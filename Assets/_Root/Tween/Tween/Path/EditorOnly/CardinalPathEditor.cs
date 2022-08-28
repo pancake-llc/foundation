@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 using System;
+using Pancake.Core.Tween;
 
 namespace Pancake.Core.Paths
 {

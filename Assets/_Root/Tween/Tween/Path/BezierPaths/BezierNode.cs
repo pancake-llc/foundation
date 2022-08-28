@@ -1,4 +1,5 @@
 ﻿using System;
+using Pancake.Core.Tween;
 using UnityEngine;
 
 namespace Pancake.Core.Paths
