@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public abstract partial class TweenAnimation
     {
@@ -464,6 +464,6 @@ namespace Pancake.Core.Tween
             EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 1), TweenPlayer.Editor.separatorLineColor);
         }
     } // TweenAnimation
-} // namespace Pancake.Core.TweenController
+} // namespace Pancake.CoreController
 
 #endif

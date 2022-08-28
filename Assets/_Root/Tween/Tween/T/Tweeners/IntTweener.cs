@@ -1,4 +1,4 @@
-﻿namespace Pancake.Core.Tween
+﻿namespace Pancake.Core
 {
     public class IntTweener : Tweener<int>
     {

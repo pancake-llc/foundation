@@ -1,4 +1,4 @@
-﻿namespace Pancake.Core.Tween
+﻿namespace Pancake.Core
 {
     public interface IInterpolator<T>
     {

@@ -8,7 +8,7 @@ using UnityEditor;
 using Pancake.Editor;
 #endif
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     [Serializable, TweenAnimation("Rendering/Material Property", "Material Property")]
     public class TweenMaterialProperty : TweenFromTo<Vector4>
@@ -418,4 +418,4 @@ namespace Pancake.Core.Tween
 
 #endif // UNITY_EDITOR
     } // class TweenMaterialProperty
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

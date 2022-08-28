@@ -19,7 +19,7 @@ using System.Runtime.CompilerServices;
     don't already exist when you use .NET SIMD.  Which is, if you create a 
     Vector<T> where T is a non primitive value type, you will get a runtime error.
  */
-namespace Pancake.Core.Linq
+namespace Pancake.Core
 {
     internal static class GenericOperators
     {

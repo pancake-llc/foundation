@@ -1,5 +1,4 @@
-﻿using Pancake.Core.Tween;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake.Core
 {

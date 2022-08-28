@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Pancake.Core.Tween;
 using UnityEngine;
 
 namespace Pancake.Core

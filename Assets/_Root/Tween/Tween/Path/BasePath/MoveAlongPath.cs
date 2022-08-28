@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// 在路径上移动
@@ -68,4 +68,4 @@ namespace Pancake.Core.Paths
             }
         }
     } // class MoveAlongPath
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

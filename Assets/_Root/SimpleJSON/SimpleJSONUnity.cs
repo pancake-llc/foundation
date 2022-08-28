@@ -41,7 +41,7 @@
 
 using UnityEngine;
 
-namespace SimpleJSON
+namespace Pancake.Core
 {
     public enum JSONContainerType { Array, Object }
     public partial class JSONNode

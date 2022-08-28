@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public class Vector2Interpolator : IInterpolator<Vector2>
     {

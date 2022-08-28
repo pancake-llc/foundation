@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SimpleJSON
+namespace Pancake.Core
 {
     public interface ISimpleJSONSerializable
     {

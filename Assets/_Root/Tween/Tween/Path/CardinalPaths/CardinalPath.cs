@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// Cardinal Path
@@ -265,4 +265,4 @@ namespace Pancake.Core.Paths
     public partial class CardinalPath : CardinalPath<CardinalNode>
     {
     }
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

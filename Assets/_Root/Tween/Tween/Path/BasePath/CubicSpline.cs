@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pancake.Core.Tween;
 using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// 三次样条
@@ -344,4 +343,4 @@ namespace Pancake.Core.Paths
 
 #endif
     } // class CubicSpline
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

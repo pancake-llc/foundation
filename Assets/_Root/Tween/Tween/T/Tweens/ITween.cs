@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public interface ITween
     {

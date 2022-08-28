@@ -5,7 +5,7 @@ using UnityEditor;
 using Pancake.Editor;
 using System;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     public partial class CardinalPathWithRotation
     {
@@ -170,6 +170,6 @@ namespace Pancake.Core.Paths
             Undo.DestroyObjectImmediate(this);
         }
     }
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core
 
 #endif

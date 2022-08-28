@@ -39,7 +39,7 @@ namespace Pancake.Core
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static string GetExtension(this string path) { return Path.GetExtension(path); }
+        public static string GetExtension(this string path) { return System.IO.Path.GetExtension(path); }
 
         /// <summary>
         /// Indicate if the file with path <paramref name="filePath"/> exists?
@@ -135,7 +135,7 @@ namespace Pancake.Core
             var paths = Directory.GetDirectories(path);
             for (int i = 0; i < paths.Length; i++)
             {
-                if (!getFullPaths) paths[i] = Path.GetFileName(paths[i]);
+                if (!getFullPaths) paths[i] = System.IO.Path.GetFileName(paths[i]);
                 // GetDirectories sometimes returns backslashes, so we need to convert them to
                 // forward slashes.
                 paths[i] = paths[i].Replace("\\", "/");
@@ -164,7 +164,7 @@ namespace Pancake.Core
             var paths = Directory.GetFiles(path);
             if (!getFullPaths)
             {
-                for (int i = 0; i < paths.Length; i++) paths[i] = Path.GetFileName(paths[i]);
+                for (int i = 0; i < paths.Length; i++) paths[i] = System.IO.Path.GetFileName(paths[i]);
             }
 
             return paths;

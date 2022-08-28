@@ -1,6 +1,6 @@
 ﻿
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     /// <summary>
     /// Predefined Interpolators
@@ -390,4 +390,4 @@ namespace Pancake.Core.Tween
         /// <returns> Interpolation result </returns>
         public static float Sine(float t) { return M.Sin((t + t + 1.5f) * M.PI) * 0.5f + 0.5f; }
     } // struct Interpolator
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

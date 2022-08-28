@@ -3,7 +3,6 @@ using UnityEngine;
 using Uei = UnityEngine.Internal;
 //using System.Linq; // used for arbitrary count min/max functions, so it's safe and won't allocate garbage don't worry~
 using System.Runtime.CompilerServices;
-using Pancake.Core.Linq;
 
 // ReSharper disable InconsistentNaming
 namespace Pancake.Core

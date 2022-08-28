@@ -5,7 +5,7 @@ using UnityEditor;
 using Pancake.Editor;
 using System;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     public partial class Path
     {
@@ -243,14 +243,14 @@ namespace Pancake.Core.Paths
                         rect.width /= 3;
                         if (GUI.Toggle(rect,
                                 selectedTool == 0,
-                                EditorGUIUtilities.TempContent(null, EditorResources.instance.moveToolPan, "Pan Move Tool"),
+                                EditorGUIUtilities.TempContent(null, TweenEditorSetting.instance.moveToolPan, "Pan Move Tool"),
                                 EditorGUIUtilities.buttonLeftStyle))
                             selectedTool = 0;
 
                         rect.x = rect.xMax;
                         if (GUI.Toggle(rect,
                                 selectedTool == 1,
-                                EditorGUIUtilities.TempContent(null, EditorResources.instance.moveTool3D, "3D Move Tool"),
+                                EditorGUIUtilities.TempContent(null, TweenEditorSetting.instance.moveTool3D, "3D Move Tool"),
                                 EditorGUIUtilities.buttonMiddleStyle))
                             selectedTool = 1;
 
@@ -259,7 +259,7 @@ namespace Pancake.Core.Paths
                             rect.x = rect.xMax;
                             if (GUI.Toggle(rect,
                                     selectedTool == 2,
-                                    EditorGUIUtilities.TempContent(null, EditorResources.instance.rotateTool, "Rotate Tool"),
+                                    EditorGUIUtilities.TempContent(null, TweenEditorSetting.instance.rotateTool, "Rotate Tool"),
                                     EditorGUIUtilities.buttonRightStyle))
                                 selectedTool = 2;
                         }
@@ -270,7 +270,7 @@ namespace Pancake.Core.Paths
 
                         rect.width /= 3;
                         if (GUI.Button(rect,
-                                EditorGUIUtilities.TempContent(null, EditorResources.instance.addNodeBack, "Add Node Back"),
+                                EditorGUIUtilities.TempContent(null, TweenEditorSetting.instance.addNodeBack, "Add Node Back"),
                                 EditorGUIUtilities.buttonLeftStyle))
                         {
                             Undo.RecordObject(path, "Add Node Back");
@@ -281,7 +281,7 @@ namespace Pancake.Core.Paths
                         {
                             rect.x = rect.xMax;
                             if (GUI.Button(rect,
-                                    EditorGUIUtilities.TempContent(null, EditorResources.instance.removeNode, "Remove Node"),
+                                    EditorGUIUtilities.TempContent(null, TweenEditorSetting.instance.removeNode, "Remove Node"),
                                     EditorGUIUtilities.buttonMiddleStyle))
                             {
                                 Undo.RecordObject(path, "Remove Node");
@@ -292,7 +292,7 @@ namespace Pancake.Core.Paths
 
                         rect.x = rect.xMax;
                         if (GUI.Button(rect,
-                                EditorGUIUtilities.TempContent(null, EditorResources.instance.addNodeForward, "Add Node Forward"),
+                                EditorGUIUtilities.TempContent(null, TweenEditorSetting.instance.addNodeForward, "Add Node Forward"),
                                 EditorGUIUtilities.buttonRightStyle))
                         {
                             Undo.RecordObject(path, "Add Node Forward");

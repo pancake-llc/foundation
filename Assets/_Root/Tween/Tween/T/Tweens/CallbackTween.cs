@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public class CallbackTween : Tween
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public class SequenceTweenRepository
     {

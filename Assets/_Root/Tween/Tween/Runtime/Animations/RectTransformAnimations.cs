@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     [Serializable, TweenAnimation("Rect Transform/Size Delta", "Rect Transform Size Delta")]
     public class TweenRectTransformSizeDelta : TweenVector2<RectTransform>
@@ -80,4 +80,4 @@ namespace Pancake.Core.Tween
             }
         }
     }
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

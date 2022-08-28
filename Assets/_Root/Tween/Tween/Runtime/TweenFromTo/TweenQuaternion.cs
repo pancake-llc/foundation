@@ -4,7 +4,7 @@
 using UnityEditor;
 #endif
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public abstract class TweenQuaternion<TTarget> : TweenFromTo<Quaternion, TTarget> where TTarget : Object
     {
@@ -59,4 +59,4 @@ namespace Pancake.Core.Tween
 
 #endif // UNITY_EDITOR
     } // class TweenQuaternion<TTarget>
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

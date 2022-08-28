@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pancake.Core.Tween;
 using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// 路径基类. 路径是 Cubic Spline 的有序组合
@@ -622,4 +621,4 @@ namespace Pancake.Core.Paths
             CopyBaseData(path1, path2);
         }
     } // class Path<Node>
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Pancake.Core.Linq
+namespace Pancake.Core
 {
     //Takes a comparer, and creates a reverse comparer, for Descending sorts
     internal sealed class ComparerReverser<T> : IComparer<T>

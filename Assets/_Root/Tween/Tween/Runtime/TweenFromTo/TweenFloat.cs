@@ -4,7 +4,7 @@
 using UnityEditor;
 #endif
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public abstract class TweenFloat<TTarget> : TweenFromTo<float, TTarget> where TTarget : Object
     {
@@ -22,4 +22,4 @@ namespace Pancake.Core.Tween
 
 #endif
     } // class TweenFloat<TTarget>
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

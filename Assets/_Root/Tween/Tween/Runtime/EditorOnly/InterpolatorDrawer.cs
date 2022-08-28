@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     /// <summary>
     /// Interpolator Drawer
@@ -219,6 +219,6 @@ namespace Pancake.Core.Tween
             EditorGUI.LabelField(buttonRect, EditorGUIUtilities.TempContent(image: EditorGUIUtilities.paneOptionsIconDark), GUIStyle.none);
         }
     } // class InterpolatorDrawer
-} // namespace Pancake.Core.Tween.Editor
+} // namespace Pancake.Core.Editor
 
 #endif // UNITY_EDITOR

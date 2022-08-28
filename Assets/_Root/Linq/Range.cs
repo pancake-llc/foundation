@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pancake.Core.Linq
+namespace Pancake.Core
 {
     public static partial class L
     {

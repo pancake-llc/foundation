@@ -6,7 +6,7 @@ using UnityEditor;
 using Pancake.Editor;
 #endif
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     internal interface ITweenFromTo
     {
@@ -189,4 +189,4 @@ namespace Pancake.Core.Tween
 
 #endif // UNITY_EDITOR
     } // class TweenFromTo<TValue, TTarget>
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

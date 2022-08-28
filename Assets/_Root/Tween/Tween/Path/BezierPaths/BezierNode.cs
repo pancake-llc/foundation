@@ -1,8 +1,7 @@
 ﻿using System;
-using Pancake.Core.Tween;
 using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// 贝塞尔路径节点
@@ -103,4 +102,4 @@ namespace Pancake.Core.Paths
             _broken = target._broken;
         }
     } // class BezierNode
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// Cardinal 路径节点
@@ -20,4 +20,4 @@ namespace Pancake.Core.Paths
             tension = target.tension;
         }
     } // class CardinalNode
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

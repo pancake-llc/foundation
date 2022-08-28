@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// Cardinal 路径节点 (with Rotation)
@@ -221,4 +221,4 @@ namespace Pancake.Core.Paths
             target.rotation = GetRotation(location);
         }
     }
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

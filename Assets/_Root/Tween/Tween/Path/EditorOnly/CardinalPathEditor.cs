@@ -4,9 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 using System;
-using Pancake.Core.Tween;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     public abstract partial class CardinalPath<Node>
     {
@@ -162,6 +161,6 @@ namespace Pancake.Core.Paths
             Undo.DestroyObjectImmediate(this);
         }
     }
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core
 
 #endif

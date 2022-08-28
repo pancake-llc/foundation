@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core.Paths
+namespace Pancake.Core
 {
     /// <summary>
     /// 贝塞尔路径泛型基类
@@ -316,4 +316,4 @@ namespace Pancake.Core.Paths
     public partial class BezierPath : BezierPath<BezierNode>
     {
     }
-} // namespace Pancake.Core.Paths
+} // namespace Pancake.Core

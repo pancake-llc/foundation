@@ -4,7 +4,7 @@
 using UnityEditor;
 #endif
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     [System.Serializable]
     public abstract class TweenVector3<TTarget> : TweenFromTo<Vector3, TTarget> where TTarget : Object
@@ -57,4 +57,4 @@ namespace Pancake.Core.Tween
 
 #endif // UNITY_EDITOR
     } // class TweenVector3<TTarget>
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

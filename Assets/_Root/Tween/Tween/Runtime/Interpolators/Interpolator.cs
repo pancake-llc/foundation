@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     /// <summary>
     /// Interpolator
@@ -40,4 +40,4 @@ namespace Pancake.Core.Tween
             this.customCurve = customCurve;
         }
     } // struct Interpolator
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

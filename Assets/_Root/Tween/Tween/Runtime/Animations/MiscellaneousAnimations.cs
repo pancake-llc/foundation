@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using System;
-using Pancake.Core.Paths;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     [Serializable, TweenAnimation("Miscellaneous/Behaviour Enabled", "Behaviour Enabled")]
     public class TweenBehaviourEnabled : TweenFloat<Behaviour>
@@ -174,4 +173,4 @@ namespace Pancake.Core.Tween
 
 #endif
     }
-} // namespace Pancake.Core.Tween
+} // namespace Pancake.Core

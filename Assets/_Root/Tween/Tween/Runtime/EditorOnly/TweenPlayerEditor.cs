@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     public partial class TweenPlayer
     {
@@ -404,7 +404,7 @@ namespace Pancake.Core.Tween
                     rect2.width = EditorGUIUtility.singleLineHeight * 2 - 4;
                     using (GUIContentColorScope.New(target.Playing ? progressForegroundValid : EditorGUIUtilities.labelNormalColor))
                     {
-                        target.Playing = GUI.Toggle(rect2, target.Playing, EditorGUIUtilities.TempContent(image: EditorResources.instance.play), imageButtonStyle);
+                        target.Playing = GUI.Toggle(rect2, target.Playing, EditorGUIUtilities.TempContent(image: TweenEditorSetting.instance.play), imageButtonStyle);
                     }
 
                     // direction button
@@ -415,8 +415,8 @@ namespace Pancake.Core.Tween
                         {
                             if (GUI.Button(rect2,
                                     EditorGUIUtilities.TempContent(image: target.direction == PlayDirection.Forward
-                                        ? EditorResources.instance.rightArrow
-                                        : EditorResources.instance.leftArrow),
+                                        ? TweenEditorSetting.instance.rightArrow
+                                        : TweenEditorSetting.instance.leftArrow),
                                     imageButtonStyle))
                             {
                                 target.ReverseDirection();
