@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core.Tween
+namespace Pancake.Core
 {
     /// <summary>
     /// RenderingUtilities
