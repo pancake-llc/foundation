@@ -6,7 +6,7 @@
 
 Add the lines below to `Packages/manifest.json`
 
-for version x.x.x
++ for version 1.0.0
 ```csharp
-"package name": "path version ",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root#1.0.0",
 ```
