@@ -502,5 +502,38 @@ namespace Pancake.Core
                 childsCache.Add(t);
             }
         }
+        
+#if !UNITY_2019_2_OR_NERER
+        public static bool TryGetComponent<T>(this GameObject gameObject, out T component)
+        {
+            component = gameObject.GetComponent<T>();
+            return component != null;
+        }
+#endif
+
+        /// <summary>
+        /// Get component if it exists or add a new one.
+        /// </summary>
+        public static T GetComponentSafely<T>(this GameObject target) where T : Component
+        {
+            if (!target.TryGetComponent(out T component))
+            {
+                component = target.AddComponent<T>();
+            }
+
+            return component;
+        }
+
+
+        /// <summary>
+        /// Get component if it exists or add a new one.
+        /// </summary>
+        public static T GetComponentSafely<T>(this Component target) where T : Component { return target.gameObject.GetComponentSafely<T>(); }
+        
+        /// <summary>
+        /// Get the RectTransform component.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        public static RectTransform rectTransform(this GameObject target) { return target.transform as RectTransform; }
     }
 }

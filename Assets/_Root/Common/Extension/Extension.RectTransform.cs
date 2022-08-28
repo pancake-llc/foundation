@@ -378,5 +378,65 @@ namespace Pancake.Core
 
             return new Rect(screenCorners[0], screenCorners[1] - screenCorners[0]);
         }
+
+        /// <summary>
+        /// Sets the x/y transform.anchoredPosition using optional parameters, keeping all undefined values as they were before. Can be
+        /// called with named parameters like transform.SetAnchoredPosition(x: 5), for example, only changing transform.anchoredPositon.x
+        /// </summary>
+        /// <param name="transform">The transform to set the transform.anchoredPosition at.</param>
+        /// <param name="x">If this is not null, transform.anchoredPosition.x is set to this value.</param>
+        /// <param name="y">If this is not null, transform.anchoredPosition.y is set to this value.</param>
+        /// <returns>The transform itself.</returns>
+        public static RectTransform SetAnchoredPosition(this RectTransform transform, float? x = null, float? y = null)
+        {
+            transform.anchoredPosition = transform.position.Change(x, y);
+            return transform;
+        }
+        
+        /// <summary>
+        /// Sets width/height using optional parameters, keeping all undefined values as they were before. Can be
+        /// called with named parameters like transform.SetSizeDelta(x: 5), for example, only changing transform.width .x
+        /// </summary>
+        /// <param name="transform">The transform to set the transform.sizeDelta at.</param>
+        /// <param name="x">If this is not null, transform.width.x is set to this value.</param>
+        /// <param name="y">If this is not null, transform.height.y is set to this value.</param>
+        /// <returns>The transform itself.</returns>
+        public static RectTransform SetSizeDelta(this RectTransform transform, float? x = null, float? y = null)
+        {
+            transform.sizeDelta = transform.sizeDelta.Change(x, y);
+            return transform;
+        }
+        
+        public static RectTransform SetAnchorMin(this RectTransform transform, float? x = null, float? y = null)
+        {
+            transform.anchorMin = transform.anchorMin.Change(x, y);
+            return transform;
+        }
+        
+        public static RectTransform SetAnchorMax(this RectTransform transform, float? x = null, float? y = null)
+        {
+            transform.anchorMax = transform.anchorMax.Change(x, y);
+            return transform;
+        }
+        
+        public static Rect GetWorldRect(this RectTransform rectTransform)
+        {
+            var rect = rectTransform.rect;
+            rect.min = rectTransform.TransformPoint(rect.min);
+            rect.max = rectTransform.TransformPoint(rect.max);
+            return rect;
+        }
+        
+        /// <summary>
+        /// Get the overlapped rect.
+        /// </summary>
+        public static Rect GetIntersection(this Rect rect, Rect other)
+        {
+            if (rect.xMin > other.xMin) other.xMin = rect.xMin;
+            if (rect.xMax < other.xMax) other.xMax = rect.xMax;
+            if (rect.yMin > other.yMin) other.yMin = rect.yMin;
+            if (rect.yMax < other.yMax) other.yMax = rect.yMax;
+            return other;
+        }
     }
 }

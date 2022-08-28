@@ -1,7 +1,10 @@
 {
     "name": "pancake@heart",
     "rootNamespace": "Pancake.Heart",
-    "references": [],
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -9,6 +12,22 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "2.0.0",
+            "define": "PANCAKE_TMP_SUPPORT"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "1.0.0",
+            "define": "PANCAKE_UGUI_SUPPORT"
+        },
+        {
+            "name": "com.unity.render-pipelines.core",
+            "expression": "7.1.8",
+            "define": "PANCAKE_RENDER_PIPELINE_CORE"
+        }
+    ],
     "noEngineReferences": false
 }

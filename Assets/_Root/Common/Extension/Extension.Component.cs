@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Pancake.Core
 {
     using System;
@@ -24,7 +26,42 @@ namespace Pancake.Core
             setup?.Invoke(button);
             return button;
         }
+        
+        /// <summary>
+        /// Get the RectTransform component.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        public static RectTransform rectTransform(this Component target) { return target.transform as RectTransform; }
 
+        /// <summary>
+        /// Delay invoking (scaled time).
+        /// </summary>
+        public static void Delay(this MonoBehaviour behaviour, float delay, Action action)
+        {
+            behaviour.StartCoroutine(DelayedCoroutine());
+
+            IEnumerator DelayedCoroutine()
+            {
+                yield return new WaitForSeconds(delay);
+                action();
+            }
+        }
+        
+        
+        /// <summary>
+        /// Delay invoking (unscaled time).
+        /// </summary>
+        public static void DelayRealtime(this MonoBehaviour behaviour, float delay, Action action)
+        {
+            behaviour.StartCoroutine(DelayedCoroutine());
+
+            IEnumerator DelayedCoroutine()
+            {
+                yield return new WaitForSecondsRealtime(delay);
+                action();
+            }
+        }
+        
         #region field info
 
 #if UNITY_EDITOR

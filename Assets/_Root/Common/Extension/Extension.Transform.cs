@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Pancake.Core
@@ -333,6 +334,72 @@ namespace Pancake.Core
             {
                 child.ChangeLayersRecursively(layerIndex);
             }
+        }
+        
+                /// <summary>
+        /// Traverse transform tree (root node first).
+        /// </summary>
+        /// <param name="root"> The root node of transform tree. </param>
+        /// <param name="operate"> A custom operation on every transform node. </param>
+        /// <param name="depthLimit"> Negative value means no limit, zero means root only, positive value means maximum children depth </param>
+        public static void TraverseHierarchy(this Transform root, Action<Transform> operate, int depthLimit = -1)
+        {
+            operate(root);
+
+            if (depthLimit != 0)
+            {
+                int count = root.childCount;
+                for (int i = 0; i < count; i++)
+                {
+                    TraverseHierarchy(root.GetChild(i), operate, depthLimit - 1);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Traverse transform tree (leaf node first).
+        /// </summary>
+        /// <param name="root"> The root node of transform tree. </param>
+        /// <param name="operate"> A custom operation on every transform node. </param>
+        /// <param name="depthLimit"> Negative value means no limit, zero means root only, positive value means maximum children depth </param>
+        public static void InverseTraverseHierarchy(this Transform root, Action<Transform> operate, int depthLimit = -1)
+        {
+            if (depthLimit != 0)
+            {
+                int count = root.childCount;
+                for (int i = 0; i < count; i++)
+                {
+                    InverseTraverseHierarchy(root.GetChild(i), operate, depthLimit - 1);
+                }
+            }
+
+            operate(root);
+        }
+
+
+        /// <summary>
+        /// Find a transform in the transform tree (root node first)
+        /// </summary>
+        /// <param name="root"> The root node of transform tree. </param>
+        /// <param name="match"> match function. </param>
+        /// <param name="depthLimit"> Negative value means no limit, zero means root only, positive value means maximum children depth </param>
+        /// <returns> The matched node or null if no matched. </returns>
+        public static Transform SearchHierarchy(this Transform root, Predicate<Transform> match, int depthLimit = -1)
+        {
+            if (match(root)) return root;
+            if (depthLimit == 0) return null;
+
+            int count = root.childCount;
+            Transform result = null;
+
+            for (int i = 0; i < count; i++)
+            {
+                result = SearchHierarchy(root.GetChild(i), match, depthLimit - 1);
+                if (result) break;
+            }
+
+            return result;
         }
     }
 }
