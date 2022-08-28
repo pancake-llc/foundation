@@ -1,0 +1,93 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# =============== #
+# Unity generated #
+# =============== #
+/[Tt]emp/
+/[Uu]serSettings/
+/[Oo]bj/
+/[Ll]ibrary/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+Assets/AssetStoreTools*
+/UnityGenerated/
+# Library should not freeze version, it should be written in README.
+/ProjectSettings/ProjectVersion.txt
+/ProjectSettings/UniformFoldoutState.asset
+
+# ============= #
+# IDE generated #
+# ============= #
+# MonoDevelop / VisualStudio
+/ExportedObj/
+/.consulo/
+/*.tmp
+/*.opendb
+/*.VC.db
+/*.pdb
+/*.svd
+/*.userprefs
+/*.csproj
+/*.csproj.CoreCompileInputs.cache
+/*.pidb
+/*.suo
+/*.sln
+/*.user
+/*.unityproj
+/*.booproj
+# Sublime Text
+/*.sublime-*
+# Visual Studio Code
+/.vscode/
+# Visual Studio cache directory
+.vs/
+# Gradle cache directory
+.gradle/
+# IntelliJ Rider
+/.idea/
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ====== #
+# Custom #
+# ====== #
+
+# Unity3D generated meta files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity3D Generated File On Crash Reports
+sysinfo.txt
+
+# Builds
+*.apk
+#*.unitypackage
+*.symbols.zip
+/[Bb]in/
+
+# Crashlytics generated file
+Assets/StreamingAssets/crashlytics-build.properties
+
+#firebase remote
+/remote_config_data
+
+#user setting
+/Assets/_Temp
+/Assets/_Temp.meta

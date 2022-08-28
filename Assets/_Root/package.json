@@ -1,0 +1,25 @@
+{
+  "name": "com.demo.packagename",
+  "displayName": "Package Name",
+  "description": "Package Description",
+  "version": "1.0.0",
+  "unity": "2019.1",
+  "category": "pancake",
+  "author": {
+    "name": "yenmoc",
+    "email": "phongsoyenmoc.diep@gmail.com",
+    "url": "https://github.com/yenmoc"
+  },
+  "license": "MIT",
+  "keywords": [ "unity" ],
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:pancake-llc/packagename.git",
+    "directory": "Package Name"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@pancake-llc"
+  }
+}
