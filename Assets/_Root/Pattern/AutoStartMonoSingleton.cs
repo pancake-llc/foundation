@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core.Pattern
+namespace Pancake.Core
 {
     public abstract class AutoStartMonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {

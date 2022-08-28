@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pancake.Core.Pattern;
 using UnityEngine;
 
 // ReSharper disable InconsistentNaming
