@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pancake.Core.Stack
+namespace Pancake.Core
 {
     /// <summary>
     /// StackStateMachine

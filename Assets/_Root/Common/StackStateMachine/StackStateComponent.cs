@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Pancake.Core.Stack
+namespace Pancake.Core
 {
     /// <summary>
     /// BaseStackStateComponent

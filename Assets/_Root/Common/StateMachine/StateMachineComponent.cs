@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core.State
+namespace Pancake.Core
 {
     /// <summary>
     /// StateMachine

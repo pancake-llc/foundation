@@ -1,4 +1,4 @@
-﻿namespace Pancake.Core.State
+﻿namespace Pancake.Core
 {
     /// <summary>
     /// State.

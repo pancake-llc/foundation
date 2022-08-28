@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pancake.Core.State
+namespace Pancake.Core
 {
     /// <summary>
     /// StateMachine

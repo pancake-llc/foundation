@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Pancake.Core.State
+namespace Pancake.Core
 {
     /// <summary>
     /// BaseState

@@ -1,4 +1,4 @@
-﻿namespace Pancake.Core.Stack
+﻿namespace Pancake.Core
 {
     /// <summary>
     /// Stack state.
