@@ -1,9 +1,7 @@
 {
     "name": "pancake@ulid",
     "rootNamespace": "",
-    "references": [
-        "GUID:96c821a642a1d6b46820749c150c5a13"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
