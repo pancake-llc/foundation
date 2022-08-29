@@ -6,8 +6,6 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-using Pancake;
-
 namespace System
 {
     public class UlidAttribute : PropertyAttribute
@@ -60,7 +58,9 @@ namespace System
         {
             if (property.propertyType != SerializedPropertyType.String) return;
 
-            property.stringValue.CopyToClipboard();
+            var textEditor = new TextEditor {text = property.stringValue};
+            textEditor.SelectAll();
+            textEditor.Copy();
         }
     }
 #endif

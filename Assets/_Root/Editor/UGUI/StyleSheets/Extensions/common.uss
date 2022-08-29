@@ -1,0 +1,7 @@
+:root {
+    --unity-metrics-default-border_radius: 7px;
+}
+
+.AppCommandLeftOn {
+    background-color: rgba(255, 0, 0, 1);
+}

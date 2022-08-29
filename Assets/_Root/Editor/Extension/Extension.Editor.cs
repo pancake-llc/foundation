@@ -154,6 +154,19 @@ namespace Pancake.Editor
                 if (rectTransform) rectTransform.SelfFilling();
             }
         }
+        
+        [MenuItem("GameObject/Pancake/Self Filling", true, 1)]
+        private static bool AnchorFillinSelectedUIObjectsValidate()
+        {
+            bool flag = false;
+            foreach (var obj in Selection.gameObjects)
+            {
+                var rectTransform = obj.GetComponent<RectTransform>();
+                flag = rectTransform != null;
+            }
+
+            return flag;
+        }
 
         public static void Delay(string key, float second)
         {
