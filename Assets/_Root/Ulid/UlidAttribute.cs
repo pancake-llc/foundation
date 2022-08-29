@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-using Pancake.Core
+using Pancake.Core;
 
 namespace System
 {
