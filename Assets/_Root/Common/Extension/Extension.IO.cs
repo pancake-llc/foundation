@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public static partial class C
     {

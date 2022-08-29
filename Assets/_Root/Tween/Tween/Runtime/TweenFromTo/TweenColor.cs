@@ -5,7 +5,7 @@ using UnityEditor;
 using Pancake.Editor;
 #endif
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [System.Serializable]
     public abstract class TweenColor<TTarget> : TweenFromTo<Color, TTarget> where TTarget : Object

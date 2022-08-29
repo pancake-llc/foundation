@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public static class IOExtensions
     {

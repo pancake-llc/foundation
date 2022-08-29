@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public enum JSONNodeType
     {

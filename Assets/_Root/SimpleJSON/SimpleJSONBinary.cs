@@ -41,7 +41,7 @@
  * * * * */
 using System;
 
-namespace Pancake.Core
+namespace Pancake
 {
 #if !SimpleJSON_ExcludeBinary
     public abstract partial class JSONNode

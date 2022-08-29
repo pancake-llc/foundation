@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>
     /// BaseStackState

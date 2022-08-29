@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public class Vector2Tweener : Tweener<Vector2>
     {

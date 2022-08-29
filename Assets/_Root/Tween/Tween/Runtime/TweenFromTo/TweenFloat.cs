@@ -4,7 +4,7 @@
 using UnityEditor;
 #endif
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public abstract class TweenFloat<TTarget> : TweenFromTo<float, TTarget> where TTarget : Object
     {

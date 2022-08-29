@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 // ReSharper disable NotAccessedField.Local
 
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>
     /// Enum representing the response type the internet check will use to determine internet status

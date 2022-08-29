@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     /// <summary>
     /// Cardinal 路径节点 (with Rotation)

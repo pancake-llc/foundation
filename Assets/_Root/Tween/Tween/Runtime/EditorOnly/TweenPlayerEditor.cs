@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public partial class TweenPlayer
     {

@@ -9,7 +9,7 @@ using TMPro;
 using UnityEngine.UI;
 #endif
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
 #if PANCAKE_UGUI_SUPPORT
 

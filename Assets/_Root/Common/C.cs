@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public static partial class C
     {

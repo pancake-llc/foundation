@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Pancake.Core;
+using Pancake.Linq;
 
 namespace Pancake.Editor
 {

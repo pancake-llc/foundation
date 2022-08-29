@@ -3,14 +3,15 @@ using UnityEngine;
 using Uei = UnityEngine.Internal;
 //using System.Linq; // used for arbitrary count min/max functions, so it's safe and won't allocate garbage don't worry~
 using System.Runtime.CompilerServices;
+using Pancake.Linq;
 
 // ReSharper disable InconsistentNaming
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>The core math helper class. It has functions mostly for single values, but also vector helpers</summary>
     public static class M
     {
-        const MethodImplOptions INLINE = MethodImplOptions.AggressiveInlining;
+        private const MethodImplOptions INLINE = MethodImplOptions.AggressiveInlining;
 
         #region Constants
 
@@ -1185,13 +1186,13 @@ namespace Pancake.Core
 
         /// <summary>Returns the direction of the input angle, as a normalized vector</summary>
         /// <param name="aRad">The input angle, in radians</param>
-        /// <seealso cref="Extensions.Angle"/>
+        /// <seealso cref="MExtension.Angle"/>
         [MethodImpl(INLINE)]
         public static Vector2 AngToDir(float aRad) => new Vector2(Mathf.Cos(aRad), Mathf.Sin(aRad));
 
         /// <summary>Returns the angle of the input vector, in radians. You can also use <c>myVector.Angle()</c></summary>
         /// <param name="vec">The vector to get the angle of. It does not have to be normalized</param>
-        /// <seealso cref="Extensions.Angle"/>
+        /// <seealso cref="MExtension.Angle"/>
         [MethodImpl(INLINE)]
         public static float DirToAng(Vector2 vec) => Mathf.Atan2(vec.y, vec.x);
 

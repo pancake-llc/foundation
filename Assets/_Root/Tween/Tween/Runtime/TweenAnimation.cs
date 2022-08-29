@@ -3,7 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public sealed class TweenAnimationAttribute : Attribute

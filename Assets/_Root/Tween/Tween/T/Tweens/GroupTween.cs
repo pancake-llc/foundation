@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public class GroupTween : Tween
     {

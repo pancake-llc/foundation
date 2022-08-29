@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pancake.Core
+namespace Pancake.Linq
 {
     /// <summary>
     /// Provides faster array and list specific extension methods with

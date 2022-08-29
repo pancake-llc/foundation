@@ -8,7 +8,7 @@ using UnityEditor;
 using Pancake.Editor;
 #endif
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [Serializable, TweenAnimation("Rendering/Material Property", "Material Property")]
     public class TweenMaterialProperty : TweenFromTo<Vector4>

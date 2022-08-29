@@ -5,7 +5,7 @@ using System;
 using UnityEditor;
 #endif
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [Serializable, TweenAnimation("Miscellaneous/Behaviour Enabled", "Behaviour Enabled")]
     public class TweenBehaviourEnabled : TweenFloat<Behaviour>

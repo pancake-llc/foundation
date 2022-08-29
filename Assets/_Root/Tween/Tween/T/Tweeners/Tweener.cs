@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public abstract class Tweener<T> : ITweener
     {

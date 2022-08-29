@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     /// <summary>
     /// Interpolator Drawer

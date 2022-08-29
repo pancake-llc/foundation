@@ -3,7 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Pancake.Core
+namespace Pancake.Linq
 {
     public class EmptyOrderablePartitioner<T> : OrderablePartitioner<T>
     {

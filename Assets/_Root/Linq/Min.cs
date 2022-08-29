@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pancake.Core
+namespace Pancake.Linq
 {
     //int, long, float,double, decimal
     public static partial class L

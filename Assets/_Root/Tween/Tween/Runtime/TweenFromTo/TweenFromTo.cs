@@ -6,7 +6,7 @@ using UnityEditor;
 using Pancake.Editor;
 #endif
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     internal interface ITweenFromTo
     {

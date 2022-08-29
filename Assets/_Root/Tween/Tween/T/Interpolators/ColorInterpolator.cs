@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public class ColorInterpolator : IInterpolator<Color>
     {

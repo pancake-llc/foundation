@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public sealed class MachineKey
     {

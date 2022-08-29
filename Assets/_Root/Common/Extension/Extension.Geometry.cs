@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>
     /// A helper class to handle geometry related operations    

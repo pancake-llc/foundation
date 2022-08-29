@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pancake.Core
+namespace Pancake.Linq
 {
     public static class SliceHelper
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     /// <summary>
     /// 贝塞尔路径节点

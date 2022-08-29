@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Pancake.Core
+namespace Pancake
 {
     internal static class BytesAndStringExtensions
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Pancake.Core
+namespace Pancake
 {
     using UnityEngine;
 

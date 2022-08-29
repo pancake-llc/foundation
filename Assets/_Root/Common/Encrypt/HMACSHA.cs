@@ -2,7 +2,7 @@
 
 using System.Text;
 
-namespace Pancake.Core
+namespace Pancake
 {
     // ReSharper disable once InconsistentNaming
     public sealed class HMACSHA

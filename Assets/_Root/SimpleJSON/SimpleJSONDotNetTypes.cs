@@ -38,7 +38,7 @@
 
 #endregion License and information
 
-namespace Pancake.Core
+namespace Pancake
 {
     using System.Globalization;
     using System.Collections.Generic;

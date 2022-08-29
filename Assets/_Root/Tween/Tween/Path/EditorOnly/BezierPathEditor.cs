@@ -5,7 +5,7 @@ using UnityEditor;
 using Pancake.Editor;
 using System;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public abstract partial class BezierPath<Node>
     {

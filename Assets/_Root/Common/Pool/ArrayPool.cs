@@ -1,6 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming
 
-namespace Pancake.Core
+namespace Pancake
 {
     using System;
     using System.Collections.Generic;

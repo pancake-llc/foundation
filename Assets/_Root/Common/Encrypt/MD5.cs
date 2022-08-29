@@ -6,7 +6,7 @@ using System.Text;
 // ReSharper disable UnusedMember.Global
 
 // ReSharper disable once CheckNamespace
-namespace Pancake.Core
+namespace Pancake
 {
     // Simple struct for the (a,b,c,d) which is used to compute the mesage digest.    
     // ReSharper disable once InconsistentNaming

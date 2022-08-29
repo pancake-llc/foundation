@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Pancake.Core
+namespace Pancake
 {
     using System;
 

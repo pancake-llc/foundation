@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     internal static class AngleUtils
     {

@@ -1,4 +1,4 @@
-﻿namespace Pancake.Core
+﻿namespace Pancake.Tween
 {
     public delegate float EaseDelegate(float a, float b, float t);
 

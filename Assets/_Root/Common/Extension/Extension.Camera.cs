@@ -2,46 +2,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public static partial class C
     {
-        public static PlatformMask ToFlag(this RuntimePlatform platform)
-        {
-            switch (platform)
-            {
-                case RuntimePlatform.WindowsEditor: return PlatformMask.WindowsEditor;
-                case RuntimePlatform.OSXEditor: return PlatformMask.OSXEditor;
-                case RuntimePlatform.LinuxEditor: return PlatformMask.LinuxEditor;
-
-                case RuntimePlatform.WindowsPlayer: return PlatformMask.WindowsPlayer;
-                case RuntimePlatform.OSXPlayer: return PlatformMask.OSXPlayer;
-                case RuntimePlatform.LinuxPlayer: return PlatformMask.LinuxPlayer;
-
-                case RuntimePlatform.PS4: return PlatformMask.PS4;
-                case RuntimePlatform.XboxOne: return PlatformMask.XboxOne;
-                case RuntimePlatform.Switch: return PlatformMask.Switch;
-
-                case RuntimePlatform.IPhonePlayer: return PlatformMask.iPhone;
-                case RuntimePlatform.Android: return PlatformMask.Android;
-
-                case RuntimePlatform.WSAPlayerX86: return PlatformMask.WSAPlayerX86;
-                case RuntimePlatform.WSAPlayerX64: return PlatformMask.WSAPlayerX64;
-                case RuntimePlatform.WSAPlayerARM: return PlatformMask.WSAPlayerARM;
-
-                case RuntimePlatform.WebGLPlayer: return PlatformMask.WebGLPlayer;
-
-                case RuntimePlatform.tvOS: return PlatformMask.tvOS;
-                //case RuntimePlatform.Stadia: return PlatformMask.Stadia;
-
-                default: return PlatformMask.None;
-            }
-        }
-
-
-        public static bool Contains(this PlatformMask mask, RuntimePlatform platform) { return (mask & platform.ToFlag()) != 0; }
-
-
         public static float ScreenToWorldSize(this Camera camera, float pixelSize, float clipPlane)
         {
             if (camera.orthographic)

@@ -1,4 +1,4 @@
-namespace Pancake.Core
+namespace Pancake
 {
     public static class Routine
     {

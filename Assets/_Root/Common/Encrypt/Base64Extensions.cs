@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public static class Base64Extensions
     {

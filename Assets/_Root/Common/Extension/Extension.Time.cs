@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake
 {
     using System;
 

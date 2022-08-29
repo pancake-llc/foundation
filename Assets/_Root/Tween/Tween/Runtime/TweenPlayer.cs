@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public enum WrapMode
     {

@@ -1,4 +1,4 @@
-﻿namespace Pancake.Core
+﻿namespace Pancake.Tween
 {
     using TMPro;
     using UnityEngine;

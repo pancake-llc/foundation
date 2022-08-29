@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-namespace Pancake.Core
+namespace Pancake
 {
     using System;
     using System.Collections.Generic;

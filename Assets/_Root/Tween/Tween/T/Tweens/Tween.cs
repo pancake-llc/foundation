@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public abstract partial class Tween : ITween
     {

@@ -1,6 +1,6 @@
 ﻿
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     /// <summary>
     /// Predefined Interpolators

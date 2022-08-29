@@ -2,7 +2,7 @@
 using UnityEngine.Rendering;
 using System;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [Serializable, TweenAnimation("Rendering/Light Color", "Light Color")]
     public class TweenLightColor : TweenColor<Light>

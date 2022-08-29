@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     /// <summary>
     /// 在路径上移动

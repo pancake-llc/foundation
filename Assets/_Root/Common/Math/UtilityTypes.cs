@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>Contains either 0, 1, 2 or 3 valid return values</summary>
     public readonly struct ResultsMax3<T> : IEnumerable<T> where T : struct

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // ReSharper disable InconsistentNaming
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [AddComponentMenu("")]
     public class TweenManager : AutoStartMonoSingleton<TweenManager>

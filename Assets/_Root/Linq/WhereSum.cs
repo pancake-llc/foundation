@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace Pancake.Core
+namespace Pancake.Linq
 {
     public static partial class L
     {

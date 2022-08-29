@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>
     /// StackStateMachineComponent

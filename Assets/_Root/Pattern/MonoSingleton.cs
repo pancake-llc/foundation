@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {

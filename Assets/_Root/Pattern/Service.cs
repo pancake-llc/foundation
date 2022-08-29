@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>
     /// Service - Service locator wrapper.

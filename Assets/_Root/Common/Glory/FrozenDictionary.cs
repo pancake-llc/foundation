@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 // ReSharper disable RedundantAssignment
-namespace Pancake.Core
+namespace Pancake
 {
     /// <summary>
     /// Provides a read-only dictionary that contents are fixed at the time of instance creation.

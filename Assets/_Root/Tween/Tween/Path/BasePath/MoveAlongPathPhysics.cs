@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     /// <summary>
     /// 在路径上通过物理的方式移动

@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Pancake.Core
+namespace Pancake
 {
     public sealed class BoxingConveter<TIn, TOut>
     {

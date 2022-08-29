@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Pancake.Core
+namespace Pancake
 {
     internal static partial class Error
     {

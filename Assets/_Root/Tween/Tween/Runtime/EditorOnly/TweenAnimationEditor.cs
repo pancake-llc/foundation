@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEditor;
 using Pancake.Editor;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public abstract partial class TweenAnimation
     {

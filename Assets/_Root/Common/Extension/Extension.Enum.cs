@@ -1,4 +1,4 @@
-namespace Pancake.Core
+namespace Pancake
 {
     using System;
 

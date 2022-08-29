@@ -3,7 +3,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     public class TweenEditorSetting : ScriptableAssetSingleton<TweenEditorSetting>
     {

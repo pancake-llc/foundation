@@ -6,7 +6,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [Serializable, TweenAnimation("Rendering/Light 2D Outer Angle", "Light 2D Outer Angle")]
     public class TweenLight2DOuterAngle : TweenFloat<Light2D>

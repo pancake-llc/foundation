@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 
 // ReSharper disable InconsistentNaming
-namespace Pancake.Core
+namespace Pancake
 {
     public class AESEncrypt
     {

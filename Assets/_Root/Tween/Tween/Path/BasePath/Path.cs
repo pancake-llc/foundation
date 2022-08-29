@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     /// <summary>
     /// 路径基类. 路径是 Cubic Spline 的有序组合

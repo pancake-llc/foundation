@@ -6,7 +6,7 @@ using UnityEditor;
 using Pancake.Editor;
 #endif
 
-namespace Pancake.Core
+namespace Pancake.Tween
 {
     [Serializable, TweenAnimation("Transform/Position", "Transform Position")]
     public class TweenTransformPosition : TweenVector3<Transform>
