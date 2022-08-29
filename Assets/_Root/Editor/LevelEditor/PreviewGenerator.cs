@@ -109,7 +109,7 @@ namespace Pancake.Editor.LevelEditor
             if (!CanCreatePreview(obj))
             {
                 onCapturedCallback?.Invoke(null);
-                return Uniform.PrefabIcon;
+                return EditorResources.instance.prefabIcon;
             }
 
             var cachedPosition = obj.transform.position;

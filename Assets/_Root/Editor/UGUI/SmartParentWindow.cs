@@ -23,11 +23,11 @@ namespace Pancake.UI.Editor
         {
             _isFreeMovementEnabled = false;
 
-            _snapAllContent = new GUIContent(Uniform.SnapAllPic, "Trims size to children horizontally and vertically. Also snap Anchors to borders.");
-            _snapVerticalContent = new GUIContent(Uniform.SnapVerticalPic, "Trims size to children vertically. Also snap Anchors to borders vertically.");
-            _snapHorizontalContent = new GUIContent(Uniform.SnapHorizontalPic, "Trims size to children horizontally. Also snap Anchors to borders horizontally.");
-            _freeParentModeOnContent = new GUIContent(Uniform.FreeParentModeOnPic, "When this mode is enabled children are not moved along with the parent.");
-            _freeParentModeOffContent = new GUIContent(Uniform.FreeParentModeOffPic, "When this mode is enabled children are not moved along with the parent.");
+            _snapAllContent = new GUIContent(EditorResources.instance.snapAllPic, "Trims size to children horizontally and vertically. Also snap Anchors to borders.");
+            _snapVerticalContent = new GUIContent(EditorResources.instance.snapVerticalPic, "Trims size to children vertically. Also snap Anchors to borders vertically.");
+            _snapHorizontalContent = new GUIContent(EditorResources.instance.snapHorizontalPic, "Trims size to children horizontally. Also snap Anchors to borders horizontally.");
+            _freeParentModeOnContent = new GUIContent(EditorResources.instance.freeParentModeOnPic, "When this mode is enabled children are not moved along with the parent.");
+            _freeParentModeOffContent = new GUIContent(EditorResources.instance.freeParentModeOffPic, "When this mode is enabled children are not moved along with the parent.");
 
             Selection.selectionChanged += SelectionChanged;
             EditorApplication.update += UpdateTransforms;
