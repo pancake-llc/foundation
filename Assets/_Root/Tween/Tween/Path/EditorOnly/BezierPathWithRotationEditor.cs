@@ -47,7 +47,7 @@ namespace Pancake.Tween
                             rot,
                             0.75f,
                             EventType.Repaint);
-                        HandlesUtilities.DrawAALine(pos, pos + rot * Vector3.up);
+                        EditorHandlesUtilities.DrawAALine(pos, pos + rot * Vector3.up);
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace Pancake.Tween
                         rotation,
                         size,
                         EventType.Repaint);
-                    HandlesUtilities.DrawAALine(position, position + rotation * Vector3.up * size);
+                    EditorHandlesUtilities.DrawAALine(position, position + rotation * Vector3.up * size);
 
                     if (selectedNode == i)
                     {

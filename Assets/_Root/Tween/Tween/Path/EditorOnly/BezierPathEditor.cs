@@ -83,8 +83,8 @@ namespace Pancake.Tween
 
                     // 绘制切线
                     Handles.color = selectedNode == i ? new Color(1f, 1f, 1f, 0.9f) : new Color(1f, 1f, 1f, 0.3f);
-                    HandlesUtilities.DrawAALine(back, middle);
-                    HandlesUtilities.DrawAALine(forward, middle);
+                    EditorHandlesUtilities.DrawAALine(back, middle);
+                    EditorHandlesUtilities.DrawAALine(forward, middle);
 
                     // 绘制后控制点
                     capSize = HandleUtility.GetHandleSize(back) * FloatingWindow.capSize;

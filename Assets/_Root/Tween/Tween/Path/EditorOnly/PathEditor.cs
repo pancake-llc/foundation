@@ -57,9 +57,9 @@ namespace Pancake.Tween
                 Vector3 vector = new Vector3(0.06f, 0f, -0.2f) * scale;
                 var tangent = this[count - 1].GetTangent(1f);
                 var rotation = Quaternion.LookRotation(tangent, matrix.inverse.MultiplyPoint(Camera.current.transform.position) - point);
-                HandlesUtilities.DrawAALine(point, point + rotation * vector);
+                EditorHandlesUtilities.DrawAALine(point, point + rotation * vector);
                 vector.x = -vector.x;
-                HandlesUtilities.DrawAALine(point, point + rotation * vector);
+                EditorHandlesUtilities.DrawAALine(point, point + rotation * vector);
             }
         }
 

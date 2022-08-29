@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 
-using UnityEditor;
 using UnityEngine;
 
 namespace Pancake.Tween
@@ -17,9 +16,6 @@ namespace Pancake.Tween
         [Header("tween")] public Texture2D play;
         public Texture2D rightArrow;
         public Texture2D leftArrow;
-
-        // [MenuItem("Assets/Create/Unity Extensions/Editor/Paths Editor Resources")]
-        // static void CreateAsset() { CreateOrSelectAsset(); }
     }
 }
 

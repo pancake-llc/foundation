@@ -69,7 +69,7 @@ namespace Pancake.Tween
                         var point = (point2 - point1) * tension + point1;
 
                         Handles.color = new Color(1f, 1f, 1f, 0.5f);
-                        HandlesUtilities.DrawAALine(point1, point2, 4);
+                        EditorHandlesUtilities.DrawAALine(point1, point2, 4);
 
                         float capSize = HandleUtility.GetHandleSize(point) * FloatingWindow.capSize;
 

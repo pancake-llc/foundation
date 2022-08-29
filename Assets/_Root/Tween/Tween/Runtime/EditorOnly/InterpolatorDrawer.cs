@@ -146,7 +146,7 @@ namespace Pancake.Tween
                     point.x = origin.x + point.x * scale.x;
                     point.y = origin.y + (_maxValue - point.y) * scale.y;
 
-                    HandlesUtilities.DrawAALine(last, point);
+                    EditorHandlesUtilities.DrawAALine(last, point);
                     last = point;
                 }
             }

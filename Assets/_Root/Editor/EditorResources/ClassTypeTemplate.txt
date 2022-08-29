@@ -1,0 +1,55 @@
+﻿using System;
+using UnityEngine;
+
+// ReSharper disable InconsistentNaming
+namespace Pancake.SaveData
+{
+	[UnityEngine.Scripting.Preserve]
+	[Properties([propertyNames])]
+	public class UserType_[typeSuffix] : CustomObjectType
+	{
+		public static CustomType Instance = null;
+
+		public UserType_[typeSuffix]() : base(typeof([fullType])){ Instance = this; priority = 1; }
+
+
+		protected override void WriteObject(object obj, Writer writer)
+		{
+			var instance = ([fullType])obj;
+			[writes]
+		}
+
+		protected override void ReadObject<T>(Reader reader, object obj)
+		{
+			var instance = ([fullType])obj;
+			foreach(string propertyName in reader.Properties)
+			{
+				switch(propertyName)
+				{
+					[reads]
+					default:
+						reader.Skip();
+						break;
+				}
+			}
+		}
+
+		protected override object ReadObject<T>(Reader reader)
+		{
+			var instance = new [fullType]();
+			ReadObject<T>(reader, instance);
+			return instance;
+		}
+	}
+
+
+	public class UserType_[typeSuffix]Array : CustomArrayType
+	{
+		public static CustomType Instance;
+
+		public UserType_[typeSuffix]Array() : base(typeof([fullType][]), UserType_[typeSuffix].Instance)
+		{
+			Instance = this;
+		}
+	}
+}
