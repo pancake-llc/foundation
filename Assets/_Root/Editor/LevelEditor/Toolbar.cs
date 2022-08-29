@@ -2,7 +2,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor
+namespace Pancake.Editor.LevelEditor
 {
     public enum ToolbarType
     {
@@ -10,7 +10,7 @@ namespace Pancake.Editor
         Place = 1,
     }
     
-    public class Toolbar : EditorWindow
+    internal class Toolbar : EditorWindow
     {
         private const int MIN_SIZE = 32;
         private const int WIDTH = 556;

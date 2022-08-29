@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor
+namespace Pancake.Editor.LevelEditor
 {
-    public static class LevelWindow
+    internal static class LevelWindow
     {
         private static PreviewGenerator previewGenerator;
 
@@ -66,7 +66,7 @@ namespace Pancake.Editor
         [MenuItem("Tools/Pancake/Level Editor &_3")]
         public static void OpenEditor()
         {
-            var window = EditorWindow.GetWindow<LevelEditor.LevelEditor>("Level Editor", true, InEditor.InspectorWindow);
+            var window = EditorWindow.GetWindow<LevelEditor>("Level Editor", true, InEditor.InspectorWindow);
 
             if (window)
             {

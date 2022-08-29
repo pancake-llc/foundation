@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Pancake.Editor.LevelEditor
 {
     [Serializable]
-    public class Settings
+    internal class Settings
     {
         public List<string> pickupObjectWhiteList;
         public List<string> pickupObjectBlackList;

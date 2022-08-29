@@ -4,9 +4,9 @@ using Pancake.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor
+namespace Pancake.Editor.LevelEditor
 {
-    public class PreviewGenerator
+    internal class PreviewGenerator
     {
         public static readonly PreviewGenerator Default = new PreviewGenerator();
 
@@ -307,7 +307,7 @@ namespace Pancake.Editor
         }
     }
     
-    public interface IPreviewComponent
+    internal interface IPreviewComponent
     {
         void OnPreviewCapturing(PreviewGenerator preview);
 

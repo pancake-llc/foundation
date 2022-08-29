@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Pancake.Editor.LevelEditor
 {
-    public class LevelEditor : EditorWindow
+    internal class LevelEditor : EditorWindow
     {
         private readonly string[] _optionsSpawn = {"Default", "Index", "Custom"};
 
@@ -658,7 +658,9 @@ namespace Pancake.Editor.LevelEditor
                         _previewPickupObject.layer = LayerMask.NameToLayer("Ignore Raycast");
                     }
 
+#pragma warning disable CS8321
                     void SetPosition2()
+#pragma warning restore CS8321
                     {
                         var rendererAttach = _currentPickObject?.pickedObject.GetComponentInChildren<Renderer>();
                         if (raycastHit == null || rendererAttach == null) return;
