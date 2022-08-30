@@ -14,9 +14,10 @@ namespace Pancake.Loader
 {
     [RequireComponent(typeof(CanvasGroup))]
     [AddComponentMenu("")]
-    public class LoadingScreen : MonoBehaviour
+    public class LoadingScene : MonoBehaviour
     {
-        private static LoadingScreen instance;
+        public const string LABEL = "loading_scene";
+        private static LoadingScene instance;
 
         #region pak
 
@@ -39,7 +40,7 @@ namespace Pancake.Loader
         public Color spinnerColor = Color.white;
         public SpinnerItem spinnerItem;
         public Transform spinnerParent;
-        public int spinnerIndex;
+        public int spinnerIndex = 0;
 
         #endregion
 
@@ -77,7 +78,7 @@ namespace Pancake.Loader
         public float hintsFontSize;
         public bool isChangeHintsWithTimer;
         public float hintsLifeTime = 5; // this value will used when isChangeHintsWithTimer equal true
-        [TextArea] public List<string> hintsCollection = new List<string>();
+        [TextArea] public List<string> hintsCollection;
         private float _currentHintsTime;
 
         #endregion
@@ -159,7 +160,7 @@ namespace Pancake.Loader
             {
                 processLoading = true;
                 var loadingObj = await Addressables.LoadAssetAsync<GameObject>(prefabName);
-                instance = Instantiate(loadingObj.GetComponent<LoadingScreen>());
+                instance = Instantiate(loadingObj.GetComponent<LoadingScene>());
                 DontDestroyOnLoad(instance.gameObject);
                 instance._waitingComplete = funcWaiting;
                 instance._prepareActiveScene = prepareActiveScene;
@@ -194,7 +195,7 @@ namespace Pancake.Loader
             {
                 processLoading = true;
                 var loadingObj = await Addressables.LoadAssetAsync<GameObject>(prefabName);
-                instance = Instantiate(loadingObj.GetComponent<LoadingScreen>());
+                instance = Instantiate(loadingObj.GetComponent<LoadingScene>());
                 DontDestroyOnLoad(instance.gameObject);
                 instance._waitingComplete = funcWaiting;
                 instance._prepareActiveScene = prepareActiveScene;

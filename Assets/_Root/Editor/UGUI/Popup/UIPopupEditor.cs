@@ -100,17 +100,16 @@ namespace Pancake.UI.Editor
             {
                 if (PrefabUtility.IsPartOfAnyPrefab(popup.gameObject))
                 {
-                    if (!IsAddressable())
+                    if (!popup.gameObject.IsAddressableWithLabel(Pancake.UI.PopupHelper.POPUP_LABEL))
                     {
                         Uniform.HelpBox("Click the toogle below to mark the popup as can be loaded by addressable", MessageType.Warning);
-                        if (GUILayout.Button("Mark Popup")) MarkPopup();
+                        if (GUILayout.Button("Mark Popup")) popup.gameObject.MarkAddressableWithLabel(PopupHelper.POPUP_LABEL);
                     }
                     else
                     {
                         Uniform.HelpBox("Marked as popup", MessageType.Info);
                     }
                 }
-
 
                 Uniform.SpaceOneLine();
                 EditorGUI.BeginDisabledGroup(true);
@@ -300,48 +299,6 @@ namespace Pancake.UI.Editor
                 }
 
                 _durationHide.floatValue = EditorGUILayout.FloatField("Duration", _durationHide.floatValue);
-            }
-
-            void MarkPopup()
-            {
-                var settings = AddressableAssetSettingsDefaultObject.Settings;
-                if (!settings.GetLabels().Contains(PopupHelper.POPUP_LABEL)) settings.AddLabel(PopupHelper.POPUP_LABEL);
-                AddressableAssetGroup group = settings.FindGroup("Default Local Group");
-                var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(popup.gameObject);
-                var guid = AssetDatabase.AssetPathToGUID(path);
-                if (string.IsNullOrEmpty(guid)) return;
-                var entry = settings.CreateOrMoveEntry(guid, group);
-
-                if (!entry.labels.Contains(PopupHelper.POPUP_LABEL)) entry.labels.Add(PopupHelper.POPUP_LABEL);
-                entry.address = popup.gameObject.name;
-                settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-            }
-
-            bool IsAddressable()
-            {
-                bool flag = false;
-                var settings = AddressableAssetSettingsDefaultObject.Settings;
-                if (settings.GetLabels().Contains(PopupHelper.POPUP_LABEL)) settings.AddLabel(PopupHelper.POPUP_LABEL);
-                AddressableAssetGroup group = settings.FindGroup("Default Local Group");
-                var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(popup.gameObject);
-                var guid = AssetDatabase.AssetPathToGUID(path);
-
-                AddressableAssetEntry entry = null;
-                foreach (var addressableAssetEntry in group.entries)
-                {
-                    if (addressableAssetEntry.guid == guid)
-                    {
-                        flag = true;
-                        entry = addressableAssetEntry;
-                        break;
-                    }
-                }
-
-                if (flag) flag = entry.labels.Contains(PopupHelper.POPUP_LABEL);
-
-                return flag;
             }
 
             EditorGUILayout.Space();

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Pancake.Core;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -154,7 +153,7 @@ namespace Pancake.Editor
                 if (rectTransform) rectTransform.SelfFilling();
             }
         }
-        
+
         [MenuItem("GameObject/Pancake/Self Filling", true, 1)]
         private static bool AnchorFillinSelectedUIObjectsValidate()
         {
@@ -181,7 +180,7 @@ namespace Pancake.Editor
             var diff = now - next;
             return diff.TotalSeconds >= 0;
         }
-        
+
         /// <summary>
         /// thanks @JoshuaMcKenzie and @Edvard-D
         /// remove all empty object reference elements
@@ -231,8 +230,8 @@ namespace Pancake.Editor
 
             list.serializedObject.ApplyModifiedProperties();
         }
-        
-                /// <summary>
+
+        /// <summary>
         /// thanks @JoshuaMcKenzie
         /// </summary>
         /// <param name="property"></param>
@@ -306,5 +305,6 @@ namespace Pancake.Editor
                     break;
             }
         }
+        
     }
 }

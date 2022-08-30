@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Pancake.Editor
 {
@@ -20,7 +21,8 @@ namespace Pancake.Editor
         private const float SPACE_ONE_LINE = 4f;
         private const float SPACE_TWO_LINE = 8f;
         private const float SPACE_THREE_LINE = 12f;
-        
+        public const float DEFAULT_LABEL_WIDTH = 120f;
+
         public static readonly Color Green = new Color(0.18f, 1f, 0.45f, 0.66f);
         public static readonly Color Orange = new Color(1f, 0.46f, 0f, 0.66f);
         public static readonly Color Blue = new Color(0f, 0.75f, 1f, 0.27f);
@@ -28,6 +30,7 @@ namespace Pancake.Editor
         public static readonly Color Red = new Color(1f, 0.1f, 0.13f, 0.66f);
         public static readonly Color InspectorLock = new Color(.6f, .6f, .6f, 1);
         public static readonly Color InspectorNullError = new Color(1f, .5f, .5f, 1);
+
         public class Property
         {
             public SerializedProperty property;
@@ -44,32 +47,42 @@ namespace Pancake.Editor
 
         public static InEditor.ProjectSetting<UniformFoldoutState> FoldoutSettings { get; set; } = new InEditor.ProjectSetting<UniformFoldoutState>();
 
-        public static GUIStyle UppercaseSectionHeaderExpand { get
+        public static GUIStyle UppercaseSectionHeaderExpand
         {
-            if (uppercaseSectionHeaderExpand == null) uppercaseSectionHeaderExpand = GetCustomStyle("Uppercase Section Header");
-            return uppercaseSectionHeaderExpand;
-        } }
+            get
+            {
+                if (uppercaseSectionHeaderExpand == null) uppercaseSectionHeaderExpand = GetCustomStyle("Uppercase Section Header");
+                return uppercaseSectionHeaderExpand;
+            }
+        }
 
         public static GUIStyle UppercaseSectionHeaderCollapse
         {
             get
             {
-                if (uppercaseSectionHeaderCollapse == null) uppercaseSectionHeaderCollapse = new GUIStyle(GetCustomStyle("Uppercase Section Header")) {normal = new GUIStyleState()};
+                if (uppercaseSectionHeaderCollapse == null)
+                    uppercaseSectionHeaderCollapse = new GUIStyle(GetCustomStyle("Uppercase Section Header")) {normal = new GUIStyleState()};
                 return uppercaseSectionHeaderCollapse;
             }
         }
 
-        public static GUIStyle ToggleButtonToolbar { get
+        public static GUIStyle ToggleButtonToolbar
         {
-            if (toggleButtonToolbar == null) toggleButtonToolbar = new GUIStyle(GetCustomStyle("ToggleButton"));
-            return toggleButtonToolbar;
-        } }
+            get
+            {
+                if (toggleButtonToolbar == null) toggleButtonToolbar = new GUIStyle(GetCustomStyle("ToggleButton"));
+                return toggleButtonToolbar;
+            }
+        }
 
-        public static GUIStyle BoxArea { get
+        public static GUIStyle BoxArea
         {
-            if (boxArea == null) boxArea = new GUIStyle(GetCustomStyle("BoxArea"));
-            return boxArea;
-        } }
+            get
+            {
+                if (boxArea == null) boxArea = new GUIStyle(GetCustomStyle("BoxArea"));
+                return boxArea;
+            }
+        }
 
         public static GUIStyle GetCustomStyle(string styleName)
         {
@@ -487,6 +500,16 @@ namespace Pancake.Editor
         /// <param name="message"></param>
         /// <param name="type"></param>
         public static void HelpBox(string message, MessageType type = MessageType.None) { EditorGUILayout.HelpBox(message, type); }
+
+        public static void Toggle(SerializedProperty property, GUIContent content, float width = 120f, Action optionalDraw = null)
+        {
+            Horizontal(() =>
+            {
+                EditorGUILayout.LabelField(content, GUILayout.Width(width));
+                property.boolValue = GUILayout.Toggle(property.boolValue, new GUIContent(""));
+                optionalDraw?.Invoke();
+            });
+        }
 
         public static void SpaceHalfLine() => GUILayout.Space(SPACE_HALF_LINE);
         public static void SpaceOneLine() => GUILayout.Space(SPACE_ONE_LINE);

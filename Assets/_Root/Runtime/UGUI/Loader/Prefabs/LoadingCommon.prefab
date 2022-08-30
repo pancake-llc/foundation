@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &627841116151362829
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1589,7 +1589,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8189874899330286219
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2376,7 +2376,7 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2858,8 +2858,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3755,8 +3755,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 0
+  m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3933,7 +3933,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enablePressAnyKey: 0
   pakSize: 35
-  pakFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  pakFont: {fileID: 0}
   pakColor: {r: 1, g: 1, b: 1, a: 1}
   pakText: Press {KEY} to continue
   txtPak: {fileID: 3531613504923568622}
@@ -3945,7 +3945,7 @@ MonoBehaviour:
   spinnerColor: {r: 0.5707547, g: 0.922659, b: 1, a: 1}
   spinnerItem: {fileID: 0}
   spinnerParent: {fileID: 172571552106298043}
-  spinnerIndex: 1
+  spinnerIndex: 0
   background: {fileID: 6093724075085323141}
   singleBackgroundSprite: {fileID: 0}
   backgroundCollection: []
@@ -3971,7 +3971,7 @@ MonoBehaviour:
   progressBar: {fileID: 3920709171825963789}
   mainLoadingAnimator: {fileID: 4793683857312699445}
   virtualLoadTime: 2.5
-  enableVirtualLoading: 1
+  enableVirtualLoading: 0
   enableRandomBackground: 0
   fadingAnimationSpeed: 2
   timeDelayDestroy: 1.5
