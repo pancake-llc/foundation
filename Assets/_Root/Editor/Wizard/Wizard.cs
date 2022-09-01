@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Pancake.Debugging;
 using UnityEditor;
 using UnityEngine;
@@ -50,7 +51,21 @@ namespace Pancake.Editor
                         string dir = "Assets/_Root/Resources/";
                         if (!dir.DirectoryExists()) dir.CreateDirectory();
                         AssetDatabase.CreateAsset(debuglogExtensionProjectSettingInstance, $"Assets/_Root/Resources/{DebugLogExtensionsProjectSettingsAsset.RESOURCE_PATH}.asset");
+                        var installerPath = AssetUtility.FindByNameAndExtension("debug_dll", ".unitypackage");
                         
+                        if (!File.Exists(installerPath))
+                        {
+#if DEV_MODE
+							Debug.LogWarning("Installer not found: "+installerPath);
+#endif
+                            return;
+                        }
+                        
+#if DEV_MODE
+						Debug.Log("Installing "+installerPath);
+#endif
+
+                        AssetDatabase.ImportPackage(installerPath, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -61,7 +76,7 @@ namespace Pancake.Editor
                 }
                 else
                 {
-                    //EditorPrefs.SetBool($"wizard_{PlayerSettings.productGUID}", true);
+                    EditorPrefs.SetBool($"wizard_{PlayerSettings.productGUID}", true);
                     EditorApplication.update -= AutoRunWizard.OnUpdate;
                     Close();
                 }
