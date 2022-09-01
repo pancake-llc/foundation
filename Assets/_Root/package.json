@@ -13,6 +13,7 @@
   "license": "MIT",
   "keywords": [ "unity" ],
   "dependencies": {
+    "com.unity.addressables": "1.19.19"
   },
   "repository": {
     "type": "git",
