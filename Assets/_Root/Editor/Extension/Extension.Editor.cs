@@ -166,19 +166,10 @@ namespace Pancake.Editor
 
             return flag;
         }
-
-        public static void Delay(string key, float second)
+        
+        public static void DelayedCall(float delay, Action callback)
         {
-            EditorPrefs.SetString($"{Application.identifier}_{key}_next", DateTime.UtcNow.AddSeconds(second).ToString(CultureInfo.InvariantCulture));
-        }
-
-        public static bool IsCompleteDelay(string key)
-        {
-            var now = DateTime.UtcNow;
-            var next = DateTime.Parse(EditorPrefs.GetString($"{Application.identifier}_{key}_next", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)));
-
-            var diff = now - next;
-            return diff.TotalSeconds >= 0;
+            var delayedCall = new DelayedCall(delay, callback);
         }
 
         /// <summary>
