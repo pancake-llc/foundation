@@ -65,7 +65,12 @@ namespace Pancake.Database
         /// <param name="generateNewId">If true, a new ID will be generated for the item.</param>
         public virtual void Add(Entity data, bool generateNewId = true)
         {
+#if PANCAKE_RUNTIME_UNSAFE
             string id = generateNewId ? Ulid.NewUlid().ToString() : data.ID;
+#else
+            string id = data.ID;
+#endif
+            
             if (this.data.ContainsKey(id)) return;
             data.ID = id;
             this.data.Add(id, data);

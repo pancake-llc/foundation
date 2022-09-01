@@ -114,7 +114,9 @@ namespace Pancake.UI.Editor
                 Uniform.SpaceOneLine();
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUILayout.BeginHorizontal();
-                if (string.IsNullOrEmpty(_uniqueId.stringValue)) _uniqueId.stringValue = Ulid.NewUlid().ToString();
+#if PANCAKE_RUNTIME_UNSAFE
+                if (string.IsNullOrEmpty(_uniqueId.stringValue)) _uniqueId.stringValue = Ulid.NewUlid().ToString();  
+#endif
                 GUILayout.Label("Id", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _uniqueId.stringValue = GUILayout.TextField(_uniqueId.stringValue);
                 EditorGUILayout.EndHorizontal();

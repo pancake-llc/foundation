@@ -1,11 +1,13 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake.Database
 {
     public abstract class Entity : ScriptableObject
     {
-        [SerializeField, Ulid] private string id;
+#if PANCAKE_RUNTIME_UNSAFE
+        [System.Ulid]
+#endif
+        [SerializeField] private string id;
         [SerializeField] private string title = "Blank";
         [SerializeField, TextArea] private string description;
 
@@ -17,7 +19,11 @@ namespace Pancake.Database
 
         protected virtual void Reset()
         {
-            Title = $"UNASSIGNED.{Ulid.NewUlid()}";
+#if PANCAKE_RUNTIME_UNSAFE
+            Title = $"UNASSIGNED.{System.Ulid.NewUlid()}";
+#else 
+            Title = $"UNASSIGNED";
+#endif
             Description = "";
         }
 

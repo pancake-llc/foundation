@@ -262,7 +262,11 @@ namespace Pancake.Database
 
             const string prefix = "Data-";
             const string suffix = ".asset";
+#if PANCAKE_RUNTIME_UNSAFE
             var filename = $"{prefix}{t.Name}-{Ulid.NewUlid()}{suffix}";
+#else
+            var filename = $"{prefix}{t.Name}-{suffix}";
+#endif
             string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath($"{EditorUtility.StoragePath()}{filename}");
 
             var asset = ScriptableObject.CreateInstance(t);
@@ -289,7 +293,12 @@ namespace Pancake.Database
 
             const string prefix = "Data-";
             const string suffix = ".asset";
+#if PANCAKE_RUNTIME_UNSAFE
             var filename = $"{prefix}{Dashboard.CurrentSelectedEntity.GetType().Name}-{Ulid.NewUlid()}{suffix}";
+#else
+            var filename = $"{prefix}{Dashboard.CurrentSelectedEntity.GetType().Name}-{suffix}";
+#endif
+            
             string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath($"{EditorUtility.StoragePath()}{filename}");
 
             AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(Dashboard.CurrentSelectedEntity), assetPathAndName);
@@ -299,7 +308,9 @@ namespace Pancake.Database
             AssetDatabase.Refresh();
 
             var real = (Entity) AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPathAndName);
+#if PANCAKE_RUNTIME_UNSAFE
             real.ID = Ulid.NewUlid().ToString();
+#endif
             Dashboard.entitySearch.SetValueWithoutNotify(string.Empty);
 
             Rebuild();

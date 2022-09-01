@@ -172,7 +172,9 @@ namespace Pancake.Database
             var changed = 0;
             foreach (var x in data)
             {
+#if PANCAKE_RUNTIME_UNSAFE
                 x.ID = Ulid.NewUlid().ToString();
+#endif
                 UnityEditor.EditorUtility.SetDirty(x);
                 changed++;
             }
