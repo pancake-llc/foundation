@@ -12,17 +12,17 @@ namespace Pancake
     /// Use on an enum field
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
-    public sealed class FlagsAttribute : PropertyAttribute
+    public sealed class EnumFlagsAttribute : PropertyAttribute
     {
         bool _includeObsolete;
 
-        public FlagsAttribute(bool includeObsolete = false) { _includeObsolete = includeObsolete; }
+        public EnumFlagsAttribute(bool includeObsolete = false) { _includeObsolete = includeObsolete; }
 
 
 #if UNITY_EDITOR
 
-        [CustomPropertyDrawer(typeof(FlagsAttribute))]
-        class FlagsDrawer : BasePropertyDrawer<FlagsAttribute>
+        [CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
+        class EnumFlagsDrawer : BasePropertyDrawer<EnumFlagsAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {
@@ -37,8 +37,8 @@ namespace Pancake
                     }
                 }
             }
-        } // class FlagsDrawer
+        } // class EnumFlagsDrawer
 
 #endif // UNITY_EDITOR
-    } // class FlagsAttribute
+    } // class EnumFlagsAttribute
 } // namespace Pancake

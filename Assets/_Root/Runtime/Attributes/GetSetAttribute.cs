@@ -1,10 +1,9 @@
-﻿using System.Reflection;
-using Pancake.Core;
-using UnityEngine;
+﻿using UnityEngine;
 
 #if UNITY_EDITOR
 using Pancake.Editor;
 using UnityEditor;
+using System.Reflection;
 #endif
 
 namespace Pancake

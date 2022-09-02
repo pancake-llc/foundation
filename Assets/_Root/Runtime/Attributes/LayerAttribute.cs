@@ -21,11 +21,18 @@ namespace Pancake
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {
-                if (property.propertyType == SerializedPropertyType.Integer)
+                switch (property.propertyType)
                 {
-                    property.intValue = EditorGUI.LayerField(position, label, property.intValue);
+                    case SerializedPropertyType.Integer:
+                        property.intValue = EditorGUI.LayerField(position, label, property.intValue);
+                        break;
+                    case SerializedPropertyType.String:
+                        property.stringValue = LayerMask.LayerToName(EditorGUI.LayerField(position, label, LayerMask.NameToLayer(property.stringValue)));
+                        break;
+                    default:
+                        EditorGUI.LabelField(position, label.text,"Use LayerAttribute must be an int or string" );
+                        break;
                 }
-                else EditorGUI.LabelField(position, label, "Use LayerAttribute with int.");
             }
         } // class LayerDrawer
 

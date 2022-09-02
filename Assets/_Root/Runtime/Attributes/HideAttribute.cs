@@ -1,5 +1,4 @@
 ﻿using System;
-using Pancake.Core;
 using UnityEngine;
 
 #if UNITY_EDITOR
