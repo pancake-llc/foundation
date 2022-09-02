@@ -28,12 +28,11 @@ namespace Pancake.Debugging
 
 		private static string GetChannelClassPath()
 		{
-			string settingsPath = AssetUtility.FindByNameAndExtension("Debug.ReleaseBuild", ".dll");
-			if(settingsPath.Length == 0)
-			{
-				return "";
-			}
+			//string settingsPath = AssetUtility.FindByNameAndExtension("Debug.ReleaseBuild", ".dll");
+			string settingsPath = "Assets/_Root/Packages/Debug/Debug.ReleaseBuild.dll";
+			if(settingsPath.Length == 0) return "";
 			string directory = Path.GetDirectoryName(settingsPath);
+			if (!directory.DirectoryExists())directory.CreateDirectory();
 			return Path.Combine(directory, "Channel.cs");
 		}
 
