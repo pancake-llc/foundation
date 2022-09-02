@@ -2,7 +2,7 @@
 
 namespace Pancake
 {
-    public abstract class AutoStartMonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
+    internal abstract class AutoStartMonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T instance;
         // ReSharper disable once StaticMemberInGenericType
