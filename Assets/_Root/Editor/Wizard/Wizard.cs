@@ -38,6 +38,17 @@ namespace Pancake.Editor
             Styles.Init();
             GUILayout.Label(_headers[(int) page], Styles.title);
             GUILayout.Label(_descriptions[(int) page], Styles.description);
+            switch (page)
+            {
+                case EWizardPage.Debug:
+                    GUILayout.Label("Installation content", Styles.title);
+                    GUILayout.Label("<color=#93DD59>1) Dll DebugBuild and Dll ReleaseBuild", Styles.description);
+                    GUILayout.Label("<color=#93DD59>2) ScriptableObject for debug extension project setting", Styles.description);
+                    GUILayout.Label("<color=#93DD59>3) Script Chanel.cs", Styles.description);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             GUILayout.FlexibleSpace();
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
