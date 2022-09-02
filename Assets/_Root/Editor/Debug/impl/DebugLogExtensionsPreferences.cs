@@ -654,9 +654,9 @@ namespace Pancake.Debugging
 		[SettingsProvider, UsedImplicitly]
 		private static SettingsProvider CreateSettingsProvider()
 		{
-			var provider = new SettingsProvider("Preferences/Debug.Log Extensions", SettingsScope.User)
+			var provider = new SettingsProvider("Preferences/Heart/Debug Log", SettingsScope.User)
 			{
-				label = "Debug.Log Extensions",
+				label = "Debug Log",
 				guiHandler = DrawSettingsGUI,
 
 				// Populate the search keywords to enable smart search filtering and label highlighting
