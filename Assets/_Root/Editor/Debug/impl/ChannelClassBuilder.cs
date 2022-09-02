@@ -61,7 +61,12 @@ namespace Pancake.Debugging
 				}
 				string newContents = GenerateClassCode(channels);
 				string currentContents = "";
-				if (File.Exists(path)) currentContents = File.ReadAllText(path);
+				var fileStream = new FileStream(path, 
+					FileMode.OpenOrCreate, 
+					FileAccess.ReadWrite, 
+					FileShare.None);
+				var reader = new StreamReader(fileStream, Encoding.UTF8);
+				if (File.Exists(path)) currentContents = reader.ReadToEnd();
 				
 				if(File.Exists(path) && string.Equals(currentContents, newContents))
 				{
@@ -71,9 +76,10 @@ namespace Pancake.Debugging
 				#if DEV_MODE
 				Debug.Log("Rebuilding Channel.cs...\nCurrent:\n"+currentContents+"\n\nNew:\n" + newContents);
 				#endif
-				
-				File.WriteAllText(path, newContents);
+				var writer = new StreamWriter(fileStream, Encoding.UTF8);
+				writer.Write(newContents);
 				AssetDatabase.ImportAsset(path);
+				fileStream.Dispose();
 			}
 			catch(Exception e)
             {
