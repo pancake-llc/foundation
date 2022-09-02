@@ -42,9 +42,9 @@ namespace Pancake.Editor
             {
                 case EWizardPage.Debug:
                     GUILayout.Label("Installation content", Styles.title);
-                    GUILayout.Label("<color=#93DD59>1) Dll DebugBuild and Dll ReleaseBuild", Styles.description);
-                    GUILayout.Label("<color=#93DD59>2) ScriptableObject for debug extension project setting", Styles.description);
-                    GUILayout.Label("<color=#93DD59>3) Script Chanel.cs", Styles.description);
+                    GUILayout.Label("<color=#93DD59>1)</color> Dll DebugBuild and Dll ReleaseBuild", Styles.description);
+                    GUILayout.Label("<color=#93DD59>2)</color> ScriptableObject for debug extension project setting", Styles.description);
+                    GUILayout.Label("<color=#93DD59>3)</color> Script Chanel.cs", Styles.description);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
