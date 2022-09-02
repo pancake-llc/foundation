@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake
 {
-    internal class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
+    public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T monoInstance;
 

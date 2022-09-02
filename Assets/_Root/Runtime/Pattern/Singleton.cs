@@ -2,7 +2,7 @@
 
 namespace Pancake
 {
-    internal class Singleton<T> where T : class
+    public class Singleton<T> where T : class
     {
         private static T instance;
 
