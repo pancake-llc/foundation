@@ -1,4 +1,4 @@
-﻿namespace Pancake.InitArgs
+﻿namespace Pancake
 {
     /// <summary>
     /// Defines a class that can <see cref="Updater.Subscribe(IFixedUpdate)">subscribe</see> to receive a callback during the FixedUpdate event function.

@@ -1,4 +1,4 @@
-﻿namespace Pancake.InitArgs
+﻿namespace Pancake
 {
 	/// <summary>
 	/// Represents an object that can provide a <see cref="Value"/> of type <typeparamref name="TValue"/> on demand.

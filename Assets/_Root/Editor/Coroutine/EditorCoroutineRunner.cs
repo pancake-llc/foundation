@@ -2,6 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 using JetBrains.Annotations;
+using Pancake.Init;
 
 namespace Pancake.Editor
 {
