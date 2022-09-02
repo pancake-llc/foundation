@@ -51,6 +51,9 @@ namespace Pancake.Editor
                         string dir = "Assets/_Root/Resources/";
                         if (!dir.DirectoryExists()) dir.CreateDirectory();
                         AssetDatabase.CreateAsset(debuglogExtensionProjectSettingInstance, $"Assets/_Root/Resources/{DebugLogExtensionsProjectSettingsAsset.RESOURCE_PATH}.asset");
+                        DebugLogExtensionsProjectSettingsAsset asset = DebugLogExtensionsProjectSettingsAsset.Get();
+                        ChannelClassBuilder.BuildClass(asset.channels);
+                        
                         var installerPath = AssetUtility.FindByNameAndExtension("debug_dll", ".unitypackage");
                         
                         if (!File.Exists(installerPath))
