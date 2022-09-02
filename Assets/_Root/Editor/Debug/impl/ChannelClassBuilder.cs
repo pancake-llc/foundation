@@ -28,7 +28,7 @@ namespace Pancake.Debugging
 
 		private static string GetChannelClassPath()
 		{
-			string settingsPath = AssetUtility.FindByNameAndExtension(nameof(DebugLogExtensionsProjectSettingsAsset), ".cs");
+			string settingsPath = AssetUtility.FindByNameAndExtension("Debug.ReleaseBuild", ".dll");
 			if(settingsPath.Length == 0)
 			{
 				return "";
@@ -45,7 +45,8 @@ namespace Pancake.Debugging
 				return true;
 			}
 			string newContents = GenerateClassCode(channels);
-			string currentContents = File.ReadAllText(path);
+			string currentContents = "";
+			if (File.Exists(path)) currentContents = File.ReadAllText(path);
 
 			return File.Exists(path) && string.Equals(currentContents, newContents);
 		}
@@ -60,8 +61,9 @@ namespace Pancake.Debugging
 					return;
 				}
 				string newContents = GenerateClassCode(channels);
-				string currentContents = File.ReadAllText(path);
-
+				string currentContents = "";
+				if (File.Exists(path)) currentContents = File.ReadAllText(path);
+				
 				if(File.Exists(path) && string.Equals(currentContents, newContents))
 				{
 					return;
@@ -70,7 +72,7 @@ namespace Pancake.Debugging
 				#if DEV_MODE
 				Debug.Log("Rebuilding Channel.cs...\nCurrent:\n"+currentContents+"\n\nNew:\n" + newContents);
 				#endif
-
+				
 				File.WriteAllText(path, newContents);
 				AssetDatabase.ImportAsset(path);
 			}

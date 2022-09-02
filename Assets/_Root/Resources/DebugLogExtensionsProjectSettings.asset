@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stripAllCallsFromBuilds: 0
   unlistedChannelsEnabledByDefault: 1
-  channels: []
+  channels:
+  - id: yenmoc
+    color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    enabledByDefault: 0
+    colorText: 
   toggleView:
     key: DebugLogExtensions.ToggleView
     keyCode: 277
