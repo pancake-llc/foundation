@@ -457,7 +457,7 @@ namespace Pancake.Init
 				return true;
 			}
 
-			bool isPlaying = context  == Context.MainThread ? Application.isPlaying : EditorOnly.ThreadSafe.Application.IsPlaying;
+			bool isPlaying = context  == Context.MainThread ? Application.isPlaying : Pancake.Editor.Init.ThreadSafe.Application.IsPlaying;
 			if(!isPlaying && ServiceUtility.IsServiceDefiningType<T>())
             {
 				return true;

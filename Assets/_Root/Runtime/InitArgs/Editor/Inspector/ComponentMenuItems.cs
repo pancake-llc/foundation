@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	internal static class ComponentMenuItems
 	{

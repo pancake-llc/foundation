@@ -159,7 +159,7 @@ namespace Pancake.Init
 			}
 
 			#if UNITY_EDITOR
-			if(EditorOnly.ThreadSafe.Application.IsExitingPlayMode)
+			if(Pancake.Editor.Init.ThreadSafe.Application.IsExitingPlayMode)
             {
 				return;
             }

@@ -5,10 +5,10 @@ using System.Linq;
 using Pancake.Init.Internal;
 using UnityEditor;
 using UnityEngine;
-using static Pancake.Init.EditorOnly.InitializerEditorUtility;
+using static Pancake.Editor.Init.InitializerEditorUtility;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	internal static class ScriptGenerator
     {

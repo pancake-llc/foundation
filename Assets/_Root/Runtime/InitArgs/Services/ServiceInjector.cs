@@ -76,7 +76,7 @@ namespace Pancake.Init.Internal
             bool servicesAreReady = ServicesAreReady;
 
             #if UNITY_EDITOR
-            if(servicesAreReady && !EditorOnly.ThreadSafe.Application.IsPlaying)
+            if(servicesAreReady && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
             {
                 servicesAreReady = false;
             }
@@ -134,7 +134,7 @@ namespace Pancake.Init.Internal
             bool servicesAreReady = ServicesAreReady;
 
             #if UNITY_EDITOR
-            if(servicesAreReady && !EditorOnly.ThreadSafe.Application.IsPlaying)
+            if(servicesAreReady && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
             {
                 servicesAreReady = false;
             }
@@ -221,8 +221,8 @@ namespace Pancake.Init.Internal
                 ServicesAreReady = false;
             }
 
-            EditorOnly.ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
-            EditorOnly.ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
+            Pancake.Editor.Init.ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
+            Pancake.Editor.Init.ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
             #endif
         }
 

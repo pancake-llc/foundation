@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Pancake.Init;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEditorInternal;
@@ -10,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	[CustomEditor(typeof(Animator), true), CanEditMultipleObjects]
     public sealed class AnimatorEditor : UnityEditor.Editor

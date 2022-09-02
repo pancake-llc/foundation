@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.Init
 {
 	#if UNITY_EDITOR
-	using static EditorOnly.AutoInitUtility;
+	using static Pancake.Editor.Init.AutoInitUtility;
 	#endif
 
 	/// <summary>

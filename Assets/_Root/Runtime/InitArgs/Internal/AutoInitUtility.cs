@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using Pancake.Init;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -16,7 +17,7 @@ using TypeCollection = System.Nullable<UnityEditor.TypeCache.TypeCollection>;
 using TypeCollection = System.Collections.Generic.IEnumerable<System.Type>;
 #endif
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	/// <summary>
 	/// Editor-only utility class to help with automatically initializing <see cref="IArgs{}"/> objects during the Reset event function.

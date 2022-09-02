@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
+using Pancake.Init;
 using Pancake.Init.Internal;
 using Pancake.Init.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	internal static class InitializerEditorUtility
 	{

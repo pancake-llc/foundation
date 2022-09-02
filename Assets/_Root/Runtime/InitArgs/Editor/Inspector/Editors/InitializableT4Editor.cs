@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEditor;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	[CanEditMultipleObjects]
     public class InitializableT4Editor : InitializableEditor

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Pancake.Init;
 using Pancake.Init.Internal;
 using Pancake.Init.Serialization;
 using UnityEditor;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	/// <summary>
 	/// Custom property drawer for <see cref="Any{T}"/>

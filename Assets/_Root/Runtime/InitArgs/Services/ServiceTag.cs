@@ -154,7 +154,7 @@ namespace Pancake.Init
 		private void Register()
 		{
 			#if UNITY_EDITOR
-			if(service == null && !EditorOnly.ThreadSafe.Application.IsPlaying)
+			if(service == null && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
 			{
 				return;
 			}
@@ -294,7 +294,7 @@ namespace Pancake.Init
 				EditorUtility.SetDirty(this);
 			}
 
-			if(gameObject.scene.IsValid() && !EditorOnly.ThreadSafe.Application.IsPlaying)
+			if(gameObject.scene.IsValid() && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
 			{
 				Register();
 

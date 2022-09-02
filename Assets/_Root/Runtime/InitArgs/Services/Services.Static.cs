@@ -30,7 +30,7 @@ namespace Pancake.Init
             get
             {
                 #if UNITY_EDITOR
-                if(!EditorOnly.ThreadSafe.Application.IsPlaying)
+                if(!Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
                 {
                     return infosByDefiningTypeInEditMode;
                 }
@@ -275,7 +275,7 @@ namespace Pancake.Init
             Debug.Assert(serviceProvider != null);
 
             #if UNITY_EDITOR
-            var infosByDefiningType = EditorOnly.ThreadSafe.Application.IsPlaying ? Services.infosByDefiningType : infosByDefiningTypeInEditMode;
+            var infosByDefiningType = Pancake.Editor.Init.ThreadSafe.Application.IsPlaying ? Services.infosByDefiningType : infosByDefiningTypeInEditMode;
             #endif
 
             foreach(var serviceDefinition in providesServices)
@@ -348,7 +348,7 @@ namespace Pancake.Init
         internal static void Deregister([NotNull] Object serviceProvider)
         {
             #if UNITY_EDITOR
-            var infosByDefiningType = EditorOnly.ThreadSafe.Application.IsPlaying ? Services.infosByDefiningType : infosByDefiningTypeInEditMode;
+            var infosByDefiningType = Pancake.Editor.Init.ThreadSafe.Application.IsPlaying ? Services.infosByDefiningType : infosByDefiningTypeInEditMode;
             #endif
 
             foreach(var instance in infosByDefiningType)

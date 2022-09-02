@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+using Pancake.Init;
 using Pancake.Init.Internal;
 using UnityEditor;
 using UnityEditor.Presets;
@@ -10,7 +11,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	public class InitializerDrawer : IDisposable
 	{

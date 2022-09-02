@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	/// <summary>
 	/// Provides thread safe alternatives to some of Unity's static properties.

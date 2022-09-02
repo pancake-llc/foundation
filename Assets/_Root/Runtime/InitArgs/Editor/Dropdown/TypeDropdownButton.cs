@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
     internal sealed class TypeDropdownButton : DropdownButton<Type>
     {

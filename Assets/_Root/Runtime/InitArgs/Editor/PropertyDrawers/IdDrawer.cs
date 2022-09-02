@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Pancake.Init.Internal;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	[CustomPropertyDrawer(typeof(Id))]
 	public sealed class IdDrawer : PropertyDrawer

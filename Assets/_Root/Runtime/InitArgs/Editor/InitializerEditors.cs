@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static Pancake.Init.EditorOnly.DragAndDropUtility;
+using static Pancake.Editor.Init.DragAndDropUtility;
 using static UnityEditorInternal.ComponentUtility;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	/// <summary>
 	/// Class responsible for setting Initializer inspector hide flags on/off

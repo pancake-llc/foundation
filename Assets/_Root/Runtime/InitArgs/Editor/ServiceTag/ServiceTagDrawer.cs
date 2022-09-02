@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using Pancake.Init.Internal;
 using Pancake.Editor;
+using Pancake.Init;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	[InitializeOnLoad]
 	internal static class ServiceTagDrawer

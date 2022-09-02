@@ -1,8 +1,9 @@
 using System.Linq;
+using Pancake.Init;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
     [CustomEditor(typeof(Services), true, isFallback = true), CanEditMultipleObjects]
     public class ServicesEditor : UnityEditor.Editor

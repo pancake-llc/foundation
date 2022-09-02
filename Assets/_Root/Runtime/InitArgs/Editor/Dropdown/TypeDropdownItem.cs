@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	internal sealed class TypeDropdownItem : AdvancedDropdownItem
     {

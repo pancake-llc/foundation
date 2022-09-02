@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
+using Pancake.Init;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	[InitializeOnLoad]
 	internal static class InitializableEditorInjector

@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using static Pancake.NullExtensions;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	/// <summary>
 	/// Custom property drawer for <see cref="Any{T}"/>

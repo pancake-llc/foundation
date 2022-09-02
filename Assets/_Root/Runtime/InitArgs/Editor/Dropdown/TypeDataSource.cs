@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	internal class TypeDataSource : AdvancedDropdownDataSource
     {

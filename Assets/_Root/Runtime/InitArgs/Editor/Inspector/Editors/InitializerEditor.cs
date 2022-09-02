@@ -1,11 +1,12 @@
 ﻿using System;
+using Pancake.Init;
 using UnityEngine;
 using UnityEditor;
 using Pancake.Init.Internal;
-using static Pancake.Init.EditorOnly.InitializerEditorUtility;
+using static Pancake.Editor.Init.InitializerEditorUtility;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	public abstract class InitializerEditor : UnityEditor.Editor
 	{

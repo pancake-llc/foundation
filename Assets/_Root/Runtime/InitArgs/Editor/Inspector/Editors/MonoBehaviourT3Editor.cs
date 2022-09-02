@@ -1,7 +1,8 @@
 ﻿using System;
+using Pancake.Init;
 using UnityEditor;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
     [CustomEditor(typeof(MonoBehaviour<,,>), true, isFallback = true), CanEditMultipleObjects]
     public class MonoBehaviourT3Editor : InitializableEditor

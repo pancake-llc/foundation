@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Event = UnityEngine.Event;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
     internal sealed class AdvancedDropdownGUI
     {

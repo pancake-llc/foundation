@@ -15,7 +15,7 @@ using UnityEditor.SceneManagement;
 using UnityEditor.Experimental.SceneManagement;
 #endif
 using static Pancake.Init.ServiceUtility;
-using static Pancake.Init.EditorOnly.AutoInitUtility;
+using static Pancake.Editor.Init.AutoInitUtility;
 using static Pancake.NullExtensions;
 using System.Linq;
 #endif

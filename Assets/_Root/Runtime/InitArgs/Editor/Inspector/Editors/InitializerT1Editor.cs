@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using Pancake.Init;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Init.EditorOnly
+namespace Pancake.Editor.Init
 {
 	using static InitializerEditorUtility;
 

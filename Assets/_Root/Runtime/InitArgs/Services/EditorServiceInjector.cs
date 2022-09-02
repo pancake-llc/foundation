@@ -117,8 +117,8 @@ namespace Pancake.Init.Internal
                 ServicesAreReady = false;
             }
 
-            EditorOnly.ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
-            EditorOnly.ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
+            Pancake.Editor.Init.ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
+            Pancake.Editor.Init.ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
         }
 
         [CanBeNull]
