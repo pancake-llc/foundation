@@ -18,6 +18,7 @@ lerna-debug.log*
 /[Ll]ogs/
 Assets/AssetStoreTools*
 /UnityGenerated/
+Assets/_Root/Resources*
 # Library should not freeze version, it should be written in README.
 /ProjectSettings/ProjectVersion.txt
 /ProjectSettings/UniformFoldoutState.asset
