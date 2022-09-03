@@ -5,8 +5,6 @@ using UnityEngine;
 using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using System.Linq;
-using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("pancake@initargs.editor")]
 #endif
 
 namespace Pancake.Init

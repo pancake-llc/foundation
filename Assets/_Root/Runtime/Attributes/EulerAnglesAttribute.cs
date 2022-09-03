@@ -16,12 +16,12 @@ namespace Pancake
     {
 #if UNITY_EDITOR
 
-        Quaternion _quaternion = Quaternion.identity;
-        Vector3 _eulerAngles = Vector3.zero;
+        private Quaternion _quaternion = Quaternion.identity;
+        private Vector3 _eulerAngles = Vector3.zero;
 
 
         [CustomPropertyDrawer(typeof(EulerAnglesAttribute))]
-        class EulerAnglesDrawer : BasePropertyDrawer<EulerAnglesAttribute>
+        private class EulerAnglesDrawer : BasePropertyDrawer<EulerAnglesAttribute>
         {
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {

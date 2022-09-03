@@ -17,7 +17,7 @@ namespace Pancake.Init
 	internal sealed class RefTag : MonoBehaviour, IInitializable<Object>
 	{
 		private static readonly Dictionary<Id, Object> activeObjects = new Dictionary<Id, Object>();
-		private static readonly Dictionary<Id, List<Object>> activeClones = new Dictionary<Id, List<Object>>(); // one prefab can have more than one instance
+		private static readonly Dictionary<Id, List<Object>> activeClones = new Dictionary<Id, List<Object>>(); // one prefab can have more than one Instance
 
 		[SerializeField]
 		internal Id guid = Id.Empty;
@@ -301,20 +301,20 @@ namespace Pancake.Init
 			bool otherIsPrefabInstance = PrefabUtility.IsPartOfPrefabInstance(otherGameObject);
 			bool otherIsNormalSceneObject = !otherIsPrefabAsset && !otherIsOpenInPrefabStage && !otherIsPrefabInstance;
 
-			// If either one is a scene object which is not a prefab instance, we have an id conflict.
-			// A scene object could have been duplicated, or a prefab instance unpacked.
+			// If either one is a scene object which is not a prefab Instance, we have an id conflict.
+			// A scene object could have been duplicated, or a prefab Instance unpacked.
 			if(targetIsNormalSceneObject || otherIsNormalSceneObject)
 			{
 				return false;
 			}
 
-			// Prefab assets can share their id with a prefab instance or an object being edited in prefab stage.
+			// Prefab assets can share their id with a prefab Instance or an object being edited in prefab stage.
 			if(targetIsPrefabAsset)
 			{
 				return otherIsPrefabInstance || otherIsOpenInPrefabStage;
 			}
 
-			// Objects being edited in prefab stage can share their id with a prefab asset and a prefab instance.
+			// Objects being edited in prefab stage can share their id with a prefab asset and a prefab Instance.
 			if(targetIsOpenInPrefabStage)
 			{
 				return otherIsPrefabAsset ||otherIsPrefabInstance;

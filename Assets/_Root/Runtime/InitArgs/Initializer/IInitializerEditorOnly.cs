@@ -1,8 +1,4 @@
 ﻿#if UNITY_EDITOR
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("pancake@initargs.editor")]
-[assembly: InternalsVisibleTo("Tests.EditMode")]
 
 namespace Pancake.Init
 {

@@ -334,7 +334,7 @@ namespace Pancake.Editor.SaveData
 
             if (type.hasExplicitCustomType)
             {
-                GUILayout.Box(new GUIContent(EditorResources.instance.circleCheckmark, "Type is explicitly supported"), EditorStyles.largeLabel);
+                GUILayout.Box(new GUIContent(EditorResources.Instance.circleCheckmark, "Type is explicitly supported"), EditorStyles.largeLabel);
                 EditorGUILayout.EndHorizontal();
             }
         }
@@ -572,8 +572,8 @@ namespace Pancake.Editor.SaveData
 
             // Insert the relevant strings into the template.
             string template;
-            if (Reflection.IsValueType(type)) template = EditorResources.instance.valueTypeTemplate.text;
-            else template = EditorResources.instance.classTypeTemplate.text;
+            if (Reflection.IsValueType(type)) template = EditorResources.Instance.valueTypeTemplate.text;
+            else template = EditorResources.Instance.classTypeTemplate.text;
             template = template.Replace("[typeSuffix]", typeSuffix);
             template = template.Replace("[fullType]", fullType);
             template = template.Replace("[writes]", writes);
@@ -608,13 +608,13 @@ namespace Pancake.Editor.SaveData
                 string typeParam = HasExplicitCustomType(customType) && writeByRef == ""
                     ? ", " + customType.GetType().Name + ".Instance"
                     : (writeByRef == "" ? ", TypeManager.GetOrCreateCustomType(typeof(" + GetFullTypeName(field.MemberType) + "))" : "");
-                // If this is static, access the field through the class name rather than through an instance.
-                string instance = (field.IsStatic) ? GetFullTypeName(type) : "instance";
+                // If this is static, access the field through the class name rather than through an Instance.
+                string instance = (field.IsStatic) ? GetFullTypeName(type) : "Instance";
 
                 if (!field.IsPublic)
                 {
                     string memberType = field.isProperty ? "Property" : "Field";
-                    writes += String.Format("\r\n\t\t\twriter.WritePrivate{2}{1}(\"{0}\", instance);", field.Name, writeByRef, memberType);
+                    writes += String.Format("\r\n\t\t\twriter.WritePrivate{2}{1}(\"{0}\", Instance);", field.Name, writeByRef, memberType);
                 }
                 else
                     writes += String.Format("\r\n\t\t\twriter.WriteProperty{1}(\"{0}\", {3}.{0}{2});",
@@ -643,8 +643,8 @@ namespace Pancake.Editor.SaveData
 
                 string fieldTypeName = GetFullTypeName(field.MemberType);
                 string typeParam = HasExplicitCustomType(field.MemberType) ? TypeManager.GetCustomType(field.MemberType).GetType().Name + ".Instance" : "";
-                // If this is static, access the field through the class name rather than through an instance.
-                string instance = (field.IsStatic) ? GetFullTypeName(type) : "instance";
+                // If this is static, access the field through the class name rather than through an Instance.
+                string instance = (field.IsStatic) ? GetFullTypeName(type) : "Instance";
 
                 // If we're writing a private field or property, we need to write it using a different method.
                 if (!field.IsPublic)
@@ -652,12 +652,12 @@ namespace Pancake.Editor.SaveData
                     typeParam = ", " + typeParam;
                     if (field.isProperty)
                         reads += String.Format(
-                            "\r\n\t\t\t\t\tcase \"{0}\":\r\n\t\t\t\t\treader.SetPrivateProperty(\"{0}\", reader.Read<{1}>(), instance);\r\n\t\t\t\t\tbreak;",
+                            "\r\n\t\t\t\t\tcase \"{0}\":\r\n\t\t\t\t\treader.SetPrivateProperty(\"{0}\", reader.Read<{1}>(), Instance);\r\n\t\t\t\t\tbreak;",
                             field.Name,
                             fieldTypeName);
                     else
                         reads += String.Format(
-                            "\r\n\t\t\t\t\tcase \"{0}\":\r\n\t\t\t\t\treader.SetPrivateField(\"{0}\", reader.Read<{1}>(), instance);\r\n\t\t\t\t\tbreak;",
+                            "\r\n\t\t\t\t\tcase \"{0}\":\r\n\t\t\t\t\treader.SetPrivateField(\"{0}\", reader.Read<{1}>(), Instance);\r\n\t\t\t\t\tbreak;",
                             field.Name,
                             fieldTypeName);
                 }

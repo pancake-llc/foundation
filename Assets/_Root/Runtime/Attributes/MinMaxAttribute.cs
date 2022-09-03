@@ -27,11 +27,11 @@ namespace Pancake
 
 #if UNITY_EDITOR
 
-        float _min;
-        float _max;
+        private float _min;
+        private float _max;
 
         [CustomPropertyDrawer(typeof(MinMaxAttribute))]
-        class MinMaxDrawer : BasePropertyDrawer<MinMaxAttribute>
+        private class MinMaxDrawer : BasePropertyDrawer<MinMaxAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

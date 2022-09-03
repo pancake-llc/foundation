@@ -23,10 +23,10 @@ namespace Pancake
 
 #if UNITY_EDITOR
 
-        string _label;
+        private string _label;
 
         [CustomPropertyDrawer(typeof(LabelAttribute))]
-        class LabelDrawer : BasePropertyDrawer<LabelAttribute>
+        private class LabelDrawer : BasePropertyDrawer<LabelAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

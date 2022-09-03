@@ -32,12 +32,12 @@ namespace Pancake.Init.Serialization
         #endif
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="_Type"/> class.
+        /// Initializes a new Instance of the <see cref="_Type"/> class.
         /// </summary>
         public _Type() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="_Type"/> class.
+        /// Initializes a new Instance of the <see cref="_Type"/> class.
         /// </summary>
         /// <param name="assemblyQualifiedTypeName"> Assembly qualified name of the wrapped type. </param>
         /// <param name="guid"> (Optional:) The GUID of the script asset in which the wrapped type is defined. </param>
@@ -48,7 +48,7 @@ namespace Pancake.Init.Serialization
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="_Type"/> class.
+        /// Initializes a new Instance of the <see cref="_Type"/> class.
         /// </summary>
         /// <param name="value"> the wrapped type. </param>
         /// <param name="guid"> (Optional:) The GUID of the script asset in which the wrapped type is defined. </param>

@@ -14,7 +14,7 @@ namespace Pancake
     {
 #if UNITY_EDITOR
         [CustomPropertyDrawer(typeof(TagAttribute))]
-        class TagDrawer : BasePropertyDrawer<TagAttribute>
+        private class TagDrawer : BasePropertyDrawer<TagAttribute>
         {
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {

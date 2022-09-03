@@ -26,7 +26,7 @@ namespace Pancake
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public sealed class AxisUsageAttribute : PropertyAttribute
     {
-        AxisUsage _usage;
+        private AxisUsage _usage;
 
         /// <summary>
         /// AxisUsageAttribute
@@ -37,19 +37,19 @@ namespace Pancake
 #if UNITY_EDITOR
 
         [CustomPropertyDrawer(typeof(AxisUsageAttribute))]
-        class AxisUsageDrawer : BasePropertyDrawer<AxisUsageAttribute>
+        private class AxisUsageDrawer : BasePropertyDrawer<AxisUsageAttribute>
         {
-            static string[][] _axisNames = {new string[] {"+X", "-X", "+Y", "-Y", "+Z", "-Z"}, new string[] {"X", "Y", "Z"}, new string[] {"XY", "YZ", "XZ"},};
+            private static string[][] _axisNames = {new string[] {"+X", "-X", "+Y", "-Y", "+Z", "-Z"}, new string[] {"X", "Y", "Z"}, new string[] {"XY", "YZ", "XZ"},};
 
 
-            static Axis[][] _axisValues =
+            private static Axis[][] _axisValues =
             {
                 new Axis[] {Axis.PositiveX, Axis.NegativeX, Axis.PositiveY, Axis.NegativeY, Axis.PositiveZ, Axis.NegativeZ}, new Axis[] {Axis.X, Axis.Y, Axis.Z},
                 new Axis[] {Axis.XY, Axis.YZ, Axis.XZ},
             };
 
 
-            int AxisToIndex(Axis axis)
+            private int AxisToIndex(Axis axis)
             {
                 switch (attribute._usage)
                 {

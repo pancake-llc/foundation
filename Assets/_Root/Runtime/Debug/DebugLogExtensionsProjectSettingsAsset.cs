@@ -33,7 +33,7 @@ namespace Pancake.Debugging
 					{
 						string dir = "Assets/_Root/Resources/";
 						#if DEV_MODE && UNITY_EDITOR
-						Debug.LogWarning(ResourcePath + " not found. Creating new instance at "+ path + ".");
+						Debug.LogWarning(ResourcePath + " not found. Creating new Instance at "+ path + ".");
 						#endif
 
 						instance = CreateInstance<DebugLogExtensionsProjectSettingsAsset>();
@@ -46,7 +46,7 @@ namespace Pancake.Debugging
 					#endif
 				}
 				#if DEV_MODE && UNITY_EDITOR
-				else { Debug.Log("DebugLogExtensionsProjectSettingsAsset.Get - loaded asset", instance); }
+				else { Debug.Log("DebugLogExtensionsProjectSettingsAsset.Get - loaded asset", Instance); }
 				#endif
 			}
 

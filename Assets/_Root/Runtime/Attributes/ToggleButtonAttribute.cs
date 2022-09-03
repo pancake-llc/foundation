@@ -34,14 +34,14 @@ namespace Pancake
 
 #if UNITY_EDITOR
 
-        string _label;
-        string _trueText;
-        string _falseText;
-        bool _indent;
+        private string _label;
+        private string _trueText;
+        private string _falseText;
+        private bool _indent;
 
 
         [CustomPropertyDrawer(typeof(ToggleButtonAttribute))]
-        class ToggleButtonDrawer : BasePropertyDrawer<ToggleButtonAttribute>
+        private class ToggleButtonDrawer : BasePropertyDrawer<ToggleButtonAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

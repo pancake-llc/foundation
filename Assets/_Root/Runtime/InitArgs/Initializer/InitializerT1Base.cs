@@ -87,10 +87,10 @@ namespace Pancake.Init
 		protected virtual void OnReset(ref TArgument argument) { }
 
 		/// <summary>
-		/// Initializes the existing <see cref="target"/> or new instance of type <see cref="TClient"/> using the provided argument.
+		/// Initializes the existing <see cref="target"/> or new Instance of type <see cref="TClient"/> using the provided argument.
 		/// </summary>
 		/// <param name="argument"> The argument to pass to the target's Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TClient"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TClient"/>. </returns>
 		[NotNull]
 		protected virtual TClient InitTarget(TArgument argument)
         {

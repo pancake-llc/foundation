@@ -14,7 +14,7 @@ namespace Pancake
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public sealed class MinAttribute : PropertyAttribute
     {
-        float _min;
+        private float _min;
 
         /// <summary>
         /// Set minimum allowed value for int & float field
@@ -25,7 +25,7 @@ namespace Pancake
 #if UNITY_EDITOR
 
         [CustomPropertyDrawer(typeof(MinAttribute))]
-        class MinDrawer : BasePropertyDrawer<MinAttribute>
+        private class MinDrawer : BasePropertyDrawer<MinAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

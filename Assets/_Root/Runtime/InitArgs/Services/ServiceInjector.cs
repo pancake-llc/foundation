@@ -360,7 +360,7 @@ namespace Pancake.Init.Internal
                 definingType = classWithAttribute;
             }
 
-            // If one class contains multiple Service attributes still create only one shared instance.
+            // If one class contains multiple Service attributes still create only one shared Instance.
             if(services.TryGetValue(classWithAttribute, out var existingInstance))
             {
                 ServiceUtility.SetInstance(definingType, existingInstance);
@@ -372,7 +372,7 @@ namespace Pancake.Init.Internal
             if(instance is null)
             {
                 #if DEV_MODE
-                Debug.LogWarning($"GetInstance({classWithAttribute.Name}. {definingType.Name}) returned instance was null.");
+                Debug.LogWarning($"GetInstance({classWithAttribute.Name}. {definingType.Name}) returned Instance was null.");
                 #endif
                 return;
             }
@@ -391,7 +391,7 @@ namespace Pancake.Init.Internal
                 if(instance != null)
                 {
                     #if DEBUG_CREATE_SERVICES
-                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", instance);
+                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", Instance);
                     #endif
 
                     if(definingType.IsAssignableFrom(classWithAttribute))
@@ -419,7 +419,7 @@ namespace Pancake.Init.Internal
                 if(initializer != null && initializer.InitTarget() is object initializedTarget)
                 {
                     #if DEBUG_CREATE_SERVICES
-                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", instance);
+                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", Instance);
                     #endif
 
                     var initializedType = initializedTarget.GetType();
@@ -461,7 +461,7 @@ namespace Pancake.Init.Internal
                 #endif
 
 
-                Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the active scene {SceneManager.GetActiveScene().name}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Either add an instance to the scene or don't set {nameof(ServiceAttribute.FindFromScene)} true to have a new instance be created automatically.");
+                Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the active scene {SceneManager.GetActiveScene().name}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Either add an Instance to the scene or don't set {nameof(ServiceAttribute.FindFromScene)} true to have a new Instance be created automatically.");
                 return null;
             }
 
@@ -470,7 +470,7 @@ namespace Pancake.Init.Internal
                 var asset = Resources.Load(resourcePath, typeof(Object));
                 if(asset == null)
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at resource path 'Resources/{resourcePath}', but the service class has the {nameof(ServiceAttribute)} {nameof(ServiceAttribute.ResourcePath)} set to '{resourcePath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at resource path 'Resources/{resourcePath}', but the service class has the {nameof(ServiceAttribute)} {nameof(ServiceAttribute.ResourcePath)} set to '{resourcePath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new Instance be created automatically.");
                     return null;
                 }
 
@@ -494,7 +494,7 @@ namespace Pancake.Init.Internal
                 var asset = asyncOperation.WaitForCompletion();
                 if(asset == null)
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the Addressable registry under the address {addressableKey}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.AddressableKey)} set to '{addressableKey}'. Either make sure an instance with the address exists in the project or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the Addressable registry under the address {addressableKey}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.AddressableKey)} set to '{addressableKey}'. Either make sure an Instance with the address exists in the project or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new Instance be created automatically.");
                     return null;
                 }
 
@@ -1077,7 +1077,7 @@ namespace Pancake.Init.Internal
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {classType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but instance not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {classType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but Instance not found among {services.Count} services..."); }
                     #endif
                 }
             }

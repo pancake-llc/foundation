@@ -88,7 +88,7 @@ namespace Pancake.Init.Internal
             #if DEBUG
             return !type.IsValueType && !(typeof(Service<>).MakeGenericType(type).GetProperty(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) is null);
             #else
-            return !type.IsValueType && !(typeof(Service<>).MakeGenericType(type).GetField(nameof(Service<object>.instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) is null);
+            return !type.IsValueType && !(typeof(Service<>).MakeGenericType(type).GetField(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) is null);
             #endif
         }
 
@@ -199,12 +199,12 @@ namespace Pancake.Init.Internal
             {
                 if(!Find.Asset(classWithAttribute, out object instance))
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the asset database, but the service class has the {nameof(EditorServiceAttribute)} with {nameof(EditorServiceAttribute.FindAssetByType)} set to true. Either create an asset in the project view or don't set {nameof(EditorServiceAttribute.FindAssetByType)} true to have a new instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the asset database, but the service class has the {nameof(EditorServiceAttribute)} with {nameof(EditorServiceAttribute.FindAssetByType)} set to true. Either create an asset in the project view or don't set {nameof(EditorServiceAttribute.FindAssetByType)} true to have a new Instance be created automatically.");
                     return null;
                 }
 
                 #if DEBUG_CREATE_SERVICES
-                Debug.Log($"Service {classWithAttribute.Name} retrieved from asset database successfully.", instance as Object);
+                Debug.Log($"Service {classWithAttribute.Name} retrieved from asset database successfully.", Instance as Object);
                 #endif
 
                 return instance;
@@ -214,12 +214,12 @@ namespace Pancake.Init.Internal
             {
                 if(!Find.Resource(classWithAttribute, resourcePath, out object instance))
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at resource path 'Resources/{resourcePath}', but the service class has the {nameof(EditorServiceAttribute)} {nameof(EditorServiceAttribute.ResourcePath)} set to '{resourcePath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(EditorServiceAttribute.ResourcePath)} to have a new instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at resource path 'Resources/{resourcePath}', but the service class has the {nameof(EditorServiceAttribute)} {nameof(EditorServiceAttribute.ResourcePath)} set to '{resourcePath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(EditorServiceAttribute.ResourcePath)} to have a new Instance be created automatically.");
                     return null;
                 }
 
                 #if DEBUG_CREATE_SERVICES
-                Debug.Log($"Service {classWithAttribute.Name} loaded from resources successfully.", instance as Object);
+                Debug.Log($"Service {classWithAttribute.Name} loaded from resources successfully.", Instance as Object);
                 #endif
 
                 return instance;
@@ -230,7 +230,7 @@ namespace Pancake.Init.Internal
                 Object obj = EditorGUIUtility.Load(editorDefaultResourcesPath);
                 if(obj == null)
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at 'Editor Default Resources/{editorDefaultResourcesPath}', but the service class has the {nameof(EditorServiceAttribute)} {nameof(EditorServiceAttribute.EditorDefaultResourcesPath)} set to '{editorDefaultResourcesPath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(EditorServiceAttribute.EditorDefaultResourcesPath)} to have a new instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at 'Editor Default Resources/{editorDefaultResourcesPath}', but the service class has the {nameof(EditorServiceAttribute)} {nameof(EditorServiceAttribute.EditorDefaultResourcesPath)} set to '{editorDefaultResourcesPath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(EditorServiceAttribute.EditorDefaultResourcesPath)} to have a new Instance be created automatically.");
                     return null;
                 }
 
@@ -259,17 +259,17 @@ namespace Pancake.Init.Internal
             #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
             if(serviceAttribute.AddressableKey is string addressableKey)
             {
-                if(!Find.Addressable(classWithAttribute, addressableKey, out object instance))
+                if(!Find.Addressable(classWithAttribute, addressableKey, out object Instance))
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the Addressable registry under the address {addressableKey}, but the service class has the {nameof(EditorServiceAttribute)} with {nameof(EditorServiceAttribute.AddressableKey)} set to '{addressableKey}'. Either make sure an asset with the address exists in the project or don't specify a {nameof(EditorServiceAttribute.ResourcePath)} to have a new instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the Addressable registry under the address {addressableKey}, but the service class has the {nameof(EditorServiceAttribute)} with {nameof(EditorServiceAttribute.AddressableKey)} set to '{addressableKey}'. Either make sure an asset with the address exists in the project or don't specify a {nameof(EditorServiceAttribute.ResourcePath)} to have a new Instance be created automatically.");
                     return null;
                 }
 
                 #if DEBUG_CREATE_SERVICES
-                Debug.Log($"Service {classWithAttribute.Name} loaded using Addressables successfully.", instance as Object);
+                Debug.Log($"Service {classWithAttribute.Name} loaded using Addressables successfully.", Instance as Object);
                 #endif
 
-                return instance;
+                return Instance;
             }
             #endif
 
@@ -422,7 +422,7 @@ namespace Pancake.Init.Internal
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {clientType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but instance not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {clientType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but Instance not found among {services.Count} services..."); }
                     #endif
                     return;                
                 }

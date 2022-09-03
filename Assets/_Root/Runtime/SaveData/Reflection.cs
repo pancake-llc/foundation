@@ -302,7 +302,7 @@ namespace Pancake.SaveData
         }
 
         /*
-		 * 	Finds all classes of a specific type, and then returns an instance of each.
+		 * 	Finds all classes of a specific type, and then returns an Instance of each.
 		 * 	Ignores classes which can't be instantiated (i.e. abstract classes).
 		 */
         public static IList<T> GetInstances<T>()

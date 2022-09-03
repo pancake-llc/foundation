@@ -22,7 +22,7 @@
 		public readonly bool provided;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Args{TArgument}"/> struct.
+		/// Initializes a new Instance of the <see cref="Args{TArgument}"/> struct.
 		/// </summary>
 		/// <param name="argument"> The provided argument. </param>
 		public Arg(TArgument argument)
@@ -66,7 +66,7 @@
 		public readonly bool provided;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Args{TFirstArgument, TSecondArgument}"/> struct.
+		/// Initializes a new Instance of the <see cref="Args{TFirstArgument, TSecondArgument}"/> struct.
 		/// </summary>
 		/// <param name="firstArgument"> The first provided argument. </param>
 		/// <param name="secondArgument"> The second provided argument. </param>
@@ -119,7 +119,7 @@
 		public readonly bool provided;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument}"/> struct.
+		/// Initializes a new Instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument}"/> struct.
 		/// </summary>
 		/// <param name="firstArgument"> The first provided argument. </param>
 		/// <param name="secondArgument"> The second provided argument. </param>
@@ -181,7 +181,7 @@
 		public readonly bool provided;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> struct.
+		/// Initializes a new Instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> struct.
 		/// </summary>
 		/// <param name="firstArgument"> The first provided argument. </param>
 		/// <param name="secondArgument"> The second provided argument. </param>
@@ -252,7 +252,7 @@
 		public readonly TFifthArgument fifthArgument;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> struct.
+		/// Initializes a new Instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> struct.
 		/// </summary>
 		/// <param name="firstArgument"> The first provided argument. </param>
 		/// <param name="secondArgument"> The second provided argument. </param>
@@ -332,7 +332,7 @@
 		public readonly TSixthArgument sixthArgument;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> struct.
+		/// Initializes a new Instance of the <see cref="Args{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> struct.
 		/// </summary>
 		/// <param name="firstArgument"> The first provided argument. </param>
 		/// <param name="secondArgument"> The second provided argument. </param>

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.Tween
 {
     [AddComponentMenu("")]
-    public class TweenManager : AutoStartMonoSingleton<TweenManager>
+    public class TweenManager : MonoBehaviour
     {
         private readonly List<Tween> _aliveTweens_Update = new List<Tween>();
         private readonly List<Tween> _aliveTweens_FixedUpdate = new List<Tween>();
@@ -28,6 +28,33 @@ namespace Pancake.Tween
 
         private float _timeScale;
 
+        /// <summary>
+        /// I don't want to use singleton as a pattern outside internal so no base class singleton was created
+        /// </summary>
+        #region singleton
+
+        private static TweenManager instance;
+        private static bool isCreated;
+        
+        public static bool IsDestroyed => instance == null && isCreated;
+
+        public static TweenManager Instance
+        {
+            get
+            {
+                if (!isCreated)
+                {
+                    var go = new GameObject(nameof(TweenManager));
+                    DontDestroyOnLoad(go);
+                    instance = go.AddComponent<TweenManager>();
+                    isCreated = true;
+                }
+
+                return instance;
+            }
+        }
+        #endregion
+        
         public static float TimeScale { get => Instance._timeScale; set => Instance._timeScale = value; }
 
         private void Awake() { Init(); }
@@ -144,7 +171,7 @@ namespace Pancake.Tween
 
             if (tween == null)
             {
-                throw new ArgumentNullException($"Tried to play a null {nameof(Tween)} on {nameof(TweenManager)} instance");
+                throw new ArgumentNullException($"Tried to play a null {nameof(Tween)} on {nameof(TweenManager)} Instance");
             }
 
             if (tween.IsNested) return;

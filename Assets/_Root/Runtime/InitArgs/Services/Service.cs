@@ -327,15 +327,15 @@ namespace Pancake.Init
         internal static Type NowSettingInstance;
 
         /// <summary>
-        /// Sets the <typeparamref name="TService"/> service instance
+        /// Sets the <typeparamref name="TService"/> service Instance
         /// shared across clients to the given value.
         /// <para>
-        /// If the provided instance is not equal to the old <see cref="Instance"/>
+        /// If the provided Instance is not equal to the old <see cref="Instance"/>
         /// then the <see cref="InstanceChanged"/> event will be raised.
         /// </para>
         /// </summary>
         /// <typeparam name="TService"> The defining type of the service. </typeparam>
-        /// <param name="newInstance"> The new instance of the service. </param>
+        /// <param name="newInstance"> The new Instance of the service. </param>
         [Preserve]
         public static void SetInstance<TService>([NotNull] TService newInstance)
 	    {
@@ -362,20 +362,20 @@ namespace Pancake.Init
 	    }
 
         /// <summary>
-        /// Subscribes the provided <paramref name="method"/> to listen for changes made to the shared instance of service of type <typeparamref name="TService"/>.
+        /// Subscribes the provided <paramref name="method"/> to listen for changes made to the shared Instance of service of type <typeparamref name="TService"/>.
         /// </summary>
         /// <typeparam name="TService"> The defining type of the service. </typeparam>
         /// <param name="method">
-        /// Method to call when the shared instance of service of type <typeparamref name="TService"/> has changed to a different one.
+        /// Method to call when the shared Instance of service of type <typeparamref name="TService"/> has changed to a different one.
         /// </param>
         public static void AddInstanceChangedListener<TService>(ServiceChangedHandler<TService> method) => ServiceChanged<TService>.Listeners += method;
 
         /// <summary>
-        /// Unsubscribes the provided <paramref name="method"/> from listening for changes made to the shared instance of service of type <typeparamref name="TService"/>.
+        /// Unsubscribes the provided <paramref name="method"/> from listening for changes made to the shared Instance of service of type <typeparamref name="TService"/>.
         /// </summary>
         /// <typeparam name="TService"> The defining type of the service. </typeparam>
         /// <param name="method">
-        /// Method that should no longer be called when the shared instance of service of type <typeparamref name="TService"/> has changed to a different one.
+        /// Method that should no longer be called when the shared Instance of service of type <typeparamref name="TService"/> has changed to a different one.
         /// </param>
         public static void RemoveInstanceChangedListener<TService>(ServiceChangedHandler<TService> method) => ServiceChanged<TService>.Listeners -= method;
    }

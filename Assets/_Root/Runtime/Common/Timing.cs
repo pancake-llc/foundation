@@ -1485,7 +1485,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance in the Update segment.
+        /// Run a new coroutine on this Timing Instance in the Update segment.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <returns>The coroutine's handle, which can be used for Wait and Kill operations.</returns>
@@ -1496,7 +1496,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance in the Update segment.
+        /// Run a new coroutine on this Timing Instance in the Update segment.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="gameObj">The new coroutine will be put on a layer corresponding to this gameObject.</param>
@@ -1508,7 +1508,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance in the Update segment.
+        /// Run a new coroutine on this Timing Instance in the Update segment.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="layer">An optional layer to attach to the coroutine which can later be used to identify this coroutine.</param>
@@ -1520,7 +1520,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance in the Update segment.
+        /// Run a new coroutine on this Timing Instance in the Update segment.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="tag">An optional tag to attach to the coroutine which can later be used to identify this coroutine.</param>
@@ -1532,7 +1532,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance in the Update segment.
+        /// Run a new coroutine on this Timing Instance in the Update segment.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="gameObj">The new coroutine will be put on a layer corresponding to this gameObject.</param>
@@ -1545,7 +1545,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance in the Update segment.
+        /// Run a new coroutine on this Timing Instance in the Update segment.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="layer">An optional layer to attach to the coroutine which can later be used to identify this coroutine.</param>
@@ -1558,7 +1558,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance.
+        /// Run a new coroutine on this Timing Instance.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="segment">The segment that the coroutine should run in.</param>
@@ -1570,7 +1570,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance.
+        /// Run a new coroutine on this Timing Instance.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="segment">The segment that the coroutine should run in.</param>
@@ -1583,7 +1583,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance.
+        /// Run a new coroutine on this Timing Instance.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="segment">The segment that the coroutine should run in.</param>
@@ -1596,7 +1596,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance.
+        /// Run a new coroutine on this Timing Instance.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="segment">The segment that the coroutine should run in.</param>
@@ -1609,7 +1609,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance.
+        /// Run a new coroutine on this Timing Instance.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="segment">The segment that the coroutine should run in.</param>
@@ -1623,7 +1623,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Run a new coroutine on this Timing instance.
+        /// Run a new coroutine on this Timing Instance.
         /// </summary>
         /// <param name="coroutine">The new coroutine's handle.</param>
         /// <param name="segment">The segment that the coroutine should run in.</param>
@@ -2990,7 +2990,7 @@ namespace Pancake
             return handle;
         }
         /// <summary>
-        /// This will kill all coroutines running on the main MEC instance and reset the context.
+        /// This will kill all coroutines running on the main MEC Instance and reset the context.
         /// NOTE: If you call this function from within a running coroutine then you MUST end the current
         /// coroutine. If the running coroutine has more work to do you may run a new "part 2" coroutine 
         /// function to complete the task before ending the current one.
@@ -3002,7 +3002,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will kill all coroutines running on the current MEC instance and reset the context. 
+        /// This will kill all coroutines running on the current MEC Instance and reset the context. 
         /// NOTE: If you call this function from within a running coroutine then you MUST end the current
         /// coroutine. If the running coroutine has more work to do you may run a new "part 2" coroutine 
         /// function to complete the task before ending the current one.
@@ -3111,7 +3111,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Kills the instance of the coroutine handle on this Timing instance if it exists.
+        /// Kills the Instance of the coroutine handle on this Timing Instance if it exists.
         /// </summary>
         /// <param name="handle">The handle of the coroutine to kill.</param>
         /// <returns>The number of coroutines that were found and killed (Normally 0 or 1).</returns>
@@ -3331,9 +3331,9 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Retrieves the MEC manager that corresponds to the supplied instance id.
+        /// Retrieves the MEC manager that corresponds to the supplied Instance id.
         /// </summary>
-        /// <param name="ID">The instance ID.</param>
+        /// <param name="ID">The Instance ID.</param>
         /// <returns>The manager, or null if not found.</returns>
         public static Timing GetInstance(byte ID)
         {
@@ -3549,7 +3549,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause all coroutines running on the main MEC instance until ResumeCoroutines is called.
+        /// This will pause all coroutines running on the main MEC Instance until ResumeCoroutines is called.
         /// </summary>
         /// <returns>The number of coroutines that were paused.</returns>
         public static int PauseCoroutines()
@@ -3558,7 +3558,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause all coroutines running on this MEC instance until ResumeCoroutinesOnInstance is called.
+        /// This will pause all coroutines running on this MEC Instance until ResumeCoroutinesOnInstance is called.
         /// </summary>
         /// <returns>The number of coroutines that were paused.</returns>
         public int PauseCoroutinesOnInstance()
@@ -3696,7 +3696,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on this MEC instance until ResumeCoroutinesOnInstance is called.
+        /// This will pause any matching coroutines running on this MEC Instance until ResumeCoroutinesOnInstance is called.
         /// </summary>
         /// <param name="handle">The handle of the coroutine to pause.</param>
         /// <returns>The number of coroutines that were paused (Normally 0 or 1).</returns>
@@ -3745,7 +3745,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on the current MEC instance until ResumeCoroutines is called.
+        /// This will pause any matching coroutines running on the current MEC Instance until ResumeCoroutines is called.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be paused.</param>
         /// <returns>The number of coroutines that were paused.</returns>
@@ -3755,7 +3755,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on this MEC instance until ResumeCoroutinesOnInstance is called.
+        /// This will pause any matching coroutines running on this MEC Instance until ResumeCoroutinesOnInstance is called.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be paused.</param>
         /// <returns>The number of coroutines that were paused.</returns>
@@ -3765,7 +3765,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on the current MEC instance until ResumeCoroutines is called.
+        /// This will pause any matching coroutines running on the current MEC Instance until ResumeCoroutines is called.
         /// </summary>
         /// <param name="layer">Any coroutines on the matching layer will be paused.</param>
         /// <returns>The number of coroutines that were paused.</returns>
@@ -3775,7 +3775,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on this MEC instance until ResumeCoroutinesOnInstance is called.
+        /// This will pause any matching coroutines running on this MEC Instance until ResumeCoroutinesOnInstance is called.
         /// </summary>
         /// <param name="layer">Any coroutines on the matching layer will be paused.</param>
         /// <returns>The number of coroutines that were paused.</returns>
@@ -3807,7 +3807,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on the current MEC instance until ResumeCoroutines is called.
+        /// This will pause any matching coroutines running on the current MEC Instance until ResumeCoroutines is called.
         /// </summary>
         /// <param name="tag">Any coroutines with a matching tag will be paused.</param>
         /// <returns>The number of coroutines that were paused.</returns>
@@ -3817,7 +3817,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on this MEC instance until ResumeCoroutinesOnInstance is called.
+        /// This will pause any matching coroutines running on this MEC Instance until ResumeCoroutinesOnInstance is called.
         /// </summary>
         /// <param name="tag">Any coroutines with a matching tag will be paused.</param>
         /// <returns>The number of coroutines that were paused.</returns>
@@ -3849,7 +3849,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on the current MEC instance until ResumeCoroutines is called.
+        /// This will pause any matching coroutines running on the current MEC Instance until ResumeCoroutines is called.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be paused.</param>
         /// <param name="tag">Any coroutines with a matching tag will be paused.</param>
@@ -3860,7 +3860,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on this MEC instance until ResumeCoroutinesOnInstance is called.
+        /// This will pause any matching coroutines running on this MEC Instance until ResumeCoroutinesOnInstance is called.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be paused.</param>
         /// <param name="tag">Any coroutines with a matching tag will be paused.</param>
@@ -3871,7 +3871,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on the current MEC instance until ResumeCoroutines is called.
+        /// This will pause any matching coroutines running on the current MEC Instance until ResumeCoroutines is called.
         /// </summary>
         /// <param name="layer">Any coroutines on the matching layer will be paused.</param>
         /// <param name="tag">Any coroutines with a matching tag will be paused.</param>
@@ -3882,7 +3882,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will pause any matching coroutines running on this MEC instance until ResumeCoroutinesOnInstance is called.
+        /// This will pause any matching coroutines running on this MEC Instance until ResumeCoroutinesOnInstance is called.
         /// </summary>
         /// <param name="layer">Any coroutines on the matching layer will be paused.</param>
         /// <param name="tag">Any coroutines with a matching tag will be paused.</param>
@@ -3922,7 +3922,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes all coroutines on the current MEC instance if they are currently paused, otherwise it has
+        /// This resumes all coroutines on the current MEC Instance if they are currently paused, otherwise it has
         /// no effect.
         /// </summary>
         /// <returns>The number of coroutines that were resumed.</returns>
@@ -3932,7 +3932,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes all coroutines on this MEC instance if they are currently paused, otherwise it has no effect.
+        /// This resumes all coroutines on this MEC Instance if they are currently paused, otherwise it has no effect.
         /// </summary>
         /// <returns>The number of coroutines that were resumed.</returns>
         public int ResumeCoroutinesOnInstance()
@@ -4058,7 +4058,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will resume any matching coroutines that are paused and running on this MEC instance.
+        /// This will resume any matching coroutines that are paused and running on this MEC Instance.
         /// </summary>
         /// <param name="handle">The handle of the coroutine to resume.</param>
         /// <returns>The number of coroutines that were resumed. (Normally 0 or 1)</returns>
@@ -4083,7 +4083,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This will resume any matching coroutines running on this MEC instance.
+        /// This will resume any matching coroutines running on this MEC Instance.
         /// </summary>
         /// <param name="handles">A list of handles to coroutines you want to resume.</param>
         /// <returns>The number of coroutines that were resumed.</returns>
@@ -4097,7 +4097,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on the current MEC instance if they are currently paused, otherwise it has
+        /// This resumes any matching coroutines on the current MEC Instance if they are currently paused, otherwise it has
         /// no effect.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be resumed.</param>
@@ -4108,7 +4108,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on this MEC instance if they are currently paused, otherwise it has no effect.
+        /// This resumes any matching coroutines on this MEC Instance if they are currently paused, otherwise it has no effect.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be resumed.</param>
         /// <returns>The number of coroutines that were resumed.</returns>
@@ -4118,7 +4118,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on the current MEC instance if they are currently paused, otherwise it has
+        /// This resumes any matching coroutines on the current MEC Instance if they are currently paused, otherwise it has
         /// no effect.
         /// </summary>
         /// <param name="layer">Any coroutines previously paused on the matching layer will be resumend.</param>
@@ -4129,7 +4129,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on this MEC instance if they are currently paused, otherwise it has no effect.
+        /// This resumes any matching coroutines on this MEC Instance if they are currently paused, otherwise it has no effect.
         /// </summary>
         /// <param name="layer">Any coroutines previously paused on the matching layer will be resumend.</param>
         /// <returns>The number of coroutines that were resumed.</returns>
@@ -4162,7 +4162,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on the current MEC instance if they are currently paused, otherwise it has no effect.
+        /// This resumes any matching coroutines on the current MEC Instance if they are currently paused, otherwise it has no effect.
         /// </summary>
         /// <param name="tag">Any coroutines previously paused with a matching tag will be resumend.</param>
         /// <returns>The number of coroutines that were resumed.</returns>
@@ -4172,7 +4172,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on this MEC instance if they are currently paused, otherwise it has no effect.
+        /// This resumes any matching coroutines on this MEC Instance if they are currently paused, otherwise it has no effect.
         /// </summary>
         /// <param name="tag">Any coroutines previously paused with a matching tag will be resumend.</param>
         /// <returns>The number of coroutines that were resumed.</returns>
@@ -4205,7 +4205,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on the current MEC instance if they are currently paused, otherwise it has
+        /// This resumes any matching coroutines on the current MEC Instance if they are currently paused, otherwise it has
         /// no effect.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be resumed.</param>
@@ -4217,7 +4217,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on this MEC instance if they are currently paused, otherwise it has no effect.
+        /// This resumes any matching coroutines on this MEC Instance if they are currently paused, otherwise it has no effect.
         /// </summary>
         /// <param name="gameObj">All coroutines on the layer corresponding with this GameObject will be resumed.</param>
         /// <param name="tag">Any coroutines previously paused with a matching tag will be resumend.</param>
@@ -4228,7 +4228,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on the current MEC instance if they are currently paused, otherwise it has
+        /// This resumes any matching coroutines on the current MEC Instance if they are currently paused, otherwise it has
         /// no effect.
         /// </summary>
         /// <param name="layer">Any coroutines previously paused on the matching layer will be resumend.</param>
@@ -4240,7 +4240,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// This resumes any matching coroutines on this MEC instance if they are currently paused, otherwise it has no effect.
+        /// This resumes any matching coroutines on this MEC Instance if they are currently paused, otherwise it has no effect.
         /// </summary>
         /// <param name="layer">Any coroutines previously paused on the matching layer will be resumend.</param>
         /// <param name="tag">Any coroutines previously paused with a matching tag will be resumend.</param>
@@ -5163,7 +5163,7 @@ namespace Pancake
                 }
                 if (!inst.currentCoroutine.IsValid)
                 {
-                    Assert.IsFalse(warnOnIssue, "The two coroutines are not running on the same MEC instance.");
+                    Assert.IsFalse(warnOnIssue, "The two coroutines are not running on the same MEC Instance.");
                     return WaitForOneFrame;
                 }
 
@@ -5199,7 +5199,7 @@ namespace Pancake
 
             if (handle.Key != otherHandle.Key)
             {
-                Assert.IsFalse(warnOnIssue, "A coroutine cannot wait for another coroutine on a different MEC instance.");
+                Assert.IsFalse(warnOnIssue, "A coroutine cannot wait for another coroutine on a different MEC Instance.");
                 return;
             }
 
@@ -5250,7 +5250,7 @@ namespace Pancake
 
                 if (handle.Key != othersEnum.Current.Key)
                 {
-                    Assert.IsFalse(warnOnIssue, "A coroutine cannot wait for another coroutine on a different MEC instance.");
+                    Assert.IsFalse(warnOnIssue, "A coroutine cannot wait for another coroutine on a different MEC Instance.");
                     continue;
                 }
 
@@ -5644,7 +5644,7 @@ namespace Pancake
 
         /// <summary>
         /// Use the command "yield return Timing.SwitchCoroutine(segment);" to switch this coroutine to
-        /// the given segment on the default instance.
+        /// the given segment on the default Instance.
         /// </summary>
         /// <param name="newSegment">The new segment to run in.</param>
         public static float SwitchCoroutine(Segment newSegment)
@@ -7647,7 +7647,7 @@ public static class MECExtensionMethods2
     /// </summary>
     /// <param name="coroutineA">The coroutine handle to act upon.</param>
     /// <param name="coroutineB">The coroutine handle to combine.</param>
-    /// <param name="instance">The timing instance that this will be run in, if not the default instance.</param>
+    /// <param name="instance">The timing Instance that this will be run in, if not the default Instance.</param>
     /// <returns>The modified coroutine handle.</returns>
     public static IEnumerator<float> Superimpose(this IEnumerator<float> coroutineA, IEnumerator<float> coroutineB, Pancake.Timing instance)
     {

@@ -14,7 +14,7 @@ namespace Pancake
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public sealed class EnumFlagsAttribute : PropertyAttribute
     {
-        bool _includeObsolete;
+        private bool _includeObsolete;
 
         public EnumFlagsAttribute(bool includeObsolete = false) { _includeObsolete = includeObsolete; }
 
@@ -22,7 +22,7 @@ namespace Pancake
 #if UNITY_EDITOR
 
         [CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
-        class EnumFlagsDrawer : BasePropertyDrawer<EnumFlagsAttribute>
+        private class EnumFlagsDrawer : BasePropertyDrawer<EnumFlagsAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

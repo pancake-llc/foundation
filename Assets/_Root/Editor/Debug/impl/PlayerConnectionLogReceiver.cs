@@ -81,11 +81,11 @@ namespace Pancake.Debugging.Console
 				return;
 			}
 
-			playerConnectionLogReceiverInstanceField = playerConnectionLogReceiverType.GetField("instance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+			playerConnectionLogReceiverInstanceField = playerConnectionLogReceiverType.GetField("Instance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 			if(playerConnectionLogReceiverInstanceField == null)
 			{
 				#if DEV_MODE
-				Debug.LogWarning("UnityEditor.PlayerConnectionLogReceiver.instance field not found.");
+				Debug.LogWarning("UnityEditor.PlayerConnectionLogReceiver.Instance field not found.");
 				#endif
 			}
 

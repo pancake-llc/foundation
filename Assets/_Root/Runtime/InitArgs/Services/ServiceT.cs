@@ -8,7 +8,7 @@ using UnityEditor;
 namespace Pancake.Init
 {
     /// <summary>
-    /// Class that can act as a container for a globally shared instance of any class that has the <see cref="ServiceAttribute"/> on demand.
+    /// Class that can act as a container for a globally shared Instance of any class that has the <see cref="ServiceAttribute"/> on demand.
     /// </summary>
     /// <typeparam name="TService">
     /// The defining type of the service class, which is the type specified in its <see cref="ServiceAttribute"/>,
@@ -25,7 +25,7 @@ namespace Pancake.Init
     public static class Service<TService>
 	{
         /// <summary>
-        /// The shared instance of service of type <typeparamref name="TService"/>.
+        /// The shared Instance of service of type <typeparamref name="TService"/>.
         /// <para>
         /// The returned object's class is of type <typeparamref name="TService"/>,
         /// derives from it, or implements an interface of that type.

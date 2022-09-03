@@ -25,7 +25,7 @@ namespace Pancake.Core.Tasks.Editor
                 window.Close();
             }
 
-            // will called OnEnable(singleton instance will be set).
+            // will called OnEnable(singleton Instance will be set).
             GetWindow<UniTaskTrackerWindow>("UniTask Tracker").Show();
         }
 

@@ -8,37 +8,37 @@ namespace Pancake.Init
     public class InitArgumentsNotReceivedException : NotImplementedException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InitArgumentsNotReceivedException"/> class.
+        /// Initializes a new Instance of the <see cref="InitArgumentsNotReceivedException"/> class.
         /// </summary>
         public InitArgumentsNotReceivedException() : base(GenerateMessage(null, null)) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InitArgumentsNotReceivedException"/> class.
+        /// Initializes a new Instance of the <see cref="InitArgumentsNotReceivedException"/> class.
         /// </summary>
         /// <param name="methodName"> Name of the method from which the exception originates. </param>
         public InitArgumentsNotReceivedException(string methodName) : base(GenerateMessage(methodName, null)) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InitArgumentsNotReceivedException"/> class.
+        /// Initializes a new Instance of the <see cref="InitArgumentsNotReceivedException"/> class.
         /// </summary>
         /// <param name="methodName"> Name of the method from which the exception originates. </param>
         /// <param name="clientType"> Type of the client that failed to receive the arguments. </param>
         public InitArgumentsNotReceivedException(string methodName, Type clientType) : base(GenerateMessage(methodName, clientType)) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InitArgumentsNotReceivedException"/> class.
+        /// Initializes a new Instance of the <see cref="InitArgumentsNotReceivedException"/> class.
         /// </summary>
         /// <param name="clientType"> Type of the client that failed to receive the arguments. </param>
         public InitArgumentsNotReceivedException(Type clientType) : base(GenerateMessage(null, clientType)) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InitArgumentsNotReceivedException"/> class.
+        /// Initializes a new Instance of the <see cref="InitArgumentsNotReceivedException"/> class.
         /// </summary>
         /// <param name="client"> The client object that failed to receive the arguments. </param>
         public InitArgumentsNotReceivedException(object client) : base(GenerateMessage(null, client?.GetType())) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InitArgumentsNotReceivedException"/> class.
+        /// Initializes a new Instance of the <see cref="InitArgumentsNotReceivedException"/> class.
         /// </summary>
         /// <param name="methodName"> Name of the method from which the exception originates. </param>
         /// <param name="inner">

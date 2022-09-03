@@ -73,4 +73,10 @@ MonoBehaviour:
   starIcon: {fileID: 2800000, guid: e23641e11157e2646a661789e2c5fcd2, type: 3}
   supportIcon: {fileID: 2800000, guid: e2e3f148670f7894bb5a6f05e43baae5, type: 3}
   repeatIcon: {fileID: 2800000, guid: f8eac60a2a023f14998da9e9217e3961, type: 3}
+  collectionTemlate: {fileID: 4900000, guid: c37df815504227545bf3c909a86f6ee6, type: 3}
+  gameEventListenerTemplate: {fileID: 4900000, guid: 322335fb95ca09546bfb78b78147144b, type: 3}
+  gameEventTemplate: {fileID: 4900000, guid: 340cff775918ddf4b97cdb4fdba1294e, type: 3}
+  referenceTemplate: {fileID: 4900000, guid: 5bb692329aca5084da7363c2ad67846e, type: 3}
+  unityEventTemplate: {fileID: 4900000, guid: 5dc00cc2e2d948945a8fe03a1cf7a068, type: 3}
+  variableTemplate: {fileID: 4900000, guid: 574fca2de3eaa454e9f1f32258e3dda6, type: 3}
   skin: {fileID: 11400000, guid: c4b95d7eeba6aa04f9950735cbace714, type: 2}

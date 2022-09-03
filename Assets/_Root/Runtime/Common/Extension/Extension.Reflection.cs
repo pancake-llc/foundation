@@ -211,7 +211,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Find an instance field info.
+        /// Find an Instance field info.
         /// </summary>
         public static FieldInfo GetInstanceField(this Type type, string fieldName)
         {
@@ -229,7 +229,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Find an instance property info.
+        /// Find an Instance property info.
         /// </summary>
         public static PropertyInfo GetInstanceProperty(this Type type, string propertyName)
         {
@@ -247,7 +247,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Find an instance method info.
+        /// Find an Instance method info.
         /// </summary>
         public static MethodInfo GetInstanceMethod(this Type type, string methodName)
         {
@@ -265,7 +265,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Set instance field value.
+        /// Set Instance field value.
         /// </summary>
         public static void SetFieldValue(this object instance, string fieldName, object value)
         {
@@ -274,7 +274,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Get instance field value.
+        /// Get Instance field value.
         /// </summary>
         public static object GetFieldValue(this object instance, string fieldName) { return instance.GetType().GetInstanceField(fieldName).GetValue(instance); }
 
@@ -292,7 +292,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Set instance property value.
+        /// Set Instance property value.
         /// </summary>
         public static void SetPropertyValue(this object instance, string propertyName, object value)
         {
@@ -301,7 +301,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Get instance property value.
+        /// Get Instance property value.
         /// </summary>
         public static object GetPropertyValue(this object instance, string propertyName)
         {
@@ -322,7 +322,7 @@ namespace Pancake
 
 
         /// <summary>
-        /// Invoke an instance method.
+        /// Invoke an Instance method.
         /// </summary>
         public static object InvokeMethod(this object instance, string methodName, params object[] parameters)
         {

@@ -89,12 +89,12 @@ namespace Pancake.UI.Editor
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
 
-                    if (GUILayout.Button(new GUIContent(EditorResources.instance.allBorderPic, "Snap to all borders"), GUILayout.Width(120), GUILayout.Height(120)))
+                    if (GUILayout.Button(new GUIContent(EditorResources.Instance.allBorderPic, "Snap to all borders"), GUILayout.Width(120), GUILayout.Height(120)))
                         SnapBorder(left: true, right: true, top: true, bottom: true);
 
 
                     // TOP DOWN
-                    if (GUILayout.Button(new GUIContent(EditorResources.instance.verticalBorderPic, "Snap to top and bottom border"), GUILayout.Width(60), GUILayout.Height(120)))
+                    if (GUILayout.Button(new GUIContent(EditorResources.Instance.verticalBorderPic, "Snap to top and bottom border"), GUILayout.Width(60), GUILayout.Height(120)))
                         SnapBorder(left: false, right: false, top: true, bottom: true);
 
                     GUILayout.FlexibleSpace();
@@ -103,7 +103,7 @@ namespace Pancake.UI.Editor
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
                     // LEFT RIGHT
-                    if (GUILayout.Button(new GUIContent(EditorResources.instance.horizontalBorderPic, "Snap to left and right border"), GUILayout.Width(120), GUILayout.Height(60)))
+                    if (GUILayout.Button(new GUIContent(EditorResources.Instance.horizontalBorderPic, "Snap to left and right border"), GUILayout.Width(120), GUILayout.Height(60)))
                         SnapBorder(left: true, right: true, top: false, bottom: false);
 
                     EditorGUILayout.LabelField("", GUILayout.Width(60));
@@ -184,11 +184,11 @@ namespace Pancake.UI.Editor
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button(new GUIContent(EditorResources.instance.pointPic, "Snap all directions to position"), GUILayout.Width(120), GUILayout.Height(100)))
+            if (GUILayout.Button(new GUIContent(EditorResources.Instance.pointPic, "Snap all directions to position"), GUILayout.Width(120), GUILayout.Height(100)))
                 SnapPoint(horizontal: true, vertical: true);
 
             // TOP DOWN
-            if (GUILayout.Button(new GUIContent(EditorResources.instance.verticalPointPic, "Snap vertically to position"), GUILayout.Width(60), GUILayout.Height(100)))
+            if (GUILayout.Button(new GUIContent(EditorResources.Instance.verticalPointPic, "Snap vertically to position"), GUILayout.Width(60), GUILayout.Height(100)))
                 SnapPoint(horizontal: false, vertical: true);
 
             GUILayout.FlexibleSpace();
@@ -198,7 +198,7 @@ namespace Pancake.UI.Editor
             GUILayout.FlexibleSpace();
 
             // LEFT RIGHT
-            if (GUILayout.Button(new GUIContent(EditorResources.instance.horizontalPointPic, "Snap horizontally to position"), GUILayout.Width(120), GUILayout.Height(60)))
+            if (GUILayout.Button(new GUIContent(EditorResources.Instance.horizontalPointPic, "Snap horizontally to position"), GUILayout.Width(120), GUILayout.Height(60)))
                 SnapPoint(horizontal: true, vertical: false);
 
 

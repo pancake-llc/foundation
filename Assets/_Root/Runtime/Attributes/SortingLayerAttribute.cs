@@ -14,7 +14,7 @@ namespace Pancake
     {
 #if UNITY_EDITOR
         [CustomPropertyDrawer(typeof(SortingLayerAttribute))]
-        class SortingLayerDrawer : BasePropertyDrawer<SortingLayerAttribute>
+        private class SortingLayerDrawer : BasePropertyDrawer<SortingLayerAttribute>
         {
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {

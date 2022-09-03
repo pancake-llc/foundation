@@ -101,7 +101,7 @@ namespace Pancake.Init
         /// </para>
         /// <para>
         /// <see cref="Init"/> get called when the script is being loaded, during the Awake event when
-        /// an instance is created using <see cref="ObjectExtensions.Instantiate{TWrapped}"/> or
+        /// an Instance is created using <see cref="ObjectExtensions.Instantiate{TWrapped}"/> or
         /// <see cref="Create.Instance{TScriptableWrapper, TWrapped}(TArgument)"/> or when a scene that contains a reference
         /// to the asset is loaded.
         /// </para>
@@ -143,15 +143,15 @@ namespace Pancake.Init
         }
 
         /// <summary>
-		/// <see cref="Awake"/> is called when the script instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
+		/// <see cref="Awake"/> is called when the script Instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
 		/// <para>
 		/// <see cref="Awake"/> is called when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> containing a reference to the scriptable object asset loads,
-		/// or when a new instance of the ScriptableObject is <see cref="Create.Instance{TScriptableWrapper, TWrapped}(TArgument)">created</see>.
+		/// or when a new Instance of the ScriptableObject is <see cref="Create.Instance{TScriptableWrapper, TWrapped}(TArgument)">created</see>.
 		/// </para>
 		/// <para>
-		/// Unity calls <see cref="Awake"/> only once during the lifetime of the script instance. A script's lifetime lasts until the Scene that contains it is unloaded.
-		/// If the Scene is loaded again, Unity loads the script instance again, so <see cref="Awake"/> will be called again.
-		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="Awake"/> will be called several times (once on each instance).
+		/// Unity calls <see cref="Awake"/> only once during the lifetime of the script Instance. A script's lifetime lasts until the Scene that contains it is unloaded.
+		/// If the Scene is loaded again, Unity loads the script Instance again, so <see cref="Awake"/> will be called again.
+		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="Awake"/> will be called several times (once on each Instance).
 		/// </para>
 		/// <para>
 		/// Note: Use <see cref="Awake"/> instead of the constructor for initialization, as the serialized state of the <see cref="ScriptableObject"/> is undefined at construction time.
@@ -263,7 +263,7 @@ namespace Pancake.Init
         /// <summary>
         /// Defines an implicit conversion of a <see cref="ScriptableWrapper{TWrapped}"/> to the <see cref="TWrapped"/> plain old class object that it wraps.
         /// </summary>
-        /// <param name="wrapper"> The <see cref="ScriptableWrapper{TWrapped}"/> instance to convert. </param>
+        /// <param name="wrapper"> The <see cref="ScriptableWrapper{TWrapped}"/> Instance to convert. </param>
         public static implicit operator TWrapped(ScriptableWrapper<TWrapped> wrapper)
         {
             return wrapper.wrapped;
@@ -272,7 +272,7 @@ namespace Pancake.Init
         /// <summary>
         /// Defines an explicit conversion of a <see cref="TWrapped"/> to a <see cref="ScriptableWrapper{TWrapped}"/> that wraps it.
         /// </summary>
-        /// <param name="wrapped"> The <see cref="TWrapped"/> instance to convert. </param>
+        /// <param name="wrapped"> The <see cref="TWrapped"/> Instance to convert. </param>
         public static explicit operator ScriptableWrapper<TWrapped>(TWrapped wrapped)
         {
             return Find.WrapperOf(wrapped) as ScriptableWrapper<TWrapped>;

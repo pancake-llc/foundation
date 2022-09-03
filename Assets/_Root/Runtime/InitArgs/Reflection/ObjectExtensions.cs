@@ -10,7 +10,7 @@ namespace Pancake.Init.Reflection
 	/// <summary>
 	/// Extensions methods for <see cref="UnityEngine.Object"/> type classes that can be used to
 	/// <see cref="AddComponent">add components</see> or <see cref="Instantiate">clone objects</see>
-	/// while injecting values into fields and properties of the created instance using reflection.
+	/// while injecting values into fields and properties of the created Instance using reflection.
 	/// <para>
 	/// This can make it easier to create unit tests for <see cref="MonoBehaviour"/>-derived classes as it allows one to
 	/// set the values of non-public fields which in normal use-cases might be meant to only be assigned only through the inspector.

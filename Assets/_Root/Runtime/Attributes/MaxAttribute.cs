@@ -14,7 +14,7 @@ namespace Pancake
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public sealed class MaxAttribute : PropertyAttribute
     {
-        float _max;
+        private float _max;
 
         /// <summary>
         /// Set maximum allowed value for int & float field
@@ -24,7 +24,7 @@ namespace Pancake
 #if UNITY_EDITOR
 
         [CustomPropertyDrawer(typeof(MaxAttribute))]
-        class MaxDrawer : BasePropertyDrawer<MaxAttribute>
+        private class MaxDrawer : BasePropertyDrawer<MaxAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

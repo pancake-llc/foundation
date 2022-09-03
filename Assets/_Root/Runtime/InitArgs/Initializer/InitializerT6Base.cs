@@ -127,7 +127,7 @@ namespace Pancake.Init
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument, ref TThirdArgument thirdArgument, ref TFourthArgument fourthArgument, ref TFifthArgument fifthArgument, ref TSixthArgument sixthArgument) { }
 
 		/// <summary>
-		/// Initializes the existing <see cref="target"/> or new instance of type <see cref="TClient"/> using the provided arguments.
+		/// Initializes the existing <see cref="target"/> or new Instance of type <see cref="TClient"/> using the provided arguments.
 		/// </summary>
 		/// <param name="firstArgument"> The first argument to pass to the target's Init function. </param>
 		/// <param name="secondArgument"> The second argument to pass to the target's Init function. </param>
@@ -135,7 +135,7 @@ namespace Pancake.Init
 		/// <param name="fourthArgument"> The fourth argument to pass to the target's Init function. </param>
 		/// <param name="fifthArgument"> The fifth argument to pass to the target's Init function. </param>
 		/// <param name="sixthArgument"> The sixth argument to pass to the target's Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TClient"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TClient"/>. </returns>
 		[NotNull]
 		protected virtual TClient InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
         {

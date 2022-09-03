@@ -152,16 +152,16 @@ namespace Pancake.Init
         }
 
         /// <summary>
-		/// <see cref="Awake"/> is called when the script instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
+		/// <see cref="Awake"/> is called when the script Instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
 		/// <para>
 		/// <see cref="Awake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
 		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>
 		/// is initialized.
 		/// </para>
 		/// <para>
-		/// Unity calls <see cref="Awake"/> only once during the lifetime of the script instance. A script's lifetime lasts until the Scene that contains it is unloaded.
-		/// If the Scene is loaded again, Unity loads the script instance again, so <see cref="Awake"/> will be called again.
-		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="Awake"/> will be called several times (once on each instance).
+		/// Unity calls <see cref="Awake"/> only once during the lifetime of the script Instance. A script's lifetime lasts until the Scene that contains it is unloaded.
+		/// If the Scene is loaded again, Unity loads the script Instance again, so <see cref="Awake"/> will be called again.
+		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="Awake"/> will be called several times (once on each Instance).
 		/// </para>
 		/// <para>
 		/// For active <see cref="GameObject">GameObjects</see> placed in a Scene, Unity calls <see cref="Awake"/> after all active <see cref="GameObject">GameObjects</see>
@@ -311,7 +311,7 @@ namespace Pancake.Init
         /// <summary>
         /// Defines an implicit conversion of a <see cref="Wrapper{TWrapped}"/> to the <see cref="TWrapped"/> plain old class object that it wraps.
         /// </summary>
-        /// <param name="wrapper"> The <see cref="Wrapper{TWrapped}"/> instance to convert. </param>
+        /// <param name="wrapper"> The <see cref="Wrapper{TWrapped}"/> Instance to convert. </param>
         public static implicit operator TWrapped(Wrapper<TWrapped> wrapper)
         {
             return wrapper.wrapped;
@@ -320,7 +320,7 @@ namespace Pancake.Init
         /// <summary>
         /// Defines an explicit conversion of a <see cref="TWrapped"/> to a <see cref="Wrapper{TWrapped}"/> <see cref="Component">component</see> that wraps it.
         /// </summary>
-        /// <param name="wrapped"> The <see cref="TWrapped"/> instance to convert. </param>
+        /// <param name="wrapped"> The <see cref="TWrapped"/> Instance to convert. </param>
         public static explicit operator Wrapper<TWrapped>(TWrapped wrapped)
         {
             return Find.WrapperOf(wrapped) as Wrapper<TWrapped>;

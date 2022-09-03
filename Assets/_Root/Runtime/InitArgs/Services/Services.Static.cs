@@ -338,7 +338,7 @@ namespace Pancake.Init
 				    // Worth the performance cost? Uses reflection, so it could affect performance when spawning entities at a high pace.
                     // However it feels pretty unlikely that this would happen with services that are accessible everywhere.
                     // Another possible issue is thread safety. It's possible that an object tries to access the Service class from
-                    // a background thread at the same time that the service instance is set.
+                    // a background thread at the same time that the service Instance is set.
 				    ServiceUtility.SetInstance(definingType, service);
 			    }
                 #endif
@@ -362,9 +362,9 @@ namespace Pancake.Init
 					}
 
                     #if SET_GLOBAL_INSTANCE_FROM_DYNAMIC_SERVICES
-					if(infos[i].toClients == Clients.Everywhere && ServiceUtility.IsService(instance.Key, infos[i].service))
+					if(infos[i].toClients == Clients.Everywhere && ServiceUtility.IsService(Instance.Key, infos[i].service))
 					{
-						ServiceUtility.SetInstance(instance.Key, null);
+						ServiceUtility.SetInstance(Instance.Key, null);
 					}
                     #endif
 

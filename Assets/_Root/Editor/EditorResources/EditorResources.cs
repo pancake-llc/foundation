@@ -5,12 +5,11 @@ namespace Pancake.Editor
 {
     public class EditorResources : ScriptableAssetSingleton<EditorResources>
     {
-        [Header("[save-data]")] public Texture2D circleCheckmark;
+        [Foldout("SAVE DATA", styled: true)] public Texture2D circleCheckmark;
         public TextAsset classTypeTemplate;
         public TextAsset valueTypeTemplate;
-        
-        [Header("finder")]
-        public Texture2D chevronUp;
+
+        [Foldout("FINDER", styled: true)] public Texture2D chevronUp;
         public Texture2D chevronDown;
         public Texture2D eraserIcon;
         public Texture2D pinIcon;
@@ -69,7 +68,15 @@ namespace Pancake.Editor
         public Texture2D supportIcon;
         public Texture2D repeatIcon;
 
-        [Header("[skin")] public GUISkin skin;
+        [Foldout("SOA", styled: true)] 
+        public TextAsset collectionTemlate;
+        public TextAsset gameEventListenerTemplate;
+        public TextAsset gameEventTemplate;
+        public TextAsset referenceTemplate;
+        public TextAsset unityEventTemplate;
+        public TextAsset variableTemplate;
+        
+        [Foldout("SKIN", styled: true)] public GUISkin skin;
     }
 }
 #endif

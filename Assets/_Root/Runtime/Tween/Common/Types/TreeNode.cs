@@ -265,21 +265,21 @@ namespace Pancake.Tween
 
 
         /// <summary>
-        /// Get a enumerable instance to foreach all children (include this node).
+        /// Get a enumerable Instance to foreach all children (include this node).
         /// Note: can not change the structure of this tree inside the foreach.
         /// </summary>
         public ChildrenEnumerable children => new ChildrenEnumerable(this as Node);
 
 
         /// <summary>
-        /// Get a enumerable instance to foreach all parents (include this node).
+        /// Get a enumerable Instance to foreach all parents (include this node).
         /// Note: can not change the structure of this tree inside the foreach.
         /// </summary>
         public ParentsEnumerable parents => new ParentsEnumerable(this as Node);
 
 
         /// <summary>
-        /// Get a enumerable instance to foreach all direct children.
+        /// Get a enumerable Instance to foreach all direct children.
         /// Note: can not change the structure of this tree inside the foreach.
         /// </summary>
         public DirectChildrenEnumerable directChildren => new DirectChildrenEnumerable(this as Node);

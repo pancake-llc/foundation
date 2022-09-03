@@ -12,38 +12,38 @@ namespace Pancake
     /// </summary>
     public class ScriptableAssetSingleton<T> : ScriptableAsset where T : ScriptableAssetSingleton<T>
     {
-        static T _instance;
+        private static T instance;
 
 
         /// <summary>
-        /// The asset instance.
+        /// The asset Instance.
         /// </summary>
-        public static T instance
+        public static T Instance
         {
             get
             {
-                if (!_instance)
+                if (!instance)
                 {
 #if UNITY_EDITOR
-                    _instance = EditorAssetUtilities.FindAsset<T>();
-                    if (!_instance)
+                    instance = EditorAssetUtilities.FindAsset<T>();
+                    if (!instance)
                     {
-                        _instance = CreateInstance<T>();
-                        Debug.LogWarning(string.Format("No asset of ease {0} loaded, a temporary instance was created. Use {0}.CreateOrSelectAsset to create an asset.",
+                        instance = CreateInstance<T>();
+                        Debug.LogWarning(string.Format("No asset of ease {0} loaded, a temporary Instance was created. Use {0}.CreateOrSelectAsset to create an asset.",
                             typeof(T).Name));
                     }
 #else
                     _instance = CreateInstance<T>();
-                    Debug.LogWarning(string.Format("No asset of ease {0} loaded, a temporary instance was created. Do you forget to add the asset to \"Preloaded Assets\" list?", typeof(T).Name));
+                    Debug.LogWarning(string.Format("No asset of ease {0} loaded, a temporary Instance was created. Do you forget to add the asset to \"Preloaded Assets\" list?", typeof(T).Name));
 #endif
                 }
 
-                return _instance;
+                return instance;
             }
         }
 
 
-        protected ScriptableAssetSingleton() { _instance = this as T; }
+        protected ScriptableAssetSingleton() { instance = this as T; }
 
 
 #if UNITY_EDITOR
@@ -56,22 +56,22 @@ namespace Pancake
         {
             bool needCreate = false;
 
-            if (!_instance)
+            if (!instance)
             {
-                _instance = EditorAssetUtilities.FindAsset<T>();
-                if (!_instance)
+                instance = EditorAssetUtilities.FindAsset<T>();
+                if (!instance)
                 {
-                    _instance = CreateInstance<T>();
+                    instance = CreateInstance<T>();
                     needCreate = true;
                 }
             }
-            else needCreate = !AssetDatabase.IsNativeAsset(_instance);
+            else needCreate = !AssetDatabase.IsNativeAsset(instance);
 
-            if (needCreate) EditorAssetUtilities.CreateAsset(_instance);
+            if (needCreate) EditorAssetUtilities.CreateAsset(instance);
 
-            if (addToPreloadedAssets) EditorAssetUtilities.AddPreloadedAsset(_instance);
+            if (addToPreloadedAssets) EditorAssetUtilities.AddPreloadedAsset(instance);
 
-            Selection.activeObject = instance;
+            Selection.activeObject = Instance;
         }
 
 #endif

@@ -17,7 +17,7 @@ namespace Pancake.Editor.Init
 		private static readonly List<ServiceTag> serviceTags = new List<ServiceTag>();
 		private static readonly HashSet<Type> currentDefiningTypes = new HashSet<Type>();
 		private static readonly HashSet<Type> definingTypeOptions = new HashSet<Type>();
-		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An Instance of this service will be automatically provided during initialization.");
 
 		internal static Rect GetTagRect(Component component, Rect headerRect, GUIContent label, GUIStyle style)
         {

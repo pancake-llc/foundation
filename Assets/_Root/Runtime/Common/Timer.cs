@@ -108,7 +108,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Cancels a timer. The main benefit of this over the method on the instance is that you will not get
+        /// Cancels a timer. The main benefit of this over the method on the Instance is that you will not get
         /// a <see cref="NullReferenceException"/> if the timer is null.
         /// </summary>
         /// <param name="timer">The timer to cancel.</param>
@@ -121,7 +121,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Pause a timer. The main benefit of this over the method on the instance is that you will not get
+        /// Pause a timer. The main benefit of this over the method on the Instance is that you will not get
         /// a <see cref="NullReferenceException"/> if the timer is null.
         /// </summary>
         /// <param name="timer">The timer to pause.</param>
@@ -134,7 +134,7 @@ namespace Pancake
         }
 
         /// <summary>
-        /// Resume a timer. The main benefit of this over the method on the instance is that you will not get
+        /// Resume a timer. The main benefit of this over the method on the Instance is that you will not get
         /// a <see cref="NullReferenceException"/> if the timer is null.
         /// </summary>
         /// <param name="timer">The timer to resume.</param>

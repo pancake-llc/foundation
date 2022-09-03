@@ -32,7 +32,7 @@ namespace Pancake.Editor.Init
 
 		private static readonly GUIContent valueText = new GUIContent("Value");
 		private static readonly GUIContent blankLabel = new GUIContent(" ");
-		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An Instance of this service will be automatically provided during initialization.");
 		private const float minDropdownWidth = 63f;
 		private const float objectTextWidth = 63f;
 		private const float controlOffset = 3f;

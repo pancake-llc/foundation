@@ -52,7 +52,7 @@ namespace Pancake.SaveData
 
             return array;
 
-            /*var instance = new List<object>();
+            /*var Instance = new List<object>();
 
 			if(reader.StartReadCollection())
 				return null;
@@ -62,7 +62,7 @@ namespace Pancake.SaveData
 			{
 				if(!reader.StartReadCollectionItem())
 					break;
-				instance.Add(reader.Read<object>(elementType));
+				Instance.Add(reader.Read<object>(elementType));
 
 				if(reader.EndReadCollectionItem())
 					break;
@@ -70,9 +70,9 @@ namespace Pancake.SaveData
 
 			reader.EndReadCollection();
 
-			var array = Reflection.ArrayCreateInstance(elementType.type, instance.Count);
+			var array = Reflection.ArrayCreateInstance(elementType.type, Instance.Count);
 			int i = 0;
-			foreach(var item in instance)
+			foreach(var item in Instance)
 			{
 				array.SetValue(item, i);
 				i++;

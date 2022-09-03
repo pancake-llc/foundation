@@ -15,7 +15,7 @@ namespace Pancake
     {
 #if UNITY_EDITOR
         [CustomPropertyDrawer(typeof(SceneAttribute))]
-        class SceneDrawer : BasePropertyDrawer<SceneAttribute>
+        private class SceneDrawer : BasePropertyDrawer<SceneAttribute>
         {
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {

@@ -21,7 +21,7 @@ namespace Pancake.SaveData
 			var obj = Reflection.CreateInstance(this.type);
 
 			if(obj == null)
-				throw new NotSupportedException("Cannot create an instance of "+this.type+". However, you may be able to add support for it using a custom CustomType file.");
+				throw new NotSupportedException("Cannot create an Instance of "+this.type+". However, you may be able to add support for it using a custom CustomType file.");
 			// Make sure we return the result of ReadProperties as properties aren't assigned by reference.
 			return ReadProperties(reader, obj);
 		}

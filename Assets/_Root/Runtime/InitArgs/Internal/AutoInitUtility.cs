@@ -328,7 +328,7 @@ namespace Pancake.Editor.Init
 		}
 
 		/// <summary>
-		/// Finds or creates an instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
+		/// Finds or creates an Instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
 		/// which can be retrieved automatically.
 		/// <para>
 		/// This function is called for each required dependency of the <paramref name="client"/> during its initialization phase
@@ -355,7 +355,7 @@ namespace Pancake.Editor.Init
 		}
 
 		/// <summary>
-		/// Finds or creates an instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
+		/// Finds or creates an Instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
 		/// which can be retrieved automatically.
 		/// <para>
 		/// This function is called for each required dependency of the <paramref name="client"/> during its initialization phase
@@ -551,7 +551,7 @@ namespace Pancake.Editor.Init
 
 				if(argumentIsComponentOrInterface)
 				{
-					// First try to find an active instance
+					// First try to find an active Instance
 					TArgument argument;
 					#if UNITY_EDITOR						
 					if(isPrefabAssetOrOpenInPrefabStage)

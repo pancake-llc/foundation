@@ -17,17 +17,17 @@ namespace Pancake.Init
     /// through Unity's inspector as well as serialized by its serializer.
     /// <para>
     /// If <typeparamref name="T"/> is a <see cref="ServiceAttribute">service</see> type
-    /// then this object represents the <see cref="Service{T}.Instance">shared instance</see> of that service.
+    /// then this object represents the <see cref="Service{T}.Instance">shared Instance</see> of that service.
     /// </para>
     /// <para>
     /// If a class derives from <see cref="Object"/> and implements <see cref="IValueProvider{T}"/> then
-    /// <see cref="Any{T}"/> can wrap an instance of this class and return its <see cref="IValueProvider{T}.Value"/>
+    /// <see cref="Any{T}"/> can wrap an Instance of this class and return its <see cref="IValueProvider{T}.Value"/>
     /// when <see cref="Value"/> is called.
     /// </para>
     /// <para>
     /// If a class derives from <see cref="Object"/> and has a <see cref="TypeConverter"/>
     /// which returns <see langword="true"/> for <see cref="TypeConverter.CanConvertTo(T)"/> then
-    /// <see cref="Any{T}"/> can wrap an instance of this class and convert its <see cref="Value"/> to <typeparamref name="T"/>
+    /// <see cref="Any{T}"/> can wrap an Instance of this class and convert its <see cref="Value"/> to <typeparamref name="T"/>
     /// on-the-fly using the type converter.
     /// </para>
     /// </summary>
@@ -79,7 +79,7 @@ namespace Pancake.Init
         /// if it has been assigned a valid underlying value.
         /// <para>
         /// If <see cref="T"/> is a <see cref="ServiceAttribute">service</see> type then returns
-        /// the <see cref="Service{T}.Instance">shared instance</see> of that service.
+        /// the <see cref="Service{T}.Instance">shared Instance</see> of that service.
         /// </para>
         /// </summary>
         /// <exception cref="InvalidOperationException"> Thrown if the <see cref="HasValue"/> property is <see langword="false"/>. </exception>
@@ -95,7 +95,7 @@ namespace Pancake.Init
 		/// otherwise, the default value of <see cref="T"/>.
 		/// <para>
 		/// If <see cref="T"/> is a <see cref="ServiceAttribute">service</see> type then returns
-		/// the <see cref="Service{T}.Instance">shared instance</see> of that service.
+		/// the <see cref="Service{T}.Instance">shared Instance</see> of that service.
 		/// </para>
 		/// </summary>
 		[CanBeNull]
@@ -163,7 +163,7 @@ namespace Pancake.Init
         }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Any"/> struct with the given underlying value.
+		/// Initializes a new Instance of the <see cref="Any"/> struct with the given underlying value.
 		/// </summary>
 		/// <param name="value"> The underlying value of the <see cref="Any{T}"/> object. </param>
 		public Any(T value)
@@ -180,7 +180,7 @@ namespace Pancake.Init
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Any"/> struct with the given underlying value.
+		/// Initializes a new Instance of the <see cref="Any"/> struct with the given underlying value.
 		/// </summary>
 		/// <param name="value">
 		/// The underlying value of the <see cref="Any{T}"/> object.
@@ -199,27 +199,27 @@ namespace Pancake.Init
 		}
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Any"/> struct with the given underlying value.
+        /// Creates a new Instance of the <see cref="Any"/> struct with the given underlying value.
         /// </summary>
         /// <param name="value"> The underlying value of the <see cref="Any{T}"/> object. </param>
-        /// <returns> A new instance of the <see cref="Any{T}"/> struct. </returns>
+        /// <returns> A new Instance of the <see cref="Any{T}"/> struct. </returns>
         public static Any<T> FromValue(T value) => new Any<T>(value);
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Any"/> struct with the given underlying value.
+        /// Creates a new Instance of the <see cref="Any"/> struct with the given underlying value.
         /// </summary>
         /// <param name="value">
         /// The underlying value of the <see cref="Any{T}"/> object.
         /// </param>
-        /// <returns> A new instance of the <see cref="Any{T}"/> struct. </returns>
+        /// <returns> A new Instance of the <see cref="Any{T}"/> struct. </returns>
         public static Any<T> FromObject([CanBeNull] Object value) => new Any<T>(value);
 
         /// <summary>
-        /// Returns a value indicating whether or not it is possible to create an instance of the
+        /// Returns a value indicating whether or not it is possible to create an Instance of the
         /// <see cref="Any"/> struct with the underlying value of <paramref name="reference"/>.
         /// </summary>
         /// <param name="reference"> The underlying value of the <see cref="Any{T}"/> object. </param>
-        /// <returns> A new instance of the <see cref="Any{T}"/> struct. </returns>
+        /// <returns> A new Instance of the <see cref="Any{T}"/> struct. </returns>
         public static bool IsCreatableFrom([CanBeNull] Object reference)
         {
 			if(reference == null)
@@ -250,7 +250,7 @@ namespace Pancake.Init
 		/// <summary>
 		/// Defines an implicit conversion of a <see cref="Any{T}"/> to the <see cref="T"/> object that it wraps.
 		/// </summary>
-		/// <param name="instance"> The <see cref="Any{T}"/> instance to convert. </param>
+		/// <param name="instance"> The <see cref="Any{T}"/> Instance to convert. </param>
 		public static implicit operator T(Any<T> instance) => instance.ValueOrDefault;
 
 		/// <summary>
@@ -483,7 +483,7 @@ namespace Pancake.Init
 		/// <para>
 		/// If <see cref="T"/> is the defining type of a <see cref="ServiceAttribute">global service</see>
 		/// or a <see cref="Services">scene service</see> that is accessible to all clients, then contains
-		/// the shared instance of that service.
+		/// the shared Instance of that service.
 		/// </para>
 		/// Otherwise, contains the default value of <see cref="T"/>.
 		/// <para>

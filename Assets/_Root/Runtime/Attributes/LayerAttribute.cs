@@ -17,7 +17,7 @@ namespace Pancake
 #if UNITY_EDITOR
 
         [CustomPropertyDrawer(typeof(LayerAttribute))]
-        class LayerDrawer : BasePropertyDrawer<LayerAttribute>
+        private class LayerDrawer : BasePropertyDrawer<LayerAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

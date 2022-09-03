@@ -14,14 +14,14 @@ namespace Pancake
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public sealed class IndentAttribute : PropertyAttribute
     {
-        int _indentLevel;
+        private int _indentLevel;
 
         public IndentAttribute(int indentLevel = 1) { _indentLevel = indentLevel; }
 
 #if UNITY_EDITOR
 
         [CustomPropertyDrawer(typeof(IndentAttribute))]
-        class IndentDrawer : BasePropertyDrawer<IndentAttribute>
+        private class IndentDrawer : BasePropertyDrawer<IndentAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

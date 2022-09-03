@@ -404,7 +404,7 @@ namespace Pancake.Tween
                     rect2.width = EditorGUIUtility.singleLineHeight * 2 - 4;
                     using (GUIContentColorScope.New(target.Playing ? progressForegroundValid : EditorGUIUtilities.labelNormalColor))
                     {
-                        target.Playing = GUI.Toggle(rect2, target.Playing, EditorGUIUtilities.TempContent(image: TweenEditorSetting.instance.play), imageButtonStyle);
+                        target.Playing = GUI.Toggle(rect2, target.Playing, EditorGUIUtilities.TempContent(image: TweenEditorSetting.Instance.play), imageButtonStyle);
                     }
 
                     // direction button
@@ -415,8 +415,8 @@ namespace Pancake.Tween
                         {
                             if (GUI.Button(rect2,
                                     EditorGUIUtilities.TempContent(image: target.direction == PlayDirection.Forward
-                                        ? TweenEditorSetting.instance.rightArrow
-                                        : TweenEditorSetting.instance.leftArrow),
+                                        ? TweenEditorSetting.Instance.rightArrow
+                                        : TweenEditorSetting.Instance.leftArrow),
                                     imageButtonStyle))
                             {
                                 target.ReverseDirection();

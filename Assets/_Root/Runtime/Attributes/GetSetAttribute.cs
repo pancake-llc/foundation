@@ -25,15 +25,15 @@ namespace Pancake
 
 #if UNITY_EDITOR
 
-        string _propertyName;
-        string _label;
+        private string _propertyName;
+        private string _label;
 
-        Object _target;
-        PropertyInfo _propertyInfo;
+        private Object _target;
+        private PropertyInfo _propertyInfo;
 
 
         [CustomPropertyDrawer(typeof(GetSetAttribute))]
-        class GetSetDrawer : BasePropertyDrawer<GetSetAttribute>
+        private class GetSetDrawer : BasePropertyDrawer<GetSetAttribute>
         {
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {

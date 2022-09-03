@@ -17,9 +17,9 @@ namespace Pancake.Editor
     public class EditorCoroutineRunner : ICoroutineRunner
     {
         /// <summary>
-        /// A single cached instance of EditorCoroutineRunner that can be shared across multiple client objects.
+        /// A single cached Instance of EditorCoroutineRunner that can be shared across multiple client objects.
         /// <para>
-        /// This same instance can also be accessed via Service<ICoroutineRunner>.Instance in edit mode.
+        /// This same Instance can also be accessed via Service<ICoroutineRunner>.Instance in edit mode.
         /// </para>
         /// </summary>
         public static readonly EditorCoroutineRunner sharedInstance = new EditorCoroutineRunner();

@@ -14,11 +14,11 @@ namespace Pancake.Editor.Init
 {
 	internal static class InitializerEditorUtility
 	{
-		private static readonly GUIContent clientNullTooltip = new GUIContent("", "A new instance will be added to this GameObject during initialization.");
-		private static readonly GUIContent clientPrefabTooltip = new GUIContent("", "A new instance will be created by cloning this prefab during initialization.");
-		private static readonly GUIContent clientInstantiateTooltip = new GUIContent("", "A new instance will be created by cloning this scene object during initialization.");
+		private static readonly GUIContent clientNullTooltip = new GUIContent("", "A new Instance will be added to this GameObject during initialization.");
+		private static readonly GUIContent clientPrefabTooltip = new GUIContent("", "A new Instance will be created by cloning this prefab during initialization.");
+		private static readonly GUIContent clientInstantiateTooltip = new GUIContent("", "A new Instance will be created by cloning this scene object during initialization.");
 		private static readonly GUIContent clientNotInitializableTooltip = new GUIContent("", "Can not inject arguments to client because it does not implement IInitializable.");
-		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An Instance of this service will be automatically provided during initialization.");
 		private static readonly GUIContent valueText = new GUIContent("Value");
 		private static readonly GUIContent blankLabel = new GUIContent(" ");
 		private static GUIContent warningIcon;

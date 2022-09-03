@@ -73,7 +73,7 @@ namespace Pancake.Debugging
 					owner = propertyInfo.GetValue(owner, null);
 				}
 
-				//if it's an array member, we still need to get the correct instance (unless it's the last index, then we don't need it)
+				//if it's an array member, we still need to get the correct Instance (unless it's the last index, then we don't need it)
 				if(isCollectionMember && n < previousToLast)
 				{
 					var index = Convert.ToInt32(pathPart.Substring(pathPart.IndexOf('[')).Replace("[","").Replace("]",""));

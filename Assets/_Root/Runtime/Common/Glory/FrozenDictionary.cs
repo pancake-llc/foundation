@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace Pancake
 {
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
@@ -36,7 +36,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -371,7 +371,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -401,7 +401,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -738,7 +738,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -768,7 +768,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -1105,7 +1105,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -1135,7 +1135,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -1471,7 +1471,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -1501,7 +1501,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -1837,7 +1837,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -1867,7 +1867,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -2203,7 +2203,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -2233,7 +2233,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -2569,7 +2569,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -2599,7 +2599,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -2936,7 +2936,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -2966,7 +2966,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>
@@ -3302,7 +3302,7 @@ namespace Pancake
 
 
     /// <summary>
-    /// Provides a read-only dictionary that contents are fixed at the time of instance creation.
+    /// Provides a read-only dictionary that contents are fixed at the time of Instance creation.
     /// </summary>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
     /// <remarks>
@@ -3332,7 +3332,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="bucketSize"></param>
         /// <param name="loadFactor"></param>

@@ -101,14 +101,14 @@ namespace Pancake.Editor
             return null;
         }
 
-        public static GUISkin Skin => EditorResources.instance.skin;
+        public static GUISkin Skin => EditorResources.Instance.skin;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="foldout"></param>
         /// <returns></returns>
-        public static Texture2D GetChevronIcon(bool foldout) { return foldout ? EditorResources.instance.chevronUp : EditorResources.instance.chevronDown; }
+        public static Texture2D GetChevronIcon(bool foldout) { return foldout ? EditorResources.Instance.chevronUp : EditorResources.Instance.chevronDown; }
 
         /// <summary>
         /// Draw group selection with header

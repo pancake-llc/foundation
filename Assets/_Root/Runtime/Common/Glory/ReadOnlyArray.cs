@@ -21,7 +21,7 @@ namespace Pancake
         #region Constructors
 
         /// <summary>
-        /// Creates instance.
+        /// Creates Instance.
         /// </summary>
         /// <param name="source"></param>
         public ReadOnlyArray(T[] source) => this._source = source ?? throw new ArgumentNullException(nameof(source));

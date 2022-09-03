@@ -26,10 +26,10 @@ namespace Pancake.Init.Internal
 	{
 		internal const string InitArgumentMetadataClassName = "Init";
 
-		internal const string TargetTooltip = "Existing target instance to initialize.\n\n" +
-		"If value is null then the argument is passed to a new instance that is attached to the " +
+		internal const string TargetTooltip = "Existing target Instance to initialize.\n\n" +
+		"If value is null then the argument is passed to a new Instance that is attached to the " +
 		"same GameObject that this initializer is attached to.\n\n" +
-		"If value is a prefab then the argument is injected to a new instance of that prefab.";
+		"If value is a prefab then the argument is injected to a new Instance of that prefab.";
 
 		internal const string NullArgumentGuardTooltip =
 			"Specifies how this object should guard against the argument being null.\n\n" +
@@ -55,7 +55,7 @@ namespace Pancake.Init.Internal
 					{
 						if(typeof(IValueProvider<>).MakeGenericType(definingType).IsAssignableFrom(argumentType))
 						{
-							return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute and implements IValueProvider<{definingType.Name}> but the instance was still null.");
+							return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute and implements IValueProvider<{definingType.Name}> but the Instance was still null.");
 						}
 
 						if(definingType.IsInterface)
@@ -66,10 +66,10 @@ namespace Pancake.Init.Internal
 						return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but does not derive from {definingType.Name}.");
 					}
 
-					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but its instance was still null.");
+					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but its Instance was still null.");
 				}
 
-				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its instance was still null.");
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its Instance was still null.");
 			}
 
 			return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to a class that derives from {argumentType.Name}.");
@@ -147,7 +147,7 @@ namespace Pancake.Init.Internal
 			if(typeof(Type).IsAssignableFrom(instanceType))
             {
 				#if DEV_MODE
-				Debug.LogWarning($"Can not create instance of a {instanceType.FullName} using FormatterServices.GetUninitializedObject.");
+				Debug.LogWarning($"Can not create Instance of a {instanceType.FullName} using FormatterServices.GetUninitializedObject.");
 				#endif
 				return default;
             }
@@ -316,12 +316,12 @@ namespace Pancake.Init.Internal
 		/// </summary>
 		/// <param name="gameObject"> The <see cref="GameObject"/> that contains the initializer component. </param>
 		/// <param name="target">
-		/// The existing <typeparamref name="TWrapper"/> scene instance to initialize,
-		/// The prefab to clone to create the <typeparamref name="TWrapper"/> instance,
-		/// or <see langword="null"/> if a new instance should be created from scratch..
+		/// The existing <typeparamref name="TWrapper"/> scene Instance to initialize,
+		/// The prefab to clone to create the <typeparamref name="TWrapper"/> Instance,
+		/// or <see langword="null"/> if a new Instance should be created from scratch..
 		/// </param>
 		/// <param name="wrappedObject"> The <see cref="TWrapped">wrapped object</see> to pass to the <see cref="target"/> <typeparamref name="TWrapper">wrapper</typeparamref>'s Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TWrapper"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TWrapper"/>. </returns>
 		[NotNull, MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static TWrapper InitWrapper<TWrapper, TWrapped>(GameObject gameObject, TWrapper target, TWrapped wrappedObject)
 			where TWrapper : MonoBehaviour, IWrapper<TWrapped>

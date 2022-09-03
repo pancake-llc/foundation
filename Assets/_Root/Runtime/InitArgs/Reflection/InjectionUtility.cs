@@ -23,7 +23,7 @@ namespace Pancake.Init.Reflection
 		private static readonly SettersByType settersByType = new SettersByType(8);
 
 		/// <summary>
-		/// Assigns an argument received during initialization of client to an instance
+		/// Assigns an argument received during initialization of client to an Instance
 		/// field or property by given name found on the client.
 		/// <para>
 		/// Init only fields and properties are supported, however properties that are
@@ -45,7 +45,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		/// <summary>
-		/// Assigns an argument received during initialization of client to an instance
+		/// Assigns an argument received during initialization of client to an Instance
 		/// field or property by given name found on the client.
 		/// <para>
 		/// Init only fields and properties are supported, however properties that are
@@ -69,7 +69,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		/// <summary>
-		/// Assigns an argument received during initialization of client to an instance
+		/// Assigns an argument received during initialization of client to an Instance
 		/// field or property by given name found on the client.
 		/// <para>
 		/// Init only fields and properties are supported, however properties that are
@@ -93,7 +93,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		/// <summary>
-		/// Assigns an argument received during initialization of client to an instance
+		/// Assigns an argument received during initialization of client to an Instance
 		/// field or property by given name found on the client.
 		/// <para>
 		/// Init only fields and properties are supported, however properties that are
@@ -117,7 +117,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		/// <summary>
-		/// Assigns an argument received during initialization of client to an instance
+		/// Assigns an argument received during initialization of client to an Instance
 		/// field or property by given name found on the client.
 		/// <para>
 		/// Init only fields and properties are supported, however properties that are
@@ -141,7 +141,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		/// <summary>
-		/// Assigns an argument received during initialization of client to an instance
+		/// Assigns an argument received during initialization of client to an Instance
 		/// field or property by given name found on the client.
 		/// <para>
 		/// Init only fields and properties are supported, however properties that are
@@ -174,7 +174,7 @@ namespace Pancake.Init.Reflection
 		/// </summary>
 		/// <param name="classType"> Type of the class containing the field. </param>
 		/// <param name="parameterType"> The type of the constructor parameter. </param>
-		/// <returns> The name of an instance field or property matching the <paramref name="parameter"/>. </returns>
+		/// <returns> The name of an Instance field or property matching the <paramref name="parameter"/>. </returns>
 		/// <exception cref="MissingMemberException">
 		/// Thrown if no field or property is found with their name closely matching that of the <paramref name="parameter"/>
 		/// or their type matching the type of the parameter exactly.
@@ -530,7 +530,7 @@ namespace Pancake.Init.Reflection
 		/// Returns a value indicating whether or not field or property by name <paramref name="memberName"/> on class <paramref name="classType"/> is serialized or not.
 		/// </summary>
 		/// <param name="classType"> Type of the class that contains the field or property. </param>
-		/// <param name="memberName"> The name of an instance field or property that exists on class <paramref name="classType"/> or one of its inherited types. </param>
+		/// <param name="memberName"> The name of an Instance field or property that exists on class <paramref name="classType"/> or one of its inherited types. </param>
 		/// <returns> <see langword="true"/> if field or property by name <paramref name="memberName"/> is serialized; otherwise <see langword="false"/>. </returns>
 		/// <exception cref="MissingMemberException">
 		/// Thrown if no field or property by name <paramref name="memberName"/> is found on class <paramref name="classType"/> or any of its inherited types.

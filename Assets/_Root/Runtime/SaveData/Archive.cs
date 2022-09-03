@@ -348,44 +348,44 @@ namespace Pancake.SaveData
 
         /* Self-assigning load methods */
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="obj">The object we want to load the value into.</param>
         public static void LoadInto<T>(string key, object obj) where T : class { LoadInto<object>(key, obj, new MetaData()); }
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="filePath">The relative or absolute path of the file we want to load from.</param>
         /// <param name="obj">The object we want to load the value into.</param>
         public static void LoadInto(string key, string filePath, object obj) { LoadInto<object>(key, obj, new MetaData(filePath)); }
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="filePath">The relative or absolute path of the file we want to load from.</param>
         /// <param name="obj">The object we want to load the value into.</param>
         /// <param name="metadata">The settings we want to use to override the default settings.</param>
         public static void LoadInto(string key, string filePath, object obj, MetaData metadata) { LoadInto<object>(key, obj, new MetaData(filePath, metadata)); }
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="obj">The object we want to load the value into.</param>
         /// <param name="metadata">The settings we want to use to override the default settings.</param>
         public static void LoadInto(string key, object obj, MetaData metadata) { LoadInto<object>(key, obj, metadata); }
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <typeparam name="T">The type of the data that we want to load.</typeparam>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="obj">The object we want to load the value into.</param>
         public static void LoadInto<T>(string key, T obj) where T : class { LoadInto<T>(key, obj, new MetaData()); }
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <typeparam name="T">The type of the data that we want to load.</typeparam>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="filePath">The relative or absolute path of the file we want to load from.</param>
         /// <param name="obj">The object we want to load the value into.</param>
         public static void LoadInto<T>(string key, string filePath, T obj) where T : class { LoadInto<T>(key, obj, new MetaData(filePath)); }
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <typeparam name="T">The type of the data that we want to load.</typeparam>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="filePath">The relative or absolute path of the file we want to load from.</param>
@@ -393,7 +393,7 @@ namespace Pancake.SaveData
         /// <param name="metadata">The settings we want to use to override the default settings.</param>
         public static void LoadInto<T>(string key, string filePath, T obj, MetaData metadata) where T : class { LoadInto<T>(key, obj, new MetaData(filePath, metadata)); }
 
-        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new instance.</summary>
+        /// <summary>Loads the value from a file with the given key into an existing object, rather than creating a new Instance.</summary>
         /// <typeparam name="T">The type of the data that we want to load.</typeparam>
         /// <param name="key">The key which identifies the value we want to load.</param>
         /// <param name="obj">The object we want to load the value into.</param>

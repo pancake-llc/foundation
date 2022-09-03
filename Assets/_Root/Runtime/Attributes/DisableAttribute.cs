@@ -27,13 +27,13 @@ namespace Pancake
 
 #if UNITY_EDITOR
 
-        string _name;
-        bool _value;
-        int _indent;
-        object _fieldOrProp;
+        private string _name;
+        private bool _value;
+        private int _indent;
+        private object _fieldOrProp;
 
         [CustomPropertyDrawer(typeof(DisableAttribute))]
-        class DisableDrawer : BasePropertyDrawer<DisableAttribute>
+        private class DisableDrawer : BasePropertyDrawer<DisableAttribute>
         {
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {
