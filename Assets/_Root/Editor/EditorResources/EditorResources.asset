@@ -79,4 +79,7 @@ MonoBehaviour:
   referenceTemplate: {fileID: 4900000, guid: 5bb692329aca5084da7363c2ad67846e, type: 3}
   unityEventTemplate: {fileID: 4900000, guid: 5dc00cc2e2d948945a8fe03a1cf7a068, type: 3}
   variableTemplate: {fileID: 4900000, guid: 574fca2de3eaa454e9f1f32258e3dda6, type: 3}
+  linkBlack: {fileID: 2800000, guid: f716588e3542b5c419c968213b48af29, type: 3}
+  linkBlue: {fileID: 2800000, guid: a8b06a68423f0f54db55d93143559a60, type: 3}
+  linkWhite: {fileID: 2800000, guid: a44f4a69d3dfa074996714a55998a23f, type: 3}
   skin: {fileID: 11400000, guid: c4b95d7eeba6aa04f9950735cbace714, type: 2}

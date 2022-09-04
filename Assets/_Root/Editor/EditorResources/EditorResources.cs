@@ -68,14 +68,17 @@ namespace Pancake.Editor
         public Texture2D supportIcon;
         public Texture2D repeatIcon;
 
-        [Foldout("SOA", styled: true)] 
-        public TextAsset collectionTemlate;
+        [Foldout("SOA", styled: true)] public TextAsset collectionTemlate;
         public TextAsset gameEventListenerTemplate;
         public TextAsset gameEventTemplate;
         public TextAsset referenceTemplate;
         public TextAsset unityEventTemplate;
         public TextAsset variableTemplate;
-        
+
+        [Foldout("LINK", styled: true)] public Texture2D linkBlack;
+        public Texture2D linkBlue;
+        public Texture2D linkWhite;
+
         [Foldout("SKIN", styled: true)] public GUISkin skin;
     }
 }
