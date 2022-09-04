@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Pancake.Tween;
-using Pancake.UIQuery;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -14,7 +13,6 @@ namespace Pancake.UI
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(Canvas))]
     [RequireComponent(typeof(GraphicRaycaster))]
-    [RequireComponent(typeof(UICache))]
     public abstract class UIPopup : MonoBehaviour, IPopup
     {
         #region implementation
@@ -44,26 +42,16 @@ namespace Pancake.UI
         [Range(0.01f, 3f)] public float durationHide = 0.25f;
         public Interpolator interpolatorHide;
 
-        [SerializeField] private Canvas canvas;
-        [SerializeField] private GraphicRaycaster graphicRaycaster;
+        private Canvas _canvas;
+        private GraphicRaycaster _graphicRaycaster;
         [SerializeField] private RectTransform backgroundTransform;
         [SerializeField] private CanvasGroup backgroundCanvasGroup;
         [SerializeField] private RectTransform containerTransform;
         [SerializeField] private CanvasGroup containerCanvasGroup;
 
-        private UICache _uiCache;
         private bool _canActuallyClose;
         private Vector3 _defaultContainerScale;
         private CancellationTokenSource _tokenSourceCheckPressButton;
-
-        public UICache UIRoot
-        {
-            get
-            {
-                if (_uiCache == null) _uiCache = GetComponent<UICache>();
-                return _uiCache;
-            }
-        }
 
         public string Id => uniqueId;
         public GameObject GameObject => gameObject;
@@ -73,8 +61,8 @@ namespace Pancake.UI
         {
             get
             {
-                if (canvas == null) canvas = GetComponent<Canvas>();
-                return canvas;
+                if (_canvas == null) _canvas = GetComponent<Canvas>();
+                return _canvas;
             }
         }
 
@@ -86,8 +74,8 @@ namespace Pancake.UI
         {
             get
             {
-                if (graphicRaycaster == null) graphicRaycaster = GetComponent<GraphicRaycaster>();
-                return graphicRaycaster;
+                if (_graphicRaycaster == null) _graphicRaycaster = GetComponent<GraphicRaycaster>();
+                return _graphicRaycaster;
             }
         }
 
@@ -95,7 +83,10 @@ namespace Pancake.UI
         {
             get
             {
-                if (backgroundTransform == null) backgroundTransform = UIRoot.Get<RectTransform>("Background");
+                if (backgroundTransform == null)
+                {
+                    backgroundTransform = transform.Find("Background").GetComponent<RectTransform>();
+                }
                 return backgroundTransform;
             }
         }
@@ -104,7 +95,7 @@ namespace Pancake.UI
         {
             get
             {
-                if (backgroundCanvasGroup == null) backgroundCanvasGroup = UIRoot.Get<CanvasGroup>("Background");
+                if (backgroundCanvasGroup == null) backgroundCanvasGroup = transform.Find("Background").GetComponent<CanvasGroup>();
                 return backgroundCanvasGroup;
             }
         }
@@ -113,7 +104,7 @@ namespace Pancake.UI
         {
             get
             {
-                if (containerTransform == null) containerTransform = UIRoot.Get<RectTransform>("Container");
+                if (containerTransform == null) containerTransform = transform.Find("Container").GetComponent<RectTransform>();
                 return containerTransform;
             }
         }
@@ -122,7 +113,7 @@ namespace Pancake.UI
         {
             get
             {
-                if (containerCanvasGroup == null) containerCanvasGroup = UIRoot.Get<CanvasGroup>("Container");
+                if (containerCanvasGroup == null) containerCanvasGroup  = transform.Find("Container").GetComponent<CanvasGroup>();
                 return containerCanvasGroup;
             }
         }

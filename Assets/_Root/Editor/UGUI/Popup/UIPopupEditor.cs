@@ -1,6 +1,5 @@
 using System;
 using Pancake.Editor;
-using Pancake.UIQuery;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -36,12 +35,10 @@ namespace Pancake.UI.Editor
         private SerializedProperty _uniqueId;
 
         public UIPopup popup;
-        public UICache uiCache;
 
         protected virtual void OnEnable()
         {
             popup = target as UIPopup;
-            if (uiCache == null && popup != null) uiCache = popup.GetComponent<UICache>();
             _closeByBackButton = serializedObject.FindProperty("closeByBackButton");
             _closeByClickBackground = serializedObject.FindProperty("closeByClickBackground");
             _closeByClickContainer = serializedObject.FindProperty("closeByClickContainer");
@@ -82,58 +79,42 @@ namespace Pancake.UI.Editor
             serializedObject.Update();
             EditorGUIUtility.labelWidth = 110;
 
-            bool updateCacheUI = false;
-            try
+            if (PrefabUtility.IsPartOfAnyPrefab(popup.gameObject))
             {
-                var _ = uiCache.Get<RectTransform>("Background");
-            }
-            catch (Exception)
-            {
-                updateCacheUI = true;
-            }
-
-            if (updateCacheUI)
-            {
-                Uniform.HelpBox("Please update UICache first to use!", MessageType.Warning);
-            }
-            else
-            {
-                if (PrefabUtility.IsPartOfAnyPrefab(popup.gameObject))
+                if (!popup.gameObject.IsAddressableWithLabel(Pancake.UI.PopupHelper.POPUP_LABEL))
                 {
-                    if (!popup.gameObject.IsAddressableWithLabel(Pancake.UI.PopupHelper.POPUP_LABEL))
-                    {
-                        Uniform.HelpBox("Click the toogle below to mark the popup as can be loaded by addressable", MessageType.Warning);
-                        if (GUILayout.Button("Mark Popup")) popup.gameObject.MarkAddressableWithLabel(PopupHelper.POPUP_LABEL);
-                    }
-                    else
-                    {
-                        Uniform.HelpBox("Marked as popup", MessageType.Info);
-                    }
+                    Uniform.HelpBox("Click the toogle below to mark the popup as can be loaded by addressable", MessageType.Warning);
+                    if (GUILayout.Button("Mark Popup")) popup.gameObject.MarkAddressableWithLabel(PopupHelper.POPUP_LABEL);
                 }
-
-                Uniform.SpaceOneLine();
-                EditorGUI.BeginDisabledGroup(true);
-                EditorGUILayout.BeginHorizontal();
-#if PANCAKE_RUNTIME_UNSAFE
-                if (string.IsNullOrEmpty(_uniqueId.stringValue)) _uniqueId.stringValue = Ulid.NewUlid().ToString();  
-#endif
-                GUILayout.Label("Id", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                _uniqueId.stringValue = GUILayout.TextField(_uniqueId.stringValue);
-                EditorGUILayout.EndHorizontal();
-                EditorGUI.EndDisabledGroup();
-                Uniform.SpaceOneLine();
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label("Ignore Time Scale", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                _ignoreTimeScale.boolValue = GUILayout.Toggle(_ignoreTimeScale.boolValue, "");
-                EditorGUILayout.EndHorizontal();
-                Uniform.SpaceOneLine();
-                Uniform.DrawUppercaseSection("UIPOPUP_CLOSE", "CLOSE BY", DrawCloseSetting);
-                Uniform.SpaceOneLine();
-                Uniform.DrawUppercaseSection("UIPOPUP_SETTING_DISPLAY", "DISPLAY", DrawDisplaySetting);
-                Uniform.SpaceOneLine();
-                Uniform.DrawUppercaseSection("UIPOPUP_SETTING_HIDE", "HIDE", DrawHideSetting);
-                OnDrawExtraSetting(); // Draw custom field of inherit class
+                else
+                {
+                    Uniform.HelpBox("Marked as popup", MessageType.Info);
+                }
             }
+
+            Uniform.SpaceOneLine();
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.BeginHorizontal();
+#if PANCAKE_RUNTIME_UNSAFE
+            if (string.IsNullOrEmpty(_uniqueId.stringValue)) _uniqueId.stringValue = Ulid.NewUlid().ToString();
+#endif
+            GUILayout.Label("Id", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+            _uniqueId.stringValue = GUILayout.TextField(_uniqueId.stringValue);
+            EditorGUILayout.EndHorizontal();
+            EditorGUI.EndDisabledGroup();
+            Uniform.SpaceOneLine();
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("Ignore Time Scale", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+            _ignoreTimeScale.boolValue = GUILayout.Toggle(_ignoreTimeScale.boolValue, "");
+            EditorGUILayout.EndHorizontal();
+            Uniform.SpaceOneLine();
+            Uniform.DrawUppercaseSection("UIPOPUP_CLOSE", "CLOSE BY", DrawCloseSetting);
+            Uniform.SpaceOneLine();
+            Uniform.DrawUppercaseSection("UIPOPUP_SETTING_DISPLAY", "DISPLAY", DrawDisplaySetting);
+            Uniform.SpaceOneLine();
+            Uniform.DrawUppercaseSection("UIPOPUP_SETTING_HIDE", "HIDE", DrawHideSetting);
+            OnDrawExtraSetting(); // Draw custom field of inherit class
+
 
             void DrawCloseSetting()
             {
@@ -153,13 +134,12 @@ namespace Pancake.UI.Editor
                 EditorGUILayout.EndHorizontal();
 
 #pragma warning disable 612
-                var backgroundTransform = uiCache.Get<RectTransform>("Background");
-                if (backgroundTransform != null)
+                if (popup.BackgroundTransform != null)
                 {
-                    backgroundTransform.TryGetComponent<Button>(out var btn);
+                    popup.BackgroundTransform.TryGetComponent<Button>(out var btn);
                     if (_closeByClickBackground.boolValue)
                     {
-                        if (btn == null) btn = AddBlankButtonComponent(backgroundTransform.gameObject);
+                        if (btn == null) btn = AddBlankButtonComponent(popup.BackgroundTransform.gameObject);
                         if (!popup.CloseButtons.Contains(btn)) popup.CloseButtons.Add(btn);
                     }
                     else
@@ -171,14 +151,13 @@ namespace Pancake.UI.Editor
                         }
                     }
                 }
-
-                var containerTransform = uiCache.Get<RectTransform>("Container");
-                if (containerTransform != null)
+                
+                if (popup.ContainerTransform != null)
                 {
-                    containerTransform.TryGetComponent<Button>(out var btn);
+                    popup.ContainerTransform.TryGetComponent<Button>(out var btn);
                     if (_closeByClickContainer.boolValue)
                     {
-                        if (btn == null) btn = AddBlankButtonComponent(containerTransform.gameObject);
+                        if (btn == null) btn = AddBlankButtonComponent(popup.ContainerTransform.gameObject);
                         if (!popup.CloseButtons.Contains(btn)) popup.CloseButtons.Add(btn);
                     }
                     else
@@ -197,7 +176,6 @@ namespace Pancake.UI.Editor
 
             void DrawDisplaySetting()
             {
-                var containerTransform = uiCache.Get<RectTransform>("Container");
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Type", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _motionAffectDisplay.enumValueIndex = EditorGUILayout.Popup(_motionAffectDisplay.enumValueIndex, PopupMotionType);
@@ -208,21 +186,21 @@ namespace Pancake.UI.Editor
                     GUILayout.Label("", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                     if (GUILayout.Button("Save From", GUILayout.Width(90)))
                     {
-                        _positionFromDisplay.vector2Value = containerTransform.localPosition;
-                        containerTransform.localPosition = Vector3.zero;
+                        _positionFromDisplay.vector2Value = popup.ContainerTransform.localPosition;
+                        popup.ContainerTransform.localPosition = Vector3.zero;
                     }
 
                     if (GUILayout.Button("Save To", GUILayout.Width(90)))
                     {
-                        _positionToDisplay.vector2Value = containerTransform.localPosition;
-                        containerTransform.localPosition = Vector3.zero;
+                        _positionToDisplay.vector2Value = popup.ContainerTransform.localPosition;
+                        popup.ContainerTransform.localPosition = Vector3.zero;
                     }
 
                     if (GUILayout.Button("Clear", GUILayout.Width(90)))
                     {
                         _positionFromDisplay.vector2Value = Vector2.zero;
                         _positionToDisplay.vector2Value = Vector2.zero;
-                        containerTransform.localPosition = Vector3.zero;
+                        popup.ContainerTransform.localPosition = Vector3.zero;
                     }
 
                     EditorGUILayout.EndHorizontal();
@@ -256,7 +234,6 @@ namespace Pancake.UI.Editor
 
             void DrawHideSetting()
             {
-                var containerTransform = uiCache.Get<RectTransform>("Container");
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Type", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _motionAffectHide.enumValueIndex = EditorGUILayout.Popup(_motionAffectHide.enumValueIndex, PopupMotionType);
@@ -269,8 +246,8 @@ namespace Pancake.UI.Editor
 
                     if (GUILayout.Button("Save To", GUILayout.Width(90)))
                     {
-                        _positionToHide.vector2Value = containerTransform.localPosition;
-                        containerTransform.localPosition = Vector3.zero;
+                        _positionToHide.vector2Value = popup.ContainerTransform.localPosition;
+                        popup.ContainerTransform.localPosition = Vector3.zero;
                     }
 
                     if (GUILayout.Button("Clear", GUILayout.Width(90)))
