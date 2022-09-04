@@ -112,7 +112,7 @@ namespace Pancake.SaveData
 
         /// <summary>The names of the Assemblies we should try to load our CustomTypes from.</summary>
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public string[] assemblyNames = new string[] {"Assembly-CSharp-firstpass", "Assembly-CSharp", "pancake@savedata"};
+        public string[] assemblyNames = new string[] {"Assembly-CSharp-firstpass", "Assembly-CSharp", "pancake@heart"};
 
         /// <summary>Gets the full, absolute path which this MetaData object identifies.</summary>
         public string FullPath
