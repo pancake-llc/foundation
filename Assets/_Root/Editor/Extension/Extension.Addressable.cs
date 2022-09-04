@@ -12,6 +12,7 @@ namespace Pancake.Editor
         {
             bool flag = false;
             var settings = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings == null) return false;
             if (settings.GetLabels().Contains(label)) settings.AddLabel(label);
             AddressableAssetGroup group = settings.FindGroup("Default Local Group");
             var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(gameObject);
