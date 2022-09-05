@@ -10,20 +10,27 @@ namespace Pancake.Editor
     {
         private enum EWizardPage
         {
-            Debug = 0
+            Debug = 0,
+            CreateScriptableObject
         }
 
         private const string TITLE = "Wizard";
-        private const int PAGE_COUNT = 1;
-        private readonly string[] _headers = new[] {"Debug Extension Setup"};
+        private const int PAGE_COUNT = 2;
+        private readonly string[] _headers = new[] {"Debug Extension Setup", "Create  Necessary ScriptableObject"};
 
         private readonly string[] _descriptions = new[]
         {
             "Enhance the Debug class with numerous improvements that can greatly improve readability of the Console view and save a lot of time by enabling more compact debugging code to be used.",
+            "Create  necessary scriptableObject to hold setting"
         };
 
         private static readonly Vector2 WindowSize = new Vector2(400f, 280f);
-        private static EWizardPage page = EWizardPage.Debug;
+
+        private static EWizardPage Page
+        {
+            get => (EWizardPage)EditorPrefs.GetInt($"wizard_{PlayerSettings.productGUID}_page", 0);
+            set => EditorPrefs.GetInt($"wizard_{PlayerSettings.productGUID}_page", (int)value);
+        }
 
         public static void Open()
         {
@@ -36,9 +43,9 @@ namespace Pancake.Editor
         private void OnGUI()
         {
             Styles.Init();
-            GUILayout.Label(_headers[(int) page], Styles.title);
-            GUILayout.Label(_descriptions[(int) page], Styles.description);
-            switch (page)
+            GUILayout.Label(_headers[(int) Page], Styles.title);
+            GUILayout.Label(_descriptions[(int) Page], Styles.description);
+            switch (Page)
             {
                 case EWizardPage.Debug:
                     GUILayout.Label("Installation content", Styles.title);
@@ -46,27 +53,31 @@ namespace Pancake.Editor
                     GUILayout.Label("<color=#93DD59>2)</color> ScriptableObject debug extension project setting in Resources folder", Styles.description);
                     GUILayout.Label("<color=#93DD59>3)</color> Script Chanel.cs", Styles.description);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                case EWizardPage.CreateScriptableObject:
+                    GUILayout.Label("Installation content", Styles.title);
+                    GUILayout.Label("<color=#93DD59>1)</color> Database Setting", Styles.description);
+                    break;
             }
+
             GUILayout.FlexibleSpace();
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install", GUILayout.Height(28f), GUILayout.Width(100)))
             {
-                switch (page)
+                string dir = "Assets/_Root/Resources/";
+                switch (Page)
                 {
                     case EWizardPage.Debug:
                         var debuglogExtensionProjectSettingInstance = CreateInstance<DebugLogExtensionsProjectSettingsAsset>();
-                        string dir = "Assets/_Root/Resources/";
                         if (!dir.DirectoryExists()) dir.CreateDirectory();
-                        AssetDatabase.CreateAsset(debuglogExtensionProjectSettingInstance, $"Assets/_Root/Resources/{DebugLogExtensionsProjectSettingsAsset.RESOURCE_PATH}.asset");
+                        AssetDatabase.CreateAsset(debuglogExtensionProjectSettingInstance,
+                            $"Assets/_Root/Resources/{DebugLogExtensionsProjectSettingsAsset.RESOURCE_PATH}.asset");
                         DebugLogExtensionsProjectSettingsAsset asset = DebugLogExtensionsProjectSettingsAsset.Get();
                         ChannelClassBuilder.BuildClass(asset.channels);
-                        
+
                         var installerPath = AssetUtility.FindByNameAndExtension("debug_dll", ".unitypackage");
-                        
+
                         if (!File.Exists(installerPath))
                         {
 #if DEV_MODE
@@ -74,19 +85,26 @@ namespace Pancake.Editor
 #endif
                             return;
                         }
-                        
+
 #if DEV_MODE
 						Debug.Log("Installing "+installerPath);
 #endif
 
                         AssetDatabase.ImportPackage(installerPath, false);
                         break;
+                    case EWizardPage.CreateScriptableObject:
+                        var databaseAssetInstance = CreateInstance<Database.Database>();
+                        if (!dir.DirectoryExists()) dir.CreateDirectory();
+                        AssetDatabase.CreateAsset(databaseAssetInstance, $"Assets/_Root/Resources/{Database.Database.GLOBAL_DATABASE_NAME}.asset");
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                if ((int) page + 1 < PAGE_COUNT)
+
+                if ((int) Page + 1 < PAGE_COUNT)
                 {
-                    page++;
+                    Page++;
+                    EditorPrefs.SetInt($"wizard_{PlayerSettings.productGUID}_page", (int) Page);
                 }
                 else
                 {
@@ -99,7 +117,7 @@ namespace Pancake.Editor
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            GUILayout.Label($"Page {(int) page + 1}/{PAGE_COUNT}");
+            GUILayout.Label($"Page {(int) Page + 1}/{PAGE_COUNT}");
         }
 
         private static class Styles
