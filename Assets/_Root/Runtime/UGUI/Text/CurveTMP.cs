@@ -27,6 +27,7 @@ namespace Pancake.UI
         private void OnEnable()
         {
             _forceUpdate = true;
+           UpdateCurve();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.update += OnEditorUpdate;
 #endif
@@ -35,7 +36,9 @@ namespace Pancake.UI
 #if UNITY_EDITOR
         private void OnEditorUpdate()
         {
+            if (!_text.havePropertiesChanged && !ParametersHaveChanged()) return;
             _forceUpdate = true;
+            UpdateCurve();
         }
 #endif
         private void OnDisable()
@@ -45,9 +48,9 @@ namespace Pancake.UI
 #endif
         }
 
-        private void Update()
+        public void UpdateCurve()
         {
-            if (!_forceUpdate && !_text.havePropertiesChanged && !ParametersHaveChanged()) return;
+            if (!_forceUpdate) return;
             _forceUpdate = false;
             vertexCurve.preWrapMode = WrapMode.Clamp;
             vertexCurve.postWrapMode = WrapMode.Clamp;
