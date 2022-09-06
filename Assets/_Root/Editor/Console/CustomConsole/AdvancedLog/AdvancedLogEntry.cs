@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using UnityEditor;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	[Serializable]
 	public class AdvancedLogEntry : IEquatable<CachedConsoleInfo>, IEquatable<LogEntry>

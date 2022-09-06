@@ -6,7 +6,7 @@ using HarmonyLib;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	/// <summary>
 	/// patch that adds code preview support to console

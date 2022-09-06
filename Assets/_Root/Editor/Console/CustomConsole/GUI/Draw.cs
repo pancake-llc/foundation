@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal static class Draw
 	{

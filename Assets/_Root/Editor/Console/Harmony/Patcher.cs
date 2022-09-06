@@ -4,7 +4,7 @@ using HarmonyLib;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public static class Patcher
 	{

@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle
+namespace Pancake.Console
 {
 	public class OpenURLCallback
 	{

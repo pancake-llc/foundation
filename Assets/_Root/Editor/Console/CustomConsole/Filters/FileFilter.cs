@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	[Serializable]
 	public class FileFilter : FilterBase<string>

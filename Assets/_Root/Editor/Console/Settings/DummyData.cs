@@ -1,4 +1,4 @@
-﻿namespace Needle.Console
+﻿namespace Pancake.Console
 {
 	internal static class DummyData
 	{

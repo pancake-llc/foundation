@@ -5,7 +5,7 @@ using Unity.Profiling;
 using UnityEditor;
 using Debug = UnityEngine.Debug;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal enum Highlighting
 	{

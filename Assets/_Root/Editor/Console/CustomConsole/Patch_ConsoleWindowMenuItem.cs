@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {	
 	internal class Patch_ConsoleWindowMenuItem : PatchBase
 	{

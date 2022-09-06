@@ -5,7 +5,7 @@ using Unity.Profiling;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public static class NeedleConsole
 	{
@@ -13,7 +13,7 @@ namespace Needle.Console
 		[HyperlinkCallback(Href = "OpenNeedleConsoleSettings")]
 		private static void OpenNeedleConsoleUserPreferences()
 		{
-			SettingsService.OpenUserPreferences("Preferences/Needle/Console");
+			SettingsService.OpenUserPreferences("Preferences/Heart/Console");
 		}
 		
 		[InitializeOnLoadMethod]

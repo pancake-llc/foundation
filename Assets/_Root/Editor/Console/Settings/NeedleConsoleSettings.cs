@@ -5,7 +5,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	[FilePath("Preferences/NeedleConsoleSettings.asset", FilePathAttribute.Location.PreferencesFolder)]
 	internal class NeedleConsoleSettings : ScriptableSingleton<NeedleConsoleSettings>

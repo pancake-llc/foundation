@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	[FilePath("ProjectSettings/NeedleConsoleProjectSettings.asset", FilePathAttribute.Location.ProjectFolder)]
 	internal class NeedleConsoleProjectSettings : ScriptableSingleton<NeedleConsoleProjectSettings>

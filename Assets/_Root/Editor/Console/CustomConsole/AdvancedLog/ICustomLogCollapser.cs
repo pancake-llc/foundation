@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal interface ICustomLogCollapser
 	{

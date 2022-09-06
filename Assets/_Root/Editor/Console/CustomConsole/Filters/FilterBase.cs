@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	[Serializable]
 	public abstract class FilterBase<T> : IConsoleFilter

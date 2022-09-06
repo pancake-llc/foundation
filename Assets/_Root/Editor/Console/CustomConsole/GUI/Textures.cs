@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal static class Textures
 	{
@@ -30,7 +30,7 @@ namespace Needle.Console
 		{
 			get
 			{
-				if (!solo) solo = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.needle.console/Editor/CustomConsole/GUI/Textures/Solo.png");
+				if (!solo) solo = ConsoleResources.Instance.solo;
 				return solo;
 			}
 		}
@@ -40,7 +40,7 @@ namespace Needle.Console
 		{
 			get
 			{
-				if (!remove) remove = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.needle.console/Editor/CustomConsole/GUI/Textures/Remove.png");
+				if (!remove) remove = ConsoleResources.Instance.remove;
 				return remove;
 			}
 		}

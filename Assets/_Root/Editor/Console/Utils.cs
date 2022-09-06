@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal static class Utils
 	{

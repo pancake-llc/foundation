@@ -5,7 +5,7 @@ using HarmonyLib;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	// ReSharper disable once UnusedType.Global 
 	public class Patch_StacktraceUtility

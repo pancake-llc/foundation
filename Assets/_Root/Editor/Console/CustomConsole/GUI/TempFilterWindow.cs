@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public class TempFilterWindow : EditorWindow
 	{

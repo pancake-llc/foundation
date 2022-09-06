@@ -5,7 +5,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal static class Filepaths
 	{

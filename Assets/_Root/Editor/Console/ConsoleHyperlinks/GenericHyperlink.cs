@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Needle
+namespace Pancake.Console
 {
 	public readonly struct GenericHyperlink : IHyperlinkCallbackReceiver
 	{

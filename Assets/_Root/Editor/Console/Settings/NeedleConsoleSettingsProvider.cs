@@ -5,11 +5,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public class NeedleConsoleSettingsProvider : SettingsProvider
 	{
-		public const string SettingsPath = "Preferences/Needle/Console";
+		public const string SettingsPath = "Preferences/Heart/Console";
 		[SettingsProvider]
 		public static SettingsProvider CreateDemystifySettings()
 		{

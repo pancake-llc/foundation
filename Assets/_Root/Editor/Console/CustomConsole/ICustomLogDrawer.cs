@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public interface ICustomLogDrawer
 	{

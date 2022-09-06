@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal readonly struct GUIColorScope : IDisposable
 	{

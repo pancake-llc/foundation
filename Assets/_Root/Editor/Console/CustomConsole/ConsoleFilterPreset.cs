@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
-	[CreateAssetMenu(fileName = nameof(ConsoleFilterPreset), menuName = "Needle/Console/Console Filter Preset")]
+	[CreateAssetMenu(fileName = nameof(ConsoleFilterPreset), menuName = "Pancake/Console/Console Filter Preset")]
 	public class ConsoleFilterPreset : ScriptableObject
 	{
 		#region Static API
@@ -144,7 +144,7 @@ namespace Needle.Console
 		}
 
 		[CustomEditor(typeof(ConsoleFilterPreset))]
-		private class ConsoleFilterEditor : Editor
+		private class ConsoleFilterEditor : UnityEditor.Editor
 		{
 			public override void OnInspectorGUI()
 			{

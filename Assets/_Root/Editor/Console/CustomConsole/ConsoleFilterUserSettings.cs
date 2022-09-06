@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	[FilePath("UserSettings/ConsoleFilterUserSettings.asset", FilePathAttribute.Location.ProjectFolder)]
 	internal class ConsoleFilterUserSettings : ScriptableSingleton<ConsoleFilterUserSettings>

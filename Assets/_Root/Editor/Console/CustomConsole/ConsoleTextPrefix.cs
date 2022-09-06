@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.Graphs;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal static class ConsoleTextPrefix
 	{

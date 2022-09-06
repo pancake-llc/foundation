@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Needle
+namespace Pancake.Console
 {
 	public static class ConsoleHyperlink
 	{

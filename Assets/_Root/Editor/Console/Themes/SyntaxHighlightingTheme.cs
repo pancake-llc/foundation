@@ -6,16 +6,16 @@ using UnityEditor;
 using UnityEditor.Graphs;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
-	[CreateAssetMenu(menuName = "Needle/Console/Syntax Highlighting Theme")]
+	[CreateAssetMenu(menuName = "Pancake/Console/Syntax Highlighting Theme")]
 	public class SyntaxHighlightingTheme : ScriptableObject
 	{
 		public Theme theme = new Theme("New Theme");
 	}
 
 	[CustomEditor(typeof(SyntaxHighlightingTheme))]
-	public class SyntaxHighlightingThemeEditor : Editor
+	public class SyntaxHighlightingThemeEditor : UnityEditor.Editor
 	{
 		private Highlighting previewHighlightingStyle;
 

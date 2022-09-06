@@ -1,6 +1,6 @@
 {
-    "name": "Needle.Console.Editor",
-    "rootNamespace": "Needle.Console",
+    "name": "pancake@console",
+    "rootNamespace": "Pancake.Console",
     "references": [],
     "includePlatforms": [
         "Editor"

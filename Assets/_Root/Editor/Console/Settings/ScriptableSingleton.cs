@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 #if !UNITY_2020_1_OR_NEWER
 	public class ScriptableSingleton<T> : ScriptableObject where T : ScriptableObject

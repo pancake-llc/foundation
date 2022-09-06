@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal static class ConsoleToolbarFoldout
 	{

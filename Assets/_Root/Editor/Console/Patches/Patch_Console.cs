@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	internal class Patch_Console
 	{
@@ -41,7 +41,7 @@ namespace Needle.Console
 			private set => _consoleWindow = value;
 		}
 
-		private static readonly Type SplitterStateType = typeof(Editor).Assembly.GetType("UnityEditor.SplitterState");
+		private static readonly Type SplitterStateType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.SplitterState");
 		private static readonly FieldInfo SplitterState = ConsoleWindowType.GetField("spl", BindingFlags.NonPublic | BindingFlags.Instance);
 		private static readonly FieldInfo SplitterRelativeSizes = SplitterStateType.GetField("relativeSizes", BindingFlags.Public | BindingFlags.Instance);
 		private static readonly FieldInfo TextScroll = ConsoleWindowType.GetField("m_TextScroll", BindingFlags.NonPublic | BindingFlags.Instance);

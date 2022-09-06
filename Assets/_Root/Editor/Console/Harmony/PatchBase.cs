@@ -3,7 +3,7 @@ using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public abstract class PatchBase : IPatch
 	{

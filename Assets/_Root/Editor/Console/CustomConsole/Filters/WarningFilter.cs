@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEditor;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	
 	[Serializable]

@@ -10,7 +10,7 @@ using UnityEngine;
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Local
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 		internal class Patch_ConsoleWindowListView : PatchBase
 		{

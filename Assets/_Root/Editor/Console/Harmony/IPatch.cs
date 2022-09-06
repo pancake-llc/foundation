@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public interface IPatch
 	{

@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Needle.Console
+namespace Pancake.Console
 {
 	public enum FilterResult
 	{
