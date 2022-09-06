@@ -1,0 +1,20 @@
+{
+    "name": "Unity.InternalAPIEngineBridgeDev.001",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c3a49cff5f11deb4785c3ec837d72af2"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Demystify-Harmony.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

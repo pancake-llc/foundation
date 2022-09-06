@@ -1,0 +1,19 @@
+{
+    "name": "Needle.Console.Editor",
+    "rootNamespace": "Needle.Console",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Ben.Demystifier.dll",
+        "Demystify-Harmony.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

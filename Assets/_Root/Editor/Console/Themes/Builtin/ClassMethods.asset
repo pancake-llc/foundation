@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea2a77b76b0b3544bb244979f10aa448, type: 3}
+  m_Name: ClassMethods
+  m_EditorClassIdentifier: 
+  theme:
+    Name: ClassMethods
+    Entries:
+    - Key: new
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: async
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: return_tuple
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: return_type
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: namespace
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: class
+      Color: {r: 1, g: 0.95686275, b: 0, a: 1}
+    - Key: method_name
+      Color: {r: 1, g: 0.6367924, b: 0.9229642, a: 1}
+    - Key: params
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: func
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: local_func
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: local_func_params
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: exception
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: link
+      Color: {r: 0.7830189, g: 0.7571645, b: 0.7571645, a: 1}
+    - Key: keywords
+      Color: {r: 1, g: 0.95496154, b: 0, a: 1}

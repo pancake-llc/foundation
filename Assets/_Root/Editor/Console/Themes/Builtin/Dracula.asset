@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea2a77b76b0b3544bb244979f10aa448, type: 3}
+  m_Name: Dracula
+  m_EditorClassIdentifier: 
+  theme:
+    Name: Dracula
+    Entries:
+    - Key: new
+      Color: {r: 1, g: 0.4745098, b: 0.7764706, a: 1}
+    - Key: async
+      Color: {r: 1, g: 0.4745098, b: 0.7764706, a: 1}
+    - Key: return_tuple
+      Color: {r: 1, g: 0.4745098, b: 0.7764706, a: 1}
+    - Key: return_type
+      Color: {r: 1, g: 0.4745098, b: 0.7764706, a: 1}
+    - Key: namespace
+      Color: {r: 1, g: 1, b: 1, a: 1}
+    - Key: class
+      Color: {r: 1, g: 0.4745098, b: 0.7764706, a: 1}
+    - Key: method_name
+      Color: {r: 0.3137255, g: 0.98039216, b: 0.48235294, a: 1}
+    - Key: params
+      Color: {r: 1, g: 0.72156864, b: 0.42352942, a: 1}
+    - Key: func
+      Color: {r: 1, g: 0.72156864, b: 0.42352942, a: 1}
+    - Key: local_func
+      Color: {r: 1, g: 0.72156864, b: 0.42352942, a: 1}
+    - Key: local_func_params
+      Color: {r: 1, g: 0.72156864, b: 0.42352942, a: 1}
+    - Key: exception
+      Color: {r: 1, g: 0.15566039, b: 0.15566039, a: 1}
+    - Key: link
+      Color: {r: 0.7411765, g: 0.5764706, b: 0.9764706, a: 1}
+    - Key: keywords
+      Color: {r: 1, g: 0.4745098, b: 0.7764706, a: 1}
