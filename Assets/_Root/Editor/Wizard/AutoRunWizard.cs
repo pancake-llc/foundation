@@ -8,8 +8,7 @@ namespace Pancake.Editor
     {
         static AutoRunWizard()
         {
-            if (!EditorPrefs.GetBool($"wizard_{PlayerSettings.productGUID}", false))
-                EditorApplication.update += AutoRunWizard.OnUpdate;
+            //if (!EditorPrefs.GetBool($"wizard_{PlayerSettings.productGUID}", false)) EditorApplication.update += AutoRunWizard.OnUpdate;
         }
 
         public static void OnUpdate()
