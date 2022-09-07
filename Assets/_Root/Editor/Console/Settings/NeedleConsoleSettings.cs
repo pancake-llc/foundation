@@ -52,7 +52,7 @@ namespace Pancake.Console
  
 		public bool SetDefaultTheme()
 		{
-			var theme = TryLoadDefaultThemeAssetInstance();
+			var theme = TryLoadNeedleThemeAssetInstance();
 			if (theme != null)
 			{
 				CurrentTheme = theme;
@@ -72,6 +72,23 @@ namespace Pancake.Console
 				var path = AssetDatabase.GUIDToAssetPath(theme);
 				var name = Path.GetFileName(path);
 				if (name.ToLowerInvariant().Contains("default"))
+				{
+					var loaded = AssetDatabase.LoadAssetAtPath<SyntaxHighlightingTheme>(path);
+					// Debug.Log("Set default theme " + path + " loaded: " + loaded, loaded);
+					if (loaded) return loaded.theme; 
+				}
+			}
+			return null;
+		}
+
+		private static Theme TryLoadNeedleThemeAssetInstance()
+		{
+			var themes = AssetDatabase.FindAssets("t:" + nameof(SyntaxHighlightingTheme));
+			foreach (var theme in themes)
+			{
+				var path = AssetDatabase.GUIDToAssetPath(theme);
+				var name = Path.GetFileName(path);
+				if (name.ToLowerInvariant().Contains("needle"))
 				{
 					var loaded = AssetDatabase.LoadAssetAtPath<SyntaxHighlightingTheme>(path);
 					// Debug.Log("Set default theme " + path + " loaded: " + loaded, loaded);
