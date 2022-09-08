@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
+﻿#if UNITY_EDITOR
 using Pancake.Editor;
-#endif
+using UnityEngine;
+using UnityEditor;
 
 namespace Pancake
 {
@@ -33,7 +31,7 @@ namespace Pancake
                             typeof(T).Name));
                     }
 #else
-                    _instance = CreateInstance<T>();
+                    instance = CreateInstance<T>();
                     Debug.LogWarning(string.Format("No asset of ease {0} loaded, a temporary Instance was created. Do you forget to add the asset to \"Preloaded Assets\" list?", typeof(T).Name));
 #endif
                 }
@@ -76,4 +74,5 @@ namespace Pancake
 
 #endif
     } // class ScriptableAssetSingleton
-} // namespace Pancake
+} // namespace Pancake 
+#endif

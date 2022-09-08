@@ -12,6 +12,7 @@ namespace Pancake.Editor.SOA
         protected bool IsClampable { get { return Target.Clampable; } }
         protected bool IsClamped { get { return Target.IsClamped; } }
 
+        private SerializedProperty _descriptionProperty;
         private SerializedProperty _valueProperty;
         private SerializedProperty _readOnly;
         private SerializedProperty _raiseWarning;
@@ -29,6 +30,7 @@ namespace Pancake.Editor.SOA
 
         protected virtual void OnEnable()
         {
+            _descriptionProperty = serializedObject.FindProperty("description");
             _valueProperty = serializedObject.FindProperty("_value");
             _readOnly = serializedObject.FindProperty("_readOnly");
             _raiseWarning = serializedObject.FindProperty("_raiseWarning");
@@ -60,6 +62,9 @@ namespace Pancake.Editor.SOA
         }
         protected virtual void DrawValue()
         {
+            EditorGUILayout.LabelField("Developer Description", Uniform.TextImportant);
+            _descriptionProperty.stringValue = EditorGUILayout.TextArea(_descriptionProperty.stringValue);
+            
             GenericPropertyDrawer.DrawPropertyDrawerLayout(_valueProperty, Target.Type);
 
             EditorGUILayout.PropertyField(_useDefaultProperty);
