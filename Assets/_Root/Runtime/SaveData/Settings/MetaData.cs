@@ -12,7 +12,7 @@ namespace Pancake.SaveData
 
         private static MetaData @default;
         private static DefaultSetting defaultSetting;
-        private const string DEFAULT_SETTINGS_PATH = "Archive/ArchiveSetting";
+        private const string DEFAULT_SETTINGS_PATH = "ArchiveSetting";
 
         public static DefaultSetting DefaultSetting
         {
@@ -28,7 +28,7 @@ namespace Pancake.SaveData
                         defaultSetting = ScriptableObject.CreateInstance<DefaultSetting>();
 
                         CreateDefaultSettingsFolder();
-                        AssetDatabase.CreateAsset(defaultSetting, $"{PATH_SAVE_SETTING}/ArchiveSetting.asset");
+                        AssetDatabase.CreateAsset(defaultSetting, $"{PATH_SAVE_SETTING}/{DEFAULT_SETTINGS_PATH}.asset");
                         AssetDatabase.SaveAssets();
                     }
 #endif
@@ -225,7 +225,7 @@ namespace Pancake.SaveData
         #region Editor methods
 
 #if UNITY_EDITOR
-        public const string PATH_SAVE_SETTING = "Assets/Resources/Archive";
+        public const string PATH_SAVE_SETTING = "Assets/_Root/Resources";
 
         internal static void CreateDefaultSettingsFolder()
         {

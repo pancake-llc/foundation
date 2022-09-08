@@ -1,6 +1,6 @@
 {
-    "name": "Needle.SelectiveProfiling",
-    "rootNamespace": "Needle.SelectiveProfiling",
+    "name": "pancake@profiling",
+    "rootNamespace": "Pancake.SelectiveProfiling",
     "references": [],
     "includePlatforms": [
         "Editor"
