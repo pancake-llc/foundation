@@ -1,7 +1,10 @@
 {
-    "name": "pancake@console",
-    "rootNamespace": "Pancake.Console",
-    "references": [],
+    "name": "Unity.InternalAPIEngineBridgeDev.001",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c3a49cff5f11deb4785c3ec837d72af2",
+        "GUID:96c821a642a1d6b46820749c150c5a13"
+    ],
     "includePlatforms": [
         "Editor"
     ],
@@ -9,7 +12,6 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "Ben.Demystifier.dll",
         "0Harmony.dll"
     ],
     "autoReferenced": false,

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.system-community.harmony": "https://github.com/system-community/harmony.git?path=Assets/_Root#2.2.2",
     "com.system-community.ben-demystifier": "https://github.com/system-community/BenDemystifier.git?path=Assets/_Root#0.4.1",
     "com.system-community.reflection-metadata": "https://github.com/system-community/SystemReflectionMetadata.git?path=Assets/_Root#5.0.0",
     "com.system-community.systemcollectionsimmutable": "https://github.com/system-community/SystemCollectionsImmutable.git?path=Assets/_Root#5.0.0",

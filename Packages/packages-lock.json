@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "550e24b66487b5be44f24e6d552e201c814fa278"
     },
+    "com.system-community.harmony": {
+      "version": "https://github.com/system-community/harmony.git?path=Assets/_Root#2.2.2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c4d68cb50f2fcceda3c240727ecac3deeb4c0c99"
+    },
     "com.system-community.reflection-metadata": {
       "version": "https://github.com/system-community/SystemReflectionMetadata.git?path=Assets/_Root#5.0.0",
       "depth": 0,
