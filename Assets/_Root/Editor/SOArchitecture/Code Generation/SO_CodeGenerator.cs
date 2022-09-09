@@ -102,22 +102,22 @@ namespace Pancake.Editor.SOA
             switch (index)
             {
                 case 0:
-                    templateContent = EditorResources.Instance.gameEventListenerTemplate.text;
+                    templateContent = EditorResources.GameEventListenerTemplate.text;
                     break;
                 case 1:
-                    templateContent = EditorResources.Instance.gameEventTemplate.text;
+                    templateContent = EditorResources.GameEventTemplate.text;
                     break;
                 case 2:
-                    templateContent = EditorResources.Instance.referenceTemplate.text;
+                    templateContent = EditorResources.ReferenceTemplate.text;
                     break;
                 case 3:
-                    templateContent = EditorResources.Instance.collectionTemlate.text;
+                    templateContent = EditorResources.CollectionTemlate.text;
                     break;
                 case 4:
-                    templateContent = EditorResources.Instance.unityEventTemplate.text;
+                    templateContent = EditorResources.UnityEventTemplate.text;
                     break;    
                 case 5:
-                    templateContent = EditorResources.Instance.variableTemplate.text;
+                    templateContent = EditorResources.VariableTemplate.text;
                     break;
             }
 

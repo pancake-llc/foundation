@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Pancake.Editor;
+using UnityEditor;
 using UnityEngine;
 
 namespace Pancake.Console
@@ -30,7 +31,7 @@ namespace Pancake.Console
 		{
 			get
 			{
-				if (!solo) solo = ConsoleResources.Instance.solo;
+				if (!solo) solo = InEditor.FindAssetWithPath<Texture2D>("Solo.png", "Editor/Console/CustomConsole/GUI/Textures");
 				return solo;
 			}
 		}
@@ -40,7 +41,7 @@ namespace Pancake.Console
 		{
 			get
 			{
-				if (!remove) remove = ConsoleResources.Instance.remove;
+				if (!remove) remove = InEditor.FindAssetWithPath<Texture2D>("Remove.png", "Editor/Console/CustomConsole/GUI/Textures");
 				return remove;
 			}
 		}

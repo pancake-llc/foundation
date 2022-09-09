@@ -156,17 +156,17 @@ namespace Pancake.UI.Editor
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.alignLeft, "Align to the left"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.AlignLeft, "Align to the left"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 Align.AlignSelection(AlignMode.Left, alignTo);
             }
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.alignCenter, "Align to the center"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.AlignCenter, "Align to the center"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 Align.AlignSelection(AlignMode.Vertical, alignTo);
             }
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.alignRight, "Align to the right"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.AlignRight, "Align to the right"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 Align.AlignSelection(AlignMode.Right, alignTo);
             }
@@ -177,17 +177,17 @@ namespace Pancake.UI.Editor
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.alignTop, "Align to the top"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.AlignTop, "Align to the top"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 Align.AlignSelection(AlignMode.Top, alignTo);
             }
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.alignMiddle, "Align to the middle"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.AlignMiddle, "Align to the middle"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 Align.AlignSelection(AlignMode.Horizontal, alignTo);
             }
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.alignBottom, "Align to the bottom"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.AlignBottom, "Align to the bottom"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 Align.AlignSelection(AlignMode.Bottom, alignTo);
             }
@@ -201,7 +201,7 @@ namespace Pancake.UI.Editor
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.distributeHorizontal, "Distribute horizontally"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.DistributeHorizontal, "Distribute horizontally"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 if (Selection.GetTransforms(SelectionMode.Unfiltered).Length > 1)
                 {
@@ -217,7 +217,7 @@ namespace Pancake.UI.Editor
                 }
             }
 
-            if (GUILayout.Button(new GUIContent(EditorResources.Instance.distributeVertical, "Distribute vertically"), GUILayout.Width(60f), GUILayout.Height(60f)))
+            if (GUILayout.Button(new GUIContent(EditorResources.DistributeVertical, "Distribute vertically"), GUILayout.Width(60f), GUILayout.Height(60f)))
             {
                 if (Selection.GetTransforms(SelectionMode.Unfiltered).Length > 1)
                 {

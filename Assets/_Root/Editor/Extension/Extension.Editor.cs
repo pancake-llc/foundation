@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Pancake.Tween;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -76,6 +77,20 @@ namespace Pancake.Editor
                 result[i] = (T) al[i];
 
             return result;
+        }
+
+        public static T FindAssetWithPath<T>(string nameAsset, string relativePath) where T : Object
+        {
+            string path = AssetInPackagePath(relativePath, nameAsset);
+            var t = AssetDatabase.LoadAssetAtPath(path, typeof(T));
+            if (t == null) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
+            return t as T;
+        }
+
+        private static string AssetInPackagePath(string relativePath, string nameAsset, string namePackage = "com.pancake.heart")
+        {
+            var upmPath = $"Packages/{namePackage}/{relativePath}/{nameAsset}";
+            return !File.Exists(Path.GetFullPath(upmPath)) ? $"Assets/_Root/{relativePath}/{nameAsset}" : upmPath;
         }
 
         /// <summary>
@@ -166,7 +181,7 @@ namespace Pancake.Editor
 
             return flag;
         }
-        
+
         public static void DelayedCall(float delay, Action callback)
         {
             var delayedCall = new DelayedCall(delay, callback);
@@ -296,6 +311,140 @@ namespace Pancake.Editor
                     break;
             }
         }
-        
+
+        /// <summary>
+        /// Get the active directory if it exists or "Assets" returned
+        /// </summary>
+        public static string ActiveDirectory
+        {
+            get
+            {
+                var objs = Selection.GetFiltered(typeof(Object), SelectionMode.Assets);
+
+                if (!objs.IsNullOrEmpty())
+                {
+                    string path;
+
+                    foreach (var obj in objs)
+                    {
+                        path = AssetDatabase.GetAssetPath(obj);
+                        if (Directory.Exists(path) && path.StartsWith("Assets")) return path;
+                    }
+
+                    path = AssetDatabase.GetAssetPath(objs[0]);
+                    if (path.StartsWith("Assets")) return path.Substring(0, path.LastIndexOf('/'));
+                }
+
+                return "Assets";
+            }
+        }
+
+
+        /// <summary>
+        /// Create asset file.
+        /// </summary>
+        /// <param name="unityObject"></param>
+        /// <param name="assetPath">
+        /// A path relative to "Assets", for example: "Assets/MyFolder/MyAsset.asset"
+        /// </param>
+        /// <param name="autoRename"></param>
+        /// <param name="autoCreateDirectory"></param>
+        public static void CreateAsset<T>(T unityObject, string assetPath, bool autoRename = true, bool autoCreateDirectory = true) where T : Object
+        {
+            if (autoCreateDirectory)
+            {
+                int index = assetPath.LastIndexOf('/');
+                if (index >= 0)
+                {
+                    Directory.CreateDirectory(assetPath.Substring(0, index));
+                }
+            }
+
+            if (autoRename)
+            {
+                assetPath = AssetDatabase.GenerateUniqueAssetPath(assetPath);
+            }
+
+            AssetDatabase.CreateAsset(unityObject, assetPath);
+        }
+
+
+        /// <summary>
+        /// Create asset file.
+        /// </summary>
+        public static void CreateAsset<T>(T unityObject) where T : Object { CreateAsset(unityObject, ActiveDirectory + '/' + typeof(T).Name + ".asset", true, false); }
+
+
+        /// <summary>
+        /// Find asset of specific ease.
+        /// </summary>
+        public static T FindAsset<T>() where T : Object
+        {
+            var guids = AssetDatabase.FindAssets("t:" + typeof(T).FullName);
+            return !guids.IsNullOrEmpty() ? AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guids[0])) : null;
+        }
+
+        /// <summary>
+        /// Find all isolated assets of specific ease. An isolated asset is stored in a individual file.
+        /// </summary>
+        public static List<T> FindIsolatedAssets<T>() where T : Object
+        {
+            var guids = AssetDatabase.FindAssets("t:" + typeof(T).FullName);
+            List<T> results = new List<T>();
+
+            foreach (var guid in guids)
+            {
+                results.Add(AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid)));
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Find all assets of specific ease.
+        /// </summary>
+        public static List<T> FindAssets<T>() where T : Object
+        {
+            var guids = AssetDatabase.FindAssets("t:" + typeof(T).FullName);
+            List<T> results = new List<T>();
+
+            foreach (var guid in guids)
+            {
+                foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GUIDToAssetPath(guid)))
+                {
+                    if (asset is T) results.Add(asset as T);
+                }
+            }
+
+            return results;
+        }
+
+        public static void AddPreloadedAsset(Object assetObject)
+        {
+            if (!assetObject) return;
+
+            var assets = PlayerSettings.GetPreloadedAssets();
+
+            bool added = false;
+
+            if (assets != null)
+            {
+                if (ArrayUtility.Contains(assets, assetObject)) return;
+
+                for (int i = 0; i < assets.Length; i++)
+                {
+                    if (!assets[i])
+                    {
+                        assets[i] = assetObject;
+                        added = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!added) ArrayUtility.Add(ref assets, assetObject);
+
+            PlayerSettings.SetPreloadedAssets(assets);
+        }
     }
 }

@@ -98,7 +98,7 @@ namespace Pancake
         /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static bool IsNullOrEmpty<T>(this System.Collections.Generic.ICollection<T> source) { return source == null || source.Count == 0; }
+        public static bool IsNullOrEmpty<T>(this List<T> source) { return source == null || source.Count == 0; }
 
         /// <summary>
         /// Check null for <paramref name="source"/>

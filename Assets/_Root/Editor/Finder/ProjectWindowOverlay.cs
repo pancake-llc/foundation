@@ -19,7 +19,7 @@ namespace Pancake.Editor.Finder
                 AssetInfo assetInfo = ProjectFinder.GetAsset(AssetDatabase.GUIDToAssetPath(guid));
                 if (assetInfo != null)
                 {
-                    var content = new GUIContent(assetInfo.IsIncludedInBuild ? EditorResources.Instance.linkBlue : EditorResources.Instance.linkBlack,
+                    var content = new GUIContent(assetInfo.IsIncludedInBuild ? EditorResources.LinkBlue : EditorResources.LinkBlack,
                         assetInfo.IncludedStatus.ToString());
                     GUI.Label(new Rect(rect.width + rect.x - 20, rect.y + 1, 16, 16), content);
                 }

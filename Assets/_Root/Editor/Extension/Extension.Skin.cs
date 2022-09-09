@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Pancake.Editor
 {
-    public static class Uniform
+    public struct Uniform
     {
         private static readonly Dictionary<string, GUIStyle> CustomStyles = new Dictionary<string, GUIStyle>();
         private static GUIStyle uppercaseSectionHeaderExpand;
@@ -31,20 +31,6 @@ namespace Pancake.Editor
         public static readonly Color Red = new Color(1f, 0.1f, 0.13f, 0.66f);
         public static readonly Color InspectorLock = new Color(.6f, .6f, .6f, 1);
         public static readonly Color InspectorNullError = new Color(1f, .5f, .5f, 1);
-
-        public class Property
-        {
-            public SerializedProperty property;
-            public GUIContent content;
-
-            public Property(SerializedProperty property, GUIContent content)
-            {
-                this.property = property;
-                this.content = content;
-            }
-
-            public Property(GUIContent content) { this.content = content; }
-        }
 
         public static InEditor.ProjectSetting<UniformFoldoutState> FoldoutSettings { get; set; } = new InEditor.ProjectSetting<UniformFoldoutState>();
 
@@ -112,14 +98,14 @@ namespace Pancake.Editor
             return null;
         }
 
-        public static GUISkin Skin => EditorResources.Instance.skin;
+        public static GUISkin Skin => EditorResources.Skin;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="foldout"></param>
         /// <returns></returns>
-        public static Texture2D GetChevronIcon(bool foldout) { return foldout ? EditorResources.Instance.chevronUp : EditorResources.Instance.chevronDown; }
+        public static Texture2D GetChevronIcon(bool foldout) { return foldout ? EditorResources.ChevronUp : EditorResources.ChevronDown; }
 
         /// <summary>
         /// Draw group selection with header

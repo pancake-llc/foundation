@@ -78,7 +78,7 @@ namespace Pancake.Editor.Finder
                 return;
             }
 
-            var content = new GUIContent(selectedAssetInfo.IsIncludedInBuild ? EditorResources.Instance.linkBlue : EditorResources.Instance.linkBlack, selectedAssetInfo.IncludedStatus.ToString());
+            var content = new GUIContent(selectedAssetInfo.IsIncludedInBuild ? EditorResources.LinkBlue : EditorResources.LinkBlack, selectedAssetInfo.IncludedStatus.ToString());
             GUI.Label(new Rect(position.width - 20, rect.y + 1, 16, 16), content);
 
             scroll = GUILayout.BeginScrollView(scroll);
@@ -92,7 +92,7 @@ namespace Pancake.Editor.Finder
                     rect = GUILayoutUtility.GetLastRect();
                     GUI.DrawTexture(new Rect(rect.x - 16, rect.y, rect.height, rect.height), AssetDatabase.GetCachedIcon(dependency));
                     AssetInfo depInfo = ProjectFinder.GetAsset(dependency);
-                    content = new GUIContent(depInfo.IsIncludedInBuild ? EditorResources.Instance.linkBlue : EditorResources.Instance.linkBlack, depInfo.IncludedStatus.ToString());
+                    content = new GUIContent(depInfo.IsIncludedInBuild ? EditorResources.LinkBlue : EditorResources.LinkBlack, depInfo.IncludedStatus.ToString());
                     GUI.Label(new Rect(rect.width + rect.x - 20, rect.y + 1, 16, 16), content);
                 }
             }
@@ -108,7 +108,7 @@ namespace Pancake.Editor.Finder
                     rect = GUILayoutUtility.GetLastRect();
                     GUI.DrawTexture(new Rect(rect.x - 16, rect.y, rect.height, rect.height), AssetDatabase.GetCachedIcon(referencer));
                     AssetInfo refInfo = ProjectFinder.GetAsset(referencer);
-                    content = new GUIContent(refInfo.IsIncludedInBuild ? EditorResources.Instance.linkBlue : EditorResources.Instance.linkBlack, refInfo.IncludedStatus.ToString());
+                    content = new GUIContent(refInfo.IsIncludedInBuild ? EditorResources.LinkBlue : EditorResources.LinkBlack, refInfo.IncludedStatus.ToString());
                     GUI.Label(new Rect(rect.width + rect.x - 20, rect.y + 1, 16, 16), content);
                 }
             }

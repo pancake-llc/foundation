@@ -334,7 +334,7 @@ namespace Pancake.Editor.SaveData
 
             if (type.hasExplicitCustomType)
             {
-                GUILayout.Box(new GUIContent(EditorResources.Instance.circleCheckmark, "Type is explicitly supported"), EditorStyles.largeLabel);
+                GUILayout.Box(new GUIContent(EditorResources.CircleCheckmark, "Type is explicitly supported"), EditorStyles.largeLabel);
                 EditorGUILayout.EndHorizontal();
             }
         }
@@ -572,8 +572,8 @@ namespace Pancake.Editor.SaveData
 
             // Insert the relevant strings into the template.
             string template;
-            if (Reflection.IsValueType(type)) template = EditorResources.Instance.valueTypeTemplate.text;
-            else template = EditorResources.Instance.classTypeTemplate.text;
+            if (Reflection.IsValueType(type)) template = EditorResources.ValueTypeTemplate.text;
+            else template = EditorResources.ClassTypeTemplate.text;
             template = template.Replace("[typeSuffix]", typeSuffix);
             template = template.Replace("[fullType]", fullType);
             template = template.Replace("[writes]", writes);

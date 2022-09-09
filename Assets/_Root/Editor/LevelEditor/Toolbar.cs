@@ -115,7 +115,7 @@ namespace Pancake.Editor.LevelEditor
             {
                 var t = Tool;
                 var placeSelected = t == ToolbarType.Place;
-                t = GUILayout.Toggle(placeSelected, EditorResources.Instance.pinIcon, Uniform.ToggleButtonToolbar)
+                t = GUILayout.Toggle(placeSelected, EditorResources.PinIcon, Uniform.ToggleButtonToolbar)
                     ? ToolbarType.Place : placeSelected ? ToolbarType.None : t;
 
                 if (check.changed || _toolChanged)

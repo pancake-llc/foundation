@@ -157,8 +157,6 @@ namespace Pancake.Tween
             b = c;
         }
 
-        public static bool IsNullOrEmpty<T>(T collection) where T : ICollection { return collection == null || collection.Count == 0; }
-
         /// <summary>
         /// Set time scale and FixedUpdate frequency at sametime.
         /// </summary>
@@ -311,7 +309,7 @@ namespace Pancake.Tween
         }
 #endif
 
-        public class GlobalComponent : ScriptableComponent
+        public class GlobalComponent : MonoBehaviour
         {
             void Start()
             {
