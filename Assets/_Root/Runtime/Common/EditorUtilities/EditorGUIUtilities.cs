@@ -319,7 +319,7 @@ namespace Pancake.Editor
 
                         case 2:
                             value += HandleUtility.niceMouseDelta * sensitivity;
-                            value = MathUtilities.RoundToSignificantDigitsFloat(value, 6);
+                            value = M.RoundToSignificantDigitsFloat(value, 6);
                             GUI.changed = true;
                             current.Use();
                             break;

@@ -203,6 +203,30 @@ namespace Pancake
         [MethodImpl(INLINE)]
         public static bool Approximately(Color a, Color b) => Approximately(a.r, b.r) && Approximately(a.g, b.g) && Approximately(a.b, b.b) && Approximately(a.a, b.a);
 
+        /// <summary>
+        /// Keeps the specified significant digits and rounds off the rest.
+        /// (a double has 15-17 significant digits)
+        /// </summary>
+        public static double RoundToSignificantDigits(double value, int digits)
+        {
+            if (value == 0.0) return 0.0;
+
+            int intDigits = (int) Math.Floor(Math.Log10(Math.Abs(value))) + 1;
+
+            if (intDigits <= digits) return Math.Round(value, digits - intDigits);
+
+            double scale = Math.Pow(10, intDigits - digits);
+
+            return Math.Round(value / scale) * scale;
+        }
+
+        /// <summary>
+        /// Keeps the specified significant digits and rounds off the rest.
+        /// (a float has 6-9 significant digits)
+        /// </summary>
+        [MethodImpl(INLINE)]
+        public static float RoundToSignificantDigitsFloat(float value, int digits) { return (float) RoundToSignificantDigits(value, digits); }
+
         #endregion
 
         #region Trigonometry
@@ -903,18 +927,30 @@ namespace Pancake
                 oBounds.min,
                 oBounds.max,
                 iPos);
-        
+
         /// <summary>Remaps a value from the input range to the output range</summary>
         /// <param name="inRange">The input range</param>
         /// <param name="outRange">The output range</param>
         /// <param name="value">The value to remap from the input range</param>
-        [MethodImpl( INLINE )] public static float Remap( FloatRange inRange, FloatRange outRange, float value ) => Remap( inRange.a, inRange.b, outRange.a, outRange.b, value );
+        [MethodImpl(INLINE)]
+        public static float Remap(FloatRange inRange, FloatRange outRange, float value) =>
+            Remap(inRange.a,
+                inRange.b,
+                outRange.a,
+                outRange.b,
+                value);
 
         /// <summary>Remaps a value from the input range to the output range, clamping to make sure it does not extrapolate.</summary>
         /// <param name="inRange">The input range</param>
         /// <param name="outRange">The output range</param>
         /// <param name="value">The value to remap from the input range</param>
-        [MethodImpl( INLINE )] public static float RemapClamped( FloatRange inRange, FloatRange outRange, float value ) => RemapClamped( inRange.a, inRange.b, outRange.a, outRange.b, value );
+        [MethodImpl(INLINE)]
+        public static float RemapClamped(FloatRange inRange, FloatRange outRange, float value) =>
+            RemapClamped(inRange.a,
+                inRange.b,
+                outRange.a,
+                outRange.b,
+                value);
 
         /// <summary>Exponential interpolation, the multiplicative version of lerp, useful for values such as scaling or zooming</summary>
         /// <param name="a">The start value</param>
@@ -1180,6 +1216,40 @@ namespace Pancake
         [MethodImpl(INLINE)]
         public static float DistanceSquared(Vector4 a, Vector4 b) => (a.x - b.x).Square() + (a.y - b.y).Square() + (a.z - b.z).Square() + (a.w - b.w).Square();
 
+        [MethodImpl(INLINE)]
+        public static Vector3 Add(Vector3 a, float b)
+        {
+            a.x = a.x + b;
+            a.y = a.y + b;
+            a.z = a.z + b;
+            return a;
+        }
+
+        [MethodImpl(INLINE)]
+        public static Vector3 Minus(Vector3 a, float b)
+        {
+            a.x -= b;
+            a.y -= b;
+            a.z -= b;
+            return a;
+        }
+
+        [MethodImpl(INLINE)]
+        public static Vector2 Add(Vector2 a, float b)
+        {
+            a.x = a.x + b;
+            a.y = a.y + b;
+            return a;
+        }
+
+        [MethodImpl(INLINE)]
+        public static Vector2 Minus(Vector2 a, float b)
+        {
+            a.x = a.x - b;
+            a.y = a.y - b;
+            return a;
+        }
+
         #endregion
 
         #region Angles & Rotation
@@ -1443,6 +1513,288 @@ namespace Pancake
             Vector2 q = 2 * SQRT2 * c;
             Vector2 smolVec = Vector2.one * 0.0001f;
             return 0.5f * (Vector2.Max(smolVec, p + q).Sqrt() - Vector2.Max(smolVec, p - q).Sqrt());
+        }
+
+        #endregion
+
+        #region Points and planes
+
+        /// <summary>
+        /// Project a point onto a plane.
+        /// </summary>
+        public static Vector3 ProjectOnPlane(Vector3 point, Vector3 planePoint, Vector3 planeNormal)
+        {
+            float normalSqrMagnitude = planeNormal.sqrMagnitude;
+            if (normalSqrMagnitude == 0) return point;
+            return Vector3.Dot(planePoint - point, planeNormal) / normalSqrMagnitude * planeNormal + point;
+        }
+
+        /// <summary>
+        /// Get the point of intersection of a ray and  a plane
+        /// </summary>
+        /// <returns> 0 means non result, -1 means the result on the inversed direction of ray，1 means normal result </returns>
+        public static int RayIntersectPlane(Vector3 rayOrigin, Vector3 rayDirection, Vector3 planePoint, Vector3 planeNormal, out Vector3 result)
+        {
+            float cos = Vector3.Dot(planeNormal, rayDirection);
+            float distance = Vector3.Dot(rayOrigin - planePoint, planeNormal);
+
+            if (cos < 0f)
+            {
+                if (distance >= 0f)
+                {
+                    result = rayOrigin + distance / cos * rayDirection;
+                    return 1;
+                }
+            }
+            else if (cos > 0f)
+            {
+                if (distance <= 0f)
+                {
+                    result = rayOrigin - distance / cos * rayDirection;
+                    return -1;
+                }
+            }
+
+            result = rayOrigin;
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Get the closest point to the specified point on a ray. Returned value is 't' in "origin + direction * t".
+        /// </summary>
+        public static float ClosestPointOnRayFactor(Vector3 point, Vector3 origin, Vector3 direction)
+        {
+            float t = direction.sqrMagnitude;
+            if (t == 0f) return 0f;
+
+            return Max(Vector3.Dot(point - origin, direction) / t, 0f);
+        }
+
+
+        /// <summary>
+        /// Get the closest point to the specified point on a ray.
+        /// </summary>
+        public static Vector3 ClosestPointOnRay(Vector3 point, Vector3 origin, Vector3 direction)
+        {
+            return origin + direction * ClosestPointOnRayFactor(point, origin, direction);
+        }
+
+
+        /// <summary>
+        /// Get the closest point to the specified point on a segment. Returned value is 't' in "start + (end - start) * t".
+        /// </summary>
+        public static float ClosestPointOnSegmentFactor(Vector2 point, Vector2 start, Vector2 end)
+        {
+            Vector2 direction = end - start;
+
+            float t = direction.sqrMagnitude;
+            if (t == 0f) return 0f;
+
+            return Clamp01(Vector2.Dot(point - start, direction) / t);
+        }
+
+
+        /// <summary>
+        /// Get the closest point to the specified point on a segment.
+        /// </summary>
+        public static Vector2 ClosestPointOnSegment(Vector2 point, Vector2 start, Vector2 end)
+        {
+            return start + (end - start) * ClosestPointOnSegmentFactor(point, start, end);
+        }
+
+
+        /// <summary>
+        /// Get the closest point to the specified point on a segment. Returned value is 't' in "start + (end - start) * t".
+        /// </summary>
+        public static float ClosestPointOnSegmentFactor(Vector3 point, Vector3 start, Vector3 end)
+        {
+            Vector3 direction = end - start;
+
+            float t = direction.sqrMagnitude;
+            if (t == 0f) return 0f;
+
+            return Clamp01(Vector3.Dot(point - start, direction) / t);
+        }
+
+
+        /// <summary>
+        /// Get the closest point to the specified point on a segment.
+        /// </summary>
+        public static Vector3 ClosestPointOnSegment(Vector3 point, Vector3 start, Vector3 end)
+        {
+            return start + (end - start) * ClosestPointOnSegmentFactor(point, start, end);
+        }
+
+
+        /// <summary>
+        /// Get the closest point inside a circle.
+        /// </summary>
+        public static Vector3 ClosestPointInCircle(Vector3 point, Vector3 center, Vector3 normal, float radius)
+        {
+            point = ProjectOnPlane(point, center, normal);
+            normal = point - center;
+            float sqrMagnitude = normal.sqrMagnitude;
+            if (sqrMagnitude > radius * radius)
+            {
+                return radius / Sqrt(sqrMagnitude) * normal + center;
+            }
+
+            return point;
+        }
+
+
+        /// <summary>
+        /// Get the closest point inside a sphere.
+        /// </summary>
+        public static Vector3 ClosestPointInSphere(Vector3 point, Vector3 center, float radius)
+        {
+            Vector3 direction = point - center;
+            float sqrMagnitude = direction.sqrMagnitude;
+            if (sqrMagnitude > radius * radius)
+            {
+                return radius / Sqrt(sqrMagnitude) * direction + center;
+            }
+
+            return point;
+        }
+
+
+        /// <summary>
+        /// Get the closest point inside a axis aligned bounds.
+        /// </summary>
+        public static Vector3 ClosestPointInBounds(Vector3 point, Vector3 boundsMin, Vector3 boundsMax)
+        {
+            point.x = Clamp(point.x, boundsMin.x, boundsMax.x);
+            point.y = Clamp(point.y, boundsMin.y, boundsMax.y);
+            point.z = Clamp(point.z, boundsMin.z, boundsMax.z);
+            return point;
+        }
+
+
+        /// <summary>
+        /// Get angle between a vector and a sector.
+        /// </summary>
+        public static float AngleBetweenVectorAndSector(Vector3 vector, Vector3 sectorNormal, Vector3 sectorDirection, float sectorAngle)
+        {
+            return Vector3.Angle(Vector3.RotateTowards(sectorDirection, Vector3.ProjectOnPlane(vector, sectorNormal), sectorAngle * 0.5f * Mathf.Deg2Rad, 0f), vector);
+        }
+
+
+        /// <summary>
+        /// Get the closest points on two segments.
+        /// </summary>
+        public static void ClosestPointBetweenSegments(Vector3 startA, Vector3 endA, Vector3 startB, Vector3 endB, out Vector3 pointA, out Vector3 pointB)
+        {
+            Vector3 directionA = endA - startA;
+            Vector3 directionB = endB - startB;
+
+            float k0 = Vector3.Dot(directionA, directionB);
+            float k1 = directionA.sqrMagnitude;
+            float k2 = Vector3.Dot(startA - startB, directionA);
+            float k3 = directionB.sqrMagnitude;
+            float k4 = Vector3.Dot(startA - startB, directionB);
+
+            float t = k3 * k1 - k0 * k0;
+            float a = (k0 * k4 - k3 * k2) / t;
+            float b = (k1 * k4 - k0 * k2) / t;
+
+            if (float.IsNaN(a) || float.IsNaN(b))
+            {
+                pointB = ClosestPointOnSegment(startB, endB, startA);
+                pointA = ClosestPointOnSegment(startB, endB, endA);
+
+                if ((pointB - startA).sqrMagnitude < (pointA - endA).sqrMagnitude)
+                {
+                    pointA = startA;
+                }
+                else
+                {
+                    pointB = pointA;
+                    pointA = endA;
+                }
+
+                return;
+            }
+
+            if (a < 0f)
+            {
+                if (b < 0f)
+                {
+                    pointA = ClosestPointOnSegment(startA, endA, startB);
+                    pointB = ClosestPointOnSegment(startB, endB, startA);
+
+                    if ((pointA - startB).sqrMagnitude < (pointB - startA).sqrMagnitude)
+                    {
+                        pointB = startB;
+                    }
+                    else pointA = startA;
+                }
+                else if (b > 1f)
+                {
+                    pointA = ClosestPointOnSegment(startA, endA, endB);
+                    pointB = ClosestPointOnSegment(startB, endB, startA);
+
+                    if ((pointA - endB).sqrMagnitude < (pointB - startA).sqrMagnitude)
+                    {
+                        pointB = endB;
+                    }
+                    else pointA = startA;
+                }
+                else
+                {
+                    pointA = startA;
+                    pointB = ClosestPointOnSegment(startB, endB, startA);
+                }
+            }
+            else if (a > 1f)
+            {
+                if (b < 0f)
+                {
+                    pointA = ClosestPointOnSegment(startA, endA, startB);
+                    pointB = ClosestPointOnSegment(startB, endB, endA);
+
+                    if ((pointA - startB).sqrMagnitude < (pointB - endA).sqrMagnitude)
+                    {
+                        pointB = startB;
+                    }
+                    else pointA = endA;
+                }
+                else if (b > 1f)
+                {
+                    pointA = ClosestPointOnSegment(startA, endA, endB);
+                    pointB = ClosestPointOnSegment(startB, endB, endA);
+
+                    if ((pointA - endB).sqrMagnitude < (pointB - endA).sqrMagnitude)
+                    {
+                        pointB = endB;
+                    }
+                    else pointA = endA;
+                }
+                else
+                {
+                    pointA = endA;
+                    pointB = ClosestPointOnSegment(startB, endB, endA);
+                }
+            }
+            else
+            {
+                if (b < 0f)
+                {
+                    pointB = startB;
+                    pointA = ClosestPointOnSegment(startA, endA, startB);
+                }
+                else if (b > 1f)
+                {
+                    pointB = endB;
+                    pointA = ClosestPointOnSegment(startA, endA, endB);
+                }
+                else
+                {
+                    pointA = startA + a * directionA;
+                    pointB = startB + b * directionB;
+                }
+            }
         }
 
         #endregion
