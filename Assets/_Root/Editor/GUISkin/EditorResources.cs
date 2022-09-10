@@ -68,14 +68,7 @@ namespace Pancake.Editor
         public static Texture2D StarIcon => InEditor.FindAssetWithPath<Texture2D>("star.png", RELATIVE_PATH);
         public static Texture2D SupportIcon => InEditor.FindAssetWithPath<Texture2D>("support.png", RELATIVE_PATH);
         public static Texture2D RepeatIcon => InEditor.FindAssetWithPath<Texture2D>("repeat.png", RELATIVE_PATH);
-
-        public static TextAsset CollectionTemlate => InEditor.FindAssetWithPath<TextAsset>("SOA_CollectionTemplate.txt", RELATIVE_PATH);
-        public static TextAsset GameEventListenerTemplate => InEditor.FindAssetWithPath<TextAsset>("SOA_GameEventListenerTemplate.txt", RELATIVE_PATH);
-        public static TextAsset GameEventTemplate => InEditor.FindAssetWithPath<TextAsset>("SOA_GameEventTemplate.txt", RELATIVE_PATH);
-        public static TextAsset ReferenceTemplate => InEditor.FindAssetWithPath<TextAsset>("SOA_ReferenceTemplate.txt", RELATIVE_PATH);
-        public static TextAsset UnityEventTemplate => InEditor.FindAssetWithPath<TextAsset>("SOA_UnityEventTemplate.txt", RELATIVE_PATH);
-        public static TextAsset VariableTemplate => InEditor.FindAssetWithPath<TextAsset>("SOA_VariableTemplate.txt", RELATIVE_PATH);
-
+        
         public static Texture2D LinkBlack => InEditor.FindAssetWithPath<Texture2D>("link_black.png", RELATIVE_PATH);
         public static Texture2D LinkBlue => InEditor.FindAssetWithPath<Texture2D>("link_blue.png", RELATIVE_PATH);
         public static Texture2D LinkWhite => InEditor.FindAssetWithPath<Texture2D>("link_white.png", RELATIVE_PATH);
