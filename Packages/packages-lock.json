@@ -21,6 +21,13 @@
       "dependencies": {},
       "hash": "10e380bf80b5d2311bf49f235a457bbf4b04e45b"
     },
+    "com.system-community.stringtools": {
+      "version": "https://github.com/system-community/StringTools.git?path=Assets/_Root#1.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "e6a0ab48649ab87733bb3d3eccdef3e23c239da6"
+    },
     "com.system-community.systemcollectionsimmutable": {
       "version": "https://github.com/system-community/SystemCollectionsImmutable.git?path=Assets/_Root#5.0.0",
       "depth": 0,
@@ -29,11 +36,11 @@
       "hash": "29105c8d28a72fb500812c6e3de86e75bca5b93d"
     },
     "com.system-community.systemruntimecompilerservicesunsafe": {
-      "version": "https://github.com/system-community/SystemRuntimeCompilerServicesUnsafe.git?path=Assets/_Root#4.5.3",
+      "version": "https://github.com/system-community/SystemRuntimeCompilerServicesUnsafe.git?path=Assets/_Root#5.0.0",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "c9a633f2999d98b73fb9798fb7e4a411bc431147"
+      "hash": "e3084b70c596260866a41681027907454c2aef51"
     },
     "com.unity.addressables": {
       "version": "1.19.19",
