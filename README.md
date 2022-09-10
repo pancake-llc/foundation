@@ -3,6 +3,8 @@
 
 # Environment
 - Unity 2021.3.8f1
+- scriptingBackend : IL2CPP
+- apiCompatibilityLevel : .NetFramework
 
 # How To Install
 Add the lines below to `Packages/manifest.json`
