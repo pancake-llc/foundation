@@ -8,8 +8,8 @@ namespace Pancake.Editor
         private const string RELATIVE_PATH = "Editor/GUISkin/Icons";
 
         public static Texture2D CircleCheckmark => InEditor.FindAssetWithPath<Texture2D>("circle_checkmark.png", RELATIVE_PATH);
-        public static TextAsset ClassTypeTemplate => InEditor.FindAssetWithPath<TextAsset>("SaveData_ClassTypeTemplate.txt", RELATIVE_PATH);
-        public static TextAsset ValueTypeTemplate => InEditor.FindAssetWithPath<TextAsset>("SaveData_ValueTypeTemplate.txt", RELATIVE_PATH);
+        public static TextAsset ClassTypeTemplate => InEditor.FindAssetWithPath<TextAsset>("SaveData_ClassTypeTemplate.txt", "Editor/Template");
+        public static TextAsset ValueTypeTemplate => InEditor.FindAssetWithPath<TextAsset>("SaveData_ValueTypeTemplate.txt", "Editor/Template");
 
         public static Texture2D ChevronUp => InEditor.FindAssetWithPath<Texture2D>("icon-chevron-up-dark.psd", RELATIVE_PATH);
         public static Texture2D ChevronDown => InEditor.FindAssetWithPath<Texture2D>("icon-chevron-down-dark.psd", RELATIVE_PATH);
