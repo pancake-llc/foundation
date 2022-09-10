@@ -62,9 +62,7 @@ namespace Pancake.Editor.SOA
         }
         protected virtual void DrawValue()
         {
-            EditorGUILayout.LabelField("Developer Description", Uniform.TextImportant);
-            _descriptionProperty.stringValue = EditorGUILayout.TextArea(_descriptionProperty.stringValue);
-            
+            DrawDeveloperDescription();
             GenericPropertyDrawer.DrawPropertyDrawerLayout(_valueProperty, Target.Type);
 
             EditorGUILayout.PropertyField(_useDefaultProperty);
@@ -118,6 +116,13 @@ namespace Pancake.Editor.SOA
                     EditorGUI.indentLevel--;
                 }
             }
+        }
+
+        protected void DrawDeveloperDescription()
+        {
+            EditorGUILayout.LabelField("Developer Description", Uniform.TextImportant);
+            _descriptionProperty.stringValue = EditorGUILayout.TextArea(_descriptionProperty.stringValue);
+            Uniform.SpaceOneLine();
         }
     }
     [CustomEditor(typeof(BaseVariable<,>), true)]

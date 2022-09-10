@@ -25,6 +25,7 @@ namespace Pancake.Editor.SOA
         }
         protected override void DrawValue()
         {
+            DrawDeveloperDescription();
             var sceneVariable = (SceneVariable)target;
             var sceneInfoProperty = serializedObject.FindProperty(SCENE_INFO_PROPERTY);
             if (sceneVariable.Value.Scene == null)

@@ -15,6 +15,7 @@ namespace Pancake.Editor.SOA
         }
 
         private ReorderableList _reorderableList;
+        private SerializedProperty _descriptionProperty;
 
         // UI
         private const bool DISABLE_ELEMENTS = false;
@@ -34,6 +35,7 @@ namespace Pancake.Editor.SOA
 
         private void OnEnable()
         {
+            _descriptionProperty = serializedObject.FindProperty("description");
             _titleGUIContent = new GUIContent(string.Format(TITLE_FORMAT, Target.Type));
             _noPropertyDrawerWarningGUIContent = new GUIContent(string.Format(NO_PROPERTY_WARNING_FORMAT, Target.Type));
 
@@ -53,7 +55,9 @@ namespace Pancake.Editor.SOA
         public override void OnInspectorGUI()
         {
             EditorGUI.BeginChangeCheck();
-
+            EditorGUILayout.LabelField("Developer Description", Uniform.TextImportant);
+            _descriptionProperty.stringValue = EditorGUILayout.TextArea(_descriptionProperty.stringValue);
+            Uniform.SpaceOneLine();
             _reorderableList.DoLayoutList();
 
             if (EditorGUI.EndChangeCheck())

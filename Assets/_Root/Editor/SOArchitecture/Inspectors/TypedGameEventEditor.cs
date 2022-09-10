@@ -10,11 +10,19 @@ namespace Pancake.Editor.SOA
     public class TypedGameEventEditor : BaseGameEventEditor
     {
         private MethodInfo _raiseMethod;
+        private SerializedProperty _descriptionProperty;
+
+        protected override void DrawDeveloperDescription()
+        {
+            EditorGUILayout.LabelField("Developer Description", Uniform.TextImportant);
+            _descriptionProperty.stringValue = EditorGUILayout.TextArea(_descriptionProperty.stringValue);
+            Uniform.SpaceOneLine();
+        }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-
+            _descriptionProperty = serializedObject.FindProperty("description");
             _raiseMethod = target.GetType().BaseType.GetMethod("Raise", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
         }
         protected override void DrawRaiseButton()
@@ -37,6 +45,13 @@ namespace Pancake.Editor.SOA
                 CallMethod(GetDebugValue(property));
             }
         }
+
+        public override void OnInspectorGUI()
+        {
+            DrawDeveloperDescription();
+            base.OnInspectorGUI();
+        }
+
         private object GetDebugValue(SerializedProperty property)
         {
             Type targetType = property.serializedObject.targetObject.GetType();

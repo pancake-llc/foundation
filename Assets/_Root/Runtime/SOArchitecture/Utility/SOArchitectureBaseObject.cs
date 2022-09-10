@@ -9,7 +9,7 @@ namespace Pancake.SOA
     public abstract class SOArchitectureBaseObject : ScriptableObject
     {
 #if UNITY_EDITOR
-        [Multiline] [SerializeField] private string description;
+        [SerializeField] private string description;
 #endif
     } 
 }

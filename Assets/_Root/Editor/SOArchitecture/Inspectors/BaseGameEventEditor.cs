@@ -10,7 +10,7 @@ namespace Pancake.Editor.SOA
         private StackTrace _stackTrace;
 
         protected abstract void DrawRaiseButton();
-
+        protected abstract void DrawDeveloperDescription();
         protected virtual void OnEnable()
         {
             _stackTrace = new StackTrace(Target);
