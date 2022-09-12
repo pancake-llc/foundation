@@ -3,9 +3,9 @@
 using System;
 using System.Runtime.ExceptionServices;
 using System.Threading;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static class UniTaskObservableExtensions
     {
@@ -285,7 +285,7 @@ namespace Pancake.Core.Tasks
     }
 }
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     // Bridges for Rx.
 

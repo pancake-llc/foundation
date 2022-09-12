@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
 #if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST_SUPPORT)
     

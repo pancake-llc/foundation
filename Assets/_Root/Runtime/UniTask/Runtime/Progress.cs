@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     /// <summary>
     /// Lightweight IProgress[T] factory.

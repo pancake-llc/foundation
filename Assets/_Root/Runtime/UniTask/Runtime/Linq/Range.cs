@@ -1,7 +1,7 @@
-﻿using Pancake.Core.Tasks.Internal;
+﻿using Pancake.Threading.Tasks.Internal;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
@@ -14,7 +14,7 @@ namespace Pancake.Core.Tasks.Linq
 
             if (count == 0) UniTaskAsyncEnumerable.Empty<int>();
 
-            return new Pancake.Core.Tasks.Linq.Range(start, count);
+            return new Pancake.Threading.Tasks.Linq.Range(start, count);
         }
     }
 

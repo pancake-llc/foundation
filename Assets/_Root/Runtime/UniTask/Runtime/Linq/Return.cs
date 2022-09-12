@@ -1,7 +1,7 @@
-﻿using Pancake.Core.Tasks.Internal;
+﻿using Pancake.Threading.Tasks.Internal;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {

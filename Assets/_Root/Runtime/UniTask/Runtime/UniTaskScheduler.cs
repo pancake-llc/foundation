@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     // UniTask has no scheduler like TaskScheduler.
     // Only handle unobserved exception.

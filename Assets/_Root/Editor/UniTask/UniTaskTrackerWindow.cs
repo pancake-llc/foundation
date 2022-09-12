@@ -7,9 +7,9 @@ using System.Linq;
 using System.Reflection;
 using System;
 using UnityEditor.IMGUI.Controls;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 
-namespace Pancake.Core.Tasks.Editor
+namespace Pancake.Threading.Tasks.Editor
 {
     public class UniTaskTrackerWindow : EditorWindow
     {

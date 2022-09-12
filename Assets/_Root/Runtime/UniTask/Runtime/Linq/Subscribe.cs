@@ -1,9 +1,9 @@
-﻿using Pancake.Core.Tasks.Internal;
+﻿using Pancake.Threading.Tasks.Internal;
 using System;
 using System.Threading;
-using Subscribes = Pancake.Core.Tasks.Linq.Subscribe;
+using Subscribes = Pancake.Threading.Tasks.Linq.Subscribe;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {

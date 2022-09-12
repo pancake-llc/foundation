@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static class EnumerableAsyncExtensions
     {

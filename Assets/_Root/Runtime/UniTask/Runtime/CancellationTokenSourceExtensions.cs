@@ -2,11 +2,11 @@
 
 using System.Threading;
 using UnityEngine;
-using Pancake.Core.Tasks.Triggers;
+using Pancake.Threading.Tasks.Triggers;
 using System;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
 
     public static partial class CancellationTokenSourceExtensions

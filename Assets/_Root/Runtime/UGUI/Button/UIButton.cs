@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Pancake.Core.Tasks;
+using Pancake.Threading.Tasks;
 using Pancake.Tween;
 using UnityEngine;
 using UnityEngine.EventSystems;

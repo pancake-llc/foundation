@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     internal static class StateTuple
     {

@@ -4,12 +4,12 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 #if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST_SUPPORT)
 using UnityEngine.Networking;
 #endif
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static partial class UnityAsyncExtensions
     {

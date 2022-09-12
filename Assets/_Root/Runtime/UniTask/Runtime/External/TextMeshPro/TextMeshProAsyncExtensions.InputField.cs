@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using TMPro;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static partial class TextMeshProAsyncExtensions
     {

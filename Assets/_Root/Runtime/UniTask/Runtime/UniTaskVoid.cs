@@ -4,9 +4,9 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Pancake.Core.Tasks.CompilerServices;
+using Pancake.Threading.Tasks.CompilerServices;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     [AsyncMethodBuilder(typeof(AsyncUniTaskVoidMethodBuilder))]
     public readonly struct UniTaskVoid

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public class UnityWebRequestException : Exception
     {

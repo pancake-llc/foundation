@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public interface IResolvePromise
     {

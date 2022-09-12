@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     internal static class UnityEqualityComparer
     {

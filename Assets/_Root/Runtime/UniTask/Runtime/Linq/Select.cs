@@ -1,8 +1,8 @@
-﻿using Pancake.Core.Tasks.Internal;
+﻿using Pancake.Threading.Tasks.Internal;
 using System;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
@@ -11,7 +11,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(selector, nameof(selector));
 
-            return new Pancake.Core.Tasks.Linq.Select<TSource, TResult>(source, selector);
+            return new Pancake.Threading.Tasks.Linq.Select<TSource, TResult>(source, selector);
         }
 
         public static IUniTaskAsyncEnumerable<TResult> Select<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, TResult> selector)
@@ -19,7 +19,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(selector, nameof(selector));
 
-            return new Pancake.Core.Tasks.Linq.SelectInt<TSource, TResult>(source, selector);
+            return new Pancake.Threading.Tasks.Linq.SelectInt<TSource, TResult>(source, selector);
         }
 
         public static IUniTaskAsyncEnumerable<TResult> SelectAwait<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, UniTask<TResult>> selector)
@@ -27,7 +27,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(selector, nameof(selector));
 
-            return new Pancake.Core.Tasks.Linq.SelectAwait<TSource, TResult>(source, selector);
+            return new Pancake.Threading.Tasks.Linq.SelectAwait<TSource, TResult>(source, selector);
         }
 
         public static IUniTaskAsyncEnumerable<TResult> SelectAwait<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, UniTask<TResult>> selector)
@@ -35,7 +35,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(selector, nameof(selector));
 
-            return new Pancake.Core.Tasks.Linq.SelectIntAwait<TSource, TResult>(source, selector);
+            return new Pancake.Threading.Tasks.Linq.SelectIntAwait<TSource, TResult>(source, selector);
         }
 
         public static IUniTaskAsyncEnumerable<TResult> SelectAwaitWithCancellation<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask<TResult>> selector)
@@ -43,7 +43,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(selector, nameof(selector));
 
-            return new Pancake.Core.Tasks.Linq.SelectAwaitWithCancellation<TSource, TResult>(source, selector);
+            return new Pancake.Threading.Tasks.Linq.SelectAwaitWithCancellation<TSource, TResult>(source, selector);
         }
 
         public static IUniTaskAsyncEnumerable<TResult> SelectAwaitWithCancellation<TSource, TResult>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, CancellationToken, UniTask<TResult>> selector)
@@ -51,7 +51,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(selector, nameof(selector));
 
-            return new Pancake.Core.Tasks.Linq.SelectIntAwaitWithCancellation<TSource, TResult>(source, selector);
+            return new Pancake.Threading.Tasks.Linq.SelectIntAwaitWithCancellation<TSource, TResult>(source, selector);
         }
     }
 

@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     internal static class DiagnosticsExtensions
     {

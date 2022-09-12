@@ -3,13 +3,13 @@
 #if UNITY_2018_4 || UNITY_2019_4_OR_NEWER
 #if PANCAKE_ASSETBUNDLE_SUPPORT
 
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static partial class UnityAsyncExtensions
     {

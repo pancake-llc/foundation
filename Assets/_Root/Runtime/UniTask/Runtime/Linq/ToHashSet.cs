@@ -1,8 +1,8 @@
-﻿using Pancake.Core.Tasks.Internal;
+﻿using Pancake.Threading.Tasks.Internal;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
@@ -10,7 +10,7 @@ namespace Pancake.Core.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Pancake.Core.Tasks.Linq.ToHashSet.ToHashSetAsync(source, EqualityComparer<TSource>.Default, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ToHashSet.ToHashSetAsync(source, EqualityComparer<TSource>.Default, cancellationToken);
         }
 
         public static UniTask<HashSet<TSource>> ToHashSetAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, IEqualityComparer<TSource> comparer, CancellationToken cancellationToken = default)
@@ -18,7 +18,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(comparer, nameof(comparer));
 
-            return Pancake.Core.Tasks.Linq.ToHashSet.ToHashSetAsync(source, comparer, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ToHashSet.ToHashSetAsync(source, comparer, cancellationToken);
         }
     }
 

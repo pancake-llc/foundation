@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     // optimized version of Standard Queue<T>.
     internal class MinimumQueue<T>

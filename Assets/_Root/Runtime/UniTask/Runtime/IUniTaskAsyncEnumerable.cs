@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public interface IUniTaskAsyncEnumerable<out T>
     {

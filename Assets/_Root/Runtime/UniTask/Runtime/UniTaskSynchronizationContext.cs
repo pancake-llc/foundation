@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public class UniTaskSynchronizationContext : SynchronizationContext
     {

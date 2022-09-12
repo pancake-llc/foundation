@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static partial class UnityAsyncExtensions
     {

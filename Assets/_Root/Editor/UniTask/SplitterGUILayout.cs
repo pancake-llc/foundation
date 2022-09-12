@@ -6,7 +6,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks.Editor
+namespace Pancake.Threading.Tasks.Editor
 {
     // reflection call of UnityEditor.SplitterGUILayout
     internal static class SplitterGUILayout

@@ -1,12 +1,12 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public partial struct UniTask
     {
@@ -489,7 +489,7 @@ namespace Pancake.Core.Tasks
 
     internal static class CompletedTasks
     {
-        public static readonly UniTask<AsyncUnit> AsyncUnit = UniTask.FromResult(Pancake.Core.Tasks.AsyncUnit.Default);
+        public static readonly UniTask<AsyncUnit> AsyncUnit = UniTask.FromResult(Pancake.Threading.Tasks.AsyncUnit.Default);
         public static readonly UniTask<bool> True = UniTask.FromResult(true);
         public static readonly UniTask<bool> False = UniTask.FromResult(false);
         public static readonly UniTask<int> Zero = UniTask.FromResult(0);

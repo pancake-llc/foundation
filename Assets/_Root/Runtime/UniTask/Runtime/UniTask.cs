@@ -1,14 +1,14 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable CS0436
 
-using Pancake.Core.Tasks.CompilerServices;
+using Pancake.Threading.Tasks.CompilerServices;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     internal static class AwaiterActions
     {

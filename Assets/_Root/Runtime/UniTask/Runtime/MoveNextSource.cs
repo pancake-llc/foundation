@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public abstract class MoveNextSource : IUniTaskSource<bool>
     {

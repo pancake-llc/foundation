@@ -4,7 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static class CancellationTokenExtensions
     {

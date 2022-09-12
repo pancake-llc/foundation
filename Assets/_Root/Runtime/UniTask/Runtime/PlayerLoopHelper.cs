@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 using System.Threading;
 
 #if UNITY_2019_3_OR_NEWER
@@ -18,7 +18,7 @@ using PlayerLoopType = UnityEngine.Experimental.PlayerLoop;
 using UnityEditor;
 #endif
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static class UniTaskLoopRunners
     {

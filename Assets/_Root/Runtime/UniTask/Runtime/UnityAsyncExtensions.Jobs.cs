@@ -6,7 +6,7 @@ using System.Threading;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static partial class UnityAsyncExtensions
     {

@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
         public static IUniTaskAsyncEnumerable<T> Never<T>()
         {
-            return Pancake.Core.Tasks.Linq.Never<T>.Instance;
+            return Pancake.Threading.Tasks.Linq.Never<T>.Instance;
         }
     }
 

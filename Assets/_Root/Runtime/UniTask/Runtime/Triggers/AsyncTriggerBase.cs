@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks.Triggers
+namespace Pancake.Threading.Tasks.Triggers
 {
     public abstract class AsyncTriggerBase<T> : MonoBehaviour, IUniTaskAsyncEnumerable<T>
     {

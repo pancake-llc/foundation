@@ -1,13 +1,13 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public enum DelayType
     {

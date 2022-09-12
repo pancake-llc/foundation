@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
-using Pancake.Core.Tasks;
+using Pancake.Threading.Tasks;
 using Pancake.Loader;
 using UnityEditor;
 using UnityEngine;

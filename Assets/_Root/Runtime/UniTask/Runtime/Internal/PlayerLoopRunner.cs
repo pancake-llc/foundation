@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     internal sealed class PlayerLoopRunner
     {

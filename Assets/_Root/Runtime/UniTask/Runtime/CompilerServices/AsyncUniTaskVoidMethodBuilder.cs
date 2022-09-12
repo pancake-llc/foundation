@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Pancake.Core.Tasks.CompilerServices
+namespace Pancake.Threading.Tasks.CompilerServices
 {
     [StructLayout(LayoutKind.Auto)]
     public struct AsyncUniTaskVoidMethodBuilder

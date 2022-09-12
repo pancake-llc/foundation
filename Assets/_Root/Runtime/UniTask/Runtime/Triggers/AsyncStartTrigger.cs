@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Pancake.Core.Tasks.Triggers
+namespace Pancake.Threading.Tasks.Triggers
 {
     public static partial class AsyncTriggerExtensions
     {

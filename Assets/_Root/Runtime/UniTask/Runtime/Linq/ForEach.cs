@@ -1,8 +1,8 @@
-﻿using Pancake.Core.Tasks.Internal;
+﻿using Pancake.Threading.Tasks.Internal;
 using System;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
@@ -11,7 +11,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Pancake.Core.Tasks.Linq.ForEach.ForEachAsync(source, action, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ForEach.ForEachAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Action<TSource, Int32> action, CancellationToken cancellationToken = default)
@@ -19,7 +19,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Pancake.Core.Tasks.Linq.ForEach.ForEachAsync(source, action, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ForEach.ForEachAsync(source, action, cancellationToken);
         }
 
         /// <summary>Obsolete(Error), Use Use ForEachAwaitAsync instead.</summary>
@@ -43,7 +43,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Pancake.Core.Tasks.Linq.ForEach.ForEachAwaitAsync(source, action, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ForEach.ForEachAwaitAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAwaitAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, UniTask> action, CancellationToken cancellationToken = default)
@@ -51,7 +51,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Pancake.Core.Tasks.Linq.ForEach.ForEachAwaitAsync(source, action, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ForEach.ForEachAwaitAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, CancellationToken, UniTask> action, CancellationToken cancellationToken = default)
@@ -59,7 +59,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Pancake.Core.Tasks.Linq.ForEach.ForEachAwaitWithCancellationAsync(source, action, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ForEach.ForEachAwaitWithCancellationAsync(source, action, cancellationToken);
         }
 
         public static UniTask ForEachAwaitWithCancellationAsync<TSource>(this IUniTaskAsyncEnumerable<TSource> source, Func<TSource, Int32, CancellationToken, UniTask> action, CancellationToken cancellationToken = default)
@@ -67,7 +67,7 @@ namespace Pancake.Core.Tasks.Linq
             Error.ThrowArgumentNullException(source, nameof(source));
             Error.ThrowArgumentNullException(action, nameof(action));
 
-            return Pancake.Core.Tasks.Linq.ForEach.ForEachAwaitWithCancellationAsync(source, action, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ForEach.ForEachAwaitWithCancellationAsync(source, action, cancellationToken);
         }
     }
 

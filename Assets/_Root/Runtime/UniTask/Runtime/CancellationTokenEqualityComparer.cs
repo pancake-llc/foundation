@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public class CancellationTokenEqualityComparer : IEqualityComparer<CancellationToken>
     {

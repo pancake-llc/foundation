@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 #endif
 
-namespace Pancake.Core.Tasks.Triggers
+namespace Pancake.Threading.Tasks.Triggers
 {
 #region FixedUpdate
 

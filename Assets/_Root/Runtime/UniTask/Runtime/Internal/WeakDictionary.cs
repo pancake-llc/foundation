@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     // Add, Remove, Enumerate with sweep. All operations are thread safe(in spinlock).
     internal class WeakDictionary<TKey, TValue>

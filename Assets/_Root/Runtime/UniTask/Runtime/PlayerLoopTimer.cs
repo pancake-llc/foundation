@@ -2,10 +2,10 @@
 
 using System.Threading;
 using System;
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 using UnityEngine;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public abstract class PlayerLoopTimer : IDisposable, IPlayerLoopItem
     {

@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     // UnityEngine Bridges.
 

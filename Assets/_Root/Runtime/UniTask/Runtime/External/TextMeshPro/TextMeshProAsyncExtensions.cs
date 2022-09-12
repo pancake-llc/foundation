@@ -5,7 +5,7 @@ using System.Threading;
 using TMPro;
 using UnityEngine.Events;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static partial class TextMeshProAsyncExtensions
     {

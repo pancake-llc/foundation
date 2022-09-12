@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public interface IReadOnlyAsyncReactiveProperty<T> : IUniTaskAsyncEnumerable<T>
     {

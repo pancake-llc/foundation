@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Pancake.Core.Tasks;
+using Pancake.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

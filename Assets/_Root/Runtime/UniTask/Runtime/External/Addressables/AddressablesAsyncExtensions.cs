@@ -2,14 +2,14 @@
 
 #if PANCAKE_ADDRESSABLE_SUPPORT
 
-using Pancake.Core.Tasks.Internal;
+using Pancake.Threading.Tasks.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static class AddressablesAsyncExtensions
     {

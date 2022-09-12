@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public enum UniTaskStatus
     {

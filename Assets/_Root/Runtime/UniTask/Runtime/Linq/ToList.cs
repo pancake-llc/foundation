@@ -1,8 +1,8 @@
-﻿using Pancake.Core.Tasks.Internal;
+﻿using Pancake.Threading.Tasks.Internal;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     public static partial class UniTaskAsyncEnumerable
     {
@@ -10,7 +10,7 @@ namespace Pancake.Core.Tasks.Linq
         {
             Error.ThrowArgumentNullException(source, nameof(source));
 
-            return Pancake.Core.Tasks.Linq.ToList.ToListAsync(source, cancellationToken);
+            return Pancake.Threading.Tasks.Linq.ToList.ToListAsync(source, cancellationToken);
         }
     }
 

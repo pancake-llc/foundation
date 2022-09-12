@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public partial struct UniTask
     {

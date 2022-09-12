@@ -2,9 +2,9 @@
 
 using System.Threading;
 using UnityEngine;
-using Pancake.Core.Tasks.Triggers;
+using Pancake.Threading.Tasks.Triggers;
 
-namespace Pancake.Core.Tasks
+namespace Pancake.Threading.Tasks
 {
     public static class UniTaskCancellationExtensions
     {
@@ -22,7 +22,7 @@ namespace Pancake.Core.Tasks
     }
 }
 
-namespace Pancake.Core.Tasks.Triggers
+namespace Pancake.Threading.Tasks.Triggers
 {
     public static partial class AsyncTriggerExtensions
     {

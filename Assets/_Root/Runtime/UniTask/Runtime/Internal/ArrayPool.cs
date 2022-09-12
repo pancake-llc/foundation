@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Internal
+namespace Pancake.Threading.Tasks.Internal
 {
     // Same interface as System.Buffers.ArrayPool<T> but only provides Shared.
 

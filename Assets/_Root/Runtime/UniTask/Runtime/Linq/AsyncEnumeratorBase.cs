@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Pancake.Core.Tasks.Linq
+namespace Pancake.Threading.Tasks.Linq
 {
     // note: refactor all inherit class and should remove this.
     // see Select and Where.
