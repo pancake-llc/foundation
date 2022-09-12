@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Pancake.Core;
 using UnityEngine;
 
 namespace Pancake.Editor

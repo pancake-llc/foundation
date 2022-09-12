@@ -5,7 +5,6 @@ namespace Pancake.Editor
     using System.Linq;
     using UnityEditor;
     using UnityEngine;
-    using Core;
 
     public delegate void ProbeHitSelectHandler(bool add);
 
