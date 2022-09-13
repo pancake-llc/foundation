@@ -1,4 +1,4 @@
-﻿namespace Pancake
+﻿namespace Pancake.Buffers
 {
     using System;
     using System.Collections.Generic;
