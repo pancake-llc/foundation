@@ -12,40 +12,40 @@ using UnityEditor;
 namespace Pancake.Init.Internal
 {
 	[Serializable, TypeConverter(typeof(Converter))]
-	public class CrossSceneReference : ScriptableObject<GameObject, Object>, IValueProvider<Object>
+	public sealed class CrossSceneReference : ScriptableObject<GameObject, Object>, IValueProvider<Object>
 		#if UNITY_EDITOR
 		, ISerializationCallbackReceiver
 		#endif
 	{
 		[SerializeField, HideInInspector]
-		private Id guid;
-
-		#pragma warning disable CS0414
+		private Id guid = default;
 
 		[SerializeField]
-		internal bool isCrossScene;
+		internal bool isCrossScene = false;
 
 		#if DEBUG // To make this persist through builds, could store in a separate ScriptableObject asset instead? Or just take the hit in increased build size.
+#pragma warning disable CS0414
 		[SerializeField]
-		private Object target;
+		private Object target = null;
 		[SerializeField]
-		private string targetName;
+		private string targetName = null;
 		[SerializeField]
-		private string globalObjectIdSlow;
+		private string globalObjectIdSlow = null;
 		[SerializeField]
-		private string sceneName;
+		private string sceneName = null;
 		[SerializeField]
-		private string sceneOrAssetGuid;
+		private string sceneOrAssetGuid = null;
 		[SerializeField]
 		private Texture icon = null;
+#pragma warning restore CS0414
 		#endif
 
 		#if UNITY_EDITOR
+#pragma warning disable CS0414
 		[SerializeField]
-		private SceneAsset sceneAsset;
+		private SceneAsset sceneAsset = null;
+#pragma warning restore CS0414
 		#endif
-
-		#pragma warning restore CS0414
 
 		public string Guid => guid.ToString();
 		
@@ -122,11 +122,13 @@ namespace Pancake.Init.Internal
 				return;
 			}
 
-			#if DEBUG
+			#if UNITY_EDITOR
 			globalObjectIdSlow = GlobalObjectId.GetGlobalObjectIdSlow(value).ToString();
+			icon = EditorGUIUtility.ObjectContent(target, target.GetType()).image;	
+			#endif
+			
+			#if DEBUG
 			targetName = value.name;
-			icon = EditorGUIUtility.ObjectContent(target, target.GetType()).image;			
-
 			if(!(value is GameObject))
 			{
 				targetName += " (" + value.GetType().Name + ")";

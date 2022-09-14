@@ -29,15 +29,19 @@ namespace Pancake.Init
 		private bool isPrefab = false;
 
 		#if DEBUG
+#pragma warning disable CS0414
 		[SerializeField]
 		private string globalObjectIdSlow = null;
 		[SerializeField]
 		private Texture icon = null;
+#pragma warning restore CS0414
 		#endif
 
 		#if UNITY_EDITOR
+#pragma warning disable CS0414
 		[SerializeField]
 		private SceneAsset scene = null;
+#pragma warning restore CS0414
 		#endif
 
 		public Id Guid => guid;
