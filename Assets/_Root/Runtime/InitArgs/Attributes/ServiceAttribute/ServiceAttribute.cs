@@ -67,7 +67,7 @@ namespace Pancake.Init
 	/// </para>
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-	public class ServiceAttribute : Attribute
+	public sealed class ServiceAttribute : Attribute
 	{
 		/// <summary>
 		/// Class or interface type that uniquely defines the service and can be used to retrieve an instance of the it.

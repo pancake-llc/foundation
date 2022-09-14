@@ -65,7 +65,7 @@ namespace Pancake.Init
 	/// </para>
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false), Conditional("UNITY_EDITOR")]
-	public class EditorServiceAttribute : Attribute
+	public sealed class EditorServiceAttribute : Attribute
 	{
 		/// <summary>
 		/// Class or interface type that uniquely defines the service and can be used to retrieve an instance of the it.
