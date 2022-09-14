@@ -16,7 +16,7 @@ namespace Pancake.Init
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-	public class InitOnResetAttribute : Attribute
+	public sealed class InitOnResetAttribute : Attribute
 	{
 		private const From defaultFrom = From.Default;
 
