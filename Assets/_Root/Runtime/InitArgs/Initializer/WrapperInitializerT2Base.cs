@@ -7,6 +7,11 @@ using static Pancake.Init.Internal.InitializerUtility;
 using static Pancake.NullExtensions;
 using Object = UnityEngine.Object;
 
+#if UNITY_EDITOR
+using Pancake.Editor.Init;
+#endif
+
+
 namespace Pancake.Init
 {
 	/// <summary>
@@ -35,7 +40,7 @@ namespace Pancake.Init
 	/// <typeparam name="TWrapped"> Type of the object wrapped by the wrapper. </typeparam>
 	/// <typeparam name="TFirstArgument"> Type of the first argument passed to the wrapped object's constructor. </typeparam>
 	/// <typeparam name="TSecondArgument"> Type of the second argument passed to the wrapped object's constructor. </typeparam>
-	public abstract class WrapperInitializerBase<TWrapper, TWrapped, TFirstArgument, TSecondArgument> : MonoBehaviour, IInitializer, IValueProvider<TWrapped>
+	public abstract class WrapperInitializerBase<TWrapper, TWrapped, TFirstArgument, TSecondArgument> : MonoBehaviour, IInitializer<TWrapped, TFirstArgument, TSecondArgument>, IValueProvider<TWrapped>
 		#if DEBUG
 		, IInitializerEditorOnly
 		#endif
@@ -81,10 +86,93 @@ namespace Pancake.Init
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => false;
 		#endif
 
+		/// <inheritdoc/>
+		public TWrapped InitTarget()
+		{
+			if(this == null)
+			{
+				return target;
+			}
+
+			// Handle instance first creation method, which supports cyclical dependencies (A requires B, and B requires A).
+			if(target is IInitializable<TFirstArgument, TSecondArgument> initializable && CreateWrappedObject() is var wrappedObject)
+			{
+				target = InitWrapper(wrappedObject);
+
+				var firstArgument = FirstArgument;
+				var secondArgument = SecondArgument;
+
+#if DEBUG || INIT_ARGS_SAFE_MODE
+				if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
+				{
+					if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TWrapper), typeof(TFirstArgument));
+					if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TWrapper), typeof(TSecondArgument));
+				}
+#endif
+
+				initializable.Init(firstArgument, secondArgument);
+			}
+			// Handle arguments first creation method, which supports constructor injection.
+			else
+			{
+				var firstArgument = FirstArgument;
+				var secondArgument = SecondArgument;
+
+#if DEBUG || INIT_ARGS_SAFE_MODE
+				if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
+				{
+					if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TWrapper), typeof(TFirstArgument));
+					if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TWrapper), typeof(TSecondArgument));
+				}
+#endif
+
+				wrappedObject = CreateWrappedObject(firstArgument, secondArgument);
+				target = InitWrapper(wrappedObject);
+			}
+			
+			Updater.InvokeAtEndOfFrame(DestroySelf);
+			return target;
+		}
+
+		
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument) { }
 
 		/// <summary>
-		/// Creates a new Instance of <see cref="TWrapped"/> initialized using the provided arguments and returns it.
+		/// Creates a new instance of <see cref="TWrapped"/> using the default constructor.
+		/// <para>
+		/// By default this method returns <see langword="null"/>. When this is the case then
+		/// the <see cref="CreateWrappedObject(TArgument)"/> overload will be used to create the
+		/// <see cref="TWrapped"/> instance during initialization.
+		/// </para>
+		/// <para>
+		/// If this method is overridden to return a non-null value, and <see cref="TWrapped"/> implements
+		/// <see cref="IInitializable{TArgument}"/>, then this overload will be used to create the instance
+		/// during initialization instead. The instance will be created and injected to the <see cref="TWrapper"/>
+		/// component first, and only then will all the initialization arguments be retrieved and injected
+		/// to the Wrapped object through its <see cref="IInitializable{}.Init"/> function.
+		/// <para>
+		/// The main benefit with this form of two-part initialization (first create and inject the instance,
+		/// then retrieve the arguments and inject them to the instance), is that it makes it possible to
+		/// have cyclical dependencies between your objects. Normally if A requires B during its initialization,
+		/// and B requires A during its initialization, both will fail to initialize as the cyclical dependency
+		/// is unresolvable. With two-part initialization it is possible to initialize both objects, because A
+		/// can be created without its dependencies injected at first, then B can be created and initialized with A,
+		/// and finally B can be injected to A.
+		/// is that 
+		/// </para>
+		/// </para>
+		/// </summary>
+		/// <returns> Instance of the <see cref="TWrapped"/> class if it has a default constructor; otherwise, <see langword="null"/>. </returns>
+		[CanBeNull]
+		protected virtual TWrapped CreateWrappedObject() => default;
+
+		
+		/// <summary>
+		/// Creates a new instance of <see cref="TWrapped"/> initialized using the provided arguments and returns it.
+		/// <para>
+		/// If you need support circular dependencies between your objects then you need to also override
+		/// <see cref="CreateWrappedObject()"/>.
+		/// </para>
 		/// </summary>
 		/// <param name="firstArgument"> The first argument used to initialize the wrapped object. </param>
 		/// <param name="secondArgument"> The second argument used to initialize the wrapped object. </param>
@@ -134,30 +222,6 @@ namespace Pancake.Init
 		}
 
 		private void Awake() => InitTarget();
-
-		private TWrapped InitTarget()
-		{
-			if(this == null)
-			{
-				return target;
-			}
-
-			var firstArgument = FirstArgument;
-			var secondArgument = SecondArgument;
-
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
-			{
-				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TWrapper), typeof(TFirstArgument));
-				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TWrapper), typeof(TSecondArgument));
-			}
-			#endif
-
-			var wrappedObject = CreateWrappedObject(firstArgument, secondArgument);
-			target = InitWrapper(wrappedObject);
-			Updater.InvokeAtEndOfFrame(DestroySelf);
-			return target;
-		}
 
 		private void DestroySelf()
 		{

@@ -7,6 +7,10 @@ using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
 using static Pancake.NullExtensions;
 
+#if UNITY_EDITOR
+using Pancake.Editor.Init;
+#endif
+
 namespace Pancake.Init
 {
 	/// <summary>
@@ -34,7 +38,7 @@ namespace Pancake.Init
 	/// </summary>
 	/// <typeparam name="TClient"> Type of the initialized client component. </typeparam>
 	/// <typeparam name="TArgument"> Type of the argument to pass to the client component's Init function. </typeparam>
-	public abstract class InitializerBase<TClient, TArgument> : MonoBehaviour, IInitializer, IValueProvider<TClient>
+	public abstract class InitializerBase<TClient, TArgument> : MonoBehaviour, IInitializer<TClient, TArgument>, IValueProvider<TClient>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -75,6 +79,28 @@ namespace Pancake.Init
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => false;
 		#endif
 
+		/// <inheritdoc/>
+		public TClient InitTarget()
+		{
+			if(this == null)
+			{
+				return target;
+			}
+
+			var argument = Argument;
+
+#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
+			{
+				if(argument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TArgument));
+			}
+#endif
+
+			target = InitTarget(argument);
+			Updater.InvokeAtEndOfFrame(DestroySelf);
+			return target;
+		}
+		
 		/// <summary>
 		/// Resets the Init <paramref name="argument"/> to its default value.
 		/// <para>
@@ -126,27 +152,6 @@ namespace Pancake.Init
 		}
 
 		private void Awake() => InitTarget();
-
-		private TClient InitTarget()
-		{
-			if(this == null)
-			{
-				return target;
-			}
-
-			var argument = Argument;
-
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
-			{
-				if(argument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TArgument));
-			}
-			#endif
-
-			target = InitTarget(argument);
-			Updater.InvokeAtEndOfFrame(DestroySelf);
-			return target;
-		}
 
 		private void DestroySelf()
 		{

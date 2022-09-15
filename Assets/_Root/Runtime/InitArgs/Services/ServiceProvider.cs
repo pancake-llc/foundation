@@ -27,7 +27,7 @@ namespace Pancake.Init
     /// </para>
     /// </summary>
     [Service(typeof(IServiceProvider))]
-    public class ServiceProvider : IServiceProvider, System.IServiceProvider
+    public sealed class ServiceProvider : IServiceProvider, System.IServiceProvider
     {
         /// <inheritdoc/>
         public TDefiningClassOrInterface Get<TDefiningClassOrInterface>() => Service<TDefiningClassOrInterface>.Instance;

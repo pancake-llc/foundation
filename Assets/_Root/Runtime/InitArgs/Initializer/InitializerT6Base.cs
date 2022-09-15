@@ -7,6 +7,11 @@ using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
 using static Pancake.NullExtensions;
 
+#if UNITY_EDITOR
+using Pancake.Editor.Init;
+#endif
+
+
 namespace Pancake.Init
 {
 	/// <summary>
@@ -44,7 +49,7 @@ namespace Pancake.Init
 	/// <typeparam name="TFourthArgument"> Type of the fourth argument to pass to the client component's Init function. </typeparam>
 	/// <typeparam name="TFifthArgument"> Type of the fifth argument to pass to the client component's Init function. </typeparam>
 	/// <typeparam name="TSixthArgument"> Type of the sixth argument to pass to the client component's Init function. </typeparam>
-	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : MonoBehaviour, IInitializer, IValueProvider<TClient>
+	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : MonoBehaviour, IInitializer<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, IValueProvider<TClient>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -110,6 +115,39 @@ namespace Pancake.Init
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => false;
 		#endif
 
+		/// <inheritdoc/>
+		public TClient InitTarget()
+		{
+			if(this == null)
+			{
+				return target;
+			}
+
+			var firstArgument = FirstArgument;
+			var secondArgument = SecondArgument;
+			var thirdArgument = ThirdArgument;
+			var fourthArgument = FourthArgument;
+			var fifthArgument = FifthArgument;
+			var sixthArgument = SixthArgument;
+
+#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
+			{
+				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFirstArgument));
+				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TSecondArgument));
+				if(thirdArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TThirdArgument));
+				if(fourthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFourthArgument));
+				if(fifthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFifthArgument));
+				if(sixthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TSixthArgument));
+			}
+#endif
+
+			target = InitTarget(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+			Updater.InvokeAtEndOfFrame(DestroySelf);
+			return target;
+		}
+
+		
 		/// <summary>
 		/// Resets the Init arguments to their default values.
 		/// <para>
@@ -176,37 +214,6 @@ namespace Pancake.Init
 		}
 
 		private void Awake() => InitTarget();
-
-		private TClient InitTarget()
-		{
-			if(this == null)
-			{
-				return target;
-			}
-
-			var firstArgument = FirstArgument;
-			var secondArgument = SecondArgument;
-			var thirdArgument = ThirdArgument;
-			var fourthArgument = FourthArgument;
-			var fifthArgument = FifthArgument;
-			var sixthArgument = SixthArgument;
-
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
-			{
-				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFirstArgument));
-				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TSecondArgument));
-				if(thirdArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TThirdArgument));
-				if(fourthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFourthArgument));
-				if(fifthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFifthArgument));
-				if(sixthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TSixthArgument));
-			}
-			#endif
-
-			target = InitTarget(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
-			Updater.InvokeAtEndOfFrame(DestroySelf);
-			return target;
-		}
 
 		private void DestroySelf()
 		{

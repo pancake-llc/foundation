@@ -23,7 +23,7 @@ namespace Pancake.Init
     /// </summary>
     [AddComponentMenu(Hidden)]
     [Service(typeof(ICoroutineRunner))]
-    public class Updater : MonoBehaviour, ICoroutineRunner
+    public sealed class Updater : MonoBehaviour, ICoroutineRunner
     {
         private const string Hidden = "";
 

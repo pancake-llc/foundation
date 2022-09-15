@@ -14,7 +14,7 @@ namespace Pancake.Editor
     /// in unit tests.
     /// </para>
     /// </summary>
-    public class EditorCoroutineRunner : ICoroutineRunner
+    public sealed class EditorCoroutineRunner : ICoroutineRunner
     {
         /// <summary>
         /// A single cached Instance of EditorCoroutineRunner that can be shared across multiple client objects.

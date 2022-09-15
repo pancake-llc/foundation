@@ -6,7 +6,7 @@ namespace Pancake.Init
     /// The exception that is thrown when attempting to create an Instance of an object that implements an
     /// <see cref="IArgs{}"/> interface without having provided the arguments that it requires.
     /// </summary>
-    public class MissingInitArgumentsException : InvalidOperationException
+    public sealed class MissingInitArgumentsException : InvalidOperationException
     {
         /// <summary>
         /// Initializes a new Instance of the <see cref="MissingInitArgumentsException"/> class.

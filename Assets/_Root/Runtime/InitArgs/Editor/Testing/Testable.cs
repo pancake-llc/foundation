@@ -16,7 +16,7 @@ namespace Pancake.Init.Testing
     /// This can be useful for unit testing components in edit mode.
     /// </para>
     /// </summary>
-    public class Testable : IDisposable
+    public sealed class Testable : IDisposable
     {
         private readonly GameObject gameObject = null;
         private readonly List<TestableComponent> components;

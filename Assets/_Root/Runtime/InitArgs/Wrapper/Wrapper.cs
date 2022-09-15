@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using UnityEngine;
+using System;
 using JetBrains.Annotations;
 using Object = UnityEngine.Object;
+using static Pancake.Init.FlagsValues;
 
 namespace Pancake.Init
 {
@@ -63,17 +65,48 @@ namespace Pancake.Init
         [SerializeField]
         private TWrapped wrapped = default;
 
-        private bool awakeInvokedWithoutWrappedObject;
+        private InitState initState = InitState.None;
 
         /// <summary>
         /// The plain old class object wrapped by this component.
         /// </summary>
-        public TWrapped WrappedObject => wrapped;
+        public TWrapped WrappedObject
+        {
+            get
+            {
+                if(!ReferenceEquals(wrapped, null) || initState.HasFlag(InitState.SearchedForInitializers))
+                {
+                    return wrapped;
+                }
+
+#if UNITY_EDITOR
+                if(!Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
+                {
+                    return wrapped;
+                }
+#endif
+
+                initState |= InitState.SearchedForInitializers;
+
+                foreach(var initializer in GetComponents<IInitializer>())
+                {
+                    if(initializer.Target != this)
+                    {
+                        continue;
+                    }
+
+                    initializer.InitTarget();
+                    break;
+                }
+
+                return wrapped;
+            }
+        }
 
         /// <summary>
         /// The plain old class object wrapped by this component.
         /// </summary>
-        object IWrapper.WrappedObject => wrapped;
+        object IWrapper.WrappedObject => WrappedObject;
 
         /// <summary>
         /// This wrapper as a <see cref="MonoBehaviour"/>.
@@ -90,10 +123,10 @@ namespace Pancake.Init
         /// <summary>
         /// The plain old class object wrapped by this component.
         /// </summary>
-        TWrapped IValueProvider<TWrapped>.Value => wrapped;
+        TWrapped IValueProvider<TWrapped>.Value => WrappedObject;
 
         /// <inheritdoc/>
-        object IValueProvider.Value => wrapped;
+        object IValueProvider.Value => WrappedObject;
 
         /// <summary>
         /// Provides the <see cref="Component"/> with the object that it wraps.
@@ -125,11 +158,31 @@ namespace Pancake.Init
                 coroutineUser.CoroutineRunner = this;
             }
 
-            if(awakeInvokedWithoutWrappedObject && gameObject.activeInHierarchy)
+            if(initState.HasFlag(InitState.AwakeCalledWithoutWrappedObject) && gameObject.activeInHierarchy)
             {
-                if(this.wrapped is IAwake awake)
+                if(wrapped is IUpdate update)
+                {
+                    Updater.Subscribe(update);
+                }
+                
+                if(wrapped is ILateUpdate lateUpdate)
+                {
+                    Updater.Subscribe(lateUpdate);
+                }
+
+                if(wrapped is IFixedUpdate fixedUpdate)
+                {
+                    Updater.Subscribe(fixedUpdate);
+                }
+
+                if(wrapped is IAwake awake)
                 {
                     awake.Awake();
+                }
+
+                if(wrapped is IOnEnable onEnable)
+                {
+                    onEnable.OnEnable();
                 }
             }
         }
@@ -185,16 +238,17 @@ namespace Pancake.Init
 		/// </summary>
         protected virtual void Awake()
         {
-            if(InitArgs.TryGet(Context.Awake, this, out TWrapped wrapped))
+            if(InitArgs.TryGet(Context.Awake, this, out TWrapped injectedObject))
             {
-                Init(wrapped);
+                Init(injectedObject);
             }
-            else if(ReferenceEquals(this.wrapped, null))
+            else if(ReferenceEquals(wrapped, null))
             {
-                awakeInvokedWithoutWrappedObject = true;
+                initState |= InitState.AwakeCalledWithoutWrappedObject;
+                return;
             }
 
-            if(this.wrapped is IAwake awake)
+            if(wrapped is IAwake awake)
             {
                 awake.Awake();
             }
@@ -324,6 +378,14 @@ namespace Pancake.Init
         public static explicit operator Wrapper<TWrapped>(TWrapped wrapped)
         {
             return Find.WrapperOf(wrapped) as Wrapper<TWrapped>;
+        }
+        
+        [Flags]
+        private enum InitState : byte
+        {
+            None = _0,
+            AwakeCalledWithoutWrappedObject = _1,
+            SearchedForInitializers = _2
         }
     }
 }

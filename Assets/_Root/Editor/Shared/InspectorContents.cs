@@ -12,10 +12,67 @@ namespace Pancake.Editor
 {
 	public static class InspectorContents
 	{
-		private static readonly List<EditorWindow> allInspectors = null;
+		private static readonly IList allInspectors = null;
 		private static readonly List<EditorWindow> allPropertyEditors = new List<EditorWindow>();
 		private static readonly FieldInfo inspectorElementEditorField;
+		private static readonly Type propertyEditorType;
+		private static bool shouldUpdatePropertyEditors = true;
 
+		private static IEnumerable<EditorWindow> AllEditorWindows
+		{
+			get
+			{
+				foreach(var inspector in AllInspectors)
+				{
+					yield return inspector;
+				}
+
+				foreach(var propertyEditors in AllPropertyEditors)
+				{
+					yield return propertyEditors;
+				}
+			}
+		}
+
+		private static IEnumerable<EditorWindow> AllInspectors
+		{
+			get
+			{
+				foreach(var inspector in allInspectors)
+				{
+					yield return inspector as EditorWindow;
+				}
+			}
+		}
+
+		private static List<EditorWindow> AllPropertyEditors
+		{
+			get
+			{
+				if(shouldUpdatePropertyEditors)
+				{
+					shouldUpdatePropertyEditors = false;
+					UpdateAllPropertyEditors();
+				}
+				else
+				{
+					var focusedWindow = EditorWindow.focusedWindow;
+					if(focusedWindow != null && focusedWindow.GetType() == propertyEditorType && !allPropertyEditors.Contains(focusedWindow))
+					{
+						allPropertyEditors.Add(focusedWindow);
+					}
+
+					var mouseOverWindow = EditorWindow.mouseOverWindow;
+					if(mouseOverWindow != null && mouseOverWindow.GetType() == propertyEditorType && !allPropertyEditors.Contains(mouseOverWindow))
+					{
+						allPropertyEditors.Add(mouseOverWindow);
+					}
+				}
+
+				return allPropertyEditors;
+			}
+		}
+		
 		static InspectorContents()
 		{
 			inspectorElementEditorField = typeof(InspectorElement).GetField("m_Editor", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -26,41 +83,49 @@ namespace Pancake.Editor
 
 			if(inspectorType is null)
 			{
-				#if DEV_MODE
+#if DEV_MODE
 				Debug.LogWarning($"Type UnityEditor.InspectorWindow was not found in assembly {unityEditorAssembly.GetName().Name}.");
-				#endif
-				allInspectors.AddRange(GetAllInspectorWindowsFallback());
+#endif
+				allInspectors = new List<EditorWindow>(GetAllInspectorWindowsFallback());
 				return;
 			}
 
-			var allInspectorsField = inspectorType.GetField("m_AllInspectors", BindingFlags.Static | BindingFlags.NonPublic);
-			if(allInspectorsField is null)
-			{
-				#if DEV_MODE
-				Debug.LogWarning($"Field m_AllInspectors was not found on class UnityEditor.InspectorWindow.");
-				#endif
-				allInspectors.AddRange(GetAllInspectorWindowsFallback());
-				return;
-			}
+			FetchAllInspectors(out allInspectors);
 
-			allInspectors = new List<EditorWindow>();
-			foreach(var inspectorWindow in allInspectorsField.GetValue(null) as IList)
+			propertyEditorType = unityEditorAssembly.GetType("UnityEditor.PropertyEditor");
+			
+			void FetchAllInspectors(out IList allInspectors)
 			{
-				allInspectors.Add(inspectorWindow as EditorWindow);
+				var allInspectorsField = inspectorType.GetField("m_AllInspectors", BindingFlags.Static | BindingFlags.NonPublic);
+				if(allInspectorsField is null)
+				{
+#if DEV_MODE
+					Debug.LogWarning($"Field m_AllInspectors was not found on class UnityEditor.InspectorWindow.");
+#endif
+					allInspectors = new List<EditorWindow>(GetAllInspectorWindowsFallback());
+					return;
+				}
+
+				allInspectors = allInspectorsField.GetValue(null) as IList;
 			}
 		}
 
 		public static void Repaint()
 		{
-			foreach(var inspector in allInspectors)
+			foreach(var inspector in AllInspectors)
 			{
 				inspector.Repaint();
 			}
+
+			foreach(var propertyEditor in AllPropertyEditors)
+			{
+				propertyEditor.Repaint();
+			}
 		}
 
-		internal static IEnumerable<(UnityEditor.Editor, IMGUIContainer)> GetComponentHeaderElementsFromInspector(UnityEditor.Editor gameObjectEditor)
+		internal static IEnumerable<(UnityEditor.Editor, IMGUIContainer)> GetComponentHeaderElementsFromEditorWindowOf(UnityEditor.Editor gameObjectEditor)
 		{
-			var inspector = GetGameObjectEditorInspector(gameObjectEditor);
+			var inspector = GetGameObjectEditorWindow(gameObjectEditor);
 			if(inspector == null)
 			{
 				return Enumerable.Empty<(UnityEditor.Editor, IMGUIContainer)>();
@@ -71,38 +136,26 @@ namespace Pancake.Editor
 
 		internal static (UnityEditor.Editor, IMGUIContainer)? GetComponentHeaderElementFromPropertyEditorOf(UnityEditor.Editor componentEditor)
 		{
-			var propertyEditor = GetPropertyEditorWindow(componentEditor);
+			var propertyEditor = GetComponentPropertyEditor(componentEditor);
 			return propertyEditor == null ? default : GetFirstComponentHeaderElement(propertyEditor.rootVisualElement);
 		}
-
-		private static EditorWindow GetGameObjectEditorInspector(UnityEditor.Editor gameObjectEditor)
+		
+		private static EditorWindow GetGameObjectEditorWindow(UnityEditor.Editor gameObjectEditor)
 		{
-			foreach(var inspector in allInspectors)
+			foreach(var window in AllEditorWindows)
 			{
-				if(ContainsGameObjectEditor(inspector.rootVisualElement, gameObjectEditor))
+				if(ContainsGameObjectEditor(window.rootVisualElement, gameObjectEditor))
 				{
-					return inspector;
+					return window;
 				}
 			}
 
 			return null;
 		}
 
-		private static EditorWindow GetPropertyEditorWindow(UnityEditor.Editor componentEditor)
+		private static EditorWindow GetComponentPropertyEditor(UnityEditor.Editor componentEditor)
 		{
-			var focusedWindow = EditorWindow.focusedWindow;
-			if(focusedWindow != null && focusedWindow.GetType().Name == "PropertyEditor" && !allPropertyEditors.Contains(focusedWindow))
-			{
-				allPropertyEditors.Add(focusedWindow);
-			}
-
-			var mouseOverWindow = EditorWindow.mouseOverWindow;
-			if(mouseOverWindow != null && mouseOverWindow.GetType().Name == "PropertyEditor" && !allPropertyEditors.Contains(mouseOverWindow))
-			{
-				allPropertyEditors.Add(mouseOverWindow);
-			}
-
-			for(int i = allPropertyEditors.Count - 1; i >= 0; i--)
+			for(int i = AllPropertyEditors.Count - 1; i >= 0; i--)
 			{
 				var propertyEditor = allPropertyEditors[i];
 				if(propertyEditor == null)
@@ -118,6 +171,7 @@ namespace Pancake.Editor
 
 			return null;
 		}
+
 
 		private static IEnumerable<(UnityEditor.Editor, IMGUIContainer)> GetAllComponentHeaderElements(EditorWindow inspector)
 		{
@@ -206,7 +260,7 @@ namespace Pancake.Editor
 			}
 		}
 
-		private static (UnityEditor.Editor, IMGUIContainer)? GetFirstComponentHeaderElement(VisualElement parentElement)
+		private static (UnityEditor.Editor editor, IMGUIContainer header)? GetFirstComponentHeaderElement(VisualElement parentElement)
 		{
 			if(parentElement is null)
 			{
@@ -266,5 +320,11 @@ namespace Pancake.Editor
 
 		private static IEnumerable<EditorWindow> GetAllInspectorWindowsFallback()
 			=> Resources.FindObjectsOfTypeAll<EditorWindow>().Where(window => window.GetType().Name == "InspectorWindow");
+		
+		private static void UpdateAllPropertyEditors()
+		{
+			allPropertyEditors.Clear();
+			allPropertyEditors.AddRange(Resources.FindObjectsOfTypeAll(propertyEditorType) as EditorWindow[]);
+		}
 	}
 }

@@ -61,7 +61,7 @@ namespace Pancake.Init
     /// </para>
     /// </summary>
     /// <seealso cref="ServiceTag{TComponent, TDefiningType}"/>
-    [ExecuteAlways, AddComponentMenu("Initialization/Services"), DefaultExecutionOrder(ExecutionOrder.Services)]
+    [ExecuteAlways, AddComponentMenu("Initialization/Services"), DefaultExecutionOrder(ExecutionOrder.ServiceTag)]
     public partial class Services : MonoBehaviour
     {
         [SerializeField, FormerlySerializedAs("provideServices")]

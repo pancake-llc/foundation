@@ -65,7 +65,7 @@ namespace Pancake.Editor.Init
             "\t/// <summary>\r\n" +
             "\t/// <see cref=\"Wrapper{{}}\"/> for the <see cref=\"{1}\"/> component.\r\n" +
             "\t/// </summary>\r\n" +
-            "\t[AddComponentMenu(\"Wrapper/{1}\")]\r\n" +
+            "\t[AddComponentMenu(\"Wrapper/{2}\")]\r\n" +
             "\tpublic sealed class {1}Component : Wrapper<{1}> {{ }}\r\n" +
             "}}\r\n";
 
@@ -317,7 +317,8 @@ namespace Pancake.Editor.Init
             }
 
             var definition = @interface.GetGenericTypeDefinition();
-            if(definition == typeof(IArgs<,,,,>)
+            if(definition == typeof(IArgs<,,,,,>) 
+            || definition == typeof(IArgs<,,,,>)
             || definition == typeof(IArgs<,,,>)
             || definition == typeof(IArgs<,,>)
             || definition == typeof(IArgs<,>)
@@ -340,7 +341,8 @@ namespace Pancake.Editor.Init
 
         internal static string CreateWrapper(string forScriptAtPath, string className, string @namespace)
         {
-            string code = string.Format(WrapperTemplate, @namespace, className);
+	        string inspectorTitle = ObjectNames.NicifyVariableName(className);
+            string code = string.Format(WrapperTemplate, @namespace, className, inspectorTitle);
             string path = forScriptAtPath;
             path = Path.GetDirectoryName(path);
             string filename = className + "Component.cs";

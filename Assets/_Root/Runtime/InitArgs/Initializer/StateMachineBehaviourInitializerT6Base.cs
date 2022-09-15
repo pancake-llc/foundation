@@ -7,6 +7,11 @@ using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
 using static Pancake.NullExtensions;
 
+#if UNITY_EDITOR
+using Pancake.Editor.Init;
+#endif
+
+
 namespace Pancake.Init
 {
 	/// <summary>
@@ -40,7 +45,8 @@ namespace Pancake.Init
 	/// <typeparam name="TFourthArgument"> Type of the fourth argument to pass to the client's Init function. </typeparam>
 	/// <typeparam name="TFifthArgument"> Type of the fifth argument to pass to the client's Init function. </typeparam>
 	/// <typeparam name="TSixthArgument"> Type of the sixth argument to pass to the client's Init function. </typeparam>
-	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : MonoBehaviour, IInitializer, IValueProvider<TStateMachineBehaviour>
+	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument> : MonoBehaviour,
+		IInitializer<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>, IValueProvider<TStateMachineBehaviour>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -107,6 +113,38 @@ namespace Pancake.Init
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => true;
 		#endif
 
+		/// <inheritdoc/>
+		public TStateMachineBehaviour InitTarget()
+		{
+			if(this == null)
+			{
+				return target == null ? null : target.GetBehaviour<TStateMachineBehaviour>();
+			}
+
+			var firstArgument = FirstArgument;
+			var secondArgument = SecondArgument;
+			var thirdArgument = ThirdArgument;
+			var fourthArgument = FourthArgument;
+			var fifthArgument = FifthArgument;
+			var sixthArgument = SixthArgument;
+
+#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
+			{
+				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFirstArgument));
+				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TSecondArgument));
+				if(thirdArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TThirdArgument));
+				if(fourthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFourthArgument));
+				if(fifthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFifthArgument));
+				if(sixthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TSixthArgument));
+			}
+#endif
+
+			Updater.InvokeAtEndOfFrame(DestroySelf);
+			return InitTarget(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
+		}
+
+		
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument, ref TThirdArgument thirdArgument, ref TFourthArgument fourthArgument, ref TFifthArgument fifthArgument, ref TSixthArgument sixthArgument) { }
 
 		/// <summary>
@@ -169,36 +207,6 @@ namespace Pancake.Init
 		}
 
 		private void Awake() => InitTarget();
-
-		private TStateMachineBehaviour InitTarget()
-		{
-			if(this == null)
-			{
-				return target == null ? null : target.GetBehaviour<TStateMachineBehaviour>();
-			}
-
-			var firstArgument = FirstArgument;
-			var secondArgument = SecondArgument;
-			var thirdArgument = ThirdArgument;
-			var fourthArgument = FourthArgument;
-			var fifthArgument = FifthArgument;
-			var sixthArgument = SixthArgument;
-
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
-			{
-				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFirstArgument));
-				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TSecondArgument));
-				if(thirdArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TThirdArgument));
-				if(fourthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFourthArgument));
-				if(fifthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFifthArgument));
-				if(sixthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TSixthArgument));
-			}
-			#endif
-
-			Updater.InvokeAtEndOfFrame(DestroySelf);
-			return InitTarget(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
-		}
 
 		private void DestroySelf()
 		{

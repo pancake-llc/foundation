@@ -15,18 +15,37 @@
         public const int Referenceable = -32000;
 
         /// <summary>
-        /// Default execution order for the <see cref="Services"/> component.
+        /// Default execution order for the <see cref="ServiceTag"/> and <see cref="Init.ServiceTag"/> components.
         /// </summary>
-        public const int Services = -31000;
+        public const int ServiceTag = -31900;
 
         /// <summary>
-        /// Default execution order for all <see cref="Initializer{,}">Initializer</see> components targeting a class that has the <see cref="ServiceAttribute"/>.
+        /// Default execution order for all <see cref="Initializer{,}">Initializer</see> components
+        /// targeting a class that has the <see cref="ServiceAttribute"/>.
         /// </summary>
-        public const int ServiceInitializer = -30000;
+        public const int ServiceInitializer = -31300;
 
         /// <summary>
-        /// Default execution order for all <see cref="Initializer{,}">Initializer</see> components targeting a class that does not have the <see cref="ServiceAttribute"/>.
+        /// Default execution order for all <see cref="Initializer{,}">Initializer</see> components
+        /// targeting a <see cref="Wrapper{}"/> class that does not have the <see cref="ServiceAttribute"/>.
         /// </summary>
-        public const int Initializer = -29000;
+        public const int WrapperInitializer = -30000;
+
+        /// <summary>
+        /// Default execution order for all <see cref="Initializer{,}">Initializer</see> components
+        /// targeting a class that does not have the <see cref="ServiceAttribute"/>.
+        /// </summary>
+        public const int Initializer = -20000;
+
+        /// <summary>
+        /// Largest possible script execution order value;
+        /// </summary>
+        public const int MaxValue = 32000;
+
+        /// <summary>
+        /// Smallest possible script execution order value;
+        /// </summary>
+        public const int MinValue = -32000;
+        
     }
 }

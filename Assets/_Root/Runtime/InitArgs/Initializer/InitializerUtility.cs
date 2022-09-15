@@ -9,6 +9,7 @@ using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditorInternal;
+using Pancake.Editor.Init;
 #if UNITY_2021_1_OR_NEWER
 using UnityEditor.SceneManagement;
 #else
@@ -72,7 +73,14 @@ namespace Pancake.Init.Internal
 				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its Instance was still null.");
 			}
 
-			return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to a class that derives from {argumentType.Name}.");
+			string classThatDerivesFromImplementsOrIs = !argumentType.IsAbstract && !TypeUtility.IsBaseType(argumentType) ? "the class" : argumentType.IsInterface ? "a class that implements" : "a class that derives from";
+
+			if(!typeof(Component).IsAssignableFrom(argumentType))
+			{
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a value using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {classThatDerivesFromImplementsOrIs} {argumentType.Name}.\nIf you have already done one of these things, initialization could be failing due to circular dependencies ({clientType.Name} initialization depends on {argumentType.Name} existing and {argumentType.Name} initialization depends on {clientType.Name} existing.");
+			}
+
+			return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {classThatDerivesFromImplementsOrIs} {argumentType.Name}.");
 		}
 
 		#if UNITY_EDITOR

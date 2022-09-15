@@ -11,8 +11,6 @@ namespace Pancake.Editor
 	[InitializeOnLoad]
 	internal static class ComponentHeaderWrapperToInspectorInjector
 	{
-		private static readonly List<Component> components = new List<Component>();
-
 		static ComponentHeaderWrapperToInspectorInjector()
 		{
 			UnityEditor.Editor.finishedDefaultHeaderGUI -= AfterInspectorRootEditorHeaderGUI;
@@ -25,17 +23,19 @@ namespace Pancake.Editor
 			{
 				// Handle InspectorWindow
 				AfterGameObjectHeaderGUI(editor);
+				return;
 			}
-			else if(editor.target is Component)
+			
+			if(editor.target is Component)
 			{
 				// Handle PropertyEditor window opened via "Properties..." context menu item
-				AfterPropertiesHeaderGUI(editor);
+				AfterComponentPropertiesHeaderGUI(editor);
 			}
 		}
 
 		private static void AfterGameObjectHeaderGUI([NotNull] UnityEditor.Editor gameObjectEditor)
 		{
-			foreach((UnityEditor.Editor editor, IMGUIContainer header) editorAndHeader in GetComponentHeaderElementsFromInspector(gameObjectEditor))
+			foreach((UnityEditor.Editor editor, IMGUIContainer header) editorAndHeader in GetComponentHeaderElementsFromEditorWindowOf(gameObjectEditor))
 			{
 				var onGUIHandler = editorAndHeader.header.onGUIHandler;
 				if(onGUIHandler.Method is MethodInfo onGUI && onGUI.Name == nameof(ComponentHeaderWrapper.DrawWrappedHeaderGUI))
@@ -49,25 +49,22 @@ namespace Pancake.Editor
 			}
 		}
 
-		private static void AfterPropertiesHeaderGUI([NotNull] UnityEditor.Editor componentEditor)
+		private static void AfterComponentPropertiesHeaderGUI([NotNull] UnityEditor.Editor componentEditor)
 		{
-			var found = GetComponentHeaderElementFromPropertyEditorOf(componentEditor);
-			if(!found.HasValue)
+			if(!(GetComponentHeaderElementFromPropertyEditorOf(componentEditor) is (UnityEditor.Editor editor, IMGUIContainer header)))
 			{
 				return;
 			}
 			
-			(UnityEditor.Editor editor, IMGUIContainer header) editorAndHeader = found.Value;
-			var onGUIHandler = editorAndHeader.header.onGUIHandler;
+			var onGUIHandler = header.onGUIHandler;
 			if(onGUIHandler.Method is MethodInfo onGUI && onGUI.Name == nameof(ComponentHeaderWrapper.DrawWrappedHeaderGUI))
 			{
 				return;
 			}
 
-			var component = editorAndHeader.editor.target as Component;
-			var renameableComponentEditor = new ComponentHeaderWrapper(editorAndHeader.header, component, false);
-
-			editorAndHeader.header.onGUIHandler = renameableComponentEditor.DrawWrappedHeaderGUI;
+			var component = editor.target as Component;
+			var renameableComponentEditor = new ComponentHeaderWrapper(header, component, false);
+			header.onGUIHandler = renameableComponentEditor.DrawWrappedHeaderGUI;
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace Pancake.Init
     /// <summary>
     /// The exception that is thrown when arguments have been provided for an object being initialized but it fails to receive them.
     /// </summary>
-    public class InitArgumentsNotReceivedException : NotImplementedException
+    public sealed class InitArgumentsNotReceivedException : NotImplementedException
     {
         /// <summary>
         /// Initializes a new Instance of the <see cref="InitArgumentsNotReceivedException"/> class.

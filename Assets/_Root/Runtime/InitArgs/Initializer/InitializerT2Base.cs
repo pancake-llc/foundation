@@ -7,6 +7,10 @@ using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
 using static Pancake.NullExtensions;
 
+#if UNITY_EDITOR
+using Pancake.Editor.Init;
+#endif
+
 namespace Pancake.Init
 {
 	/// <summary>
@@ -36,7 +40,7 @@ namespace Pancake.Init
 	/// <typeparam name="TClient"> Type of the initialized client component. </typeparam>
 	/// <typeparam name="TFirstArgument"> Type of the first argument to pass to the client component's Init function. </typeparam>
 	/// <typeparam name="TSecondArgument"> Type of the second argument to pass to the client component's Init function. </typeparam>
-	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument> : MonoBehaviour, IInitializer, IValueProvider<TClient>
+	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument> : MonoBehaviour, IInitializer<TClient, TFirstArgument, TSecondArgument>, IValueProvider<TClient>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -82,6 +86,31 @@ namespace Pancake.Init
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => false;
 		#endif
 
+		/// <inheritdoc/>
+		public TClient InitTarget()
+		{
+			if(this == null)
+			{
+				return target;
+			}
+
+			var firstArgument = FirstArgument;
+			var secondArgument = SecondArgument;
+
+#if DEBUG || INIT_ARGS_SAFE_MODE
+			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
+			{
+				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFirstArgument));
+				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TSecondArgument));
+			}
+#endif
+
+			target = InitTarget(firstArgument, secondArgument);
+			Updater.InvokeAtEndOfFrame(DestroySelf);
+			return target;
+		}
+
+		
 		/// <summary>
 		/// Resets the Init arguments to their default values.
 		/// <para>
@@ -136,29 +165,6 @@ namespace Pancake.Init
 		}
 
 		private void Awake() => InitTarget();
-
-		private TClient InitTarget()
-		{
-			if(this == null)
-			{
-				return target;
-			}
-
-			var firstArgument = FirstArgument;
-			var secondArgument = SecondArgument;
-
-			#if DEBUG || INIT_ARGS_SAFE_MODE
-			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
-			{
-				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFirstArgument));
-				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TSecondArgument));
-			}
-			#endif
-
-			target = InitTarget(firstArgument, secondArgument);
-			Updater.InvokeAtEndOfFrame(DestroySelf);
-			return target;
-		}
 
 		private void DestroySelf()
 		{

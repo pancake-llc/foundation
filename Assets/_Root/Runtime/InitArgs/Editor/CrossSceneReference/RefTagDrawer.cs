@@ -88,9 +88,6 @@ namespace Pancake.Editor.Init
 			if(Event.current.type == EventType.MouseDown && refRect.Contains(Event.current.mousePosition))
 			{
 				Event.current.Use();
-
-				// TODO: Add menu item for finding all references.
-				// TODO: Ping scenes that reference this on click? (each additional click pings another one?)
 				var menu = new GenericMenu();
 				menu.AddItem(new GUIContent("Copy"), false, CopyToClipboard);
 				menu.AddItem(new GUIContent("Delete"), false, Delete);

@@ -12,7 +12,7 @@ namespace Pancake.Editor
     /// Also offers static methods for <see cref="Start">starting</see> and <see cref="Stop">stopping</see> coroutines.
     /// </para>
     /// </summary>
-    public class EditorCoroutine : YieldInstruction
+    public sealed class EditorCoroutine : YieldInstruction
     {
         private static readonly List<EditorCoroutine> running = new List<EditorCoroutine>();
         private static readonly FieldInfo waitForSecondsSeconds;

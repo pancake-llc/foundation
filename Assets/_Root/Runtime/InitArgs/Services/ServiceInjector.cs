@@ -1,4 +1,4 @@
-﻿//#define INIT_SERVICE_CONSTRUCTOR_SUPPORT
+﻿//#define INIT_ARGS_DISABLE_SERVICE_CONSTRUCTOR_SUPPORT
 
 //#define DEBUG_INIT_SERVICES
 //#define DEBUG_CREATE_SERVICES
@@ -49,7 +49,7 @@ namespace Pancake.Init.Internal
         public static event Action OnServicesBecameReady;
 
         internal static Dictionary<Type, object> services = new Dictionary<Type, object>();
-        internal static Dictionary<Type, (Type classWithAttribute, ServiceAttribute attribute)> unitializedServicesByDefiningType = new Dictionary<Type, (Type, ServiceAttribute)>();
+        internal static readonly Dictionary<Type, (Type classWithAttribute, ServiceAttribute attribute)> unitializedServicesByDefiningType = new Dictionary<Type, (Type, ServiceAttribute)>();
 
         /// <summary>
         /// Gets a value indicating whether or not <typeparamref name="T"/> is the defining type of a service.
@@ -310,6 +310,10 @@ namespace Pancake.Init.Internal
 				{
 					GetOrCreateInstance(classWithAttribute, serviceAttribute, ref container, initialized);
 				}
+                catch(MissingMethodException e)
+                {
+                    Debug.LogWarning($"Failed to initialize service {classWithAttribute.Name} with defining type {(serviceDefinition.attribute is null ? "n/a" : serviceDefinition.attribute.definingType is null ? "null" : serviceDefinition.attribute.definingType.Name)}.\nThis can happen when constructor arguments contain circular references (for example: object A requires object B, but object B also requires object A, so neither object can be constructed).\n{e}");
+                }
 				catch(Exception e)
 				{
 					Debug.LogWarning($"Failed to initialize service {classWithAttribute.Name} with defining type {(serviceDefinition.attribute is null ? "n/a" : serviceDefinition.attribute.definingType is null ? "null" : serviceDefinition.attribute.definingType.Name)}.\n{e}");
@@ -535,7 +539,11 @@ namespace Pancake.Init.Internal
                 return ScriptableObject.CreateInstance(classWithAttribute);
             }
 
-            #if INIT_SERVICE_CONSTRUCTOR_SUPPORT
+            #if !INIT_ARGS_DISABLE_SERVICE_CONSTRUCTOR_SUPPORT
+            if(initialized.Contains(classWithAttribute))
+            {
+                return null;
+            }
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
             var constructors = classWithAttribute.GetConstructors(flags);
             IEnumerable<ConstructorInfo> constructorsByParameterCount = constructors.Length <= 1 ? constructors as IEnumerable<ConstructorInfo> : constructors.OrderByDescending(c => c.GetParameters().Length);
@@ -546,94 +554,88 @@ namespace Pancake.Init.Internal
                 switch(parameters.Length)
 				{
                     case 1:
+                        initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out object argument, ref container, initialized))
                         {
-                            initialized.Add(classWithAttribute);
-
                             InjectCrossServiceDependencies(argument.GetType(), initialized, ref container);
-
                             return constructor.Invoke(new object[] { argument });
                         }
+                        initialized.Remove(classWithAttribute);
                         break;
                     case 2:
+                        initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out object firstArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[1], out object secondArgument, ref container, initialized))
+                           && TryGetOrCreateService(parameters[1], out object secondArgument, ref container, initialized))
                         {
-                            initialized.Add(classWithAttribute);
-
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
-
                             return constructor.Invoke(new object[] { firstArgument, secondArgument });
                         }
+                        initialized.Remove(classWithAttribute);
                         break;
                     case 3:
+                        initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[2], out object thirdArgument, ref container, initialized))
+                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[2], out object thirdArgument, ref container, initialized))
                         {
-                            initialized.Add(classWithAttribute);
-
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(thirdArgument.GetType(), initialized, ref container);
-
                             return constructor.Invoke(new object[] { firstArgument, secondArgument, thirdArgument });
                         }
+                        initialized.Remove(classWithAttribute);
                         break;
                     case 4:
+                        initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[3], out object fourthArgument, ref container, initialized))
+                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[3], out object fourthArgument, ref container, initialized))
                         {
-                            initialized.Add(classWithAttribute);
-
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(thirdArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(fourthArgument.GetType(), initialized, ref container);
-
                             return constructor.Invoke(new object[] { firstArgument, secondArgument, thirdArgument, fourthArgument });
                         }
+                        initialized.Remove(classWithAttribute);
                         break;
                     case 5:
+                        initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[4], out object fifthArgument, ref container, initialized))
+                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[4], out object fifthArgument, ref container, initialized))
                         {
-                            initialized.Add(classWithAttribute);
-
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(thirdArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(fourthArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(fifthArgument.GetType(), initialized, ref container);
-
                             return constructor.Invoke(new object[] { firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument });
                         }
+                        initialized.Remove(classWithAttribute);
                         break;
                     case 6:
+                        initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[4], out fifthArgument, ref container, initialized)
-                        && TryGetOrCreateService(parameters[5], out object sixthArgument, ref container, initialized))
+                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[4], out fifthArgument, ref container, initialized)
+                           && TryGetOrCreateService(parameters[5], out object sixthArgument, ref container, initialized))
                         {
-                            initialized.Add(classWithAttribute);
-
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(thirdArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(fourthArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(fifthArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(sixthArgument.GetType(), initialized, ref container);
-
                             return constructor.Invoke(new object[] { firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument });
                         }
+                        initialized.Remove(classWithAttribute);
                         break;
                 }
 			}
@@ -646,7 +648,7 @@ namespace Pancake.Init.Internal
             return Activator.CreateInstance(classWithAttribute);
         }
 
-        #if INIT_SERVICE_CONSTRUCTOR_SUPPORT
+        #if !INIT_ARGS_DISABLE_SERVICE_CONSTRUCTOR_SUPPORT
         private static bool TryGetOrCreateService(ParameterInfo parameter, out object service, ref GameObject container, HashSet<Type> initialized)
         {
             var parameterType = parameter.ParameterType;
@@ -877,33 +879,6 @@ namespace Pancake.Init.Internal
             return setMethodsByArgumentCount;
         }
 
-        private static int GetInitializationOrder((Type definingType, Type initializableType, int argumentCount) a,
-                                              (Type definingType, Type initializableType, int argumentCount) b)
-        {
-            const int AFirst = -1, BFirst = 1;
-
-            if(a.argumentCount == 0)
-            {
-                return AFirst;
-            }
-
-            if(b.argumentCount == 0)
-            {
-                return BFirst;
-            }
-
-            for(int i = a.argumentCount - 1; i >= 0; i--)
-            {
-                var arguments = a.initializableType.GetGenericArguments();
-                if(arguments[i] == b.definingType)
-                {
-                    return BFirst;
-                }
-            }
-
-            return AFirst;
-        }
-
         private static void InjectCrossServiceDependencies(Type classType, HashSet<Type> initialized, ref GameObject container)
         {
             if(!initialized.Add(classType))
@@ -926,12 +901,12 @@ namespace Pancake.Init.Internal
                 if(typeDefinition == typeof(IInitializable<,,,,,>))
                 {
                     var argumentTypes = interfaceType.GetGenericArguments();
-                    var firstArgumentType = interfaceType.GetGenericArguments()[0];
-                    var secondArgumentType = interfaceType.GetGenericArguments()[1];
-                    var thirdArgumentType = interfaceType.GetGenericArguments()[2];
-                    var fourthArgumentType = interfaceType.GetGenericArguments()[3];
-                    var fifthArgumentType = interfaceType.GetGenericArguments()[4];
-                    var sixthArgumentType = interfaceType.GetGenericArguments()[5];
+                    var firstArgumentType = argumentTypes[0];
+                    var secondArgumentType = argumentTypes[1];
+                    var thirdArgumentType = argumentTypes[2];
+                    var fourthArgumentType = argumentTypes[3];
+                    var fifthArgumentType = argumentTypes[4];
+                    var sixthArgumentType = argumentTypes[5];
                     if(TryGetService(firstArgumentType, out object firstArgument, ref container, initialized)
                     && TryGetService(secondArgumentType, out object secondArgument, ref container, initialized)
                     && TryGetService(thirdArgumentType, out object thirdArgument, ref container, initialized)
@@ -960,11 +935,11 @@ namespace Pancake.Init.Internal
                 if(typeDefinition == typeof(IInitializable<,,,,>))
                 {
                     var argumentTypes = interfaceType.GetGenericArguments();
-                    var firstArgumentType = interfaceType.GetGenericArguments()[0];
-                    var secondArgumentType = interfaceType.GetGenericArguments()[1];
-                    var thirdArgumentType = interfaceType.GetGenericArguments()[2];
-                    var fourthArgumentType = interfaceType.GetGenericArguments()[3];
-                    var fifthArgumentType = interfaceType.GetGenericArguments()[4];
+                    var firstArgumentType = argumentTypes[0];
+                    var secondArgumentType = argumentTypes[1];
+                    var thirdArgumentType = argumentTypes[2];
+                    var fourthArgumentType = argumentTypes[3];
+                    var fifthArgumentType = argumentTypes[4];
                     if(TryGetService(firstArgumentType, out object firstArgument, ref container, initialized)
                     && TryGetService(secondArgumentType, out object secondArgument, ref container, initialized)
                     && TryGetService(thirdArgumentType, out object thirdArgument, ref container, initialized)
@@ -991,10 +966,10 @@ namespace Pancake.Init.Internal
                 if(typeDefinition == typeof(IInitializable<,,,>))
                 {
                     var argumentTypes = interfaceType.GetGenericArguments();
-                    var firstArgumentType = interfaceType.GetGenericArguments()[0];
-                    var secondArgumentType = interfaceType.GetGenericArguments()[1];
-                    var thirdArgumentType = interfaceType.GetGenericArguments()[2];
-                    var fourthArgumentType = interfaceType.GetGenericArguments()[3];
+                    var firstArgumentType = argumentTypes[0];
+                    var secondArgumentType = argumentTypes[1];
+                    var thirdArgumentType = argumentTypes[2];
+                    var fourthArgumentType = argumentTypes[3];
                     if(TryGetService(firstArgumentType, out object firstArgument, ref container, initialized)
                     && TryGetService(secondArgumentType, out object secondArgument, ref container, initialized)
                     && TryGetService(thirdArgumentType, out object thirdArgument, ref container, initialized)
@@ -1019,9 +994,9 @@ namespace Pancake.Init.Internal
                 if(typeDefinition == typeof(IInitializable<,,>))
                 {
                     var argumentTypes = interfaceType.GetGenericArguments();
-                    var firstArgumentType = interfaceType.GetGenericArguments()[0];
-                    var secondArgumentType = interfaceType.GetGenericArguments()[1];
-                    var thirdArgumentType = interfaceType.GetGenericArguments()[2];
+                    var firstArgumentType = argumentTypes[0];
+                    var secondArgumentType = argumentTypes[1];
+                    var thirdArgumentType = argumentTypes[2];
                     if(TryGetService(firstArgumentType, out object firstArgument, ref container, initialized)
                     && TryGetService(secondArgumentType, out object secondArgument, ref container, initialized)
                     && TryGetService(thirdArgumentType, out object thirdArgument, ref container, initialized))
@@ -1044,8 +1019,8 @@ namespace Pancake.Init.Internal
                 if(typeDefinition == typeof(IInitializable<,>))
                 {
                     var argumentTypes = interfaceType.GetGenericArguments();
-                    var firstArgumentType = interfaceType.GetGenericArguments()[0];
-                    var secondArgumentType = interfaceType.GetGenericArguments()[1];
+                    var firstArgumentType = argumentTypes[0];
+                    var secondArgumentType = argumentTypes[1];
                     if(TryGetService(firstArgumentType, out object firstArgument, ref container, initialized)
                     && TryGetService(secondArgumentType, out object secondArgument, ref container, initialized))
                     {

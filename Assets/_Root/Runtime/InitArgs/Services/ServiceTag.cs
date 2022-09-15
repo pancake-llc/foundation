@@ -12,7 +12,7 @@ using UnityEditorInternal;
 
 namespace Pancake.Init
 {
-	[ExecuteAlways, AddComponentMenu(Hidden), DefaultExecutionOrder(ExecutionOrder.Services)]
+	[ExecuteAlways, AddComponentMenu(Hidden), DefaultExecutionOrder(ExecutionOrder.ServiceTag)]
 	internal sealed class ServiceTag : MonoBehaviour
 	{
 		private const string Hidden = "";
@@ -41,7 +41,9 @@ namespace Pancake.Init
 				#if DEBUG
 				if(!DefiningTypeIsAssignableFrom(service))
 				{
+#if UNITY_EDITOR
 					EditorApplication.delayCall += OnValidateDelayed;
+#endif
 					Debug.Log($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(DefiningType)} value {TypeUtility.ToString(value.GetType())}, which is not assignable from service Instance type {TypeUtility.ToString(service.GetType())}.", gameObject);
 				}
 				#endif
@@ -61,7 +63,9 @@ namespace Pancake.Init
 				#if DEBUG
 				if(!DefiningTypeIsAssignableFrom(value))
 				{
+#if UNITY_EDITOR
 					EditorApplication.delayCall += OnValidateDelayed;
+#endif
 					Debug.Log($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(Service)} Instance. {nameof(DefiningType)} value {TypeUtility.ToString(definingType.Value)} is not assignable from the Instance of type {TypeUtility.ToString(value.GetType())}.", gameObject);
 				}
 				#endif

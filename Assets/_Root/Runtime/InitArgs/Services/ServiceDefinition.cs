@@ -11,7 +11,7 @@ namespace Pancake.Init.Internal
     /// as the defining type of the services which its clients can use to retrieving the service Instance.
     /// </summary>
     [Serializable]
-    public class ServiceDefinition
+    public sealed class ServiceDefinition
     {
         #pragma warning disable CS0649
         public Object service;

@@ -2089,6 +2089,11 @@ namespace Pancake.Init
 				if(string.Equals(filename, name, StringComparison.OrdinalIgnoreCase))
 				{
 					var scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
+                    if(scriptAsset == null)
+                    {
+                        continue;
+                    }
+
 					var scriptClassType = scriptAsset.GetClass();
 					if(scriptClassType == classType)
 					{

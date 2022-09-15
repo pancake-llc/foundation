@@ -7,13 +7,18 @@ using UnityEditor.Callbacks;
 
 namespace Pancake.Init
 {
-    internal class InitializerAssetPostprocessor : AssetPostprocessor
+	/// <summary>
+	/// Class responsible for detecting when an <see cref="Initializer"/> asset is imported
+	/// and giving the script the Initializer icon and reapplying script execution orders
+	/// for all initializers so that all dependencies are initialized before the dependent objects.
+	/// </summary>
+	internal sealed class InitializerAssetPostprocessor : AssetPostprocessor
     {
-		const string EditorPrefsKey = "InitializerAssetPostprocessor.Queue";
+		private const string EditorPrefsKey = "InitArgs.DelayedProcessingQueue";
 		private static Texture2D initializerIcon = null;
 
         [UsedImplicitly]
-        static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
             for(int i = importedAssets.Length - 1; i >= 0; i--)
             {
@@ -21,122 +26,125 @@ namespace Pancake.Init
             }
         }
 
-        private static void PostProcessAsset(string path)
-        {
-            if(!path.EndsWith(".cs", StringComparison.Ordinal))
-            {
-                return;
-            }
+		[DidReloadScripts]
+		private static void OnScriptsReloaded()
+		{
+			EditorApplication.delayCall -= HandleProcessQueuedAssets;
+			EditorApplication.delayCall += HandleProcessQueuedAssets;
+		}
 
-            var script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
-            if(script == null)
-            {
+        private static void PostProcessAsset(string path)
+		{
+			if(TryDetermineIsInitializerAsset(path, out bool isInitializer) && !isInitializer)
+			{
 				return;
 			}
 
-            var type = script.GetClass();
+			string existingPaths = EditorPrefs.GetString(EditorPrefsKey, "");
+			if(existingPaths.Length > 0)
+			{
+				EditorPrefs.SetString(EditorPrefsKey, existingPaths + "|" + path);
+			}
+			else
+			{
+				EditorPrefs.SetString(EditorPrefsKey, path);
+			}
 
-			if(type == null)
-            {
-				// Initializer type can be null while still being compiled.
-				if(EditorApplication.isCompiling || EditorApplication.isUpdating)
-                {
-                    string existing = EditorPrefs.GetString(EditorPrefsKey, "");
-                    if(existing.Length > 0)
-                    {
-                        EditorPrefs.SetString(EditorPrefsKey, existing + "|" + path);
-                    }
-                    else
-                    {
-                        EditorPrefs.SetString(EditorPrefsKey, path);
-                    }
-                }
-                return;
-            }
+			EditorApplication.delayCall -= HandleProcessQueuedAssets;
+			EditorApplication.delayCall += HandleProcessQueuedAssets;
+		}
 
-			if(!typeof(IInitializer).IsAssignableFrom(type) || type.IsAbstract)
-            {
-				return;
-            }
+		private static bool TryDetermineIsInitializerAsset(string path, out bool isInitializer)
+		{
+			if(!path.EndsWith(".cs", StringComparison.Ordinal))
+			{
+				isInitializer = false;
+				return true;
+			}
 
+			var script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
+			if(script == null)
+			{
+				isInitializer = false;
+				return true;
+			}
+
+			var type = script.GetClass();
+			if(type != null && typeof(IInitializer).IsAssignableFrom(type) && !type.IsAbstract)
+			{
+				isInitializer = true;
+				return true;
+			}
+
+			isInitializer = false;
+
+			// Initializer type can be null while scripts are still being compiled.
+			return !EditorApplication.isCompiling && !EditorApplication.isUpdating;
+		}
+
+		private static bool TryGetInitializerScript(string path, out MonoScript script)
+		{
+			script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
+			if(script == null)
+			{
+				return false;
+			}
+
+			var type = script.GetClass();
+			if(type != null && typeof(IInitializer).IsAssignableFrom(type) && !type.IsAbstract)
+			{
+				return true;
+			}
+
+			script = null;
+			return false;
+		}
+
+		private static void HandleProcessQueuedAssets()
+		{
 			if(EditorApplication.isCompiling || EditorApplication.isUpdating)
-            {
-                string existing = EditorPrefs.GetString(EditorPrefsKey, "");
-                if(existing.Length > 0)
-                {
-                    EditorPrefs.SetString(EditorPrefsKey, existing + "|" + path);
-                }
-                else
-                {
-                    EditorPrefs.SetString(EditorPrefsKey, path);
-                }
+			{
+				EditorApplication.delayCall += HandleProcessQueuedAssets;
 				return;
-            }
+			}
 
-            OnImportedInitializerAsset(script);
-        }
-
-        [DidReloadScripts]
-		private static void OnScriptsReloaded() => EditorApplication.delayCall += OnScriptsReloadedDelayed;
-
-		private static void OnScriptsReloadedDelayed()
-        {
 			string unprocessed = EditorPrefs.GetString(EditorPrefsKey, "");
 			if(unprocessed.Length == 0)
-            {
+			{
 				return;
-            }
+			}
 
-			if(EditorApplication.isCompiling || EditorApplication.isUpdating)
-            {
-				EditorApplication.delayCall += OnScriptsReloadedDelayed;
-				return;
+			bool atLeastOneNewInitializerImported = false;
+			string[] paths = unprocessed.Split('|');
+			foreach(string path in paths)
+			{
+				if(TryGetInitializerScript(path, out var script))
+				{
+					atLeastOneNewInitializerImported = true;
+					OnImportedInitializerAsset(script);
+				}
+			}
+
+			if(atLeastOneNewInitializerImported)
+			{
+				AssetDatabase.StartAssetEditing();
+				var sorter = new InitializerExecutionOrderApplier();
+				sorter.UpdateExecutionOrderOfAllInitializers();
+				AssetDatabase.StopAssetEditing();
 			}
 
 			EditorPrefs.DeleteKey(EditorPrefsKey);
-
-			string[] paths = unprocessed.Split('|');
-			foreach(string path in paths)
-            {
-				PostProcessAsset(path);
-			}
 		}
 
-		private static void OnImportedInitializerAsset(MonoScript script)
-		{
-			int executionOrder = ExecutionOrder.Initializer;
-			if(script.GetClass() is Type initializerType)
-            {
-				foreach(var interfaceType in initializerType.GetInterfaces())
-                {
-					if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IValueProvider<>) && ServiceUtility.IsDefiningTypeOfAnyServiceAttribute(interfaceType.GetGenericArguments()[0]))
-                    {
-						executionOrder = ExecutionOrder.ServiceInitializer;
-						break;
-					}
-                }
-			}
+		private static void OnImportedInitializerAsset(MonoScript script) => SetInitializerIcon(script);
 
-			SetScriptExecutionOrder(script, executionOrder);
-			SetInitializerIcon(script);
-		}
-
-		private static void SetScriptExecutionOrder(MonoScript script, int executionOrder)
-		{
-			int executionOrderWas = MonoImporter.GetExecutionOrder(script);
-			if(executionOrderWas != executionOrder && executionOrderWas == 0)
-			{
-				MonoImporter.SetExecutionOrder(script, executionOrder);
-			}
-		}
-
-        private static void SetInitializerIcon(MonoScript script)
+		private static void SetInitializerIcon(MonoScript script)
         {
             if(initializerIcon == null)
 			{
 				initializerIcon = EditorGUIUtility.IconContent("AnimatorStateTransition Icon").image as Texture2D;
 
-				if(initializerIcon is null)
+				if(initializerIcon == null)
                 {
 					if(EditorApplication.isUpdating)
 					{
@@ -174,5 +182,5 @@ namespace Pancake.Init
 			}
 			#endif
         }
-    }
+	}
 }

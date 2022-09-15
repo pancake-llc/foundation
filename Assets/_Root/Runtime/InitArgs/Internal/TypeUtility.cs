@@ -10,6 +10,21 @@ namespace Pancake.Init.Internal
 {
     public static class TypeUtility
     {
+	    private static readonly HashSet<Type> baseTypes = new HashSet<Type>()
+	    {
+		    typeof(object), typeof(Object),
+		    typeof(Component), typeof(Behaviour), typeof(MonoBehaviour),
+		    typeof(ScriptableObject)
+	    };
+
+	    private static readonly HashSet<Type> genericBaseTypes = new HashSet<Type>()
+	    {
+		    typeof(MonoBehaviour<>), typeof(MonoBehaviour<,>), typeof(MonoBehaviour<,>),
+		    typeof(MonoBehaviour<,,>), typeof(MonoBehaviour<,,,>), typeof(MonoBehaviour<,,,,>),
+		    typeof(ConstructorBehaviour<>), typeof(ConstructorBehaviour<,>),typeof(ConstructorBehaviour<,>),
+		    typeof(ConstructorBehaviour<,,>), typeof(ConstructorBehaviour<,,,>), typeof(ConstructorBehaviour<,,,,>)
+	    };
+
 		private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(3)
 		{
 			{ '\0', new Dictionary<Type, string>(4096) {
@@ -423,26 +438,13 @@ namespace Pancake.Init.Internal
 			}
 		}
 
-		public static bool IsNullOrBaseType([CanBeNull] Type type)
-        {
-			if(type is null)
-            {
-				return true;
-            }
+		public static bool IsNullOrBaseType([CanBeNull] Type type) => type is null || IsBaseType(type);
 
-            switch(type.IsGenericType)
-            {
-				case true when type.IsGenericTypeDefinition:
-					break;
-				case true:
-					type = type.GetGenericTypeDefinition();
-					break;
-				default:
-					return type == typeof(MonoBehaviour) || type == typeof(Behaviour) || type == typeof(Component) || type == typeof(ScriptableObject) || type == typeof(Object) || type == typeof(object);
-			}
-
-			return type == typeof(MonoBehaviour<>) || type == typeof(MonoBehaviour<,>) || type == typeof(MonoBehaviour<,>) || type == typeof(MonoBehaviour<,,>) || type == typeof(MonoBehaviour<,,,>) || type == typeof(MonoBehaviour<,,,,>)
-					|| type == typeof(ConstructorBehaviour<>) || type == typeof(ConstructorBehaviour<,>) || type == typeof(ConstructorBehaviour<,>) || type == typeof(ConstructorBehaviour<,,>) || type == typeof(ConstructorBehaviour<,,,>) || type == typeof(ConstructorBehaviour<,,,,>);
-		}
+		public static bool IsBaseType([CanBeNull] Type type) => type.IsGenericType switch
+		{
+			true when type.IsGenericTypeDefinition => genericBaseTypes.Contains(type),
+			true => genericBaseTypes.Contains(type.GetGenericTypeDefinition()),
+			_ => baseTypes.Contains(type)
+		};
     }
 }
