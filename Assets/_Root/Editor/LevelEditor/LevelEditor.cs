@@ -483,6 +483,10 @@ namespace Pancake.Editor.LevelEditor
                                 Uniform.SpaceOneLine();
                                 _rootIndexSpawn = EditorGUILayout.IntField(new GUIContent("Index spawn", "Index from root stage contex"), _rootIndexSpawn);
                             }
+                            else
+                            {
+                                Uniform.HelpBox("Index spawn mode only work in PrefabMode!", MessageType.Warning);
+                            }
 
                             break;
                         case "Custom":
@@ -517,7 +521,7 @@ namespace Pancake.Editor.LevelEditor
                         if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80))) _currentPickObject = null;
                     });
 
-                    EditorGUILayout.LabelField($"Selected: {pickObjectName}\nPress Icon Again Or Escape Key To Deselect", GUILayout.Height(40));
+                    EditorGUILayout.LabelField($"Selected: <color=#80D2FF>{pickObjectName}</color>\nPress Icon Again Or Escape Key To Deselect", Uniform.HtmlText, GUILayout.Height(40));
                     Uniform.HelpBox("Shift + Click To Add", MessageType.Info);
                 }
                 else

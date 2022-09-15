@@ -13,6 +13,7 @@ namespace Pancake.Editor
         private static GUIStyle toggleButtonToolbar;
         private static GUIStyle boxArea;
         private static GUIStyle textImportant;
+        private static GUIStyle htmlText;
 
         private const int CHEVRON_ICON_WIDTH = 10;
         private const int CHEVRON_ICON_RIGHT_MARGIN = 5;
@@ -75,6 +76,16 @@ namespace Pancake.Editor
             {
                 if (textImportant == null) textImportant = new GUIStyle(EditorStyles.label) {normal = {textColor = Uniform.InspectorNullError}};
                 return textImportant;
+            }
+        }
+        
+        public static GUIStyle HtmlText
+        {
+            get
+            {
+                if (htmlText == null) htmlText = new GUIStyle(EditorStyles.label);
+                htmlText.richText = true;
+                return htmlText;
             }
         }
         

@@ -59,11 +59,12 @@ Add the lines below to `Packages/manifest.json`
 
 ## LEVEL EDITOR
 
-![image](https://user-images.githubusercontent.com/44673303/163957286-6714b6bc-68f5-46b6-9c9e-c3c7a2e1255b.png) 
-![image](https://user-images.githubusercontent.com/44673303/163957353-c9b508ef-3425-4625-96a3-1ba3e09f319c.png)
+![overrall](https://user-images.githubusercontent.com/44673303/190450836-492326a7-d0cf-47a7-965f-9c0d41afe1ce.png)
+
+![folder](https://user-images.githubusercontent.com/44673303/190456451-86c0b01f-845a-4222-bcaa-543faa31f20c.png)
 
 
-#### _DROP AREA_
+### _DROP AREA_
 
 1. White List : Contains a list of links to list all the prefabs you can choose from in the PickUp Area
 2. Black List : Contains a list of links to list all prefabs that won't show up in the PickUp Area
@@ -73,20 +74,31 @@ Add the lines below to `Packages/manifest.json`
 ### _SETTING_
 
 1. Where Spawn :
-   1. Default : 
+   1. Default: 
       1. New instantiate object will spawn in root prefab when you in prefab mode
       2. New instantiate object will spawn in world space when you in scene mode
    
-   2. Custom: You can choose to use the object as the root to spawn a new object here
+   2. Index: The newly created object is the child of the object with the specified index of root
+      1. `This mode only works inside PrefabMode`
+   3. Custom: You can choose to use the object as the root to spawn a new object here
 
 
 ### _PICKUP AREA_
 
-![image](https://user-images.githubusercontent.com/44673303/163959317-78c6f079-69ee-4bb2-b476-21d8e9f7ce3e.png)
+![pickup-area](https://user-images.githubusercontent.com/44673303/190464081-dad74533-55fb-4919-a375-3abecfaf8a9b.png)
 
 Where you choose the object to spawn
 
 + Using `Shift + Click` to instantiate object
 + Using `Right Click` in item to ping object prefab
 + Using `Right Click` in header Pickup Area to refresh draw collection item pickup
-  ![image](https://user-images.githubusercontent.com/44673303/163969707-bc0beca6-2952-414f-8732-e1e4bcbaa630.png)
+
+Right click to header of tab to refresh pickup object in tab area
+![header-right-click](https://user-images.githubusercontent.com/44673303/163969707-bc0beca6-2952-414f-8732-e1e4bcbaa630.png)
+
+Right click to specifically pickup object to show menu
+
++ Ignore: Mark this pickup object on the `black list`
++ Ping: Live property locator see where it is
+
+![right-click-pickup-object](https://user-images.githubusercontent.com/44673303/190466539-f79fd032-2a6f-46ec-8252-d1b8fa2a3ea4.png)
