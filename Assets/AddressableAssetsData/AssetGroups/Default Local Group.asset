@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: be6a9931e4272b8449fee0000647f7b6
+  m_SerializeEntries:
+  - m_GUID: 5a20c5491b6b63f4baebb3ecf7130908
+    m_Address: 01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 30bd22d31fe9b784688047c9b1d618bd
+    m_Address: Assets/_Root/Runtime/UGUI/Fetch/Animation/Fetch.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 519bedc1a92822144972d302d437603e
+    m_Address: Assets/_Root/Runtime/UGUI/Fetch/Sprites/fetch_atlas.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 66c1bc38545d23f41bcb62bc68ed8d68
+    m_Address: Assets/_Root/Runtime/UGUI/Loader/Prefabs/LoadingCommon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 0bc566a4f441ed34d858e6b2fa052f1f, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 9d852970c45ecc047a884e23bd0acd0a, type: 2}
+    - {fileID: 11400000, guid: ea3c24df7c8580b49aebd4fd55839f3d, type: 2}

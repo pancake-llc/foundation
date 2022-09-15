@@ -61,8 +61,7 @@ namespace Pancake
                 var path = UnityEditor.AssetDatabase.GetAssetPath(asset);
                 var guid = UnityEditor.AssetDatabase.AssetPathToGUID(path);
 
-                if (!TryGetValue(asset, out _))
-                    newEntries.Add(new AssetEntry(guid, asset));
+                if (!TryGetValue(asset, out _)) newEntries.Add(new AssetEntry(guid, asset));
 
                 var childAssets = UnityEditor.AssetDatabase.LoadAllAssetRepresentationsAtPath(UnityEditor.AssetDatabase.GetAssetPath(asset));
 
