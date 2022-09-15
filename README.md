@@ -68,7 +68,7 @@ Add the lines below to `Packages/manifest.json`
 
 1. White List : Contains a list of links to list all the prefabs you can choose from in the PickUp Area
 2. Black List : Contains a list of links to list all prefabs that won't show up in the PickUp Area
-3. Using `Right Click` to clear all `White List` or `Black List`
+3. Using `Right Click` in `White List Area` or `Black List Area` to clear all `White List` or `Black List`
 
 
 ### _SETTING_
