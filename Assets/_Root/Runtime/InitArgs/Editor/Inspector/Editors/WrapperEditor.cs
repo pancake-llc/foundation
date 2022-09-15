@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Pancake.Init
 {
     [CustomEditor(typeof(Wrapper<>), true, isFallback=true), CanEditMultipleObjects]
-    public class WrapperEditor : UnityEditor.Editor
+    public sealed class WrapperEditor : UnityEditor.Editor
     {
         private MonoScript wrappedScriptReference;
         private Type wrappedType;

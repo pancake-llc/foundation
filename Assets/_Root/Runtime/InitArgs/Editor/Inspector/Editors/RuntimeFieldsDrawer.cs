@@ -26,7 +26,7 @@ namespace Pancake.Init
     /// <summary>
     /// Object which can draw the non-serialized fields of a target.
     /// </summary>
-    public class RuntimeFieldsDrawer
+    public sealed class RuntimeFieldsDrawer
     {
         private const BindingFlags AllDeclaredInstance = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 

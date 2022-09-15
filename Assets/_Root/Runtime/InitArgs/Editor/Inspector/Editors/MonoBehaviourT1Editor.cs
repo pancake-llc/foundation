@@ -5,7 +5,7 @@ using UnityEditor;
 namespace Pancake.Editor.Init
 {
 	[CustomEditor(typeof(MonoBehaviour<>), true, isFallback = true), CanEditMultipleObjects]
-    public class MonoBehaviourT1Editor : InitializableEditor
+    public sealed class MonoBehaviourT1Editor : InitializableEditor
     {
         protected override Type BaseTypeDefinition => typeof(MonoBehaviour<>);
     }

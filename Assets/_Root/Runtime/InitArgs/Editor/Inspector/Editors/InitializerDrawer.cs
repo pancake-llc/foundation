@@ -13,9 +13,9 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Editor.Init
 {
-	public class InitializerDrawer : IDisposable
+	public sealed class InitializerDrawer : IDisposable
 	{
-		public const string SetInitializerTargetOnScriptsReloadedKey = "SetInitializerTarget";
+		public const string SetInitializerTargetOnScriptsReloadedKey = "InitArgs.SetInitializerTarget";
 		private const string InitArgsDefaultLabel = "Init";
 		private static readonly Type genericInspectorType;
 
@@ -598,10 +598,11 @@ namespace Pancake.Editor.Init
 
 			menu.AddSeparator("");
 
-			menu.AddItem(new GUIContent("Edit Script"), false, () => AssetDatabase.OpenAsset(MonoScript.FromMonoBehaviour(firstInitializer as MonoBehaviour)));
-
-			menu.AddItem(new GUIContent("Ping Script"), false, () => EditorApplication.delayCall += () => EditorGUIUtility.PingObject(MonoScript.FromMonoBehaviour(firstInitializer as MonoBehaviour)));
-
+			if(MonoScript.FromMonoBehaviour(firstInitializer as MonoBehaviour) is MonoScript scriptAsset)
+			{
+				menu.AddItem(new GUIContent("Edit Script"), false, () => AssetDatabase.OpenAsset(scriptAsset));
+				menu.AddItem(new GUIContent("Ping Script"), false, () => EditorApplication.delayCall += () => EditorGUIUtility.PingObject(scriptAsset));
+			}
 			if(!mixedInitializers)
 			{
 				menu.AddItem(new GUIContent("Preset"), false, () => PresetSelector.ShowSelector(initializers, null, true));

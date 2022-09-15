@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Pancake.Editor.Init
 {
 	[CanEditMultipleObjects]
-    public class InitializableT2Editor : InitializableEditor
+    public sealed class InitializableT2Editor : InitializableEditor
     {
         protected override Type BaseTypeDefinition => typeof(IInitializable<,>);
     }

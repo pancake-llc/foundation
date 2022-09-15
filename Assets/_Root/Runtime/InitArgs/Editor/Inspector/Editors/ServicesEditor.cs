@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.Editor.Init
 {
     [CustomEditor(typeof(Services), true, isFallback = true), CanEditMultipleObjects]
-    public class ServicesEditor : UnityEditor.Editor
+    public sealed class ServicesEditor : UnityEditor.Editor
     {
         private SerializedProperty providesServices;
         private SerializedProperty toClients;

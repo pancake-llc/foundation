@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Editor.Init
 {
-	public class CrossSceneReferenceDrawer : IDisposable
+	public sealed class CrossSceneReferenceDrawer : IDisposable
 	{
 		private static GUIContent sceneIcon;
 
