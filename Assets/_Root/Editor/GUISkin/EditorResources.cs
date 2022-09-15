@@ -16,7 +16,7 @@ namespace Pancake.Editor
         public static Texture2D EraserIcon => InEditor.FindAssetWithPath<Texture2D>("eraser.png", RELATIVE_PATH);
         public static Texture2D PinIcon => InEditor.FindAssetWithPath<Texture2D>("pin.png", RELATIVE_PATH);
         public static Texture2D ExtrudeIcon => InEditor.FindAssetWithPath<Texture2D>("extrude.png", RELATIVE_PATH);
-        public static Texture2D PrefabIcon => InEditor.FindAssetWithPath<Texture2D>("prefab-default.png", RELATIVE_PATH);
+        public static Texture2D PrefabIcon => InEditor.FindAssetWithPath<Texture2D>("prefab-icon.png", RELATIVE_PATH);
         public static Texture2D AlignLeft => InEditor.FindAssetWithPath<Texture2D>("allign_left.png", RELATIVE_PATH);
         public static Texture2D AlignCenter => InEditor.FindAssetWithPath<Texture2D>("allign_center.png", RELATIVE_PATH);
         public static Texture2D AlignRight => InEditor.FindAssetWithPath<Texture2D>("allign_right.png", RELATIVE_PATH);
