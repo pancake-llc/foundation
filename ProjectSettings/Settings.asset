@@ -1,6 +1,4 @@
 {
-    "pickupObjectWhiteList": [
-        "Assets/~Sample"
-    ],
+    "pickupObjectWhiteList": [],
     "pickupObjectBlackList": []
 }
