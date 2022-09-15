@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.Editor.LevelEditor
 {
@@ -25,9 +28,9 @@ namespace Pancake.Editor.LevelEditor
         {
             if (previewDict != null)
             {
-                foreach (var kvp in previewDict)
+                foreach (var kvp in previewDict.ToList())
                 {
-                    Object.DestroyImmediate(kvp.Value);
+                    previewDict[kvp.Key] = null;
                 }
 
                 previewDict.Clear();

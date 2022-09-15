@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+#if UNITY_2021_1_OR_NEWER
 using UnityEditor.SceneManagement;
+#else
+using UnityEditor.Experimental.SceneManagement;
+#endif
 using UnityEngine;
 
 namespace Pancake.Editor.LevelEditor
@@ -22,9 +26,9 @@ namespace Pancake.Editor.LevelEditor
         private int _rootIndexSpawn;
         private GameObject _previewPickupObject;
         private string _dataPath;
-        private const float DropAreaHeightFoldout = 110f;
-        private const float DefaultHeaderHeight = 30f;
-        private const float SelectedObjectPreviewHeight = 100f;
+        private const float DROP_AREA_HEIGHT_FOLDOUT = 110f;
+        private const float DEFAULT_HEADER_HEIGHT = 30f;
+        private const float SELECTED_OBJECT_PREVIEW_HEIGHT = 100f;
         private float _height;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
@@ -193,12 +197,12 @@ namespace Pancake.Editor.LevelEditor
 
         private void InternalDrawDropArea()
         {
-            _height -= DefaultHeaderHeight;
+            _height -= DEFAULT_HEADER_HEIGHT;
             Uniform.DrawUppercaseSection("LEVEL_EDITOR_DROP_AREA", "DROP AREA", DrawDropArea);
 
             void DrawDropArea()
             {
-                _height -= DropAreaHeightFoldout - DefaultHeaderHeight;
+                _height -= DROP_AREA_HEIGHT_FOLDOUT - DEFAULT_HEADER_HEIGHT;
                 GUILayout.Space(2);
                 float width = 0;
                 var @event = Event.current;
@@ -344,21 +348,21 @@ namespace Pancake.Editor.LevelEditor
                         });
                 });
             }
+        }
 
-            void ValidateByWhite(string path, ref List<string> blackList)
+        private void ValidateByWhite(string path, ref List<string> blackList)
+        {
+            foreach (string t in blackList.ToList())
             {
-                foreach (string t in blackList.ToList())
-                {
-                    if (path.Equals(t)) blackList.Remove(t);
-                }
+                if (path.Equals(t)) blackList.Remove(t);
             }
+        }
 
-            void ValidateByBlack(string path, ref List<string> whiteList)
+        void ValidateByBlack(string path, ref List<string> whiteList)
+        {
+            foreach (string t in whiteList.ToList())
             {
-                foreach (string t in whiteList.ToList())
-                {
-                    if (path.Equals(t) || IsChildOfPath(t, path)) whiteList.Remove(t);
-                }
+                if (path.Equals(t) || IsChildOfPath(t, path)) whiteList.Remove(t);
             }
         }
 
@@ -459,12 +463,12 @@ namespace Pancake.Editor.LevelEditor
 
         private void InternalDrawSetting()
         {
-            _height -= DefaultHeaderHeight;
+            _height -= DEFAULT_HEADER_HEIGHT;
             Uniform.DrawUppercaseSection("LEVEL_EDITOR_CONFIG", "SETTING", DrawSetting);
 
             void DrawSetting()
             {
-                _height -= DefaultHeaderHeight;
+                _height -= DEFAULT_HEADER_HEIGHT;
                 _selectedSpawn = EditorGUILayout.Popup("Where Spawn", _selectedSpawn, _optionsSpawn);
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -492,9 +496,9 @@ namespace Pancake.Editor.LevelEditor
 
         private void InternalDrawPickupArea()
         {
-            _height -= DefaultHeaderHeight;
-            _height -= DefaultHeaderHeight;
-            _height -= DefaultHeaderHeight;
+            _height -= DEFAULT_HEADER_HEIGHT;
+            _height -= DEFAULT_HEADER_HEIGHT;
+            _height -= DEFAULT_HEADER_HEIGHT;
             _height -= 18f;
             Uniform.DrawUppercaseSectionWithRightClick("LEVEL_EDITOR_PICKUP_AREA", "PICKUP AREA", DrawPickupArea, ShowMenuRefresh);
 
@@ -503,8 +507,8 @@ namespace Pancake.Editor.LevelEditor
                 var tex = LevelWindow.GetPreview(_currentPickObject?.pickedObject);
                 if (tex)
                 {
-                    _height -= SelectedObjectPreviewHeight;
-                    _height -= DefaultHeaderHeight;
+                    _height -= SELECTED_OBJECT_PREVIEW_HEIGHT;
+                    _height -= DEFAULT_HEADER_HEIGHT;
                     string pickObjectName = _currentPickObject?.pickedObject.name;
                     Uniform.SpaceOneLine();
                     Uniform.Horizontal(() =>
@@ -520,16 +524,17 @@ namespace Pancake.Editor.LevelEditor
                 {
                     Uniform.HelpBox("Select An Object First", MessageType.Info);
                 }
-                
+
                 _height += position.height;
                 _pickObjectScrollPosition = GUILayout.BeginScrollView(_pickObjectScrollPosition, GUILayout.Height(_height));
                 var resultSplitGroupObjects = PickObjects.GroupBy(_ => _.group).Select(_ => _.ToList()).ToList();
                 foreach (var splitGroupObject in resultSplitGroupObjects)
                 {
                     string nameGroup = splitGroupObject[0].group.ToUpper();
-                    _height -=DefaultHeaderHeight;
+                    _height -= DEFAULT_HEADER_HEIGHT;
                     Uniform.DrawUppercaseSection($"LEVEL_EDITOR_PICKUP_AREA_CHILD_{nameGroup}", nameGroup, () => DrawInGroup(splitGroupObject));
                 }
+
                 GUILayout.EndScrollView();
             }
 
@@ -556,8 +561,7 @@ namespace Pancake.Editor.LevelEditor
                             {
                                 if (Event.current.button == 1)
                                 {
-                                    Selection.activeObject = pickObj.pickedObject;
-                                    EditorGUIUtility.PingObject(pickObj.pickedObject);
+                                    ShowMenuRightClickItem(pickObj);
                                     return;
                                 }
 
@@ -590,8 +594,39 @@ namespace Pancake.Editor.LevelEditor
             void ShowMenuRefresh()
             {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("Refresh Pickup  Area"), false, RefreshAll);
+                menu.AddItem(new GUIContent("Refresh Pickup  Area"),
+                    false,
+                    () =>
+                    {
+                        _currentPickObject = null;
+                        RefreshAll();
+                    });
                 menu.ShowAsContext();
+            }
+
+            void ShowMenuRightClickItem(PickObject pickObj)
+            {
+                var menu = new GenericMenu();
+                menu.AddItem(new GUIContent("Ignore"), false, () => IgnorePath(pickObj));
+                menu.AddItem(new GUIContent("Ping"),
+                    false,
+                    () =>
+                    {
+                        Selection.activeObject = pickObj.pickedObject;
+                        EditorGUIUtility.PingObject(pickObj.pickedObject);
+                    });
+                menu.ShowAsContext();
+            }
+
+            void IgnorePath(PickObject pickObj)
+            {
+                var path = AssetDatabase.GetAssetPath(pickObj.pickedObject);
+                ValidateByBlack(path, ref levelEditorSettings.Settings.pickupObjectWhiteList);
+                AddToBlackList(path);
+
+                ReduceScopeDirectory(ref levelEditorSettings.Settings.pickupObjectBlackList);
+                levelEditorSettings.SaveSetting();
+                RefreshAll();
             }
         }
 
@@ -645,7 +680,7 @@ namespace Pancake.Editor.LevelEditor
                         Probe.Pick(ProbeFilter.Default, sceneView, e.mousePosition, out mousePosition);
                         raycastHit = null;
                     }
-                    
+
                     float discSize = HandleUtility.GetHandleSize(mousePosition) * 0.4f;
                     Handles.color = new Color(1, 0, 0, 0.5f);
                     Handles.DrawSolidDisc(mousePosition, Vector3.up, discSize * 0.5f);
@@ -841,18 +876,8 @@ namespace Pancake.Editor.LevelEditor
 
             return parent;
         }
-
-#if UNITY_2021_1_OR_NEWER
-        private UnityEditor.SceneManagement.PrefabStage GetCurrentPrefabStage()
-        {
-            return UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-        }
-#else
-        private UnityEditor.Experimental.SceneManagement.PrefabStage GetCurrentPrefabStage()
-        {
-            return UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-        }
-#endif
+        
+        private PrefabStage GetCurrentPrefabStage() { return PrefabStageUtility.GetCurrentPrefabStage(); }
 
         /// <summary>
         /// Calculate count item pickup can display

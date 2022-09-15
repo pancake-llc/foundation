@@ -6,7 +6,7 @@ namespace Pancake
     using UnityEngine;
     using System.Linq;
 
-    public class DummyBehaviour : MonoBehaviour
+    internal class DummyBehaviour : MonoBehaviour
     {
         [SerializeField] private string label = "";
 

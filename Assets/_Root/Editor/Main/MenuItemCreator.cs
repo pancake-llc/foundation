@@ -10,6 +10,29 @@ namespace Pancake.Editor
 {
     public static class MenuItemCreator
     {
+        [MenuItem("GameObject/Pancake/Self Filling", false, 1)]
+        private static void AnchorFillinSelectedUIObjects()
+        {
+            foreach (var obj in Selection.gameObjects)
+            {
+                var rectTransform = obj.GetComponent<RectTransform>();
+                if (rectTransform) rectTransform.SelfFilling();
+            }
+        }
+
+        [MenuItem("GameObject/Pancake/Self Filling", true, 1)]
+        private static bool AnchorFillinSelectedUIObjectsValidate()
+        {
+            bool flag = false;
+            foreach (var obj in Selection.gameObjects)
+            {
+                var rectTransform = obj.GetComponent<RectTransform>();
+                flag = rectTransform != null;
+            }
+
+            return flag;
+        }
+
         [MenuItem("GameObject/Pancake/UIButton", false, 1000)]
         public static void CreateUniButtonEmpty()
         {

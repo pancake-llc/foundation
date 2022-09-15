@@ -159,29 +159,6 @@ namespace Pancake.Editor
             if (EditorUtility.DisplayDialog(title, message, strOk, strCancel)) actionOk?.Invoke();
         }
 
-        [MenuItem("GameObject/Pancake/Self Filling", false, 1)]
-        private static void AnchorFillinSelectedUIObjects()
-        {
-            foreach (var obj in Selection.gameObjects)
-            {
-                var rectTransform = obj.GetComponent<RectTransform>();
-                if (rectTransform) rectTransform.SelfFilling();
-            }
-        }
-
-        [MenuItem("GameObject/Pancake/Self Filling", true, 1)]
-        private static bool AnchorFillinSelectedUIObjectsValidate()
-        {
-            bool flag = false;
-            foreach (var obj in Selection.gameObjects)
-            {
-                var rectTransform = obj.GetComponent<RectTransform>();
-                flag = rectTransform != null;
-            }
-
-            return flag;
-        }
-
         public static void DelayedCall(float delay, Action callback)
         {
             var delayedCall = new DelayedCall(delay, callback);
@@ -445,6 +422,14 @@ namespace Pancake.Editor
             if (!added) ArrayUtility.Add(ref assets, assetObject);
 
             PlayerSettings.SetPreloadedAssets(assets);
+        }
+
+        private const string DEFAULT_RESOURCE_PATH = "Assets/_Root/Resources";
+
+        public static string DefaultResourcesPath()
+        {
+            if (!DEFAULT_RESOURCE_PATH.DirectoryExists()) DEFAULT_RESOURCE_PATH.CreateDirectory();
+            return DEFAULT_RESOURCE_PATH;
         }
     }
 }
