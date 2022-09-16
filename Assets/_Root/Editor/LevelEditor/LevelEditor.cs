@@ -32,7 +32,7 @@ namespace Pancake.Editor.LevelEditor
         private float _height;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
-        private static InEditor.ProjectSetting<Settings> levelEditorSettings = new InEditor.ProjectSetting<Settings>();
+        private static InEditor.ProjectSetting<PathSetting> levelEditorSettings = new InEditor.ProjectSetting<PathSetting>("LevelEditorSettings");
 
         private static Vector2 EventMousePoint
         {
@@ -103,13 +103,13 @@ namespace Pancake.Editor.LevelEditor
         {
             _pickObjects = new List<PickObject>();
 
-            foreach (string whitepath in levelEditorSettings.Settings.pickupObjectWhiteList)
+            foreach (string whitepath in levelEditorSettings.Settings.whitelistPaths)
             {
                 MakeGroupPrefab(whitepath);
 
                 if (!Directory.Exists(whitepath)) continue;
                 var directories = new List<string>();
-                GetAllChildDirectories(whitepath, ref directories);
+                InEditor.GetAllChildDirectories(whitepath, ref directories);
 
                 foreach (string directory in directories)
                 {
@@ -136,12 +136,12 @@ namespace Pancake.Editor.LevelEditor
                     var removeList = new List<string>();
                     var nameFileExclude = new List<string>();
 
-                    foreach (string blackPath in levelEditorSettings.Settings.pickupObjectBlackList)
+                    foreach (string blackPath in levelEditorSettings.Settings.blacklistPaths)
                     {
-                        if (IsChildOfPath(blackPath, whitePath)) removeList.Add(blackPath);
+                        if (InEditor.IsChildOfPath(blackPath, whitePath)) removeList.Add(blackPath);
                     }
 
-                    if (removeList.Contains(whitePath) || levelEditorSettings.Settings.pickupObjectBlackList.Contains(whitePath)) return;
+                    if (removeList.Contains(whitePath) || levelEditorSettings.Settings.blacklistPaths.Contains(whitePath)) return;
 
                     foreach (string str in removeList)
                     {
@@ -231,11 +231,11 @@ namespace Pancake.Editor.LevelEditor
                                     DragAndDrop.AcceptDrag();
                                     foreach (string path in DragAndDrop.paths)
                                     {
-                                        ValidateByWhite(path, ref levelEditorSettings.Settings.pickupObjectBlackList);
-                                        AddToWhiteList(path);
+                                        ValidateWhitelist(path, ref levelEditorSettings.Settings.blacklistPaths);
+                                        AddToWhitelist(path);
                                     }
 
-                                    ReduceScopeDirectory(ref levelEditorSettings.Settings.pickupObjectWhiteList);
+                                    InEditor.ReduceScopeDirectory(ref levelEditorSettings.Settings.whitelistPaths);
                                     levelEditorSettings.SaveSetting();
                                     RefreshAll();
                                 }
@@ -248,11 +248,11 @@ namespace Pancake.Editor.LevelEditor
                                     DragAndDrop.AcceptDrag();
                                     foreach (string path in DragAndDrop.paths)
                                     {
-                                        ValidateByBlack(path, ref levelEditorSettings.Settings.pickupObjectWhiteList);
-                                        AddToBlackList(path);
+                                        ValidateBlacklist(path, ref levelEditorSettings.Settings.whitelistPaths);
+                                        AddToBlacklist(path);
                                     }
 
-                                    ReduceScopeDirectory(ref levelEditorSettings.Settings.pickupObjectBlackList);
+                                    InEditor.ReduceScopeDirectory(ref levelEditorSettings.Settings.blacklistPaths);
                                     levelEditorSettings.SaveSetting();
                                     RefreshAll();
                                 }
@@ -267,7 +267,7 @@ namespace Pancake.Editor.LevelEditor
                                     false,
                                     () =>
                                     {
-                                        levelEditorSettings.Settings.pickupObjectWhiteList.Clear();
+                                        levelEditorSettings.Settings.whitelistPaths.Clear();
                                         levelEditorSettings.SaveSetting();
                                         RefreshAll();
                                     });
@@ -278,7 +278,7 @@ namespace Pancake.Editor.LevelEditor
                                     false,
                                     () =>
                                     {
-                                        levelEditorSettings.Settings.pickupObjectBlackList.Clear();
+                                        levelEditorSettings.Settings.blacklistPaths.Clear();
                                         levelEditorSettings.SaveSetting();
                                         RefreshAll();
                                     });
@@ -293,16 +293,16 @@ namespace Pancake.Editor.LevelEditor
                 {
                     Uniform.VerticalScope(() =>
                         {
-                            if (levelEditorSettings.Settings.pickupObjectWhiteList.Count == 0)
+                            if (levelEditorSettings.Settings.whitelistPaths.Count == 0)
                             {
                                 EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
                             }
                             else
                             {
-                                foreach (string t in levelEditorSettings.Settings.pickupObjectWhiteList.ToList())
+                                foreach (string t in levelEditorSettings.Settings.whitelistPaths.ToList())
                                 {
                                     _height -= 18;
-                                    DrawRow(t, width, _ => levelEditorSettings.Settings.pickupObjectWhiteList.Remove(_));
+                                    DrawRow(t, width, _ => levelEditorSettings.Settings.whitelistPaths.Remove(_));
                                 }
                             }
                         },
@@ -310,15 +310,15 @@ namespace Pancake.Editor.LevelEditor
                     Uniform.SpaceOneLine();
                     Uniform.VerticalScope(() =>
                         {
-                            if (levelEditorSettings.Settings.pickupObjectBlackList.Count == 0)
+                            if (levelEditorSettings.Settings.blacklistPaths.Count == 0)
                             {
                                 EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
                             }
                             else
                             {
-                                foreach (string t in levelEditorSettings.Settings.pickupObjectBlackList.ToList())
+                                foreach (string t in levelEditorSettings.Settings.blacklistPaths.ToList())
                                 {
-                                    DrawRow(t, width, _ => levelEditorSettings.Settings.pickupObjectBlackList.Remove(_));
+                                    DrawRow(t, width, _ => levelEditorSettings.Settings.blacklistPaths.Remove(_));
                                 }
                             }
                         },
@@ -350,7 +350,7 @@ namespace Pancake.Editor.LevelEditor
             }
         }
 
-        private void ValidateByWhite(string path, ref List<string> blackList)
+        private void ValidateWhitelist(string path, ref List<string> blackList)
         {
             foreach (string t in blackList.ToList())
             {
@@ -358,107 +358,36 @@ namespace Pancake.Editor.LevelEditor
             }
         }
 
-        void ValidateByBlack(string path, ref List<string> whiteList)
+        private void ValidateBlacklist(string path, ref List<string> whiteList)
         {
             foreach (string t in whiteList.ToList())
             {
-                if (path.Equals(t) || IsChildOfPath(t, path)) whiteList.Remove(t);
+                if (path.Equals(t) || InEditor.IsChildOfPath(t, path)) whiteList.Remove(t);
             }
         }
 
-        private void AddToWhiteList(string path)
+        private void AddToWhitelist(string path)
         {
             var check = false;
-            foreach (string whitePath in levelEditorSettings.Settings.pickupObjectWhiteList)
+            foreach (string whitePath in levelEditorSettings.Settings.whitelistPaths)
             {
-                if (IsChildOfPath(path, whitePath)) check = true;
+                if (InEditor.IsChildOfPath(path, whitePath)) check = true;
             }
 
-            if (!check) levelEditorSettings.Settings.pickupObjectWhiteList.Add(path);
-            levelEditorSettings.Settings.pickupObjectWhiteList = levelEditorSettings.Settings.pickupObjectWhiteList.Distinct().ToList(); //unique
+            if (!check) levelEditorSettings.Settings.whitelistPaths.Add(path);
+            levelEditorSettings.Settings.whitelistPaths = levelEditorSettings.Settings.whitelistPaths.Distinct().ToList(); //unique
         }
 
-        private void AddToBlackList(string path)
+        private void AddToBlacklist(string path)
         {
             var check = false;
-            foreach (string blackPath in levelEditorSettings.Settings.pickupObjectBlackList)
+            foreach (string blackPath in levelEditorSettings.Settings.blacklistPaths)
             {
-                if (IsChildOfPath(path, blackPath)) check = true;
+                if (InEditor.IsChildOfPath(path, blackPath)) check = true;
             }
 
-            if (!check) levelEditorSettings.Settings.pickupObjectBlackList.Add(path);
-            levelEditorSettings.Settings.pickupObjectBlackList = levelEditorSettings.Settings.pickupObjectBlackList.Distinct().ToList(); //unique
-        }
-
-        // return true if child is childrent of parent
-        private bool IsChildOfPath(string child, string parent)
-        {
-            if (child.Equals(parent)) return false;
-            var allParent = new List<DirectoryInfo>();
-            GetAllParentDirectories(new DirectoryInfo(child), ref allParent);
-
-            foreach (var p in allParent)
-            {
-                bool check = EqualPath(p, parent);
-                if (check) return true;
-            }
-
-            return false;
-        }
-
-        static void GetAllParentDirectories(DirectoryInfo directoryToScan, ref List<DirectoryInfo> directories)
-        {
-            while (true)
-            {
-                if (directoryToScan == null || directoryToScan.Name == directoryToScan.Root.Name || !directoryToScan.FullName.Contains("Assets")) return;
-
-                directories.Add(directoryToScan);
-                directoryToScan = directoryToScan.Parent;
-            }
-        }
-
-        static void GetAllChildDirectories(string path, ref List<string> directories)
-        {
-            string[] result = Directory.GetDirectories(path);
-            if (result.Length == 0) return;
-            foreach (string i in result)
-            {
-                directories.Add(i);
-                GetAllChildDirectories(i, ref directories);
-            }
-        }
-
-        private bool EqualPath(FileSystemInfo info, string str)
-        {
-            string relativePath = info.FullName;
-            if (relativePath.StartsWith(_dataPath)) relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
-            relativePath = relativePath.Replace('\\', '/');
-            return str.Equals(relativePath);
-        }
-
-        private void ReduceScopeDirectory(ref List<string> source)
-        {
-            var arr = new string[source.Count];
-            source.CopyTo(arr);
-            var valueRemove = new List<string>();
-            var unique = arr.Distinct().ToList();
-            foreach (string u in unique)
-            {
-                var check = false;
-                foreach (string k in unique)
-                {
-                    if (IsChildOfPath(u, k)) check = true;
-                }
-
-                if (check) valueRemove.Add(u);
-            }
-
-            foreach (string i in valueRemove)
-            {
-                unique.Remove(i);
-            }
-
-            source = unique;
+            if (!check) levelEditorSettings.Settings.blacklistPaths.Add(path);
+            levelEditorSettings.Settings.blacklistPaths = levelEditorSettings.Settings.blacklistPaths.Distinct().ToList(); //unique
         }
 
         private void InternalDrawSetting()
@@ -625,10 +554,10 @@ namespace Pancake.Editor.LevelEditor
             void IgnorePath(PickObject pickObj)
             {
                 var path = AssetDatabase.GetAssetPath(pickObj.pickedObject);
-                ValidateByBlack(path, ref levelEditorSettings.Settings.pickupObjectWhiteList);
-                AddToBlackList(path);
+                ValidateBlacklist(path, ref levelEditorSettings.Settings.whitelistPaths);
+                AddToBlacklist(path);
 
-                ReduceScopeDirectory(ref levelEditorSettings.Settings.pickupObjectBlackList);
+                InEditor.ReduceScopeDirectory(ref levelEditorSettings.Settings.blacklistPaths);
                 levelEditorSettings.SaveSetting();
                 RefreshAll();
             }

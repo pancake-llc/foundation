@@ -28,17 +28,32 @@ namespace Pancake.Editor
         private static void Setup()
         {
             var str = NameFiles[internalIndex];
-            UnityEditor.EditorUtility.DisplayProgressBar("Creating the necessary settings", $"Creating {str}...",
-                internalIndex / (float)NameFiles.Length);
-            var resourcePath = InEditor.DefaultResourcesPath();
-            if (!$"{resourcePath}/{NameFiles}".FileExists())
+            UnityEditor.EditorUtility.DisplayProgressBar("Creating the necessary settings", $"Creating {str}...", internalIndex / (float)NameFiles.Length);
+
+            switch (internalIndex)
             {
-                CreateInstance(Complete);
+                case 0:
+                    if (!$"{InEditor.DefaultStoragesPath()}/{str}".FileExists())
+                    {
+                        CreateInstance(Complete);
+                    }
+                    else
+                    {
+                        Complete();
+                    }
+                    break;
+                case 1:
+                    if (!$"{InEditor.DefaultResourcesPath()}/{str}".FileExists())
+                    {
+                        CreateInstance(Complete);
+                    }
+                    else
+                    {
+                        Complete();
+                    }
+                    break;
             }
-            else
-            {
-                Complete();
-            }
+            
 
             void Complete()
             {

@@ -93,7 +93,11 @@ namespace Pancake
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Setup() { Container = Resources.Load<AssetContainer>("AssetContainer"); }
+        private static void Setup()
+        {
+            Container = Resources.Load<AssetContainer>("AssetContainer");
+            Container.LocationMap();
+        }
 
         private static string CreatePath(string fileName)
         {

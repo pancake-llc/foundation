@@ -425,11 +425,89 @@ namespace Pancake.Editor
         }
 
         private const string DEFAULT_RESOURCE_PATH = "Assets/_Root/Resources";
+        private const string DEFAULT_ADDRESSABLE_PATH = "Assets/_Root/Storages";
 
         public static string DefaultResourcesPath()
         {
             if (!DEFAULT_RESOURCE_PATH.DirectoryExists()) DEFAULT_RESOURCE_PATH.CreateDirectory();
             return DEFAULT_RESOURCE_PATH;
+        }
+
+        public static string DefaultStoragesPath()
+        {
+            if (!DEFAULT_ADDRESSABLE_PATH.DirectoryExists()) DEFAULT_ADDRESSABLE_PATH.CreateDirectory();
+            return DEFAULT_ADDRESSABLE_PATH;
+        }
+        
+        // return true if child is childrent of parent
+        internal static bool IsChildOfPath(string child, string parent)
+        {
+            if (child.Equals(parent)) return false;
+            var allParent = new List<DirectoryInfo>();
+            GetAllParentDirectories(new DirectoryInfo(child), ref allParent);
+
+            foreach (var p in allParent)
+            {
+                bool check = EqualPath(p, parent);
+                if (check) return true;
+            }
+
+            return false;
+        }
+        
+        internal static void GetAllParentDirectories(DirectoryInfo directoryToScan, ref List<DirectoryInfo> directories)
+        {
+            while (true)
+            {
+                if (directoryToScan == null || directoryToScan.Name == directoryToScan.Root.Name || !directoryToScan.FullName.Contains("Assets")) return;
+
+                directories.Add(directoryToScan);
+                directoryToScan = directoryToScan.Parent;
+            }
+        }
+        
+        internal static void GetAllChildDirectories(string path, ref List<string> directories)
+        {
+            string[] result = Directory.GetDirectories(path);
+            if (result.Length == 0) return;
+            foreach (string i in result)
+            {
+                directories.Add(i);
+                GetAllChildDirectories(i, ref directories);
+            }
+        }
+        
+        private static bool EqualPath(FileSystemInfo info, string str)
+        {
+            string relativePath = info.FullName;
+            if (relativePath.StartsWith(Application.dataPath.Replace('/', '\\'))) relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
+            relativePath = relativePath.Replace('\\', '/');
+            return str.Equals(relativePath);
+        }
+        
+        internal static void ReduceScopeDirectory(ref List<string> source)
+        {
+            var arr = new string[source.Count];
+            source.CopyTo(arr);
+            var valueRemove = new List<string>();
+            var unique = arr.Distinct().ToList();
+            foreach (string u in unique)
+            {
+                var check = false;
+                foreach (string k in unique)
+                {
+                    if (IsChildOfPath(u, k)) check = true;
+                }
+
+                if (check) valueRemove.Add(u);
+            }
+
+            foreach (string i in valueRemove)
+            {
+                unique.Remove(i);
+            }
+
+            source = unique;
         }
     }
 }

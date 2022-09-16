@@ -1,18 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using Pancake;
 using Pancake.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
+using Object = UnityEngine.Object;
 
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField] private PlayerData playerData;
     [SerializeField] private AssetReference _assetContainer;
+    public IResourceLocation irLocation;
 
     private async void Awake()
     {
-        _assetContainer = new AssetReference("66c1bc38545d23f41bcb62bc68ed8d68");
+        //_assetContainer = new AssetReference("66c1bc38545d23f41bcb62bc68ed8d68");
         // Archive.LoadFile("player-storage");
         // playerData = Archive.Load<PlayerData>("PlayerDataKey");
         //
@@ -21,9 +25,21 @@ public class PlayerManager : MonoBehaviour
        //  Debug.Log(_assetContainer.Asset.name);
        // var go = Instantiate(_assetContainer.Asset);
        //  _assetContainer.ReleaseAsset();
-       var go =  await Addressables.LoadAssetAsync<GameObject>("66c1bc38545d23f41bcb62bc68ed8d68");
-       Instantiate(go);
+       // var go =  await Addressables.LoadAssetAsync<Object>("4769b653e88f47b4da1e5c5aef65848e");
+       // var dict = new Dictionary<Type, Action>();
+       // Debug.Log(go.GetType());
+       // dict.Add(typeof(ScriptableObject),
+       //     () =>
+       //     {
+       //         Debug.Log((go as ItemSO).DisplayName);
+       //         Debug.Log((go as ItemSO).Power);
+       //     });
+       //
+       // dict[go.GetType()].Invoke();
        //_assetContainer.OperationHandle.Completed += LoadCompleted;
+       
+       
+       playerData.
     }
 
     private void LoadCompleted(AsyncOperationHandle obj)

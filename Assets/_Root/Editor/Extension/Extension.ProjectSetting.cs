@@ -16,6 +16,11 @@ namespace Pancake.Editor
         public class ProjectSetting<T> where T : class, new()
         {
             private T _settings;
+            private readonly string _name;
+            public ProjectSetting(string name) { _name = name; }
+
+            public ProjectSetting() { _name = typeof(T).Name; }
+
 
             public T Settings
             {
@@ -38,7 +43,7 @@ namespace Pancake.Editor
 
                 try
                 {
-                    File.WriteAllText(string.Format(DEFAULT_PROJECT_SETTING_PATH, typeof(T).Name), JsonUtility.ToJson(_settings, true));
+                    File.WriteAllText(string.Format(DEFAULT_PROJECT_SETTING_PATH, _name), JsonUtility.ToJson(_settings, true));
                 }
                 catch (Exception e)
                 {
@@ -49,7 +54,7 @@ namespace Pancake.Editor
             public void LoadSetting()
             {
                 _settings = new T();
-                string path = string.Format(DEFAULT_PROJECT_SETTING_PATH, typeof(T).Name);
+                string path = string.Format(DEFAULT_PROJECT_SETTING_PATH, _name);
                 if (!path.FileExists()) return;
                 string json = File.ReadAllText(path);
                 _settings = JsonUtility.FromJson<T>(json);

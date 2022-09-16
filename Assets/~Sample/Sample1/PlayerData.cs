@@ -29,6 +29,7 @@ public class PlayerData
             Debug.Log("item[" + i + "] displayName="+items[i].DisplayName);
             Debug.Log("item[" + i + "] power="+items[i].Power);
         }
+        
         Debug.Log("icon="+icon.name);
         return "";
     }

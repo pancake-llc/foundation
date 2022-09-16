@@ -33,6 +33,10 @@ MonoBehaviour:
     m_Address: Assets/_Root/Runtime/UGUI/Loader/Prefabs/LoadingCommon.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 4769b653e88f47b4da1e5c5aef65848e
+    m_Address: Assets/~Sample/Sample1/Item1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0bc566a4f441ed34d858e6b2fa052f1f, type: 2}
   m_SchemaSet:
