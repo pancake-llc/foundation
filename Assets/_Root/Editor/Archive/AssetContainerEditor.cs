@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Object = UnityEngine.Object;
 
 namespace Pancake.Editor
@@ -12,21 +13,12 @@ namespace Pancake.Editor
     {
         private AssetContainer _provider;
         private Vector2 _scroll;
-        private List<AssetEntry> _assetEntries;
         private string _pathFolderProperty;
         private string _dataPath;
         private const float DROP_AREA_HEIGHT_FOLDOUT = 110f;
         private const float DEFAULT_HEADER_HEIGHT = 30f;
         private float _height;
 
-        private List<AssetEntry> AssetEntries
-        {
-            get
-            {
-                if (_assetEntries == null) _assetEntries = new List<AssetEntry>();
-                return _assetEntries;
-            }
-        }
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private static InEditor.ProjectSetting<PathSetting> assetContainerSettings = new InEditor.ProjectSetting<PathSetting>("AssetContainerSettings");
@@ -34,46 +26,32 @@ namespace Pancake.Editor
         [MenuItem("Tools/Pancake/Asset Container")]
         private static void ShowWindow() { GetWindow<AssetContainerEditor>("Asset Container").Show(); }
 
-        private void OnEnable() { _provider = Resources.Load<AssetContainer>("AssetContainer"); }
+        private void OnEnable()
+        {
+            _provider = Resources.Load<AssetContainer>("AssetContainer");
+            RefreshAssetEntries();
+        }
 
         private void OnGUI()
         {
             var obj = new SerializedObject(_provider);
             obj.Update();
-            var objectsProperty = obj.FindProperty("savedAssets");
+            var objectsProperty = obj.FindProperty("assetEntries");
             _height = 0;
             Uniform.SpaceTwoLine();
             SceneView.RepaintAll();
             InternalDrawDropArea();
             Uniform.SpaceOneLine();
-            InternalDrawAsset();
+            DrawAssets(objectsProperty);
             obj.ApplyModifiedProperties();
         }
 
-        private void InternalDrawAsset()
+        private void DrawAssets(SerializedProperty objectsProperty)
         {
-            _height -= DEFAULT_HEADER_HEIGHT;
-            _height -= DEFAULT_HEADER_HEIGHT;
-            _height -= 18f;
-            //Uniform.DrawUppercaseSectionWithRightClick("ASSET_CONTAINER_ASSET_AREA", "ASSET AREA", DrawPickupArea, ShowMenuRefresh);
-
-            void DrawPickupArea()
-            {
-                _height += position.height;
-                _scroll = GUILayout.BeginScrollView(_scroll, GUILayout.Height(_height));
-                //var resultSplitGroupObjects = PickObjects.GroupBy(_ => _.group).Select(_ => _.ToList()).ToList();
-                // foreach (var splitGroupObject in resultSplitGroupObjects)
-                // {
-                //     string nameGroup = splitGroupObject[0].group.ToUpper();
-                //     _height -= DEFAULT_HEADER_HEIGHT;
-                //     Uniform.DrawUppercaseSection($"LEVEL_EDITOR_PICKUP_AREA_CHILD_{nameGroup}", nameGroup, () => DrawInGroup(splitGroupObject));
-                // }
-
-                GUILayout.EndScrollView();
-            }
+            _scroll = EditorGUILayout.BeginScrollView(_scroll, true, true);
 
             GUI.enabled = false;
-            //EditorGUILayout.PropertyField(objectsProperty, true);
+            EditorGUILayout.PropertyField(objectsProperty, true);
             GUI.enabled = true;
 
             EditorGUILayout.EndScrollView();
@@ -121,7 +99,7 @@ namespace Pancake.Editor
 
                                     InEditor.ReduceScopeDirectory(ref assetContainerSettings.Settings.whitelistPaths);
                                     assetContainerSettings.SaveSetting();
-                                    Repaint();
+                                    RefreshAll();
                                 }
                             }
                             else if (blackArea.Contains(@event.mousePosition))
@@ -138,7 +116,7 @@ namespace Pancake.Editor
 
                                     InEditor.ReduceScopeDirectory(ref assetContainerSettings.Settings.blacklistPaths);
                                     assetContainerSettings.SaveSetting();
-                                    Repaint();
+                                    RefreshAll();
                                 }
                             }
 
@@ -153,7 +131,7 @@ namespace Pancake.Editor
                                     {
                                         assetContainerSettings.Settings.whitelistPaths.Clear();
                                         assetContainerSettings.SaveSetting();
-                                        Repaint();
+                                        RefreshAll();
                                     });
                             }
                             else if (blackArea.Contains(@event.mousePosition))
@@ -164,7 +142,7 @@ namespace Pancake.Editor
                                     {
                                         assetContainerSettings.Settings.blacklistPaths.Clear();
                                         assetContainerSettings.SaveSetting();
-                                        Repaint();
+                                        RefreshAll();
                                     });
                             }
 
@@ -228,19 +206,18 @@ namespace Pancake.Editor
                         {
                             action?.Invoke(content);
                             assetContainerSettings.SaveSetting();
-                            Repaint();
+                            RefreshAll();
                         });
                 });
             }
         }
 
-        /// <summary>
+           /// <summary>
         /// display picked object in editor
         /// </summary>
         private void RefreshAssetEntries()
-        {
-            _provider.AssetGuids = Array.Empty<string>();
-            EditorUtility.SetDirty(_provider);
+           {
+               _provider.assetEntries = Array.Empty<AssetEntry>();
 
             foreach (string whitepath in assetContainerSettings.Settings.whitelistPaths)
             {
@@ -261,14 +238,14 @@ namespace Pancake.Editor
             {
                 if (!Directory.Exists(whitePath) && !File.Exists(whitePath) || !whitePath.StartsWith("Assets"))
                 {
-                    Debug.LogWarning("[Asset Container]: Can not found folder '" + whitePath + "'");
+                    Debug.LogWarning("[Level Editor]: Can not found folder '" + whitePath + "'");
                     return;
                 }
 
-                var objs = new List<Object>();
+                var levelObjects = new List<Object>();
                 if (File.Exists(whitePath))
                 {
-                    objs.Add(AssetDatabase.LoadAssetAtPath<Object>(whitePath));
+                    levelObjects.Add(AssetDatabase.LoadAssetAtPath<Object>(whitePath));
                 }
                 else
                 {
@@ -287,7 +264,7 @@ namespace Pancake.Editor
                         if (File.Exists(str)) nameFileExclude.Add(Path.GetFileNameWithoutExtension(str));
                     }
 
-                    objs = InEditor.FindAllAssetsWithPath<Object>(whitePath.Replace(Application.dataPath, "").Replace("Assets/", ""))
+                    levelObjects = InEditor.FindAllAssetsWithPath<Object>(whitePath.Replace(Application.dataPath, "").Replace("Assets/", ""))
                         .Where(lo => !(lo is null) && !nameFileExclude.Exists(_ => _.Equals(lo.name)))
                         .ToList();
                 }
@@ -299,37 +276,23 @@ namespace Pancake.Editor
                     if (pathInfo.Parent != null) group = pathInfo.Parent.Name;
                 }
 
-                var newEntries = new List<string>();
-                foreach (var obj in objs)
+                List<AssetEntry> entries = new List<AssetEntry>();
+                foreach (var obj in levelObjects)
                 {
-                    var path = UnityEditor.AssetDatabase.GetAssetPath(obj);
-                    var guid = UnityEditor.AssetDatabase.AssetPathToGUID(path);
-
-                    if (!TryGetValue(guid, out _))
-                    {
-                        newEntries.Add(guid);
-                        var po = new AssetEntry {group = group, asset = obj, guid = guid};
-                        AssetEntries.Add(po);
-                    }
+                    var path = AssetDatabase.GetAssetPath(obj);
+                    var guid = AssetDatabase.AssetPathToGUID(path);
+                    entries.Add(new AssetEntry(guid, obj));
                 }
-
-                _provider.AssetGuids = newEntries.ToArray();
-                UnityEditor.EditorUtility.SetDirty(_provider);
+                
+                ArrayUtility.AddRange<AssetEntry>(ref _provider.assetEntries, entries.ToArray());
             }
+        }
 
-            bool TryGetValue(string s, out string entry)
-            {
-                foreach (var str in _provider.AssetGuids)
-                {
-                    if (str != s) continue;
-
-                    entry = str;
-                    return true;
-                }
-
-                entry = null;
-                return false;
-            }
+        // ReSharper disable once UnusedMember.Local
+        private void RefreshAll()
+        {
+            RefreshAssetEntries();
+            Repaint();
         }
 
         private void ValidateWhitelist(string path, ref List<string> blackList)
@@ -371,59 +334,5 @@ namespace Pancake.Editor
             if (!check) assetContainerSettings.Settings.blacklistPaths.Add(path);
             assetContainerSettings.Settings.blacklistPaths = assetContainerSettings.Settings.blacklistPaths.Distinct().ToList(); //unique
         }
-
-        // private void DrawPaths(SerializedProperty pathsProperty)
-        // {
-        //     var selectContent = new GUIContent("Select Path");
-        //     var removeContent = new GUIContent("x");
-        //
-        //     for (int i = 0; i < pathsProperty.arraySize; i++)
-        //     {
-        //         EditorGUILayout.BeginHorizontal();
-        //
-        //         var element = pathsProperty.GetArrayElementAtIndex(i);
-        //         EditorGUILayout.PropertyField(element, new GUIContent($"Path {i.ToString()}"));
-        //
-        //         if (GUILayout.Button(selectContent, EditorStyles.miniButtonLeft, GUILayout.Width(75f)))
-        //         {
-        //             string path = EditorUtility.OpenFolderPanel("Select path", "Assets", "");
-        //
-        //             if (path != "Assets" && !string.IsNullOrEmpty(path))
-        //                 path = path.Substring(path.IndexOf("Assets"));
-        //
-        //             if (AssetDatabase.IsValidFolder(path))
-        //                 element.stringValue = path;
-        //             else
-        //                 pathsProperty.DeleteArrayElementAtIndex(i);
-        //         }
-        //
-        //         if (GUILayout.Button(removeContent, EditorStyles.miniButtonLeft, GUILayout.Width(30f)))
-        //             pathsProperty.DeleteArrayElementAtIndex(i);
-        //
-        //         EditorGUILayout.EndHorizontal();
-        //     }
-        //
-        //     GUILayout.Space(10f);
-        //
-        //     if (GUILayout.Button("Add Path", GUILayout.Height(30f)))
-        //         pathsProperty.InsertArrayElementAtIndex(pathsProperty.arraySize);
-        // }
-
-        // private void DrawButtons()
-        // {
-        //     EditorGUILayout.BeginHorizontal();
-        //
-        //     if (GUILayout.Button("Load assets at paths"))
-        //         _provider.LoadAssets();
-        //
-        //     if (GUILayout.Button("Remove assets from container"))
-        //     {
-        //         if (EditorUtility.DisplayDialog("Clear", "Do you really want to remove all referenced assets?", "Yes", "No"))
-        //             _provider.Clear();
-        //     }
-        //
-        //     EditorGUILayout.EndHorizontal();
-        //     GUILayout.Space(15f);
-        // }
     }
 }

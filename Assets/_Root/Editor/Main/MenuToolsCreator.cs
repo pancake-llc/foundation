@@ -52,5 +52,8 @@ namespace Pancake.Editor
             if (EditorUtility.DisplayDialog("Clear PlayerPrefs", "Are you sure you wish to clear PlayerPrefs?\nThis action cannot be reversed.", "Clear", "Cancel"))
                 PlayerPrefs.DeleteAll();
         }
+        
+        [MenuItem("Tools/Pancake/Create Launcher Scene", false)]
+        private static void CreateLauncherScene(){}
     }
 }

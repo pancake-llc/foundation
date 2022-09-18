@@ -1,6 +1,7 @@
 using MessagePack;
 using Pancake;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu, MessagePackFormatter(typeof(AssetFormatter<ItemSO>))]
 // ReSharper disable once InconsistentNaming

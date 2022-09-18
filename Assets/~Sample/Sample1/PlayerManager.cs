@@ -4,18 +4,19 @@ using Pancake;
 using Pancake.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using Object = UnityEngine.Object;
 
-public class PlayerManager : MonoBehaviour
+internal class PlayerManager : MonoBehaviour
 {
     [SerializeField] private PlayerData playerData;
     [SerializeField] private AssetReference _assetContainer;
-    public IResourceLocation irLocation;
 
-    private async void Awake()
+    public void AAA()
     {
+        
         //_assetContainer = new AssetReference("66c1bc38545d23f41bcb62bc68ed8d68");
         // Archive.LoadFile("player-storage");
         // playerData = Archive.Load<PlayerData>("PlayerDataKey");
@@ -37,9 +38,10 @@ public class PlayerManager : MonoBehaviour
        //
        // dict[go.GetType()].Invoke();
        //_assetContainer.OperationHandle.Completed += LoadCompleted;
-       
-       
-       playerData.
+
+       Archive.Save("PlayerDataKey", playerData);
+       Archive.SaveFile("player-storage");
+       C.LocationMap();
     }
 
     private void LoadCompleted(AsyncOperationHandle obj)
@@ -54,4 +56,6 @@ public class PlayerManager : MonoBehaviour
         //Archive.Save("PlayerDataKey", playerData);
         //Archive.SaveFile("player-storage");
     }
+    
+    
 }

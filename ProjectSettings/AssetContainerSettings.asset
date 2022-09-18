@@ -1,4 +1,9 @@
 {
-    "whitelistPaths": [],
-    "blacklistPaths": []
+    "whitelistPaths": [
+        "Assets/_Root/Atoms"
+    ],
+    "blacklistPaths": [
+        "Assets/_Root/Atoms/BaseAtoms",
+        "Assets/_Root/Atoms/Core"
+    ]
 }
