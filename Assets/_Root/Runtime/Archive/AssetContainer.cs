@@ -43,7 +43,7 @@ namespace Pancake
             return false;
         }
 
-        private bool TryGetValue(Object obj, out AssetEntry entry)
+        internal bool TryGetValue(Object obj, out AssetEntry entry)
         {
             foreach (var asset in assetEntries)
             {

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Pancake.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Object = UnityEngine.Object;
 
 namespace Pancake.Editor
@@ -60,7 +60,7 @@ namespace Pancake.Editor
         private void InternalDrawDropArea()
         {
             _height -= DEFAULT_HEADER_HEIGHT;
-            Uniform.DrawUppercaseSection("ASSET_CONTAINER_DROP_AREA", "DROP AREA", DrawDropArea);
+            Uniform.DrawUppercaseSectionWithRightClick("ASSET_CONTAINER_DROP_AREA", "DROP AREA", DrawDropArea, ShowMenuRefresh);
 
             void DrawDropArea()
             {
@@ -188,6 +188,13 @@ namespace Pancake.Editor
                 });
             }
 
+            void ShowMenuRefresh()
+            {
+                var menu = new GenericMenu();
+                menu.AddItem(new GUIContent("Refresh"), false, RefreshAll);
+                menu.ShowAsContext();
+            }
+
             void DrawRow(string content, float width, Action<string> action)
             {
                 Uniform.Horizontal(() =>
@@ -212,80 +219,74 @@ namespace Pancake.Editor
             }
         }
 
-           /// <summary>
+        /// <summary>
         /// display picked object in editor
         /// </summary>
         private void RefreshAssetEntries()
-           {
-               _provider.assetEntries = Array.Empty<AssetEntry>();
-
-            foreach (string whitepath in assetContainerSettings.Settings.whitelistPaths)
+        {
+            _provider.assetEntries = Array.Empty<AssetEntry>();
+            var blacklistAssets = new List<Object>();
+            var whitelistAssets = new List<Object>();
+            if (!assetContainerSettings.Settings.blacklistPaths.IsNullOrEmpty())
             {
-                MakeGroupPrefab(whitepath);
+                blacklistAssets = AssetDatabase.FindAssets("t:Object", assetContainerSettings.Settings.blacklistPaths.ToArray())
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Select(AssetDatabase.LoadAssetAtPath<Object>)
+                    .Where(_ =>
+                    {
+                        var fileNamespace = _.GetType().Namespace;
+                        return _ != null && (fileNamespace == null || !fileNamespace.Contains("UnityEditor"));
+                    })
+                    .ToList();
 
-                if (!Directory.Exists(whitepath)) continue;
-                var directories = new List<string>();
-                InEditor.GetAllChildDirectories(whitepath, ref directories);
-
-                foreach (string directory in directories)
+                foreach (string blacklistPath in assetContainerSettings.Settings.blacklistPaths)
                 {
-                    string dir = directory.Replace('\\', '/');
-                    MakeGroupPrefab(dir);
+                    if (File.Exists(blacklistPath)) blacklistAssets.Add(AssetDatabase.LoadAssetAtPath<Object>(blacklistPath));
                 }
             }
 
-            void MakeGroupPrefab(string whitePath)
+            if (!assetContainerSettings.Settings.whitelistPaths.IsNullOrEmpty())
             {
-                if (!Directory.Exists(whitePath) && !File.Exists(whitePath) || !whitePath.StartsWith("Assets"))
-                {
-                    Debug.LogWarning("[Level Editor]: Can not found folder '" + whitePath + "'");
-                    return;
-                }
-
-                var levelObjects = new List<Object>();
-                if (File.Exists(whitePath))
-                {
-                    levelObjects.Add(AssetDatabase.LoadAssetAtPath<Object>(whitePath));
-                }
-                else
-                {
-                    var removeList = new List<string>();
-                    var nameFileExclude = new List<string>();
-
-                    foreach (string blackPath in assetContainerSettings.Settings.blacklistPaths)
+                whitelistAssets = AssetDatabase.FindAssets("t:Object", assetContainerSettings.Settings.whitelistPaths.ToArray())
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Select(AssetDatabase.LoadAssetAtPath<Object>)
+                    .Where(_ =>
                     {
-                        if (InEditor.IsChildOfPath(blackPath, whitePath)) removeList.Add(blackPath);
-                    }
+                        var pathObj = AssetDatabase.GetAssetPath(_);
+                        pathObj = pathObj.Replace('\\', '/');
+                        string[] fs = pathObj.Split('/');
+                        var fileNamespace = _.GetType().Namespace;
+                        return _ != null && (fileNamespace == null || !fileNamespace.Contains("UnityEditor")) && !fs.Contains("Editor");
+                    })
+                    .ToList();
 
-                    if (removeList.Contains(whitePath) || assetContainerSettings.Settings.blacklistPaths.Contains(whitePath)) return;
-
-                    foreach (string str in removeList)
-                    {
-                        if (File.Exists(str)) nameFileExclude.Add(Path.GetFileNameWithoutExtension(str));
-                    }
-
-                    levelObjects = InEditor.FindAllAssetsWithPath<Object>(whitePath.Replace(Application.dataPath, "").Replace("Assets/", ""))
-                        .Where(lo => !(lo is null) && !nameFileExclude.Exists(_ => _.Equals(lo.name)))
-                        .ToList();
-                }
-
-                string group = whitePath.Split('/').Last();
-                if (File.Exists(whitePath))
+                foreach (string whitelistPath in assetContainerSettings.Settings.whitelistPaths)
                 {
-                    var pathInfo = new DirectoryInfo(whitePath);
-                    if (pathInfo.Parent != null) group = pathInfo.Parent.Name;
+                    if (File.Exists(whitelistPath)) whitelistAssets.Add(AssetDatabase.LoadAssetAtPath<Object>(whitelistPath));
                 }
-
-                List<AssetEntry> entries = new List<AssetEntry>();
-                foreach (var obj in levelObjects)
-                {
-                    var path = AssetDatabase.GetAssetPath(obj);
-                    var guid = AssetDatabase.AssetPathToGUID(path);
-                    entries.Add(new AssetEntry(guid, obj));
-                }
-                
-                ArrayUtility.AddRange<AssetEntry>(ref _provider.assetEntries, entries.ToArray());
             }
+
+            var resultAssets = whitelistAssets.Where(_ => !blacklistAssets.Contains(_)).ToList();
+            var newEntries = new List<AssetEntry>();
+            foreach (var o in resultAssets)
+            {
+                var path = AssetDatabase.GetAssetPath(o);
+                var guid = AssetDatabase.AssetPathToGUID(path);
+                if (!_provider.TryGetValue(o, out _)) newEntries.Add(new AssetEntry(guid, o));
+
+                var childAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(o));
+
+                foreach (var child in childAssets)
+                {
+                    if (_provider.TryGetValue(child, out _)) continue;
+
+                    var childGuid = Guid.NewGuid().ToString();
+                    newEntries.Add(new AssetEntry(childGuid, child));
+                }
+            }
+
+            ArrayUtility.AddRange(ref _provider.assetEntries, newEntries.ToArray());
+            EditorUtility.SetDirty(_provider);
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -320,7 +321,7 @@ namespace Pancake.Editor
             }
 
             if (!check) assetContainerSettings.Settings.whitelistPaths.Add(path);
-            assetContainerSettings.Settings.whitelistPaths = assetContainerSettings.Settings.whitelistPaths.Distinct().ToList(); //unique
+            assetContainerSettings.Settings.whitelistPaths = Enumerable.Distinct(assetContainerSettings.Settings.whitelistPaths).ToList(); //unique
         }
 
         private void AddToBlacklist(string path)
@@ -332,7 +333,7 @@ namespace Pancake.Editor
             }
 
             if (!check) assetContainerSettings.Settings.blacklistPaths.Add(path);
-            assetContainerSettings.Settings.blacklistPaths = assetContainerSettings.Settings.blacklistPaths.Distinct().ToList(); //unique
+            assetContainerSettings.Settings.blacklistPaths = Enumerable.Distinct(assetContainerSettings.Settings.blacklistPaths).ToList(); //unique
         }
     }
 }
