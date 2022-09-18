@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Pancake.Linq;
 using UnityEditor;
 #if UNITY_2021_1_OR_NEWER
 using UnityEditor.SceneManagement;
@@ -102,69 +103,42 @@ namespace Pancake.Editor.LevelEditor
         private void RefreshPickObject()
         {
             _pickObjects = new List<PickObject>();
-
-            foreach (string whitepath in levelEditorSettings.Settings.whitelistPaths)
+            var blacklistAssets = new List<GameObject>();
+            var whitelistAssets = new List<GameObject>();
+            if (!levelEditorSettings.Settings.blacklistPaths.IsNullOrEmpty())
             {
-                MakeGroupPrefab(whitepath);
+                blacklistAssets = AssetDatabase
+                    .FindAssets("t:GameObject", levelEditorSettings.Settings.blacklistPaths.ToArray())
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
+                    .ToList();
 
-                if (!Directory.Exists(whitepath)) continue;
-                var directories = new List<string>();
-                InEditor.GetAllChildDirectories(whitepath, ref directories);
-
-                foreach (string directory in directories)
+                foreach (string blacklistPath in levelEditorSettings.Settings.blacklistPaths)
                 {
-                    string dir = directory.Replace('\\', '/');
-                    MakeGroupPrefab(dir);
+                    if (File.Exists(blacklistPath)) blacklistAssets.Add(AssetDatabase.LoadAssetAtPath<GameObject>(blacklistPath));
                 }
             }
 
-            void MakeGroupPrefab(string whitePath)
+            if (!levelEditorSettings.Settings.whitelistPaths.IsNullOrEmpty())
             {
-                if (!Directory.Exists(whitePath) && !File.Exists(whitePath) || !whitePath.StartsWith("Assets"))
+                whitelistAssets = AssetDatabase
+                    .FindAssets("t:GameObject", levelEditorSettings.Settings.whitelistPaths.ToArray())
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
+                    .ToList();
+                
+                foreach (string whitelistPath in levelEditorSettings.Settings.whitelistPaths)
                 {
-                    Debug.LogWarning("[Level Editor]: Can not found folder '" + whitePath + "'");
-                    return;
+                    if (File.Exists(whitelistPath)) whitelistAssets.Add(AssetDatabase.LoadAssetAtPath<GameObject>(whitelistPath));
                 }
+            }
 
-                var levelObjects = new List<GameObject>();
-                if (File.Exists(whitePath))
-                {
-                    levelObjects.Add(AssetDatabase.LoadAssetAtPath<GameObject>(whitePath));
-                }
-                else
-                {
-                    var removeList = new List<string>();
-                    var nameFileExclude = new List<string>();
-
-                    foreach (string blackPath in levelEditorSettings.Settings.blacklistPaths)
-                    {
-                        if (InEditor.IsChildOfPath(blackPath, whitePath)) removeList.Add(blackPath);
-                    }
-
-                    if (removeList.Contains(whitePath) || levelEditorSettings.Settings.blacklistPaths.Contains(whitePath)) return;
-
-                    foreach (string str in removeList)
-                    {
-                        if (File.Exists(str)) nameFileExclude.Add(Path.GetFileNameWithoutExtension(str));
-                    }
-
-                    levelObjects = InEditor.FindAllAssetsWithPath<GameObject>(whitePath.Replace(Application.dataPath, "").Replace("Assets/", ""))
-                        .Where(lo => !(lo is null) && !nameFileExclude.Exists(_ => _.Equals(lo.name)))
-                        .ToList();
-                }
-
-                string group = whitePath.Split('/').Last();
-                if (File.Exists(whitePath))
-                {
-                    var pathInfo = new DirectoryInfo(whitePath);
-                    if (pathInfo.Parent != null) group = pathInfo.Parent.Name;
-                }
-
-                foreach (var obj in levelObjects)
-                {
-                    var po = new PickObject {pickedObject = obj.gameObject, group = group};
-                    _pickObjects.Add(po);
-                }
+            var resultAssets = whitelistAssets.Filter(_ => !blacklistAssets.Contains(_));
+            foreach (var o in resultAssets)
+            {
+                string group = Path.GetDirectoryName(AssetDatabase.GetAssetPath(o))?.Replace('\\', '/').Split('/').Last();
+                var po = new PickObject {pickedObject = o.gameObject, group = group};
+                _pickObjects.Add(po);
             }
         }
 
@@ -231,6 +205,11 @@ namespace Pancake.Editor.LevelEditor
                                     DragAndDrop.AcceptDrag();
                                     foreach (string path in DragAndDrop.paths)
                                     {
+                                        if (File.Exists(path))
+                                        {
+                                            var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                                            if (r.GetType() != typeof(UnityEngine.GameObject)) continue;
+                                        }
                                         ValidateWhitelist(path, ref levelEditorSettings.Settings.blacklistPaths);
                                         AddToWhitelist(path);
                                     }
@@ -248,6 +227,11 @@ namespace Pancake.Editor.LevelEditor
                                     DragAndDrop.AcceptDrag();
                                     foreach (string path in DragAndDrop.paths)
                                     {
+                                        if (File.Exists(path))
+                                        {
+                                            var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                                            if (r.GetType() != typeof(UnityEngine.GameObject)) continue;
+                                        }
                                         ValidateBlacklist(path, ref levelEditorSettings.Settings.whitelistPaths);
                                         AddToBlacklist(path);
                                     }
@@ -375,7 +359,7 @@ namespace Pancake.Editor.LevelEditor
             }
 
             if (!check) levelEditorSettings.Settings.whitelistPaths.Add(path);
-            levelEditorSettings.Settings.whitelistPaths = levelEditorSettings.Settings.whitelistPaths.Distinct().ToList(); //unique
+            levelEditorSettings.Settings.whitelistPaths = Enumerable.Distinct(levelEditorSettings.Settings.whitelistPaths).ToList(); //unique
         }
 
         private void AddToBlacklist(string path)
@@ -387,7 +371,7 @@ namespace Pancake.Editor.LevelEditor
             }
 
             if (!check) levelEditorSettings.Settings.blacklistPaths.Add(path);
-            levelEditorSettings.Settings.blacklistPaths = levelEditorSettings.Settings.blacklistPaths.Distinct().ToList(); //unique
+            levelEditorSettings.Settings.blacklistPaths = Enumerable.Distinct(levelEditorSettings.Settings.blacklistPaths).ToList(); //unique
         }
 
         private void InternalDrawSetting()
@@ -450,7 +434,9 @@ namespace Pancake.Editor.LevelEditor
                         if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80))) _currentPickObject = null;
                     });
 
-                    EditorGUILayout.LabelField($"Selected: <color=#80D2FF>{pickObjectName}</color>\nPress Icon Again Or Escape Key To Deselect", Uniform.HtmlText, GUILayout.Height(40));
+                    EditorGUILayout.LabelField($"Selected: <color=#80D2FF>{pickObjectName}</color>\nPress Icon Again Or Escape Key To Deselect",
+                        Uniform.HtmlText,
+                        GUILayout.Height(40));
                     Uniform.HelpBox("Shift + Click To Add", MessageType.Info);
                 }
                 else
@@ -809,7 +795,7 @@ namespace Pancake.Editor.LevelEditor
 
             return parent;
         }
-        
+
         private PrefabStage GetCurrentPrefabStage() { return PrefabStageUtility.GetCurrentPrefabStage(); }
 
         /// <summary>
