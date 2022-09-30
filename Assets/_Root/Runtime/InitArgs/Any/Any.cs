@@ -106,15 +106,6 @@ namespace Pancake.Init
 				// Using GetHashCode() != 0 instead of Object != null because the latter is not thread safe and can result in an InvalidOperationException.
 				if(!(reference is null) && reference.GetHashCode() != 0)
 				{
-					if(reference is IValueProvider<T> referenceValueProvider)
-					{
-						#if DEV_MODE
-						Debug.Assert(reference != null, $"Any<{typeof(T).Name}>"); // NOTE: This is a risky check to do because it's not a thread safe operation.
-						#endif
-
-						return referenceValueProvider.Value;
-					}
-
 					if(reference is T referenceValue)
 					{
 						#if DEV_MODE && DEBUG_GET_VALUE
@@ -125,6 +116,15 @@ namespace Pancake.Init
 						#endif
 
 						return referenceValue;
+					}
+					
+					if(reference is IValueProvider<T> referenceValueProvider)
+					{
+#if DEV_MODE
+						Debug.Assert(reference != null, $"Any<{typeof(T).Name}>"); // NOTE: This is a risky check to do because it's not a thread safe operation.
+#endif
+
+						return referenceValueProvider.Value;
 					}
 
 					var converter = TypeDescriptor.GetConverter(reference.GetType());
@@ -315,46 +315,25 @@ namespace Pancake.Init
 
 			if(reference != null)
 			{
+				if(reference is T referenceValue)
+				{
+					return referenceValue;
+				}
+				
 				if(reference is IValueProvider<T> referenceValueProvider)
 				{
 					return referenceValueProvider.Value;
-				}
-
-				if(reference is T referenceValue)
-				{
-					#if DEV_MODE && DEBUG_GET_VALUE
-					if(reference == null) // NOTE: This is a risky check to do because it's not a thread safe operation.
-					{
-						Debug.LogWarning($"Any<{typeof(T).Name}>.ValueOrDefault Object reference with hash {reference.GetHashCode()} was actually null. This could be a 'Missing' reference pointing to a Object that has been destroyed.");
-					}
-					#endif
-
-					return referenceValue;
 				}
 
 				var converter = TypeDescriptor.GetConverter(reference.GetType());
 				converterContext.Instance = reference;
 				if(converter != null && converter.CanConvertTo(converterContext, typeof(T)))
 				{
-					#if DEV_MODE && DEBUG_GET_VALUE
-					if(reference == null) // NOTE: This is a risky check to do because it's not a thread safe operation.
-					{
-						Debug.LogWarning($"Any<{typeof(T).Name}>.ValueOrDefault Object reference with hash {reference.GetHashCode()} was actually null. This could be a 'Missing' reference pointing to a Object that has been destroyed.");
-					}
-					#endif
-
 					return (T)converter.ConvertTo(reference, typeof(T));
 				}
 
 				#if DEV_MODE && DEBUG_GET_VALUE
-				if(reference == null) // NOTE: This is a risky check to do because it's not a thread safe operation.
-				{
-					Debug.LogWarning($"Any<{typeof(T).Name}>.ValueOrDefault Object reference with hash {reference.GetHashCode()} was actually null. This could be a 'Missing' reference pointing to a Object that has been destroyed.");
-				}
-				else
-				{
-					Debug.LogWarning($"Any<{typeof(T).Name}>.ValueOrDefault Object reference with hash {reference.name} could not be converted to {typeof(T).Name}.", reference);
-				}
+				Debug.LogWarning($"Any<{typeof(T).Name}>.ValueOrDefault Object reference with hash {reference.name} could not be converted to {typeof(T).Name}.", reference);
 				#endif
 			}
 
@@ -371,15 +350,6 @@ namespace Pancake.Init
 			// Using is null and GetHashCode() instead of != null because != null is not thread safe and can actually result in an InvalidOperationException!
 			if(!(reference is null) && reference.GetHashCode() != 0)
 			{
-				if(reference is IValueProvider<T> referenceValueProvider)
-				{
-					#if DEV_MODE
-					Debug.Assert(reference != null, $"Any<{typeof(T).Name}>"); // NOTE: This is a risky check to do because it's not a thread safe operation.
-					#endif
-
-					return referenceValueProvider.Value;
-				}
-
 				if(reference is T referenceValue)
 				{
 					#if DEV_MODE && DEBUG_GET_VALUE
@@ -392,6 +362,15 @@ namespace Pancake.Init
 					return referenceValue;
 				}
 
+				if(reference is IValueProvider<T> referenceValueProvider)
+				{
+#if DEV_MODE
+					Debug.Assert(reference != null, $"Any<{typeof(T).Name}>"); // NOTE: This is a risky check to do because it's not a thread safe operation.
+#endif
+
+					return referenceValueProvider.Value;
+				}
+				
 				var converter = TypeDescriptor.GetConverter(reference.GetType());
 				converterContext.Instance = reference;
 				if(converter != null && converter.CanConvertTo(converterContext, typeof(T)))
