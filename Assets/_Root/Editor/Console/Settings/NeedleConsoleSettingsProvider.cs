@@ -9,7 +9,7 @@ namespace Pancake.Console
 {
 	public class NeedleConsoleSettingsProvider : SettingsProvider
 	{
-		public const string SettingsPath = "Preferences/Heart/Console";
+		public const string SettingsPath = "Preferences/Pancake/Console";
 		[SettingsProvider]
 		public static SettingsProvider CreateDemystifySettings()
 		{

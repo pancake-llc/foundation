@@ -13,7 +13,7 @@ namespace Pancake.Console
 		[HyperlinkCallback(Href = "OpenNeedleConsoleSettings")]
 		private static void OpenNeedleConsoleUserPreferences()
 		{
-			SettingsService.OpenUserPreferences("Preferences/Heart/Console");
+			SettingsService.OpenUserPreferences("Preferences/Pancake/Console");
 		}
 		
 		[InitializeOnLoadMethod]

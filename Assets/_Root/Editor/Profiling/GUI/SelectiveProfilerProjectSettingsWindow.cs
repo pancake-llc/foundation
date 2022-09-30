@@ -9,7 +9,7 @@ namespace  Pancake.SelectiveProfiling
 {
 	internal class SelectiveProfilerProjectSettingsProvider : SettingsProvider
 	{
-		public const string SettingsPath = "Project/Heart/Selective Profiler";
+		public const string SettingsPath = "Project/Pancake/Selective Profiler";
 		
 		[SettingsProvider]
 		public static SettingsProvider Create()
