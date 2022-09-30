@@ -1,4 +1,6 @@
 {
-    "whitelistPaths": [],
+    "whitelistPaths": [
+        "Assets/_Root/Runtime"
+    ],
     "blacklistPaths": []
 }

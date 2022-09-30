@@ -9,6 +9,10 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Editor
 {
+    
+    /// <summary>
+    /// add filter
+    /// </summary>
     internal class AssetContainerEditor : EditorWindow
     {
         private AssetContainer _provider;
@@ -18,6 +22,7 @@ namespace Pancake.Editor
         private const float DROP_AREA_HEIGHT_FOLDOUT = 110f;
         private const float DEFAULT_HEADER_HEIGHT = 30f;
         private float _height;
+        private List<SerializedProperty> _cache = new List<SerializedProperty>();
 
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
@@ -51,7 +56,15 @@ namespace Pancake.Editor
             _scroll = EditorGUILayout.BeginScrollView(_scroll, true, true);
 
             GUI.enabled = false;
-            EditorGUILayout.PropertyField(objectsProperty, true);
+            for (int i = 0; i < objectsProperty.arraySize; i++)
+            {
+                var prop = objectsProperty.GetArrayElementAtIndex(i);
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(prop.FindPropertyRelative("guid"), new GUIContent(""), GUILayout.Width(280));
+                EditorGUILayout.PropertyField(prop.FindPropertyRelative("asset"), new GUIContent(""));
+                GUILayout.EndHorizontal();
+            }
+            
             GUI.enabled = true;
 
             EditorGUILayout.EndScrollView();
