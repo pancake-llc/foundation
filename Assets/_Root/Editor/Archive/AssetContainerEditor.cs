@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,6 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Editor
 {
-    
     /// <summary>
     /// add filter
     /// </summary>
@@ -22,8 +22,8 @@ namespace Pancake.Editor
         private const float DROP_AREA_HEIGHT_FOLDOUT = 110f;
         private const float DEFAULT_HEADER_HEIGHT = 30f;
         private float _height;
-        private List<SerializedProperty> _cache = new List<SerializedProperty>();
-
+        private Dictionary<SerializedProperty, SerializedProperty> _cache = new Dictionary<SerializedProperty, SerializedProperty>();
+        private SerializedObject _serializedObject;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private static InEditor.ProjectSetting<PathSetting> assetContainerSettings = new InEditor.ProjectSetting<PathSetting>("AssetContainerSettings");
@@ -34,35 +34,34 @@ namespace Pancake.Editor
         private void OnEnable()
         {
             _provider = Resources.Load<AssetContainer>("AssetContainer");
+            _serializedObject = new SerializedObject(_provider);
             RefreshAssetEntries();
         }
 
         private void OnGUI()
         {
-            var obj = new SerializedObject(_provider);
-            obj.Update();
-            var objectsProperty = obj.FindProperty("assetEntries");
+            _serializedObject.Update();
             _height = 0;
             Uniform.SpaceTwoLine();
             SceneView.RepaintAll();
             InternalDrawDropArea();
             Uniform.SpaceOneLine();
-            DrawAssets(objectsProperty);
-            obj.ApplyModifiedProperties();
+            DrawAssets();
+            _serializedObject.ApplyModifiedProperties();
         }
 
-        private void DrawAssets(SerializedProperty objectsProperty)
+        private void DrawAssets()
         {
             _scroll = EditorGUILayout.BeginScrollView(_scroll, true, true);
 
             GUI.enabled = false;
-            for (int i = 0; i < objectsProperty.arraySize; i++)
+            
+            foreach (var property in _cache.ToArray())
             {
-                var prop = objectsProperty.GetArrayElementAtIndex(i);
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(prop.FindPropertyRelative("guid"), new GUIContent(""), GUILayout.Width(280));
-                EditorGUILayout.PropertyField(prop.FindPropertyRelative("asset"), new GUIContent(""));
-                GUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(property.Key, new GUIContent(""), GUILayout.Width(280));
+                EditorGUILayout.PropertyField(property.Value, new GUIContent(""));
+                EditorGUILayout.EndHorizontal();
             }
             
             GUI.enabled = true;
@@ -237,9 +236,11 @@ namespace Pancake.Editor
         /// </summary>
         private void RefreshAssetEntries()
         {
+            _cache = new Dictionary<SerializedProperty, SerializedProperty>();
             _provider.assetEntries = Array.Empty<AssetEntry>();
             var blacklistAssets = new List<Object>();
             var whitelistAssets = new List<Object>();
+
             if (!assetContainerSettings.Settings.blacklistPaths.IsNullOrEmpty())
             {
                 blacklistAssets = AssetDatabase.FindAssets("t:Object", assetContainerSettings.Settings.blacklistPaths.ToArray())
@@ -288,18 +289,35 @@ namespace Pancake.Editor
                 if (!_provider.TryGetValue(o, out _)) newEntries.Add(new AssetEntry(guid, o));
 
                 var childAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(o));
-
+                
                 foreach (var child in childAssets)
                 {
                     if (_provider.TryGetValue(child, out _)) continue;
 
-                    var childGuid = Guid.NewGuid().ToString();
-                    newEntries.Add(new AssetEntry(childGuid, child));
+                    if (!child.name.Equals(o.name))
+                    {
+                        var childGuid = Ulid.NewUlid().ToString().ToLower();
+                        newEntries.Add(new AssetEntry(childGuid, child));
+                    }
                 }
             }
 
             ArrayUtility.AddRange(ref _provider.assetEntries, newEntries.ToArray());
             EditorUtility.SetDirty(_provider);
+            AssetDatabase.SaveAssetIfDirty(_provider);
+
+            EditorCoroutine.Start(DelayUpdateRender());
+        }
+
+        private IEnumerator DelayUpdateRender()
+        {
+            yield return new WaitForSecondsRealtime(0.1f);
+            var objectsProperty = _serializedObject.FindProperty("assetEntries");
+            for (int i = 0; i < objectsProperty.arraySize; i++)
+            {
+                var prop = objectsProperty.GetArrayElementAtIndex(i);
+                _cache.Add(prop.FindPropertyRelative("guid"), prop.FindPropertyRelative("asset"));
+            }
         }
 
         // ReSharper disable once UnusedMember.Local
