@@ -88,7 +88,7 @@ namespace Pancake.Editor.Init
 				rect.width = 200f;
 			}
 
-			instance = CreateAndInit(rect);
+			instance = CreateAndInit(rect, useGroups);
 			instance.typeSelected = onTypeSelected;
 
 			return true;
@@ -100,19 +100,23 @@ namespace Pancake.Editor.Init
 			Close();
 		}
 
-		public static TypeDropdownWindow CreateAndInit(Rect rect)
+		public static TypeDropdownWindow CreateAndInit(Rect rect, bool useGroups)
 		{
 			var instance = CreateInstance<TypeDropdownWindow>();
-			instance.Init(rect);
+			instance.Init(rect, useGroups);
 			return instance;
 		}
 
-		public void Init(Rect buttonRect)
+		public void Init(Rect buttonRect, bool useGroups)
 		{
 			buttonRect = GUIUtility.GUIToScreenRect(buttonRect);
 			OnDirtyList();
 			currentlyRenderedTree = HasSearch ? dataSource.searchTree : dataSource.mainTree;
-			ShowAsDropDown(buttonRect, new Vector2(buttonRect.width, AdvancedDropdownGUI.WindowHeight));
+			float minHeight = useGroups || currentlyRenderedTree.Children.Count == 0
+				? AdvancedDropdownGUI.WindowHeight
+				: 58f + currentlyRenderedTree.Children.Count * currentlyRenderedTree.Children[0].lineStyle.CalcHeight(GUIContent.none, 0f);
+			float height = Mathf.Min(minHeight, AdvancedDropdownGUI.WindowHeight);
+			ShowAsDropDown(buttonRect, new Vector2(buttonRect.width, height));
 			Focus();
 			wantsMouseMove = true;
 		}

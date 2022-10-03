@@ -80,6 +80,7 @@ namespace Pancake.Editor.Init
         {
             groupName.text = group.Name;
             var headerRect = GUILayoutUtility.GetRect(groupName, Styles.header, GUILayout.ExpandWidth(true));
+            headerRect.width -= 2f; // hack needed to fix rect clipping over white outline that surrounds the window
 
             if(Event.current.type == EventType.Repaint)
             {
@@ -128,11 +129,11 @@ namespace Pancake.Editor.Init
         internal string DrawSearchFieldControl(string searchString)
         {
             float padding = 8f;
-            searchRect = GUILayoutUtility.GetRect(0, 0);
+            searchRect = GUILayoutUtility.GetRect(0f, 0f);
             searchRect.x += padding;
-            searchRect.y = 7;
-            searchRect.width -= padding * 2;
-            searchRect.height = 30;
+            searchRect.y = 7f;
+            searchRect.width -= padding * 2f;
+            searchRect.height = 30f;
             var newSearch = EditorGUI.TextField(searchRect, searchString, EditorStyles.toolbarSearchField);
             return newSearch;
         }
