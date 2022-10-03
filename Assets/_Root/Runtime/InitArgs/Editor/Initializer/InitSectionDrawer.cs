@@ -9,7 +9,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	[InitializeOnLoad]
 	internal static class InitSectionDrawer

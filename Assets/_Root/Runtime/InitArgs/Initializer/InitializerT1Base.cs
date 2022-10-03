@@ -2,14 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
+using static Pancake.Init.NullExtensions;
 
 namespace Pancake.Init
 {
@@ -89,18 +88,18 @@ namespace Pancake.Init
 
 			var argument = Argument;
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
 			{
 				if(argument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TArgument));
 			}
-#endif
+			#endif
 
 			target = InitTarget(argument);
 			Updater.InvokeAtEndOfFrame(DestroySelf);
 			return target;
 		}
-		
+
 		/// <summary>
 		/// Resets the Init <paramref name="argument"/> to its default value.
 		/// <para>
@@ -113,10 +112,10 @@ namespace Pancake.Init
 		protected virtual void OnReset(ref TArgument argument) { }
 
 		/// <summary>
-		/// Initializes the existing <see cref="target"/> or new Instance of type <see cref="TClient"/> using the provided argument.
+		/// Initializes the existing <see cref="target"/> or new instance of type <see cref="TClient"/> using the provided argument.
 		/// </summary>
 		/// <param name="argument"> The argument to pass to the target's Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TClient"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TClient"/>. </returns>
 		[NotNull]
 		protected virtual TClient InitTarget(TArgument argument)
         {
@@ -130,7 +129,15 @@ namespace Pancake.Init
                 return target.Instantiate(argument);
             }
 			
-			target.Init(argument);
+			if(target is MonoBehaviour<TArgument> monoBehaviourT)
+			{
+				monoBehaviourT.InitInternal(argument);
+			}
+			else
+			{
+				target.Init(argument);
+			}
+
 			return target;
         }
 

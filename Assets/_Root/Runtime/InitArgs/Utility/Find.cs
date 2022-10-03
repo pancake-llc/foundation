@@ -67,7 +67,7 @@ namespace Pancake.Init
         /// be included in the search?
         /// </param>
         /// <returns>
-        /// Loaded <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>.
+        /// Loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
         [CanBeNull]
         public static T Any<T>(bool includeInactive = false)
@@ -105,7 +105,7 @@ namespace Pancake.Init
         /// </para>
         /// </typeparam>
         /// <param name="result">
-        /// When this method returns, contains loaded <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+        /// When this method returns, contains loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <param name="includeInactive"> Should <see cref="Components"/> on
         /// <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject">GameObjects</see>
@@ -148,7 +148,7 @@ namespace Pancake.Init
         /// in which case it will try to find a wrapper for an object of that type in the loaded scenes.
         /// </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
-        /// <returns> Loaded <see cref="Any"/> Instance, if found; otherwise, <see langword="null"/>. </returns>
+        /// <returns> Loaded <see cref="Any"/> instance, if found; otherwise, <see langword="null"/>. </returns>
         [CanBeNull]
         public static object Any([NotNull] Type type, bool includeInactive = false)
         {
@@ -612,7 +612,7 @@ namespace Pancake.Init
         /// be included in the search?
         /// </param>
         /// <returns>
-        /// <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>.
+        /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
         public static T InChildren<T>([NotNull] GameObject gameObject, bool includeInactive = false)
         {
@@ -1180,7 +1180,7 @@ namespace Pancake.Init
         /// </summary>
         /// <param name="wrapped"> The wrapped object. </param>
         /// <param name="result">
-        /// When this method returns, contains loaded <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>.
+        /// When this method returns, contains loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// This parameter is passed uninitialized.
         /// </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
@@ -1412,7 +1412,7 @@ namespace Pancake.Init
         /// </typeparam>
         /// <param name="obj"> The object to search. </param>
         /// <returns>
-        /// <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>.
+        /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
         public static T In<T>([NotNull] object obj)
         {
@@ -1690,7 +1690,7 @@ namespace Pancake.Init
         /// </typeparam>
         /// <param name="gameObject"> The <see cref="GameObject"/> to search. </param>
         /// <returns>
-        /// <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>.
+        /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
         public static T In<T>([NotNull] GameObject gameObject)
         {
@@ -1737,7 +1737,7 @@ namespace Pancake.Init
         /// <paramref name="gameObject"/> are included in the search.
         /// </param>
         /// <returns>
-        /// <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>.
+        /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
         public static T In<T>([NotNull] GameObject gameObject, Including including)
         {
@@ -1868,7 +1868,7 @@ namespace Pancake.Init
         /// <paramref name="gameObject"/> are included in the search.
         /// </param>
         /// <returns>
-        /// <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>.
+        /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
         public static T[] AllIn<T>([NotNull] GameObject gameObject, Including including)
         {
@@ -2090,9 +2090,9 @@ namespace Pancake.Init
 				{
 					var scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
                     if(scriptAsset == null)
-                    {
+					{
                         continue;
-                    }
+					}
 
 					var scriptClassType = scriptAsset.GetClass();
 					if(scriptClassType == classType)
@@ -2563,7 +2563,7 @@ namespace Pancake.Init
         /// </param>
         /// <param name="path"> Path to the target resource to load. </param>
         /// <param name="result">
-        /// When this method returns, contains loaded <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+        /// When this method returns, contains loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if an asset was found; otherwise, <see langword="false"/>. </returns>
         public static bool Resource(Type type, string path, out object result)
@@ -2589,7 +2589,7 @@ namespace Pancake.Init
         /// </para>
         /// </param>
         /// <param name="path"> Path to the target resource to load. </param>
-        /// <returns> Loaded <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>. </returns>
+        /// <returns> Loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>. </returns>
         public static object Resource(Type type, string path)
         {
             Object obj = Resources.Load(path, typeof(Object));
@@ -2626,7 +2626,7 @@ namespace Pancake.Init
         /// </para>
         /// </typeparam>
         /// <param name="path"> Path to the target resource to load. </param>
-        /// <returns> Loaded <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>. </returns>
+        /// <returns> Loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>. </returns>
         public static T Resource<T>(string path)
         {
             Object obj = Resources.Load(path, typeof(Object));
@@ -2664,7 +2664,7 @@ namespace Pancake.Init
         /// </typeparam>
         /// <param name="path"> Path to the target resource to load. </param>
         /// <param name="result">
-        /// When this method returns, contains loaded <typeparamref name="T"/> Instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+        /// When this method returns, contains loaded <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if an asset was found; otherwise, <see langword="false"/>. </returns>
         public static bool Resource<T>(string path, out T result)

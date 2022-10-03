@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	public sealed class CrossSceneReferenceDrawer : IDisposable
 	{

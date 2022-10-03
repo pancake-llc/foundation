@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
     internal class AdvancedDropdownItem : IComparable
     {

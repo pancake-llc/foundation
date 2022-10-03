@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
     internal class DropdownButton<T>
     {

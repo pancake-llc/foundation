@@ -1,8 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Pancake.Init.Internal;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Pancake.Init
 {

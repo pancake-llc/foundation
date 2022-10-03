@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using UnityEditor;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
     /// <summary>
     /// Extension methods for <see cref="UnityEditor.SerializedProperty"/>.

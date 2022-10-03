@@ -1,24 +1,27 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Reflection;
-using UnityEngine;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
+using UnityEngine;
+using static Pancake.Init.NullExtensions;
 using Object = UnityEngine.Object;
+
 #if UNITY_EDITOR
+using System.Linq;
+using Pancake.Init.EditorOnly;
 using UnityEditor;
 using UnityEditorInternal;
-using Pancake.Editor.Init;
+using static Pancake.Init.ServiceUtility;
+using static Pancake.Init.EditorOnly.AutoInitUtility;
+
 #if UNITY_2021_1_OR_NEWER
 using UnityEditor.SceneManagement;
 #else
 using UnityEditor.Experimental.SceneManagement;
 #endif
-using static Pancake.Init.ServiceUtility;
-using static Pancake.Editor.Init.AutoInitUtility;
-using static Pancake.NullExtensions;
-using System.Linq;
+
 #endif
 
 namespace Pancake.Init.Internal
@@ -27,10 +30,10 @@ namespace Pancake.Init.Internal
 	{
 		internal const string InitArgumentMetadataClassName = "Init";
 
-		internal const string TargetTooltip = "Existing target Instance to initialize.\n\n" +
-		"If value is null then the argument is passed to a new Instance that is attached to the " +
+		internal const string TargetTooltip = "Existing target instance to initialize.\n\n" +
+		"If value is null then the argument is passed to a new instance that is attached to the " +
 		"same GameObject that this initializer is attached to.\n\n" +
-		"If value is a prefab then the argument is injected to a new Instance of that prefab.";
+		"If value is a prefab then the argument is injected to a new instance of that prefab.";
 
 		internal const string NullArgumentGuardTooltip =
 			"Specifies how this object should guard against the argument being null.\n\n" +
@@ -56,7 +59,7 @@ namespace Pancake.Init.Internal
 					{
 						if(typeof(IValueProvider<>).MakeGenericType(definingType).IsAssignableFrom(argumentType))
 						{
-							return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute and implements IValueProvider<{definingType.Name}> but the Instance was still null.");
+							return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute and implements IValueProvider<{definingType.Name}> but the instance was still null.");
 						}
 
 						if(definingType.IsInterface)
@@ -67,10 +70,10 @@ namespace Pancake.Init.Internal
 						return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but does not derive from {definingType.Name}.");
 					}
 
-					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but its Instance was still null.");
+					return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service(typeof({definingType.Name}))] attribute but its instance was still null.");
 				}
 
-				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its Instance was still null.");
+				return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. The {argumentType.Name} class has the [Service] attribute but its instance was still null.");
 			}
 
 			string classThatDerivesFromImplementsOrIs = !argumentType.IsAbstract && !TypeUtility.IsBaseType(argumentType) ? "the class" : argumentType.IsInterface ? "a class that implements" : "a class that derives from";
@@ -81,6 +84,15 @@ namespace Pancake.Init.Internal
 			}
 
 			return new MissingInitArgumentsException($"{initializerType.Name} failed to initialize {clientType.Name} because missing argument of type {argumentType.Name}. Assign a reference using the Inspector or add the [Service(typeof({argumentType.Name}))] attribute to {classThatDerivesFromImplementsOrIs} {argumentType.Name}.");
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static void OnAfterUnitializedWrappedObjectArgumentRetrieved<TArgument>(Component wrapperInitializer, ref TArgument argument)
+		{
+			if(argument == Null && wrapperInitializer.TryGetComponent(out IInitializer<TArgument> argumentInitializer) && argumentInitializer as Component != wrapperInitializer)
+			{
+				argument = argumentInitializer.InitTarget();
+			}
 		}
 
 		#if UNITY_EDITOR
@@ -155,7 +167,7 @@ namespace Pancake.Init.Internal
 			if(typeof(Type).IsAssignableFrom(instanceType))
             {
 				#if DEV_MODE
-				Debug.LogWarning($"Can not create Instance of a {instanceType.FullName} using FormatterServices.GetUninitializedObject.");
+				Debug.LogWarning($"Can not create instance of a {instanceType.FullName} using FormatterServices.GetUninitializedObject.");
 				#endif
 				return default;
             }
@@ -324,12 +336,12 @@ namespace Pancake.Init.Internal
 		/// </summary>
 		/// <param name="gameObject"> The <see cref="GameObject"/> that contains the initializer component. </param>
 		/// <param name="target">
-		/// The existing <typeparamref name="TWrapper"/> scene Instance to initialize,
-		/// The prefab to clone to create the <typeparamref name="TWrapper"/> Instance,
-		/// or <see langword="null"/> if a new Instance should be created from scratch..
+		/// The existing <typeparamref name="TWrapper"/> scene instance to initialize,
+		/// The prefab to clone to create the <typeparamref name="TWrapper"/> instance,
+		/// or <see langword="null"/> if a new instance should be created from scratch..
 		/// </param>
 		/// <param name="wrappedObject"> The <see cref="TWrapped">wrapped object</see> to pass to the <see cref="target"/> <typeparamref name="TWrapper">wrapper</typeparamref>'s Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TWrapper"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TWrapper"/>. </returns>
 		[NotNull, MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static TWrapper InitWrapper<TWrapper, TWrapped>(GameObject gameObject, TWrapper target, TWrapped wrappedObject)
 			where TWrapper : MonoBehaviour, IWrapper<TWrapped>
@@ -399,7 +411,7 @@ namespace Pancake.Init.Internal
 
 			if(Array.IndexOf(Selection.gameObjects, initializer.gameObject) == -1 && initializer.gameObject.activeInHierarchy)
 			{
-				string message = $"{GetClientTypeName(initializer)} component on GameObject \"{initializer.name}\" contains missing Init arguments.\nIf missing arguments should be allowed set the 'Null Argument Guard' option to 'None'.\nIf the argument is a service that only becomes available at runtime set the option to 'Runtime Exception'.";
+				string message = $"{GetClientComponentTypeName(initializer)} component on GameObject \"{initializer.name}\" contains missing Init arguments.\nIf missing arguments should be allowed set the 'Null Argument Guard' option to 'None'.\nIf the argument is a service that only becomes available at runtime set the option to 'Runtime Exception'.";
 				Debug.LogWarning(message, initializer);
 				initializer.NullGuardFailedMessage = message;
 				return;
@@ -410,7 +422,7 @@ namespace Pancake.Init.Internal
 				initializer.NullGuardFailedMessage = NullGuardFailedDefaultMessage;
 			}
 
-			static string GetClientTypeName(TInitializer initializer)
+			static string GetClientComponentTypeName(Component initializer)
 			{
 				Type initializerType = initializer.GetType();
 				Type baseType = initializerType.BaseType;
@@ -423,7 +435,7 @@ namespace Pancake.Init.Internal
 					}
 				}
 
-				string initializerTypeName = initializer.GetType().Name;
+				string initializerTypeName = initializerType.Name;
 				if(!initializerTypeName.EndsWith("Initializer"))
 				{
 					return initializerTypeName;

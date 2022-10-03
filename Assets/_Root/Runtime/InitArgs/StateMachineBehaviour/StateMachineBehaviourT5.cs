@@ -113,14 +113,14 @@ namespace Pancake.Init
 		protected static NullExtensions.NullOrInactiveComparer NullOrInactive => NullExtensions.NullOrInactive;
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script Instance is being loaded during the
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the
 		/// <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
 		/// This happens as the game is launched and is similar to MonoBehavior.Awake.
 		/// <para>
 		/// Use <see cref="OnAwake"/> to initialize variables or states before the application starts.
 		/// </para>
 		/// <para>
-		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script Instance.
+		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script instance.
 		/// A script's lifetime lasts until it is manually destroyed using <see cref="UnityEngine.Object.Destroy"/>.
 		/// </para>
 		/// <para>

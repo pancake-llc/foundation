@@ -2,7 +2,7 @@
 using UnityEditor;
 using System;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
     [InitializeOnLoad]
     public static class DragAndDropUtility

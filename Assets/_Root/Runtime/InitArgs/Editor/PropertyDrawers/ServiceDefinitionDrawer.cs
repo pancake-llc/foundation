@@ -6,9 +6,9 @@ using Pancake.Init.Internal;
 using Pancake.Init.Serialization;
 using UnityEditor;
 using UnityEngine;
-using static Pancake.NullExtensions;
+using static Pancake.Init.NullExtensions;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	/// <summary>
 	/// Custom property drawer for <see cref="Any{T}"/>

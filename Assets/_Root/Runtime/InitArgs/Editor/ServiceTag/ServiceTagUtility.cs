@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Pancake.Init;
 using Pancake.Init.Internal;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	internal static class ServiceTagUtility
 	{
@@ -17,7 +16,7 @@ namespace Pancake.Editor.Init
 		private static readonly List<ServiceTag> serviceTags = new List<ServiceTag>();
 		private static readonly HashSet<Type> currentDefiningTypes = new HashSet<Type>();
 		private static readonly HashSet<Type> definingTypeOptions = new HashSet<Type>();
-		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An Instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An instance of this service will be automatically provided during initialization.");
 
 		internal static Rect GetTagRect(Component component, Rect headerRect, GUIContent label, GUIStyle style)
         {

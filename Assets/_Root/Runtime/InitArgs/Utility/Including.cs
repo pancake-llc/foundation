@@ -14,7 +14,7 @@ namespace Pancake.Init
     /// <seealso cref="Find.AllIn{T}(GameObject, Including)"/>
     /// </para>
 	/// </summary>
-    [System.Flags]
+    [Flags]
     public enum Including
     {
         /// <summary>

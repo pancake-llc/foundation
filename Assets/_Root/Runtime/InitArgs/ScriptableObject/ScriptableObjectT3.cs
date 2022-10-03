@@ -10,7 +10,7 @@ namespace Pancake.Init
 	/// <summary>
 	/// A base class for <see cref="ScriptableObject">ScriptableObjects</see> that can be <see cref="CreateInstance">created</see>
 	/// or <see cref="ObjectExtensions.Instantiate{TFirstArgument, TSecondArgument, TThirdArgument}">instantiated</see>
-	/// with three arguments passed to the <see cref="Init"/> function of the created Instance.
+	/// with three arguments passed to the <see cref="Init"/> function of the created instance.
 	/// <para>
 	/// Instances of classes inheriting from <see cref="ScriptableObject{TFirstArgument, TSecondArgument, TThirdArgument}"/> receive the arguments
 	/// via the <see cref="Init"/> method where they can be assigned to member fields or properties.
@@ -116,7 +116,7 @@ namespace Pancake.Init
 		/// <summary>
 		/// Reset state to default values.
 		/// <para>
-		/// <see cref="OnReset"/> is called when the user selects Reset in the Inspector context menu or creating an Instance for the first time.
+		/// <see cref="OnReset"/> is called when the user selects Reset in the Inspector context menu or creating an instance for the first time.
 		/// </para>
 		/// <para>
 		/// This function is only called in edit mode.
@@ -125,13 +125,13 @@ namespace Pancake.Init
 		protected virtual void OnReset() { }
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script Instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
 		/// This happens as the game is launched and is similar to MonoBehavior.Awake.
 		/// <para>
 		/// Use <see cref="OnAwake"/> to initialize variables or states before the application starts.
 		/// </para>
 		/// <para>
-		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script Instance.
+		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script instance.
 		/// A script's lifetime lasts until it is manually destroyed using <see cref="UnityEngine.Object.Destroy"/>.
 		/// </para>
 		/// <para>

@@ -5,10 +5,10 @@ using System.Linq;
 using Pancake.Init.Internal;
 using UnityEditor;
 using UnityEngine;
-using static Pancake.Editor.Init.InitializerEditorUtility;
+using static Pancake.Init.EditorOnly.InitializerEditorUtility;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	internal static class ScriptGenerator
     {
@@ -19,7 +19,7 @@ namespace Pancake.Editor.Init
             "\t/// <summary>\r\n" +
             "\t/// <see cref=\"Initializer{{,}}\"/> for the <see cref=\"{2}\"/> component.\r\n" +
             "\t/// </summary>\r\n" +
-            "\tpublic sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
+            "\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
             "\t{{\r\n" +
             "\t\t#if UNITY_EDITOR\r\n" +
 			"\t\t#pragma warning disable CS0649\r\n" +
@@ -48,7 +48,7 @@ namespace Pancake.Editor.Init
             "\t/// <summary>\r\n" +
             "\t/// <see cref=\"Initializer{{,}}\"/> for the <see cref=\"{2}\"/> component.\r\n" +
             "\t/// </summary>\r\n" +
-            "\tpublic sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
+            "\tinternal sealed class {2}Initializer : {3}<{2}, {4}>\r\n" +
             "\t{{\r\n" +
 			"\t\t#pragma warning disable CS0649\r\n" +
             "{5}" +
@@ -66,7 +66,7 @@ namespace Pancake.Editor.Init
             "\t/// <see cref=\"Wrapper{{}}\"/> for the <see cref=\"{1}\"/> component.\r\n" +
             "\t/// </summary>\r\n" +
             "\t[AddComponentMenu(\"Wrapper/{2}\")]\r\n" +
-            "\tpublic sealed class {1}Component : Wrapper<{1}> {{ }}\r\n" +
+            "\tinternal sealed class {1}Component : Wrapper<{1}> {{ }}\r\n" +
             "}}\r\n";
 
         private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(1)
@@ -317,7 +317,7 @@ namespace Pancake.Editor.Init
             }
 
             var definition = @interface.GetGenericTypeDefinition();
-            if(definition == typeof(IArgs<,,,,,>) 
+            if(definition == typeof(IArgs<,,,,,>)
             || definition == typeof(IArgs<,,,,>)
             || definition == typeof(IArgs<,,,>)
             || definition == typeof(IArgs<,,>)
@@ -341,7 +341,7 @@ namespace Pancake.Editor.Init
 
         internal static string CreateWrapper(string forScriptAtPath, string className, string @namespace)
         {
-	        string inspectorTitle = ObjectNames.NicifyVariableName(className);
+			string inspectorTitle = ObjectNames.NicifyVariableName(className);
             string code = string.Format(WrapperTemplate, @namespace, className, inspectorTitle);
             string path = forScriptAtPath;
             path = Path.GetDirectoryName(path);

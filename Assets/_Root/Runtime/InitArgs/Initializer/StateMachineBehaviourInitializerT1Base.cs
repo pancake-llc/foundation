@@ -2,15 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
-
+using static Pancake.Init.NullExtensions;
 
 namespace Pancake.Init
 {
@@ -41,7 +39,8 @@ namespace Pancake.Init
 	/// </summary>
 	/// <typeparam name="TStateMachineBehaviour"> Type of the initialized state machine behaviour client. </typeparam>
 	/// <typeparam name="TArgument"> Type of the argument to pass to the client's Init function. </typeparam>
-	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TArgument> : MonoBehaviour, IInitializer<TStateMachineBehaviour, TArgument>, IValueProvider<TStateMachineBehaviour>
+	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TArgument> : MonoBehaviour
+		, IInitializer<TStateMachineBehaviour, TArgument>, IValueProvider<TStateMachineBehaviour>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -92,18 +91,17 @@ namespace Pancake.Init
 
 			var argument = Argument;
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
 			{
 				if(argument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TArgument));
 			}
-#endif
+			#endif
 
 			Updater.InvokeAtEndOfFrame(DestroySelf);
 			return InitTarget(argument);
 		}
 
-		
 		protected virtual void OnReset(ref TArgument argument) { }
 
 		/// <summary>

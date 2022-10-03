@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_2021_2_OR_NEWER
 using UnityEditor.SceneManagement;
 #else
 using UnityEditor.Experimental.SceneManagement;
@@ -17,7 +17,7 @@ namespace Pancake.Init
 	internal sealed class RefTag : MonoBehaviour, IInitializable<Object>
 	{
 		private static readonly Dictionary<Id, Object> activeObjects = new Dictionary<Id, Object>();
-		private static readonly Dictionary<Id, List<Object>> activeClones = new Dictionary<Id, List<Object>>(); // one prefab can have more than one Instance
+		private static readonly Dictionary<Id, List<Object>> activeClones = new Dictionary<Id, List<Object>>(); // one prefab can have more than one instance
 
 		[SerializeField]
 		internal Id guid = Id.Empty;
@@ -29,19 +29,19 @@ namespace Pancake.Init
 		private bool isPrefab = false;
 
 		#if DEBUG
-#pragma warning disable CS0414
+		#pragma warning disable CS0414
 		[SerializeField]
 		private string globalObjectIdSlow = null;
 		[SerializeField]
 		private Texture icon = null;
-#pragma warning restore CS0414
+		#pragma warning restore CS0414
 		#endif
 
 		#if UNITY_EDITOR
-#pragma warning disable CS0414
+		#pragma warning disable CS0414
 		[SerializeField]
 		private SceneAsset scene = null;
-#pragma warning restore CS0414
+		#pragma warning restore CS0414
 		#endif
 
 		public Id Guid => guid;
@@ -305,20 +305,20 @@ namespace Pancake.Init
 			bool otherIsPrefabInstance = PrefabUtility.IsPartOfPrefabInstance(otherGameObject);
 			bool otherIsNormalSceneObject = !otherIsPrefabAsset && !otherIsOpenInPrefabStage && !otherIsPrefabInstance;
 
-			// If either one is a scene object which is not a prefab Instance, we have an id conflict.
-			// A scene object could have been duplicated, or a prefab Instance unpacked.
+			// If either one is a scene object which is not a prefab instance, we have an id conflict.
+			// A scene object could have been duplicated, or a prefab instance unpacked.
 			if(targetIsNormalSceneObject || otherIsNormalSceneObject)
 			{
 				return false;
 			}
 
-			// Prefab assets can share their id with a prefab Instance or an object being edited in prefab stage.
+			// Prefab assets can share their id with a prefab instance or an object being edited in prefab stage.
 			if(targetIsPrefabAsset)
 			{
 				return otherIsPrefabInstance || otherIsOpenInPrefabStage;
 			}
 
-			// Objects being edited in prefab stage can share their id with a prefab asset and a prefab Instance.
+			// Objects being edited in prefab stage can share their id with a prefab asset and a prefab instance.
 			if(targetIsOpenInPrefabStage)
 			{
 				return otherIsPrefabAsset ||otherIsPrefabInstance;
@@ -353,6 +353,6 @@ namespace Pancake.Init
 		private void GenerateNewId() => guid = Id.NewId();
 		private bool TargetExistsOnSameGameObject() => GetGameObject(target) == gameObject;
 		private static GameObject GetGameObject(Object target) => target is Component component && component != null ? component.gameObject : target as GameObject;
-#endif
+		#endif
 	}
 }

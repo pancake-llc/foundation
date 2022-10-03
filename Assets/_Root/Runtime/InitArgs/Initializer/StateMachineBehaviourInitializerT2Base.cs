@@ -2,15 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
-
+using static Pancake.Init.NullExtensions;
 
 namespace Pancake.Init
 {
@@ -41,8 +39,8 @@ namespace Pancake.Init
 	/// <typeparam name="TStateMachineBehaviour"> Type of the initialized state machine behaviour client. </typeparam>
 	/// <typeparam name="TFirstArgument"> Type of the first argument to pass to the client's Init function. </typeparam>
 	/// <typeparam name="TSecondArgument"> Type of the second argument to pass to the client's Init function. </typeparam>
-	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument> : MonoBehaviour, 
-		IInitializer<TStateMachineBehaviour, TFirstArgument, TSecondArgument>, IValueProvider<TStateMachineBehaviour>
+	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument> : MonoBehaviour
+		, IInitializer, IValueProvider<TStateMachineBehaviour>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -88,7 +86,7 @@ namespace Pancake.Init
 		[HideInInspector, NonSerialized] private string nullGuardFailedMessage = "";
 		bool IInitializerEditorOnly.MultipleInitializersPerTargetAllowed => true;
 		#endif
-		
+
 		/// <inheritdoc/>
 		public TStateMachineBehaviour InitTarget()
 		{
@@ -100,18 +98,17 @@ namespace Pancake.Init
 			var firstArgument = FirstArgument;
 			var secondArgument = SecondArgument;
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
 			{
 				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFirstArgument));
 				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TSecondArgument));
 			}
-#endif
+			#endif
 
 			Updater.InvokeAtEndOfFrame(DestroySelf);
 			return InitTarget(firstArgument, secondArgument);
 		}
-
 
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument) { }
 

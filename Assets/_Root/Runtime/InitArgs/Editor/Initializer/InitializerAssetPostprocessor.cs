@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using UnityEditor;
-using UnityEngine;
 using JetBrains.Annotations;
+using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEngine;
 
 namespace Pancake.Init
 {

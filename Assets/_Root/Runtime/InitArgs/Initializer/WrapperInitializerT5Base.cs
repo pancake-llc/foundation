@@ -2,15 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
+using static Pancake.Init.NullExtensions;
 using Object = UnityEngine.Object;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
-
 
 namespace Pancake.Init
 {
@@ -43,8 +41,9 @@ namespace Pancake.Init
 	/// <typeparam name="TThirdArgument"> Type of the third argument passed to the wrapped object's constructor. </typeparam>
 	/// <typeparam name="TFourthArgument"> Type of the fourth argument passed to the wrapped object's constructor. </typeparam>
 	/// <typeparam name="TFifthArgument"> Type of the fifth argument passed to the wrapped object's constructor. </typeparam>
-	public abstract class WrapperInitializerBase<TWrapper, TWrapped, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> : MonoBehaviour, IInitializer<TWrapped, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>, IValueProvider<TWrapped>
-		#if DEBUG
+	public abstract class WrapperInitializerBase<TWrapper, TWrapped, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> : MonoBehaviour
+		, IInitializer<TWrapped, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>, IValueProvider<TWrapped>
+		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
 		where TWrapper : Wrapper<TWrapped>
@@ -113,15 +112,20 @@ namespace Pancake.Init
 			}
 
 			// Handle instance first creation method, which supports cyclical dependencies (A requires B, and B requires A).
-			if(target is IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> initializable && CreateWrappedObject() is var wrappedObject)
+			if(target is IInitializable<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> initializable && GetOrCreateUnitializedWrappedObject() is var wrappedObject)
 			{
 				target = InitWrapper(wrappedObject);
 
 				var firstArgument = FirstArgument;
+				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref firstArgument);
 				var secondArgument = SecondArgument;
+				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref secondArgument);
 				var thirdArgument = ThirdArgument;
+				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref thirdArgument);
 				var fourthArgument = FourthArgument;
+				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref fourthArgument);
 				var fifthArgument = FifthArgument;
+				OnAfterUnitializedWrappedObjectArgumentRetrieved(this, ref fifthArgument);
 
 				#if DEBUG || INIT_ARGS_SAFE_MODE
 				if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
@@ -164,22 +168,25 @@ namespace Pancake.Init
 			return target;
 		}
 
-		
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument, ref TThirdArgument thirdArgument, ref TFourthArgument fourthArgument, ref TFifthArgument fifthArgument) { }
 
 		/// <summary>
-		/// Creates a new instance of <see cref="TWrapped"/> using the default constructor.
+		/// Creates a new instance of <see cref="TWrapped"/> using the default constructor
+		/// or retrieves an existing instance of it contained in <see cref="TWrapper"/>.
 		/// <para>
 		/// By default this method returns <see langword="null"/>. When this is the case then
-		/// the <see cref="CreateWrappedObject(TArgument)"/> overload will be used to create the
+		/// the <see cref="CreateWrappedObject"/> overload will be used to create the
 		/// <see cref="TWrapped"/> instance during initialization.
 		/// </para>
 		/// <para>
-		/// If this method is overridden to return a non-null value, and <see cref="TWrapped"/> implements
-		/// <see cref="IInitializable{TArgument}"/>, then this overload will be used to create the instance
-		/// during initialization instead. The instance will be created and injected to the <see cref="TWrapper"/>
+		/// If <see cref="TWrapped"/> is a serializable class, or this method is overridden to return
+		/// a non-null value, and <see cref="TWrapped"/> implements <see cref="IInitializable{,,,,}"/>,
+		/// then this overload will be used to create the instance during initialization instead
+		/// of <see cref="CreateWrappedObject"/>.
+		/// The instance will be created and injected to the <see cref="TWrapper"/>
 		/// component first, and only then will all the initialization arguments be retrieved and injected
-		/// to the Wrapped object through its <see cref="IInitializable{}.Init"/> function.
+		/// to the Wrapped object through its <see cref="IInitializable{,,,,}.Init"/> function.
+		/// </para>
 		/// <para>
 		/// The main benefit with this form of two-part initialization (first create and inject the instance,
 		/// then retrieve the arguments and inject them to the instance), is that it makes it possible to
@@ -190,18 +197,16 @@ namespace Pancake.Init
 		/// and finally B can be injected to A.
 		/// is that 
 		/// </para>
-		/// </para>
 		/// </summary>
-		/// <returns> Instance of the <see cref="TWrapped"/> class if it has a default constructor; otherwise, <see langword="null"/>. </returns>
+		/// <returns> Instance of the <see cref="TWrapped"/> class or <see langword="null"/>. </returns>
 		[CanBeNull]
-		protected virtual TWrapped CreateWrappedObject() => default;
+		protected virtual TWrapped GetOrCreateUnitializedWrappedObject() => target != null && target.gameObject == gameObject ? target.wrapped : default;
 
-		
 		/// <summary>
 		/// Creates a new instance of <see cref="TWrapped"/> initialized using the provided arguments and returns it.
 		/// <para>
-		/// If you need support circular dependencies between your objects then you need to also override
-		/// <see cref="CreateWrappedObject()"/>.
+		/// Note: If you need support circular dependencies between your objects then you need to also override
+		/// <see cref="GetOrCreateUnitializedWrappedObject()"/>.
 		/// </para>
 		/// </summary>
 		/// <param name="firstArgument"> The first argument used to initialize the wrapped object. </param>
@@ -214,10 +219,10 @@ namespace Pancake.Init
 		protected abstract TWrapped CreateWrappedObject(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument);
 
 		/// <summary>
-		/// Initializes the existing <see cref="target"/> or new Instance of type <see cref="TWrapper"/> using the provided <paramref name="wrappedObject">wrapped object</paramref>.
+		/// Initializes the existing <see cref="target"/> or new instance of type <see cref="TWrapper"/> using the provided <paramref name="wrappedObject">wrapped object</paramref>.
 		/// </summary>
 		/// <param name="wrappedObject"> The <see cref="TWrapped">wrapped object</see> to pass to the <typeparamref name="TWrapper">wrapper</typeparamref>'s Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TWrapper"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TWrapper"/>. </returns>
 		[NotNull]
 		protected virtual TWrapper InitWrapper(TWrapped wrappedObject)
         {

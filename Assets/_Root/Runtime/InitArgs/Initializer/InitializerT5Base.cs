@@ -2,15 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
-
+using static Pancake.Init.NullExtensions;
 
 namespace Pancake.Init
 {
@@ -45,7 +43,8 @@ namespace Pancake.Init
 	/// <typeparam name="TThirdArgument"> Type of the third argument to pass to the client component's Init function. </typeparam>
 	/// <typeparam name="TFourthArgument"> Type of the fourth argument to pass to the client component's Init function. </typeparam>
 	/// <typeparam name="TFifthArgument"> Type of the fifth argument to pass to the client component's Init function. </typeparam>
-	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> : MonoBehaviour, IInitializer<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>, IValueProvider<TClient>
+	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> : MonoBehaviour
+		, IInitializer<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>, IValueProvider<TClient>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -120,7 +119,7 @@ namespace Pancake.Init
 			var fourthArgument = FourthArgument;
 			var fifthArgument = FifthArgument;
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
 			{
 				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFirstArgument));
@@ -129,14 +128,13 @@ namespace Pancake.Init
 				if(fourthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFourthArgument));
 				if(fifthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFifthArgument));
 			}
-#endif
+			#endif
 
 			target = InitTarget(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
 			Updater.InvokeAtEndOfFrame(DestroySelf);
 			return target;
 		}
 
-		
 		/// <summary>
 		/// Resets the Init arguments to their default values.
 		/// <para>
@@ -153,14 +151,14 @@ namespace Pancake.Init
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument, ref TThirdArgument thirdArgument, ref TFourthArgument fourthArgument, ref TFifthArgument fifthArgument) { }
 
 		/// <summary>
-		/// Initializes the existing <see cref="target"/> or new Instance of type <see cref="TClient"/> using the provided arguments.
+		/// Initializes the existing <see cref="target"/> or new instance of type <see cref="TClient"/> using the provided arguments.
 		/// </summary>
 		/// <param name="firstArgument"> The first argument to pass to the target's Init function. </param>
 		/// <param name="secondArgument"> The second argument to pass to the target's Init function. </param>
 		/// <param name="thirdArgument"> The third argument to pass to the target's Init function. </param>
 		/// <param name="fourthArgument"> The fourth argument to pass to the target's Init function. </param>
 		/// <param name="fifthArgument"> The fifth argument to pass to the target's Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TClient"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TClient"/>. </returns>
 		[NotNull]
 		protected virtual TClient InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
         {
@@ -174,7 +172,15 @@ namespace Pancake.Init
 				return target.Instantiate(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
             }
 
-			target.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
+			if(target is MonoBehaviour<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument> monoBehaviourT)
+			{
+				monoBehaviourT.InitInternal(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
+			}
+			else
+			{
+				target.Init(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
+			}
+
 			return target;
         }
 

@@ -2,15 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
-
+using static Pancake.Init.NullExtensions;
 
 namespace Pancake.Init
 {
@@ -42,7 +40,8 @@ namespace Pancake.Init
 	/// <typeparam name="TFirstArgument"> Type of the first argument to pass to the client's Init function. </typeparam>
 	/// <typeparam name="TSecondArgument"> Type of the second argument to pass to the client's Init function. </typeparam>
 	/// <typeparam name="TThirdArgument"> Type of the third argument to pass to the client's Init function. </typeparam>
-	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument> : MonoBehaviour, IInitializer<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument>, IValueProvider<TStateMachineBehaviour>
+	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument> : MonoBehaviour
+		, IInitializer<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument>, IValueProvider<TStateMachineBehaviour>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -106,20 +105,19 @@ namespace Pancake.Init
 			var secondArgument = SecondArgument;
 			var thirdArgument = ThirdArgument;
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
 			{
 				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFirstArgument));
 				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TSecondArgument));
 				if(thirdArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TThirdArgument));
 			}
-#endif
+			#endif
 
 			Updater.InvokeAtEndOfFrame(DestroySelf);
 			return InitTarget(firstArgument, secondArgument, thirdArgument);
 		}
 
-		
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument, ref TThirdArgument thirdArgument) { }
 
 		/// <summary>

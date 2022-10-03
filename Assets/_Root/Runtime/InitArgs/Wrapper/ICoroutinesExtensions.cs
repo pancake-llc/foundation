@@ -30,7 +30,7 @@ namespace Pancake.Init
         /// is started on the object directly.
         /// </para>
         /// <para>
-        /// Otherwise the <paramref name="coroutine"/> is started on an <see cref="Updater"/> Instance.
+        /// Otherwise the <paramref name="coroutine"/> is started on an <see cref="Updater"/> instance.
         /// </para>
         /// </summary>
         /// <typeparam name="T"> Type of <see langword="this"/> <see cref="object"/>. </typeparam>
@@ -85,7 +85,7 @@ namespace Pancake.Init
         /// is started on the object directly.
         /// </para>
         /// <para>
-        /// Otherwise the <paramref name="coroutine"/> is started on an <see cref="Updater"/> Instance.
+        /// Otherwise the <paramref name="coroutine"/> is started on an <see cref="Updater"/> instance.
         /// </para>
         /// </summary>
         /// <param name="coroutine"> The <see cref="IEnumerator">coroutine</see> to stop. </param>
@@ -130,7 +130,7 @@ namespace Pancake.Init
         /// is stopped on the object directly.
         /// </para>
         /// <para>
-        /// Otherwise the <paramref name="coroutine"/> is stopped on an <see cref="Updater"/> Instance.
+        /// Otherwise the <paramref name="coroutine"/> is stopped on an <see cref="Updater"/> instance.
         /// </para>
         /// </summary>
         /// <param name="coroutine">

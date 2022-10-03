@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using Pancake.Init;
+using Pancake.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	[InitializeOnLoad]
 	internal static class RefTagDrawer

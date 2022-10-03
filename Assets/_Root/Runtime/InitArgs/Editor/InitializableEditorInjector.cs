@@ -6,12 +6,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
-using Pancake.Init;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	[InitializeOnLoad]
 	internal static class InitializableEditorInjector
@@ -41,7 +40,8 @@ namespace Pancake.Editor.Init
 			{ typeof(WrapperInitializer<,,,,>), typeof(WrapperInitializerT3Editor) },
 			{ typeof(WrapperInitializer<,,,,,>), typeof(WrapperInitializerT4Editor) },
 			{ typeof(WrapperInitializer<,,,,,,>), typeof(WrapperInitializerT5Editor) },
-			{ typeof(WrapperInitializer<,,,,,,,>), typeof(WrapperInitializerT6Editor) }
+			{ typeof(WrapperInitializer<,,,,,,,>), typeof(WrapperInitializerT6Editor) },
+			{ typeof(Wrapper<>), typeof(WrapperEditor) }
 		};
 
 		private static readonly HashSet<Type> initializableEditors = new HashSet<Type>()
@@ -274,6 +274,8 @@ namespace Pancake.Editor.Init
 
 			UnityEditor.Editor.CreateCachedEditor(targets[0], editorType, ref editor);
 		}
+
+		public static bool HasCustomEditor(Type componentType) => GetCustomEditorType(componentType, false) != genericInspectorType;
 
 		public static Type GetCustomEditorType([NotNull] Type componentType, bool multiEdit)
 		{

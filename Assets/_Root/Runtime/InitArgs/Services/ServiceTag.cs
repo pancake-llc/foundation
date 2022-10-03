@@ -2,7 +2,6 @@
 
 using System;
 using JetBrains.Annotations;
-using Pancake.Init.Internal;
 using Pancake.Init.Serialization;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -10,7 +9,7 @@ using UnityEditor;
 using UnityEditorInternal;
 #endif
 
-namespace Pancake.Init
+namespace Pancake.Init.Internal
 {
 	[ExecuteAlways, AddComponentMenu(Hidden), DefaultExecutionOrder(ExecutionOrder.ServiceTag)]
 	internal sealed class ServiceTag : MonoBehaviour
@@ -28,7 +27,7 @@ namespace Pancake.Init
 
 		/// <summary>
 		/// Gets the defining type that clients should be able to use to retrieve
-		/// an Instance of the <see cref="Service"/>.
+		/// an instance of the <see cref="Service"/>.
 		/// </summary>
 		internal Type DefiningType
 		{
@@ -41,17 +40,17 @@ namespace Pancake.Init
 				#if DEBUG
 				if(!DefiningTypeIsAssignableFrom(service))
 				{
-#if UNITY_EDITOR
+					#if UNITY_EDITOR
 					EditorApplication.delayCall += OnValidateDelayed;
-#endif
-					Debug.Log($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(DefiningType)} value {TypeUtility.ToString(value.GetType())}, which is not assignable from service Instance type {TypeUtility.ToString(service.GetType())}.", gameObject);
+					#endif
+					Debug.Log($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(DefiningType)} value {TypeUtility.ToString(value.GetType())}, which is not assignable from service instance type {TypeUtility.ToString(service.GetType())}.", gameObject);
 				}
 				#endif
 			}
 		}
 
 		/// <summary>
-		/// Gets service Instance that clients should be able to retrieve 
+		/// Gets service instance that clients should be able to retrieve 
 		/// using its <see cref="DefiningType"/>.
 		/// </summary>
 		internal Component Service
@@ -63,10 +62,10 @@ namespace Pancake.Init
 				#if DEBUG
 				if(!DefiningTypeIsAssignableFrom(value))
 				{
-#if UNITY_EDITOR
+					#if UNITY_EDITOR
 					EditorApplication.delayCall += OnValidateDelayed;
-#endif
-					Debug.Log($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(Service)} Instance. {nameof(DefiningType)} value {TypeUtility.ToString(definingType.Value)} is not assignable from the Instance of type {TypeUtility.ToString(value.GetType())}.", gameObject);
+					#endif
+					Debug.Log($"ServiceTag on GameObject \"{name}\" was assigned an invalid {nameof(Service)} instance. {nameof(DefiningType)} value {TypeUtility.ToString(definingType.Value)} is not assignable from the instance of type {TypeUtility.ToString(value.GetType())}.", gameObject);
 				}
 				#endif
 
@@ -158,7 +157,7 @@ namespace Pancake.Init
 		private void Register()
 		{
 			#if UNITY_EDITOR
-			if(service == null && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
+			if(service == null && !EditorOnly.ThreadSafe.Application.IsPlaying)
 			{
 				return;
 			}
@@ -236,7 +235,7 @@ namespace Pancake.Init
 						if(!instanceHasOtherTags)
 						{
 							#if DEV_MODE
-							Debug.Log($"Moving Service tag {definingType.Value.Name} of {Instance.GetType().Name} from {name} to {Instance.gameObject.name}...", Instance.gameObject);
+							Debug.Log($"Moving Service tag {definingType.Value.Name} of {instance.GetType().Name} from {name} to {instance.gameObject.name}...", instance.gameObject);
 							#endif
 							service = instance;
 							ComponentUtility.CopyComponent(this);
@@ -298,7 +297,7 @@ namespace Pancake.Init
 				EditorUtility.SetDirty(this);
 			}
 
-			if(gameObject.scene.IsValid() && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
+			if(gameObject.scene.IsValid() && !EditorOnly.ThreadSafe.Application.IsPlaying)
 			{
 				Register();
 

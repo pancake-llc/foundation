@@ -7,7 +7,7 @@ namespace Pancake.Init
     /// <summary>
     /// Specifies how an <see cref="Initializer"/> should guard against null arguments.
     /// </summary>
-    [System.Flags]
+    [Flags]
     public enum NullArgumentGuard
     {
         /// <summary>

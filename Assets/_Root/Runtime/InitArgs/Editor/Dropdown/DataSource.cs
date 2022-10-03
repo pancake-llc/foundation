@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	internal class DataSource : AdvancedDropdownDataSource
     {

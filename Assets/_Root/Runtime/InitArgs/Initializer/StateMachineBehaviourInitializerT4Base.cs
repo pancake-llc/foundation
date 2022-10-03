@@ -2,15 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
-
+using static Pancake.Init.NullExtensions;
 
 namespace Pancake.Init
 {
@@ -43,8 +41,8 @@ namespace Pancake.Init
 	/// <typeparam name="TSecondArgument"> Type of the second argument to pass to the client's Init function. </typeparam>
 	/// <typeparam name="TThirdArgument"> Type of the third argument to pass to the client's Init function. </typeparam>
 	/// <typeparam name="TFourthArgument"> Type of the fourth argument to pass to the client's Init function. </typeparam>
-	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> : MonoBehaviour,
-		IInitializer<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, IValueProvider<TStateMachineBehaviour>
+	public abstract class StateMachineBehaviourInitializerBase<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument> : MonoBehaviour
+		, IInitializer<TStateMachineBehaviour, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>, IValueProvider<TStateMachineBehaviour>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -114,7 +112,7 @@ namespace Pancake.Init
 			var thirdArgument = ThirdArgument;
 			var fourthArgument = FourthArgument;
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
 			{
 				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFirstArgument));
@@ -122,13 +120,12 @@ namespace Pancake.Init
 				if(thirdArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TThirdArgument));
 				if(fourthArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TStateMachineBehaviour), typeof(TFourthArgument));
 			}
-#endif
+			#endif
 
 			Updater.InvokeAtEndOfFrame(DestroySelf);
 			return InitTarget(firstArgument, secondArgument, thirdArgument, fourthArgument);
 		}
 
-		
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument, ref TThirdArgument thirdArgument, ref TFourthArgument fourthArgument) { }
 
 		/// <summary>

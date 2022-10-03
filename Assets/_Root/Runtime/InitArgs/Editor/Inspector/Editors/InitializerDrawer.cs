@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using JetBrains.Annotations;
-using Pancake.Init;
 using Pancake.Init.Internal;
 using UnityEditor;
 using UnityEditor.Presets;
@@ -11,11 +11,18 @@ using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	public sealed class InitializerDrawer : IDisposable
 	{
+		public static bool ServicesShown
+		{
+			get => EditorPrefs.GetBool(ServiceVisibilityKey, true);
+			set => EditorPrefs.SetBool(ServiceVisibilityKey, value);
+		}
+
 		public const string SetInitializerTargetOnScriptsReloadedKey = "InitArgs.SetInitializerTarget";
+		public const string ServiceVisibilityKey = "InitArgs.InitializerServiceVisibility";
 		private const string InitArgsDefaultLabel = "Init";
 		private static readonly Type genericInspectorType;
 
@@ -31,9 +38,12 @@ namespace Pancake.Editor.Init
 		private GUIContent nullGuardDisabledIcon;
 		private GUIContent nullGuardPassedIcon;
 		private GUIContent nullGuardFailedIcon;
-		private GUIContent initArgsLabel = new GUIContent();
+		private readonly GUIContent servicesHiddenIcon = new GUIContent();
+		private readonly GUIContent servicesShownIcon = new GUIContent();
+		private readonly GUIContent initArgsLabel = new GUIContent();
 		private GUIStyle initializerBackgroundStyle = null;
 		private GUIStyle noInitializerBackgroundStyle = null;
+		private bool hasServiceParameters;
 
 		private Object[] initializers = new Component[1];
 		private UnityEditor.Editor initializerEditor;
@@ -76,11 +86,25 @@ namespace Pancake.Editor.Init
 				}
 			}
 
+			bool[] initServiceParameters = initParameterTypes.Select(ServiceUtility.IsDefiningTypeOfAnyServiceAttribute).ToArray();
+			hasServiceParameters = initServiceParameters.Any(b => b);
+
 			this.gameObjects = gameObjects;
 			initArgsLabel.text = InitArgsDefaultLabel;
-			initArgsLabel.tooltip = GetInitArgsTooltip(clientType, initParameterTypes);
+			initArgsLabel.tooltip = GetInitArgumentsTooltip(clientType, initParameterTypes, initServiceParameters);
 			this.initializerEditor = initializerEditor;
 			isResponsibleForInitializerEditorLifetime = initializerEditor == null;
+
+			if(hasServiceParameters)
+			{
+				servicesShownIcon.tooltip = GetServiceVisibilityTooltip(initParameterTypes, initServiceParameters, true);
+				servicesHiddenIcon.tooltip = GetServiceVisibilityTooltip(initParameterTypes, initServiceParameters, false);
+			}
+			else
+			{
+				servicesShownIcon.tooltip = "";
+				servicesHiddenIcon.tooltip = "";
+			}
 
 			Setup();
 		}
@@ -114,6 +138,17 @@ namespace Pancake.Editor.Init
 			nullGuardDisabledIcon = EditorGUIUtility.IconContent("DebuggerDisabled");
 			nullGuardPassedIcon = EditorGUIUtility.IconContent("Installed@2x");
 			nullGuardFailedIcon = EditorGUIUtility.IconContent("DebuggerEnabled");
+
+			if(hasServiceParameters)
+			{
+				servicesHiddenIcon.image = EditorGUIUtility.IconContent("animationvisibilitytoggleoff").image;
+				servicesShownIcon.image = EditorGUIUtility.IconContent("animationvisibilitytoggleon").image;
+			}
+			else
+			{
+				servicesHiddenIcon.image = null;
+				servicesShownIcon.image = null;
+			}
 		}
 
 		public static void OnAssemblyCompilationStarted(ref InitializerDrawer drawer, string compilingAssemblyName)
@@ -173,6 +208,7 @@ namespace Pancake.Editor.Init
 				GUI.enabled = false;
 			}
 
+			const float ICON_WIDTH = 20f;
 			var foldoutRect = headerRect;
 			if(!isResponsibleForInitializerEditorLifetime)
 			{
@@ -183,16 +219,18 @@ namespace Pancake.Editor.Init
 				foldoutRect.width -= 38f;
 				foldoutRect.x -= 12f;
 			}
+
 			foldoutRect.y -= 1f;
-			
-			var toggleInitializerRect = headerRect;
-			toggleInitializerRect.x += toggleInitializerRect.width - 20f;
-			toggleInitializerRect.width = 20f;
+			foldoutRect.width -= ICON_WIDTH;
+
+			var addInitializerOrContextMenuRect = headerRect;
+			addInitializerOrContextMenuRect.x += addInitializerOrContextMenuRect.width - ICON_WIDTH;
+			addInitializerOrContextMenuRect.width = ICON_WIDTH;
 
 			bool setInitializerUnfolded = initializerUnfolded;
 			var foldoutClickableRect = foldoutRect;
 			foldoutClickableRect.x -= 5f;
-			foldoutClickableRect.width += 10f;
+			foldoutClickableRect.width +=  10f;
 
 			if(!isResponsibleForInitializerEditorLifetime)
 			{
@@ -235,31 +273,31 @@ namespace Pancake.Editor.Init
 			{
 				DrawInitHeader();
 
-				if(GUI.Button(toggleInitializerRect, addInitializerIcon, "RL FooterButton"))
+				if(GUI.Button(addInitializerOrContextMenuRect, addInitializerIcon, "RL FooterButton"))
 				{
 					if(OnAddInitializerButtonPressedOverride != null)
 					{
-						OnAddInitializerButtonPressedOverride.Invoke(toggleInitializerRect);
+						OnAddInitializerButtonPressedOverride.Invoke(addInitializerOrContextMenuRect);
 						return;
 					}
 
-					AddInitializer(toggleInitializerRect);
+					AddInitializer(addInitializerOrContextMenuRect);
 				}
 			}
 			else
 			{
 				if(!isResponsibleForInitializerEditorLifetime)
 				{
-					toggleInitializerRect.x += toggleInitializerRect.width;
+					addInitializerOrContextMenuRect.x += addInitializerOrContextMenuRect.width;
 				}
-				else if(GUI.Button(toggleInitializerRect, GUIContent.none, EditorStyles.label))
+				else if(GUI.Button(addInitializerOrContextMenuRect, GUIContent.none, EditorStyles.label))
 				{
-					OnInitializerContextMenuButtonPressed(targets, firstInitializer, mixedInitializers, toggleInitializerRect);
+					OnInitializerContextMenuButtonPressed(targets, firstInitializer, mixedInitializers, addInitializerOrContextMenuRect);
 				}
 
-				var nullGuardIconRect = toggleInitializerRect;
+				var nullGuardIconRect = addInitializerOrContextMenuRect;
 				nullGuardIconRect.y -= 1f;
-				nullGuardIconRect.x -= toggleInitializerRect.width;
+				nullGuardIconRect.x -= addInitializerOrContextMenuRect.width;
 
 				var initializerEditorOnly = firstInitializer as IInitializerEditorOnly;
 				var nullGuard = initializerEditorOnly != null ? initializerEditorOnly.NullArgumentGuard : NullArgumentGuard.None;
@@ -269,6 +307,16 @@ namespace Pancake.Editor.Init
 					OnInitializerNullGuardButtonPressed(nullGuard, nullGuardIconRect);
 				}
 
+				bool servicesShown = ServicesShown;
+				var serviceVisibilityIconRect = nullGuardIconRect;
+				serviceVisibilityIconRect.x -= nullGuardIconRect.width;
+				if(hasServiceParameters && GUI.Button(serviceVisibilityIconRect, GUIContent.none, EditorStyles.label))
+				{
+					servicesShown = !servicesShown;
+					ServicesShown = servicesShown;
+					EditorPrefs.SetBool(ServiceVisibilityKey, servicesShown);
+				}
+
 				if(initializerUnfolded)
 				{
 					DrawInitializerArguments();
@@ -276,7 +324,7 @@ namespace Pancake.Editor.Init
 
 				DrawInitHeader();
 
-				GUI.Label(toggleInitializerRect, contextMenuIcon);
+				GUI.Label(addInitializerOrContextMenuRect, contextMenuIcon);
 
 				if(initializerEditorOnly != null)
 				{
@@ -320,12 +368,16 @@ namespace Pancake.Editor.Init
 						GUI.color = Color.yellow;
 					}
 
-					if(GUI.Button(nullGuardIconRect, nullGuardIcon, EditorStyles.label))
+					GUI.Label(nullGuardIconRect, nullGuardIcon);
+					
+					GUI.color = guiColorWas;
+					
+					if(hasServiceParameters)
 					{
-						OnInitializerNullGuardButtonPressed(nullGuard, nullGuardIconRect);
+						var serviceVisibilityIcon = servicesShown ? servicesShownIcon : servicesHiddenIcon;
+						GUI.Label(serviceVisibilityIconRect, serviceVisibilityIcon);
 					}
 
-					GUI.color = guiColorWas;
 					EditorGUIUtility.SetIconSize(iconSizeWas);
 				}
 			}
@@ -385,28 +437,66 @@ namespace Pancake.Editor.Init
 			}
 		}
 
-		private string GetInitArgsTooltip([NotNull] Type clientType, [NotNull] Type[] initParameterTypes)
+		private string GetInitArgumentsTooltip([NotNull] Type clientType, [NotNull] Type[] initParameterTypes, [NotNull] bool[] initServiceParameters)
 		{
 			var className = clientType.Name;
 			var types = initParameterTypes;
-			switch(types.Length)
+
+			var sb = new StringBuilder();
+			sb.Append(className);
+			int count = types.Length;
+			sb.Append(count switch
 			{
-				case 1:
-					return $"{className} accepts one initialization argument:\n" + string.Join("\n", types.Select(t => ArgumentTooltip(t)));
-				case 2:
-					return $"{className} accepts two initialization arguments:\n" + string.Join("\n", types.Select(t => ArgumentTooltip(t)));
-				case 3:
-					return $"{className} accepts three initialization arguments:\n" + string.Join("\n", types.Select(t => ArgumentTooltip(t)));
-				case 4:
-					return $"{className} accepts four initialization arguments:\n" + string.Join("\n", types.Select(t => ArgumentTooltip(t)));
-				case 5:
-					return $"{className} accepts five initialization arguments:\n" + string.Join("\n", types.Select(t => ArgumentTooltip(t)));
-				default:
-					return $"{className} accepts {types.Length} initialization arguments:\n" + string.Join("\n", types.Select(t => ArgumentTooltip(t)));
+				1 => " accepts one Init argument:",
+				2 => " accepts two Init arguments:",
+				3 => " accepts three Init arguments:",
+				4 => " accepts four Init arguments:",
+				5 => " accepts five Init arguments:",
+				_ => $" accepts {count} Init arguments:"
+			});
+
+			for(int i = 0; i < count; i++)
+			{
+				sb.Append('\n');
+				sb.Append(GetInitArgumentTooltipText(types[i], initServiceParameters[i]));
 			}
+
+			return sb.ToString();
 		}
 
-		private string ArgumentTooltip(Type type) => ServiceUtility.IsDefiningTypeOfAnyServiceAttribute(type) ? TypeUtility.ToString(type) + " (Service)" : TypeUtility.ToString(type);
+		private string GetServiceVisibilityTooltip([NotNull] Type[] initParameterTypes, [NotNull] bool[] initServiceParameters, bool servicesShown)
+		{
+			var sb = new StringBuilder();
+
+			int serviceCount = initServiceParameters.Count(b => b);
+			sb.Append(serviceCount switch
+			{
+				1 => "One service argument is",
+				2 => "Two service arguments are",
+				3 => "Three service arguments are",
+				4 => "Four service arguments are",
+				5 => "Five service arguments are",
+				6 => "Six service arguments are",
+				_ => serviceCount + " service arguments are"
+			});
+
+			sb.Append(servicesShown ? " shown:" : " hidden:");
+
+			for(int i = 0, count = initParameterTypes.Length; i < count; i++)
+			{
+				if(initServiceParameters[i])
+				{
+					sb.Append("\n ");
+					sb.Append(TypeUtility.ToString(initParameterTypes[i]));
+				}
+			}
+
+			sb.Append("\n\nThese services will be provided automatically during initialization.");
+
+			return sb.ToString();
+		}
+
+		private string GetInitArgumentTooltipText(Type type, bool isService) => isService ? TypeUtility.ToString(type) + " (Service)" : TypeUtility.ToString(type);
 
 		private static string GetTooltip(NullArgumentGuard guard)
 		{
@@ -603,6 +693,7 @@ namespace Pancake.Editor.Init
 				menu.AddItem(new GUIContent("Edit Script"), false, () => AssetDatabase.OpenAsset(scriptAsset));
 				menu.AddItem(new GUIContent("Ping Script"), false, () => EditorApplication.delayCall += () => EditorGUIUtility.PingObject(scriptAsset));
 			}
+
 			if(!mixedInitializers)
 			{
 				menu.AddItem(new GUIContent("Preset"), false, () => PresetSelector.ShowSelector(initializers, null, true));

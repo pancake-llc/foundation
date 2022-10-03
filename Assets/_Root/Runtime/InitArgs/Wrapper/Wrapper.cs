@@ -1,9 +1,7 @@
-﻿using System.ComponentModel;
-using UnityEngine;
-using System;
+﻿using System.ComponentModel; 
 using JetBrains.Annotations;
+using UnityEngine;
 using Object = UnityEngine.Object;
-using static Pancake.Init.FlagsValues;
 
 namespace Pancake.Init
 {
@@ -63,50 +61,19 @@ namespace Pancake.Init
         /// The plain old class object wrapped by this component.
         /// </summary>
         [SerializeField]
-        private TWrapped wrapped = default;
+        internal TWrapped wrapped = default;
 
-        private InitState initState = InitState.None;
-
-        /// <summary>
-        /// The plain old class object wrapped by this component.
-        /// </summary>
-        public TWrapped WrappedObject
-        {
-            get
-            {
-                if(!ReferenceEquals(wrapped, null) || initState.HasFlag(InitState.SearchedForInitializers))
-                {
-                    return wrapped;
-                }
-
-#if UNITY_EDITOR
-                if(!Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
-                {
-                    return wrapped;
-                }
-#endif
-
-                initState |= InitState.SearchedForInitializers;
-
-                foreach(var initializer in GetComponents<IInitializer>())
-                {
-                    if(initializer.Target != this)
-                    {
-                        continue;
-                    }
-
-                    initializer.InitTarget();
-                    break;
-                }
-
-                return wrapped;
-            }
-        }
+        private bool awakeCalledWithoutWrappedObject;
 
         /// <summary>
         /// The plain old class object wrapped by this component.
         /// </summary>
-        object IWrapper.WrappedObject => WrappedObject;
+        public TWrapped WrappedObject => wrapped;
+
+        /// <summary>
+        /// The plain old class object wrapped by this component.
+        /// </summary>
+        object IWrapper.WrappedObject => wrapped;
 
         /// <summary>
         /// This wrapper as a <see cref="MonoBehaviour"/>.
@@ -123,10 +90,10 @@ namespace Pancake.Init
         /// <summary>
         /// The plain old class object wrapped by this component.
         /// </summary>
-        TWrapped IValueProvider<TWrapped>.Value => WrappedObject;
+        TWrapped IValueProvider<TWrapped>.Value => wrapped;
 
         /// <inheritdoc/>
-        object IValueProvider.Value => WrappedObject;
+        object IValueProvider.Value => wrapped;
 
         /// <summary>
         /// Provides the <see cref="Component"/> with the object that it wraps.
@@ -158,13 +125,13 @@ namespace Pancake.Init
                 coroutineUser.CoroutineRunner = this;
             }
 
-            if(initState.HasFlag(InitState.AwakeCalledWithoutWrappedObject) && gameObject.activeInHierarchy)
+            if(awakeCalledWithoutWrappedObject && gameObject.activeInHierarchy)
             {
                 if(wrapped is IUpdate update)
                 {
                     Updater.Subscribe(update);
                 }
-                
+
                 if(wrapped is ILateUpdate lateUpdate)
                 {
                     Updater.Subscribe(lateUpdate);
@@ -205,16 +172,16 @@ namespace Pancake.Init
         }
 
         /// <summary>
-		/// <see cref="Awake"/> is called when the script Instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
+		/// <see cref="Awake"/> is called when the script instance is being loaded and handles calling the <see cref="Init"/> function with the <see cref="TWrapped"/> argument.
 		/// <para>
 		/// <see cref="Awake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
 		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>
 		/// is initialized.
 		/// </para>
 		/// <para>
-		/// Unity calls <see cref="Awake"/> only once during the lifetime of the script Instance. A script's lifetime lasts until the Scene that contains it is unloaded.
-		/// If the Scene is loaded again, Unity loads the script Instance again, so <see cref="Awake"/> will be called again.
-		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="Awake"/> will be called several times (once on each Instance).
+		/// Unity calls <see cref="Awake"/> only once during the lifetime of the script instance. A script's lifetime lasts until the Scene that contains it is unloaded.
+		/// If the Scene is loaded again, Unity loads the script instance again, so <see cref="Awake"/> will be called again.
+		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="Awake"/> will be called several times (once on each instance).
 		/// </para>
 		/// <para>
 		/// For active <see cref="GameObject">GameObjects</see> placed in a Scene, Unity calls <see cref="Awake"/> after all active <see cref="GameObject">GameObjects</see>
@@ -244,7 +211,7 @@ namespace Pancake.Init
             }
             else if(ReferenceEquals(wrapped, null))
             {
-                initState |= InitState.AwakeCalledWithoutWrappedObject;
+                awakeCalledWithoutWrappedObject = true;
                 return;
             }
 
@@ -365,7 +332,7 @@ namespace Pancake.Init
         /// <summary>
         /// Defines an implicit conversion of a <see cref="Wrapper{TWrapped}"/> to the <see cref="TWrapped"/> plain old class object that it wraps.
         /// </summary>
-        /// <param name="wrapper"> The <see cref="Wrapper{TWrapped}"/> Instance to convert. </param>
+        /// <param name="wrapper"> The <see cref="Wrapper{TWrapped}"/> instance to convert. </param>
         public static implicit operator TWrapped(Wrapper<TWrapped> wrapper)
         {
             return wrapper.wrapped;
@@ -374,18 +341,10 @@ namespace Pancake.Init
         /// <summary>
         /// Defines an explicit conversion of a <see cref="TWrapped"/> to a <see cref="Wrapper{TWrapped}"/> <see cref="Component">component</see> that wraps it.
         /// </summary>
-        /// <param name="wrapped"> The <see cref="TWrapped"/> Instance to convert. </param>
+        /// <param name="wrapped"> The <see cref="TWrapped"/> instance to convert. </param>
         public static explicit operator Wrapper<TWrapped>(TWrapped wrapped)
         {
             return Find.WrapperOf(wrapped) as Wrapper<TWrapped>;
-        }
-        
-        [Flags]
-        private enum InitState : byte
-        {
-            None = _0,
-            AwakeCalledWithoutWrappedObject = _1,
-            SearchedForInitializers = _2
         }
     }
 }

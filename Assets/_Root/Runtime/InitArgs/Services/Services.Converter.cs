@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace Pancake.Init
+namespace Pancake.Init.Internal
 {
     [TypeConverter(typeof(Converter))]
     public partial class Services

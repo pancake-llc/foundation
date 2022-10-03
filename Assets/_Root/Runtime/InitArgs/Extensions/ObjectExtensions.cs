@@ -146,8 +146,8 @@ namespace Pancake.Init
 		/// <typeparam name="TArgument"> Type of the argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="argument"> The argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
-		/// <param name="position"> The position for the new Instance. </param>
-		/// <param name="rotation"> The rotation for the new Instance. </param>
+		/// <param name="position"> The position for the new instance. </param>
+		/// <param name="rotation"> The rotation for the new instance. </param>
 		/// <returns> The cloned <typeparamref name="TObject"/>. </returns>
 		/// <exception cref="ArgumentNullException">
 		/// Thrown if <paramref name="original"/> is <see langword="null"/>.
@@ -203,7 +203,7 @@ namespace Pancake.Init
 		/// <typeparam name="TArgument"> Type of the argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="argument"> The argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
-		/// <param name="position"> The position for the new Instance. </param>
+		/// <param name="position"> The position for the new instance. </param>
 		/// <param name="parent"> Parent that will be assigned to the new object. </param>
 		/// <param name="rotation"> The orientation of the new GameObject. </param>
 		/// <returns> The cloned <typeparamref name="TObject"/>. </returns>
@@ -382,8 +382,8 @@ namespace Pancake.Init
 		/// <param name="original"> Original <typeparamref name="TObject"/> to clone. </param>
 		/// <param name="firstArgument"> The first argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
-		/// <param name="position"> The position for the new Instance. </param>
-		/// <param name="rotation"> The rotation for the new Instance. </param>
+		/// <param name="position"> The position for the new instance. </param>
+		/// <param name="rotation"> The rotation for the new instance. </param>
 		/// <param name="parent"> Parent that will be assigned to the new object. </param>
 		/// <returns> The cloned <typeparamref name="TObject"/>. </returns>
 		/// <exception cref="ArgumentNullException">
@@ -571,8 +571,8 @@ namespace Pancake.Init
 		/// <param name="firstArgument"> The first argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="secondArgument"> The second argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="thirdArgument"> The third argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
-		/// <param name="position"> The position for the new Instance. </param>
-		/// <param name="rotation"> The rotation for the new Instance. </param>
+		/// <param name="position"> The position for the new instance. </param>
+		/// <param name="rotation"> The rotation for the new instance. </param>
 		/// <param name="parent"> Parent that will be assigned to the new object. </param>
 		/// <returns> The cloned <typeparamref name="TObject"/>. </returns>
 		/// <exception cref="ArgumentNullException">
@@ -766,8 +766,8 @@ namespace Pancake.Init
 		/// <param name="secondArgument"> The second argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="thirdArgument"> The third argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="fourthArgument"> The fourth argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
-		/// <param name="position"> The position for the new Instance. </param>
-		/// <param name="rotation"> The rotation for the new Instance. </param>
+		/// <param name="position"> The position for the new instance. </param>
+		/// <param name="rotation"> The rotation for the new instance. </param>
 		/// <param name="parent"> Parent that will be assigned to the new object. </param>
 		/// <returns> The cloned <typeparamref name="TObject"/>. </returns>
 		/// <exception cref="ArgumentNullException">
@@ -1037,8 +1037,8 @@ namespace Pancake.Init
 		/// <param name="thirdArgument"> The third argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="fourthArgument"> The fourth argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
 		/// <param name="fifthArgument"> The fifth argument used during initialization of the cloned <typeparamref name="TObject"/>. </param>
-		/// <param name="position"> The position for the new Instance. </param>
-		/// <param name="rotation"> The rotation for the new Instance. </param>
+		/// <param name="position"> The position for the new instance. </param>
+		/// <param name="rotation"> The rotation for the new instance. </param>
 		/// <param name="parent"> Parent that will be assigned to the new object. </param>
 		/// <returns> The cloned <typeparamref name="TObject"/>. </returns>
 		/// <exception cref="ArgumentNullException">

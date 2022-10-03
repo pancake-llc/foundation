@@ -76,7 +76,7 @@ namespace Pancake.Init.Internal
             bool servicesAreReady = ServicesAreReady;
 
             #if UNITY_EDITOR
-            if(servicesAreReady && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
+            if(servicesAreReady && !EditorOnly.ThreadSafe.Application.IsPlaying)
             {
                 servicesAreReady = false;
             }
@@ -89,10 +89,31 @@ namespace Pancake.Init.Internal
 
             foreach(var service in GetServiceDefinitions())
             {
-                if(typeof(T) == service.attribute.definingType && !service.classWithAttribute.IsAbstract)
+                if(service.attribute.definingType is Type definingType)
                 {
-                    return true;
+                    if(definingType == typeof(T))
+				    {
+                        return true;
+				    }
                 }
+                else if(typeof(IInitializer).IsAssignableFrom(service.classWithAttribute))
+			    {
+                    var interfaceTypes = service.classWithAttribute.GetInterfaces();
+                    for(int i = interfaceTypes.Length - 1; i >= 0; i--)
+                    {
+                        var interfaceType = interfaceTypes[i];
+                        if(interfaceType.IsGenericType
+                            && interfaceType.GetGenericTypeDefinition() == typeof(IInitializer<>)
+                            && interfaceType.GetGenericArguments()[0] == typeof(T))
+                        {
+                            return true;
+					    }
+				    }
+                }
+                else if(service.classWithAttribute == typeof(T))
+				{
+                    return true;
+				}
             }
 
             return false;
@@ -105,7 +126,22 @@ namespace Pancake.Init.Internal
 		/// <typeparam name="T"> Type to test. </typeparam>
 		/// <returns> <see langword="true"/> if <typeparamref name="T"/> is a concrete service type; otherwise, <see langword="false"/>. </returns>
 		public static bool HasServiceAttribute<T>()
-            => !typeof(T).IsValueType && GetClassWithServiceAttribute(typeof(T)) is Type classWithAttribute && !classWithAttribute.IsAbstract;
+		{
+            if(typeof(T).IsValueType || typeof(T).IsAbstract)
+			{
+                return false;
+			}
+
+            foreach(var service in GetServiceDefinitions())
+            {
+                if(typeof(T) == service.classWithAttribute)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+		}
 
         /// <summary>
         /// Gets a value indicating whether or not the provided <paramref name="type"/> is the defining type of a service.
@@ -134,7 +170,7 @@ namespace Pancake.Init.Internal
             bool servicesAreReady = ServicesAreReady;
 
             #if UNITY_EDITOR
-            if(servicesAreReady && !Pancake.Editor.Init.ThreadSafe.Application.IsPlaying)
+            if(servicesAreReady && !EditorOnly.ThreadSafe.Application.IsPlaying)
             {
                 servicesAreReady = false;
             }
@@ -147,10 +183,12 @@ namespace Pancake.Init.Internal
                     var definingType = service.attribute.definingType;
                     if(definingType is null)
 					{
-                        definingType = service.classWithAttribute;
+                        if(type == GetServiceConcreteType(service.classWithAttribute))
+						{
+                            return true;
+						}
                     }
-
-                    if(type == definingType && !service.classWithAttribute.IsAbstract)
+                    else if(type == definingType && GetServiceConcreteType(service.classWithAttribute) != null)
                     {
                         return true;
                     }
@@ -198,6 +236,19 @@ namespace Pancake.Init.Internal
             return false;
         }
 
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Reset state when entering play mode in the editor to support Enter Play Mode Settings.
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void OnEnterPlayMode()
+		{
+            ServicesAreReady = false;
+            services.Clear();
+            unitializedServicesByDefiningType.Clear();
+		}
+        #endif
+
         /// <summary>
         /// Creates instances of all services,
         /// injects dependencies for servives that implement an <see cref="IInitializable{}"/>
@@ -221,8 +272,8 @@ namespace Pancake.Init.Internal
                 ServicesAreReady = false;
             }
 
-            Pancake.Editor.Init.ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
-            Pancake.Editor.Init.ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
+            EditorOnly.ThreadSafe.Application.ExitingPlayMode -= OnExitingPlayMode;
+            EditorOnly.ThreadSafe.Application.ExitingPlayMode += OnExitingPlayMode;
             #endif
         }
 
@@ -311,9 +362,9 @@ namespace Pancake.Init.Internal
 					GetOrCreateInstance(classWithAttribute, serviceAttribute, ref container, initialized);
 				}
                 catch(MissingMethodException e)
-                {
+				{
                     Debug.LogWarning($"Failed to initialize service {classWithAttribute.Name} with defining type {(serviceDefinition.attribute is null ? "n/a" : serviceDefinition.attribute.definingType is null ? "null" : serviceDefinition.attribute.definingType.Name)}.\nThis can happen when constructor arguments contain circular references (for example: object A requires object B, but object B also requires object A, so neither object can be constructed).\n{e}");
-                }
+				}
 				catch(Exception e)
 				{
 					Debug.LogWarning($"Failed to initialize service {classWithAttribute.Name} with defining type {(serviceDefinition.attribute is null ? "n/a" : serviceDefinition.attribute.definingType is null ? "null" : serviceDefinition.attribute.definingType.Name)}.\n{e}");
@@ -364,7 +415,7 @@ namespace Pancake.Init.Internal
                 definingType = classWithAttribute;
             }
 
-            // If one class contains multiple Service attributes still create only one shared Instance.
+            // If one class contains multiple Service attributes still create only one shared instance.
             if(services.TryGetValue(classWithAttribute, out var existingInstance))
             {
                 ServiceUtility.SetInstance(definingType, existingInstance);
@@ -376,7 +427,7 @@ namespace Pancake.Init.Internal
             if(instance is null)
             {
                 #if DEV_MODE
-                Debug.LogWarning($"GetInstance({classWithAttribute.Name}. {definingType.Name}) returned Instance was null.");
+                Debug.LogWarning($"GetInstance({classWithAttribute.Name}. {definingType.Name}) returned instance was null.");
                 #endif
                 return;
             }
@@ -395,7 +446,7 @@ namespace Pancake.Init.Internal
                 if(instance != null)
                 {
                     #if DEBUG_CREATE_SERVICES
-                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", Instance);
+                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", instance);
                     #endif
 
                     if(definingType.IsAssignableFrom(classWithAttribute))
@@ -423,7 +474,7 @@ namespace Pancake.Init.Internal
                 if(initializer != null && initializer.InitTarget() is object initializedTarget)
                 {
                     #if DEBUG_CREATE_SERVICES
-                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", Instance);
+                    Debug.Log($"Service {classWithAttribute.Name} retrieved from scene successfully.", instance);
                     #endif
 
                     var initializedType = initializedTarget.GetType();
@@ -465,7 +516,7 @@ namespace Pancake.Init.Internal
                 #endif
 
 
-                Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the active scene {SceneManager.GetActiveScene().name}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Either add an Instance to the scene or don't set {nameof(ServiceAttribute.FindFromScene)} true to have a new Instance be created automatically.");
+                Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the active scene {SceneManager.GetActiveScene().name}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.FindFromScene)} set to true. Either add an instance to the scene or don't set {nameof(ServiceAttribute.FindFromScene)} true to have a new instance be created automatically.");
                 return null;
             }
 
@@ -474,7 +525,7 @@ namespace Pancake.Init.Internal
                 var asset = Resources.Load(resourcePath, typeof(Object));
                 if(asset == null)
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at resource path 'Resources/{resourcePath}', but the service class has the {nameof(ServiceAttribute)} {nameof(ServiceAttribute.ResourcePath)} set to '{resourcePath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new Instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found at resource path 'Resources/{resourcePath}', but the service class has the {nameof(ServiceAttribute)} {nameof(ServiceAttribute.ResourcePath)} set to '{resourcePath}'. Either make sure an asset exists in the project at the expected path or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new instance be created automatically.");
                     return null;
                 }
 
@@ -498,7 +549,7 @@ namespace Pancake.Init.Internal
                 var asset = asyncOperation.WaitForCompletion();
                 if(asset == null)
                 {
-                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the Addressable registry under the address {addressableKey}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.AddressableKey)} set to '{addressableKey}'. Either make sure an Instance with the address exists in the project or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new Instance be created automatically.");
+                    Debug.LogWarning($"Service Not Found: There is no '{classWithAttribute.Name}' found in the Addressable registry under the address {addressableKey}, but the service class has the {nameof(ServiceAttribute)} with {nameof(ServiceAttribute.AddressableKey)} set to '{addressableKey}'. Either make sure an instance with the address exists in the project or don't specify a {nameof(ServiceAttribute.ResourcePath)} to have a new instance be created automatically.");
                     return null;
                 }
 
@@ -506,6 +557,8 @@ namespace Pancake.Init.Internal
                 {
                     #if DEBUG_CREATE_SERVICES
                     Debug.Log($"Service {classWithAttribute.Name} loaded using Addressables successfully.", asset);
+                    Debug.Assert(asset != null, addressableKey, asset);
+                    Debug.Assert(result != null, addressableKey, asset);
                     #endif
 
                     return result;
@@ -541,9 +594,10 @@ namespace Pancake.Init.Internal
 
             #if !INIT_ARGS_DISABLE_SERVICE_CONSTRUCTOR_SUPPORT
             if(initialized.Contains(classWithAttribute))
-            {
+			{
                 return null;
-            }
+			}
+
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
             var constructors = classWithAttribute.GetConstructors(flags);
             IEnumerable<ConstructorInfo> constructorsByParameterCount = constructors.Length <= 1 ? constructors as IEnumerable<ConstructorInfo> : constructors.OrderByDescending(c => c.GetParameters().Length);
@@ -565,7 +619,7 @@ namespace Pancake.Init.Internal
                     case 2:
                         initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out object firstArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[1], out object secondArgument, ref container, initialized))
+                        && TryGetOrCreateService(parameters[1], out object secondArgument, ref container, initialized))
                         {
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
@@ -576,8 +630,8 @@ namespace Pancake.Init.Internal
                     case 3:
                         initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[2], out object thirdArgument, ref container, initialized))
+                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[2], out object thirdArgument, ref container, initialized))
                         {
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
@@ -589,9 +643,9 @@ namespace Pancake.Init.Internal
                     case 4:
                         initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[3], out object fourthArgument, ref container, initialized))
+                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[3], out object fourthArgument, ref container, initialized))
                         {
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
@@ -604,10 +658,10 @@ namespace Pancake.Init.Internal
                     case 5:
                         initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[4], out object fifthArgument, ref container, initialized))
+                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[4], out object fifthArgument, ref container, initialized))
                         {
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
@@ -621,11 +675,11 @@ namespace Pancake.Init.Internal
                     case 6:
                         initialized.Add(classWithAttribute);
                         if(TryGetOrCreateService(parameters[0], out firstArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[4], out fifthArgument, ref container, initialized)
-                           && TryGetOrCreateService(parameters[5], out object sixthArgument, ref container, initialized))
+                        && TryGetOrCreateService(parameters[1], out secondArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[2], out thirdArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[3], out fourthArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[4], out fifthArgument, ref container, initialized)
+                        && TryGetOrCreateService(parameters[5], out object sixthArgument, ref container, initialized))
                         {
                             InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                             InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
@@ -879,14 +933,15 @@ namespace Pancake.Init.Internal
             return setMethodsByArgumentCount;
         }
 
-        private static void InjectCrossServiceDependencies(Type classType, HashSet<Type> initialized, ref GameObject container)
+        private static void InjectCrossServiceDependencies(Type classWithAttribute, HashSet<Type> initialized, ref GameObject container)
         {
-            if(!initialized.Add(classType))
+            var concreteType = GetServiceConcreteType(classWithAttribute);
+            if(!initialized.Add(concreteType))
             {
                 return;
             }
 
-            var interfaceTypes = classType.GetInterfaces();
+            var interfaceTypes = concreteType.GetInterfaces();
             for(int i = interfaceTypes.Length - 1; i >= 0; i--)
             {
                 var interfaceType = interfaceTypes[i];
@@ -921,14 +976,14 @@ namespace Pancake.Init.Internal
                         InjectCrossServiceDependencies(fifthArgument.GetType(), initialized, ref container);
                         InjectCrossServiceDependencies(sixthArgument.GetType(), initialized, ref container);
 
-                        if(services.TryGetValue(classType, out object client))
+                        if(services.TryGetValue(concreteType, out object client))
                         {
                             interfaceType.GetMethod("Init").Invoke(client, new object[] { firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument });
                             return;
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {classType.Name} requires 6 arguments but instances not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {concreteType.Name} requires 6 arguments but instances not found among {services.Count} services..."); }
                     #endif
                 }
 
@@ -952,14 +1007,14 @@ namespace Pancake.Init.Internal
                         InjectCrossServiceDependencies(fourthArgument.GetType(), initialized, ref container);
                         InjectCrossServiceDependencies(fifthArgument.GetType(), initialized, ref container);
 
-                        if(services.TryGetValue(classType, out object client))
+                        if(services.TryGetValue(concreteType, out object client))
                         {
                             interfaceType.GetMethod("Init").Invoke(client, new object[] { firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument });
                             return;
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {classType.Name} requires 5 arguments but instances not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {concreteType.Name} requires 5 arguments but instances not found among {services.Count} services..."); }
                     #endif
                 }
 
@@ -980,14 +1035,14 @@ namespace Pancake.Init.Internal
                         InjectCrossServiceDependencies(thirdArgument.GetType(), initialized, ref container);
                         InjectCrossServiceDependencies(fourthArgument.GetType(), initialized, ref container);
 
-                        if(services.TryGetValue(classType, out object client))
+                        if(services.TryGetValue(concreteType, out object client))
                         {
                             interfaceType.GetMethod("Init").Invoke(client, new object[] { firstArgument, secondArgument, thirdArgument, fourthArgument });
                             return;
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {classType.Name} requires 4 arguments but instances not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {concreteType.Name} requires 4 arguments but instances not found among {services.Count} services..."); }
                     #endif
                 }
 
@@ -1005,14 +1060,14 @@ namespace Pancake.Init.Internal
                         InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
                         InjectCrossServiceDependencies(thirdArgument.GetType(), initialized, ref container);
 
-                        if(services.TryGetValue(classType, out object client))
+                        if(services.TryGetValue(concreteType, out object client))
                         {
                             interfaceType.GetMethod("Init").Invoke(client, new object[] { firstArgument, secondArgument, thirdArgument });
                             return;
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {classType.Name} requires 3 arguments but instances not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {concreteType.Name} requires 3 arguments but instances not found among {services.Count} services..."); }
                     #endif
                 }
 
@@ -1027,14 +1082,14 @@ namespace Pancake.Init.Internal
                         InjectCrossServiceDependencies(firstArgument.GetType(), initialized, ref container);
                         InjectCrossServiceDependencies(secondArgument.GetType(), initialized, ref container);
 
-                        if(services.TryGetValue(classType, out object client))
+                        if(services.TryGetValue(concreteType, out object client))
                         {
                             interfaceType.GetMethod("Init").Invoke(client, new object[] { firstArgument, secondArgument });
                             return;
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {classType.Name} requires 2 arguments but instances not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {concreteType.Name} requires 2 arguments but instances not found among {services.Count} services..."); }
                     #endif
                 }
 
@@ -1045,14 +1100,14 @@ namespace Pancake.Init.Internal
                     {
                         InjectCrossServiceDependencies(argument.GetType(), initialized, ref container);
 
-                        if(services.TryGetValue(classType, out object client))
+                        if(services.TryGetValue(concreteType, out object client))
                         {
                             interfaceType.GetMethod("Init").Invoke(client, new object[] { argument });
                             return;
                         }
                     }
                     #if DEBUG_INIT_SERVICES
-                    else { Debug.Log($"Service {classType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but Instance not found among {services.Count} services..."); }
+                    else { Debug.Log($"Service {concreteType.Name} requires argument {interfaceType.GetGenericArguments()[0].Name} but instance not found among {services.Count} services..."); }
                     #endif
                 }
             }
@@ -1084,7 +1139,7 @@ namespace Pancake.Init.Internal
 
             ServiceUtility.SetInstance(definingType, service);
             services[definingType] = service;
-            services[definition.classWithAttribute] = service;
+            services[GetServiceConcreteType(definition.classWithAttribute)] = service;
 
             return service != null;
         }
@@ -1293,13 +1348,23 @@ namespace Pancake.Init.Internal
         }
 
         [CanBeNull]
-        internal static Type GetClassWithServiceAttribute(Type definingTypeOrClassWithAttribute)
+        internal static Type GetClassWithServiceAttribute(Type definingType)
         {
             foreach(var service in GetServiceDefinitions())
             {
-                if(definingTypeOrClassWithAttribute == service.classWithAttribute || definingTypeOrClassWithAttribute == service.attribute.definingType)
+                if(service.attribute.definingType is Type type)
+				{
+                    if(type == definingType)
+					{
+                        return service.classWithAttribute;
+					}
+
+                    continue;
+				}
+
+                if(definingType == service.classWithAttribute)
                 {
-                    return service.classWithAttribute;
+                    return definingType;
                 }
             }
 
@@ -1319,6 +1384,8 @@ namespace Pancake.Init.Internal
             return TypeUtility.GetImplementingTypes<TInterface>(typeof(object).Assembly, typeof(InitArgs).Assembly);
             #endif
         }
+
+        private static Type GetServiceConcreteType(Type classWithAttribute) => ServiceUtility.GetServiceConcreteType(classWithAttribute);
     }
 }
 #endif

@@ -3,11 +3,11 @@
 namespace Pancake.Init
 {
     /// <summary>
-    /// Class that can provide an Instance of any class that has the <see cref="ServiceAttribute"/> on demand.
+    /// Class that can provide an instance of any class that has the <see cref="ServiceAttribute"/> on demand.
     /// <para>
     /// This is a simple proxy for the static <see cref="Service{TDefiningClassOrInterface}"/> class;
-    /// Calling the <see cref="Get"/> method on any Instance of this class will return the shared
-    /// service Instance stored in <see cref="Service{TDefiningClassOrInterface}.Instance"/>.
+    /// Calling the <see cref="Get"/> method on any instance of this class will return the shared
+    /// service instance stored in <see cref="Service{TDefiningClassOrInterface}.Instance"/>.
     /// </para>
     /// <para>
     /// A benefit of using <see cref="ServiceProvider"/> instead of <see cref="Service{}"/> directly,
@@ -22,7 +22,7 @@ namespace Pancake.Init
     /// </para>
     /// <para>
     /// The <see cref="ServiceProvider"/> class is a <see cref="ServiceAttribute">service</see> itself.
-    /// This means that an Instance of the class can be automatically received by any classes that derive from
+    /// This means that an instance of the class can be automatically received by any classes that derive from
     /// <see cref="MonoBehaviour{IServiceProvider}"/> or <see cref="ScriptableObject{IServiceProvider}"/>.
     /// </para>
     /// </summary>

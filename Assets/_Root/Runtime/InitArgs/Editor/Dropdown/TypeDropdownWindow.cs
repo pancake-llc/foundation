@@ -6,7 +6,7 @@ using UnityEditor.Callbacks;
 using UnityEngine;
 using Event = UnityEngine.Event;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	[InitializeOnLoad]
 	internal sealed class TypeDropdownWindow : EditorWindow
@@ -100,21 +100,21 @@ namespace Pancake.Editor.Init
 			Close();
 		}
 
-		public static TypeDropdownWindow CreateAndInit(Rect rect, bool useGroups)
+		private static TypeDropdownWindow CreateAndInit(Rect rect, bool useGroups)
 		{
-			var instance = CreateInstance<TypeDropdownWindow>();
-			instance.Init(rect, useGroups);
-			return instance;
+			var window = CreateInstance<TypeDropdownWindow>();
+			window.Init(rect, useGroups);
+			return window;
 		}
 
-		public void Init(Rect buttonRect, bool useGroups)
+		private void Init(Rect buttonRect, bool useGroups)
 		{
 			buttonRect = GUIUtility.GUIToScreenRect(buttonRect);
 			OnDirtyList();
 			currentlyRenderedTree = HasSearch ? dataSource.searchTree : dataSource.mainTree;
 			float minHeight = useGroups || currentlyRenderedTree.Children.Count == 0
-				? AdvancedDropdownGUI.WindowHeight
-				: 58f + currentlyRenderedTree.Children.Count * currentlyRenderedTree.Children[0].lineStyle.CalcHeight(GUIContent.none, 0f);
+							? AdvancedDropdownGUI.WindowHeight
+							: 58f + currentlyRenderedTree.Children.Count * currentlyRenderedTree.Children[0].lineStyle.CalcHeight(GUIContent.none, 0f);
 			float height = Mathf.Min(minHeight, AdvancedDropdownGUI.WindowHeight);
 			ShowAsDropDown(buttonRect, new Vector2(buttonRect.width, height));
 			Focus();

@@ -14,9 +14,8 @@ using UnityEditor.SceneManagement;
 using UnityEditor.Experimental.SceneManagement;
 #endif
 using Object = UnityEngine.Object;
-using Pancake.Init;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
     public abstract class BaseConstructorBehaviourEditor : InitializableEditor
     {

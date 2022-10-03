@@ -23,7 +23,7 @@ namespace Pancake.Init
 	/// Instances can be
 	/// <see cref="ObjectExtensions.Instantiate{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}">instantiated</see>
 	/// or <see cref="GameObjectExtensions.AddComponent{TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}">added</see>
-	/// to a <see cref="GameObject"/> at runtime with four arguments passed to the constructor of the created Instance.
+	/// to a <see cref="GameObject"/> at runtime with four arguments passed to the constructor of the created instance.
 	/// </para>
 	/// <para>
 	/// If an object depends exclusively on classes that implement <see cref="IService"/> then it will be able to receive them
@@ -95,7 +95,7 @@ namespace Pancake.Init
 		protected static NullExtensions.NullOrInactiveComparer NullOrInactive => NullExtensions.NullOrInactive;
 
 		/// <summary>
-		/// Initializes the new Instance of the <see cref="ConstructorBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> class and retrieves its dependencies.
+		/// Initializes the new instance of the <see cref="ConstructorBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> class and retrieves its dependencies.
 		/// <para>
 		/// Classes that inherit from <see cref="ConstructorBehaviour{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> should always implement the parameterless
 		/// default constructor, chain it to this constructor using the <see langword="base"/> keyword and then in the body of the
@@ -175,7 +175,7 @@ namespace Pancake.Init
 			}
 
 			#if UNITY_EDITOR
-			if(Pancake.Editor.Init.ThreadSafe.Application.IsExitingPlayMode)
+			if(EditorOnly.ThreadSafe.Application.IsExitingPlayMode)
             {
 				return;
             }
@@ -274,7 +274,7 @@ namespace Pancake.Init
 		/// </example>
 		/// </para>
 		/// </summary>
-		/// <returns> The names of five Instance fields or properties. </returns>
+		/// <returns> The names of five instance fields or properties. </returns>
 		/// <exception cref="MissingMemberException">
 		/// Thrown if no field or property is found with their name closely matching that of the one the constructor parameters
 		/// nor is any field or property found with their type matching the type of the parameter exactly.
@@ -325,7 +325,7 @@ namespace Pancake.Init
 		}
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script Instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
 		/// <para>
 		/// <see cref="OnAwake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
 		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>
@@ -335,9 +335,9 @@ namespace Pancake.Init
 		/// Use <see cref="OnAwake"/> to initialize variables or states before the application starts.
 		/// </para>
 		/// <para>
-		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script Instance. A script's lifetime lasts until the Scene that contains it is unloaded.
-		/// If the Scene is loaded again, Unity loads the script Instance again, so <see cref="OnAwake"/> will be called again.
-		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="OnAwake"/> will be called several times (once on each Instance).
+		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script instance. A script's lifetime lasts until the Scene that contains it is unloaded.
+		/// If the Scene is loaded again, Unity loads the script instance again, so <see cref="OnAwake"/> will be called again.
+		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="OnAwake"/> will be called several times (once on each instance).
 		/// </para>
 		/// <para>
 		/// For active <see cref="GameObject">GameObjects</see> placed in a Scene, Unity calls <see cref="OnAwake"/> after all active <see cref="GameObject">GameObjects</see>

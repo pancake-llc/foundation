@@ -8,7 +8,7 @@ namespace Pancake.Init
 	/// a class that implements an <see cref="IArgs{}"/> interface.
 	/// <seealso cref="InitOnResetAttribute"/>
 	/// </summary>
-	[System.Flags]
+	[Flags]
 	public enum From
 	{
 		Default = _0,

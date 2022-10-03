@@ -24,7 +24,7 @@ namespace Pancake.Init.Internal
 		internal bool isCrossScene = false;
 
 		#if DEBUG // To make this persist through builds, could store in a separate ScriptableObject asset instead? Or just take the hit in increased build size.
-#pragma warning disable CS0414
+		#pragma warning disable CS0414
 		[SerializeField]
 		private Object target = null;
 		[SerializeField]
@@ -37,14 +37,14 @@ namespace Pancake.Init.Internal
 		private string sceneOrAssetGuid = null;
 		[SerializeField]
 		private Texture icon = null;
-#pragma warning restore CS0414
+		#pragma warning restore CS0414
 		#endif
 
 		#if UNITY_EDITOR
-#pragma warning disable CS0414
+		#pragma warning disable CS0414
 		[SerializeField]
 		private SceneAsset sceneAsset = null;
-#pragma warning restore CS0414
+		#pragma warning restore CS0414
 		#endif
 
 		public string Guid => guid.ToString();
@@ -124,9 +124,9 @@ namespace Pancake.Init.Internal
 
 			#if UNITY_EDITOR
 			globalObjectIdSlow = GlobalObjectId.GetGlobalObjectIdSlow(value).ToString();
-			icon = EditorGUIUtility.ObjectContent(target, target.GetType()).image;	
+			icon = EditorGUIUtility.ObjectContent(target, target.GetType()).image;
 			#endif
-			
+
 			#if DEBUG
 			targetName = value.name;
 			if(!(value is GameObject))

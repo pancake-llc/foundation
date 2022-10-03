@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using Pancake.Init;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	using static InitializerEditorUtility;
 
@@ -45,9 +44,9 @@ namespace Pancake.Editor.Init
             }
         }
 
-        protected override void DrawArgumentFields(bool nullAllowed)
+        protected override void DrawArgumentFields(bool nullAllowed, bool servicesShown)
 		{
-            DrawArgumentField(argument, argumentType, argumentLabel, propertyDrawer, argumentIsService, nullAllowed);
+            DrawArgumentField(argument, argumentType, argumentLabel, propertyDrawer, argumentIsService, nullAllowed, servicesShown);
         }
     }
 }

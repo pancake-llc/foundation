@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Pancake.Init.Internal;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	[InitializeOnLoad]
 	internal static class ReferenceableLabelDrawer

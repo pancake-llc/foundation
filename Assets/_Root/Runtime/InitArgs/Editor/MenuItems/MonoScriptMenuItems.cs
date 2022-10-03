@@ -1,9 +1,8 @@
-using Pancake.Init;
 using UnityEditor;
 using Object = UnityEngine.Object;
-using static Pancake.Editor.Init.ScriptGenerator;
+using static Pancake.Init.EditorOnly.ScriptGenerator;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	internal static class MonoScriptMenuItems
     {

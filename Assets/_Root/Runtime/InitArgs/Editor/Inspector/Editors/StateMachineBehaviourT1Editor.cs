@@ -1,8 +1,7 @@
 ﻿using System;
 using UnityEditor;
-using Pancake.Init;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	[CustomEditor(typeof(StateMachineBehaviour<>), true, isFallback = true), CanEditMultipleObjects]
     public sealed class StateMachineBehaviourT1Editor : InitializableEditor

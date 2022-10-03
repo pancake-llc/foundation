@@ -8,7 +8,7 @@ namespace Pancake.Init.Internal
 {
     /// <summary>
     /// Defines a single service that derives from <see cref="UnityEngine.Object"/> as well
-    /// as the defining type of the services which its clients can use to retrieving the service Instance.
+    /// as the defining type of the services which its clients can use to retrieving the service instance.
     /// </summary>
     [Serializable]
     public sealed class ServiceDefinition

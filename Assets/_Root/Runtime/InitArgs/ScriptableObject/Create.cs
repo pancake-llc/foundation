@@ -14,7 +14,7 @@ namespace Pancake.Init
 		private static readonly List<GameObject> rootGameObjects = new List<GameObject>(1);
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TArgument}.Init">initializes</see> it with the provided <paramref name="argument"/>.
 		/// <para>
 		/// For classes that derive from <see cref="ScriptableObject{TArgument}"/>
@@ -34,7 +34,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <typeparam name="TScriptableObject"> Type of the <see cref="ScriptableObject"/> to create. </typeparam>
 		/// <param name="argument"> The object that the <see cref="ScriptableObject"/> depends on. </param>
-		/// <returns> The created <see cref="ScriptableObject"/> Instance. </returns>
+		/// <returns> The created <see cref="ScriptableObject"/> instance. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TScriptableObject"/> class does not implement <see cref="IInitializable{TArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
@@ -60,7 +60,7 @@ namespace Pancake.Init
         }
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializes</see> it with the provided arguments.
 		/// <para>
 		/// For classes that derive from <see cref="ScriptableObject{TFirstArgument, TSecondArgument}"/>
@@ -81,7 +81,7 @@ namespace Pancake.Init
 		/// <typeparam name="TScriptableObject"> Type of the <see cref="ScriptableObject"/> to create. </typeparam>
 		/// <param name="firstArgument"> The first object that the <see cref="ScriptableObject"/> depends on. </param>
 		/// <param name="secondArgument"> The second object that the <see cref="ScriptableObject"/> depends on. </param>
-		/// <returns> The created <see cref="ScriptableObject"/> Instance. </returns>
+		/// <returns> The created <see cref="ScriptableObject"/> instance. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TScriptableObject"/> class does not implement
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument}"/>
@@ -108,7 +108,7 @@ namespace Pancake.Init
 		}
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializes</see>
 		/// it with the provided arguments.
 		/// <para>
@@ -131,7 +131,7 @@ namespace Pancake.Init
 		/// <param name="firstArgument"> The first object that the <see cref="ScriptableObject"/> depends on. </param>
 		/// <param name="secondArgument"> The second object that the <see cref="ScriptableObject"/> depends on. </param>
 		/// <param name="thirdArgument"> The third object that the <see cref="ScriptableObject"/> depends on. </param>
-		/// <returns> The created <see cref="ScriptableObject"/> Instance. </returns>
+		/// <returns> The created <see cref="ScriptableObject"/> instance. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TScriptableObject"/> class does not implement
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>
@@ -158,7 +158,7 @@ namespace Pancake.Init
 		}
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializes</see>
 		/// it with the provided arguments.
 		/// <para>
@@ -182,7 +182,7 @@ namespace Pancake.Init
 		/// <param name="secondArgument"> The second object that the <see cref="ScriptableObject"/> depends on. </param>
 		/// <param name="thirdArgument"> The third object that the <see cref="ScriptableObject"/> depends on. </param>
 		/// <param name="fourthArgument"> The fourth object that the <see cref="ScriptableObject"/> depends on. </param>
-		/// <returns> The created <see cref="ScriptableObject"/> Instance. </returns>
+		/// <returns> The created <see cref="ScriptableObject"/> instance. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TScriptableObject"/> class does not implement
 		/// <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
@@ -209,7 +209,7 @@ namespace Pancake.Init
 		}
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializes</see>
 		/// it with the provided arguments.
 		/// <para>
@@ -237,7 +237,7 @@ namespace Pancake.Init
 		/// <param name="thirdArgument"> The third object that the <see cref="ScriptableObject"/> depends on. </param>
 		/// <param name="fourthArgument"> The fourth object that the <see cref="ScriptableObject"/> depends on. </param>
 		/// <param name="fifthArgument"> The fifth object that the <see cref="ScriptableObject"/> depends on. </param>
-		/// <returns> The created <see cref="ScriptableObject"/> Instance. </returns>
+		/// <returns> The created <see cref="ScriptableObject"/> instance. </returns>
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TScriptableObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
@@ -262,7 +262,7 @@ namespace Pancake.Init
 		}
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TArgument}.Init">initializes</see> it with the provided <paramref name="argument"/>.
 		/// <para>
 		/// For classes that derive from <see cref="ScriptableObject{TArgument}"/>
@@ -282,7 +282,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <typeparam name="TScriptableObject"> Type of the <see cref="ScriptableObject"/> to create. </typeparam>
 		/// <param name="instance">
-		/// When this method returns, contains the Instance of type <typeparamref name="TScriptableObject"/> that was created.
+		/// When this method returns, contains the instance of type <typeparamref name="TScriptableObject"/> that was created.
 		/// This parameter is passed uninitialized.
 		/// </param>
 		/// <param name="argument"> The object that the <see cref="ScriptableObject"/> depends on. </param>
@@ -295,7 +295,7 @@ namespace Pancake.Init
 				=> instance = Instance<TScriptableObject, TArgument>(argument);
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument}.Init">initializes</see>
 		/// it with the provided arguments.
 		/// <para>
@@ -319,7 +319,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <typeparam name="TScriptableObject"> Type of the <see cref="ScriptableObject"/> to create. </typeparam>
 		/// <param name="instance">
-		/// When this method returns, contains the Instance of type <typeparamref name="TScriptableObject"/> that was created.
+		/// When this method returns, contains the instance of type <typeparamref name="TScriptableObject"/> that was created.
 		/// This parameter is passed uninitialized.
 		/// </param>
 		/// <param name="firstArgument"> The first object that the <see cref="ScriptableObject"/> depends on. </param>
@@ -333,7 +333,7 @@ namespace Pancake.Init
 					=> instance = Instance<TScriptableObject, TFirstArgument, TSecondArgument>(firstArgument, secondArgument);
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}.Init">initializes</see>
 		/// it with the provided arguments.
 		/// <para>
@@ -357,7 +357,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <typeparam name="TScriptableObject"> Type of the <see cref="ScriptableObject"/> to create. </typeparam>
 		/// <param name="instance">
-		/// When this method returns, contains the Instance of type <typeparamref name="TScriptableObject"/> that was created.
+		/// When this method returns, contains the instance of type <typeparamref name="TScriptableObject"/> that was created.
 		/// This parameter is passed uninitialized.
 		/// </param>
 		/// <param name="firstArgument"> The first object that the <see cref="ScriptableObject"/> depends on. </param>
@@ -372,7 +372,7 @@ namespace Pancake.Init
 					=> instance = Instance<TScriptableObject, TFirstArgument, TSecondArgument, TThirdArgument>(firstArgument, secondArgument, thirdArgument);
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}.Init">initializes</see>
 		/// it with the provided arguments.
 		/// <para>
@@ -396,7 +396,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <typeparam name="TScriptableObject"> Type of the <see cref="ScriptableObject"/> to create. </typeparam>
 		/// <param name="instance">
-		/// When this method returns, contains the Instance of type <typeparamref name="TScriptableObject"/> that was created.
+		/// When this method returns, contains the instance of type <typeparamref name="TScriptableObject"/> that was created.
 		/// This parameter is passed uninitialized.
 		/// </param>
 		/// <param name="firstArgument"> The first object that the <see cref="ScriptableObject"/> depends on. </param>
@@ -412,7 +412,7 @@ namespace Pancake.Init
 					=> instance = Instance<TScriptableObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(firstArgument, secondArgument, thirdArgument, fourthArgument);
 
 		/// <summary>
-		/// Creates an Instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
+		/// Creates an instance of <see cref="ScriptableObject"/> of type <typeparamref name="TScriptableObject"/>
 		/// and <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}.Init">initializes</see>
 		/// it with the provided arguments.
 		/// <para>
@@ -436,7 +436,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <typeparam name="TScriptableObject"> Type of the <see cref="ScriptableObject"/> to create. </typeparam>
 		/// <param name="instance">
-		/// When this method returns, contains the Instance of type <typeparamref name="TScriptableObject"/> that was created.
+		/// When this method returns, contains the instance of type <typeparamref name="TScriptableObject"/> that was created.
 		/// This parameter is passed uninitialized.
 		/// </param>
 		/// <param name="firstArgument"> The first object that the <see cref="ScriptableObject"/> depends on. </param>

@@ -154,11 +154,6 @@ namespace Pancake.Init
 
         private void DrawField(object target, FieldInfo field, int maxDepth)
         {
-            if(maxDepth <= 0)
-            {
-                return;
-            }
-
             if(TryGetValue(target, field, out object value))
             {
                 DrawField(field.Name, field.FieldType, value, maxDepth);
@@ -324,14 +319,14 @@ namespace Pancake.Init
                 return;
             }
 
-            var nestedFields = GetFields(type);
-            int count = nestedFields.Length;
+            var dataSetFields = GetFields(type);
+            int count = dataSetFields.Length;
             if(count == 0)
             {
                 return;
             }
 
-            if(variableName.StartsWith("[") && variableName.EndsWith("]") && TryGetValue(value, nestedFields[0], out object firstNestedValue) && firstNestedValue != Null)
+            if(variableName.StartsWith("[") && variableName.EndsWith("]") && TryGetValue(value, dataSetFields[0], out object firstNestedValue) && firstNestedValue != Null)
 			{
                 string firstNestedValueText = firstNestedValue.ToString();
                 var firstNestedValueType = firstNestedValue.GetType();
@@ -355,8 +350,7 @@ namespace Pancake.Init
 
             for(int i = 0; i < count; i++)
             {
-                var nestedField = nestedFields[i];
-                DrawField(value, nestedField, maxDepth - 1);
+                DrawField(value, dataSetFields[i], maxDepth - 1);
             }
 
             EditorGUI.indentLevel--;

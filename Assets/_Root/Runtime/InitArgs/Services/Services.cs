@@ -1,13 +1,16 @@
 using System;
 using JetBrains.Annotations;
-using Pancake.Init.Internal;
 using UnityEngine;
 using UnityEngine.Serialization;
+
 #if UNITY_EDITOR
 using System.Linq;
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("InitArgs.Editor")]
+[assembly: InternalsVisibleTo("InitArgs.Search")]
 #endif
 
-namespace Pancake.Init
+namespace Pancake.Init.Internal
 {
     /// <summary>
     /// The <see cref="Services"/> component can be attached to a <see cref="GameObject"/> and used to

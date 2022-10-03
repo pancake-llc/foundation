@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	internal static class Styles
 	{

@@ -11,7 +11,7 @@ namespace Pancake.Init
 	/// A base class for <see cref="MonoBehaviour">MonoBehaviours</see> that can be
 	/// <see cref="ObjectExtensions.Instantiate{TArgument}">instantiated</see>
 	/// or <see cref="GameObjectExtensions.AddComponent{TComponent, TArgument}">added</see>
-	/// to a <see cref="GameObject"/> with an argument passed to the <see cref="Init"/> function of the created Instance.
+	/// to a <see cref="GameObject"/> with an argument passed to the <see cref="Init"/> function of the created instance.
 	/// <para>
 	/// If the object depends on a class that has the <see cref="ServiceAttribute"/> then
 	/// it will be able to receive it in its constructor automatically during initialization.
@@ -133,16 +133,16 @@ namespace Pancake.Init
 		protected virtual void OnReset() { }
 
 		/// <summary>
-		/// <see cref="OnAwake"/> is called when the script Instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
+		/// <see cref="OnAwake"/> is called when the script instance is being loaded during the <see cref="Awake"/> event after the <see cref="Init"/> function has finished.
 		/// <para>
 		/// <see cref="OnAwake"/> is called either when an active <see cref="GameObject"/> that contains the script is initialized when a <see cref="UnityEngine.SceneManagement.Scene">Scene</see> loads,
 		/// or when a previously <see cref="GameObject.activeInHierarchy">inactive</see> <see cref="GameObject"/> is set active, or after a <see cref="GameObject"/> created with <see cref="Object.Instantiate"/>
 		/// is initialized.
 		/// </para>
 		/// <para>
-		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script Instance. A script's lifetime lasts until the Scene that contains it is unloaded.
-		/// If the Scene is loaded again, Unity loads the script Instance again, so <see cref="OnAwake"/> will be called again.
-		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="OnAwake"/> will be called several times (once on each Instance).
+		/// Unity calls <see cref="OnAwake"/> only once during the lifetime of the script instance. A script's lifetime lasts until the Scene that contains it is unloaded.
+		/// If the Scene is loaded again, Unity loads the script instance again, so <see cref="OnAwake"/> will be called again.
+		/// If the Scene is loaded multiple times additively, Unity loads several script instances, so <see cref="OnAwake"/> will be called several times (once on each instance).
 		/// </para>
 		/// <para>
 		/// For active <see cref="GameObject">GameObjects</see> placed in a Scene, Unity calls <see cref="OnAwake"/> after all active <see cref="GameObject">GameObjects</see>
@@ -209,6 +209,20 @@ namespace Pancake.Init
 		/// <inheritdoc/>
 		void IInitializable<TArgument>.Init(TArgument argument)
         {
+			#if DEBUG
+			initializing = true;
+			ValidateArgument(argument);
+			#endif
+
+			Init(argument);
+
+			#if DEBUG
+			initializing = false;
+			#endif
+		}
+
+		internal void InitInternal(TArgument argument)
+		{
 			#if DEBUG
 			initializing = true;
 			ValidateArgument(argument);

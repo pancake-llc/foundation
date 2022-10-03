@@ -36,7 +36,7 @@ namespace Pancake.Init
 	/// In this case the end result is the same, except the arguments are routed into the initializer instead.
 	/// </para>
 	/// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public sealed class InitOnResetAttribute : Attribute
 	{
 		private const From defaultFrom = From.Default;

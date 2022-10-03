@@ -1,9 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using UnityEngine;
-using Pancake.Init;
 using Object = UnityEngine.Object;
 
-namespace Pancake
+namespace Pancake.Init
 {
 	/// <summary>
 	/// Helper class for checking whether the value of a variable that is of <see cref="object"/>, interface or generic
@@ -17,7 +16,7 @@ namespace Pancake
 	/// <example>
 	/// <code>
 	/// using Pancake.Init;
-	/// using static Pancake.NullExtensions;
+	/// using static Pancake.Init.NullExtensions;
 	/// 
 	/// public class EventListener : MonoBehaviour{IEvent}, IEventListener
 	/// {
@@ -56,7 +55,7 @@ namespace Pancake
 		/// <see langword="null"/> or an <see cref="Object"/> which has been <see cref="Object.Destroy">destroyed</see>.
 		/// <example>
 		/// <code>
-		/// using static Pancake.NullExtensions;
+		/// using static Pancake.Init.NullExtensions;
 		/// 
 		/// public class EventListener : MonoBehaviour{IEvent}, IEventListener
 		/// {
@@ -96,7 +95,7 @@ namespace Pancake
 		/// or has been <see cref="Object.Destroy">destroyed</see>.
 		/// <example>
 		/// <code>
-		/// using static Pancake.NullExtensions;
+		/// using static Pancake.Init.NullExtensions;
 		/// 
 		/// public class LookAt : MonoBehaviour{ITrackable}
 		/// {

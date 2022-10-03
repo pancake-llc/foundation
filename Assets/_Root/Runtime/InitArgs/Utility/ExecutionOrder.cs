@@ -14,10 +14,10 @@
         /// </summary>
         public const int Referenceable = -32000;
 
-        /// <summary>
-        /// Default execution order for the <see cref="ServiceTag"/> and <see cref="Init.ServiceTag"/> components.
-        /// </summary>
-        public const int ServiceTag = -31900;
+		/// <summary>
+		/// Default execution order for the <see cref="ServiceTag"/> and <see cref="Init.ServiceTag"/> components.
+		/// </summary>
+		public const int ServiceTag = -31900;
 
         /// <summary>
         /// Default execution order for all <see cref="Initializer{,}">Initializer</see> components

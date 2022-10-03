@@ -1,12 +1,12 @@
 ﻿using System;
-using Pancake.Init;
 using UnityEngine;
 using UnityEditor;
 using Pancake.Init.Internal;
-using static Pancake.Editor.Init.InitializerEditorUtility;
+using static Pancake.Init.EditorOnly.InitializerEditorUtility;
 using Object = UnityEngine.Object;
+using System.Linq;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	public abstract class InitializerEditor : UnityEditor.Editor
 	{
@@ -16,11 +16,14 @@ namespace Pancake.Editor.Init
         private SerializedProperty nullArgumentGuard;
         private GUIContent clientLabel;
         private bool clientIsInitializable;
+        private bool hasServiceArguments;
         private InitializerDrawer drawer;
         private Type clientType;
 
         protected virtual Type[] GenericArguments => target.GetType().BaseType.GetGenericArguments();
         protected virtual int InitArgumentCount => GetInitArgumentCount(clientType);
+
+        private static bool ServicesShown => InitializerDrawer.ServicesShown;
 
         private bool IsNullAllowed
         {
@@ -56,6 +59,7 @@ namespace Pancake.Editor.Init
             {
                 var initArguments = GetInitArguments(genericArguments, initArgumentCount);
                 drawer = new InitializerDrawer(clientType, clients, initArguments, this);
+                hasServiceArguments = initArguments.Any(ServiceUtility.IsDefiningTypeOfAnyServiceAttribute);
             }
 
             GUIContent GetClientLabel()
@@ -111,7 +115,7 @@ namespace Pancake.Editor.Init
 
             GUILayout.Space(-EditorGUIUtility.singleLineHeight - 2f);
 			drawer.OnInspectorGUI();
-			DrawClientField(rect, client, clientLabel, clientIsInitializable);
+			DrawClientField(rect, client, clientLabel, clientIsInitializable, hasServiceArguments);
 
             serializedObject.ApplyModifiedProperties();
 		}
@@ -123,10 +127,10 @@ namespace Pancake.Editor.Init
                 Setup(true);
             }
 
-            DrawArgumentFields(IsNullAllowed);
+            DrawArgumentFields(IsNullAllowed, ServicesShown);
         }
 
-        protected abstract void DrawArgumentFields(bool nullAllowed);
+        protected abstract void DrawArgumentFields(bool nullAllowed, bool servicesShown);
 
         private void OnDestroy()
 		{

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Pancake.Init;
 using Pancake.Init.Internal;
 using Pancake.Init.Serialization;
 using UnityEditor;
@@ -12,7 +11,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	/// <summary>
 	/// Custom property drawer for <see cref="Any{T}"/>
@@ -22,7 +21,7 @@ namespace Pancake.Editor.Init
     public sealed class AnyDrawer : PropertyDrawer
     {
 		private class State
-        {
+		{
 			public bool drawObjectField;
 			public SerializedProperty referenceProperty;
 			public SerializedProperty valueProperty;
@@ -32,7 +31,7 @@ namespace Pancake.Editor.Init
 
 		private static readonly GUIContent valueText = new GUIContent("Value");
 		private static readonly GUIContent blankLabel = new GUIContent(" ");
-		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An Instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An instance of this service will be automatically provided during initialization.");
 		private const float minDropdownWidth = 63f;
 		private const float objectTextWidth = 63f;
 		private const float controlOffset = 3f;
@@ -43,6 +42,7 @@ namespace Pancake.Editor.Init
 		private IEqualityComparer equalityComparer;
 
         private bool argumentIsService;
+        private bool valueHasChildProperties;
         private bool canBeUnityObject;
 		private bool canBeNonUnityObject;
 
@@ -229,6 +229,10 @@ namespace Pancake.Editor.Init
 			argumentIsService = ServiceUtility.ServiceExists(anyProperty.serializedObject.targetObject, valueType);
 			equalityComparer = typeof(EqualityComparer<>).MakeGenericType(valueType).GetProperty(nameof(EqualityComparer<object>.Default), BindingFlags.Static | BindingFlags.Public).GetValue(null, null) as IEqualityComparer;
 
+			var valueChildProperty = state.valueProperty.Copy();
+			valueChildProperty.Next(true);
+			valueHasChildProperties = valueChildProperty != null;
+			
 			if(argumentIsService)
 			{
 				return;
@@ -467,7 +471,7 @@ namespace Pancake.Editor.Init
 				return EditorGUIUtility.singleLineHeight;
             }
 
-            var remainingRect = EditorGUI.PrefixLabel(position, label);
+			Rect remainingRect = EditorGUI.PrefixLabel(position, label);
 
 			if(valueProperty == null)
             {
@@ -671,14 +675,18 @@ namespace Pancake.Editor.Init
                 return EditorGUIUtility.singleLineHeight * 2f;
             }
 
-            EditorGUI.indentLevel++;
-            
-			var valuePosition = position;
-            valuePosition.y += position.height;
-            EditorGUI.PropertyField(valuePosition, valueProperty, valueText, true);
-			
-			EditorGUI.indentLevel--;
+			if(valueHasChildProperties)
+			{
+				EditorGUI.PropertyField(position, valueProperty, GUIContent.none, true);
+				return EditorGUI.GetPropertyHeight(valueProperty, valueText, true);
+			}
 
+			var valuePosition = position;
+			valuePosition.y += position.height;
+
+			EditorGUI.indentLevel++;
+			EditorGUI.PropertyField(valuePosition, valueProperty, valueText, true);
+			EditorGUI.indentLevel--;
 			return EditorGUIUtility.singleLineHeight + EditorGUI.GetPropertyHeight(valueProperty, valueText, true);
         }
 

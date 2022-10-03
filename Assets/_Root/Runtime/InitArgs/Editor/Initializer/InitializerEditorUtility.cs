@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
-using Pancake.Init;
 using Pancake.Init.Internal;
 using Pancake.Init.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	internal static class InitializerEditorUtility
 	{
-		private static readonly GUIContent clientNullTooltip = new GUIContent("", "A new Instance will be added to this GameObject during initialization.");
-		private static readonly GUIContent clientPrefabTooltip = new GUIContent("", "A new Instance will be created by cloning this prefab during initialization.");
-		private static readonly GUIContent clientInstantiateTooltip = new GUIContent("", "A new Instance will be created by cloning this scene object during initialization.");
+		private static readonly GUIContent clientNullTooltip = new GUIContent("", "A new instance will be added to this GameObject during initialization.");
+		private static readonly GUIContent clientPrefabTooltip = new GUIContent("", "A new instance will be created by cloning this prefab during initialization.");
+		private static readonly GUIContent clientInstantiateTooltip = new GUIContent("", "A new instance will be created by cloning this scene object during initialization.");
 		private static readonly GUIContent clientNotInitializableTooltip = new GUIContent("", "Can not inject arguments to client because it does not implement IInitializable.");
-		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An Instance of this service will be automatically provided during initialization.");
+		private static readonly GUIContent serviceLabel = new GUIContent("Service", "An instance of this service will be automatically provided during initialization.");
 		private static readonly GUIContent valueText = new GUIContent("Value");
 		private static readonly GUIContent blankLabel = new GUIContent(" ");
 		private static GUIContent warningIcon;
@@ -56,7 +55,7 @@ namespace Pancake.Editor.Init
 		/// If <see langword="false"/>, then the field will be tinted red if it has a null value.
 		/// </para>
 		/// </param>
-		internal static void DrawArgumentField(SerializedProperty anyProperty, Type argumentType, GUIContent label, [CanBeNull] PropertyDrawer customDrawer, bool isService, bool canBeNull)
+		internal static void DrawArgumentField(SerializedProperty anyProperty, Type argumentType, GUIContent label, [CanBeNull] PropertyDrawer customDrawer, bool isService, bool canBeNull, bool servicesShown)
 		{
 			// Repaint whenever dragged object references change because
 			// the controls can change in reaction to objects being dragged.
@@ -71,18 +70,26 @@ namespace Pancake.Editor.Init
 			var targetObject = anyProperty.serializedObject.targetObject;
 			bool hasSerializedValue = (bool)anyType.GetMethod("HasSerializedValue", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Invoke(any, null);
 
-			if(isService && !hasSerializedValue && !IsDraggingObjectReferenceThatIsAssignableToProperty())
+			if(isService && !hasSerializedValue)
 			{
-				var totalRect = EditorGUILayout.GetControlRect();
-				var controlRect = EditorGUI.PrefixLabel(totalRect, blankLabel);
-				controlRect.width = Styles.ServiceTag.CalcSize(serviceLabel).x;
+				if(!servicesShown)
+				{
+					return;
+				}
 
-				ServiceTagUtility.Draw(controlRect, () => ServiceTagUtility.Ping(argumentType, anyProperty.serializedObject.targetObject as Component));
+				if(!IsDraggingObjectReferenceThatIsAssignableToProperty())
+				{
+					var totalRect = EditorGUILayout.GetControlRect();
+					var controlRect = EditorGUI.PrefixLabel(totalRect, blankLabel);
+					controlRect.width = Styles.ServiceTag.CalcSize(serviceLabel).x;
+
+					ServiceTagUtility.Draw(controlRect, () => ServiceTagUtility.Ping(argumentType, anyProperty.serializedObject.targetObject as Component));
 				
-				var labelRect = totalRect;
-				labelRect.width -= controlRect.width;
-				GUI.Label(labelRect, label);
-				return;
+					var labelRect = totalRect;
+					labelRect.width -= controlRect.width;
+					GUI.Label(labelRect, label);
+					return;
+				}
 			}
 
 			if(anyProperty == null)
@@ -394,12 +401,16 @@ namespace Pancake.Editor.Init
 			return false;
 		}
 
-		internal static void DrawClientField(Rect rect, SerializedProperty client, GUIContent clientLabel, bool isInitializable)
+		internal static void DrawClientField(Rect rect, SerializedProperty client, GUIContent clientLabel, bool isInitializable, bool hasServiceArguments)
 		{
 			rect.y += 5f;
 			rect.width -= 28f;
-			var fieldRect = EditorGUI.PrefixLabel(rect, new GUIContent(" "));
+			if(hasServiceArguments)
+			{
+				rect.width -= 20f;
+			}
 
+			var fieldRect = EditorGUI.PrefixLabel(rect, new GUIContent(" "));
 			var reference = client.objectReferenceValue;
 
 			EditorGUI.ObjectField(fieldRect, client, GUIContent.none);
@@ -622,17 +633,19 @@ namespace Pancake.Editor.Init
 
 			foreach(var propertyDrawerType in TypeCache.GetTypesWithAttribute<CustomPropertyDrawer>())
 			{
-				var attribute = propertyDrawerType.GetCustomAttribute<CustomPropertyDrawer>();
-				var targetType = typeField.GetValue(attribute) as Type;
-				if(targetType == propertyAttributeType)
+				foreach(var attribute in propertyDrawerType.GetCustomAttributes<CustomPropertyDrawer>())
 				{
-					drawerType = propertyDrawerType;
-					return true;
-				}
+					var targetType = typeField.GetValue(attribute) as Type;
+					if(targetType == propertyAttributeType)
+					{
+						drawerType = propertyDrawerType;
+						return true;
+					}
 
-				if(targetType.IsAssignableFrom(propertyAttributeType) && (bool)useForChildrenField.GetValue(attribute))
-				{
-					drawerType = propertyDrawerType;
+					if(targetType.IsAssignableFrom(propertyAttributeType) && (bool)useForChildrenField.GetValue(attribute))
+					{
+						drawerType = propertyDrawerType;
+					}
 				}
 			}
 

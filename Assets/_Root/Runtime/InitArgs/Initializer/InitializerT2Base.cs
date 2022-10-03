@@ -2,14 +2,13 @@
 
 using System;
 using JetBrains.Annotations;
+#if UNITY_EDITOR
+using Pancake.Init.EditorOnly;
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Pancake.Init.Internal.InitializerUtility;
-using static Pancake.NullExtensions;
-
-#if UNITY_EDITOR
-using Pancake.Editor.Init;
-#endif
+using static Pancake.Init.NullExtensions;
 
 namespace Pancake.Init
 {
@@ -40,7 +39,8 @@ namespace Pancake.Init
 	/// <typeparam name="TClient"> Type of the initialized client component. </typeparam>
 	/// <typeparam name="TFirstArgument"> Type of the first argument to pass to the client component's Init function. </typeparam>
 	/// <typeparam name="TSecondArgument"> Type of the second argument to pass to the client component's Init function. </typeparam>
-	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument> : MonoBehaviour, IInitializer<TClient, TFirstArgument, TSecondArgument>, IValueProvider<TClient>
+	public abstract class InitializerBase<TClient, TFirstArgument, TSecondArgument> : MonoBehaviour
+		, IInitializer<TClient, TFirstArgument, TSecondArgument>, IValueProvider<TClient>
 		#if UNITY_EDITOR
 		, IInitializerEditorOnly
 		#endif
@@ -97,20 +97,19 @@ namespace Pancake.Init
 			var firstArgument = FirstArgument;
 			var secondArgument = SecondArgument;
 
-#if DEBUG || INIT_ARGS_SAFE_MODE
+			#if DEBUG || INIT_ARGS_SAFE_MODE
 			if(nullArgumentGuard.IsEnabled(NullArgumentGuard.RuntimeException))
 			{
 				if(firstArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TFirstArgument));
 				if(secondArgument == Null) throw GetMissingInitArgumentsException(GetType(), typeof(TClient), typeof(TSecondArgument));
 			}
-#endif
+			#endif
 
 			target = InitTarget(firstArgument, secondArgument);
 			Updater.InvokeAtEndOfFrame(DestroySelf);
 			return target;
 		}
 
-		
 		/// <summary>
 		/// Resets the Init arguments to their default values.
 		/// <para>
@@ -124,11 +123,11 @@ namespace Pancake.Init
 		protected virtual void OnReset(ref TFirstArgument firstArgument, ref TSecondArgument secondArgument) { }
 
 		/// <summary>
-		/// Initializes the existing <see cref="target"/> or new Instance of type <see cref="TClient"/> using the provided arguments.
+		/// Initializes the existing <see cref="target"/> or new instance of type <see cref="TClient"/> using the provided arguments.
 		/// </summary>
 		/// <param name="firstArgument"> The first argument to pass to the target's Init function. </param>
 		/// <param name="secondArgument"> The second argument to pass to the target's Init function. </param>
-		/// <returns> The existing <see cref="target"/> or new Instance of type <see cref="TClient"/>. </returns>
+		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TClient"/>. </returns>
 		[NotNull]
 		protected virtual TClient InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument)
         {
@@ -142,7 +141,15 @@ namespace Pancake.Init
                 return target.Instantiate(firstArgument, secondArgument);
             }
 			
-			target.Init(firstArgument, secondArgument);
+			if(target is MonoBehaviour<TFirstArgument, TSecondArgument> monoBehaviourT)
+			{
+				monoBehaviourT.InitInternal(firstArgument, secondArgument);
+			}
+			else
+			{
+				target.Init(firstArgument, secondArgument);
+			}
+
 			return target;
         }
 

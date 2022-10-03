@@ -7,7 +7,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using Pancake.Init;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -17,7 +16,7 @@ using TypeCollection = System.Nullable<UnityEditor.TypeCache.TypeCollection>;
 using TypeCollection = System.Collections.Generic.IEnumerable<System.Type>;
 #endif
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	/// <summary>
 	/// Editor-only utility class to help with automatically initializing <see cref="IArgs{}"/> objects during the Reset event function.
@@ -26,16 +25,6 @@ namespace Pancake.Editor.Init
 	/// </summary>
 	internal static class AutoInitUtility
 	{
-		private enum ObjectType
-        {
-			None = 0,
-			Object = 1,
-			GameObject = 2,
-			Transform = 3,
-			Component = 4,
-			Interface = 5
-		}
-
 		private static readonly ConcurrentDictionary<Type, bool> shouldAutoInit = new ConcurrentDictionary<Type, bool>();
 		private static readonly ConcurrentDictionary<Type, From[]> autoInitFrom = new ConcurrentDictionary<Type, From[]>();
 
@@ -328,11 +317,11 @@ namespace Pancake.Editor.Init
 		}
 
 		/// <summary>
-		/// Finds or creates an Instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
+		/// Finds or creates an instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
 		/// which can be retrieved automatically.
 		/// <para>
 		/// This function is called for each required dependency of the <paramref name="client"/> during its initialization phase
-		/// when the <typeparamref name="TClient"/> class has the <see cref="InitOnResetAttribute">AutoInit attribute</see> or
+		/// when the <typeparamref name="TClient"/> class has the <see cref="InitOnResetAttribute"/> or
 		/// <see cref="RequireComponent">RequireComponent attribute</see> targeting all dependencies.
 		/// </para>
 		/// </summary>
@@ -355,7 +344,7 @@ namespace Pancake.Editor.Init
 		}
 
 		/// <summary>
-		/// Finds or creates an Instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
+		/// Finds or creates an instance of the <typeparamref name="TArgument"/> which is a dependency of the <paramref name="client"/>
 		/// which can be retrieved automatically.
 		/// <para>
 		/// This function is called for each required dependency of the <paramref name="client"/> during its initialization phase
@@ -418,6 +407,7 @@ namespace Pancake.Editor.Init
 						{
 							return ConvertToCollectionOfType<TArgument, GameObject>(new GameObject[] { clientComponent.gameObject });
 						}
+
 						return ConvertToCollectionOfType<TArgument, Transform>(new Transform[] { clientComponent.transform });
 					}
 					else if(argumentIsComponentOrInterfaceCollection)
@@ -551,7 +541,7 @@ namespace Pancake.Editor.Init
 
 				if(argumentIsComponentOrInterface)
 				{
-					// First try to find an active Instance
+					// First try to find an active instance
 					TArgument argument;
 					#if UNITY_EDITOR						
 					if(isPrefabAssetOrOpenInPrefabStage)
@@ -741,7 +731,7 @@ namespace Pancake.Editor.Init
 				}
 				catch(Exception e)
                 {
-					Debug.LogError(e);
+					Debug.LogWarning(e, client as Object);
 					return default;
                 }
             }
@@ -788,6 +778,7 @@ namespace Pancake.Editor.Init
 				{
 					continue;
 				}
+
 				return derivedType;
 			}
 
@@ -809,6 +800,7 @@ namespace Pancake.Editor.Init
 			{
 				return ObjectType.None;
 			}
+
 			foreach(var interfaceType in type.GetInterfaces())
 			{
 				if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
@@ -817,6 +809,7 @@ namespace Pancake.Editor.Init
 					return GetObjectType(genericArgument);
 				}
 			}
+
 			return ObjectType.None;
 		}
 
@@ -826,10 +819,12 @@ namespace Pancake.Editor.Init
             {
 				return type.IsInterface ? ObjectType.Interface : ObjectType.None;
 			}
+
 			if(typeof(Component).IsAssignableFrom(type))
             {
 				return typeof(Transform).IsAssignableFrom(type) ? ObjectType.Transform : ObjectType.Component;
             }
+
 			return type == typeof(GameObject) ? ObjectType.GameObject : ObjectType.Object;
         }
 
@@ -842,12 +837,12 @@ namespace Pancake.Editor.Init
 					return interfaceType.GetGenericArguments()[0];
                 }
             }
+
 			return null;
 		}
 
 		private static TCollection ConvertToCollectionOfType<TCollection, TObject>(TObject[] source)
 		{
-			// Array
 			if(typeof(TCollection).IsArray)
 			{
 				var elementType = typeof(TCollection).GetElementType();
@@ -855,6 +850,7 @@ namespace Pancake.Editor.Init
 				{
 					return (TCollection)(object)source;
 				}
+
 				int count = source.Length;
 				var array = Array.CreateInstance(elementType, count);
 				Array.Copy(source, array, count);
@@ -865,7 +861,7 @@ namespace Pancake.Editor.Init
 			if(typeof(TCollection).IsGenericType)
             {
 				var genericType = typeof(TCollection).GetGenericTypeDefinition();
-				if(genericType == typeof(List<>) || genericType == typeof(ICollection<>) || genericType == typeof(IEnumerable<>) || genericType == typeof(IEnumerable) || genericType == typeof(IList<>) || genericType == typeof(IReadOnlyCollection<>) || genericType == typeof(IReadOnlyList<>) || genericType == typeof(ICollection) || genericType == typeof(IList))
+				if(genericType == typeof(List<>) || genericType == typeof(ICollection<>) || genericType == typeof(IEnumerable<>) || genericType == typeof(IList<>) || genericType == typeof(IReadOnlyCollection<>) || genericType == typeof(IReadOnlyList<>))
                 {
 					var argumentType = GetCollectionGenericArgumentType(typeof(TCollection));
 					var parameterTypeGeneric = typeof(IEnumerable<>);
@@ -1084,6 +1080,7 @@ namespace Pancake.Editor.Init
 				{
 					return From.GameObject;
 				}
+
 				return From.Children | From.Parent | From.Scene;
             }
 
@@ -1101,17 +1098,59 @@ namespace Pancake.Editor.Init
 				return From.Assets;
 			}
 
-			if(typeof(IEnumerable<GameObject>).IsAssignableFrom(genericArgument) || typeof(IEnumerable<Transform>).IsAssignableFrom(genericArgument) || typeof(IEnumerable<RectTransform>).IsAssignableFrom(genericArgument))
+			if(TryGetCollectionItemType(genericArgument, out Type itemType)
+			&& (typeof(GameObject).IsAssignableFrom(itemType)
+			|| typeof(Component).IsAssignableFrom(itemType)))
 			{
 				return From.Children;
-			}			
+			}
 
 			return From.CreateInstance;
+		}
+
+		private static bool TryGetCollectionItemType(Type argumentType, out Type itemType)
+		{
+			if(argumentType.IsArray)
+			{
+				itemType = argumentType.GetElementType();
+				return itemType != null;
+			}
+			
+			if(!argumentType.IsGenericType)
+			{
+				itemType = null;
+				return false;
+			}
+
+			Type typeDefinition = argumentType.GetGenericTypeDefinition();
+			if(typeDefinition == typeof(IEnumerable<>)
+			|| typeDefinition == typeof(IReadOnlyCollection<>)
+			|| typeDefinition == typeof(ICollection)
+			|| typeDefinition == typeof(IList<>)
+			|| typeDefinition == typeof(IReadOnlyList<>)
+			|| typeDefinition == typeof(List<>))
+			{
+				itemType = argumentType.GetGenericArguments()[0];
+				return true;
+			}
+
+			itemType = null;
+			return false;
 		}
 
 		private static bool HasFlag(From value, From flag)
 		{
 			return (value & flag) == flag;
+		}
+
+		private enum ObjectType
+        {
+			None = 0,
+			Object = 1,
+			GameObject = 2,
+			Transform = 3,
+			Component = 4,
+			Interface = 5
 		}
     }
 }

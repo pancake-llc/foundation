@@ -10,20 +10,20 @@ namespace Pancake.Init.Internal
 {
     public static class TypeUtility
     {
-	    private static readonly HashSet<Type> baseTypes = new HashSet<Type>()
-	    {
-		    typeof(object), typeof(Object),
-		    typeof(Component), typeof(Behaviour), typeof(MonoBehaviour),
-		    typeof(ScriptableObject)
-	    };
+		private static readonly HashSet<Type> baseTypes = new HashSet<Type>()
+		{
+			typeof(object), typeof(Object),
+			typeof(Component), typeof(Behaviour), typeof(MonoBehaviour),
+			typeof(ScriptableObject)
+		};
 
-	    private static readonly HashSet<Type> genericBaseTypes = new HashSet<Type>()
-	    {
-		    typeof(MonoBehaviour<>), typeof(MonoBehaviour<,>), typeof(MonoBehaviour<,>),
-		    typeof(MonoBehaviour<,,>), typeof(MonoBehaviour<,,,>), typeof(MonoBehaviour<,,,,>),
-		    typeof(ConstructorBehaviour<>), typeof(ConstructorBehaviour<,>),typeof(ConstructorBehaviour<,>),
-		    typeof(ConstructorBehaviour<,,>), typeof(ConstructorBehaviour<,,,>), typeof(ConstructorBehaviour<,,,,>)
-	    };
+		private static readonly HashSet<Type> genericBaseTypes = new HashSet<Type>()
+		{
+			typeof(MonoBehaviour<>), typeof(MonoBehaviour<,>), typeof(MonoBehaviour<,>),
+			typeof(MonoBehaviour<,,>), typeof(MonoBehaviour<,,,>), typeof(MonoBehaviour<,,,,>),
+			typeof(ConstructorBehaviour<>), typeof(ConstructorBehaviour<,>),typeof(ConstructorBehaviour<,>),
+			typeof(ConstructorBehaviour<,,>), typeof(ConstructorBehaviour<,,,>), typeof(ConstructorBehaviour<,,,,>)
+		};
 
 		private static readonly Dictionary<char, Dictionary<Type, string>> toStringCache = new Dictionary<char, Dictionary<Type, string>>(3)
 		{
@@ -66,7 +66,7 @@ namespace Pancake.Init.Internal
 		};
 
 		[NotNull]
-		internal static IEnumerable<(Type, TAttribute)> GetTypesWithAttribute<TAttribute>() where TAttribute : Attribute
+		public static IEnumerable<(Type, TAttribute)> GetTypesWithAttribute<TAttribute>() where TAttribute : Attribute
 		{
 			#if UNITY_EDITOR
 			foreach(var type in UnityEditor.TypeCache.GetTypesWithAttribute<TAttribute>())
@@ -441,7 +441,7 @@ namespace Pancake.Init.Internal
 		public static bool IsNullOrBaseType([CanBeNull] Type type) => type is null || IsBaseType(type);
 
 		public static bool IsBaseType([CanBeNull] Type type) => type.IsGenericType switch
-		{
+        {
 			true when type.IsGenericTypeDefinition => genericBaseTypes.Contains(type),
 			true => genericBaseTypes.Contains(type.GetGenericTypeDefinition()),
 			_ => baseTypes.Contains(type)

@@ -89,7 +89,7 @@ namespace Pancake.Init
         }
 
         /// <summary>
-        /// Gets the shared service Instance of the given <paramref name="serviceType"/>.
+        /// Gets the shared service instance of the given <paramref name="serviceType"/>.
         /// <para>
         /// The returned object's class will match the provided <paramref name="serviceType"/>,
         /// derive from it or implement an interface of the type.
@@ -100,7 +100,7 @@ namespace Pancake.Init
 		public static object GetService([NotNull] Type serviceType) => serviceGetForAnyMethodDefinition.MakeGenericMethod(serviceType).Invoke(null, null);
 
         /// <summary>
-        /// Gets the shared service Instance of the given <paramref name="serviceType"/>.
+        /// Gets the shared service instance of the given <paramref name="serviceType"/>.
         /// <para>
         /// The returned object's class will match the provided <paramref name="serviceType"/>,
         /// derive from it or implement an interface of the type.
@@ -144,15 +144,15 @@ namespace Pancake.Init
         }
 
         /// <summary>
-        /// Sets the <see cref="Service{}.Instance">service Instance</see> of the provided
+        /// Sets the <see cref="Service{}.Instance">service instance</see> of the provided
         /// <paramref name="definingType">type</paramref> that is shared across clients
         /// to the given value.
         /// <para>
-        /// If the provided Instance is not equal to the old <see cref="Service{}.Instance"/>
+        /// If the provided instance is not equal to the old <see cref="Service{}.Instance"/>
         /// then the <see cref="Service{}.InstanceChanged"/> event will be raised.
         /// </para>
         /// </summary>
-        /// <param name="instance"> The new Instance of the service. </param>
+        /// <param name="instance"> The new instance of the service. </param>
         [Preserve]
         public static void SetInstance([NotNull] Type definingType, [CanBeNull] object instance)
         {
@@ -171,7 +171,6 @@ namespace Pancake.Init
                 return;
             }
 
-            var setInstanceMethodDefinition = typeof(Service).GetMethod(nameof(Service.SetInstance), BindingFlags.Static | BindingFlags.Public);
             var setInstanceMethod = setInstanceMethodDefinition.MakeGenericMethod(definingType);
             setInstanceMethod.Invoke(null, new object[] { instance });
         }
@@ -230,7 +229,7 @@ namespace Pancake.Init
         /// Gets a value indicating whether or not the provided <paramref name="instance"/> is a service of the given type.
         /// </summary>
         /// <param name="definingType"> The defining type of the service. </param>
-        /// <param name="instance"> The Instance to test. </param>
+        /// <param name="instance"> The instance to test. </param>
         /// <returns> <see langword="true"/> if <paramref name="instance"/> is a service of type <paramref name="definingType"/>; otherwise, <see langword="false"/>. </returns>
         public static bool IsService([NotNull] Type definingType, [CanBeNull] object instance)
         {
@@ -263,11 +262,44 @@ namespace Pancake.Init
             return Services.IsService(definingType, instance);
         }
 
+        [CanBeNull]
+        public static Type GetServiceConcreteType([NotNull] Type classWithAttribute)
+		{
+            if(typeof(IInitializer).IsAssignableFrom(classWithAttribute) || typeof(IWrapper).IsAssignableFrom(classWithAttribute))
+			{
+                var interfaceTypes = classWithAttribute.GetInterfaces();
+                for(int i = interfaceTypes.Length - 1; i >= 0; i--)
+                {
+                    var interfaceType = interfaceTypes[i];
+                    if(!interfaceType.IsGenericType)
+					{
+                        continue;
+					}
+
+                    var genericType = interfaceType.GetGenericTypeDefinition();
+                    if(genericType == typeof(IInitializer<>) || genericType == typeof(IWrapper<>))
+                    {
+                        var clientType = interfaceType.GetGenericArguments()[0];
+						return clientType.IsAbstract || TypeUtility.IsBaseType(clientType)
+							? TypeUtility.GetDerivedTypes(clientType, clientType.Assembly, null).SingleOrDefault(t => !t.IsAbstract)
+							: clientType;
+					}
+				}
+            }
+
+            if(!classWithAttribute.IsAbstract)
+			{
+                return classWithAttribute;
+			}
+
+            return TypeUtility.GetDerivedTypes(classWithAttribute, classWithAttribute.Assembly, null).SingleOrDefault();
+		}
+
         #if UNITY_EDITOR
         /// <summary>
         /// Gets a value indicating whether or not the provided <paramref name="instance"/> is a service of any type.
         /// </summary>
-        /// <param name="instance"> The Instance to test. </param>
+        /// <param name="instance"> The instance to test. </param>
         /// <returns> <see langword="true"/> if <paramref name="instance"/> is a service; otherwise, <see langword="false"/>. </returns>
         internal static bool IsService([CanBeNull] object instance)
         {

@@ -6,7 +6,7 @@ using UnityEditor.Callbacks;
 using UnityEngine;
 using Event = UnityEngine.Event;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	[InitializeOnLoad]
 	internal sealed class DropdownWindow : EditorWindow

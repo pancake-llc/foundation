@@ -1,4 +1,7 @@
-﻿using System;
+﻿//#define DEBUG_SORTING
+//#define DEBUG_SORTING_DETAILED
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +11,7 @@ using UnityEngine;
 
 namespace Pancake.Init
 {
-    	/// <summary>
+	/// <summary>
 	/// Class responsible for reapplying script execution orders for all initializers so that
 	/// all dependencies are initialized before the dependent objects.
 	/// </summary>
@@ -26,8 +29,8 @@ namespace Pancake.Init
 
 		private readonly Dictionary<Type, Type> clientTypes;
 		private readonly Dictionary<Type, Type[]> genericArgumentTypes;
-		private readonly HashSet<Type> typesWithInitAfterAttribute;
 		private readonly Dictionary<Type, Type[]> initAfter;
+		private readonly Dictionary<Type, HashSet<Type>> initBefore;
 		private readonly HashSet<Type> typesWithDefaultExecutionOrderAttribute;
 		private readonly HashSet<Type> serviceTypes;
 		private readonly Dictionary<Type, int> currentExecutionOrders;
@@ -40,12 +43,31 @@ namespace Pancake.Init
 		{
 			clientTypes = new Dictionary<Type, Type>(128);
 			genericArgumentTypes = new Dictionary<Type, Type[]>(128);
-			typesWithInitAfterAttribute = new HashSet<Type>(TypeCache.GetTypesWithAttribute<InitAfterAttribute>());
 			
+			var typesWithInitAfterAttribute = TypeCache.GetTypesWithAttribute<InitAfterAttribute>();
 			initAfter = new Dictionary<Type, Type[]>(typesWithInitAfterAttribute.Count);
+			initBefore = new Dictionary<Type, HashSet<Type>>(typesWithInitAfterAttribute.Count);
+
 			foreach(var type in typesWithInitAfterAttribute)
 			{
-				initAfter.Add(type, type.GetCustomAttribute<InitAfterAttribute>().types);
+				var afterTypes = type.GetCustomAttribute<InitAfterAttribute>().types;
+
+				initAfter.Add(type, afterTypes);
+
+				foreach(var afterType in afterTypes)
+				{
+					if(!initBefore.TryGetValue(afterType, out var beforeTypes))
+					{
+						beforeTypes = new HashSet<Type>();
+						initBefore[afterType] = beforeTypes;
+					}
+					else if(beforeTypes.Contains(type))
+					{
+						continue;
+					}
+
+					beforeTypes.Add(type);
+				}
 			}
 
 			typesWithDefaultExecutionOrderAttribute = new HashSet<Type>(TypeCache.GetTypesWithAttribute<DefaultExecutionOrder>());
@@ -392,11 +414,20 @@ namespace Pancake.Init
 		{
 			if(!sortingStates.TryGetValue(initializerType, out var sortingState))
 			{
+				#if DEV_MODE && DEBUG_SORTING_DETAILED
+				Debug.Log($"Adding {initializerType.Name}, but first adding all its dependencies...");
+				#endif
+
 				sortingStates.Add(initializerType, SortingState.NowAddingDependencies);
 
-				foreach(var dependency in GetDependencies(initializerType))
+				foreach(var dependencyType in GetDependencies(initializerType))
 				{
-					AddTypeAndItsDependenciesSorted(dependency, addToList);
+					#if DEV_MODE && DEBUG_SORTING_DETAILED
+					Debug.Assert(dependencyType != initializerType);
+					Debug.Log($"Adding {initializerType.Name} dependency {dependencyType.Name}...");
+					#endif
+
+					AddTypeAndItsDependenciesSorted(dependencyType, addToList);
 				}
 
 				sortingStates[initializerType] = SortingState.AlreadyAdded;
@@ -405,80 +436,114 @@ namespace Pancake.Init
 				{
 					addToList.Add(initializerType);
 				}
+
+				return;
 			}
 
-			if(sortingState == SortingState.NowAddingDependencies)
+			if(sortingState != SortingState.NowAddingDependencies)
 			{
-				foreach(var dependency in GetDependencies(initializerType))
+				#if DEV_MODE && DEBUG_SORTING_DETAILED
+				Debug.Log($"{initializerType.Name} has already been added.");
+				#endif
+				return;
+			}
+
+			#if DEV_MODE && DEBUG_SORTING_DETAILED
+			Debug.Log($"Cyclic dependency detected while adding {initializerType.Name}...");
+			#endif
+
+			#if (DEV_MODE && DEBUG_SORTING) || INIT_ARGS_WARN_ABOUT_ALL_CYCLIC_DEPENDENCIES
+			bool indirectCyclicDependency = true;
+			#endif
+
+			foreach(var dependencyType in GetDependencies(initializerType))
+			{
+				if(dependencyType == initializerType)
 				{
-					foreach(var dependencyOfDependency in GetDependencies(dependency))
-					{
-						if(dependencyOfDependency != initializerType)
-						{
-							continue;
-						}
-
-						Type clientType = GetClientType(initializerType);
-						Type dependencyClientType = GetClientType(dependency);
-						var clientConcreteTypeOptions = GetConcreteTypeOptions(clientType).ToArray();
-						var dependencyClientConcreteTypeOptions = GetConcreteTypeOptions(dependencyClientType).ToArray();
-						bool clientIsComponent = clientConcreteTypeOptions.Any(t => typeof(Component).IsAssignableFrom(t));
-						bool dependencyClientIsComponent = dependencyClientConcreteTypeOptions.Any(t => typeof(Component).IsAssignableFrom(t));
-						bool clientCanBeCreatedWithoutDependency = clientIsComponent || clientConcreteTypeOptions.Any(t => t.GetConstructors().Any(c => !c.GetParameters().Select(p => p.ParameterType).Contains(dependencyClientType)));
-						bool dependencyCanBeCreatedWithoutClient = dependencyClientIsComponent || dependencyClientConcreteTypeOptions.Any(t => t.GetConstructors().Any(c => !c.GetParameters().Select(p => p.ParameterType).Contains(clientType)));
-
-						if(!clientCanBeCreatedWithoutDependency && !dependencyCanBeCreatedWithoutClient)
-						{
-							Debug.LogWarning($"{initializerType.Name} has a cyclic dependency with {dependency.Name}.");
-							return;
-						}
-
-						if(!dependencyCanBeCreatedWithoutClient || (!dependencyClientIsComponent && clientIsComponent))
-						{
-							#if DEV_MODE && DEBUG_SORTING
-							Debug.Log($"Adding {initializerType.Name} before {dependency.Name} in initialization order because {dependency.Name} client can not be initialized without {initializerType.Name} client existing.");
-							#endif
-
-							addToList.Remove(dependency);
-							addToList.Remove(initializerType);
-							addToList.Add(initializerType);
-							addToList.Add(dependency);
-							sortingStates[initializerType] = SortingState.AlreadyAdded;
-							sortingStates[dependency] = SortingState.AlreadyAdded;
-							return;
-						}
-
-						if(!clientCanBeCreatedWithoutDependency || (!clientIsComponent && dependencyClientIsComponent))
-						{
-							#if DEV_MODE && DEBUG_SORTING
-							Debug.Log($"Adding {dependency.Name} before {initializerType.Name} in initialization order because {initializerType.Name} client can not be initialized without {dependency.Name} client existing.");
-							#endif
-
-							addToList.Remove(dependency);
-							addToList.Remove(initializerType);
-							addToList.Add(dependency);
-							addToList.Add(initializerType);
-							sortingStates[initializerType] = SortingState.AlreadyAdded;
-							sortingStates[dependency] = SortingState.AlreadyAdded;
-						}
-
-						#if (DEV_MODE && DEBUG_SORTING) || INIT_ARGS_WARN_ABOUT_ALL_CYCLIC_DEPENDENCIES
-						Debug.Log($"{initializerType.Name} has a cyclic dependency with {dependency.Name}, but it seems resolvable.\nclientIsComponent:{clientIsComponent}, dependencyClientIsComponent:{dependencyClientIsComponent}, clientCanBeCreatedWithoutDependency:{clientCanBeCreatedWithoutDependency}, dependencyCanBeCreatedWithoutClient:{dependencyCanBeCreatedWithoutClient}");
-						#endif
-								
-						return;
-					}
+					continue;
 				}
 
-				#if (DEV_MODE && DEBUG_SORTING) || INIT_ARGS_WARN_ABOUT_ALL_CYCLIC_DEPENDENCIES
-				Debug.LogWarning($"{initializerType.Name} has an indirect cyclic dependency. Not sure if it's resolvable or not.");
-				#endif
+				foreach(var dependencyOfDependency in GetDependencies(dependencyType))
+				{
+					if(dependencyOfDependency != initializerType)
+					{
+						continue;
+					}
+
+					#if (DEV_MODE && DEBUG_SORTING) || INIT_ARGS_WARN_ABOUT_ALL_CYCLIC_DEPENDENCIES
+					indirectCyclicDependency = false;
+					#endif
+
+					Type clientType = GetClientType(initializerType);
+					Type dependencyClientType = GetClientType(dependencyType);
+
+					var clientConcreteTypeOptions = GetConcreteTypeOptions(clientType).ToArray();
+					var dependencyClientConcreteTypeOptions = GetConcreteTypeOptions(dependencyClientType).ToArray();
+
+					bool clientMaybeComponent = clientConcreteTypeOptions.Any(t => typeof(Component).IsAssignableFrom(t));
+					bool clientForSureComponent = clientMaybeComponent && clientConcreteTypeOptions.All(t => typeof(Component).IsAssignableFrom(t));
+
+					bool dependencyClientMaybeComponent = dependencyClientConcreteTypeOptions.Any(t => typeof(Component).IsAssignableFrom(t));
+					bool dependencyClientForSureComponent = dependencyClientConcreteTypeOptions.Any(t => typeof(Component).IsAssignableFrom(t));
+
+					bool clientMaybeCreatableWithoutDependency = clientMaybeComponent || clientConcreteTypeOptions.Any(t => t.GetConstructors().Any(c => !c.GetParameters().Select(p => p.ParameterType).Contains(dependencyClientType)));
+					bool clientForSureCreatableWithoutDependency = clientMaybeCreatableWithoutDependency && (clientForSureComponent || clientConcreteTypeOptions.All(t => t.GetConstructors().Any(c => !c.GetParameters().Select(p => p.ParameterType).Contains(dependencyClientType))));
+
+					bool dependencyMaybeCreatableWithoutClient = dependencyClientMaybeComponent || dependencyClientConcreteTypeOptions.Any(t => t.GetConstructors().Any(c => !c.GetParameters().Select(p => p.ParameterType).Contains(clientType)));
+					bool dependencyForSureCreatableWithoutClient = dependencyMaybeCreatableWithoutClient && (dependencyClientForSureComponent || dependencyClientConcreteTypeOptions.Any(t => t.GetConstructors().Any(c => !c.GetParameters().Select(p => p.ParameterType).Contains(clientType))));
+
+					if(!clientMaybeCreatableWithoutDependency && !clientMaybeCreatableWithoutDependency)
+					{
+						Debug.LogWarning($"{initializerType.Name} client {clientType.Name} has a cyclic dependency with {dependencyType.Name}.\nYou can use the {nameof(InitAfterAttribute)} to configure which Initializer should be executed first.");
+						continue;
+					}
+
+					if(!dependencyMaybeCreatableWithoutClient || clientForSureCreatableWithoutDependency)
+					{
+						#if DEV_MODE && DEBUG_SORTING
+						Debug.Log($"Adding {initializerType.Name} before {dependencyType.Name} in initialization order because {dependencyType.Name} client maybe can not be initialized without {initializerType.Name} client existing.");
+						#endif
+
+						addToList.Remove(dependencyType);
+						addToList.Remove(initializerType);
+						addToList.Add(initializerType);
+						addToList.Add(dependencyType);
+						sortingStates[initializerType] = SortingState.AlreadyAdded;
+						sortingStates[dependencyType] = SortingState.AlreadyAdded;
+						continue;
+					}
+
+					if(!clientMaybeCreatableWithoutDependency || dependencyForSureCreatableWithoutClient)
+					{
+						#if DEV_MODE && DEBUG_SORTING
+						Debug.Log($"Adding {dependencyType.Name} before {initializerType.Name} in initialization order because {initializerType.Name} client maybe can not be initialized without {dependencyType.Name} client existing.");
+						#endif
+
+						addToList.Remove(dependencyType);
+						addToList.Remove(initializerType);
+						addToList.Add(dependencyType);
+						addToList.Add(initializerType);
+						sortingStates[initializerType] = SortingState.AlreadyAdded;
+						sortingStates[dependencyType] = SortingState.AlreadyAdded;
+					}
+					#if (DEV_MODE && DEBUG_SORTING) || INIT_ARGS_WARN_ABOUT_ALL_CYCLIC_DEPENDENCIES
+					else Debug.Log($"{initializerType.Name} has a cyclic dependency with {dependencyType.Name}, but it seems potentially resolvable.\nYou can use the {nameof(InitAfterAttribute)} to configure which Initializer should be executed first.");
+					#endif
+				}
 			}
+
+			#if (DEV_MODE && DEBUG_SORTING) || INIT_ARGS_WARN_ABOUT_ALL_CYCLIC_DEPENDENCIES
+			if(indirectCyclicDependency)
+			{
+				Debug.LogWarning($"{initializerType.Name} has an indirect cyclic dependency. Not sure if it's resolvable or not.\nYou can use the {nameof(InitAfterAttribute)} to configure which Initializers should be executed first.");
+			}
+			#endif
 		}
 
 		private IEnumerable<Type> GetDependencies(Type initializerType)
 		{
-			bool hasInitAfterAttribute = initAfter.TryGetValue(initializerType, out Type[] userDefinedDependencyTypes);
+			bool hasUserDefinedDependencies = initAfter.TryGetValue(initializerType, out Type[] userDefinedDependencyTypes);
+			bool isUserDefinedDependency = initBefore.TryGetValue(initializerType, out HashSet<Type> userDefinedDependencyOf);
 
 			for(int i = 0; i < initializerCount; i++)
 			{
@@ -487,11 +552,16 @@ namespace Pancake.Init
 
 				if(Requires(initializerType, potentialDependency, potentialDependencyClient))
 				{
+					if(isUserDefinedDependency && userDefinedDependencyOf.Contains(potentialDependency))
+					{
+						continue;
+					}
+
 					yield return potentialDependency;
 					continue;
 				}
 
-				if(!hasInitAfterAttribute)
+				if(!hasUserDefinedDependencies)
 				{
 					continue;
 				}

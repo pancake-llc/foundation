@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Pancake.Init;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Pancake.Editor.Init
+namespace Pancake.Init.EditorOnly
 {
 	/// <summary>
 	/// Base class for custom editors for initializable targets that visualize non-serialized fields of the target in play mode.
@@ -33,7 +33,7 @@ namespace Pancake.Editor.Init
 		/// The generic type definition of the Initializable base class from which the Editor target derives from,
 		/// or if that is not known, then an IInitializable<T...> interface the target implements.
 		/// <para>
-		/// This is used to get
+		/// This is used to determine what the <see cref="BaseType"/> for the target component.
 		/// </para>
 		/// </summary>
 		protected abstract Type BaseTypeDefinition { get; }
@@ -183,6 +183,8 @@ namespace Pancake.Editor.Init
 
 		protected virtual void OnEnable()
         {
+			EditorApplication.update -= OnUpdate;
+			EditorApplication.update += OnUpdate;
 			EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
 			EditorApplication.playModeStateChanged += OnPlaymodeStateChanged;
 			CompilationPipeline.assemblyCompilationFinished -= OnAssemblyCompilationFinished;
@@ -216,7 +218,7 @@ namespace Pancake.Editor.Init
 			InitializerDrawer.OnAssemblyCompilationStarted(ref initializerDrawer, assemblyName);
 		}
 
-		private void Setup()
+		protected virtual void Setup()
 		{
 			var baseType = BaseType;
 			var initParameterTypes = baseType is null || !baseType.IsGenericType || baseType.IsGenericTypeDefinition ? Type.EmptyTypes : baseType.GetGenericArguments();
@@ -245,6 +247,9 @@ namespace Pancake.Editor.Init
 			#endif
 		}
 
+		[Pure]
+		protected virtual RuntimeFieldsDrawer CreateRuntimeFieldsDrawer() => new RuntimeFieldsDrawer(target, BaseType);
+
 		public override VisualElement CreateInspectorGUI()
 		{
 			if(internalEditor == null)
@@ -272,21 +277,12 @@ namespace Pancake.Editor.Init
 
 		public override void OnInspectorGUI()
 		{
-			if(initializerDrawer is null)
-			{
-				Setup();
-			}
-
 			InitializerGUI();
 			BaseGUI();
-
-			if(ShowRuntimeFields)
-			{
-				RuntimeFieldsGUI();
-			}
+			RuntimeFieldsGUI();
 		}
 
-		private void BaseGUI()
+		protected virtual void BaseGUI()
 		{
 			if(internalEditor == null)
 			{
@@ -311,19 +307,29 @@ namespace Pancake.Editor.Init
 			}
 		}
 
-		private void InitializerGUI()
+		protected virtual void InitializerGUI()
 		{
+			if(initializerDrawer is null)
+			{
+				Setup();
+			}
+
 			if(drawInitializerGUI)
 			{
 				initializerDrawer.OnInspectorGUI();
 			}
 		}
 
-		private void RuntimeFieldsGUI()
+		protected void RuntimeFieldsGUI()
 		{
+			if(!ShowRuntimeFields)
+			{
+				return;
+			}
+
 			if(runtimeFieldsDrawer is null)
 			{
-				runtimeFieldsDrawer = new RuntimeFieldsDrawer(target, BaseType);
+				runtimeFieldsDrawer = CreateRuntimeFieldsDrawer();
 			}
 
 			runtimeFieldsDrawer.Draw();
@@ -331,6 +337,7 @@ namespace Pancake.Editor.Init
 
         private void OnDisable()
 		{
+			EditorApplication.update -= OnUpdate;
 			EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
 			CompilationPipeline.assemblyCompilationFinished -= OnAssemblyCompilationFinished;
 
@@ -354,6 +361,14 @@ namespace Pancake.Editor.Init
 			{
 				DestroyImmediate(editor);
 			}
+		}
+
+		private void OnUpdate()
+		{
+			if(Application.isPlaying && runtimeFieldsDrawer != null)
+			{
+                Repaint();
+            }
 		}
 	}
 }
