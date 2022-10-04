@@ -1,5 +1,4 @@
-﻿#if PANCAKE_RUNTIME_UNSAFE
-#if UNITY_2021_3_OR_NEWER
+﻿#if UNITY_2021_3_OR_NEWER
 using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -507,5 +506,4 @@ namespace System // wa-o, System Namespace!?
     }
 }
 
-#endif
 #endif

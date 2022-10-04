@@ -11,12 +11,6 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.system-community.systemruntimecompilerservicesunsafe",
-            "expression": "4.5.3",
-            "define": "PANCAKE_RUNTIME_UNSAFE"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

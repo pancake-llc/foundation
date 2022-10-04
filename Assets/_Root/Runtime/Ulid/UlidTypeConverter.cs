@@ -1,5 +1,4 @@
-﻿#if PANCAKE_RUNTIME_UNSAFE
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 
 namespace System
@@ -66,4 +65,3 @@ namespace System
         }
     }
 }
-#endif

@@ -1,5 +1,4 @@
-﻿#if PANCAKE_RUNTIME_UNSAFE
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace System
@@ -81,4 +80,3 @@ namespace System
         }
     }
 }
-#endif
