@@ -89,21 +89,21 @@ namespace Pancake.Editor
 
         private static void SetupFetch(RectTransform fetch)
         {
-            Sprite first = (Sprite) AssetDatabase.LoadAssetAtPath("Packages/com.pancake.ui/Runtime/Fetch/Sprites/01.png", typeof(Sprite));
-            if (first == null) first = (Sprite) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/Fetch/Sprites/01.png", typeof(Sprite));
+            Sprite first = (Sprite) AssetDatabase.LoadAssetAtPath("Packages/com.pancake.heart/Runtime/UGUI/Fetch/Sprites/01.png", typeof(Sprite));
+            if (first == null) first = (Sprite) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/UGUI/Fetch/Sprites/01.png", typeof(Sprite));
             var img = fetch.GetComponent<Image>();
             img.sprite = first;
             img.raycastTarget = false;
             var animator = fetch.gameObject.AddComponent<Animator>();
 
             animator.runtimeAnimatorController =
-                (AnimatorController) AssetDatabase.LoadAssetAtPath("Packages/com.pancake.ui/Runtime/Fetch/Animation/FetchAnimator.controller",
+                (AnimatorController) AssetDatabase.LoadAssetAtPath("Packages/com.pancake.heart/Runtime/UGUI/Fetch/Animation/FetchAnimator.controller",
                     typeof(AnimatorController));
 
             if (animator.runtimeAnimatorController == null)
             {
                 animator.runtimeAnimatorController =
-                    (AnimatorController) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/Fetch/Animation/FetchAnimator.controller", typeof(AnimatorController));
+                    (AnimatorController) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/UGUI/Fetch/Animation/FetchAnimator.controller", typeof(AnimatorController));
             }
 
             if (animator.runtimeAnimatorController == null)
