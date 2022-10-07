@@ -89,9 +89,9 @@ namespace Pancake.UI
 
         #region Overrides of UIBehaviour
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
             DefaultScale = AffectObject.localScale;
         }
 
