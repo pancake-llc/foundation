@@ -23,7 +23,7 @@ namespace Pancake
 
 #if UNITY_EDITOR
 
-        private string _label;
+        private readonly string _label;
 
         [CustomPropertyDrawer(typeof(LabelAttribute))]
         private class LabelDrawer : BasePropertyDrawer<LabelAttribute>
@@ -35,6 +35,6 @@ namespace Pancake
             }
         }
 
-#endif // UNITY_EDITOR
+#endif
     }
-} // namespace Pancake
+}

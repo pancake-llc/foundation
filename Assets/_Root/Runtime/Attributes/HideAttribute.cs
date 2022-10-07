@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
+using Pancake.Linq;
 using UnityEngine;
 
 #if UNITY_EDITOR
-using System.Reflection;
 using UnityEditor;
 using Pancake.Editor;
+using Pancake.LogicExpressionParser;
 #endif
 
 namespace Pancake
@@ -15,85 +17,48 @@ namespace Pancake
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public sealed class HideAttribute : PropertyAttribute
     {
-        public HideAttribute(string fieldOrProperty, bool hideValue, int indent = 0)
+        public HideAttribute(string conditionalExpression)
         {
 #if UNITY_EDITOR
-            _name = fieldOrProperty;
-            _value = hideValue;
-            _indent = indent;
+            _logicExpression = _parser.Parse(conditionalExpression);
 #endif
         }
 
 
 #if UNITY_EDITOR
 
-        private string _name;
-        private bool _value;
-        private int _indent;
-
-        private object _fieldOrProp;
-        private int _result; // 0-hide, 1-show, -1-error
+        private static Parser _parser = new Parser(new ParsingContext(false), new ExpressionContext(false));
+        private readonly LogicExpression _logicExpression;
 
         [CustomPropertyDrawer(typeof(HideAttribute))]
         private class HideDrawer : BasePropertyDrawer<HideAttribute>
         {
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             {
-                if (attribute._fieldOrProp == null)
+                if (!attribute._logicExpression.GetResult())
                 {
-                    var field = property.serializedObject.targetObject.GetType().GetInstanceField(attribute._name);
-                    if (field?.FieldType == typeof(bool))
-                    {
-                        attribute._fieldOrProp = field;
-                    }
-                    else
-                    {
-                        var prop = property.serializedObject.targetObject.GetType().GetInstanceProperty(attribute._name);
-                        if (prop?.PropertyType == typeof(bool) && prop.CanRead)
-                        {
-                            attribute._fieldOrProp = prop;
-                        }
-                    }
+                    return base.GetPropertyHeight(property, label);
                 }
 
-                object result = (attribute._fieldOrProp as FieldInfo)?.GetValue(property.serializedObject.targetObject);
-                if (result == null) result = (attribute._fieldOrProp as PropertyInfo)?.GetValue(property.serializedObject.targetObject, null);
-
-                if (result != null)
-                {
-                    if ((bool) result == attribute._value)
-                    {
-                        attribute._result = 0;
-                        return -2f;
-                    }
-                    else
-                    {
-                        attribute._result = 1;
-                        return base.GetPropertyHeight(property, label);
-                    }
-                }
-                else
-                {
-                    attribute._result = -1;
-                    return EditorGUIUtility.singleLineHeight;
-                }
+                return 0;
             }
-
 
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             {
-                if (attribute._result == 1)
+                var result = GetAllFields(property.serializedObject.targetObject).ToList();
+                foreach (var info in attribute._logicExpression.Context.Variables)
                 {
-                    using (IndentLevelScope.New(attribute._indent))
-                        base.OnGUI(position, property, label);
+                    var r = result.Filter(_ => _.Name.Equals(info.Key)).FirstOrDefault();
+                    if (r != null)
+                    {
+                        
+                    }
                 }
-                else if (attribute._result == -1)
-                {
-                    EditorGUI.LabelField(position, label.text, "Field or Property has error!");
-                }
+
+                if (!attribute._logicExpression.GetResult()) base.OnGUI(position, property, label);
             }
-        } // class HideDrawer
+        }
 
 #endif
-    } // class HideAttribute
-} // namespace Pancake
+    }
+}
