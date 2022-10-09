@@ -51,6 +51,12 @@ namespace Pancake.LogicExpressionParser
     {
         bool GetResult();
     }
+
+    public interface IStringProvider
+    {
+        string GetString();
+    }
+    
     public interface INumberProvider
     {
         double GetNumber();
@@ -249,6 +255,12 @@ namespace Pancake.LogicExpressionParser
     #endregion compare gates
 
     #region value providers
+
+    public class ConstantString : IStringProvider
+    {
+        public string constantValue;
+        public string GetString() { return constantValue; }
+    }
     public class ConstantNumber : INumberProvider
     {
         public double constantValue;

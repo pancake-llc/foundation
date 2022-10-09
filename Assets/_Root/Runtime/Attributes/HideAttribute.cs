@@ -56,6 +56,10 @@ namespace Pancake
                         {
                             attribute._logicExpression[r.Name].Set(double.Parse(r.GetValue(property.serializedObject.targetObject).ToString()));
                         }
+                        else if (r.FieldType == typeof(string))
+                        {
+                            
+                        }
                     }
                 }
 
