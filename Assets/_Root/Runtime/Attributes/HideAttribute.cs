@@ -27,8 +27,9 @@ namespace Pancake
 
 #if UNITY_EDITOR
 
-        private static Parser _parser = new Parser(new ParsingContext(false), new ExpressionContext(false));
+        private readonly Parser _parser = new Parser(new ParsingContext(false), new ExpressionContext(false));
         private readonly LogicExpression _logicExpression;
+        private bool _isChangeState;
 
         [CustomPropertyDrawer(typeof(HideAttribute))]
         private class HideDrawer : BasePropertyDrawer<HideAttribute>
@@ -51,11 +52,33 @@ namespace Pancake
                     var r = result.Filter(_ => _.Name.Equals(info.Key)).FirstOrDefault();
                     if (r != null)
                     {
-                        
+                        if (r.FieldType == typeof(float) || r.FieldType == typeof(int) || r.FieldType == typeof(double))
+                        {
+                            attribute._logicExpression[r.Name].Set(double.Parse(r.GetValue(property.serializedObject.targetObject).ToString()));
+                        }
                     }
                 }
 
-                if (!attribute._logicExpression.GetResult()) base.OnGUI(position, property, label);
+                if (!attribute._logicExpression.GetResult())
+                {
+                    base.OnGUI(position, property, label);
+                    if (!attribute._isChangeState)
+                    {
+                        attribute._isChangeState = true;
+                        GUI.FocusControl(null);
+                    }
+                }
+                else
+                {
+                    if (attribute._isChangeState)
+                    {
+                        attribute._isChangeState = false;
+                        GUI.FocusControl(null);
+                    }
+                }
+
+                property.serializedObject.Update();
+                property.serializedObject.ApplyModifiedProperties();
             }
         }
 
