@@ -48,14 +48,14 @@ namespace Pancake.Notification
         // On iOS, this represents the notification's Category Identifier, and is optional
         // On Android, this represents the notification's channel, and is required (at least one).
 
-        [SerializeField] private NotificationStuctureData[] structures =
+        [SerializeField, Array] private NotificationStuctureData[] structures =
         {
             new NotificationStuctureData() {type = TypeNoti.Repeat, chanel = "channel_repeat", minute = 1440, autoSchedule = true},
             new NotificationStuctureData() {type = TypeNoti.OnceTime, chanel = "channel_event", minute = 120, autoSchedule = false},
             new NotificationStuctureData() {type = TypeNoti.OnceTime, chanel = "channel_noti", minute = 120, autoSchedule = false},
         };
 
-        public UnityEvent onUpdateDeliveryTime;
+        [SerializeField]public UnityEvent onUpdateDeliveryTime;
         public GameNotificationsManager Manager => _manager != null ? _manager : _manager = GetComponent<GameNotificationsManager>();
 
         private GameNotificationChannel[] _channels;

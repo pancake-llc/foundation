@@ -13,6 +13,7 @@ namespace Pancake.Notification
     /// <summary>
     /// Global notifications manager that serves as a wrapper for multiple platforms' notification systems.
     /// </summary>
+    [AddComponentMenu("")]
     public class GameNotificationsManager : MonoBehaviour
     {
         // Default filename for notifications serializer
