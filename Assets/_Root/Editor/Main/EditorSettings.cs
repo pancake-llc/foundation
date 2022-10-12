@@ -110,7 +110,7 @@ namespace Pancake.Editor
         {
             settings.attributeEnabled = true;
             settings.attributeAnimate = true;
-            settings.attributeExceptTypes = null;
+            settings.attributeExceptTypes = new[] {new ExceptType("UnityEvent", false)};
         }
 
         #endregion
