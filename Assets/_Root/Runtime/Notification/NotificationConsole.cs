@@ -43,6 +43,7 @@ namespace Pancake.Notification
     /// and allows you to schedule more.
     /// </summary>
     [RequireComponent(typeof(GameNotificationsManager))]
+    [HideMono]
     public class NotificationConsole : MonoBehaviour
     {
         // On iOS, this represents the notification's Category Identifier, and is optional
@@ -55,7 +56,7 @@ namespace Pancake.Notification
             new NotificationStuctureData() {type = TypeNoti.OnceTime, chanel = "channel_noti", minute = 120, autoSchedule = false},
         };
 
-        [SerializeField]public UnityEvent onUpdateDeliveryTime;
+        public UnityEvent onUpdateDeliveryTime;
         public GameNotificationsManager Manager => _manager != null ? _manager : _manager = GetComponent<GameNotificationsManager>();
 
         private GameNotificationChannel[] _channels;
