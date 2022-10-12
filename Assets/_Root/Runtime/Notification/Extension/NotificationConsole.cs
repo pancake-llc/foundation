@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 #if UNITY_IOS
 using Unity.Notifications.iOS;
@@ -49,9 +50,9 @@ namespace Pancake.Notification
 
         [SerializeField] private NotificationStuctureData[] structures =
         {
-            new NotificationStuctureData() { type = TypeNoti.Repeat, chanel = "channel_repeat", minute = 1440, autoSchedule = true },
-            new NotificationStuctureData() { type = TypeNoti.OnceTime, chanel = "channel_event", minute = 120, autoSchedule = false },
-            new NotificationStuctureData() { type = TypeNoti.OnceTime, chanel = "channel_noti", minute = 120, autoSchedule = false },
+            new NotificationStuctureData() {type = TypeNoti.Repeat, chanel = "channel_repeat", minute = 1440, autoSchedule = true},
+            new NotificationStuctureData() {type = TypeNoti.OnceTime, chanel = "channel_event", minute = 120, autoSchedule = false},
+            new NotificationStuctureData() {type = TypeNoti.OnceTime, chanel = "channel_noti", minute = 120, autoSchedule = false},
         };
 
         public UnityEvent onUpdateDeliveryTime;
@@ -60,7 +61,7 @@ namespace Pancake.Notification
         private GameNotificationChannel[] _channels;
         private GameNotificationsManager _manager;
 
-        private void Start()
+        private IEnumerator Start()
         {
             // Set up channels (mostly for Android)
             // You need to have at least one of these
@@ -74,7 +75,7 @@ namespace Pancake.Notification
                 _channels[i] = new GameNotificationChannel(structures[i].chanel, chanelName, chanelDescription);
             }
 
-            Manager.Initialize(_channels);
+            yield return Manager.Initialize(_channels);
             Manager.CancelAllNotifications();
             Manager.DismissAllNotifications();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -313,7 +314,7 @@ namespace Pancake.Notification
         /// </summary>
         /// <param name="channels">An optional collection of channels to register, for Android</param>
         /// <exception cref="InvalidOperationException"><see cref="Initialize"/> has already been called.</exception>
-        public void Initialize(params GameNotificationChannel[] channels)
+        public IEnumerator Initialize(params GameNotificationChannel[] channels)
         {
             if (Initialized)
             {
@@ -360,7 +361,7 @@ namespace Pancake.Notification
 
             if (Platform == null)
             {
-                return;
+                yield break;
             }
 
             PendingNotifications = new List<PendingNotification>();
@@ -372,6 +373,8 @@ namespace Pancake.Notification
                 Serializer = new DefaultSerializer(Path.Combine(Application.persistentDataPath, DefaultFilename));
             }
 
+            yield return Platform.RequestNotificationPermission();
+            
             OnForegrounding();
         }
 

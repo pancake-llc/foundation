@@ -1,5 +1,6 @@
 #if UNITY_IOS
 using System;
+using System.Collections;
 using Unity.Notifications.iOS;
 
 namespace Pancake.Notification
@@ -7,8 +8,7 @@ namespace Pancake.Notification
     /// <summary>
     /// iOS implementation of <see cref="IGameNotificationsPlatform"/>.
     /// </summary>
-    public class iOSNotificationsPlatform : IGameNotificationsPlatform<iOSGameNotification>,
-        IDisposable
+    public class iOSNotificationsPlatform : IGameNotificationsPlatform<iOSGameNotification>, IDisposable
     {
         /// <inheritdoc />
         public event Action<IGameNotification> NotificationReceived;
@@ -16,10 +16,7 @@ namespace Pancake.Notification
         /// <summary>
         /// Instantiate a new instance of <see cref="iOSNotificationsPlatform"/>.
         /// </summary>
-        public iOSNotificationsPlatform()
-        {
-            iOSNotificationCenter.OnNotificationReceived += OnLocalNotificationReceived;
-        }
+        public iOSNotificationsPlatform() { iOSNotificationCenter.OnNotificationReceived += OnLocalNotificationReceived; }
 
         /// <inheritdoc />
         public void ScheduleNotification(IGameNotification gameNotification)
@@ -31,8 +28,7 @@ namespace Pancake.Notification
 
             if (!(gameNotification is iOSGameNotification notification))
             {
-                throw new InvalidOperationException(
-                    "Notification provided to ScheduleNotification isn't an iOSGameNotification.");
+                throw new InvalidOperationException("Notification provided to ScheduleNotification isn't an iOSGameNotification.");
             }
 
             ScheduleNotification(notification);
@@ -54,49 +50,28 @@ namespace Pancake.Notification
         /// <summary>
         /// Create a new <see cref="T:NotificationSamples.Android.AndroidNotification" />.
         /// </summary>
-        IGameNotification IGameNotificationsPlatform.CreateNotification()
-        {
-            return CreateNotification();
-        }
+        IGameNotification IGameNotificationsPlatform.CreateNotification() { return CreateNotification(); }
 
         /// <inheritdoc />
         /// <summary>
         /// Create a new <see cref="T:NotificationSamples.Android.AndroidNotification" />.
         /// </summary>
-        public iOSGameNotification CreateNotification()
-        {
-            return new iOSGameNotification();
-        }
+        public iOSGameNotification CreateNotification() { return new iOSGameNotification(); }
 
         /// <inheritdoc />
-        public void CancelNotification(int notificationId)
-        {
-            iOSNotificationCenter.RemoveScheduledNotification(notificationId.ToString());
-        }
+        public void CancelNotification(int notificationId) { iOSNotificationCenter.RemoveScheduledNotification(notificationId.ToString()); }
 
         /// <inheritdoc />
-        public void DismissNotification(int notificationId)
-        {
-            iOSNotificationCenter.RemoveDeliveredNotification(notificationId.ToString());
-        }
+        public void DismissNotification(int notificationId) { iOSNotificationCenter.RemoveDeliveredNotification(notificationId.ToString()); }
 
         /// <inheritdoc />
-        public void CancelAllScheduledNotifications()
-        {
-            iOSNotificationCenter.RemoveAllScheduledNotifications();
-        }
+        public void CancelAllScheduledNotifications() { iOSNotificationCenter.RemoveAllScheduledNotifications(); }
 
         /// <inheritdoc />
-        public void DismissAllDisplayedNotifications()
-        {
-            iOSNotificationCenter.RemoveAllDeliveredNotifications();
-        }
+        public void DismissAllDisplayedNotifications() { iOSNotificationCenter.RemoveAllDeliveredNotifications(); }
 
         /// <inheritdoc />
-        IGameNotification IGameNotificationsPlatform.GetLastNotification()
-        {
-            return GetLastNotification();
-        }
+        IGameNotification IGameNotificationsPlatform.GetLastNotification() { return GetLastNotification(); }
 
         /// <inheritdoc />
         public iOSGameNotification GetLastNotification()
@@ -114,23 +89,17 @@ namespace Pancake.Notification
         /// <summary>
         /// Clears badge count.
         /// </summary>
-        public void OnForeground()
-        {
-            iOSNotificationCenter.ApplicationBadge = 0;
-        }
+        public void OnForeground() { iOSNotificationCenter.ApplicationBadge = 0; }
 
         /// <summary>
         /// Does nothing on iOS.
         /// </summary>
-        public void OnBackground() {}
+        public void OnBackground() { }
 
         /// <summary>
         /// Unregister delegates.
         /// </summary>
-        public void Dispose()
-        {
-            iOSNotificationCenter.OnNotificationReceived -= OnLocalNotificationReceived;
-        }
+        public void Dispose() { iOSNotificationCenter.OnNotificationReceived -= OnLocalNotificationReceived; }
 
         // Event handler for receiving local notifications.
         private void OnLocalNotificationReceived(iOSNotification notification)
@@ -139,6 +108,15 @@ namespace Pancake.Notification
             // if the event is registered
             NotificationReceived?.Invoke(new iOSGameNotification(notification));
         }
+        
+        public IEnumerator RequestNotificationPermission()
+        {
+            using (var request = new AuthorizationRequest(AuthorizationOption.Badge | AuthorizationOption.Sound | AuthorizationOption.Alert, false))
+            {
+                while (!request.IsFinished) yield return null;
+            }
+        }
     }
 }
+
 #endif

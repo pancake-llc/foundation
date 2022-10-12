@@ -1,5 +1,6 @@
 #if UNITY_ANDROID
 using System;
+using System.Collections;
 using Unity.Notifications.Android;
 
 namespace Pancake.Notification
@@ -167,6 +168,12 @@ namespace Pancake.Notification
             // Create a new AndroidGameNotification out of the delivered notification, but only
             // if the event is registered
             NotificationReceived?.Invoke(new AndroidGameNotification(data.Notification, data.Id, data.Channel));
+        }
+        
+        public IEnumerator RequestNotificationPermission()
+        {
+            var request = new PermissionRequest();
+            while (request.Status == PermissionStatus.RequestPending) yield return null;
         }
     }
 }
