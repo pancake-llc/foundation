@@ -71,7 +71,7 @@ namespace Pancake.Init.EditorOnly
 			}
 		}
 
-		private static void AfterInspectorRootEditorHeaderGUI([NotNull] UnityEditor.Editor editor)
+		private static void AfterInspectorRootEditorHeaderGUI([JetBrains.Annotations.NotNull] UnityEditor.Editor editor)
 		{
 			foreach(var target in editor.targets)
 			{
@@ -82,7 +82,7 @@ namespace Pancake.Init.EditorOnly
 			}
 		}
 
-		private static void AfterGameObjectHeaderGUI([NotNull] GameObject gameObject)
+		private static void AfterGameObjectHeaderGUI([JetBrains.Annotations.NotNull] GameObject gameObject)
 		{
 			if(InitializersOnInspectedObjects.TryGetValue(gameObject, out List<IInitializer> initializers))
 			{

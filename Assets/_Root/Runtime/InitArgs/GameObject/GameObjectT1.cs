@@ -297,7 +297,7 @@ namespace Pancake.Init
 		/// <see langword="true"/> to set the position, rotation and scale for the new GameObject directly in <see cref="Transform.position">world space</see>
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -338,7 +338,7 @@ namespace Pancake.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, bool inWorldSpace, bool active) : this(original, parent, active)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, bool inWorldSpace, bool active) : this(original, parent, active)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -464,7 +464,7 @@ namespace Pancake.Init
 		/// </para>
 		/// </summary>
 		/// <param name="original"> An existing object that you want to make a copy of. </param>
-		public GameObject([NotNull] GameObject original)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -504,7 +504,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <param name="original"> An existing object that you want to make a copy of. </param>
 		/// <param name="parent"> The <see cref="Transform.parent">parent</see> of the created GameObject. </param>
-		public GameObject([NotNull] GameObject original, Transform parent)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -545,7 +545,7 @@ namespace Pancake.Init
 		/// <param name="original"> An existing object that you want to make a copy of. </param>
 		/// <param name="parent"> The <see cref="Transform.parent">parent</see> of the created GameObject. </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
-		public GameObject([NotNull] GameObject original, Transform parent, bool active)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, bool active)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -589,7 +589,7 @@ namespace Pancake.Init
 		/// <see langword="true"/> to position the new GameObject directly in <see cref="Transform.position">world space</see>
 		/// or <see langword="false"/> to set the GameObject's position <see cref="Transform.localPosition">relative</see> to its new <paramref name="parent"/>.
 		/// </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, bool positionInWorldSpace = false) : this(original, parent, original.activeSelf)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, bool positionInWorldSpace = false) : this(original, parent, original.activeSelf)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -628,7 +628,7 @@ namespace Pancake.Init
 		/// or <see langword="false"/> to set the GameObject's position <see cref="Transform.localPosition">relative</see> to its new <paramref name="parent"/>.
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, bool positionInWorldSpace, bool active) : this(original, parent, active)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, bool positionInWorldSpace, bool active) : this(original, parent, active)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -667,7 +667,7 @@ namespace Pancake.Init
 		/// <see langword="true"/> to set the position and rotation for the new GameObject directly in <see cref="Transform.position">world space</see>
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -708,7 +708,7 @@ namespace Pancake.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, bool inWorldSpace, bool active) : this(original, parent, active)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, bool inWorldSpace, bool active) : this(original, parent, active)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -749,7 +749,7 @@ namespace Pancake.Init
 		/// <see langword="true"/> to set the position, rotation and scale for the new GameObject directly in <see cref="Transform.position">world space</see>
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -799,7 +799,7 @@ namespace Pancake.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, bool inWorldSpace, bool active) : this(original, parent, active)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, bool inWorldSpace, bool active) : this(original, parent, active)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -848,7 +848,7 @@ namespace Pancake.Init
 		/// <see langword="true"/> to set the position, rotation and scale for the new GameObject directly in <see cref="Transform.position">world space</see>
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, Vector3 scale, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, Vector3 scale, bool inWorldSpace = false) : this(original, parent, original.activeSelf)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 
@@ -894,7 +894,7 @@ namespace Pancake.Init
 		/// or <see langword="false"/> to set them <see cref="Transform.localPosition">relative</see> to the GameObject's new <paramref name="parent"/>.
 		/// </param>
 		/// <param name="active"> Defines whether the created GameObject is <see cref="GameObject.activeSelf">active</see> in the Scene. </param>
-		public GameObject([NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, Vector3 scale, bool inWorldSpace, bool active) : this(original, parent, active)
+		public GameObject([JetBrains.Annotations.NotNull] GameObject original, Transform parent, Vector3 position, Vector3 eulerAngles, Vector3 scale, bool inWorldSpace, bool active) : this(original, parent, active)
         {
 			Debug.Assert(original != null, "GameObject constructor called with null original.");
 

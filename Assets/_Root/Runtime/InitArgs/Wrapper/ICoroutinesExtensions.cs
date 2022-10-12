@@ -48,7 +48,7 @@ namespace Pancake.Init
         /// This 
         /// </para>
         /// </returns>
-        public static Coroutine StartCoroutine<T>([NotNull] this T @this, [NotNull] IEnumerator coroutine) where T : ICoroutines
+        public static Coroutine StartCoroutine<T>([JetBrains.Annotations.NotNull] this T @this, [JetBrains.Annotations.NotNull] IEnumerator coroutine) where T : ICoroutines
         {
             if(@this.CoroutineRunner != null)
             {
@@ -89,7 +89,7 @@ namespace Pancake.Init
         /// </para>
         /// </summary>
         /// <param name="coroutine"> The <see cref="IEnumerator">coroutine</see> to stop. </param>
-        public static void StopCoroutine<TObject>([NotNull]this TObject @this, [NotNull] IEnumerator coroutine) where TObject : ICoroutines
+        public static void StopCoroutine<TObject>([JetBrains.Annotations.NotNull]this TObject @this, [JetBrains.Annotations.NotNull] IEnumerator coroutine) where TObject : ICoroutines
         {
             if(@this.CoroutineRunner != null)
             {
@@ -140,7 +140,7 @@ namespace Pancake.Init
         /// when the coroutine was started.
         /// </para>
         /// </param>
-        public static void StopCoroutine<TObject>([NotNull]this TObject @this, [NotNull] Coroutine coroutine) where TObject : ICoroutines
+        public static void StopCoroutine<TObject>([JetBrains.Annotations.NotNull]this TObject @this, [JetBrains.Annotations.NotNull] Coroutine coroutine) where TObject : ICoroutines
         {
             if(@this.CoroutineRunner != null)
             {
@@ -184,7 +184,7 @@ namespace Pancake.Init
         /// You will need to use <see cref="StopCoroutine"/> instead to stop each running coroutine individually.
         /// </para>
         /// </summary>
-        public static void StopAllCoroutines<TObject>([NotNull] this TObject @this) where TObject : ICoroutines
+        public static void StopAllCoroutines<TObject>([JetBrains.Annotations.NotNull] this TObject @this) where TObject : ICoroutines
         {
             if(@this.CoroutineRunner != null)
             {

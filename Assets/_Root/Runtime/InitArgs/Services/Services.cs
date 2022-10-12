@@ -78,7 +78,7 @@ namespace Pancake.Init.Internal
 
         internal virtual bool AreAvailableToAnyClient() => toClients == Clients.Everywhere;
 
-        internal virtual bool AreAvailableToClient([NotNull] GameObject client)
+        internal virtual bool AreAvailableToClient([JetBrains.Annotations.NotNull] GameObject client)
         {
             Debug.Assert(client != null);
             Debug.Assert(this != null);

@@ -149,7 +149,7 @@ namespace Pancake.Init
 		/// <param name="thirdArgument"> The third argument to pass to the target's Init function. </param>
 		/// <param name="fourthArgument"> The fourth argument to pass to the target's Init function. </param>
 		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TClient"/>. </returns>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		protected virtual TClient InitTarget(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
         {
             if(target == null)

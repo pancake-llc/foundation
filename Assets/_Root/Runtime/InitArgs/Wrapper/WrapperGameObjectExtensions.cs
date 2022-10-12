@@ -22,7 +22,7 @@ namespace Pancake.Init
 		/// <exception cref="ArgumentNullException">
 		/// Thrown if <see cref="this"/> <see cref="GameObject"/> or the <paramref name="wrapped"/> is <see langword="null"/>. 
 		/// </exception>
-		public static IWrapper AddComponent<TWrapped>([NotNull] this GameObject gameObject, TWrapped wrapped)
+		public static IWrapper AddComponent<TWrapped>([JetBrains.Annotations.NotNull] this GameObject gameObject, TWrapped wrapped)
 		{
 			#if DEBUG
 			if(wrapped is null)
@@ -97,7 +97,7 @@ namespace Pancake.Init
 		}
 
 		[CanBeNull]
-        public static TWrapper Add<TWrapper, TWrapped>([NotNull] this GameObject gameObject)
+        public static TWrapper Add<TWrapper, TWrapped>([JetBrains.Annotations.NotNull] this GameObject gameObject)
             where TWrapper : MonoBehaviour, IWrapper<TWrapped> where TWrapped : class, new()
         {
             return gameObject.AddComponent<TWrapper, TWrapped>(new TWrapped());

@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace Pancake.Console
 {
-	[FilePath("UserSettings/ConsoleAdvancedUserSettings.asset", FilePathAttribute.Location.ProjectFolder)]
+	[UnityEditor.FilePath("UserSettings/ConsoleAdvancedUserSettings.asset", UnityEditor.FilePathAttribute.Location.ProjectFolder)]
 	internal class AdvancedLogUserSettings : ScriptableSingleton<AdvancedLogUserSettings>
 	{
 		public void Save() => Save(true);

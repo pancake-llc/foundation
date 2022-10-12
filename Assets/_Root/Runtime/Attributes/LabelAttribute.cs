@@ -1,40 +1,9 @@
-﻿using System;
-using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-using Pancake.Editor;
-#endif
-
-namespace Pancake
+﻿namespace Pancake
 {
-    /// <summary>
-    /// Change the label text of a field
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
-    public sealed class LabelAttribute : PropertyAttribute
+    public sealed class LabelAttribute : ManipulatorAttribute
     {
-        public LabelAttribute(string label)
-        {
-#if UNITY_EDITOR
-            _label = label;
-#endif
-        }
+        public readonly string name;
 
-#if UNITY_EDITOR
-
-        private readonly string _label;
-
-        [CustomPropertyDrawer(typeof(LabelAttribute))]
-        private class LabelDrawer : BasePropertyDrawer<LabelAttribute>
-        {
-            public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            {
-                label.text = attribute._label;
-                base.OnGUI(position, property, label);
-            }
-        }
-
-#endif
+        public LabelAttribute(string name) { this.name = name; }
     }
 }

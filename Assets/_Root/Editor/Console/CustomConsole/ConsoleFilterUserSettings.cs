@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace Pancake.Console
 {
-	[FilePath("UserSettings/ConsoleFilterUserSettings.asset", FilePathAttribute.Location.ProjectFolder)]
+	[UnityEditor.FilePath("UserSettings/ConsoleFilterUserSettings.asset", UnityEditor.FilePathAttribute.Location.ProjectFolder)]
 	internal class ConsoleFilterUserSettings : ScriptableSingleton<ConsoleFilterUserSettings>
 	{
 		public void Save() => Save(true);

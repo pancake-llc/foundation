@@ -83,7 +83,7 @@ namespace Pancake.Init
 		/// Subscribes <paramref name="subscriber"/> to receive a callback during the MonoBehaviour.Update event function.
 		/// </summary>
 		/// <param name="subscriber"> object to receive the callback. </param>
-		public static void Subscribe([NotNull] IUpdate subscriber)
+		public static void Subscribe([JetBrains.Annotations.NotNull] IUpdate subscriber)
 		{
 			lock(threadLock)
 			{
@@ -95,7 +95,7 @@ namespace Pancake.Init
 		/// Subscribes <paramref name="subscriber"/> to receive a callback during the MonoBehaviour.LateUpdate event function.
 		/// </summary>
 		/// <param name="subscriber"> object to receive the callback. </param>
-		public static void Subscribe([NotNull] ILateUpdate subscriber)
+		public static void Subscribe([JetBrains.Annotations.NotNull] ILateUpdate subscriber)
 		{
 			lock(threadLock)
 			{
@@ -107,7 +107,7 @@ namespace Pancake.Init
 		/// Subscribes <paramref name="subscriber"/> to receive a callback during the MonoBehaviour.FixedUpdate event function.
 		/// </summary>
 		/// <param name="subscriber"> object to receive the callback. </param>
-		public static void Subscribe([NotNull] IFixedUpdate subscriber)
+		public static void Subscribe([JetBrains.Annotations.NotNull] IFixedUpdate subscriber)
 		{
 			lock(threadLock)
 			{
@@ -119,7 +119,7 @@ namespace Pancake.Init
 		/// Unsubscribes <paramref name="subscriber"/> from receiving a callback during the MonoBehaviour.Update event function.
 		/// </summary>
 		/// <param name="subscriber"> object to stop receiving the callback. </param>
-		public static void Unsubscribe([NotNull] IUpdate subscriber)
+		public static void Unsubscribe([JetBrains.Annotations.NotNull] IUpdate subscriber)
 		{
 			lock(threadLock)
 			{
@@ -131,7 +131,7 @@ namespace Pancake.Init
 		/// Unsubscribes <paramref name="subscriber"/> from receiving a callback during the MonoBehaviour.LateUpdate event function.
 		/// </summary>
 		/// <param name="subscriber"> object to stop receiving the callback. </param>
-		public static void Unsubscribe([NotNull] ILateUpdate subscriber)
+		public static void Unsubscribe([JetBrains.Annotations.NotNull] ILateUpdate subscriber)
 		{
 			lock(threadLock)
 			{
@@ -143,7 +143,7 @@ namespace Pancake.Init
 		/// Unsubscribes <paramref name="subscriber"/> from receiving a callback during the MonoBehaviour.FixedUpdate event function.
 		/// </summary>
 		/// <param name="subscriber"> object to stop receiving the callback. </param>
-		public static void Unsubscribe([NotNull] IFixedUpdate subscriber)
+		public static void Unsubscribe([JetBrains.Annotations.NotNull] IFixedUpdate subscriber)
 		{
 			lock(threadLock)
 			{
@@ -162,7 +162,7 @@ namespace Pancake.Init
 		/// the execution of the coroutine.
 		/// </para>
 		/// </returns>
-		public static new Coroutine StartCoroutine([NotNull] IEnumerator coroutine)
+		public static new Coroutine StartCoroutine([JetBrains.Annotations.NotNull] IEnumerator coroutine)
 		{
 			// This will only occur in the rare cases that Init has not yet executed before
 			// this method is called or that the application is quitting and the
@@ -180,7 +180,7 @@ namespace Pancake.Init
 		/// Stops the provided <paramref name="coroutine"/>.
 		/// </summary>
 		/// <param name="coroutine"> The <see cref="IEnumerator">coroutine</see> to stop. </param>
-		public static new void StopCoroutine([NotNull] IEnumerator coroutine)
+		public static new void StopCoroutine([JetBrains.Annotations.NotNull] IEnumerator coroutine)
 		{
 			// This will only occur in the rare cases that Init has not yet executed before
 			// this method is called or that the application is quitting and the
@@ -204,7 +204,7 @@ namespace Pancake.Init
 		/// when the coroutine was started.
 		/// </para>
 		/// </param>
-		public static new void StopCoroutine([NotNull] Coroutine coroutine)
+		public static new void StopCoroutine([JetBrains.Annotations.NotNull] Coroutine coroutine)
 		{
 			// This will only occur in the rare cases that Init has not yet executed before
 			// this method is called or that the application is quitting and the

@@ -111,7 +111,7 @@ namespace Pancake.Init
 		/// <returns>
 		/// The existing <see cref="TStateMachineBehaviour"/> that was initialized.
 		/// </returns>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		protected virtual TStateMachineBehaviour InitTarget(TArgument argument)
         {
 			Animator animator = target;

@@ -83,7 +83,7 @@ namespace Pancake.Init
         /// </para>
         /// </summary>
         /// <exception cref="InvalidOperationException"> Thrown if the <see cref="HasValue"/> property is <see langword="false"/>. </exception>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         public T Value => ValueOrDefault ?? throw new InvalidOperationException($"{nameof(Any<object>)}<{typeof(T).Name}>.Value must return a non-null value. Use {nameof(ValueOrDefault)} if a null return value is acceptable.");
 
 		/// <inheritdoc/>
@@ -273,7 +273,7 @@ namespace Pancake.Init
 		/// The value associated with the current <see cref="Any{T}"/> object, if it has a value;
 		/// otherwise, the default value of <see cref="T"/>.
 		/// </returns>
-		public T GetValue<TClient>([NotNull] TClient client, Context context = Context.MainThread)
+		public T GetValue<TClient>([JetBrains.Annotations.NotNull] TClient client, Context context = Context.MainThread)
         {
 			T result = GetValueOrDefault(client, context);
 
@@ -306,7 +306,7 @@ namespace Pancake.Init
 		/// The value associated with the current <see cref="Any{T}"/> object, if it has a value;
 		/// otherwise, the default value of <see cref="T"/>.
 		/// </returns>
-		public T GetValueOrDefault<TClient>([NotNull] TClient client, Context context = Context.MainThread)
+		public T GetValueOrDefault<TClient>([JetBrains.Annotations.NotNull] TClient client, Context context = Context.MainThread)
         {
 			if(context == Context.Threaded)
 			{

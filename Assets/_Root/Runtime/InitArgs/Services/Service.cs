@@ -33,7 +33,7 @@ namespace Pancake.Init
 		/// <see langword="true"/> if service exists for the client; otherwise, <see langword="false"/>.
 		/// </returns>
 		[Preserve]
-		public static bool Exists<TService>([NotNull] object client)
+		public static bool Exists<TService>([JetBrains.Annotations.NotNull] object client)
 			=> TryGetGameObject(client, out GameObject gameObject)
 				? Services.TryGetFor<TService>(gameObject, out _)
 				: Services.TryGetForAnyClient<TService>(out _);
@@ -50,7 +50,7 @@ namespace Pancake.Init
 		/// <returns>
 		/// <see langword="true"/> if service exists for the client; otherwise, <see langword="false"/>.
 		/// </returns>
-		public static bool Exists<TService>([NotNull] Component client) =>
+		public static bool Exists<TService>([JetBrains.Annotations.NotNull] Component client) =>
 			Services.TryGetFor<TService>(client.gameObject, out _);
 
 		/// <summary>
@@ -69,7 +69,7 @@ namespace Pancake.Init
 		/// <returns>
 		/// <see langword="true"/> if service exists for the client; otherwise, <see langword="false"/>.
 		/// </returns>
-		public static bool Exists<TService>([NotNull] GameObject client)
+		public static bool Exists<TService>([JetBrains.Annotations.NotNull] GameObject client)
 			=> Services.TryGetFor<TService>(client, out _);
 
 		/// <summary>
@@ -131,7 +131,7 @@ namespace Pancake.Init
 		/// if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
 		/// </param>
 		/// <returns> <see langword="true"/> if service was found; otherwise, <see langword="false"/>. </returns>
-		public static bool TryGet<TService>([NotNull] object client, out TService service)
+		public static bool TryGet<TService>([JetBrains.Annotations.NotNull] object client, out TService service)
 			=> TryGetGameObject(client, out GameObject gameObject)
 				? Services.TryGetFor(gameObject, out service)
 				: Services.TryGetForAnyClient(out service);
@@ -153,7 +153,7 @@ namespace Pancake.Init
 		/// When this method returns, contains service of type <typeparamref name="TService"/>, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
 		/// </param>
 		/// <returns> <see langword="true"/> if service was found; otherwise, <see langword="false"/>. </returns>
-		public static bool TryGet<TService>([NotNull] Component client, out TService service) => Services.TryGetFor(client.gameObject, out service);
+		public static bool TryGet<TService>([JetBrains.Annotations.NotNull] Component client, out TService service) => Services.TryGetFor(client.gameObject, out service);
 
 		/// <summary>
 		/// Tries to get <paramref name="service"/> of type <typeparamref name="TService"/>
@@ -172,7 +172,7 @@ namespace Pancake.Init
 		/// When this method returns, contains service of type <typeparamref name="TService"/>, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
 		/// </param>
 		/// <returns> <see langword="true"/> if service was found; otherwise, <see langword="false"/>. </returns>
-		public static bool TryGet<TService>([NotNull] GameObject client, out TService service) => Services.TryGetFor(client, out service);
+		public static bool TryGet<TService>([JetBrains.Annotations.NotNull] GameObject client, out TService service) => Services.TryGetFor(client, out service);
 
 		/// <summary>
 		/// Tries to get <paramref name="service"/> of type <typeparamref name="TService"/>
@@ -206,7 +206,7 @@ namespace Pancake.Init
 		/// <param name="client"> The client that needs the service. </param>
 		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is accessible to the <paramref name="client"/>. </exception>
-		[NotNull, Preserve]
+		[JetBrains.Annotations.NotNull, Preserve]
 		public static TService Get<TService>([CanBeNull] object client)
 		{
 			TService service;
@@ -255,8 +255,8 @@ namespace Pancake.Init
 		/// <param name="client"> The client <see cref="Component"/> that needs the service. </param>
 		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is accessible to the <paramref name="client"/>. </exception>
-		[NotNull]
-		public static TService Get<TService>([NotNull] Component client) => Services.TryGetFor(client.gameObject, out TService service) ? service : throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {client.GetType().Name}.");
+		[JetBrains.Annotations.NotNull]
+		public static TService Get<TService>([JetBrains.Annotations.NotNull] Component client) => Services.TryGetFor(client.gameObject, out TService service) ? service : throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {client.GetType().Name}.");
 
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for <paramref name="client"/>.
@@ -272,8 +272,8 @@ namespace Pancake.Init
 		/// <param name="client"> The client <see cref="GameObject"/> that needs the service. </param>
 		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is accessible to the <paramref name="client"/>. </exception>
-		[NotNull]
-		public static TService Get<TService>([NotNull] GameObject client) => Services.TryGetFor(client, out TService service) ? service : throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {client.GetType().Name}.");
+		[JetBrains.Annotations.NotNull]
+		public static TService Get<TService>([JetBrains.Annotations.NotNull] GameObject client) => Services.TryGetFor(client, out TService service) ? service : throw new NullReferenceException($"No service of type {typeof(TService).Name} was found that was accessible to client {client.GetType().Name}.");
 
 		/// <summary>
 		/// Gets service of type <typeparamref name="TService"/> for any client.
@@ -289,7 +289,7 @@ namespace Pancake.Init
 		/// <param name="client"> The client <see cref="GameObject"/> that needs the service. </param>
 		/// <returns> Service of type <typeparamref name="TService"/>. </returns>
 		/// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is globally accessible to any client. </exception>
-		[NotNull, Preserve]
+		[JetBrains.Annotations.NotNull, Preserve]
 		public static TService Get<TService>() => Services.TryGetForAnyClient(out TService service) ? service : throw new NullReferenceException($"No globally accessible Service of type {typeof(TService).Name} was found.");
 
 		private static bool TryGetGameObject(object client, out GameObject gameObject)
@@ -337,7 +337,7 @@ namespace Pancake.Init
 		/// <typeparam name="TService"> The defining type of the service. </typeparam>
 		/// <param name="newInstance"> The new instance of the service. </param>
 		[Preserve]
-		public static void SetInstance<TService>([NotNull] TService newInstance)
+		public static void SetInstance<TService>([JetBrains.Annotations.NotNull] TService newInstance)
 		{
 			Debug.Assert(newInstance != null);
 

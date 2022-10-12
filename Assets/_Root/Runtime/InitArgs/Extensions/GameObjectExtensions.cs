@@ -37,7 +37,7 @@ namespace Pancake.Init
 		/// <exception cref="InitArgumentsNotReceivedException">
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TArgument}"/> and did not manually handle receiving the provided argument. 
 		/// </exception>
-		public static TComponent AddComponent<TComponent, TArgument>([NotNull] this GameObject gameObject, TArgument argument)
+		public static TComponent AddComponent<TComponent, TArgument>([JetBrains.Annotations.NotNull] this GameObject gameObject, TArgument argument)
 			where TComponent : MonoBehaviour, IArgs<TArgument>
 		{
 			#if DEBUG
@@ -93,7 +93,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static TComponent AddComponent<TComponent, TFirstArgument, TSecondArgument>
-			([NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument>
 		{
 			#if DEBUG
@@ -152,7 +152,7 @@ namespace Pancake.Init
 		/// and did receive the arguments during initialization. 
 		/// </exception>
 		public static TComponent AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			#if DEBUG
@@ -212,7 +212,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static TComponent AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
 			#if DEBUG
@@ -274,7 +274,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static TComponent AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
 			#if DEBUG
@@ -338,7 +338,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static TComponent AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-			([NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		{
 			#if DEBUG
@@ -395,7 +395,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static void AddComponent<TComponent, TArgument>
-			([NotNull] this GameObject gameObject, out TComponent component, TArgument argument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, out TComponent component, TArgument argument)
 				where TComponent : MonoBehaviour, IArgs<TArgument>
 				 => component = gameObject.AddComponent<TComponent, TArgument>(argument);
 
@@ -431,7 +431,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static void AddComponent<TComponent, TFirstArgument, TSecondArgument>
-			([NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument>
 				 => component = gameObject.AddComponent<TComponent, TFirstArgument, TSecondArgument>(firstArgument, secondArgument);
 
@@ -469,7 +469,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static void AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 				 => component = gameObject.AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument>(firstArgument, secondArgument, thirdArgument);
 
@@ -509,7 +509,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static void AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 				 => component = gameObject.AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>(firstArgument, secondArgument, thirdArgument, fourthArgument);
 
@@ -551,7 +551,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static void AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 				 => component = gameObject.AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);
 
@@ -595,7 +595,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TComponent"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> and did not manually handle receiving the provided arguments. 
 		/// </exception>
 		public static void AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-			([NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
+			([JetBrains.Annotations.NotNull] this GameObject gameObject, out TComponent component, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 				where TComponent : MonoBehaviour, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 				 => component = gameObject.AddComponent<TComponent, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument, sixthArgument);
 
@@ -623,37 +623,37 @@ namespace Pancake.Init
         /// <param name="gameObject"></param>
         /// <returns></returns>
         [CanBeNull]
-        public static T Get<T>([NotNull] this GameObject gameObject) => Find.In<T>(gameObject);
+        public static T Get<T>([JetBrains.Annotations.NotNull] this GameObject gameObject) => Find.In<T>(gameObject);
 
         [CanBeNull]
-        public static T Get<T>([NotNull] this Component component) => Find.In<T>(component.gameObject);
+        public static T Get<T>([JetBrains.Annotations.NotNull] this Component component) => Find.In<T>(component.gameObject);
 
-        public static bool TryGet<T>([NotNull] this GameObject gameObject, out T result) => Find.In(gameObject, out result);
-
-        [CanBeNull]
-        public static T[] GetAll<T>([NotNull] this GameObject gameObject) => Find.AllIn<T>(gameObject);
+        public static bool TryGet<T>([JetBrains.Annotations.NotNull] this GameObject gameObject, out T result) => Find.In(gameObject, out result);
 
         [CanBeNull]
-        public static T GetInChildren<T>([NotNull] this GameObject gameObject, bool includeInactive = false) => Find.InChildren<T>(gameObject, includeInactive);
+        public static T[] GetAll<T>([JetBrains.Annotations.NotNull] this GameObject gameObject) => Find.AllIn<T>(gameObject);
 
         [CanBeNull]
-        public static T[] GetAllInChildren<T>([NotNull] this GameObject gameObject, bool includeInactive = false) => Find.AllInChildren<T>(gameObject, includeInactive);
+        public static T GetInChildren<T>([JetBrains.Annotations.NotNull] this GameObject gameObject, bool includeInactive = false) => Find.InChildren<T>(gameObject, includeInactive);
 
         [CanBeNull]
-        public static T GetInParents<T>([NotNull] this GameObject gameObject, bool includeInactive = false) => Find.InParents<T>(gameObject, includeInactive);
+        public static T[] GetAllInChildren<T>([JetBrains.Annotations.NotNull] this GameObject gameObject, bool includeInactive = false) => Find.AllInChildren<T>(gameObject, includeInactive);
 
         [CanBeNull]
-        public static T[] GetAllInParents<T>([NotNull] this GameObject gameObject, bool includeInactive = false) => Find.AllInParents<T>(gameObject, includeInactive);
+        public static T GetInParents<T>([JetBrains.Annotations.NotNull] this GameObject gameObject, bool includeInactive = false) => Find.InParents<T>(gameObject, includeInactive);
 
         [CanBeNull]
-        public static TWrapped GetWrappedInChildren<TWrapped>([NotNull] this Component component, bool includeInactive = false) => Find.InChildren<TWrapped>(component.gameObject, includeInactive);
+        public static T[] GetAllInParents<T>([JetBrains.Annotations.NotNull] this GameObject gameObject, bool includeInactive = false) => Find.AllInParents<T>(gameObject, includeInactive);
 
         [CanBeNull]
-        public static TWrapped GetWrappedInParents<TWrapped>([NotNull] this Component component, bool includeInactive = false) => Find.InParents<TWrapped>(component.gameObject, includeInactive);
+        public static TWrapped GetWrappedInChildren<TWrapped>([JetBrains.Annotations.NotNull] this Component component, bool includeInactive = false) => Find.InChildren<TWrapped>(component.gameObject, includeInactive);
+
+        [CanBeNull]
+        public static TWrapped GetWrappedInParents<TWrapped>([JetBrains.Annotations.NotNull] this Component component, bool includeInactive = false) => Find.InParents<TWrapped>(component.gameObject, includeInactive);
 
         #region Internal
 
-        internal static Component AddComponent<TArgument>([NotNull] this GameObject gameObject, [NotNull] Type componentType, TArgument argument)
+        internal static Component AddComponent<TArgument>([JetBrains.Annotations.NotNull] this GameObject gameObject, [JetBrains.Annotations.NotNull] Type componentType, TArgument argument)
 		{
 			#if DEBUG
 			if(gameObject == null)
@@ -684,7 +684,7 @@ namespace Pancake.Init
 			throw new InitArgumentsNotReceivedException(nameof(AddComponent), componentType);
 		}
 
-		internal static Component AddComponent<TFirstArgument, TSecondArgument>([NotNull] this GameObject gameObject, [NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument)
+		internal static Component AddComponent<TFirstArgument, TSecondArgument>([JetBrains.Annotations.NotNull] this GameObject gameObject, [JetBrains.Annotations.NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument)
 		{
 			#if DEBUG
 			if(gameObject == null)
@@ -715,7 +715,7 @@ namespace Pancake.Init
 			throw new InitArgumentsNotReceivedException(nameof(AddComponent), componentType);
 		}
 
-		internal static Component AddComponent<TFirstArgument, TSecondArgument, TThirdArgument>([NotNull] this GameObject gameObject, [NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
+		internal static Component AddComponent<TFirstArgument, TSecondArgument, TThirdArgument>([JetBrains.Annotations.NotNull] this GameObject gameObject, [JetBrains.Annotations.NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 		{
 			#if DEBUG
 			if(gameObject == null)
@@ -746,7 +746,7 @@ namespace Pancake.Init
 			throw new InitArgumentsNotReceivedException(nameof(AddComponent), componentType);
 		}
 
-		internal static Component AddComponent<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([NotNull] this GameObject gameObject, [NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+		internal static Component AddComponent<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([JetBrains.Annotations.NotNull] this GameObject gameObject, [JetBrains.Annotations.NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 		{
 			#if DEBUG
 			if(gameObject == null)
@@ -777,7 +777,7 @@ namespace Pancake.Init
 			throw new InitArgumentsNotReceivedException(nameof(AddComponent), componentType);
 		}
 
-		internal static Component AddComponent<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([NotNull] this GameObject gameObject, [NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
+		internal static Component AddComponent<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([JetBrains.Annotations.NotNull] this GameObject gameObject, [JetBrains.Annotations.NotNull] Type componentType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 		{
 			#if DEBUG
 			if(gameObject == null)
@@ -809,21 +809,21 @@ namespace Pancake.Init
 		}
 
 		#if UNITY_EDITOR
-		internal static bool IsPartOfPrefabAssetOrOpenInPrefabStage([NotNull] this GameObject gameObject)
+		internal static bool IsPartOfPrefabAssetOrOpenInPrefabStage([JetBrains.Annotations.NotNull] this GameObject gameObject)
         {
 			return gameObject.IsPartOfPrefabAsset() || gameObject.IsOpenInPrefabStage();
         }
 		#endif
 
 		#if UNITY_EDITOR
-        internal static bool IsPartOfPrefabAsset([NotNull] this GameObject gameObject)
+        internal static bool IsPartOfPrefabAsset([JetBrains.Annotations.NotNull] this GameObject gameObject)
         {
 			return !gameObject.scene.IsValid();
 		}
 		#endif
 
 		#if UNITY_EDITOR
-        internal static bool IsOpenInPrefabStage([NotNull] this GameObject gameObject)
+        internal static bool IsOpenInPrefabStage([JetBrains.Annotations.NotNull] this GameObject gameObject)
         {
 		    #if UNITY_2020_1_OR_NEWER
 		    return UnityEditor.SceneManagement.StageUtility.GetStage(gameObject) != null;

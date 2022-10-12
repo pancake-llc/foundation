@@ -153,7 +153,7 @@ namespace Pancake.Init.Internal
         /// </summary>
         /// <param name="type"> Type to test. </param>
         /// <returns> <see langword="true"/> if type is the defining type of a service; otherwise, <see langword="false"/>. </returns>
-        public static bool IsDefiningTypeOfAnyServiceAttribute([NotNull] Type type)
+        public static bool IsDefiningTypeOfAnyServiceAttribute([JetBrains.Annotations.NotNull] Type type)
         {
             #if DEBUG || INIT_ARGS_SAFE_MODE
             if(type is null)
@@ -211,7 +211,7 @@ namespace Pancake.Init.Internal
         /// </summary>
         /// <param name="type"> Type to test. </param>
         /// <returns> <see langword="true"/> if <typeparamref name="T"/> is a concrete service type; otherwise, <see langword="false"/>. </returns>
-        public static bool HasServiceAttribute([NotNull] Type type)
+        public static bool HasServiceAttribute([JetBrains.Annotations.NotNull] Type type)
         {
             #if DEBUG || INIT_ARGS_SAFE_MODE
             if(type is null)
@@ -437,7 +437,7 @@ namespace Pancake.Init.Internal
             services[classWithAttribute] = instance;
         }
 
-        private static object LoadInstance([NotNull] Type classWithAttribute, [NotNull] Type definingType, [NotNull] ServiceAttribute serviceAttribute, ref GameObject container, HashSet<Type> initialized)
+        private static object LoadInstance([JetBrains.Annotations.NotNull] Type classWithAttribute, [JetBrains.Annotations.NotNull] Type definingType, [JetBrains.Annotations.NotNull] ServiceAttribute serviceAttribute, ref GameObject container, HashSet<Type> initialized)
         {
             if(serviceAttribute.FindFromScene)
             {
@@ -724,7 +724,7 @@ namespace Pancake.Init.Internal
         }
         #endif
 
-        private static bool TryGetService([NotNull] GameObject gameObject, [NotNull] Type classWithAttribute, [NotNull] Type definingType, out object instance)
+        private static bool TryGetService([JetBrains.Annotations.NotNull] GameObject gameObject, [JetBrains.Annotations.NotNull] Type classWithAttribute, [JetBrains.Annotations.NotNull] Type definingType, out object instance)
         {
             if(typeof(Component).IsAssignableFrom(classWithAttribute) && gameObject.TryGetComponent(classWithAttribute, out var component))
             {
@@ -787,7 +787,7 @@ namespace Pancake.Init.Internal
             return false;
         }
 
-        private static bool TryGetService([NotNull] Object unityObject, [NotNull] Type classWithAttribute, [NotNull] Type definingType, out object instance)
+        private static bool TryGetService([JetBrains.Annotations.NotNull] Object unityObject, [JetBrains.Annotations.NotNull] Type classWithAttribute, [JetBrains.Annotations.NotNull] Type definingType, out object instance)
         {
             if(unityObject is GameObject gameObject)
             {

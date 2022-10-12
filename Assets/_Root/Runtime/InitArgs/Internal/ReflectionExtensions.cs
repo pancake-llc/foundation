@@ -235,7 +235,7 @@ namespace Pancake.Init.Reflection
 		/// Thrown if no field or property with the provided <paramref name="name"/> was found on the <paramref name="client"/> class <typeparamref name="TClient"/>,
 		/// or if a field or property was found but a <paramref name="value"/> of type <typeparamref name="TValue"/> is not assignable to it.
 		/// </exception>
-		internal static void Init<TClient, TArgument>([NotNull] this TClient client, TArgument argument) where TClient : class
+		internal static void Init<TClient, TArgument>([JetBrains.Annotations.NotNull] this TClient client, TArgument argument) where TClient : class
         {
 			var init = Cached<TClient, TArgument>.Init;
 			if(init != null)
@@ -261,7 +261,7 @@ namespace Pancake.Init.Reflection
 			SetPropertyOrFieldValue(client, argument);
 		}
 
-		internal static void Init<TClient, TFirstArgument, TSecondArgument>([NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument) where TClient : class
+		internal static void Init<TClient, TFirstArgument, TSecondArgument>([JetBrains.Annotations.NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument) where TClient : class
 		{
 			var init = Cached<TClient, TFirstArgument, TSecondArgument>.Init;
 			if(init != null)
@@ -289,7 +289,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		internal static void Init<TClient, TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument) where TClient : class
+			([JetBrains.Annotations.NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument) where TClient : class
 		{
 			var init = Cached<TClient, TFirstArgument, TSecondArgument, TThirdArgument>.Init;
 			if(init != null)
@@ -318,7 +318,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		internal static void Init<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument) where TClient : class
+			([JetBrains.Annotations.NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument) where TClient : class
 		{
 			var init = Cached<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>.Init;
 			if(init != null)
@@ -348,7 +348,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		internal static void Init<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument) where TClient : class
+			([JetBrains.Annotations.NotNull] this TClient client, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument) where TClient : class
 		{
 			var init = Cached<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>.Init;
 			if(init != null)

@@ -22,9 +22,9 @@ namespace Pancake
 
     /// <summary>
     /// Represents a <see cref="UnityEngine.Object">Object</see> that acts as a simple wrapper for a plain old class object of type <typeparamref name="TWrapped"/>.
-	/// <para>
-	/// Base interface of <see cref="IWrapper{TWrapped}"/>.
-	/// </para>
+    /// <para>
+    /// Base interface of <see cref="IWrapper{TWrapped}"/>.
+    /// </para>
     /// </summary>
     public interface IWrapper
     {
@@ -40,21 +40,18 @@ namespace Pancake
         /// while <see cref="ScriptableObject"/> wrappers are never.
         /// </para>
         /// </summary>
-        [CanBeNull]
-        GameObject gameObject { get; }
+        [CanBeNull] GameObject gameObject { get; }
 
         /// <summary>
         /// This wrapper as a <see cref="MonoBehaviour"/>, or <see langword="null"/>
         /// if the wrapper class does not derive from <see cref="MonoBehaviour"/>.
         /// </summary>
-        [CanBeNull]
-        MonoBehaviour AsMonoBehaviour { get; }
+        [CanBeNull] MonoBehaviour AsMonoBehaviour { get; }
 
         /// <summary>
         /// This wrapper as an <see cref="Object"/>.
         /// </summary>
-        [NotNull]
-        Object AsObject { get; }
+        [JetBrains.Annotations.NotNull] Object AsObject { get; }
 
         /// <summary>
         /// Should the object be hidden, saved with the Scene or modifiable by the user?

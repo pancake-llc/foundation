@@ -203,7 +203,7 @@ namespace Pancake.Init
 		/// <param name="thirdArgument"> The third argument used to initialize the wrapped object. </param>
 		/// <param name="fourthArgument"> The fourth argument used to initialize the wrapped object. </param>
 		/// <returns> Instance of the <see cref="TWrapped"/> class. </returns>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		protected abstract TWrapped CreateWrappedObject(TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument);
 
 		/// <summary>
@@ -211,7 +211,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <param name="wrappedObject"> The <see cref="TWrapped">wrapped object</see> to pass to the <typeparamref name="TWrapper">wrapper</typeparamref>'s Init function. </param>
 		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TWrapper"/>. </returns>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		protected virtual TWrapper InitWrapper(TWrapped wrappedObject)
         {
             if(target == null)

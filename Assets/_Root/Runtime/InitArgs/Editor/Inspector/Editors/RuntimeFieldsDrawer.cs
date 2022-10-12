@@ -38,7 +38,7 @@ namespace Pancake.Init
         
         private readonly List<FieldInfo> fields;
 
-        public RuntimeFieldsDrawer([NotNull] object target, [CanBeNull] Type baseType)
+        public RuntimeFieldsDrawer([JetBrains.Annotations.NotNull] object target, [CanBeNull] Type baseType)
         {
             this.target = target;
             targetType = target.GetType();
@@ -77,7 +77,7 @@ namespace Pancake.Init
             return fields;
         }
 
-        private static bool ShouldDrawAsRuntimeField([NotNull] FieldInfo field)
+        private static bool ShouldDrawAsRuntimeField([JetBrains.Annotations.NotNull] FieldInfo field)
         {
             if(field.GetCustomAttribute<HideInInspector>() != null || field.GetCustomAttribute<SerializeField>() != null)
             {

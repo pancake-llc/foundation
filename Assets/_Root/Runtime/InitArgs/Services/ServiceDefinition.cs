@@ -54,7 +54,7 @@ namespace Pancake.Init.Internal
             }
         }
 
-        private static bool IsAssignableFrom([NotNull] Type definingType, [NotNull] Object service)
+        private static bool IsAssignableFrom([JetBrains.Annotations.NotNull] Type definingType, [JetBrains.Annotations.NotNull] Object service)
         {
             var serviceType = service.GetType();
             if(definingType.IsAssignableFrom(serviceType))

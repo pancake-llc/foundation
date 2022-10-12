@@ -116,7 +116,7 @@ namespace Pancake.Init
 		/// </summary>
 		/// <param name="argument"> The argument to pass to the target's Init function. </param>
 		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TClient"/>. </returns>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		protected virtual TClient InitTarget(TArgument argument)
         {
             if(target == null)

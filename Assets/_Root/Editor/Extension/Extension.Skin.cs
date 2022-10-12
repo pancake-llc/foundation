@@ -14,6 +14,15 @@ namespace Pancake.Editor
         private static GUIStyle boxArea;
         private static GUIStyle textImportant;
         private static GUIStyle htmlText;
+        private static GUIStyle button;
+        private static GUIStyle buttonItem;
+        private static GUIStyle tabButton;
+        private static GUIStyle boldFoldout;
+        private static GUIStyle actionButton;
+        private static GUIStyle headerLablel;
+        private static GUIStyle italicLablel;
+        private static GUIStyle contentBackground;
+        private static GUIStyle header;
 
         private const int CHEVRON_ICON_WIDTH = 10;
         private const int CHEVRON_ICON_RIGHT_MARGIN = 5;
@@ -78,7 +87,7 @@ namespace Pancake.Editor
                 return textImportant;
             }
         }
-        
+
         public static GUIStyle HtmlText
         {
             get
@@ -88,7 +97,171 @@ namespace Pancake.Editor
                 return htmlText;
             }
         }
-        
+
+        public static GUIStyle ButtonStyle
+        {
+            get
+            {
+                if (button == null)
+                {
+                    var normalTexture = EditorResources.HeaderTexture;
+                    var hoverTexture = EditorResources.HoverTexture;
+                    var pressTexture = EditorResources.PressTexture;
+
+                    button = new GUIStyle
+                    {
+                        alignment = TextAnchor.MiddleCenter,
+                        border = new RectOffset(2, 2, 2, 2),
+                        normal = {textColor = Color.white, background = normalTexture, scaledBackgrounds = new Texture2D[1] {normalTexture}},
+                        onNormal = {background = normalTexture, scaledBackgrounds = new Texture2D[1] {normalTexture}},
+                        hover = {textColor = Color.white, background = hoverTexture, scaledBackgrounds = new Texture2D[1] {hoverTexture}},
+                        onHover = {background = hoverTexture, scaledBackgrounds = new Texture2D[1] {hoverTexture}},
+                        focused = {textColor = Color.white, background = hoverTexture, scaledBackgrounds = new Texture2D[1] {hoverTexture}},
+                        onFocused = {background = hoverTexture, scaledBackgrounds = new Texture2D[1] {hoverTexture}},
+                        active = {textColor = Color.white, background = pressTexture, scaledBackgrounds = new Texture2D[1] {pressTexture}},
+                        onActive = {background = pressTexture, scaledBackgrounds = new Texture2D[1] {pressTexture}}
+                    };
+                }
+
+                return button;
+            }
+        }
+
+        public static GUIStyle ButtonItem
+        {
+            get
+            {
+                if (buttonItem == null)
+                {
+                    buttonItem = new GUIStyle(ButtonStyle)
+                    {
+                        fontSize = 12,
+                        alignment = TextAnchor.MiddleLeft,
+                        contentOffset = new Vector2(10, 0),
+                        normal = {textColor = new Color(0.8f, 0.8f, 0.8f, 1.0f)},
+                        onNormal = {textColor = new Color(0.8f, 0.8f, 0.8f, 1.0f)},
+                        hover = {textColor = Color.white},
+                        onHover = {textColor = Color.white},
+                        focused = {textColor = Color.white},
+                        onFocused = {textColor = Color.white},
+                        active = {textColor = Color.white},
+                        onActive = {textColor = Color.white}
+                    };
+                }
+
+                return buttonItem;
+            }
+        }
+
+        public static GUIStyle TabButton
+        {
+            get
+            {
+                if (tabButton == null)
+                {
+                    tabButton = new GUIStyle(ButtonStyle)
+                    {
+                        fontSize = HeaderLabel.fontSize,
+                        fontStyle = HeaderLabel.fontStyle,
+                        normal = {textColor = HeaderLabel.normal.textColor},
+                        active = {textColor = HeaderLabel.active.textColor},
+                        focused = {textColor = HeaderLabel.focused.textColor},
+                        hover = {textColor = HeaderLabel.hover.textColor},
+                        onNormal = {textColor = HeaderLabel.normal.textColor},
+                        onActive = {textColor = HeaderLabel.active.textColor},
+                        onFocused = {textColor = HeaderLabel.focused.textColor},
+                        onHover = {textColor = HeaderLabel.hover.textColor}
+                    };
+                }
+
+                return tabButton;
+            }
+        }
+
+        public static GUIStyle HeaderLabel
+        {
+            get
+            {
+                if (headerLablel == null)
+                {
+                    headerLablel = new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold, fontSize = 12, alignment = TextAnchor.MiddleCenter};
+                }
+
+                return headerLablel;
+            }
+        }
+
+        public static GUIStyle BoldFoldout
+        {
+            get
+            {
+                if (boldFoldout == null)
+                {
+                    boldFoldout = new GUIStyle(EditorStyles.foldout) {contentOffset = new Vector2(2, 0), fontStyle = FontStyle.Bold};
+                }
+
+                return boldFoldout;
+            }
+        }
+
+        public static GUIStyle ActionButton
+        {
+            get
+            {
+                if (actionButton == null)
+                {
+                    actionButton = new GUIStyle(ButtonStyle) {alignment = TextAnchor.MiddleCenter};
+                }
+
+                return actionButton;
+            }
+        }
+
+        public static GUIStyle ItalicLabel
+        {
+            get
+            {
+                if (italicLablel == null)
+                {
+                    italicLablel = new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Italic};
+                }
+
+                return italicLablel;
+            }
+        }
+
+        public static GUIStyle ContentBackground
+        {
+            get
+            {
+                if (contentBackground == null)
+                {
+                    var texture = EditorResources.ContentBackgroundTexture;
+
+                    contentBackground = new GUIStyle
+                    {
+                        normal = {background = texture, scaledBackgrounds = new Texture2D[1] {texture}}, border = new RectOffset(2, 2, 2, 2)
+                    };
+                }
+
+                return contentBackground;
+            }
+        }
+
+        public static GUIStyle Header
+        {
+            get
+            {
+                if (header == null)
+                {
+                    var texture = EditorResources.HeaderTexture;
+
+                    header = new GUIStyle {normal = {background = texture, scaledBackgrounds = new Texture2D[1] {texture}}, border = new RectOffset(2, 2, 2, 2)};
+                }
+
+                return header;
+            }
+        }
 
         public static GUIStyle GetCustomStyle(string styleName)
         {

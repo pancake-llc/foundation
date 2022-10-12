@@ -35,7 +35,7 @@ namespace Pancake.Init.EditorOnly
 		/// </summary>
 		/// <typeparam name="TClient"> Type of the component that the initializer initializes. </typeparam>
 		/// <param name="initializer"> Initializer responsible for initializing client of type <typeparamref name="TClient"/>. </param>
-		internal static void PrepareArgumentsForAutoInit<TClient>([NotNull] IInitializer initializer, int argumentCount) where TClient : Component
+		internal static void PrepareArgumentsForAutoInit<TClient>([JetBrains.Annotations.NotNull] IInitializer initializer, int argumentCount) where TClient : Component
 		{
 			var client = initializer.Target;
 			var initializerType = initializer.GetType();
@@ -87,7 +87,7 @@ namespace Pancake.Init.EditorOnly
 		/// <typeparam name="TArgument"> Type of the dependency of the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires <typeparamref name="TArgument"/>, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentForAutoInit<TClient, TArgument>([NotNull] TClient client) where TClient : IArgs<TArgument>
+		internal static bool TryPrepareArgumentForAutoInit<TClient, TArgument>([JetBrains.Annotations.NotNull] TClient client) where TClient : IArgs<TArgument>
 		{
 			var clientType = client.GetType();
 
@@ -123,7 +123,7 @@ namespace Pancake.Init.EditorOnly
 		/// <typeparam name="TSecondArgument"> Type of the second argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument>([NotNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument>([JetBrains.Annotations.NotNull] TClient client)
 			where TClient : IArgs<TFirstArgument, TSecondArgument>
 		{
 			var clientType = client.GetType();
@@ -161,7 +161,7 @@ namespace Pancake.Init.EditorOnly
 		/// <typeparam name="TThirdArgument"> Type of the third argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument>([NotNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument>([JetBrains.Annotations.NotNull] TClient client)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			var clientType = client.GetType();
@@ -200,7 +200,7 @@ namespace Pancake.Init.EditorOnly
 		/// <typeparam name="TFourthArgument"> Type of the fourth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([NotNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([JetBrains.Annotations.NotNull] TClient client)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
 			var clientType = client.GetType();
@@ -242,7 +242,7 @@ namespace Pancake.Init.EditorOnly
 		/// <typeparam name="TFifthArgument"> Type of the fifth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([NotNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([JetBrains.Annotations.NotNull] TClient client)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
         {
 			var clientType = client.GetType();
@@ -286,7 +286,7 @@ namespace Pancake.Init.EditorOnly
 		/// <typeparam name="TSixthArgument"> Type of the sixth argument required by the <paramref name="client"/> to test for being auto-initializable. </typeparam>
 		/// <param name="client"> Client whose class is checked for the <see cref="RequireComponent"/> attribute. </param>
 		/// <returns> <see langword="true"/> if the <paramref name="client"/> class requires all its dependencies, otherwise, <see langword="false"/>. </returns>
-		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>([NotNull] TClient client)
+		internal static bool TryPrepareArgumentsForAutoInit<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>([JetBrains.Annotations.NotNull] TClient client)
 			where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
         {
 			var clientType = client.GetType();
@@ -333,7 +333,7 @@ namespace Pancake.Init.EditorOnly
 		/// <param name="argumentIndex"> Index of the argument among the client's <see cref="IArgs{}"/> arguments. </param>
 		/// <returns> Instance of type <typeparamref name="TArgument"/> or <see langword="null"/>. </returns>
 		[CanBeNull]
-		internal static TArgument GetAutoInitArgument<TClient, TArgument>([NotNull] TClient client, int argumentIndex)
+		internal static TArgument GetAutoInitArgument<TClient, TArgument>([JetBrains.Annotations.NotNull] TClient client, int argumentIndex)
 		{
 			#if DEV_MODE
 			Debug.Assert(autoInitFrom.ContainsKey(client.GetType()), client.GetType().Name);
@@ -361,7 +361,7 @@ namespace Pancake.Init.EditorOnly
 		/// <param name="from"> Where to search when trying to locate an argument. </param>
 		/// <returns> Instance of type <typeparamref name="TArgument"/> or <see langword="null"/>. </returns>
 		[CanBeNull]
-		internal static TArgument GetAutoInitArgument<TClient, TArgument>([NotNull] TClient client, int argumentIndex, From from)
+		internal static TArgument GetAutoInitArgument<TClient, TArgument>([JetBrains.Annotations.NotNull] TClient client, int argumentIndex, From from)
 		{
 			var clientComponent = client as object as Component;
 			bool clientIsComponent = clientComponent != null;
@@ -785,7 +785,7 @@ namespace Pancake.Init.EditorOnly
 			return null;
 		}
 
-		private static TypeCollection GetDerivedTypes([NotNull] Type inheritedType)
+		private static TypeCollection GetDerivedTypes([JetBrains.Annotations.NotNull] Type inheritedType)
         {
             #if UNITY_EDITOR
 			return UnityEditor.TypeCache.GetTypesDerivedFrom(inheritedType);
@@ -886,7 +886,7 @@ namespace Pancake.Init.EditorOnly
         /// <typeparam name="TArgument"> Type to test whether or not it is a component type required by the <typeparamref name="TClient"/> class. </typeparam>
         /// <param name="classType"> The <see cref="MonoBehaviour"/> type to check for the <see cref="RequireComponent"/> attribute. </param>
         /// <returns> <see langword="true"/> if <typeparamref name="TClient"/> requires <typeparamref name="TArgument"/>, otherwise false. </returns>
-        private static bool ArgumentIsRequiredComponentFor<TArgument>([NotNull]Type classType)
+        private static bool ArgumentIsRequiredComponentFor<TArgument>([JetBrains.Annotations.NotNull]Type classType)
 		{
 			if(!typeof(Component).IsAssignableFrom(typeof(TArgument)) && !typeof(TArgument).IsInterface)
             {
@@ -940,7 +940,7 @@ namespace Pancake.Init.EditorOnly
 		/// <param name="argumentCount"> Number of arguments that the class accepts during initialization. </param>
 		/// <param name="clientType"> Type of the client that will receive the arguments. </param>
 		/// <returns> <see langword="true"/> if <paramref name="clientType"/> class contains the <see cref="InitOnResetAttribute"/>; otherwise, <see langword="false"/>. </returns>
-		private static bool HasInitOnResetAttribute([NotNull] Type clientType, int argumentCount)
+		private static bool HasInitOnResetAttribute([JetBrains.Annotations.NotNull] Type clientType, int argumentCount)
         {
 			Type[] argumentTypes = null;
 

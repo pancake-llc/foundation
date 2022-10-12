@@ -184,7 +184,7 @@ namespace Pancake.Init.Reflection
 		/// Thrown if no field or property with the provided <paramref name="name"/> was found on the <paramref name="client"/> class <typeparamref name="TClient"/>,
 		/// or if a field or property was found but a <paramref name="value"/> of type <typeparamref name="TValue"/> is not assignable to it.
 		/// </exception>
-		private static void SetPropertyOrFieldValue<TClient>(TClient client, [NotNull] string name, object value)
+		private static void SetPropertyOrFieldValue<TClient>(TClient client, [JetBrains.Annotations.NotNull] string name, object value)
         {
             switch(TryFindFieldOrProperty(typeof(TClient), name, out FieldInfo field, out PropertyInfo property))
             {
@@ -222,7 +222,7 @@ namespace Pancake.Init.Reflection
 			}
         }
 
-        private static FoundMember TryFindFieldOrProperty(Type componentType, [NotNull] string name, out FieldInfo field, out PropertyInfo property)
+        private static FoundMember TryFindFieldOrProperty(Type componentType, [JetBrains.Annotations.NotNull] string name, out FieldInfo field, out PropertyInfo property)
         {
 			for(var type = componentType; type != null; type = type.BaseType)
 			{
@@ -256,7 +256,7 @@ namespace Pancake.Init.Reflection
 		/// Thrown if no field or property with the provided <paramref name="name"/> was found on the <paramref name="client"/> class <typeparamref name="TClient"/>,
 		/// or if a field or property was found but a <paramref name="value"/> of type <typeparamref name="TValue"/> is not assignable to it.
 		/// </exception>
-		private static void SetPropertyOrFieldValue<TClient>(TClient client, [NotNull] object value)
+		private static void SetPropertyOrFieldValue<TClient>(TClient client, [JetBrains.Annotations.NotNull] object value)
         {
             switch(TryFindFieldOrProperty(typeof(TClient), value.GetType(), out FieldInfo field, out PropertyInfo property))
             {

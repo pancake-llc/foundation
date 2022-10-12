@@ -544,7 +544,7 @@ namespace Pancake.Init.EditorOnly
 			return isPrefab ? clientPrefabTooltip : clientInstantiateTooltip;
 		}
 
-		internal static GUIContent GetLabel([NotNull] Type type)
+		internal static GUIContent GetLabel([JetBrains.Annotations.NotNull] Type type)
 		{
 			if(!(type.GetCustomAttribute<AddComponentMenu>() is AddComponentMenu addComponentMenu))
 			{
@@ -578,7 +578,7 @@ namespace Pancake.Init.EditorOnly
 			return Array.Empty<PropertyAttribute>();
 		}
 
-		internal static bool TryGetAttributeBasedPropertyDrawer([NotNull] Type metadataClass, [NotNull] SerializedProperty serializedProperty, [NotNull] Type argumentType, out PropertyDrawer propertyDrawer)
+		internal static bool TryGetAttributeBasedPropertyDrawer([JetBrains.Annotations.NotNull] Type metadataClass, [JetBrains.Annotations.NotNull] SerializedProperty serializedProperty, [JetBrains.Annotations.NotNull] Type argumentType, out PropertyDrawer propertyDrawer)
 		{
 			foreach(var propertyAttribute in GetPropertyAttributes(metadataClass, argumentType))
 			{
@@ -592,7 +592,7 @@ namespace Pancake.Init.EditorOnly
 			return false;
 		}
 
-		internal static bool TryGetAttributeBasedPropertyDrawer([NotNull] SerializedProperty serializedProperty, [CanBeNull] PropertyAttribute propertyAttribute, out PropertyDrawer propertyDrawer)
+		internal static bool TryGetAttributeBasedPropertyDrawer([JetBrains.Annotations.NotNull] SerializedProperty serializedProperty, [CanBeNull] PropertyAttribute propertyAttribute, out PropertyDrawer propertyDrawer)
 		{
 			if(!TryGetDrawerType(propertyAttribute, out Type drawerType))
 			{
@@ -624,7 +624,7 @@ namespace Pancake.Init.EditorOnly
 			return true;
 		}
 
-		private static bool TryGetDrawerType([NotNull] PropertyAttribute propertyAttribute, out Type drawerType)
+		private static bool TryGetDrawerType([JetBrains.Annotations.NotNull] PropertyAttribute propertyAttribute, out Type drawerType)
 		{
 			var propertyAttributeType = propertyAttribute.GetType();
 			var typeField = typeof(CustomPropertyDrawer).GetField("m_Type", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -667,7 +667,7 @@ namespace Pancake.Init.EditorOnly
 			return GetLabel(parameterType);
 		}
 
-		internal static GUIContent GetLabel([NotNull] MemberInfo member)
+		internal static GUIContent GetLabel([JetBrains.Annotations.NotNull] MemberInfo member)
 		{
 			var label = GetLabel(member.Name);
 			label.tooltip = GetTooltip(member);

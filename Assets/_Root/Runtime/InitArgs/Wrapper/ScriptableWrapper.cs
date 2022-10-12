@@ -70,20 +70,20 @@ namespace Pancake.Init
         /// Scriptable objects are not attached to <see cref="GameObject">GameObjects</see>;
         /// this always returns <see langword="null"/>.
         /// </summary>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         GameObject IWrapper.gameObject => null;
 
         /// <summary>
         /// Scriptable objects do not derive from <see cref="MonoBehaviour"/>;
         /// this always returns <see langword="null"/>.
         /// </summary>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         MonoBehaviour IWrapper.AsMonoBehaviour => null;
 
         /// <summary>
         /// This wrapper as an <see cref="Object"/>.
         /// </summary>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         Object IWrapper.AsObject => this;
 
         /// <summary>

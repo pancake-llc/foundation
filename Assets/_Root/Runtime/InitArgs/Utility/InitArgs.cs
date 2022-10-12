@@ -355,7 +355,7 @@ namespace Pancake.Init
 		/// <param name="argument"> The argument received, or default value if no stored argument was found. </typeparam>
 		/// <returns> <see langword="true"/> if an argument had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException"> Thrown if <paramref name="client"/> argument is <see langword="null"/>. </exception>
-		public static bool TryGet<TClient, TArgument>(Context context, [NotNull] TClient client, out TArgument argument) where TClient : IArgs<TArgument>
+		public static bool TryGet<TClient, TArgument>(Context context, [JetBrains.Annotations.NotNull] TClient client, out TArgument argument) where TClient : IArgs<TArgument>
 		{
 			#if DEBUG
 			if(ReferenceEquals(client, null) || (client is Object obj && obj == null))
@@ -418,7 +418,7 @@ namespace Pancake.Init
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument>
-			(Context context, [NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument)
+			(Context context, [JetBrains.Annotations.NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument>
 		{
 			#if DEBUG
@@ -482,7 +482,7 @@ namespace Pancake.Init
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument>
-			(Context context, [NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument)
+			(Context context, [JetBrains.Annotations.NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			#if DEBUG
@@ -550,7 +550,7 @@ namespace Pancake.Init
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			(Context context, [NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument)
+			(Context context, [JetBrains.Annotations.NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
 			#if DEBUG
@@ -623,7 +623,7 @@ namespace Pancake.Init
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			(Context context, [NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument)
+			(Context context, [JetBrains.Annotations.NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
 			#if DEBUG
@@ -700,7 +700,7 @@ namespace Pancake.Init
 		/// <returns> <see langword="true"/> if arguments had been provided for the object; otherwise, <see langword="false"/>. </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if client argument is null. </exception>
 		public static bool TryGet<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-			(Context context, [NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument)
+			(Context context, [JetBrains.Annotations.NotNull] TClient client, out TFirstArgument firstArgument, out TSecondArgument secondArgument, out TThirdArgument thirdArgument, out TFourthArgument fourthArgument, out TFifthArgument fifthArgument, out TSixthArgument sixthArgument)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		{
 			#if DEBUG
@@ -927,7 +927,7 @@ namespace Pancake.Init
 		/// <see cref="TryGet{TClient, TArgument}"/>; otherwise, <see langword="false"/>.
 		/// </returns>
 		/// <exception cref="ArgumentNullException" > Thrown if the <paramref name="clientType"/> argument is <see langword="null"/>. </exception>
-		public static bool Clear<TArgument>([NotNull] Type clientType)
+		public static bool Clear<TArgument>([JetBrains.Annotations.NotNull] Type clientType)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -960,7 +960,7 @@ namespace Pancake.Init
 		/// using <see cref="Set{TFirstArgument, TSecondArgument}"/> but never retrieved using
 		/// <see cref="TryGet{TClient, TFirstArgument, TSecondArgument}"/>; otherwise, <see langword="false"/>.
 		/// </returns>
-		public static bool Clear<TFirstArgument, TSecondArgument>([NotNull] Type clientType)
+		public static bool Clear<TFirstArgument, TSecondArgument>([JetBrains.Annotations.NotNull] Type clientType)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -990,7 +990,7 @@ namespace Pancake.Init
 		/// using <see cref="Set{TFirstArgument, TSecondArgument, TThirdArgument}"/> but never retrieved using
 		/// <see cref="TryGet{TClient, TFirstArgument, TSecondArgument, TThirdArgument}"/>; otherwise, <see langword="false"/>.
 		/// </returns>
-		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument>([NotNull] Type clientType)
+		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument>([JetBrains.Annotations.NotNull] Type clientType)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1021,7 +1021,7 @@ namespace Pancake.Init
 		/// using <see cref="Set{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/> but never retrieved using
 		/// <see cref="TryGet{TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>; otherwise, <see langword="false"/>.
 		/// </returns>
-		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([NotNull] Type clientType)
+		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>([JetBrains.Annotations.NotNull] Type clientType)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1053,7 +1053,7 @@ namespace Pancake.Init
 		/// using <see cref="Set{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/> but never retrieved using
 		/// <see cref="TryGet{TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>; otherwise, <see langword="false"/>.
 		/// </returns>
-		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([NotNull] Type clientType)
+		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>([JetBrains.Annotations.NotNull] Type clientType)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1086,7 +1086,7 @@ namespace Pancake.Init
 		/// using <see cref="Set{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/> but never retrieved using
 		/// <see cref="TryGet{TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>; otherwise, <see langword="false"/>.
 		/// </returns>
-		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>([NotNull] Type clientType)
+		public static bool Clear<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>([JetBrains.Annotations.NotNull] Type clientType)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1218,7 +1218,7 @@ namespace Pancake.Init
 			return Args<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>.args.TryGetValue(client.GetType(), out var dependency) && dependency.received;
 		}
 
-		internal static void Set<TArgument>([NotNull] Type clientType, TArgument argument)
+		internal static void Set<TArgument>([JetBrains.Annotations.NotNull] Type clientType, TArgument argument)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1235,7 +1235,7 @@ namespace Pancake.Init
 		}
 
 		internal static void Set<TFirstArgument, TSecondArgument>
-			([NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument)
+			([JetBrains.Annotations.NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1252,7 +1252,7 @@ namespace Pancake.Init
 		}
 
 		internal static void Set<TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
+			([JetBrains.Annotations.NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1270,7 +1270,7 @@ namespace Pancake.Init
 		}
 
 		internal static void Set<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+			([JetBrains.Annotations.NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1288,7 +1288,7 @@ namespace Pancake.Init
 		}
 
 		internal static void Set<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
+			([JetBrains.Annotations.NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 		{
 			#if DEBUG
 			if(clientType is null)
@@ -1306,7 +1306,7 @@ namespace Pancake.Init
 		}
 
 		internal static void Set<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-			([NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
+			([JetBrains.Annotations.NotNull] Type clientType, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 		{
 			#if DEBUG
 			if(clientType is null)

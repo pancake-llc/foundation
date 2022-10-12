@@ -236,7 +236,7 @@ namespace Pancake.Init.EditorOnly
 			ConcatAllTypeOptions(ref typeOptions, serviceType);
 		}
 
-		private static void ConcatTypeOptions(ref IEnumerable<Type> typeOptions, [NotNull] Type serviceType, [CanBeNull] Type wrappedType)
+		private static void ConcatTypeOptions(ref IEnumerable<Type> typeOptions, [JetBrains.Annotations.NotNull] Type serviceType, [CanBeNull] Type wrappedType)
         {
 			if(TypeUtility.IsNullOrBaseType(wrappedType))
 			{

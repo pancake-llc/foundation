@@ -42,7 +42,7 @@ namespace Pancake.Init.Reflection
 		/// Thrown if no field or property by the provided name is found on the client
 		/// or if property by given name is not auto-implemented and does not have a set accessor.
 		/// </exception>
-		public static void Inject<TClient, TArgument>([NotNull] TClient client, [NotNull] string memberName, [CanBeNull] TArgument value) where TClient : IArgs<TArgument>
+		public static void Inject<TClient, TArgument>([JetBrains.Annotations.NotNull] TClient client, [JetBrains.Annotations.NotNull] string memberName, [CanBeNull] TArgument value) where TClient : IArgs<TArgument>
 		{
 			InjectInternal(client, memberName, value);
 		}
@@ -65,7 +65,7 @@ namespace Pancake.Init.Reflection
 		/// or if property by given name is not auto-implemented and does not have a set accessor.
 		/// </exception>
 		public static void Inject<TClient, TFirstArgument, TSecondArgument>
-			([NotNull] TClient client, [NotNull] string memberName, [CanBeNull] object value)
+			([JetBrains.Annotations.NotNull] TClient client, [JetBrains.Annotations.NotNull] string memberName, [CanBeNull] object value)
 				where TClient : IArgs<TFirstArgument, TSecondArgument>
 		{
 			InjectInternal(client, memberName, value);
@@ -89,7 +89,7 @@ namespace Pancake.Init.Reflection
 		/// or if property by given name is not auto-implemented and does not have a set accessor.
 		/// </exception>
 		public static void Inject<TClient, TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull] TClient client, [NotNull] string memberName, [CanBeNull] object value)
+			([JetBrains.Annotations.NotNull] TClient client, [JetBrains.Annotations.NotNull] string memberName, [CanBeNull] object value)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			InjectInternal(client, memberName, value);
@@ -113,7 +113,7 @@ namespace Pancake.Init.Reflection
 		/// or if property by given name is not auto-implemented and does not have a set accessor.
 		/// </exception>
 		public static void Inject<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] TClient client, [NotNull] string memberName, [CanBeNull] object value)
+			([JetBrains.Annotations.NotNull] TClient client, [JetBrains.Annotations.NotNull] string memberName, [CanBeNull] object value)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
 			InjectInternal(client, memberName, value);
@@ -137,7 +137,7 @@ namespace Pancake.Init.Reflection
 		/// or if property by given name is not auto-implemented and does not have a set accessor.
 		/// </exception>
 		public static void Inject<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] TClient client, [NotNull] string memberName, [CanBeNull] object value)
+			([JetBrains.Annotations.NotNull] TClient client, [JetBrains.Annotations.NotNull] string memberName, [CanBeNull] object value)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
 			InjectInternal(client, memberName, value);
@@ -161,7 +161,7 @@ namespace Pancake.Init.Reflection
 		/// or if property by given name is not auto-implemented and does not have a set accessor.
 		/// </exception>
 		public static void Inject<TClient, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-			([NotNull] TClient client, [NotNull] string memberName, [CanBeNull] object value)
+			([JetBrains.Annotations.NotNull] TClient client, [JetBrains.Annotations.NotNull] string memberName, [CanBeNull] object value)
 				where TClient : IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		{
 			InjectInternal(client, memberName, value);
@@ -186,7 +186,7 @@ namespace Pancake.Init.Reflection
 		/// Thrown if no field or property is found with their name closely matching that of the <paramref name="parameter"/>,
 		/// and more than one field or property is found with their type matching the type of the parameter exactly.
 		/// </exception>
-		public static string GetConstructorArgumentTargetFieldName([NotNull] Type classType, [NotNull] Type parameterType)
+		public static string GetConstructorArgumentTargetFieldName([JetBrains.Annotations.NotNull] Type classType, [JetBrains.Annotations.NotNull] Type parameterType)
 		{
 			string argumentTypeName = parameterType.Name;
 			string memberName = GetConstructorArgumentTargetFieldName(classType, parameterType, argumentTypeName);
@@ -224,7 +224,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		[CanBeNull]
-		private static string GetConstructorArgumentTargetFieldName([NotNull] Type classType, [NotNull] Type argumentType, string argumentTypeName)
+		private static string GetConstructorArgumentTargetFieldName([JetBrains.Annotations.NotNull] Type classType, [JetBrains.Annotations.NotNull] Type argumentType, string argumentTypeName)
         {
 			if(AssignableClassMemberExists(classType, argumentTypeName, argumentType))
             {
@@ -356,7 +356,7 @@ namespace Pancake.Init.Reflection
 		}
 
 		[CanBeNull]
-		internal static bool TryGetConstructorArgumentTarget([NotNull] Type classType, [NotNull] Type argumentType, string argumentTypeName, out MemberInfo member)
+		internal static bool TryGetConstructorArgumentTarget([JetBrains.Annotations.NotNull] Type classType, [JetBrains.Annotations.NotNull] Type argumentType, string argumentTypeName, out MemberInfo member)
         {
 			if(TryGetAssignableClassMember(classType, argumentTypeName, argumentType, out member))
             {
@@ -494,7 +494,7 @@ namespace Pancake.Init.Reflection
 			return false;
 		}
 
-		private static bool TryGetAssignableClassMember([NotNull] Type classType, [NotNull] string memberName, [NotNull] Type assignedType, out MemberInfo member)
+		private static bool TryGetAssignableClassMember([JetBrains.Annotations.NotNull] Type classType, [JetBrains.Annotations.NotNull] string memberName, [JetBrains.Annotations.NotNull] Type assignedType, out MemberInfo member)
         {
 			for(var type = classType; !IsNullOrBaseType(type); type = type.BaseType)
 			{
@@ -538,7 +538,7 @@ namespace Pancake.Init.Reflection
 		/// <exception cref="MissingMemberException">
 		/// Thrown if no field or property by name <paramref name="memberName"/> is found on class <paramref name="classType"/> or any of its inherited types.
 		/// </exception>
-		public static bool IsClassMemberSerialized([NotNull] Type classType, [NotNull] string memberName)
+		public static bool IsClassMemberSerialized([JetBrains.Annotations.NotNull] Type classType, [JetBrains.Annotations.NotNull] string memberName)
         {
 			for(var type = classType; !IsNullOrBaseType(type); type = type.BaseType)
 			{
@@ -617,7 +617,7 @@ namespace Pancake.Init.Reflection
 			return type.IsSerializable && !type.IsAbstract;
         }
 
-		private static bool AssignableClassMemberExists([NotNull] Type classType, [NotNull] string memberName, [NotNull] Type assignedType)
+		private static bool AssignableClassMemberExists([JetBrains.Annotations.NotNull] Type classType, [JetBrains.Annotations.NotNull] string memberName, [JetBrains.Annotations.NotNull] Type assignedType)
         {
 			for(var type = classType; !IsNullOrBaseType(type); type = type.BaseType)
 			{
@@ -650,7 +650,7 @@ namespace Pancake.Init.Reflection
 			return false;
 		}
 
-		private static void InjectInternal([NotNull] object client, [NotNull] string memberName, [CanBeNull] object value)
+		private static void InjectInternal([JetBrains.Annotations.NotNull] object client, [JetBrains.Annotations.NotNull] string memberName, [CanBeNull] object value)
 		{
 			#if DEBUG
 			if(client is null)
@@ -680,8 +680,8 @@ namespace Pancake.Init.Reflection
 			throw new MissingMemberException(client.GetType().Name, memberName);
 		}
 
-		[NotNull]
-		private static MemberInfo GetClassMemberForInjection([NotNull] object client, [NotNull] string memberName)
+		[JetBrains.Annotations.NotNull]
+		private static MemberInfo GetClassMemberForInjection([JetBrains.Annotations.NotNull] object client, [JetBrains.Annotations.NotNull] string memberName)
 		{
 			if(settersByType.TryGetValue(client.GetType(), out var setters))
             {

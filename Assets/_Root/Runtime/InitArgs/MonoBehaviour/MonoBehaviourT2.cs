@@ -73,7 +73,7 @@ namespace Pancake.Init
 		/// Thrown if no field or property by the provided name is found or if property by given name is not auto-implemented
 		/// and does not have a set accessor.
 		/// </exception>
-		protected object this[[NotNull] string memberName]
+		protected object this[[JetBrains.Annotations.NotNull] string memberName]
         {
 			set
 			{

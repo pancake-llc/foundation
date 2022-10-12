@@ -277,7 +277,7 @@ namespace Pancake.Init.EditorOnly
 
 		public static bool HasCustomEditor(Type componentType) => GetCustomEditorType(componentType, false) != genericInspectorType;
 
-		public static Type GetCustomEditorType([NotNull] Type componentType, bool multiEdit)
+		public static Type GetCustomEditorType([JetBrains.Annotations.NotNull] Type componentType, bool multiEdit)
 		{
 			#if DEV_MODE
 			Debug.Assert(componentType != null);

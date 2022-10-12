@@ -30,7 +30,7 @@ namespace Pancake.Init.EditorOnly
 			}
 		}
 
-		private static void OnAfterGameObjectHeaderGUI([NotNull] UnityEditor.Editor gameObjectEditor)
+		private static void OnAfterGameObjectHeaderGUI([JetBrains.Annotations.NotNull] UnityEditor.Editor gameObjectEditor)
 		{
 			GameObject gameObject = gameObjectEditor.target as GameObject;
 			if(!TryGetRefTag(gameObject, gameObject, out RefTag referenceable))

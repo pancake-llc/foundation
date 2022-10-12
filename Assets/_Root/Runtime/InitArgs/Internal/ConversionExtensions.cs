@@ -10,7 +10,7 @@ namespace Pancake.Init
 
     internal class ConversionExtensions
     {
-        internal static bool TryConvert<T>([NotNull] object obj, out T result)
+        internal static bool TryConvert<T>([JetBrains.Annotations.NotNull] object obj, out T result)
         {
             if(obj is T castable)
             {
@@ -64,7 +64,7 @@ namespace Pancake.Init
             return false;
         }
 
-        internal static T As<T>([NotNull] Object obj)
+        internal static T As<T>([JetBrains.Annotations.NotNull] Object obj)
         {
             if(obj is T result)
             {
@@ -83,7 +83,7 @@ namespace Pancake.Init
             return default;
         }
 
-        internal static object As([NotNull] Type type, [NotNull] Object obj)
+        internal static object As([JetBrains.Annotations.NotNull] Type type, [JetBrains.Annotations.NotNull] Object obj)
         {
             if(type.IsAssignableFrom(obj.GetType()))
             {
@@ -103,7 +103,7 @@ namespace Pancake.Init
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
 
-        internal static void TryAddAs<T>([NotNull] List<T> list, [NotNull] Object obj)
+        internal static void TryAddAs<T>([JetBrains.Annotations.NotNull] List<T> list, [JetBrains.Annotations.NotNull] Object obj)
         {
             if(obj is T result)
             {
@@ -117,7 +117,7 @@ namespace Pancake.Init
             }
         }
 
-        internal static void TryAddAs([NotNull] List<object> list, [NotNull] Object obj, [NotNull] Type asType)
+        internal static void TryAddAs([JetBrains.Annotations.NotNull] List<object> list, [JetBrains.Annotations.NotNull] Object obj, [JetBrains.Annotations.NotNull] Type asType)
         {
             var objectType = obj.GetType();
             if(asType.IsAssignableFrom(objectType))
@@ -132,7 +132,7 @@ namespace Pancake.Init
             }
         }
 
-        internal static void TryAddAs<T>([NotNull] List<T> list, [NotNull] Object[] objs)
+        internal static void TryAddAs<T>([JetBrains.Annotations.NotNull] List<T> list, [JetBrains.Annotations.NotNull] Object[] objs)
         {
             for(int i = objs.Length - 1; i >= 0; i--)
             {

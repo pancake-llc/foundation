@@ -150,7 +150,7 @@ namespace Pancake.Init
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
         /// <returns> Loaded <see cref="Any"/> instance, if found; otherwise, <see langword="null"/>. </returns>
         [CanBeNull]
-        public static object Any([NotNull] Type type, bool includeInactive = false)
+        public static object Any([JetBrains.Annotations.NotNull] Type type, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -190,7 +190,7 @@ namespace Pancake.Init
         /// <param name="match"> The Predicate<T> delegate that defines the conditions of the Object to search for. </param>
         /// <returns></returns>
         [CanBeNull]
-        public static T Any<T>([NotNull] Predicate<T> match, bool includeInactive = false)
+        public static T Any<T>([JetBrains.Annotations.NotNull] Predicate<T> match, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
             {
@@ -223,8 +223,8 @@ namespace Pancake.Init
         /// </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
         /// <returns> Array of zero or more objects of the given <paramref name="type"/>. </returns>
-        [NotNull]
-        public static object[] All([NotNull] Type type, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static object[] All([JetBrains.Annotations.NotNull] Type type, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -269,8 +269,8 @@ namespace Pancake.Init
         /// </para>
         /// </typeparam>
         /// <returns> Array of zero or more objects of type <typeparamref name="T"/>. </returns>
-        [NotNull]
-        public static T[] All<T>([NotNull] Predicate<T> match, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static T[] All<T>([JetBrains.Annotations.NotNull] Predicate<T> match, bool includeInactive = false)
         {
             var list = Cached<T>.list;
             All(match, list, includeInactive);
@@ -290,8 +290,8 @@ namespace Pancake.Init
         /// </para>
         /// </typeparam>
         /// <param name="results"> List into which found instances are added. </param>
-        [NotNull]
-        public static void All<T>([NotNull] Predicate<T> match, [NotNull] List<T> results, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static void All<T>([JetBrains.Annotations.NotNull] Predicate<T> match, [JetBrains.Annotations.NotNull] List<T> results, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
             {
@@ -320,7 +320,7 @@ namespace Pancake.Init
         /// </para>
         /// </typeparam>
         /// <returns> An array containing all found instances; if no results were found, then an empty array. </returns>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         public static T[] All<T>(bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
@@ -353,8 +353,8 @@ namespace Pancake.Init
         /// </typeparam>
         /// <param name="results"> List into which found instances are added. </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
-        [NotNull]
-        public static void All<T>([NotNull] List<T> results, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static void All<T>([JetBrains.Annotations.NotNull] List<T> results, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
             {
@@ -381,8 +381,8 @@ namespace Pancake.Init
         /// </param>
         /// <param name="results"> List into which found instances are added. </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
-        [NotNull]
-        public static void All<T>([NotNull] Type type, [NotNull] List<T> results, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static void All<T>([JetBrains.Annotations.NotNull] Type type, [JetBrains.Annotations.NotNull] List<T> results, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -404,7 +404,7 @@ namespace Pancake.Init
         /// or objects that are wrapped by a <see cref="IWrapper{T}"/> can be returned.
         /// </para>
         /// </typeparam>
-        public static bool InParents<T>([NotNull] GameObject gameObject, out T result, bool includeInactive = false)
+        public static bool InParents<T>([JetBrains.Annotations.NotNull] GameObject gameObject, out T result, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
             {
@@ -437,7 +437,7 @@ namespace Pancake.Init
         /// or objects that are wrapped by a <see cref="IWrapper{T}"/> can be returned.
         /// </para>
         /// </typeparam>
-        public static T InParents<T>([NotNull] GameObject gameObject, bool includeInactive = false)
+        public static T InParents<T>([JetBrains.Annotations.NotNull] GameObject gameObject, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
             {
@@ -456,7 +456,7 @@ namespace Pancake.Init
             return default;
         }
 
-        public static bool InParents([NotNull] GameObject gameObject, Type type, out object result, bool includeInactive = false)
+        public static bool InParents([JetBrains.Annotations.NotNull] GameObject gameObject, Type type, out object result, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -490,8 +490,8 @@ namespace Pancake.Init
         /// </para>
         /// </typeparam>
         /// <returns> Array of zero or more objects of type <typeparamref name="T"/>. </returns>
-        [NotNull]
-        public static T[] AllInParents<T>([NotNull] GameObject gameObject, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static T[] AllInParents<T>([JetBrains.Annotations.NotNull] GameObject gameObject, bool includeInactive = false)
         {
             var list = Cached<T>.list;
             AllInParents(gameObject, list, includeInactive);
@@ -514,8 +514,8 @@ namespace Pancake.Init
         /// </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
         /// <returns> Array of zero or more objects of type <typeparamref name="T"/>. </returns>
-        [NotNull]
-        public static object[] AllInParents([NotNull] GameObject gameObject, Type type, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static object[] AllInParents([JetBrains.Annotations.NotNull] GameObject gameObject, Type type, bool includeInactive = false)
         {
             var list = Cached<object>.list;
             AllInParents(gameObject, type, list, includeInactive);
@@ -541,7 +541,7 @@ namespace Pancake.Init
         /// <param name="gameObject"> The <see cref="GameObject"/> to search along with all its parents. </param>
         /// <param name="results"> List into which found instances are added. </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
-        public static void AllInParents<T>([NotNull] GameObject gameObject, [NotNull] List<T> results, bool includeInactive = false)
+        public static void AllInParents<T>([JetBrains.Annotations.NotNull] GameObject gameObject, [JetBrains.Annotations.NotNull] List<T> results, bool includeInactive = false)
         {
             AllInParents(gameObject, typeof(T), results, includeInactive);
         }
@@ -566,7 +566,7 @@ namespace Pancake.Init
         /// <param name="gameObject"> The <see cref="GameObject"/> to search along with all its parents. </param>
         /// <param name="results"> List into which found instances are added. </param>
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
-        public static void AllInParents<T>([NotNull] GameObject gameObject, [NotNull] Type type, [NotNull] List<T> results, bool includeInactive = false)
+        public static void AllInParents<T>([JetBrains.Annotations.NotNull] GameObject gameObject, [JetBrains.Annotations.NotNull] Type type, [JetBrains.Annotations.NotNull] List<T> results, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -614,7 +614,7 @@ namespace Pancake.Init
         /// <returns>
         /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static T InChildren<T>([NotNull] GameObject gameObject, bool includeInactive = false)
+        public static T InChildren<T>([JetBrains.Annotations.NotNull] GameObject gameObject, bool includeInactive = false)
         {
             var type = typeof(T);
             if(typeof(Component).IsAssignableFrom(type))
@@ -639,7 +639,7 @@ namespace Pancake.Init
             return default;
         }
 
-        public static bool InChildren<T>([NotNull] GameObject gameObject, out T result, bool includeInactive = false)
+        public static bool InChildren<T>([JetBrains.Annotations.NotNull] GameObject gameObject, out T result, bool includeInactive = false)
         {
             var type = typeof(T);
 
@@ -662,7 +662,7 @@ namespace Pancake.Init
             return false;
         }
 
-        public static object InChildren([NotNull] GameObject gameObject, [NotNull] Type type, bool includeInactive = false)
+        public static object InChildren([JetBrains.Annotations.NotNull] GameObject gameObject, [JetBrains.Annotations.NotNull] Type type, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -687,7 +687,7 @@ namespace Pancake.Init
             return default;
         }
 
-        public static bool InChildren([NotNull] GameObject gameObject, [NotNull] Type type, out object result, bool includeInactive = false)
+        public static bool InChildren([JetBrains.Annotations.NotNull] GameObject gameObject, [JetBrains.Annotations.NotNull] Type type, out object result, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -716,8 +716,8 @@ namespace Pancake.Init
         }
 
         /// <returns> Array of zero or more objects of type <typeparamref name="T"/>. </returns>
-        [NotNull]
-        public static T[] AllInChildren<T>([NotNull] GameObject gameObject, bool includeInactive = false)
+        [JetBrains.Annotations.NotNull]
+        public static T[] AllInChildren<T>([JetBrains.Annotations.NotNull] GameObject gameObject, bool includeInactive = false)
         {
             var list = Cached<T>.list;
             AllInChildren(gameObject, list, includeInactive);
@@ -725,7 +725,7 @@ namespace Pancake.Init
         }
 
         /// <param name="results"> List into which found instances are added. </param>
-        public static void AllInChildren<T>([NotNull] GameObject gameObject, [NotNull] List<T> results, bool includeInactive = false)
+        public static void AllInChildren<T>([JetBrains.Annotations.NotNull] GameObject gameObject, [JetBrains.Annotations.NotNull] List<T> results, bool includeInactive = false)
         {
             var type = typeof(T);
             if(typeof(Component).IsAssignableFrom(type))
@@ -756,7 +756,7 @@ namespace Pancake.Init
         }
 
         /// <returns> Array of zero or more objects of the given <paramref name="type"/>. </returns>
-        public static object[] AllInChildren([NotNull] GameObject gameObject, [NotNull] Type type, bool includeInactive = false)
+        public static object[] AllInChildren([JetBrains.Annotations.NotNull] GameObject gameObject, [JetBrains.Annotations.NotNull] Type type, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -892,7 +892,7 @@ namespace Pancake.Init
         /// </para>
         /// </param>
         /// <returns> Array of zero or more <see cref="GameObject">GameObjects</see>. </returns>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         public static GameObject[] AllWithTag(string tag, bool includeInactive = false)
         {
             if(!includeInactive)
@@ -1101,7 +1101,7 @@ namespace Pancake.Init
         /// <param name="includeInactive"> Should inactive GameObjects be included in the search? </param>
         /// <returns> object of type <typeparamref name="T"/>, if found. </returns>
         [CanBeNull]
-        public static object WrappedObject([NotNull] Type type, bool includeInactive = false)
+        public static object WrappedObject([JetBrains.Annotations.NotNull] Type type, bool includeInactive = false)
         {
             return Any(type, includeInactive) is IWrapper wrapper ? wrapper.WrappedObject : null;
         }
@@ -1111,7 +1111,7 @@ namespace Pancake.Init
         /// </summary>
         /// <typeparam name="TWrapped"> Type of the wrapped objects. </typeparam>
         /// <param name="includeInactive"> Should inactive GameObjects be included in the search? </param>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         public static void AllWrappedObjects<TWrapped>(List<TWrapped> results, bool includeInactive = false) where TWrapped : class
         {
             Components(results, includeInactive);
@@ -1124,7 +1124,7 @@ namespace Pancake.Init
         /// <param name="wrapped"> The wrapped <see cref="object"/>. </param>
         /// <returns> <see cref="Object"/> that implements <see cref="IWrapper{TWrapped}"/>, if found. </returns>
         [CanBeNull]
-        public static TWrapper WrapperOf<TWrapper, TWrapped>([NotNull] TWrapped wrapped) where TWrapper : Object, IWrapper<TWrapped>
+        public static TWrapper WrapperOf<TWrapper, TWrapped>([JetBrains.Annotations.NotNull] TWrapped wrapped) where TWrapper : Object, IWrapper<TWrapped>
         {
             return wrappedInstances.TryGetValue(wrapped, out IWrapper wrapper) ? wrapper as TWrapper : null;
         }
@@ -1136,7 +1136,7 @@ namespace Pancake.Init
         /// <param name="wrapped"> The wrapped <see cref="object"/>. </param>
         /// <returns> <see cref="Object"/> that implements <see cref="IWrapper{TWrapped}"/>, if found. </returns>
         [CanBeNull]
-        public static IWrapper<TWrapped> WrapperOf<TWrapped>([NotNull] TWrapped wrapped)
+        public static IWrapper<TWrapped> WrapperOf<TWrapped>([JetBrains.Annotations.NotNull] TWrapped wrapped)
         {
             return wrappedInstances.TryGetValue(wrapped, out IWrapper wrapper) ? wrapper as IWrapper<TWrapped> : null;
         }
@@ -1151,7 +1151,7 @@ namespace Pancake.Init
         /// </param>
         /// <returns> <see langword="true"/> if wrapper was found; otherwise, <see langword="false"/>. </returns>
         [CanBeNull]
-        public static bool WrapperOf<TWrapped>([NotNull] TWrapped wrapped, out IWrapper<TWrapped> result)
+        public static bool WrapperOf<TWrapped>([JetBrains.Annotations.NotNull] TWrapped wrapped, out IWrapper<TWrapped> result)
         {
             if(wrappedInstances.TryGetValue(wrapped, out IWrapper wrapper))
             {
@@ -1170,7 +1170,7 @@ namespace Pancake.Init
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
         /// <returns> Object of type <see cref="WrapperOf{TWrapped}"/>, if found. </returns>
         [CanBeNull]
-        public static IWrapper WrapperOf([NotNull] object wrapped)
+        public static IWrapper WrapperOf([JetBrains.Annotations.NotNull] object wrapped)
         {
             return wrappedInstances.TryGetValue(wrapped, out IWrapper wrapper) ? wrapper : null;
         }
@@ -1186,7 +1186,7 @@ namespace Pancake.Init
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
         /// <returns> <see langword="true"/> if wrapper was found; otherwise, <see langword="false"/>. </returns>
         [CanBeNull]
-        public static bool WrapperOf([NotNull] object wrapped, out IWrapper result, bool includeInactive = false)
+        public static bool WrapperOf([JetBrains.Annotations.NotNull] object wrapped, out IWrapper result, bool includeInactive = false)
         {
             if(!wrappedInstances.TryGetValue(wrapped, out result))
             {
@@ -1243,7 +1243,7 @@ namespace Pancake.Init
         /// <param name="includeInactive"> Should components on inactive GameObjects be included in the search? </param>
         /// <returns> Component of type <see cref="WrapperOf{TWrapped}"/>, if found. </returns>
         [CanBeNull]
-        public static IWrapper Wrapper([NotNull] Type type, bool includeInactive = false)
+        public static IWrapper Wrapper([JetBrains.Annotations.NotNull] Type type, bool includeInactive = false)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -1272,7 +1272,7 @@ namespace Pancake.Init
         /// <typeparam name="TWrapped"> Type of the wrapped objects. </typeparam>
         /// <param name="includeInactive"> Should inactive GameObjects be included in the search? </param>
         /// <returns> Array of zero or more objects of type <typeparamref name="TWrapped"/>. </returns>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         public static IWrapper<TWrapped>[] AllWrappers<TWrapped>(bool includeInactive = false)
         {
             var list = Cached<IWrapper<TWrapped>>.list;
@@ -1308,7 +1308,7 @@ namespace Pancake.Init
         /// <returns>
         /// Instance of given <paramref name="type"/>, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static object In([NotNull] GameObject gameObject, Type type, Including including)
+        public static object In([JetBrains.Annotations.NotNull] GameObject gameObject, Type type, Including including)
         {
             bool includeInactive = HasFlag(including, Including.Inactive);
 
@@ -1360,7 +1360,7 @@ namespace Pancake.Init
         }
 
         [CanBeNull]
-        public static object In([NotNull] GameObject gameObject, Type type)
+        public static object In([JetBrains.Annotations.NotNull] GameObject gameObject, Type type)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -1414,7 +1414,7 @@ namespace Pancake.Init
         /// <returns>
         /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static T In<T>([NotNull] object obj)
+        public static T In<T>([JetBrains.Annotations.NotNull] object obj)
         {
             if(obj is GameObject gameObject)
             {
@@ -1481,7 +1481,7 @@ namespace Pancake.Init
         /// When this method returns, contains object of type <typeparamref name="T"/>, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if object of the given type was found; otherwise, <see langword="false"/>. </returns>
-        public static bool In<T>([NotNull] object obj, out T result)
+        public static bool In<T>([JetBrains.Annotations.NotNull] object obj, out T result)
         {
             if(obj is T objAsT)
             {
@@ -1548,7 +1548,7 @@ namespace Pancake.Init
         /// When this method returns, contains object of type <typeparamref name="T"/>, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if object of the given type was found; otherwise, <see langword="false"/>. </returns>
-        public static bool In([NotNull] object obj, Type type, out object result)
+        public static bool In([JetBrains.Annotations.NotNull] object obj, Type type, out object result)
         {
             if(obj is GameObject gameObject)
             {
@@ -1605,7 +1605,7 @@ namespace Pancake.Init
         /// When this method returns, contains object of type <typeparamref name="T"/>, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if object of the given type was found; otherwise, <see langword="false"/>. </returns>
-        public static bool In<T>([NotNull] GameObject gameObject, out T result)
+        public static bool In<T>([JetBrains.Annotations.NotNull] GameObject gameObject, out T result)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
             {
@@ -1649,7 +1649,7 @@ namespace Pancake.Init
         /// When this method returns, contains object of type <typeparamref name="T"/>, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if object of the given type was found; otherwise, <see langword="false"/>. </returns>
-        public static bool In([NotNull] GameObject gameObject, Type type, out object result)
+        public static bool In([JetBrains.Annotations.NotNull] GameObject gameObject, Type type, out object result)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -1692,7 +1692,7 @@ namespace Pancake.Init
         /// <returns>
         /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static T In<T>([NotNull] GameObject gameObject)
+        public static T In<T>([JetBrains.Annotations.NotNull] GameObject gameObject)
         {
             var type = typeof(T);
             if(typeof(Component).IsAssignableFrom(type))
@@ -1739,7 +1739,7 @@ namespace Pancake.Init
         /// <returns>
         /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static T In<T>([NotNull] GameObject gameObject, Including including)
+        public static T In<T>([JetBrains.Annotations.NotNull] GameObject gameObject, Including including)
         {
             bool includeInactive = HasFlag(including, Including.Inactive);
 
@@ -1791,7 +1791,7 @@ namespace Pancake.Init
         }
 
         /// <returns> Array of zero or more objects of type <typeparamref name="T"/>. </returns>
-        public static T[] AllIn<T>([NotNull] GameObject gameObject)
+        public static T[] AllIn<T>([JetBrains.Annotations.NotNull] GameObject gameObject)
         {
             var type = typeof(T);
             if(typeof(Component).IsAssignableFrom(type))
@@ -1823,7 +1823,7 @@ namespace Pancake.Init
         }
 
         /// <returns> Array of zero or more objects of the given <paramref name="type"/>. </returns>
-        public static object[] AllIn([NotNull] GameObject gameObject, Type type)
+        public static object[] AllIn([JetBrains.Annotations.NotNull] GameObject gameObject, Type type)
         {
             if(typeof(Component).IsAssignableFrom(type))
             {
@@ -1870,7 +1870,7 @@ namespace Pancake.Init
         /// <returns>
         /// <typeparamref name="T"/> instance, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static T[] AllIn<T>([NotNull] GameObject gameObject, Including including)
+        public static T[] AllIn<T>([JetBrains.Annotations.NotNull] GameObject gameObject, Including including)
         {
             bool includeInactive = HasFlag(including, Including.Inactive);
 
@@ -1914,7 +1914,7 @@ namespace Pancake.Init
         }
 
         /// <returns> Array of zero or more objects of the given <paramref name="type"/>. </returns>
-        public static object[] AllIn([NotNull] GameObject gameObject, Type type, Including including)
+        public static object[] AllIn([JetBrains.Annotations.NotNull] GameObject gameObject, Type type, Including including)
         {
             bool includeInactive = HasFlag(including, Including.Inactive);
 
@@ -1958,7 +1958,7 @@ namespace Pancake.Init
         }
 
         /// <param name="results"> List into which found instances are added. </param>
-        public static void AllIn<T>([NotNull] GameObject gameObject, List<T> results)
+        public static void AllIn<T>([JetBrains.Annotations.NotNull] GameObject gameObject, List<T> results)
         {
             if(!typesToFindableTypes.TryGetValue(typeof(T), out var findableTypes))
             {
@@ -1979,7 +1979,7 @@ namespace Pancake.Init
         /// Generic type of the <see cref="List{T}"/> into which found results will be placed.
         /// </typeparam>
         /// <param name="results"> List into which found instances are added. </param>
-        public static void AllIn<T>([NotNull] GameObject gameObject, Type type, List<T> results)
+        public static void AllIn<T>([JetBrains.Annotations.NotNull] GameObject gameObject, Type type, List<T> results)
         {
             if(!typesToFindableTypes.TryGetValue(type, out var findableTypes))
             {
@@ -2389,7 +2389,7 @@ namespace Pancake.Init
         /// When this method returns, contains loaded Addressable object, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if an asset was found; otherwise, <see langword="false"/>. </returns>
-        public static bool Addressable<T>([NotNull] string key, [CanBeNull] out T result)
+        public static bool Addressable<T>([JetBrains.Annotations.NotNull] string key, [CanBeNull] out T result)
         {
             Object obj = LoadAddressable(key);
 
@@ -2436,7 +2436,7 @@ namespace Pancake.Init
         /// When this method returns, contains loaded Addressable object, if found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.
         /// </param>
         /// <returns> <see langword="true"/> if an asset was found; otherwise, <see langword="false"/>. </returns>
-        public static bool Addressable([NotNull] Type type, [NotNull] string key, [CanBeNull] out object result)
+        public static bool Addressable([JetBrains.Annotations.NotNull] Type type, [JetBrains.Annotations.NotNull] string key, [CanBeNull] out object result)
         {
             Object obj = LoadAddressable(key);
 
@@ -2481,7 +2481,7 @@ namespace Pancake.Init
         /// <returns>
         /// Loaded asset by the given <paramref name="key"/>, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static object Addressable([NotNull] Type type, [NotNull] string key)
+        public static object Addressable([JetBrains.Annotations.NotNull] Type type, [JetBrains.Annotations.NotNull] string key)
         {
             Object obj = LoadAddressable(key);
 
@@ -2523,7 +2523,7 @@ namespace Pancake.Init
         /// <returns>
         /// Loaded asset by the given <paramref name="key"/>, if found; otherwise, <see langword="null"/>.
         /// </returns>
-        public static T Addressable<T>([NotNull] string key)
+        public static T Addressable<T>([JetBrains.Annotations.NotNull] string key)
         {
             Object obj = LoadAddressable(key);
 
@@ -2692,7 +2692,7 @@ namespace Pancake.Init
 
         #if UNITY_ADDRESSABLES_1_17_4_OR_NEWER
         [CanBeNull, System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private static Object LoadAddressable([NotNull] string key)
+        private static Object LoadAddressable([JetBrains.Annotations.NotNull] string key)
         {
             #if UNITY_EDITOR
             if(!Application.isPlaying)
@@ -2708,7 +2708,7 @@ namespace Pancake.Init
 
         #if UNITY_EDITOR && UNITY_ADDRESSABLES_1_17_4_OR_NEWER
         [CanBeNull, System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private static Object LoadAddressableInEditor([NotNull] string key)
+        private static Object LoadAddressableInEditor([JetBrains.Annotations.NotNull] string key)
         {
             foreach(var group in AddressableAssetSettingsDefaultObject.Settings.groups)
             {
@@ -2921,7 +2921,7 @@ namespace Pancake.Init
             return false;
         }
 
-        private static T InChildrenByExactType<T>([NotNull] GameObject gameObject, Type findableType, bool includeInactive)
+        private static T InChildrenByExactType<T>([JetBrains.Annotations.NotNull] GameObject gameObject, Type findableType, bool includeInactive)
         {
             var component = gameObject.GetComponentInChildren(findableType, includeInactive);
             if(component != null)
@@ -2932,7 +2932,7 @@ namespace Pancake.Init
             return default;
         }
 
-        private static T InParentsByExactType<T>([NotNull] GameObject gameObject, Type findableType, bool includeInactive)
+        private static T InParentsByExactType<T>([JetBrains.Annotations.NotNull] GameObject gameObject, Type findableType, bool includeInactive)
         {
             if(!typeof(Component).IsAssignableFrom(findableType))
             {
@@ -3040,7 +3040,7 @@ namespace Pancake.Init
         }
 
         #if !UNITY_2020_1_OR_NEWER
-        private static void ComponentsByExactTypeInLoadedScenesIncludingInactive<T>([NotNull] Type findableType, [NotNull] List<T> results)
+        private static void ComponentsByExactTypeInLoadedScenesIncludingInactive<T>([JetBrains.Annotations.NotNull] Type findableType, [JetBrains.Annotations.NotNull] List<T> results)
         {
             #if DEBUG
             if(findableType.IsGenericTypeDefinition)
@@ -3065,7 +3065,7 @@ namespace Pancake.Init
         #endif
 
         #if !UNITY_2020_1_OR_NEWER
-        private static Component ComponentByExactTypeInLoadedScenesIncludingInactive([NotNull] Type type)
+        private static Component ComponentByExactTypeInLoadedScenesIncludingInactive([JetBrains.Annotations.NotNull] Type type)
         {
             var list = Cached<GameObject>.list;
 
@@ -3149,7 +3149,7 @@ namespace Pancake.Init
             }
         }
 
-        private static void SetupWrappedType([NotNull] Type wrapperType)
+        private static void SetupWrappedType([JetBrains.Annotations.NotNull] Type wrapperType)
         {
             var wrappedType = GetWrappedType(wrapperType);
             if(wrappedType != null)
@@ -3172,7 +3172,7 @@ namespace Pancake.Init
             return null;
         }
 
-        private static void SetupWrappedTypeAndItsBaseTypesAndInterfaces([NotNull] Type wrappedType, [NotNull] Type wrapperType)
+        private static void SetupWrappedTypeAndItsBaseTypesAndInterfaces([JetBrains.Annotations.NotNull] Type wrappedType, [JetBrains.Annotations.NotNull] Type wrapperType)
         {
             // In theory it is possible that a type has more than one wrapper.
             RegisterWrappedToWrapperLink(wrappedType, wrapperType);

@@ -13,10 +13,10 @@ namespace Pancake.Init.EditorOnly
         private readonly Action<Rect> openDropdown;
         private readonly bool highlightMissingValue;
 
-        public DropdownButton(string prefixLabel, string buttonLabel, [NotNull] Action<Rect> openDropdown, bool highlightMissingValue)
+        public DropdownButton(string prefixLabel, string buttonLabel, [JetBrains.Annotations.NotNull] Action<Rect> openDropdown, bool highlightMissingValue)
             : this(new GUIContent(prefixLabel), new GUIContent(buttonLabel), openDropdown, highlightMissingValue) { }
 
-        public DropdownButton(GUIContent prefixLabel, GUIContent buttonLabel, [NotNull] Action<Rect> openDropdown, bool highlightMissingValue)
+        public DropdownButton(GUIContent prefixLabel, GUIContent buttonLabel, [JetBrains.Annotations.NotNull] Action<Rect> openDropdown, bool highlightMissingValue)
         {
             this.prefixLabel = prefixLabel;
             this.buttonLabel = buttonLabel;

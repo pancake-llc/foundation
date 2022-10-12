@@ -65,7 +65,7 @@ namespace Pancake.Init.Internal
 			} }
 		};
 
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static IEnumerable<(Type, TAttribute)> GetTypesWithAttribute<TAttribute>() where TAttribute : Attribute
 		{
 			#if UNITY_EDITOR
@@ -81,8 +81,8 @@ namespace Pancake.Init.Internal
 			}
 		}
 
-		[NotNull]
-		internal static IEnumerable<(Type, TAttribute)> GetTypesWithAttribute<TAttribute>([NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly) where TAttribute : Attribute
+		[JetBrains.Annotations.NotNull]
+		internal static IEnumerable<(Type, TAttribute)> GetTypesWithAttribute<TAttribute>([JetBrains.Annotations.NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly) where TAttribute : Attribute
 		{
 			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
 			{
@@ -96,7 +96,7 @@ namespace Pancake.Init.Internal
 		#if UNITY_EDITOR
 		public static UnityEditor.TypeCache.TypeCollection GetDerivedTypes<T>()
 		#else
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		internal static IEnumerable<Type> GetDerivedTypes<T>()
 		#endif
         {
@@ -113,8 +113,8 @@ namespace Pancake.Init.Internal
 			#endif
         }
 
-		[NotNull]
-		internal static IEnumerable<Type> GetDerivedTypes([NotNull] Type inheritedType, [NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly)
+		[JetBrains.Annotations.NotNull]
+		internal static IEnumerable<Type> GetDerivedTypes([JetBrains.Annotations.NotNull] Type inheritedType, [JetBrains.Annotations.NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly)
         {
 			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
 			{
@@ -125,8 +125,8 @@ namespace Pancake.Init.Internal
 			}
         }
 
-		[NotNull]
-		internal static IEnumerable<Type> GetImplementingTypes<TInterface>([NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly) where TInterface : class
+		[JetBrains.Annotations.NotNull]
+		internal static IEnumerable<Type> GetImplementingTypes<TInterface>([JetBrains.Annotations.NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly) where TInterface : class
         {
 			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
 			{
@@ -137,8 +137,8 @@ namespace Pancake.Init.Internal
 			}
         }
 
-		[NotNull]
-		internal static IEnumerable<Type> GetImplementingTypes(Type interfaceType, [NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly)
+		[JetBrains.Annotations.NotNull]
+		internal static IEnumerable<Type> GetImplementingTypes(Type interfaceType, [JetBrains.Annotations.NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly)
         {
 			foreach(var type in GetAllTypesThreadSafe(mustReferenceAssembly, ignoreAssembly))
 			{
@@ -149,7 +149,7 @@ namespace Pancake.Init.Internal
 			}
         }
 
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		internal static IEnumerable<Type> GetAllTypesThreadSafe(Assembly mustReferenceAssembly, Assembly ignoreAssembly)
 		{
             foreach(var assembly in GetAllAssembliesThreadSafe(mustReferenceAssembly, ignoreAssembly))
@@ -162,7 +162,7 @@ namespace Pancake.Init.Internal
             }
 		}
 
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static IEnumerable<Type> GetAllTypesThreadSafe()
 		{
             foreach(var assembly in GetAllAssembliesThreadSafe())
@@ -175,8 +175,8 @@ namespace Pancake.Init.Internal
             }
 		}
 
-		[NotNull]
-		private static Type[] GetLoadableTypes([NotNull] this Assembly assembly, bool exportedOnly)
+		[JetBrains.Annotations.NotNull]
+		private static Type[] GetLoadableTypes([JetBrains.Annotations.NotNull] this Assembly assembly, bool exportedOnly)
 		{
 			try
 			{
@@ -232,7 +232,7 @@ namespace Pancake.Init.Internal
 			}
 		}
 
-		public static IEnumerable<Assembly> GetAllAssembliesThreadSafe([NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly)
+		public static IEnumerable<Assembly> GetAllAssembliesThreadSafe([JetBrains.Annotations.NotNull] Assembly mustReferenceAssembly, [CanBeNull] Assembly ignoreAssembly)
 		{
 			var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -294,7 +294,7 @@ namespace Pancake.Init.Internal
 			return type is null ? "Null" : ToString(type, namespaceDelimiter, toStringCache);
 		}
 
-		internal static string ToString([NotNull] Type type, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache)
+		internal static string ToString([JetBrains.Annotations.NotNull] Type type, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache)
         {
 			if(cache[namespaceDelimiter].TryGetValue(type, out string cached))
             {
@@ -310,7 +310,7 @@ namespace Pancake.Init.Internal
 
 		internal static bool IsSerializableByUnity(Type type) => type.IsSerializable || (type.Namespace is string namespaceName && namespaceName.Contains("Unity"));
 
-		private static void ToString([NotNull] Type type, [NotNull] StringBuilder builder, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache, Type[] genericTypeArguments = null)
+		private static void ToString([JetBrains.Annotations.NotNull] Type type, [JetBrains.Annotations.NotNull] StringBuilder builder, char namespaceDelimiter, Dictionary<char, Dictionary<Type, string>> cache, Type[] genericTypeArguments = null)
 		{
 			// E.g. List<T> generic parameter is T, in which case we just want to append "T".
 			if(type.IsGenericParameter)

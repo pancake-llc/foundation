@@ -83,7 +83,7 @@ namespace Pancake.Init.Internal
         /// </summary>
         /// <param name="type"> Type to test. </param>
         /// <returns> <see langword="true"/> if <typeparamref name="T"/> is a concrete service type; otherwise, <see langword="false"/>. </returns>
-        public static bool IsServiceDefiningType([NotNull] Type type)
+        public static bool IsServiceDefiningType([JetBrains.Annotations.NotNull] Type type)
         {
             #if DEBUG
             return !type.IsValueType && !(typeof(Service<>).MakeGenericType(type).GetProperty(nameof(Service<object>.Instance), BindingFlags.Static | BindingFlags.Public).GetValue(null) is null);

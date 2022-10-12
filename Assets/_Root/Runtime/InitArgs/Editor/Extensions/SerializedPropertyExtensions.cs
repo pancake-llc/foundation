@@ -33,7 +33,7 @@ namespace Pancake.Init.EditorOnly
         private const BindingFlags AnyInstanceDeclaredOnly = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
         private static readonly Regex collectionIndexRegex = new Regex(@"\GArray\.data\[(\d+)\]", RegexOptions.Compiled);
 
-        public static object GetValue([NotNull] this SerializedProperty serializedProperty)
+        public static object GetValue([JetBrains.Annotations.NotNull] this SerializedProperty serializedProperty)
         {
             string propertyPath = serializedProperty.propertyPath;
             object value = serializedProperty.serializedObject.targetObject;
@@ -48,7 +48,7 @@ namespace Pancake.Init.EditorOnly
             return value;
         }
 
-        public static MemberInfo GetMemberInfo([NotNull] this SerializedProperty serializedProperty)
+        public static MemberInfo GetMemberInfo([JetBrains.Annotations.NotNull] this SerializedProperty serializedProperty)
         {
             string propertyPath = serializedProperty.propertyPath;
             Type previousType = serializedProperty.serializedObject.targetObject.GetType();
@@ -65,7 +65,7 @@ namespace Pancake.Init.EditorOnly
             return GetMember(previousType.GetType(), property.name);
         }
 
-        public static int GetArrayElementIndex([NotNull] this SerializedProperty serializedProperty)
+        public static int GetArrayElementIndex([JetBrains.Annotations.NotNull] this SerializedProperty serializedProperty)
         {
             string propertyPath = serializedProperty.propertyPath;
             int i = propertyPath.LastIndexOf('[');

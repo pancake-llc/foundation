@@ -437,7 +437,7 @@ namespace Pancake.Init.EditorOnly
 			}
 		}
 
-		private string GetInitArgumentsTooltip([NotNull] Type clientType, [NotNull] Type[] initParameterTypes, [NotNull] bool[] initServiceParameters)
+		private string GetInitArgumentsTooltip([JetBrains.Annotations.NotNull] Type clientType, [JetBrains.Annotations.NotNull] Type[] initParameterTypes, [JetBrains.Annotations.NotNull] bool[] initServiceParameters)
 		{
 			var className = clientType.Name;
 			var types = initParameterTypes;
@@ -464,7 +464,7 @@ namespace Pancake.Init.EditorOnly
 			return sb.ToString();
 		}
 
-		private string GetServiceVisibilityTooltip([NotNull] Type[] initParameterTypes, [NotNull] bool[] initServiceParameters, bool servicesShown)
+		private string GetServiceVisibilityTooltip([JetBrains.Annotations.NotNull] Type[] initParameterTypes, [JetBrains.Annotations.NotNull] bool[] initServiceParameters, bool servicesShown)
 		{
 			var sb = new StringBuilder();
 

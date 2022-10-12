@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 using UnityEngine;
 using static Pancake.Init.NullExtensions;
 using Object = UnityEngine.Object;
@@ -96,7 +95,7 @@ namespace Pancake.Init.Internal
 		}
 
 		#if UNITY_EDITOR
-		internal static void ResetArgument<TArgument, TInitializer>(ref TArgument argument, int argumentIndex, bool canAutoInitArguments, [NotNull] TInitializer initializer) where TInitializer : MonoBehaviour
+		internal static void ResetArgument<TArgument, TInitializer>(ref TArgument argument, int argumentIndex, bool canAutoInitArguments, [JetBrains.Annotations.NotNull] TInitializer initializer) where TInitializer : MonoBehaviour
 		{
 			if(IsServiceDefiningType<TArgument>())
 			{
@@ -182,7 +181,7 @@ namespace Pancake.Init.Internal
 			}
         }
 
-		internal static void ResetInitializer<TClient>([NotNull] Component initializer, ref TClient client) where TClient : Component
+		internal static void ResetInitializer<TClient>([JetBrains.Annotations.NotNull] Component initializer, ref TClient client) where TClient : Component
         {
             client = FindComponentWithoutInitializer<TClient>(initializer.gameObject);
 
@@ -219,7 +218,7 @@ namespace Pancake.Init.Internal
 			return Find.In<TComponent>(gameObject, Including.Children | Including.Parents | Including.Scene | Including.Inactive);
 		}
 
-        private static void MoveInitializerAboveItsClient([NotNull] Component initializer, [NotNull] Component target)
+        private static void MoveInitializerAboveItsClient([JetBrains.Annotations.NotNull] Component initializer, [JetBrains.Annotations.NotNull] Component target)
         {
 			var moveComponentRelativeToComponent = typeof(ComponentUtility).GetMethod("MoveComponentRelativeToComponent", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { typeof(Component), typeof(Component), typeof(bool) }, null);
 			if(moveComponentRelativeToComponent != null)
@@ -342,7 +341,7 @@ namespace Pancake.Init.Internal
 		/// </param>
 		/// <param name="wrappedObject"> The <see cref="TWrapped">wrapped object</see> to pass to the <see cref="target"/> <typeparamref name="TWrapper">wrapper</typeparamref>'s Init function. </param>
 		/// <returns> The existing <see cref="target"/> or new instance of type <see cref="TWrapper"/>. </returns>
-		[NotNull, MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[JetBrains.Annotations.NotNull, MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static TWrapper InitWrapper<TWrapper, TWrapped>(GameObject gameObject, TWrapper target, TWrapped wrappedObject)
 			where TWrapper : MonoBehaviour, IWrapper<TWrapped>
         {

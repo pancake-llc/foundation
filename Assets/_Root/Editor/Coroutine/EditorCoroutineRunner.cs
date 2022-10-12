@@ -44,21 +44,21 @@ namespace Pancake.Editor
         /// <returns>
         /// Always returns <see langword="null"/>.
         /// </returns>
-        public Coroutine StartCoroutine([NotNull] IEnumerator coroutine)
+        public Coroutine StartCoroutine([JetBrains.Annotations.NotNull] IEnumerator coroutine)
         {
             EditorCoroutine.Start(coroutine);
             return null;
         }
 
         /// <inheritdoc/>
-        public void StopCoroutine([NotNull] Coroutine coroutine)
+        public void StopCoroutine([JetBrains.Annotations.NotNull] Coroutine coroutine)
         {
             IEnumerator enumerator = (IEnumerator)routineField.GetValue(coroutine);
             EditorCoroutine.Stop(enumerator);
         }
 
         /// <inheritdoc/>
-        public void StopCoroutine([NotNull] IEnumerator coroutine)
+        public void StopCoroutine([JetBrains.Annotations.NotNull] IEnumerator coroutine)
         {
             EditorCoroutine.Stop(coroutine);
         }

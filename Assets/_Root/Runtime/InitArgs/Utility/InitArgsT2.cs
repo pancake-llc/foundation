@@ -29,7 +29,7 @@ namespace Pancake.Init
 		/// <param name="context"> Initialization phase during which the method is being called. </typeparam>
 		/// <param name="client"> The object to receive the dependencies. </typeparam>
 		/// <exception cref="ArgumentNullException" > Thrown if the <paramref name="client"/> argument is <see langword="null"/>. </exception>
-		public static bool TryGet<TClient>(Context context, [NotNull] TClient client) where TClient : IInitializable<TFirstArgument, TSecondArgument>
+		public static bool TryGet<TClient>(Context context, [JetBrains.Annotations.NotNull] TClient client) where TClient : IInitializable<TFirstArgument, TSecondArgument>
 		{
 			if(InitArgs.TryGet(context, client, out TFirstArgument firstArgument, out TSecondArgument secondArgument))
             {

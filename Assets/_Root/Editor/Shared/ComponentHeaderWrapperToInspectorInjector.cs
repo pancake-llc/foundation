@@ -33,7 +33,7 @@ namespace Pancake.Editor
 			}
 		}
 
-		private static void AfterGameObjectHeaderGUI([NotNull] UnityEditor.Editor gameObjectEditor)
+		private static void AfterGameObjectHeaderGUI([JetBrains.Annotations.NotNull] UnityEditor.Editor gameObjectEditor)
 		{
 			foreach((UnityEditor.Editor editor, IMGUIContainer header) editorAndHeader in GetComponentHeaderElementsFromEditorWindowOf(gameObjectEditor))
 			{
@@ -49,7 +49,7 @@ namespace Pancake.Editor
 			}
 		}
 
-		private static void AfterComponentPropertiesHeaderGUI([NotNull] UnityEditor.Editor componentEditor)
+		private static void AfterComponentPropertiesHeaderGUI([JetBrains.Annotations.NotNull] UnityEditor.Editor componentEditor)
 		{
 			if(!(GetComponentHeaderElementFromPropertyEditorOf(componentEditor) is (UnityEditor.Editor editor, IMGUIContainer header)))
 			{

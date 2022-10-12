@@ -78,13 +78,13 @@ namespace Pancake.Init
         /// <summary>
         /// This wrapper as a <see cref="MonoBehaviour"/>.
         /// </summary>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         MonoBehaviour IWrapper.AsMonoBehaviour => this;
 
         /// <summary>
         /// This wrapper as an <see cref="Object"/>.
         /// </summary>
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         Object IWrapper.AsObject => this;
 
         /// <summary>

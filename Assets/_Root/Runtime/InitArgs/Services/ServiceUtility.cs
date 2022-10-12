@@ -97,7 +97,7 @@ namespace Pancake.Init
         /// </summary>
         /// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is globally accessible to any client. </exception>
         [Preserve]
-		public static object GetService([NotNull] Type serviceType) => serviceGetForAnyMethodDefinition.MakeGenericMethod(serviceType).Invoke(null, null);
+		public static object GetService([JetBrains.Annotations.NotNull] Type serviceType) => serviceGetForAnyMethodDefinition.MakeGenericMethod(serviceType).Invoke(null, null);
 
         /// <summary>
         /// Gets the shared service instance of the given <paramref name="serviceType"/>.
@@ -111,7 +111,7 @@ namespace Pancake.Init
         /// </summary>
         /// <exception cref="NullReferenceException"> Thrown if no service of type <typeparamref name="TService"/> is found that is accessible to the <paramref name="client"/>. </exception>
         [Preserve]
-        public static object GetService(object client, [NotNull] Type serviceType)
+        public static object GetService(object client, [JetBrains.Annotations.NotNull] Type serviceType)
         {
             return serviceGetForClientMethodDefinition.MakeGenericMethod(serviceType).Invoke(null, new object[] { client });
         }
@@ -133,7 +133,7 @@ namespace Pancake.Init
         /// <see langword="true"/> if service of the given type exists for the client; otherwise, <see langword="false"/>.
         /// </returns>
         [Preserve]
-        public static bool ServiceExists([NotNull] object client, [NotNull] Type serviceType)
+        public static bool ServiceExists([JetBrains.Annotations.NotNull] object client, [JetBrains.Annotations.NotNull] Type serviceType)
         {
             if(serviceType.IsValueType)
             {
@@ -154,7 +154,7 @@ namespace Pancake.Init
         /// </summary>
         /// <param name="instance"> The new instance of the service. </param>
         [Preserve]
-        public static void SetInstance([NotNull] Type definingType, [CanBeNull] object instance)
+        public static void SetInstance([JetBrains.Annotations.NotNull] Type definingType, [CanBeNull] object instance)
         {
             Debug.Assert(definingType != null);
 
@@ -202,7 +202,7 @@ namespace Pancake.Init
         /// </summary>
         /// <param name="type"> Type to test. </param>
         /// <returns> <see langword="true"/> if type is the defining type of a service; otherwise, <see langword="false"/>. </returns>
-        public static bool IsDefiningTypeOfAnyServiceAttribute([NotNull] Type type)
+        public static bool IsDefiningTypeOfAnyServiceAttribute([JetBrains.Annotations.NotNull] Type type)
         {
             #if DEBUG
             if(type is null)
@@ -231,7 +231,7 @@ namespace Pancake.Init
         /// <param name="definingType"> The defining type of the service. </param>
         /// <param name="instance"> The instance to test. </param>
         /// <returns> <see langword="true"/> if <paramref name="instance"/> is a service of type <paramref name="definingType"/>; otherwise, <see langword="false"/>. </returns>
-        public static bool IsService([NotNull] Type definingType, [CanBeNull] object instance)
+        public static bool IsService([JetBrains.Annotations.NotNull] Type definingType, [CanBeNull] object instance)
         {
             #if DEBUG
             if(definingType is null)
@@ -263,7 +263,7 @@ namespace Pancake.Init
         }
 
         [CanBeNull]
-        public static Type GetServiceConcreteType([NotNull] Type classWithAttribute)
+        public static Type GetServiceConcreteType([JetBrains.Annotations.NotNull] Type classWithAttribute)
 		{
             if(typeof(IInitializer).IsAssignableFrom(classWithAttribute) || typeof(IWrapper).IsAssignableFrom(classWithAttribute))
 			{

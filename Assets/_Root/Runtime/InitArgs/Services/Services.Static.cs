@@ -51,7 +51,7 @@ namespace Pancake.Init.Internal
 		}
 		#endif
 
-		internal static bool IsService([NotNull] Type definingType, [NotNull] object instance)
+		internal static bool IsService([JetBrains.Annotations.NotNull] Type definingType, [JetBrains.Annotations.NotNull] object instance)
 		{
 			if(!InfosByDefiningType.TryGetValue(definingType, out var list))
 			{
@@ -186,7 +186,7 @@ namespace Pancake.Init.Internal
 			return !(service is null);
 		}
 
-		internal static bool TryGetFor<TService>([NotNull] GameObject gameObject, out TService service)
+		internal static bool TryGetFor<TService>([JetBrains.Annotations.NotNull] GameObject gameObject, out TService service)
 		{
 			Debug.Assert(gameObject != null);
 
@@ -249,7 +249,7 @@ namespace Pancake.Init.Internal
 			return false;
 		}
 
-		private static bool AreAvailableToClient(Transform serviceProvider, Clients availability, [NotNull] Transform client)
+		private static bool AreAvailableToClient(Transform serviceProvider, Clients availability, [JetBrains.Annotations.NotNull] Transform client)
 		{
 			Debug.Assert(client != null);
 			Debug.Assert(serviceProvider != null);
@@ -291,7 +291,7 @@ namespace Pancake.Init.Internal
 			}
 		}
 
-		internal static void Register([NotNull] Component serviceProvider, IEnumerable<ServiceDefinition> providesServices, Clients toClients)
+		internal static void Register([JetBrains.Annotations.NotNull] Component serviceProvider, IEnumerable<ServiceDefinition> providesServices, Clients toClients)
 		{
 			Debug.Assert(serviceProvider != null);
 
@@ -366,7 +366,7 @@ namespace Pancake.Init.Internal
 			}
 		}
 
-		internal static void Deregister([NotNull] Object serviceProvider)
+		internal static void Deregister([JetBrains.Annotations.NotNull] Object serviceProvider)
 		{
 			#if UNITY_EDITOR
 			var infosByDefiningType = EditorOnly.ThreadSafe.Application.IsPlaying ? Services.infosByDefiningType : infosByDefiningTypeInEditMode;
@@ -394,7 +394,7 @@ namespace Pancake.Init.Internal
 			}
 		}
 
-		private static ProvidedServiceInfo GetNearest([NotNull] GameObject client, ProvidedServiceInfo firstOption, ProvidedServiceInfo? secondOptionOrNull)
+		private static ProvidedServiceInfo GetNearest([JetBrains.Annotations.NotNull] GameObject client, ProvidedServiceInfo firstOption, ProvidedServiceInfo? secondOptionOrNull)
 		{
 			if(!secondOptionOrNull.HasValue)
 			{

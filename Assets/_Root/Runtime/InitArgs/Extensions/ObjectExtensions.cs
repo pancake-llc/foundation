@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -38,9 +37,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TArgument>
-			([NotNull] this TObject original, TArgument argument)
+			([JetBrains.Annotations.NotNull] this TObject original, TArgument argument)
 				where TObject : Object, IArgs<TArgument>
 		{
 			#if DEBUG
@@ -97,7 +96,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TArgument>
 			(this TObject original, TArgument argument, Transform parent, bool instantiateInWorldSpace = false)
 				where TObject : Object, IArgs<TArgument>
@@ -156,7 +155,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TArgument>
 			(this TObject original, TArgument argument, Vector3 position, Quaternion rotation)
 				where TObject : Object, IArgs<TArgument>
@@ -214,7 +213,7 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TArgument>
 			(this TObject original, TArgument argument, Vector3 position, Quaternion rotation, Transform parent)
 				where TObject : Object, IArgs<TArgument>
@@ -272,9 +271,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument>
-			([NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument)
+			([JetBrains.Annotations.NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument>
 		{
 			if(original == null)
@@ -332,9 +331,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument>
-			([NotNull]TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, Transform parent, bool instantiateInWorldSpace = false)
+			([JetBrains.Annotations.NotNull]TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, Transform parent, bool instantiateInWorldSpace = false)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument>
 		{
 			if(original == null)
@@ -393,9 +392,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument>
-			([NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, Vector3 position, Quaternion rotation, Transform parent = null)
+			([JetBrains.Annotations.NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, Vector3 position, Quaternion rotation, Transform parent = null)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument>
 		{
 			#if DEBUG
@@ -455,9 +454,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
+			([JetBrains.Annotations.NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			#if DEBUG
@@ -518,9 +517,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull]TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, Transform parent = null, bool instantiateInWorldSpace = false)
+			([JetBrains.Annotations.NotNull]TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, Transform parent = null, bool instantiateInWorldSpace = false)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			#if DEBUG
@@ -582,9 +581,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument>
-			([NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, Vector3 position, Quaternion rotation, Transform parent = null)
+			([JetBrains.Annotations.NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, Vector3 position, Quaternion rotation, Transform parent = null)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument>
 		{
 			#if DEBUG
@@ -645,9 +644,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
+			([JetBrains.Annotations.NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
 			#if DEBUG
@@ -710,9 +709,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument,
+			([JetBrains.Annotations.NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument,
 				Transform parent = null, bool instantiateInWorldSpace = false)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
@@ -777,9 +776,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
-			([NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument,
+			([JetBrains.Annotations.NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument,
 				Vector3 position, Quaternion rotation, Transform parent = null)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument>
 		{
@@ -843,9 +842,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
+			([JetBrains.Annotations.NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
 			#if DEBUG
@@ -912,9 +911,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
-			([NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
+			([JetBrains.Annotations.NotNull] this TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument, TSixthArgument sixthArgument)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument, TSixthArgument>
 		{
 			#if DEBUG
@@ -979,9 +978,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument,
+			([JetBrains.Annotations.NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument,
 				Transform parent = null, bool instantiateInWorldSpace = false)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{
@@ -1048,9 +1047,9 @@ namespace Pancake.Init
 		/// Thrown if <typeparamref name="TObject"/> class does not implement <see cref="IInitializable{TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument}"/>
 		/// and did not manually handle receiving the provided arguments. 
 		/// </exception>
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		public static TObject Instantiate<TObject, TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
-			([NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument,
+			([JetBrains.Annotations.NotNull] TObject original, TFirstArgument firstArgument, TSecondArgument secondArgument, TThirdArgument thirdArgument, TFourthArgument fourthArgument, TFifthArgument fifthArgument,
 				Vector3 position, Quaternion rotation, Transform parent = null)
 				where TObject : Object, IArgs<TFirstArgument, TSecondArgument, TThirdArgument, TFourthArgument, TFifthArgument>
 		{

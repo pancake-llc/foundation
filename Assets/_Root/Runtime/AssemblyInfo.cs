@@ -8,3 +8,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Tests.EditMode")]
 
 #endif
+
+[assembly: UnityEngine.Scripting.Preserve]
