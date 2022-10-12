@@ -429,23 +429,4 @@ namespace Pancake.Notification
 
         private IEnumerator<float> UpdatePendingNotificationsNextFrame() { yield return Timing.WaitForOneFrame; }
     }
-
-
-    internal static class NotificationUtility
-    {
-        /// <summary>
-        /// Indicates the random value in the <paramref name="collection"/>
-        /// if <paramref name="collection"/> is empty return default vaule of T
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static T PickRandom<T>(this T[] collection)
-        {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
-
-            return collection.Length == 0 ? default : collection[UnityEngine.Random.Range(0, collection.Length - 1)];
-        }
-    }
 }
