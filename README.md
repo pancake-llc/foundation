@@ -107,10 +107,10 @@ Right click to specifically pickup object to show menu
 - Event `OnUpdateDeliveryTime` to use when you want to send notification one time with diffirent custom `Minute` each time such as fire notification in game idle when building house completed. In case you need write your custom method
   to assign to event by call to API
 ```csharp
-public void UpdateDeliveryTimeBy(string id, int customTimeSchedule = -1)
-public void UpdateDeliveryTimeBy(int index, int customTimeSchedule = -1)
-public void UpdateDeliveryTimeByIncremental(string id, int indexData, int customTimeSchedule = -1)
-public void UpdateDeliveryTimeByIncremental(int index, int indexData, int customTimeSchedule = -1)
+public void UpdateDeliveryTimeBy(string id, int customTimeSchedule = -1){}
+public void UpdateDeliveryTimeBy(int index, int customTimeSchedule = -1){}
+public void UpdateDeliveryTimeByIncremental(string id, int indexData, int customTimeSchedule = -1){}
+public void UpdateDeliveryTimeByIncremental(int index, int indexData, int customTimeSchedule = -1){}
 ```
 
 *Note :
