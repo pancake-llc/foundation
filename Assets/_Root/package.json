@@ -16,7 +16,7 @@
     "com.unity.addressables": "1.19.19",
     "com.unity.inputsystem": "1.4.3",
     "com.unity.nuget.newtonsoft-json": "3.0.2",
-    "com.unity.mobile.notifications": "2.0.2",
+    "com.unity.mobile.notifications": "2.1.0",
     "com.unity.2d.sprite": "1.0.0"
   },
   "repository": {
