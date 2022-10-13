@@ -75,14 +75,14 @@ namespace Pancake.Editor
             Selection.activeTransform = obj;
         }
 
-        [MenuItem("Assets/Create/Pancake/Loader Prefab")]
+        [MenuItem("Assets/Create/Pancake/Loading Prefab")]
         public static void CreateLoaderPrefab()
         {
-           var loadingCommon = InEditor.FindAssetWithPath<GameObject>("LoadingCommon.prefab", "Runtime/UGUI/Loader/Prefabs");
+           var loadingCommon = InEditor.FindAssetWithPath<GameObject>("LoadingPrefabBase.prefab", "Runtime/UGUI/Loader/Prefabs");
            if (loadingCommon != null)
            {
                GameObject instanceRoot = (GameObject)PrefabUtility.InstantiatePrefab(loadingCommon);
-               GameObject p = PrefabUtility.SaveAsPrefabAsset(instanceRoot, AssetDatabase.GetAssetPath(Selection.activeObject) + "/LoadingCommon-Copy.prefab");
+               GameObject p = PrefabUtility.SaveAsPrefabAsset(instanceRoot, AssetDatabase.GetAssetPath(Selection.activeObject) + "/LoadingPrefab-Copy.prefab");
                Object.DestroyImmediate(instanceRoot);
            }
         }

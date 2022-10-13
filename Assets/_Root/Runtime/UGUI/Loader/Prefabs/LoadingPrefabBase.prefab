@@ -3885,7 +3885,7 @@ GameObject:
   - component: {fileID: 4647301718394447486}
   - component: {fileID: 6175393561640513138}
   m_Layer: 0
-  m_Name: LoadingCommon
+  m_Name: LoadingPrefabBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
