@@ -10,7 +10,7 @@ namespace Pancake.Editor
         private static void OpenSettings()
         {
 #if UNITY_2019_1_OR_NEWER
-            SettingsService.OpenProjectSettings("Project/Console");
+            SettingsService.OpenProjectSettings("Project/Player");
 #else
 			EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
 #endif
@@ -20,7 +20,7 @@ namespace Pancake.Editor
         private static void OpenPreferences()
         {
 #if UNITY_2019_1_OR_NEWER
-            SettingsService.OpenUserPreferences("Preferences/Console");
+            SettingsService.OpenUserPreferences("Preferences/Pancake");
 #else
 			EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
 #endif
@@ -52,8 +52,11 @@ namespace Pancake.Editor
             if (EditorUtility.DisplayDialog("Clear PlayerPrefs", "Are you sure you wish to clear PlayerPrefs?\nThis action cannot be reversed.", "Clear", "Cancel"))
                 PlayerPrefs.DeleteAll();
         }
-        
-        [MenuItem("Tools/Pancake/Create Launcher Scene", false)]
-        private static void CreateLauncherScene(){}
+
+        //[MenuItem("Tools/Pancake/Create Launcher Scene", false)]
+        private static void CreateLauncherScene()
+        {
+            
+        }
     }
 }

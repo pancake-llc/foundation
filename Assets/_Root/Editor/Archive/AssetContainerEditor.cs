@@ -28,7 +28,7 @@ namespace Pancake.Editor
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private static InEditor.ProjectSetting<PathSetting> assetContainerSettings = new InEditor.ProjectSetting<PathSetting>("AssetContainerSettings");
 
-        [MenuItem("Tools/Pancake/Asset Container")]
+        [MenuItem("Tools/Pancake/Asset Container &_4")]
         private static void ShowWindow() { GetWindow<AssetContainerEditor>("Asset Container").Show(); }
 
         private void OnEnable()

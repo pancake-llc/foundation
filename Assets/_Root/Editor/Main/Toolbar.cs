@@ -2,7 +2,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor.LevelEditor
+namespace Pancake.Editor
 {
     public enum ToolbarType
     {
@@ -52,7 +52,7 @@ namespace Pancake.Editor.LevelEditor
             }
         }
 
-        //[MenuItem("Tools/Pancake/Level Editor/Toolbar &_4", false, 1100)]
+        //[MenuItem("Tools/Pancake/Toolbar", false, 1100)]
         public static void ShowWindow()
         {
             bool status = instance == null;
@@ -115,8 +115,7 @@ namespace Pancake.Editor.LevelEditor
             {
                 var t = Tool;
                 var placeSelected = t == ToolbarType.Place;
-                t = GUILayout.Toggle(placeSelected, EditorResources.PinIcon, Uniform.ToggleButtonToolbar)
-                    ? ToolbarType.Place : placeSelected ? ToolbarType.None : t;
+                t = GUILayout.Toggle(placeSelected, EditorResources.PinIcon, Uniform.ToggleButtonToolbar) ? ToolbarType.Place : placeSelected ? ToolbarType.None : t;
 
                 if (check.changed || _toolChanged)
                 {
