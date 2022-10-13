@@ -207,12 +207,16 @@ namespace Pancake.Toolbar
             text = content.text;
             tooltip = content.tooltip;
             icon = content.image as Texture2D;
-
-            value = EditorApplication.isPaused;
+            
+            value = EditorPrefs.GetBool($"{Application.identifier}_PlayModePause", false);
             this.RegisterValueChangedCallback(Toggle);
         }
 
-        private void Toggle(ChangeEvent<bool> evt) { EditorApplication.isPaused = evt.newValue; }
+        private void Toggle(ChangeEvent<bool> evt)
+        {
+            EditorApplication.isPaused = evt.newValue;
+            EditorPrefs.SetBool($"{Application.identifier}_PlayModePause", evt.newValue);
+        }
     }
 
     [EditorToolbarElement(ID, typeof(SceneView))]
@@ -236,15 +240,23 @@ namespace Pancake.Toolbar
     }
 
     [InitializeOnLoad]
-    public sealed class EditorQuitHandle
+    internal sealed class EditorQuitHandle
     {
-        static void Quit()
+        private static void Quit()
         {
             EditorPrefs.DeleteKey($"{Application.identifier}_PlayModePlay");
+            EditorPrefs.DeleteKey($"{Application.identifier}_PlayModePause");
         }
 
         static EditorQuitHandle()
         {
+            EditorApplication.quitting += Quit;
+        }
+
+        [InitializeOnEnterPlayMode]
+        private static void EnterPlayMode()
+        {
+            EditorApplication.quitting -= Quit;
             EditorApplication.quitting += Quit;
         }
     }
