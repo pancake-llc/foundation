@@ -116,4 +116,22 @@ public void UpdateDeliveryTimeByIncremental(int index, int indexData, int custom
 *Note :
 - Version 2.+ require minimum android api support is 5.+ 
 
+## LOADING SCENE
 
+<p style="text-align: center;">
+  <img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.19/img/loading-component2.png" width="600"  alt=""/>
+</p>
+
+- Add component `Loading` into GameObject to start handle loading scene. You can you method `LoadScene` inside `Loading` to switch scene
+- There are two overide for method `LoadingScene`
+
+```csharp
+public void LoadScene(string sceneName, Func<bool> funcWaiting = null, Action prepareActiveScene = null){}
+public void LoadScene(string sceneName, string subScene, Func<bool> funcWaiting = null, Action prepareActiveScene = null){}
+```
+
+- You can customize the Loading Scene prefab by creating a prefab variant via the menu item below. Then, you can use it by selecting via `Selected Template` in `Loading`
+
+<p style="text-align: center;">
+  <img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.19/img/create-loading-prefab2.png" width="600"  alt=""/>
+</p>
