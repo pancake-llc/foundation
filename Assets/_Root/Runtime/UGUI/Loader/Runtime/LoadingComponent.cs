@@ -5,7 +5,6 @@ using System.Globalization;
 using Pancake.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,10 +13,9 @@ namespace Pancake.Loader
 {
     [RequireComponent(typeof(CanvasGroup))]
     [AddComponentMenu("")]
-    public class LoadingScene : MonoBehaviour
+    public class LoadingComponent : MonoBehaviour
     {
-        public const string LABEL = "loading_scene";
-        private static LoadingScene instance;
+        public static LoadingComponent instance;
 
         #region pak
 
@@ -149,41 +147,27 @@ namespace Pancake.Loader
             progressBar.value = 0;
         }
 
-        public static async void LoadScene(
+        public static void LoadScene(
             string sceneName,
             Func<bool> funcWaiting = null,
             Action prepareActiveScene = null,
             UnityEvent onBeginEvent = null,
             UnityEvent onFinishEvent = null)
         {
-            try
-            {
-                processLoading = true;
-                var loadingObj = await Addressables.LoadAssetAsync<GameObject>(prefabName);
-                instance = Instantiate(loadingObj.GetComponent<LoadingScene>());
-                DontDestroyOnLoad(instance.gameObject);
-                instance._waitingComplete = funcWaiting;
-                instance._prepareActiveScene = prepareActiveScene;
-                instance._onFinishAction = onFinishEvent;
-                instance._isWaitingPrepareActiveScene = false;
-                instance.gameObject.SetActive(true);
-                instance._loadingOperation = SceneManager.LoadSceneAsync(sceneName);
-                onBeginEvent?.Invoke();
-                instance.onBeginEvents.Invoke();
-                instance._loadingOperation.allowSceneActivation = false;
-            }
-
-            catch
-            {
-                Debug.LogError("<b><color=orange>[Loading]</color></b> Cannot initalize the loading screen because either <b><color=orange>'" + sceneName +
-                               "'</color></b> scene has not been added to the build window, or <b><color=orange>'" + prefabName +
-                               "'</color></b> prefab cannot be found in addressable.");
-                Destroy(instance.gameObject);
-                processLoading = false;
-            }
+            processLoading = true;
+            DontDestroyOnLoad(instance.gameObject);
+            instance._waitingComplete = funcWaiting;
+            instance._prepareActiveScene = prepareActiveScene;
+            instance._onFinishAction = onFinishEvent;
+            instance._isWaitingPrepareActiveScene = false;
+            instance.gameObject.SetActive(true);
+            instance._loadingOperation = SceneManager.LoadSceneAsync(sceneName);
+            onBeginEvent?.Invoke();
+            instance.onBeginEvents.Invoke();
+            instance._loadingOperation.allowSceneActivation = false;
         }
 
-        public static async void LoadScene(
+        public static void LoadScene(
             string sceneName,
             string subScene,
             Func<bool> funcWaiting = null,
@@ -191,33 +175,19 @@ namespace Pancake.Loader
             UnityEvent onBeginEvent = null,
             UnityEvent onFinishEvent = null)
         {
-            try
-            {
-                processLoading = true;
-                var loadingObj = await Addressables.LoadAssetAsync<GameObject>(prefabName);
-                instance = Instantiate(loadingObj.GetComponent<LoadingScene>());
-                DontDestroyOnLoad(instance.gameObject);
-                instance._waitingComplete = funcWaiting;
-                instance._prepareActiveScene = prepareActiveScene;
-                instance._onFinishAction = onFinishEvent;
-                instance._isWaitingPrepareActiveScene = false;
-                instance.gameObject.SetActive(true);
-                instance._loadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-                instance._loadingOperationSubScene = SceneManager.LoadSceneAsync(subScene, LoadSceneMode.Additive);
-                onBeginEvent?.Invoke();
-                instance.onBeginEvents.Invoke();
-                instance._loadingOperation.allowSceneActivation = false;
-                instance._loadingOperationSubScene.allowSceneActivation = true;
-            }
-
-            catch
-            {
-                Debug.LogError("<b><color=orange>[Loading]</color></b> Cannot initalize the loading screen because either <b><color=orange>'" + sceneName +
-                               "'</color></b> scene has not been added to the build window, or <b><color=orange>'" + prefabName +
-                               "'</color></b> prefab cannot be found in <b>Packages/Loading/Prefabs</b>.");
-                Destroy(instance.gameObject);
-                processLoading = false;
-            }
+            processLoading = true;
+            DontDestroyOnLoad(instance.gameObject);
+            instance._waitingComplete = funcWaiting;
+            instance._prepareActiveScene = prepareActiveScene;
+            instance._onFinishAction = onFinishEvent;
+            instance._isWaitingPrepareActiveScene = false;
+            instance.gameObject.SetActive(true);
+            instance._loadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            instance._loadingOperationSubScene = SceneManager.LoadSceneAsync(subScene, LoadSceneMode.Additive);
+            onBeginEvent?.Invoke();
+            instance.onBeginEvents.Invoke();
+            instance._loadingOperation.allowSceneActivation = false;
+            instance._loadingOperationSubScene.allowSceneActivation = true;
         }
 
         private void Update()

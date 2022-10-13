@@ -5,13 +5,13 @@ using UnityEngine.Events;
 
 namespace Pancake.Loader
 {
-    public class LoadingSceneManager : MonoBehaviour
+    public class Loading : MonoBehaviour
     {
-        public string prefabLoadingName;
+        public LoadingComponent prefabLoading;
         public List<GameObject> dontDestroyOnLoad = new List<GameObject>();
         public UnityEvent onBeginEvents;
         public UnityEvent onFinishEvents;
-        
+
         /// <summary>
         /// <see cref="funcWaiting"/> and <see cref="prepareActiveScene"/> only use for fakeloading
         /// </summary>
@@ -20,8 +20,8 @@ namespace Pancake.Loader
         /// <param name="prepareActiveScene">action prepare call before action scene</param>
         public void LoadScene(string sceneName, Func<bool> funcWaiting = null, Action prepareActiveScene = null)
         {
-            LoadingScene.prefabName = prefabLoadingName;
-            LoadingScene.LoadScene(sceneName,
+            LoadingComponent.instance = Instantiate(prefabLoading);
+            LoadingComponent.LoadScene(sceneName,
                 funcWaiting,
                 prepareActiveScene,
                 onBeginEvents,
@@ -43,8 +43,8 @@ namespace Pancake.Loader
         /// <param name="prepareActiveScene">action prepare call before action scene</param>
         public void LoadScene(string sceneName, string subScene, Func<bool> funcWaiting = null, Action prepareActiveScene = null)
         {
-            LoadingScene.prefabName = prefabLoadingName;
-            LoadingScene.LoadScene(sceneName,
+            LoadingComponent.instance = Instantiate(prefabLoading);
+            LoadingComponent.LoadScene(sceneName,
                 subScene,
                 funcWaiting,
                 prepareActiveScene,

@@ -9,19 +9,19 @@ using UnityEngine.UI;
 
 namespace Pancake.Editor
 {
-    [CustomEditor(typeof(LoadingScene))]
+    [CustomEditor(typeof(LoadingComponent))]
     [Serializable]
-    public class LoadingSceneEditor : UnityEditor.Editor
+    public class LoadingComponentEditor : UnityEditor.Editor
     {
         private Image _pakCountdownFilled;
         private Image _pakCountdownBg;
         private SpinnerItem _selectedSpinnerItem;
         private List<Transform> _spinnerList = new List<Transform>();
-        private LoadingScene _loading;
+        private LoadingComponent _loading;
 
         private void Init()
         {
-            _loading = target as LoadingScene;
+            _loading = target as LoadingComponent;
             // Property variables
             LoadingSceneProperties.singleBackgroundSprite.property = serializedObject.FindProperty("singleBackgroundSprite");
 
@@ -89,19 +89,6 @@ namespace Pancake.Editor
         {
             serializedObject.Update();
 
-            if (PrefabUtility.IsPartOfAnyPrefab(_loading.gameObject))
-            {
-                if (!_loading.gameObject.IsAddressableWithLabel(LoadingScene.LABEL))
-                {
-                    Uniform.HelpBox("Click the toogle below to mark the popup as can be loaded by addressable", MessageType.Warning);
-                    if (GUILayout.Button("Mark Popup")) _loading.gameObject.MarkAddressableWithLabel(LoadingScene.LABEL);
-                }
-                else
-                {
-                    Uniform.HelpBox("Marked as popup", MessageType.Info);
-                }
-            }
-
             Uniform.DrawUppercaseSection("LOADING_SPINNER", "SPINNER", DrawLayout, false);
             Uniform.SpaceOneLine();
             Uniform.DrawUppercaseSection("LOADING_HINT", "HINT", DrawHint, false);
@@ -124,7 +111,8 @@ namespace Pancake.Editor
 
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(new GUIContent("Spinner"), GUILayout.Width(120));
-                LoadingSceneProperties.spinnerIndex.property.intValue = EditorGUILayout.Popup(LoadingSceneProperties.spinnerIndex.property.intValue, _spinnerList.Map(_=>_.gameObject.name).ToArray());
+                LoadingSceneProperties.spinnerIndex.property.intValue = EditorGUILayout.Popup(LoadingSceneProperties.spinnerIndex.property.intValue,
+                    _spinnerList.Map(_ => _.gameObject.name).ToArray());
                 _selectedSpinnerItem = _spinnerList[LoadingSceneProperties.spinnerIndex.property.intValue].GetComponent<SpinnerItem>();
                 _selectedSpinnerItem.UpdateColor(LoadingSceneProperties.spinnerColor.property.colorValue);
                 EditorUtility.SetDirty(target);
