@@ -1,4 +1,6 @@
-﻿#if UNITY_EDITOR
+﻿using System;
+
+#if UNITY_EDITOR
 namespace Pancake.Toolbar
 {
     using System.Collections.Generic;
@@ -185,12 +187,29 @@ namespace Pancake.Toolbar
             
             value = EditorPrefs.GetBool($"{Application.identifier}_PlayModePlay", false);
             this.RegisterValueChangedCallback(Toggle);
+            
+            EditorApplication.playModeStateChanged  -= OnPlayModeChange;
+            EditorApplication.playModeStateChanged  += OnPlayModeChange;
         }
 
         private void Toggle(ChangeEvent<bool> evt)
         {
             EditorApplication.isPlaying = evt.newValue;
             EditorPrefs.SetBool($"{Application.identifier}_PlayModePlay", evt.newValue);
+        }
+
+        private static void OnPlayModeChange(PlayModeStateChange state)
+        {
+            switch (state)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    EditorPrefs.DeleteKey($"{Application.identifier}_PlayModePlay");
+                    EditorPrefs.DeleteKey($"{Application.identifier}_PlayModePause");
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    EditorPrefs.SetBool($"{Application.identifier}_PlayModePlay", true);
+                    break;
+            }
         }
     }
 
@@ -228,15 +247,35 @@ namespace Pancake.Toolbar
 
         public PlayModeStepButton()
         {
+            SetEnabled(false);
             var content = EditorGUIUtility.TrTextContentWithIcon("", Tooltip, "StepButton");
             text = content.text;
             tooltip = content.tooltip;
             icon = content.image as Texture2D;
 
             RegisterCallback<ClickEvent>(ButtonCallback);
+            EditorApplication.playModeStateChanged  -= OnPlayModeChange;
+            EditorApplication.playModeStateChanged  += OnPlayModeChange;
         }
 
-        private void ButtonCallback(ClickEvent evt) { EditorApplication.Step(); }
+        private void OnPlayModeChange(PlayModeStateChange obj)
+        {
+            switch (obj)
+            {
+                case PlayModeStateChange.EnteredPlayMode:
+                    SetEnabled(true);
+                    break;
+                case PlayModeStateChange.EnteredEditMode:
+                    SetEnabled(false);
+                    break;
+            }
+        }
+
+        private void ButtonCallback(ClickEvent evt)
+        {
+            if (!EditorApplication.isPaused) EditorApplication.isPaused = true;
+            EditorApplication.Step();
+        }
     }
 
     [InitializeOnLoad]
@@ -249,12 +288,6 @@ namespace Pancake.Toolbar
         }
 
         static EditorQuitHandle()
-        {
-            EditorApplication.quitting += Quit;
-        }
-
-        [InitializeOnEnterPlayMode]
-        private static void EnterPlayMode()
         {
             EditorApplication.quitting -= Quit;
             EditorApplication.quitting += Quit;
