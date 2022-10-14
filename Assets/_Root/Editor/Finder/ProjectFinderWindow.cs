@@ -8,7 +8,7 @@ namespace Pancake.Editor.Finder
     public class ProjectFinderWindow : EditorWindow, IHasCustomMenu
     {
 
-        [MenuItem("Tools/Pancake/Project Finder", priority = -99999)]
+        [MenuItem("Tools/Pancake/Project Finder &_2", priority = -99999)]
         static void Init()
         {
             GetWindow<ProjectFinderWindow>("Project Finder");
