@@ -337,5 +337,51 @@ namespace Pancake
         {
             return type.GetStaticMethod(methodName).Invoke(null, parameters);
         }
+        
+        public static FieldInfo GetFieldViaPath(this Type type, string path, BindingFlags flags)
+        {
+            var parent = type;
+            var fi = parent.GetField(path, flags);
+            var paths = path.Split('.');
+     
+            for (int i = 0; i < paths.Length; i++)
+            {
+                fi = parent.GetField(paths[i], flags);
+                if (fi != null)
+                {
+                    // there are only two container field type that can be serialized:
+                    // Array and List<T>
+                    if (fi.FieldType.IsArray)
+                    {
+                        parent = fi.FieldType.GetElementType();
+                        i += 2;
+                        continue;
+                    }
+     
+                    if (fi.FieldType.IsGenericType)
+                    {
+                        parent = fi.FieldType.GetGenericArguments()[0];
+                        i += 2;
+                        continue;
+                    }
+                    parent = fi.FieldType;
+                }
+                else
+                {
+                    break;
+                }
+     
+            }
+            if (fi == null)
+            {
+                if (type.BaseType != null)
+                {
+                    return GetFieldViaPath(type.BaseType, path, flags);
+                }
+
+                return null;
+            }
+            return fi;
+        }
     }
 }
