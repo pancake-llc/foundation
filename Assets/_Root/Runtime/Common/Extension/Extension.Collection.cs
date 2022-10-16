@@ -137,9 +137,7 @@ namespace Pancake
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
-        public static List<TValue> EnsureList<TKey, TValue>(
-            this IDictionary<TKey, System.Collections.Generic.List<TValue>> source,
-            TKey key)
+        public static List<TValue> EnsureList<TKey, TValue>(this IDictionary<TKey, System.Collections.Generic.List<TValue>> source, TKey key)
         {
             //do not use Ensure for performance and GC reasons
             source.TryGetValue(key, out var result);
@@ -290,7 +288,7 @@ namespace Pancake
 
             return -1;
         }
-        
+
         /// <summary>
         /// Gets collection count if <see cref="source"/> is materialized, otherwise null.
         /// </summary>
@@ -329,8 +327,8 @@ namespace Pancake
             if (source is IReadOnlyCollection<T>) return source;
             return source.ToArray();
         }
-        
-                /// <summary>
+
+        /// <summary>
         /// Set values of elements in an array.
         /// </summary>
         /// <param name="index"> Start index. </param>
@@ -476,7 +474,7 @@ namespace Pancake
 
 
         public static T Last<T>(this IList<T> list) { return list[list.Count - 1]; }
-        
+
 
         /// <summary>
         /// Traverse any array.
@@ -580,6 +578,20 @@ namespace Pancake
                 });
 
             return builder.ToString();
+        }
+        
+        public static T Pop<T>(this HashSet<T> set)
+        {
+            if (set == null) throw new System.ArgumentNullException(nameof(set));
+
+            using var e = set.GetEnumerator();
+            if (e.MoveNext())
+            {
+                set.Remove(e.Current);
+                return e.Current;
+            }
+
+            throw new System.ArgumentException("HashSet must not be empty.");
         }
     }
 }
