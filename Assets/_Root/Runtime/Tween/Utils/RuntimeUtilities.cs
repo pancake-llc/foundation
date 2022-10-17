@@ -49,7 +49,7 @@ namespace Pancake.Tween
             {
 #if UNITY_EDITOR
                 if (!Application.isPlaying)
-                    return Editor.EditorUtilities.unscaledDeltaTime * Time.timeScale;
+                    return Editor.EditorUtilities.UnscaledDeltaTime * Time.timeScale;
                 else
 #endif
                     return Time.deltaTime;
@@ -65,7 +65,7 @@ namespace Pancake.Tween
             {
 #if UNITY_EDITOR
                 if (!Application.isPlaying)
-                    return Editor.EditorUtilities.unscaledDeltaTime;
+                    return Editor.EditorUtilities.UnscaledDeltaTime;
                 else
 #endif
                     return Time.unscaledDeltaTime;
