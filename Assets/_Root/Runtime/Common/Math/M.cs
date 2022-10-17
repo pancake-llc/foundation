@@ -35,7 +35,7 @@ namespace Pancake
 
         // PI / 16 OR 11.25 deg
         public const float PI_16 = 0.196349540849362f;
-        
+
         // 3 * PI_2 OR 270 deg
         public const float THREE_PI_2 = 4.71238898038469f;
 
@@ -1816,6 +1816,149 @@ namespace Pancake
         }
 
         #endregion
-        
+
+        #region Wrap
+
+        public enum WrapMode
+        {
+            Oblivion = 0,
+            Clamp = 1,
+            Loop = 2,
+            PingPong = 3
+        }
+
+        /// <summary>
+        /// Wraps a value around some significant range.
+        /// 
+        /// Similar to C# modulo, but works like a true module, in a unary direction over any range (including negative values).
+        /// 
+        /// ex:
+        /// Wrap(8,6,2) == 4
+        /// Wrap(4,2,0) == 0
+        /// Wrap(4,2,-2) == 0
+        /// </summary>
+        /// <param name="value">value to wrap</param>
+        /// <param name="max">max in range</param>
+        /// <param name="min">min in range</param>
+        /// <returns>A value wrapped around min to max</returns>
+        /// <remarks></remarks>
+        public static int Wrap(int value, int max, int min)
+        {
+            max -= min;
+            if (max == 0)
+                return min;
+
+            var result = (value - min) % max;
+            return result < 0 ? result + max + min : result + min;
+        }
+
+        public static int Wrap(int value, int max)
+        {
+            var result = value % max;
+            return result < 0 ? result + max : result;
+        }
+
+        public static long Wrap(long value, long max, long min)
+        {
+            max -= min;
+            if (max == 0)
+                return min;
+
+            var result = (value - min) % max;
+            return result < 0 ? result + max + min : result + min;
+        }
+
+        public static long Wrap(long value, long max)
+        {
+            var result = value % max;
+            return result < 0 ? result + max : result;
+        }
+
+        public static float Wrap(float value, float max, float min)
+        {
+            max -= min;
+            if (max == 0)
+                return min;
+
+            var result = (value - min) % max;
+            return result < 0 ? result + max + min : result + min;
+        }
+
+        public static float Wrap(float value, float max)
+        {
+            var result = value % max;
+            return result < 0 ? result + max : result;
+        }
+
+        public static double Wrap(double value, double max, double min)
+        {
+            max -= min;
+            if (max == 0)
+                return min;
+
+            var result = (value - min) % max;
+            return result < 0 ? result + max + min : result + min;
+        }
+
+        public static double Wrap(double value, double max)
+        {
+            var result = value % max;
+            return result < 0 ? result + max : result;
+        }
+
+        /// <summary>
+        /// Wrap an index by some mode
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="value"></param>
+        /// <param name="max"></param>
+        /// <param name="min"></param>
+        /// <returns></returns>
+        public static int WrapIndex(WrapMode mode, int value, int max)
+        {
+            switch (mode)
+            {
+                case WrapMode.Clamp:
+                    return M.Clamp(value, 0, max - 1);
+                case WrapMode.Loop:
+                    return M.Wrap(value, max);
+                case WrapMode.PingPong:
+                    return (int) M.PingPong(value, max - 1);
+                default:
+                    return value;
+            }
+        }
+
+        public static float Wrap(WrapMode mode, int value, int max, int min = 0)
+        {
+            switch (mode)
+            {
+                case WrapMode.Clamp:
+                    return M.Clamp(value, min, max);
+                case WrapMode.Loop:
+                    return M.Wrap(value, max, min);
+                case WrapMode.PingPong:
+                    return (int) M.PingPong(value - min, max - min) + min;
+                default:
+                    return value;
+            }
+        }
+
+        public static float Wrap(WrapMode mode, float value, float max, float min = 0)
+        {
+            switch (mode)
+            {
+                case WrapMode.Clamp:
+                    return M.Clamp(value, min, max - 1);
+                case WrapMode.Loop:
+                    return M.Wrap(value, max, min);
+                case WrapMode.PingPong:
+                    return (int) M.PingPong(value - min, max - min - 1) + min;
+                default:
+                    return value;
+            }
+        }
+
+        #endregion
     }
 }
