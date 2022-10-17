@@ -182,6 +182,51 @@ namespace Pancake
             /*12*/ 479001600
         };
 
+        /// <summary>
+        /// Returns if the value is in between or equal to max and min
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="max"></param>
+        /// <param name="min"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool InRange(float value, float max, float min = 0f)
+        {
+            if (max < min) return (value >= max && value <= min);
+            return (value >= min && value <= max);
+
+        }
+
+        public static bool InRange(int value, int max, int min = 0)
+        {
+            if (max < min) return (value >= max && value <= min);
+            return (value >= min && value <= max);
+        }
+
+        public static bool InRangeExclusive(float value, float max, float min = 0f)
+        {
+            if (max < min) return (value > max && value < min);
+            return (value > min && value < max);
+        }
+
+        /// <summary>
+        /// Returns if the value is a valid index in list of length 'bound'.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="bound"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static bool InBounds(int value, int bound)
+        {
+            return (value >= 0 && value < bound);
+        }
+
+        public static bool IsPowerOfTwo(ulong value)
+        {
+            return value != 0 && (value & (value - 1)) == 0;
+        }
+        
+        
         #endregion
 
         #region Floating point shenanigans
@@ -1437,6 +1482,131 @@ namespace Pancake
             float h = a + angBetween * 0.5f; // halfway angle
             v = h + DeltaAngle(h, v); // get offset from h, and offset by h
             return InverseLerpClamped(a, b, v);
+        }
+
+        /// <summary>
+        /// set an angle with in the bounds of -PI to PI
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="useRadians"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static float NormalizeAngle(float angle, bool useRadians = true)
+        {
+            float rd = (useRadians ? PI : 180);
+            return Wrap(angle, rd, -rd);
+        }
+
+        /// <summary>
+        /// closest angle from a1 to a2
+        /// absolute value the return for exact angle
+        /// </summary>
+        /// <param name="a1"></param>
+        /// <param name="a2"></param>
+        /// <param name="useRadians"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static float NearestAngleBetween(float a1, float a2, bool useRadians = true)
+        {
+            var rd = useRadians ? PI : 180f;
+            var ra = Wrap(a2 - a1, rd * 2f);
+            if (ra > rd) ra -= (rd * 2f);
+            return ra;
+        }
+
+        /// <summary>
+        /// Returns a value for dependant that is a value that is the shortest angle between dep and ind from ind.
+        /// 
+        /// 
+        /// for instance if dep=-170 degrees and ind=170 degrees then 190 degrees will be returned as an alternative to -170 degrees
+        /// note: angle is passed in radians, this written example is in degrees for ease of reading
+        /// </summary>
+        /// <param name="dep"></param>
+        /// <param name="ind"></param>
+        /// <param name="useRadians"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static float ShortenAngleToAnother(float dep, float ind, bool useRadians)
+        {
+            return ind + NearestAngleBetween(ind, dep, useRadians);
+        }
+
+        /// <summary>
+        /// Returns a value for dependant that is the shortest angle counter-clockwise from ind.
+        /// 
+        /// for instance if dep=-170 degrees, and ind=10 degrees, then 200 degrees will be returned as an alternative to -160. The shortest 
+        /// path from 10 to -160 moving counter-clockwise is 190 degrees away.
+        /// </summary>
+        /// <param name="dep"></param>
+        /// <param name="ind"></param>
+        /// <param name="useRadians"></param>
+        /// <returns></returns>
+        public static float NormalizeAngleToAnother(float dep, float ind, bool useRadians)
+        {
+            float div = useRadians ? TWO_PI : 360f;
+            float v = (dep - ind) / div;
+            return dep - (float)Math.Floor(v) * div;
+        }
+
+        public static float NormalizeAngleToRange(float value, float start, float end, bool useRadians)
+        {
+            float div = useRadians ? TWO_PI : 360f;
+            float d = (end - start) / div;
+            float v = (value - start) / div;
+            if (!M.InRange(v, d))
+            {
+                if (Math.Abs(d) > 1.0)
+                {
+                    //the start->end range is larger than 360, so just land inside it
+                    v = (float)Math.Round((double)v, System.MidpointRounding.AwayFromZero);
+                    value -= v * div;
+                }
+                else
+                {
+                    //the start->end range is smaller than 360
+                    //so lets land as close as we can to the bounds of the range on either end
+                    v = (float)Math.Truncate((double)v);
+                    value -= v * div;
+                    if (Math.Abs(value - end) > 180.0) value -= Math.Sign(value - end) * div;
+                }
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// interpolate across the shortest arc between two angles
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="weight"></param>
+        /// <param name="useRadians"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static float InterpolateAngle(float a, float b, float weight, bool useRadians)
+        {
+            var rd = (useRadians) ? PI : 180f;
+            var delta = (b - a) % (rd * 2f);
+            return Wrap(a + delta * weight, rd, -rd);
+        }
+
+        //public static float ClampAngle(float a, float max, float min, bool bUseRadians)
+        //{
+        //    a = NormalizeAngle(a, bUseRadians);
+        //    max = NormalizeAngleToAnother(max, a, bUseRadians);
+        //    min = NormalizeAngleToAnother(min, a, bUseRadians);
+        //    return MathUtil.Clamp(a, max, min);
+        //}
+
+        public static float ClampIn180(float a, bool bUseRadians = false)
+        {
+            return NormalizeAngle(a, bUseRadians);
+        }
+
+        public static float ClampIn360(float a, bool bUseRadians = false)
+        {
+            a = NormalizeAngle(a, bUseRadians);
+            if (a < 0f) a += (bUseRadians) ? TWO_PI : 360.0f;
+            return a;
         }
 
         #endregion
