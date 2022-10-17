@@ -334,6 +334,11 @@ namespace Pancake
 
         public static Vector3 SlerpClamped(Vector3 a, Vector3 b, float t) => Vector3.Slerp(a, b, t);
 
+        public static bool IsNaN(Vector3 v)
+        {
+            return float.IsNaN(v.sqrMagnitude);
+        }
+        
         #endregion
 
         #region Swizzling
