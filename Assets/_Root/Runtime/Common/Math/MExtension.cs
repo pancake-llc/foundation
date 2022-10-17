@@ -18,6 +18,111 @@ namespace Pancake
         [MethodImpl(INLINE)]
         public static float Angle(this Vector2 v) => Mathf.Atan2(v.y, v.x);
 
+        /// <summary>Get the angle in degrees off the forward defined by x.</summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <seealso cref="M.DirToAng"/>
+        [MethodImpl(INLINE)]
+        public static float Angle(float x, float y) => Mathf.Atan2(y, x);
+
+        /// <summary>
+        /// The angle between 2 vectors in radian
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static float AngleBetween(Vector2 a, Vector2 b)
+        {
+            // // Due to float error the dot / mag can sometimes be ever so slightly over 1, which can cause NaN in acos.
+            //return Mathf.Acos(Vector2.Dot(a, b) / (a.magnitude * b.magnitude)) * MathUtil.RAD_TO_DEG;
+            double d = (double) Vector2.Dot(a, b) / ((double) a.magnitude * (double) b.magnitude);
+            if (d >= 1d) return 0f;
+            else if (d <= -1d) return 180f;
+            return (float) System.Math.Acos(d);
+        }
+
+        /// <summary>
+        /// The angle between 2 lines, regardless of heading (+/- versions of vector are normalized so that opposite vectors are treated as an angle of 0). 
+        /// This means a value near 0 means the vectors are parrallel, a value near 90 means they're perpendicular.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>Returns an angle in degrees from 0 -> 90</returns>
+        public static float AngleAgainst(Vector2 a, Vector2 b)
+        {
+            // // Due to float error the dot / mag can sometimes be ever so slightly over 1, which can cause NaN in acos.
+            //return Mathf.Acos(Vector2.Dot(a, b) / (a.magnitude * b.magnitude)) * MathUtil.RAD_TO_DEG;
+            double d = System.Math.Abs((double) Vector2.Dot(a, b) / ((double) a.magnitude * (double) b.magnitude));
+            if (d >= 1d) return 0f;
+            else if (d <= 0d) return 90f;
+            return (float) System.Math.Acos(d) * M.RAD_TO_DEG;
+        }
+
+        /// <summary>
+        /// The cosine between 2 vectors regardless of magnitude. Acos this value to get the angle between.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static float CosBetween(Vector2 a, Vector2 b)
+        {
+            // // Due to float error the dot / mag can sometimes be ever so slightly over 1, which can cause NaN in acos.
+            double d = System.Math.Abs((double) Vector2.Dot(a, b) / ((double) a.magnitude * (double) b.magnitude));
+            if (d >= 1d) return 1f;
+            else if (d <= 0d) return 0f;
+            return (float) d;
+        }
+
+        /// <summary>
+        /// Angle in degrees off some axis in the counter-clockwise direction. Think of like 'Angle' or 'Atan2' where you get to control 
+        /// which axis as opposed to only measuring off of <1,0>. 
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="axis"></param>
+        /// <returns></returns>
+        public static float AngleOff(Vector2 v, Vector2 axis)
+        {
+            if (axis.sqrMagnitude < 0.0001f) return float.NaN;
+            axis.Normalize();
+            var tang = new Vector2(-axis.y, axis.x);
+            return AngleBetween(v, axis) * Mathf.Sign(Vector2.Dot(v, tang));
+        }
+
+        public static void Reflect(ref Vector2 v, Vector2 normal)
+        {
+            var dp = 2f * Vector2.Dot(v, normal);
+            var ix = v.x - normal.x * dp;
+            var iy = v.y - normal.y * dp;
+            v.x = ix;
+            v.y = iy;
+        }
+
+        public static Vector2 Reflect(Vector2 v, Vector2 normal)
+        {
+            var dp = 2 * Vector2.Dot(v, normal);
+            return new Vector2(v.x - normal.x * dp, v.y - normal.y * dp);
+        }
+
+        public static void Mirror(ref Vector2 v, Vector2 axis) { v = (2 * (Vector2.Dot(v, axis) / Vector2.Dot(axis, axis)) * axis) - v; }
+
+        public static Vector2 Mirror(Vector2 v, Vector2 axis) { return (2 * (Vector2.Dot(v, axis) / Vector2.Dot(axis, axis)) * axis) - v; }
+
+        /// <summary>
+        /// Rotate Vector2 counter-clockwise by 'a'
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="aRad">angle in rad</param>
+        /// <returns></returns>
+        public static Vector2 RotateBy(Vector2 v, float aRad)
+        {
+            var ca = System.Math.Cos(aRad);
+            var sa = System.Math.Sin(aRad);
+            var rx = v.x * ca - v.y * sa;
+
+            return new Vector2((float) rx, (float) (v.x * sa + v.y * ca));
+        }
+
+
         /// <summary>Rotates the vector 90 degrees clockwise (negative Z axis rotation)</summary>
         [MethodImpl(INLINE)]
         public static Vector2 Rotate90CW(this Vector2 v) => new Vector2(v.y, -v.x);
@@ -46,12 +151,12 @@ namespace Pancake
         /// <summary>Converts an angle in degrees to radians</summary>
         /// <param name="angDegrees">The angle, in degrees, to convert to radians</param>
         [MethodImpl(INLINE)]
-        public static float DegToRad(this float angDegrees) => angDegrees * M.Deg2Rad;
+        public static float DegToRad(this float angDegrees) => angDegrees * M.DEG_TO_RAD;
 
         /// <summary>Converts an angle in radians to degrees</summary>
         /// <param name="angRadians">The angle, in radians, to convert to degrees</param>
         [MethodImpl(INLINE)]
-        public static float RadToDeg(this float angRadians) => angRadians * M.Rad2Deg;
+        public static float RadToDeg(this float angRadians) => angRadians * M.RAD_TO_DEG;
 
         /// <summary>Extracts the quaternion components into a Vector4</summary>
         /// <param name="q">The quaternion to get the components of</param>
@@ -141,31 +246,39 @@ namespace Pancake
         /// <summary>Mirrors this vector around another point. Equivalent to rotating the vector 180° around the point</summary>
         /// <param name="p">The point to mirror</param>
         /// <param name="pivot">The point to mirror around</param>
-        [MethodImpl( INLINE )] public static Vector2 MirrorAround( this Vector2 p, Vector2 pivot ) => new(2 * pivot.x - p.x, 2 * pivot.y - p.y);
+        [MethodImpl(INLINE)]
+        public static Vector2 MirrorAround(this Vector2 p, Vector2 pivot) => new(2 * pivot.x - p.x, 2 * pivot.y - p.y);
 
         /// <summary>Mirrors this vector around an x coordinate</summary>
         /// <param name="p">The point to mirror</param>
         /// <param name="xPivot">The x coordinate to mirror around</param>
-        [MethodImpl( INLINE )] public static Vector2 MirrorAroundX( this Vector2 p, float xPivot ) => new(2 * xPivot - p.x, p.y );
+        [MethodImpl(INLINE)]
+        public static Vector2 MirrorAroundX(this Vector2 p, float xPivot) => new(2 * xPivot - p.x, p.y);
 
         /// <summary>Mirrors this vector around a y coordinate</summary>
         /// <param name="p">The point to mirror</param>
         /// <param name="yPivot">The y coordinate to mirror around</param>
-        [MethodImpl( INLINE )] public static Vector2 MirrorAroundY( this Vector2 p, float yPivot ) => new(p.x, 2 * yPivot - p.y );
+        [MethodImpl(INLINE)]
+        public static Vector2 MirrorAroundY(this Vector2 p, float yPivot) => new(p.x, 2 * yPivot - p.y);
 
         /// <inheritdoc cref="MirrorAroundX(Vector2,float)"/>
-        [MethodImpl( INLINE )] public static Vector3 MirrorAroundX( this Vector3 p, float xPivot ) => new(2 * xPivot - p.x, p.y, p.z );
+        [MethodImpl(INLINE)]
+        public static Vector3 MirrorAroundX(this Vector3 p, float xPivot) => new(2 * xPivot - p.x, p.y, p.z);
 
         /// <inheritdoc cref="MirrorAroundY(Vector2,float)"/>
-        [MethodImpl( INLINE )] public static Vector3 MirrorAroundY( this Vector3 p, float yPivot ) => new(p.x, 2 * yPivot - p.y, p.z );
+        [MethodImpl(INLINE)]
+        public static Vector3 MirrorAroundY(this Vector3 p, float yPivot) => new(p.x, 2 * yPivot - p.y, p.z);
 
         /// <summary>Mirrors this vector around a y coordinate</summary>
         /// <param name="p">The point to mirror</param>
         /// <param name="zPivot">The z coordinate to mirror around</param>
-        [MethodImpl( INLINE )] public static Vector3 MirrorAroundZ( this Vector3 p, float zPivot ) => new(p.x, p.y, 2 * zPivot - p.z );
+        [MethodImpl(INLINE)]
+        public static Vector3 MirrorAroundZ(this Vector3 p, float zPivot) => new(p.x, p.y, 2 * zPivot - p.z);
 
         /// <inheritdoc cref="MirrorAround(Vector2,Vector2)"/>
-        [MethodImpl( INLINE )] public static Vector3 MirrorAround( this Vector3 p, Vector3 pivot ) => new(2 * pivot.x - p.x, 2 * pivot.y - p.y, 2 * pivot.z - p.z);
+        [MethodImpl(INLINE)]
+        public static Vector3 MirrorAround(this Vector3 p, Vector3 pivot) => new(2 * pivot.x - p.x, 2 * pivot.y - p.y, 2 * pivot.z - p.z);
+
         #endregion
 
         #region Color manipulation
@@ -209,22 +322,20 @@ namespace Pancake
             r.yMin = Mathf.Min(r.yMin, p.y);
             return r;
         }
+
         /// <summary>Interpolates a position within this rectangle, given a normalized position</summary>
         /// <param name="r">The rectangle to get a position within</param>
         /// <param name="tPos">The normalized position within this rectangle</param>
-        public static Vector2 Lerp( this Rect r, Vector2 tPos ) =>
-            new(
-                M.Lerp( r.xMin, r.xMax, tPos.x ),
-                M.Lerp( r.yMin, r.yMax, tPos.y )
-            );
+        public static Vector2 Lerp(this Rect r, Vector2 tPos) => new(M.Lerp(r.xMin, r.xMax, tPos.x), M.Lerp(r.yMin, r.yMax, tPos.y));
 
         /// <summary>The x axis range of this rectangle</summary>
         /// <param name="rect">The rectangle to get the x range of</param>
-        public static FloatRange RangeX( this Rect rect ) => ( rect.xMin, rect.xMax );
+        public static FloatRange RangeX(this Rect rect) => (rect.xMin, rect.xMax);
 
         /// <summary>The y axis range of this rectangle</summary>
         /// <param name="rect">The rectangle to get the y range of</param>
-        public static FloatRange RangeY( this Rect rect ) => ( rect.yMin, rect.yMax );
+        public static FloatRange RangeY(this Rect rect) => (rect.yMin, rect.yMax);
+
         #endregion
 
         #region Simple float and int operations
@@ -728,11 +839,23 @@ namespace Pancake
                 value);
 
         /// <inheritdoc cref="M.Remap(float,FloatRange,FloatRange)"/>
-        [MethodImpl( INLINE )] public static float Remap( this float value, FloatRange inRange, FloatRange outRange ) => M.Remap( inRange.a, inRange.b, outRange.a, outRange.b, value );
+        [MethodImpl(INLINE)]
+        public static float Remap(this float value, FloatRange inRange, FloatRange outRange) =>
+            M.Remap(inRange.a,
+                inRange.b,
+                outRange.a,
+                outRange.b,
+                value);
 
         /// <inheritdoc cref="M.RemapClamped(float,FloatRange,FloatRange)"/>
-        [MethodImpl( INLINE )] public static float RemapClamped( this float value, FloatRange inRange, FloatRange outRange ) => M.RemapClamped( inRange.a, inRange.b, outRange.a, outRange.b, value );
-        
+        [MethodImpl(INLINE)]
+        public static float RemapClamped(this float value, FloatRange inRange, FloatRange outRange) =>
+            M.RemapClamped(inRange.a,
+                inRange.b,
+                outRange.a,
+                outRange.b,
+                value);
+
         /// <inheritdoc cref="M.Lerp(float,float,float)"/>
         [MethodImpl(INLINE)]
         public static float Lerp(this float t, float a, float b) => M.Lerp(a, b, t);
@@ -795,11 +918,13 @@ namespace Pancake
                 iPos);
 
         /// <inheritdoc cref="M.Eerp(float,float,float)"/>
-        [MethodImpl( INLINE )] public static float Eerp( this float t, float a, float b ) => M.Eerp( a, b, t );
+        [MethodImpl(INLINE)]
+        public static float Eerp(this float t, float a, float b) => M.Eerp(a, b, t);
 
         /// <inheritdoc cref="M.InverseEerp(float,float,float)"/>
-        [MethodImpl( INLINE )] public static float InverseEerp( this float v, float a, float b ) => M.InverseEerp( a, b, v );
-        
+        [MethodImpl(INLINE)]
+        public static float InverseEerp(this float v, float a, float b) => M.InverseEerp(a, b, v);
+
         #endregion
 
         #region Vector Math

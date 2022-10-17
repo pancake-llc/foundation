@@ -335,8 +335,8 @@ namespace Pancake
                 child.ChangeLayersRecursively(layerIndex);
             }
         }
-        
-                /// <summary>
+
+        /// <summary>
         /// Traverse transform tree (root node first).
         /// </summary>
         /// <param name="root"> The root node of transform tree. </param>
@@ -401,5 +401,127 @@ namespace Pancake
 
             return result;
         }
+
+        public static Quaternion TransformRotation(this Transform t, Quaternion rot) { return rot * t.rotation; }
+
+        public static Quaternion InverseTransformRotation(this Transform t, Quaternion rot) { return Quaternion.Inverse(t.rotation) * rot; }
+
+        #region Matrix Methods
+
+        public static Vector3 GetTranslation(this Matrix4x4 m)
+        {
+            var col = m.GetColumn(3);
+            return new Vector3(col.x, col.y, col.z);
+        }
+
+        public static Quaternion GetRotation(this Matrix4x4 m)
+        {
+            // Adapted from: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+            Quaternion q = new Quaternion();
+            q.w = M.Sqrt(M.Max(0, 1 + m[0, 0] + m[1, 1] + m[2, 2])) / 2;
+            q.x = M.Sqrt(M.Max(0, 1 + m[0, 0] - m[1, 1] - m[2, 2])) / 2;
+            q.y = M.Sqrt(M.Max(0, 1 - m[0, 0] + m[1, 1] - m[2, 2])) / 2;
+            q.z = M.Sqrt(M.Max(0, 1 - m[0, 0] - m[1, 1] + m[2, 2])) / 2;
+            q.x *= M.Sign(q.x * (m[2, 1] - m[1, 2]));
+            q.y *= M.Sign(q.y * (m[0, 2] - m[2, 0]));
+            q.z *= M.Sign(q.z * (m[1, 0] - m[0, 1]));
+            return q;
+        }
+
+        public static Vector3 GetScale(this Matrix4x4 m)
+        {
+            //var xs = m.GetColumn(0);
+            //var ys = m.GetColumn(1);
+            //var zs = m.GetColumn(2);
+
+            //var sc = new Vector3();
+            //sc.x = Vector3.Magnitude(new Vector3(xs.x, xs.y, xs.z));
+            //sc.y = Vector3.Magnitude(new Vector3(ys.x, ys.y, ys.z));
+            //sc.z = Vector3.Magnitude(new Vector3(zs.x, zs.y, zs.z));
+
+            //return sc;
+
+            return new Vector3(m.GetColumn(0).magnitude, m.GetColumn(1).magnitude, m.GetColumn(2).magnitude);
+        }
+
+        #endregion
+
+        #region GetAxis
+
+        public static Vector3 GetAxis(CartesianAxis axis)
+        {
+            switch (axis)
+            {
+                case CartesianAxis.Xneg:
+                    return Vector3.left;
+                case CartesianAxis.Yneg:
+                    return Vector3.down;
+                case CartesianAxis.Zneg:
+                    return Vector3.back;
+                case CartesianAxis.X:
+                    return Vector3.right;
+                case CartesianAxis.Y:
+                    return Vector3.up;
+                case CartesianAxis.Z:
+                    return Vector3.forward;
+            }
+
+            return Vector3.zero;
+        }
+
+        public static Vector3 GetAxis(this Transform transform, CartesianAxis axis)
+        {
+            if (transform == null) throw new System.ArgumentNullException(nameof(transform));
+
+            switch (axis)
+            {
+                case CartesianAxis.Xneg:
+                    return -transform.right;
+                case CartesianAxis.Yneg:
+                    return -transform.up;
+                case CartesianAxis.Zneg:
+                    return -transform.forward;
+                case CartesianAxis.X:
+                    return transform.right;
+                case CartesianAxis.Y:
+                    return transform.up;
+                case CartesianAxis.Z:
+                    return transform.forward;
+            }
+
+            return Vector3.zero;
+        }
+
+        public static Vector3 GetAxis(this Transform transform, CartesianAxis axis, bool inLocalSpace)
+        {
+            if (transform == null) throw new System.ArgumentNullException(nameof(transform));
+
+            Vector3 v = Vector3.zero;
+            switch (axis)
+            {
+                case CartesianAxis.Xneg:
+                    v = -transform.right;
+                    break;
+                case CartesianAxis.Yneg:
+                    v = -transform.up;
+                    break;
+                case CartesianAxis.Zneg:
+                    v = -transform.forward;
+                    break;
+                case CartesianAxis.X:
+                    v = transform.right;
+                    break;
+                case CartesianAxis.Y:
+                    v = transform.up;
+                    break;
+                case CartesianAxis.Z:
+                    v = transform.forward;
+                    break;
+            }
+
+            return (inLocalSpace) ? transform.InverseTransformDirection(v) : v;
+        }
+
+        #endregion
     }
 }

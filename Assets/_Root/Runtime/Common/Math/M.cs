@@ -16,28 +16,46 @@ namespace Pancake
         #region Constants
 
         /// <summary>The circle constant. Defined as the circumference of a circle divided by its radius. Equivalent to 2*pi</summary>
-        public const float TAU = 6.28318530717959f;
+        public const float TWO_PI = 6.28318530717959f;
 
         /// <summary>An obscure circle constant. Defined as the circumference of a circle divided by its diameter. Equivalent to 0.5*tau</summary>
-        public const float PI = 3.14159265359f;
+        public const float PI = 3.14159265358979f;
+
+        // PI / 2 OR 90 deg
+        public const float PI_2 = 1.5707963267949f;
+
+        // PI / 3 OR 60 deg
+        public const float PI_3 = 1.04719755119659666667f;
+
+        // PI / 4 OR 45 deg
+        public const float PI_4 = 0.785398163397448f;
+
+        // PI / 8 OR 22.5 deg
+        public const float PI_8 = 0.392699081698724f;
+
+        // PI / 16 OR 11.25 deg
+        public const float PI_16 = 0.196349540849362f;
+        
+        // 3 * PI_2 OR 270 deg
+        public const float THREE_PI_2 = 4.71238898038469f;
 
         /// <summary>Euler's number. The base of the natural logarithm. f(x)=e^x is equal to its own derivative</summary>
-        public const float E = 2.71828182846f;
+        public const float E = 2.71828182845905f;
 
         /// <summary>The golden ratio. It is the value of a/b where a/b = (a+b)/a. It's the positive root of x^2-x-1</summary>
         public const float GOLDEN_RATIO = 1.61803398875f;
 
         /// <summary>The square root of two. The length of the vector (1,1)</summary>
-        public const float SQRT2 = 1.41421356237f;
+        public const float SQRT2 = 1.4142135623731f;
 
         /// <summary>The reciprocal of the square root of two. The components of the vector (1,1)</summary>
         public const float RSQRT2 = 1f / SQRT2;
 
-        /// <summary>Multiply an angle in degrees by this, to convert it to radians</summary>
-        public const float Deg2Rad = TAU / 360f;
+        /// <summary>Multiply an angle in degrees by this, to convert it to radians (2pi/360)</summary>
+        public const float DEG_TO_RAD = 0.0174532925199433f;
 
-        /// <summary>Multiply an angle in radians by this, to convert it to degrees</summary>
-        public const float Rad2Deg = 360f / TAU;
+        /// <summary>Multiply an angle in radians by this, to convert it to degrees (360/2pi)</summary>
+        public const float RAD_TO_DEG = 57.2957795130823f;
 
         #endregion
 
@@ -1386,11 +1404,11 @@ namespace Pancake
 
         /// <summary>Returns the clockwise angle between <c>from</c> and <c>to</c>, in the range 0 to tau (0 to 2*pi)</summary>
         [MethodImpl(INLINE)]
-        public static float AngleFromToCW(Vector2 from, Vector2 to) => Determinant(from, to) < 0 ? AngleBetween(from, to) : TAU - AngleBetween(from, to);
+        public static float AngleFromToCW(Vector2 from, Vector2 to) => Determinant(from, to) < 0 ? AngleBetween(from, to) : TWO_PI - AngleBetween(from, to);
 
         /// <summary>Returns the counterclockwise angle between <c>from</c> and <c>to</c>, in the range 0 to tau (0 to 2*pi)</summary>
         [MethodImpl(INLINE)]
-        public static float AngleFromToCCW(Vector2 from, Vector2 to) => Determinant(from, to) > 0 ? AngleBetween(from, to) : TAU - AngleBetween(from, to);
+        public static float AngleFromToCCW(Vector2 from, Vector2 to) => Determinant(from, to) > 0 ? AngleBetween(from, to) : TWO_PI - AngleBetween(from, to);
 
         /// <summary>Blends between the <c>aRad</c> and <c>bRad</c> angles, based on the input t-value between 0 and 1</summary>
         /// <param name="aRad">The start value, in radians</param>
@@ -1398,15 +1416,15 @@ namespace Pancake
         /// <param name="t">The t-value between 0 and 1</param>
         public static float LerpAngle(float aRad, float bRad, float t)
         {
-            float delta = Repeat((bRad - aRad), TAU);
+            float delta = Repeat((bRad - aRad), TWO_PI);
             if (delta > PI)
-                delta -= TAU;
+                delta -= TWO_PI;
             return aRad + delta * Clamp01(t);
         }
 
         /// <summary>Returns the shortest angle between the two input angles, in radians</summary>
         [MethodImpl(INLINE)]
-        public static float DeltaAngle(float a, float b) => (b - a + PI).Repeat(TAU) - PI;
+        public static float DeltaAngle(float a, float b) => (b - a + PI).Repeat(TWO_PI) - PI;
 
         /// <summary>Given an angle between a and b, returns its normalized location in that range, as a t-value (interpolant) from 0 to 1</summary>
         /// <param name="a">The start angle of the range (in radians), where it would return 0</param>
@@ -1798,5 +1816,6 @@ namespace Pancake
         }
 
         #endregion
+        
     }
 }

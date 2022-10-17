@@ -28,7 +28,7 @@ namespace Pancake
 
         // 2D
         /// <summary>Returns a random point on the unit circle</summary>
-        public static Vector2 OnUnitCircle => M.AngToDir(Value * M.TAU);
+        public static Vector2 OnUnitCircle => M.AngToDir(Value * M.TWO_PI);
 
         /// <summary>Returns a random 2D direction, equivalent to <c>OnUnitCircle</c></summary>
         public static Vector2 Direction2D => OnUnitCircle;
@@ -53,8 +53,8 @@ namespace Pancake
         public static Vector3 InUnitCube => new Vector3(Value, Value, Value);
 
         // 2D orientation
-        /// <summary>Returns a random angle in radians from 0 to TAU</summary>
-        public static float Angle => Value * M.TAU;
+        /// <summary>Returns a random angle in radians from 0 to TWO_PI</summary>
+        public static float Angle => Value * M.TWO_PI;
 
         // 3D Orientation
         /// <summary>Returns a random uniformly distributed rotation</summary>
