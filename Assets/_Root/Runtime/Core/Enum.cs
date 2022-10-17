@@ -93,4 +93,13 @@ namespace Pancake
         DoNotPlayIfPlaying = 1,
         PlayOverExisting = 2
     }
+    
+    /// <summary>
+    /// TimeMode
+    /// </summary>
+    public enum TimeMode
+    {
+        Normal = 0,
+        Unscaled = 1,
+    }
 }
