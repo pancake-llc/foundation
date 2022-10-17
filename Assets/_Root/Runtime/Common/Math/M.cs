@@ -56,6 +56,8 @@ namespace Pancake
 
         /// <summary>Multiply an angle in radians by this, to convert it to degrees (360/2pi)</summary>
         public const float RAD_TO_DEG = 57.2957795130823f;
+        
+        public const double DBL_EPSILON = 9.99999943962493E-11;
 
         #endregion
 

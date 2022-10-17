@@ -122,7 +122,6 @@ namespace Pancake
             return new Vector2((float) rx, (float) (v.x * sa + v.y * ca));
         }
 
-
         /// <summary>Rotates the vector 90 degrees clockwise (negative Z axis rotation)</summary>
         [MethodImpl(INLINE)]
         public static Vector2 Rotate90CW(this Vector2 v) => new Vector2(v.y, -v.x);
@@ -162,6 +161,178 @@ namespace Pancake
         /// <param name="q">The quaternion to get the components of</param>
         [MethodImpl(INLINE)]
         public static Vector4 ToVector4(this Quaternion q) => new Vector4(q.x, q.y, q.z, q.w);
+
+        public static Vector2 RotateToward(Vector2 from, Vector2 to, float a, bool useRadians = false)
+        {
+            if (!useRadians) a *= M.DEG_TO_RAD;
+            var a1 = M.Atan2(from.y, from.x);
+            var a2 = M.Atan2(to.y, to.x);
+            a2 = M.ShortenAngleToAnother(a2, a1, true);
+            var ra = (a2 - a1 >= 0f) ? a1 + a : a1 - a;
+            var l = from.magnitude;
+            return new Vector2(M.Cos(ra) * l, M.Sin(ra) * l);
+        }
+
+        public static Vector2 RotateTowardClamped(Vector2 from, Vector2 to, float a, bool useRadians = false)
+        {
+            if (!useRadians) a *= M.DEG_TO_RAD;
+            var a1 = M.Atan2(from.y, from.x);
+            var a2 = M.Atan2(to.y, to.x);
+            a2 = M.ShortenAngleToAnother(a2, a1, true);
+
+            var da = a2 - a1;
+            var ra = a1 + M.Clamp(M.Abs(a), 0f, M.Abs(da)) * M.Sign(da);
+
+            var l = from.magnitude;
+            return new Vector2(M.Cos(ra) * l, M.Sin(ra) * l);
+        }
+
+        /// <summary>
+        /// Angular interpolates between two vectors.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="t"></param>
+        /// <returns>The vectors are 2 dimensional, so technically this is not a spherical linear interpolation. The name Slerp is kept for consistency. 
+        /// The result would be if you Slerped between 2 Vector3's that had a z value of 0. The direction interpolates at an angular rate, where as the 
+        /// magnitude interpolates at a linear rate.</returns>
+        public static Vector2 Slerp(Vector2 from, Vector2 to, float t)
+        {
+            var a = M.NormalizeAngle(M.Lerp(M.Atan2(from.y, from.x), M.Atan2(to.y, to.x), t), true);
+            var l = Mathf.LerpUnclamped(from.magnitude, to.magnitude, t);
+            return new Vector2(M.Cos(a) * l, M.Sin(a) * l);
+        }
+
+        /// <summary>
+        /// Angular interpolates between two vectors.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="t"></param>
+        /// <returns>The vectors are 2 dimensional, so technically this is not a spherical linear interpolation. The name Slerp is kept for consistency. 
+        /// The result would be if you Slerped between 2 Vector3's that had a z value of 0. The direction interpolates at an angular rate, where as the 
+        /// magnitude interpolates at a linear rate.</returns>
+        public static Vector2 SlerpClamped(Vector2 from, Vector2 to, float t)
+        {
+            var a = M.NormalizeAngle(M.Lerp(M.Atan2(from.y, from.x), M.Atan2(to.y, to.x), t), true);
+            var l = M.Lerp(from.magnitude, to.magnitude, t);
+            return new Vector2(M.Cos(a) * l, M.Sin(a) * l);
+        }
+
+        public static Vector2 Orth(Vector2 v) { return new Vector2(-v.y, v.x); }
+
+        /// <summary>
+        /// The angle between 2 vectors in degrees.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static float AngleBetween(Vector3 a, Vector3 b)
+        {
+            // // Due to float error the dot / mag can sometimes be ever so slightly over 1, which can cause NaN in acos.
+            //return Mathf.Acos(Vector3.Dot(a, b) / (a.magnitude * b.magnitude)) * MathUtil.RAD_TO_DEG;
+            double d = System.Math.Sqrt((double) a.sqrMagnitude * (double) b.sqrMagnitude);
+            if (d < M.DBL_EPSILON) return 0f;
+
+            d = (double) Vector3.Dot(a, b) / d;
+            if (d >= 1d) return 0f;
+            else if (d <= -1d) return 180f;
+            return (float) System.Math.Acos(d) * M.RAD_TO_DEG;
+        }
+
+        /// <summary>
+        /// The angle between 2 lines, regardless of heading (+/- versions of vector are normalized so that opposite vectors are treated as an angle of 0). 
+        /// This means a value near 0 means the vectors are parrallel, a value near 90 means they're orthogonal.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>Returns an angle in degrees from 0 -> 90</returns>
+        public static float AngleAgainst(Vector3 a, Vector3 b)
+        {
+            // // Due to float error the dot / mag can sometimes be ever so slightly over 1, which can cause NaN in acos.
+            //return Mathf.Acos(Vector3.Dot(a, b) / (a.magnitude * b.magnitude)) * MathUtil.RAD_TO_DEG;
+            double d = System.Math.Sqrt((double) a.sqrMagnitude * (double) b.sqrMagnitude);
+            if (d < M.DBL_EPSILON) return 0f;
+
+            d = System.Math.Abs((double) Vector3.Dot(a, b) / d);
+            if (d >= 1d) return 0f;
+            else if (d <= 0d) return 90f;
+            return (float) System.Math.Acos(d) * M.RAD_TO_DEG;
+        }
+
+        /// <summary>
+        /// The cosine between 2 vectors regardless of magnitude. Acos this value to get the angle between.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static float CosBetween(Vector3 a, Vector3 b)
+        {
+            // // Due to float error the dot / mag can sometimes be ever so slightly over 1, which can cause NaN in acos.
+            double d = System.Math.Sqrt((double) a.sqrMagnitude * (double) b.sqrMagnitude);
+            if (d < M.DBL_EPSILON) return 0f;
+
+            d = (double) Vector3.Dot(a, b) / d;
+            if (d >= 1d) return 1f;
+            else if (d <= -1d) return -1f;
+            return (float) d;
+        }
+
+        /// <summary>
+        /// Returns a vector orthogonal to up in the general direction of forward.
+        /// </summary>
+        /// <param name="forward"></param>
+        /// <param name="up"></param>
+        /// <returns></returns>
+        public static Vector3 GetForwardTangent(Vector3 forward, Vector3 up) { return Vector3.Cross(Vector3.Cross(up, forward), up); }
+
+        /// <summary>
+        /// Find some projected angle measure off some forward around some axis.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="forward"></param>
+        /// <param name="axis"></param>
+        /// <returns>Angle in degrees</returns>
+        public static float AngleOffAroundAxis(Vector3 v, Vector3 forward, Vector3 axis, bool clockwise = false)
+        {
+            Vector3 right;
+            if (clockwise)
+            {
+                right = Vector3.Cross(forward, axis);
+                forward = Vector3.Cross(axis, right);
+            }
+            else
+            {
+                right = Vector3.Cross(axis, forward);
+                forward = Vector3.Cross(right, axis);
+            }
+
+            return M.Atan2(Vector3.Dot(v, right), Vector3.Dot(v, forward)) * M.RAD_TO_DEG;
+        }
+
+        /// <summary>
+        /// Rotate a vector around some axis.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="a"></param>
+        /// <param name="axis"></param>
+        /// <param name="clockwise"></param>
+        /// <param name="bUseRadians"></param>
+        /// <returns></returns>
+        public static Vector3 RotateAroundAxis(Vector3 v, float a, Vector3 axis, bool clockwise = false, bool bUseRadians = false)
+        {
+            if (bUseRadians) a *= M.RAD_TO_DEG;
+            Quaternion q;
+            if (clockwise)
+                q = Quaternion.AngleAxis(a, axis);
+            else
+                q = Quaternion.AngleAxis(-a, axis);
+            return q * v;
+        }
+
+        public static Vector3 Slerp(Vector3 a, Vector3 b, float t) => Vector3.SlerpUnclamped(a, b, t);
+
+        public static Vector3 SlerpClamped(Vector3 a, Vector3 b, float t) => Vector3.Slerp(a, b, t);
 
         #endregion
 
