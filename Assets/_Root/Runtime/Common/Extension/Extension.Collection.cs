@@ -579,7 +579,7 @@ namespace Pancake
 
             return builder.ToString();
         }
-        
+
         public static T Pop<T>(this HashSet<T> set)
         {
             if (set == null) throw new System.ArgumentNullException(nameof(set));
@@ -593,5 +593,7 @@ namespace Pancake
 
             throw new System.ArgumentException("HashSet must not be empty.");
         }
+
+        
     }
 }
