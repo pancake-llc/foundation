@@ -81,7 +81,7 @@ namespace Pancake.Editor
             {
                 if (!EditorBuildSettings.TryGetConfigObject<EditorSettings>(EDITOR_BUILD_SETTINGS_GUID, out EditorSettings settings))
                 {
-                    settings = AssetDatabase.LoadAllAssetsAtPath("Assets/_Root/EditorResources/").FirstOrDefault(a => a is EditorSettings) as EditorSettings;
+                    settings = InEditor.FindAllAssets<EditorSettings>().FirstOrDefault(a => a != null) as EditorSettings;
 
                     if (settings == null)
                     {
