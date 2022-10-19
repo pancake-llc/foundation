@@ -1,4 +1,10 @@
 {
     "whitelistPaths": [],
-    "blacklistPaths": []
+    "blacklistPaths": [],
+    "entities": [
+        {
+            "name": "9dfcf8db32676af4a89da26325867b3d_avatar",
+            "guid": "01gfqzt0xer9z4tg43e5r3n9xq"
+        }
+    ]
 }

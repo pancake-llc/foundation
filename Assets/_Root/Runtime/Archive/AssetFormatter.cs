@@ -1,5 +1,6 @@
 using MessagePack;
 using MessagePack.Formatters;
+using UnityEngine;
 
 namespace Pancake
 {
@@ -8,6 +9,7 @@ namespace Pancake
         public void Serialize(ref MessagePackWriter writer, T value, MessagePackSerializerOptions options)
         {
             Archive.Container.TryResolveId(value, out string id);
+            Debug.Log(id);
             writer.Write(id);
         }
 

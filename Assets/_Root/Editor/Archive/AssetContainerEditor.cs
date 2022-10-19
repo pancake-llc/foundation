@@ -26,10 +26,11 @@ namespace Pancake.Editor
         private SerializedObject _serializedObject;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
-        private static InEditor.ProjectSetting<PathSetting> assetContainerSettings = new InEditor.ProjectSetting<PathSetting>("AssetContainerSettings");
+        private static InEditor.ProjectSetting<AssetContainerSetting> assetContainerSettings =
+            new InEditor.ProjectSetting<AssetContainerSetting>("AssetContainerSettings");
 
         [MenuItem("Tools/Pancake/Asset Container &_4")]
-        private static void ShowWindow() { GetWindow<AssetContainerEditor>("Asset Container").Show(); }
+        private static void ShowWindow() { GetWindow<AssetContainerEditor>("Asset Container", true, InEditor.InspectorWindow).Show(); }
 
         private void OnEnable()
         {
@@ -47,15 +48,16 @@ namespace Pancake.Editor
             InternalDrawDropArea();
             Uniform.SpaceOneLine();
             DrawAssets();
+            Uniform.SpaceTwoLine();
             _serializedObject.ApplyModifiedProperties();
         }
 
         private void DrawAssets()
         {
-            _scroll = EditorGUILayout.BeginScrollView(_scroll, true, true);
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
             GUI.enabled = false;
-            
+
             foreach (var property in _cache.ToArray())
             {
                 EditorGUILayout.BeginHorizontal();
@@ -63,12 +65,12 @@ namespace Pancake.Editor
                 EditorGUILayout.PropertyField(property.Value, new GUIContent(""));
                 EditorGUILayout.EndHorizontal();
             }
-            
+
             GUI.enabled = true;
 
             EditorGUILayout.EndScrollView();
         }
-        
+
 
         private void InternalDrawDropArea()
         {
@@ -277,7 +279,8 @@ namespace Pancake.Editor
 
                 foreach (string whitelistPath in assetContainerSettings.Settings.whitelistPaths)
                 {
-                    if (File.Exists(whitelistPath)) whitelistAssets.Add(AssetDatabase.LoadAssetAtPath<Object>(whitelistPath));
+                    if (File.Exists(whitelistPath) && !whitelistAssets.Contains(AssetDatabase.LoadAssetAtPath<Object>(whitelistPath)))
+                        whitelistAssets.Add(AssetDatabase.LoadAssetAtPath<Object>(whitelistPath));
                 }
             }
 
@@ -290,15 +293,21 @@ namespace Pancake.Editor
                 if (!_provider.TryGetValue(o, out _)) newEntries.Add(new AssetEntry(guid, o));
 
                 var childAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(o));
-                
+
                 foreach (var child in childAssets)
                 {
                     if (_provider.TryGetValue(child, out _)) continue;
 
-                    if (!child.name.Equals(o.name))
+                    if (!assetContainerSettings.Settings.entities.Exists(_ => _.name == $"{guid}_{child.name}"))
                     {
                         var childGuid = Ulid.NewUlid().ToString().ToLower();
+                        assetContainerSettings.Settings.entities.Add(new AssetContainerSetting.SubEntityId {name = $"{guid}_{child.name}", guid = childGuid});
                         newEntries.Add(new AssetEntry(childGuid, child));
+                        assetContainerSettings.SaveSetting();
+                    }
+                    else
+                    {
+                        newEntries.Add(new AssetEntry(assetContainerSettings.Settings.entities.Filter(_=>_.name == $"{guid}_{child.name}").FirstOrDefault().guid, child));
                     }
                 }
             }
