@@ -92,9 +92,25 @@ namespace Pancake
             return false;
         }
 
-        public static List<Type> GetAllSubTypes(this Type targetType, Predicate<Type> filter = null)
+        /// <summary>
+        /// retrurn all sub type without abstract type
+        /// </summary>
+        /// <param name="targetType"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public static List<Type> GetAllSubClassNoAbstract(this Type targetType, Predicate<Type> filter = null)
         {
             bool SubclassFilter(Type type) => type.IsClass && !type.IsAbstract && type.IsSubclassOf(targetType);
+            return filter == null ? GetTypes(SubclassFilter) : GetTypes(type => SubclassFilter(type) && filter(type));
+        }
+
+        /// <summary>
+        /// Iterate through all subclasses of specific type.
+        /// </summary>
+        /// <param name="targetType"></param>
+        public static List<Type> GetAllSubClass(this Type targetType, Predicate<Type> filter = null)
+        {
+            bool SubclassFilter(Type type) => type.IsClass && type.IsSubclassOf(targetType);
             return filter == null ? GetTypes(SubclassFilter) : GetTypes(type => SubclassFilter(type) && filter(type));
         }
         
