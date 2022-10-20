@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using Pancake.Editor;
+using Pancake.Tween;
 
-namespace Pancake.Tween
+namespace Pancake.Editor
 {
     /// <summary>
     /// Interpolator Drawer
     /// </summary>
-    [CustomPropertyDrawer(typeof(Interpolator))]
+    [CustomPropertyDrawer(typeof(Pancake.Tween.Interpolator))]
     internal class InterpolatorDrawer : PropertyDrawer
     {
         /// <summary>
