@@ -92,10 +92,27 @@ namespace Pancake
             return false;
         }
 
-        public static List<Type> GetAllSubTypes(Type targetType, Predicate<Type> filter = null)
+        public static List<Type> GetAllSubTypes(this Type targetType, Predicate<Type> filter = null)
         {
             bool SubclassFilter(Type type) => type.IsClass && !type.IsAbstract && type.IsSubclassOf(targetType);
             return filter == null ? GetTypes(SubclassFilter) : GetTypes(type => SubclassFilter(type) && filter(type));
+        }
+        
+        /// <summary>
+        /// Iterate through all the members of the current Type and all base types. 
+        /// </summary>
+        public static IEnumerable<MemberInfo> AllMembers(this Type type)
+        {
+            do
+            {
+                TypeInfo typeInfo = type.GetTypeInfo();
+                foreach (MemberInfo memberInfo in typeInfo.DeclaredMembers)
+                {
+                    yield return memberInfo;
+                }
+                type = type.BaseType;
+            }
+            while (type != null);
         }
 
         public static T Clone<T>(T @object) where T : class
@@ -209,6 +226,56 @@ namespace Pancake
             return null;
         }
 
+        /// <summary>
+        /// Iterate through all the fields of the current Type and all base types. 
+        /// </summary>
+        public static IEnumerable<FieldInfo> AllFields(this Type type)
+        {
+            do
+            {
+                TypeInfo typeInfo = type.GetTypeInfo();
+                foreach (FieldInfo fieldInfo in typeInfo.DeclaredFields)
+                {
+                    yield return fieldInfo;
+                }
+                type = type.BaseType;
+            }
+            while (type != null);
+        }
+
+        /// <summary>
+        /// Iterate through all the methods of the current Type and all base types. 
+        /// </summary>
+        public static IEnumerable<MethodInfo> AllMethods(this Type type)
+        {
+            do
+            {
+                TypeInfo typeInfo = type.GetTypeInfo();
+                foreach (MethodInfo methodInfo in typeInfo.DeclaredMethods)
+                {
+                    yield return methodInfo;
+                }
+                type = type.BaseType;
+            }
+            while (type != null);
+        }
+
+        /// <summary>
+        /// Iterate through all the properties of the current Type and all base types. 
+        /// </summary>
+        public static IEnumerable<PropertyInfo> AllProperties(this Type type)
+        {
+            do
+            {
+                TypeInfo typeInfo = type.GetTypeInfo();
+                foreach (PropertyInfo propertyInfo in typeInfo.DeclaredProperties)
+                {
+                    yield return propertyInfo;
+                }
+                type = type.BaseType;
+            }
+            while (type != null);
+        }
 
         /// <summary>
         /// Find an Instance field info.
