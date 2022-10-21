@@ -324,3 +324,34 @@ public class Item : ScriptableObject
     [SerializeField] private int cost;
 }
 ```
+
+
+## SimpleJSON
+
+- Serialize
+```c#
+public void Serialize(T data, Stream writer)
+{
+	var jsonNode = JSON.Parse(JsonUtility.ToJson(data));
+	jsonNode.SaveToBinaryStream(writer);
+}
+```
+
+- Deserialize
+```c#
+public T Deserialize(Stream reader)
+{
+	var jsonData = JSONNode.LoadFromBinaryStream(reader);
+	string json = jsonData.ToString()
+    // ... 
+}
+```
+
+
+```c#
+var jsonNode = JSON.Parse(jsonString);
+if (jsonNode == null) return jsonString;
+
+object jsonObject = jsonNode;
+var version = jsonNode["version"].AsInt;
+```
