@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Pancake
 {
@@ -8,10 +8,7 @@ namespace Pancake
         public readonly string member;
         public readonly object comparer;
 
-        public ConditionAttribute(string member)
-        {
-            this.member = member;
-        }
+        public ConditionAttribute(string member) { this.member = member; }
 
         public ConditionAttribute(string member, object comparer)
         {

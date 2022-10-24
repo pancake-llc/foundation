@@ -1,4 +1,4 @@
-namespace Pancake
+﻿namespace Pancake
 {
     public sealed class FoldoutAttribute : ContainerAttribute
     {

@@ -1,4 +1,6 @@
-﻿namespace Pancake
+﻿using System;
+
+namespace Pancake
 {
     public sealed class LabelAttribute : ManipulatorAttribute
     {

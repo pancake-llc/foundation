@@ -1,4 +1,6 @@
-namespace Pancake
+﻿namespace Pancake
 {
-    public sealed class OnInspectorUpdateAttribute : EditorMethodAttribute { }
+    public sealed class OnInspectorUpdateAttribute : EditorMethodAttribute
+    {
+    }
 }

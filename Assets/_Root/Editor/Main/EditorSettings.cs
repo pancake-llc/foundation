@@ -35,9 +35,9 @@ namespace Pancake.Editor
             #endregion
         }
 
-        [SerializeField] private bool attributeEnabled = true;
+        [SerializeField] private bool enabled = true;
 
-        [SerializeField] private bool attributeAnimate = true;
+        [SerializeField] private bool animate = true;
 
         [SerializeField]
         [ReorderableList(HeaderHeight = 0,
@@ -45,7 +45,7 @@ namespace Pancake.Editor
             GetElementLabel = nameof(GetExceptTypeLabel),
             GetElementHeight = nameof(GetExceptTypeHeight))]
         [Foldout("Except Types", Style = "Highlight")]
-        private ExceptType[] attributeExceptTypes;
+        private ExceptType[] exceptTypes;
 
         #region [ExceptType GUI]
 
@@ -108,30 +108,26 @@ namespace Pancake.Editor
         /// <param name="settings">Settings reference.</param>
         public static void ResetSettings(EditorSettings settings)
         {
-            settings.attributeEnabled = true;
-            settings.attributeAnimate = true;
-            settings.attributeExceptTypes = new[]
-            {
-                new ExceptType("UnityEvent", false),
-                new ExceptType("Interpolator", false),
-            };
+            settings.enabled = true;
+            settings.animate = true;
+            settings.exceptTypes = new[] {new ExceptType("UnityEvent", false), new ExceptType("Interpolator", false),};
         }
 
         #endregion
 
         #region [Getter / Setter]
 
-        public bool AttributeEnabled() { return attributeEnabled; }
+        public bool Enabled() { return enabled; }
 
-        public void AttributeEnabled(bool value) { attributeEnabled = value; }
+        public void Enabled(bool value) { enabled = value; }
 
-        public bool AttributeAnimate() { return attributeAnimate; }
+        public bool Animate() { return animate; }
 
-        public void AttributeAnimate(bool value) { attributeAnimate = value; }
+        public void Animate(bool value) { animate = value; }
 
-        public ExceptType[] GetAttributeExceptTypes() { return attributeExceptTypes; }
+        public ExceptType[] GetExceptTypes() { return exceptTypes; }
 
-        public void SetAttributExceptTypes(ExceptType[] exceptTypes) { this.attributeExceptTypes = exceptTypes; }
+        public void SetExceptTypes(ExceptType[] exceptTypes) { this.exceptTypes = exceptTypes; }
 
         #endregion
     }

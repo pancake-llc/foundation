@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Pancake
 {
@@ -7,9 +7,6 @@ namespace Pancake
     {
         public readonly string Name;
 
-        protected ContainerAttribute(string name)
-        {
-            this.Name = name;
-        }
+        protected ContainerAttribute(string name) { this.Name = name; }
     }
 }

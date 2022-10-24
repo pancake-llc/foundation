@@ -3,7 +3,7 @@
     public sealed class ArrayAttribute : ViewAttribute
     {
         /// <summary>
-        /// Array attribute.
+        /// array attribute.
         /// </summary>
         public ArrayAttribute() { ElementLabel = "Element {niceIndex}"; }
 

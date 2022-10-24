@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -436,7 +437,7 @@ namespace Pancake.Editor
             if (!DEFAULT_ADDRESSABLE_PATH.DirectoryExists()) DEFAULT_ADDRESSABLE_PATH.CreateDirectory();
             return DEFAULT_ADDRESSABLE_PATH;
         }
-        
+
         // return true if child is childrent of parent
         internal static bool IsChildOfPath(string child, string parent)
         {
@@ -452,7 +453,7 @@ namespace Pancake.Editor
 
             return false;
         }
-        
+
         internal static void GetAllParentDirectories(DirectoryInfo directoryToScan, ref List<DirectoryInfo> directories)
         {
             while (true)
@@ -463,7 +464,7 @@ namespace Pancake.Editor
                 directoryToScan = directoryToScan.Parent;
             }
         }
-        
+
         internal static void GetAllChildDirectories(string path, ref List<string> directories)
         {
             string[] result = Directory.GetDirectories(path);
@@ -474,7 +475,7 @@ namespace Pancake.Editor
                 GetAllChildDirectories(i, ref directories);
             }
         }
-        
+
         private static bool EqualPath(FileSystemInfo info, string str)
         {
             string relativePath = info.FullName;
@@ -482,7 +483,7 @@ namespace Pancake.Editor
             relativePath = relativePath.Replace('\\', '/');
             return str.Equals(relativePath);
         }
-        
+
         internal static void ReduceScopeDirectory(ref List<string> source)
         {
             var arr = new string[source.Count];
@@ -506,6 +507,102 @@ namespace Pancake.Editor
             }
 
             source = unique;
+        }
+
+        public static Rect GetCenterScreen()
+        {
+            Type containerWindowType = typeof(ScriptableObject).GetAllSubClass().Where(t => t.Name == "ContainerWindow").FirstOrDefault();
+            if (containerWindowType == null)
+            {
+                return Rect.zero;
+            }
+
+            FieldInfo showModeField = containerWindowType.GetField("m_ShowMode", BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            PropertyInfo positionProperty = containerWindowType.GetProperty("position", BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            if (showModeField == null || positionProperty == null)
+            {
+                return Rect.zero;
+            }
+
+            Object[] windows = Resources.FindObjectsOfTypeAll(containerWindowType);
+            for (int i = 0; i < windows.Length; i++)
+            {
+                Object window = windows[i];
+                var showmode = (int) showModeField.GetValue(window);
+                if (showmode == 4)
+                {
+                    Rect position = (Rect) positionProperty.GetValue(window, null);
+                    return position;
+                }
+            }
+
+            return Rect.zero;
+        }
+
+        public static void MoveToCenter(this EditorWindow window)
+        {
+            Rect position = window.position;
+            Rect mainWindowPosition = InEditor.GetCenterScreen();
+            if (mainWindowPosition != Rect.zero)
+            {
+                float width = (mainWindowPosition.width - position.width) * 0.5f;
+                float height = (mainWindowPosition.height - position.height) * 0.5f;
+                position.x = mainWindowPosition.x + width;
+                position.y = mainWindowPosition.y + height;
+                window.position = position;
+            }
+            else
+            {
+                window.position = new Rect(new Vector2(Screen.width, Screen.height), new Vector2(position.width, position.height));
+            }
+        }
+
+        /// <summary>
+        /// Find member metadata by path.
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <param name="memberPath">Path to member.</param>
+        /// <returns>SerializedMemberData of member.</returns>
+        public static MemberData FindMember(this SerializedObject serializedObject, string memberPath) { return new MemberData(serializedObject, memberPath); }
+
+        /// <summary>
+        /// Get parent of serialized property.
+        /// </summary>
+        /// <returns>If serialized property is top, return itself.</returns>
+        public static SerializedProperty GetParent(this SerializedProperty property)
+        {
+            string[] paths = property.propertyPath.Split('.');
+            if (paths != null && paths.Length > 1)
+            {
+                Array.Resize<string>(ref paths, paths.Length - 1);
+                string path = string.Join(".", paths);
+                return property.serializedObject.FindProperty(path);
+            }
+
+            return property;
+        }
+
+        /// <summary>
+        /// Get visible children of serialized property.
+        /// </summary>
+        public static IEnumerable<SerializedProperty> GetVisibleChildren(this SerializedProperty serializedProperty)
+        {
+            SerializedProperty currentProperty = serializedProperty.Copy();
+            SerializedProperty nextSiblingProperty = serializedProperty.Copy();
+            {
+                nextSiblingProperty.NextVisible(false);
+            }
+
+            if (currentProperty.NextVisible(true))
+            {
+                do
+                {
+                    if (SerializedProperty.EqualContents(currentProperty, nextSiblingProperty))
+                        break;
+
+                    yield return currentProperty;
+                } while (currentProperty.NextVisible(false));
+            }
         }
     }
 }

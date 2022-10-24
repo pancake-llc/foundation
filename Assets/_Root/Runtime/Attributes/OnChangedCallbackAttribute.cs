@@ -8,7 +8,8 @@ namespace Pancake
         public readonly string method;
 
         /// <param name="method">
-        /// <br>Method format: <b>void OnEnable(SerializedProperty property, GUIContent label);</b></br>
+        /// <br>Method format: <b>void OnChanged();</b></br>
+        /// <br>Method format: <b>void OnChanged(SerializedProperty property);</b></br>
         /// </param>
         public OnChangedCallbackAttribute(string method) { this.method = method; }
     }

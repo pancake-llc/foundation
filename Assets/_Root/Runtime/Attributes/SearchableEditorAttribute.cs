@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 
 namespace Pancake
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class SearchableEditorAttribute : PancakeAttribute
+    public sealed class SearchableEditorAttribute : PancakeAttribute
     {
     }
 }
