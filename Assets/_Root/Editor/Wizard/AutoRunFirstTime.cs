@@ -30,7 +30,7 @@ namespace Pancake.Editor
             var str = NameFiles[internalIndex];
             UnityEditor.EditorUtility.DisplayProgressBar("Creating the necessary settings", $"Creating {str}...", internalIndex / (float)NameFiles.Length);
             var resourcePath = InEditor.DefaultResourcesPath();
-            if (!$"{resourcePath}/{NameFiles}".FileExists())
+            if (!$"{resourcePath}/{str}".FileExists())
             {
                 CreateInstance(Complete);
             }

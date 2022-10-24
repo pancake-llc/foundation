@@ -30,7 +30,19 @@ namespace Pancake.Editor
             new InEditor.ProjectSetting<AssetContainerSetting>("AssetContainerSettings");
 
         [MenuItem("Tools/Pancake/Asset Container &_4")]
-        private static void ShowWindow() { GetWindow<AssetContainerEditor>("Asset Container", true, InEditor.InspectorWindow).Show(); }
+        private static void ShowWindow()
+        {
+            string resourcePath = InEditor.DefaultResourcesPath();
+            if (!$"{resourcePath}/AssetContainer.asset".FileExists())
+            {
+                var instance = UnityEngine.ScriptableObject.CreateInstance<AssetContainer>();
+                AssetDatabase.CreateAsset(instance, $"{resourcePath}/AssetContainer.asset");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+
+            GetWindow<AssetContainerEditor>("Asset Container", true, InEditor.InspectorWindow).Show();
+        }
 
         private void OnEnable()
         {
@@ -307,7 +319,8 @@ namespace Pancake.Editor
                     }
                     else
                     {
-                        newEntries.Add(new AssetEntry(assetContainerSettings.Settings.entities.Filter(_=>_.name == $"{guid}_{child.name}").FirstOrDefault().guid, child));
+                        newEntries.Add(
+                            new AssetEntry(assetContainerSettings.Settings.entities.Filter(_ => _.name == $"{guid}_{child.name}").FirstOrDefault().guid, child));
                     }
                 }
             }
