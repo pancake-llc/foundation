@@ -99,7 +99,7 @@ namespace Pancake.Threading.Tasks
 
         public void Reset()
         {
-            timer.Stop();
+            timer?.Stop();
         }
 
         public void Dispose()
@@ -109,7 +109,7 @@ namespace Pancake.Threading.Tasks
             try
             {
                 // stop timer.
-                timer.Dispose();
+                timer?.Dispose();
 
                 // cancel and dispose.
                 timeoutSource.Cancel();

@@ -182,7 +182,7 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 return "(" + string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true))) + ")";
             }
-            if (!t.IsGenericType) return shortName ? t.Name : t.FullName.Replace("Pancake.Core.Tasks.Triggers.", "").Replace("Pancake.Core.Tasks.Internal.", "").Replace("Pancake.Core.Tasks.", "") ?? t.Name;
+            if (!t.IsGenericType) return shortName ? t.Name : t.FullName.Replace("Pancake.Threading.Tasks.Triggers.", "").Replace("Cysharp.Threading.Tasks.Internal.", "").Replace("Cysharp.Threading.Tasks.", "") ?? t.Name;
 
             var innerFormat = string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true)));
 
@@ -192,7 +192,7 @@ namespace Pancake.Threading.Tasks.Internal
                 genericType = "Task";
             }
 
-            return typeBeautifyRegex.Replace(genericType, "").Replace("Pancake.Core.Tasks.Triggers.", "").Replace("Pancake.Core.Tasks.Internal.", "").Replace("Pancake.Core.Tasks.", "") + "<" + innerFormat + ">";
+            return typeBeautifyRegex.Replace(genericType, "").Replace("Pancake.Threading.Tasks.Triggers.", "").Replace("Cysharp.Threading.Tasks.Internal.", "").Replace("Cysharp.Threading.Tasks.", "") + "<" + innerFormat + ">";
         }
 
         static bool IgnoreLine(MethodBase methodInfo)
@@ -206,7 +206,7 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 return true;
             }
-            else if (declareType.StartsWith("Pancake.Core.Tasks.CompilerServices"))
+            else if (declareType.StartsWith("Pancake.Threading.Tasks.CompilerServices"))
             {
                 return true;
             }
@@ -218,11 +218,11 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 return true;
             }
-            else if (declareType.StartsWith("Pancake.Core.Tasks.UniTaskCompletionSourceCore"))
+            else if (declareType.StartsWith("Pancake.Threading.Tasks.UniTaskCompletionSourceCore"))
             {
                 return true;
             }
-            else if (declareType.StartsWith("Pancake.Core.Tasks.AwaiterActions"))
+            else if (declareType.StartsWith("Pancake.Threading.Tasks.AwaiterActions"))
             {
                 return true;
             }
