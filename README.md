@@ -355,3 +355,72 @@ if (jsonNode == null) return jsonString;
 object jsonObject = jsonNode;
 var version = jsonNode["version"].AsInt;
 ```
+
+
+## Linq
+
+Improved performance when using Linq with Mobile (il2cpp).
+To use it instead of using **System.Linq**, change it to **Pancake.Linq**
+
+It will be a little different from System Linq that **Select** is replaced with **Map**, and **Where** is changed to **Filter**
+
+Result test in Android v8 snapdradon 855
+
+|                | System.Linq (ms) | Pancake.Linq (ms) |
+|----------------|------------------|-------------------|
+| Aggregate      | 2890             | 140               |
+| Any            | 2986             | 159               |
+| All            | 3167             | 159               |
+| Averange       | 3042             | 106               |
+| Contains       | 10048            | 133               |
+| Count          | 3227             | 186               |
+| Distinct       | 4578             | 8449              |
+| First          | 311              | 18                |
+| Last           | 3118             | 0                 |
+| Max            | 1283             | 377               |
+| Min            | 1233             | 398               |
+| OrderBy        | 16221            | 15136             |
+| Range          | 314              | 61                |
+| Repeat         | 593              | 198               |
+| Reverse        | 3607             | 456               |
+| Select (Map)   | 3925             | 629               |
+| Single         | 3264             | 185               |
+| Skip           | 10384            | 432               |
+| Sum            | 3055             | 79                |
+| Take           | 1365             | 67                |
+| Where (Filter) | 2267             | 1054              |
+| Where2         | 233              | 615               |
+| Where3         | 3842             | 622               |
+| WhereSelect    | 4372             | 810               |
+| WhereSpan      | 655              | 674               |
+| Zip            | 17219            | 580               |
+
+
+1000 loop in array 10k element (anroid 11 redmi note 10 pro)
+
+|                | System.Linq (ms) | Pancake.Linq (ms) |
+|----------------|------------------|-------------------|
+| Aggregate      | 344              | 30                |
+| Any            | 0                | 0                 |
+| All            | 0                | 0                 |
+| Averange       | 329              | 17                |
+| Contains       | 0                | 1                 |
+| Count          | 362              | 28                |
+| First          | 0                | 0                 |
+| Last           | 350              | 0                 |
+| Max            | 228              | 70                |
+| Min            | 412              | 8                 |
+| Range          | 40               | 6                 |
+| Repeat         | 68               | 21                |
+| Reverse        | 595              | 64                |
+| Select (Map)   | 508              | 77                |
+| Skip           | 515              | 32                |
+| Sum            | 387              | 79                |
+| Take           | 437              | 32                |
+| Where (Filter) | 276              | 134               |
+| WhereSelect    | 263              | 144               |
+| Zip            | 1397             | 88                |
+
+
+
+
