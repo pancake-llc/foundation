@@ -5,6 +5,286 @@
         {
             "name": "9dfcf8db32676af4a89da26325867b3d_avatar",
             "guid": "01gfqzt0xer9z4tg43e5r3n9xq"
+        },
+        {
+            "name": "5a20c5491b6b63f4baebb3ecf7130908_01",
+            "guid": "01ggcr9cj9y8h5z2x0jet3pa8r"
+        },
+        {
+            "name": "23c7553a446eb074aa386d8f1ef7f59a_02",
+            "guid": "01ggcr9cjf9qb3asx0pvprnhan"
+        },
+        {
+            "name": "aaf799b3f809cb94a841add770c6331b_03",
+            "guid": "01ggcr9cjj9et86k5w2td2nt0t"
+        },
+        {
+            "name": "1f6c65c9449510d4ab71b520b01aefc4_04",
+            "guid": "01ggcr9cjq0n0a9kahnrk6qgrb"
+        },
+        {
+            "name": "d92cb8e677b3c9846ae55366eaec4f22_05",
+            "guid": "01ggcr9cjt5d286ygmdqrb95zb"
+        },
+        {
+            "name": "cdf1ae14f71350b4d8552e3c0392523c_06",
+            "guid": "01ggcr9cjxktqjxsjsk0ftxbre"
+        },
+        {
+            "name": "ec965e876faf30c46be0bb57f27a96fe_07",
+            "guid": "01ggcr9ck1atj127pgyd1q28zk"
+        },
+        {
+            "name": "177b409703db4ea41b3eac7e900248d8_08",
+            "guid": "01ggcr9ck43bwj18ss2xnwdzsq"
+        },
+        {
+            "name": "06fa7116bf9bab849af018744319647b_Font Material",
+            "guid": "01ggcr9ck9773s9z0r7wy34z7m"
+        },
+        {
+            "name": "06fa7116bf9bab849af018744319647b_Font Texture",
+            "guid": "01ggcr9ckasw2vwz23sz346tpa"
+        },
+        {
+            "name": "76b02809b7adcf14794761b09750c701_BoldenVanASCII Material",
+            "guid": "01ggcr9ckd5xewmy39xjr2c135"
+        },
+        {
+            "name": "76b02809b7adcf14794761b09750c701_BoldenVanASCII Atlas",
+            "guid": "01ggcr9ckg8hvjwn1hpp0ccd2n"
+        },
+        {
+            "name": "cf365ccf3da163743a58f94fbbc89e60_circle_outline_stroke_3px",
+            "guid": "01ggcr9ckmhy76qv69vbmk43aq"
+        },
+        {
+            "name": "4fd7ddfbb82f56e439609d057586f092_circle_outline_stroke_5px",
+            "guid": "01ggcr9ckp0z36bh65e2v45b9f"
+        },
+        {
+            "name": "195dbc1b93460a74b893596f65d946d0_circle_outline_stroke_8px (x128)",
+            "guid": "01ggcr9cks3vjjph3x6s3w27t1"
+        },
+        {
+            "name": "6d39f25194dd64f4e9f6e29926a94b95_circle_outline_stroke_8px (x256)",
+            "guid": "01ggcr9ckz0cz9s7a1wj5y1nw2"
+        },
+        {
+            "name": "6f9dbc9b80bb1e144a04404a193686e5_circle_outline_stroke_10px (x64)",
+            "guid": "01ggcr9cm26ma34za0rmk0ft20"
+        },
+        {
+            "name": "8d64eb997b9f42a4fbb595d9aa76c598_circle_outline_stroke_10px",
+            "guid": "01ggcr9cm581dvtjwhpwz2c9tc"
+        },
+        {
+            "name": "e88f02740d1652d488d25f8e4df54c84_circle_outline_stroke_12px",
+            "guid": "01ggcr9cm8ew7tvcm8ryr6m8wj"
+        },
+        {
+            "name": "1238583ab0e436948bf70b7394fd2234_circle_outline_stroke_14px",
+            "guid": "01ggcr9cmbvw66wj7q7nrgj7v8"
+        },
+        {
+            "name": "23977301a37628d4f8ba44df290c1c9b_circle_outline_stroke_16px",
+            "guid": "01ggcr9cmet5bcxwvf7teaskxk"
+        },
+        {
+            "name": "c85a636f898b5974b8b108cce0582f63_circle_outline_stroke_18px",
+            "guid": "01ggcr9cmhrkfnn0txx8ykbrjd"
+        },
+        {
+            "name": "09a0949dd16316d40975f07b0e2e986f_circle_outline_stroke_20px",
+            "guid": "01ggcr9cmk9ngex8b1v60zzeqf"
+        },
+        {
+            "name": "ba4f69aab2ca7d24fbfdd2b210adfd21_circle_x64",
+            "guid": "01ggcr9cmp8p796kbc2f7xvq2w"
+        },
+        {
+            "name": "b6911d5303f43ab43a3cb66bcbe0ca0a_circle_x128",
+            "guid": "01ggcr9cmta4gsb3adrvzm6ab7"
+        },
+        {
+            "name": "9a784b105bf157746982fd918e36195d_circle_x256",
+            "guid": "01ggcr9cmxpr19ns5k16czyj0b"
+        },
+        {
+            "name": "01b3079c2f955c249ac56478b939ed7e_triad_1",
+            "guid": "01ggcr9cn09t4xj678bzf70erz"
+        },
+        {
+            "name": "3332826a1f785064ba7c5358b369d3ea_triad_2",
+            "guid": "01ggcr9cn3ce3bgkgqc3ksf773"
+        },
+        {
+            "name": "96ec62bd2849826408197abc1cf8a5e3_triad_3",
+            "guid": "01ggcr9cn6p757hrj1w1xzwr6d"
+        },
+        {
+            "name": "1c656e9c94d1eff40988765701a8ad72_triad_4",
+            "guid": "01ggcr9cn92y35212537abnwfd"
+        },
+        {
+            "name": "0f494fb7f2b8b6d4fa78291926779321_triad_5",
+            "guid": "01ggcr9cnd8z7q24kgexa1rhm6"
+        },
+        {
+            "name": "7a102de3c2813dd409ebcda43dad7831_triad_6",
+            "guid": "01ggcr9cnfcjbbckmepfe82hs8"
+        },
+        {
+            "name": "fb0cc176fcc1cca4984c05ba27e67dc7_triad_7",
+            "guid": "01ggcr9cnj7h0x61kc1csxzcea"
+        },
+        {
+            "name": "ed9f96a7f21dbcc499ec4290a446f3cd_triad_8",
+            "guid": "01ggcr9cnnwkc33h529pvq5vws"
+        },
+        {
+            "name": "8268b34437c09584aa3102ebe5c629e0_triad_9",
+            "guid": "01ggcr9cnrvyy3cyysaj7q1kty"
+        },
+        {
+            "name": "e93c861f2de5c13418a68e25110c295d_triad_10",
+            "guid": "01ggcr9cnw8v9bxebt4c18btwc"
+        },
+        {
+            "name": "e45146f7603c55441b2c053f7a9b5b24_triad_11",
+            "guid": "01ggcr9cp1hntx86k29tv1dd2k"
+        },
+        {
+            "name": "f9b2cf3183ba67a4abc369bbfc3f90e0_triad_12",
+            "guid": "01ggcr9cp6dk3x9a4wn6m9023m"
+        },
+        {
+            "name": "cbc967e3374e3bd4697458d3822f4c6a_triad_13",
+            "guid": "01ggcr9cpbpmk0pj0t5q3twb2c"
+        },
+        {
+            "name": "f6357641c4dbddc4dae40af7a4fcd49e_triad_14",
+            "guid": "01ggcr9cpgnn9azsvrwsk3r5kh"
+        },
+        {
+            "name": "5ebb1d77e613d2942a57597549eefbdc_triad_15",
+            "guid": "01ggcr9cpnpwtm047d7sxzn460"
+        },
+        {
+            "name": "d4274448e525ee8489e8ed1e4940d26b_triad_16",
+            "guid": "01ggcr9cpsv01ey3mdyx1gm7yw"
+        },
+        {
+            "name": "66008a3f4e1429f46b88d44d77fd5f64_triad_17",
+            "guid": "01ggcr9cpyafybkryy941v059a"
+        },
+        {
+            "name": "27de0f3f4c7b30d48b0f40dbd73cd8e9_triad_18",
+            "guid": "01ggcr9cq3msmbq7xdn7rq64ae"
+        },
+        {
+            "name": "45ae807b82ab33f46aef442ed0066737_triad_19",
+            "guid": "01ggcr9cq73bsjbv15h0gxts83"
+        },
+        {
+            "name": "906e8c77e67c8c1428b3127bfb1f320b_triad_20",
+            "guid": "01ggcr9cqababwf476kght4etr"
+        },
+        {
+            "name": "d5dfd578f7ffb014785082175cb0cf73_triad_21",
+            "guid": "01ggcr9cqd7rja7qmhx4vekex1"
+        },
+        {
+            "name": "ce4c7142364f98b48b13f628da83bdcd_triad_22",
+            "guid": "01ggcr9cqgcgr6befd1aqwbya4"
+        },
+        {
+            "name": "0841bfb7be81d4048adc2f4760521d64_triad_23",
+            "guid": "01ggcr9cqkc09k3r3hwnr0n59v"
+        },
+        {
+            "name": "5afd4ac582a45464c8bb476d6bce1b23_triad_24",
+            "guid": "01ggcr9cqp9mw451xpt5q2t5t5"
+        },
+        {
+            "name": "1c3cf0df59531b34a9818d873db2bcf0_triad_25",
+            "guid": "01ggcr9cqst5e4qps6at87nndx"
+        },
+        {
+            "name": "bdf2e165b4055074d8ffaab76ec50d96_triad_26",
+            "guid": "01ggcr9cqwekdm8rsjqf2sfyzp"
+        },
+        {
+            "name": "c9c70f7cf7761bb4f96b244adddfe66b_triad_27",
+            "guid": "01ggcr9cr0mk0etax1kq5vv6sh"
+        },
+        {
+            "name": "fb23008e8cc0b434a970f05d07e09174_triad_28",
+            "guid": "01ggcr9cr30d3p17qjg4cyvxq1"
+        },
+        {
+            "name": "6b2c8f47f9f75df4caa10f4b18e7d779_triad_29",
+            "guid": "01ggcr9cr6pzre5nsk0q4xpctw"
+        },
+        {
+            "name": "47b224d4c7f3e994293d9a378d8d1cda_triad_30",
+            "guid": "01ggcr9cray55egavajrtk1jdv"
+        },
+        {
+            "name": "3b74ad821976afc4294ef3e7a07e4fd3_triad_31",
+            "guid": "01ggcr9crd0xgbdv7v15fagkz0"
+        },
+        {
+            "name": "d08464b9ebd961146ac335f54bcb6d08_triad_32",
+            "guid": "01ggcr9crgdprpwm2yz2vehg1v"
+        },
+        {
+            "name": "59f4f2db1fd18ff49852c6a4a32b6303_triad_33",
+            "guid": "01ggcr9crkbqe292zd77d1cxhq"
+        },
+        {
+            "name": "9c6609976e8fd3841bdc2781874e25e0_triad_34",
+            "guid": "01ggcr9crp526t9q8cfm8k9mch"
+        },
+        {
+            "name": "6ea107eb0d58fb14a969c863dee76f5e_triad_35",
+            "guid": "01ggcr9crsmez58kxh21knspp2"
+        },
+        {
+            "name": "502e056bb18543c43b2a6ad76d5ec4be_triad_36",
+            "guid": "01ggcr9crv4vqdh7vpmmxmtnky"
+        },
+        {
+            "name": "cfaffaafb0c51824d8ffc3ca3328dc22_triad_37",
+            "guid": "01ggcr9crzc5qgw7ws5cg1y4qr"
+        },
+        {
+            "name": "db3a1c4fa026e244f84ee61e2bbb6200_triad_38",
+            "guid": "01ggcr9cs3889hp11bx4r0nh23"
+        },
+        {
+            "name": "5f6844f764326574386179aae5591dae_triad_39",
+            "guid": "01ggcr9cs53xeqckhk4gm20q39"
+        },
+        {
+            "name": "765182909b4e9f44a88badd5cd728f87_triad_40",
+            "guid": "01ggcr9csa9jzw1wz7fnrz3kjg"
+        },
+        {
+            "name": "9029bd39cf8155d4bbf8c12acc596aa9_hexagon",
+            "guid": "01ggcr9csds4efbmwn58p5a571"
+        },
+        {
+            "name": "f3fdcda99a624a84b972d4f75c9c8339_radial_glow",
+            "guid": "01ggcr9csfc4bk5h4ah6f25mqe"
+        },
+        {
+            "name": "22b56b27ed1ce9149986a38467b1031c_radiant_orb_bg",
+            "guid": "01ggcr9cskbjmnyjnsb1gnksa7"
+        },
+        {
+            "name": "1181e1b232d5d9a4288fe8254956dbe9_radiant_orb_handle",
+            "guid": "01ggcr9cspxnnt6j7x94g8qasw"
         }
     ]
 }
