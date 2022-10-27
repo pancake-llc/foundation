@@ -364,7 +364,7 @@ To use it instead of using **System.Linq**, change it to **Pancake.Linq**
 
 It will be a little different from System Linq that **Select** is replaced with **Map**, and **Where** is changed to **Filter**
 
-Result test in Android v8 snapdradon 855
+#### Result test in Android v8 snapdradon 855
 
 |                | System.Linq (ms) | Pancake.Linq (ms) |
 |----------------|------------------|-------------------|
@@ -396,7 +396,7 @@ Result test in Android v8 snapdradon 855
 | Zip            | 17219            | 580               |
 
 
-1000 loop in array 10k element (anroid 11 redmi note 10 pro)
+#### 1000 loop in array 10k element (anroid 11 redmi note 10 pro)
 
 |                | System.Linq (ms) | Pancake.Linq (ms) |
 |----------------|------------------|-------------------|
