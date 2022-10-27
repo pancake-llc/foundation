@@ -91,22 +91,22 @@ namespace Pancake.Editor
                 Type type = GetMemberType();
                 if (!defaultEditor && type != null)
                 {
-                    Func<EditorSettings.ExceptType, bool> predicate = (exceptType) =>
+                    Func<EditorHeartSettings.ExceptType, bool> predicate = (exceptType) =>
                     {
                         do
                         {
-                            if (type.Name == exceptType.GetName())
+                            if (type.Name == exceptType.Name)
                             {
                                 return true;
                             }
 
                             type = type.BaseType;
-                        } while (type != null && exceptType.SubClasses());
+                        } while (type != null && exceptType.SubClasses);
 
                         return false;
                     };
 
-                    EditorSettings.ExceptType[] exceptTypes = EditorSettings.Current.GetExceptTypes();
+                    EditorHeartSettings.ExceptType[] exceptTypes = EditorHeartSettings.Current.ExceptTypes;
                     if (exceptTypes != null)
                     {
                         defaultEditor = exceptTypes.Any(predicate);

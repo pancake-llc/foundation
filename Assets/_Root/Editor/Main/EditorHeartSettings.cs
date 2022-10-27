@@ -5,12 +5,12 @@ using UnityEngine;
 namespace Pancake.Editor
 {
     [HideMono]
-    public sealed class EditorSettings : ScriptableObject
+    public sealed class EditorHeartSettings : ScriptableObject
     {
         private const string EDITOR_BUILD_SETTINGS_GUID = "Editor Settings Asset";
 
         [System.Serializable]
-        public struct ExceptType
+        public class ExceptType
         {
             [SerializeField] private string name;
 
@@ -22,17 +22,9 @@ namespace Pancake.Editor
                 this.subClasses = subClasses;
             }
 
-            #region [Getter / Setter]
+            public string Name => name;
 
-            public string GetName() { return name; }
-
-            public void SetName(string value) { name = value; }
-
-            public bool SubClasses() { return subClasses; }
-
-            public void SubClasses(bool value) { subClasses = value; }
-
-            #endregion
+            public bool SubClasses => subClasses;
         }
 
         [SerializeField] private bool enabled = true;
@@ -75,21 +67,21 @@ namespace Pancake.Editor
         /// <summary>
         /// Get current editor settings asset.
         /// </summary>
-        public static EditorSettings Current
+        public static EditorHeartSettings Current
         {
             get
             {
-                if (!EditorBuildSettings.TryGetConfigObject<EditorSettings>(EDITOR_BUILD_SETTINGS_GUID, out EditorSettings settings))
+                if (!EditorBuildSettings.TryGetConfigObject<EditorHeartSettings>(EDITOR_BUILD_SETTINGS_GUID, out EditorHeartSettings settings))
                 {
-                    settings = InEditor.FindAllAssets<EditorSettings>().FirstOrDefault(a => a != null) as EditorSettings;
+                    settings = InEditor.FindAllAssets<EditorHeartSettings>().FirstOrDefault(a => a != null) as EditorHeartSettings;
 
                     if (settings == null)
                     {
-                        settings = CreateInstance<EditorSettings>();
+                        settings = CreateInstance<EditorHeartSettings>();
                         ResetSettings(settings);
-                        var editorResourcePath = "Assets/_Root/EditorResources/";
+                        var editorResourcePath = "Assets/_Root/Editor/";
                         if (!editorResourcePath.DirectoryExists()) editorResourcePath.CreateDirectory();
-                        string path = AssetDatabase.GenerateUniqueAssetPath("Assets/_Root/EditorResources/EditorSettings.asset");
+                        string path = AssetDatabase.GenerateUniqueAssetPath("Assets/_Root/Editor/EditorHeartSettings.asset");
                         AssetDatabase.CreateAsset(settings, path);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
@@ -105,30 +97,18 @@ namespace Pancake.Editor
         /// <summary>
         /// Reset specific settings to default.
         /// </summary>
-        /// <param name="settings">Settings reference.</param>
-        public static void ResetSettings(EditorSettings settings)
+        /// <param name="heartSettings">Settings reference.</param>
+        public static void ResetSettings(EditorHeartSettings heartSettings)
         {
-            settings.enabled = true;
-            settings.animate = true;
-            settings.exceptTypes = new[] {new ExceptType("UnityEvent", false), new ExceptType("Interpolator", false),};
+            heartSettings.enabled = true;
+            heartSettings.animate = true;
+            heartSettings.exceptTypes = new[] {new ExceptType("UnityEvent", false), new ExceptType("Interpolator", false),};
         }
 
         #endregion
 
-        #region [Getter / Setter]
-
-        public bool Enabled() { return enabled; }
-
-        public void Enabled(bool value) { enabled = value; }
-
-        public bool Animate() { return animate; }
-
-        public void Animate(bool value) { animate = value; }
-
-        public ExceptType[] GetExceptTypes() { return exceptTypes; }
-
-        public void SetExceptTypes(ExceptType[] exceptTypes) { this.exceptTypes = exceptTypes; }
-
-        #endregion
+        public bool Enabled { get => enabled; set => enabled = value; }
+        public bool Animate { get => animate; set => animate = value; }
+        public ExceptType[] ExceptTypes { get => exceptTypes; set => exceptTypes = value; }
     }
 }

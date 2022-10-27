@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.Editor
 {
@@ -15,7 +17,7 @@ namespace Pancake.Editor
         private List<VisualEntity> searchedElements;
         private List<MethodInfo> onInspectorGUIMethods;
         private List<MethodInfo> onInspectorUpdateMethods;
-        private EditorSettings settings;
+        private EditorHeartSettings _heartSettings;
         private SearchField searchField;
         private string searchText;
         private bool useDefaultEditor;
@@ -28,7 +30,7 @@ namespace Pancake.Editor
         /// </summary>
         protected virtual void OnEnable()
         {
-            settings = EditorSettings.Current;
+            _heartSettings = EditorHeartSettings.Current;
 
             System.Type type = target.GetType();
             ignoreScriptReference = type.GetCustomAttribute<HideMonoAttribute>() != null;
@@ -36,21 +38,21 @@ namespace Pancake.Editor
             useDefaultEditor = type.GetCustomAttribute<UseDefaultEditor>() != null;
             if (!useDefaultEditor)
             {
-                System.Func<EditorSettings.ExceptType, bool> predicate = (exceptType) =>
+                System.Func<EditorHeartSettings.ExceptType, bool> predicate = (exceptType) =>
                 {
                     do
                     {
-                        if (type.Name == exceptType.GetName())
+                        if (type.Name == exceptType.Name)
                         {
                             return true;
                         }
 
                         type = type.BaseType;
-                    } while (type != null && exceptType.SubClasses());
+                    } while (type != null && exceptType.SubClasses);
 
                     return false;
                 };
-                EditorSettings.ExceptType[] exceptTypes = settings.GetExceptTypes();
+                EditorHeartSettings.ExceptType[] exceptTypes = _heartSettings.ExceptTypes;
                 if (exceptTypes != null)
                 {
                     useDefaultEditor = exceptTypes.Any(predicate);
@@ -69,7 +71,7 @@ namespace Pancake.Editor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            if (keepEnable || (!useDefaultEditor && settings.Enabled()))
+            if (keepEnable || (!useDefaultEditor && _heartSettings.Enabled))
             {
                 if (!isSearchableEditor)
                 {
@@ -105,29 +107,38 @@ namespace Pancake.Editor
 
             // Collect all serialized property.
             int count = 0;
-            using (SerializedProperty iterator = serializedObject.GetIterator())
+            // try catch to ignore SerializedObjectNotCreatableException
+            try
             {
-                if (iterator.NextVisible(true))
+                using (SerializedProperty iterator = serializedObject.GetIterator())
                 {
-                    do
+                    if (iterator.NextVisible(true))
                     {
-                        SerializedField serializedField = new SerializedField(serializedObject, iterator.propertyPath) {Repaint = Repaint};
-
-                        const string MONO_SCRIPT_NAME = "m_Script";
-                        if (iterator.name == MONO_SCRIPT_NAME)
+                        do
                         {
-                            serializedField.AddManipulator(new ReadOnlyAttribute());
-                            if (ignoreScriptReference)
-                            {
-                                continue;
-                            }
-                        }
+                            SerializedField serializedField = new SerializedField(serializedObject, iterator.propertyPath) {Repaint = Repaint};
 
-                        serializedField.SetOrder(count++);
-                        visualElements.Add(serializedField);
-                    } while (iterator.NextVisible(false));
+                            const string MONO_SCRIPT_NAME = "m_Script";
+                            if (iterator.name == MONO_SCRIPT_NAME)
+                            {
+                                serializedField.AddManipulator(new ReadOnlyAttribute());
+                                if (ignoreScriptReference)
+                                {
+                                    continue;
+                                }
+                            }
+
+                            serializedField.SetOrder(count++);
+                            visualElements.Add(serializedField);
+                        } while (iterator.NextVisible(false));
+                    }
                 }
             }
+            catch (Exception)
+            {
+                //
+            }
+            
 
             // Collect all buttons with [SerializeMethod] attribute.
             System.Type type = target.GetType();

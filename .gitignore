@@ -19,7 +19,8 @@ lerna-debug.log*
 Assets/AssetStoreTools*
 /UnityGenerated/
 Assets/_Root/Resources*
-Assets/_Root/EditorResources*
+Assets/_Root/Editor/EditorHeartSettings.asset
+Assets/_Root/Editor/EditorHeartSettings.asset.meta
 # Library should not freeze version, it should be written in README.
 /ProjectSettings/ProjectVersion.txt
 /ProjectSettings/UniformFoldoutState.asset

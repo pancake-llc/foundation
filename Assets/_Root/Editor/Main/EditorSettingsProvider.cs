@@ -6,7 +6,7 @@ namespace Pancake.Editor
 {
     public sealed class EditorSettingsProvider : SettingsProvider
     {
-        private EditorSettings settings;
+        private EditorHeartSettings _heartSettings;
         private InspectorEditor editor;
 
         /// <summary>
@@ -27,8 +27,8 @@ namespace Pancake.Editor
         /// <param name="rootElement">Root of the UIElements tree. If you add to this root, the SettingsProvider uses UIElements instead of calling SettingsProvider.OnGUI to build the UI. If you do not add to this VisualElement, then you must use the IMGUI to build the UI.</param>
         public override void OnActivate(string searchContext, UnityEngine.UIElements.VisualElement rootElement)
         {
-            settings = EditorSettings.Current;
-            editor = (InspectorEditor) UnityEditor.Editor.CreateEditor(settings, typeof(InspectorEditor));
+            _heartSettings = EditorHeartSettings.Current;
+            editor = (InspectorEditor) UnityEditor.Editor.CreateEditor(_heartSettings, typeof(InspectorEditor));
             editor.KeepEnable(true);
         }
 
@@ -66,13 +66,13 @@ namespace Pancake.Editor
             GUILayout.BeginVertical();
             EditorGUIUtility.labelWidth = 248;
 
-            if (settings != null)
+            if (_heartSettings != null)
             {
                 EditorGUI.BeginChangeCheck();
                 editor.OnInspectorGUI();
                 if (EditorGUI.EndChangeCheck())
                 {
-                    InspectorEditor.RebuildAllInstances(typeof(EditorSettings).Name);
+                    InspectorEditor.RebuildAllInstances(typeof(EditorHeartSettings).Name);
                 }
             }
 
@@ -86,7 +86,7 @@ namespace Pancake.Editor
         /// </summary>
         private void ResetSettingsFunction()
         {
-            EditorSettings.ResetSettings(settings);
+            EditorHeartSettings.ResetSettings(_heartSettings);
             InspectorEditor.RepaintAllInstances();
         }
 

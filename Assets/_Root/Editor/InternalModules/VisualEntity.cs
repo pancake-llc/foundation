@@ -66,7 +66,7 @@ namespace Pancake.Editor
             {
                 float targetHeight = GetHeight();
 
-                if (EditorSettings.Current.Animate())
+                if (EditorHeartSettings.Current.Animate)
                 {
                     CreateAnimFloatSafety(targetHeight);
                     if (animHeight.target != targetHeight)
@@ -81,7 +81,7 @@ namespace Pancake.Editor
                 OnGUI(position);
                 GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
             }
-            else if (EditorSettings.Current.Animate())
+            else if (EditorHeartSettings.Current.Animate)
             {
                 CreateAnimFloatSafety(0);
             }
