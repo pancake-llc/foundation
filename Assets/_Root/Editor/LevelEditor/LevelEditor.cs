@@ -107,8 +107,7 @@ namespace Pancake.Editor.LevelEditor
             var whitelistAssets = new List<GameObject>();
             if (!levelEditorSettings.Settings.blacklistPaths.IsNullOrEmpty())
             {
-                blacklistAssets = AssetDatabase
-                    .FindAssets("t:GameObject", levelEditorSettings.Settings.blacklistPaths.ToArray())
+                blacklistAssets = AssetDatabase.FindAssets("t:GameObject", levelEditorSettings.Settings.blacklistPaths.ToArray())
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
                     .ToList();
@@ -121,12 +120,11 @@ namespace Pancake.Editor.LevelEditor
 
             if (!levelEditorSettings.Settings.whitelistPaths.IsNullOrEmpty())
             {
-                whitelistAssets = AssetDatabase
-                    .FindAssets("t:GameObject", levelEditorSettings.Settings.whitelistPaths.ToArray())
+                whitelistAssets = AssetDatabase.FindAssets("t:GameObject", levelEditorSettings.Settings.whitelistPaths.ToArray())
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
                     .ToList();
-                
+
                 foreach (string whitelistPath in levelEditorSettings.Settings.whitelistPaths)
                 {
                     if (File.Exists(whitelistPath)) whitelistAssets.Add(AssetDatabase.LoadAssetAtPath<GameObject>(whitelistPath));
@@ -210,6 +208,7 @@ namespace Pancake.Editor.LevelEditor
                                             var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
                                             if (r.GetType() != typeof(UnityEngine.GameObject)) continue;
                                         }
+
                                         ValidateWhitelist(path, ref levelEditorSettings.Settings.blacklistPaths);
                                         AddToWhitelist(path);
                                     }
@@ -232,6 +231,7 @@ namespace Pancake.Editor.LevelEditor
                                             var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
                                             if (r.GetType() != typeof(UnityEngine.GameObject)) continue;
                                         }
+
                                         ValidateBlacklist(path, ref levelEditorSettings.Settings.whitelistPaths);
                                         AddToBlacklist(path);
                                     }
@@ -459,10 +459,12 @@ namespace Pancake.Editor.LevelEditor
 
             void DrawInGroup(IReadOnlyList<PickObject> pickObjectsInGroup)
             {
+                const int spacing = 25;
                 var counter = 0;
                 CalculateIdealCount(position.width - 50,
                     60,
                     135,
+                    spacing,
                     5,
                     out int count,
                     out float size);
@@ -470,11 +472,21 @@ namespace Pancake.Editor.LevelEditor
                 while (counter >= 0 && counter < pickObjectsInGroup.Count)
                 {
                     EditorGUILayout.BeginHorizontal();
+                    Uniform.SpaceTwoLine();
                     for (var x = 0; x < count; x++)
                     {
                         var pickObj = pickObjectsInGroup[counter];
                         var go = pickObj.pickedObject;
                         var tex = LevelWindow.GetPreview(go);
+                        if (pickObj == _currentPickObject)
+                        {
+                            GUI.color = new Color32(79, 213, 255, 255);
+                        }
+                        else
+                        {
+                            GUI.color = Color.white;
+                        }
+
                         Uniform.Button("",
                             () =>
                             {
@@ -490,23 +502,22 @@ namespace Pancake.Editor.LevelEditor
                             GUILayout.Width(size),
                             GUILayout.Height(size));
 
-                        var rect = GUILayoutUtility.GetLastRect().Grown(-3);
-                        if (pickObj == _currentPickObject) EditorGUI.DrawRect(rect, new Color32(86, 221, 255, 242));
-                        if (tex) GUI.DrawTexture(rect, tex, ScaleMode.ScaleToFit);
+                        GUI.color = Color.white;
+                        var rect = GUILayoutUtility.GetLastRect();
+                        if (tex) GUI.DrawTexture(rect.Grown(-10), tex, ScaleMode.ScaleToFit);
                         if (go)
                         {
-                            if (pickObj == _currentPickObject)
-                                EditorGUI.DropShadowLabel(rect, go.name, new GUIStyle(EditorStyles.whiteMiniLabel) {alignment = TextAnchor.LowerCenter});
-                            else
-                                EditorGUI.LabelField(rect, go.name, new GUIStyle(EditorStyles.whiteMiniLabel) {alignment = TextAnchor.LowerCenter});
+                            EditorGUI.LabelField(rect.Grown(new Vector2(0, 15)), go.name, new GUIStyle(EditorStyles.miniLabel) {alignment = TextAnchor.LowerCenter,});
                         }
 
                         counter++;
                         if (counter >= pickObjectsInGroup.Count) break;
+                        Uniform.SpaceTwoLine();
                     }
 
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
+                    GUILayout.Space(spacing);
                 }
             }
 
@@ -804,18 +815,20 @@ namespace Pancake.Editor.LevelEditor
         /// <param name="availableSpace"></param>
         /// <param name="minSize"></param>
         /// <param name="maxSize"></param>
+        /// <param name="spacing"></param>
         /// <param name="defaultCount"></param>
         /// <param name="count"></param>
         /// <param name="size"></param>
         /// <returns></returns>
         // ReSharper disable once UnusedMethodReturnValue.Local
-        private static bool CalculateIdealCount(float availableSpace, float minSize, float maxSize, int defaultCount, out int count, out float size)
+        private static bool CalculateIdealCount(float availableSpace, float minSize, float maxSize, float spacing, int defaultCount, out int count, out float size)
         {
-            int minCount = Mathf.FloorToInt(availableSpace / maxSize);
-            int maxCount = Mathf.FloorToInt(availableSpace / minSize);
+            float halfSpacing = spacing / 2f;
+            int minCount = Mathf.FloorToInt(availableSpace / (maxSize + halfSpacing));
+            int maxCount = Mathf.FloorToInt(availableSpace / (minSize + halfSpacing));
             bool goodness = defaultCount >= minCount && defaultCount <= maxCount;
             count = Mathf.Clamp(defaultCount, minCount, maxCount);
-            size = (availableSpace - (count - 1) * (count / 10f)) / count;
+            size = (availableSpace - halfSpacing * (count - 1) - (count - 1) * (count / 10f)) / count;
             return goodness;
         }
 
