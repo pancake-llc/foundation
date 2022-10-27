@@ -46,11 +46,11 @@ Add the lines below to `Packages/manifest.json`
 ## LEVEL EDITOR
 
 <p style="text-align: center;">
-  <img src="https://user-images.githubusercontent.com/44673303/190450836-492326a7-d0cf-47a7-965f-9c0d41afe1ce.png" width="600"  alt=""/>
+  <img src="https://user-images.githubusercontent.com/44673303/198231314-85dedbcd-d962-4e94-9eac-50a7e0d56d89.png" width="600"  alt=""/>
 </p>
 
 <p style="text-align: center;">
-  <img src="https://user-images.githubusercontent.com/44673303/190456451-86c0b01f-845a-4222-bcaa-543faa31f20c.png" width="600"  alt=""/>
+  <img src="https://user-images.githubusercontent.com/44673303/198229730-1b1fd11d-0b91-422b-a176-c27a72491fb7.png" width="600"  alt=""/>
 </p>
 
 ### _DROP AREA_
@@ -73,7 +73,7 @@ Add the lines below to `Packages/manifest.json`
 ### _PICKUP AREA_
 
 <p style="text-align: center;">
-  <img src="https://user-images.githubusercontent.com/44673303/190464081-dad74533-55fb-4919-a375-3abecfaf8a9b.png" width="600"  alt=""/>
+  <img src="https://user-images.githubusercontent.com/44673303/198229738-f9b1737c-dcd0-4629-bb0e-696c9d1e713f.png" width="600"  alt=""/>
 </p>
 
 Where you choose the object to spawn
@@ -94,7 +94,7 @@ Right click to specifically pickup object to show menu
 + Ping: Live property locator see where it is
 
 <p style="text-align: center;">
-  <img src="https://user-images.githubusercontent.com/44673303/190466539-f79fd032-2a6f-46ec-8252-d1b8fa2a3ea4.png" width="600"  alt=""/>
+  <img src="https://user-images.githubusercontent.com/44673303/198229743-c8f0177c-7d97-466e-ab1f-861daa936a79.png" width="600"  alt=""/>
 </p>
 
 ## NOTIFICATION
