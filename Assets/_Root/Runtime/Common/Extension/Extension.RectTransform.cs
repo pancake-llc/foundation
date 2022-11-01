@@ -85,6 +85,10 @@ namespace Pancake
         /// <summary> Resets the target's localScale to Vector3.one </summary>
         /// <param name="source"> Target RectTransform </param>
         public static void LocalScaleToOne(this RectTransform source) { source.localScale = Vector3.one; }
+        
+        /// <summary> Resets the target's anchorMin to Vector2.one </summary>
+        /// <param name="source"> Target RectTransform </param>
+        public static void AnchorMinToOne(this RectTransform source) { source.AnchorMinToValue(Vector2.one); }
 
         /// <summary> Resets the target's anchorMin to Vector2.zero </summary>
         /// <param name="source"> Target RectTransform </param>
@@ -108,6 +112,10 @@ namespace Pancake
         /// <summary> Sets the target's anchorMax to Vector2(0.5f, 0.5f) </summary>
         /// <param name="source"> Target RectTransform </param>
         public static void AnchorMaxToCenter(this RectTransform source) { source.AnchorMaxToValue(new Vector2(0.5f, 0.5f)); }
+        
+        /// <summary> Resets the target's anchorMax to Vector2.zero </summary>
+        /// <param name="source"> Target RectTransform </param>
+        public static void AnchorMaxToZero(this RectTransform source) { source.AnchorMaxToValue(Vector2.zero); }
 
         /// <summary>
         /// Sets the target's anchorMax to vector2 value

@@ -85,6 +85,14 @@ namespace Pancake.Editor
             if (t == null) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t as T;
         }
+        
+        public static T[] FindAssetsWithPath<T>(string nameAsset, string relativePath) where T : Object
+        {
+            string path = AssetInPackagePath(relativePath, nameAsset);
+            var t = AssetDatabase.LoadAllAssetsAtPath(path).OfType<T>().ToArray();
+            if (t.Length == 0) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
+            return t;
+        }
 
         private static string AssetInPackagePath(string relativePath, string nameAsset, string namePackage = "com.pancake.heart")
         {
