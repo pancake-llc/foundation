@@ -5,7 +5,6 @@ namespace Pancake
 {
     public class TempQueue<T> : Queue<T>, ITempCollection<T>
     {
-
         private const int MAX_SIZE_INBYTES = 1024;
 
         #region Fields
@@ -32,15 +31,9 @@ namespace Pancake
 
         bool ICollection<T>.IsReadOnly { get { return false; } }
 
-        void ICollection<T>.Add(T item)
-        {
-            this.Enqueue(item);
-        }
+        void ICollection<T>.Add(T item) { this.Enqueue(item); }
 
-        bool ICollection<T>.Remove(T item)
-        {
-            throw new NotSupportedException();
-        }
+        bool ICollection<T>.Remove(T item) { throw new NotSupportedException(); }
 
         #endregion
 
@@ -56,10 +49,7 @@ namespace Pancake
 
         #region Static Methods
 
-        public static TempQueue<T> GetQueue()
-        {
-            return _pool.GetInstance();
-        }
+        public static TempQueue<T> GetQueue() { return _pool.GetInstance(); }
 
         public static TempQueue<T> GetQueue(IEnumerable<T> e)
         {
@@ -76,10 +66,10 @@ namespace Pancake
             {
                 result = new TempQueue<T>(e);
             }
+
             return result;
         }
 
         #endregion
-
     }
 }

@@ -4,7 +4,6 @@ namespace Pancake
 {
     public class TempHashSet<T> : HashSet<T>, ITempCollection<T>
     {
-
         private const int MAX_SIZE_INBYTES = 1024;
 
         #region Fields
@@ -29,14 +28,7 @@ namespace Pancake
 
         #region Properties
 
-        public new IEqualityComparer<T> Comparer
-        {
-            get { return base.Comparer; }
-            set
-            {
-                (base.Comparer as OverridableEqualityComparer<T>).Comparer = value;
-            }
-        }
+        public new IEqualityComparer<T> Comparer { get { return base.Comparer; } set { (base.Comparer as OverridableEqualityComparer<T>).Comparer = value; } }
 
         #endregion
 
@@ -53,10 +45,7 @@ namespace Pancake
 
         #region Static Methods
 
-        public static TempHashSet<T> GetSet()
-        {
-            return _pool.GetInstance();
-        }
+        public static TempHashSet<T> GetSet() { return _pool.GetInstance(); }
 
         public static TempHashSet<T> GetSet(IEqualityComparer<T> comparer)
         {
@@ -71,7 +60,7 @@ namespace Pancake
             if (_pool.TryGetInstance(out result))
             {
                 var le = LightEnumerator.Create<T>(e);
-                while(le.MoveNext())
+                while (le.MoveNext())
                 {
                     result.Add(le.Current);
                 }
@@ -80,6 +69,7 @@ namespace Pancake
             {
                 result = new TempHashSet<T>(e);
             }
+
             return result;
         }
 
@@ -100,10 +90,10 @@ namespace Pancake
                 result = new TempHashSet<T>(e);
                 result.Comparer = comparer;
             }
+
             return result;
         }
 
         #endregion
-
     }
 }

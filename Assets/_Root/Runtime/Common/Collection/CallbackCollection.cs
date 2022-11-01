@@ -7,13 +7,9 @@ namespace Pancake
 {
     public class CallbackCollection<T> : ICollection<T>
     {
-
         #region CONSTRUCTOR
 
-        public CallbackCollection()
-        {
-
-        }
+        public CallbackCollection() { }
 
         public CallbackCollection(Action<T> addCallback)
         {
@@ -43,20 +39,14 @@ namespace Pancake
 
         bool ICollection<T>.IsReadOnly { get { return false; } }
 
-        public void Add(T item)
-        {
-            this.AddCallback?.Invoke(item);
-        }
+        public void Add(T item) { this.AddCallback?.Invoke(item); }
 
         public void Clear()
         {
             //do nothing
         }
 
-        public bool Contains(T item)
-        {
-            return false;
-        }
+        public bool Contains(T item) { return false; }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
@@ -69,23 +59,15 @@ namespace Pancake
             return true;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return Enumerable.Empty<T>().GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() { return Enumerable.Empty<T>().GetEnumerator(); }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return Enumerable.Empty<T>().GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() { return Enumerable.Empty<T>().GetEnumerator(); }
 
         #endregion
-
     }
 
     public class TempCallbackCollection<T> : CallbackCollection<T>, ITempCollection<T>
     {
-
         private const int MAX_SIZE_INBYTES = 1024;
 
         #region Fields
@@ -127,7 +109,5 @@ namespace Pancake
         }
 
         #endregion
-
     }
-
 }

@@ -2,16 +2,15 @@
 
 namespace Pancake
 {
-
     public class TempDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ITempCollection<KeyValuePair<TKey, TValue>>
     {
-
         //private const int MAX_SIZE_INBYTES = 1024;
         private const int MAX_SIZE = 256;
 
         #region Fields
 
-        private static ObjectCachePool<TempDictionary<TKey, TValue>> _pool = new ObjectCachePool<TempDictionary<TKey, TValue>>(-1, () => new TempDictionary<TKey, TValue>(), (c) => c.Comparer = null);
+        private static ObjectCachePool<TempDictionary<TKey, TValue>> _pool =
+            new ObjectCachePool<TempDictionary<TKey, TValue>>(-1, () => new TempDictionary<TKey, TValue>(), (c) => c.Comparer = null);
 
 #pragma warning disable CS0414
         private int _maxCapacityOnRelease;
@@ -46,14 +45,7 @@ namespace Pancake
 
         #region Properties
 
-        public new IEqualityComparer<TKey> Comparer
-        {
-            get { return base.Comparer; }
-            set
-            {
-                (base.Comparer as OverridableEqualityComparer<TKey>).Comparer = value;
-            }
-        }
+        public new IEqualityComparer<TKey> Comparer { get { return base.Comparer; } set { (base.Comparer as OverridableEqualityComparer<TKey>).Comparer = value; } }
 
         #endregion
 
@@ -69,10 +61,7 @@ namespace Pancake
 
         #region Static Methods
 
-        public static TempDictionary<TKey, TValue> GetDict()
-        {
-            return _pool.GetInstance();
-        }
+        public static TempDictionary<TKey, TValue> GetDict() { return _pool.GetInstance(); }
 
         public static TempDictionary<TKey, TValue> GetDict(IEqualityComparer<TKey> comparer)
         {
@@ -96,6 +85,7 @@ namespace Pancake
             {
                 result = new TempDictionary<TKey, TValue>(dict);
             }
+
             return result;
         }
 
@@ -116,11 +106,10 @@ namespace Pancake
                 result = new TempDictionary<TKey, TValue>(dict);
                 result.Comparer = comparer;
             }
+
             return result;
         }
 
         #endregion
-
     }
-
 }

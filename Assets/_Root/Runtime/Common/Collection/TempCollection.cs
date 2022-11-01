@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace Pancake
 {
-
     public interface ITempCollection<T> : ICollection<T>, IDisposable
     {
-
     }
 
     /// <summary>
@@ -23,7 +21,6 @@ namespace Pancake
     /// </summary>
     public static class TempCollection
     {
-
         #region Static Interface
 
         /// <summary>
@@ -33,10 +30,7 @@ namespace Pancake
         /// unnecessarily.
         /// </summary>
         /// <returns></returns>
-        public static ITempCollection<T> GetCollection<T>()
-        {
-            return GetList<T>();
-        }
+        public static ITempCollection<T> GetCollection<T>() { return GetList<T>(); }
 
         /// <summary>
         /// Returns the any available collection for use generically. 
@@ -45,80 +39,37 @@ namespace Pancake
         /// unnecessarily.
         /// </summary>
         /// <returns></returns>
-        public static ITempCollection<T> GetCollection<T>(IEnumerable<T> e)
-        {
-            return GetList<T>(e);
-        }
+        public static ITempCollection<T> GetCollection<T>(IEnumerable<T> e) { return GetList<T>(e); }
 
 
+        public static TempList<T> GetList<T>() { return TempList<T>.GetList(); }
 
+        public static TempList<T> GetList<T>(IEnumerable<T> e) { return TempList<T>.GetList(e); }
 
+        public static TempList<T> GetList<T>(int count) { return TempList<T>.GetList(count); }
 
+        public static TempHashSet<T> GetSet<T>() { return TempHashSet<T>.GetSet(); }
 
-        public static TempList<T> GetList<T>()
-        {
-            return TempList<T>.GetList();
-        }
+        public static TempHashSet<T> GetSet<T>(IEqualityComparer<T> comparer) { return TempHashSet<T>.GetSet(comparer); }
 
-        public static TempList<T> GetList<T>(IEnumerable<T> e)
-        {
-            return TempList<T>.GetList(e);
-        }
+        public static TempHashSet<T> GetSet<T>(IEnumerable<T> e) { return TempHashSet<T>.GetSet(e); }
 
-        public static TempList<T> GetList<T>(int count)
-        {
-            return TempList<T>.GetList(count);
-        }
+        public static TempHashSet<T> GetSet<T>(IEnumerable<T> e, IEqualityComparer<T> comparer) { return TempHashSet<T>.GetSet(e, comparer); }
 
-        public static TempHashSet<T> GetSet<T>()
-        {
-            return TempHashSet<T>.GetSet();
-        }
+        public static TempDictionary<TKey, TValue> GetDict<TKey, TValue>() { return TempDictionary<TKey, TValue>.GetDict(); }
 
-        public static TempHashSet<T> GetSet<T>(IEqualityComparer<T> comparer)
-        {
-            return TempHashSet<T>.GetSet(comparer);
-        }
+        public static TempDictionary<TKey, TValue> GetDict<TKey, TValue>(IEqualityComparer<TKey> comparer) { return TempDictionary<TKey, TValue>.GetDict(comparer); }
 
-        public static TempHashSet<T> GetSet<T>(IEnumerable<T> e)
-        {
-            return TempHashSet<T>.GetSet(e);
-        }
-
-        public static TempHashSet<T> GetSet<T>(IEnumerable<T> e, IEqualityComparer<T> comparer)
-        {
-            return TempHashSet<T>.GetSet(e, comparer);
-        }
-
-        public static TempDictionary<TKey, TValue> GetDict<TKey, TValue>()
-        {
-            return TempDictionary<TKey, TValue>.GetDict();
-        }
-
-        public static TempDictionary<TKey, TValue> GetDict<TKey, TValue>(IEqualityComparer<TKey> comparer)
-        {
-            return TempDictionary<TKey, TValue>.GetDict(comparer);
-        }
-
-        public static TempDictionary<TKey, TValue> GetDict<TKey, TValue>(IDictionary<TKey, TValue> dict)
-        {
-            return TempDictionary<TKey, TValue>.GetDict(dict);
-        }
+        public static TempDictionary<TKey, TValue> GetDict<TKey, TValue>(IDictionary<TKey, TValue> dict) { return TempDictionary<TKey, TValue>.GetDict(dict); }
 
         public static TempDictionary<TKey, TValue> GetDict<TKey, TValue>(IDictionary<TKey, TValue> dict, IEqualityComparer<TKey> comparer)
         {
             return TempDictionary<TKey, TValue>.GetDict(dict, comparer);
         }
 
-        public static TempQueue<T> GetQueue<T>()
-        {
-            return TempQueue<T>.GetQueue();
-        }
+        public static TempQueue<T> GetQueue<T>() { return TempQueue<T>.GetQueue(); }
 
-        public static TempQueue<T> GetQueue<T>(IEnumerable<T> e)
-        {
-            return TempQueue<T>.GetQueue(e);
-        }
+        public static TempQueue<T> GetQueue<T>(IEnumerable<T> e) { return TempQueue<T>.GetQueue(e); }
 
         public static TempCallbackCollection<T> GetCallbackCollection<T>(Action<T> addCallback, Action<T> removeCallback = null)
         {
@@ -126,6 +77,5 @@ namespace Pancake
         }
 
         #endregion
-
     }
 }

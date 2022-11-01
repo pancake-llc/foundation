@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace Pancake
 {
-
     public class TempList<T> : List<T>, ITempCollection<T>
     {
-
         //private const int MAX_SIZE_INBYTES = 1024;
         private const int MAX_SIZE = 256;
 
@@ -58,9 +56,9 @@ namespace Pancake
         public virtual void Dispose()
         {
             this.Clear();
-            if(_pool.Release(this))
+            if (_pool.Release(this))
             {
-                if(this.Capacity > _maxCapacityOnRelease / Math.Min(_version, 4))
+                if (this.Capacity > _maxCapacityOnRelease / Math.Min(_version, 4))
                 {
                     this.Capacity = _maxCapacityOnRelease / Math.Min(_version, 4);
                     _version = 1;
@@ -76,19 +74,16 @@ namespace Pancake
 
         #region Static Methods
 
-        public static TempList<T> GetList()
-        {
-            return _pool.GetInstance();
-        }
+        public static TempList<T> GetList() { return _pool.GetInstance(); }
 
         public static TempList<T> GetList(IEnumerable<T> e)
         {
             TempList<T> result;
-            if(_pool.TryGetInstance(out result))
+            if (_pool.TryGetInstance(out result))
             {
                 //result.AddRange(e);
                 var e2 = new LightEnumerator<T>(e);
-                while(e2.MoveNext())
+                while (e2.MoveNext())
                 {
                     result.Add(e2.Current);
                 }
@@ -97,6 +92,7 @@ namespace Pancake
             {
                 result = new TempList<T>(e);
             }
+
             return result;
         }
 
@@ -112,11 +108,10 @@ namespace Pancake
             {
                 result = new TempList<T>(count);
             }
+
             return result;
         }
 
         #endregion
-
     }
-
 }

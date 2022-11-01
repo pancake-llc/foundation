@@ -4,7 +4,6 @@ using Pancake;
 
 namespace Pancake
 {
-
     /// <summary>
     /// Creates a pool that will cache instances of objects for later use so that you don't have to construct them again. 
     /// There is a max cache size, if set to 0 or less, it's considered endless in size.
@@ -12,11 +11,10 @@ namespace Pancake
     /// <typeparam name="T"></typeparam>
     public class ObjectCachePool<T> : ICachePool<T> where T : class
     {
-
         private const int DEFAULT_CACHESIZE = 64; //1024;
 
         #region Fields
-        
+
         private HashSet<T> _inactive;
 
         private int _cacheSize;
@@ -63,34 +61,17 @@ namespace Pancake
             _resetOnGet = resetOnGet;
         }
 
-        private T SimpleConstructor()
-        {
-            return Activator.CreateInstance<T>();
-        }
+        private T SimpleConstructor() { return Activator.CreateInstance<T>(); }
 
         #endregion
 
         #region Properties
 
-        public int CacheSize
-        {
-            get { return _cacheSize; }
-            set
-            {
-                _cacheSize = value > 0 ? value : DEFAULT_CACHESIZE;
-            }
-        }
+        public int CacheSize { get { return _cacheSize; } set { _cacheSize = value > 0 ? value : DEFAULT_CACHESIZE; } }
 
-        public bool ResetOnGet
-        {
-            get { return _resetOnGet; }
-            set { _resetOnGet = value; }
-        }
+        public bool ResetOnGet { get { return _resetOnGet; } set { _resetOnGet = value; } }
 
-        public int InactiveCount
-        {
-            get { return _inactive.Count; }
-        }
+        public int InactiveCount { get { return _inactive.Count; } }
 
         #endregion
 
@@ -99,16 +80,17 @@ namespace Pancake
         public bool TryGetInstance(out T result)
         {
             result = null;
-            lock(_inactive)
+            lock (_inactive)
             {
-                if(_inactive.Count > 0)
+                if (_inactive.Count > 0)
                 {
                     result = _inactive.Pop();
                 }
             }
+
             if (result != null)
             {
-                if(_resetOnGet && _resetObjectDelegate != null)
+                if (_resetOnGet && _resetObjectDelegate != null)
                     _resetObjectDelegate(result);
                 return true;
             }
@@ -121,13 +103,14 @@ namespace Pancake
         public T GetInstance()
         {
             T result = null;
-            lock(_inactive)
+            lock (_inactive)
             {
-                if(_inactive.Count > 0)
+                if (_inactive.Count > 0)
                 {
                     result = _inactive.Pop();
                 }
             }
+
             if (result != null)
             {
                 if (_resetOnGet && _resetObjectDelegate != null)
@@ -143,12 +126,12 @@ namespace Pancake
         public bool Release(T obj)
         {
             if (obj == null) throw new System.ArgumentNullException("obj");
-            
+
             if (!_resetOnGet && _resetObjectDelegate != null && _inactive.Count < _cacheSize) _resetObjectDelegate(obj);
 
-            lock(_inactive)
+            lock (_inactive)
             {
-                if(_inactive.Count < _cacheSize)
+                if (_inactive.Count < _cacheSize)
                 {
                     _inactive.Add(obj);
                     return true;
@@ -158,18 +141,10 @@ namespace Pancake
             return false;
         }
 
-        void ICachePool<T>.Release(T obj)
-        {
-            this.Release(obj);
-        }
+        void ICachePool<T>.Release(T obj) { this.Release(obj); }
 
-        public bool IsTreatedAsInactive(T obj)
-        {
-            return _inactive.Contains(obj);
-        }
+        public bool IsTreatedAsInactive(T obj) { return _inactive.Contains(obj); }
 
         #endregion
-
     }
-
 }
