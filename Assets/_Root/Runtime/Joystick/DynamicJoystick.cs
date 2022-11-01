@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Pancake
+namespace Pancake.Joystick
 {
     public class DynamicJoystick : Joystick
     {

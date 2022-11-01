@@ -1,4 +1,5 @@
 ﻿using System;
+using Pancake.Joystick;
 using Pancake.Linq;
 using Pancake.UI;
 using UnityEditor;
@@ -89,7 +90,7 @@ namespace Pancake.Editor
             }
         }
 
-        [MenuItem("GameObject/Pancake/Joystick/Dynamic")]
+        [MenuItem("GameObject/Pancake/Joystick/Dynamic", false, 1100)]
         private static void CreateDynamicJoystick()
         {
             void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
@@ -127,7 +128,7 @@ namespace Pancake.Editor
             Create(canvas.transform);
         }
 
-        [MenuItem("GameObject/Pancake/Joystick/Fixed")]
+        [MenuItem("GameObject/Pancake/Joystick/Fixed", false, 1100)]
         private static void CreateFixedJoystick()
         {
             void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
@@ -139,7 +140,7 @@ namespace Pancake.Editor
 
             void Create(Transform t)
             {
-                var result = InEditor.FindAssetsWithPath<Sprite>("JoystickA.png", "Runtime/External/Sprites");
+                var result = InEditor.FindAssetsWithPath<Sprite>("JoystickA.png", "Runtime/Joystick/Sprites");
 
                 var background = CreateEmptyRectTransformObject(t, "FixedJoystick");
                 background.AnchorMinToZero();
@@ -186,7 +187,7 @@ namespace Pancake.Editor
             Create(canvas.transform);
         }
 
-        [MenuItem("GameObject/Pancake/Joystick/Floating")]
+        [MenuItem("GameObject/Pancake/Joystick/Floating", false, 1100)]
         private static void CreateFloatingJoystick()
         {
             void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
@@ -224,7 +225,7 @@ namespace Pancake.Editor
             Create(canvas.transform);
         }
 
-        [MenuItem("GameObject/Pancake/Joystick/Variable")]
+        [MenuItem("GameObject/Pancake/Joystick/Variable", false, 1100)]
         private static void CreateVariableJoystick()
         {
             void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
@@ -269,7 +270,7 @@ namespace Pancake.Editor
             var img = joystick.gameObject.AddComponent<Image>();
             img.color = img.color.ChangeAlpha(0);
 
-            var result = InEditor.FindAssetsWithPath<Sprite>("JoystickA.png", "Runtime/External/Sprites");
+            var result = InEditor.FindAssetsWithPath<Sprite>("JoystickA.png", "Runtime/Joystick/Sprites");
 
             var background = CreateEmptyRectTransformObject(joystick.transform, "Background");
             background.AnchorMinToZero();
