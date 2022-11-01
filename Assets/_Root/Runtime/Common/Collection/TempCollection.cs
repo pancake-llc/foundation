@@ -40,8 +40,7 @@ namespace Pancake
         /// </summary>
         /// <returns></returns>
         public static ITempCollection<T> GetCollection<T>(IEnumerable<T> e) { return GetList<T>(e); }
-
-
+        
         public static TempList<T> GetList<T>() { return TempList<T>.GetList(); }
 
         public static TempList<T> GetList<T>(IEnumerable<T> e) { return TempList<T>.GetList(e); }
