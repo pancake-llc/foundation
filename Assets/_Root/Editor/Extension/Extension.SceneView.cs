@@ -1,7 +1,6 @@
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Pancake.Buffers;
 
 namespace Pancake.Editor
 {
@@ -77,7 +76,14 @@ namespace Pancake.Editor
 
         public static Rect? BoundsToGUIRect(this SceneView sceneView, Bounds worldBounds)
         {
-            var worldPoints = ArrayPool<Vector3>.New(8);
+            var worldPoints = TempArray.Temp(Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero);            
             worldBounds.GetPointsNoAlloc(worldPoints);
 
             Rect? guiRect = null;
@@ -94,7 +100,7 @@ namespace Pancake.Editor
                 guiRect = guiRect.Encompass(guiPoint);
             }
 
-            worldPoints.Free();
+            TempArray.Release(worldPoints);
 
             return guiRect;
         }

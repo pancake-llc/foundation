@@ -9,7 +9,7 @@ namespace Pancake
 
         #region Fields
 
-        private static ObjectCachePool<TempQueue<T>> _pool = new ObjectCachePool<TempQueue<T>>(-1, () => new TempQueue<T>());
+        private static ObjectCachePool<TempQueue<T>> pool = new ObjectCachePool<TempQueue<T>>(-1, () => new TempQueue<T>());
 
         #endregion
 
@@ -42,19 +42,19 @@ namespace Pancake
         public void Dispose()
         {
             this.Clear();
-            _pool.Release(this);
+            pool.Release(this);
         }
 
         #endregion
 
         #region Static Methods
 
-        public static TempQueue<T> GetQueue() { return _pool.GetInstance(); }
+        public static TempQueue<T> Get() { return pool.GetInstance(); }
 
-        public static TempQueue<T> GetQueue(IEnumerable<T> e)
+        public static TempQueue<T> Get(IEnumerable<T> e)
         {
             TempQueue<T> result;
-            if (_pool.TryGetInstance(out result))
+            if (pool.TryGetInstance(out result))
             {
                 var le = LightEnumerator.Create<T>(e);
                 while (le.MoveNext())

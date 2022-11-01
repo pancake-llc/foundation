@@ -72,7 +72,7 @@ namespace Pancake
 
         #region Fields
 
-        private static ObjectCachePool<TempCallbackCollection<T>> _pool = new ObjectCachePool<TempCallbackCollection<T>>(-1, () => new TempCallbackCollection<T>());
+        private static ObjectCachePool<TempCallbackCollection<T>> pool = new ObjectCachePool<TempCallbackCollection<T>>(-1, () => new TempCallbackCollection<T>());
 
         #endregion
 
@@ -93,16 +93,16 @@ namespace Pancake
         {
             this.AddCallback = null;
             this.RemoveCallback = null;
-            _pool.Release(this);
+            pool.Release(this);
         }
 
         #endregion
 
         #region Static Methods
 
-        public static TempCallbackCollection<T> GetCallbackCollection(Action<T> addCallback, Action<T> removeCallback = null)
+        public static TempCallbackCollection<T> Get(Action<T> addCallback, Action<T> removeCallback = null)
         {
-            var coll = _pool.GetInstance();
+            var coll = pool.GetInstance();
             coll.AddCallback = addCallback;
             coll.RemoveCallback = removeCallback;
             return coll;

@@ -9,7 +9,7 @@ namespace Pancake
 
         #region Fields
 
-        private static ObjectCachePool<TempDictionary<TKey, TValue>> _pool =
+        private static ObjectCachePool<TempDictionary<TKey, TValue>> pool =
             new ObjectCachePool<TempDictionary<TKey, TValue>>(-1, () => new TempDictionary<TKey, TValue>(), (c) => c.Comparer = null);
 
 #pragma warning disable CS0414
@@ -54,26 +54,26 @@ namespace Pancake
         public void Dispose()
         {
             this.Clear();
-            _pool.Release(this);
+            pool.Release(this);
         }
 
         #endregion
 
         #region Static Methods
 
-        public static TempDictionary<TKey, TValue> GetDict() { return _pool.GetInstance(); }
+        public static TempDictionary<TKey, TValue> Get() { return pool.GetInstance(); }
 
-        public static TempDictionary<TKey, TValue> GetDict(IEqualityComparer<TKey> comparer)
+        public static TempDictionary<TKey, TValue> Get(IEqualityComparer<TKey> comparer)
         {
-            var result = _pool.GetInstance();
+            var result = pool.GetInstance();
             result.Comparer = comparer;
             return result;
         }
 
-        public static TempDictionary<TKey, TValue> GetDict(IDictionary<TKey, TValue> dict)
+        public static TempDictionary<TKey, TValue> Get(IDictionary<TKey, TValue> dict)
         {
             TempDictionary<TKey, TValue> result;
-            if (_pool.TryGetInstance(out result))
+            if (pool.TryGetInstance(out result))
             {
                 var le = LightEnumerator.Create(dict);
                 while (le.MoveNext())
@@ -89,10 +89,10 @@ namespace Pancake
             return result;
         }
 
-        public static TempDictionary<TKey, TValue> GetDict(IDictionary<TKey, TValue> dict, IEqualityComparer<TKey> comparer)
+        public static TempDictionary<TKey, TValue> Get(IDictionary<TKey, TValue> dict, IEqualityComparer<TKey> comparer)
         {
             TempDictionary<TKey, TValue> result;
-            if (_pool.TryGetInstance(out result))
+            if (pool.TryGetInstance(out result))
             {
                 result.Comparer = comparer;
                 var le = LightEnumerator.Create(dict);

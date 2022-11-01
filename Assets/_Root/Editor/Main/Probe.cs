@@ -5,7 +5,6 @@ namespace Pancake.Editor
     using System.Linq;
     using UnityEditor;
     using UnityEngine;
-    using Buffers;
 
     public delegate void ProbeHitSelectHandler(bool add);
 
@@ -102,7 +101,7 @@ namespace Pancake.Editor
 
         public static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point)
         {
-            var results = ListPool<ProbeHit>.New();
+            var results = TempCollection.GetList<ProbeHit>();
 
             try
             {
@@ -122,7 +121,7 @@ namespace Pancake.Editor
             }
             finally
             {
-                results.Free();
+                results.Dispose();
             }
         }
         
@@ -139,12 +138,11 @@ namespace Pancake.Editor
             var worldPosition = sceneView.camera.ScreenToWorldPoint(screenPosition);
             var layerMask = Physics.DefaultRaycastLayers;
 
-            var raycastHits = ArrayPool<RaycastHit>.New(limit);
-            var overlapHits = ArrayPool<Collider2D>.New(limit);
-            var handleHits = HashSetPool<GameObject>.New();
-            var ancestorHits = HashSetPool<ProbeHit>.New();
-
-            var gameObjectHits = DictionaryPool<GameObject, ProbeHit>.New();
+            var raycastHits = TempArray.TryGetTemp<RaycastHit>(limit);
+            var overlapHits = TempArray.TryGetTemp<Collider2D>(limit);
+            var handleHits = TempHashSet<GameObject>.Get();
+            var ancestorHits = TempHashSet<ProbeHit>.Get();
+            var gameObjectHits = TempDictionary<GameObject, ProbeHit>.Get();
 
             try
             {
@@ -272,12 +270,11 @@ namespace Pancake.Editor
             }
             finally
             {
-                raycastHits.Free();
-                overlapHits.Free();
-                handleHits.Free();
-                ancestorHits.Free();
-
-                gameObjectHits.Free();
+                TempArray.Release(raycastHits);
+                TempArray.Release(overlapHits);
+                handleHits.Dispose();
+                ancestorHits.Dispose();
+                gameObjectHits.Dispose();
             }
         }
 
@@ -352,6 +349,45 @@ namespace Pancake.Editor
         }
 
         #endregion
+        
+        private static class HashSetPool<T>
+        {
+            private static readonly object @lock = new object();
+            private static readonly Stack<HashSet<T>> free = new Stack<HashSet<T>>();
+            private static readonly HashSet<HashSet<T>> busy = new HashSet<HashSet<T>>();
+
+            public static HashSet<T> New()
+            {
+                lock (@lock)
+                {
+                    if (free.Count == 0)
+                    {
+                        free.Push(new HashSet<T>());
+                    }
+
+                    var hashSet = free.Pop();
+
+                    busy.Add(hashSet);
+
+                    return hashSet;
+                }
+            }
+
+            public static void Free(HashSet<T> hashSet)
+            {
+                lock (@lock)
+                {
+                    if (!busy.Remove(hashSet))
+                    {
+                        throw new ArgumentException("The hash set to free is not in use by the pool.", nameof(hashSet));
+                    }
+
+                    hashSet.Clear();
+
+                    free.Push(hashSet);
+                }
+            }
+        }
     }
 
     public struct ProbeFilter
@@ -365,4 +401,6 @@ namespace Pancake.Editor
             Raycast = true, Overlap = true, Handles = true
         };
     }
+    
+    
 }

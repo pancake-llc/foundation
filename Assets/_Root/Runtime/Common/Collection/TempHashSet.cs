@@ -8,7 +8,7 @@ namespace Pancake
 
         #region Fields
 
-        private static ObjectCachePool<TempHashSet<T>> _pool = new ObjectCachePool<TempHashSet<T>>(-1, () => new TempHashSet<T>(), (c) => c.Comparer = null);
+        private static ObjectCachePool<TempHashSet<T>> pool = new ObjectCachePool<TempHashSet<T>>(-1, () => new TempHashSet<T>(), (c) => c.Comparer = null);
 
         #endregion
 
@@ -31,33 +31,32 @@ namespace Pancake
         public new IEqualityComparer<T> Comparer { get { return base.Comparer; } set { (base.Comparer as OverridableEqualityComparer<T>).Comparer = value; } }
 
         #endregion
-
-
+        
         #region IDisposable Interface
 
         public void Dispose()
         {
             this.Clear();
-            _pool.Release(this);
+            pool.Release(this);
         }
 
         #endregion
 
         #region Static Methods
 
-        public static TempHashSet<T> GetSet() { return _pool.GetInstance(); }
+        public static TempHashSet<T> Get() { return pool.GetInstance(); }
 
-        public static TempHashSet<T> GetSet(IEqualityComparer<T> comparer)
+        public static TempHashSet<T> Get(IEqualityComparer<T> comparer)
         {
-            var result = _pool.GetInstance();
+            var result = pool.GetInstance();
             result.Comparer = comparer;
             return result;
         }
 
-        public static TempHashSet<T> GetSet(IEnumerable<T> e)
+        public static TempHashSet<T> Get(IEnumerable<T> e)
         {
             TempHashSet<T> result;
-            if (_pool.TryGetInstance(out result))
+            if (pool.TryGetInstance(out result))
             {
                 var le = LightEnumerator.Create<T>(e);
                 while (le.MoveNext())
@@ -73,10 +72,10 @@ namespace Pancake
             return result;
         }
 
-        public static TempHashSet<T> GetSet(IEnumerable<T> e, IEqualityComparer<T> comparer)
+        public static TempHashSet<T> Get(IEnumerable<T> e, IEqualityComparer<T> comparer)
         {
             TempHashSet<T> result;
-            if (_pool.TryGetInstance(out result))
+            if (pool.TryGetInstance(out result))
             {
                 result.Comparer = comparer;
                 var le = LightEnumerator.Create<T>(e);
