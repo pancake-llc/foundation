@@ -13,9 +13,13 @@
 Add the lines below to `Packages/manifest.json`
 
 - for dev version
-
 ```csharp
 "com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root",
+```
+
+- for version `1.0.4`
+```csharp
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root#1.0.4",
 ```
 
 # Usages
