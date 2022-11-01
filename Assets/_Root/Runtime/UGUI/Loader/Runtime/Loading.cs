@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Pancake.Loader
 {
-    public class Loading : MonoBehaviour
+    public sealed class Loading : MonoBehaviour
     {
         public LoadingComponent prefabLoading;
         public List<GameObject> dontDestroyOnLoad = new List<GameObject>();
