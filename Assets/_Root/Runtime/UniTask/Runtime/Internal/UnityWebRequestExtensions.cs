@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 namespace Pancake.Threading.Tasks.Internal
 {
-#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST_SUPPORT)
+#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST)
     
     internal static class UnityWebRequestResultExtensions
     {

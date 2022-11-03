@@ -1,6 +1,6 @@
 ﻿// asmdef Version Defines, enabled when com.unity.addressables is imported.
 
-#if PANCAKE_ADDRESSABLE_SUPPORT
+#if PANCAKE_ADDRESSABLE
 
 using Pancake.Threading.Tasks.Internal;
 using System;

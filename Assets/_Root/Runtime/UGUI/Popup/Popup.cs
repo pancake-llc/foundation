@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Pancake.Threading.Tasks;
 using UnityEngine;
 
-#if PANCAKE_ADDRESSABLE_SUPPORT
+#if PANCAKE_ADDRESSABLE
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.ResourceLocations;
 #endif

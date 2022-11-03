@@ -1,4 +1,4 @@
-#if PANCAKE_ADDRESSABLE_SUPPORT
+#if PANCAKE_ADDRESSABLE
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

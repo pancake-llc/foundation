@@ -28,7 +28,7 @@
         {
             "name": "com.unity.addressables",
             "expression": "",
-            "define": "PANCAKE_ADDRESSABLE_SUPPORT"
+            "define": "PANCAKE_ADDRESSABLE"
         },
         {
             "name": "com.system-community.systemruntimecompilerservicesunsafe",

@@ -24,12 +24,12 @@
         {
             "name": "com.unity.textmeshpro",
             "expression": "2.0.0",
-            "define": "PANCAKE_TMP_SUPPORT"
+            "define": "PANCAKE_TMP"
         },
         {
             "name": "com.unity.ugui",
             "expression": "1.0.0",
-            "define": "PANCAKE_UGUI_SUPPORT"
+            "define": "PANCAKE_UGUI"
         },
         {
             "name": "com.unity.render-pipelines.core",
@@ -39,37 +39,42 @@
         {
             "name": "com.unity.modules.assetbundle",
             "expression": "",
-            "define": "PANCAKE_ASSETBUNDLE_SUPPORT"
+            "define": "PANCAKE_ASSETBUNDLE"
         },
         {
             "name": "com.unity.modules.physics",
             "expression": "",
-            "define": "PANCAKE_PHYSICS_SUPPORT"
+            "define": "PANCAKE_PHYSICS"
         },
         {
             "name": "com.unity.modules.physics2d",
             "expression": "",
-            "define": "PANCAKE_PHYSICS2D_SUPPORT"
+            "define": "PANCAKE_PHYSICS2D"
         },
         {
             "name": "com.unity.modules.particlesystem",
             "expression": "",
-            "define": "PANCAKE_PARTICLESYSTEM_SUPPORT"
+            "define": "PANCAKE_PARTICLESYSTEM"
         },
         {
             "name": "com.unity.modules.unitywebrequest",
             "expression": "",
-            "define": "PANCAKE_WEBREQUEST_SUPPORT"
+            "define": "PANCAKE_WEBREQUEST"
         },
         {
             "name": "com.unity.addressables",
             "expression": "",
-            "define": "PANCAKE_ADDRESSABLE_SUPPORT"
+            "define": "PANCAKE_ADDRESSABLE"
         },
         {
             "name": "com.pancake.facebook",
             "expression": "",
-            "define": "PANCAKE_FACEBOOK_SUPPORT"
+            "define": "PANCAKE_FACEBOOK"
+        },
+        {
+            "name": "com.pancake.playfab",
+            "expression": "",
+            "define": "PANCAKE_PLAYFAB"
         }
     ],
     "noEngineReferences": false

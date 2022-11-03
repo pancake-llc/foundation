@@ -7,7 +7,7 @@ namespace Pancake.Threading.Tasks
 {
     public static class UnityBindingExtensions
     {
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
         // <string> -> Text
 
         public static void BindTo(this IUniTaskAsyncEnumerable<string> source, UnityEngine.UI.Text text, bool rebindOnError = true)

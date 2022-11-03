@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 using System;
 using System.Threading;
 using UnityEngine;

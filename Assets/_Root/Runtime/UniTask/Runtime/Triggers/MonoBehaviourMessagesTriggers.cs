@@ -2,7 +2,7 @@
 
 using System.Threading;
 using UnityEngine;
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 using UnityEngine.EventSystems;
 #endif
 
@@ -717,7 +717,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region CollisionEnter
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnCollisionEnterHandler
     {
@@ -778,7 +778,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region CollisionEnter2D
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnCollisionEnter2DHandler
     {
@@ -839,7 +839,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region CollisionExit
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnCollisionExitHandler
     {
@@ -900,7 +900,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region CollisionExit2D
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnCollisionExit2DHandler
     {
@@ -961,7 +961,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region CollisionStay
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnCollisionStayHandler
     {
@@ -1022,7 +1022,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region CollisionStay2D
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnCollisionStay2DHandler
     {
@@ -1083,7 +1083,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region ControllerColliderHit
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnControllerColliderHitHandler
     {
@@ -1439,7 +1439,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region JointBreak
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnJointBreakHandler
     {
@@ -1500,7 +1500,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region JointBreak2D
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnJointBreak2DHandler
     {
@@ -2165,7 +2165,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region ParticleUpdateJobScheduled
-#if UNITY_2019_3_OR_NEWER && (!UNITY_2019_1_OR_NEWER || PANCAKE_PARTICLESYSTEM_SUPPORT)
+#if UNITY_2019_3_OR_NEWER && (!UNITY_2019_1_OR_NEWER || PANCAKE_PARTICLESYSTEM)
 
     public interface IAsyncOnParticleUpdateJobScheduledHandler
     {
@@ -2816,7 +2816,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region TriggerEnter
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnTriggerEnterHandler
     {
@@ -2877,7 +2877,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region TriggerEnter2D
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnTriggerEnter2DHandler
     {
@@ -2938,7 +2938,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region TriggerExit
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnTriggerExitHandler
     {
@@ -2999,7 +2999,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region TriggerExit2D
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnTriggerExit2DHandler
     {
@@ -3060,7 +3060,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region TriggerStay
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnTriggerStayHandler
     {
@@ -3121,7 +3121,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region TriggerStay2D
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnTriggerStay2DHandler
     {
@@ -3418,7 +3418,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region BeginDrag
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnBeginDragHandler
     {
@@ -3479,7 +3479,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Cancel
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnCancelHandler
     {
@@ -3540,7 +3540,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Deselect
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnDeselectHandler
     {
@@ -3601,7 +3601,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Drag
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnDragHandler
     {
@@ -3662,7 +3662,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Drop
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnDropHandler
     {
@@ -3723,7 +3723,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region EndDrag
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnEndDragHandler
     {
@@ -3784,7 +3784,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region InitializePotentialDrag
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnInitializePotentialDragHandler
     {
@@ -3845,7 +3845,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Move
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnMoveHandler
     {
@@ -3906,7 +3906,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region PointerClick
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerClickHandler
     {
@@ -3967,7 +3967,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region PointerDown
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerDownHandler
     {
@@ -4028,7 +4028,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region PointerEnter
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerEnterHandler
     {
@@ -4089,7 +4089,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region PointerExit
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerExitHandler
     {
@@ -4150,7 +4150,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region PointerUp
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerUpHandler
     {
@@ -4211,7 +4211,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Scroll
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnScrollHandler
     {
@@ -4272,7 +4272,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Select
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnSelectHandler
     {
@@ -4333,7 +4333,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region Submit
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnSubmitHandler
     {
@@ -4394,7 +4394,7 @@ namespace Pancake.Threading.Tasks.Triggers
 #endregion
 
 #region UpdateSelected
-#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI_SUPPORT
+#if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnUpdateSelectedHandler
     {

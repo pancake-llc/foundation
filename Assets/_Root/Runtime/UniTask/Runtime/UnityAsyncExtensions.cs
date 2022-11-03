@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
 using Pancake.Threading.Tasks.Internal;
-#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST_SUPPORT)
+#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST)
 using UnityEngine.Networking;
 #endif
 
@@ -365,7 +365,7 @@ namespace Pancake.Threading.Tasks
 
         #endregion
 
-#if PANCAKE_ASSETBUNDLE_SUPPORT
+#if PANCAKE_ASSETBUNDLE
         #region AssetBundleRequest
 
         public static AssetBundleRequestAwaiter GetAwaiter(this AssetBundleRequest asyncOperation)
@@ -545,7 +545,7 @@ namespace Pancake.Threading.Tasks
         #endregion
 #endif
 
-#if PANCAKE_ASSETBUNDLE_SUPPORT
+#if PANCAKE_ASSETBUNDLE
         #region AssetBundleCreateRequest
 
         public static AssetBundleCreateRequestAwaiter GetAwaiter(this AssetBundleCreateRequest asyncOperation)
@@ -725,7 +725,7 @@ namespace Pancake.Threading.Tasks
         #endregion
 #endif
 
-#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST_SUPPORT)
+#if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST)
         #region UnityWebRequestAsyncOperation
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)

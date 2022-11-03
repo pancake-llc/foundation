@@ -1,6 +1,6 @@
 using UnityEngine;
 
-#if PANCAKE_ADDRESSABLE_SUPPORT
+#if PANCAKE_ADDRESSABLE
 using UnityEngine.AddressableAssets;
 #endif
 
@@ -13,7 +13,7 @@ namespace Pancake
 
         protected virtual void Start()
         {
-#if PANCAKE_ADDRESSABLE_SUPPORT
+#if PANCAKE_ADDRESSABLE
             Addressables.InitializeAsync().WaitForCompletion();
 #endif
 

@@ -1,4 +1,4 @@
-﻿#if PANCAKE_ADDRESSABLE_SUPPORT
+﻿#if PANCAKE_ADDRESSABLE
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
