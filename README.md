@@ -17,9 +17,9 @@ Add the lines below to `Packages/manifest.json`
 "com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root",
 ```
 
-- for version `1.0.4`
+- for version `1.0.5`
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root#1.0.4",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root#1.0.5",
 ```
 
 # Usages
