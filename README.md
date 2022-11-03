@@ -429,6 +429,7 @@ It will be a little different from System Linq that **Select** is replaced with 
 
 
 ## Facebook
+Require install [facebook](https://github.com/pancake-llc/facebook)
 ### Friend Facebook
 - Facebook application need create with type is `gaming`
 - If permission `gaming_user_picture` not include will return avartar, if include it will return profile picture
