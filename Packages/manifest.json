@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "com.pancake.playfab": "https://github.com/pancake-llc/playfab.git?path=Assets/_Root#2.153.221024",
+    "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "1.19.19",
     "com.unity.ide.rider": "3.0.16",

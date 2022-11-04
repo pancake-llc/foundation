@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "com.coffee.ui-effect": {
+      "version": "https://github.com/mob-sakai/UIEffect.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b43e40508b167d143330d8b9eff0d5c9965cdf3c"
+    },
+    "com.pancake.playfab": {
+      "version": "https://github.com/pancake-llc/playfab.git?path=Assets/_Root#2.153.221024",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b36192c2ca1e498c0096172c5d24321214001f54"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

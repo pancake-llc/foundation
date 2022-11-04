@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 #if PANCAKE_PLAYFAB
+using System.Collections.Generic;
 using Pancake.GameService;
 #endif
 using UnityEditor;
@@ -60,11 +61,11 @@ namespace Pancake.Editor
         [MenuItem("Tools/Pancake/PlayFab")]
         private static void CreatePlayFab()
         {
-            var setting = ServiceSettings.LoadSettings();
-            if (setting == null) ServiceSettings.CreateSettingsAsset();
-
             var shareSetting = ServiceSettings.LoadPlayFabSharedSettings();
             if (shareSetting == null) ServiceSettings.CreatePlayFabSharedSettings();
+            
+            var setting = ServiceSettings.LoadSettings();
+            if (setting == null) ServiceSettings.CreateSettingsAsset();
         }
 #endif
 

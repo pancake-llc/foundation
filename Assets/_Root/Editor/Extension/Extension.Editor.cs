@@ -163,7 +163,7 @@ namespace Pancake.Editor
             if (EditorUtility.DisplayDialog(title, message, strOk, strCancel)) actionOk?.Invoke();
         }
 
-        public static void DelayedCall(float delay, Action callback)
+        public static void DelayedCall(float delay, Action callback, bool waitComplieCompleted = true)
         {
             var delayedCall = new DelayedCall(delay, callback);
         }
