@@ -1,4 +1,7 @@
 using JetBrains.Annotations;
+#if PANCAKE_PLAYFAB
+using Pancake.GameService;
+#endif
 using UnityEditor;
 using UnityEngine;
 
@@ -25,7 +28,7 @@ namespace Pancake.Editor
 			EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
 #endif
         }
-        
+
         [MenuItem("Tools/Open Persistent Data Path", false, 31000), UsedImplicitly]
         private static void OpenPersistentDataPath() { EditorUtility.RevealInFinder(Application.persistentDataPath); }
 
@@ -53,10 +56,19 @@ namespace Pancake.Editor
                 PlayerPrefs.DeleteAll();
         }
 
-        //[MenuItem("Tools/Pancake/Create Launcher Scene", false)]
-        private static void CreateLauncherScene()
+#if PANCAKE_PLAYFAB
+        [MenuItem("Tools/Pancake/PlayFab")]
+        private static void CreatePlayFab()
         {
-            
+            var setting = ServiceSettings.LoadSettings();
+            if (setting == null) ServiceSettings.CreateSettingsAsset();
+
+            var shareSetting = ServiceSettings.LoadPlayFabSharedSettings();
+            if (shareSetting == null) ServiceSettings.CreatePlayFabSharedSettings();
         }
+#endif
+
+        //[MenuItem("Tools/Pancake/Create Launcher Scene", false)]
+        private static void CreateLauncherScene() { }
     }
 }
