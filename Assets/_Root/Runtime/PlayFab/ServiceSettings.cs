@@ -106,8 +106,8 @@ namespace Pancake.GameService
         internal static void CreateSettingsAsset()
         {
             if (flagCreateServiceSetting) return;
-
             flagCreateServiceSetting = true;
+            
             // Now create the asset inside the Resources folder.
             var setting = UnityEngine.ScriptableObject.CreateInstance<Pancake.GameService.ServiceSettings>();
             UnityEditor.AssetDatabase.CreateAsset(setting, $"{DefaultResourcesPath()}/GameServiceSettings.asset");
