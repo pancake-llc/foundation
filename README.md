@@ -488,6 +488,7 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
     - in `Allow client access to profile properties` enable `Display Name`, `Locations`, `Statistics` 
     - in `Allow client access to sensitive profile properties` enable `Linked accounts`
 <img width="947" alt="client profile options in playfab title setting" src="https://user-images.githubusercontent.com/44673303/200122264-c5536d05-98c6-411b-b204-1342d65d196b.png">
+
 - install sample leaderboard via PackageManager
 - use `Update Aggregation` menu in context menu of PopupLeaderboard to create table leaderboard for 240 countries just do this once
 - replace the code in `#if region replace your code` with your own code to manage popups the way you want
