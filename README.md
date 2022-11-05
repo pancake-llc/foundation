@@ -1,10 +1,10 @@
 # What
 
-- Heart of the tree
+- The heart of the world tree
 
 # Environment
 
-- Unity 2021.3.8f1
+- unity 2021.3.8f1
 - scriptingBackend : IL2CPP
 - apiCompatibilityLevel : .NetFramework
 
@@ -14,12 +14,12 @@ Add the lines below to `Packages/manifest.json`
 
 - for dev version
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git",
 ```
 
-- for version `1.0.5`
+- for version `1.0.0`
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root#1.0.5",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.0.0",
 ```
 
 # Usages
@@ -474,4 +474,25 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
             result.sprite = FacebookManager.CreateSprite(FacebookManager.Instance.FriendDatas[i].avatar, Vector2.one * 0.5f);
         }
     }
+```
+
+## PlayFab
+### Leaderboard
+
+- install package [playfab](https://github.com/pancake-llc/playfab)
+- install package [ios login](https://github.com/lupidan/apple-signin-unity) (optional if you build for ios platform)
+- config setting via menu item `Tool/Pancake/Playfab`
+![image](https://user-images.githubusercontent.com/44673303/193963879-16e7337d-3ebe-42b2-a700-feff49f1f1b0.png)
+- in tab [API Features] enable `Allow client to post player statistics`
+- in tab [Client Profile Options] 
+    - in `Allow client access to profile properties` enable `Display Name`, `Locations`, `Statistics` 
+    - in `Allow client access to sensitive profile properties` enable `Linked accounts`
+<img width="947" alt="client profile options in playfab title setting" src="https://user-images.githubusercontent.com/44673303/200122264-c5536d05-98c6-411b-b204-1342d65d196b.png">
+- install sample leaderboard via PackageManager
+- use `Update Aggregation` menu in context menu of PopupLeaderboard to create table leaderboard for 240 countries just do this once
+- replace the code in `#if region replace your code` with your own code to manage popups the way you want
+- for update score to leaderboard when first time you enter name complete. You can via using `valueExpression` in `ButtonLeaderBoard`
+
+```c#
+GetComponent<ButtonLeaderboard>().valueExpression += () => UnityEngine.Random.Range(1, 100);
 ```
