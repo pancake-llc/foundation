@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "com.pancake.playfab": "https://github.com/pancake-llc/playfab.git?path=Assets/_Root#2.153.221024",
+    "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "1.19.19",
     "com.unity.ide.rider": "3.0.16",
@@ -22,12 +24,9 @@
     "com.unity.modules.physics": "1.0.0",
     "com.unity.modules.physics2d": "1.0.0",
     "com.unity.modules.screencapture": "1.0.0",
-    "com.unity.modules.terrain": "1.0.0",
-    "com.unity.modules.terrainphysics": "1.0.0",
     "com.unity.modules.tilemap": "1.0.0",
     "com.unity.modules.ui": "1.0.0",
     "com.unity.modules.uielements": "1.0.0",
-    "com.unity.modules.umbra": "1.0.0",
     "com.unity.modules.unityanalytics": "1.0.0",
     "com.unity.modules.unitywebrequest": "1.0.0",
     "com.unity.modules.unitywebrequestassetbundle": "1.0.0",

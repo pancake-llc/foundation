@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Pancake.Buffers;
 
 namespace Pancake
 {
@@ -136,7 +135,7 @@ namespace Pancake
             {
                 if (renderers)
                 {
-                    var results = ListPool<Renderer>.New();
+                    var results = TempList<Renderer>.Get();
                     root.GetComponentsInChildren(results);
 
                     foreach (var renderer in results)
@@ -166,12 +165,12 @@ namespace Pancake
                         }
                     }
 
-                    results.Free();
+                    results.Dispose(); ;
                 }
 
                 if (meshes)
                 {
-                    var meshFilters = ListPool<MeshFilter>.New();
+                    var meshFilters = TempList<MeshFilter>.Get();
                     root.GetComponentsInChildren(meshFilters);
 
                     foreach (var meshFilter in meshFilters)
@@ -199,12 +198,12 @@ namespace Pancake
                         }
                     }
 
-                    meshFilters.Free();
+                    meshFilters.Dispose();
                 }
 
                 if (graphics)
                 {
-                    var results = ListPool<Graphic>.New();
+                    var results = TempList<Graphic>.Get();
                     root.GetComponentsInChildren(results);
 
                     foreach (var graphic in results)
@@ -214,10 +213,10 @@ namespace Pancake
                             continue;
                         }
 
-                        var graphicCorners = ArrayPool<Vector3>.New(4);
+                        var graphicCorners =  TempArray.Temp(Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero);
                         graphic.rectTransform.GetLocalCorners(graphicCorners);
                         var graphicsBounds = BoundsFromCorners(graphicCorners);
-                        graphicCorners.Free();
+                        TempArray.Release(graphicCorners);
 
                         if (first)
                         {
@@ -230,12 +229,12 @@ namespace Pancake
                         }
                     }
 
-                    results.Free();
+                    results.Dispose();
                 }
 
                 if (colliders && first)
                 {
-                    var results = ListPool<Collider>.New();
+                    var results = TempList<Collider>.Get();
                     root.GetComponentsInChildren(results);
 
                     foreach (var collider in results)
@@ -260,7 +259,7 @@ namespace Pancake
                         }
                     }
 
-                    results.Free();
+                    results.Dispose();
                 }
 
                 return !first;
@@ -269,7 +268,7 @@ namespace Pancake
             {
                 if (renderers)
                 {
-                    var results = ListPool<Renderer>.New();
+                    var results = TempList<Renderer>.Get();
                     root.GetComponentsInChildren(results);
 
                     foreach (var renderer in results)
@@ -295,12 +294,12 @@ namespace Pancake
                         }
                     }
 
-                    results.Free();
+                    results.Dispose();
                 }
 
                 if (meshes)
                 {
-                    var filters = ListPool<MeshFilter>.New();
+                    var filters = TempList<MeshFilter>.Get();
                     root.GetComponentsInChildren(filters);
 
                     foreach (var meshFilter in filters)
@@ -327,12 +326,12 @@ namespace Pancake
                         }
                     }
 
-                    filters.Free();
+                    filters.Dispose();
                 }
 
                 if (graphics)
                 {
-                    var results = ListPool<Graphic>.New();
+                    var results = TempList<Graphic>.Get();
                     root.GetComponentsInChildren(results);
 
                     foreach (var graphic in results)
@@ -342,10 +341,10 @@ namespace Pancake
                             continue;
                         }
 
-                        var graphicCorners = ArrayPool<Vector3>.New(4);
+                        var graphicCorners =  TempArray.Temp(Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero);
                         graphic.rectTransform.GetWorldCorners(graphicCorners);
                         var graphicsBounds = BoundsFromCorners(graphicCorners);
-                        graphicCorners.Free();
+                        TempArray.Release(graphicCorners);
 
                         if (first)
                         {
@@ -358,12 +357,12 @@ namespace Pancake
                         }
                     }
 
-                    results.Free();
+                    results.Dispose();
                 }
 
                 if (colliders && first)
                 {
-                    var results = ListPool<Collider>.New();
+                    var results = TempList<Collider>.Get();
                     root.GetComponentsInChildren(results);
 
                     foreach (var collider in results)
@@ -384,7 +383,7 @@ namespace Pancake
                         }
                     }
 
-                    results.Free();
+                    results.Dispose();
                 }
             }
 
@@ -446,7 +445,7 @@ namespace Pancake
         /// 
         /// </summary>
         /// <param name="bounds"></param>
-        /// <param name="array"></param>
+        /// <param name="array">array has 8 element</param>
         public static void GetPointsNoAlloc(this Bounds bounds, Vector3[] array)
         {
             var min = bounds.min;

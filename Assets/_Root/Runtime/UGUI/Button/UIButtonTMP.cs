@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Pancake.UI
 {
     [RequireComponent(typeof(UnityEngine.UI.Image))]
-    public class UIButtonTMP : UIButton, IUniTMP
+    public sealed class UIButtonTMP : UIButton, IUniTMP
     {
         [SerializeField] private TextMeshProUGUI label;
 

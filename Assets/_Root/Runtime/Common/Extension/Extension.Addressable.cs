@@ -1,3 +1,4 @@
+#if PANCAKE_ADDRESSABLE
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -28,3 +29,4 @@ namespace Pancake
         }
     }
 }
+#endif

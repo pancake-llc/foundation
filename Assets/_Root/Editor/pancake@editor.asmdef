@@ -13,7 +13,9 @@
         "GUID:0acc523941302664db1f4e527237feb3",
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
         "GUID:382b51f79fae5634884dfdc10bd52eeb",
-        "GUID:76ccd20425a997e4fa7d12750eb80eb1"
+        "GUID:76ccd20425a997e4fa7d12750eb80eb1",
+        "GUID:09ef5922e2d77498aa246abd9073d05f",
+        "GUID:0da6d172d18a54e4389d0dce1e1ffdf2"
     ],
     "includePlatforms": [
         "Editor"
@@ -28,12 +30,22 @@
         {
             "name": "com.unity.addressables",
             "expression": "",
-            "define": "PANCAKE_ADDRESSABLE_SUPPORT"
+            "define": "PANCAKE_ADDRESSABLE"
         },
         {
             "name": "com.system-community.systemruntimecompilerservicesunsafe",
             "expression": "4.5.3",
             "define": "PANCAKE_RUNTIME_UNSAFE"
+        },
+        {
+            "name": "com.lupidan.apple-signin-unity",
+            "expression": "",
+            "define": "PANCAKE_APPLE_SIGNIN"
+        },
+        {
+            "name": "com.pancake.playfab",
+            "expression": "",
+            "define": "PANCAKE_PLAYFAB"
         }
     ],
     "noEngineReferences": false

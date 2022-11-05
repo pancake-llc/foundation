@@ -4,10 +4,8 @@ using System.Collections.Generic;
 
 namespace Pancake
 {
-
     public struct LightEnumerator : IEnumerator
     {
-
         private object _e;
         private object _current;
         private int _index;
@@ -26,6 +24,7 @@ namespace Pancake
                 _e = e.GetEnumerator();
                 _index = -1;
             }
+
             _current = null;
         }
 
@@ -34,14 +33,8 @@ namespace Pancake
 
         #region IEnumerator Interface
 
-        public object Current
-        {
-            get
-            {
-                return _current;
-            }
-        }
-        
+        public object Current { get { return _current; } }
+
         public void Dispose()
         {
             _e = null;
@@ -84,30 +77,18 @@ namespace Pancake
             }
         }
 
-        void IEnumerator.Reset()
-        {
-            throw new NotImplementedException();
-        }
+        void IEnumerator.Reset() { throw new NotImplementedException(); }
 
         #endregion
 
 
+        public static LightEnumerator Create(IEnumerable e) { return new LightEnumerator(e); }
 
-        public static LightEnumerator Create(IEnumerable e)
-        {
-            return new LightEnumerator(e);
-        }
-
-        public static LightEnumerator<T> Create<T>(IEnumerable<T> e)
-        {
-            return new LightEnumerator<T>(e);
-        }
-
+        public static LightEnumerator<T> Create<T>(IEnumerable<T> e) { return new LightEnumerator<T>(e); }
     }
 
     public struct LightEnumerator<T> : IEnumerator<T>
     {
-
         private object _e;
         private T _current;
         private int _index;
@@ -116,7 +97,7 @@ namespace Pancake
 
         public LightEnumerator(IEnumerable<T> e)
         {
-            if(e is IList<T>)
+            if (e is IList<T>)
             {
                 _e = e;
                 _index = 0;
@@ -126,6 +107,7 @@ namespace Pancake
                 _e = e.GetEnumerator();
                 _index = -1;
             }
+
             _current = default(T);
         }
 
@@ -134,22 +116,10 @@ namespace Pancake
 
         #region IEnumerator Interface
 
-        public T Current
-        {
-            get
-            {
-                return _current;
-            }
-        }
+        public T Current { get { return _current; } }
 
-        object IEnumerator.Current
-        {
-            get
-            {
-                return _current;
-            }
-        }
-        
+        object IEnumerator.Current { get { return _current; } }
+
         public void Dispose()
         {
             _e = null;
@@ -191,14 +161,9 @@ namespace Pancake
                 }
             }
         }
-        
-        void IEnumerator.Reset()
-        {
-            throw new NotImplementedException();
-        }
+
+        void IEnumerator.Reset() { throw new NotImplementedException(); }
 
         #endregion
-
     }
-
 }

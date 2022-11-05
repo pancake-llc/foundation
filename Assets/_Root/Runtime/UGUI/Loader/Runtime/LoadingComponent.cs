@@ -12,7 +12,7 @@ namespace Pancake.Loader
 {
     [RequireComponent(typeof(CanvasGroup))]
     [AddComponentMenu("")]
-    public class LoadingComponent : MonoBehaviour
+    public sealed class LoadingComponent : MonoBehaviour
     {
         public static LoadingComponent instance;
 

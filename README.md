@@ -13,9 +13,13 @@
 Add the lines below to `Packages/manifest.json`
 
 - for dev version
-
 ```csharp
 "com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root",
+```
+
+- for version `1.0.5`
+```csharp
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git?path=Assets/_Root#1.0.5",
 ```
 
 # Usages
@@ -424,3 +428,50 @@ It will be a little different from System Linq that **Select** is replaced with 
 
 
 
+## Facebook
+Require install [facebook](https://github.com/pancake-llc/facebook)
+### Friend Facebook
+- Facebook application need create with type is `gaming`
+- If permission `gaming_user_picture` not include will return avartar, if include it will return profile picture
+
+```cs
+    public Image prefab;
+    public Transform root;
+    private async void Start()
+    {
+        if (FacebookManager.Instance.IsLoggedIn)
+        {
+            FacebookManager.Instance.GetMeProfile(FacebookManager.Instance.OnGetProfilePhotoCompleted);
+
+            await UniTask.WaitUntil(() => !FacebookManager.Instance.IsRequestingProfile);
+            var o = Instantiate(prefab, root);
+            o.sprite = FacebookManager.CreateSprite(FacebookManager.Instance.ProfilePicture, Vector2.one * 0.5f);
+        }
+    }
+    
+
+    public void Login() { FacebookManager.Instance.Login(OnLoginCompleted, OnLoginFaild, OnLoginError); }
+
+    private void OnLoginError() { }
+
+    private void OnLoginFaild() { }
+
+    private async void OnLoginCompleted()
+    {
+        await UniTask.WaitUntil(() => !FacebookManager.Instance.IsRequestingProfile);
+        var o = Instantiate(prefab, root);
+        o.sprite = FacebookManager.CreateSprite(FacebookManager.Instance.ProfilePicture, Vector2.one * 0.5f);
+        
+        FacebookManager.Instance.GetMeFriend();
+
+        await UniTask.WaitUntil(() => !FacebookManager.Instance.IsRequestingFriend);
+        var p = FacebookManager.Instance.LoadProfileAllFriend();
+        await p;
+        for (int i = 0; i < FacebookManager.Instance.FriendDatas.Count; i++)
+        {
+            var result = Instantiate(prefab, root);
+            Debug.Log("friend : "  + FacebookManager.Instance.FriendDatas[i].name);
+            result.sprite = FacebookManager.CreateSprite(FacebookManager.Instance.FriendDatas[i].avatar, Vector2.one * 0.5f);
+        }
+    }
+```

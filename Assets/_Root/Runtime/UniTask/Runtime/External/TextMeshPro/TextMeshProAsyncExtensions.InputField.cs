@@ -1,4 +1,4 @@
-﻿#if PANCAKE_TMP_SUPPORT
+﻿#if PANCAKE_TMP
 
 using System;
 using System.Threading;

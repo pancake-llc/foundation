@@ -318,9 +318,9 @@ namespace Pancake
                             (member as PropertyInfo).SetValue(obj, value, index);
                             return true;
                         case MemberTypes.Method:
-                            var arr = ArrayUtil.Temp(value);
+                            var arr = TempArray.Temp(value);
                             (member as MethodInfo).Invoke(obj, arr);
-                            ArrayUtil.ReleaseTemp(arr);
+                            TempArray.Release(arr);
                             return true;
                     }
                 }
@@ -344,9 +344,9 @@ namespace Pancake
                                 (member as PropertyInfo).SetValue(obj, value, index);
                                 return true;
                             case MemberTypes.Method:
-                                var arr = ArrayUtil.Temp(value);
+                                var arr = TempArray.Temp(value);
                                 (member as MethodInfo).Invoke(obj, arr);
-                                ArrayUtil.ReleaseTemp(arr);
+                                TempArray.Release(arr);
                                 return true;
                         }
                     }
@@ -383,9 +383,9 @@ namespace Pancake
                         else
                             return false;
                     case MemberTypes.Method:
-                        var arr = ArrayUtil.Temp(value);
+                        var arr = TempArray.Temp(value);
                         (member as MethodInfo).Invoke(obj, arr);
-                        ArrayUtil.ReleaseTemp(arr);
+                        TempArray.Release(arr);
                         return true;
                 }
             }
@@ -1122,7 +1122,7 @@ namespace Pancake
                     return arr;
                 }
                 default:
-                    return ArrayUtil.Empty<System.Type>();
+                    return TempArray.Empty<System.Type>();
             }
         }
 
@@ -1146,7 +1146,7 @@ namespace Pancake
                     return arr;
                 }
                 default:
-                    return ArrayUtil.Empty<DynamicParameterInfo>();
+                    return TempArray.Empty<DynamicParameterInfo>();
             }
         }
 
@@ -1321,8 +1321,8 @@ namespace Pancake
 
         private static bool ParameterSignatureMatches(object[] args, ParameterInfo[] paramInfos, bool allowOptional)
         {
-            if (args == null) args = ArrayUtil.Empty<object>();
-            if (paramInfos == null) ArrayUtil.Empty<ParameterInfo>();
+            if (args == null) args = TempArray.Empty<object>();
+            if (paramInfos == null) TempArray.Empty<ParameterInfo>();
 
             if (args.Length == 0 && paramInfos.Length == 0) return true;
             if (args.Length > paramInfos.Length) return false;
@@ -1346,8 +1346,8 @@ namespace Pancake
 
         private static bool ParameterSignatureMatchesNumericallyUnstrict(object[] args, ParameterInfo[] paramInfos, bool allowOptional, bool convertArgsOnSuccess)
         {
-            if (args == null) args = ArrayUtil.Empty<object>();
-            if (paramInfos == null) ArrayUtil.Empty<ParameterInfo>();
+            if (args == null) args = TempArray.Empty<object>();
+            if (paramInfos == null) TempArray.Empty<ParameterInfo>();
 
             if (args.Length == 0 && paramInfos.Length == 0) return true;
             if (args.Length > paramInfos.Length) return false;
@@ -1504,7 +1504,7 @@ namespace Pancake
                 string[] names,
                 out object state)
             {
-                if (args == null) args = ArrayUtil.Empty<object>();
+                if (args == null) args = TempArray.Empty<object>();
 
                 state = null;
                 foreach (var m in match)

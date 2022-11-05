@@ -1,4 +1,7 @@
-﻿using Pancake.UI;
+﻿using System;
+using Pancake.Joystick;
+using Pancake.Linq;
+using Pancake.UI;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -67,7 +70,7 @@ namespace Pancake.Editor
         }
 
         [MenuItem("GameObject/Pancake/Fetch", false, 1100)]
-        public static void CreateFetch()
+        private static void CreateFetch()
         {
             var obj = CreateObject<Image>("Fetch");
             Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create Fetch");
@@ -76,16 +79,218 @@ namespace Pancake.Editor
         }
 
         [MenuItem("Assets/Create/Pancake/Loading Prefab")]
-        public static void CreateLoaderPrefab()
+        private static void CreateLoaderPrefab()
         {
-           var loadingCommon = InEditor.FindAssetWithPath<GameObject>("LoadingPrefabBase.prefab", "Runtime/UGUI/Loader/Prefabs");
-           if (loadingCommon != null)
-           {
-               GameObject instanceRoot = (GameObject)PrefabUtility.InstantiatePrefab(loadingCommon);
-               GameObject p = PrefabUtility.SaveAsPrefabAsset(instanceRoot, AssetDatabase.GetAssetPath(Selection.activeObject) + "/LoadingPrefab-Copy.prefab");
-               Object.DestroyImmediate(instanceRoot);
-           }
+            var loadingCommon = InEditor.FindAssetWithPath<GameObject>("LoadingPrefabBase.prefab", "Runtime/UGUI/Loader/Prefabs");
+            if (loadingCommon != null)
+            {
+                GameObject instanceRoot = (GameObject) PrefabUtility.InstantiatePrefab(loadingCommon);
+                GameObject p = PrefabUtility.SaveAsPrefabAsset(instanceRoot, AssetDatabase.GetAssetPath(Selection.activeObject) + "/LoadingPrefab-Copy.prefab");
+                Object.DestroyImmediate(instanceRoot);
+            }
         }
+
+        [MenuItem("GameObject/Pancake/Joystick/Dynamic", false, 1100)]
+        private static void CreateDynamicJoystick()
+        {
+            void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
+            {
+                var joystick = t.gameObject.AddComponent<DynamicJoystick>();
+                joystick.handle = handle;
+                joystick.background = bg;
+            }
+
+            void Create(Transform t) { CreateRootJoystick(t, "DynamicJoystick", AddVariableComponent); }
+
+            // find canvas in scene
+            var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
+            if (allCanvases.Length > 0)
+            {
+                if (Selection.activeTransform == null)
+                {
+                    Create(allCanvases[0].transform);
+                    return;
+                }
+
+                for (int i = 0; i < allCanvases.Length; i++)
+                {
+                    if (!Selection.activeTransform.IsChildOf(allCanvases[i].transform)) continue;
+
+                    Create(Selection.activeTransform);
+                    return;
+                }
+
+                Create(allCanvases[0].transform);
+                return;
+            }
+
+            var canvas = CreateCanvas();
+            Create(canvas.transform);
+        }
+
+        [MenuItem("GameObject/Pancake/Joystick/Fixed", false, 1100)]
+        private static void CreateFixedJoystick()
+        {
+            void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
+            {
+                var joystick = t.gameObject.AddComponent<FixedJoystick>();
+                joystick.background = bg;
+                joystick.handle = handle;
+            }
+
+            void Create(Transform t)
+            {
+                var result = InEditor.FindAssetsWithPath<Sprite>("JoystickA.png", "Runtime/Joystick/Sprites");
+
+                var background = CreateEmptyRectTransformObject(t, "FixedJoystick");
+                background.AnchorMinToZero();
+                background.AnchorMaxToZero();
+                background.CenterPivot();
+                background.SetSizeDelta(227f, 227f);
+                background.SetAnchoredPosition(150f, 150f);
+                background.gameObject.AddComponent<Image>().sprite = result.Filter(_ => _.name.ToLower().Equals("base")).FirstOrDefault();
+
+                var handle = CreateEmptyRectTransformObject(background.transform, "Handle");
+                handle.AnchorMinToCenter();
+                handle.AnchorMaxToCenter();
+                handle.CenterPivot();
+                handle.SetSizeDelta(200f, 200f);
+                handle.SetAnchoredPosition(0f, 0f);
+                handle.gameObject.AddComponent<Image>().sprite = result.Filter(_ => _.name.ToLower().Equals("joystick")).FirstOrDefault();
+
+                AddVariableComponent(background, background, handle);
+            }
+
+            // find canvas in scene
+            var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
+            if (allCanvases.Length > 0)
+            {
+                if (Selection.activeTransform == null)
+                {
+                    Create(allCanvases[0].transform);
+                    return;
+                }
+
+                for (int i = 0; i < allCanvases.Length; i++)
+                {
+                    if (!Selection.activeTransform.IsChildOf(allCanvases[i].transform)) continue;
+
+                    Create(Selection.activeTransform);
+                    return;
+                }
+
+                Create(allCanvases[0].transform);
+                return;
+            }
+
+            var canvas = CreateCanvas();
+            Create(canvas.transform);
+        }
+
+        [MenuItem("GameObject/Pancake/Joystick/Floating", false, 1100)]
+        private static void CreateFloatingJoystick()
+        {
+            void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
+            {
+                var joystick = t.gameObject.AddComponent<FloatingJoystick>();
+                joystick.handle = handle;
+                joystick.background = bg;
+            }
+
+            void Create(Transform t) { CreateRootJoystick(t, "FloatingJoystick", AddVariableComponent); }
+
+            // find canvas in scene
+            var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
+            if (allCanvases.Length > 0)
+            {
+                if (Selection.activeTransform == null)
+                {
+                    Create(allCanvases[0].transform);
+                    return;
+                }
+
+                for (int i = 0; i < allCanvases.Length; i++)
+                {
+                    if (!Selection.activeTransform.IsChildOf(allCanvases[i].transform)) continue;
+
+                    Create(Selection.activeTransform);
+                    return;
+                }
+
+                Create(allCanvases[0].transform);
+                return;
+            }
+
+            var canvas = CreateCanvas();
+            Create(canvas.transform);
+        }
+
+        [MenuItem("GameObject/Pancake/Joystick/Variable", false, 1100)]
+        private static void CreateVariableJoystick()
+        {
+            void AddVariableComponent(Transform t, RectTransform bg, RectTransform handle)
+            {
+                var joystick = t.gameObject.AddComponent<VariableJoystick>();
+                joystick.handle = handle;
+                joystick.background = bg;
+            }
+
+            void Create(Transform t) { CreateRootJoystick(t, "VariableJoystick", AddVariableComponent); }
+
+            // find canvas in scene
+            var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
+            if (allCanvases.Length > 0)
+            {
+                if (Selection.activeTransform == null)
+                {
+                    Create(allCanvases[0].transform);
+                    return;
+                }
+
+                for (int i = 0; i < allCanvases.Length; i++)
+                {
+                    if (!Selection.activeTransform.IsChildOf(allCanvases[i].transform)) continue;
+
+                    Create(Selection.activeTransform);
+                    return;
+                }
+
+                Create(allCanvases[0].transform);
+                return;
+            }
+
+            var canvas = CreateCanvas();
+            Create(canvas.transform);
+        }
+
+        private static void CreateRootJoystick(Transform parent, string name, Action<Transform, RectTransform, RectTransform> action)
+        {
+            var joystick = CreateEmptyRectTransformObject(parent, name);
+            joystick.FullScreen();
+            var img = joystick.gameObject.AddComponent<Image>();
+            img.color = img.color.ChangeAlpha(0);
+
+            var result = InEditor.FindAssetsWithPath<Sprite>("JoystickA.png", "Runtime/Joystick/Sprites");
+
+            var background = CreateEmptyRectTransformObject(joystick.transform, "Background");
+            background.AnchorMinToZero();
+            background.AnchorMaxToZero();
+            background.CenterPivot();
+            background.SetSizeDelta(227f, 227f);
+            background.SetAnchoredPosition(150f, 150f);
+            background.gameObject.AddComponent<Image>().sprite = result.Filter(_ => _.name.ToLower().Equals("base")).FirstOrDefault();
+
+            var handle = CreateEmptyRectTransformObject(background.transform, "Handle");
+            handle.AnchorMinToCenter();
+            handle.AnchorMaxToCenter();
+            handle.CenterPivot();
+            handle.SetSizeDelta(200f, 200f);
+            handle.SetAnchoredPosition(0f, 0f);
+            handle.gameObject.AddComponent<Image>().sprite = result.Filter(_ => _.name.ToLower().Equals("joystick")).FirstOrDefault();
+
+            action?.Invoke(joystick, background, handle);
+        }
+
 
         private static void SetupFetch(RectTransform fetch)
         {

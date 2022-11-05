@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 #if UNITY_2018_4 || UNITY_2019_4_OR_NEWER
-#if PANCAKE_ASSETBUNDLE_SUPPORT
+#if PANCAKE_ASSETBUNDLE
 
 using Pancake.Threading.Tasks.Internal;
 using System;

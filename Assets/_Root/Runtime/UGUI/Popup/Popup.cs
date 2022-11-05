@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using Pancake.Threading.Tasks;
 using UnityEngine;
+
+#if PANCAKE_ADDRESSABLE
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.ResourceLocations;
+#endif
+
 
 namespace Pancake.UI
 {
@@ -12,7 +16,7 @@ namespace Pancake.UI
     /// Marking the label has the effect of loading all available prefab popups in the address location form and performing a search by type.
     /// </summary>
     [AddComponentMenu("")]
-    public class Popup : MonoBehaviour
+    public sealed class Popup : MonoBehaviour
     {
         private static Popup instance;
 
