@@ -94,7 +94,7 @@ namespace Pancake.Editor
         private static string AssetInPackagePath(string relativePath, string nameAsset, string namePackage = "com.pancake.heart")
         {
             var upmPath = $"Packages/{namePackage}/{relativePath}/{nameAsset}";
-            return !File.Exists(Path.GetFullPath(upmPath)) ? $"Assets/_Root/{relativePath}/{nameAsset}" : upmPath;
+            return !File.Exists(Path.GetFullPath(upmPath)) ? $"Assets/heart/{relativePath}/{nameAsset}" : upmPath;
         }
 
         /// <summary>
