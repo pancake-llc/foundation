@@ -26,7 +26,8 @@ namespace Pancake.GameService
                 if (instance == null)
                 {
 #if UNITY_EDITOR
-                    instance = CreateSettingsAsset();
+                    CreateSettingsAsset();
+                    instance = LoadSettings();
 #else
                     instance = UnityEngine.ScriptableObject.CreateInstance<Pancake.GameService.ServiceSettings>();
                     Debug.LogWarning("ServiceSettings not found! Please go to menu Tools > Pancake > Playfab to setup and build again!");
@@ -47,7 +48,8 @@ namespace Pancake.GameService
                 if (sharedSettings == null)
                 {
 #if UNITY_EDITOR
-                    sharedSettings = CreatePlayFabSharedSettings();
+                    CreatePlayFabSharedSettings();
+                    sharedSettings = LoadPlayFabSharedSettings();
 #else
                     sharedSettings = UnityEngine.ScriptableObject.CreateInstance<PlayFabSharedSettings>();
                     Debug.LogWarning("PlayFabSharedSettings not found! Please go to menu Tools > Pancake > Playfab to setup and build again!");
@@ -99,8 +101,13 @@ namespace Pancake.GameService
         public static ServiceSettings LoadSettings() { return Resources.Load<ServiceSettings>("GameServiceSettings"); }
 
 #if UNITY_EDITOR
-        internal static Pancake.GameService.ServiceSettings CreateSettingsAsset()
+
+        internal static bool flagCreateServiceSetting = false;
+        internal static void CreateSettingsAsset()
         {
+            if (flagCreateServiceSetting) return;
+
+            flagCreateServiceSetting = true;
             // Now create the asset inside the Resources folder.
             var setting = UnityEngine.ScriptableObject.CreateInstance<Pancake.GameService.ServiceSettings>();
             UnityEditor.AssetDatabase.CreateAsset(setting, $"{DefaultResourcesPath()}/GameServiceSettings.asset");
@@ -108,11 +115,9 @@ namespace Pancake.GameService
             UnityEditor.AssetDatabase.Refresh();
 
             Debug.Log($"ServiceSettings was created at {DefaultResourcesPath()}/GameServiceSettings.asset");
-
-            return setting;
         }
 
-        internal static PlayFabSharedSettings CreatePlayFabSharedSettings()
+        internal static void CreatePlayFabSharedSettings()
         {
             // Now create the asset inside the Resources folder.
             var setting = UnityEngine.ScriptableObject.CreateInstance<PlayFabSharedSettings>();
@@ -121,8 +126,6 @@ namespace Pancake.GameService
             UnityEditor.AssetDatabase.Refresh();
 
             Debug.Log($"PlayFabSharedSettings was created at {DefaultResourcesPath()}/PlayFabSharedSettings.asset");
-
-            return setting;
         }
 
         private static string DefaultResourcesPath()

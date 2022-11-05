@@ -62,10 +62,16 @@ namespace Pancake.Editor
         private static void CreatePlayFab()
         {
             var shareSetting = ServiceSettings.LoadPlayFabSharedSettings();
-            if (shareSetting == null) ServiceSettings.CreatePlayFabSharedSettings();
-            
+            if (shareSetting == null)
+            {
+                var _ = ServiceSettings.SharedSettings;
+            }
+
             var setting = ServiceSettings.LoadSettings();
-            if (setting == null) ServiceSettings.CreateSettingsAsset();
+            if (setting == null)
+            {
+                var _ = ServiceSettings.Instance;
+            }
         }
 #endif
 
