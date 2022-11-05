@@ -26,5 +26,12 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@pancake-llc"
+  },
+  "samples": [
+  {
+    "displayName": "Leaderboard",
+    "description": "Demo leaderboard using PlayFab",
+    "path": "Samples~/Leaderboard"
   }
+]
 }
