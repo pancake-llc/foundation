@@ -73,6 +73,10 @@ namespace Pancake.Editor
         public static Texture2D HeaderTexture => InEditor.FindAssetWithPath<Texture2D>("header_texture.png", RELATIVE_PATH);
         public static Texture2D HoverTexture => InEditor.FindAssetWithPath<Texture2D>("hover_texture.png", RELATIVE_PATH);
         public static Texture2D PressTexture => InEditor.FindAssetWithPath<Texture2D>("press_texture.png", RELATIVE_PATH);
+        public static Texture2D BoxBackground => InEditor.FindAssetWithPath<Texture2D>("box_bg.png", RELATIVE_PATH);
+        public static Texture2D BoxBackgroundDark => InEditor.FindAssetWithPath<Texture2D>("box_bg_dark.png", RELATIVE_PATH);
+        public static Texture2D ContentBackground => InEditor.FindAssetWithPath<Texture2D>("content_bg.png", RELATIVE_PATH);
+        public static Texture2D ContentBackgroundDark => InEditor.FindAssetWithPath<Texture2D>("content_bg_dark.png", RELATIVE_PATH);
 
         public static GUISkin Skin => InEditor.FindAssetWithPath<GUISkin>("Dark.guiskin", "Editor/GUISkin");
     }

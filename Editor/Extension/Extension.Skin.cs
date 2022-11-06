@@ -24,6 +24,13 @@ namespace Pancake.Editor
         private static GUIStyle contentBackground;
         private static GUIStyle header;
 
+        private static GUIStyle contentBox;
+        private static GUIStyle box;
+        public static GUIStyle TabOnlyOne { get; } = "Tab onlyOne";
+        public static GUIStyle TabFirst { get; } = "Tab first";
+        public static GUIStyle TabMiddle { get; } = "Tab middle";
+        public static GUIStyle TabLast { get; } = "Tab last";
+
         private const int CHEVRON_ICON_WIDTH = 10;
         private const int CHEVRON_ICON_RIGHT_MARGIN = 5;
         private const float SPACE_HALF_LINE = 2f;
@@ -262,6 +269,37 @@ namespace Pancake.Editor
                 return header;
             }
         }
+
+        public static GUIStyle ContentBox
+        {
+            get
+            {
+                if (contentBox == null)
+                {
+                    contentBox = new GUIStyle
+                    {
+                        border = new RectOffset(2, 2, 2, 2),
+                        normal = {background = EditorGUIUtility.isProSkin ? EditorResources.ContentBackgroundDark : EditorResources.ContentBackground},
+                    };
+                }
+
+                return contentBox;
+            }
+        }
+
+        public static GUIStyle Box
+        {
+            get
+            {
+                if (box == null)
+                {
+                    box = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorGUIUtility.isProSkin ? EditorResources.BoxBackgroundDark : EditorResources.BoxBackground},};
+                }
+
+                return box;
+            }
+        }
+
 
         public static GUIStyle GetCustomStyle(string styleName)
         {
@@ -694,5 +732,24 @@ namespace Pancake.Editor
         public static void SpaceOneLine() => GUILayout.Space(SPACE_ONE_LINE);
         public static void SpaceTwoLine() => GUILayout.Space(SPACE_TWO_LINE);
         public static void SpaceThreeLine() => GUILayout.Space(SPACE_THREE_LINE);
+
+        public static void Foldout(Rect rect, Property property)
+        {
+            var content = property.DisplayNameContent;
+            property.IsExpanded = EditorGUI.Foldout(rect, property.IsExpanded, content, true);
+        }
+
+        public static void DrawBox(Rect position, GUIStyle style, bool isHover = false, bool isActive = false, bool on = false, bool hasKeyboardFocus = false)
+        {
+            if (Event.current.type == EventType.Repaint)
+            {
+                style.Draw(position,
+                    GUIContent.none,
+                    isHover,
+                    isActive,
+                    on,
+                    hasKeyboardFocus);
+            }
+        }
     }
 }

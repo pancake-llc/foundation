@@ -562,14 +562,7 @@ namespace Pancake.Editor
             }
         }
 
-        /// <summary>
-        /// Find member metadata by path.
-        /// </summary>
-        /// <param name="serializedObject"></param>
-        /// <param name="memberPath">Path to member.</param>
-        /// <returns>SerializedMemberData of member.</returns>
-        public static MemberData FindMember(this SerializedObject serializedObject, string memberPath) { return new MemberData(serializedObject, memberPath); }
-
+        
         /// <summary>
         /// Get parent of serialized property.
         /// </summary>
