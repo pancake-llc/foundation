@@ -100,7 +100,9 @@ namespace UnityAtoms.Editor
                 scrollView.style.maxHeight = 100;
                 scrollView.style.height = 100;
                 scrollView.style.backgroundColor = GetBodyColor();
+#pragma warning disable CS0618
                 scrollView.showVertical = true;
+#pragma warning restore CS0618
                 scrollView.style.display = selectedStackTraceId != -1 ? DisplayStyle.Flex : DisplayStyle.None;
             });
 
@@ -129,7 +131,9 @@ namespace UnityAtoms.Editor
                 scrollView.style.maxHeight = 100;
                 scrollView.style.height = 100;
                 scrollView.style.backgroundColor = GetBodyColor();
+#pragma warning disable CS0618
                 scrollView.showVertical = true;
+#pragma warning restore CS0618
             });
             var stackTracesOverviewRowContainer = GetOrCreate<VisualElement>(stackTracesOverview, "STACK_TRACES_OVERVIEW_ROW_CONTAINER");
             stackTracesOverviewRowContainer.style.flexDirection = FlexDirection.Column;
