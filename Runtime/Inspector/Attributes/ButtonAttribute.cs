@@ -11,7 +11,7 @@ namespace Pancake
 
         public ButtonAttribute(string name) { Name = name; }
 
-        public ButtonAttribute(EButtonSize eButtonSize) { ButtonSize = (int) eButtonSize; }
+        public ButtonAttribute(ButtonSize buttonSize) { ButtonSize = (int) buttonSize; }
 
         public string Name { get; set; }
         public int ButtonSize { get; }

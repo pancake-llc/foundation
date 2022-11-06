@@ -114,4 +114,12 @@ namespace Pancake
         WaitForFixedUpdate = 3,
         WaitForEndOfFrame = 4
     }
+    
+    public enum ButtonSize
+    {
+        Small = 0,
+        Medium = 22,
+        Large = 32,
+        Gigantic = 62,
+    }
 }

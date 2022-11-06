@@ -1,4 +1,4 @@
-﻿#if PANCAKE_FACEBOOK_SUPPORT
+﻿#if PANCAKE_FACEBOOK
 using Pancake.Threading.Tasks;
 using Facebook.Unity;
 using UnityEngine.Networking;
