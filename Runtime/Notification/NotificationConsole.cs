@@ -43,7 +43,6 @@ namespace Pancake.Notification
     /// and allows you to schedule more.
     /// </summary>
     [RequireComponent(typeof(GameNotificationsManager))]
-    //[HideMono]
     public class NotificationConsole : MonoBehaviour
     {
         // On iOS, this represents the notification's Category Identifier, and is optional
