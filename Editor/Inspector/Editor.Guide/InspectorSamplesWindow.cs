@@ -23,6 +23,7 @@
         {
             var window = GetWindow<InspectorSamplesWindow>();
             window.titleContent = new GUIContent("Inspector Samples");
+            window.minSize = new Vector2(600, 500);
             window.Show();
         }
 
