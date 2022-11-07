@@ -5,7 +5,7 @@ namespace Pancake
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly)]
     [Conditional("UNITY_EDITOR")]
-    public class DrawWithTriInspectorAttribute : Attribute
+    public class DrawWithInspectorAttribute : Attribute
     {
     }
 }
