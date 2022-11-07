@@ -4,7 +4,7 @@ using Pancake.Editor;
 using UnityEditor;
 using UnityEngine;
 
-[assembly: RegisterTriAttributeDrawer(typeof(ButtonDrawer), DrawerOrder.Drawer)]
+[assembly: RegisterAttributeDrawer(typeof(ButtonDrawer), DrawerOrder.Drawer)]
 
 namespace Pancake.Editor
 {

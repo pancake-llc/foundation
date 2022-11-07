@@ -5,7 +5,7 @@ using System.Reflection;
 using Pancake.Editor;
 
 
-[assembly: RegisterTriTypeProcessor(typeof(RegisterShownByPropertiesTypeProcessor), 1)]
+[assembly: RegisterTypeProcessor(typeof(RegisterShownByPropertiesTypeProcessor), 1)]
 
 namespace Pancake.Editor
 {

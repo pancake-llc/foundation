@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Pancake.Editor;
 
 
-[assembly: RegisterTriTypeProcessor(typeof(SortPropertiesTypeProcessor), 10000)]
+[assembly: RegisterTypeProcessor(typeof(SortPropertiesTypeProcessor), 10000)]
 
 namespace Pancake.Editor
 {

@@ -7,7 +7,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEditorInternal;
 using UnityEngine;
 
-[assembly: RegisterTriAttributeDrawer(typeof(TableListDrawer), DrawerOrder.Drawer)]
+[assembly: RegisterAttributeDrawer(typeof(TableListDrawer), DrawerOrder.Drawer)]
 
 namespace Pancake.Editor
 {

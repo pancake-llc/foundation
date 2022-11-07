@@ -1,6 +1,6 @@
 ﻿using Pancake.Editor;
 
-[assembly: RegisterTriPropertyDisableProcessor(typeof(DisableIfProcessor))]
+[assembly: RegisterPropertyDisableProcessor(typeof(DisableIfProcessor))]
 
 namespace Pancake.Editor
 {

@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[assembly: RegisterTriValueDrawer(typeof(ObjectReferenceDrawer), DrawerOrder.Fallback)]
+[assembly: RegisterValueDrawer(typeof(ObjectReferenceDrawer), DrawerOrder.Fallback)]
 
 namespace Pancake.Editor
 {

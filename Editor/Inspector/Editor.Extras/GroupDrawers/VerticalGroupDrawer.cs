@@ -1,6 +1,6 @@
 ﻿using Pancake.Editor;
 
-[assembly: RegisterTriGroupDrawer(typeof(VerticalGroupDrawer))]
+[assembly: RegisterGroupDrawer(typeof(VerticalGroupDrawer))]
 
 namespace Pancake.Editor
 {

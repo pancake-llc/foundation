@@ -17,12 +17,12 @@ namespace Pancake.Editor
         private static readonly GenericTypeMatcher DisableProcessorMatcher = typeof(PropertyDisableProcessor<>);
 
         private static IDictionary<Type, GroupDrawer> _allGroupDrawersCacheBackingField;
-        private static IReadOnlyList<RegisterTriAttributeDrawerAttribute> _allAttributeDrawerTypesBackingField;
-        private static IReadOnlyList<RegisterTriValueDrawerAttribute> _allValueDrawerTypesBackingField;
-        private static IReadOnlyList<RegisterTriAttributeValidatorAttribute> _allAttributeValidatorTypesBackingField;
-        private static IReadOnlyList<RegisterTriValueValidatorAttribute> _allValueValidatorTypesBackingField;
-        private static IReadOnlyList<RegisterTriPropertyHideProcessor> _allHideProcessorTypesBackingField;
-        private static IReadOnlyList<RegisterTriPropertyDisableProcessor> _allDisableProcessorTypesBackingField;
+        private static IReadOnlyList<RegisterAttributeDrawerAttribute> _allAttributeDrawerTypesBackingField;
+        private static IReadOnlyList<RegisterValueDrawerAttribute> _allValueDrawerTypesBackingField;
+        private static IReadOnlyList<RegisterAttributeValidatorAttribute> _allAttributeValidatorTypesBackingField;
+        private static IReadOnlyList<RegisterValueValidatorAttribute> _allValueValidatorTypesBackingField;
+        private static IReadOnlyList<RegisterPropertyHideProcessor> _allHideProcessorTypesBackingField;
+        private static IReadOnlyList<RegisterPropertyDisableProcessor> _allDisableProcessorTypesBackingField;
 
         private static IReadOnlyList<TypeProcessor> _allTypeProcessorBackingField;
 
@@ -34,10 +34,10 @@ namespace Pancake.Editor
                 {
                     _allGroupDrawersCacheBackingField =
                         (from asm in ReflectionUtilities.Assemblies
-                            from attr in asm.GetCustomAttributes<RegisterTriGroupDrawerAttribute>()
+                            from attr in asm.GetCustomAttributes<RegisterGroupDrawerAttribute>()
                             let groupAttributeType = GroupDrawerMatcher.MatchOut(attr.DrawerType, out var t) ? t : null
                             where groupAttributeType != null
-                            select new KeyValuePair<Type, RegisterTriGroupDrawerAttribute>(groupAttributeType, attr)).ToDictionary(it => it.Key,
+                            select new KeyValuePair<Type, RegisterGroupDrawerAttribute>(groupAttributeType, attr)).ToDictionary(it => it.Key,
                             it => (GroupDrawer) Activator.CreateInstance(it.Value.DrawerType));
                 }
 
@@ -52,7 +52,7 @@ namespace Pancake.Editor
                 if (_allTypeProcessorBackingField == null)
                 {
                     _allTypeProcessorBackingField = (from asm in ReflectionUtilities.Assemblies
-                        from attr in asm.GetCustomAttributes<RegisterTriTypeProcessorAttribute>()
+                        from attr in asm.GetCustomAttributes<RegisterTypeProcessorAttribute>()
                         orderby attr.Order
                         select (TypeProcessor) Activator.CreateInstance(attr.ProcessorType)).ToList();
                 }
@@ -61,14 +61,14 @@ namespace Pancake.Editor
             }
         }
 
-        public static IReadOnlyList<RegisterTriValueDrawerAttribute> AllValueDrawerTypes
+        public static IReadOnlyList<RegisterValueDrawerAttribute> AllValueDrawerTypes
         {
             get
             {
                 if (_allValueDrawerTypesBackingField == null)
                 {
                     _allValueDrawerTypesBackingField = (from asm in ReflectionUtilities.Assemblies
-                        from attr in asm.GetCustomAttributes<RegisterTriValueDrawerAttribute>()
+                        from attr in asm.GetCustomAttributes<RegisterValueDrawerAttribute>()
                         where ValueDrawerMatcher.Match(attr.DrawerType)
                         select attr).ToList();
                 }
@@ -77,14 +77,14 @@ namespace Pancake.Editor
             }
         }
 
-        public static IReadOnlyList<RegisterTriAttributeDrawerAttribute> AllAttributeDrawerTypes
+        public static IReadOnlyList<RegisterAttributeDrawerAttribute> AllAttributeDrawerTypes
         {
             get
             {
                 if (_allAttributeDrawerTypesBackingField == null)
                 {
                     _allAttributeDrawerTypesBackingField = (from asm in ReflectionUtilities.Assemblies
-                        from attr in asm.GetCustomAttributes<RegisterTriAttributeDrawerAttribute>()
+                        from attr in asm.GetCustomAttributes<RegisterAttributeDrawerAttribute>()
                         where AttributeDrawerMatcher.Match(attr.DrawerType)
                         select attr).ToList();
                 }
@@ -93,14 +93,14 @@ namespace Pancake.Editor
             }
         }
 
-        public static IReadOnlyList<RegisterTriValueValidatorAttribute> AllValueValidatorTypes
+        public static IReadOnlyList<RegisterValueValidatorAttribute> AllValueValidatorTypes
         {
             get
             {
                 if (_allValueValidatorTypesBackingField == null)
                 {
                     _allValueValidatorTypesBackingField = (from asm in ReflectionUtilities.Assemblies
-                        from attr in asm.GetCustomAttributes<RegisterTriValueValidatorAttribute>()
+                        from attr in asm.GetCustomAttributes<RegisterValueValidatorAttribute>()
                         where ValueValidatorMatcher.Match(attr.ValidatorType)
                         select attr).ToList();
                 }
@@ -109,14 +109,14 @@ namespace Pancake.Editor
             }
         }
 
-        public static IReadOnlyList<RegisterTriAttributeValidatorAttribute> AllAttributeValidatorTypes
+        public static IReadOnlyList<RegisterAttributeValidatorAttribute> AllAttributeValidatorTypes
         {
             get
             {
                 if (_allAttributeValidatorTypesBackingField == null)
                 {
                     _allAttributeValidatorTypesBackingField = (from asm in ReflectionUtilities.Assemblies
-                        from attr in asm.GetCustomAttributes<RegisterTriAttributeValidatorAttribute>()
+                        from attr in asm.GetCustomAttributes<RegisterAttributeValidatorAttribute>()
                         where AttributeValidatorMatcher.Match(attr.ValidatorType)
                         select attr).ToList();
                 }
@@ -125,14 +125,14 @@ namespace Pancake.Editor
             }
         }
 
-        public static IReadOnlyList<RegisterTriPropertyHideProcessor> AllHideProcessors
+        public static IReadOnlyList<RegisterPropertyHideProcessor> AllHideProcessors
         {
             get
             {
                 if (_allHideProcessorTypesBackingField == null)
                 {
                     _allHideProcessorTypesBackingField = (from asm in ReflectionUtilities.Assemblies
-                        from attr in asm.GetCustomAttributes<RegisterTriPropertyHideProcessor>()
+                        from attr in asm.GetCustomAttributes<RegisterPropertyHideProcessor>()
                         where HideProcessorMatcher.Match(attr.ProcessorType)
                         select attr).ToList();
                 }
@@ -141,14 +141,14 @@ namespace Pancake.Editor
             }
         }
 
-        public static IReadOnlyList<RegisterTriPropertyDisableProcessor> AllDisableProcessors
+        public static IReadOnlyList<RegisterPropertyDisableProcessor> AllDisableProcessors
         {
             get
             {
                 if (_allDisableProcessorTypesBackingField == null)
                 {
                     _allDisableProcessorTypesBackingField = (from asm in ReflectionUtilities.Assemblies
-                        from attr in asm.GetCustomAttributes<RegisterTriPropertyDisableProcessor>()
+                        from attr in asm.GetCustomAttributes<RegisterPropertyDisableProcessor>()
                         where DisableProcessorMatcher.Match(attr.ProcessorType)
                         select attr).ToList();
                 }

@@ -3,7 +3,7 @@ using System.Linq;
 using Pancake.Editor;
 
 
-[assembly: RegisterTriAttributeDrawer(typeof(DropdownDrawer<>), DrawerOrder.Decorator)]
+[assembly: RegisterAttributeDrawer(typeof(DropdownDrawer<>), DrawerOrder.Decorator)]
 
 namespace Pancake.Editor
 {

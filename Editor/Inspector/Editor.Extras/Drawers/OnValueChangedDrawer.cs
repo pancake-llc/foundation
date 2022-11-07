@@ -1,6 +1,6 @@
 ﻿using Pancake.Editor;
 
-[assembly: RegisterTriAttributeDrawer(typeof(OnValueChangedDrawer), DrawerOrder.System)]
+[assembly: RegisterAttributeDrawer(typeof(OnValueChangedDrawer), DrawerOrder.System)]
 
 namespace Pancake.Editor
 {

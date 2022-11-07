@@ -6,7 +6,7 @@ using Pancake.Editor;
 using UnityEditor;
 using UnityEngine;
 
-[assembly: RegisterTriAttributeDrawer(typeof(EnumToggleButtonsDrawer), DrawerOrder.Drawer, ApplyOnArrayElement = true)]
+[assembly: RegisterAttributeDrawer(typeof(EnumToggleButtonsDrawer), DrawerOrder.Drawer, ApplyOnArrayElement = true)]
 
 namespace Pancake.Editor
 {

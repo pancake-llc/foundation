@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[assembly: RegisterTriAttributeDrawer(typeof(LabelWidthDrawer), DrawerOrder.Decorator)]
+[assembly: RegisterAttributeDrawer(typeof(LabelWidthDrawer), DrawerOrder.Decorator)]
 
 namespace Pancake.Editor
 {

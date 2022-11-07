@@ -1,6 +1,6 @@
 ﻿using Pancake.Editor;
 
-[assembly: RegisterTriPropertyHideProcessor(typeof(HideIfProcessor))]
+[assembly: RegisterPropertyHideProcessor(typeof(HideIfProcessor))]
 
 namespace Pancake.Editor
 {

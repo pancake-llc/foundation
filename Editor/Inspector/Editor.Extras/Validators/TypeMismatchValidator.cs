@@ -1,7 +1,7 @@
 ﻿using Pancake.Editor;
 using UnityEditor;
 
-[assembly: RegisterTriValueValidator(typeof(TypeMismatchValidator<>))]
+[assembly: RegisterValueValidator(typeof(TypeMismatchValidator<>))]
 
 namespace Pancake.Editor
 {

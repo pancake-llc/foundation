@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Pancake.Editor;
 
 
-[assembly: RegisterTriTypeProcessor(typeof(GroupNextTypeProcessor), 11000)]
+[assembly: RegisterTypeProcessor(typeof(GroupNextTypeProcessor), 11000)]
 
 namespace Pancake.Editor
 {

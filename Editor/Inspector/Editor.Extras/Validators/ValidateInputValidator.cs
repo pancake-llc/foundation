@@ -1,6 +1,6 @@
 ﻿using Pancake.Editor;
 
-[assembly: RegisterTriAttributeValidator(typeof(ValidateInputValidator))]
+[assembly: RegisterAttributeValidator(typeof(ValidateInputValidator))]
 
 namespace Pancake.Editor
 {

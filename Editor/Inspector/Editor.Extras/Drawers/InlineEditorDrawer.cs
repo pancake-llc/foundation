@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-[assembly: RegisterTriAttributeDrawer(typeof(InlineEditorDrawer), DrawerOrder.Drawer - 100, ApplyOnArrayElement = true)]
+[assembly: RegisterAttributeDrawer(typeof(InlineEditorDrawer), DrawerOrder.Drawer - 100, ApplyOnArrayElement = true)]
 
 namespace Pancake.Editor
 {

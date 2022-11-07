@@ -1,7 +1,7 @@
 ﻿using Pancake.Editor;
 using UnityEngine;
 
-[assembly: RegisterTriPropertyHideProcessor(typeof(HideInEditModeProcessor))]
+[assembly: RegisterPropertyHideProcessor(typeof(HideInEditModeProcessor))]
 
 namespace Pancake.Editor
 {

@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[assembly: RegisterTriAttributeValidator(typeof(SceneObjectsOnlyValidator))]
+[assembly: RegisterAttributeValidator(typeof(SceneObjectsOnlyValidator))]
 
 namespace Pancake.Editor
 {
