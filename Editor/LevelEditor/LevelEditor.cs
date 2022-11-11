@@ -63,7 +63,7 @@ namespace Pancake.Editor.LevelEditor
         private void OnEnable()
         {
             _dataPath = Application.dataPath.Replace('/', '\\');
-            Uniform.FoldoutSettings.LoadSetting();
+            Uniform.LoadFoldoutSetting();
             levelEditorSettings.LoadSetting();
             RefreshPickObject();
             SceneView.duringSceneGui += OnSceneGUI;
@@ -76,7 +76,7 @@ namespace Pancake.Editor.LevelEditor
             SceneView.duringSceneGui -= OnSceneGUI;
 
             levelEditorSettings.SaveSetting();
-            Uniform.FoldoutSettings.SaveSetting();
+            Uniform.SaveFoldoutSetting();
         }
 
         private void PlayModeStateChanged(PlayModeStateChange obj) { }

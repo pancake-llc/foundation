@@ -11,6 +11,7 @@
         [Group("box")] public int a;
         [Group("box")] public float b;
 
+        
         [Group("named_box")] public string c;
         [Group("named_box")] public bool d;
 

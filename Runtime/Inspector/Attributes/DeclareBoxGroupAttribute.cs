@@ -13,5 +13,6 @@ namespace Pancake
         }
 
         public string Title { get; set; }
+        public bool Foldout { get; set; }
     }
 }

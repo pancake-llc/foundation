@@ -87,6 +87,7 @@ namespace Pancake.UI
                 {
                     backgroundTransform = transform.Find("Background").GetComponent<RectTransform>();
                 }
+
                 return backgroundTransform;
             }
         }
@@ -113,7 +114,7 @@ namespace Pancake.UI
         {
             get
             {
-                if (containerCanvasGroup == null) containerCanvasGroup  = transform.Find("Container").GetComponent<CanvasGroup>();
+                if (containerCanvasGroup == null) containerCanvasGroup = transform.Find("Container").GetComponent<CanvasGroup>();
                 return containerCanvasGroup;
             }
         }

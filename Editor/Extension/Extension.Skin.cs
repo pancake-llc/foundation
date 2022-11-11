@@ -47,7 +47,23 @@ namespace Pancake.Editor
         public static readonly Color InspectorLock = new Color(.6f, .6f, .6f, 1);
         public static readonly Color InspectorNullError = new Color(1f, .5f, .5f, 1);
 
-        public static InEditor.ProjectSetting<UniformFoldoutState> FoldoutSettings { get; set; } = new InEditor.ProjectSetting<UniformFoldoutState>();
+        private static InEditor.ProjectSetting<UniformFoldoutState> FoldoutSettings { get; set; } = new InEditor.ProjectSetting<UniformFoldoutState>();
+
+        public static bool GetFoldoutState<T>(string name)
+        {
+            var key = $"{nameof(T)}_{name}";
+            if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, false);
+            return FoldoutSettings.Settings[key];
+        }
+
+        public static void SetFoldoutState<T>(string name, bool state)
+        {
+            var key = $"{nameof(T)}_{name}";
+            FoldoutSettings.Settings[key] = state;
+        }
+
+        public static void LoadFoldoutSetting() { FoldoutSettings.LoadSetting(); }
+        public static void SaveFoldoutSetting() { FoldoutSettings.SaveSetting(); }
 
         public static GUIStyle UppercaseSectionHeaderExpand
         {
@@ -293,7 +309,11 @@ namespace Pancake.Editor
             {
                 if (box == null)
                 {
-                    box = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorGUIUtility.isProSkin ? EditorResources.BoxBackgroundDark : EditorResources.BoxBackground},};
+                    box = new GUIStyle
+                    {
+                        border = new RectOffset(2, 2, 2, 2),
+                        normal = {background = EditorGUIUtility.isProSkin ? EditorResources.BoxBackgroundDark : EditorResources.BoxBackground},
+                    };
                 }
 
                 return box;

@@ -103,7 +103,9 @@ namespace Pancake.UI.Editor
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
                     // LEFT RIGHT
-                    if (GUILayout.Button(new GUIContent(EditorResources.SnapHorizontalBorder, "Snap to left and right border"), GUILayout.Width(120), GUILayout.Height(60)))
+                    if (GUILayout.Button(new GUIContent(EditorResources.SnapHorizontalBorder, "Snap to left and right border"),
+                            GUILayout.Width(120),
+                            GUILayout.Height(60)))
                         SnapBorder(left: true, right: true, top: false, bottom: false);
 
                     EditorGUILayout.LabelField("", GUILayout.Width(60));

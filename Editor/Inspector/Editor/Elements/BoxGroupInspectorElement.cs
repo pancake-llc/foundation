@@ -7,8 +7,11 @@ namespace Pancake.Editor
     {
         private readonly GUIContent _headerLabel;
 
-        public BoxGroupInspectorElement(DeclareBoxGroupAttribute attribute) { _headerLabel = attribute.Title == null ? GUIContent.none : new GUIContent(attribute.Title); }
-
+        public BoxGroupInspectorElement(DeclareBoxGroupAttribute attribute)
+        {
+            _headerLabel = attribute.Title == null ? GUIContent.none : new GUIContent(attribute.Title);
+        }
+        
         protected override float GetHeaderHeight(float width)
         {
             if (string.IsNullOrEmpty(_headerLabel.text))
@@ -29,6 +32,11 @@ namespace Pancake.Editor
             };
 
             EditorGUI.LabelField(headerLabelRect, _headerLabel);
+        }
+
+        protected override void Draw(float headerHeight, Rect headerBgRect, Rect contentBgRect, Rect contentRect)
+        {
+            base.Draw(headerHeight, headerBgRect, contentBgRect, contentRect);
         }
     }
 }

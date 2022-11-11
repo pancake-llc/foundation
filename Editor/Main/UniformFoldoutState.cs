@@ -7,19 +7,19 @@ namespace Pancake.Editor
     [Serializable]
     public class UniformFoldoutState
     {
-        public List<FoldoutState> uppercaseSectionsFoldoutStates;
+        public List<FoldoutState> uniformFoldouts;
 
-        public UniformFoldoutState() { uppercaseSectionsFoldoutStates = new List<FoldoutState>(); }
+        public UniformFoldoutState() { uniformFoldouts = new List<FoldoutState>(); }
 
-        public bool ContainsKey(string key) { return uppercaseSectionsFoldoutStates.Any(foldoutState => foldoutState.key.Equals(key)); }
+        public bool ContainsKey(string key) { return uniformFoldouts.Any(foldoutState => foldoutState.key.Equals(key)); }
 
-        public void Add(string key, bool value) { uppercaseSectionsFoldoutStates.Add(new FoldoutState {key = key, state = value}); }
+        public void Add(string key, bool value) { uniformFoldouts.Add(new FoldoutState {key = key, state = value}); }
 
         public bool this[string key]
         {
             get
             {
-                foreach (var foldoutState in uppercaseSectionsFoldoutStates)
+                foreach (var foldoutState in uniformFoldouts)
                 {
                     if (foldoutState.key.Equals(key))
                     {
@@ -31,7 +31,7 @@ namespace Pancake.Editor
             }
             set
             {
-                foreach (var foldoutState in uppercaseSectionsFoldoutStates)
+                foreach (var foldoutState in uniformFoldouts)
                 {
                     if (foldoutState.key.Equals(key))
                     {
