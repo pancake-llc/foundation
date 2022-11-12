@@ -203,6 +203,8 @@ namespace Pancake.Editor
                     box = new GUIStyle
                     {
                         border = new RectOffset(2, 2, 2, 2),
+                        padding = new RectOffset(2, 2,2 ,2),
+                        margin = new RectOffset(2, 2, 2, 2),
                         normal = {background = EditorGUIUtility.isProSkin ? EditorResources.BoxBackgroundDark : EditorResources.BoxBackground},
                     };
                 }
@@ -297,16 +299,13 @@ namespace Pancake.Editor
         /// <param name="defaultFoldout"></param>
         public static void DrawGroupFoldout(string key, string sectionName, Action drawer, bool defaultFoldout = true)
         {
-            if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, defaultFoldout);
-
-            bool foldout = FoldoutSettings.Settings[key];
+            bool foldout = GetFoldoutState(key);
 
             EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout ? 30 : 0));
             EditorGUILayout.BeginHorizontal(foldout ? GroupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
-            if (GUILayout.Button(sectionName, FoldoutButton))
-                FoldoutSettings.Settings[key] = !FoldoutSettings.Settings[key];
+            if (GUILayout.Button(sectionName, FoldoutButton)) SetFoldoutState(key, !foldout);
 
             // The expand/collapse icon.
             var buttonRect = GUILayoutUtility.GetLastRect();
