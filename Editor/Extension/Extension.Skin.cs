@@ -18,6 +18,7 @@ namespace Pancake.Editor
 
         private static GUIStyle contentBox;
         private static GUIStyle box;
+        private static GUIStyle boxWithPadding;
         private static GUIStyle foldoutButton;
         private static GUIStyle cheveron;
         private static GUIStyle groupHeader;
@@ -149,7 +150,7 @@ namespace Pancake.Editor
                 return buttonStyle;
             }
         }
-        
+
 
         public static GUIStyle HeaderLabel
         {
@@ -163,7 +164,7 @@ namespace Pancake.Editor
                 return headerLablel;
             }
         }
-        
+
         public static GUIStyle ItalicLabel
         {
             get
@@ -176,7 +177,7 @@ namespace Pancake.Editor
                 return italicLablel;
             }
         }
-        
+
         public static GUIStyle ContentBox
         {
             get
@@ -203,13 +204,25 @@ namespace Pancake.Editor
                     box = new GUIStyle
                     {
                         border = new RectOffset(2, 2, 2, 2),
-                        padding = new RectOffset(2, 2,2 ,2),
                         margin = new RectOffset(2, 2, 2, 2),
                         normal = {background = EditorGUIUtility.isProSkin ? EditorResources.BoxBackgroundDark : EditorResources.BoxBackground},
                     };
                 }
 
                 return box;
+            }
+        }
+
+        public static GUIStyle BoxWithPadding
+        {
+            get
+            {
+                if (boxWithPadding == null)
+                {
+                    boxWithPadding = new GUIStyle(Box) {padding = new RectOffset(2, 2, 2, 2),};
+                }
+
+                return boxWithPadding;
             }
         }
 
@@ -254,10 +267,7 @@ namespace Pancake.Editor
                 {
                     groupHeader = new GUIStyle
                     {
-                        padding = new RectOffset(4, 0, 0, 0),
-                        overflow = new RectOffset(0, 0, 3, 3),
-                        stretchWidth = true,
-                        fixedHeight = 25,
+                        padding = new RectOffset(4, 0, 0, 0), overflow = new RectOffset(0, 0, 3, 3), stretchWidth = true, fixedHeight = 25,
                     };
                 }
 
@@ -301,7 +311,7 @@ namespace Pancake.Editor
         {
             bool foldout = GetFoldoutState(key);
 
-            EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout ? 30 : 0));
+            EditorGUILayout.BeginVertical(BoxWithPadding, GUILayout.MinHeight(foldout ? 30 : 0));
             EditorGUILayout.BeginHorizontal(foldout ? GroupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
@@ -338,7 +348,7 @@ namespace Pancake.Editor
 
             bool foldout = FoldoutSettings.Settings[key];
 
-            EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout ? 30 : 0));
+            EditorGUILayout.BeginVertical(BoxWithPadding, GUILayout.MinHeight(foldout ? 30 : 0));
             EditorGUILayout.BeginHorizontal(foldout ? groupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
