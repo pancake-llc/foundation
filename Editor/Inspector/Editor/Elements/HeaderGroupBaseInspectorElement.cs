@@ -15,9 +15,7 @@ namespace Pancake.Editor
         protected virtual void DrawHeader(Rect position) { }
 
         public sealed override float GetHeight(float width) { return base.GetHeight(width) + InsetTop + InsetBottom + GetHeaderHeight(width); }
-
-        protected virtual bool EnableFoldout() { return false;}
-
+        
         public sealed override void OnGUI(Rect position)
         {
             var headerHeight = GetHeaderHeight(position.width);
@@ -32,11 +30,6 @@ namespace Pancake.Editor
                 yMax = contentBgRect.yMax - InsetBottom,
             };
 
-            Draw(headerHeight, headerBgRect, contentBgRect, contentRect);
-        }
-
-        protected virtual void Draw(float headerHeight, Rect headerBgRect, Rect contentBgRect, Rect contentRect)
-        {
             if (headerHeight > 0f)
             {
                 DrawHeader(headerBgRect);

@@ -33,10 +33,5 @@ namespace Pancake.Editor
 
             EditorGUI.LabelField(headerLabelRect, _headerLabel);
         }
-
-        protected override void Draw(float headerHeight, Rect headerBgRect, Rect contentBgRect, Rect contentRect)
-        {
-            base.Draw(headerHeight, headerBgRect, contentBgRect, contentRect);
-        }
     }
 }
