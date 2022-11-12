@@ -46,12 +46,7 @@ namespace Pancake.Editor
             PropertyType = GetPropertyType(this);
         }
 
-        internal Property(
-            PropertyTree propertyTree,
-            Property parent,
-            PropertyDefinition definition,
-            int propertyIndex,
-            [CanBeNull] SerializedProperty serializedProperty)
+        internal Property(PropertyTree propertyTree, Property parent, PropertyDefinition definition, int propertyIndex, [CanBeNull] SerializedProperty serializedProperty)
         {
             Parent = parent;
             _definition = definition;
@@ -98,7 +93,14 @@ namespace Pancake.Editor
                     }
                 }
 
-                if (!IsArrayElement)
+                if (IsArrayElement)
+                {
+                    if (UnityInspectorUtilities.TryGetSpecialArrayElementName(this, out string specialName))
+                    {
+                        _displayNameBackingField.text = specialName;
+                    }
+                }
+                else
                 {
                     if (_definition.CustomLabel != null)
                     {

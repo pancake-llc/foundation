@@ -73,7 +73,8 @@ namespace Pancake.Editor
 
             var handler = isSerializedProperty ? ScriptAttributeUtilityProxy.GetHandler(serializedProperty) : default(PropertyHandlerProxy?);
 
-            if (!handler.HasValue || !handler.Value.hasPropertyDrawer)
+            var drawWithUnity = handler.HasValue && handler.Value.hasPropertyDrawer || handler.HasValue && UnityInspectorUtilities.MustDrawWithUnity(property);
+            if (!drawWithUnity)
             {
                 var propertyType = property.PropertyType;
 

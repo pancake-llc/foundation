@@ -47,7 +47,8 @@ namespace Pancake.Editor
 
             if (_rootPropertyInspectorElement == null)
             {
-                _rootPropertyInspectorElement = new PropertyInspectorElement(RootProperty, new PropertyInspectorElement.Props {forceInline = !RootProperty.TryGetMemberInfo(out _),});
+                _rootPropertyInspectorElement =
+                    new PropertyInspectorElement(RootProperty, new PropertyInspectorElement.Props {forceInline = !RootProperty.TryGetMemberInfo(out _),});
                 _rootPropertyInspectorElement.AttachInternal();
             }
 
@@ -72,7 +73,7 @@ namespace Pancake.Editor
 
         public void EnumerateValidationResults(Action<Property, ValidationResult> call) { RootProperty.EnumerateValidationResults(call); }
 
-        public virtual void RequestRepaint() { RepaintRequired = true; }
+        public void RequestRepaint() { RepaintRequired = true; }
 
         public void RequestValidation()
         {
