@@ -170,7 +170,7 @@ namespace Pancake.Editor.LevelEditor
         private void InternalDrawDropArea()
         {
             _height -= DEFAULT_HEADER_HEIGHT;
-            Uniform.DrawUppercaseSection("LEVEL_EDITOR_DROP_AREA", "DROP AREA", DrawDropArea);
+            Uniform.DrawGroupFoldout("LEVEL_EDITOR_DROP_AREA", "DROP AREA", DrawDropArea);
 
             void DrawDropArea()
             {
@@ -377,7 +377,7 @@ namespace Pancake.Editor.LevelEditor
         private void InternalDrawSetting()
         {
             _height -= DEFAULT_HEADER_HEIGHT;
-            Uniform.DrawUppercaseSection("LEVEL_EDITOR_CONFIG", "SETTING", DrawSetting);
+            Uniform.DrawGroupFoldout("LEVEL_EDITOR_CONFIG", "SETTING", DrawSetting);
 
             void DrawSetting()
             {
@@ -417,7 +417,7 @@ namespace Pancake.Editor.LevelEditor
             _height -= DEFAULT_HEADER_HEIGHT;
             _height -= DEFAULT_HEADER_HEIGHT;
             _height -= 18f;
-            Uniform.DrawUppercaseSectionWithRightClick("LEVEL_EDITOR_PICKUP_AREA", "PICKUP AREA", DrawPickupArea, ShowMenuRefresh);
+            Uniform.DrawGroupFoldoutWithRightClick("LEVEL_EDITOR_PICKUP_AREA", "PICKUP AREA", DrawPickupArea, ShowMenuRefresh);
 
             void DrawPickupArea()
             {
@@ -451,7 +451,7 @@ namespace Pancake.Editor.LevelEditor
                 {
                     string nameGroup = splitGroupObject[0].group.ToUpper();
                     _height -= DEFAULT_HEADER_HEIGHT;
-                    Uniform.DrawUppercaseSection($"LEVEL_EDITOR_PICKUP_AREA_CHILD_{nameGroup}", nameGroup, () => DrawInGroup(splitGroupObject));
+                    Uniform.DrawGroupFoldout($"LEVEL_EDITOR_PICKUP_AREA_CHILD_{nameGroup}", nameGroup, () => DrawInGroup(splitGroupObject));
                 }
 
                 GUILayout.EndScrollView();

@@ -89,7 +89,7 @@ namespace Pancake.Editor
         private void InternalDrawDropArea()
         {
             _height -= DEFAULT_HEADER_HEIGHT;
-            Uniform.DrawUppercaseSectionWithRightClick("ASSET_CONTAINER_DROP_AREA", "DROP AREA", DrawDropArea, ShowMenuRefresh);
+            Uniform.DrawGroupFoldoutWithRightClick("ASSET_CONTAINER_DROP_AREA", "DROP AREA", DrawDropArea, ShowMenuRefresh);
 
             void DrawDropArea()
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,24 +9,21 @@ namespace Pancake.Editor
     public struct Uniform
     {
         private static readonly Dictionary<string, GUIStyle> CustomStyles = new Dictionary<string, GUIStyle>();
-        private static GUIStyle uppercaseSectionHeaderExpand;
-        private static GUIStyle uppercaseSectionHeaderCollapse;
-        private static GUIStyle toggleButtonToolbar;
-        private static GUIStyle boxArea;
-        private static GUIStyle textImportant;
+
+        private static GUIStyle toolboxArea;
         private static GUIStyle htmlText;
-        private static GUIStyle button;
-        private static GUIStyle buttonItem;
-        private static GUIStyle tabButton;
-        private static GUIStyle boldFoldout;
-        private static GUIStyle actionButton;
+        private static GUIStyle buttonStyle;
         private static GUIStyle headerLablel;
         private static GUIStyle italicLablel;
-        private static GUIStyle contentBackground;
-        private static GUIStyle header;
 
         private static GUIStyle contentBox;
         private static GUIStyle box;
+        private static GUIStyle foldoutButton;
+        private static GUIStyle cheveron;
+        private static GUIStyle groupHeader;
+        private static GUIStyle groupHeaderCollapse;
+        private static GUIStyle toggleToolbar;
+
         public static GUIStyle TabOnlyOne { get; } = "Tab onlyOne";
         public static GUIStyle TabFirst { get; } = "Tab first";
         public static GUIStyle TabMiddle { get; } = "Tab middle";
@@ -52,6 +50,12 @@ namespace Pancake.Editor
         public static bool GetFoldoutState<T>(string name)
         {
             var key = $"{nameof(T)}_{name}";
+            return GetFoldoutState(key);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool GetFoldoutState(string key)
+        {
             if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, false);
             return FoldoutSettings.Settings[key];
         }
@@ -59,55 +63,51 @@ namespace Pancake.Editor
         public static void SetFoldoutState<T>(string name, bool state)
         {
             var key = $"{nameof(T)}_{name}";
-            FoldoutSettings.Settings[key] = state;
+            SetFoldoutState(key, state);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetFoldoutState(string key, bool state) { FoldoutSettings.Settings[key] = state; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LoadFoldoutSetting() { FoldoutSettings.LoadSetting(); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SaveFoldoutSetting() { FoldoutSettings.SaveSetting(); }
 
-        public static GUIStyle UppercaseSectionHeaderExpand
+        public static GUIStyle ToggleToolbar
         {
             get
             {
-                if (uppercaseSectionHeaderExpand == null) uppercaseSectionHeaderExpand = GetCustomStyle("Uppercase Section Header");
-                return uppercaseSectionHeaderExpand;
+                if (toggleToolbar == null)
+                    toggleToolbar = new GUIStyle
+                    {
+                        normal = new GUIStyleState() {background = EditorResources.ToggleNormalBackground},
+                        onNormal = new GUIStyleState {background = EditorResources.ToggleOnNormalBackground},
+                        margin = new RectOffset(2, 2, 2, 2),
+                        padding = new RectOffset(4, 4, 4, 4),
+                        fixedHeight = 24,
+                        fixedWidth = 24,
+                        stretchWidth = true
+                    };
+                return toggleToolbar;
             }
         }
 
-        public static GUIStyle UppercaseSectionHeaderCollapse
+        public static GUIStyle ToolboxArea
         {
             get
             {
-                if (uppercaseSectionHeaderCollapse == null)
-                    uppercaseSectionHeaderCollapse = new GUIStyle(GetCustomStyle("Uppercase Section Header")) {normal = new GUIStyleState()};
-                return uppercaseSectionHeaderCollapse;
-            }
-        }
-
-        public static GUIStyle ToggleButtonToolbar
-        {
-            get
-            {
-                if (toggleButtonToolbar == null) toggleButtonToolbar = new GUIStyle(GetCustomStyle("ToggleButton"));
-                return toggleButtonToolbar;
-            }
-        }
-
-        public static GUIStyle BoxArea
-        {
-            get
-            {
-                if (boxArea == null) boxArea = new GUIStyle(GetCustomStyle("BoxArea"));
-                return boxArea;
-            }
-        }
-
-        public static GUIStyle TextImportant
-        {
-            get
-            {
-                if (textImportant == null) textImportant = new GUIStyle(EditorStyles.label) {normal = {textColor = Uniform.InspectorNullError}};
-                return textImportant;
+                if (toolboxArea == null)
+                    toolboxArea = new GUIStyle
+                    {
+                        normal = new GUIStyleState {background = EditorResources.ToolboxAreaNormalBackground},
+                        border = new RectOffset(6, 6, 6, 6),
+                        padding = new RectOffset(4, 4, 4, 4),
+                        richText = true,
+                        stretchWidth = true
+                    };
+                return toolboxArea;
             }
         }
 
@@ -125,13 +125,13 @@ namespace Pancake.Editor
         {
             get
             {
-                if (button == null)
+                if (buttonStyle == null)
                 {
-                    var normalTexture = EditorResources.HeaderTexture;
-                    var hoverTexture = EditorResources.HoverTexture;
-                    var pressTexture = EditorResources.PressTexture;
+                    var normalTexture = EditorResources.ButtonNormalTexture;
+                    var hoverTexture = EditorResources.ButtonHoverTexture;
+                    var pressTexture = EditorResources.ButtonPressTexture;
 
-                    button = new GUIStyle
+                    buttonStyle = new GUIStyle
                     {
                         alignment = TextAnchor.MiddleCenter,
                         border = new RectOffset(2, 2, 2, 2),
@@ -146,60 +146,10 @@ namespace Pancake.Editor
                     };
                 }
 
-                return button;
+                return buttonStyle;
             }
         }
-
-        public static GUIStyle ButtonItem
-        {
-            get
-            {
-                if (buttonItem == null)
-                {
-                    buttonItem = new GUIStyle(ButtonStyle)
-                    {
-                        fontSize = 12,
-                        alignment = TextAnchor.MiddleLeft,
-                        contentOffset = new Vector2(10, 0),
-                        normal = {textColor = new Color(0.8f, 0.8f, 0.8f, 1.0f)},
-                        onNormal = {textColor = new Color(0.8f, 0.8f, 0.8f, 1.0f)},
-                        hover = {textColor = Color.white},
-                        onHover = {textColor = Color.white},
-                        focused = {textColor = Color.white},
-                        onFocused = {textColor = Color.white},
-                        active = {textColor = Color.white},
-                        onActive = {textColor = Color.white}
-                    };
-                }
-
-                return buttonItem;
-            }
-        }
-
-        public static GUIStyle TabButton
-        {
-            get
-            {
-                if (tabButton == null)
-                {
-                    tabButton = new GUIStyle(ButtonStyle)
-                    {
-                        fontSize = HeaderLabel.fontSize,
-                        fontStyle = HeaderLabel.fontStyle,
-                        normal = {textColor = HeaderLabel.normal.textColor},
-                        active = {textColor = HeaderLabel.active.textColor},
-                        focused = {textColor = HeaderLabel.focused.textColor},
-                        hover = {textColor = HeaderLabel.hover.textColor},
-                        onNormal = {textColor = HeaderLabel.normal.textColor},
-                        onActive = {textColor = HeaderLabel.active.textColor},
-                        onFocused = {textColor = HeaderLabel.focused.textColor},
-                        onHover = {textColor = HeaderLabel.hover.textColor}
-                    };
-                }
-
-                return tabButton;
-            }
-        }
+        
 
         public static GUIStyle HeaderLabel
         {
@@ -213,33 +163,7 @@ namespace Pancake.Editor
                 return headerLablel;
             }
         }
-
-        public static GUIStyle BoldFoldout
-        {
-            get
-            {
-                if (boldFoldout == null)
-                {
-                    boldFoldout = new GUIStyle(EditorStyles.foldout) {contentOffset = new Vector2(2, 0), fontStyle = FontStyle.Bold};
-                }
-
-                return boldFoldout;
-            }
-        }
-
-        public static GUIStyle ActionButton
-        {
-            get
-            {
-                if (actionButton == null)
-                {
-                    actionButton = new GUIStyle(ButtonStyle) {alignment = TextAnchor.MiddleCenter};
-                }
-
-                return actionButton;
-            }
-        }
-
+        
         public static GUIStyle ItalicLabel
         {
             get
@@ -252,40 +176,7 @@ namespace Pancake.Editor
                 return italicLablel;
             }
         }
-
-        public static GUIStyle ContentBackground
-        {
-            get
-            {
-                if (contentBackground == null)
-                {
-                    var texture = EditorResources.ContentBackgroundTexture;
-
-                    contentBackground = new GUIStyle
-                    {
-                        normal = {background = texture, scaledBackgrounds = new Texture2D[1] {texture}}, border = new RectOffset(2, 2, 2, 2)
-                    };
-                }
-
-                return contentBackground;
-            }
-        }
-
-        public static GUIStyle Header
-        {
-            get
-            {
-                if (header == null)
-                {
-                    var texture = EditorResources.HeaderTexture;
-
-                    header = new GUIStyle {normal = {background = texture, scaledBackgrounds = new Texture2D[1] {texture}}, border = new RectOffset(2, 2, 2, 2)};
-                }
-
-                return header;
-            }
-        }
-
+        
         public static GUIStyle ContentBox
         {
             get
@@ -320,32 +211,82 @@ namespace Pancake.Editor
             }
         }
 
-
-        public static GUIStyle GetCustomStyle(string styleName)
+        public static GUIStyle FoldoutButton
         {
-            if (CustomStyles.ContainsKey(styleName)) return CustomStyles[styleName];
-
-            if (Skin != null)
+            get
             {
-                var style = Skin.FindStyle(styleName);
+                if (foldoutButton == null)
+                {
+                    foldoutButton = new GUIStyle
+                    {
+                        normal = new GUIStyleState {textColor = Color.white},
+                        margin = new RectOffset(4, 4, 4, 4),
+                        padding = new RectOffset(0, 0, 2, 3),
+                        stretchWidth = true,
+                        richText = true
+                    };
+                }
 
-                if (style == null) Debug.LogError("Couldn't find style " + styleName);
-                else CustomStyles.Add(styleName, style);
-
-                return style;
+                return foldoutButton;
             }
-
-            return null;
         }
 
-        public static GUISkin Skin => EditorResources.Skin;
+        public static GUIStyle Cheveron
+        {
+            get
+            {
+                if (cheveron == null)
+                {
+                    cheveron = new GUIStyle {padding = new RectOffset(0, 0, 3, 0)};
+                }
+
+                return cheveron;
+            }
+        }
+
+        public static GUIStyle GroupHeader
+        {
+            get
+            {
+                if (groupHeader == null)
+                {
+                    groupHeader = new GUIStyle
+                    {
+                        padding = new RectOffset(4, 0, 0, 0),
+                        overflow = new RectOffset(0, 0, 3, 3),
+                        stretchWidth = true,
+                        fixedHeight = 25,
+                    };
+                }
+
+                return groupHeader;
+            }
+        }
+
+        public static GUIStyle GroupHeaderCollapse
+        {
+            get
+            {
+                if (groupHeaderCollapse == null)
+                {
+                    groupHeaderCollapse = new GUIStyle(GroupHeader) {normal = new GUIStyleState()};
+                }
+
+                return groupHeaderCollapse;
+            }
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="foldout"></param>
         /// <returns></returns>
-        public static Texture2D GetChevronIcon(bool foldout) { return foldout ? EditorResources.ChevronUp : EditorResources.ChevronDown; }
+        public static Texture2D GetChevronIcon(bool foldout)
+        {
+            if (EditorGUIUtility.isProSkin) return foldout ? EditorResources.ChevronUpDark : EditorResources.ChevronDownDark;
+
+            return foldout ? EditorResources.ChevronUpLight : EditorResources.ChevronDownLight;
+        }
 
         /// <summary>
         /// Draw group selection with header
@@ -354,17 +295,17 @@ namespace Pancake.Editor
         /// <param name="sectionName"></param>
         /// <param name="drawer"></param>
         /// <param name="defaultFoldout"></param>
-        public static void DrawUppercaseSection(string key, string sectionName, Action drawer, bool defaultFoldout = true)
+        public static void DrawGroupFoldout(string key, string sectionName, Action drawer, bool defaultFoldout = true)
         {
             if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, defaultFoldout);
 
             bool foldout = FoldoutSettings.Settings[key];
 
-            EditorGUILayout.BeginVertical(GetCustomStyle("Uppercase Section Box"), GUILayout.MinHeight(foldout ? 30 : 0));
-            EditorGUILayout.BeginHorizontal(foldout ? UppercaseSectionHeaderExpand : UppercaseSectionHeaderCollapse);
+            EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout ? 30 : 0));
+            EditorGUILayout.BeginHorizontal(foldout ? GroupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
-            if (GUILayout.Button(sectionName, GetCustomStyle("Uppercase Section Header Label")))
+            if (GUILayout.Button(sectionName, FoldoutButton))
                 FoldoutSettings.Settings[key] = !FoldoutSettings.Settings[key];
 
             // The expand/collapse icon.
@@ -373,7 +314,7 @@ namespace Pancake.Editor
                 buttonRect.y,
                 CHEVRON_ICON_WIDTH,
                 buttonRect.height);
-            GUI.Label(iconRect, GetChevronIcon(foldout), GetCustomStyle("Uppercase Section Header Chevron"));
+            GUI.Label(iconRect, GetChevronIcon(foldout), Cheveron);
 
             EditorGUILayout.EndHorizontal();
 
@@ -392,17 +333,17 @@ namespace Pancake.Editor
         /// <param name="drawer"></param>
         /// <param name="actionRightClick"></param>
         /// <param name="defaultFoldout"></param>
-        public static void DrawUppercaseSectionWithRightClick(string key, string sectionName, Action drawer, Action actionRightClick, bool defaultFoldout = true)
+        public static void DrawGroupFoldoutWithRightClick(string key, string sectionName, Action drawer, Action actionRightClick, bool defaultFoldout = true)
         {
             if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, defaultFoldout);
 
             bool foldout = FoldoutSettings.Settings[key];
 
-            EditorGUILayout.BeginVertical(GetCustomStyle("Uppercase Section Box"), GUILayout.MinHeight(foldout ? 30 : 0));
-            EditorGUILayout.BeginHorizontal(foldout ? UppercaseSectionHeaderExpand : UppercaseSectionHeaderCollapse);
+            EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout ? 30 : 0));
+            EditorGUILayout.BeginHorizontal(foldout ? groupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
-            if (GUILayout.Button(sectionName, GetCustomStyle("Uppercase Section Header Label")))
+            if (GUILayout.Button(sectionName, FoldoutButton))
             {
                 if (Event.current.button == 1)
                 {
@@ -419,7 +360,7 @@ namespace Pancake.Editor
                 buttonRect.y,
                 CHEVRON_ICON_WIDTH,
                 buttonRect.height);
-            GUI.Label(iconRect, GetChevronIcon(foldout), GetCustomStyle("Uppercase Section Header Chevron"));
+            GUI.Label(iconRect, GetChevronIcon(foldout), Cheveron);
 
             EditorGUILayout.EndHorizontal();
 

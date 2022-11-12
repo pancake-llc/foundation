@@ -89,17 +89,17 @@ namespace Pancake.Editor
         {
             serializedObject.Update();
 
-            Uniform.DrawUppercaseSection("LOADING_SPINNER", "SPINNER", DrawLayout, false);
+            Uniform.DrawGroupFoldout("LOADING_SPINNER", "SPINNER", DrawLayout, false);
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("LOADING_HINT", "HINT", DrawHint, false);
+            Uniform.DrawGroupFoldout("LOADING_HINT", "HINT", DrawHint, false);
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("LOADING_BACKGROUND", "BG", DrawBackground, false);
+            Uniform.DrawGroupFoldout("LOADING_BACKGROUND", "BG", DrawBackground, false);
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("LOADING_STATUS", "STATUS", DrawStatus, false);
+            Uniform.DrawGroupFoldout("LOADING_STATUS", "STATUS", DrawStatus, false);
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("LOADING_PAK", "PRESS ANY KEY", DrawPak, false);
+            Uniform.DrawGroupFoldout("LOADING_PAK", "PRESS ANY KEY", DrawPak, false);
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("LOADING_SETTING", "SETTING", DrawSetting, false);
+            Uniform.DrawGroupFoldout("LOADING_SETTING", "SETTING", DrawSetting, false);
 
             void DrawLayout()
             {

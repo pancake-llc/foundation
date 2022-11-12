@@ -1,9 +1,9 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using Pancake.Editor;
+using Pancake.UI;
 
-namespace Pancake.UI.Editor
+namespace Pancake.Editor
 {
     [CustomEditor(typeof(UIButton), true)]
     [CanEditMultipleObjects]
@@ -74,7 +74,7 @@ namespace Pancake.UI.Editor
             DrawInspector();
         }
 
-        protected virtual void DrawInspector() { Uniform.DrawUppercaseSection("UNIBUTTON_MOTION", "SETTING", () => Draw()); }
+        protected virtual void DrawInspector() { Uniform.DrawGroupFoldout("UIBUTTON_SETTING", "SETTING", () => Draw()); }
 
         protected void Draw(Action callback = null)
         {

@@ -1,7 +1,8 @@
-﻿using UnityEditor;
+﻿using Pancake.UI;
+using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.UI.Editor
+namespace Pancake.Editor
 {
     [CustomEditor(typeof(UIButtonTMP), true)]
     [CanEditMultipleObjects]
@@ -12,13 +13,16 @@ namespace Pancake.UI.Editor
         protected override void DrawInspector()
         {
             _label = serializedObject.FindProperty("label");
-            Draw(() =>
-            {
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(new GUIContent("  Label"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                EditorGUILayout.PropertyField(_label, new GUIContent(""));
-                EditorGUILayout.EndHorizontal();
-            });
+
+            Uniform.DrawGroupFoldout("UIBUTTON_SETTING",
+                "SETTING",
+                () => Draw(() =>
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label(new GUIContent("  Label"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    EditorGUILayout.PropertyField(_label, new GUIContent(""));
+                    EditorGUILayout.EndHorizontal();
+                }));
         }
     }
 }

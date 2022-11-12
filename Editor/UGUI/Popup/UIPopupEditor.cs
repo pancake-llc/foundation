@@ -106,11 +106,11 @@ namespace Pancake.UI.Editor
             _ignoreTimeScale.boolValue = GUILayout.Toggle(_ignoreTimeScale.boolValue, "");
             EditorGUILayout.EndHorizontal();
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("UIPOPUP_CLOSE", "CLOSE BY", DrawCloseSetting);
+            Uniform.DrawGroupFoldout("UIPOPUP_CLOSE", "CLOSE BY", DrawCloseSetting);
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("UIPOPUP_SETTING_DISPLAY", "DISPLAY", DrawDisplaySetting);
+            Uniform.DrawGroupFoldout("UIPOPUP_SETTING_DISPLAY", "DISPLAY", DrawDisplaySetting);
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("UIPOPUP_SETTING_HIDE", "HIDE", DrawHideSetting);
+            Uniform.DrawGroupFoldout("UIPOPUP_SETTING_HIDE", "HIDE", DrawHideSetting);
             OnDrawExtraSetting(); // Draw custom field of inherit class
 
 

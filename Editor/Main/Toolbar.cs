@@ -70,7 +70,7 @@ namespace Pancake.Editor
             minSize = new Vector2(MIN_SIZE, MIN_SIZE);
             _wasDocked = !IsDocked;
             ControlId = GUIUtility.GetControlID(GetHashCode(), FocusType.Passive);
-            _foldoutButtonStyle = new GUIStyle(Uniform.ToggleButtonToolbar);
+            _foldoutButtonStyle = new GUIStyle(Uniform.ToggleToolbar);
         }
 
         private void OnGUI()
@@ -84,8 +84,8 @@ namespace Pancake.Editor
             {
                 _scollPosition = scrollView.scrollPosition;
                 using (position.width > position.height
-                           ? new GUILayout.HorizontalScope(Uniform.BoxArea)
-                           : (GUI.Scope)new GUILayout.VerticalScope(Uniform.BoxArea))
+                           ? new GUILayout.HorizontalScope(Uniform.ToolboxArea)
+                           : (GUI.Scope)new GUILayout.VerticalScope(Uniform.ToolboxArea))
                 {
                     
                     Draw();
@@ -115,7 +115,7 @@ namespace Pancake.Editor
             {
                 var t = Tool;
                 var placeSelected = t == ToolbarType.Place;
-                t = GUILayout.Toggle(placeSelected, EditorResources.PinIcon, Uniform.ToggleButtonToolbar) ? ToolbarType.Place : placeSelected ? ToolbarType.None : t;
+                t = GUILayout.Toggle(placeSelected, EditorResources.PinIcon, Uniform.ToggleToolbar) ? ToolbarType.Place : placeSelected ? ToolbarType.None : t;
 
                 if (check.changed || _toolChanged)
                 {
