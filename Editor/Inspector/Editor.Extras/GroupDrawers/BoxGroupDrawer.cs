@@ -6,6 +6,6 @@ namespace Pancake.Editor
 {
     public class BoxGroupDrawer : GroupDrawer<DeclareBoxGroupAttribute>
     {
-        public override PropertyCollectionBaseInspectorElement CreateElement(DeclareBoxGroupAttribute attribute) { return new BoxGroupInspectorElement(attribute); }
+        public override PropertyCollectionBaseInspectorElement CreateElement(DeclareBoxGroupAttribute attribute) { return new BoxGroupInspectorElement(attribute.Title); }
     }
 }

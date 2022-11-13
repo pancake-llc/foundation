@@ -21,7 +21,7 @@ namespace Pancake.Editor
 
         public override InspectorElement CreateElement(Property property, InspectorElement next)
         {
-            var element = new BoxGroupInspectorElement(new DeclareBoxGroupAttribute(""));
+            var element = new BoxGroupInspectorElement("");
             element.AddChild(new ObjectReferenceFoldoutDrawerInspectorElement(property));
             element.AddChild(new InlineEditorInspectorElement(property));
             return element;
