@@ -4,7 +4,7 @@
     using UnityEngine;
 
     [DeclareBoxGroup("box")]
-    [DeclareBoxGroup("named_box", Title = "My Box", Foldout = true)]
+    [DeclareBoxGroup("named_box", Title = "My Box")]
     [DeclareBoxGroup("boxed_struct", Title = "Boxed Struct")]
     public class Groups_BoxGroup_BasicSample : ScriptableObject
     {
