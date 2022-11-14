@@ -7,42 +7,52 @@ namespace Pancake.Editor
     {
         private const string DefaultTabName = "Main";
 
-        private readonly List<string> _tabNames;
+        private readonly List<TabInfo> _tabs;
         private readonly Dictionary<string, InspectorElement> _tabElements;
 
         private string _activeTabName;
+        
+        private struct TabInfo
+        {
+            public string name;
+            public ValueResolver<string> titleResolver;
+            public Property property;
+        }
 
         public TabGroupInspectorElement()
         {
-            _tabNames = new List<string>();
+            _tabs = new List<TabInfo>();
             _tabElements = new Dictionary<string, InspectorElement>();
             _activeTabName = null;
         }
 
         protected override void DrawHeader(Rect position)
         {
-            if (_tabNames.Count == 0)
+            if (_tabs.Count == 0)
             {
                 return;
             }
 
-            var tabRect = new Rect(position) {width = position.width / _tabNames.Count,};
+            var tabRect = new Rect(position) {width = position.width / _tabs.Count,};
 
-            if (_tabNames.Count == 1)
+            if (_tabs.Count == 1)
             {
-                GUI.Toggle(tabRect, true, _tabNames[0], Uniform.TabOnlyOne);
+                var tab = _tabs[0];
+                var content = tab.titleResolver.GetValue(tab.property);
+                GUI.Toggle(tabRect, true, content, Uniform.TabOnlyOne);
             }
             else
             {
-                for (int index = 0, tabCount = _tabNames.Count; index < tabCount; index++)
+                for (int index = 0, tabCount = _tabs.Count; index < tabCount; index++)
                 {
-                    var tabName = _tabNames[index];
+                    var tab = _tabs[index];
+                    var content = tab.titleResolver.GetValue(tab.property);
                     var tabStyle = index == 0 ? Uniform.TabFirst : index == tabCount - 1 ? Uniform.TabLast : Uniform.TabMiddle;
 
-                    var isTabActive = GUI.Toggle(tabRect, _activeTabName == tabName, tabName, tabStyle);
-                    if (isTabActive && _activeTabName != tabName)
+                    var isTabActive = GUI.Toggle(tabRect, _activeTabName == tab.name, content, tabStyle);
+                    if (isTabActive && _activeTabName != tab.name)
                     {
-                        SetActiveTab(tabName);
+                        SetActiveTab(tab.name);
                     }
 
                     tabRect.x += tabRect.width;
@@ -62,9 +72,21 @@ namespace Pancake.Editor
             if (!_tabElements.TryGetValue(tabName, out var tabElement))
             {
                 tabElement = new InspectorElement();
-
+                
+                var info = new TabInfo
+                {
+                    name = tabName,
+                    titleResolver = ValueResolver.ResolveString(property.Definition, tabName),
+                    property = property,
+                };
+                
                 _tabElements[tabName] = tabElement;
-                _tabNames.Add(tabName);
+                _tabs.Add(info);
+
+                if (info.titleResolver.TryGetErrorString(out var error))
+                {
+                    tabElement.AddChild(new InfoBoxInspectorElement(error, EMessageType.Error));
+                }
 
                 if (_activeTabName == null)
                 {

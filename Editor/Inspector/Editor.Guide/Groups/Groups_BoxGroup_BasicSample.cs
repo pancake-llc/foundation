@@ -4,14 +4,15 @@
     using UnityEngine;
 
     [DeclareBoxGroup("box")]
-    [DeclareBoxGroup("named_box", Title = "My Box")]
+    [DeclareBoxGroup("named_box", Title = "$" + nameof(titleGroup))]
     [DeclareBoxGroup("boxed_struct", Title = "Boxed Struct")]
     public class Groups_BoxGroup_BasicSample : ScriptableObject
     {
+        
         [Group("box")] public int a;
         [Group("box")] public float b;
 
-        
+        public string titleGroup = "My Box";
         [Group("named_box")] public string c;
         [Group("named_box")] public bool d;
 

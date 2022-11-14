@@ -33,6 +33,8 @@ namespace Pancake.Editor
 
         public event Action<Property> ValueChanged;
         public event Action<Property> ChildValueChanged;
+        
+        internal PropertyDefinition Definition => _definition;
 
         internal Property(PropertyTree propertyTree, Property parent, PropertyDefinition definition, SerializedObject serializedObject)
         {
