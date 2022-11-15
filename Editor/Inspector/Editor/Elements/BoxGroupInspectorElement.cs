@@ -62,7 +62,7 @@ namespace Pancake.Editor
 
         protected override void DrawHeader(Rect position)
         {
-            Uniform.DrawBox(position, Uniform.TabOnlyOne);
+            Uniform.DrawBox(position, MyEditorStyle.TabOnlyOne);
 
             var headerLabelRect = new Rect(position)
             {

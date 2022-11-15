@@ -80,5 +80,18 @@ namespace Pancake.Editor
         {
             var _ = Pancake.IAP.IAPSetting.Instance;
         }
+        
+        [MenuItem("Tools/Pancake/Advertisement %E", false, 1)]
+        public static void MenuOpenSettings()
+        {
+            // Load settings object or create a new one if it doesn't exist.
+            var instance = Monetization.Settings.LoadSetting();
+            if (instance == null)
+            {
+                var _ = Monetization.Settings.Instance;
+            }
+
+            Monetization.Editor.SettingsWindow.ShowWindow();
+        }
     }
 }

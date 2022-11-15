@@ -39,7 +39,7 @@ namespace Pancake.Editor
             {
                 var tab = _tabs[0];
                 var content = tab.titleResolver.GetValue(tab.property);
-                GUI.Toggle(tabRect, true, content, Uniform.TabOnlyOne);
+                GUI.Toggle(tabRect, true, content, MyEditorStyle.TabOnlyOne);
             }
             else
             {
@@ -47,7 +47,7 @@ namespace Pancake.Editor
                 {
                     var tab = _tabs[index];
                     var content = tab.titleResolver.GetValue(tab.property);
-                    var tabStyle = index == 0 ? Uniform.TabFirst : index == tabCount - 1 ? Uniform.TabLast : Uniform.TabMiddle;
+                    var tabStyle = index == 0 ? MyEditorStyle.TabFirst : index == tabCount - 1 ? MyEditorStyle.TabLast : MyEditorStyle.TabMiddle;
 
                     var isTabActive = GUI.Toggle(tabRect, _activeTabName == tab.name, content, tabStyle);
                     if (isTabActive && _activeTabName != tab.name)

@@ -8,8 +8,6 @@ namespace Pancake.Editor
 {
     public struct Uniform
     {
-        private static readonly Dictionary<string, GUIStyle> CustomStyles = new Dictionary<string, GUIStyle>();
-
         private static GUIStyle toolboxArea;
         private static GUIStyle htmlText;
         private static GUIStyle buttonStyle;
@@ -24,11 +22,6 @@ namespace Pancake.Editor
         private static GUIStyle groupHeader;
         private static GUIStyle groupHeaderCollapse;
         private static GUIStyle toggleToolbar;
-
-        public static GUIStyle TabOnlyOne { get; } = "Tab onlyOne";
-        public static GUIStyle TabFirst { get; } = "Tab first";
-        public static GUIStyle TabMiddle { get; } = "Tab middle";
-        public static GUIStyle TabLast { get; } = "Tab last";
 
         private const int CHEVRON_ICON_WIDTH = 10;
         private const int CHEVRON_ICON_RIGHT_MARGIN = 5;
@@ -721,5 +714,13 @@ namespace Pancake.Editor
                     hasKeyboardFocus);
             }
         }
+    }
+
+    public static class MyEditorStyle
+    {
+        public static GUIStyle TabOnlyOne { get; } = "Tab onlyOne";
+        public static GUIStyle TabFirst { get; } = "Tab first";
+        public static GUIStyle TabMiddle { get; } = "Tab middle";
+        public static GUIStyle TabLast { get; } = "Tab last";
     }
 }
