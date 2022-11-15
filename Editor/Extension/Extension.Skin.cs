@@ -349,7 +349,7 @@ namespace Pancake.Editor
             bool foldout = FoldoutSettings.Settings[key];
 
             EditorGUILayout.BeginVertical(BoxWithPadding, GUILayout.MinHeight(foldout ? 30 : 0));
-            EditorGUILayout.BeginHorizontal(foldout ? groupHeader : GroupHeaderCollapse);
+            EditorGUILayout.BeginHorizontal(foldout ? GroupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
             if (GUILayout.Button(sectionName, FoldoutButton))

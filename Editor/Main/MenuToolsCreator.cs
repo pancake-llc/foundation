@@ -75,7 +75,10 @@ namespace Pancake.Editor
         }
 #endif
 
-        //[MenuItem("Tools/Pancake/Create Launcher Scene", false)]
-        private static void CreateLauncherScene() { }
+        [MenuItem("Tools/Pancake/IAP %W", false)]
+        private static void OpenIAPSetting()
+        {
+            var _ = Pancake.IAP.IAPSetting.Instance;
+        }
     }
 }
