@@ -169,7 +169,7 @@ namespace Pancake.Monetization.Editor
             // Download is in progress, update progress bar.
             else
             {
-                if (EditorUtility.DisplayCancelableProgressBar("Ads", string.Format("Downloading {0} plugin...", pluginName), progress))
+                if (EditorUtility.DisplayCancelableProgressBar("Advertisement", string.Format("Downloading {0} plugin...", pluginName), progress))
                 {
                     if (index == -1)
                     {

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using Pancake.Editor;
-using Pancake.Monetization;
 using UnityEditor;
 using UnityEngine;
-using Network = Pancake.Monetization.Network;
 
 namespace Pancake.Monetization.Editor
 {
@@ -98,7 +96,7 @@ namespace Pancake.Monetization.Editor
         public static bool callFromEditorWindow = false;
 
         private const float ACTION_FIELD_WIDTH = 65f;
-        private const float NETWORK_FIELD_MIN_WIDTH = 180f;
+        private const float NETWORK_FIELD_MIN_WIDTH = 130f;
         private const float VERSION_FIELD_MIN_WIDTH = 180f;
         private static readonly GUILayoutOption NetworkWidthOption = GUILayout.Width(NETWORK_FIELD_MIN_WIDTH);
         private static readonly GUILayoutOption VersionWidthOption = GUILayout.Width(VERSION_FIELD_MIN_WIDTH);
@@ -492,7 +490,6 @@ namespace Pancake.Monetization.Editor
                 EditorGUILayout.LabelField("Current Version", _headerLabelStyle, VersionWidthOption);
                 GUILayout.Space(3);
                 EditorGUILayout.LabelField("Latest Version", _headerLabelStyle, VersionWidthOption);
-                GUILayout.Space(3);
                 GUILayout.FlexibleSpace();
                 GUILayout.Button("Actions", _headerLabelStyle, FieldWidth);
                 GUILayout.Space(5);
@@ -520,7 +517,6 @@ namespace Pancake.Monetization.Editor
                 EditorGUILayout.LabelField(new GUIContent(currentVersion), VersionWidthOption);
                 GUILayout.Space(3);
                 EditorGUILayout.LabelField(new GUIContent(latestVersion), VersionWidthOption);
-                GUILayout.Space(3);
                 GUILayout.FlexibleSpace();
 
                 if (network.requireUpdate)
@@ -596,7 +592,6 @@ namespace Pancake.Monetization.Editor
                 EditorGUILayout.LabelField(new GUIContent(currentVersion), VersionWidthOption);
                 GUILayout.Space(3);
                 EditorGUILayout.LabelField(new GUIContent(latestVersion), VersionWidthOption);
-                GUILayout.Space(3);
                 GUILayout.FlexibleSpace();
 
                 if (network.RequiresUpdate)
@@ -628,7 +623,7 @@ namespace Pancake.Monetization.Editor
                 GUILayout.Space(2);
 
                 GUI.enabled = isInstalled && !EditorApplication.isCompiling;
-                if (GUILayout.Button(_iconUnintall))
+                if (GUILayout.Button(_iconUnintall, FieldWidth))
                 {
                     EditorUtility.DisplayProgressBar("Ads", "Deleting " + network.DisplayName + "...", 0.5f);
                     var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
@@ -779,7 +774,7 @@ namespace Pancake.Monetization.Editor
                 GUI.enabled = showInstallAll && !EditorApplication.isCompiling;
                 if (GUILayout.Button(new GUIContent("Install All"), FieldWidth))
                 {
-                    EditorCoroutine.Start(SettingManager.Instance.DownloadAllPlugin(Settings.AdmobSettings.editorListNetwork));
+                    SettingManager.Instance.DownloadAllPlugin(Settings.AdmobSettings.editorListNetwork);
                 }
 
                 GUI.enabled = !EditorApplication.isCompiling;

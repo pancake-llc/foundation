@@ -454,7 +454,7 @@ namespace Pancake.Monetization.Editor
                 yield return _wait; // Just wait till webRequest is completed. Our coroutine is pretty rudimentary.
                 downloadPluginProgressCallback?.Invoke(network.DisplayName, operation.progress, operation.isDone, index);
             }
-
+            
 #if UNITY_2020_1_OR_NEWER
             if (branWidthRequest[index].result != UnityWebRequest.Result.Success)
 #elif UNITY_2017_2_OR_NEWER
@@ -687,14 +687,14 @@ namespace Pancake.Monetization.Editor
 
             var labelsToAdd = labels.ToList();
             var didAddLabels = false;
-            if (!labels.Contains("al_max"))
+            if (!Enumerable.Contains(labels, "al_max"))
             {
                 labelsToAdd.Add("al_max");
                 didAddLabels = true;
             }
 
             var exportPathLabel = "al_max_export_path-" + assetPath.Replace(pluginParentDir, "");
-            if (!labels.Contains(exportPathLabel))
+            if (!Enumerable.Contains(labels, exportPathLabel))
             {
                 labelsToAdd.Add(exportPathLabel);
                 didAddLabels = true;
@@ -737,7 +737,7 @@ namespace Pancake.Monetization.Editor
             {
                 // We have to ignore some files, if the plugin is outside the Assets/ directory.
                 if (isPluginOutsideAssetsDirectory &&
-                    PluginPathsToIgnoreMoveWhenPluginOutsideAssetsDirectory.Any(pluginPathsToIgnore => file.Contains(pluginPathsToIgnore))) continue;
+                    Enumerable.Any(PluginPathsToIgnoreMoveWhenPluginOutsideAssetsDirectory, pluginPathsToIgnore => file.Contains(pluginPathsToIgnore))) continue;
 
                 // Check if the destination folder exists and create it if it doesn't exist
                 var parentDirectory = Path.GetDirectoryName(file);
@@ -770,7 +770,7 @@ namespace Pancake.Monetization.Editor
             {
                 // We might have to ignore some directories, if the plugin is outside the Assets/ directory.
                 if (isPluginOutsideAssetsDirectory &&
-                    PluginPathsToIgnoreMoveWhenPluginOutsideAssetsDirectory.Any(pluginPathsToIgnore => directory.Contains(pluginPathsToIgnore))) continue;
+                    Enumerable.Any(PluginPathsToIgnoreMoveWhenPluginOutsideAssetsDirectory, pluginPathsToIgnore => directory.Contains(pluginPathsToIgnore))) continue;
 
                 MovePluginFiles(directory, pluginRoot, isPluginOutsideAssetsDirectory);
             }
@@ -830,7 +830,10 @@ namespace Pancake.Monetization.Editor
 #endif
         }
 
-        private static string GetPluginFileName(MaxNetwork network) { return network.Name.ToLowerInvariant() + "_" + network.LatestVersions.Unity + ".unitypackage"; }
+        private static string GetPluginFileName(MaxNetwork network)
+        {
+            return network.Name.ToLowerInvariant() + "_" + network.LatestVersions.Unity + ".unitypackage";
+        }
 
         public void Load()
         {

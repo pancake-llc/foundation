@@ -481,7 +481,6 @@ namespace Pancake.Monetization.Editor
             }
             else
             {
-                Debug.Log("Add : " + network.name);
                 Settings.AdmobSettings.editorImportingListNetwork.Add(network);
                 string folderUnZip = Path.Combine(Application.temporaryCachePath, "UnZip");
                 UnZip(folderUnZip, File.ReadAllBytes(pathFile));
@@ -493,7 +492,7 @@ namespace Pancake.Monetization.Editor
             brandWidthWebRequest[index] = null;
         }
 
-        public IEnumerator DownloadAllPlugin(List<Network> networks)
+        public void DownloadAllPlugin(List<Network> networks)
         {
             brandWidthWebRequest = new UnityWebRequest[networks.Count];
             Settings.AdmobSettings.editorImportingListNetwork.Clear();
@@ -502,7 +501,6 @@ namespace Pancake.Monetization.Editor
 
             for (var i = 0; i < networks.Count; i++)
             {
-                yield return new WaitForSeconds(1f);
                 EditorCoroutine.Start(DownloadPlugin(networks[i], i));
             }
         }
