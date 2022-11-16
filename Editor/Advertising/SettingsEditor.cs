@@ -204,7 +204,7 @@ namespace Pancake.Monetization.Editor
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.HelpBox(
-                    "This ScriptableObject holds all the settings of Ads. Please go to menu Tools > Snorlax > Ads or click the button below to edit it.",
+                    "This ScriptableObject holds all the settings of Ads. Please go to menu Tools > Pancake > Advertisement or click the button below to edit it.",
                     MessageType.Info);
                 if (GUILayout.Button("Edit")) SettingsWindow.ShowWindow();
                 return;
