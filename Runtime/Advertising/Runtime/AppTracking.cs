@@ -1,5 +1,10 @@
-#if ADS_FIREBASE_TRACKING
+#if PANCAKE_ANALYTIC
 using Firebase.Analytics;
+#endif
+
+#if PANCAKE_ADJUST
+using com.adjust.sdk;
+#endif
 
 namespace Pancake.Monetization
 {
@@ -8,42 +13,60 @@ namespace Pancake.Monetization
 #if PANCAKE_MAX_ENABLE
         internal static void TrackingRevenue(MaxSdkBase.AdInfo adInfo)
         {
-            double revenue = adInfo.Revenue;
+#if PANCAKE_ADJUST
+            var adRevenue = new AdjustAdRevenue(AdjustConfig.AdjustAdRevenueSourceAppLovinMAX);
+            adRevenue.setRevenue(adInfo.Revenue, "USD");
+            adRevenue.setAdRevenueNetwork(adInfo.NetworkName);
+            adRevenue.setAdRevenuePlacement(adInfo.Placement);
+            adRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
+            Adjust.trackAdRevenue(adRevenue);
+#endif
+
+#if PANCAKE_ANALYTIC
 
             // Log an event with ad value parameters
-            Parameter[] LTVParameters =
+            Parameter[] parameters =
             {
                 // Log ad value in micros.
-                new Parameter("value", revenue),
-                new Parameter("ad_platform", "AppLovin"),
+                new Parameter("value", adInfo.Revenue), 
+                new Parameter("ad_platform", "AppLovin"), 
                 new Parameter("ad_format", adInfo.AdFormat),
                 new Parameter("currency", "USD"),
-                new Parameter("ad_unit_name", adInfo.AdUnitIdentifier),
+                new Parameter("ad_unit_name", adInfo.AdUnitIdentifier), 
                 new Parameter("ad_source", adInfo.NetworkName)
             };
 
-            FirebaseAnalytics.LogEvent("ad_impression", LTVParameters);
+            FirebaseAnalytics.LogEvent("ad_impression", parameters);
+#endif
         }
 #endif
 
 #if PANCAKE_ADMOB_ENABLE
         internal static void TrackingRevenue(GoogleMobileAds.Api.AdValueEventArgs e, string unitId)
         {
+            double revenue = e.AdValue.Value / 1000000f;
+#if PANCAKE_ADJUST
+            var adRevenue = new AdjustAdRevenue(AdjustConfig.AdjustAdRevenueSourceAdMob);
+            adRevenue.setRevenue(revenue, e.AdValue.CurrencyCode);
+            adRevenue.setAdRevenueUnit(unitId);
+            Adjust.trackAdRevenue(adRevenue);
+#endif
+
+#if PANCAKE_ANALYTIC
+            
             // Log an event with ad value parameters
-            Parameter[] LTVParameters =
+            Parameter[] parameters =
             {
                 // Log ad value in micros.
-                new Parameter("valuemicros", e.AdValue.Value * 1000000),
-                // These values below won’t be used in ROASrecipe.
-                // But log for purposes of debugging and futurereference.
-                new Parameter("currency", e.AdValue.CurrencyCode), new Parameter("precision", (int) e.AdValue.Precision), new Parameter("adunitid", unitId),
-                new Parameter("network", "admob")
+                new Parameter("value", revenue), 
+                new Parameter("ad_platform", "Admob"),
+                new Parameter("currency", e.AdValue.CurrencyCode),
+                new Parameter("ad_unit_name", unitId),
             };
 
-            FirebaseAnalytics.LogEvent("paid_ad_impression", LTVParameters);
+            FirebaseAnalytics.LogEvent("ad_impression", parameters);
+#endif
         }
 #endif
     }
 }
-
-#endif

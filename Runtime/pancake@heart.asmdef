@@ -17,7 +17,8 @@
         "GUID:60bfecf5cb232594891bc622f40d6bed",
         "GUID:00c479e63b1c74419820a39073267645",
         "GUID:a4cfc1a18fa3a469b96d885db522f42e",
-        "GUID:f889b4ab8c0b04d409f2bbd996249a4e"
+        "GUID:f889b4ab8c0b04d409f2bbd996249a4e",
+        "GUID:73cfe616a226dd64690d08b6164cb0e2"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -27,7 +28,8 @@
         "GoogleMobileAds.dll",
         "GoogleMobileAds.Unity.dll",
         "GoogleMobileAds.Common.dll",
-        "GoogleMobileAds.Core.dll"
+        "GoogleMobileAds.Core.dll",
+        "Firebase.Analytics.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
@@ -86,6 +88,16 @@
             "name": "com.pancake.playfab",
             "expression": "",
             "define": "PANCAKE_PLAYFAB"
+        },
+        {
+            "name": "com.pancake.adjust",
+            "expression": "",
+            "define": "PANCAKE_ADJUST"
+        },
+        {
+            "name": "com.google.firebase.analytics",
+            "expression": "",
+            "define": "PANCAKE_ANALYTIC"
         }
     ],
     "noEngineReferences": false

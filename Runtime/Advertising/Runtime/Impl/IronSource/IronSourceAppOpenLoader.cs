@@ -53,7 +53,7 @@ namespace Pancake.Monetization
         private void OnPaidHandleEvent(object sender, AdValueEventArgs e)
         {
             _client.InvokeAppOpenAdRevenuePaid(e);
-#if ADS_FIREBASE_TRACKING
+#if PANCAKE_ANALYTIC
             AppTracking.TrackingRevenue(e, unit.Id);  
 #endif
         }
