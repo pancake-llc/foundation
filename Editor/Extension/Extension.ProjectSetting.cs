@@ -26,8 +26,10 @@ namespace Pancake.Editor
             {
                 get
                 {
-                    if (_settings == null) LoadSetting();
+                    if (_settings != null) return _settings;
 
+                    LoadSetting();
+                    
                     return _settings;
                 }
                 set
@@ -55,7 +57,11 @@ namespace Pancake.Editor
             {
                 _settings = new T();
                 string path = string.Format(DEFAULT_PROJECT_SETTING_PATH, _name);
-                if (!path.FileExists()) return;
+                if (!path.FileExists())
+                {
+                    File.WriteAllText(string.Format(DEFAULT_PROJECT_SETTING_PATH, _name), JsonUtility.ToJson(_settings, true));
+                    return;
+                }
                 string json = File.ReadAllText(path);
                 _settings = JsonUtility.FromJson<T>(json);
             }

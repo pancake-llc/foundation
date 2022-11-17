@@ -102,7 +102,7 @@ namespace Pancake.Monetization.Editor
             if (!result.Item1) return;
 
             Debug.LogError(errorMessage);
-            Settings.AdmobSettings.editorImportingListNetwork[result.Item2] = null;
+            AdSettings.AdmobSettings.editorImportingListNetwork[result.Item2] = null;
         }
 
         private void OnAssetDatabaseOnimportAllPackageCancelled(string packageName)
@@ -110,7 +110,7 @@ namespace Pancake.Monetization.Editor
             var result = IsIncludeImportAllNetwork(packageName);
             if (!result.Item1) return;
 
-            Settings.AdmobSettings.editorImportingListNetwork[result.Item2] = null;
+            AdSettings.AdmobSettings.editorImportingListNetwork[result.Item2] = null;
         }
 
         private void OnAssetDatabaseOnimportAllPackageCompleted(string packageName)
@@ -125,8 +125,8 @@ namespace Pancake.Monetization.Editor
             AssetDatabase.Refresh();
 
             Debug.Log("Import completed : " + packageName);
-            CallImportPackageCompletedCallback(Settings.AdmobSettings.editorImportingListNetwork[result.Item2]);
-            Settings.AdmobSettings.editorImportingListNetwork[result.Item2] = null;
+            CallImportPackageCompletedCallback(AdSettings.AdmobSettings.editorImportingListNetwork[result.Item2]);
+            AdSettings.AdmobSettings.editorImportingListNetwork[result.Item2] = null;
         }
 
         private void OnImportSdkFailedCallback(string packageName, string errorMessage)
@@ -134,14 +134,14 @@ namespace Pancake.Monetization.Editor
             if (!IsImportingGMA(packageName)) return;
 
             Debug.LogError(errorMessage);
-            Settings.AdmobSettings.editorImportingSdk = null;
+            AdSettings.AdmobSettings.editorImportingSdk = null;
         }
 
         private void OnImportSdkCancelledCallback(string packageName)
         {
             if (!IsImportingGMA(packageName)) return;
 
-            Settings.AdmobSettings.editorImportingSdk = null;
+            AdSettings.AdmobSettings.editorImportingSdk = null;
         }
 
         private void OnImportSdkCompletedCallback(string packageName)
@@ -154,8 +154,8 @@ namespace Pancake.Monetization.Editor
             //AddLabelsToAssetsIfNeeded(pluginParentDir, isPluginOutsideAssetsDir);
             AssetDatabase.Refresh();
 
-            CallImportGmaCompletedCallback(Settings.AdmobSettings.editorImportingSdk);
-            Settings.AdmobSettings.editorImportingSdk = null;
+            CallImportGmaCompletedCallback(AdSettings.AdmobSettings.editorImportingSdk);
+            AdSettings.AdmobSettings.editorImportingSdk = null;
         }
 
         private void OnAssetDatabaseOnimportPackageFailed(string packageName, string errorMessage)
@@ -163,14 +163,14 @@ namespace Pancake.Monetization.Editor
             if (!IsImportingNetwork(packageName)) return;
 
             Debug.LogError(errorMessage);
-            Settings.AdmobSettings.editorImportingNetwork = null;
+            AdSettings.AdmobSettings.editorImportingNetwork = null;
         }
 
         private void OnAssetDatabaseOnimportPackageCancelled(string packageName)
         {
             if (!IsImportingNetwork(packageName)) return;
 
-            Settings.AdmobSettings.editorImportingNetwork = null;
+            AdSettings.AdmobSettings.editorImportingNetwork = null;
         }
 
         private void OnAssetDatabaseOnimportPackageCompleted(string packageName)
@@ -183,8 +183,8 @@ namespace Pancake.Monetization.Editor
             AddLabelsToAssetsIfNeeded(pluginParentDir, isPluginOutsideAssetsDir);
             AssetDatabase.Refresh();
 
-            CallImportPackageCompletedCallback(Settings.AdmobSettings.editorImportingNetwork);
-            Settings.AdmobSettings.editorImportingNetwork = null;
+            CallImportPackageCompletedCallback(AdSettings.AdmobSettings.editorImportingNetwork);
+            AdSettings.AdmobSettings.editorImportingNetwork = null;
         }
 
         private static void CallImportPackageCompletedCallback(Network network) { importPackageCompletedCallback?.Invoke(network); }
@@ -375,8 +375,8 @@ namespace Pancake.Monetization.Editor
         private bool IsImportingNetwork(string packageName)
         {
             // Note: The pluginName doesn't have the '.unitypacakge' extension included in its name but the pluginFileName does. So using Contains instead of Equals.
-            return Settings.AdmobSettings.editorImportingNetwork != null && GetPluginFileName(Settings.AdmobSettings.editorImportingNetwork).Contains(packageName) &&
-                   !Settings.AdmobSettings.editorInstallAllFlag;
+            return AdSettings.AdmobSettings.editorImportingNetwork != null && GetPluginFileName(AdSettings.AdmobSettings.editorImportingNetwork).Contains(packageName) &&
+                   !AdSettings.AdmobSettings.editorInstallAllFlag;
         }
 
         private (bool, int) IsIncludeImportAllNetwork(string packageName)
@@ -385,9 +385,9 @@ namespace Pancake.Monetization.Editor
 
             var flag = false;
             var index = 0;
-            for (var i = 0; i < Settings.AdmobSettings.editorImportingListNetwork.Count; i++)
+            for (var i = 0; i < AdSettings.AdmobSettings.editorImportingListNetwork.Count; i++)
             {
-                var importing = Settings.AdmobSettings.editorImportingListNetwork[i];
+                var importing = AdSettings.AdmobSettings.editorImportingListNetwork[i];
                 if (importing != null && GetPluginFileName(importing).Contains(packageName))
                 {
                     flag = true;
@@ -396,10 +396,10 @@ namespace Pancake.Monetization.Editor
                 }
             }
 
-            return (Settings.AdmobSettings.editorInstallAllFlag && flag, index);
+            return (AdSettings.AdmobSettings.editorInstallAllFlag && flag, index);
         }
 
-        private bool IsImportingGMA(string packageName) { return Settings.AdmobSettings.editorImportingSdk != null && packageName.Contains("GoogleMobileAds-v"); }
+        private bool IsImportingGMA(string packageName) { return AdSettings.AdmobSettings.editorImportingSdk != null && packageName.Contains("GoogleMobileAds-v"); }
 
         private string GetPluginFileName(Network network) { return $"GoogleMobileAds{network.displayName}Mediation.unitypackage"; }
 
@@ -409,8 +409,8 @@ namespace Pancake.Monetization.Editor
             curl.Headers.Add(HttpRequestHeader.UserAgent, "request");
             const string url = "https://gist.githubusercontent.com/yenmoc/d79936098344befbd8edfa882c17bf20/raw";
             string json = curl.DownloadString(url);
-            Settings.AdmobSettings.editorListNetwork = JsonConvert.DeserializeObject<List<Network>>(json);
-            foreach (var n in Settings.AdmobSettings.editorListNetwork)
+            AdSettings.AdmobSettings.editorListNetwork = JsonConvert.DeserializeObject<List<Network>>(json);
+            foreach (var n in AdSettings.AdmobSettings.editorListNetwork)
             {
                 UpdateCurrentVersion(n);
             }
@@ -418,7 +418,7 @@ namespace Pancake.Monetization.Editor
 
         public IEnumerator DownloadPlugin(Network network)
         {
-            Settings.AdmobSettings.editorInstallAllFlag = false;
+            AdSettings.AdmobSettings.editorInstallAllFlag = false;
             string pathFile = Path.Combine(Application.temporaryCachePath, $"{network.name.ToLowerInvariant()}_{network.lastVersion.unity}.zip");
             string urlDownload = string.Format(network.path, network.lastVersion.unity);
             var downloadHandler = new DownloadHandlerFile(pathFile);
@@ -443,7 +443,7 @@ namespace Pancake.Monetization.Editor
             }
             else
             {
-                Settings.AdmobSettings.editorImportingNetwork = network;
+                AdSettings.AdmobSettings.editorImportingNetwork = network;
 
                 string folderUnZip = Path.Combine(Application.temporaryCachePath, "UnZip");
                 UnZip(folderUnZip, File.ReadAllBytes(pathFile));
@@ -481,7 +481,7 @@ namespace Pancake.Monetization.Editor
             }
             else
             {
-                Settings.AdmobSettings.editorImportingListNetwork.Add(network);
+                AdSettings.AdmobSettings.editorImportingListNetwork.Add(network);
                 string folderUnZip = Path.Combine(Application.temporaryCachePath, "UnZip");
                 UnZip(folderUnZip, File.ReadAllBytes(pathFile));
 
@@ -495,9 +495,9 @@ namespace Pancake.Monetization.Editor
         public void DownloadAllPlugin(List<Network> networks)
         {
             brandWidthWebRequest = new UnityWebRequest[networks.Count];
-            Settings.AdmobSettings.editorImportingListNetwork.Clear();
-            Settings.AdmobSettings.editorImportingNetwork = null;
-            Settings.AdmobSettings.editorInstallAllFlag = true;
+            AdSettings.AdmobSettings.editorImportingListNetwork.Clear();
+            AdSettings.AdmobSettings.editorImportingNetwork = null;
+            AdSettings.AdmobSettings.editorInstallAllFlag = true;
 
             for (var i = 0; i < networks.Count; i++)
             {
@@ -531,7 +531,7 @@ namespace Pancake.Monetization.Editor
             }
             else
             {
-                Settings.AdmobSettings.editorImportingSdk = network;
+                AdSettings.AdmobSettings.editorImportingSdk = network;
                 AssetDatabase.ImportPackage(Path.Combine(Application.temporaryCachePath, $"GoogleMobileAds-v{network.lastVersion.unity}.unitypackage"), true);
             }
 
@@ -543,9 +543,9 @@ namespace Pancake.Monetization.Editor
             using var curl = new WebClient();
             curl.Headers.Add(HttpRequestHeader.UserAgent, "request");
             string json = curl.DownloadString("https://gist.githubusercontent.com/yenmoc/df91d875eb78556b8644a2c5a7dc8a03/raw");
-            Settings.AdmobSettings.editorImportingSdk = JsonConvert.DeserializeObject<Network>(json);
+            AdSettings.AdmobSettings.editorImportingSdk = JsonConvert.DeserializeObject<Network>(json);
 
-            UpdateCurrentVersionGMA(Settings.AdmobSettings.editorImportingSdk);
+            UpdateCurrentVersionGMA(AdSettings.AdmobSettings.editorImportingSdk);
         }
 
         public void UpdateCurrentVersionGMA(Network network)

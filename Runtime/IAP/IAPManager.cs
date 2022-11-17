@@ -39,7 +39,7 @@ namespace Pancake.IAP
             {
                 var obj = new GameObject("IAPManager") {hideFlags = HideFlags.HideAndDontSave};
                 instance = obj.AddComponent<IAPManager>();
-                instance.InitImpl(IAPSetting.SkusData);
+                instance.InitImpl(IAPSettings.SkusData);
                 DontDestroyOnLoad(obj);
             }
         }
@@ -215,7 +215,7 @@ namespace Pancake.IAP
 #if UNITY_ANDROID
                 
 #endif
-                if (IAPSetting.TestMode)
+                if (IAPSettings.TestMode)
                 {
                     builder.AddProduct(p.sku.Id, ProductType.Consumable);
                 }

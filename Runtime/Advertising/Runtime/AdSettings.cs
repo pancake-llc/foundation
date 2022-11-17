@@ -1,34 +1,32 @@
-using System;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
-    [Serializable]
-    public class AdSettings
+    public class AdSettings : ScriptableSettings<AdSettings>
     {
-        [SerializeField] private bool autoInit = true;
-        [SerializeField] private EAutoLoadingAd autoLoadingAd = EAutoLoadingAd.All;
-        [Range(5, 100)] [SerializeField] private float adCheckingInterval = 8f;
-        [Range(5, 100)] [SerializeField] private float adLoadingInterval = 15f;
-        [SerializeField] private string privacyPolicyUrl;
-        [SerializeField] private bool enableGDPR;
-        [SerializeField] private bool enableMultipleDex;
-        [SerializeField] private EAdNetwork currentNetwork = EAdNetwork.Admob;
+        #region member
 
-        public bool AutoInit { get => autoInit; set => autoInit = value; }
+        [SerializeField] private bool runtimeAutoInitialize = true;
+        [SerializeField] private AdCommonSettings adCommonSettings = new AdCommonSettings();
+        [SerializeField] private AdmobSettings admobSettings = new AdmobSettings();
+        [SerializeField] private MaxSettings maxSettings = new MaxSettings();
+        [SerializeField] private IronSourceSettings ironSourceSettings = new IronSourceSettings();
 
-        public float AdCheckingInterval { get => adCheckingInterval; set => adCheckingInterval = value; }
+        #endregion
 
-        public float AdLoadingInterval { get => adLoadingInterval; set => adLoadingInterval = value; }
+        #region properties
 
-        public EAutoLoadingAd AutoLoadingAd { get => autoLoadingAd; set => autoLoadingAd = value; }
+        public static bool RuntimeAutoInitialize => Instance.runtimeAutoInitialize;
 
-        public string PrivacyPolicyUrl => privacyPolicyUrl;
+        public static AdCommonSettings AdCommonSettings => Instance.adCommonSettings;
 
-        public bool EnableGDPR { get => enableGDPR; set => enableGDPR = value; }
+        public static AdmobSettings AdmobSettings => Instance.admobSettings;
 
-        public bool EnableMultipleDex => enableMultipleDex;
+        public static MaxSettings MaxSettings => Instance.maxSettings;
+        public static IronSourceSettings IronSourceSettings => Instance.ironSourceSettings;
 
-        public EAdNetwork CurrentNetwork { get => currentNetwork; set => currentNetwork = value; }
+        public static EAdNetwork CurrentNetwork => Instance.adCommonSettings.CurrentNetwork;
+
+        #endregion
     }
 }

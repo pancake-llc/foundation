@@ -21,7 +21,7 @@ namespace Pancake.IAP
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitalize()
         {
-            if (IAPSetting.RuntimeAutoInitialize) Init();
+            if (IAPSettings.RuntimeAutoInitialize) Init();
         }
     }
     

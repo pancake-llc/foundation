@@ -85,7 +85,7 @@ namespace Pancake.Monetization
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitialize()
         {
-            if (Settings.RuntimeAutoInitialize) Init();
+            if (AdSettings.RuntimeAutoInitialize) Init();
         }
 
         // Adds the required components necessary for the runtime operation of EM modules

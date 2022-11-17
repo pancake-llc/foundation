@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Pancake.Monetization.Editor
 {
-    [CustomEditor(typeof(Settings))]
+    [CustomEditor(typeof(AdSettings))]
     internal class SettingsEditor : UnityEditor.Editor
     {
         private class Property
@@ -154,7 +154,7 @@ namespace Pancake.Monetization.Editor
 
             _autoInitializeProperty = serializedObject.FindProperty("runtimeAutoInitialize");
 
-            AdProperties.main = serializedObject.FindProperty("adSettings");
+            AdProperties.main = serializedObject.FindProperty("adCommonSettings");
             AdProperties.autoInit.property = AdProperties.main.FindPropertyRelative("autoInit");
             AdProperties.autoLoadAdsMode.property = AdProperties.main.FindPropertyRelative("autoLoadingAd");
             AdProperties.adCheckingInterval.property = AdProperties.main.FindPropertyRelative("adCheckingInterval");
@@ -224,9 +224,9 @@ namespace Pancake.Monetization.Editor
 
                     EditorGUILayout.PropertyField(AdProperties.currentNetwork.property, AdProperties.currentNetwork.content);
 
-                    if (Settings.AdSettings.EnableGDPR) EditorGUILayout.PropertyField(AdProperties.privacyPolicyUrl.property, AdProperties.privacyPolicyUrl.content);
+                    if (AdSettings.AdCommonSettings.EnableGDPR) EditorGUILayout.PropertyField(AdProperties.privacyPolicyUrl.property, AdProperties.privacyPolicyUrl.content);
 
-                    if (Settings.AdSettings.EnableMultipleDex)
+                    if (AdSettings.AdCommonSettings.EnableMultipleDex)
                     {
                         AdsEditorUtil.CreateMainTemplateGradle();
 #if UNITY_2020_3_OR_NEWER
@@ -255,7 +255,7 @@ namespace Pancake.Monetization.Editor
                 () =>
                 {
                     EditorGUILayout.PropertyField(AdProperties.autoLoadAdsMode.property, AdProperties.autoLoadAdsMode.content);
-                    if (Settings.AdSettings.AutoLoadingAd != EAutoLoadingAd.None)
+                    if (AdSettings.AdCommonSettings.AutoLoadingAd != EAutoLoadingAd.None)
                     {
                         EditorGUILayout.PropertyField(AdProperties.adCheckingInterval.property, AdProperties.adCheckingInterval.content);
                         EditorGUILayout.PropertyField(AdProperties.adLoadingInterval.property, AdProperties.adLoadingInterval.content);
@@ -268,22 +268,22 @@ namespace Pancake.Monetization.Editor
                 () =>
                 {
                     EditorGUILayout.PropertyField(AdmobProperties.enable.property, AdmobProperties.enable.content);
-                    if (Settings.AdmobSettings.Enable)
+                    if (AdSettings.AdmobSettings.Enable)
                     {
                         SettingManager.ValidateAdmobSdkImported();
                         if (IsAdmobSdkAvaiable)
                         {
                             EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
-                            if (Settings.AdmobSettings.editorImportingSdk != null && !string.IsNullOrEmpty(Settings.AdmobSettings.editorImportingSdk.lastVersion.unity) &&
-                                Settings.AdmobSettings.editorImportingSdk.CurrentToLatestVersionComparisonResult == EVersionComparisonResult.Lesser)
+                            if (AdSettings.AdmobSettings.editorImportingSdk != null && !string.IsNullOrEmpty(AdSettings.AdmobSettings.editorImportingSdk.lastVersion.unity) &&
+                                AdSettings.AdmobSettings.editorImportingSdk.CurrentToLatestVersionComparisonResult == EVersionComparisonResult.Lesser)
                             {
                                 if (GUILayout.Button("Update Admob Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
                                 {
-                                    EditorCoroutine.Start(SettingManager.Instance.DownloadGma(Settings.AdmobSettings.editorImportingSdk));
+                                    EditorCoroutine.Start(SettingManager.Instance.DownloadGma(AdSettings.AdmobSettings.editorImportingSdk));
                                 }
                             }
 
-                            if (Settings.AdSettings.EnableGDPR)
+                            if (AdSettings.AdCommonSettings.EnableGDPR)
                             {
                                 EditorGUILayout.HelpBox("GDPR is enable so you should turn on Delay app measurement in GoogleMobileAds setting", MessageType.Info);
                             }
@@ -310,7 +310,7 @@ namespace Pancake.Monetization.Editor
                                 () =>
                                 {
                                     DrawHeaderMediation();
-                                    foreach (var network in Settings.AdmobSettings.editorListNetwork)
+                                    foreach (var network in AdSettings.AdmobSettings.editorListNetwork)
                                     {
                                         DrawAdmobNetworkDetailRow(network);
                                     }
@@ -319,10 +319,10 @@ namespace Pancake.Monetization.Editor
                                 });
 
                             EditorGUILayout.Space();
-                            if (Settings.AdmobSettings.BannerAdUnit.size == EBannerSize.SmartBanner)
+                            if (AdSettings.AdmobSettings.BannerAdUnit.size == EBannerSize.SmartBanner)
                                 EditorGUILayout.PropertyField(AdmobProperties.useAdaptiveBanner.property, AdmobProperties.useAdaptiveBanner.content);
                             EditorGUILayout.PropertyField(AdmobProperties.enableTestMode.property, AdmobProperties.enableTestMode.content);
-                            if (Settings.AdmobSettings.EnableTestMode)
+                            if (AdSettings.AdmobSettings.EnableTestMode)
                             {
                                 EditorGUILayout.PropertyField(AdmobProperties.devicesTest.property, AdmobProperties.devicesTest.content);
                             }
@@ -332,9 +332,9 @@ namespace Pancake.Monetization.Editor
                             EditorGUILayout.HelpBox("Admob plugin not found. Please import it to show ads from Admob", MessageType.Warning);
                             if (GUILayout.Button("Import Admob Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
                             {
-                                if (Settings.AdmobSettings.editorImportingSdk != null)
+                                if (AdSettings.AdmobSettings.editorImportingSdk != null)
                                 {
-                                    EditorCoroutine.Start(SettingManager.Instance.DownloadGma(Settings.AdmobSettings.editorImportingSdk));
+                                    EditorCoroutine.Start(SettingManager.Instance.DownloadGma(AdSettings.AdmobSettings.editorImportingSdk));
                                 }
                                 else
                                 {
@@ -351,19 +351,19 @@ namespace Pancake.Monetization.Editor
                 () =>
                 {
                     EditorGUILayout.PropertyField(ApplovinProperties.enable.property, ApplovinProperties.enable.content);
-                    if (Settings.MaxSettings.Enable)
+                    if (AdSettings.MaxSettings.Enable)
                     {
                         SettingManager.ValidateApplovinSdkImported();
                         if (IsApplovinSdkAvaiable)
                         {
                             EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
                             
-                            if (Settings.MaxSettings.editorImportingSdk != null && !string.IsNullOrEmpty(Settings.MaxSettings.editorImportingSdk.lastVersion.unity) &&
-                                Settings.MaxSettings.editorImportingSdk.CurrentToLatestVersionComparisonResult == EVersionComparisonResult.Lesser)
+                            if (AdSettings.MaxSettings.editorImportingSdk != null && !string.IsNullOrEmpty(AdSettings.MaxSettings.editorImportingSdk.lastVersion.unity) &&
+                                AdSettings.MaxSettings.editorImportingSdk.CurrentToLatestVersionComparisonResult == EVersionComparisonResult.Lesser)
                             {
                                 if (GUILayout.Button("Update MaxSdk Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
                                 {
-                                    EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(Settings.MaxSettings.editorImportingSdk));
+                                    EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(AdSettings.MaxSettings.editorImportingSdk));
                                 }
                             }
                             EditorGUILayout.Space();
@@ -391,7 +391,7 @@ namespace Pancake.Monetization.Editor
                                 () =>
                                 {
                                     DrawHeaderMediation();
-                                    foreach (var network in Settings.MaxSettings.editorListNetwork)
+                                    foreach (var network in AdSettings.MaxSettings.editorListNetwork)
                                     {
                                         DrawApplovinNetworkDetailRow(network);
                                     }
@@ -405,9 +405,9 @@ namespace Pancake.Monetization.Editor
                             EditorGUILayout.HelpBox("Max plugin not found. Please import it to show ads from Applovin", MessageType.Warning);
                             if (GUILayout.Button("Import MAX Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
                             {
-                                if (Settings.MaxSettings.editorImportingSdk != null)
+                                if (AdSettings.MaxSettings.editorImportingSdk != null)
                                 {
-                                    EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(Settings.MaxSettings.editorImportingSdk));
+                                    EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(AdSettings.MaxSettings.editorImportingSdk));
                                 }
                                 else
                                 {
@@ -429,7 +429,7 @@ namespace Pancake.Monetization.Editor
                 () =>
                 {
                     EditorGUILayout.PropertyField(IronSourceProperties.enable.property, IronSourceProperties.enable.content);
-                    if (Settings.IronSourceSettings.Enable)
+                    if (AdSettings.IronSourceSettings.Enable)
                     {
                         SettingManager.ValidateIronSourceSdkImported();
                         if (IsIronSourceSdkAvaiable)
@@ -448,7 +448,7 @@ namespace Pancake.Monetization.Editor
                                 () =>
                                 {
                                     DrawHeaderMediation();
-                                    foreach (var network in Settings.IronSourceSettings.editorListNetwork)
+                                    foreach (var network in AdSettings.IronSourceSettings.editorListNetwork)
                                     {
                                         DrawIronSourceNetworkDetailRow(network);
                                     }
@@ -462,9 +462,9 @@ namespace Pancake.Monetization.Editor
                             EditorGUILayout.HelpBox("IronSource plugin not found. Please import it to show ads from IronSource", MessageType.Warning);
                             if (GUILayout.Button("Import IronSource Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
                             {
-                                if (Settings.IronSourceSettings.editorImportingSdk != null)
+                                if (AdSettings.IronSourceSettings.editorImportingSdk != null)
                                 {
-                                    EditorCoroutine.Start(IronSourceManager.Instance.DownloadPlugin(Settings.IronSourceSettings.editorImportingSdk));
+                                    EditorCoroutine.Start(IronSourceManager.Instance.DownloadPlugin(AdSettings.IronSourceSettings.editorImportingSdk));
                                 }
                                 else
                                 {
@@ -743,9 +743,9 @@ namespace Pancake.Monetization.Editor
         {
             var showInstallAll = false;
             var showUninstallAll = false;
-            for (int i = 0; i < Settings.AdmobSettings.editorListNetwork.Count; i++)
+            for (int i = 0; i < AdSettings.AdmobSettings.editorListNetwork.Count; i++)
             {
-                var network = Settings.AdmobSettings.editorListNetwork[i];
+                var network = AdSettings.AdmobSettings.editorListNetwork[i];
                 string currentVersion = network.currentVersion != null ? network.currentVersion.unity : "";
                 var status = "";
                 var isActionEnabled = false;
@@ -774,7 +774,7 @@ namespace Pancake.Monetization.Editor
                 GUI.enabled = showInstallAll && !EditorApplication.isCompiling;
                 if (GUILayout.Button(new GUIContent("Install All"), FieldWidth))
                 {
-                    SettingManager.Instance.DownloadAllPlugin(Settings.AdmobSettings.editorListNetwork);
+                    SettingManager.Instance.DownloadAllPlugin(AdSettings.AdmobSettings.editorListNetwork);
                 }
 
                 GUI.enabled = !EditorApplication.isCompiling;
@@ -786,7 +786,7 @@ namespace Pancake.Monetization.Editor
                     EditorUtility.DisplayProgressBar("Ads", "Deleting All Network...", 0.5f);
                     var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
 
-                    foreach (var network in Settings.AdmobSettings.editorListNetwork)
+                    foreach (var network in AdSettings.AdmobSettings.editorListNetwork)
                     {
                         foreach (var pluginFilePath in network.pluginFilePath)
                         {
@@ -825,9 +825,9 @@ namespace Pancake.Monetization.Editor
         {
             var showInstallAll = false;
             var showUninstallAll = false;
-            for (int i = 0; i < Settings.MaxSettings.editorListNetwork.Count; i++)
+            for (int i = 0; i < AdSettings.MaxSettings.editorListNetwork.Count; i++)
             {
-                var network = Settings.MaxSettings.editorListNetwork[i];
+                var network = AdSettings.MaxSettings.editorListNetwork[i];
                 var status = "";
                 string currentVersion = network.CurrentVersions != null ? network.CurrentVersions.Unity : "";
                 var isActionEnabled = false;
@@ -856,7 +856,7 @@ namespace Pancake.Monetization.Editor
                 GUI.enabled = showInstallAll && !EditorApplication.isCompiling;
                 if (GUILayout.Button(new GUIContent("Install All"), FieldWidth))
                 {
-                    MaxManager.Instance.DownloadAllPlugin(Settings.MaxSettings.editorListNetwork);
+                    MaxManager.Instance.DownloadAllPlugin(AdSettings.MaxSettings.editorListNetwork);
                 }
 
                 GUI.enabled = !EditorApplication.isCompiling;
@@ -868,7 +868,7 @@ namespace Pancake.Monetization.Editor
                     EditorUtility.DisplayProgressBar("Ads", "Deleting All Network...", 0.5f);
                     var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
 
-                    foreach (var network in Settings.MaxSettings.editorListNetwork)
+                    foreach (var network in AdSettings.MaxSettings.editorListNetwork)
                     {
                         var status = "";
                         var isActionEnabled = false;
@@ -908,9 +908,9 @@ namespace Pancake.Monetization.Editor
         {
             var showInstallAll = false;
             var showUninstallAll = false;
-            for (int i = 0; i < Settings.IronSourceSettings.editorListNetwork.Count; i++)
+            for (int i = 0; i < AdSettings.IronSourceSettings.editorListNetwork.Count; i++)
             {
-                var network = Settings.IronSourceSettings.editorListNetwork[i];
+                var network = AdSettings.IronSourceSettings.editorListNetwork[i];
                 var status = "";
                 string currentVersion = network.currentUnityVersion;
                 var isActionEnabled = false;
@@ -942,7 +942,7 @@ namespace Pancake.Monetization.Editor
                 {
                     EditorPrefs.SetBool(ironsourceKeyInstallAll, false);
                     InEditor.DelayedCall(2f, () => EditorPrefs.SetBool(ironsourceKeyInstallAll, true));
-                    IronSourceManager.Instance.DownloadAllPlugin(Settings.IronSourceSettings.editorListNetwork);
+                    IronSourceManager.Instance.DownloadAllPlugin(AdSettings.IronSourceSettings.editorListNetwork);
                 }
 
                 GUI.enabled = !EditorApplication.isCompiling;
@@ -954,7 +954,7 @@ namespace Pancake.Monetization.Editor
                     EditorUtility.DisplayProgressBar("Ads", "Deleting All Network...", 0.5f);
                     var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
 
-                    foreach (var network in Settings.IronSourceSettings.editorListNetwork)
+                    foreach (var network in AdSettings.IronSourceSettings.editorListNetwork)
                     {
                         FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, "IronSource", "Editor", network.fileName));
                         FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, "IronSource", "Editor", network.fileName + ".meta"));

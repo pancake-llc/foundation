@@ -167,7 +167,7 @@ namespace Pancake.Monetization.Editor
             var result = IsIncludeImportAllNetwork(packageName);
             if (!result.Item1) return;
             
-            Settings.MaxSettings.editorImportingListNetwork[result.Item2] = null;
+            AdSettings.MaxSettings.editorImportingListNetwork[result.Item2] = null;
         }
 
         private void OnAssetDatabaseOnimportAllPackageFailed(string packageName, string errormessage)
@@ -175,7 +175,7 @@ namespace Pancake.Monetization.Editor
             var result = IsIncludeImportAllNetwork(packageName);
             if (!result.Item1) return;
             
-            Settings.MaxSettings.editorImportingListNetwork[result.Item2] = null;
+            AdSettings.MaxSettings.editorImportingListNetwork[result.Item2] = null;
         }
 
         private void OnAssetDatabaseOnimportAllPackageCompleted(string packageName)
@@ -188,22 +188,22 @@ namespace Pancake.Monetization.Editor
             AddLabelsToAssetsIfNeeded(pluginParentDir, isPluginOutsideAssetsDir);
             AssetDatabase.Refresh();
             
-            CallImportPackageCompletedCallback(Settings.MaxSettings.editorImportingListNetwork[result.Item2]);
-            Settings.MaxSettings.editorImportingListNetwork[result.Item2] = null;
+            CallImportPackageCompletedCallback(AdSettings.MaxSettings.editorImportingListNetwork[result.Item2]);
+            AdSettings.MaxSettings.editorImportingListNetwork[result.Item2] = null;
         }
 
         private void OnAssetDatabaseOnimportPackageFailed(string packageName, string errorMessage)
         {
             if (!IsImportingNetwork(packageName)) return;
 
-            Settings.MaxSettings.editorImportingNetwork = null;
+            AdSettings.MaxSettings.editorImportingNetwork = null;
         }
 
         private void OnAssetDatabaseOnimportPackageCancelled(string packageName)
         {
             if (!IsImportingNetwork(packageName)) return;
 
-            Settings.MaxSettings.editorImportingNetwork = null;
+            AdSettings.MaxSettings.editorImportingNetwork = null;
         }
 
         private void OnAssetDatabaseOnimportPackageCompleted(string packageName)
@@ -215,8 +215,8 @@ namespace Pancake.Monetization.Editor
             AddLabelsToAssetsIfNeeded(pluginParentDir, isPluginOutsideAssetsDir);
             AssetDatabase.Refresh();
 
-            CallImportPackageCompletedCallback(Settings.MaxSettings.editorImportingNetwork);
-            Settings.MaxSettings.editorImportingNetwork = null;
+            CallImportPackageCompletedCallback(AdSettings.MaxSettings.editorImportingNetwork);
+            AdSettings.MaxSettings.editorImportingNetwork = null;
         }
 
         static MaxManager() { }
@@ -384,7 +384,7 @@ namespace Pancake.Monetization.Editor
         /// <returns></returns>
         public IEnumerator DownloadPlugin(MaxNetwork network)
         {
-            Settings.MaxSettings.editorInstallAllFlag = false;
+            AdSettings.MaxSettings.editorInstallAllFlag = false;
             string path = Path.Combine(Application.temporaryCachePath, GetPluginFileName(network)); // TODO: Maybe delete plugin file after finishing import.
 
 #if UNITY_2017_2_OR_NEWER
@@ -418,7 +418,7 @@ namespace Pancake.Monetization.Editor
             }
             else
             {
-                Settings.MaxSettings.editorImportingNetwork = network;
+                AdSettings.MaxSettings.editorImportingNetwork = network;
                 AssetDatabase.ImportPackage(path, true);
             }
 
@@ -467,7 +467,7 @@ namespace Pancake.Monetization.Editor
             }
             else
             {
-                Settings.MaxSettings.editorImportingListNetwork.Add(network);
+                AdSettings.MaxSettings.editorImportingListNetwork.Add(network);
                 AssetDatabase.ImportPackage(path, interactive);
             }
 
@@ -481,9 +481,9 @@ namespace Pancake.Monetization.Editor
         public void DownloadAllPlugin(List<MaxNetwork> networks)
         {
             branWidthRequest = new UnityWebRequest[networks.Count];
-            Settings.MaxSettings.editorImportingListNetwork.Clear();
-            Settings.MaxSettings.editorImportingNetwork = null;
-            Settings.MaxSettings.editorInstallAllFlag = true;
+            AdSettings.MaxSettings.editorImportingListNetwork.Clear();
+            AdSettings.MaxSettings.editorImportingNetwork = null;
+            AdSettings.MaxSettings.editorInstallAllFlag = true;
 
             for (var i = 0; i < networks.Count; i++)
             {
@@ -604,7 +604,7 @@ namespace Pancake.Monetization.Editor
         private bool IsImportingNetwork(string packageName)
         {
             // Note: The pluginName doesn't have the '.unitypacakge' extension included in its name but the pluginFileName does. So using Contains instead of Equals.
-            return Settings.MaxSettings.editorImportingNetwork != null && GetPluginFileName(Settings.MaxSettings.editorImportingNetwork).Contains(packageName) && !Settings.MaxSettings.editorInstallAllFlag;
+            return AdSettings.MaxSettings.editorImportingNetwork != null && GetPluginFileName(AdSettings.MaxSettings.editorImportingNetwork).Contains(packageName) && !AdSettings.MaxSettings.editorInstallAllFlag;
         }
 
         private (bool, int) IsIncludeImportAllNetwork(string packageName)
@@ -613,9 +613,9 @@ namespace Pancake.Monetization.Editor
           
             var flag = false;
             var index = 0;
-            for (var i = 0; i < Settings.MaxSettings.editorImportingListNetwork.Count; i++)
+            for (var i = 0; i < AdSettings.MaxSettings.editorImportingListNetwork.Count; i++)
             {
-                var importing = Settings.MaxSettings.editorImportingListNetwork[i];
+                var importing = AdSettings.MaxSettings.editorImportingListNetwork[i];
                 if (importing != null && GetPluginFileName(importing).Contains(packageName))
                 {
                     flag = true;
@@ -624,7 +624,7 @@ namespace Pancake.Monetization.Editor
                 }
             }
 
-            return (Settings.MaxSettings.editorInstallAllFlag && flag, index);
+            return (AdSettings.MaxSettings.editorInstallAllFlag && flag, index);
         }
 
 #if PANCAKE_MAX_ENABLE
@@ -889,7 +889,7 @@ namespace Pancake.Monetization.Editor
             }
             else
             {
-                Settings.AdmobSettings.editorImportingSdk = network;
+                AdSettings.AdmobSettings.editorImportingSdk = network;
                 AssetDatabase.ImportPackage(Path.Combine(Application.temporaryCachePath, $"MaxSdk-v{network.lastVersion.unity}.unitypackage"), true);
             }
 
@@ -901,8 +901,8 @@ namespace Pancake.Monetization.Editor
             using var curl = new WebClient();
             curl.Headers.Add(HttpRequestHeader.UserAgent, "request");
             string json = curl.DownloadString("https://gist.githubusercontent.com/yenmoc/b055344445ef8ee6e7535f895aa9839b/raw");
-            Settings.MaxSettings.editorImportingSdk = JsonConvert.DeserializeObject<Network>(json);
-            UpdateCurrentVersionMaxSdk(Settings.MaxSettings.editorImportingSdk);
+            AdSettings.MaxSettings.editorImportingSdk = JsonConvert.DeserializeObject<Network>(json);
+            UpdateCurrentVersionMaxSdk(AdSettings.MaxSettings.editorImportingSdk);
         }
         
         public void UpdateCurrentVersionMaxSdk(Network network)

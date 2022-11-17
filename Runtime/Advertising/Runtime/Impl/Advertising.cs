@@ -40,7 +40,7 @@ namespace Pancake.Monetization
                 if (value == autoLoadingAdMode) return;
 
                 flagAutoLoadingModeChange = true;
-                Settings.AdSettings.AutoLoadingAd = value;
+                AdSettings.AdCommonSettings.AutoLoadingAd = value;
                 autoLoadingAdMode = value;
                 flagAutoLoadingModeChange = false;
 
@@ -107,23 +107,23 @@ namespace Pancake.Monetization
 
         private void Start()
         {
-            if (Settings.AdSettings.AutoInit) Initialize();
+            if (AdSettings.AdCommonSettings.AutoInit) Initialize();
         }
 
         private void Update()
         {
             if (!IsInitialized) return;
 
-            if (!flagAutoLoadingModeChange && autoLoadingAdMode != Settings.AdSettings.AutoLoadingAd)
+            if (!flagAutoLoadingModeChange && autoLoadingAdMode != AdSettings.AdCommonSettings.AutoLoadingAd)
             {
-                AutoLoadingAdMode = Settings.AdSettings.AutoLoadingAd;
+                AutoLoadingAdMode = AdSettings.AdCommonSettings.AutoLoadingAd;
             }
         }
 
         public static void Initialize()
         {
             isInitialized = true;
-            AutoLoadingAdMode = Settings.AdSettings.AutoLoadingAd;
+            AutoLoadingAdMode = AdSettings.AdCommonSettings.AutoLoadingAd;
 #if PANCAKE_ADMOB_ENABLE
             if (Settings.AdSettings.CurrentNetwork == EAdNetwork.Admob) RegisterAppStateChange();
 #endif
@@ -151,19 +151,19 @@ namespace Pancake.Monetization
             switch (network.Trim().ToLower())
             {
                 case "none":
-                    Settings.AdSettings.CurrentNetwork = EAdNetwork.None;
+                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.None;
                     break;
                 case "admob":
-                    Settings.AdSettings.CurrentNetwork = EAdNetwork.Admob;
+                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Admob;
                     break;
                 case "applovin":
-                    Settings.AdSettings.CurrentNetwork = EAdNetwork.Applovin;
+                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Applovin;
                     break;
                 case "ironsource":
-                    Settings.AdSettings.CurrentNetwork = EAdNetwork.IronSource;
+                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.IronSource;
                     break;
                 default:
-                    Settings.AdSettings.CurrentNetwork = EAdNetwork.Admob;
+                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Admob;
                     break;
             }
         }
@@ -184,7 +184,7 @@ namespace Pancake.Monetization
                 AutoLoadRewardedAd();
                 AutoLoadRewardedInterstitialAd();
                 AutoLoadAppOpenAd();
-                yield return new WaitForSeconds(Settings.AdSettings.AdCheckingInterval);
+                yield return new WaitForSeconds(AdSettings.AdCommonSettings.AdCheckingInterval);
             }
             // ReSharper disable once IteratorNeverReturns
         }
@@ -194,7 +194,7 @@ namespace Pancake.Monetization
             if (IsAdRemoved) return;
             if (IsInterstitialAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadInterstitialAdTimestamp < Settings.AdSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadInterstitialAdTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
 
             LoadInsterstitialAd();
             lastTimeLoadInterstitialAdTimestamp = Time.realtimeSinceStartup;
@@ -204,7 +204,7 @@ namespace Pancake.Monetization
         {
             if (IsRewardedAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadRewardedTimestamp < Settings.AdSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadRewardedTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
 
             LoadRewardedAd();
             lastTimeLoadRewardedTimestamp = Time.realtimeSinceStartup;
@@ -214,7 +214,7 @@ namespace Pancake.Monetization
         {
             if (IsRewardedInterstitialAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadRewardedInterstitialTimestamp < Settings.AdSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadRewardedInterstitialTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
 
             LoadRewardedInterstitialAd();
             lastTimeLoadRewardedInterstitialTimestamp = Time.realtimeSinceStartup;
@@ -225,7 +225,7 @@ namespace Pancake.Monetization
             if (IsAdRemoved || IsAppOpenRemoved) return;
             if (IsAppOpenAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadAppOpenTimestamp < Settings.AdSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadAppOpenTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
 
             LoadAppOpenAd();
             lastTimeLoadAppOpenTimestamp = Time.realtimeSinceStartup;
@@ -411,37 +411,37 @@ namespace Pancake.Monetization
             client.ShowConsentForm();
         }
 
-        public static void ShowBannerAd() { ShowBannerAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void ShowBannerAd() { ShowBannerAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void HideBannerAd() { HideBannerAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void HideBannerAd() { HideBannerAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void DestroyBannerAd() { DestroyBannerAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void DestroyBannerAd() { DestroyBannerAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static float GetAdaptiveBannerHeight() { return GetClientAlreadySetup(Settings.CurrentNetwork).GetAdaptiveBannerHeight; }
+        public static float GetAdaptiveBannerHeight() { return GetClientAlreadySetup(AdSettings.CurrentNetwork).GetAdaptiveBannerHeight; }
 
-        public static void LoadInsterstitialAd() { LoadInterstitialAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void LoadInsterstitialAd() { LoadInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static bool IsInterstitialAdReady() { return IsInterstitialAdReady(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static bool IsInterstitialAdReady() { return IsInterstitialAdReady(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void ShowInterstitialAd() { ShowInterstitialAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void ShowInterstitialAd() { ShowInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void LoadRewardedAd() { LoadRewardedAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void LoadRewardedAd() { LoadRewardedAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static bool IsRewardedAdReady() { return IsRewardedAdReady(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static bool IsRewardedAdReady() { return IsRewardedAdReady(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void ShowRewardedAd() { ShowRewardedAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void ShowRewardedAd() { ShowRewardedAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void LoadRewardedInterstitialAd() { LoadRewardedInterstitialAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void LoadRewardedInterstitialAd() { LoadRewardedInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static bool IsRewardedInterstitialAdReady() { return IsRewardedInterstitialAdReady(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static bool IsRewardedInterstitialAdReady() { return IsRewardedInterstitialAdReady(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void ShowRewardedInterstitialAd() { ShowRewardedInterstitialAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void ShowRewardedInterstitialAd() { ShowRewardedInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        private static void LoadAppOpenAd() { LoadAppOpenAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        private static void LoadAppOpenAd() { LoadAppOpenAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        private static bool IsAppOpenAdReady() { return IsAppOpenAdReady(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        private static bool IsAppOpenAdReady() { return IsAppOpenAdReady(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        private static void ShowAppOpenAd() { ShowAppOpenAd(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        private static void ShowAppOpenAd() { ShowAppOpenAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
 #if PANCAKE_ADMOB_ENABLE
         private static void RegisterAppStateChange() { GoogleMobileAds.Api.AppStateEventNotifier.AppStateChanged += OnAppStateChanged; }
@@ -461,6 +461,6 @@ namespace Pancake.Monetization
 #endif
 
 
-        public static void ShowConsentFrom() { ShowConsentForm(GetClientAlreadySetup(Settings.CurrentNetwork)); }
+        public static void ShowConsentFrom() { ShowConsentForm(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
     }
 }

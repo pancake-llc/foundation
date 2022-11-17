@@ -325,6 +325,7 @@ namespace Pancake.Editor
             if (foldout && drawer != null) drawer();
 
             EditorGUILayout.EndVertical();
+            Uniform.SpaceOneLine();
         }
 
         /// <summary>
@@ -371,6 +372,7 @@ namespace Pancake.Editor
             if (foldout && drawer != null) drawer();
 
             EditorGUILayout.EndVertical();
+            Uniform.SpaceTwoLine();
         }
 
         /// <summary>

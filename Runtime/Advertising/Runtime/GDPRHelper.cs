@@ -35,6 +35,6 @@ namespace Pancake.Monetization
             Time.timeScale = 1;
         }
 
-        public void OnButtonPrivacyPolicyPressed() { Application.OpenURL(Settings.AdSettings.PrivacyPolicyUrl); }
+        public void OnButtonPrivacyPolicyPressed() { Application.OpenURL(AdSettings.AdCommonSettings.PrivacyPolicyUrl); }
     }
 }

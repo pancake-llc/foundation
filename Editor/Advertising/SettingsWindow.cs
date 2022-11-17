@@ -12,7 +12,7 @@ namespace Pancake.Monetization.Editor
 
         private void OnGUI()
         {
-            if (_editor == null) _editor = UnityEditor.Editor.CreateEditor(Settings.Instance);
+            if (_editor == null) _editor = UnityEditor.Editor.CreateEditor(AdSettings.Instance);
 
             if (_editor == null)
             {
