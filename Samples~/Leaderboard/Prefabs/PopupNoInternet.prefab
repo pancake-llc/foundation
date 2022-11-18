@@ -438,8 +438,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Please check your internet connection and try again!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 76b02809b7adcf14794761b09750c701, type: 2}
-  m_sharedMaterial: {fileID: -3864341688851990548, guid: 76b02809b7adcf14794761b09750c701, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
+  m_sharedMaterial: {fileID: 7374927986402738804, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -649,8 +649,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Connection Error
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 76b02809b7adcf14794761b09750c701, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: e348b69869544ae42a9bb88a94757354, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
+  m_sharedMaterial: {fileID: 7374927986402738804, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -784,8 +784,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: OK
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 76b02809b7adcf14794761b09750c701, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: e348b69869544ae42a9bb88a94757354, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
+  m_sharedMaterial: {fileID: 7374927986402738804, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -942,55 +942,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d56f377c46db4448a3eab1d6ae83006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTimeScale: 0
-  onBeforeShow:
-    m_PersistentCalls:
-      m_Calls: []
-  onAfterShow:
-    m_PersistentCalls:
-      m_Calls: []
-  onBeforeClose:
-    m_PersistentCalls:
-      m_Calls: []
-  onAfterClose:
-    m_PersistentCalls:
-      m_Calls: []
-  closeByClickContainer: 0
-  closeByClickBackground: 0
-  closeByBackButton: 0
-  closeButtons:
-  - {fileID: 1753878526095301884}
-  startScale: {x: 0, y: 0}
-  uniqueId: 01GA8MSJ9JTABYVPJ7SE3ASWS3
-  motionAffectDisplay: 0
-  endValueDisplay: {x: 1, y: 1}
-  positionToDisplay: {x: 0, y: 0}
-  positionFromDisplay: {x: 0, y: 0}
-  durationDisplay: 0.25
-  interpolatorDisplay:
-    ease: 0
-    strength: 0
-    customCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  motionAffectHide: 0
-  endValueHide: {x: 0, y: 0}
-  positionToHide: {x: 0, y: 0}
-  durationHide: 0.25
-  interpolatorHide:
-    ease: 0
-    strength: 0
-    customCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  backgroundTransform: {fileID: 0}
-  backgroundCanvasGroup: {fileID: 0}
-  containerTransform: {fileID: 0}
-  containerCanvasGroup: {fileID: 0}
   btnOk: {fileID: 1753878526095301884}

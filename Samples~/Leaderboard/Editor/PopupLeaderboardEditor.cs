@@ -144,7 +144,7 @@ namespace Pancake.Editor
         protected virtual void OnDrawExtraSetting()
         {
             Uniform.SpaceOneLine();
-            Uniform.DrawUppercaseSection("UIPOPUP_LEADERBOARD", "LEADERBOARD SETTING", DrawSetting);
+            Uniform.DrawGroupFoldout("UIPOPUP_LEADERBOARD", "LEADERBOARD SETTING", DrawSetting);
         }
 
         private void DrawSetting()
@@ -224,7 +224,7 @@ namespace Pancake.Editor
                 EditorGUILayout.EndHorizontal();
             }
 
-            Uniform.DrawUppercaseSection("LB_COLOR_RANK1",
+            Uniform.DrawGroupFoldout("LB_COLOR_RANK1",
                 "COLOR RANK 1",
                 () =>
                 {
@@ -237,7 +237,7 @@ namespace Pancake.Editor
                 false);
 
 
-            Uniform.DrawUppercaseSection("LB_COLOR_RANK2",
+            Uniform.DrawGroupFoldout("LB_COLOR_RANK2",
                 "COLOR RANK 2",
                 () =>
                 {
@@ -250,7 +250,7 @@ namespace Pancake.Editor
                 false);
 
 
-            Uniform.DrawUppercaseSection("LB_COLOR_RANK3",
+            Uniform.DrawGroupFoldout("LB_COLOR_RANK3",
                 "COLOR RANK 3",
                 () =>
                 {
@@ -262,7 +262,7 @@ namespace Pancake.Editor
                 },
                 false);
 
-            Uniform.DrawUppercaseSection("LB_COLOR_RANKYOU",
+            Uniform.DrawGroupFoldout("LB_COLOR_RANKYOU",
                 "COLOR RANK YOU",
                 () =>
                 {
@@ -274,7 +274,7 @@ namespace Pancake.Editor
                 },
                 false);
 
-            Uniform.DrawUppercaseSection("LB_COLOR_OUTRANK",
+            Uniform.DrawGroupFoldout("LB_COLOR_OUTRANK",
                 "COLOR OUT RANK",
                 () =>
                 {
