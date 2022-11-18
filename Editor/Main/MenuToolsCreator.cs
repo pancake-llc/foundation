@@ -81,7 +81,7 @@ namespace Pancake.Editor
             var _ = Pancake.IAP.IAPSettings.Instance;
         }
         
-        [MenuItem("Tools/Pancake/Advertisement %E", false, 1)]
+        [MenuItem("Tools/Pancake/Advertisement %E", false)]
         public static void MenuOpenSettings()
         {
             var _ = Monetization.AdSettings.Instance;
