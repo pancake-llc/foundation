@@ -429,7 +429,7 @@ namespace Pancake.Editor
         }
 
         private const string DEFAULT_RESOURCE_PATH = "Assets/_Root/Resources";
-        private const string DEFAULT_ADDRESSABLE_PATH = "Assets/_Root/Storages";
+        private const string DEFAULT_STORAGE_PATH = "Assets/_Root/Storages";
 
         public static string DefaultResourcesPath()
         {
@@ -439,8 +439,8 @@ namespace Pancake.Editor
 
         public static string DefaultStoragesPath()
         {
-            if (!DEFAULT_ADDRESSABLE_PATH.DirectoryExists()) DEFAULT_ADDRESSABLE_PATH.CreateDirectory();
-            return DEFAULT_ADDRESSABLE_PATH;
+            if (!DEFAULT_STORAGE_PATH.DirectoryExists()) DEFAULT_STORAGE_PATH.CreateDirectory();
+            return DEFAULT_STORAGE_PATH;
         }
 
         // return true if child is childrent of parent
