@@ -24,6 +24,22 @@ Add the lines below to `Packages/manifest.json`
 
 # Usages
 
+Summary
+
+- [Anti Singleton](#anti-singleton)
+- [Level Editor](#level-editor)
+- [Notification](#notification)
+- [Loading Scene](#loading-scene)
+- [Timer](#timer)
+- [Archive](#archive)
+- [SimpleJson](#simplejson)
+- [Linq](#linq)
+- [Facebook](#facebook)
+- [Playfab](#playfab)
+- [IAP](#iap)
+- [Ads](#advertisement)
+
+
 ## ANTI SINGLETON
 
 ```csharp
@@ -46,6 +62,7 @@ Add the lines below to `Packages/manifest.json`
 /// we're creating a dependency between these two classes
 /// </summary> 
 ```
+
 
 ## LEVEL EDITOR
 
@@ -101,6 +118,7 @@ Right click to specifically pickup object to show menu
   <img src="https://user-images.githubusercontent.com/44673303/198229743-c8f0177c-7d97-466e-ab1f-861daa936a79.png" width="600"  alt=""/>
 </p>
 
+
 ## NOTIFICATION
 
 - Add component `NotificationConsole` into object has dont destroy to reschedule each time go to background and cancel when back to forceground
@@ -126,6 +144,7 @@ public void UpdateDeliveryTimeByIncremental(int index, int indexData, int custom
 
 - Version 2.+ require minimum android api support is 5.+
 
+
 ## LOADING SCENE
 
 <p style="text-align: center;">
@@ -145,6 +164,7 @@ public void LoadScene(string sceneName, string subScene, Func<bool> funcWaiting 
 <p style="text-align: center;">
   <img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.19/img/create-loading-prefab2.png" width="600"  alt=""/>
 </p>
+
 
 ## TIMER
 
@@ -426,8 +446,6 @@ It will be a little different from System Linq that **Select** is replaced with 
 | Zip            | 1397             | 88                |
 
 
-
-
 ## Facebook
 Require install [facebook](https://github.com/pancake-llc/facebook)
 ### Friend Facebook
@@ -475,6 +493,7 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
         }
     }
 ```
+
 
 ## PlayFab
 ### Leaderboard
@@ -568,7 +587,6 @@ Product.PurchaseRemoveads(); // ex call purchase remove ads item
                 });
         }
 ```
-
 
 
 ## Advertisement
