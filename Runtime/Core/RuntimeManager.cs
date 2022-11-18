@@ -1,4 +1,5 @@
 using System;
+using Pancake.Monetization;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -97,7 +98,7 @@ namespace Pancake
             GameObject.DontDestroyOnLoad(go);
             go.AddComponent<Monetization.Advertising>();
 #if PANCAKE_IRONSOURCE_ENABLE
-            go.AddComponent<IronSourceStateHandler>();
+            go.AddComponent<Monetization.IronSourceStateHandler>();
 #endif
         }
 

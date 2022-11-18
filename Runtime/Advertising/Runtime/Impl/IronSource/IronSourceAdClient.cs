@@ -143,7 +143,7 @@ namespace Pancake.Monetization
         protected override void InternalInit()
         {
 #if PANCAKE_IRONSOURCE_ENABLE
-            IronSource.Agent.init(Settings.IronSourceSettings.AppKey.Id,
+            IronSource.Agent.init(AdSettings.IronSourceSettings.AppKey.Id,
                 IronSourceAdUnits.REWARDED_VIDEO,
                 IronSourceAdUnits.INTERSTITIAL,
                 IronSourceAdUnits.OFFERWALL,
@@ -163,9 +163,9 @@ namespace Pancake.Monetization
 #if PANCAKE_IRONSOURCE_ENABLE
             if (!_isBannerLoaded)
             {
-                var bannerUnit = Settings.IronSourceSettings.BannerAdUnit;
+                var bannerUnit = AdSettings.IronSourceSettings.BannerAdUnit;
                 var size = bannerUnit.ConvertSize();
-                size.SetAdaptive(Settings.IronSourceSettings.UseAdaptiveBanner);
+                size.SetAdaptive(AdSettings.IronSourceSettings.UseAdaptiveBanner);
                 IronSource.Agent.loadBanner(size, bannerUnit.ConvertPosition());
             }
 
