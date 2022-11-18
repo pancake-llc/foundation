@@ -23,14 +23,13 @@ namespace Pancake.Feedback
         /// <summary>
         /// Whether or not the request has resulted in an error
         /// </summary>
-        public bool RequestIsError =>
-            Request.isHttpError || Request.isNetworkError;
+        public bool RequestIsError => Request.result == UnityWebRequest.Result.ProtocolError || Request.result == UnityWebRequest.Result.ConnectionError;
 
         public string ErrorText
         {
             get
             {
-                if (Request.isHttpError)
+                if (Request.result == UnityWebRequest.Result.ProtocolError)
                     return Request.downloadHandler.text;
 
                 if (RequestIsError)
@@ -40,9 +39,7 @@ namespace Pancake.Feedback
             }
         }
 
-        public AsyncWebRequestData(
-            UnityWebRequest request, AsyncOperation operation
-        )
+        public AsyncWebRequestData(UnityWebRequest request, AsyncOperation operation)
         {
             Request = request;
             Operation = operation;

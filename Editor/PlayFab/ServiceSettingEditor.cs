@@ -41,11 +41,11 @@ namespace Pancake.Editor
             _infoRequestParams = new Field(serializedObject.FindProperty("infoRequestParams"), new GUIContent("Info Request Param"));
         }
 
-        private void OnDisable()
-        {
-            EditorUtility.SetDirty(ServiceSettings.SharedSettings);
-            AssetDatabase.SaveAssets();
-        }
+        // private void OnDisable()
+        // {
+        //     EditorUtility.SetDirty(ServiceSettings.SharedSettings);
+        //     AssetDatabase.SaveAssets();
+        // }
 
         public override void OnInspectorGUI()
         {

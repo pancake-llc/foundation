@@ -41,6 +41,7 @@ Summary
 - [IAP](#iap)
 - [Ads](#advertisement)
 - [Tween](#tween)
+- [Feedback](#feedback)
 
 ## ANTI SINGLETON
 
@@ -441,7 +442,7 @@ It will be a little different from System Linq that **Select** is replaced with 
 | WhereSelect    | 263              | 144               |
 | Zip            | 1397             | 88                |
 
-## Facebook
+## FACEBOOK
 
 Require install [facebook](https://github.com/pancake-llc/facebook)
 
@@ -492,9 +493,9 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
     }
 ```
 
-## PlayFab
+## PLAYFAB
 
-### Leaderboard
+### LEADERBOARD
 
 - install package [playfab](https://github.com/pancake-llc/playfab)
 - install package [ios login](https://github.com/lupidan/apple-signin-unity) (optional if you build for ios platform)
@@ -756,7 +757,7 @@ So, for example, if you use this method in an Editor script, then immediately ca
     </dependencies>
     ```
 
-## Tween
+## TWEEN
 
 ### Delay
 
@@ -792,3 +793,22 @@ var sequence = TweenManager.Sequence();
 ```csharp
  GetComponent<Image>().TweenColor(Color.red, 1f).SetEase(interpolator).SetLoops(-1, ResetMode.InitialValues).OnLoop(() => Debug.Log("LOOP")).Play();
 ```
+
+## FEEDBACK
+
+Goto feedback setting ProjectSetting -> Pancake -> Feedback
+
+![Screenshot_4](https://user-images.githubusercontent.com/44673303/202736092-c9f6b1f5-965a-468b-b16d-2da435b864ce.jpg)
+
+1. Get token by click to button `Get Trello API Token` and accept permissions for application and copy token
+2. Paste token already copy to `Token`
+3. Click button `Authenticate With Token`
+
+![Screenshot_5](https://user-images.githubusercontent.com/44673303/202736080-73b25be4-02c9-4f6a-a53c-db56e8266046.jpg)
+
+4. Create new board and select board using for user push feedback.
+5. See demo in package sample in package manager
+
+- Image demo
+
+![Screenshot_3](https://user-images.githubusercontent.com/44673303/202736089-ba77a2e0-e234-4d8f-815e-d09187a4867a.jpg)
