@@ -51,11 +51,11 @@ namespace Pancake.Editor
             window.Show();
         }
 
-        private void OnEnable() { Uniform.FoldoutSettings.LoadSetting(); }
+        private void OnEnable() { Uniform.LoadFoldoutSetting(); }
 
         private void OnDisable()
         {
-            Uniform.FoldoutSettings.SaveSetting();
+            Uniform.SaveFoldoutSetting();
             EditorUtility.ClearProgressBar();
             AssetDatabase.SaveAssets();
         }
