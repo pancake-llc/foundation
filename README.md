@@ -13,11 +13,13 @@
 Add the lines below to `Packages/manifest.json`
 
 - for dev version
+
 ```csharp
 "com.pancake.heart": "https://github.com/pancake-llc/heart.git",
 ```
 
 - for version `1.0.1`
+
 ```csharp
 "com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.0.1",
 ```
@@ -38,7 +40,7 @@ Summary
 - [Playfab](#playfab)
 - [IAP](#iap)
 - [Ads](#advertisement)
-
+- [Tween](#tween)
 
 ## ANTI SINGLETON
 
@@ -62,7 +64,6 @@ Summary
 /// we're creating a dependency between these two classes
 /// </summary> 
 ```
-
 
 ## LEVEL EDITOR
 
@@ -118,7 +119,6 @@ Right click to specifically pickup object to show menu
   <img src="https://user-images.githubusercontent.com/44673303/198229743-c8f0177c-7d97-466e-ab1f-861daa936a79.png" width="600"  alt=""/>
 </p>
 
-
 ## NOTIFICATION
 
 - Add component `NotificationConsole` into object has dont destroy to reschedule each time go to background and cancel when back to forceground
@@ -144,7 +144,6 @@ public void UpdateDeliveryTimeByIncremental(int index, int indexData, int custom
 
 - Version 2.+ require minimum android api support is 5.+
 
-
 ## LOADING SCENE
 
 <p style="text-align: center;">
@@ -164,7 +163,6 @@ public void LoadScene(string sceneName, string subScene, Func<bool> funcWaiting 
 <p style="text-align: center;">
   <img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.19/img/create-loading-prefab2.png" width="600"  alt=""/>
 </p>
-
 
 ## TIMER
 
@@ -295,13 +293,13 @@ A test scene + script demoing all the features is included with the package in t
 ### Usage Notes / Caveats
 
 1. All timers are destroyed when changing scenes. This behaviour is typically desired, and it happens because timers are updated by a `TimerController` that is also destroyed when
-   the scene changes. Note that as a result of this, creating a `Timer` when the scene is being closed, e.g. in an object's `OnDestroy` method, will result in a Unity error when the
+   the scene changes. Note that as a result of this, creating a `Timer` when the scene is being closed, e.g. in an object's `OnDestroy` method, will result in a Unity error when
+   the
    `TimerController` is spawned (test this on unity 2021+ but no error is thrown)
 
 <p style="text-align: center;">
   <img src="https://i.imgur.com/ESFmFDO.png" width="600"  alt=""/>
 </p>
-
 
 ## ARCHIVE
 
@@ -349,10 +347,10 @@ public class Item : ScriptableObject
 }
 ```
 
-
 ## SimpleJSON
 
 - Serialize
+
 ```c#
 public void Serialize(T data, Stream writer)
 {
@@ -362,6 +360,7 @@ public void Serialize(T data, Stream writer)
 ```
 
 - Deserialize
+
 ```c#
 public T Deserialize(Stream reader)
 {
@@ -371,7 +370,6 @@ public T Deserialize(Stream reader)
 }
 ```
 
-
 ```c#
 var jsonNode = JSON.Parse(jsonString);
 if (jsonNode == null) return jsonString;
@@ -379,7 +377,6 @@ if (jsonNode == null) return jsonString;
 object jsonObject = jsonNode;
 var version = jsonNode["version"].AsInt;
 ```
-
 
 ## Linq
 
@@ -419,7 +416,6 @@ It will be a little different from System Linq that **Select** is replaced with 
 | WhereSpan      | 655              | 674               |
 | Zip            | 17219            | 580               |
 
-
 #### 1000 loop in array 10k element (anroid 11 redmi note 10 pro)
 
 |                | System.Linq (ms) | Pancake.Linq (ms) |
@@ -445,10 +441,12 @@ It will be a little different from System Linq that **Select** is replaced with 
 | WhereSelect    | 263              | 144               |
 | Zip            | 1397             | 88                |
 
-
 ## Facebook
+
 Require install [facebook](https://github.com/pancake-llc/facebook)
+
 ### Friend Facebook
+
 - Facebook application need create with type is `gaming`
 - If permission `gaming_user_picture` not include will return avartar, if include it will return profile picture
 
@@ -494,19 +492,19 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
     }
 ```
 
-
 ## PlayFab
+
 ### Leaderboard
 
 - install package [playfab](https://github.com/pancake-llc/playfab)
 - install package [ios login](https://github.com/lupidan/apple-signin-unity) (optional if you build for ios platform)
 - config setting via menu item `Tool/Pancake/Playfab`
-![image](https://user-images.githubusercontent.com/44673303/193963879-16e7337d-3ebe-42b2-a700-feff49f1f1b0.png)
+  ![image](https://user-images.githubusercontent.com/44673303/193963879-16e7337d-3ebe-42b2-a700-feff49f1f1b0.png)
 - in tab [API Features] enable `Allow client to post player statistics`
-- in tab [Client Profile Options] 
-    - in `Allow client access to profile properties` enable `Display Name`, `Locations`, `Statistics` 
+- in tab [Client Profile Options]
+    - in `Allow client access to profile properties` enable `Display Name`, `Locations`, `Statistics`
     - in `Allow client access to sensitive profile properties` enable `Linked accounts`
-<img width="947" alt="client profile options in playfab title setting" src="https://user-images.githubusercontent.com/44673303/200122264-c5536d05-98c6-411b-b204-1342d65d196b.png">
+      <img width="947" alt="client profile options in playfab title setting" src="https://user-images.githubusercontent.com/44673303/200122264-c5536d05-98c6-411b-b204-1342d65d196b.png">
 
 - install sample leaderboard via PackageManager, sample need install pacakge [ui effect](https://github.com/mob-sakai/UIEffect.git) to run correctly
 - in sample leaderboard has already file config, select `GameServiceSettings` in folder resources to active setting
@@ -518,8 +516,8 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
 GetComponent<ButtonLeaderboard>().valueExpression += () => UnityEngine.Random.Range(1, 100);
 ```
 
-
 ## IAP
+
 ### _SETTING_
 
 1. Auto Init : Always true, when game starting IAPManager auto initialize
@@ -576,6 +574,7 @@ Product.PurchaseRemoveads(); // ex call purchase remove ads item
 ```
 
 - or you can use chain method to handle callback purchase success
+
 ```c#
         private static void OnButtonRemoveAdsClicked()
         {
@@ -587,7 +586,6 @@ Product.PurchaseRemoveads(); // ex call purchase remove ads item
                 });
         }
 ```
-
 
 ## Advertisement
 
@@ -757,3 +755,40 @@ So, for example, if you use this method in an Editor script, then immediately ca
         </iosPods>
     </dependencies>
     ```
+
+## Tween
+
+### Delay
+
+- `CallbackTween`, `ResetableCallbackTween`, `WaitTween` can not use `.Delay()`
+
+```csharp
+        var sequense = TweenManager.Sequence();
+        sequense.Join(transform.TweenPosition(Vector3.one, 1f).OnComplete(() => Debug.Log("DONE POSITION")));
+        sequense.Join(transform.TweenLocalScale(Vector3.one, 1f).OnComplete(() => Debug.Log("DONE SCALE")));
+        sequense.Append(new WaitTween(5));
+        sequense.Append(transform.TweenPosition(Vector3.zero, 1f).OnComplete(() => Debug.Log("DONE POSITION BACK")));
+        sequense.Delay(5);
+        
+        sequense.Play();
+```
+
+```csharp
+        transform.TweenPosition(Vector3.one, 1f).OnComplete(() => Debug.Log("DONE POSITION")).Delay(5f).Play();
+```
+
+### Loop
+
+```csharp
+var sequence = TweenManager.Sequence();
+        sequence.Append(GetComponent<Image>().TweenColor(Color.red, 1f));
+        sequence.SetLoops(10, ResetMode.InitialValues).OnLoop(() => Debug.Log("LOOP SEQUENSE"))
+            .OnComplete(()=> Debug.Log("ON COMPLETED!!!"));
+        sequence.Play();
+```
+
+- for infinite loop pass `-1` as parameter
+
+```csharp
+ GetComponent<Image>().TweenColor(Color.red, 1f).SetEase(interpolator).SetLoops(-1, ResetMode.InitialValues).OnLoop(() => Debug.Log("LOOP")).Play();
+```
