@@ -280,6 +280,14 @@ namespace Pancake
         }
 
         /// <summary>
+        /// Removes the callback from the list to invoke upon OnApplicationPause event.
+        /// is called.
+        /// </summary>
+        /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
+        /// <param name="callback">Callback.</param>
+        public static bool RemovePauseCallback(Action<bool> callback) { return mPauseCallbackQueue.Remove(callback); }
+        
+        /// <summary>
         /// Removes the callback from the list to invoke upon OnApplicationQuit event.
         /// is called.
         /// </summary>
@@ -300,14 +308,6 @@ namespace Pancake
                 mQuitCallbackQueue.Add(callback);
             }
         }
-
-        /// <summary>
-        /// Removes the callback from the list to invoke upon OnApplicationPause event.
-        /// is called.
-        /// </summary>
-        /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
-        /// <param name="callback">Callback.</param>
-        public static bool RemovePauseCallback(Action<bool> callback) { return mPauseCallbackQueue.Remove(callback); }
 
         /// <summary>
         /// Gets the key associated with the specified value in the given dictionary.
