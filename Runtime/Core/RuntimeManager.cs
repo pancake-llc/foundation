@@ -58,7 +58,7 @@ namespace Pancake
 
         private static void OnHandleLogReceived(string log, string stacktrace, LogType type)
         {
-            if (type == LogType.Exception)
+            if (type == LogType.Exception || type == LogType.Error)
             {
                 sessionLog.AppendLine(log);
                 sessionLog.AppendLine(stacktrace);
