@@ -1,7 +1,6 @@
 using System;
-using Pancake.Monetization;
+using System.Text;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Pancake
 {
@@ -12,9 +11,10 @@ namespace Pancake
 
         private static bool mIsInitialized;
 
+        public static StringBuilder sessionLog;
+
         #region Public API
 
-      
         public static event Action Initialized;
 
         /// <summary>
@@ -27,16 +27,18 @@ namespace Pancake
         /// </summary>
         public static void Init()
         {
-            if (mIsInitialized)
-            {
-                return;
-            }
+            if (mIsInitialized) return;
 
             if (Application.isPlaying)
             {
+                // tracking log
+                sessionLog = new StringBuilder();
+                Application.logMessageReceived -= OnHandleLogReceived;
+                Application.logMessageReceived += OnHandleLogReceived;
+                
                 // Initialize runtime Helper.
                 RuntimeHelper.Init();
-                
+
                 var go = new GameObject("RuntimeManager");
                 Configure(go);
 
@@ -53,7 +55,16 @@ namespace Pancake
                 Debug.Log("RuntimeManager has been initialized.");
             }
         }
-        
+
+        private static void OnHandleLogReceived(string log, string stacktrace, LogType type)
+        {
+            if (type == LogType.Exception)
+            {
+                sessionLog.AppendLine(log);
+                sessionLog.AppendLine(stacktrace);
+            }
+        }
+
         public static bool IsInitialized() { return mIsInitialized; }
 
         /// <summary>
