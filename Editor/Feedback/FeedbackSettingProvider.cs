@@ -298,7 +298,7 @@ namespace Pancake.Editor
         }
 
         /// <summary>
-        /// Checks for Easy Feedback (EF) lists on the board
+        /// Checks for Feedback lists on the board
         /// </summary>
         private void UpdateCategories(List[] lists)
         {
@@ -368,7 +368,7 @@ namespace Pancake.Editor
         public void ResetButton()
         {
             if (GUILayout.Button("Reset to Default") && EditorUtility.DisplayDialog("Reset Config",
-                    "Are you sure you want to reset the Easy Feedback config file to default values?",
+                    "Are you sure you want to reset the Feedback config file to default values?",
                     "Yes",
                     "Cancel"))
             {
@@ -380,7 +380,7 @@ namespace Pancake.Editor
                 EditorUtility.SetDirty(setting);
                 AssetDatabase.SaveAssets();
 
-                EditorUtility.DisplayDialog("Reset Successful", "The Easy Feedback config file has been reset to default values.", "OK");
+                EditorUtility.DisplayDialog("Reset Successful", "The Feedback config file has been reset to default values.", "OK");
             }
         }
 
@@ -488,7 +488,7 @@ namespace Pancake.Editor
                 NewBoardButton();
 
                 GUI.skin.label.wordWrap = true;
-                GUILayout.Label("There are no Easy Feeback boards on this account yet!\nClick \"New Board\" above to create one!");
+                GUILayout.Label("There are no Feeback boards on this account yet!\nClick \"New Board\" above to create one!");
             }
         }
 
