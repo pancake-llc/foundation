@@ -5,7 +5,6 @@ using UnityEngine;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable InconsistentNaming
-// ReSharper disable ArrangeTypeMemberModifiers
 namespace Pancake
 {
     /// <summary>
@@ -45,7 +44,7 @@ namespace Pancake
 
         // Member variable used to copy actions from mToMainThreadQueue and
         // execute them on the game thread.
-        List<Action> localToMainThreadQueue = new List<Action>();
+        private List<Action> localToMainThreadQueue = new List<Action>();
 
         // Flag indicating whether there's any action queued to be run on game thread.
         private static volatile bool mIsToMainThreadQueueEmpty = true;
@@ -55,6 +54,9 @@ namespace Pancake
 
         // List of actions to be invoked upon application focus event.
         private static List<Action<bool>> mFocusCallbackQueue = new List<Action<bool>>();
+        
+        // List of action to be invoked upon application quit event
+        private static List<Action> mQuitCallbackQueue = new List<Action>();
 
         // Flag indicating whether this is a dummy instance.
         private static bool mIsDummy;
@@ -278,6 +280,28 @@ namespace Pancake
         }
 
         /// <summary>
+        /// Removes the callback from the list to invoke upon OnApplicationQuit event.
+        /// is called.
+        /// </summary>
+        /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
+        /// <param name="callback">Callback.</param>
+        public static bool RemoveQuitCallback(Action callback) { return mQuitCallbackQueue.Remove(callback); }
+        
+        /// <summary>
+        /// Adds a callback that is invoked upon the Unity event OnApplicationQuit.
+        /// Only works if initilization has done (<see cref="Init"/>).
+        /// </summary>
+        /// <see cref="OnApplicationQuit"/>
+        /// <param name="callback">Callback.</param>
+        public static void AddQuitCallback(Action callback)
+        {
+            if (!mQuitCallbackQueue.Contains(callback))
+            {
+                mQuitCallbackQueue.Add(callback);
+            }
+        }
+
+        /// <summary>
         /// Removes the callback from the list to invoke upon OnApplicationPause event.
         /// is called.
         /// </summary>
@@ -312,7 +336,7 @@ namespace Pancake
 
         // Destroys the proxy game object that carries the instance of this class if one exists.
         // ReSharper disable once UnusedMember.Local
-        static void DestroyProxy()
+        private static void DestroyProxy()
         {
             if (mInstance == null)
                 return;
@@ -326,9 +350,9 @@ namespace Pancake
             mInstance = null;
         }
 
-        void Awake() { DontDestroyOnLoad(gameObject); }
+        private void Awake() { DontDestroyOnLoad(gameObject); }
 
-        void OnDisable()
+        private void OnDisable()
         {
             if (mInstance == this)
             {
@@ -336,7 +360,7 @@ namespace Pancake
             }
         }
 
-        void Update()
+        private void Update()
         {
             if (mIsDummy || mIsToMainThreadQueueEmpty)
             {
@@ -360,7 +384,7 @@ namespace Pancake
             }
         }
 
-        void OnApplicationFocus(bool focused)
+        private void OnApplicationFocus(bool focused)
         {
             for (int i = 0; i < mFocusCallbackQueue.Count; i++)
             {
@@ -376,7 +400,7 @@ namespace Pancake
             }
         }
 
-        void OnApplicationPause(bool paused)
+        private void OnApplicationPause(bool paused)
         {
             for (int i = 0; i < mPauseCallbackQueue.Count; i++)
             {
@@ -388,6 +412,23 @@ namespace Pancake
                 catch (Exception e)
                 {
                     Debug.LogError("Exception executing action in OnApplicationPause:" + e.Message + "\n" + e.StackTrace);
+                }
+            }
+        }
+
+
+        private void OnApplicationQuit()
+        {
+            for (int i = 0; i < mQuitCallbackQueue.Count; i++)
+            {
+                var act = mQuitCallbackQueue[i];
+                try
+                {
+                    act();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Exception executing action in OnApplicationQuit:" + e.Message + "\n" + e.StackTrace);
                 }
             }
         }
