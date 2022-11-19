@@ -54,7 +54,7 @@ namespace Pancake
 
         // List of actions to be invoked upon application focus event.
         private static List<Action<bool>> mFocusCallbackQueue = new List<Action<bool>>();
-        
+
         // List of action to be invoked upon application quit event
         private static List<Action> mQuitCallbackQueue = new List<Action>();
 
@@ -74,10 +74,7 @@ namespace Pancake
         /// </summary>
         public static void Init()
         {
-            if (mInstance != null)
-            {
-                return;
-            }
+            if (mInstance != null) return;
 
             if (Application.isPlaying)
             {
@@ -91,6 +88,10 @@ namespace Pancake
                 mInstance = new RuntimeHelper();
                 mIsDummy = true;
             }
+
+            mPauseCallbackQueue.Clear();
+            mFocusCallbackQueue.Clear();
+            mQuitCallbackQueue.Clear();
         }
 
         /// <summary>
@@ -286,7 +287,7 @@ namespace Pancake
         /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
         /// <param name="callback">Callback.</param>
         public static bool RemovePauseCallback(Action<bool> callback) { return mPauseCallbackQueue.Remove(callback); }
-        
+
         /// <summary>
         /// Removes the callback from the list to invoke upon OnApplicationQuit event.
         /// is called.
@@ -294,7 +295,7 @@ namespace Pancake
         /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
         /// <param name="callback">Callback.</param>
         public static bool RemoveQuitCallback(Action callback) { return mQuitCallbackQueue.Remove(callback); }
-        
+
         /// <summary>
         /// Adds a callback that is invoked upon the Unity event OnApplicationQuit.
         /// Only works if initilization has done (<see cref="Init"/>).
@@ -384,6 +385,14 @@ namespace Pancake
             }
         }
 
+        /// <summary>
+        /// Called when the gamme loses or gains focus. 
+        /// </summary>
+        /// <param name="focused"><c>true</c> if the gameobject has focus, else <c>false</c>.</param>
+        /// <remarks>
+        /// On Windows Store Apps and Windows Phone 8.1 there's no application quit event,
+        /// consider using OnApplicationFocus event when hasFocus equals false.
+        /// </remarks>
         private void OnApplicationFocus(bool focused)
         {
             for (int i = 0; i < mFocusCallbackQueue.Count; i++)
@@ -400,6 +409,10 @@ namespace Pancake
             }
         }
 
+        /// <summary>
+        /// Called when the application pauses.
+        /// </summary>
+        /// <param name="paused"><c>true</c> if the application is paused, else <c>false</c>.</param>
         private void OnApplicationPause(bool paused)
         {
             for (int i = 0; i < mPauseCallbackQueue.Count; i++)
@@ -416,7 +429,16 @@ namespace Pancake
             }
         }
 
-
+        /// <summary>
+        /// Called before the application quits.
+        /// </summary>
+        /// <remarks>
+        /// iOS applications are usually suspended and do not quit.
+        /// On Windows Store Apps and Windows Phone 8.1 there's no application quit event,
+        /// consider using OnApplicationFocus event when focusStatus equals false.
+        /// On WebGL is not possible to implement OnApplicationQuit due to nature of the
+        /// browser tabs closing.
+        /// </remarks>
         private void OnApplicationQuit()
         {
             for (int i = 0; i < mQuitCallbackQueue.Count; i++)

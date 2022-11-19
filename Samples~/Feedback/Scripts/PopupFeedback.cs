@@ -94,7 +94,7 @@ namespace Pancake.Feedback
         {
             if (FeedbackSettings.Instance.includeScreenshot)
             {
-                var filename = "debug-" + DateTime.Now.ToString("DDmmyyyy-HHmmss") + ".png";
+                var filename = "debug-" + DateTime.Now.ToString("ddMMyyyy-HHmmss") + ".png";
                 _screenshotPath = Path.Combine(Application.persistentDataPath, filename);
 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
                 ScreenCapture.CaptureScreenshot(filename);
@@ -159,6 +159,11 @@ namespace Pancake.Feedback
             }
 
             _screenshotPath = "";
+        }
+
+        private void OnDisable()
+        {
+            if (File.Exists(_screenshotPath)) File.Delete(_screenshotPath);
         }
 
         private IEnumerator SubmitAsync()

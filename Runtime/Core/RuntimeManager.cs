@@ -1,5 +1,7 @@
 using System;
+using System.Globalization;
 using System.Text;
+using System.IO;
 using UnityEngine;
 
 namespace Pancake
@@ -11,7 +13,7 @@ namespace Pancake
 
         private static bool mIsInitialized;
 
-        public static StringBuilder sessionLog;
+        public static StringBuilder sessionLogError;
 
         #region Public API
 
@@ -32,15 +34,19 @@ namespace Pancake
             if (Application.isPlaying)
             {
                 // tracking log
-                sessionLog = new StringBuilder();
+                sessionLogError = new StringBuilder();
                 Application.logMessageReceived -= OnHandleLogReceived;
                 Application.logMessageReceived += OnHandleLogReceived;
-                
+
                 // Initialize runtime Helper.
                 RuntimeHelper.Init();
+                RuntimeHelper.AddQuitCallback(OnApplicationQuit);
 
-                var go = new GameObject("RuntimeManager");
-                Configure(go);
+                if (Monetization.AdSettings.RuntimeAutoInitialize)
+                {
+                    var go = new GameObject("RuntimeManager");
+                    Configure(go);
+                }
 
                 // Store the timestamp of the *first* init which can be used 
                 // as a rough approximation of the installation time.
@@ -53,15 +59,6 @@ namespace Pancake
                 Initialized?.Invoke();
 
                 Debug.Log("RuntimeManager has been initialized.");
-            }
-        }
-
-        private static void OnHandleLogReceived(string log, string stacktrace, LogType type)
-        {
-            if (type == LogType.Exception || type == LogType.Error)
-            {
-                sessionLog.AppendLine(log);
-                sessionLog.AppendLine(stacktrace);
             }
         }
 
@@ -97,7 +94,7 @@ namespace Pancake
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitialize()
         {
-            if (Monetization.AdSettings.RuntimeAutoInitialize) Init();
+            Init();
         }
 
         // Adds the required components necessary for the runtime operation of EM modules
@@ -111,6 +108,63 @@ namespace Pancake
 #if PANCAKE_IRONSOURCE_ENABLE
             go.AddComponent<Monetization.IronSourceStateHandler>();
 #endif
+        }
+
+        private static void OnHandleLogReceived(string log, string stacktrace, LogType type)
+        {
+            if (type == LogType.Exception || type == LogType.Error)
+            {
+                sessionLogError.AppendLine(log);
+                sessionLogError.AppendLine(stacktrace);
+            }
+        }
+
+        private static void OnApplicationQuit()
+        {
+            // remove old log outdate
+            RemoveOldDirectory();
+
+            // write current log
+            WriteLocalLog();
+        }
+
+        private static string WriteLocalLog()
+        {
+            var log = sessionLogError.ToString();
+            if (!string.IsNullOrEmpty(log))
+            {
+                // create the directory
+                var feedbackDirectory = $"{Application.persistentDataPath}/userlogs/{DateTime.Now:ddMMyyyy}/{DateTime.Now:HHmmss}";
+                if (!feedbackDirectory.DirectoryExists()) feedbackDirectory.CreateDirectory();
+
+                // save the log
+                File.WriteAllText(feedbackDirectory + "/logs.txt", log);
+
+                return feedbackDirectory;
+            }
+
+            return "";
+        }
+
+        private static void RemoveOldDirectory()
+        {
+            var path = $"{Application.persistentDataPath}/userlogs";
+            if (path.DirectoryExists())
+            {
+                DirectoryInfo info = new DirectoryInfo(path);
+                foreach (var directoryInfo in info.GetDirectories())
+                {
+                    string folderName = directoryInfo.Name;
+                    DateTime.TryParseExact(folderName,
+                        "ddMMyyyy",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out var dateTime);
+                    Debug.Log(folderName);
+
+                    if ((DateTime.Now - dateTime).TotalDays > 3) Directory.Delete($"{path}/{folderName}");
+                }
+            }
         }
 
         #endregion
