@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ReSharper disable FieldCanBeMadeReadOnly.Local
-// ReSharper disable InconsistentNaming
 namespace Pancake
 {
     /// <summary>
@@ -23,89 +21,35 @@ namespace Pancake
         /// has been created before
         /// </summary>
         /// <value>The instance.</value>
-        public static RuntimeHelper Instance
-        {
-            get
-            {
-                if (mInstance == null)
-                {
-                    Init();
-                }
-
-                return mInstance;
-            }
-        }
-
-        // The singleton instance.
-        private static RuntimeHelper mInstance;
+        public static RuntimeHelper Instance { get; private set; }
 
         // List of actions to run on the game thread
-        private static List<Action> mToMainThreadQueue = new List<Action>();
+        private static List<Action> toMainThreadQueue = new List<Action>();
 
         // Member variable used to copy actions from mToMainThreadQueue and
         // execute them on the game thread.
-        private List<Action> localToMainThreadQueue = new List<Action>();
+        private List<Action> _localToMainThreadQueue = new List<Action>();
 
         // Flag indicating whether there's any action queued to be run on game thread.
-        private static volatile bool mIsToMainThreadQueueEmpty = true;
+        private static volatile bool isToMainThreadQueueEmpty = true;
 
         // List of actions to be invoked upon application pause event.
-        private static List<Action<bool>> mPauseCallbackQueue = new List<Action<bool>>();
+        private static List<Action<bool>> pauseCallbackQueue = new List<Action<bool>>();
 
         // List of actions to be invoked upon application focus event.
-        private static List<Action<bool>> mFocusCallbackQueue = new List<Action<bool>>();
+        private static List<Action<bool>> focusCallbackQueue = new List<Action<bool>>();
 
         // List of action to be invoked upon application quit event
-        private static List<Action> mQuitCallbackQueue = new List<Action>();
-
-        // Flag indicating whether this is a dummy instance.
-        private static bool mIsDummy;
+        private static List<Action> quitCallbackQueue = new List<Action>();
 
         #region Public API
-
-        /// <summary>
-        /// Creates the singleton instance of this class and a game object that carries it.
-        /// This must be called once from the main thread.
-        /// You can call it before accessing the <see cref="Instance"/> singleton,
-        /// though <see cref="Instance"/> automatically calls this method if needed, so you can bypass this
-        /// and access that property directly, provided that you're on the main thread.
-        /// Also note that this method does nothing if initialization has been done before,
-        /// so it's safe to call it multiple times.
-        /// </summary>
-        public static void Init()
-        {
-            if (mInstance != null) return;
-
-            if (Application.isPlaying)
-            {
-                var go = new GameObject("RuntimeHelper") {hideFlags = HideFlags.HideAndDontSave};
-                mInstance = go.AddComponent<RuntimeHelper>();
-                DontDestroyOnLoad(go);
-            }
-            else
-            {
-                // ReSharper disable once Unity.IncorrectMonoBehaviourInstantiation
-                mInstance = new RuntimeHelper();
-                mIsDummy = true;
-            }
-
-            mPauseCallbackQueue.Clear();
-            mFocusCallbackQueue.Clear();
-            mQuitCallbackQueue.Clear();
-        }
-
-        /// <summary>
-        /// Internally calls <see cref="Init"/>. Basically we're just giving
-        /// the method another name to make things clearer. 
-        /// </summary>
-        public static void InitIfNeeded() { Init(); }
 
         /// <summary>
         /// Determines if a game object attached with this class singleton instance exists.
         /// 
         /// </summary>
         /// <returns><c>true</c> if is initialized; otherwise, <c>false</c>.</returns>
-        public static bool IsInitialized() { return mInstance != null; }
+        public static bool IsInitialized => Instance != null;
 
         /// <summary>
         /// Gets the (roughly accurate) app installation timestamp in local timezone. 
@@ -114,7 +58,7 @@ namespace Pancake
         /// no value was stored.
         /// </summary>
         /// <returns>The app installation time in local timezone.</returns>
-        public static DateTime GetAppInstallationTime() { return RuntimeManager.GetAppInstallationTimestamp(); }
+        public static DateTime GetAppInstallationTime => RuntimeManager.GetAppInstallationTimestamp;
 
         /// <summary>
         /// Starts a coroutine from non-MonoBehavior objects.
@@ -122,10 +66,8 @@ namespace Pancake
         /// <param name="routine">Routine.</param>
         public static Coroutine RunCoroutine(IEnumerator routine)
         {
-            if (routine != null)
-                return Instance.StartCoroutine(routine);
-            else
-                return null;
+            if (routine != null) return Instance.StartCoroutine(routine);
+            return null;
         }
 
         /// <summary>
@@ -141,7 +83,7 @@ namespace Pancake
         /// <summary>
         /// Converts the specified action to one that runs on the main thread.
         /// The converted action will be invoked upon the next Unity Update event.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <returns>The main thread.</returns>
         /// <param name="act">Act.</param>
@@ -158,7 +100,7 @@ namespace Pancake
         /// <summary>
         /// Converts the specified action to one that runs on the main thread.
         /// The converted action will be invoked upon the next Unity Update event.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <returns>The main thread.</returns>
         /// <param name="act">Act.</param>
@@ -176,7 +118,7 @@ namespace Pancake
         /// <summary>
         /// Converts the specified action to one that runs on the main thread.
         /// The converted action will be invoked upon the next Unity Update event.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <returns>The main thread.</returns>
         /// <param name="act">Act.</param>
@@ -195,7 +137,7 @@ namespace Pancake
         /// <summary>
         /// Converts the specified action to one that runs on the main thread.
         /// The converted action will be invoked upon the next Unity Update event.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <returns>The main thread.</returns>
         /// <param name="act">Act.</param>
@@ -215,46 +157,41 @@ namespace Pancake
         /// <summary>
         /// Schedules the specifies action to be run on the main thread (game thread).
         /// The action will be invoked upon the next Unity Update event.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <param name="action">Action.</param>
         public static void RunOnMainThread(Action action)
         {
             if (action == null)
             {
-                throw new ArgumentNullException("action");
-            }
-
-            if (mIsDummy)
-            {
-                return;
+                throw new ArgumentNullException(nameof(action));
             }
 
             // Note that this requires the singleton game object to be created first (for Update() to run).
-            if (!IsInitialized())
+            if (!IsInitialized)
             {
                 Debug.LogError("Using RunOnMainThread without initializing Helper.");
                 return;
             }
 
-            lock (mToMainThreadQueue)
+            lock (toMainThreadQueue)
             {
-                mToMainThreadQueue.Add(action);
-                mIsToMainThreadQueueEmpty = false;
+                toMainThreadQueue.Add(action);
+                isToMainThreadQueueEmpty = false;
             }
         }
 
         /// <summary>
         /// Adds a callback that is invoked upon the Unity event OnApplicationFocus.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <see cref="OnApplicationFocus"/>
         /// <param name="callback">Callback.</param>
         public static void AddFocusCallback(Action<bool> callback)
         {
-            if (!mFocusCallbackQueue.Contains(callback))
+            if (!focusCallbackQueue.Contains(callback))
             {
-                mFocusCallbackQueue.Add(callback);
+                focusCallbackQueue.Add(callback);
             }
         }
 
@@ -264,19 +201,19 @@ namespace Pancake
         /// </summary>
         /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
         /// <param name="callback">Callback.</param>
-        public static bool RemoveFocusCallback(Action<bool> callback) { return mFocusCallbackQueue.Remove(callback); }
+        public static bool RemoveFocusCallback(Action<bool> callback) { return focusCallbackQueue.Remove(callback); }
 
         /// <summary>
         /// Adds a callback that is invoked upon the Unity event OnApplicationPause.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <see cref="OnApplicationPause"/>
         /// <param name="callback">Callback.</param>
         public static void AddPauseCallback(Action<bool> callback)
         {
-            if (!mPauseCallbackQueue.Contains(callback))
+            if (!pauseCallbackQueue.Contains(callback))
             {
-                mPauseCallbackQueue.Add(callback);
+                pauseCallbackQueue.Add(callback);
             }
         }
 
@@ -286,7 +223,7 @@ namespace Pancake
         /// </summary>
         /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
         /// <param name="callback">Callback.</param>
-        public static bool RemovePauseCallback(Action<bool> callback) { return mPauseCallbackQueue.Remove(callback); }
+        public static bool RemovePauseCallback(Action<bool> callback) { return pauseCallbackQueue.Remove(callback); }
 
         /// <summary>
         /// Removes the callback from the list to invoke upon OnApplicationQuit event.
@@ -294,19 +231,19 @@ namespace Pancake
         /// </summary>
         /// <returns><c>true</c>, if focus callback was removed, <c>false</c> otherwise.</returns>
         /// <param name="callback">Callback.</param>
-        public static bool RemoveQuitCallback(Action callback) { return mQuitCallbackQueue.Remove(callback); }
+        public static bool RemoveQuitCallback(Action callback) { return quitCallbackQueue.Remove(callback); }
 
         /// <summary>
         /// Adds a callback that is invoked upon the Unity event OnApplicationQuit.
-        /// Only works if initilization has done (<see cref="Init"/>).
+        /// Only works if initilization has done (<see cref="RuntimeManager.Init"/>).
         /// </summary>
         /// <see cref="OnApplicationQuit"/>
         /// <param name="callback">Callback.</param>
         public static void AddQuitCallback(Action callback)
         {
-            if (!mQuitCallbackQueue.Contains(callback))
+            if (!quitCallbackQueue.Contains(callback))
             {
-                mQuitCallbackQueue.Add(callback);
+                quitCallbackQueue.Add(callback);
             }
         }
 
@@ -339,49 +276,51 @@ namespace Pancake
         // ReSharper disable once UnusedMember.Local
         private static void DestroyProxy()
         {
-            if (mInstance == null)
-                return;
+            if (!IsInitialized) return;
 
-            if (!mIsToMainThreadQueueEmpty || mPauseCallbackQueue.Count > 0 || mFocusCallbackQueue.Count > 0)
-                return;
+            if (!isToMainThreadQueueEmpty || pauseCallbackQueue.Count > 0 || focusCallbackQueue.Count > 0) return;
 
-            if (!mIsDummy)
-                Destroy(mInstance.gameObject);
-
-            mInstance = null;
+            Destroy(Instance.gameObject);
+            Instance = null;
         }
 
-        private void Awake() { DontDestroyOnLoad(gameObject); }
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+            }
+
+            DontDestroyOnLoad(gameObject);
+        }
 
         private void OnDisable()
         {
-            if (mInstance == this)
-            {
-                mInstance = null;
-            }
+            if (Instance == this) Instance = null;
         }
 
         private void Update()
         {
-            if (mIsDummy || mIsToMainThreadQueueEmpty)
-            {
-                return;
-            }
+            if (isToMainThreadQueueEmpty) return;
 
             // Copy the shared queue into a local queue while
             // preventing other threads to modify it.
-            localToMainThreadQueue.Clear();
-            lock (mToMainThreadQueue)
+            _localToMainThreadQueue.Clear();
+            lock (toMainThreadQueue)
             {
-                localToMainThreadQueue.AddRange(mToMainThreadQueue);
-                mToMainThreadQueue.Clear();
-                mIsToMainThreadQueueEmpty = true;
+                _localToMainThreadQueue.AddRange(toMainThreadQueue);
+                toMainThreadQueue.Clear();
+                isToMainThreadQueueEmpty = true;
             }
 
             // Execute queued actions (from local queue).
-            for (int i = 0; i < localToMainThreadQueue.Count; i++)
+            for (int i = 0; i < _localToMainThreadQueue.Count; i++)
             {
-                localToMainThreadQueue[i].Invoke();
+                _localToMainThreadQueue[i].Invoke();
             }
         }
 
@@ -395,9 +334,9 @@ namespace Pancake
         /// </remarks>
         private void OnApplicationFocus(bool focused)
         {
-            for (int i = 0; i < mFocusCallbackQueue.Count; i++)
+            for (int i = 0; i < focusCallbackQueue.Count; i++)
             {
-                var act = mFocusCallbackQueue[i];
+                var act = focusCallbackQueue[i];
                 try
                 {
                     act(focused);
@@ -415,9 +354,9 @@ namespace Pancake
         /// <param name="paused"><c>true</c> if the application is paused, else <c>false</c>.</param>
         private void OnApplicationPause(bool paused)
         {
-            for (int i = 0; i < mPauseCallbackQueue.Count; i++)
+            for (int i = 0; i < pauseCallbackQueue.Count; i++)
             {
-                var act = mPauseCallbackQueue[i];
+                var act = pauseCallbackQueue[i];
                 try
                 {
                     act(paused);
@@ -441,9 +380,9 @@ namespace Pancake
         /// </remarks>
         private void OnApplicationQuit()
         {
-            for (int i = 0; i < mQuitCallbackQueue.Count; i++)
+            for (int i = 0; i < quitCallbackQueue.Count; i++)
             {
-                var act = mQuitCallbackQueue[i];
+                var act = quitCallbackQueue[i];
                 try
                 {
                     act();
@@ -455,6 +394,6 @@ namespace Pancake
             }
         }
 
-        #endregion // Internal Stuff
+        #endregion
     }
 }

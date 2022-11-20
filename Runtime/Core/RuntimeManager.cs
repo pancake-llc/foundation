@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake
 {
@@ -11,13 +12,13 @@ namespace Pancake
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
         private const string APP_INSTALLATION_TIMESTAMP_PPKEY = "APP_INSTALLATION_TIMESTAMP";
 
-        private static bool mIsInitialized;
+        private static bool isInitialized;
 
         public static StringBuilder sessionLogError;
 
         #region Public API
 
-        public static event Action Initialized;
+        public static event Action OnInitialized;
 
         /// <summary>
         /// Initializes the runtime. Always do this before
@@ -27,9 +28,9 @@ namespace Pancake
         /// safe to be called multiple times. This method must be called on 
         /// the main thread.
         /// </summary>
-        public static void Init()
+        private static void Init()
         {
-            if (mIsInitialized) return;
+            if (isInitialized) return;
 
             if (Application.isPlaying)
             {
@@ -39,30 +40,28 @@ namespace Pancake
                 Application.logMessageReceived += OnHandleLogReceived;
 
                 // Initialize runtime Helper.
-                RuntimeHelper.Init();
+                var runtimeHelper = new GameObject("RuntimeHelper") {hideFlags = HideFlags.HideInHierarchy};
+                runtimeHelper.AddComponent<RuntimeHelper>();
+                Object.DontDestroyOnLoad(runtimeHelper);
                 RuntimeHelper.AddQuitCallback(OnApplicationQuit);
 
-                if (Monetization.AdSettings.RuntimeAutoInitialize)
-                {
-                    var go = new GameObject("RuntimeManager");
-                    Configure(go);
-                }
+                if (Monetization.AdSettings.RuntimeAutoInitialize) AdConfigure(runtimeHelper);
 
                 // Store the timestamp of the *first* init which can be used 
                 // as a rough approximation of the installation time.
                 if (StorageUtil.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch) == UnixEpoch) StorageUtil.SetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, DateTime.Now);
 
-                // Done init.
-                mIsInitialized = true;
-
                 // Raise the event.
-                Initialized?.Invoke();
+                OnInitialized?.Invoke();
+
+                // Done init.
+                isInitialized = true;
 
                 Debug.Log("RuntimeManager has been initialized.");
             }
         }
 
-        public static bool IsInitialized() { return mIsInitialized; }
+        public static bool IsInitialized() { return isInitialized; }
 
         /// <summary>
         /// Gets the installation timestamp of this app in local timezone.
@@ -71,7 +70,7 @@ namespace Pancake
         /// provided that the initialization is done soon after app launch.
         /// </summary>
         /// <returns>The installation timestamp.</returns>
-        public static DateTime GetAppInstallationTimestamp() { return StorageUtil.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch); }
+        public static DateTime GetAppInstallationTimestamp => StorageUtil.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch);
 
         /// <summary>
         /// Enables or disables Unity debug log.
@@ -92,18 +91,13 @@ namespace Pancake
 
         //Auto initialization
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void AutoInitialize()
-        {
-            Init();
-        }
+        private static void AutoInitialize() { Init(); }
 
-        // Adds the required components necessary for the runtime operation of EM modules
+        // Adds the required components necessary for the runtime operation of Advertising
         // to the game object this instance is attached to.
-        private static void Configure(GameObject go)
+        private static void AdConfigure(GameObject go)
         {
             // This game object must prevail.
-            // ReSharper disable once AccessToStaticMemberViaDerivedType
-            GameObject.DontDestroyOnLoad(go);
             go.AddComponent<Monetization.Advertising>();
 #if PANCAKE_IRONSOURCE_ENABLE
             go.AddComponent<Monetization.IronSourceStateHandler>();
