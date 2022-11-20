@@ -104,6 +104,12 @@ namespace Pancake
 #endif
         }
 
+        /// <summary>
+        /// handle when receive log
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="stacktrace"></param>
+        /// <param name="type"></param>
         private static void OnHandleLogReceived(string log, string stacktrace, LogType type)
         {
             if (type == LogType.Exception || type == LogType.Error)
@@ -116,12 +122,16 @@ namespace Pancake
         private static void OnApplicationQuit()
         {
             // remove old log outdate
-            RemoveOldDirectory();
+            RemoveOldLogDirectory(3);
 
             // write current log
             WriteLocalLog();
         }
 
+        /// <summary>
+        /// write log to local file
+        /// </summary>
+        /// <returns></returns>
         private static string WriteLocalLog()
         {
             var log = sessionLogError.ToString();
@@ -140,7 +150,11 @@ namespace Pancake
             return "";
         }
 
-        private static void RemoveOldDirectory()
+        /// <summary>
+        /// Removes stale logs that exceed the number of days specified by <paramref name="day"/>
+        /// </summary>
+        /// <param name="day"></param>
+        private static void RemoveOldLogDirectory(int day)
         {
             var path = $"{Application.persistentDataPath}/userlogs";
             if (path.DirectoryExists())
@@ -154,9 +168,8 @@ namespace Pancake
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.None,
                         out var dateTime);
-                    Debug.Log(folderName);
 
-                    if ((DateTime.Now - dateTime).TotalDays > 3) Directory.Delete($"{path}/{folderName}");
+                    if ((DateTime.Now - dateTime).TotalDays >= day) Directory.Delete($"{path}/{folderName}");
                 }
             }
         }
