@@ -43,6 +43,7 @@ namespace Pancake.Feedback
         private string _screenshotPath;
 
         public event Action CollectDataAction;
+        public event Action SubmitFeedbackCompletedAction;
 
         private void Start()
         {
@@ -213,6 +214,7 @@ namespace Pancake.Feedback
             {
                 // report success
                 // you can show popup notification in here
+                OnSubmitFeedbackCompletedAction();
             }
             Hide();
             report = new Report();
@@ -356,5 +358,6 @@ namespace Pancake.Feedback
         }
 
         private void OnCollectDataAction() { CollectDataAction?.Invoke(); }
+        private void OnSubmitFeedbackCompletedAction() { SubmitFeedbackCompletedAction?.Invoke(); }
     }
 }

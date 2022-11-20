@@ -169,7 +169,7 @@ namespace Pancake
                         DateTimeStyles.None,
                         out var dateTime);
 
-                    if ((DateTime.Now - dateTime).TotalDays >= day) Directory.Delete($"{path}/{folderName}");
+                    if ((DateTime.Now - dateTime).TotalDays >= day) $"{path}/{folderName}".DeleteDirectory();
                 }
             }
         }
