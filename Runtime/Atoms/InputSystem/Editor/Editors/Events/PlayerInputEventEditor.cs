@@ -1,4 +1,4 @@
-#if UNITY_2019_1_OR_NEWER
+#if UNITY_2019_1_OR_NEWER && PANCAKE_INPUTSYSTEM
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityAtoms.Editor;

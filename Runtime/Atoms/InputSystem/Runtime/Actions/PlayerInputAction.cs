@@ -1,3 +1,4 @@
+#if PANCAKE_INPUTSYSTEM
 using UnityEngine.InputSystem;
 namespace UnityAtoms.InputSystem
 {
@@ -7,3 +8,5 @@ namespace UnityAtoms.InputSystem
     [EditorIcon("atom-icon-purple")]
     public abstract class PlayerInputAction : AtomAction<PlayerInput> { }
 }
+
+#endif

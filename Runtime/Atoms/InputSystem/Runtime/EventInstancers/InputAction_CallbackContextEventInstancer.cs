@@ -1,3 +1,4 @@
+#if PANCAKE_INPUTSYSTEM
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,3 +11,5 @@ namespace UnityAtoms.InputSystem
     [AddComponentMenu("Unity Atoms/Event Instancers/InputAction_CallbackContext Event Instancer")]
     public class InputAction_CallbackContextEventInstancer : AtomEventInstancer<InputAction.CallbackContext, InputAction_CallbackContextEvent> { }
 }
+
+#endif

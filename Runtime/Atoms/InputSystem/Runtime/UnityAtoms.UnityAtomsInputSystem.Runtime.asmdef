@@ -1,5 +1,6 @@
 {
     "name": "UnityAtoms.UnityAtomsInputSystem.Runtime",
+    "rootNamespace": "",
     "references": [
         "UnityAtoms.UnityAtomsCore.Runtime",
         "UnityAtoms.UnityAtomsBaseAtoms.Runtime",
@@ -14,6 +15,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "",
+            "define": "PANCAKE_INPUTSYSTEM"
+        }
+    ],
     "noEngineReferences": false
 }

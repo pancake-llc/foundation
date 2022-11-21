@@ -1,3 +1,4 @@
+#if PANCAKE_INPUTSYSTEM
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,3 +11,5 @@ namespace UnityAtoms.InputSystem
     [AddComponentMenu("Unity Atoms/Event Instancers/PlayerInput Event Instancer")]
     public class PlayerInputEventInstancer : AtomEventInstancer<PlayerInput, PlayerInputEvent> { }
 }
+
+#endif

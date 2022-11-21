@@ -1,3 +1,4 @@
+#if PANCAKE_INPUTSYSTEM
 using System;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -10,3 +11,5 @@ namespace UnityAtoms.InputSystem
     [Serializable]
     public sealed class InputAction_CallbackContextUnityEvent : UnityEvent<InputAction.CallbackContext> { }
 }
+
+#endif
