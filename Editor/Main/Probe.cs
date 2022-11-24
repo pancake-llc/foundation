@@ -128,6 +128,35 @@ namespace Pancake.Editor
             }
         }
         
+        public static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point, out Vector3 normal)
+        {
+            var results = TempCollection.GetList<ProbeHit>();
+
+            try
+            {
+                PickAllNonAlloc(results, filter, sceneView, guiPosition);
+
+                foreach (var result in results)
+                {
+                    if (result.point.HasValue && result.normal.HasValue)
+                    {
+                        point = result.point.Value;
+                        normal = result.normal.Value;
+                        return result;
+                    }
+                }
+
+                point = DefaultPoint(sceneView, guiPosition);
+                normal = Vector3.up;
+                return null;
+            }
+            finally
+            {
+                results.Dispose();
+            }
+        }
+        
+        
         public static ProbeHit[] PickAll(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, int limit = DEFAULT_LIMIT)
         {
             var results = new List<ProbeHit>();

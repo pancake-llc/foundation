@@ -578,6 +578,7 @@ namespace Pancake.Editor.LevelEditor
 
             if (_currentPickObject == null || !_currentPickObject.pickedObject) return;
             Vector3 mousePosition;
+            Vector3 normal;
             if (sceneView.in2DMode)
             {
                 bool state = InEditor.Get2DMouseScenePosition(out var mousePosition2d);
@@ -601,19 +602,24 @@ namespace Pancake.Editor.LevelEditor
                     var currentPrefabState = GetCurrentPrefabStage();
                     if (currentPrefabState != null)
                     {
-                        (var mouseCast, var hitInfo) = RaycastPoint(GetParent(), EventMousePoint);
+                        var (mouseCast, hitInfo) = RaycastPoint(GetParent(), EventMousePoint);
                         mousePosition = mouseCast;
+                        normal = hitInfo.HasValue ? hitInfo.Value.normal : Vector3.up;
                         raycastHit = hitInfo;
                     }
                     else
                     {
-                        Probe.Pick(ProbeFilter.Default, sceneView, e.mousePosition, out mousePosition);
+                        Probe.Pick(ProbeFilter.Default,
+                            sceneView,
+                            e.mousePosition,
+                            out mousePosition,
+                            out normal);
                         raycastHit = null;
                     }
 
                     float discSize = HandleUtility.GetHandleSize(mousePosition) * 0.4f;
                     Handles.color = new Color(1, 0, 0, 0.5f);
-                    Handles.DrawSolidDisc(mousePosition, Vector3.up, discSize * 0.5f);
+                    Handles.DrawSolidDisc(mousePosition, normal, discSize * 0.5f);
 
                     if (!_previewPickupObject)
                     {
@@ -623,9 +629,7 @@ namespace Pancake.Editor.LevelEditor
                         _previewPickupObject.layer = LayerMask.NameToLayer("Ignore Raycast");
                     }
 
-#pragma warning disable CS8321
                     void SetPosition2()
-#pragma warning restore CS8321
                     {
                         var rendererAttach = _currentPickObject?.pickedObject.GetComponentInChildren<Renderer>();
                         if (raycastHit == null || rendererAttach == null) return;
@@ -634,7 +638,7 @@ namespace Pancake.Editor.LevelEditor
                         _previewPickupObject.transform.position = GetSpawnPosition(rendererAttach, rendererOther, raycastHit.Value);
                     }
 
-                    void SetPosition1()
+                    void SetPosition()
                     {
                         _previewPickupObject.transform.position = mousePosition;
 
@@ -645,13 +649,26 @@ namespace Pancake.Editor.LevelEditor
                                 false,
                                 false))
                         {
-                            float difference = mousePosition.y - bounds.min.y;
-                            _previewPickupObject.transform.position += difference * Vector3.up;
+                            float difference = 0;
+
+                            if (normal == Vector3.up || normal == Vector3.down)
+                            {
+                                difference = mousePosition.y - bounds.min.y;
+                            }
+                            else if (normal == Vector3.right || normal == Vector3.left)
+                            {
+                                difference = mousePosition.x - bounds.min.x;
+                            }
+                            else if (normal == Vector3.forward || normal == Vector3.back)
+                            {
+                                difference = mousePosition.z - bounds.min.z;
+                            }
+
+                            _previewPickupObject.transform.position += difference * normal;
                         }
                     }
 
-                    SetPosition1();
-                    //SetPosition2();
+                    SetPosition();
 
                     if (e.type == EventType.MouseDown && e.button == 0 && _previewPickupObject)
                     {
