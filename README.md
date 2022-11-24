@@ -33,7 +33,6 @@ Summary
 - [Notification](#notification)
 - [Loading Scene](#loading-scene)
 - [Timer](#timer)
-- [Archive](#archive)
 - [SimpleJson](#simplejson)
 - [Linq](#linq)
 - [Facebook](#facebook)
@@ -302,51 +301,6 @@ A test scene + script demoing all the features is included with the package in t
   <img src="https://i.imgur.com/ESFmFDO.png" width="600"  alt=""/>
 </p>
 
-## ARCHIVE
-
-```csharp
-public class ArchiveDemo : MonoBehaviour
-{
-    [SerializeField] private PlayerData playerData;
-    
-    public void Load()
-    {
-        // There's also async version
-        // Usually LoadFile will be called from a different place (e.g load menu, bootstrap) but for simplicity of example I called it here
-        Archive.LoadFile(fileName: "Save");
-
-        playerData = Archive.Load<PlayerData>(key: "PlayerData");
-    }
-
-    public void Save()
-    {
-        Archive.Save(key: "PlayerData", playerData);
-
-        // There's also async version
-        // Usually SaveFile will be called from a different place (e.g save menu) but for simplicity of example I called it here
-        Archive.SaveFile(fileName: "Save");
-    }
-}
-
-
-[MessagePackObject, Serializable]
-public class PlayerData
-{
-    [Key(0), SerializeField] private string playerName;
-    [Key(1), SerializeField] private int level;
-    [Key(2), SerializeField, Array] private List<Item> inventories;
-
-    [Key(3), SerializeField, MessagePackFormatter(typeof(AssetFormatter<Sprite>))]
-    private Sprite avatar;
-}
-
-[CreateAssetMenu, MessagePackFormatter(typeof(AssetFormatter<Item>))]
-public class Item : ScriptableObject
-{
-    [SerializeField] private string itemName;
-    [SerializeField] private int cost;
-}
-```
 
 ## SimpleJSON
 
