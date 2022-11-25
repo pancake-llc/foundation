@@ -769,6 +769,23 @@ Goto feedback setting ProjectSetting -> Pancake -> Feedback
 
 ## Ulid
 
+[Fast .NET C# Implementation of ULID for .NET Core and Unity.](https://github.com/Cysharp/Ulid) it requirement enable unsafe in its asmdef
+
+Similar api to Guid.
+
+- .Ulid.NewUlid()
+- .Ulid.Parse()
+- .Ulid.TryParse()
+- .new Ulid()
+- .ToString()
+- .ToByteArray()
+- .TryWriteBytes()
+- .TryWriteStringify()
+- .ToBase64()
+- .Time
+- .Random
+
+
 ## UGUI
 
 ## Observable Collection
@@ -812,3 +829,5 @@ static void List_CollectionChanged(in NotifyCollectionChangedEventArgs<int> e)
 ## Atom
 
 ## Common
+
+## Inspector
