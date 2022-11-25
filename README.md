@@ -785,6 +785,11 @@ Similar api to Guid.
 - .Time
 - .Random
 
+```csharp
+var stringId = Ulid.NewUlid().ToString();
+```
+
+provide attribute `UlidAttribute` to auto create unique id
 
 ## UGUI
 
