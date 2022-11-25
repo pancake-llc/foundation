@@ -535,5 +535,17 @@ namespace Pancake
         /// </summary>
         // ReSharper disable once InconsistentNaming
         public static RectTransform rectTransform(this GameObject target) { return target.transform as RectTransform; }
+        
+        /// <summary>
+        /// add blank button
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        internal static Button AddBlankButtonComponent(this GameObject target)
+        {
+            var button = target.AddComponent<Button>();
+            button.transition = Selectable.Transition.None;
+            return button;
+        }
     }
 }

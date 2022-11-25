@@ -13,42 +13,135 @@ namespace Pancake.UI
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(Canvas))]
     [RequireComponent(typeof(GraphicRaycaster))]
+    [DeclareFoldoutGroup("basic", Title = "BASIC")]
+    [DeclareFoldoutGroup("event", Title = "EVENT")]
+    [DeclareFoldoutGroup("close", Title = "CLOSE")]
+    [DeclareFoldoutGroup("display", Title = "DISPLAY")]
+    [DeclareHorizontalGroup("display/button")]
+    [DeclareFoldoutGroup("hide", Title = "HIDE")]
+    [DeclareHorizontalGroup("hide/button")]
     public abstract class UIPopup : MonoBehaviour, IPopup
     {
         #region implementation
 
-        [SerializeField] protected bool ignoreTimeScale;
-        [SerializeField] protected UnityEvent onBeforeShow;
-        [SerializeField] protected UnityEvent onAfterShow;
-        [SerializeField] protected UnityEvent onBeforeClose;
-        [SerializeField] protected UnityEvent onAfterClose;
-        [SerializeField] protected bool closeByClickContainer;
-        [SerializeField] protected bool closeByClickBackground;
-        [SerializeField] protected bool closeByBackButton;
-        [SerializeField] private List<Button> closeButtons = new List<Button>();
-        [SerializeField] protected Vector2 startScale;
-        [SerializeField] private string uniqueId;
+        #region prop
 
-        public EMotionAffect motionAffectDisplay = EMotionAffect.Scale;
-        public Vector2 endValueDisplay = Vector2.one;
-        public Vector2 positionToDisplay;
-        public Vector2 positionFromDisplay;
-        [Range(0.01f, 3f)] public float durationDisplay = 0.25f;
-        public Interpolator interpolatorDisplay;
+        #region basic
 
-        public EMotionAffect motionAffectHide = EMotionAffect.Scale;
-        public Vector2 endValueHide = Vector2.zero;
-        public Vector2 positionToHide;
-        [Range(0.01f, 3f)] public float durationHide = 0.25f;
-        public Interpolator interpolatorHide;
+        [SerializeField, Group("basic"), Ulid, PropertyOrder(0)] private string uniqueId;
+        [SerializeField, Group("basic")] protected bool ignoreTimeScale;
 
+        #endregion
+
+        #region event
+
+        [SerializeField, Group("event"), PropertyOrder(0)] protected UnityEvent onBeforeShow;
+        [SerializeField, Group("event")] protected UnityEvent onAfterShow;
+        [SerializeField, Group("event")] protected UnityEvent onBeforeClose;
+        [SerializeField, Group("event")] protected UnityEvent onAfterClose;
+
+        #endregion
+
+        #region close
+
+        [SerializeField, Group("close"), OnValueChanged(nameof(OnCloseByClickContainerChanged)), LabelText("By Click Container"), PropertyOrder(0)]
+        protected bool closeByClickContainer;
+
+        [SerializeField, Group("close"), OnValueChanged(nameof(OnCloseByClickBackgroundChanged)), LabelText("By Click Background")]
+        protected bool closeByClickBackground;
+
+        [SerializeField, Group("close"), LabelText("By Back Button")]
+        protected bool closeByBackButton;
+
+        [SerializeField, Group("close")] private List<Button> closeButtons = new List<Button>();
+
+        #endregion
+
+        #region display
+
+        [SerializeField, Group("display"), LabelText("Type"), PropertyOrder(1)]
+        protected EMotionAffect motionAffectDisplay = EMotionAffect.Scale;
+
+        [SerializeField, Group("display"), LabelText("Scale"), HideIf(nameof(motionAffectDisplay), EMotionAffect.Position)]
+        protected Vector2 endValueDisplay = Vector2.one;
+
+        [Button("Save From"), ShowIf(nameof(ConditionDisplayPosition)), Group("display/button"), PropertyOrder(2)]
+        private void SaveFromPosition()
+        {
+            positionFromDisplay = ContainerTransform.localPosition;
+            ContainerTransform.localPosition = Vector3.zero;
+        }
+
+        [Button("Save To"), ShowIf(nameof(ConditionDisplayPosition)), Group("display/button"), PropertyOrder(2)]
+        private void SaveToPosition()
+        {
+            positionToDisplay = ContainerTransform.localPosition;
+            ContainerTransform.localPosition = Vector3.zero;
+        }
+
+        [Button("Clear"), ShowIf(nameof(ConditionDisplayPosition)), Group("display/button"), PropertyOrder(2)]
+        private void ClearPosition()
+        {
+            positionToDisplay = Vector2.zero;
+            positionFromDisplay = Vector2.zero;
+            ContainerTransform.localPosition = Vector3.zero;
+        }
+
+        [SerializeField, Group("display"), ShowIf(nameof(ConditionDisplayPosition)), ReadOnly]
+        protected Vector2 positionToDisplay;
+
+        [SerializeField, Group("display"), ShowIf(nameof(ConditionDisplayPosition)), ReadOnly]
+        protected Vector2 positionFromDisplay;
+
+        [SerializeField, Group("display"), LabelText("Duration")] [Range(0.01f, 3f)]
+        protected float durationDisplay = 0.25f;
+
+        [SerializeField, Group("display"), LabelText("Interpolate")] protected Interpolator interpolatorDisplay;
+
+        #endregion
+
+        #region hide
+
+        [SerializeField, Group("hide"), LabelText("Type"), PropertyOrder(2)]
+        protected EMotionAffect motionAffectHide = EMotionAffect.Scale;
+
+        [Button("Save To"), ShowIf(nameof(ConditionHidePosition)), Group("hide/button"), PropertyOrder(3)]
+        private void SaveHideToPosition()
+        {
+            positionToHide = ContainerTransform.localPosition;
+            ContainerTransform.localPosition = Vector3.zero;
+        }
+
+        [Button("Clear"), ShowIf(nameof(ConditionHidePosition)), Group("hide/button"), PropertyOrder(3)]
+        private void ClearHidePosition()
+        {
+            positionToHide = Vector2.zero;
+            ContainerTransform.localPosition = Vector3.zero;
+        }
+
+        [SerializeField, Group("hide"), LabelText("Scale"), HideIf(nameof(motionAffectHide), EMotionAffect.Position)]
+        protected Vector2 endValueHide = Vector2.zero;
+
+        [SerializeField, Group("hide"), ShowIf(nameof(ConditionHidePosition)), ReadOnly]
+        protected Vector2 positionToHide;
+
+        [SerializeField, Group("hide"), LabelText("Duration")] [Range(0.01f, 3f)]
+        protected float durationHide = 0.25f;
+
+        [SerializeField, Group("hide"), LabelText("Interpolate")] protected Interpolator interpolatorHide;
+
+        #endregion
+
+        #endregion
+
+
+        private Vector2 _startScale;
         private Canvas _canvas;
         private GraphicRaycaster _graphicRaycaster;
-        [SerializeField] private RectTransform backgroundTransform;
-        [SerializeField] private CanvasGroup backgroundCanvasGroup;
-        [SerializeField] private RectTransform containerTransform;
-        [SerializeField] private CanvasGroup containerCanvasGroup;
-
+        private RectTransform _backgroundTransform;
+        private CanvasGroup _backgroundCanvasGroup;
+        private RectTransform _containerTransform;
+        private CanvasGroup _containerCanvasGroup;
         private bool _canActuallyClose;
         private Vector3 _defaultContainerScale;
         private CancellationTokenSource _tokenSourceCheckPressButton;
@@ -83,12 +176,8 @@ namespace Pancake.UI
         {
             get
             {
-                if (backgroundTransform == null)
-                {
-                    backgroundTransform = transform.Find("Background").GetComponent<RectTransform>();
-                }
-
-                return backgroundTransform;
+                if (_backgroundTransform == null) _backgroundTransform = transform.Find("Background").GetComponent<RectTransform>();
+                return _backgroundTransform;
             }
         }
 
@@ -96,8 +185,8 @@ namespace Pancake.UI
         {
             get
             {
-                if (backgroundCanvasGroup == null) backgroundCanvasGroup = transform.Find("Background").GetComponent<CanvasGroup>();
-                return backgroundCanvasGroup;
+                if (_backgroundCanvasGroup == null) _backgroundCanvasGroup = transform.Find("Background").GetComponent<CanvasGroup>();
+                return _backgroundCanvasGroup;
             }
         }
 
@@ -105,8 +194,8 @@ namespace Pancake.UI
         {
             get
             {
-                if (containerTransform == null) containerTransform = transform.Find("Container").GetComponent<RectTransform>();
-                return containerTransform;
+                if (_containerTransform == null) _containerTransform = transform.Find("Container").GetComponent<RectTransform>();
+                return _containerTransform;
             }
         }
 
@@ -114,22 +203,50 @@ namespace Pancake.UI
         {
             get
             {
-                if (containerCanvasGroup == null) containerCanvasGroup = transform.Find("Container").GetComponent<CanvasGroup>();
-                return containerCanvasGroup;
+                if (_containerCanvasGroup == null) _containerCanvasGroup = transform.Find("Container").GetComponent<CanvasGroup>();
+                return _containerCanvasGroup;
             }
         }
 
         public bool Active { get; protected set; }
         public CancellationTokenSource TokenSourceCheckPressButton => _tokenSourceCheckPressButton ?? (_tokenSourceCheckPressButton = new CancellationTokenSource());
 
+        private void OnCloseByClickBackgroundChanged()
+        {
+            BackgroundTransform.TryGetComponent<Button>(out var btn);
 
-#if UNITY_EDITOR
-        /// <summary>
-        /// do not use this
-        /// it only avaiable on editor
-        /// </summary>
-        [Obsolete] public List<Button> CloseButtons => closeButtons;
-#endif
+            if (CloseByClickBackground)
+            {
+                if (btn == null) btn = BackgroundTransform.gameObject.AddBlankButtonComponent();
+                if (!closeButtons.Contains(btn)) closeButtons.Add(btn);
+            }
+            else
+            {
+                if (btn == null) return;
+                DestroyImmediate(btn);
+                closeButtons?.Remove(btn);
+            }
+        }
+
+        private void OnCloseByClickContainerChanged()
+        {
+            ContainerTransform.TryGetComponent<Button>(out var btn);
+
+            if (CloseByClickContainer)
+            {
+                if (btn == null) btn = ContainerTransform.gameObject.AddBlankButtonComponent();
+                if (!closeButtons.Contains(btn)) closeButtons.Add(btn);
+            }
+            else
+            {
+                if (btn == null) return;
+                DestroyImmediate(btn);
+                closeButtons?.Remove(btn);
+            }
+        }
+
+        private bool ConditionDisplayPosition => motionAffectDisplay == EMotionAffect.Position || motionAffectDisplay == EMotionAffect.PositionAndScale;
+        private bool ConditionHidePosition => motionAffectHide == EMotionAffect.Position || motionAffectHide == EMotionAffect.PositionAndScale;
 
         private void Awake() { _defaultContainerScale = ContainerTransform.localScale; }
 
@@ -299,7 +416,7 @@ namespace Pancake.UI
             {
                 case EMotionAffect.Scale:
                     ContainerTransform.pivot = new Vector2(0.5f, 0.5f);
-                    ContainerTransform.localScale = startScale;
+                    ContainerTransform.localScale = _startScale;
                     ContainerTransform.TweenLocalScale(endValueDisplay, durationDisplay)
                         .SetEase(interpolatorDisplay)
                         .OnComplete(() => ContainerCanvasGroup.blocksRaycasts = true)
@@ -315,7 +432,7 @@ namespace Pancake.UI
                     break;
                 case EMotionAffect.PositionAndScale:
                     ContainerTransform.pivot = new Vector2(0.5f, 0.5f);
-                    ContainerTransform.localScale = startScale;
+                    ContainerTransform.localScale = _startScale;
                     ContainerTransform.localPosition = positionFromDisplay;
                     var sequense = TweenManager.Sequence();
                     sequense.Join(ContainerTransform.TweenLocalScale(endValueDisplay, durationDisplay).SetEase(interpolatorDisplay));
