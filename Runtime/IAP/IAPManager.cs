@@ -37,7 +37,7 @@ namespace Pancake.IAP
 
             if (Application.isPlaying)
             {
-                var obj = new GameObject("IAPManager") {hideFlags = HideFlags.HideAndDontSave};
+                var obj = new GameObject("IAPManager") {hideFlags = HideFlags.HideInHierarchy};
                 instance = obj.AddComponent<IAPManager>();
                 instance.InitImpl(IAPSettings.SkusData);
                 DontDestroyOnLoad(obj);
