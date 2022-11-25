@@ -18,10 +18,10 @@ Add the lines below to `Packages/manifest.json`
 "com.pancake.heart": "https://github.com/pancake-llc/heart.git",
 ```
 
-- for version `1.0.1`
+- for version `1.1.0`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.0.1",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.1.0",
 ```
 
 # Usages
@@ -300,7 +300,6 @@ A test scene + script demoing all the features is included with the package in t
 <p style="text-align: center;">
   <img src="https://i.imgur.com/ESFmFDO.png" width="600"  alt=""/>
 </p>
-
 
 ## SimpleJSON
 
