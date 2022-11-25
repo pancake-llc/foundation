@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     {
         internal static void SetupDeviceTest()
         {
-            var configuration = new RequestConfiguration.Builder().SetTestDeviceIds(Settings.AdmobSettings.DevicesTest).build();
+            var configuration = new RequestConfiguration.Builder().SetTestDeviceIds(AdSettings.AdmobSettings.DevicesTest).build();
             MobileAds.SetRequestConfiguration(configuration);
         }
 
@@ -17,7 +17,7 @@ namespace Pancake.Monetization
             // targetting setting
             // extra options
             // consent
-            if (Settings.AdSettings.EnableGDPR) builder.AddExtra("npa", GDPRHelper.GetValueGDPR().ToString());
+            if (AdSettings.AdCommonSettings.EnableGDPR) builder.AddExtra("npa", GDPRHelper.GetValueGDPR().ToString());
 
             return builder.Build();
         }

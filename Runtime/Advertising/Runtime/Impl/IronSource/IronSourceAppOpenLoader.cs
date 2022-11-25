@@ -24,7 +24,7 @@ namespace Pancake.Monetization
         {
             _client = client;
 #if PANCAKE_IRONSOURCE_ENABLE && PANCAKE_ADMOB_ENABLE
-            unit = Settings.IronSourceSettings.AppOpenAdUnit;
+            unit = AdSettings.IronSourceSettings.AppOpenAdUnit;
 #endif
         }
 #if PANCAKE_IRONSOURCE_ENABLE && PANCAKE_ADMOB_ENABLE

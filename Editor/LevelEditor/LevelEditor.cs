@@ -629,6 +629,7 @@ namespace Pancake.Editor.LevelEditor
                         _previewPickupObject.layer = LayerMask.NameToLayer("Ignore Raycast");
                     }
 
+#pragma warning disable CS8321
                     void SetPosition2()
                     {
                         var rendererAttach = _currentPickObject?.pickedObject.GetComponentInChildren<Renderer>();
@@ -637,6 +638,7 @@ namespace Pancake.Editor.LevelEditor
                         if (rendererOther == null) return;
                         _previewPickupObject.transform.position = GetSpawnPosition(rendererAttach, rendererOther, raycastHit.Value);
                     }
+#pragma warning restore CS8321
 
                     void SetPosition()
                     {

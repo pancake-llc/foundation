@@ -59,8 +59,8 @@ namespace Pancake.Monetization
             {
                 RuntimeHelper.RunOnMainThread(() =>
                 {
-                    if (Settings.AdmobSettings.EnableTestMode) Admob.SetupDeviceTest();
-                    if (Settings.AdSettings.EnableGDPR) ShowConsentForm();
+                    if (AdSettings.AdmobSettings.EnableTestMode) Admob.SetupDeviceTest();
+                    if (AdSettings.AdCommonSettings.EnableGDPR) ShowConsentForm();
                     isInitialized = true;
                 });
             });

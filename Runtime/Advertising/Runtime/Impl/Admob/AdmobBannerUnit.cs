@@ -35,7 +35,7 @@ namespace Pancake.Monetization
                 case EBannerSize.FullBanner: return AdSize.IABBanner;
                 case EBannerSize.Leaderboard: return AdSize.Leaderboard;
                 case EBannerSize.SmartBanner:
-                    return Settings.AdmobSettings.UseAdaptiveBanner
+                    return AdSettings.AdmobSettings.UseAdaptiveBanner
                         ? AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth)
                         : AdSize.SmartBanner;
                 default:

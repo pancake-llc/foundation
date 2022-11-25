@@ -125,7 +125,7 @@ namespace Pancake.Monetization
             isInitialized = true;
             AutoLoadingAdMode = AdSettings.AdCommonSettings.AutoLoadingAd;
 #if PANCAKE_ADMOB_ENABLE
-            if (Settings.AdSettings.CurrentNetwork == EAdNetwork.Admob) RegisterAppStateChange();
+            if (AdSettings.AdCommonSettings.CurrentNetwork == EAdNetwork.Admob) RegisterAppStateChange();
 #endif
         }
 

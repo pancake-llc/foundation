@@ -32,7 +32,7 @@ namespace Pancake.Monetization
         {
             R.isShowingAd = false;
             _client.InvokeInterstitialAdHidden();
-            if (Settings.MaxSettings.EnableRequestAdAfterHidden) _client.LoadInterstitialAd();
+            if (AdSettings.MaxSettings.EnableRequestAdAfterHidden) _client.LoadInterstitialAd();
         }
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.InvokeInterstitialAdDisplay(); }

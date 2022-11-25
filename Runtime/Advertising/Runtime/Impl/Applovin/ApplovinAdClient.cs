@@ -156,11 +156,11 @@ namespace Pancake.Monetization
         protected override void InternalInit()
         {
 #if PANCAKE_MAX_ENABLE
-            MaxSdk.SetSdkKey(Settings.MaxSettings.SdkKey);
-            if (Settings.AdSettings.EnableGDPR) MaxSdkCallbacks.OnSdkInitializedEvent += OnSdkInitializedEvent;
+            MaxSdk.SetSdkKey(AdSettings.MaxSettings.SdkKey);
+            if (AdSettings.AdCommonSettings.EnableGDPR) MaxSdkCallbacks.OnSdkInitializedEvent += OnSdkInitializedEvent;
 
             MaxSdk.InitializeSdk();
-            MaxSdk.SetIsAgeRestrictedUser(Settings.MaxSettings.EnableAgeRestrictedUser);
+            MaxSdk.SetIsAgeRestrictedUser(AdSettings.MaxSettings.EnableAgeRestrictedUser);
 #endif
 
             _banner = new ApplovinBannerLoader(this);
@@ -198,56 +198,56 @@ namespace Pancake.Monetization
         protected override void InternalShowBannerAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.BannerAdUnit.Id)) return;
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.BannerAdUnit.Id)) return;
             if (_isBannerDestroyed)
             {
-                MaxSdk.CreateBanner(Settings.MaxSettings.BannerAdUnit.Id, Settings.MaxSettings.BannerAdUnit.ConvertPosition());
+                MaxSdk.CreateBanner(AdSettings.MaxSettings.BannerAdUnit.Id, AdSettings.MaxSettings.BannerAdUnit.ConvertPosition());
                 _isBannerDestroyed = false;
             }
 
-            MaxSdk.ShowBanner(Settings.MaxSettings.BannerAdUnit.Id);
+            MaxSdk.ShowBanner(AdSettings.MaxSettings.BannerAdUnit.Id);
 #endif
         }
 
         protected override void InternalHideBannerAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.BannerAdUnit.Id)) return;
-            MaxSdk.HideBanner(Settings.MaxSettings.BannerAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.BannerAdUnit.Id)) return;
+            MaxSdk.HideBanner(AdSettings.MaxSettings.BannerAdUnit.Id);
 #endif
         }
 
         protected override void InternalDestroyBannerAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.BannerAdUnit.Id)) return;
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.BannerAdUnit.Id)) return;
             _isBannerDestroyed = true;
-            MaxSdk.DestroyBanner(Settings.MaxSettings.BannerAdUnit.Id);
+            MaxSdk.DestroyBanner(AdSettings.MaxSettings.BannerAdUnit.Id);
 #endif
         }
 
         protected override void InternalLoadInterstitialAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.InterstitialAdUnit.Id)) return;
-            MaxSdk.LoadInterstitial(Settings.MaxSettings.InterstitialAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.InterstitialAdUnit.Id)) return;
+            MaxSdk.LoadInterstitial(AdSettings.MaxSettings.InterstitialAdUnit.Id);
 #endif
         }
 
         protected override void InternalShowInterstitialAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.InterstitialAdUnit.Id)) return;
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.InterstitialAdUnit.Id)) return;
             R.isShowingAd = true;
-            MaxSdk.ShowInterstitial(Settings.MaxSettings.InterstitialAdUnit.Id);
+            MaxSdk.ShowInterstitial(AdSettings.MaxSettings.InterstitialAdUnit.Id);
 #endif
         }
 
         protected override bool InternalIsInterstitialAdReady()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.InterstitialAdUnit.Id)) return false;
-            return MaxSdk.IsInterstitialReady(Settings.MaxSettings.InterstitialAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.InterstitialAdUnit.Id)) return false;
+            return MaxSdk.IsInterstitialReady(AdSettings.MaxSettings.InterstitialAdUnit.Id);
 #else
             return false;
 #endif
@@ -256,26 +256,26 @@ namespace Pancake.Monetization
         protected override void InternalLoadRewardedAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.RewardedAdUnit.Id)) return;
-            MaxSdk.LoadRewardedAd(Settings.MaxSettings.RewardedAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedAdUnit.Id)) return;
+            MaxSdk.LoadRewardedAd(AdSettings.MaxSettings.RewardedAdUnit.Id);
 #endif
         }
 
         protected override void InternalShowRewardedAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.RewardedAdUnit.Id)) return;
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedAdUnit.Id)) return;
             _isRewardedCompleted = false;
             R.isShowingAd = true;
-            MaxSdk.ShowRewardedAd(Settings.MaxSettings.RewardedAdUnit.Id);
+            MaxSdk.ShowRewardedAd(AdSettings.MaxSettings.RewardedAdUnit.Id);
 #endif
         }
 
         protected override bool InternalIsRewardedAdReady()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.RewardedAdUnit.Id)) return false;
-            return MaxSdk.IsRewardedAdReady(Settings.MaxSettings.RewardedAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedAdUnit.Id)) return false;
+            return MaxSdk.IsRewardedAdReady(AdSettings.MaxSettings.RewardedAdUnit.Id);
 #else
             return false;
 #endif
@@ -284,25 +284,25 @@ namespace Pancake.Monetization
         protected override void InternalLoadRewardedInterstitialAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.RewardedInterstitialAdUnit.Id)) return;
-            MaxSdk.LoadRewardedInterstitialAd(Settings.MaxSettings.RewardedInterstitialAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedInterstitialAdUnit.Id)) return;
+            MaxSdk.LoadRewardedInterstitialAd(AdSettings.MaxSettings.RewardedInterstitialAdUnit.Id);
 #endif
         }
 
         protected override void InternalShowRewardedInterstitialAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.RewardedInterstitialAdUnit.Id)) return;
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedInterstitialAdUnit.Id)) return;
             R.isShowingAd = true;
-            MaxSdk.ShowRewardedInterstitialAd(Settings.MaxSettings.RewardedInterstitialAdUnit.Id);
+            MaxSdk.ShowRewardedInterstitialAd(AdSettings.MaxSettings.RewardedInterstitialAdUnit.Id);
 #endif
         }
 
         protected override bool InternalIsRewardedInterstitialAdReady()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.RewardedInterstitialAdUnit.Id)) return false;
-            return MaxSdk.IsRewardedInterstitialAdReady(Settings.MaxSettings.RewardedInterstitialAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedInterstitialAdUnit.Id)) return false;
+            return MaxSdk.IsRewardedInterstitialAdReady(AdSettings.MaxSettings.RewardedInterstitialAdUnit.Id);
 #else
             return false;
 #endif
@@ -311,24 +311,24 @@ namespace Pancake.Monetization
         protected override void InternalLoadAppOpenAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.AppOpenAdUnit.Id)) return;
-            MaxSdk.LoadAppOpenAd(Settings.MaxSettings.AppOpenAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.AppOpenAdUnit.Id)) return;
+            MaxSdk.LoadAppOpenAd(AdSettings.MaxSettings.AppOpenAdUnit.Id);
 #endif
         }
 
         protected override void InternalShowAppOpenAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.AppOpenAdUnit.Id)) return;
-            MaxSdk.ShowAppOpenAd(Settings.MaxSettings.AppOpenAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.AppOpenAdUnit.Id)) return;
+            MaxSdk.ShowAppOpenAd(AdSettings.MaxSettings.AppOpenAdUnit.Id);
 #endif
         }
 
         protected override bool InternalIsAppOpenAdReady()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(Settings.MaxSettings.AppOpenAdUnit.Id)) return false;
-            return MaxSdk.IsAppOpenAdReady(Settings.MaxSettings.AppOpenAdUnit.Id);
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.AppOpenAdUnit.Id)) return false;
+            return MaxSdk.IsAppOpenAdReady(AdSettings.MaxSettings.AppOpenAdUnit.Id);
 #else
             return false;
 #endif

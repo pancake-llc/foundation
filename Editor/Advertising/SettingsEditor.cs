@@ -372,9 +372,9 @@ namespace Pancake.Monetization.Editor
                             EditorGUILayout.PropertyField(ApplovinProperties.enableRequestAdAfterHidden.property, ApplovinProperties.enableRequestAdAfterHidden.content);
                             EditorGUILayout.PropertyField(ApplovinProperties.enableMaxAdReview.property, ApplovinProperties.enableMaxAdReview.content);
 #if PANCAKE_MAX_ENABLE
-                            AppLovinSettings.Instance.QualityServiceEnabled = Settings.MaxSettings.EnableMaxAdReview;
-                            AppLovinSettings.Instance.ConsentFlowEnabled = Settings.AdSettings.EnableGDPR;
-                            AppLovinSettings.Instance.ConsentFlowPrivacyPolicyUrl = Settings.AdSettings.PrivacyPolicyUrl;
+                            AppLovinSettings.Instance.QualityServiceEnabled = AdSettings.MaxSettings.EnableMaxAdReview;
+                            AppLovinSettings.Instance.ConsentFlowEnabled = AdSettings.AdCommonSettings.EnableGDPR;
+                            AppLovinSettings.Instance.ConsentFlowPrivacyPolicyUrl = AdSettings.AdCommonSettings.PrivacyPolicyUrl;
 #endif
                             EditorGUILayout.Space();
                             EditorGUI.indentLevel++;

@@ -32,7 +32,7 @@ namespace Pancake.Monetization
             ;
         }
 
-        public AdmobAppOpenLoader() { unit = Settings.AdmobSettings.AppOpenAdUnit; }
+        public AdmobAppOpenLoader() { unit = AdSettings.AdmobSettings.AppOpenAdUnit; }
 
         internal override void Load() { AppOpenAd.LoadAd(unit.Id, ((AdmobAppOpenUnit) unit).orientation, Admob.CreateRequest(), OnAdLoadCallback); }
 

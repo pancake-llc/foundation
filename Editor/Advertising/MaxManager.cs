@@ -840,8 +840,8 @@ namespace Pancake.Monetization.Editor
 #if PANCAKE_MAX_ENABLE
             EditorCoroutine.Start(Instance.LoadPluginData(_ =>
             {
-                Settings.MaxSettings.editorListNetwork = _.MediatedNetworks;
-                foreach (var mediationNetwork in Settings.MaxSettings.editorListNetwork.ToList())
+                AdSettings.MaxSettings.editorListNetwork = _.MediatedNetworks;
+                foreach (var mediationNetwork in AdSettings.MaxSettings.editorListNetwork.ToList())
                 {
                     if (!mediationNetwork.Name.Equals("ADCOLONY_NETWORK") &&
                         !mediationNetwork.Name.Equals("CHARTBOOST_NETWORK") &&
@@ -854,11 +854,11 @@ namespace Pancake.Monetization.Editor
                         !mediationNetwork.Name.Equals("UNITY_NETWORK") &&
                         !mediationNetwork.Name.Equals("VUNGLE_NETWORK"))
                     {
-                        Settings.MaxSettings.editorListNetwork.Remove(mediationNetwork);
+                        AdSettings.MaxSettings.editorListNetwork.Remove(mediationNetwork);
                     }
                 }
 
-                LoadPluginDataExtend(_ => { Settings.MaxSettings.editorListNetwork.AddRange(_); });
+                LoadPluginDataExtend(_ => { AdSettings.MaxSettings.editorListNetwork.AddRange(_); });
             }));
 #endif
         }

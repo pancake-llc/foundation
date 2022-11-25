@@ -21,7 +21,7 @@ namespace Pancake.Monetization
         public event Action<AdmobRewardedInterstitialLoader, object, EventArgs> OnClosedEvent = delegate { };
         public event Action<AdmobRewardedInterstitialLoader, Reward> OnRewardEvent = delegate { };
 
-        public AdmobRewardedInterstitialLoader() { unit = Settings.AdmobSettings.RewardedInterstitialAdUnit; }
+        public AdmobRewardedInterstitialLoader() { unit = AdSettings.AdmobSettings.RewardedInterstitialAdUnit; }
 
         internal override bool IsReady() { return _rewardedInterstitialAd != null; }
 

@@ -22,10 +22,10 @@ namespace Pancake.Monetization
             MaxSdkCallbacks.Banner.OnAdLoadFailedEvent += OnAdLoadFailed;
             MaxSdkCallbacks.Banner.OnAdCollapsedEvent += OnAdCollapsed;
             MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaid;
-            MaxSdk.CreateBanner(Settings.MaxSettings.BannerAdUnit.Id, Settings.MaxSettings.BannerAdUnit.ConvertPosition());
-            if (Settings.MaxSettings.BannerAdUnit.useAdaptiveBanner)
+            MaxSdk.CreateBanner(AdSettings.MaxSettings.BannerAdUnit.Id, AdSettings.MaxSettings.BannerAdUnit.ConvertPosition());
+            if (AdSettings.MaxSettings.BannerAdUnit.useAdaptiveBanner)
             {
-                MaxSdk.SetBannerExtraParameter(Settings.MaxSettings.BannerAdUnit.Id, "adaptive_banner", "true");
+                MaxSdk.SetBannerExtraParameter(AdSettings.MaxSettings.BannerAdUnit.Id, "adaptive_banner", "true");
             }
 #endif
         }

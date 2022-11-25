@@ -20,7 +20,7 @@ namespace Pancake.Monetization
         public event Action<AdmobInterstitialLoader, object, EventArgs> OnRecordImpressionEvent = delegate { };
         public event Action<AdmobInterstitialLoader, object, AdValueEventArgs> OnPaidEvent = delegate { };
 
-        public AdmobInterstitialLoader() { unit = Settings.AdmobSettings.InterstitialAdUnit; }
+        public AdmobInterstitialLoader() { unit = AdSettings.AdmobSettings.InterstitialAdUnit; }
 
         internal override void Load()
         {

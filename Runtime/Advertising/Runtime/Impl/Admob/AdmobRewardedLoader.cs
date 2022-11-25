@@ -22,7 +22,7 @@ namespace Pancake.Monetization
         public event Action<AdmobRewardedLoader, object, EventArgs> OnClosedEvent = delegate { };
         public event Action<AdmobRewardedLoader, object, Reward> OnRewardEvent = delegate { };
 
-        public AdmobRewardedLoader() { unit = Settings.AdmobSettings.RewardedAdUnit; }
+        public AdmobRewardedLoader() { unit = AdSettings.AdmobSettings.RewardedAdUnit; }
 
         internal override bool IsReady() { return _rewardedAd != null && _rewardedAd.IsLoaded(); }
 
