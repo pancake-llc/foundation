@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     {
         public const string GDPR_NPA_KEY = "gdpr_npa_key";
 
-        public static int GetValueGDPR() => StorageUtil.GetInt(GDPR_NPA_KEY, -1);
+        public static int GetValueGDPR() => Storage.GetInt(GDPR_NPA_KEY, -1);
 
         public static bool CheckStatusGDPR()
         {
@@ -19,18 +19,18 @@ namespace Pancake.Monetization
             return true;
         }
 
-        public static void ClearStatusGDPR() { StorageUtil.SetInt(GDPR_NPA_KEY, -1); }
+        public static void ClearStatusGDPR() { Storage.SetInt(GDPR_NPA_KEY, -1); }
 
         public void OnButtonAcceptPressed()
         {
-            StorageUtil.SetInt(GDPR_NPA_KEY, 0);
+            Storage.SetInt(GDPR_NPA_KEY, 0);
             gameObject.SetActive(false);
             Time.timeScale = 1;
         }
 
         public void OnButtonClosePressed()
         {
-            StorageUtil.SetInt(GDPR_NPA_KEY, 1);
+            Storage.SetInt(GDPR_NPA_KEY, 1);
             gameObject.SetActive(false);
             Time.timeScale = 1;
         }

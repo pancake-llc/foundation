@@ -5,7 +5,7 @@ namespace Pancake
     using StoringSystem = PlayerPrefs;
     using System;
 
-    internal static class StorageUtil
+    public static class Storage
     {
         /// <summary>
         /// Removes all keys and values from the persistent data storage. Use with caution.
@@ -98,19 +98,19 @@ namespace Pancake
         /// Stores a <see cref="DateTime"/> value as string to the persistent storage.
         /// </summary>
         /// <param name="time">Time.</param>
-        /// <param name="ppkey">Key to store the value.</param>
-        public static void SetTime(string ppkey, DateTime time) { StoringSystem.SetString(ppkey, time.ToBinary().ToString()); }
+        /// <param name="key">Key to store the value.</param>
+        public static void SetTime(string key, DateTime time) { StoringSystem.SetString(key, time.ToBinary().ToString()); }
 
         /// <summary>
         /// Gets the stored string in the persistent storage, converts it to a <see cref="DateTime"/> and returns.
         /// If no value was stored previously, the given default time is returned.
         /// </summary>
         /// <returns>The time.</returns>
-        /// <param name="ppkey">Key to retrieve the value.</param>
+        /// <param name="key">Key to retrieve the value.</param>
         /// <param name="defaultTime"></param>
-        public static DateTime GetTime(string ppkey, DateTime defaultTime)
+        public static DateTime GetTime(string key, DateTime defaultTime)
         {
-            string storedTime = StoringSystem.GetString(ppkey, string.Empty);
+            string storedTime = StoringSystem.GetString(key, string.Empty);
 
             if (!string.IsNullOrEmpty(storedTime))
                 return DateTime.FromBinary(Convert.ToInt64(storedTime));

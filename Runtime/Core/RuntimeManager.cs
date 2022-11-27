@@ -49,7 +49,7 @@ namespace Pancake
 
                 // Store the timestamp of the *first* init which can be used 
                 // as a rough approximation of the installation time.
-                if (StorageUtil.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch) == UnixEpoch) StorageUtil.SetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, DateTime.Now);
+                if (Storage.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch) == UnixEpoch) Storage.SetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, DateTime.Now);
 
                 // Raise the event.
                 OnInitialized?.Invoke();
@@ -70,7 +70,7 @@ namespace Pancake
         /// provided that the initialization is done soon after app launch.
         /// </summary>
         /// <returns>The installation timestamp.</returns>
-        public static DateTime GetAppInstallationTimestamp => StorageUtil.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch);
+        public static DateTime GetAppInstallationTimestamp => Storage.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch);
 
         /// <summary>
         /// Enables or disables Unity debug log.

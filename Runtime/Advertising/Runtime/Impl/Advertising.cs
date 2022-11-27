@@ -298,29 +298,29 @@ namespace Pancake.Monetization
             return client;
         }
 
-        public static bool IsAdRemoved => StorageUtil.GetBool(REMOVE_ADS_KEY, false);
+        public static bool IsAdRemoved => Storage.GetBool(REMOVE_ADS_KEY, false);
 
         public static void RemoveAds()
         {
-            StorageUtil.SetBool(REMOVE_ADS_KEY, true);
-            StorageUtil.Save();
+            Storage.SetBool(REMOVE_ADS_KEY, true);
+            Storage.Save();
 
             RemoveAdsEvent?.Invoke();
         }
 
         public static void TurnOffAppOpenAds()
         {
-            StorageUtil.SetBool(APP_OPEN_ADS_KEY, false);
-            StorageUtil.Save();
+            Storage.SetBool(APP_OPEN_ADS_KEY, false);
+            Storage.Save();
         }
 
         public static void TurnOnAppOpenAds()
         {
-            StorageUtil.SetBool(APP_OPEN_ADS_KEY, true);
-            StorageUtil.Save();
+            Storage.SetBool(APP_OPEN_ADS_KEY, true);
+            Storage.Save();
         }
 
-        public static bool IsAppOpenRemoved => !StorageUtil.GetBool(APP_OPEN_ADS_KEY, true) || IsAdRemoved;
+        public static bool IsAppOpenRemoved => !Storage.GetBool(APP_OPEN_ADS_KEY, true) || IsAdRemoved;
 
         private static void ShowBannerAd(IAdClient client)
         {
