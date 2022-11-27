@@ -52,7 +52,7 @@ namespace Pancake.Feedback
             }
 
             // attach log
-            oldLog.AppendLine(RuntimeManager.sessionLogError.ToString());
+            oldLog.AppendLine(DeviceLogTracking.sessionLogError.ToString());
             byte[] bytes = Encoding.ASCII.GetBytes(oldLog.ToString());
             popupFeedback.report.AttachFile("log.txt", bytes);
         }

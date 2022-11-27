@@ -56,6 +56,9 @@ namespace Pancake
         internal static Exception NoMatch() { return new InvalidOperationException("Sequence contains no matching element"); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static Exception NotFound(string key) { return new Exception($"No data saved with key: {key}");}
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         internal static Exception NotSupported() { return new NotSupportedException(); }
     }
 }
