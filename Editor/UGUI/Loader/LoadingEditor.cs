@@ -22,6 +22,7 @@ namespace Pancake.Editor
         {
             _loading = (Loading) target;
             _loadingScenePrefab = InEditor.FindAllAssets<GameObject>().Map(_=>_.GetComponent<LoadingComponent>());
+            _loadingScenePrefab.RemoveAll(_ => _ == null);
         }
 
         public override void OnInspectorGUI()
