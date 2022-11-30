@@ -46,7 +46,7 @@ namespace Pancake.IAP
                 var itemName = skus[i].sku.Id.Split('.').Last();
                 str += $"\n\t\tpublic static IAPData Purchase{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(itemName)}()";
                 str += "\n\t\t{";
-                str += $"\n\t\t\treturn IAPManager.Purchase(IAPSetting.SkusData[{i}]);";
+                str += $"\n\t\t\treturn IAPManager.Purchase(IAPSettings.SkusData[{i}]);";
                 str += "\n\t\t}";
                 str += "\n";
             }
