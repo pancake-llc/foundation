@@ -7,14 +7,14 @@
         [Button(ButtonSize.Large, Name = "PLAY"), ShowIf(nameof(CountSelectionObject))]
         private void PlayImpl()
         {
-            LevelDebug.isTest = true;
-            LevelDebug.levelTest = UnityEditor.Selection.activeGameObject.GetComponent<BaseLevel>();
+            LevelDebug.IsTest = true;
+            LevelDebug.PathLevelAsset = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.Selection.activeGameObject);
             if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
                 // ReSharper disable once AccessToStaticMemberViaDerivedType
-                //var scene = UnityEditor.SceneManagement.EditorSceneManager.GetSceneAt(0);
-                //UnityEditor.SceneManagement.EditorSceneManager.OpenScene(scene.path, UnityEditor.SceneManagement.OpenSceneMode.Single);
-                //UnityEditor.EditorApplication.isPlaying = true;
+                string path = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(0);
+                UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Single);
+                UnityEditor.EditorApplication.isPlaying = true;
             }
         }
 
