@@ -67,7 +67,7 @@ Summary
 
 ## LEVEL EDITOR
 
-<detail>
+<details>
 <summary>Provide workspace space to drop and drag prefab to easy make level</summary>
 
 <p style="text-align: center;">
@@ -122,11 +122,11 @@ Right click to specifically pickup object to show menu
   <img src="https://user-images.githubusercontent.com/44673303/198229743-c8f0177c-7d97-466e-ab1f-861daa936a79.png" width="600"  alt=""/>
 </p>
 
-</detail>
+</details>
 
 ## NOTIFICATION
 
-<detail>
+<details>
 <summary>Simple api to push notification in game</summary>
 
 - Add component `NotificationConsole` into object has dont destroy to reschedule each time go to background and cancel when back to forceground
@@ -152,11 +152,11 @@ public void UpdateDeliveryTimeByIncremental(int index, int indexData, int custom
 
 - Version 2+ require minimum android api support is 22
 
-</detail>
+</details>
 
 ## LOADING SCENE
 
-<detail>
+<details>
 <summary>Provide best loading scene synchronization</summary>
 
 <p style="text-align: center;">
@@ -177,11 +177,11 @@ public void LoadScene(string sceneName, string subScene, Func<bool> funcWaiting 
   <img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.19/img/create-loading-prefab2.png" width="600"  alt=""/>
 </p>
 
-</detail>
+</details>
 
 ## TIMER
 
-<detail>
+<details>
 <summary>Powerful and convenient library for running actions after a delay in Unity3D.</summary>
 
 `Timer` provides the following method for creating timers:
@@ -319,11 +319,11 @@ A test scene + script demoing all the features is included with the package in t
   <img src="https://i.imgur.com/ESFmFDO.png" width="600"  alt=""/>
 </p>
 
-</detail>
+</details>
 
 ## SimpleJSON
 
-<detail>
+<details>
 <summary>A simple JSON parser in C# </summary>
 
 - Serialize
@@ -355,11 +355,11 @@ object jsonObject = jsonNode;
 var version = jsonNode["version"].AsInt;
 ```
 
-</detail>
+</details>
 
 ## Linq
 
-<detail>
+<details>
 <summary>High performance Linq for Unity</summary>
 
 Improved performance when using Linq with Mobile (il2cpp).
@@ -423,11 +423,11 @@ It will be a little different from System Linq that **Select** is replaced with 
 | WhereSelect    | 263              | 144               |
 | Zip            | 1397             | 88                |
 
-</detail>
+</details>
 
 ## FACEBOOK
 
-<detail>
+<details>
 <summary>Simple Facebook manager</summary>
 
 Require install [facebook](https://github.com/pancake-llc/facebook)
@@ -479,11 +479,11 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
     }
 ```
 
-</detail>
+</details>
 
 ## PLAYFAB
 
-<detail>
+<details>
 <summary>Playfab simple Auth</summary>
 
 ### LEADERBOARD
@@ -508,11 +508,11 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
 GetComponent<ButtonLeaderboard>().valueExpression += () => UnityEngine.Random.Range(1, 100);
 ```
 
-</detail>
+</details>
 
 ## IAP
 
-<detail>
+<details>
 <summary>Easy IAP in Unity</summary>
 
 ### _SETTING_
@@ -584,11 +584,11 @@ Product.PurchaseRemoveads(); // ex call purchase remove ads item
         }
 ```
 
-</detail>
+</details>
 
 ## Advertisement
 
-<detail>
+<details>
 <summary>Easy Advertising in Unity</summary>
 
 ![1](https://user-images.githubusercontent.com/44673303/161428593-fce3bccd-e05c-435f-b482-7f3a3a68b2ef.png)
@@ -758,12 +758,12 @@ So, for example, if you use this method in an Editor script, then immediately ca
     </dependencies>
 ```
 
-</detail>
+</details>
 
 
 ## TWEEN
 
-<detail>
+<details>
 <summary>Simple Tween engine for Unity</summary>
 
 ### Delay
@@ -801,11 +801,11 @@ var sequence = TweenManager.Sequence();
  GetComponent<Image>().TweenColor(Color.red, 1f).SetEase(interpolator).SetLoops(-1, ResetMode.InitialValues).OnLoop(() => Debug.Log("LOOP")).Play();
 ```
 
-</detail>
+</details>
 
 ## FEEDBACK
 
-<detail>
+<details>
 <summary>Simple api collect feedback of user and push to trello</summary>
 Goto feedback setting ProjectSetting -> Pancake -> Feedback
 
@@ -824,11 +824,11 @@ Goto feedback setting ProjectSetting -> Pancake -> Feedback
 
 ![Screenshot_3](https://user-images.githubusercontent.com/44673303/202736089-ba77a2e0-e234-4d8f-815e-d09187a4867a.jpg)
 
-</detail>
+</details>
 
 ## Ulid
 
-<detail>
+<details>
 <summary>Fast .NET C# Implementation of ULID for .NET Core and Unity</summary>
 
 [Fast .NET C# Implementation of ULID for .NET Core and Unity.](https://github.com/Cysharp/Ulid) it requirement enable unsafe in its asmdef
@@ -853,13 +853,13 @@ var stringId = Ulid.NewUlid().ToString();
 
 provide attribute `UlidAttribute` to auto create unique id
 
-</detail>
+</details>
 
 ## UGUI
 
 ## Observable Collection
 
-<detail>
+<details>
 <summary>High performance observable collections and synchronized views for Unity</summary>
 
 High performance observable collections and synchronized views for Unity, you can find source in [here](https://github.com/Cysharp/ObservableCollections)
@@ -898,7 +898,7 @@ static void List_CollectionChanged(in NotifyCollectionChangedEventArgs<int> e)
 }
 ```
 
-</detail>
+</details>
 
 ## Atom
 
