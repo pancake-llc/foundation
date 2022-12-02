@@ -330,7 +330,7 @@ A test scene + script demoing all the features is included with the package in t
 
 </details>
 
-## SimpleJSON
+## SIMPLE JSON
 
 <details>
 <summary>A simple JSON parser in C# </summary>
@@ -754,17 +754,18 @@ So, for example, if you use this method in an Editor script, then immediately ca
     - Mediation adapter Chartboost 8.4.1 is crashing and not building on Unity after they updated to Java 11
       ![image (1)](https://user-images.githubusercontent.com/44673303/161477158-1deae20f-ce7c-436a-8e8c-d4c5fe196ed7.png)
     - so you need use old version of Chartboot (8.2.1.0)
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-    <dependencies>
-        <androidPackages>
-            <androidPackage spec="com.applovin.mediation:chartboost-adapter:8.2.1.0" />
-            <androidPackage spec="com.google.android.gms:play-services-base:16.1.0" />
-        </androidPackages>
-        <iosPods>
-            <iosPod name="AppLovinMediationChartboostAdapter" version="8.4.2.0" />
-        </iosPods>
-    </dependencies>
+<dependencies>
+    <androidPackages>
+        <androidPackage spec="com.applovin.mediation:chartboost-adapter:8.2.1.0"/>
+        <androidPackage spec="com.google.android.gms:play-services-base:16.1.0"/>
+    </androidPackages>
+    <iosPods>
+        <iosPod name="AppLovinMediationChartboostAdapter" version="8.4.2.0"/>
+    </iosPods>
+</dependencies>
 ```
 
 </details>
@@ -773,6 +774,105 @@ So, for example, if you use this method in an Editor script, then immediately ca
 
 <details>
 <summary>Simple Tween engine for Unity</summary>
+
+- **Tweening Engine**: system that allows you to animate stuff via code in an easy, concise and possibly powerful way.
+- **Tween**: unit of work that takes control of a value and animates it.
+- **Sequence**: special tween that, instead of taking control of a value, takes control of other tweens and animates them as a group.
+
+### Basic Usage
+
+This is a very simple example of how the tweening engine works.
+Unity components have tweening extensions that you can call with the prefix Tween... like _TweenPosition_,
+_TweenRotation_, etc.
+This then returns an _ITween_ that you can play whenever you want by call `.Play()` on it;
+
+using the following namespace `Pancake.Tween`
+
+```csharp
+using Pancake.Tween;
+
+...
+
+[SerializeField] private Transform target; // default position is Vector3.zero
+
+private void Start()
+{
+    // move right 5 units
+    ITween tween = target.TweenPosition(to: new Vector3(5f, 0, 0), duration: 1f);
+
+    tween.Play();
+}
+```
+
+### Generic Tween
+
+This is the most flexible way of tweening and allows you to tween almost any value, either public or private, static or dynamic (shortcuts actually uses the generic tweens in the
+background).
+
+```csharp
+static Tween.To(getter, setter, to, float duration, validation);
+```
+
+- **Getter**: function that gets called at the beggining to determine the starting value of the tween.
+- **Setter**: function that gets called every update, while the tween is active, and returns the current value of the tween.
+- **Duration**: time in seconds that the tween should take to complete.
+- **Validation** (optional): funcion that gets called every update, checks if the tween should be killed. This is practical, for example, for checking if a component that is using
+  has been destroyed while the tween was running.
+
+Practical example:
+
+```csharp
+using Pancake.Tween;
+
+...
+
+[SerializeField] private Transform target;
+
+private void Start()
+{
+    Vector3 finalValue = new Vector3(10, 0, 0);
+
+    ITween tween = Tween.To(
+        () => target.position,
+        toSet => target.position = toSet,
+        () => finalValue,
+        duration: 1f,
+        validation: () => target != null);
+
+    tween.Play();
+}
+```
+
+### Extension Method
+
+Tween includes extension method for some known Unity objects, like _Transform_, _Rigidbody_, _Material_, _SpriteRenderer_, _Image_, _TextMeshPro_ etc.
+You can start a tween directly from a reference to these objects, like:
+
+```csharp
+transform.TweenPosition(new Vector3(10, 0, 0), 1);
+image.TweenColor(Color.green, 1);
+canvasGroup.TweenAlpha(0, 1);
+```
+
+Notes: **If the target Unity object gets destroyed, the Tween will automatically be killed.**
+
+### Sequence
+
+Sequences are Tweens, but instead of animating a property or value they animate other Tweens or Sequences as a group.
+Sequences can be contained inside other Sequences without any limit to the depth of the hierarchy.
+
+A Tween can be nested only inside a single other Sequence, meaning you can't reuse the same tween in multiple Sequences.
+To create a sequence, you do the following
+
+```csharp
+ISequence sequence = TweenManager.Sequence();
+
+sequence.Append(tween1);
+sequence.Append(tween2);
+sequence.Append(tween3);
+
+sequence.Play();
+```
 
 ### Delay
 
@@ -867,9 +967,13 @@ provide attribute `UlidAttribute` to auto create unique id
 ## UniTask
 
 ## UGUI
+
 ### UIButton
+
 ### UIPopup
+
 ### Loading
+
 ### Enhanced Scroll
 
 ## OBSERVE COLLECTION
@@ -975,6 +1079,5 @@ TempArray.Release(raycastHits);
 ```
 
 </details>
-
 
 ## LEVEL BASE
