@@ -67,6 +67,9 @@ Summary
 
 ## LEVEL EDITOR
 
+<detail>
+<summary>Provide workspace space to drop and drag prefab to easy make level</summary>
+
 <p style="text-align: center;">
   <img src="https://user-images.githubusercontent.com/44673303/198231314-85dedbcd-d962-4e94-9eac-50a7e0d56d89.png" width="600"  alt=""/>
 </p>
@@ -119,7 +122,12 @@ Right click to specifically pickup object to show menu
   <img src="https://user-images.githubusercontent.com/44673303/198229743-c8f0177c-7d97-466e-ab1f-861daa936a79.png" width="600"  alt=""/>
 </p>
 
+</detail>
+
 ## NOTIFICATION
+
+<detail>
+<summary>Simple api to push notification in game</summary>
 
 - Add component `NotificationConsole` into object has dont destroy to reschedule each time go to background and cancel when back to forceground
 
@@ -142,9 +150,14 @@ public void UpdateDeliveryTimeByIncremental(int index, int indexData, int custom
 
 *Note :
 
-- Version 2.+ require minimum android api support is 5.+
+- Version 2+ require minimum android api support is 22
+
+</detail>
 
 ## LOADING SCENE
+
+<detail>
+<summary>Provide best loading scene synchronization</summary>
 
 <p style="text-align: center;">
   <img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.19/img/loading-component2.png" width="600"  alt=""/>
@@ -164,7 +177,12 @@ public void LoadScene(string sceneName, string subScene, Func<bool> funcWaiting 
   <img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.19/img/create-loading-prefab2.png" width="600"  alt=""/>
 </p>
 
+</detail>
+
 ## TIMER
+
+<detail>
+<summary>Powerful and convenient library for running actions after a delay in Unity3D.</summary>
 
 `Timer` provides the following method for creating timers:
 
@@ -301,7 +319,12 @@ A test scene + script demoing all the features is included with the package in t
   <img src="https://i.imgur.com/ESFmFDO.png" width="600"  alt=""/>
 </p>
 
+</detail>
+
 ## SimpleJSON
+
+<detail>
+<summary>A simple JSON parser in C# </summary>
 
 - Serialize
 
@@ -332,7 +355,12 @@ object jsonObject = jsonNode;
 var version = jsonNode["version"].AsInt;
 ```
 
+</detail>
+
 ## Linq
+
+<detail>
+<summary>High performance Linq for Unity</summary>
 
 Improved performance when using Linq with Mobile (il2cpp).
 To use it instead of using **System.Linq**, change it to **Pancake.Linq**
@@ -395,7 +423,12 @@ It will be a little different from System Linq that **Select** is replaced with 
 | WhereSelect    | 263              | 144               |
 | Zip            | 1397             | 88                |
 
+</detail>
+
 ## FACEBOOK
+
+<detail>
+<summary>Simple Facebook manager</summary>
 
 Require install [facebook](https://github.com/pancake-llc/facebook)
 
@@ -446,7 +479,12 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
     }
 ```
 
+</detail>
+
 ## PLAYFAB
+
+<detail>
+<summary>Playfab simple Auth</summary>
 
 ### LEADERBOARD
 
@@ -470,7 +508,12 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
 GetComponent<ButtonLeaderboard>().valueExpression += () => UnityEngine.Random.Range(1, 100);
 ```
 
+</detail>
+
 ## IAP
+
+<detail>
+<summary>Easy IAP in Unity</summary>
 
 ### _SETTING_
 
@@ -541,7 +584,12 @@ Product.PurchaseRemoveads(); // ex call purchase remove ads item
         }
 ```
 
+</detail>
+
 ## Advertisement
+
+<detail>
+<summary>Easy Advertising in Unity</summary>
 
 ![1](https://user-images.githubusercontent.com/44673303/161428593-fce3bccd-e05c-435f-b482-7f3a3a68b2ef.png)
 
@@ -697,8 +745,8 @@ So, for example, if you use this method in an Editor script, then immediately ca
     - Mediation adapter Chartboost 8.4.1 is crashing and not building on Unity after they updated to Java 11
       ![image (1)](https://user-images.githubusercontent.com/44673303/161477158-1deae20f-ce7c-436a-8e8c-d4c5fe196ed7.png)
     - so you need use old version of Chartboot (8.2.1.0)
-    ```xml
-    <?xml version="1.0" encoding="utf-8"?>
+```xml
+<?xml version="1.0" encoding="utf-8"?>
     <dependencies>
         <androidPackages>
             <androidPackage spec="com.applovin.mediation:chartboost-adapter:8.2.1.0" />
@@ -708,9 +756,15 @@ So, for example, if you use this method in an Editor script, then immediately ca
             <iosPod name="AppLovinMediationChartboostAdapter" version="8.4.2.0" />
         </iosPods>
     </dependencies>
-    ```
+```
+
+</detail>
+
 
 ## TWEEN
+
+<detail>
+<summary>Simple Tween engine for Unity</summary>
 
 ### Delay
 
@@ -747,8 +801,12 @@ var sequence = TweenManager.Sequence();
  GetComponent<Image>().TweenColor(Color.red, 1f).SetEase(interpolator).SetLoops(-1, ResetMode.InitialValues).OnLoop(() => Debug.Log("LOOP")).Play();
 ```
 
+</detail>
+
 ## FEEDBACK
 
+<detail>
+<summary>Simple api collect feedback of user and push to trello</summary>
 Goto feedback setting ProjectSetting -> Pancake -> Feedback
 
 ![Screenshot_4](https://user-images.githubusercontent.com/44673303/202736092-c9f6b1f5-965a-468b-b16d-2da435b864ce.jpg)
@@ -766,8 +824,12 @@ Goto feedback setting ProjectSetting -> Pancake -> Feedback
 
 ![Screenshot_3](https://user-images.githubusercontent.com/44673303/202736089-ba77a2e0-e234-4d8f-815e-d09187a4867a.jpg)
 
+</detail>
 
 ## Ulid
+
+<detail>
+<summary>Fast .NET C# Implementation of ULID for .NET Core and Unity</summary>
 
 [Fast .NET C# Implementation of ULID for .NET Core and Unity.](https://github.com/Cysharp/Ulid) it requirement enable unsafe in its asmdef
 
@@ -791,9 +853,14 @@ var stringId = Ulid.NewUlid().ToString();
 
 provide attribute `UlidAttribute` to auto create unique id
 
+</detail>
+
 ## UGUI
 
 ## Observable Collection
+
+<detail>
+<summary>High performance observable collections and synchronized views for Unity</summary>
 
 High performance observable collections and synchronized views for Unity, you can find source in [here](https://github.com/Cysharp/ObservableCollections)
 
@@ -830,6 +897,8 @@ static void List_CollectionChanged(in NotifyCollectionChangedEventArgs<int> e)
     }
 }
 ```
+
+</detail>
 
 ## Atom
 
