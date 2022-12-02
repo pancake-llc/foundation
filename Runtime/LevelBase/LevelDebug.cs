@@ -19,6 +19,21 @@ namespace Pancake.LevelBase
             set => EditorPrefs.SetString($"{Application.identifier}_leveldebug_pathlevel", value);
         }
 
+        private static BaseLevel levelPrefab;
+
+        public static BaseLevel LevelAsset
+        {
+            get
+            {
+                if (levelPrefab != null) return levelPrefab;
+
+                if (string.IsNullOrEmpty(PathLevelAsset)) return null;
+
+                levelPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PathLevelAsset)?.GetComponent<BaseLevel>();
+                return levelPrefab;
+            }
+        }
+
         static LevelDebug() { EditorApplication.playModeStateChanged += OnModeChange; }
 
         private static void OnModeChange(PlayModeStateChange state)
@@ -27,6 +42,7 @@ namespace Pancake.LevelBase
             {
                 LevelDebug.IsTest = false;
                 LevelDebug.PathLevelAsset = string.Empty;
+                LevelDebug.levelPrefab = null;
             }
         }
     }
