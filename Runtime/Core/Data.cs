@@ -35,7 +35,7 @@ namespace Pancake
 
             GeneratePath();
             Load();
-            RuntimeHelper.AddFocusCallback(OnApplicationFocus);
+            RuntimeManager.AddFocusCallback(OnApplicationFocus);
         }
 
         private static byte[] Serialize<T>(T data)

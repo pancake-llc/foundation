@@ -19,7 +19,7 @@ namespace Pancake
             sessionLogError = new StringBuilder();
             Application.logMessageReceived -= OnHandleLogReceived;
             Application.logMessageReceived += OnHandleLogReceived;
-            RuntimeHelper.AddQuitCallback(OnApplicationQuit);
+            RuntimeManager.AddQuitCallback(OnApplicationQuit);
         }
 
         /// <summary>
