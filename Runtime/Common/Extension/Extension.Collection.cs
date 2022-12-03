@@ -594,6 +594,22 @@ namespace Pancake
             throw new System.ArgumentException("HashSet must not be empty.");
         }
 
-        
+        /// <summary>
+        /// Gets the key associated with the specified value in the given dictionary.
+        /// </summary>
+        /// <returns>The key for value.</returns>
+        /// <param name="dict">Dict.</param>
+        /// <param name="value">Value.</param>
+        /// <typeparam name="TKey">The 1st type parameter.</typeparam>
+        /// <typeparam name="TVal">The 2nd type parameter.</typeparam>
+        public static TKey GetKeyForValue<TKey, TVal>(this IDictionary<TKey, TVal> dict, TVal value)
+        {
+            foreach (KeyValuePair<TKey, TVal> entry in dict)
+            {
+                if (entry.Value.Equals(value)) return entry.Key;
+            }
+
+            return default(TKey);
+        }
     }
 }
