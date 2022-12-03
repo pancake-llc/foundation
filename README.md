@@ -1127,7 +1127,7 @@ static void List_CollectionChanged(in NotifyCollectionChangedEventArgs<int> e)
 <details>
 <summary>Advanced inspector attributes for Unity</summary>
 
-You can find guid by use menu `Tools/Pancake/Inspector Sample`
+You can find basic instructions using the menu `Tools/Pancake/Inspector Sample`
 
 <p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.44/img/inspector-sample.png" width="600"  alt=""/></p>
 
