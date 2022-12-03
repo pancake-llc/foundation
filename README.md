@@ -969,7 +969,7 @@ provide attribute `UlidAttribute` to auto create unique id
 ## UniTask
 
 <details>
-<summary>Guide</summary>
+<summary>Provides an efficient allocation free async/await integration for Unity.</summary>
 
 More infomation you can find [here](https://github.com/Cysharp/UniTask#getting-started)
 
@@ -1052,6 +1052,7 @@ async UniTask<string> DemoAsync()
     return (asset as TextAsset)?.text ?? throw new InvalidOperationException("Asset not found");
 }
 ```
+
 </details>
 
 ## DATA
@@ -1059,8 +1060,12 @@ async UniTask<string> DemoAsync()
 ## UGUI
 
 ### UIButton
+
+<details>
+<summary>Guide</summary>
 <p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.42/img/uibutton.png" width="600"  alt=""/></p>
 <p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.42/img/uibutton-setting.png" width="600"  alt=""/></p>
+</details>
 
 ### UIPopup
 
@@ -1116,6 +1121,13 @@ static void List_CollectionChanged(in NotifyCollectionChangedEventArgs<int> e)
 ## COMMON
 
 ## INSPECTOR
+
+<details>
+<summary>Advanced inspector attributes for Unity</summary>
+
+You can find guid by use menu `Tools/Pancake/Inspector Sample`
+
+</details>
 
 ## TEMP COLLECTION
 
