@@ -1193,6 +1193,9 @@ TempArray.Release(raycastHits);
 
 ## SPRING
 
+<details>
+<summary>Spring Motion</summary>
+
 Spring system moves according to simple harmonic motion. If you hold a small coiled metal spring in your hand, it will remain at some rest length. If you try to compress the
 spring, it will apply a force trying to grow back to its rest length. If you stretch the spring, it will apply a force trying to shrink back to its rest length. We call this rest
 length, the equilibrium position of the spring. Unlike a real world coiled spring, our simple harmonic motion spring will have no drag, friction or other complex forces on it. It
@@ -1210,7 +1213,6 @@ springPosition.SpringTo(new Vector2(5f, 0));
 
 <p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.45/img/sping-demo1.gif" width="600"  alt=""/></p>
 
-
 ```csharp
 private SpringPosition2DComponent springPosition;
 
@@ -1223,6 +1225,9 @@ springPosition.Nudge(new Vector2(50f, 0f));
 In addition, you can also use **Vector2Nudger** or **Vector3Nudger** to automatically handle the Nudge
 
 <p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.45/img/spring2.jpg" width="600"  alt=""/></p>
+
+
+</details>
 
 
 
