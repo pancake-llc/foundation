@@ -2,6 +2,7 @@
 
 namespace Pancake
 {
+    [AddComponentMenu("")]
     public class BaseSpringComponent : BaseBehaviour
     {
         [SerializeField, Range(0f, 100f)] protected float damping = 26f;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake
 {
-    public class SpringScaleComponent : BaseSpringComponent, ISpringTo<Vector3>, INudgeable<Vector3>
+    public class SpringLocalScaleComponent : BaseSpringComponent, ISpringTo<Vector3>, INudgeable<Vector3>
     {
         private SpringVector3 _spring;
 
