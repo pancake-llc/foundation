@@ -28,29 +28,30 @@ Add the lines below to `Packages/manifest.json`
 
 Summary
 
-- [Anti Singleton](#anti-singleton)
-- [Level Editor](#level-editor)
-- [Notification](#notification)
-- [Loading Scene](#loading-scene)
-- [Timer](#timer)
-- [SimpleJson](#simplejson)
-- [Linq](#linq)
-- [Facebook](#facebook)
-- [Playfab](#playfab)
-- [In App Purchase](#iap)
 - [Advertisement](#advertisement)
-- [Tween](#tween)
-- [Feedback](#feedback)
-- [Ulid](#ulid)
-- [UniTask](#unitask)
-- [Ugui](#ugui)
-- [Observer Collection](#observable-collection)
+- [Anti Singleton](#anti-singleton)
 - [Atom](#atom)
 - [Common](#common)
-- [Inspector](#inspector)
-- [Temp Collection](#temp-collection)
-- [Level Base](#level-base)
 - [Data](#data)
+- [In-App-Purchase](#iap)
+- [Facebook](#facebook)
+- [Feedback](#feedback)
+- [Inspector](#inspector)
+- [Level Editor](#level-editor)
+- [Level Base](#level-base)
+- [Linq](#linq)
+- [Loading Scene](#loading-scene)
+- [Notification](#notification)
+- [Observer Collection](#observable-collection)
+- [Playfab](#playfab)
+- [SimpleJson](#simplejson)
+- [Spring](#spring)
+- [Temp Collection](#temp-collection)
+- [Timer](#timer)
+- [Tween](#tween)
+- [Ugui](#ugui)
+- [Ulid](#ulid)
+- [UniTask](#unitask)
 
 ## ANTI SINGLETON
 
@@ -1189,3 +1190,40 @@ TempArray.Release(raycastHits);
 </details>
 
 ## LEVEL BASE
+
+## SPRING
+
+Spring system moves according to simple harmonic motion. If you hold a small coiled metal spring in your hand, it will remain at some rest length. If you try to compress the
+spring, it will apply a force trying to grow back to its rest length. If you stretch the spring, it will apply a force trying to shrink back to its rest length. We call this rest
+length, the equilibrium position of the spring. Unlike a real world coiled spring, our simple harmonic motion spring will have no drag, friction or other complex forces on it. It
+only has the push and pull due to fighting compression or extension.
+
+Using spring in the game will increase your game experience. Take a look at the example below to understand better
+
+<p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.45/img/spring1.jpg" width="600"  alt=""/></p>
+
+```csharp
+private SpringPosition2DComponent springPosition;
+
+springPosition.SpringTo(new Vector2(5f, 0));
+```
+
+<p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.45/img/sping-demo1.gif" width="600"  alt=""/></p>
+
+
+```csharp
+private SpringPosition2DComponent springPosition;
+
+springPosition.Nudge(new Vector2(50f, 0f));
+```
+
+<p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.45/img/spring-demo2.gif" width="600"  alt=""/></p>
+
+
+In addition, you can also use **Vector2Nudger** or **Vector3Nudger** to automatically handle the Nudge
+
+<p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.45/img/spring2.jpg" width="600"  alt=""/></p>
+
+
+
+
