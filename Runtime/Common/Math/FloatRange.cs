@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Pancake
 {
     /// <summary>A value range between two values a and b</summary>
+    [Serializable]
     public readonly struct FloatRange
     {
         /// <summary>The unit interval of 0 to 1</summary>
