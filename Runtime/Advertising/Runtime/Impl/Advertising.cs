@@ -462,5 +462,16 @@ namespace Pancake.Monetization
 
 
         public static void ShowConsentFrom() { ShowConsentForm(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
+
+#if UNITY_ANDROID && PANCAKE_INAPPREVIEW
+        /// <summary>
+        /// Please only use this method when you are sure that your app switches to android activity and you don't want to show app-open-ad when you return to the game.
+        /// <para>OTHERWISE DON'T USE IT</para>
+        /// </summary>
+        public static void SwitchToAndroidActivityNoOpenAd()
+        {
+            R.isShowingAd = true;
+        }
+#endif
     }
 }

@@ -100,6 +100,11 @@
             "name": "com.google.firebase.analytics",
             "expression": "",
             "define": "PANCAKE_ANALYTIC"
+        },
+        {
+            "name": "com.google.play.review",
+            "expression": "1.6.0",
+            "define": "PANCAKE_INAPPREVIEW"
         }
     ],
     "noEngineReferences": false
