@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Pancake.Monetization;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
@@ -103,7 +104,12 @@ namespace Pancake.IAP
             return product;
         }
 
-        public static IAPData Purchase(IAPData product) { return Instance.PurchaseProduct(product); }
+        public static IAPData Purchase(IAPData product)
+        {
+            if (AdSettings.RuntimeAutoInitialize) R.isShowingAd = true;
+
+            return Instance.PurchaseProduct(product);
+        }
 
         public static void RegisterCompletedEvent(string key, Action action)
         {
@@ -123,6 +129,7 @@ namespace Pancake.IAP
 
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
+            Timer.Register(0.1f, () => RuntimeManager.RunOnMainThread(() => R.isShowingAd = false));
             OnPurchaseFailedEvent?.Invoke(failureReason.ToString());
             foreach (var e in FaildDict)
             {
@@ -201,6 +208,7 @@ namespace Pancake.IAP
 
         private void PurchaseVerified(PurchaseEventArgs e)
         {
+            Timer.Register(0.1f, () => RuntimeManager.RunOnMainThread(() => R.isShowingAd = false));
             OnPurchaseSucceedEvent?.Invoke(e.purchasedProduct.definition.id);
             foreach (var completeEvent in CompletedDict)
             {
@@ -213,7 +221,7 @@ namespace Pancake.IAP
             foreach (var p in Skus)
             {
 #if UNITY_ANDROID
-                
+
 #endif
                 if (IAPSettings.TestMode)
                 {
