@@ -1,5 +1,4 @@
 ﻿using System;
-using InspectorUnityInternalBridge;
 using UnityEditor;
 using UnityEngine;
 
@@ -69,40 +68,28 @@ namespace Pancake.Editor
 
         private static InspectorElement CreateElement(Property property, Props props)
         {
-            var isSerializedProperty = property.TryGetSerializedProperty(out var serializedProperty);
-
-            var handler = isSerializedProperty ? ScriptAttributeUtilityProxy.GetHandler(serializedProperty) : default(PropertyHandlerProxy?);
-
-            var drawWithUnity = handler.HasValue && handler.Value.hasPropertyDrawer || handler.HasValue && UnityInspectorUtilities.MustDrawWithUnity(property);
-            if (!drawWithUnity)
+            switch (property.PropertyType)
             {
-                var propertyType = property.PropertyType;
-
-                switch (propertyType)
+                case EPropertyType.Array:
                 {
-                    case EPropertyType.Array:
-                    {
-                        return CreateArrayElement(property);
-                    }
+                    return CreateArrayElement(property);
+                }
 
-                    case EPropertyType.Reference:
-                    {
-                        return CreateReferenceElement(property, props);
-                    }
+                case EPropertyType.Reference:
+                {
+                    return CreateReferenceElement(property, props);
+                }
 
-                    case EPropertyType.Generic:
-                    {
-                        return CreateGenericElement(property, props);
-                    }
+                case EPropertyType.Generic:
+                {
+                    return CreateGenericElement(property, props);
+                }
+
+                default:
+                {
+                    return new NoDrawerInspectorElement(property);
                 }
             }
-
-            if (isSerializedProperty)
-            {
-                return new BuiltInPropertyInspectorElement(property, serializedProperty, handler.Value);
-            }
-
-            return new NoDrawerInspectorElement(property);
         }
 
         private static InspectorElement CreateArrayElement(Property property) { return new ListInspectorElement(property); }
