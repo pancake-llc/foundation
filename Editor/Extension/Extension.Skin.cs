@@ -300,11 +300,11 @@ namespace Pancake.Editor
         /// <param name="sectionName"></param>
         /// <param name="drawer"></param>
         /// <param name="defaultFoldout"></param>
-        public static void DrawGroupFoldout(string key, string sectionName, Action drawer, bool defaultFoldout = true)
+        public static float DrawGroupFoldout(string key, string sectionName, Action drawer, bool defaultFoldout = true)
         {
             bool foldout = GetFoldoutState(key);
 
-            EditorGUILayout.BeginVertical(BoxWithPadding, GUILayout.MinHeight(foldout ? 30 : 0));
+            var rect = EditorGUILayout.BeginVertical(BoxWithPadding, GUILayout.MinHeight(foldout ? 30 : 0));
             EditorGUILayout.BeginHorizontal(foldout ? GroupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
@@ -324,8 +324,11 @@ namespace Pancake.Editor
             if (foldout) GUILayout.Space(5);
             if (foldout && drawer != null) drawer();
 
+            float height = rect.height;
             EditorGUILayout.EndVertical();
+            height += 4;
             Uniform.SpaceOneLine();
+            return height;
         }
 
         /// <summary>
@@ -336,13 +339,13 @@ namespace Pancake.Editor
         /// <param name="drawer"></param>
         /// <param name="actionRightClick"></param>
         /// <param name="defaultFoldout"></param>
-        public static void DrawGroupFoldoutWithRightClick(string key, string sectionName, Action drawer, Action actionRightClick, bool defaultFoldout = true)
+        public static float DrawGroupFoldoutWithRightClick(string key, string sectionName, Action drawer, Action actionRightClick, bool defaultFoldout = true)
         {
             if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, defaultFoldout);
 
             bool foldout = FoldoutSettings.Settings[key];
 
-            EditorGUILayout.BeginVertical(BoxWithPadding, GUILayout.MinHeight(foldout ? 30 : 0));
+            var rect = EditorGUILayout.BeginVertical(BoxWithPadding, GUILayout.MinHeight(foldout ? 30 : 0));
             EditorGUILayout.BeginHorizontal(foldout ? GroupHeader : GroupHeaderCollapse);
 
             // Header label (and button).
@@ -351,7 +354,7 @@ namespace Pancake.Editor
                 if (Event.current.button == 1)
                 {
                     actionRightClick?.Invoke();
-                    return;
+                    return rect.height;
                 }
 
                 FoldoutSettings.Settings[key] = !FoldoutSettings.Settings[key];
@@ -371,8 +374,11 @@ namespace Pancake.Editor
             if (foldout) GUILayout.Space(5);
             if (foldout && drawer != null) drawer();
 
+            float height = rect.height;
             EditorGUILayout.EndVertical();
+            height += 4;
             Uniform.SpaceTwoLine();
+            return height;
         }
 
         /// <summary>
@@ -414,11 +420,13 @@ namespace Pancake.Editor
         /// </summary>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void Vertical(Action callback, params GUILayoutOption[] options)
+        public static float Vertical(Action callback, params GUILayoutOption[] options)
         {
-            EditorGUILayout.BeginVertical(options);
+            var r = EditorGUILayout.BeginVertical(options);
             callback();
+            float h = r.height;
             EditorGUILayout.EndVertical();
+            return h;
         }
 
         /// <summary>
@@ -426,11 +434,13 @@ namespace Pancake.Editor
         /// </summary>
         /// <param name="style"></param>
         /// <param name="callback"></param>
-        public static void Vertical(GUIStyle style, Action callback)
+        public static float Vertical(GUIStyle style, Action callback)
         {
-            EditorGUILayout.BeginVertical(style);
+            var r = EditorGUILayout.BeginVertical(style);
             callback();
+            float h = r.height;
             EditorGUILayout.EndVertical();
+            return h;
         }
 
         /// <summary>
@@ -439,24 +449,26 @@ namespace Pancake.Editor
         /// <param name="style"></param>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void Vertical(GUIStyle style, Action callback, params GUILayoutOption[] options)
+        public static float Vertical(GUIStyle style, Action callback, params GUILayoutOption[] options)
         {
-            EditorGUILayout.BeginVertical(style, options);
+            var r = EditorGUILayout.BeginVertical(style, options);
             callback();
+            float h = r.height;
             EditorGUILayout.EndVertical();
+            return h;
         }
 
         /// <summary>
         /// Draw vertical group
+        /// return height of scope
         /// </summary>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void VerticalScope(Action callback, params GUILayoutOption[] options)
+        public static float VerticalScope(Action callback, params GUILayoutOption[] options)
         {
-            using (new EditorGUILayout.VerticalScope(options))
-            {
-                callback();
-            }
+            using var scope = new EditorGUILayout.VerticalScope(options);
+            callback();
+            return scope.rect.height;
         }
 
         /// <summary>
@@ -464,12 +476,11 @@ namespace Pancake.Editor
         /// </summary>
         /// <param name="style"></param>
         /// <param name="callback"></param>
-        public static void VerticalScope(GUIStyle style, Action callback)
+        public static float VerticalScope(GUIStyle style, Action callback)
         {
-            using (new EditorGUILayout.VerticalScope(style))
-            {
-                callback();
-            }
+            using var scope = new EditorGUILayout.VerticalScope(style);
+            callback();
+            return scope.rect.height;
         }
 
         /// <summary>
@@ -478,12 +489,11 @@ namespace Pancake.Editor
         /// <param name="style"></param>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void VerticalScope(GUIStyle style, Action callback, params GUILayoutOption[] options)
+        public static float VerticalScope(GUIStyle style, Action callback, params GUILayoutOption[] options)
         {
-            using (new EditorGUILayout.VerticalScope(style, options))
-            {
-                callback();
-            }
+            using var scope = new EditorGUILayout.VerticalScope(style, options);
+            callback();
+            return scope.rect.height;
         }
 
         /// <summary>
@@ -491,11 +501,13 @@ namespace Pancake.Editor
         /// </summary>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void Horizontal(Action callback, params GUILayoutOption[] options)
+        public static float Horizontal(Action callback, params GUILayoutOption[] options)
         {
-            EditorGUILayout.BeginHorizontal(options);
+            var r = EditorGUILayout.BeginHorizontal(options);
             callback();
+            float h = r.height;
             EditorGUILayout.EndHorizontal();
+            return h;
         }
 
         /// <summary>
@@ -503,11 +515,13 @@ namespace Pancake.Editor
         /// </summary>
         /// <param name="style"></param>
         /// <param name="callback"></param>
-        public static void Horizontal(GUIStyle style, Action callback)
+        public static float Horizontal(GUIStyle style, Action callback)
         {
-            EditorGUILayout.BeginHorizontal(style);
+            var r = EditorGUILayout.BeginHorizontal(style);
             callback();
+            float h = r.height;
             EditorGUILayout.EndHorizontal();
+            return h;
         }
 
         /// <summary>
@@ -516,11 +530,13 @@ namespace Pancake.Editor
         /// <param name="style"></param>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void Horizontal(GUIStyle style, Action callback, params GUILayoutOption[] options)
+        public static float Horizontal(GUIStyle style, Action callback, params GUILayoutOption[] options)
         {
-            EditorGUILayout.BeginHorizontal(style, options);
+            var r = EditorGUILayout.BeginHorizontal(style, options);
             callback();
+            float h = r.height;
             EditorGUILayout.EndHorizontal();
+            return h;
         }
 
         /// <summary>
@@ -528,12 +544,11 @@ namespace Pancake.Editor
         /// </summary>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void HorizontalScope(Action callback, params GUILayoutOption[] options)
+        public static float HorizontalScope(Action callback, params GUILayoutOption[] options)
         {
-            using (new EditorGUILayout.HorizontalScope(options))
-            {
-                callback();
-            }
+            using var scope = new EditorGUILayout.HorizontalScope(options);
+            callback();
+            return scope.rect.height;
         }
 
         /// <summary>
@@ -541,12 +556,11 @@ namespace Pancake.Editor
         /// </summary>
         /// <param name="style"></param>
         /// <param name="callback"></param>
-        public static void HorizontalScope(GUIStyle style, Action callback)
+        public static float HorizontalScope(GUIStyle style, Action callback)
         {
-            using (new EditorGUILayout.HorizontalScope(style))
-            {
-                callback();
-            }
+            using var scope = new EditorGUILayout.HorizontalScope(style);
+            callback();
+            return scope.rect.height;
         }
 
         /// <summary>
@@ -555,12 +569,11 @@ namespace Pancake.Editor
         /// <param name="style"></param>
         /// <param name="callback"></param>
         /// <param name="options"></param>
-        public static void HorizontalScope(GUIStyle style, Action callback, params GUILayoutOption[] options)
+        public static float HorizontalScope(GUIStyle style, Action callback, params GUILayoutOption[] options)
         {
-            using (new EditorGUILayout.HorizontalScope(style, options))
-            {
-                callback();
-            }
+            using var scope = new EditorGUILayout.HorizontalScope(style, options);
+            callback();
+            return scope.rect.height;
         }
 
         /// <summary>
