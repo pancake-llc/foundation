@@ -10,7 +10,7 @@ namespace Pancake.Editor
     {
         public override InspectorElement CreateElement(InspectorValue<Object> value, InspectorElement next)
         {
-            if (value.Property.IsRootProperty)
+            if (value.Property.IsRootProperty || value.Property.TryGetSerializedProperty(out _))
             {
                 return next;
             }
@@ -26,7 +26,7 @@ namespace Pancake.Editor
             public ObjectReferenceDrawerInspectorElement(InspectorValue<Object> propertyValue)
             {
                 _propertyValue = propertyValue;
-                _allowSceneObjects = propertyValue.Property.PropertyTree.TargetIsPersistent && propertyValue.Property.TryGetAttribute(out AssetsOnlyAttribute _) == false;
+                _allowSceneObjects = propertyValue.Property.PropertyTree.TargetIsPersistent == false;
             }
 
             public override float GetHeight(float width) { return EditorGUIUtility.singleLineHeight; }
@@ -35,7 +35,7 @@ namespace Pancake.Editor
             {
                 var hasSerializedProperty = _propertyValue.Property.TryGetSerializedProperty(out var serializedProperty);
 
-                var value = hasSerializedProperty ? serializedProperty.objectReferenceValue : _propertyValue.SmartValue;
+                var value = _propertyValue.SmartValue;
 
                 EditorGUI.BeginChangeCheck();
 
@@ -47,15 +47,7 @@ namespace Pancake.Editor
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if (hasSerializedProperty)
-                    {
-                        serializedProperty.objectReferenceValue = value;
-                        _propertyValue.Property.NotifyValueChanged();
-                    }
-                    else
-                    {
-                        _propertyValue.SmartValue = value;
-                    }
+                    _propertyValue.SmartValue = value;
                 }
             }
         }

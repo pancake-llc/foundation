@@ -7,7 +7,7 @@
     [DeclareVerticalGroup("header/right")]
     [DeclareBoxGroup("header/right/top", Title = "My Right Box")]
     [DeclareTabGroup("header/right/tabs")]
-    [DeclareBoxGroup("body")]
+    [DeclareBoxGroup("body", HideTitle = true)]
     public class Groups_GroupsSample : ScriptableObject
     {
         [Group("header/left")] public bool prop1;

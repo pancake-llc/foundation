@@ -8,7 +8,10 @@ namespace Pancake.Editor
     {
         public override PropertyCollectionBaseInspectorElement CreateElement(DeclareFoldoutGroupAttribute attribute)
         {
-            return new BoxGroupInspectorElement(attribute.Title, new BoxGroupInspectorElement.Props() {foldout = true, expandedByDefault = attribute.Expanded});
+            return new BoxGroupInspectorElement(new BoxGroupInspectorElement.Props()
+            {
+                title = attribute.Title, titleMode = BoxGroupInspectorElement.TitleMode.Foldout, expandedByDefault = attribute.Expanded
+            });
         }
     }
 }

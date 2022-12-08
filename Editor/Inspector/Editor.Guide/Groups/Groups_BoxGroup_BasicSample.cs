@@ -3,7 +3,7 @@
     using System;
     using UnityEngine;
 
-    [DeclareBoxGroup("box")]
+    [DeclareBoxGroup("box", HideTitle = true)]
     [DeclareBoxGroup("named_box", Title = "$" + nameof(titleGroup))]
     [DeclareBoxGroup("boxed_struct", Title = "Boxed Struct")]
     public class Groups_BoxGroup_BasicSample : ScriptableObject
