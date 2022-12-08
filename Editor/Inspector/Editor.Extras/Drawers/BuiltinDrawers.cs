@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 [assembly: RegisterValueDrawer(typeof(IntegerDrawer), DrawerOrder.Fallback)]
+[assembly: RegisterValueDrawer(typeof(LongDrawer), DrawerOrder.Fallback)]
 [assembly: RegisterValueDrawer(typeof(BooleanDrawer), DrawerOrder.Fallback)]
 [assembly: RegisterValueDrawer(typeof(FloatDrawer), DrawerOrder.Fallback)]
 [assembly: RegisterValueDrawer(typeof(StringDrawer), DrawerOrder.Fallback)]
@@ -38,6 +39,11 @@ namespace Pancake.Editor
     public class IntegerDrawer : BuiltinDrawerBase<int>
     {
         protected override int OnValueGUI(Rect position, GUIContent label, int value) { return EditorGUI.IntField(position, label, value); }
+    }
+
+    public class LongDrawer : BuiltinDrawerBase<long>
+    {
+        protected override long OnValueGUI(Rect position, GUIContent label, long value) { return EditorGUI.LongField(position, label, value); }
     }
 
     public class FloatDrawer : BuiltinDrawerBase<float>
