@@ -21,7 +21,7 @@ namespace Pancake.Editor
 
         public override InspectorElement CreateElement(Property property, InspectorElement next)
         {
-            var element = new BoxGroupInspectorElement("");
+            var element = new BoxGroupInspectorElement(new BoxGroupInspectorElement.Props() {titleMode = BoxGroupInspectorElement.TitleMode.Hidden});
             element.AddChild(new ObjectReferenceFoldoutDrawerInspectorElement(property));
             element.AddChild(new InlineEditorInspectorElement(property));
             return element;
@@ -44,7 +44,7 @@ namespace Pancake.Editor
 
                 EditorGUI.BeginChangeCheck();
 
-                var allowSceneObjects = _property.PropertyTree.TargetIsPersistent;
+                var allowSceneObjects = _property.PropertyTree.TargetIsPersistent == false;
 
                 var value = (Object) _property.Value;
                 value = EditorGUI.ObjectField(pickerRect,

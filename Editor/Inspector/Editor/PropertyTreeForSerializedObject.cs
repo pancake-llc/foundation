@@ -15,7 +15,7 @@ namespace Pancake.Editor
 
             TargetObjectType = _serializedObject.targetObject.GetType();
             TargetsCount = _serializedObject.targetObjects.Length;
-            TargetIsPersistent = _serializedObject.targetObject is var targetObject && targetObject != null && !EditorUtility.IsPersistent(targetObject);
+            TargetIsPersistent = _serializedObject.targetObject is var targetObject && targetObject != null && EditorUtility.IsPersistent(targetObject);
 
             RootPropertyDefinition = new PropertyDefinition(memberInfo: null,
                 ownerType: null,
