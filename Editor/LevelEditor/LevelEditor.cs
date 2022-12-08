@@ -19,6 +19,8 @@ namespace Pancake.Editor.LevelEditor
         private readonly string[] _optionsMode = {"Renderer", "Ignore"};
 
         private Vector2 _pickObjectScrollPosition;
+        private Vector2 _whiteScrollPosition;
+        private Vector2 _blackScrollPosition;
         private PickObject _currentPickObject;
         private List<PickObject> _pickObjects;
         private SerializedObject _pathFolderSerializedObject;
@@ -28,11 +30,6 @@ namespace Pancake.Editor.LevelEditor
         private GameObject _rootSpawn;
         private int _rootIndexSpawn;
         private GameObject _previewPickupObject;
-        private string _dataPath;
-        private const float DROP_AREA_HEIGHT_FOLDOUT = 110f;
-        private const float DEFAULT_HEADER_HEIGHT = 54f;
-        private const float SELECTED_OBJECT_PREVIEW_HEIGHT = 100f;
-        private float _height;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private static InEditor.ProjectSetting<PathSetting> levelEditorSettings = new InEditor.ProjectSetting<PathSetting>("LevelEditorSettings");
@@ -64,7 +61,6 @@ namespace Pancake.Editor.LevelEditor
 
         private void OnEnable()
         {
-            _dataPath = Application.dataPath.Replace('/', '\\');
             Uniform.LoadFoldoutSetting();
             levelEditorSettings.LoadSetting();
             RefreshPickObject();
@@ -157,7 +153,6 @@ namespace Pancake.Editor.LevelEditor
 
         private void OnGUI()
         {
-            _height = 0f;
             Uniform.SpaceTwoLine();
             if (TryClose()) return;
             if (CheckEscape()) return;
@@ -171,19 +166,17 @@ namespace Pancake.Editor.LevelEditor
 
         private void InternalDrawDropArea()
         {
-            _height -= DEFAULT_HEADER_HEIGHT;
             Uniform.DrawGroupFoldout("LEVEL_EDITOR_DROP_AREA", "DROP AREA", DrawDropArea);
 
             void DrawDropArea()
             {
-                _height -= DROP_AREA_HEIGHT_FOLDOUT - DEFAULT_HEADER_HEIGHT;
-                GUILayout.Space(2);
+                Uniform.SpaceHalfLine();
                 float width = 0;
                 var @event = Event.current;
                 Uniform.Horizontal(() =>
                 {
-                    var whiteArea = GUILayoutUtility.GetRect(0.0f, 50.0f, GUILayout.ExpandWidth(true));
-                    var blackArea = GUILayoutUtility.GetRect(0.0f, 50.0f, GUILayout.ExpandWidth(true));
+                    var whiteArea = GUILayoutUtility.GetRect(0.0f, 50f, GUILayout.ExpandWidth(true));
+                    var blackArea = GUILayoutUtility.GetRect(0.0f, 50f, GUILayout.ExpandWidth(true));
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if (whiteArea.width == 1f) width = position.width / 2;
                     else width = whiteArea.width;
@@ -285,11 +278,14 @@ namespace Pancake.Editor.LevelEditor
                             }
                             else
                             {
+                                Uniform.SpaceHalfLine();
+                                _whiteScrollPosition = GUILayout.BeginScrollView(_whiteScrollPosition, false, false, GUILayout.Height(250));
                                 foreach (string t in levelEditorSettings.Settings.whitelistPaths.ToList())
                                 {
-                                    _height -= 18;
                                     DrawRow(t, width, _ => levelEditorSettings.Settings.whitelistPaths.Remove(_));
                                 }
+
+                                GUILayout.EndScrollView();
                             }
                         },
                         GUILayout.Width(width - 10));
@@ -302,10 +298,14 @@ namespace Pancake.Editor.LevelEditor
                             }
                             else
                             {
+                                Uniform.SpaceHalfLine();
+                                _blackScrollPosition = GUILayout.BeginScrollView(_blackScrollPosition, false, false, GUILayout.Height(250));
                                 foreach (string t in levelEditorSettings.Settings.blacklistPaths.ToList())
                                 {
                                     DrawRow(t, width, _ => levelEditorSettings.Settings.blacklistPaths.Remove(_));
                                 }
+
+                                GUILayout.EndScrollView();
                             }
                         },
                         GUILayout.Width(width - 15));
@@ -316,7 +316,7 @@ namespace Pancake.Editor.LevelEditor
             {
                 Uniform.Horizontal(() =>
                 {
-                    EditorGUILayout.LabelField(new GUIContent(content), GUILayout.Width(width - 80));
+                    EditorGUILayout.LabelField(new GUIContent(content), GUILayout.Width(width - 100));
                     GUILayout.FlexibleSpace();
                     Uniform.Button(Uniform.IconContent("d_scenevis_visible_hover", "Ping Selection"),
                         () =>
@@ -378,12 +378,10 @@ namespace Pancake.Editor.LevelEditor
 
         private void InternalDrawSetting()
         {
-            _height -= DEFAULT_HEADER_HEIGHT;
             Uniform.DrawGroupFoldout("LEVEL_EDITOR_CONFIG", "SETTING", DrawSetting);
 
             void DrawSetting()
             {
-                _height -= DEFAULT_HEADER_HEIGHT;
                 _selectedSpawn = EditorGUILayout.Popup("Where Spawn", _selectedSpawn, _optionsSpawn);
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -400,7 +398,7 @@ namespace Pancake.Editor.LevelEditor
                             }
                             else
                             {
-                                Uniform.HelpBox("Index spawn mode only work in PrefabMode!", MessageType.Warning);
+                                Uniform.HelpBox("Index spawn only work in PrefabMode!", MessageType.Warning);
                             }
 
                             break;
@@ -430,10 +428,7 @@ namespace Pancake.Editor.LevelEditor
 
         private void InternalDrawPickupArea()
         {
-            _height -= DEFAULT_HEADER_HEIGHT;
-            _height -= DEFAULT_HEADER_HEIGHT;
-            _height -= DEFAULT_HEADER_HEIGHT;
-            _height -= 18f;
+            float height = 0f;
             Uniform.DrawGroupFoldoutWithRightClick("LEVEL_EDITOR_PICKUP_AREA", "PICKUP AREA", DrawPickupArea, ShowMenuRefresh);
 
             void DrawPickupArea()
@@ -441,8 +436,6 @@ namespace Pancake.Editor.LevelEditor
                 var tex = LevelWindow.GetPreview(_currentPickObject?.pickedObject);
                 if (tex)
                 {
-                    _height -= SELECTED_OBJECT_PREVIEW_HEIGHT;
-                    _height -= DEFAULT_HEADER_HEIGHT;
                     string pickObjectName = _currentPickObject?.pickedObject.name;
                     Uniform.SpaceOneLine();
                     Uniform.Horizontal(() =>
@@ -450,10 +443,10 @@ namespace Pancake.Editor.LevelEditor
                         GUILayout.Space(position.width / 2 - 50);
                         if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80))) _currentPickObject = null;
                     });
-
                     EditorGUILayout.LabelField($"Selected: <color=#80D2FF>{pickObjectName}</color>\nPress Icon Again Or Escape Key To Deselect",
                         Uniform.HtmlText,
                         GUILayout.Height(40));
+                    height -= 128;
                     Uniform.HelpBox("Shift + Click To Add", MessageType.Info);
                 }
                 else
@@ -461,13 +454,59 @@ namespace Pancake.Editor.LevelEditor
                     Uniform.HelpBox("Select An Object First", MessageType.Info);
                 }
 
-                _height += position.height;
-                _pickObjectScrollPosition = GUILayout.BeginScrollView(_pickObjectScrollPosition, GUILayout.Height(_height));
+                height -= 100;
+                if (Uniform.GetFoldoutState("LEVEL_EDITOR_DROP_AREA"))
+                {
+                    if (levelEditorSettings.Settings.blacklistPaths.Count == 0 && levelEditorSettings.Settings.whitelistPaths.Count == 0)
+                    {
+                        height -= 94;
+                    }
+                    else
+                    {
+                        height -= 342;
+                    }
+                }
+                else
+                {
+                    height -= 33;
+                }
+
+                if (Uniform.GetFoldoutState("LEVEL_EDITOR_CONFIG"))
+                {
+                    switch (_optionsSpawn[_selectedSpawn].ToLower())
+                    {
+                        case "default":
+                            height -= 122;
+                            break;
+                        case "index":
+                            var currentPrefabState = GetCurrentPrefabStage();
+                            if (currentPrefabState != null)
+                            {
+                                height -= 146;
+                            }
+                            else
+                            {
+                                height -= 162;
+                            }
+
+                            break;
+                        case "custom":
+                            height -= 146;
+                            break;
+                    }
+                }
+                else
+                {
+                    height -= 33;
+                }
+
+                var h = position.height + height;
+
+                _pickObjectScrollPosition = GUILayout.BeginScrollView(_pickObjectScrollPosition, GUILayout.Height(h));
                 var resultSplitGroupObjects = PickObjects.GroupBy(_ => _.group).Select(_ => _.ToList()).ToList();
                 foreach (var splitGroupObject in resultSplitGroupObjects)
                 {
                     string nameGroup = splitGroupObject[0].group.ToUpper();
-                    _height -= DEFAULT_HEADER_HEIGHT;
                     Uniform.DrawGroupFoldout($"LEVEL_EDITOR_PICKUP_AREA_CHILD_{nameGroup}", nameGroup, () => DrawInGroup(splitGroupObject));
                 }
 
