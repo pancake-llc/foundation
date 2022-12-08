@@ -30,6 +30,8 @@ namespace Pancake.Editor.LevelEditor
         private GameObject _rootSpawn;
         private int _rootIndexSpawn;
         private GameObject _previewPickupObject;
+        private UnityEngine.Object _previousObjectInpectorPreview;
+        private UnityEditor.Editor _editorInpsectorPreview;
 
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private static InEditor.ProjectSetting<PathSetting> levelEditorSettings = new InEditor.ProjectSetting<PathSetting>("LevelEditorSettings");
@@ -201,7 +203,7 @@ namespace Pancake.Editor.LevelEditor
                                         if (File.Exists(path))
                                         {
                                             var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                                            if (r.GetType() != typeof(UnityEngine.GameObject)) continue;
+                                            if (r.GetType() != typeof(GameObject)) continue;
                                         }
 
                                         ValidateWhitelist(path, ref levelEditorSettings.Settings.blacklistPaths);
@@ -224,7 +226,7 @@ namespace Pancake.Editor.LevelEditor
                                         if (File.Exists(path))
                                         {
                                             var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                                            if (r.GetType() != typeof(UnityEngine.GameObject)) continue;
+                                            if (r.GetType() != typeof(GameObject)) continue;
                                         }
 
                                         ValidateBlacklist(path, ref levelEditorSettings.Settings.whitelistPaths);
@@ -441,7 +443,19 @@ namespace Pancake.Editor.LevelEditor
                     Uniform.Horizontal(() =>
                     {
                         GUILayout.Space(position.width / 2 - 50);
-                        if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80))) _currentPickObject = null;
+                        if (_editorInpsectorPreview == null || _previousObjectInpectorPreview != _currentPickObject?.pickedObject)
+                        {
+                            _editorInpsectorPreview = UnityEditor.Editor.CreateEditor(_currentPickObject?.pickedObject);
+                        }
+                        
+                        var rect = GUILayoutUtility.GetLastRect();
+                        _editorInpsectorPreview.DrawPreview(new Rect(new Vector2(position.width / 2 - 50, rect.position.y), new Vector2(100,100)));
+                        _previousObjectInpectorPreview = _currentPickObject?.pickedObject;
+                        GUI.color = new Color(1,1,1,0f);
+                        if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80)))
+                        {
+                        }
+                        GUI.color = Color.white;
                     });
                     EditorGUILayout.LabelField($"Selected: <color=#80D2FF>{pickObjectName}</color>\nPress Icon Again Or Escape Key To Deselect",
                         Uniform.HtmlText,
