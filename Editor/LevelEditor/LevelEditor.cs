@@ -16,6 +16,7 @@ namespace Pancake.Editor.LevelEditor
     internal class LevelEditor : EditorWindow
     {
         private readonly string[] _optionsSpawn = {"Default", "Index", "Custom"};
+        private readonly string[] _optionsMode = {"Renderer", "Ignore"};
 
         private Vector2 _pickObjectScrollPosition;
         private PickObject _currentPickObject;
@@ -23,12 +24,13 @@ namespace Pancake.Editor.LevelEditor
         private SerializedObject _pathFolderSerializedObject;
         private SerializedProperty _pathFolderProperty;
         private int _selectedSpawn;
+        private int _selectedMode;
         private GameObject _rootSpawn;
         private int _rootIndexSpawn;
         private GameObject _previewPickupObject;
         private string _dataPath;
         private const float DROP_AREA_HEIGHT_FOLDOUT = 110f;
-        private const float DEFAULT_HEADER_HEIGHT = 30f;
+        private const float DEFAULT_HEADER_HEIGHT = 54f;
         private const float SELECTED_OBJECT_PREVIEW_HEIGHT = 100f;
         private float _height;
 
@@ -385,11 +387,11 @@ namespace Pancake.Editor.LevelEditor
                 _selectedSpawn = EditorGUILayout.Popup("Where Spawn", _selectedSpawn, _optionsSpawn);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    switch (_optionsSpawn[_selectedSpawn])
+                    switch (_optionsSpawn[_selectedSpawn].ToLower())
                     {
-                        case "Default":
+                        case "default":
                             break;
-                        case "Index":
+                        case "index":
                             var currentPrefabState = GetCurrentPrefabStage();
                             if (currentPrefabState != null)
                             {
@@ -402,9 +404,24 @@ namespace Pancake.Editor.LevelEditor
                             }
 
                             break;
-                        case "Custom":
+                        case "custom":
                             Uniform.SpaceOneLine();
                             _rootSpawn = (GameObject) EditorGUILayout.ObjectField("Spawn in GO here -->", _rootSpawn, typeof(GameObject), true);
+                            break;
+                    }
+                }
+
+                Uniform.SpaceOneLine();
+                _selectedMode = EditorGUILayout.Popup("Mode", _selectedMode, _optionsMode);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    switch (_optionsMode[_selectedMode].ToLower())
+                    {
+                        case "renderer":
+                            Uniform.HelpBox("Based on Renderer detection", MessageType.Info);
+                            break;
+                        case "ignore":
+                            Uniform.HelpBox("GameObject will be spawn correcty at raycast location\nIgnore calculate bound object", MessageType.Info);
                             break;
                     }
                 }
@@ -644,29 +661,37 @@ namespace Pancake.Editor.LevelEditor
                     {
                         _previewPickupObject.transform.position = mousePosition;
 
-                        if (_previewPickupObject.CalculateBounds(out var bounds,
-                                Space.World,
-                                true,
-                                false,
-                                false,
-                                false))
+                        switch (_optionsMode[_selectedMode].ToLower())
                         {
-                            float difference = 0;
+                            case "renderer":
+                                if (_previewPickupObject.CalculateBounds(out var bounds,
+                                        Space.World,
+                                        true,
+                                        false,
+                                        false,
+                                        false))
+                                {
+                                    float difference = 0;
 
-                            if (normal == Vector3.up || normal == Vector3.down)
-                            {
-                                difference = mousePosition.y - bounds.min.y;
-                            }
-                            else if (normal == Vector3.right || normal == Vector3.left)
-                            {
-                                difference = mousePosition.x - bounds.min.x;
-                            }
-                            else if (normal == Vector3.forward || normal == Vector3.back)
-                            {
-                                difference = mousePosition.z - bounds.min.z;
-                            }
+                                    if (normal == Vector3.up || normal == Vector3.down)
+                                    {
+                                        difference = mousePosition.y - bounds.min.y;
+                                    }
+                                    else if (normal == Vector3.right || normal == Vector3.left)
+                                    {
+                                        difference = mousePosition.x - bounds.min.x;
+                                    }
+                                    else if (normal == Vector3.forward || normal == Vector3.back)
+                                    {
+                                        difference = mousePosition.z - bounds.min.z;
+                                    }
 
-                            _previewPickupObject.transform.position += difference * normal;
+                                    _previewPickupObject.transform.position += difference * normal;
+                                }
+
+                                break;
+                            case "ignore":
+                                break;
                         }
                     }
 
