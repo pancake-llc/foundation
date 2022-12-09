@@ -42,7 +42,7 @@ namespace Pancake.Editor
 
         public override void InvokeForTarget(Property property, int targetIndex)
         {
-            var parentValue = property.Parent.GetValue(targetIndex);
+            var parentValue = property.Owner.GetValue(targetIndex);
 
             try
             {

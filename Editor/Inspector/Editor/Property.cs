@@ -66,6 +66,8 @@ namespace Pancake.Editor
 
         [PublicAPI] public Property Parent { get; }
 
+        [PublicAPI] public Property Owner => IsArrayElement ? Parent.Owner : Parent;
+
         [PublicAPI] public bool IsRootProperty => Parent == null;
 
         [PublicAPI] public string RawName => _definition.Name;

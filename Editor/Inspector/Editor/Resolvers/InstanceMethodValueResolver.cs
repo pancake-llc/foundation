@@ -43,7 +43,7 @@ namespace Pancake.Editor
 
         public override T GetValue(Property property, T defaultValue = default)
         {
-            var parentValue = property.Parent.GetValue(0);
+            var parentValue = property.Owner.GetValue(0);
 
             try
             {
