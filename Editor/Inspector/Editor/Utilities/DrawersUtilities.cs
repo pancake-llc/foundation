@@ -231,7 +231,7 @@ namespace Pancake.Editor
                     valueType,
                     it =>
                     {
-                        //
+                        it.ApplyOnArrayElement = processor.ApplyOnArrayElement;
                         it.RawAttribute = attribute;
                     });
         }
@@ -245,7 +245,7 @@ namespace Pancake.Editor
                     valueType,
                     it =>
                     {
-                        //
+                        it.ApplyOnArrayElement = processor.ApplyOnArrayElement;
                         it.RawAttribute = attribute;
                     });
         }

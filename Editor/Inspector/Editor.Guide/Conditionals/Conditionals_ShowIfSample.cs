@@ -1,4 +1,6 @@
-﻿namespace Pancake.Editor.Guide
+﻿using System.Collections.Generic;
+
+namespace Pancake.Editor.Guide
 {
     using UnityEngine;
 
@@ -10,7 +12,7 @@
 
         [ShowIf(nameof(material), null)] public Vector3 showWhenMaterialIsNull;
 
-        [ShowIf(nameof(toggle))] public Vector3 showWhenToggleIsTrue;
+        [ShowIf(nameof(toggle))] public List<Vector3> showWhenToggleIsTrue;
 
         [ShowIf(nameof(toggle), false)] public Vector3 showWhenToggleIsFalse;
 

@@ -44,6 +44,7 @@ namespace Pancake.Editor
         public RegisterPropertyHideProcessor(Type processorType) { ProcessorType = processorType; }
 
         public Type ProcessorType { get; }
+        public bool ApplyOnArrayElement { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
@@ -52,6 +53,7 @@ namespace Pancake.Editor
         public RegisterPropertyDisableProcessor(Type processorType) { ProcessorType = processorType; }
 
         public Type ProcessorType { get; }
+        public bool ApplyOnArrayElement { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
