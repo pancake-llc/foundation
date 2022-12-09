@@ -1,5 +1,5 @@
 :root {
-    --unity-metrics-default-border_radius: 7px;
+    --unity-metrics-default-border_radius: 6px;
 }
 
 .AppCommandLeftOn {
