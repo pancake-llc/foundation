@@ -1,21 +1,4 @@
-﻿// 2021.2 versions:
-#if UNITY_2021_2_OR_NEWER
-#define UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS
-
-// 2021.1 versions:
-#elif UNITY_2021_1_OR_NEWER && !UNITY_2021_1_0 && !UNITY_2021_1_1 && !UNITY_2021_1_2 && !UNITY_2021_1_3 && !UNITY_2021_1_4 && !UNITY_2021_1_5 
-#define UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS
-
-// 2020.3 versions:
-#elif UNITY_2020_3_OR_NEWER && !UNITY_2020_3_1 && !UNITY_2020_3_2 && !UNITY_2020_3_3 && !UNITY_2020_3_4 && !UNITY_2020_3_5 && !UNITY_2020_3_6 && !UNITY_2020_3_7 && !UNITY_2020_3_8 && !UNITY_2021_1_OR_NEWER
-#define UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS
-
-// // has changed somewhere between 2020.3.10f1, 2021.1.1f1 - 2021.1.6f1 and 2021.2.0a16+ - in-between versions not tested
-// #elif UNITY_2020_3_OR_NEWER && !UNITY_2020_3_0 && !UNITY_2020_3_1 && !UNITY_2020_3_2 && !UNITY_2020_3_3 && !UNITY_2020_3_4 && !UNITY_2020_3_5 && !UNITY_2020_3_6 && !UNITY_2020_3_7 && !UNITY_2021_1_0 && !UNITY_2021_1_1
-// #define UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -29,7 +12,14 @@ namespace Pancake.Console
 	{
 		internal static bool DrawCustom
 		{
-			get => NeedleConsoleSettings.instance.CustomConsole;
+			get
+			{
+#if CUSTOM_DRAWING_BROKEN
+				return false;
+#else
+				return NeedleConsoleSettings.instance.CustomConsole;
+#endif
+			}
 			set => NeedleConsoleSettings.instance.CustomConsole = value;
 		}
 
@@ -550,7 +540,12 @@ namespace Pancake.Console
 			try
 			{
 #if UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS
+#if UNITY_2022_2_OR_NEWER
+				// mode doesn't matter when shouldStripCallstack is false
+				var stackWithHyperlinks = ConsoleWindow.StacktraceWithHyperlinks(message, 0, false, ConsoleWindow.Mode.Log);
+#else
 				var stackWithHyperlinks = ConsoleWindow.StacktraceWithHyperlinks(message, 0);
+#endif
 #else
 				var stackWithHyperlinks = ConsoleWindow.StacktraceWithHyperlinks(message);
 #endif

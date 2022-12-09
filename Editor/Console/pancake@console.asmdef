@@ -14,6 +14,22 @@
     ],
     "autoReferenced": false,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "Unity",
+            "expression": "2021.1.6",
+            "define": "UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS"
+        },
+        {
+            "name": "Unity",
+            "expression": "[2020.3.9,2021.1)",
+            "define": "UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS"
+        },
+        {
+            "name": "Unity",
+            "expression": "[2020.3.34,2021.1)",
+            "define": "CUSTOM_DRAWING_BROKEN"
+        }
+    ],
     "noEngineReferences": false
 }
