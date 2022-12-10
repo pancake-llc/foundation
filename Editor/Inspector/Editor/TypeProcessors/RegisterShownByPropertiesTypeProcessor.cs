@@ -20,6 +20,6 @@ namespace Pancake.Editor
                 .Select((it, ind) => PropertyDefinition.CreateForPropertyInfo(ind + propertiesOffset, it)));
         }
 
-        private static bool IsSerialized(PropertyInfo propertyInfo) { return propertyInfo.GetCustomAttribute<ShowInInspector>() != null; }
+        private static bool IsSerialized(PropertyInfo propertyInfo) { return propertyInfo.GetCustomAttribute<ShowInInspectorAttribute>() != null; }
     }
 }

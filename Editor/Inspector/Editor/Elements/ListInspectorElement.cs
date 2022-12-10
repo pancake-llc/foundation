@@ -22,7 +22,7 @@ namespace Pancake.Editor
 
         public ListInspectorElement(Property property)
         {
-            property.TryGetAttribute(out ListDrawerSettings settings);
+            property.TryGetAttribute(out ListDrawerSettingsAttribute settings);
 
             _property = property;
             _alwaysExpanded = settings?.AlwaysExpanded ?? false;
