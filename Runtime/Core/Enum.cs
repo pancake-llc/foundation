@@ -76,24 +76,13 @@ namespace Pancake
         Always = 7
     }
 
-    /// <summary>
-    /// Enum used by InfoboxAttribute to define which message box type to display as.
-    /// </summary>
-    public enum InfoBoxMessageType
-    {
-        None = 0,
-        Info = 1,
-        Warning = 2,
-        Error = 3
-    }
-
     public enum AudioInterruptMode
     {
         StopIfPlaying = 0,
         DoNotPlayIfPlaying = 1,
         PlayOverExisting = 2
     }
-    
+
     /// <summary>
     /// TimeMode
     /// </summary>
@@ -102,7 +91,7 @@ namespace Pancake
         Normal = 0,
         Unscaled = 1,
     }
-    
+
     /// <summary>
     /// UpdateMode
     /// </summary>
@@ -114,12 +103,28 @@ namespace Pancake
         WaitForFixedUpdate = 3,
         WaitForEndOfFrame = 4
     }
-    
+
     public enum ButtonSize
     {
         Small = 0,
         Medium = 22,
         Large = 32,
         Gigantic = 62,
+    }
+
+    public enum Axis
+    {
+        X = 0,
+        Y = 1,
+        Z = 2
+    }
+
+    public enum RotationSpace
+    {
+        /// <summary>An intrinsic rotation around its own local axes, usually called "local" or "self" space. Equivalent to <c>q*rotation</c></summary>
+        Self,
+
+        /// <summary>Rotation around its pre-rotation axes, usually "world" space. Equivalent to <c>rotation*q</c></summary>
+        Extrinsic
     }
 }
