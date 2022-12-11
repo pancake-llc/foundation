@@ -364,7 +364,7 @@ namespace Pancake
             if (Application.isPlaying)
             {
                 // Initialize runtime Helper.
-                var runtimeHelper = new GameObject("RuntimeHelper");// {hideFlags = HideFlags.HideInHierarchy};
+                var runtimeHelper = new GameObject("RuntimeHelper") {hideFlags = HideFlags.HideInHierarchy};
                 runtimeHelper.AddComponent<RuntimeHelper>();
                 Object.DontDestroyOnLoad(runtimeHelper);
 
@@ -466,6 +466,10 @@ namespace Pancake
             go.AddComponent<Monetization.Advertising>();
 #if PANCAKE_IRONSOURCE_ENABLE
             go.AddComponent<Monetization.IronSourceStateHandler>();
+#endif
+
+#if PANCAKE_INPUTSYSTEM
+            go.AddComponent<Pancake.MyInput>();
 #endif
         }
 

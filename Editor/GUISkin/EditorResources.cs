@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Pancake.Editor
@@ -53,6 +54,11 @@ namespace Pancake.Editor
         public static Texture2D ToggleNormalBackground => InEditor.FindAssetWithPath<Texture2D>("toggle-normal-background.png", RELATIVE_PATH);
         public static Texture2D ToggleOnNormalBackground => InEditor.FindAssetWithPath<Texture2D>("toggle-on-normal-background.png", RELATIVE_PATH);
         public static Texture2D ToolboxAreaNormalBackground => InEditor.FindAssetWithPath<Texture2D>("toolbox-area-normal-background.png", RELATIVE_PATH);
+
+        public static Sprite FetchSpriteZero => InEditor.FindAssetWithPath<Sprite>("fetch_01.png", "Runtime/DefaultAssets/Sprites");
+        public static Sprite CircleRingJoystick => InEditor.FindAssetWithPath<Sprite>("circle-border-06.png", "Runtime/DefaultAssets/Sprites");
+        public static Sprite KnobJoystick => InEditor.FindAssetWithPath<Sprite>("circle.png", "Runtime/DefaultAssets/Sprites");
+        public static AnimatorController FetchAnimator => InEditor.FindAssetWithPath<AnimatorController>("FetchAnimator.controller", "Runtime/DefaultAssets/Animation");
     }
 }
 #endif

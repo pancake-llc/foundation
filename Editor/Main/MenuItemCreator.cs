@@ -1,6 +1,4 @@
-﻿using System;
-using Pancake.Linq;
-using Pancake.UI;
+﻿using Pancake.UI;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -60,7 +58,7 @@ namespace Pancake.Editor
             Selection.activeTransform = button;
         }
 
-        [MenuItem("GameObject/Pancake/UIPopup", false, 1100)]
+        [MenuItem("GameObject/Pancake/UIPopup", false, 1000)]
         public static void CreateUIPopupEmpty()
         {
             var popup = CreateUIPopupObject();
@@ -74,6 +72,24 @@ namespace Pancake.Editor
             var obj = CreateObject<Image>("Fetch");
             Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create Fetch");
             SetupFetch(obj);
+            Selection.activeTransform = obj;
+        }
+
+        [MenuItem("GameObject/Pancake/Fixed Joystick", false, 1200)]
+        private static void CreateFixedJoystick()
+        {
+            var obj = CreateObject<Image>("FixedJoystick");
+            Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create joystick");
+            SetupJoystick<FixedJoystick>(obj);
+            Selection.activeTransform = obj;
+        }
+
+        [MenuItem("GameObject/Pancake/Floating Joystick", false, 1200)]
+        private static void CreateFloatingJoystick()
+        {
+            var obj = CreateObject<Image>("FixedJoystick");
+            Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create joystick");
+            SetupJoystick<FloatingJoystick>(obj);
             Selection.activeTransform = obj;
         }
 
@@ -91,16 +107,12 @@ namespace Pancake.Editor
 
         private static void SetupFetch(RectTransform fetch)
         {
-            Sprite first = (Sprite) AssetDatabase.LoadAssetAtPath("Packages/com.pancake.heart/Runtime/UGUI/Fetch/Sprites/01.png", typeof(Sprite));
-            if (first == null) first = (Sprite) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/UGUI/Fetch/Sprites/01.png", typeof(Sprite));
             var img = fetch.GetComponent<Image>();
-            img.sprite = first;
+            img.sprite = EditorResources.FetchSpriteZero;
             img.raycastTarget = false;
             var animator = fetch.gameObject.AddComponent<Animator>();
 
-            animator.runtimeAnimatorController =
-                (AnimatorController) AssetDatabase.LoadAssetAtPath("Packages/com.pancake.heart/Runtime/UGUI/Fetch/Animation/FetchAnimator.controller",
-                    typeof(AnimatorController));
+            animator.runtimeAnimatorController = EditorResources.FetchAnimator;
 
             if (animator.runtimeAnimatorController == null)
             {
@@ -112,6 +124,30 @@ namespace Pancake.Editor
             {
                 Debug.LogError("Can not found FetchAnimator!");
             }
+        }
+
+        private static void SetupJoystick<T>(RectTransform joystickTransform) where T : Pancake.UI.Joystick
+        {
+            joystickTransform.AnchorMaxToZero();
+            joystickTransform.AnchorMinToZero();
+            joystickTransform.sizeDelta = new Vector2(200, 200);
+            joystickTransform.CenterPivot();
+            joystickTransform.anchoredPosition = new Vector2(200, 200);
+            var img = joystickTransform.GetComponent<Image>();
+            img.color = new Color(0.6f, 1f, 1f);
+            img.sprite = EditorResources.CircleRingJoystick;
+            joystickTransform.gameObject.AddComponent<Shadow>().effectDistance = new Vector2(3, -3);
+            var joystick = joystickTransform.gameObject.AddComponent<T>();
+            var knob = CreateEmptyRectTransformObject(joystickTransform, "Knob");
+            knob.sizeDelta = new Vector2(60, 60);
+            joystick.knob = knob;
+            var knobImg = knob.gameObject.AddComponent<Image>();
+            knobImg.sprite = EditorResources.KnobJoystick;
+            knobImg.color = new Color(0.6f, 1f, 1f);
+            var inner = CreateEmptyRectTransformObject(knob, "KnobInner");
+            inner.gameObject.AddComponent<Image>().sprite = EditorResources.KnobJoystick;
+            inner.FullScreen();
+            inner.sizeDelta = new Vector2(-10, -10);
         }
 
         private static RectTransform CreateUIPopupObject()

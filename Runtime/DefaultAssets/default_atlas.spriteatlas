@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: fetch_atlas
+  m_Name: default_atlas
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -76,20 +76,16 @@ SpriteAtlas:
     - {fileID: 2800000, guid: cdf1ae14f71350b4d8552e3c0392523c, type: 3}
     - {fileID: 2800000, guid: ec965e876faf30c46be0bb57f27a96fe, type: 3}
     - {fileID: 2800000, guid: 177b409703db4ea41b3eac7e900248d8, type: 3}
+    - {fileID: 2800000, guid: bf2bce4a828364e409f8eb09f5b1ca96, type: 3}
+    - {fileID: 2800000, guid: 580194e9ec365ec45a6c5f7f7d5076c0, type: 3}
+    - {fileID: 2800000, guid: 89122b9369a173448aaaef766cf5d6cc, type: 3}
+    - {fileID: 2800000, guid: 7e8d49df4c23d6b4a9ce6fb807f4d682, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
-    packedSpriteRenderDataKeys:
-    - aaf799b3f809cb94a841add770c6331b: 21300000
-    - cdf1ae14f71350b4d8552e3c0392523c: 21300000
-    - d92cb8e677b3c9846ae55366eaec4f22: 21300000
-    - ec965e876faf30c46be0bb57f27a96fe: 21300000
-    - 177b409703db4ea41b3eac7e900248d8: 21300000
-    - 5a20c5491b6b63f4baebb3ecf7130908: 21300000
-    - 1f6c65c9449510d4ab71b520b01aefc4: 21300000
-    - 23c7553a446eb074aa386d8f1ef7f59a: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 89122b9369a173448aaaef766cf5d6cc, type: 3}
   - {fileID: 21300000, guid: aaf799b3f809cb94a841add770c6331b, type: 3}
   - {fileID: 21300000, guid: cdf1ae14f71350b4d8552e3c0392523c, type: 3}
   - {fileID: 21300000, guid: d92cb8e677b3c9846ae55366eaec4f22, type: 3}
@@ -97,16 +93,23 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 177b409703db4ea41b3eac7e900248d8, type: 3}
   - {fileID: 21300000, guid: 5a20c5491b6b63f4baebb3ecf7130908, type: 3}
   - {fileID: 21300000, guid: 1f6c65c9449510d4ab71b520b01aefc4, type: 3}
+  - {fileID: 21300000, guid: 580194e9ec365ec45a6c5f7f7d5076c0, type: 3}
   - {fileID: 21300000, guid: 23c7553a446eb074aa386d8f1ef7f59a, type: 3}
+  - {fileID: 21300000, guid: bf2bce4a828364e409f8eb09f5b1ca96, type: 3}
+  - {fileID: 21300000, guid: 7e8d49df4c23d6b4a9ce6fb807f4d682, type: 3}
   m_PackedSpriteNamesToIndex:
-  - 03
-  - 06
-  - 05
-  - 07
-  - 08
-  - 01
-  - 04
-  - 02
+  - circle-border-06
+  - fetch_03
+  - fetch_06
+  - fetch_05
+  - fetch_07
+  - fetch_08
+  - fetch_01
+  - fetch_04
+  - square-ads
+  - fetch_02
+  - btn-x-ads
+  - circle
   m_RenderDataMap: {}
-  m_Tag: fetch_atlas
+  m_Tag: default_atlas
   m_IsVariant: 0
