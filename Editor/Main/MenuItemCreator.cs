@@ -75,38 +75,6 @@ namespace Pancake.Editor
             Selection.activeTransform = obj;
         }
 
-#if PANCAKE_INPUTSYSTEM
-        [MenuItem("GameObject/Pancake/Fixed Joystick", false, 1200)]
-        private static void CreateFixedJoystick()
-        {
-            var obj = CreateObject<Image>("FixedJoystick");
-            Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create joystick");
-            SetupJoystick<FixedJoystick>(obj);
-            Selection.activeTransform = obj;
-        }
-
-        [MenuItem("GameObject/Pancake/Floating Joystick", false, 1200)]
-        private static void CreateFloatingJoystick()
-        {
-            var obj = CreateObject<Image>("FixedJoystick");
-            Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create joystick");
-            SetupJoystick<FloatingJoystick>(obj);
-            Selection.activeTransform = obj;
-        }
-#endif
-
-        [MenuItem("Assets/Create/Pancake/Loading Prefab")]
-        private static void CreateLoaderPrefab()
-        {
-            var loadingCommon = InEditor.FindAssetWithPath<GameObject>("LoadingPrefabBase.prefab", "Runtime/UGUI/Loader/Prefabs");
-            if (loadingCommon != null)
-            {
-                GameObject instanceRoot = (GameObject) PrefabUtility.InstantiatePrefab(loadingCommon);
-                GameObject p = PrefabUtility.SaveAsPrefabAsset(instanceRoot, AssetDatabase.GetAssetPath(Selection.activeObject) + "/LoadingPrefab-Copy.prefab");
-                Object.DestroyImmediate(instanceRoot);
-            }
-        }
-
         private static void SetupFetch(RectTransform fetch)
         {
             var img = fetch.GetComponent<Image>();
@@ -129,6 +97,24 @@ namespace Pancake.Editor
         }
 
 #if PANCAKE_INPUTSYSTEM
+        [MenuItem("GameObject/Pancake/Fixed Joystick", false, 1200)]
+        private static void CreateFixedJoystick()
+        {
+            var obj = CreateObject<Image>("FixedJoystick");
+            Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create joystick");
+            SetupJoystick<FixedJoystick>(obj);
+            Selection.activeTransform = obj;
+        }
+
+        [MenuItem("GameObject/Pancake/Floating Joystick", false, 1200)]
+        private static void CreateFloatingJoystick()
+        {
+            var obj = CreateObject<Image>("FixedJoystick");
+            Undo.RegisterCreatedObjectUndo(obj.gameObject, "Create joystick");
+            SetupJoystick<FloatingJoystick>(obj);
+            Selection.activeTransform = obj;
+        }
+
         private static void SetupJoystick<T>(RectTransform joystickTransform) where T : UI.Joystick
         {
             joystickTransform.AnchorMaxToZero();
@@ -153,6 +139,18 @@ namespace Pancake.Editor
             inner.sizeDelta = new Vector2(-10, -10);
         }
 #endif
+
+        [MenuItem("Assets/Create/Pancake/Loading Prefab")]
+        private static void CreateLoaderPrefab()
+        {
+            var loadingCommon = InEditor.FindAssetWithPath<GameObject>("LoadingPrefabBase.prefab", "Runtime/UGUI/Loader/Prefabs");
+            if (loadingCommon != null)
+            {
+                GameObject instanceRoot = (GameObject) PrefabUtility.InstantiatePrefab(loadingCommon);
+                GameObject p = PrefabUtility.SaveAsPrefabAsset(instanceRoot, AssetDatabase.GetAssetPath(Selection.activeObject) + "/LoadingPrefab-Copy.prefab");
+                Object.DestroyImmediate(instanceRoot);
+            }
+        }
 
         private static RectTransform CreateUIPopupObject()
         {
