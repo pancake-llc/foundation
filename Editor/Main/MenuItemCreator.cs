@@ -75,6 +75,7 @@ namespace Pancake.Editor
             Selection.activeTransform = obj;
         }
 
+#if PANCAKE_INPUTSYSTEM
         [MenuItem("GameObject/Pancake/Fixed Joystick", false, 1200)]
         private static void CreateFixedJoystick()
         {
@@ -92,6 +93,7 @@ namespace Pancake.Editor
             SetupJoystick<FloatingJoystick>(obj);
             Selection.activeTransform = obj;
         }
+#endif
 
         [MenuItem("Assets/Create/Pancake/Loading Prefab")]
         private static void CreateLoaderPrefab()
@@ -126,7 +128,8 @@ namespace Pancake.Editor
             }
         }
 
-        private static void SetupJoystick<T>(RectTransform joystickTransform) where T : Pancake.UI.Joystick
+#if PANCAKE_INPUTSYSTEM
+        private static void SetupJoystick<T>(RectTransform joystickTransform) where T : UI.Joystick
         {
             joystickTransform.AnchorMaxToZero();
             joystickTransform.AnchorMinToZero();
@@ -149,6 +152,7 @@ namespace Pancake.Editor
             inner.FullScreen();
             inner.sizeDelta = new Vector2(-10, -10);
         }
+#endif
 
         private static RectTransform CreateUIPopupObject()
         {
