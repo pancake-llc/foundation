@@ -566,7 +566,7 @@ namespace Pancake.GameService
                 PlayFabClientAPI.LoginWithApple(new LoginWithAppleRequest()
                     {
                         TitleId = PlayFabSettings.TitleId,
-                        IdentityToken = Encoding.UTF8.GetString(identityToken),
+                        IdentityToken = System.Text.Encoding.UTF8.GetString(identityToken),
                         CreateAccount = true,
                         InfoRequestParameters = infoRequestParams
                     },
