@@ -21,6 +21,8 @@ namespace Pancake.Editor
             public GameObject pickedObject;
         }
 
+        #region preview generator
+
         private static PreviewGenerator previewGenerator;
 
         private static PreviewGenerator PreviewGenerator
@@ -77,6 +79,9 @@ namespace Pancake.Editor
 
             return tex;
         }
+
+        #endregion
+
 
         private readonly string[] _optionsSpawn = {"Default", "Index", "Custom"};
         private readonly string[] _optionsMode = {"Renderer", "Ignore"};
