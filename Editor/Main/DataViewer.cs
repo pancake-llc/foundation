@@ -13,6 +13,7 @@ namespace Pancake.Editor
         public List<int> profiles;
         private int _currentProfile;
         private string _path;
+        private Vector2 _scrollPosition;
         private Dictionary<string, Data.DataSegment> _datas;
 
         private static readonly Color[] ColorSchemas = new[] {new Color(0.43f, 1f, 0.33f), new Color(1f, 0.71f, 0.36f), new Color(1f, 0.33f, 0.14f)};
@@ -49,7 +50,6 @@ namespace Pancake.Editor
                 });
 
                 Uniform.SpaceThreeLine();
-                Uniform.SpaceThreeLine();
 
                 Uniform.Vertical(() =>
                 {
@@ -62,77 +62,86 @@ namespace Pancake.Editor
                         totalSize += dataSegment.Value.value.Length;
                     }
 
-
-                    Uniform.Horizontal(() =>
+                    if (_datas.Count == 0)
                     {
-                        EditorGUILayout.LabelField("Key", GUILayout.Width(150));
-                        EditorGUILayout.LabelField("Size");
-                        GUILayout.FlexibleSpace();
-                    });
-                    Uniform.SpaceOneLine();
-                    foreach (var dataSegment in _datas.ToArray())
+                        Uniform.HelpBox("Profile Empty!", MessageType.Info);
+                    }
+                    else
                     {
                         Uniform.Horizontal(() =>
                         {
-                            EditorGUILayout.LabelField(dataSegment.Key, GUILayout.Width(120));
-                            var rect = GUILayoutUtility.GetLastRect();
-                            var percent = dataSegment.Value.value.Length / (float) totalSize;
-
-                            Color color;
-                            if (percent <= 0.33f)
-                            {
-                                color = ColorSchemas[0];
-                            }
-                            else if (percent <= 0.66)
-                            {
-                                color = ColorSchemas[1];
-                            }
-                            else
-                            {
-                                color = ColorSchemas[2];
-                            }
-
-                            var size = position.width - 200;
-                            var pos = new Vector2(rect.position.x + 150, rect.position.y);
-                            var fillRect = new Rect(pos, new Vector2(size * percent, rect.height));
-                            EditorGUI.DrawRect(new Rect(pos, new Vector2(size, rect.height)), new Color(0.13f, 0.13f, 0.13f));
-                            EditorGUI.DrawRect(fillRect, color);
-
-                            // set alignment and cache the default
-                            var align = GUI.skin.label.alignment;
-                            GUI.skin.label.alignment = TextAnchor.UpperCenter;
-
-                            // set the color and cache the default
-                            var c = GUI.contentColor;
-                            GUI.contentColor = Color.white;
-
-                            // calculate the position
-                            var labelRect = new Rect(position.width / 2, rect.y - 2, rect.width, rect.height);
-
-                            EditorGUI.DropShadowLabel(labelRect, InEditor.GetSizeInMemory(dataSegment.Value.value.Length));
-
-                            // reset color and alignment
-                            GUI.contentColor = c;
-                            GUI.skin.label.alignment = align;
-
+                            EditorGUILayout.LabelField("Key", GUILayout.Width(150));
+                            EditorGUILayout.LabelField("Size");
                             GUILayout.FlexibleSpace();
-
-                            if (GUILayout.Button(Uniform.IconContent("d_TreeEditor.Trash", "Uninstall"), GUILayout.Width(35)))
-                            {
-                                if (EditorUtility.DisplayDialog("Remove Data",
-                                        $"Are you sure you wish to delete data of {dataSegment.Key}?\nThis action cannot be reversed.",
-                                        "Remove",
-                                        "Cancel"))
-                                {
-                                    _datas.Remove(dataSegment.Key);
-                                    byte[] bytes = OdinSerializer.SerializationUtility.SerializeValue(_datas, OdinSerializer.DataFormat.Binary);
-                                    File.WriteAllBytes(_path, bytes);
-                                }
-                            }
                         });
+                        Uniform.SpaceOneLine();
+                        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, GUILayout.Height(position.height - 108));
+                        foreach (var dataSegment in _datas.ToArray())
+                        {
+                            Uniform.Horizontal(() =>
+                            {
+                                EditorGUILayout.LabelField(dataSegment.Key, GUILayout.Width(120));
+                                var rect = GUILayoutUtility.GetLastRect();
+                                var percent = dataSegment.Value.value.Length / (float) totalSize;
+
+                                Color color;
+                                if (percent <= 0.33f)
+                                {
+                                    color = ColorSchemas[0];
+                                }
+                                else if (percent <= 0.66)
+                                {
+                                    color = ColorSchemas[1];
+                                }
+                                else
+                                {
+                                    color = ColorSchemas[2];
+                                }
+
+                                var size = position.width - 200;
+                                var pos = new Vector2(rect.position.x + 150, rect.position.y);
+                                var fillRect = new Rect(pos, new Vector2(size * percent, rect.height));
+                                EditorGUI.DrawRect(new Rect(pos, new Vector2(size, rect.height)), new Color(0.13f, 0.13f, 0.13f));
+                                EditorGUI.DrawRect(fillRect, color);
+
+                                // set alignment and cache the default
+                                var align = GUI.skin.label.alignment;
+                                GUI.skin.label.alignment = TextAnchor.UpperCenter;
+
+                                // set the color and cache the default
+                                var c = GUI.contentColor;
+                                GUI.contentColor = Color.white;
+
+                                // calculate the position
+                                var labelRect = new Rect(position.width / 2, rect.y - 2, rect.width, rect.height);
+
+                                EditorGUI.DropShadowLabel(labelRect, InEditor.GetSizeInMemory(dataSegment.Value.value.Length));
+
+                                // reset color and alignment
+                                GUI.contentColor = c;
+                                GUI.skin.label.alignment = align;
+
+                                GUILayout.FlexibleSpace();
+
+                                if (GUILayout.Button(Uniform.IconContent("d_TreeEditor.Trash", "Uninstall"), GUILayout.Width(35)))
+                                {
+                                    if (EditorUtility.DisplayDialog("Remove Data",
+                                            $"Are you sure you wish to delete data of {dataSegment.Key}?\nThis action cannot be reversed.",
+                                            "Remove",
+                                            "Cancel"))
+                                    {
+                                        _datas.Remove(dataSegment.Key);
+                                        byte[] bytes = OdinSerializer.SerializationUtility.SerializeValue(_datas, OdinSerializer.DataFormat.Binary);
+                                        File.WriteAllBytes(_path, bytes);
+                                    }
+                                }
+                            });
+                        }
+
+                        GUILayout.EndScrollView();
                     }
 
-                    Uniform.SpaceThreeLine();
+                    Uniform.SpaceTwoLine();
                 });
             }
 
