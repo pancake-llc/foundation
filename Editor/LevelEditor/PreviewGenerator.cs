@@ -4,7 +4,7 @@ using Pancake.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.LevelEditor
+namespace Pancake.Editor
 {
     internal class PreviewGenerator
     {
@@ -34,9 +34,6 @@ namespace Pancake.Editor.LevelEditor
         public int height = 256;
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public CaptureTiming captureTiming = CaptureTiming.Instant;
-
-        // ReSharper disable once MemberCanBePrivate.Global
         public float timingCounter = 1;
 
         // ReSharper disable once MemberCanBePrivate.Global
@@ -54,16 +51,6 @@ namespace Pancake.Editor.LevelEditor
             Stretch,
         }
 
-        public enum CaptureTiming
-        {
-            Instant,
-            EndOfFrame,
-            NextFrame,
-            NextSecond,
-            NextSecondRealtime
-        }
-
-
         public PreviewGenerator Copy()
         {
             return new PreviewGenerator()
@@ -77,7 +64,6 @@ namespace Pancake.Editor.LevelEditor
                 pixelPerUnit = pixelPerUnit,
                 width = width,
                 height = height,
-                captureTiming = captureTiming,
                 timingCounter = timingCounter,
                 onCapturedCallback = onCapturedCallback,
                 onPreCaptureCallback = onPreCaptureCallback,
@@ -93,13 +79,6 @@ namespace Pancake.Editor.LevelEditor
         public PreviewGenerator OnPreCaptured(Action<GameObject> callback)
         {
             onPreCaptureCallback = callback;
-            return this;
-        }
-
-        public PreviewGenerator SetTiming(CaptureTiming timing, float? counter = null)
-        {
-            captureTiming = timing;
-            timingCounter = counter ?? timingCounter;
             return this;
         }
 
@@ -141,19 +120,11 @@ namespace Pancake.Editor.LevelEditor
                 Object.DestroyImmediate(dummy.gameObject);
             }
 
-            if (captureTiming == CaptureTiming.Instant)
-                return WrappedCapture(prevObj,
-                    cam,
-                    size.x,
-                    size.y,
-                    Callback);
-
-            dummy.StartCoroutine(TimedCapture(prevObj,
+            return WrappedCapture(prevObj,
                 cam,
                 size.x,
                 size.y,
-                Callback));
-            return null;
+                Callback);
         }
 
 
@@ -239,25 +210,6 @@ namespace Pancake.Editor.LevelEditor
             }
 
             return new Vector2Int(w, h);
-        }
-
-        private IEnumerator TimedCapture(GameObject obj, Camera cam, int w, int h, Action callback)
-        {
-            if (captureTiming == CaptureTiming.Instant)
-            {
-            }
-            else if (captureTiming == CaptureTiming.EndOfFrame) yield return new WaitForEndOfFrame();
-            else if (captureTiming == CaptureTiming.NextFrame)
-                for (var i = 0; i < timingCounter; i++)
-                    yield return null;
-            else if (captureTiming == CaptureTiming.NextSecond) yield return new WaitForSeconds(timingCounter);
-            else if (captureTiming == CaptureTiming.NextSecondRealtime) yield return new WaitForSecondsRealtime(timingCounter);
-
-            WrappedCapture(obj,
-                cam,
-                w,
-                h,
-                callback);
         }
 
         private Texture2D WrappedCapture(GameObject obj, Camera cam, int w, int h, Action callback)

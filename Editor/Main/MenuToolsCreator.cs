@@ -88,5 +88,19 @@ namespace Pancake.Editor
             var _ = Monetization.AdSettings.Instance;
             Monetization.Editor.SettingsWindow.ShowWindow();
         }
+
+
+        [MenuItem("Tools/Pancake/Level Editor &_3")]
+        public static void OpenEditor()
+        {
+            var window = EditorWindow.GetWindow<Pancake.Editor.LevelEditor>("Level Editor", true, InEditor.InspectorWindow);
+
+            if (window)
+            {
+                window.Init();
+                window.minSize = new Vector2(275, 0);
+                window.Show(true);
+            }
+        }
     }
 }

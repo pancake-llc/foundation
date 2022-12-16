@@ -11,10 +11,73 @@ using UnityEditor.Experimental.SceneManagement;
 #endif
 using UnityEngine;
 
-namespace Pancake.Editor.LevelEditor
+namespace Pancake.Editor
 {
     internal class LevelEditor : EditorWindow
     {
+        private class PickObject
+        {
+            public string group;
+            public GameObject pickedObject;
+        }
+
+        private static PreviewGenerator previewGenerator;
+
+        private static PreviewGenerator PreviewGenerator
+        {
+            get
+            {
+                var generator = previewGenerator;
+                if (generator != null) return generator;
+
+                return previewGenerator = new PreviewGenerator {width = 512, height = 512, transparentBackground = true, sizingType = PreviewGenerator.ImageSizeType.Fit};
+            }
+        }
+
+        private static Dictionary<GameObject, Texture2D> previewDict;
+
+        public static void ClearPreviews()
+        {
+            if (previewDict != null)
+            {
+                foreach (var kvp in previewDict.ToList())
+                {
+                    previewDict[kvp.Key] = null;
+                }
+
+                previewDict.Clear();
+            }
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        public static void ClearPreview(GameObject go)
+        {
+            // ReSharper disable once RedundantAssignment
+            // ReSharper disable once InlineOutVariableDeclaration
+            Texture2D tex = null;
+            if (previewDict?.TryGetValue(go, out tex) ?? false)
+            {
+                UnityEngine.Object.DestroyImmediate(tex);
+                previewDict.Remove(go);
+            }
+        }
+
+        public static Texture2D GetPreview(GameObject go, bool canCreate = true)
+        {
+            if (!go) return null;
+            if (!canCreate) return previewDict?.GetOrDefault(go);
+
+            if (previewDict == null) previewDict = new Dictionary<GameObject, Texture2D>();
+            previewDict.TryGetValue(go, out var tex);
+            if (!tex)
+            {
+                tex = PreviewGenerator.CreatePreview(go.gameObject);
+                previewDict[go] = tex;
+            }
+
+            return tex;
+        }
+
         private readonly string[] _optionsSpawn = {"Default", "Index", "Custom"};
         private readonly string[] _optionsMode = {"Renderer", "Ignore"};
 
@@ -92,7 +155,7 @@ namespace Pancake.Editor.LevelEditor
         // ReSharper disable once UnusedMember.Local
         private void RefreshAll()
         {
-            LevelWindow.ClearPreviews();
+            LevelEditor.ClearPreviews();
             RefreshPickObject();
             ClearEditor();
         }
@@ -435,7 +498,7 @@ namespace Pancake.Editor.LevelEditor
 
             void DrawPickupArea()
             {
-                var tex = LevelWindow.GetPreview(_currentPickObject?.pickedObject);
+                var tex = LevelEditor.GetPreview(_currentPickObject?.pickedObject);
                 if (tex)
                 {
                     string pickObjectName = _currentPickObject?.pickedObject.name;
@@ -447,14 +510,15 @@ namespace Pancake.Editor.LevelEditor
                         {
                             _editorInpsectorPreview = UnityEditor.Editor.CreateEditor(_currentPickObject?.pickedObject);
                         }
-                        
+
                         var rect = GUILayoutUtility.GetLastRect();
-                        _editorInpsectorPreview.DrawPreview(new Rect(new Vector2(position.width / 2 - 50, rect.position.y), new Vector2(100,100)));
+                        _editorInpsectorPreview.DrawPreview(new Rect(new Vector2(position.width / 2 - 50, rect.position.y), new Vector2(100, 100)));
                         _previousObjectInpectorPreview = _currentPickObject?.pickedObject;
-                        GUI.color = new Color(1,1,1,0f);
+                        GUI.color = new Color(1, 1, 1, 0f);
                         if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80)))
                         {
                         }
+
                         GUI.color = Color.white;
                     });
                     EditorGUILayout.LabelField($"Selected: <color=#80D2FF>{pickObjectName}</color>\nPress Icon Again Or Escape Key To Deselect",
@@ -547,7 +611,7 @@ namespace Pancake.Editor.LevelEditor
                     {
                         var pickObj = pickObjectsInGroup[counter];
                         var go = pickObj.pickedObject;
-                        var tex = LevelWindow.GetPreview(go);
+                        var tex = LevelEditor.GetPreview(go);
                         if (pickObj == _currentPickObject)
                         {
                             GUI.color = new Color32(79, 213, 255, 255);
