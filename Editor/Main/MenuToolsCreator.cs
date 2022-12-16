@@ -81,7 +81,7 @@ namespace Pancake.Editor
             var _ = Pancake.IAP.IAPSettings.Instance;
             Selection.activeObject = _;
         }
-        
+
         [MenuItem("Tools/Pancake/Advertisement %E", false)]
         public static void MenuOpenSettings()
         {
