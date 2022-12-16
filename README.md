@@ -510,14 +510,20 @@ Require install [facebook](https://github.com/pancake-llc/facebook)
     - in `Allow client access to sensitive profile properties` enable `Linked accounts`
       <img width="947" alt="client profile options in playfab title setting" src="https://user-images.githubusercontent.com/44673303/200122264-c5536d05-98c6-411b-b204-1342d65d196b.png">
 
-- install sample leaderboard via PackageManager, sample need install pacakge [ui effect](https://github.com/mob-sakai/UIEffect.git) to run correctly
-- in sample leaderboard has already file config, select `GameServiceSettings` in folder resources to active setting
-- use `Update Aggregation` menu in context menu of PopupLeaderboard to create table leaderboard for 240 countries just do this once
+- install sample leaderboard via PackageManager. You also need to install the package [ui effect](https://github.com/mob-sakai/UIEffect.git) to run correctly
+- in sample leaderboard has already config file, select `GameServiceSettings` in folder Resources to active setting
+- use `Update Aggregation` menu in menu context of PopupLeaderboard to create table leaderboard for 240 countries just do this once
 - replace the code in `#if region replace your code` with your own code to manage popups the way you want
-- for update score to leaderboard when first time you enter name complete. You can via using `valueExpression` in `ButtonLeaderBoard`
+- for update score to leaderboard when first time you enter name completed. Example you can find in class `ButtonLeaderBoard` using `valueExpression`
 
 ```c#
 GetComponent<ButtonLeaderboard>().valueExpression += () => UnityEngine.Random.Range(1, 100);
+```
+
+- when you want update score of user in leaderboard you can you method `UpdatePlayerStatistics`
+```csharp
+int newScore = 100;
+AuthService.UpdatePlayerStatistics("name_table", newScore); 
 ```
 
 </details>
