@@ -1143,7 +1143,7 @@ Data.DeleteAll();
 
 You can view all key use in each profile by using menu `Tools > Pancake > Data Viewer` by shortcut `Alt + 4`
 
-<p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.46/img/data_viewer.png" width="600"  alt=""/></p>
+<p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.46/img/data_viewer.jpg" width="600"  alt=""/></p>
 
 </details>
 
