@@ -12,7 +12,7 @@ namespace Pancake
     public static class Data
     {
         [Serializable]
-        private sealed class DataSegment
+        internal sealed class DataSegment
         {
             public byte[] value;
         }

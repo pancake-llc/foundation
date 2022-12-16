@@ -102,5 +102,16 @@ namespace Pancake.Editor
                 window.Show(true);
             }
         }
+        
+        [MenuItem("Tools/Pancake/Data Viewer &_4")]
+        public static void OpenDataViewer()
+        {
+            var window = EditorWindow.GetWindow<Pancake.Editor.DataViewer>("Data View", true, InEditor.InspectorWindow);
+            if (window)
+            {
+                window.minSize = new Vector2(275, 0);
+                window.Show(true);
+            }
+        }
     }
 }
