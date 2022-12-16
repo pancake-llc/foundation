@@ -521,6 +521,7 @@ GetComponent<ButtonLeaderboard>().valueExpression += () => UnityEngine.Random.Ra
 ```
 
 - when you want update score of user in leaderboard you can you method `UpdatePlayerStatistics`
+
 ```csharp
 int newScore = 100;
 AuthService.UpdatePlayerStatistics("name_table", newScore); 
@@ -1065,6 +1066,86 @@ async UniTask<string> DemoAsync()
 </details>
 
 ## DATA
+
+<details>
+<summary>Simple api save and load user data</summary>
+
+It allows you to store data in binary form in blocks called profiles. Usage is quite simple and similar to PlayerPrefs
+
+Each profile is a Dictionary with the key as a string and the value as a byte array.
+
+The default profile will be 0 if you want to Load or Save in another profile you will need to call the `ChangeProfile` function.
+
+```csharp
+using Pancake;
+
+Data.ChangeProfile(1);
+```
+
+The `Load` function will load all the data of the current profile into memory. When the game starts it will be called automatically
+
+```csharp
+using Pancake;
+
+Data.Load();
+```
+
+The `Save` function will save all changes of the current profile to a file. It will be called automatically when you leave the game.
+
+```csharp
+using Pancake;
+
+Data.Save();
+```
+
+When you switch profiles, it will save the data of the current profile and then load the profile you need.
+
+After you have successfully loaded the profile you can `Load` part data from the profile by key in memory using the following two methods
+
+```csharp
+using Pancake;
+
+PlayerData player = Data.Load<PlayerData>("hero");
+Data.Load<PlayerData>("hero", out PlayerData player);
+```
+
+
+Call `Save` if you want to add new or overwrite data to the profile in memory
+```csharp
+using Pancake;
+
+PlayerData player = new PlayerData();
+Data.Save<PlayerData>(player);
+```
+
+To check if the profile has a key, you can use the `HasKey` function
+```csharp
+using Pancake;
+
+bool exist = Data.HasKey("hero");
+```
+
+To delete the key from the profile you can use the function `DeleteKey`
+
+```csharp
+using Pancake;
+
+Data.DeleteKey("hero");
+```
+
+To delete the entire key, call `DeleteAll`
+
+```csharp
+using Pancake;
+
+Data.DeleteAll();
+```
+
+You can view all key use in each profile by using menu `Tools > Pancake > Data Viewer` by shortcut `Alt + 4`
+
+<p style="text-align: center;"><img src="https://cdn.jsdelivr.net/npm/yenmoc-assets@1.0.46/img/data_viewer.png" width="600"  alt=""/></p>
+
+</details>
 
 ## UGUI
 
