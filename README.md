@@ -44,6 +44,7 @@ Add the lines below to `Packages/manifest.json`
 - [Ugui](https://github.com/pancake-llc/heart/wiki/ugui)
 - [Ulid](https://github.com/pancake-llc/heart/wiki/ulid)
 - [UniTask](https://github.com/pancake-llc/heart/wiki/unitask)
+- [Know Issue](https://github.com/pancake-llc/heart/wiki/Know-Problem#non-secure-network-connections-disabled-in-player-settings)
 
 
 
