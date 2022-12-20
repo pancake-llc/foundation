@@ -26,6 +26,7 @@ namespace Pancake.Editor
             profiles?.Clear();
             _datas = null;
             profiles = null;
+            _path = string.Empty;
         }
 
         private void OnGUI()
@@ -40,6 +41,13 @@ namespace Pancake.Editor
 
             void View()
             {
+                if (profiles.Count == 0)
+                {
+                    Uniform.HelpBox("No profiles are used to store data!", MessageType.Info);
+                    Uniform.SpaceTwoLine();
+                    return;
+                }
+
                 Uniform.Vertical(() =>
                 {
                     _currentProfile = EditorGUILayout.Popup("Select Profile", _currentProfile, profiles.Map(_ => $"Profile {_}").ToArray());
