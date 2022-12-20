@@ -52,20 +52,7 @@ namespace Pancake.Monetization
             Adjust.trackAdRevenue(adRevenue);
 #endif
 
-#if PANCAKE_ANALYTIC
-            
-            // Log an event with ad value parameters
-            Parameter[] parameters =
-            {
-                // Log ad value in micros.
-                new Parameter("value", revenue), 
-                new Parameter("ad_platform", "Admob"),
-                new Parameter("currency", e.AdValue.CurrencyCode),
-                new Parameter("ad_unit_name", unitId),
-            };
-
-            FirebaseAnalytics.LogEvent("ad_impression", parameters);
-#endif
+            // google admob auto tracking ad_impression when using admob ad
         }
 #endif
     }
