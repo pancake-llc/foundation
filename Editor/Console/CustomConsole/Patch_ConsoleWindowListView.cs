@@ -95,6 +95,8 @@ namespace Pancake.Console
 					if (index == 382)
 #elif UNITY_2021_1_OR_NEWER
 					if (index == 330)
+#elif UNITY_2020_3_38_OR_NEWER
+					if (index == 323)
 #elif UNITY_2020_1_OR_NEWER
 					if (index == 318)
 #else // 2019

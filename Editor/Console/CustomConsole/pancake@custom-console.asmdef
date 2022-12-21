@@ -37,6 +37,11 @@
             "name": "Unity",
             "expression": "[2021.1,2021.1)",
             "define": "CUSTOM_DRAWING_BROKEN"
+        },
+        {
+            "name": "Unity",
+            "expression": "[2020.3.38,9999.9)",
+            "define": "UNITY_2020_3_38_OR_NEWER"
         }
     ],
     "noEngineReferences": false
