@@ -32,6 +32,10 @@ namespace Pancake.Editor
         private void OnGUI()
         {
             Uniform.SpaceOneLine();
+            Uniform.HelpBox("[Serializable] attribute is unnecessary for OdinSerializer!.\nYou don't need to add it to your data class.\n\n" +
+                            "It necessary when you use Unity serialize",
+                MessageType.Info);
+            Uniform.SpaceOneLine();
             InternalDrawDataView();
         }
 

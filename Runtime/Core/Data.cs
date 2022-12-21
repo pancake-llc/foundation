@@ -11,7 +11,7 @@ namespace Pancake
     /// </summary>
     public static class Data
     {
-        [Serializable]
+        // [Serializable] is unnecessary for OdinSerializer
         internal sealed class DataSegment
         {
             public byte[] value;
