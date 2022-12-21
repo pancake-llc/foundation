@@ -5,14 +5,17 @@ namespace Pancake
     public class MagicBag
     {
         private readonly float[] _weights;
+        private readonly float[] _cumulativeWeights;
         private readonly float _totalWeight;
 
         public MagicBag(float[] weights)
         {
             _weights = weights;
+            _cumulativeWeights = new float[weights.Length];
             for (int i = 0; i < weights.Length; i++)
             {
                 _totalWeight += weights[i];
+                _cumulativeWeights[i] = _totalWeight;
             }
         }
 
@@ -23,14 +26,28 @@ namespace Pancake
         public int Take()
         {
             var point = Random.Range(0f, _totalWeight);
+            var lo = 0;
+            var hi = _weights.Length - 1;
 
-            var currentWeight = 0f;
-            for (int i = 0; i < _weights.Length; i++)
+            while (lo < hi)
             {
-                currentWeight += _weights[i];
-                if (point < currentWeight)
+                var mid = (int) (((uint) hi + (uint) lo) >> 1);
+                var value = _cumulativeWeights[mid];
+
+                if (point > value)
                 {
-                    return i;
+                    lo = mid + 1;
+                }
+                else
+                {
+                    var prevPoint = mid > 0 ? _cumulativeWeights[mid - 1] : 0;
+
+                    if (point >= prevPoint)
+                    {
+                        return mid;
+                    }
+                    
+                    hi = mid;
                 }
             }
 
