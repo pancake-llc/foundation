@@ -57,151 +57,154 @@ namespace Pancake
 
     public static partial class C
     {
-        public static void CheckConnection(Action<ENetworkStatus> onCompleted)
+        public static class Network
         {
-            switch (Application.platform)
+            public static void CheckConnection(Action<ENetworkStatus> onCompleted)
             {
-                case RuntimePlatform.Android:
-                case RuntimePlatform.WebGLPlayer:
-                default:
-                    CheckNetworkAndroid(onCompleted);
-                    break;
-                case RuntimePlatform.WindowsEditor:
-                case RuntimePlatform.WindowsPlayer:
-                case RuntimePlatform.XboxOne:
-                    CheckNetworkWidow(onCompleted);
-                    break;
-                case RuntimePlatform.IPhonePlayer:
-                case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.OSXPlayer:
-                    CheckNetworkiOS(onCompleted);
-                    break;
+                switch (Application.platform)
+                {
+                    case RuntimePlatform.Android:
+                    case RuntimePlatform.WebGLPlayer:
+                    default:
+                        CheckNetworkAndroid(onCompleted);
+                        break;
+                    case RuntimePlatform.WindowsEditor:
+                    case RuntimePlatform.WindowsPlayer:
+                    case RuntimePlatform.XboxOne:
+                        CheckNetworkWidow(onCompleted);
+                        break;
+                    case RuntimePlatform.IPhonePlayer:
+                    case RuntimePlatform.OSXEditor:
+                    case RuntimePlatform.OSXPlayer:
+                        CheckNetworkiOS(onCompleted);
+                        break;
+                }
             }
-        }
 
-        private static void CheckNetworkAndroid(Action<ENetworkStatus> onCompleted)
-        {
-            Timing.RunCoroutine(Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted), tag: "net_check_android");
-        }
-
-        private static void CheckNetworkWidow(Action<ENetworkStatus> onCompleted)
-        {
-            Timing.RunCoroutine(Check_ResponseContain("http://www.msftncsi.com/ncsi.txt", "Microsoft NCSI", onCompleted), tag: "net_check_win");
-        }
-
-        private static void CheckNetworkiOS(Action<ENetworkStatus> onCompleted)
-        {
-            Timing.RunCoroutine(Check_ResponseContain("https://captive.apple.com/hotspot-detect.html",
-                    "<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>",
-                    onCompleted),
-                tag: "net_check_ios");
-        }
-
-
-        /// <summary>
-        /// Check internet connection status
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerator<float> Check_HttpStatusCode(string url, HttpStatusCode statusCode, Action<ENetworkStatus> onCompleted)
-        {
-            var www = UnityWebRequest.Get(url);
-            yield return Timing.WaitUntilDone(www.SendWebRequest());
-
-            ENetworkStatus status;
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+            private static void CheckNetworkAndroid(Action<ENetworkStatus> onCompleted)
             {
-                status = ENetworkStatus.NoDnsConnection;
+                Timing.RunCoroutine(Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted), tag: "net_check_android");
+            }
+
+            private static void CheckNetworkWidow(Action<ENetworkStatus> onCompleted)
+            {
+                Timing.RunCoroutine(Check_ResponseContain("http://www.msftncsi.com/ncsi.txt", "Microsoft NCSI", onCompleted), tag: "net_check_win");
+            }
+
+            private static void CheckNetworkiOS(Action<ENetworkStatus> onCompleted)
+            {
+                Timing.RunCoroutine(Check_ResponseContain("https://captive.apple.com/hotspot-detect.html",
+                        "<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>",
+                        onCompleted),
+                    tag: "net_check_ios");
+            }
+
+
+            /// <summary>
+            /// Check internet connection status
+            /// </summary>
+            /// <returns></returns>
+            public static IEnumerator<float> Check_HttpStatusCode(string url, HttpStatusCode statusCode, Action<ENetworkStatus> onCompleted)
+            {
+                var www = UnityWebRequest.Get(url);
+                yield return Timing.WaitUntilDone(www.SendWebRequest());
+
+                ENetworkStatus status;
+                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+                {
+                    status = ENetworkStatus.NoDnsConnection;
+                    onCompleted?.Invoke(status);
+                    yield break;
+                }
+
+                status = (int) www.responseCode == (int) statusCode ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+
                 onCompleted?.Invoke(status);
-                yield break;
             }
 
-            status = (int) www.responseCode == (int) statusCode ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-
-            onCompleted?.Invoke(status);
-        }
-
-        /// <summary>
-        /// Check internet connection status
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerator<float> Check_ResponseContain(string url, string expectedContent, Action<ENetworkStatus> onCompleted)
-        {
-            var www = UnityWebRequest.Get(url);
-            yield return Timing.WaitUntilDone(www.SendWebRequest());
-
-            ENetworkStatus status;
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+            /// <summary>
+            /// Check internet connection status
+            /// </summary>
+            /// <returns></returns>
+            public static IEnumerator<float> Check_ResponseContain(string url, string expectedContent, Action<ENetworkStatus> onCompleted)
             {
-                status = ENetworkStatus.NoDnsConnection;
+                var www = UnityWebRequest.Get(url);
+                yield return Timing.WaitUntilDone(www.SendWebRequest());
+
+                ENetworkStatus status;
+                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+                {
+                    status = ENetworkStatus.NoDnsConnection;
+                    onCompleted?.Invoke(status);
+                    yield break;
+                }
+
+                status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+
                 onCompleted?.Invoke(status);
-                yield break;
             }
 
-            status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-
-            onCompleted?.Invoke(status);
-        }
-
-        /// <summary>
-        /// Check internet connection status
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerator<float> Check_ResponseContainContent(string url, string expectedContent, Action<ENetworkStatus> onCompleted)
-        {
-            var www = UnityWebRequest.Get(url);
-            yield return Timing.WaitUntilDone(www.SendWebRequest());
-
-            ENetworkStatus status;
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+            /// <summary>
+            /// Check internet connection status
+            /// </summary>
+            /// <returns></returns>
+            public static IEnumerator<float> Check_ResponseContainContent(string url, string expectedContent, Action<ENetworkStatus> onCompleted)
             {
-                status = ENetworkStatus.NoDnsConnection;
+                var www = UnityWebRequest.Get(url);
+                yield return Timing.WaitUntilDone(www.SendWebRequest());
+
+                ENetworkStatus status;
+                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+                {
+                    status = ENetworkStatus.NoDnsConnection;
+                    onCompleted?.Invoke(status);
+                    yield break;
+                }
+
+                status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+
                 onCompleted?.Invoke(status);
-                yield break;
             }
 
-            status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-
-            onCompleted?.Invoke(status);
-        }
-
-        /// <summary>
-        /// Check internet connection status
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerator<float> Check(
-            string url,
-            ENetworkResponseType responseType,
-            HttpStatusCode statusCode,
-            string expectedContent,
-            Action<ENetworkStatus> onCompleted)
-        {
-            var www = UnityWebRequest.Get(url);
-            yield return Timing.WaitUntilDone(www.SendWebRequest());
-
-            ENetworkStatus status;
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+            /// <summary>
+            /// Check internet connection status
+            /// </summary>
+            /// <returns></returns>
+            public static IEnumerator<float> Check(
+                string url,
+                ENetworkResponseType responseType,
+                HttpStatusCode statusCode,
+                string expectedContent,
+                Action<ENetworkStatus> onCompleted)
             {
-                status = ENetworkStatus.NoDnsConnection;
+                var www = UnityWebRequest.Get(url);
+                yield return Timing.WaitUntilDone(www.SendWebRequest());
+
+                ENetworkStatus status;
+                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
+                {
+                    status = ENetworkStatus.NoDnsConnection;
+                    onCompleted?.Invoke(status);
+                    yield break;
+                }
+
+                switch (responseType)
+                {
+                    case ENetworkResponseType.HttpStatusCode:
+                        status = (int) www.responseCode == (int) statusCode ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+                        break;
+                    case ENetworkResponseType.ResponseContent:
+                        status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+                        break;
+                    case ENetworkResponseType.ResponseContainContent:
+                        status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
                 onCompleted?.Invoke(status);
-                yield break;
             }
-
-            switch (responseType)
-            {
-                case ENetworkResponseType.HttpStatusCode:
-                    status = (int) www.responseCode == (int) statusCode ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-                    break;
-                case ENetworkResponseType.ResponseContent:
-                    status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-                    break;
-                case ENetworkResponseType.ResponseContainContent:
-                    status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            onCompleted?.Invoke(status);
         }
     }
 }
