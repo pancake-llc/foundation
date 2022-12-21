@@ -106,6 +106,10 @@ namespace Pancake.Console
 				var methodWithoutIntParameter = ConsoleWindowType?.GetMethod("StacktraceWithHyperlinks", (BindingFlags) ~0, null, new[] {typeof(string)}, null);
 				if (methodWithoutIntParameter != null)
 					yield return methodWithoutIntParameter;
+				
+				var method = ConsoleWindowType?.GetMethod("StacktraceWithHyperlinks", BindingFlags.Static | BindingFlags.NonPublic);
+				if (method != null)
+					yield return method;
 			}
 
 			private static string lastText;
