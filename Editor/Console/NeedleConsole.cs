@@ -84,6 +84,8 @@ namespace Pancake.Console
 			{
 				using (new ProfilerMarker("Demystify.Apply").Auto())
 				{
+					if(UnityEngine.Profiling.Profiler.enabled) return;
+					
 					string[] lines = null;
 					using (new ProfilerMarker("Split Lines").Auto())
 						lines = stacktrace.Split('\n');
