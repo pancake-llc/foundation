@@ -29,7 +29,7 @@ namespace Pancake.Console
 			set => SessionState.SetBool("Needle.Console.DevelopmentMode", value);
 		}
 
-		public Highlighting SyntaxHighlighting = Highlighting.Simple;
+		public Highlighting SyntaxHighlighting = Highlighting.Complex;
 		public bool UseSyntaxHighlighting => SyntaxHighlighting != Highlighting.None;
 
 		[SerializeField] private Theme Theme;
@@ -88,7 +88,7 @@ namespace Pancake.Console
 			{
 				var path = AssetDatabase.GUIDToAssetPath(theme);
 				var name = Path.GetFileName(path);
-				if (name.ToLowerInvariant().Contains("needle"))
+				if (name.ToLowerInvariant().Contains("dracula"))
 				{
 					var loaded = AssetDatabase.LoadAssetAtPath<SyntaxHighlightingTheme>(path);
 					// Debug.Log("Set default theme " + path + " loaded: " + loaded, loaded);
