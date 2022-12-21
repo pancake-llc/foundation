@@ -81,6 +81,28 @@ namespace Pancake
                 }
             }
 
+            public static void StopCheckConnection()
+            {
+                switch (Application.platform)
+                {
+                    case RuntimePlatform.Android:
+                    case RuntimePlatform.WebGLPlayer:
+                    default:
+                        Timing.KillCoroutines("net_check_android");
+                        break;
+                    case RuntimePlatform.WindowsEditor:
+                    case RuntimePlatform.WindowsPlayer:
+                    case RuntimePlatform.XboxOne:
+                        Timing.KillCoroutines("net_check_win");
+                        break;
+                    case RuntimePlatform.IPhonePlayer:
+                    case RuntimePlatform.OSXEditor:
+                    case RuntimePlatform.OSXPlayer:
+                        Timing.KillCoroutines("net_check_ios");
+                        break;
+                }
+            }
+
             private static void CheckNetworkAndroid(Action<ENetworkStatus> onCompleted)
             {
                 Timing.RunCoroutine(Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted), tag: "net_check_android");
@@ -108,7 +130,6 @@ namespace Pancake
             {
                 var www = UnityWebRequest.Get(url);
                 yield return Timing.WaitUntilDone(www.SendWebRequest());
-
                 ENetworkStatus status;
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
                 {
@@ -130,7 +151,6 @@ namespace Pancake
             {
                 var www = UnityWebRequest.Get(url);
                 yield return Timing.WaitUntilDone(www.SendWebRequest());
-
                 ENetworkStatus status;
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
                 {
@@ -152,7 +172,6 @@ namespace Pancake
             {
                 var www = UnityWebRequest.Get(url);
                 yield return Timing.WaitUntilDone(www.SendWebRequest());
-
                 ENetworkStatus status;
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
                 {
@@ -165,6 +184,7 @@ namespace Pancake
 
                 onCompleted?.Invoke(status);
             }
+
 
             /// <summary>
             /// Check internet connection status
@@ -179,7 +199,6 @@ namespace Pancake
             {
                 var www = UnityWebRequest.Get(url);
                 yield return Timing.WaitUntilDone(www.SendWebRequest());
-
                 ENetworkStatus status;
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.responseCode == 0)
                 {
