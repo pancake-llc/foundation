@@ -50,6 +50,11 @@ namespace Pancake.Tween
 
         public override int OnGetPlayingTweensCount() { return IsPlaying ? 1 : 0; }
 
+        public override void OnGoto(float elapsed)
+        {
+            elapsedDelay = elapsed;
+        }
+
 #pragma warning disable CS0809
         /// <summary>
         /// do not use this function for <see cref="WaitTween"/>

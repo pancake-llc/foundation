@@ -171,6 +171,11 @@ namespace Pancake.Tween
 
         public void Kill() { IsPlaying = false; }
 
+        public void Goto(float elapsed)
+        {
+            Elapsed = elapsed;
+        }
+
         public void SetEase(EaseDelegate easeFunction) { this.easeFunction = easeFunction; }
 
         private void CompleteIfInstant()

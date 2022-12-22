@@ -51,6 +51,8 @@ namespace Pancake.Tween
         public override int OnGetTweensCount() { return 1; }
 
         public override int OnGetPlayingTweensCount() { return IsPlaying ? 1 : 0; }
+        
+        public override void OnGoto(float elapsed) {  }
 
 #pragma warning disable CS0809
         /// <summary>

@@ -182,6 +182,14 @@ namespace Pancake.Tween
             return totalTweens;
         }
 
+        public override void OnGoto(float elapsed)
+        {
+            foreach (Tween tween in _tweenRepository.Tweens)
+            {
+                tween.Goto(elapsed);
+            }
+        }
+
         public void Append(ITween tween)
         {
             Tween castedTween = tween as Tween;
