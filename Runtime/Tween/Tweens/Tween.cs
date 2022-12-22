@@ -9,6 +9,7 @@ namespace Pancake.Tween
     {
         private int _loopsRemaining;
         private event TweenCallback OnStartCallback;
+        private event TweenCallback OnStartLateCallback;
         private event TweenCallback OnLoopCallback;
         private event TweenCallback OnResetCallback;
         private event TweenCallback OnCompleteCallback;
@@ -41,6 +42,12 @@ namespace Pancake.Tween
         public ITween OnStart(TweenCallback onStart)
         {
             OnStartCallback = onStart;
+            return this;
+        }
+
+        public ITween OnStartLate(TweenCallback onStart)
+        {
+            OnStartLateCallback = onStart;
             return this;
         }
 
@@ -100,6 +107,8 @@ namespace Pancake.Tween
             OnStartCallback?.Invoke();
 
             OnTweenStart(isCompletingInstantly);
+            
+            OnStartLateCallback?.Invoke();
         }
 
         public void Update()
@@ -325,6 +334,11 @@ namespace Pancake.Tween
             OnCompleteOrKillCallback -= Callback;
         }
 
+        public void Goto(float elapsed)
+        {
+            OnGoto(elapsed);
+        }
+
         protected bool ValidateDelay()
         {
             float deltaTime = RuntimeUtilities.GetUnitedDeltaTime(TimeMode);
@@ -366,5 +380,7 @@ namespace Pancake.Tween
         public abstract float OnGetElapsed();
         public abstract int OnGetTweensCount();
         public abstract int OnGetPlayingTweensCount();
+
+        public abstract void OnGoto(float elapsed);
     }
 }

@@ -18,6 +18,7 @@ namespace Pancake.Tween
 
         ITween OnTimeScaleChanged(TweenCallback<float> onTimeScaleChange);
         ITween OnStart(TweenCallback onStart);
+        ITween OnStartLate(TweenCallback onStart);
         ITween OnLoop(TweenCallback onLoop);
         ITween OnReset(TweenCallback onReset);
         ITween OnComplete(TweenCallback onComplete);
@@ -47,5 +48,7 @@ namespace Pancake.Tween
         void Pause();
 
         Task AwaitCompleteOrKill(CancellationToken cancellationToken);
+
+        void Goto(float elapsed);
     }
 }

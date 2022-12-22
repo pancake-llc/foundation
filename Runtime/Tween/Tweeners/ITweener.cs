@@ -18,5 +18,6 @@
         void Update();
         void Complete();
         void Kill();
+        void Goto(float elapsed);
     }
 }

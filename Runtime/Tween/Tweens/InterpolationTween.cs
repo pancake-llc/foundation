@@ -105,6 +105,14 @@ namespace Pancake.Tween
 
         public override int OnGetPlayingTweensCount() { return IsPlaying ? 1 : 0; }
 
+        public override void OnGoto(float elapsed)
+        {
+            foreach (ITweener tweener in _tweeners)
+            {
+                tweener.Goto(elapsed);
+            }
+        }
+
         public override float OnGetDuration()
         {
             if (_durationCalculated)
