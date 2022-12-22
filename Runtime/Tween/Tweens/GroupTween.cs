@@ -173,11 +173,11 @@ namespace Pancake.Tween
             return totalTweens;
         }
 
-        public override void OnGoto(float elapsed)
+        public override void OnGoto(float percent)
         {
             foreach (Tween tween in _tweens)
             {
-                tween.Goto(elapsed);
+                tween.Goto(percent * tween.GetDuration());
             }
         }
 

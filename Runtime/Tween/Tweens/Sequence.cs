@@ -20,9 +20,9 @@ namespace Pancake.Tween
             #region DELAY
 
             if (ValidateDelay()) return;
-            
+
             #endregion
-            
+
             if (_playingTweens.Count == 0)
             {
                 NewMarkCompleted();
@@ -184,9 +184,44 @@ namespace Pancake.Tween
 
         public override void OnGoto(float elapsed)
         {
+            void GotoLocal(Tween tween, float value)
+            {
+                if (tween.IsPlaying) tween.Goto(value);
+                else
+                {
+                    tween.OnStartLate(OnStartLateLocal);
+
+                    void OnStartLateLocal()
+                    {
+                        tween.OnStartLate(null);
+                        tween.Goto(value);
+                    }
+                }
+            }
+
             foreach (Tween tween in _tweenRepository.Tweens)
             {
-                tween.Goto(elapsed);
+                if (tween is GroupTween groupTween)
+                {
+                    float percent = elapsed / groupTween.GetDuration();
+                    if (groupTween.IsPlaying) groupTween.Goto(percent);
+                    else GotoLocal(groupTween, percent);
+                }
+                else
+                {
+                    float d = tween.GetDuration();
+
+                    if (elapsed > d)
+                    {
+                        elapsed -= d;
+                        GotoLocal(tween, d);
+                    }
+                    else
+                    {
+                        GotoLocal(tween, elapsed);
+                        break;
+                    }
+                }
             }
         }
 
