@@ -204,8 +204,7 @@ namespace Pancake.Tween
                 if (tween is GroupTween groupTween)
                 {
                     float percent = elapsed / groupTween.GetDuration();
-                    if (groupTween.IsPlaying) groupTween.Goto(percent);
-                    else GotoLocal(groupTween, percent);
+                    GotoLocal(groupTween, percent);
                 }
                 else
                 {
