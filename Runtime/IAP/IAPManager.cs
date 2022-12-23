@@ -55,7 +55,7 @@ namespace Pancake.IAP
             CompletedDict.Clear();
             foreach (var item in skuItems)
             {
-                CompletedDict.Add(item.sku.Id, null);
+                CompletedDict.Add(item.sku.Id, EmptyAction);
             }
 
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
@@ -270,5 +270,7 @@ namespace Pancake.IAP
             }
         }
 #endif
+        
+        private void EmptyAction(){}
     }
 }
