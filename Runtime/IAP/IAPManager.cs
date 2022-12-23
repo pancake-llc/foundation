@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Pancake.Monetization;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using UnityEngine.Purchasing.Security;
 
 namespace Pancake.IAP
 {
@@ -29,7 +30,6 @@ namespace Pancake.IAP
         }
 
         public List<IAPData> Skus { get; set; } = new List<IAPData>();
-        public InformationPurchaseResult ReceiptInfo { get; set; }
         public bool IsInitialized { get; set; }
 
         public static void Init()
@@ -55,7 +55,7 @@ namespace Pancake.IAP
             CompletedDict.Clear();
             foreach (var item in skuItems)
             {
-                CompletedDict.Add(item.sku.Id, EmptyAction);
+                CompletedDict.Add(item.sku.Id, null);
             }
 
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
@@ -88,11 +88,29 @@ namespace Pancake.IAP
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
-#if !UNITY_EDITOR
-            ReceiptInfo = purchaseEvent.purchasedProduct.hasReceipt ? GetIapInformationPurchase(purchaseEvent.purchasedProduct.receipt) : null;
+            bool validPurchase = true;
+#if UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX
+            var validator = new CrossPlatformValidator(GooglePlayTangle.Data(), AppleTangle.Data(), Application.identifier);
+
+            try
+            {
+                // On Google Play, result has a single product ID.
+                // On Apple stores, receipts contain multiple products.
+                var result = validator.Validate(purchaseEvent.purchasedProduct.receipt);
+                Debug.Log("Receipt is valid");
+            }
+            catch (IAPSecurityException)
+            {
+                Debug.Log("Invalid receipt, not unlocking content");
+                validPurchase = false;
+            }
 #endif
 
-            PurchaseVerified(purchaseEvent);
+            if (validPurchase)
+            {
+                PurchaseVerified(purchaseEvent);
+            }
+
             return PurchaseProcessingResult.Complete;
         }
 
@@ -156,54 +174,6 @@ namespace Pancake.IAP
             if (_controller == null) return false;
             var type = GetIapType(sku);
             return type == ProductType.NonConsumable && _controller.products.WithID(sku).hasReceipt;
-        }
-
-        private InformationPurchaseResult GetIapInformationPurchase(string json)
-        {
-            if (string.IsNullOrEmpty(json)) return null;
-
-#if UNITY_ANDROID
-            string jsonNode = JSON.Parse(json)["Payload"].Value;
-            string jsonData = JSON.Parse(jsonNode)["json"].Value;
-            long purchaseTime = JSON.Parse(jsonData)["purchaseTime"].AsLong;
-            const string device = "ANDROID";
-            string productId = JSON.Parse(jsonData)["productId"].Value;
-            var iapType = GetIapType(productId);
-            string transactionId = JSON.Parse(json)["TransactionID"].Value;
-            int purchaseState = JSON.Parse(jsonData)["purchaseState"].AsInt;
-            string purchaseToken = JSON.Parse(jsonData)["purchaseToken"].Value;
-            string signature = JSON.Parse(jsonNode)["signature"].Value;
-            return new InformationPurchaseResult(device,
-                iapType.ToString(),
-                transactionId,
-                productId,
-                purchaseState,
-                purchaseTime,
-                purchaseToken,
-                signature,
-                SystemInfo.deviceUniqueIdentifier);
-#elif UNITY_IOS
-            string jsonNode = JSON.Parse(json)["receipt"].Value;
-            long purchaseTime = JSON.Parse(jsonNode)["receipt_creation_date_ms"].AsLong;
-            const string device = "IOS";
-            string productId = JSON.Parse(jsonNode)["in_app"][0]["product_id"].Value;
-            var iapType = GetIapType(productId);
-            string transactionId = JSON.Parse(jsonNode)["in_app"][0]["transaction_id"].Value;
-            int purchaseState = JSON.Parse(json)["status"].AsInt;
-            const string purchaseToken = "";
-            const string signature = "";
-            return new InformationPurchaseResult(device,
-                iapType.ToString(),
-                transactionId,
-                productId,
-                purchaseState,
-                purchaseTime,
-                purchaseToken,
-                signature,
-                SystemInfo.deviceUniqueIdentifier);
-#else
-            return null;
-#endif
         }
 
         private void PurchaseVerified(PurchaseEventArgs e)
@@ -270,7 +240,5 @@ namespace Pancake.IAP
             }
         }
 #endif
-        
-        private void EmptyAction(){}
     }
 }
