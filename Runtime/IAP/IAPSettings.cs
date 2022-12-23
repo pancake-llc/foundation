@@ -49,6 +49,12 @@ namespace Pancake.IAP
                 str += $"\n\t\t\treturn IAPManager.Purchase(IAPSettings.SkusData[{i}]);";
                 str += "\n\t\t}";
                 str += "\n";
+                
+                str += $"\n\t\tpublic static bool IsPurchase{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(itemName)}()";
+                str += "\n\t\t{";
+                str += $"\n\t\t\treturn IAPManager.Instance.IsPurchased(IAPSettings.SkusData[{i}].sku.Id);";
+                str += "\n\t\t}";
+                str += "\n";
             }
 
             str += "\n\t}";
