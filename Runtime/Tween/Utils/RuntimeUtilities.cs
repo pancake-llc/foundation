@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UObject = UnityEngine.Object;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Pancake.Tween
 {
@@ -15,7 +14,6 @@ namespace Pancake.Tween
     public struct RuntimeUtilities
     {
         static GameObject _globalGameObject;
-        static IEnumerable<Type> _allAssemblyTypes;
 
         public static event Action fixedUpdate;
         public static event Action waitForFixedUpdate;
@@ -43,59 +41,32 @@ namespace Pancake.Tween
         /// <summary>
         /// Get deltaTime in unitedUpdate
         /// </summary>
-        public static float unitedDeltaTime
+        private static float UnitedDeltaTime
         {
             get
             {
 #if UNITY_EDITOR
-                if (!Application.isPlaying)
-                    return Editor.EditorUtilities.UnscaledDeltaTime * Time.timeScale;
-                else
-#endif
+                if (!Application.isPlaying) return EditorUtilities.UnscaledDeltaTime * Time.timeScale;
+                return Time.deltaTime;
+#else
                     return Time.deltaTime;
+#endif
             }
         }
 
         /// <summary>
         /// Get unscaled deltaTime in unitedUpdate
         /// </summary>
-        public static float unitedUnscaledDeltaTime
+        private static float UnitedUnscaledDeltaTime
         {
             get
             {
 #if UNITY_EDITOR
-                if (!Application.isPlaying)
-                    return Editor.EditorUtilities.UnscaledDeltaTime;
-                else
-#endif
+                if (!Application.isPlaying) return EditorUtilities.UnscaledDeltaTime;
+                return Time.unscaledDeltaTime;
+#else
                     return Time.unscaledDeltaTime;
-            }
-        }
-
-        /// <summary>
-        /// allAssemblyTypes
-        /// </summary>
-        public static IEnumerable<Type> allAssemblyTypes
-        {
-            get
-            {
-                if (_allAssemblyTypes == null)
-                {
-                    _allAssemblyTypes = AppDomain.CurrentDomain.GetAssemblies()
-                        .SelectMany(t =>
-                        {
-                            try
-                            {
-                                return t.GetTypes();
-                            }
-                            catch
-                            {
-                                return new Type[0];
-                            }
-                        });
-                }
-
-                return _allAssemblyTypes;
+#endif
             }
         }
 
@@ -104,7 +75,7 @@ namespace Pancake.Tween
         /// </summary>
         public static int fixedFrameCount { get; private set; }
 
-        public static float GetUnitedDeltaTime(TimeMode mode) { return mode == TimeMode.Normal ? unitedDeltaTime : unitedUnscaledDeltaTime; }
+        public static float GetUnitedDeltaTime(TimeMode mode) { return mode == TimeMode.Normal ? UnitedDeltaTime : UnitedUnscaledDeltaTime; }
 
         public static void AddUpdate(UpdateMode mode, Action action)
         {
@@ -149,69 +120,7 @@ namespace Pancake.Tween
                     return;
             }
         }
-
-        public static void Swap<T>(ref T a, ref T b)
-        {
-            T c = a;
-            a = b;
-            b = c;
-        }
-
-        /// <summary>
-        /// Set time scale and FixedUpdate frequency at sametime.
-        /// </summary>
-        public static void SetTimeScaleAndFixedUpdateFrequency(float timeScale, float fixedFrequency)
-        {
-            Time.timeScale = timeScale;
-            Time.fixedDeltaTime = timeScale / fixedFrequency;
-        }
-
-        /// <summary>
-        /// Destroy Unity Object in a safe way
-        /// </summary>
-        public static void Destroy(UObject obj)
-        {
-            if (obj != null)
-            {
-#if UNITY_EDITOR
-                if (!Application.isPlaying)
-                    UObject.DestroyImmediate(obj);
-                else
-#endif
-                    UObject.Destroy(obj);
-            }
-        }
-
-        /// <summary>
-        /// Find a loaded scene
-        /// </summary>
-        /// <returns> The loaded scene, return default(Scene) if no matched </returns>
-        public static Scene FindScene(Predicate<Scene> match)
-        {
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                var scene = SceneManager.GetSceneAt(i);
-                if (match(scene)) return scene;
-            }
-
-            return default;
-        }
-
-        /// <summary>
-        /// Find a loaded scene
-        /// </summary>
-        /// <returns> index of loaded scene (use SceneManager.GetSceneAt to get the scene), return -1 if no matched </returns>
-        public static int FindSceneIndex(Predicate<Scene> match)
-        {
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                var scene = SceneManager.GetSceneAt(i);
-                if (match(scene)) return i;
-            }
-
-            return -1;
-        }
-
+        
         [RuntimeInitializeOnLoadMethod]
         static void Initialize()
         {
@@ -219,7 +128,7 @@ namespace Pancake.Tween
             _globalGameObject.AddComponent<GlobalComponent>();
             _globalGameObject.hideFlags = HideFlags.HideInHierarchy;
             _globalGameObject.transform.Reset();
-            UObject.DontDestroyOnLoad(_globalGameObject);
+            UnityEngine.Object.DontDestroyOnLoad(_globalGameObject);
         }
 
 #if UNITY_EDITOR
@@ -331,6 +240,28 @@ namespace Pancake.Tween
                     call();
                 }
             }
-        } // class GlobalComponent
-    } // struct RuntimeUtilities
-} // namespace Pancake
+        }
+        
+        
+#if UNITY_EDITOR
+        
+    public struct EditorUtilities
+    {
+        private static float unscaledDeltaTime;
+        private static double lastTimeSinceStartup = -0.01;
+        
+        [InitializeOnLoadMethod]
+        private static void Init()
+        {
+            EditorApplication.update += () =>
+            {
+                unscaledDeltaTime = (float) (EditorApplication.timeSinceStartup - lastTimeSinceStartup);
+                lastTimeSinceStartup = EditorApplication.timeSinceStartup;
+            };
+        }
+
+        public static float UnscaledDeltaTime => unscaledDeltaTime;
+    }
+#endif
+    }
+}
