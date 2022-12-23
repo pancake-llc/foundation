@@ -89,7 +89,7 @@ namespace Pancake.IAP
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
             bool validPurchase = true;
-#if UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX
+#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             var validator = new CrossPlatformValidator(GooglePlayTangle.Data(), AppleTangle.Data(), Application.identifier);
 
             try
