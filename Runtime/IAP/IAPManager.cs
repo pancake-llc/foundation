@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Pancake.Monetization;
 using UnityEngine;
 using UnityEngine.Purchasing;
@@ -131,7 +132,7 @@ namespace Pancake.IAP
 
         public static void RegisterCompletedEvent(string key, Action action)
         {
-            foreach (var e in CompletedDict)
+            foreach (var e in CompletedDict.ToArray())
             {
                 if (e.Key.Equals(key)) CompletedDict[key] = action;
             }
@@ -139,7 +140,7 @@ namespace Pancake.IAP
 
         public static void RegisterFaildEvent(string key, Action action)
         {
-            foreach (var e in FaildDict)
+            foreach (var e in FaildDict.ToArray())
             {
                 if (e.Key.Equals(key)) FaildDict[key] = action;
             }
