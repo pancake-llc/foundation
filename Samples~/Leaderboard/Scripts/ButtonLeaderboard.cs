@@ -115,7 +115,7 @@ namespace Pancake.GameService
         private void OnButtonClicked()
         {
             _button.interactable = false;
-            C.CheckConnection(_ =>
+            C.Network.CheckConnection(_ =>
             {
                 _button.interactable = true;
                 if (_ == ENetworkStatus.Connected)
@@ -188,28 +188,12 @@ namespace Pancake.GameService
 
             void SetupFetch2(RectTransform fetch)
             {
-                Sprite first = (Sprite) AssetDatabase.LoadAssetAtPath("Packages/com.pancake.ui/Runtime/Fetch/Sprites/01.png", typeof(Sprite));
-                if (first == null) first = (Sprite) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/Fetch/Sprites/01.png", typeof(Sprite));
                 var img = fetch.GetComponent<Image>();
-                img.sprite = first;
+                img.sprite = Pancake.Editor.EditorResources.FetchSpriteZero;
                 img.raycastTarget = false;
                 var animator = fetch.gameObject.AddComponent<Animator>();
-
-                animator.runtimeAnimatorController = (UnityEditor.Animations.AnimatorController) AssetDatabase.LoadAssetAtPath(
-                    "Packages/com.pancake.ui/Runtime/Fetch/Animation/FetchAnimator.controller",
-                    typeof(UnityEditor.Animations.AnimatorController));
-
-                if (animator.runtimeAnimatorController == null)
-                {
-                    animator.runtimeAnimatorController =
-                        (UnityEditor.Animations.AnimatorController) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/Fetch/Animation/FetchAnimator.controller",
-                            typeof(UnityEditor.Animations.AnimatorController));
-                }
-
-                if (animator.runtimeAnimatorController == null)
-                {
-                    Debug.LogError("Can not found FetchAnimator!");
-                }
+                animator.runtimeAnimatorController = Pancake.Editor.EditorResources.FetchAnimator;
+                if (animator.runtimeAnimatorController == null) Debug.LogError("Can not found FetchAnimator!");
             }
 
             serializedObject.ApplyModifiedProperties();

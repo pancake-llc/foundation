@@ -201,6 +201,8 @@ namespace Pancake.GameService
         protected bool sessionFirstTime;
         protected HandleIconFacebook handleIconFacebook;
         protected Canvas canvas;
+        protected CoroutineHandle handleRefresh;
+        protected ISequence[] _sequences;
 
         public HandleIconFacebook HandleIconFacebook
         {
@@ -243,12 +245,14 @@ namespace Pancake.GameService
                 friendCacheAvatar.Clear();
             }
 
+            _sequences = new ISequence[rankSlots.Length];
             currentTab = ELeaderboardTab.World;
             WorldButtonInvokeImpl();
         }
 #endif
         protected virtual void Refresh(Data data)
         {
+            HideAllRankSlot();
             txtCurrentPage.text = $"PAGE {data.currentPage + 1}";
             if (data.currentPage >= data.pageCount) // reach the end
             {
@@ -262,6 +266,11 @@ namespace Pancake.GameService
 
             block.SetActive(true);
             var pageData = new List<PlayerLeaderboardEntry>();
+            foreach (var sequence in _sequences)
+            {
+                if (sequence != null && sequence.IsPlaying) sequence.Kill();
+            }
+
             for (int i = 0; i < CountInOnePage; i++)
             {
                 int index = data.currentPage * CountInOnePage + i;
@@ -274,23 +283,22 @@ namespace Pancake.GameService
             btnNextPage.gameObject.SetActive(data.currentPage < data.pageCount && !(data.players.Count < 100 && data.currentPage == data.pageCount - 1));
 
             content.SetActive(false);
-            foreach (var element in rankSlots)
-            {
-                element.gameObject.SetActive(false);
-            }
-
             FetchInternalConfig(pageData, OnOnePageFetchInternalConfigCompleted);
         }
 
-        public void Init(Canvas canvas)
-        {
-            this.canvas = canvas;
-        }
+        public void Init(Canvas canvas) { this.canvas = canvas; }
 
         private IEnumerator<float> OnOnePageFetchInternalConfigCompleted(List<PlayerLeaderboardEntry> entries, InternalConfig[] internalConfigs)
         {
             block.SetActive(false);
             content.SetActive(true);
+            if (internalConfigs.Length < rankSlots.Length)
+            {
+                for (int i = internalConfigs.Length; i < rankSlots.Length; i++)
+                {
+                    rankSlots[i].gameObject.SetActive(false);
+                }
+            }
 
             for (int i = 0; i < internalConfigs.Length; i++)
             {
@@ -304,10 +312,11 @@ namespace Pancake.GameService
                     canvas,
                     entries[i].PlayFabId.Equals(LoginResultModel.playerId));
                 rankSlots[i].gameObject.SetActive(true);
-                var sequense = TweenManager.Sequence();
-                sequense.Append(rankSlots[i].transform.TweenLocalScale(new Vector3(1.04f, 1.06f, 1), 0.15f).SetEase(Ease.OutQuad));
-                sequense.Append(rankSlots[i].transform.TweenLocalScale(Vector3.one, 0.08f).SetEase(Ease.InQuad));
-                sequense.Play();
+
+                _sequences[i] = TweenManager.Sequence();
+                _sequences[i].Append(rankSlots[i].transform.TweenLocalScale(new Vector3(1.04f, 1.06f, 1), 0.15f).SetEase(Ease.OutQuad));
+                _sequences[i].Append(rankSlots[i].transform.TweenLocalScale(Vector3.one, 0.08f).SetEase(Ease.InQuad));
+                _sequences[i].Play();
                 yield return Timing.WaitForSeconds(displayRankCurve.Evaluate(i / (float) internalConfigs.Length));
             }
         }
@@ -330,7 +339,16 @@ namespace Pancake.GameService
                 }
             }
 
-            Timing.RunCoroutine(onCompleted?.Invoke(entries, configs));
+            Timing.KillCoroutines(handleRefresh);
+            handleRefresh = Timing.RunCoroutine(onCompleted?.Invoke(entries, configs));
+        }
+
+        private void HideAllRankSlot()
+        {
+            foreach (var element in rankSlots)
+            {
+                element.gameObject.SetActive(false);
+            }
         }
 
 #if PANCAKE_FACEBOOK
@@ -889,7 +907,8 @@ namespace Pancake.GameService
                 }
             }
 
-            Timing.RunCoroutine(onCompleted?.Invoke(entries, null));
+            Timing.KillCoroutines(handleRefresh);
+            handleRefresh = Timing.RunCoroutine(onCompleted?.Invoke(entries, null));
         }
 
         protected virtual void Refresh(FriendData data)
@@ -931,10 +950,7 @@ namespace Pancake.GameService
             btnNextPage.gameObject.SetActive(data.currentPage < data.pageCount && !(data.players.Count < 100 && data.currentPage == data.pageCount - 1));
 
             content.SetActive(false);
-            foreach (var element in rankSlots)
-            {
-                element.gameObject.SetActive(false);
-            }
+            HideAllRankSlot();
 
             FetchFriendConfig(pageData, OnOnePageFetchFriendConfigCompleted);
         }
@@ -978,7 +994,7 @@ namespace Pancake.GameService
 
         #endregion
 #endif
-        
+
 #if ENABLE_PLAYFABSERVER_API
         protected virtual void OnDisable()
         {
