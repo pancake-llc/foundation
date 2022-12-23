@@ -81,19 +81,8 @@ namespace Pancake.Editor
             img.sprite = EditorResources.FetchSpriteZero;
             img.raycastTarget = false;
             var animator = fetch.gameObject.AddComponent<Animator>();
-
             animator.runtimeAnimatorController = EditorResources.FetchAnimator;
-
-            if (animator.runtimeAnimatorController == null)
-            {
-                animator.runtimeAnimatorController =
-                    (AnimatorController) AssetDatabase.LoadAssetAtPath("Assets/_Root/Runtime/UGUI/Fetch/Animation/FetchAnimator.controller", typeof(AnimatorController));
-            }
-
-            if (animator.runtimeAnimatorController == null)
-            {
-                Debug.LogError("Can not found FetchAnimator!");
-            }
+            if (animator.runtimeAnimatorController == null) Debug.LogError("Can not found FetchAnimator!");
         }
 
 #if PANCAKE_INPUTSYSTEM
