@@ -8,20 +8,20 @@ namespace Pancake
 {
     public struct Runtime
     {
-        public static event Action fixedTick;
-        public static event Action waitForFixedTick;
-        public static event Action tick;
-        public static event Action lateTick;
+        public static event Action fixedUpdate;
+        public static event Action waitForFixedUpdate;
+        public static event Action update;
+        public static event Action lateUpdate;
         public static event Action waitForEndOfFrame;
 
-        public static event Action fixedTickOnceTime;
-        public static event Action waitForFixedTickOnceTime;
-        public static event Action tickOnceTime;
-        public static event Action lateTickOnceTime;
+        public static event Action fixedUpdateOnceTime;
+        public static event Action waitForFixedUpdateOnceTime;
+        public static event Action updateOnceTime;
+        public static event Action lateUpdateOnceTime;
         public static event Action waitForEndOfFrameOnceTime;
 
-        public static event Action editorTick; // An update callback can be used in edit-mode
-        public static event Action editorTickOnceTime; // An update callback (will be executed once) can be used in edit-mode
+        public static event Action editorUpdate; // An update callback can be used in edit-mode
+        public static event Action editorUpdateOnceTime; // An update callback (will be executed once) can be used in edit-mode
 
         public static List<Action> toMainThreads = new();
         private static volatile bool isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
@@ -79,16 +79,16 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    fixedTick += action;
+                    fixedUpdate += action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    waitForFixedTick += action;
+                    waitForFixedUpdate += action;
                     return;
                 case UpdateMode.Update:
-                    tick += action;
+                    update += action;
                     return;
                 case UpdateMode.LateUpdate:
-                    lateTick += action;
+                    lateUpdate += action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
                     waitForEndOfFrame += action;
@@ -103,16 +103,16 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    fixedTick -= action;
+                    fixedUpdate -= action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    waitForFixedTick -= action;
+                    waitForFixedUpdate -= action;
                     return;
                 case UpdateMode.Update:
-                    tick -= action;
+                    update -= action;
                     return;
                 case UpdateMode.LateUpdate:
-                    lateTick -= action;
+                    lateUpdate -= action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
                     waitForEndOfFrame -= action;
@@ -219,12 +219,12 @@ namespace Pancake
             {
                 if (!Application.isPlaying)
                 {
-                    editorTick?.Invoke();
+                    editorUpdate?.Invoke();
 
-                    if (editorTickOnceTime != null)
+                    if (editorUpdateOnceTime != null)
                     {
-                        var call = editorTickOnceTime;
-                        editorTickOnceTime = null;
+                        var call = editorUpdateOnceTime;
+                        editorUpdateOnceTime = null;
                         call();
                     }
                 }
@@ -232,7 +232,8 @@ namespace Pancake
         }
 #endif
 
-        class GlobalComponent : MonoBehaviour
+        [DisallowMultipleComponent]
+        private class GlobalComponent : MonoBehaviour
         {
             private static GlobalComponent global;
 
@@ -250,21 +251,21 @@ namespace Pancake
 
             private void Start()
             {
-                StartCoroutine(WaitForFixedTick());
+                StartCoroutine(WaitForFixedUpdate());
                 StartCoroutine(WaitForEndOfFrame());
 
-                IEnumerator WaitForFixedTick()
+                IEnumerator WaitForFixedUpdate()
                 {
                     var wait = new WaitForFixedUpdate();
                     while (true)
                     {
                         yield return wait;
                         FixedFrameCount += 1;
-                        waitForFixedTick?.Invoke();
+                        waitForFixedUpdate?.Invoke();
 
-                        if (waitForFixedTickOnceTime == null) continue;
-                        var call = waitForFixedTickOnceTime;
-                        waitForFixedTickOnceTime = null;
+                        if (waitForFixedUpdateOnceTime == null) continue;
+                        var call = waitForFixedUpdateOnceTime;
+                        waitForFixedUpdateOnceTime = null;
                         call();
                     }
                     // ReSharper disable once IteratorNeverReturns
@@ -289,20 +290,20 @@ namespace Pancake
 
             private void Update()
             {
-                tick?.Invoke();
-                editorTick?.Invoke();
+                update?.Invoke();
+                editorUpdate?.Invoke();
 
-                if (tickOnceTime != null)
+                if (updateOnceTime != null)
                 {
-                    var call = tickOnceTime;
-                    tickOnceTime = null;
+                    var call = updateOnceTime;
+                    updateOnceTime = null;
                     call();
                 }
 
-                if (editorTickOnceTime != null)
+                if (editorUpdateOnceTime != null)
                 {
-                    var call = editorTickOnceTime;
-                    editorTickOnceTime = null;
+                    var call = editorUpdateOnceTime;
+                    editorUpdateOnceTime = null;
                     call();
                 }
 
@@ -324,24 +325,24 @@ namespace Pancake
 
             private void FixedUpdate()
             {
-                fixedTick?.Invoke();
+                fixedUpdate?.Invoke();
 
-                if (fixedTickOnceTime != null)
+                if (fixedUpdateOnceTime != null)
                 {
-                    var call = fixedTickOnceTime;
-                    fixedTickOnceTime = null;
+                    var call = fixedUpdateOnceTime;
+                    fixedUpdateOnceTime = null;
                     call();
                 }
             }
 
             private void LateUpdate()
             {
-                lateTick?.Invoke();
+                lateUpdate?.Invoke();
 
-                if (lateTickOnceTime != null)
+                if (lateUpdateOnceTime != null)
                 {
-                    var call = lateTickOnceTime;
-                    lateTickOnceTime = null;
+                    var call = lateUpdateOnceTime;
+                    lateUpdateOnceTime = null;
                     call();
                 }
             }
