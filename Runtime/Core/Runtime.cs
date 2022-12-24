@@ -296,7 +296,7 @@ namespace Pancake
             {
                 for (int i = 0; i < tickSystems.Count; i++)
                 {
-                    tickSystems[i]?.Tick();
+                    tickSystems[i]?.OnTick();
                 }
                 
                 update?.Invoke();
@@ -335,7 +335,7 @@ namespace Pancake
             {
                 for (int i = 0; i < fixedTickSystems.Count; i++)
                 {
-                    fixedTickSystems[i]?.FixedTick();
+                    fixedTickSystems[i]?.OnFixedTick();
                 }
                 
                 fixedUpdate?.Invoke();
@@ -352,7 +352,7 @@ namespace Pancake
             {
                 for (int i = 0; i < lateTickSystems.Count; i++)
                 {
-                    lateTickSystems[i]?.LateTick();
+                    lateTickSystems[i]?.OnLateTick();
                 }
                 
                 lateUpdate?.Invoke();

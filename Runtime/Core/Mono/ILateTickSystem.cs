@@ -5,6 +5,6 @@
     /// </summary>
     public interface ILateTickSystem
     {
-        void LateTick();
+        void OnLateTick();
     }
 }

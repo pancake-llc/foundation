@@ -5,6 +5,6 @@
     /// </summary>
     public interface IFixedTickSystem
     {
-        void FixedTick();
+        void OnFixedTick();
     }
 }
