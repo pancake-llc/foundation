@@ -13,7 +13,7 @@ namespace Pancake.Tween
     /// </summary>
     public struct RuntimeUtilities
     {
-        static GameObject _globalGameObject;
+        private static GameObject _globalGameObject;
 
         public static event Action fixedUpdate;
         public static event Action waitForFixedUpdate;
@@ -122,7 +122,7 @@ namespace Pancake.Tween
         }
         
         [RuntimeInitializeOnLoadMethod]
-        static void Initialize()
+        private static void Initialize()
         {
             _globalGameObject = new GameObject("GlobalGameObject");
             _globalGameObject.AddComponent<GlobalComponent>();
@@ -133,7 +133,7 @@ namespace Pancake.Tween
 
 #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
-        static void InitializeEditor()
+        private static void InitializeEditor()
         {
             UnityEditor.EditorApplication.update += () =>
             {
@@ -154,7 +154,7 @@ namespace Pancake.Tween
 
         public class GlobalComponent : MonoBehaviour
         {
-            void Start()
+            private void Start()
             {
                 StartCoroutine(WaitForFixedUpdate());
                 StartCoroutine(WaitForEndOfFrame());
@@ -197,7 +197,7 @@ namespace Pancake.Tween
                 }
             }
 
-            void FixedUpdate()
+            private void FixedUpdate()
             {
                 fixedUpdate?.Invoke();
 
@@ -209,7 +209,7 @@ namespace Pancake.Tween
                 }
             }
 
-            void Update()
+            private void Update()
             {
                 update?.Invoke();
                 unitedUpdate?.Invoke();
@@ -229,7 +229,7 @@ namespace Pancake.Tween
                 }
             }
 
-            void LateUpdate()
+            private void LateUpdate()
             {
                 lateUpdate?.Invoke();
 

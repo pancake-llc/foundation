@@ -148,7 +148,7 @@ namespace Pancake.IAP
 
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
-            Timer.Register(0.1f, () => RuntimeManager.RunOnMainThread(() => R.isShowingAd = false));
+            Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
             OnPurchaseFailedEvent?.Invoke(failureReason.ToString());
             foreach (var e in FaildDict)
             {
@@ -179,7 +179,7 @@ namespace Pancake.IAP
 
         private void PurchaseVerified(PurchaseEventArgs e)
         {
-            Timer.Register(0.1f, () => RuntimeManager.RunOnMainThread(() => R.isShowingAd = false));
+            Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
             OnPurchaseSucceedEvent?.Invoke(e.purchasedProduct.definition.id);
             foreach (var completeEvent in CompletedDict)
             {
