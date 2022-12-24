@@ -186,6 +186,27 @@ namespace Pancake
             }
         }
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        private static void EditorInitialize()
+        {
+            UnityEditor.EditorApplication.update += () =>
+            {
+                if (!Application.isPlaying)
+                {
+                    OnEditorTick?.Invoke();
+
+                    if (OnEditorTickOnceTime != null)
+                    {
+                        var call = OnEditorTickOnceTime;
+                        OnEditorTickOnceTime = null;
+                        call();
+                    }
+                }
+            };
+        }
+#endif
+
         public class GlobalComponent : MonoBehaviour
         {
             private static GlobalComponent global;

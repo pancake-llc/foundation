@@ -65,20 +65,20 @@ namespace Pancake.Tween
         {
             gameObject.hideFlags = HideFlags.HideInHierarchy;
             _timeScale = 1.0f;
-            RuntimeUtilities.AddUpdate(UpdateMode.Update, UpdateTweens_Update);
-            RuntimeUtilities.AddUpdate(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
-            RuntimeUtilities.AddUpdate(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
-            RuntimeUtilities.AddUpdate(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
-            RuntimeUtilities.AddUpdate(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
+            Runtime.Add(UpdateMode.Update, UpdateTweens_Update);
+            Runtime.Add(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
+            Runtime.Add(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
+            Runtime.Add(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
+            Runtime.Add(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
         }
 
         private void Dispose()
         {
-            RuntimeUtilities.RemoveUpdate(UpdateMode.Update, UpdateTweens_Update);
-            RuntimeUtilities.RemoveUpdate(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
-            RuntimeUtilities.RemoveUpdate(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
-            RuntimeUtilities.RemoveUpdate(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
-            RuntimeUtilities.RemoveUpdate(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
+            Runtime.Remove(UpdateMode.Update, UpdateTweens_Update);
+            Runtime.Remove(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
+            Runtime.Remove(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
+            Runtime.Remove(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
+            Runtime.Remove(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
 
             _aliveTweens_Update.Clear();
             _aliveTweens_FixedUpdate.Clear();
