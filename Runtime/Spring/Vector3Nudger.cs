@@ -2,7 +2,7 @@
 
 namespace Pancake
 {
-    public class Vector3Nudger : BaseBehaviour
+    public class Vector3Nudger : BaseMono
     {
         public BaseSpringComponent nudgeable;
         public Vector3 value = new Vector3(20f, 20f, 20f);

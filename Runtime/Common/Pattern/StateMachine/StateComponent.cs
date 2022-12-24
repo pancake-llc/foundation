@@ -6,7 +6,7 @@ namespace Pancake
     /// <summary>
     /// BaseStateComponent
     /// </summary>
-    public abstract class BaseStateComponent : BaseBehaviour, IState
+    public abstract class BaseStateComponent : BaseMono, IState
     {
         public virtual void OnEnter() { }
         public virtual void OnExit() { }

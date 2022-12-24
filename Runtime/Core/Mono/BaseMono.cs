@@ -5,7 +5,8 @@ namespace Pancake
     /// <summary>
     /// Base class MonoBehavior
     /// </summary>
-    public class BaseBehaviour : MonoBehaviour
+    public class BaseMono : MonoBehaviour
     {
+        
     }
 }

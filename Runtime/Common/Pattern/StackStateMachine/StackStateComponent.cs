@@ -6,7 +6,7 @@ namespace Pancake
     /// <summary>
     /// BaseStackStateComponent
     /// </summary>
-    public abstract class BaseStackStateComponent : BaseBehaviour, IStackState
+    public abstract class BaseStackStateComponent : BaseMono, IStackState
     {
         public virtual void OnReset() { }
         public virtual void OnPush() { }

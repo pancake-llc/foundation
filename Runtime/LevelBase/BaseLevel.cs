@@ -1,6 +1,6 @@
 ﻿namespace Pancake.LevelBase
 {
-    public abstract class BaseLevel : BaseBehaviour, ILevel
+    public abstract class BaseLevel : BaseMono, ILevel
     {
 #if UNITY_EDITOR
 
