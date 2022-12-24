@@ -23,12 +23,16 @@ namespace Pancake
         public static event Action editorUpdate; // An update callback can be used in edit-mode
         public static event Action editorUpdateOnceTime; // An update callback (will be executed once) can be used in edit-mode
 
-        public static List<Action> toMainThreads = new();
+        public static readonly List<Action> toMainThreads = new();
         private static volatile bool isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
 
         public static event Action<bool> onGamePause;
         public static event Action<bool> onGameFocus;
         public static event Action onGameQuit;
+        
+        public static readonly List<ITickSystem> tickSystems = new List<ITickSystem>(1024);
+        public static readonly List<IFixedTickSystem> fixedTickSystems = new List<IFixedTickSystem>(512);
+        public static readonly List<ILateTickSystem> lateTickSystems = new List<ILateTickSystem>(256);
 
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
         private const string APP_INSTALLATION_TIMESTAMP_PPKEY = "APP_INSTALLATION_TIMESTAMP";
@@ -290,6 +294,11 @@ namespace Pancake
 
             private void Update()
             {
+                for (int i = 0; i < tickSystems.Count; i++)
+                {
+                    tickSystems[i]?.Tick();
+                }
+                
                 update?.Invoke();
                 editorUpdate?.Invoke();
 
@@ -306,8 +315,7 @@ namespace Pancake
                     editorUpdateOnceTime = null;
                     call();
                 }
-
-
+                
                 if (isToMainThreadQueueEmpty) return;
                 _localToMainThreads.Clear();
                 lock (toMainThreads)
@@ -325,6 +333,11 @@ namespace Pancake
 
             private void FixedUpdate()
             {
+                for (int i = 0; i < fixedTickSystems.Count; i++)
+                {
+                    fixedTickSystems[i]?.FixedTick();
+                }
+                
                 fixedUpdate?.Invoke();
 
                 if (fixedUpdateOnceTime != null)
@@ -337,6 +350,11 @@ namespace Pancake
 
             private void LateUpdate()
             {
+                for (int i = 0; i < lateTickSystems.Count; i++)
+                {
+                    lateTickSystems[i]?.LateTick();
+                }
+                
                 lateUpdate?.Invoke();
 
                 if (lateUpdateOnceTime != null)
