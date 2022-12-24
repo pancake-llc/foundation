@@ -31,14 +31,6 @@ namespace Pancake.Editor
         private const float SPACE_THREE_LINE = 12f;
         public const float DEFAULT_LABEL_WIDTH = 120f;
 
-        public static readonly Color Green = new Color(0.18f, 1f, 0.45f, 0.66f);
-        public static readonly Color Orange = new Color(1f, 0.46f, 0f, 0.66f);
-        public static readonly Color Blue = new Color(0f, 0.75f, 1f, 0.27f);
-        public static readonly Color Purple = new Color(1f, 0.56f, 1f, 0.39f);
-        public static readonly Color Red = new Color(1f, 0.1f, 0.13f, 0.66f);
-        public static readonly Color InspectorLock = new Color(.6f, .6f, .6f, 1);
-        public static readonly Color InspectorNullError = new Color(1f, .5f, .5f, 1);
-
         private static InEditor.ProjectSetting<UniformFoldoutState> FoldoutSettings { get; set; } = new InEditor.ProjectSetting<UniformFoldoutState>();
 
         public static bool GetFoldoutState<T>(string name)

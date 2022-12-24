@@ -29,7 +29,7 @@ namespace Pancake
         public static event Action<bool> onGamePause;
         public static event Action<bool> onGameFocus;
         public static event Action onGameQuit;
-        
+
         public static readonly List<ITickSystem> tickSystems = new List<ITickSystem>(1024);
         public static readonly List<IFixedTickSystem> fixedTickSystems = new List<IFixedTickSystem>(512);
         public static readonly List<ILateTickSystem> lateTickSystems = new List<ILateTickSystem>(256);
@@ -251,6 +251,10 @@ namespace Pancake
                 else global = this;
 
                 DontDestroyOnLoad(gameObject);
+
+#if UNITY_EDITOR
+                new BaseMonoExceptionChecker().CheckForExceptions();
+#endif
             }
 
             private void Start()
@@ -298,7 +302,7 @@ namespace Pancake
                 {
                     tickSystems[i]?.OnTick();
                 }
-                
+
                 update?.Invoke();
                 editorUpdate?.Invoke();
 
@@ -315,7 +319,7 @@ namespace Pancake
                     editorUpdateOnceTime = null;
                     call();
                 }
-                
+
                 if (isToMainThreadQueueEmpty) return;
                 _localToMainThreads.Clear();
                 lock (toMainThreads)
@@ -337,7 +341,7 @@ namespace Pancake
                 {
                     fixedTickSystems[i]?.OnFixedTick();
                 }
-                
+
                 fixedUpdate?.Invoke();
 
                 if (fixedUpdateOnceTime != null)
@@ -354,7 +358,7 @@ namespace Pancake
                 {
                     lateTickSystems[i]?.OnLateTick();
                 }
-                
+
                 lateUpdate?.Invoke();
 
                 if (lateUpdateOnceTime != null)

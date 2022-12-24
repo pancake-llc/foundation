@@ -42,7 +42,7 @@ namespace Pancake.Editor
                 T obj = AssetDatabase.LoadAssetAtPath<T>(path);
                 if (obj != null) l.Add(obj);
             }
-            
+
             return l;
         }
 
@@ -562,7 +562,7 @@ namespace Pancake.Editor
             }
         }
 
-        
+
         /// <summary>
         /// Get parent of serialized property.
         /// </summary>
@@ -602,7 +602,7 @@ namespace Pancake.Editor
                 } while (currentProperty.NextVisible(false));
             }
         }
-        
+
         public class ScriptingDefinition
         {
             private static BuildTargetGroup[] workingBuildTargetGroups;
@@ -819,19 +819,19 @@ namespace Pancake.Editor
 
             #endregion
         }
-        
+
         public static string GetSizeInMemory(this long bytesize)
         {
-            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            string[] sizes = {"B", "KB", "MB", "GB", "TB"};
             double len = Convert.ToDouble(bytesize);
             int order = 0;
-            while(len >= 1024D && order < sizes.Length - 1)
+            while (len >= 1024D && order < sizes.Length - 1)
             {
                 order++;
                 len /= 1024;
             }
 
-            return string.Format(System.Globalization.CultureInfo.CurrentCulture,"{0:0.##} {1}", len, sizes[order]);
+            return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
         }
     }
 }

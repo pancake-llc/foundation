@@ -14,12 +14,10 @@ namespace Pancake
 
         private void Awake() { _nextNudgeFrequency = Random.Range(frequency.a, frequency.b); }
 
-        private void Update()
+
+        protected override void Tick()
         {
-            if (autoNudge && _lastNudgeTime + _nextNudgeFrequency < Time.time)
-            {
-                Nudge();
-            }
+            if (autoNudge && _lastNudgeTime + _nextNudgeFrequency < Time.time) Nudge();
         }
 
         public void Nudge()

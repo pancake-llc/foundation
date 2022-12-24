@@ -84,6 +84,6 @@ namespace Pancake
     {
         public TimeMode timeMode = TimeMode.Normal;
 
-        private void Update() { OnUpdate(timeMode == TimeMode.Normal ? Time.deltaTime : Time.unscaledDeltaTime); }
+        protected override void Tick() { OnUpdate(timeMode == TimeMode.Normal ? Time.deltaTime : Time.unscaledDeltaTime); }
     }
 }
