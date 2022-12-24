@@ -3,31 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// ReSharper disable InconsistentNaming
 namespace Pancake
 {
     public struct Runtime
     {
-        public static event Action OnFixedTick;
-        public static event Action OnWaitForFixedTick;
-        public static event Action OnTick;
-        public static event Action OnLateTick;
-        public static event Action OnWaitForEndOfFrame;
+        public static event Action fixedTick;
+        public static event Action waitForFixedTick;
+        public static event Action tick;
+        public static event Action lateTick;
+        public static event Action waitForEndOfFrame;
 
-        public static event Action OnFixedTickOnceTime;
-        public static event Action OnWaitForFixedTickOnceTime;
-        public static event Action OnTickOnceTime;
-        public static event Action OnLateTickOnceTime;
-        public static event Action OnWaitForEndOfFrameOnceTime;
+        public static event Action fixedTickOnceTime;
+        public static event Action waitForFixedTickOnceTime;
+        public static event Action tickOnceTime;
+        public static event Action lateTickOnceTime;
+        public static event Action waitForEndOfFrameOnceTime;
 
-        public static event Action OnEditorTick; // An update callback can be used in edit-mode
-        public static event Action OnEditorTickOnceTime; // An update callback (will be executed once) can be used in edit-mode
+        public static event Action editorTick; // An update callback can be used in edit-mode
+        public static event Action editorTickOnceTime; // An update callback (will be executed once) can be used in edit-mode
 
         public static List<Action> toMainThreads = new();
         private static volatile bool isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
 
-        public static event Action<bool> OnPause;
-        public static event Action<bool> OnFocus;
-        public static event Action OnQuit;
+        public static event Action<bool> onGamePause;
+        public static event Action<bool> onGameFocus;
+        public static event Action onGameQuit;
 
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
         private const string APP_INSTALLATION_TIMESTAMP_PPKEY = "APP_INSTALLATION_TIMESTAMP";
@@ -78,19 +79,19 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    OnFixedTick += action;
+                    fixedTick += action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    OnWaitForFixedTick += action;
+                    waitForFixedTick += action;
                     return;
                 case UpdateMode.Update:
-                    OnTick += action;
+                    tick += action;
                     return;
                 case UpdateMode.LateUpdate:
-                    OnLateTick += action;
+                    lateTick += action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
-                    OnWaitForEndOfFrame += action;
+                    waitForEndOfFrame += action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -102,19 +103,19 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    OnFixedTick -= action;
+                    fixedTick -= action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    OnWaitForFixedTick -= action;
+                    waitForFixedTick -= action;
                     return;
                 case UpdateMode.Update:
-                    OnTick -= action;
+                    tick -= action;
                     return;
                 case UpdateMode.LateUpdate:
-                    OnLateTick -= action;
+                    lateTick -= action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
-                    OnWaitForEndOfFrame -= action;
+                    waitForEndOfFrame -= action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -123,27 +124,27 @@ namespace Pancake
 
         public static void AddPauseCallback(Action<bool> callback)
         {
-            OnPause -= callback;
-            OnPause += callback;
+            onGamePause -= callback;
+            onGamePause += callback;
         }
 
-        public static void RemovePauseCallback(Action<bool> callback) { OnPause -= callback; }
+        public static void RemovePauseCallback(Action<bool> callback) { onGamePause -= callback; }
 
         public static void AddFocusCallback(Action<bool> callback)
         {
-            OnFocus -= callback;
-            OnFocus += callback;
+            onGameFocus -= callback;
+            onGameFocus += callback;
         }
 
-        public static void RemoveFocusCallback(Action<bool> callback) { OnFocus -= callback; }
+        public static void RemoveFocusCallback(Action<bool> callback) { onGameFocus -= callback; }
 
         public static void AddQuitCallback(Action callback)
         {
-            OnQuit -= callback;
-            OnQuit += callback;
+            onGameQuit -= callback;
+            onGameQuit += callback;
         }
 
-        public static void RemoveQuitCallback(Action callback) { OnQuit -= callback; }
+        public static void RemoveQuitCallback(Action callback) { onGameQuit -= callback; }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static Coroutine RunCoroutine(IEnumerator routine) => GlobalComponent.RunCoroutineImpl(routine);
@@ -218,12 +219,12 @@ namespace Pancake
             {
                 if (!Application.isPlaying)
                 {
-                    OnEditorTick?.Invoke();
+                    editorTick?.Invoke();
 
-                    if (OnEditorTickOnceTime != null)
+                    if (editorTickOnceTime != null)
                     {
-                        var call = OnEditorTickOnceTime;
-                        OnEditorTickOnceTime = null;
+                        var call = editorTickOnceTime;
+                        editorTickOnceTime = null;
                         call();
                     }
                 }
@@ -231,7 +232,7 @@ namespace Pancake
         }
 #endif
 
-        public class GlobalComponent : MonoBehaviour
+        class GlobalComponent : MonoBehaviour
         {
             private static GlobalComponent global;
 
@@ -259,11 +260,11 @@ namespace Pancake
                     {
                         yield return wait;
                         FixedFrameCount += 1;
-                        OnWaitForFixedTick?.Invoke();
+                        waitForFixedTick?.Invoke();
 
-                        if (OnWaitForFixedTickOnceTime == null) continue;
-                        var call = OnWaitForFixedTickOnceTime;
-                        OnWaitForFixedTickOnceTime = null;
+                        if (waitForFixedTickOnceTime == null) continue;
+                        var call = waitForFixedTickOnceTime;
+                        waitForFixedTickOnceTime = null;
                         call();
                     }
                     // ReSharper disable once IteratorNeverReturns
@@ -275,11 +276,11 @@ namespace Pancake
                     while (true)
                     {
                         yield return wait;
-                        OnWaitForEndOfFrame?.Invoke();
+                        waitForEndOfFrame?.Invoke();
 
-                        if (OnWaitForEndOfFrameOnceTime == null) continue;
-                        var call = OnWaitForEndOfFrameOnceTime;
-                        OnWaitForEndOfFrameOnceTime = null;
+                        if (waitForEndOfFrameOnceTime == null) continue;
+                        var call = waitForEndOfFrameOnceTime;
+                        waitForEndOfFrameOnceTime = null;
                         call();
                     }
                     // ReSharper disable once IteratorNeverReturns
@@ -288,20 +289,20 @@ namespace Pancake
 
             private void Update()
             {
-                OnTick?.Invoke();
-                OnEditorTick?.Invoke();
+                tick?.Invoke();
+                editorTick?.Invoke();
 
-                if (OnTickOnceTime != null)
+                if (tickOnceTime != null)
                 {
-                    var call = OnTickOnceTime;
-                    OnTickOnceTime = null;
+                    var call = tickOnceTime;
+                    tickOnceTime = null;
                     call();
                 }
 
-                if (OnEditorTickOnceTime != null)
+                if (editorTickOnceTime != null)
                 {
-                    var call = OnEditorTickOnceTime;
-                    OnEditorTickOnceTime = null;
+                    var call = editorTickOnceTime;
+                    editorTickOnceTime = null;
                     call();
                 }
 
@@ -323,24 +324,24 @@ namespace Pancake
 
             private void FixedUpdate()
             {
-                OnFixedTick?.Invoke();
+                fixedTick?.Invoke();
 
-                if (OnFixedTickOnceTime != null)
+                if (fixedTickOnceTime != null)
                 {
-                    var call = OnFixedTickOnceTime;
-                    OnFixedTickOnceTime = null;
+                    var call = fixedTickOnceTime;
+                    fixedTickOnceTime = null;
                     call();
                 }
             }
 
             private void LateUpdate()
             {
-                OnLateTick?.Invoke();
+                lateTick?.Invoke();
 
-                if (OnLateTickOnceTime != null)
+                if (lateTickOnceTime != null)
                 {
-                    var call = OnLateTickOnceTime;
-                    OnLateTickOnceTime = null;
+                    var call = lateTickOnceTime;
+                    lateTickOnceTime = null;
                     call();
                 }
             }
@@ -353,13 +354,13 @@ namespace Pancake
             /// On Windows Store Apps and Windows Phone 8.1 there's no application quit event,
             /// consider using OnApplicationFocus event when hasFocus equals false.
             /// </remarks>
-            private void OnApplicationFocus(bool hasFocus) { OnFocus?.Invoke(hasFocus); }
+            private void OnApplicationFocus(bool hasFocus) { onGameFocus?.Invoke(hasFocus); }
 
             /// <summary>
             /// Called when the application pauses.
             /// </summary>
             /// <param name="pauseStatus"><c>true</c> if the application is paused, else <c>false</c>.</param>
-            private void OnApplicationPause(bool pauseStatus) { OnPause?.Invoke(pauseStatus); }
+            private void OnApplicationPause(bool pauseStatus) { onGamePause?.Invoke(pauseStatus); }
 
             /// <summary>
             /// Called before the application quits.
@@ -371,7 +372,7 @@ namespace Pancake
             /// On WebGL is not possible to implement OnApplicationQuit due to nature of the
             /// browser tabs closing.
             /// </remarks>
-            private void OnApplicationQuit() { OnQuit?.Invoke(); }
+            private void OnApplicationQuit() { onGameQuit?.Invoke(); }
 
             private void OnDisable()
             {
