@@ -141,7 +141,7 @@ namespace Pancake.Tween
             }
 
             float generalTimeScale = UseGeneralTimeScale ? TweenManager.TimeScale : 1.0f;
-            float deltaTime = Runtime.DeltaTime(TimeMode);
+            float deltaTime = Runtime.GetDeltaTime(TimeMode);
             float dt = deltaTime * generalTimeScale * TimeScale;
 
             Elapsed += dt;

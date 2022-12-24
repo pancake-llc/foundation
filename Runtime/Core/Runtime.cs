@@ -62,7 +62,16 @@ namespace Pancake
 
         public static int FixedFrameCount { get; private set; }
 
-        public static float DeltaTime(TimeMode mode) => mode == TimeMode.Normal ? UnitedDeltaTime : UnitedUnscaledDeltaTime;
+        /// <summary>
+        /// Gets the installation timestamp of this app in local timezone.
+        /// This timestamp is recorded when the app is initialized for
+        /// the first time so it's not really precise but can serve well as a rough approximation
+        /// provided that the initialization is done soon after app launch.
+        /// </summary>
+        /// <returns>The installation timestamp.</returns>
+        public static DateTime GetAppInstallTimestamp => Storage.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch);
+
+        public static float GetDeltaTime(TimeMode mode) => mode == TimeMode.Normal ? UnitedDeltaTime : UnitedUnscaledDeltaTime;
 
         public static void Add(UpdateMode mode, Action action)
         {
@@ -136,7 +145,6 @@ namespace Pancake
 
         public static void RemoveQuitCallback(Action callback) { OnQuit -= callback; }
 
-
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static Coroutine RunCoroutine(IEnumerator routine) => GlobalComponent.RunCoroutineImpl(routine);
 
@@ -158,6 +166,19 @@ namespace Pancake
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static void RunOnMainThread(Action action) => GlobalComponent.RunOnMainThreadImpl(action);
 
+        /// <summary>
+        /// Enables or disables Unity debug log.
+        /// </summary>
+        /// <param name="isEnabled">If set to <c>true</c> is enabled.</param>
+        public static void EnableUnityDebugLog(bool isEnabled)
+        {
+#if UNITY_2017_1_OR_NEWER
+            Debug.unityLogger.logEnabled = isEnabled;
+#else
+            Debug.logger.logEnabled = isEnabled;
+#endif
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitialize()
         {
@@ -175,6 +196,9 @@ namespace Pancake
                 if (Monetization.AdSettings.RuntimeAutoInitialize) runtime.AddComponent<Monetization.Advertising>();
 #if PANCAKE_INPUTSYSTEM
                 runtime.AddComponent<Pancake.MyInput>();
+#endif
+#if PANCAKE_IRONSOURCE_ENABLE
+                runtime.AddComponent<Monetization.IronSourceStateHandler>();
 #endif
 
                 // Store the timestamp of the *first* init which can be used 
