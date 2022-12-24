@@ -42,23 +42,23 @@ namespace Pancake
         public T[] Finds<T>() where T : Object => FindObjectsOfType<T>();
 
 
-        public T GetCached<T>() where T : Component { return GetSingleCached(_get, GetComponent<T>); }
+        public T GetCached<T>() where T : Component { return GetSingleCached(ref _get, GetComponent<T>); }
 
-        public T[] GetsCached<T>() where T : Component { return GetManyCached(_gets, GetComponents<T>); }
+        public T[] GetsCached<T>() where T : Component { return GetManyCached(ref _gets, GetComponents<T>); }
 
-        public T ChildrenGetCached<T>() where T : Component { return GetSingleCached(_childrenGet, GetComponentInChildren<T>); }
+        public T ChildrenGetCached<T>() where T : Component { return GetSingleCached(ref _childrenGet, GetComponentInChildren<T>); }
 
-        public T[] ChildrenGetsCached<T>() where T : Component { return GetManyCached(_childrenGets, GetComponentsInChildren<T>); }
+        public T[] ChildrenGetsCached<T>() where T : Component { return GetManyCached(ref _childrenGets, GetComponentsInChildren<T>); }
 
-        public T ParentGetCached<T>() where T : Component { return GetSingleCached(_parentGet, GetComponentInParent<T>); }
+        public T ParentGetCached<T>() where T : Component { return GetSingleCached(ref _parentGet, GetComponentInParent<T>); }
 
-        public T[] ParentGetsCached<T>() where T : Component { return GetManyCached(_parentGets, GetComponentsInParent<T>); }
+        public T[] ParentGetsCached<T>() where T : Component { return GetManyCached(ref _parentGets, GetComponentsInParent<T>); }
 
-        public T FindCached<T>() where T : Component { return GetSingleCached(_find, FindObjectOfType<T>); }
+        public T FindCached<T>() where T : Component { return GetSingleCached(ref _find, FindObjectOfType<T>); }
 
-        public T[] FindsCached<T>() where T : Component { return GetManyCached(_finds, FindObjectsOfType<T>); }
+        public T[] FindsCached<T>() where T : Component { return GetManyCached(ref _finds, FindObjectsOfType<T>); }
 
-        private T GetSingleCached<T>(Dictionary<int, Component> storage, Func<T> getMethod) where T : Component
+        private T GetSingleCached<T>(ref Dictionary<int, Component> storage, Func<T> getMethod) where T : Component
         {
             var index = GetInfo<T>.Index;
 
@@ -82,7 +82,7 @@ namespace Pancake
             return instance;
         }
 
-        private T[] GetManyCached<T>(Dictionary<int, Component[]> storage, Func<T[]> getsMethod) where T : Component
+        private T[] GetManyCached<T>(ref Dictionary<int, Component[]> storage, Func<T[]> getsMethod) where T : Component
         {
             var index = GetInfo<T>.Index;
 
