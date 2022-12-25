@@ -4,7 +4,7 @@
 
 # Environment
 
-- unity 2021.3.8f1
+- unity 2022.2.0f1
 - scriptingBackend : IL2CPP
 - apiCompatibilityLevel : .NetFramework
 
@@ -12,10 +12,10 @@
 
 Add the lines below to `Packages/manifest.json`
 
-- for version `1.2.8`
+- for version `1.2.9`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.2.8",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.2.9",
 ```
 
 # Table of Contents
