@@ -46,20 +46,20 @@ namespace Pancake
                 .GetComponent<T>();
         }
 
-        public static GameObject Spawn(GameObject toSpawn, Vector3 position = default, Quaternion rotation = default)
+        public static GameObject Spawn(GameObject gameObject, Vector3 position = default, Quaternion rotation = default)
         {
-            return DefaultSpawn(toSpawn,
+            return DefaultSpawn(gameObject,
                 position,
                 rotation,
                 null,
                 false);
         }
 
-        public static GameObject Spawn(GameObject toSpawn, Transform parent, Quaternion rotation = default, bool worldPositionStays = false)
+        public static GameObject Spawn(GameObject gameObject, Transform parent, Quaternion rotation = default, bool worldPositionStays = false)
         {
             var position = parent != null ? parent.position : Vector3.zero;
 
-            return DefaultSpawn(toSpawn,
+            return DefaultSpawn(gameObject,
                 position,
                 rotation,
                 parent,

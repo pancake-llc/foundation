@@ -18,7 +18,7 @@ namespace Pancake
         public void Init(Pool pool, GameObject prefab, bool active)
         {
             if (_isInitialized) return;
-            if (Prefab == null) throw new NullReferenceException(nameof(Prefab), null);
+            if (prefab == null) throw new NullReferenceException(nameof(prefab), null);
            
             gameObject.SetActive(active);
             IsActive = active;

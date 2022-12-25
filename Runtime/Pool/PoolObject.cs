@@ -6,7 +6,11 @@ namespace Pancake
     [Serializable]
     public sealed class PoolObject
     {
-        [field: SerializeField] public GameObject Prefab { get; }
-        [field: SerializeField] public int Size { get; }
+        [SerializeField] private GameObject prefab;
+        [SerializeField] private int size;
+
+        public GameObject Prefab => prefab;
+
+        public int Size => size;
     }
 }
