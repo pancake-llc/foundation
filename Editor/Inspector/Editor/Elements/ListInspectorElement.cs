@@ -304,7 +304,14 @@ namespace Pancake.Editor
             {
                 rect.xMin += DraggableAreaExtraWidth;
             }
-
+            
+            if (index % 2 != 0)
+            {
+                var r = new Rect(rect);
+                r.size += new Vector2(25, 0);
+                r.position -= new Vector2(20, 0);
+                Uniform.DrawBox(r, Uniform.Content);
+            }
             GetChild(index).OnGUI(rect);
         }
 

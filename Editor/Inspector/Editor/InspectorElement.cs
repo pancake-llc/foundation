@@ -85,7 +85,7 @@ namespace Pancake.Editor
                 {
                     var offset = 0f;
                     var spacing = EditorGUIUtility.standardVerticalSpacing;
-
+                    
                     foreach (var child in _children)
                     {
                         var childHeight = child.GetHeight(position.width);
