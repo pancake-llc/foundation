@@ -65,8 +65,8 @@ namespace Pancake
         {
             if (getBounds == null)
                 getBounds = (t) => (t as Collider)?.bounds ?? (t as Collider2D)?.bounds ?? (t as Renderer)?.bounds ?? default;
-            var comps = go.GetComponentsInChildren<T>(includeInactive);
-
+            var comps = go.GetComponentsInChildren<T>(includeInactive).Where(_ => !(_.gameObject.GetComponent<ParticleSystem>() )).ToArray();
+            
             Bounds bound = default;
             bool found = false;
 
