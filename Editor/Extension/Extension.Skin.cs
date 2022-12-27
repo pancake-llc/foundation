@@ -15,6 +15,7 @@ namespace Pancake.Editor
         private static GUIStyle italicLablel;
 
         private static GUIStyle contentBox;
+        private static GUIStyle content;
         private static GUIStyle box;
         private static GUIStyle boxWithPadding;
         private static GUIStyle foldoutButton;
@@ -177,6 +178,23 @@ namespace Pancake.Editor
                 }
 
                 return contentBox;
+            }
+        }      
+        
+        public static GUIStyle Content
+        {
+            get
+            {
+                if (content == null)
+                {
+                    content = new GUIStyle
+                    {
+                        border = new RectOffset(2, 2, 2, 2),
+                        normal = {background = EditorGUIUtility.isProSkin ? EditorResources.EvenBackgroundDark : EditorResources.EvenBackground},
+                    };
+                }
+
+                return content;
             }
         }
 

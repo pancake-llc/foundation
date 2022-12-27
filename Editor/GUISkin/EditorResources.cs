@@ -54,6 +54,8 @@ namespace Pancake.Editor
         public static Texture2D ToggleNormalBackground => InEditor.FindAssetWithPath<Texture2D>("toggle-normal-background.png", RELATIVE_PATH);
         public static Texture2D ToggleOnNormalBackground => InEditor.FindAssetWithPath<Texture2D>("toggle-on-normal-background.png", RELATIVE_PATH);
         public static Texture2D ToolboxAreaNormalBackground => InEditor.FindAssetWithPath<Texture2D>("toolbox-area-normal-background.png", RELATIVE_PATH);
+        public static Texture2D EvenBackground => InEditor.FindAssetWithPath<Texture2D>("even_bg.png", RELATIVE_PATH);
+        public static Texture2D EvenBackgroundDark => InEditor.FindAssetWithPath<Texture2D>("even_bg_dark.png", RELATIVE_PATH);
 
         public static Sprite FetchSpriteZero => InEditor.FindAssetWithPath<Sprite>("fetch_01.png", "Runtime/DefaultAssets/Sprites");
         public static Sprite CircleRingJoystick => InEditor.FindAssetWithPath<Sprite>("circle-border-06.png", "Runtime/DefaultAssets/Sprites");
