@@ -36,11 +36,6 @@
     "path": "Samples~/Leaderboard"
   },
   {
-    "displayName": "Feedback",
-    "description": "Demo Feedback",
-    "path": "Samples~/Feedback"
-  },
-  {
     "displayName": "Resources",
     "description": "Resources using for heart package",
     "path": "Samples~/EssentialResources"

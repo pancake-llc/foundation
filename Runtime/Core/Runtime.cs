@@ -196,7 +196,6 @@ namespace Pancake
                 UnityEngine.Object.DontDestroyOnLoad(runtime);
 
                 Data.Init();
-                DeviceLogTracking.Init();
 
                 if (Monetization.AdSettings.RuntimeAutoInitialize) runtime.AddComponent<Monetization.Advertising>();
 #if PANCAKE_INPUTSYSTEM
