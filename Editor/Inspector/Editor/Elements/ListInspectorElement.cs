@@ -277,7 +277,6 @@ namespace Pancake.Editor
 
         private void DrawHeaderCallback(Rect rect)
         {
-            
             var labelRect = new Rect(rect);
             var arraySizeRect = new Rect(rect) {xMin = rect.xMax - 100,};
 
@@ -293,7 +292,10 @@ namespace Pancake.Editor
 
             var label = _reorderableListGui.count == 0 ? "Empty" : $"{_reorderableListGui.count} items";
             GUI.Label(arraySizeRect, label, Styles.ItemsCount);
-            GUI.Box(rect, "");
+            var previousColor = GUI.color;
+            GUI.color = new Color(1f, 1f, 1f, 0f);
+            GUI.Box(rect, "", new GUIStyle());
+            GUI.color = previousColor;
             var @event = Event.current;
             switch (@event.type)
             {
@@ -305,13 +307,13 @@ namespace Pancake.Editor
                         if (@event.type == EventType.DragPerform)
                         {
                             DragAndDrop.AcceptDrag();
-                            
+
                             foreach (var objectDrop in DragAndDrop.objectReferences)
                             {
                                 if (objectDrop.GetType() == _property.ArrayElementType)
                                 {
                                     AddElementCallback(_reorderableListGui);
-                                    
+
                                     if (_property.TryGetSerializedProperty(out var x))
                                     {
                                         x.GetArrayElementAtIndex(x.arraySize - 1).objectReferenceValue = objectDrop;
@@ -321,6 +323,7 @@ namespace Pancake.Editor
                             }
                         }
                     }
+
                     break;
             }
         }
@@ -336,14 +339,33 @@ namespace Pancake.Editor
             {
                 rect.xMin += DraggableAreaExtraWidth;
             }
-            
-            if (index % 2 != 0)
+
+            var r = new Rect(rect);
+            r.position -= new Vector2(18, 0);
+            var alignRect = new Rect(r);
+            if (index % 2 != 0 && !isFocused)
             {
-                var r = new Rect(rect);
                 r.size += new Vector2(25, 0);
-                r.position -= new Vector2(20, 0);
-                Uniform.DrawBox(r, Uniform.Content);
+                r.position -= new Vector2(2, 0);
+                Uniform.DrawBox(r, Uniform.ContentListDark);
             }
+            else if (!isFocused)
+            {
+                r.size += new Vector2(25, 0);
+                r.position -= new Vector2(2, 0);
+                Uniform.DrawBox(r, Uniform.ContentList);
+            }
+            else
+            {
+                r.size += new Vector2(25, 0);
+                r.position -= new Vector2(2, 0);
+                Uniform.DrawBox(r, Uniform.ContentListBlue);
+            }
+
+            var previousColor = GUI.contentColor;
+            GUI.contentColor = new Color(0.55f, 0.55f, 0.55f);
+            EditorGUI.LabelField(alignRect, Uniform.IconContent("align_vertically_center", ""));
+            GUI.contentColor = previousColor;
             GetChild(index).OnGUI(rect);
         }
 

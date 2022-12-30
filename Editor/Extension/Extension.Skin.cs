@@ -15,7 +15,9 @@ namespace Pancake.Editor
         private static GUIStyle italicLablel;
 
         private static GUIStyle contentBox;
-        private static GUIStyle content;
+        private static GUIStyle contentList;
+        private static GUIStyle contentListDark;
+        private static GUIStyle contentListBlue;
         private static GUIStyle box;
         private static GUIStyle boxWithPadding;
         private static GUIStyle foldoutButton;
@@ -181,20 +183,54 @@ namespace Pancake.Editor
             }
         }      
         
-        public static GUIStyle Content
+        public static GUIStyle ContentList
         {
             get
             {
-                if (content == null)
+                if (contentList == null)
                 {
-                    content = new GUIStyle
+                    contentList = new GUIStyle
                     {
                         border = new RectOffset(2, 2, 2, 2),
-                        normal = {background = EditorGUIUtility.isProSkin ? EditorResources.EvenBackgroundDark : EditorResources.EvenBackground},
+                        normal = {background = EditorResources.EvenBackground},
                     };
                 }
 
-                return content;
+                return contentList;
+            }
+        }
+        
+        public static GUIStyle ContentListDark
+        {
+            get
+            {
+                if (contentListDark == null)
+                {
+                    contentListDark = new GUIStyle
+                    {
+                        border = new RectOffset(2, 2, 2, 2),
+                        normal = {background = EditorResources.EvenBackgroundDark},
+                    };
+                }
+
+                return contentListDark;
+            }
+        }
+        
+        public static GUIStyle ContentListBlue
+        {
+            get
+            {
+                if (contentListBlue == null)
+                {
+                    contentListBlue = new GUIStyle
+                    {
+                        border = new RectOffset(2, 2, 2, 2),
+                        normal = {background = EditorResources.EvenBackgroundBlue},
+                    };
+                }
+
+                return contentListBlue;
             }
         }
 
