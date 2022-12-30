@@ -11,5 +11,6 @@ namespace Pancake
         public bool HideAddButton { get; set; }
         public bool HideRemoveButton { get; set; }
         public bool AlwaysExpanded { get; set; }
+        public bool MultiSelect { get; set; }
     }
 }
