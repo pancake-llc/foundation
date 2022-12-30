@@ -37,6 +37,7 @@ namespace Pancake.Editor
                 onAddCallback = AddElementCallback,
                 onRemoveCallback = RemoveElementCallback,
                 onReorderCallbackWithDetails = ReorderCallback,
+                multiSelect = settings != null && settings.MultiSelect
             };
 
             if (!_reorderableListGui.displayAdd && !_reorderableListGui.displayRemove)
@@ -276,6 +277,7 @@ namespace Pancake.Editor
 
         private void DrawHeaderCallback(Rect rect)
         {
+            
             var labelRect = new Rect(rect);
             var arraySizeRect = new Rect(rect) {xMin = rect.xMax - 100,};
 
@@ -291,6 +293,36 @@ namespace Pancake.Editor
 
             var label = _reorderableListGui.count == 0 ? "Empty" : $"{_reorderableListGui.count} items";
             GUI.Label(arraySizeRect, label, Styles.ItemsCount);
+            GUI.Box(rect, "");
+            var @event = Event.current;
+            switch (@event.type)
+            {
+                case EventType.DragUpdated:
+                case EventType.DragPerform:
+                    if (rect.Contains(@event.mousePosition))
+                    {
+                        DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                        if (@event.type == EventType.DragPerform)
+                        {
+                            DragAndDrop.AcceptDrag();
+                            
+                            foreach (var objectDrop in DragAndDrop.objectReferences)
+                            {
+                                if (objectDrop.GetType() == _property.ArrayElementType)
+                                {
+                                    AddElementCallback(_reorderableListGui);
+                                    
+                                    if (_property.TryGetSerializedProperty(out var x))
+                                    {
+                                        x.GetArrayElementAtIndex(x.arraySize - 1).objectReferenceValue = objectDrop;
+                                        _property.NotifyValueChanged();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
         }
 
         private void DrawElementCallback(Rect rect, int index, bool isActive, bool isFocused)
