@@ -1,3 +1,4 @@
+#if PANCAKE_IAP
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -243,3 +244,4 @@ namespace Pancake.IAP
 #endif
     }
 }
+#endif

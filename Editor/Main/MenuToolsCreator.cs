@@ -75,12 +75,14 @@ namespace Pancake.Editor
         }
 #endif
 
+#if PANCAKE_IAP
         [MenuItem("Tools/Pancake/IAP %W", false)]
         private static void OpenIAPSetting()
         {
             var _ = Pancake.IAP.IAPSettings.Instance;
             Selection.activeObject = _;
         }
+#endif
 
         [MenuItem("Tools/Pancake/Advertisement %E", false)]
         public static void MenuOpenSettings()
@@ -112,6 +114,12 @@ namespace Pancake.Editor
                 window.minSize = new Vector2(275, 0);
                 window.Show(true);
             }
+        }
+        
+        [MenuItem("Tools/Pancake/Wizard")]
+        public static void OpenWizard()
+        {
+            Wizard.Open();
         }
     }
 }

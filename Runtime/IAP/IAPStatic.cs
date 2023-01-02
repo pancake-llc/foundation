@@ -1,3 +1,4 @@
+#if PANCAKE_IAP
 using System;
 using UnityEngine;
 
@@ -53,3 +54,4 @@ namespace Pancake.IAP
         }
     }
 }
+#endif

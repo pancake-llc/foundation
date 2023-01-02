@@ -1,3 +1,4 @@
+#if PANCAKE_IAP
 using System;
 using UnityEngine;
 using UnityEngine.Purchasing;
@@ -50,3 +51,4 @@ namespace Pancake.IAP
         public ProductType productType;
     }
 }
+#endif
