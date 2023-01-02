@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using UnityEngine;
 
@@ -67,3 +68,4 @@ namespace Pancake.Monetization
         public static bool operator !=(AdUnit a, AdUnit b) { return !(a == b); }
     }
 }
+#endif

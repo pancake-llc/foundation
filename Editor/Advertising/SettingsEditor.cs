@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System.Collections.Generic;
 using System.IO;
 using Pancake.Editor;
@@ -78,17 +79,6 @@ namespace Pancake.Monetization.Editor
             public static Property enableMaxAdReview = new Property(null, new GUIContent("Enable MAX Ad Review"));
         }
 
-        private static class IronSourceProperties
-        {
-            public static SerializedProperty main;
-            public static Property enable = new Property(null, new GUIContent("Enable", "Enable using ironSource ad"));
-            public static Property appKey = new Property(null, new GUIContent("Sdk Key", "Sdk of ironSource"));
-            public static Property bannerAdUnit = new Property(null, new GUIContent("Banner Ad"));
-
-            public static Property useAdaptiveBanner = new Property(null,
-                new GUIContent("Use Adaptive Banner", "Use adaptive banner ad when use smart banner affect for admob ad of ironsouce mediation"));
-        }
-
         #region properties
 
         //Runtime auto initialization
@@ -123,18 +113,6 @@ namespace Pancake.Monetization.Editor
             get
             {
 #if PANCAKE_MAX_ENABLE
-                return true;
-#else
-                return false;
-#endif
-            }
-        }
-
-        private bool IsIronSourceSdkAvaiable
-        {
-            get
-            {
-#if PANCAKE_IRONSOURCE_ENABLE
                 return true;
 #else
                 return false;
@@ -187,12 +165,6 @@ namespace Pancake.Monetization.Editor
             ApplovinProperties.enableAgeRestrictedUser.property = ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
             ApplovinProperties.enableRequestAdAfterHidden.property = ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
             ApplovinProperties.enableMaxAdReview.property = ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
-
-            IronSourceProperties.main = serializedObject.FindProperty("ironSourceSettings");
-            IronSourceProperties.enable.property = IronSourceProperties.main.FindPropertyRelative("enable");
-            IronSourceProperties.appKey.property = IronSourceProperties.main.FindPropertyRelative("appKey");
-            IronSourceProperties.bannerAdUnit.property = IronSourceProperties.main.FindPropertyRelative("bannerAdUnit");
-            IronSourceProperties.useAdaptiveBanner.property = IronSourceProperties.main.FindPropertyRelative("useAdaptiveBanner");
         }
 
         public override void OnInspectorGUI()
@@ -232,7 +204,7 @@ namespace Pancake.Monetization.Editor
 #if UNITY_2020_3_OR_NEWER
                         AdsEditorUtil.CreateGradleTemplateProperties();
 #endif
-                        ScriptingDefinition.AddDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_MULTIPLE_DEX);
+                        InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_MULTIPLE_DEX);
                         AdsEditorUtil.SetDeleteGradleState(true);
                     }
                     else
@@ -244,7 +216,7 @@ namespace Pancake.Monetization.Editor
 #if UNITY_2020_3_OR_NEWER
                             AdsEditorUtil.DeleteGradleTemplateProperties();
 #endif
-                            ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_MULTIPLE_DEX);
+                            InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_MULTIPLE_DEX);
                         }
                     }
                 });
@@ -419,59 +391,6 @@ namespace Pancake.Monetization.Editor
 #if PANCAKE_MAX_ENABLE
                         if (GUI.changed) AppLovinSettings.Instance.SaveAsync();
 #endif
-                    }
-                });
-
-
-            EditorGUILayout.Space();
-            Uniform.DrawGroupFoldout("IRONSOURCE_MODULE",
-                "IRONSOURCE",
-                () =>
-                {
-                    EditorGUILayout.PropertyField(IronSourceProperties.enable.property, IronSourceProperties.enable.content);
-                    if (AdSettings.IronSourceSettings.Enable)
-                    {
-                        SettingManager.ValidateIronSourceSdkImported();
-                        if (IsIronSourceSdkAvaiable)
-                        {
-                            EditorGUILayout.HelpBox("IronSource plugin was imported", MessageType.Info);
-                            EditorGUILayout.Space();
-                            EditorGUI.indentLevel++;
-                            EditorGUILayout.PropertyField(IronSourceProperties.appKey.property, IronSourceProperties.appKey.content);
-                            EditorGUILayout.PropertyField(IronSourceProperties.bannerAdUnit.property, IronSourceProperties.bannerAdUnit.content);
-                            EditorGUILayout.PropertyField(IronSourceProperties.useAdaptiveBanner.property, IronSourceProperties.useAdaptiveBanner.content);
-                            EditorGUI.indentLevel--;
-                            EditorGUILayout.Space();
-
-                            Uniform.DrawGroupFoldout("IRONSOURCE_MODULE_MEDIATION",
-                                "MEDIATION",
-                                () =>
-                                {
-                                    DrawHeaderMediation();
-                                    foreach (var network in AdSettings.IronSourceSettings.editorListNetwork)
-                                    {
-                                        DrawIronSourceNetworkDetailRow(network);
-                                    }
-
-                                    DrawIronsourceInstallAllNetwork();
-                                });
-                            EditorGUILayout.Space();
-                        }
-                        else
-                        {
-                            EditorGUILayout.HelpBox("IronSource plugin not found. Please import it to show ads from IronSource", MessageType.Warning);
-                            if (GUILayout.Button("Import IronSource Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
-                            {
-                                if (AdSettings.IronSourceSettings.editorImportingSdk != null)
-                                {
-                                    EditorCoroutine.Start(IronSourceManager.Instance.DownloadPlugin(AdSettings.IronSourceSettings.editorImportingSdk));
-                                }
-                                else
-                                {
-                                    Application.OpenURL("https://developers.is.com/ironsource-mobile/unity/unity-plugin/");
-                                }
-                            }
-                        }
                     }
                 });
 
@@ -677,65 +596,6 @@ namespace Pancake.Monetization.Editor
             }
         }
 
-        private void DrawIronSourceNetworkDetailRow(AdapterMediationIronSource network)
-        {
-            if (!network.Equals(default(AdapterMediationIronSource)))
-            {
-                string currentVersion = network.currentUnityVersion;
-                string latestVersion = network.latestUnityVersion;
-                var status = "";
-                var isActionEnabled = false;
-                var isInstalled = false;
-
-                ValidateVersionIronSource(network.currentStatus,
-                    ref currentVersion,
-                    ref status,
-                    ref isActionEnabled,
-                    ref isInstalled);
-
-                GUILayout.Space(4);
-                using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandHeight(false)))
-                {
-                    GUILayout.Space(5);
-                    string displayName = network.displayAdapterName;
-                    if (displayName.Equals("Google (AdMob and Ad Manager)")) displayName = "Admob";
-                    EditorGUILayout.LabelField(new GUIContent(displayName), NetworkWidthOption);
-                    EditorGUILayout.LabelField(new GUIContent(currentVersion), VersionWidthOption);
-                    GUILayout.Space(3);
-                    EditorGUILayout.LabelField(new GUIContent(latestVersion), VersionWidthOption);
-                    GUILayout.Space(3);
-                    GUILayout.FlexibleSpace();
-
-                    GUI.enabled = isActionEnabled && !EditorApplication.isCompiling;
-                    if (GUILayout.Button(new GUIContent(status), FieldWidth))
-                    {
-                        // Download the plugin.
-                        EditorCoroutine.Start(IronSourceManager.Instance.DownloadFileDependency(network.downloadUrl));
-                    }
-
-                    GUI.enabled = !EditorApplication.isCompiling;
-                    GUILayout.Space(2);
-
-                    GUI.enabled = isInstalled && !EditorApplication.isCompiling;
-                    if (GUILayout.Button(_iconUnintall))
-                    {
-                        EditorUtility.DisplayProgressBar("Ads", "Deleting " + network.displayAdapterName + "...", 0.5f);
-                        string pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
-                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, "IronSource", "Editor", network.fileName));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, "IronSource", "Editor", network.fileName + ".meta"));
-
-                        IronSourceManager.RefreshAllCurrentVersionAdapter();
-                        // Refresh UI
-                        AssetDatabase.Refresh();
-                        EditorUtility.ClearProgressBar();
-                    }
-
-                    GUI.enabled = !EditorApplication.isCompiling;
-                    GUILayout.Space(5);
-                }
-            }
-        }
-
         /// <summary>
         /// Use Install All Network to import package => AssetDatabase.importPackageCompleted not called
         /// </summary>
@@ -901,77 +761,6 @@ namespace Pancake.Monetization.Editor
             }
         }
 
-        /// <summary>
-        /// AssetDatabase.importPackageCompleted not called
-        /// </summary>
-        private void DrawIronsourceInstallAllNetwork()
-        {
-            var showInstallAll = false;
-            var showUninstallAll = false;
-            for (int i = 0; i < AdSettings.IronSourceSettings.editorListNetwork.Count; i++)
-            {
-                var network = AdSettings.IronSourceSettings.editorListNetwork[i];
-                var status = "";
-                string currentVersion = network.currentUnityVersion;
-                var isActionEnabled = false;
-                var isInstalled = false;
-                ValidateVersionIronSource(network.currentStatus,
-                    ref currentVersion,
-                    ref status,
-                    ref isActionEnabled,
-                    ref isInstalled);
-
-                if (isActionEnabled) showInstallAll = true;
-                if (isInstalled) showUninstallAll = true;
-            }
-
-            GUILayout.Space(4);
-            using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandHeight(false)))
-            {
-                GUILayout.Space(5);
-                EditorGUILayout.LabelField(new GUIContent(), NetworkWidthOption);
-                EditorGUILayout.LabelField(new GUIContent(), VersionWidthOption);
-                GUILayout.Space(3);
-                EditorGUILayout.LabelField(new GUIContent(), VersionWidthOption);
-                GUILayout.Space(3);
-                GUILayout.FlexibleSpace();
-
-                const string ironsourceKeyInstallAll = "IronSource_InstallAll";
-                GUI.enabled = showInstallAll && !EditorApplication.isCompiling && EditorPrefs.GetBool(ironsourceKeyInstallAll);
-                if (GUILayout.Button(new GUIContent("Install All"), FieldWidth))
-                {
-                    EditorPrefs.SetBool(ironsourceKeyInstallAll, false);
-                    InEditor.DelayedCall(2f, () => EditorPrefs.SetBool(ironsourceKeyInstallAll, true));
-                    IronSourceManager.Instance.DownloadAllPlugin(AdSettings.IronSourceSettings.editorListNetwork);
-                }
-
-                GUI.enabled = !EditorApplication.isCompiling;
-                GUILayout.Space(2);
-
-                GUI.enabled = showUninstallAll && !EditorApplication.isCompiling;
-                if (GUILayout.Button(new GUIContent("Unistall All"), GUILayout.Width(ACTION_FIELD_WIDTH + 10)))
-                {
-                    EditorUtility.DisplayProgressBar("Ads", "Deleting All Network...", 0.5f);
-                    var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
-
-                    foreach (var network in AdSettings.IronSourceSettings.editorListNetwork)
-                    {
-                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, "IronSource", "Editor", network.fileName));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, "IronSource", "Editor", network.fileName + ".meta"));
-
-                        IronSourceManager.RefreshAllCurrentVersionAdapter();
-                    }
-
-                    // Refresh UI
-                    AssetDatabase.Refresh();
-                    EditorUtility.ClearProgressBar();
-                }
-
-                GUI.enabled = !EditorApplication.isCompiling;
-                GUILayout.Space(5);
-            }
-        }
-
         private bool ValidateVersionAdmob(
             EVersionComparisonResult comparison,
             ref string currentVersion,
@@ -1060,49 +849,7 @@ namespace Pancake.Monetization.Editor
             return isActionEnabled;
         }
 
-        private bool ValidateVersionIronSource(
-            EAdapterStatus currentStatus,
-            ref string currentVersion,
-            // ReSharper disable once RedundantAssignment
-            ref string status,
-            // ReSharper disable once RedundantAssignment
-            ref bool isActionEnabled,
-            // ReSharper disable once RedundantAssignment
-            ref bool isInstalled)
-        {
-            if (string.IsNullOrEmpty(currentVersion))
-            {
-                status = "Install";
-                currentVersion = "Not Installed";
-                isActionEnabled = true;
-                isInstalled = false;
-            }
-            else
-            {
-                isInstalled = true;
-                switch (currentStatus)
-                {
-                    // A newer version is available
-                    case EAdapterStatus.Upgrade:
-                        status = "Upgrade";
-                        isActionEnabled = true;
-                        break;
-                    // Current installed version is newer than latest version from DB (beta version)
-                    case EAdapterStatus.Installed:
-                        status = "Installed";
-                        isActionEnabled = false;
-                        break;
-                    // Already on the latest version
-                    default:
-                        status = "Installed";
-                        isActionEnabled = false;
-                        break;
-                }
-            }
-
-            return isActionEnabled;
-        }
-
         #endregion
     }
 }
+#endif

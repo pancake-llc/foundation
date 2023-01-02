@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public enum EBannerPosition
@@ -10,3 +11,4 @@ namespace Pancake.Monetization
         BottomRight = 5,
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -62,3 +63,4 @@ namespace Pancake.Monetization
         public bool EnableMaxAdReview => enableMaxAdReview;
     }
 }
+#endif

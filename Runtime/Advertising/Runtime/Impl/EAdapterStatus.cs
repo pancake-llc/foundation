@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public enum EAdapterStatus
@@ -7,3 +8,4 @@ namespace Pancake.Monetization
         Upgrade = 2
     }
 }
+#endif

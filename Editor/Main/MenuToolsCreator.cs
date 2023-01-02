@@ -84,12 +84,14 @@ namespace Pancake.Editor
         }
 #endif
 
+#if PANCAKE_ADS
         [MenuItem("Tools/Pancake/Advertisement %E", false)]
         public static void MenuOpenSettings()
         {
             var _ = Monetization.AdSettings.Instance;
             Monetization.Editor.SettingsWindow.ShowWindow();
         }
+#endif
 
 
         [MenuItem("Tools/Pancake/Level Editor &_3")]

@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 
 #pragma warning disable CS0414
@@ -352,3 +353,4 @@ namespace Pancake.Monetization
         }
     }
 }
+#endif

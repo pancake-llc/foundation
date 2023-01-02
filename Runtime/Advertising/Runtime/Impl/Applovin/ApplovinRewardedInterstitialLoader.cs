@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public class ApplovinRewardedInterstitialLoader
@@ -54,3 +55,4 @@ namespace Pancake.Monetization
 #endif
     }
 }
+#endif

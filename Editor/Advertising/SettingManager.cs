@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using Unity.SharpZipLib.Zip;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Object = UnityEngine.Object;
 
 
 namespace Pancake.Monetization.Editor
@@ -234,7 +236,7 @@ namespace Pancake.Monetization.Editor
 
         private static void UpdateAssetLabelsIfNeeded(string assetPath, string pluginParentDir)
         {
-            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+            var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
             var labels = AssetDatabase.GetLabels(asset);
 
             var labelsToAdd = labels.ToList();
@@ -795,11 +797,11 @@ namespace Pancake.Monetization.Editor
         {
             if (IsAdmobSdkImported())
             {
-                ScriptingDefinition.AddDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_ADMOB);
+                InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_ADMOB);
             }
             else
             {
-                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_ADMOB);
+                InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_ADMOB);
             }
         }
 
@@ -818,29 +820,11 @@ namespace Pancake.Monetization.Editor
         {
             if (IsMaxSdkImported())
             {
-                ScriptingDefinition.AddDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_APPLOVIN);
+                InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_APPLOVIN);
             }
             else
             {
-                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_APPLOVIN);
-            }
-        }
-
-        public static bool IsIronSourceSdkImported()
-        {
-            return AssetDatabase.FindAssets(AdsEditorUtil.DEFAULT_FILTER_IRONSOURCE_SDK).Length >= 1 ||
-                   AssetDatabase.FindAssets(AdsEditorUtil.DEFAULT_FILTER_IRONSOURCE_SDK.Replace("/", "\\")).Length >= 1;
-        }
-
-        public static void ValidateIronSourceSdkImported()
-        {
-            if (IsIronSourceSdkImported())
-            {
-                ScriptingDefinition.AddDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_IRONSOURCE);
-            }
-            else
-            {
-                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_IRONSOURCE);
+                InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_APPLOVIN);
             }
         }
 
@@ -848,3 +832,4 @@ namespace Pancake.Monetization.Editor
         public static string GetNetworkUnityVersion(string name) { return EditorPrefs.GetString($"{Application.identifier}_ads_{name}_unity"); }
     }
 }
+#endif

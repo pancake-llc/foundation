@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using System.Globalization;
 using System.Linq;
@@ -98,3 +99,4 @@ namespace Pancake.Monetization
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public enum EVersionComparisonResult
@@ -7,3 +8,4 @@ namespace Pancake.Monetization
         Greater = 1
     }
 }
+#endif

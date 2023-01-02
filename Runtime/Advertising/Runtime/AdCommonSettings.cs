@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using UnityEngine;
 
@@ -32,3 +33,4 @@ namespace Pancake.Monetization
         public EAdNetwork CurrentNetwork { get => currentNetwork; set => currentNetwork = value; }
     }
 }
+#endif

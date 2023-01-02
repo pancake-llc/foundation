@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public enum EBannerSize
@@ -10,3 +11,4 @@ namespace Pancake.Monetization
         SmartBanner = 5         // width x 32|50|90
     }
 }
+#endif

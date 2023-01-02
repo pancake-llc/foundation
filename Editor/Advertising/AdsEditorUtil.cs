@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System.Collections.Generic;
 using System.IO;
 using Pancake.Editor;
@@ -10,12 +11,10 @@ namespace Pancake.Monetization.Editor
     {
         public const string SCRIPTING_DEFINITION_ADMOB = "PANCAKE_ADMOB_ENABLE";
         public const string SCRIPTING_DEFINITION_APPLOVIN = "PANCAKE_MAX_ENABLE";
-        public const string SCRIPTING_DEFINITION_IRONSOURCE = "PANCAKE_IRONSOURCE_ENABLE";
         public const string SCRIPTING_DEFINITION_MULTIPLE_DEX = "PANCAKE_MULTIPLE_DEX";
         private const string KEY_FORCE_GRADLE = "KEY_FORCE_GRADLE";
         public const string DEFAULT_FILTER_ADMOB_DLL = "l:gvhp_exportpath-GoogleMobileAds/GoogleMobileAds.dll";
         public const string DEFAULT_FILTER_MAX_MAXSDK = "l:al_max_export_path-MaxSdk/Scripts/MaxSdk.cs";
-        public const string DEFAULT_FILTER_IRONSOURCE_SDK = "l:pancake_ironsource_export_path-IronSource/Scripts/IronSource.cs";
 
         private const string MAINTEMPALTE_GRADLE_PATH = "Assets/Plugins/Android/mainTemplate.gradle";
         private const string GRADLETEMPALTE_PROPERTIES_PATH = "Assets/Plugins/Android/gradleTemplate.properties";
@@ -137,3 +136,4 @@ namespace Pancake.Monetization.Editor
         }
     }
 }
+#endif

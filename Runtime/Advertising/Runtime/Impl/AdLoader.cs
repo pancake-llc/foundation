@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public class AdLoader<T> where T : AdUnit
@@ -9,3 +10,4 @@ namespace Pancake.Monetization
         internal virtual void Destroy() { }
     }
 }
+#endif

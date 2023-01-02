@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 #if PANCAKE_ANALYTIC
 using Firebase.Analytics;
 #endif
@@ -57,3 +58,4 @@ namespace Pancake.Monetization
 #endif
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     /// <summary>
@@ -11,3 +12,4 @@ namespace Pancake.Monetization
         internal static bool isShowingAd;
     }
 }
+#endif

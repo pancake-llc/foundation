@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using UnityEngine;
 
@@ -17,3 +18,4 @@ namespace Pancake.Monetization
         }
     }
 }
+#endif

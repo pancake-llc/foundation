@@ -1,22 +1,25 @@
+#if PANCAKE_ADS
+using Pancake.Editor;
 using UnityEditor;
 
 namespace Pancake.Monetization.Editor
 {
-    public class OnPostDeleted : UnityEditor.AssetModificationProcessor
+    public class OnPostDeleted : AssetModificationProcessor
     {
         private static AssetDeleteResult OnWillDeleteAsset(string assetPath, RemoveAssetOptions options)
         {
             if (!SettingManager.IsAdmobSdkImported())
             {
-                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_ADMOB);
+                InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_ADMOB);
             }
 
             if (!SettingManager.IsMaxSdkImported())
             {
-                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_APPLOVIN);
+                InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms(AdsEditorUtil.SCRIPTING_DEFINITION_APPLOVIN);
             }
 
             return AssetDeleteResult.DidNotDelete;
         }
     }
 }
+#endif

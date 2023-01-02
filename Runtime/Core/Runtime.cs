@@ -197,12 +197,12 @@ namespace Pancake
 
                 Data.Init();
 
+#if PANCAKE_ADS
                 if (Monetization.AdSettings.RuntimeAutoInitialize) runtime.AddComponent<Monetization.Advertising>();
+#endif
+
 #if PANCAKE_INPUTSYSTEM
                 runtime.AddComponent<Pancake.MyInput>();
-#endif
-#if PANCAKE_IRONSOURCE_ENABLE
-                runtime.AddComponent<Monetization.IronSourceStateHandler>();
 #endif
 
                 // Store the timestamp of the *first* init which can be used 

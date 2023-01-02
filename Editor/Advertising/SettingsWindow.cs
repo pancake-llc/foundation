@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System.Collections;
 using Pancake.Editor;
 using UnityEditor;
@@ -62,12 +63,8 @@ namespace Pancake.Monetization.Editor
             MaxManager.downloadPluginProgressCallback = OnDownloadMaxPluginProgress;
             MaxManager.importPackageCompletedCallback = OnMaxImportPackageCompleted;
 
-            IronSourceManager.downloadPluginProgressCallback = OnDownloadIronSourcePluginProgress;
-            IronSourceManager.importPackageCompletedCallback = OnImportIronSourceCompleted;
-
             SettingManager.Instance.Load();
             SettingManager.Instance.LoadGma();
-            IronSourceManager.Instance.Load();
             MaxManager.Instance.Load();
             MaxManager.Instance.LoadMaxSdkJson();
             Uniform.LoadFoldoutSetting();
@@ -76,8 +73,6 @@ namespace Pancake.Monetization.Editor
         private void OnDisable()
         {
             SettingManager.Instance.webRequest?.Abort();
-            IronSourceManager.Instance.webRequest?.Abort();
-            IronSourceManager.Instance.webRequest?.Abort();
             EditorUtility.ClearProgressBar();
             Uniform.SaveFoldoutSetting();
             AssetDatabase.SaveAssets();
@@ -184,56 +179,6 @@ namespace Pancake.Monetization.Editor
                 }
             }
         }
-
-        /// <summary>
-        /// Callback method that will be called with progress updates when the plugin is being downloaded.
-        /// </summary>
-        private static void OnDownloadIronSourcePluginProgress(string pluginName, float progress, bool done, int index)
-        {
-            // Download is complete. Clear progress bar.
-            if (done)
-            {
-                EditorUtility.ClearProgressBar();
-            }
-            // Download is in progress, update progress bar.
-            else
-            {
-                if (EditorUtility.DisplayCancelableProgressBar("Ads", string.Format("Downloading {0} plugin...", pluginName), progress))
-                {
-                    if (index == -1)
-                    {
-                        IronSourceManager.Instance.webRequest?.Abort();
-                    }
-                    else
-                    {
-                        IronSourceManager.Instance.branWidthRequest[index]?.Abort();
-                    }
-
-                    EditorUtility.ClearProgressBar();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="network"></param>
-        private static void OnImportIronSourceCompleted(Network network)
-        {
-            IronSourceManager.Instance.UpdateCurrentVersion(network);
-            EditorCoroutine.Start(DelayRefreshIronSource(1, network));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="delay"></param>
-        /// <param name="network"></param>
-        /// <returns></returns>
-        private static IEnumerator DelayRefreshIronSource(float delay, Network network)
-        {
-            yield return new WaitForSeconds(delay);
-            IronSourceManager.Instance.UpdateCurrentVersion(network);
-        }
     }
 }
+#endif

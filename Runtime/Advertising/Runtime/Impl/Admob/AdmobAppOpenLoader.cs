@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 #if PANCAKE_ADMOB_ENABLE
 using System;
 using GoogleMobileAds.Api;
@@ -98,3 +99,4 @@ namespace Pancake.Monetization
 #endif
     }
 }
+#endif

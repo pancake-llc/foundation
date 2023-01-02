@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using System.Collections;
 using UnityEngine;
@@ -18,7 +19,6 @@ namespace Pancake.Monetization
 
         private static AdmobAdClient admobAdClient;
         private static ApplovinAdClient applovinAdClient;
-        private static IronSourceAdClient ironSourceAdClient;
         private static bool isInitialized;
         private static EAutoLoadingAd autoLoadingAdMode = EAutoLoadingAd.None;
         private static bool flagAutoLoadingModeChange;
@@ -80,16 +80,6 @@ namespace Pancake.Monetization
                 if (!InitializeCheck()) return null;
                 if (applovinAdClient == null) applovinAdClient = SetupClient(EAdNetwork.Applovin) as ApplovinAdClient;
                 return applovinAdClient;
-            }
-        }
-
-        public static IronSourceAdClient IronSourceAdClient
-        {
-            get
-            {
-                if (!InitializeCheck()) return null;
-                if (ironSourceAdClient == null) ironSourceAdClient = SetupClient(EAdNetwork.IronSource) as IronSourceAdClient;
-                return ironSourceAdClient;
             }
         }
 
@@ -158,9 +148,6 @@ namespace Pancake.Monetization
                     break;
                 case "applovin":
                     AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Applovin;
-                    break;
-                case "ironsource":
-                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.IronSource;
                     break;
                 default:
                     AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Admob;
@@ -256,7 +243,6 @@ namespace Pancake.Monetization
                 case EAdNetwork.None: return NoneAdClient.Instance;
                 case EAdNetwork.Admob: return AdmobAdClient.Instance;
                 case EAdNetwork.Applovin: return ApplovinAdClient.Instance;
-                case EAdNetwork.IronSource: return IronSourceAdClient.Instance;
                 default: return null;
             }
         }
@@ -269,7 +255,6 @@ namespace Pancake.Monetization
                 case EAdNetwork.None: return NoneAdClient.Instance;
                 case EAdNetwork.Admob: return AdmobAdClient;
                 case EAdNetwork.Applovin: return ApplovinAdClient;
-                case EAdNetwork.IronSource: return IronSourceAdClient;
                 default: return null;
             }
         }
@@ -475,3 +460,4 @@ namespace Pancake.Monetization
 #endif
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if  PANCAKE_ADS
 
 using UnityEngine;
 #if PANCAKE_ADMOB_ENABLE
@@ -78,3 +79,4 @@ namespace Pancake.Monetization
 #endif
     }
 }
+#endif

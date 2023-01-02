@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 #if PANCAKE_MAX_ENABLE
 using System;
 #endif
@@ -59,3 +60,4 @@ namespace Pancake.Monetization
 #endif
     }
 }
+#endif

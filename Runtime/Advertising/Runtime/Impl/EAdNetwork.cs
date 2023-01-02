@@ -1,11 +1,11 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public enum EAdNetwork
     {
         None = 0,
         Admob = 1,
-        Applovin = 2,
-        IronSource = 3
+        Applovin = 2
     }
 
     public enum EBannerAdNetwork
@@ -13,23 +13,20 @@ namespace Pancake.Monetization
         None = EAdNetwork.None,
         Admob = EAdNetwork.Admob,
         Applovin = EAdNetwork.Applovin,
-        IronSource = EAdNetwork.IronSource
     }
 
     public enum EInterstitialAdNetwork
     {
         None = EAdNetwork.None,
         Admob = EAdNetwork.Admob,
-        Applovin = EAdNetwork.Applovin,
-        IronSource = EAdNetwork.IronSource
+        Applovin = EAdNetwork.Applovin
     }
 
     public enum ERewardedAdNetwork
     {
         None = EAdNetwork.None,
         Admob = EAdNetwork.Admob,
-        Applovin = EAdNetwork.Applovin,
-        IronSource = EAdNetwork.IronSource
+        Applovin = EAdNetwork.Applovin
     }
 
     public enum ERewardedInterstitialAdNetwork
@@ -46,3 +43,4 @@ namespace Pancake.Monetization
         Applovin = EAdNetwork.Applovin
     }
 }
+#endif

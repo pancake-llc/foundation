@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 
 namespace Pancake.Monetization
@@ -13,3 +14,4 @@ namespace Pancake.Monetization
         }
     }
 }
+#endif

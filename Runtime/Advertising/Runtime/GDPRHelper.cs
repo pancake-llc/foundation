@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using UnityEngine;
 
 namespace Pancake.Monetization
@@ -38,3 +39,4 @@ namespace Pancake.Monetization
         public void OnButtonPrivacyPolicyPressed() { Application.OpenURL(AdSettings.AdCommonSettings.PrivacyPolicyUrl); }
     }
 }
+#endif

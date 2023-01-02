@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 #if UNITY_EDITOR && UNITY_IOS
 using System.IO;
 using UnityEditor;
@@ -29,4 +30,5 @@ namespace Pancake.Monetization.Editor
     }
 }
 
+#endif
 #endif

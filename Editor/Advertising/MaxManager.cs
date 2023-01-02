@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using AppLovinMax.Scripts.IntegrationManager.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Object = UnityEngine.Object;
 
 namespace Pancake.Monetization.Editor
 {
@@ -682,7 +684,7 @@ namespace Pancake.Monetization.Editor
 
         private static void UpdateAssetLabelsIfNeeded(string assetPath, string pluginParentDir)
         {
-            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+            var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
             var labels = AssetDatabase.GetLabels(asset);
 
             var labelsToAdd = labels.ToList();
@@ -951,3 +953,4 @@ namespace Pancake.Monetization.Editor
         #endregion
     }
 }
+#endif

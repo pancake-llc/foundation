@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public class NoneAdClient : AdClient
@@ -35,3 +36,4 @@ namespace Pancake.Monetization
         protected override void InternalShowRewardedAd() { }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 namespace Pancake.Monetization
 {
     public enum AdType
@@ -18,3 +19,4 @@ namespace Pancake.Monetization
         AppOpen = AdType.AppOpen
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
@@ -53,3 +54,4 @@ namespace Pancake.Monetization
 #endif
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 #if UNITY_EDITOR && PANCAKE_MULTIPLE_DEX
 using System.IO;
 using System.Text;
@@ -36,5 +37,6 @@ namespace Pancake.Monetization.Editor
         }
     }
 }
+#endif
 #endif
 #endif
