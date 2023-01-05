@@ -64,7 +64,6 @@ namespace Pancake.IAP
                 var writer = new StreamWriter(path, false);
                 writer.Write(asmdef.text);
                 writer.Close();
-                AssetDatabase.ImportAsset(path);
             }
 
             if (!File.Exists(pathMeta))
@@ -72,8 +71,8 @@ namespace Pancake.IAP
                 var writer = new StreamWriter(pathMeta, false);
                 writer.Write(meta.text);
                 writer.Close();
-                AssetDatabase.ImportAsset(pathMeta);
             }
+            AssetDatabase.ImportAsset(path);
         }
 
 
