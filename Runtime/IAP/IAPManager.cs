@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if PANCAKE_ADS
 using Pancake.Monetization;
+#endif
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Security;
@@ -126,8 +128,9 @@ namespace Pancake.IAP
 
         public static IAPData Purchase(IAPData product)
         {
+#if PANCAKE_ADS
             if (AdSettings.RuntimeAutoInitialize) R.isShowingAd = true;
-
+#endif
             return Instance.PurchaseProduct(product);
         }
 
@@ -149,7 +152,10 @@ namespace Pancake.IAP
 
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
+#if PANCAKE_ADS
             Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
+#endif
+            
             OnPurchaseFailedEvent?.Invoke(failureReason.ToString());
             foreach (var e in FaildDict)
             {
@@ -180,7 +186,9 @@ namespace Pancake.IAP
 
         private void PurchaseVerified(PurchaseEventArgs e)
         {
+#if PANCAKE_ADS
             Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
+#endif
             OnPurchaseSucceedEvent?.Invoke(e.purchasedProduct.definition.id);
             foreach (var completeEvent in CompletedDict)
             {
