@@ -58,7 +58,7 @@ namespace Pancake.Monetization
 #if PANCAKE_ADMOB_ENABLE
             MobileAds.Initialize(status =>
             {
-                RuntimeHelper.RunOnMainThread(() =>
+                Runtime.RunOnMainThread(() =>
                 {
                     if (AdSettings.AdmobSettings.EnableTestMode) Admob.SetupDeviceTest();
                     if (AdSettings.AdCommonSettings.EnableGDPR) ShowConsentForm();

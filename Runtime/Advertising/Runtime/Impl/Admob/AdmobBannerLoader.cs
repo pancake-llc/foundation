@@ -53,7 +53,7 @@ namespace Pancake.Monetization
         private void OnAdFailedToLoad(object sender, AdFailedToLoadEventArgs e)
         {
             OnFailToLoadEvent.Invoke(this, sender, e);
-            RuntimeHelper.RunCoroutine(DelayReload(10f));
+            Runtime.RunCoroutine(DelayReload(10f));
         }
 
         private void OnAdClosed(object sender, EventArgs e) { OnClosedEvent.Invoke(this, sender, e); }
