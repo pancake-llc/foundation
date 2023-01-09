@@ -5,7 +5,7 @@ using ETouch = UnityEngine.InputSystem.EnhancedTouch;
 
 namespace Pancake
 {
-    public sealed class MyInput : BaseBehaviour
+    public sealed class MyInput : BaseMono
     {
         public static event Action<Finger> FingerDownEvent;
         public static event Action<Finger> FingerUpEvent;

@@ -5,7 +5,7 @@ using ETouch = UnityEngine.InputSystem.EnhancedTouch;
 
 namespace Pancake.UI
 {
-    public class MovementInfluencedByJoystick : BaseBehaviour
+    public class MovementInfluencedByJoystick : BaseMono
     {
         public Pancake.UI.Joystick joystick;
         public float speed;

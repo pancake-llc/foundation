@@ -7,7 +7,7 @@ using ETouch = UnityEngine.InputSystem.EnhancedTouch;
 namespace Pancake.UI
 {
     [RequireComponent(typeof(RectTransform))]
-    public abstract class Joystick : BaseBehaviour
+    public abstract class Joystick : BaseMono
     {
         private RectTransform _rectTransform;
         public RectTransform knob;
