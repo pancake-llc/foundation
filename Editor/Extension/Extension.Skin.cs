@@ -25,6 +25,8 @@ namespace Pancake.Editor
         private static GUIStyle groupHeader;
         private static GUIStyle groupHeaderCollapse;
         private static GUIStyle toggleToolbar;
+        
+        private static readonly Dictionary<string, GUIContent> CachedIconContent = new Dictionary<string, GUIContent>();
 
         private const int CHEVRON_ICON_WIDTH = 10;
         private const int CHEVRON_ICON_RIGHT_MARGIN = 5;
@@ -433,10 +435,13 @@ namespace Pancake.Editor
         /// <param name="name"></param>
         /// <param name="tooltip"></param>
         /// <returns></returns>
-        public static GUIContent IconContent(string name, string tooltip)
+        public static GUIContent IconContent(string name, string tooltip = "")
         {
-            var builtinIcon = EditorGUIUtility.IconContent(name);
-            return new GUIContent(builtinIcon.image, tooltip);
+            if (CachedIconContent.TryGetValue(name, out var result)) return result ?? GUIContent.none;
+            var builtinIcon = EditorGUIUtility.IconContent(name) ?? new GUIContent(Texture2D.whiteTexture);
+            result = new GUIContent(builtinIcon.image, tooltip);
+            CachedIconContent.Add(name, result);
+            return result;
         }
 
         /// <summary>
