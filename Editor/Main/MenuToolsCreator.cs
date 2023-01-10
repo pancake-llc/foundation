@@ -127,7 +127,7 @@ namespace Pancake.Editor
         [MenuItem("Tools/Pancake/Finder %#K")]
         private static void OpenFinder()
         {
-            //FinderWindow.FinderWindow.ShowWindow();
+            Finder.FinderWindow.ShowWindow();
         }
     }
 }

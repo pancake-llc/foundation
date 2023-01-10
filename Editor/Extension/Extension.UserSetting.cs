@@ -33,7 +33,7 @@ namespace Pancake.Editor
                 }
             }
 
-            private void SaveSetting()
+            public void SaveSetting()
             {
                 if (!"UserSettings".DirectoryExists()) Directory.CreateDirectory("UserSettings");
 
@@ -47,7 +47,7 @@ namespace Pancake.Editor
                 }
             }
 
-            private void LoadSetting()
+            public void LoadSetting()
             {
                 _settings = new T();
                 string path = string.Format(DEFAULT_USER_SETTING_PATH, _name);
@@ -59,6 +59,12 @@ namespace Pancake.Editor
 
                 string json = File.ReadAllText(path);
                 _settings = JsonUtility.FromJson<T>(json);
+            }
+
+            public void DeleteSetting()
+            {
+                string path = string.Format(DEFAULT_USER_SETTING_PATH, _name);
+                if (path.FileExists()) File.Delete(path);
             }
         }
     }
