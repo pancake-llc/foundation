@@ -22,13 +22,13 @@ namespace Pancake.Editor
 
             if (fieldInfo.IsPublic || fieldInfo.GetCustomAttribute<SerializeField>() != null)
             {
-                return IsTypeSerializable(fieldInfo.FieldType);
+                return IsTypeSerializable(fieldInfo.FieldType, true);
             }
 
             return false;
         }
 
-        private static bool IsTypeSerializable(Type type)
+        private static bool IsTypeSerializable(Type type, bool allowCollections)
         {
             if (type == typeof(object))
             {
@@ -61,13 +61,23 @@ namespace Pancake.Editor
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();
-                return IsTypeSerializable(elementType);
+                return allowCollections && IsTypeSerializable(elementType, false);
             }
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+            if (type.IsGenericType)
             {
-                var elementType = type.GetGenericArguments()[0];
-                return IsTypeSerializable(elementType);
+                var genericTypeDefinition = type.GetGenericTypeDefinition();
+
+                if (genericTypeDefinition == typeof(List<>))
+                {
+                    var elementType = type.GetGenericArguments()[0];
+                    return allowCollections && IsTypeSerializable(elementType, allowCollections: false);
+                }
+
+                if (genericTypeDefinition == typeof(Dictionary<,>))
+                {
+                    return false;
+                }
             }
 
             if (type.GetCustomAttribute<SerializableAttribute>() != null)
