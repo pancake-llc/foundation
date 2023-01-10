@@ -1,4 +1,5 @@
-﻿namespace Pancake.LevelBase
+﻿#if PANCAKE_GAM
+namespace Pancake.LevelBase
 {
     public interface IUnit
     {
@@ -13,3 +14,4 @@
         public void Deactive();
     }
 }
+#endif

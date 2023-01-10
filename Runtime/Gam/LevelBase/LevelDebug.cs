@@ -1,4 +1,5 @@
-﻿#if UNITY_EDITOR
+﻿#if PANCAKE_GAM
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -40,11 +41,12 @@ namespace Pancake.LevelBase
         {
             if (state == PlayModeStateChange.ExitingPlayMode)
             {
-                LevelDebug.IsTest = false;
-                LevelDebug.PathLevelAsset = string.Empty;
-                LevelDebug.levelPrefab = null;
+                IsTest = false;
+                PathLevelAsset = string.Empty;
+                levelPrefab = null;
             }
         }
     }
 }
+#endif
 #endif

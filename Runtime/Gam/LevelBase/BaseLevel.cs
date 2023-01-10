@@ -1,4 +1,5 @@
-﻿namespace Pancake.LevelBase
+﻿#if PANCAKE_GAM
+namespace Pancake.LevelBase
 {
     public abstract class BaseLevel : BaseMono, ILevel
     {
@@ -27,3 +28,5 @@
         public abstract void Deactive();
     }
 }
+
+#endif

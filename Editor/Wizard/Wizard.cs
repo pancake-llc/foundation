@@ -12,6 +12,7 @@ namespace Pancake.Editor
 
         private static bool enableIap;
         private static bool enableAds;
+        private static bool enableGam;
         private static bool enable = true;
         private static AddRequest request;
 
@@ -39,6 +40,7 @@ namespace Pancake.Editor
             var group = BuildPipeline.GetBuildTargetGroup(target);
             enableIap = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_IAP", group);
             enableAds = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADS", group);
+            enableGam = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_GAM", group);
         }
 
         private void OnGUI()
@@ -56,6 +58,7 @@ namespace Pancake.Editor
             GUI.enabled = !EditorApplication.isCompiling && enable;
             enableAds = EditorGUILayout.Toggle("Advertising", enableAds);
             enableIap = EditorGUILayout.Toggle("In-App-Purchase", enableIap);
+            enableGam = EditorGUILayout.Toggle("Game Base Flow", enableGam);
 
             Uniform.SpaceTwoLine();
             Uniform.Horizontal(() =>
@@ -97,6 +100,9 @@ namespace Pancake.Editor
                             }
                             else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_IAP");
 
+                            if (enableGam) InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_GAM");
+                            else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_GAM");
+                            
                             if (!flag) InEditor.DelayedCall(2f, Close);
                         }
                     });
