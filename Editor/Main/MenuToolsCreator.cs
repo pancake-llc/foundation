@@ -86,7 +86,7 @@ namespace Pancake.Editor
 
 #if PANCAKE_ADS
         [MenuItem("Tools/Pancake/Advertisement %E", false)]
-        public static void MenuOpenSettings()
+        private static void MenuOpenSettings()
         {
             var _ = Monetization.AdSettings.Instance;
             Monetization.Editor.SettingsWindow.ShowWindow();
@@ -95,7 +95,7 @@ namespace Pancake.Editor
 
 
         [MenuItem("Tools/Pancake/Level Editor &_3")]
-        public static void OpenEditor()
+        private static void OpenEditor()
         {
             var window = EditorWindow.GetWindow<Pancake.Editor.LevelEditor>("Level Editor", true, InEditor.InspectorWindow);
 
@@ -108,7 +108,7 @@ namespace Pancake.Editor
         }
         
         [MenuItem("Tools/Pancake/Data Viewer &_4")]
-        public static void OpenDataViewer()
+        private static void OpenDataViewer()
         {
             var window = EditorWindow.GetWindow<Pancake.Editor.DataViewer>("Data View", true, InEditor.InspectorWindow);
             if (window)
@@ -119,9 +119,15 @@ namespace Pancake.Editor
         }
         
         [MenuItem("Tools/Pancake/Wizard")]
-        public static void OpenWizard()
+        private static void OpenWizard()
         {
             Wizard.Open();
+        }
+
+        [MenuItem("Tools/Pancake/Finder %#K")]
+        private static void OpenFinder()
+        {
+            //FinderWindow.FinderWindow.ShowWindow();
         }
     }
 }

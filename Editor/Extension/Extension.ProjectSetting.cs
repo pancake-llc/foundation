@@ -59,7 +59,7 @@ namespace Pancake.Editor
                 string path = string.Format(DEFAULT_PROJECT_SETTING_PATH, _name);
                 if (!path.FileExists())
                 {
-                    File.WriteAllText(string.Format(DEFAULT_PROJECT_SETTING_PATH, _name), JsonUtility.ToJson(_settings, true));
+                    File.WriteAllText(path, JsonUtility.ToJson(_settings, true));
                     return;
                 }
                 string json = File.ReadAllText(path);
