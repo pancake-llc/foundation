@@ -1,4 +1,4 @@
-#if UNITY_ANDROID
+#if UNITY_ANDROID && PANCAKE_NOTIFICATION
 using System;
 using System.Collections;
 using Unity.Notifications.Android;

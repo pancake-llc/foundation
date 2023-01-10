@@ -1,4 +1,4 @@
-#if UNITY_IOS
+#if UNITY_IOS && PANCAKE_NOTIFICATION
 using System;
 using System.Collections;
 using Unity.Notifications.iOS;

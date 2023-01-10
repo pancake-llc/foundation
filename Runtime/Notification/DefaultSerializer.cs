@@ -1,3 +1,4 @@
+#if PANCAKE_NOTIFICATION
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -161,3 +162,5 @@ namespace Pancake.Notification
         }
     }
 }
+
+#endif

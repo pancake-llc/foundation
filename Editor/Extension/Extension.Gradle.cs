@@ -1,3 +1,4 @@
+#if PANCAKE_ADS
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -359,3 +360,4 @@ namespace Pancake.Editor
         public string GetComment() { return m_name; }
     }
 }
+#endif

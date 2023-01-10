@@ -1,3 +1,4 @@
+#if PANCAKE_NOTIFICATION
 using System;
 
 namespace Pancake.Notification
@@ -37,3 +38,5 @@ namespace Pancake.Notification
         }
     }
 }
+
+#endif

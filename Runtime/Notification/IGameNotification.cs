@@ -1,3 +1,4 @@
+#if PANCAKE_NOTIFICATION
 using System;
 
 namespace Pancake.Notification
@@ -84,3 +85,5 @@ namespace Pancake.Notification
         string LargeIcon { get; set; }
     }
 }
+
+#endif

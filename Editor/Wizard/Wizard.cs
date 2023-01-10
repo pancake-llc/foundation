@@ -13,8 +13,14 @@ namespace Pancake.Editor
         private static bool enableIap;
         private static bool enableAds;
         private static bool enableGam;
+        private static bool enableNotification;
         private static bool enable = true;
-        private static AddRequest request;
+        private static int countInstall;
+        private static AddRequest requestPurchasing;
+        private static AddRequest requestAdsIosSupport;
+        private static AddRequest requestZipLib;
+        private static AddRequest requestNewtonSoftJson;
+        private static AddRequest requestNotification;
 
         internal static bool Status
         {
@@ -41,6 +47,7 @@ namespace Pancake.Editor
             enableIap = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_IAP", group);
             enableAds = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADS", group);
             enableGam = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_GAM", group);
+            enableNotification = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_NOTIFICATION", group);
         }
 
         private void OnGUI()
@@ -58,6 +65,7 @@ namespace Pancake.Editor
             GUI.enabled = !EditorApplication.isCompiling && enable;
             enableAds = EditorGUILayout.Toggle("Advertising", enableAds);
             enableIap = EditorGUILayout.Toggle("In-App-Purchase", enableIap);
+            enableNotification = EditorGUILayout.Toggle("Local Notification", enableNotification);
             enableGam = EditorGUILayout.Toggle("Game Base Flow", enableGam);
 
             Uniform.SpaceTwoLine();
@@ -68,9 +76,22 @@ namespace Pancake.Editor
                     {
                         if (!enableAds || !enableIap)
                         {
-                            if (EditorUtility.DisplayDialog("Notification",
-                                    "If you disable the Advertising or In-App-Purchase module, IAPSettings or AdSettings won't compile.\nBe sure to remove it after disabling the module.",
-                                    "Ok"))
+                            string str;
+                            if (!enableAds && !enableIap)
+                            {
+                                str =
+                                    "If you disable the Advertising or In-App-Purchase module, IAPSettings or AdSettings won't compile.\nBe sure to remove it after disabling the module.";
+                            }
+                            else if (!enableAds)
+                            {
+                                str = "If you disable the Advertising module, AdSettings won't compile.\nBe sure to remove AdSettings after disabling the module.";
+                            }
+                            else
+                            {
+                                str = "If you disable the In-App-Purchase module, IAPSettings won't compile.\nBe sure to remove it after disabling the module.";
+                            }
+
+                            if (EditorUtility.DisplayDialog("Notification", str, "Ok"))
                             {
                                 Execute();
                             }
@@ -82,18 +103,41 @@ namespace Pancake.Editor
 
                         void Execute()
                         {
+                            countInstall = 0;
                             enable = false;
-                            if (enableAds) InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADS");
+                            var flag = false;
+                            var time = 0;
+                            if (enableAds)
+                            {
+                                if (!InEditor.IsPackageInstalled("com.unity.ads.ios-support"))
+                                {
+                                    time += 2;
+                                    flag = true;
+                                    countInstall++;
+                                    countInstall++;
+                                    countInstall++;
+                                    requestPurchasing = Client.Add("com.unity.ads.ios-support");
+                                    requestZipLib = Client.Add("com.unity.sharp-zip-lib");
+                                    requestNewtonSoftJson = Client.Add("com.unity.nuget.newtonsoft-json");
+                                    EditorApplication.update += ProgressAdsIosSupport;
+                                    EditorApplication.update += ProgressZipLib;
+                                    EditorApplication.update += ProgressNewtonSoftJson;
+                                }
+
+                                InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADS");
+                            }
                             else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADS");
 
-                            var flag = false;
+
                             if (enableIap)
                             {
                                 if (!InEditor.IsPackageInstalled("com.unity.purchasing"))
                                 {
+                                    time += 2;
                                     flag = true;
-                                    request = Client.Add("com.unity.purchasing");
-                                    EditorApplication.update += Progress;
+                                    countInstall++;
+                                    requestPurchasing = Client.Add("com.unity.purchasing");
+                                    EditorApplication.update += ProgressPurchasing;
                                 }
 
                                 InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_IAP");
@@ -102,8 +146,23 @@ namespace Pancake.Editor
 
                             if (enableGam) InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_GAM");
                             else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_GAM");
-                            
-                            if (!flag) InEditor.DelayedCall(2f, Close);
+
+                            if (enableNotification)
+                            {
+                                if (!InEditor.IsPackageInstalled("com.unity.mobile.notifications"))
+                                {
+                                    time += 2;
+                                    flag = true;
+                                    countInstall++;
+                                    requestNotification = Client.Add("com.unity.mobile.notifications");
+                                    EditorApplication.update += ProgressNotification;
+                                }
+
+                                InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_NOTIFICATION");
+                            }
+                            else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_NOTIFICATION");
+
+                            if (!flag) InEditor.DelayedCall(time, Close);
                         }
                     });
                 Uniform.Button("Cancel", Close);
@@ -115,16 +174,68 @@ namespace Pancake.Editor
             GUI.enabled = true;
         }
 
-        private static void Progress()
+        private void ProgressNewtonSoftJson()
         {
-            if (request.IsCompleted)
+            if (requestNewtonSoftJson.IsCompleted)
             {
-                if (request.Status == StatusCode.Success) Debug.Log("Installed: " + request.Result.packageId);
-                else if (request.Status >= StatusCode.Failure) Debug.Log(request.Error.message);
+                if (requestNewtonSoftJson.Status == StatusCode.Success) Debug.Log("Installed: " + requestNewtonSoftJson.Result.packageId);
+                else if (requestNewtonSoftJson.Status >= StatusCode.Failure) Debug.Log(requestNewtonSoftJson.Error.message);
 
-                var window = EditorWindow.GetWindow<Wizard>(true, "Wizard", true);
-                window.Close();
-                EditorApplication.update -= Progress;
+                countInstall--;
+                if (countInstall == 0) EditorWindow.GetWindow<Wizard>(true, "Wizard", false).Close();
+                EditorApplication.update -= ProgressNewtonSoftJson;
+            }
+        }
+
+        private void ProgressAdsIosSupport()
+        {
+            if (requestAdsIosSupport.IsCompleted)
+            {
+                if (requestAdsIosSupport.Status == StatusCode.Success) Debug.Log("Installed: " + requestAdsIosSupport.Result.packageId);
+                else if (requestAdsIosSupport.Status >= StatusCode.Failure) Debug.Log(requestAdsIosSupport.Error.message);
+
+                countInstall--;
+                if (countInstall == 0) EditorWindow.GetWindow<Wizard>(true, "Wizard", false).Close();
+                EditorApplication.update -= ProgressAdsIosSupport;
+            }
+        }
+
+        private void ProgressZipLib()
+        {
+            if (requestZipLib.IsCompleted)
+            {
+                if (requestZipLib.Status == StatusCode.Success) Debug.Log("Installed: " + requestZipLib.Result.packageId);
+                else if (requestZipLib.Status >= StatusCode.Failure) Debug.Log(requestZipLib.Error.message);
+
+                countInstall--;
+                if (countInstall == 0) EditorWindow.GetWindow<Wizard>(true, "Wizard", false).Close();
+                EditorApplication.update -= ProgressZipLib;
+            }
+        }
+
+        private static void ProgressPurchasing()
+        {
+            if (requestPurchasing.IsCompleted)
+            {
+                if (requestPurchasing.Status == StatusCode.Success) Debug.Log("Installed: " + requestPurchasing.Result.packageId);
+                else if (requestPurchasing.Status >= StatusCode.Failure) Debug.Log(requestPurchasing.Error.message);
+
+                countInstall--;
+                if (countInstall == 0) EditorWindow.GetWindow<Wizard>(true, "Wizard", false).Close();
+                EditorApplication.update -= ProgressPurchasing;
+            }
+        }
+
+        private static void ProgressNotification()
+        {
+            if (requestNotification.IsCompleted)
+            {
+                if (requestNotification.Status == StatusCode.Success) Debug.Log("Installed: " + requestNotification.Result.packageId);
+                else if (requestNotification.Status >= StatusCode.Failure) Debug.Log(requestNotification.Error.message);
+
+                countInstall--;
+                if (countInstall == 0) EditorWindow.GetWindow<Wizard>(true, "Wizard", false).Close();
+                EditorApplication.update -= ProgressNotification;
             }
         }
     }

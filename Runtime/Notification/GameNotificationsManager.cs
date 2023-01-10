@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_NOTIFICATION
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -77,8 +78,8 @@ namespace Pancake.Notification
         private OperatingMode mode = OperatingMode.NoQueue;
 
         [SerializeField, Tooltip(
-            "Check to make the notifications manager automatically set badge numbers so that they increment.\n" +
-            "Schedule notifications with no numbers manually set to make use of this feature.")]
+             "Check to make the notifications manager automatically set badge numbers so that they increment.\n" +
+             "Schedule notifications with no numbers manually set to make use of this feature.")]
         private bool autoBadging = true;
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace Pancake.Notification
         protected virtual void Update()
         {
             if (PendingNotifications == null || !PendingNotifications.Any()
-                || (mode & OperatingMode.Queue) != OperatingMode.Queue)
+                                             || (mode & OperatingMode.Queue) != OperatingMode.Queue)
             {
                 return;
             }
@@ -601,3 +602,5 @@ namespace Pancake.Notification
         }
     }
 }
+
+#endif

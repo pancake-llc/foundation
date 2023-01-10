@@ -1,3 +1,4 @@
+#if PANCAKE_NOTIFICATION
 using System;
 using System.Collections;
 
@@ -109,3 +110,5 @@ namespace Pancake.Notification
         new TNotificationType GetLastNotification();
     }
 }
+
+#endif

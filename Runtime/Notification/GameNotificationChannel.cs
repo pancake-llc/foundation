@@ -1,3 +1,4 @@
+#if PANCAKE_NOTIFICATION
 using System;
 using System.Linq;
 
@@ -146,3 +147,5 @@ namespace Pancake.Notification
         }
     }
 }
+
+#endif

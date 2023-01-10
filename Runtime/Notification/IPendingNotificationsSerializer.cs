@@ -1,3 +1,4 @@
+#if PANCAKE_NOTIFICATION
 using System.Collections.Generic;
 
 namespace Pancake.Notification
@@ -22,3 +23,5 @@ namespace Pancake.Notification
         IList<IGameNotification> Deserialize(IGameNotificationsPlatform platform);
     }
 }
+
+#endif
