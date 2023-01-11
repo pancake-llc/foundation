@@ -181,7 +181,7 @@ namespace Pancake.UI
 
         #region resources
 
-#if !PANCAKE_ADDRESSABLE
+#if !PANCAKE_ADDRESSABLE || !PANCAKE_ADDRESSABLE_POPUP
         public static void Show<T>(Action<T> callback) where T : IPopup
         {
             if (instance._container == null) instance._container = new Dictionary<string, IPopup>();
