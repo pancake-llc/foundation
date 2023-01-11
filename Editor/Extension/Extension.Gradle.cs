@@ -232,7 +232,7 @@ namespace Pancake.Editor
         }
 
         /// <summary>
-        /// 节点路径索引
+        /// node path index
         /// </summary>
         /// <param name="path"> Sample "android/signingConfigs/release"</param>
         /// <returns></returns>
@@ -302,7 +302,7 @@ namespace Pancake.Editor
         }
 
         /// <summary>
-        /// 添加子节点
+        /// Add child node
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
