@@ -833,13 +833,5 @@ namespace Pancake.Editor
 
             return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
         }
-
-        public static bool IsPackageInstalled(string packageId)
-        {
-            if (!File.Exists("Packages/manifest.json")) return false;
-
-            string json = File.ReadAllText("Packages/manifest.json");
-            return json.Contains(packageId);
-        }
     }
 }
