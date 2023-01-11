@@ -13,7 +13,6 @@
   "license": "MIT",
   "keywords": [ "unity" ],
   "dependencies": {
-    "com.unity.addressables": "1.19.19",
     "com.unity.nuget.newtonsoft-json": "3.0.2",
     "com.unity.2d.sprite": "1.0.0"
   },
