@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Pancake.Threading.Tasks;
 using UnityEngine;
 
 #if PANCAKE_ADDRESSABLE
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.ResourceLocations;
+using Pancake.Threading.Tasks;
 #endif
 
 
@@ -19,12 +19,7 @@ namespace Pancake.UI
     public sealed class Popup : MonoBehaviour
     {
         private static Popup instance;
-
-        /// <summary>
-        /// Indicates whether the entire popup data has been loaded from addressable
-        /// </summary>
-        public bool IsDoneFindAllPopupLightWeight { get; set; }
-
+        
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
@@ -38,25 +33,23 @@ namespace Pancake.UI
         /// </summary>
         private readonly Stack<IPopup> _stacks = new Stack<IPopup>();
 
+#if PANCAKE_ADDRESSABLE
+        /// <summary>
+        /// Indicates whether the entire popup data has been loaded from addressable
+        /// </summary>
+        public bool IsDoneFindAllPopupLightWeight { get; set; }
+
         private Dictionary<IResourceLocation, IPopup> _container;
+#else
+        private Dictionary<string, IPopup> _container;
+#endif
 
         /// <summary>
         /// control sorting order of root canvas popup
         /// </summary>
         private int _sortingOrder;
 
-        public static async void LazyFindAllPrefabLocation()
-        {
-            instance.IsDoneFindAllPopupLightWeight = false;
-            instance._container = new Dictionary<IResourceLocation, IPopup>();
-            var allPopopupNames = await Addressables.LoadResourceLocationsAsync(PopupHelper.POPUP_LABEL);
-            foreach (var className in allPopopupNames)
-            {
-                if (!instance._container.ContainsKey(className)) instance._container.Add(className, null);
-            }
-
-            instance.IsDoneFindAllPopupLightWeight = true;
-        }
+        #region external
 
         /// <summary>
         /// Close popup in top of stack
@@ -97,9 +90,22 @@ namespace Pancake.UI
             instance._sortingOrder = 0;
         }
 
-        public static void Show<T>() where T : IPopup
+        public static void Show<T>() where T : IPopup { Show<T>(null); }
+
+        #region addressable
+
+#if PANCAKE_ADDRESSABLE
+        public static async void LazyFindAllPrefabLocation()
         {
-            Show<T>(null);
+            instance.IsDoneFindAllPopupLightWeight = false;
+            instance._container = new Dictionary<IResourceLocation, IPopup>();
+            var allPopopupNames = await Addressables.LoadResourceLocationsAsync(PopupHelper.POPUP_LABEL);
+            foreach (var className in allPopopupNames)
+            {
+                if (!instance._container.ContainsKey(className)) instance._container.Add(className, null);
+            }
+
+            instance.IsDoneFindAllPopupLightWeight = true;
         }
         
         public static async void Show<T>(Action<T> callback) where T : IPopup
@@ -169,6 +175,59 @@ namespace Pancake.UI
             return result;
         }
 
+#endif
+
+        #endregion
+
+        #region resources
+
+#if !PANCAKE_ADDRESSABLE
+        public static void Show<T>(Action<T> callback) where T : IPopup
+        {
+            if (instance._container == null) instance._container = new Dictionary<string, IPopup>();
+
+            string namePopup = typeof(T).Name;
+            T p;
+            if (instance._container[namePopup] == null)
+            {
+                var prefab = Resources.Load<GameObject>($"Popup/{namePopup}");
+                if (prefab == null)
+                {
+                    Debug.LogError($"[Popup] Can not find popup in resource in sub folder Popup with key '{namePopup}'");
+                    return;
+                }
+
+                var obj = Instantiate(prefab, parent: PopupRootHolder.instance.transform);
+                p = obj.GetComponent<T>();
+                instance._container[namePopup] = p;
+            }
+            else
+            {
+                p = (T) instance._container[namePopup];
+            }
+
+            Show(p, callback);
+        }
+
+        public static void Release<T>() where T : IPopup
+        {
+            if (instance._container == null) return;
+            string namePopup = typeof(T).Name;
+
+            if (instance._container[namePopup] != null)
+            {
+                Destroy(instance._container[namePopup].GameObject);
+                instance._container[namePopup] = null;
+            }
+        }
+#endif
+
+        #endregion
+
+        #endregion
+
+        #region internal
+
         /// <summary>
         /// show popup
         /// </summary>
@@ -237,5 +296,7 @@ namespace Pancake.UI
 
             return false;
         }
+
+        #endregion
     }
 }

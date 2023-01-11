@@ -477,5 +477,22 @@ namespace Pancake.UI
         }
 
         #endregion
+
+        #region mark popup
+
+#if PANCAKE_ADDRESSABLE && UNITY_EDITOR
+        [HideIf(nameof(IsMarkAsPopup))]
+        [InfoBox("Click the toogle below to mark the popup as can be loaded by addressable", EMessageType.Warning)]
+        [Button(ButtonSize.Medium)]
+        private void MarkAsPopup()
+        {
+            GameObject.MarkAddressableWithLabel(PopupHelper.POPUP_LABEL);
+        }
+
+        private bool IsMarkAsPopup => GameObject.IsAddressableWithLabel(PopupHelper.POPUP_LABEL);
+
+#endif
+
+        #endregion
     }
 }

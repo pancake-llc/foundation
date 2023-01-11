@@ -12,6 +12,8 @@ namespace Pancake.Editor
         private static bool enableAds;
         private static bool enableGam;
         private static bool enableNotification;
+        private static bool enableAddressable;
+        private static bool enableUsingAddressableForPopup;
         private static bool enable = true;
 
         internal static bool Status
@@ -25,7 +27,7 @@ namespace Pancake.Editor
         {
             enable = true;
             var window = EditorWindow.GetWindow<Wizard>(true, "Wizard", true);
-            window.minSize = window.maxSize = new Vector2(400, 200);
+            window.minSize = window.maxSize = new Vector2(400, 250);
             window.ShowUtility();
 
             Refresh();
@@ -40,6 +42,8 @@ namespace Pancake.Editor
             enableAds = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADS", group);
             enableGam = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_GAM", group);
             enableNotification = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_NOTIFICATION", group);
+            enableAddressable = RegistryManager.IsInstalled("com.unity.addressables");
+            enableUsingAddressableForPopup = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADDRESSABLE_POPUP", group);
         }
 
         private void OnGUI()
@@ -58,6 +62,14 @@ namespace Pancake.Editor
             enableAds = EditorGUILayout.Toggle("Advertising", enableAds);
             enableIap = EditorGUILayout.Toggle("In-App-Purchase", enableIap);
             enableNotification = EditorGUILayout.Toggle("Local Notification", enableNotification);
+            enableAddressable = EditorGUILayout.Toggle("Addressable", enableAddressable);
+            if (enableAddressable)
+            {
+                EditorGUI.indentLevel++;
+                enableUsingAddressableForPopup = EditorGUILayout.Toggle("For Popup", enableUsingAddressableForPopup);
+                EditorGUI.indentLevel--;
+            }
+
             enableGam = EditorGUILayout.Toggle("Game Base Flow", enableGam);
 
             Uniform.SpaceTwoLine();
@@ -120,7 +132,7 @@ namespace Pancake.Editor
                         void Execute()
                         {
                             enable = false;
-                            
+
                             if (enableAds)
                             {
                                 RegistryManager.Add("com.unity.ads.ios-support", "1.2.0");
@@ -158,7 +170,25 @@ namespace Pancake.Editor
                                 RegistryManager.Remove("com.unity.mobile.notifications");
                                 InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_NOTIFICATION");
                             }
-                            
+
+                            if (enableAddressable)
+                            {
+                                RegistryManager.Add("com.unity.addressables", "1.19.19");
+                                if (enableUsingAddressableForPopup)
+                                {
+                                    InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADDRESSABLE_POPUP");
+                                }
+                                else
+                                {
+                                    InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADDRESSABLE_POPUP");
+                                }
+                            }
+                            else
+                            {
+                                RegistryManager.Remove("com.unity.addressables");
+                                InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADDRESSABLE_POPUP");
+                            }
+
                             RegistryManager.Resolve();
                             Close();
                         }
