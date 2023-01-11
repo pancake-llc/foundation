@@ -480,7 +480,7 @@ namespace Pancake.UI
 
         #region mark popup
 
-#if PANCAKE_ADDRESSABLE && UNITY_EDITOR
+#if PANCAKE_ADDRESSABLE && UNITY_EDITOR && PANCAKE_ADDRESSABLE_POPUP
         [HideIf(nameof(IsMarkAsPopup))]
         [InfoBox("Click the toogle below to mark the popup as can be loaded by addressable", EMessageType.Warning)]
         [Button(ButtonSize.Medium)]

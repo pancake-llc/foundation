@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-#if PANCAKE_ADDRESSABLE
+#if PANCAKE_ADDRESSABLE && PANCAKE_ADDRESSABLE_POPUP
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using Pancake.Threading.Tasks;
@@ -33,7 +33,7 @@ namespace Pancake.UI
         /// </summary>
         private readonly Stack<IPopup> _stacks = new Stack<IPopup>();
 
-#if PANCAKE_ADDRESSABLE
+#if PANCAKE_ADDRESSABLE && PANCAKE_ADDRESSABLE_POPUP
         /// <summary>
         /// Indicates whether the entire popup data has been loaded from addressable
         /// </summary>
@@ -94,7 +94,7 @@ namespace Pancake.UI
 
         #region addressable
 
-#if PANCAKE_ADDRESSABLE
+#if PANCAKE_ADDRESSABLE && PANCAKE_ADDRESSABLE_POPUP
         public static async void LazyFindAllPrefabLocation()
         {
             instance.IsDoneFindAllPopupLightWeight = false;
