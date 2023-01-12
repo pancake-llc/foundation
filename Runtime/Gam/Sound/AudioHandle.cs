@@ -46,6 +46,7 @@ namespace Pancake
             _source.outputAudioMixerGroup = sound.output;
             _source.playOnAwake = sound.playOnAwake;
             _source.volume = sound.volume;
+            Volume = sound.volume;
             if (!randomPitch) _source.pitch = sound.pitch;
             else _source.pitch = Random.Range(sound.pitchMin, sound.pitchMax);
             _source.spatialBlend = sound.spatialBlend;
@@ -247,6 +248,7 @@ namespace Pancake
             } while (_loopCount == -1 || _loopCount > 0);
 
             onPlayCompleted?.Invoke(this);
+            MagicAudio.Complete(this);
             ResetPlayer();
         }
 

@@ -8,6 +8,10 @@ namespace Pancake
 
         private void Awake() { MagicAudio.InstallSoundPreset(soundPreset); }
 
-        private void OnDestroy() { MagicAudio.Reset(); }
+        private void OnDestroy()
+        {
+            MagicAudio.ClearAsset();
+            MagicAudio.ClearPool();
+        }
     }
 }

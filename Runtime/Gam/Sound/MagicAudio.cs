@@ -6,7 +6,6 @@ namespace Pancake
 {
     public static class MagicAudio
     {
-        public static readonly List<AudioHandle> Handles = new List<AudioHandle>();
         private static readonly List<Sound> SoundAssets = new List<Sound>();
         private static GameObject prefab;
         public static TimeMode TimeMode { get; private set; } = TimeMode.Normal;
@@ -30,7 +29,9 @@ namespace Pancake
             MagicAudio.prefab = preset.Prefab;
         }
 
-        public static void Reset() { }
+        public static void ClearAsset() { SoundAssets.Clear(); }
+
+        public static void ClearPool() { MagicPool.DestroyPool(MagicPool.GetPool(prefab)); }
 
         public static AudioHandle Play(string id, Action<AudioHandle> onCompleted = null)
         {
@@ -43,6 +44,8 @@ namespace Pancake
             audioHandle.Play(onCompleted);
             return audioHandle;
         }
+
+        internal static void Complete(AudioHandle audio) { MagicPool.Despawn(audio.gameObject); }
 
         public static void ChangeTimeMode(TimeMode mode) { TimeMode = mode; }
     }
