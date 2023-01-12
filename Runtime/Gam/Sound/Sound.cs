@@ -19,7 +19,10 @@ namespace Pancake
         [ShowIf(nameof(loop), SoundLoop.Number)] public int loopCount = 1;
         public bool playOnAwake = false;
 
-        [Header("Volume and Pitch")] [Range(0f, 1f)] public float volume = 0.5f;
+        [Header("Fade")] [Range(0f, 1f)] public float fadeVolume = 0.5f;
+        public float fadeDuration = 0.25f;
+
+        [Header("Volume and Pitch")] [Range(0f, 1f)] public float volume = 1f;
         [Range(-3f, 3f)] public float pitch = 1f;
 
         public float pitchMin;

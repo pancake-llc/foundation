@@ -13,7 +13,6 @@ namespace Pancake
         private int _loopCount;
         private float _fadeVolume;
         private float _fadeDuration;
-        private TimeMode _mode;
         private CoroutineHandle _fadeHandle;
         private CoroutineHandle _playHandle;
 
@@ -31,14 +30,39 @@ namespace Pancake
                 return M.Clamp01(_source.time / _source.clip.length);
             }
         }
-        
-        
+
         public float Volume { get => _volume; set => _volume = M.Clamp01(value); }
 
         public Action onStart;
         public Action onPlay;
         public Action onPause;
         public Action onCompleted;
+
+        public void Init(Sound sound, bool randomPitch = false)
+        {
+            if (_source == null) _source = Get<AudioSource>();
+
+            _source.clip = sound.clip;
+            _source.outputAudioMixerGroup = sound.output;
+            _source.playOnAwake = sound.playOnAwake;
+            _source.volume = sound.volume;
+            if (!randomPitch) _source.pitch = sound.pitch;
+            else _source.pitch = Random.Range(sound.pitchMin, sound.pitchMax);
+            _source.spatialBlend = sound.spatialBlend;
+            _source.rolloffMode = sound.audioMode;
+            _source.maxDistance = sound.maxRange;
+            _source.loop = false;
+            _loopCount = sound.loop switch
+            {
+                SoundLoop.None => 0,
+                SoundLoop.Loop => -1,
+                SoundLoop.Number => sound.loopCount,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            _fadeDuration = sound.fadeDuration;
+            _fadeVolume = sound.fadeVolume;
+        }
 
         public void ChangeVolume() { _source.volume = Volume * _fadeVolume; }
 
@@ -128,7 +152,7 @@ namespace Pancake
             var time = 0f;
             while (time < waitTime)
             {
-                time += Runtime.GetDeltaTime(_mode);
+                time += Runtime.GetDeltaTime(MagicAudio.TimeMode);
                 onNext?.Invoke(time);
                 yield return Timing.WaitForOneFrame;
             }
@@ -139,7 +163,7 @@ namespace Pancake
             var time = 0f;
             while (time < waitTime)
             {
-                time += Runtime.GetDeltaTime(_mode);
+                time += Runtime.GetDeltaTime(MagicAudio.TimeMode);
                 onNext?.Invoke();
                 yield return Timing.WaitForOneFrame;
             }
@@ -211,7 +235,7 @@ namespace Pancake
                         }
                     }
 
-                    _waitTime += Runtime.GetDeltaTime(_mode);
+                    _waitTime += Runtime.GetDeltaTime(MagicAudio.TimeMode);
                     yield return Timing.WaitForOneFrame;
                 }
 

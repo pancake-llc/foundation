@@ -17,6 +17,7 @@ namespace Pancake
         [SerializeField] private List<Sound> sounds = new List<Sound>();
 
         public List<Sound> Sounds => sounds;
+        public GameObject Prefab => prefab;
 
 #if UNITY_EDITOR
 
@@ -46,9 +47,9 @@ namespace Pancake
                 var item = sounds[i].soundName.Replace(" ", "");
                 str += $"\n\t\t[Identificate(\"{sounds[i].ID}\")]";
                 str += $"\n\t\tpublic static void Play{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item)}()";
-                str += "\n\t\t{";
-                str += $"\n\t\t\tPancake.MagicAudio.Play(\"{sounds[i].ID}\");";
-                str += "\n\t\t}";
+                str += " {";
+                str += $" Pancake.MagicAudio.Play(\"{sounds[i].ID}\");";
+                str += " }";
                 str += "\n";
             }
 
