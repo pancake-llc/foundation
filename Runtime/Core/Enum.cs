@@ -137,4 +137,11 @@ namespace Pancake
         AwaitPause = 4,
         AwaitStop = 5,
     }
+
+    public enum SoundLoop
+    {
+        None,
+        Loop,
+        Number
+    }
 }
