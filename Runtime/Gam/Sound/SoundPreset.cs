@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using Pancake.Linq;
 using UnityEngine;
 
 namespace Pancake
@@ -38,17 +36,19 @@ namespace Pancake
             var implPath = $"{Global.DEFAULT_SCRIPT_GEN_PATH}/Audio.cs";
 
             var str = "namespace Pancake\n{";
-            str += "\n\tpublic static class Audio\n\t";
+            str += "\n\tpublic static class Audio\n\t{";
 
             for (int i = 0; i < sounds.Count; i++)
             {
                 var item = sounds[i].soundName.Replace(" ", "");
+                str += $"\n\t\t[Identificate(\"{sounds[i].ID}\")]";
                 str += $"\n\t\tpublic static void Play{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item)}()";
                 str += "\n\t\t{";
-                str += $"\n\t\t\t";
+                str += $"\n\t\t\tPancake.MagicAudio.Play(\"{sounds[i].ID}\");";
                 str += "\n\t\t}";
                 str += "\n";
             }
+
             str += "\n\t}";
             str += "\n}";
 
@@ -89,20 +89,25 @@ namespace Pancake
 
             if (audio != null)
             {
-                var sources = sounds.Map(_ => $"Play{_.soundName.Replace(" ", "")}");
-                var bindingFlag = BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly;
+                var sources = new Dictionary<string, string>();
+                foreach (var t in sounds)
+                {
+                    sources.Add(t.ID, $"Play{t.soundName.Replace(" ", "")}");
+                }
+
+                var bindingFlag = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.DeclaredOnly;
                 var methods = audio.GetMethods(bindingFlag);
                 var flag = false;
-                for (int i = 0; i < sources.Count; i++)
-                {
-                    string s = sources[i];
 
+                foreach (var source in sources)
+                {
+                    flag = false;
                     for (int j = 0; j < methods.Length; j++)
                     {
                         string n = methods[j].Name;
-                        if (n.Equals(s))
+                        if (n.Equals(source.Value))
                         {
-                            flag = true;
+                            if (((IdentificateAttribute) methods[j].GetCustomAttributes(typeof(IdentificateAttribute), true)[0]).Value.Equals(source.Key)) flag = true;
                             break;
                         }
                     }
