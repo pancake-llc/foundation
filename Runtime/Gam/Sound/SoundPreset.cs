@@ -10,7 +10,10 @@ namespace Pancake
     public class SoundPreset : ScriptableObject
     {
         [SerializeField, TextArea] private string developerDescription;
-        [SerializeField, DisableInEditMode, DisableInPlayMode] private GameObject prefab;
+
+        [SerializeField, DisableInEditMode, DisableInPlayMode, ValidateInput("ValidateSoundPrefab")]
+        private GameObject prefab;
+
         [SerializeField] private List<Sound> sounds = new List<Sound>();
 
         public List<Sound> Sounds => sounds;
@@ -120,6 +123,8 @@ namespace Pancake
 
             return false;
         }
+
+        private ValidationResult ValidateSoundPrefab() { return prefab == null ? ValidationResult.Error("Prefab can not be null") : ValidationResult.Valid; }
 #endif
     }
 }
