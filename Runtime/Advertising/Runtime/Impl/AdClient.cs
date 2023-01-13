@@ -9,10 +9,13 @@ namespace Pancake.Monetization
         protected bool isInitialized;
 
         public event Action<IAdClient> OnInterstitialAdCompleted;
+        public event Action<IAdClient> OnInterstitialAdDisplayed;
         public event Action<IAdClient> OnRewardedAdSkipped;
         public event Action<IAdClient> OnRewardedAdCompleted;
+        public event Action<IAdClient> OnRewardedAdDisplayed;
         public event Action<IAdClient> OnRewardedInterstitialAdSkipped;
         public event Action<IAdClient> OnRewardedInterstitialAdCompleted;
+        public event Action<IAdClient> OnRewardedInterstitialAdDisplayed;
         public event Action<IAdClient> OnAppOpenAdCompleted;
         public abstract EAdNetwork Network { get; }
         public abstract bool IsBannerAdSupported { get; }
@@ -89,6 +92,8 @@ namespace Pancake.Monetization
 
         protected virtual void InvokeInterstitialAdCompleted() { Runtime.RunOnMainThread(() => { OnInterstitialAdCompleted?.Invoke(this); }); }
 
+        protected virtual void InvokeInterstitialAdDisplayed() { Runtime.RunOnMainThread(() => { OnInterstitialAdDisplayed?.Invoke(this); }); }
+
         public void LoadInterstitialAd()
         {
             if (IsSdkAvaiable)
@@ -113,7 +118,7 @@ namespace Pancake.Monetization
                     Debug.Log($"Cannot show {Network} interstitial ad. Ad is not loaded.");
                     return;
                 }
-                
+
                 InternalShowInterstitialAd();
             }
             else
@@ -126,6 +131,7 @@ namespace Pancake.Monetization
 
         protected virtual void InvokeRewardedAdSkipped() { Runtime.RunOnMainThread(() => { OnRewardedAdSkipped?.Invoke(this); }); }
         protected virtual void InvokeRewardedAdCompleted() { Runtime.RunOnMainThread(() => { OnRewardedAdCompleted?.Invoke(this); }); }
+        protected virtual void InvokeRewardedAdDisplayed() { Runtime.RunOnMainThread(() => { OnRewardedAdDisplayed?.Invoke(this); }); }
 
         public void LoadRewardedAd()
         {
@@ -150,7 +156,7 @@ namespace Pancake.Monetization
                     Debug.LogFormat($"Cannot show {Network} rewarded ad : ad is not loaded.");
                     return;
                 }
-                
+
                 InternalShowRewardedAd();
             }
             else
@@ -163,6 +169,7 @@ namespace Pancake.Monetization
 
         protected virtual void InvokeRewardedInterstitialAdSkipped() { Runtime.RunOnMainThread(() => { OnRewardedInterstitialAdSkipped?.Invoke(this); }); }
         protected virtual void InvokeRewardedInterstitialAdCompleted() { Runtime.RunOnMainThread(() => { OnRewardedInterstitialAdCompleted?.Invoke(this); }); }
+        protected virtual void InvokeRewardedInterstitialAdDisplayed() { Runtime.RunOnMainThread(() => { OnRewardedInterstitialAdDisplayed?.Invoke(this); }); }
 
         public void LoadRewardedInterstitialAd()
         {
@@ -187,7 +194,7 @@ namespace Pancake.Monetization
                     Debug.LogFormat($"Cannot show {Network} rewarded interstitial ad : ad is not loaded.");
                     return;
                 }
-                
+
                 InternalShowRewardedInterstitialAd();
             }
             else
@@ -223,9 +230,9 @@ namespace Pancake.Monetization
                     Debug.LogFormat($"Cannot show {Network} app open ad : ad is not loaded.");
                     return;
                 }
-                
+
                 if (R.isShowingAd) return; // dose not show app open ad when interstitial or rewarded still displayed
-                
+
                 InternalShowAppOpenAd();
             }
             else

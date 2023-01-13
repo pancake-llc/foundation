@@ -29,15 +29,15 @@ namespace Pancake.Monetization
         public event Action OnInterstitialAdClicked;
         public event Action OnInterstitialAdLoaded;
         public event Action OnInterstitialAdFaildToLoad;
+
         public event Action OnInterstitialAdFaildToDisplay;
-        public event Action OnInterstitialAdDisplay;
+        
         public event Action OnInterstitialAdHidden;
         public event Action<MaxSdkBase.AdInfo> OnInterstitialAdRevenuePaid;
         public event Action OnRewardedAdClicked;
         public event Action OnRewardedAdLoaded;
         public event Action OnRewardedAdFaildToLoad;
         public event Action OnRewardedAdFaildToDisplay;
-        public event Action OnRewardedAdDisplay;
         public event Action OnRewardedAdHidden;
         public event Action<MaxSdkBase.AdInfo> OnRewardedAdRevenuePaid;
         public event Action<MaxSdkBase.Reward> OnRewardedAdReceivedReward;
@@ -45,11 +45,10 @@ namespace Pancake.Monetization
         public event Action OnRewardedInterstitialAdLoaded;
         public event Action OnRewardedInterstitialAdFaildToLoad;
         public event Action OnRewardedInterstitialAdFaildToDisplay;
-        public event Action OnRewardedInterstitialAdDisplay;
         public event Action OnRewardedInterstitialAdHidden;
         public event Action<MaxSdkBase.AdInfo> OnRewardedInterstitialAdRevenuePaid;
         public event Action<MaxSdkBase.Reward> OnRewardedInterstitialAdReceivedReward;
-        
+
         public event Action OnAppOpenAdClicked;
         public event Action OnAppOpenAdLoaded;
         public event Action OnAppOpenAdFaildToLoaded;
@@ -97,7 +96,8 @@ namespace Pancake.Monetization
         internal void InvokeInterstitialAdFaildToLoad() { OnInterstitialAdFaildToLoad?.Invoke(); }
         internal void InvokeInterstitialAdFaildToDisplay() { OnInterstitialAdFaildToDisplay?.Invoke(); }
         internal void InvokeInterstitialAdClicked() { OnInterstitialAdClicked?.Invoke(); }
-        internal void InvokeInterstitialAdDisplay() { OnInterstitialAdDisplay?.Invoke(); }
+
+        internal void HandleInterstitialAdDisplay() { InvokeInterstitialAdDisplayed(); }
 
         internal void InvokeInterstitialAdHidden()
         {
@@ -110,7 +110,8 @@ namespace Pancake.Monetization
         internal void InvokeRewardedAdFaildToLoad() { OnRewardedAdFaildToLoad?.Invoke(); }
         internal void InvokeRewardedAdFaildToDisplay() { OnRewardedAdFaildToDisplay?.Invoke(); }
         internal void InvokeRewardedAdClicked() { OnRewardedAdClicked?.Invoke(); }
-        internal void InvokeRewardedAdDisplay() { OnRewardedAdDisplay?.Invoke(); }
+
+        internal void HandleRewardedAdDisplay() { InvokeRewardedAdDisplayed(); }
 
         internal void InvokeRewardedAdHidden()
         {
@@ -137,11 +138,13 @@ namespace Pancake.Monetization
         internal void InvokeRewardedInterstitialAdFaildToLoad() { OnRewardedInterstitialAdFaildToLoad?.Invoke(); }
         internal void InvokeRewardedInterstitialAdFaildToDisplay() { OnRewardedInterstitialAdFaildToDisplay?.Invoke(); }
         internal void InvokeRewardedInterstitialAdClicked() { OnRewardedInterstitialAdClicked?.Invoke(); }
-        internal void InvokeRewardedInterstitialAdDisplay() { OnRewardedInterstitialAdDisplay?.Invoke(); }
+
+        internal void InvokeRewardedInterstitialAdDisplay() { InvokeRewardedInterstitialAdDisplayed(); }
+
         internal void InvokeRewardedInterstitialAdHidden() { OnRewardedInterstitialAdHidden?.Invoke(); }
         internal void InvokeRewardedInterstitialAdRevenuePaid(MaxSdkBase.AdInfo info) { OnRewardedInterstitialAdRevenuePaid?.Invoke(info); }
         internal void InvokeRewardedInterstitialAdReceivedReward(MaxSdkBase.Reward reward) { OnRewardedInterstitialAdReceivedReward?.Invoke(reward); }
-        
+
         internal void InvokeAppOpenAdRevenuePaid(MaxSdkBase.AdInfo info) { OnAppOpenAdPaid?.Invoke(info); }
         internal void InvokeAppOpenAdClicked() { OnAppOpenAdClicked?.Invoke(); }
         internal void InvokeAppOpenAdLoaded() { OnAppOpenAdLoaded?.Invoke(); }

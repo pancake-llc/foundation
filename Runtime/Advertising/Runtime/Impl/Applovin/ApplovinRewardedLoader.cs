@@ -51,7 +51,7 @@ namespace Pancake.Monetization
             if (AdSettings.MaxSettings.EnableRequestAdAfterHidden) _client.LoadRewardedAd();
         }
 
-        private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.InvokeRewardedAdDisplay(); }
+        private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.HandleRewardedAdDisplay(); }
 
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeRewardedAdClicked(); }
 #endif

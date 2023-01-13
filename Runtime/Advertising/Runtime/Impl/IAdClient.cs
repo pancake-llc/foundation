@@ -27,6 +27,7 @@ namespace Pancake.Monetization
         #region interstitial ad
 
         event Action<IAdClient> OnInterstitialAdCompleted;
+        event Action<IAdClient> OnInterstitialAdDisplayed;
         void LoadInterstitialAd();
         bool IsInterstitialAdReady();
         void ShowInterstitialAd();
@@ -37,6 +38,7 @@ namespace Pancake.Monetization
 
         event Action<IAdClient> OnRewardedAdSkipped;
         event Action<IAdClient> OnRewardedAdCompleted;
+        event Action<IAdClient> OnRewardedAdDisplayed;
         void LoadRewardedAd();
         bool IsRewardedAdReady();
         void ShowRewardedAd();
@@ -47,6 +49,7 @@ namespace Pancake.Monetization
 
         event Action<IAdClient> OnRewardedInterstitialAdSkipped;
         event Action<IAdClient> OnRewardedInterstitialAdCompleted;
+        event Action<IAdClient> OnRewardedInterstitialAdDisplayed;
         void LoadRewardedInterstitialAd();
         bool IsRewardedInterstitialAdReady();
         void ShowRewardedInterstitialAd();

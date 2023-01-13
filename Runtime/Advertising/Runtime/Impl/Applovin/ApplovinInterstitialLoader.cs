@@ -36,7 +36,7 @@ namespace Pancake.Monetization
             if (AdSettings.MaxSettings.EnableRequestAdAfterHidden) _client.LoadInterstitialAd();
         }
 
-        private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.InvokeInterstitialAdDisplay(); }
+        private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.HandleInterstitialAdDisplay(); }
 
         private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
         {

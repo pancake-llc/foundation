@@ -76,7 +76,7 @@ namespace Pancake.Monetization
             _interstitial.OnFailToLoadEvent += InvokeInterstitialAdFailedToLoad;
             _interstitial.OnFailToShowEvent += InvokeInterstitialAdFailedToShow;
             _interstitial.OnLoadedEvent += InvokeInterstitialAdLoaded;
-            _interstitial.OnOpeningEvent += InvokeInterstitialAdOpening;
+            _interstitial.OnOpeningEvent += HandleInterstitialAdOpening;
             _interstitial.OnPaidEvent += InvokeInterstitialAdPaid;
             _interstitial.OnCompleted += HandleInterstitialCompleted;
 
@@ -84,7 +84,7 @@ namespace Pancake.Monetization
             _rewarded.OnFailToLoadEvent += InvokeRewardedAdFailedToLoad;
             _rewarded.OnFailToShowEvent += InvokeRewardedAdFailedToShow;
             _rewarded.OnLoadedEvent += InvokeRewardedAdLoaded;
-            _rewarded.OnOpeningEvent += InvokeRewardedAdOpening;
+            _rewarded.OnOpeningEvent += HandleRewardedAdOpening;
             _rewarded.OnPaidEvent += InvokeRewardedAdPaid;
             _rewarded.OnRewardEvent += InvokeRewardedAdRewared;
             _rewarded.OnCompleted += HandleRewaredCompleted;
@@ -94,7 +94,7 @@ namespace Pancake.Monetization
             _rewardedInterstitial.OnFailToLoadEvent += InvokeRewardedInterstitialAdFailedToLoad;
             _rewardedInterstitial.OnFailToShowEvent += InvokeRewardedInterstitialAdFailedToShow;
             _rewardedInterstitial.OnLoadedEvent += InvokeRewardedInterstitialAdLoaded;
-            _rewardedInterstitial.OnOpeningEvent += InvokeRewardedInterstitialAdOpening;
+            _rewardedInterstitial.OnOpeningEvent += HandleRewardedInterstitialAdOpening;
             _rewardedInterstitial.OnPaidEvent += InvokeRewardedInterstitialAdPaid;
             _rewardedInterstitial.OnRewardEvent += InvokeRewardedInterstitialAdRewared;
             _rewardedInterstitial.OnCompleted += HandleRewaredInterstitialCompleted;
@@ -121,11 +121,9 @@ namespace Pancake.Monetization
         public event EventHandler<AdFailedToLoadEventArgs> OnInterstitialAdFailedToLoad;
         public event EventHandler<AdErrorEventArgs> OnInterstitialAdFailedToShow;
         public event EventHandler<EventArgs> OnInterstitialAdLoaded;
-        public event EventHandler<EventArgs> OnInterstititalAdOpening;
         public event EventHandler<AdValueEventArgs> OnInterstititalAdPaid;
 
         public event EventHandler<AdValueEventArgs> OnRewardedAdPaid;
-        public event EventHandler<EventArgs> OnRewardedAdOpening;
         public event EventHandler<EventArgs> OnRewardedAdLoaded;
         public event EventHandler<AdErrorEventArgs> OnRewardedAdFailedToShow;
         public event EventHandler<AdFailedToLoadEventArgs> OnRewardedAdFailedToLoad;
@@ -133,7 +131,6 @@ namespace Pancake.Monetization
         public event EventHandler<Reward> OnRewardedAdRewarded;
 
         public event EventHandler<AdValueEventArgs> OnRewardedInterstitialAdPaid;
-        public event EventHandler<EventArgs> OnRewardedInterstitialAdOpening;
         public event EventHandler<EventArgs> OnRewardedInterstitialAdLoaded;
         public event EventHandler<AdErrorEventArgs> OnRewardedInterstitialAdFailedToShow;
         public event EventHandler<AdFailedToLoadEventArgs> OnRewardedInterstitialAdFailedToLoad;
@@ -166,10 +163,8 @@ namespace Pancake.Monetization
         }
 
         private void InvokeInterstitialAdLoaded(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnInterstitialAdLoaded?.Invoke(sender, args); }
-        private void InvokeInterstitialAdOpening(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnInterstititalAdOpening?.Invoke(sender, args); }
         private void InvokeInterstitialAdPaid(AdLoader<AdUnit> instance, object sender, AdValueEventArgs args) { OnInterstititalAdPaid?.Invoke(sender, args); }
         private void InvokeRewardedAdPaid(AdLoader<AdUnit> instance, object sender, AdValueEventArgs args) { OnRewardedAdPaid?.Invoke(sender, args); }
-        private void InvokeRewardedAdOpening(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnRewardedAdOpening?.Invoke(sender, args); }
         private void InvokeRewardedAdLoaded(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnRewardedAdLoaded?.Invoke(sender, args); }
         private void InvokeRewardedAdFailedToShow(AdLoader<AdUnit> instance, object sender, AdErrorEventArgs args) { OnRewardedAdFailedToShow?.Invoke(sender, args); }
 
@@ -183,24 +178,28 @@ namespace Pancake.Monetization
 
         private void HandleInterstitialCompleted(AdmobInterstitialLoader instance) { InternalInterstitialCompleted(instance); }
 
+        private void HandleInterstitialAdOpening(AdmobInterstitialLoader instance, object sender, EventArgs arg3) { InternalInterstitialDisplayed(instance); }
+
         private void HandleRewaredCompleted(AdmobRewardedLoader instance) { InternalRewaredCompleted(instance); }
 
         private void HandleRewardedSkipped(AdmobRewardedLoader instance) { InternalRewardSkipped(instance); }
 
+        private void HandleRewardedAdOpening(AdmobRewardedLoader instance, object sender, EventArgs arg3) { InternalRewardedDisplayed(instance); }
+
         private void HandleRewardedInterstitialSkipped(AdmobRewardedInterstitialLoader instance) { InternalRewardedInterstitialSkipped(instance); }
 
         private void HandleRewaredInterstitialCompleted(AdmobRewardedInterstitialLoader instance) { InternalRewaredInterstitialCompleted(instance); }
+
+        private void HandleRewardedInterstitialAdOpening(AdmobRewardedInterstitialLoader instance, object sender, EventArgs arg3)
+        {
+            InternalRewaredInterstitialDisplayed(instance);
+        }
 
         private void InvokeRewardedInterstitialAdRewared(AdmobRewardedInterstitialLoader instance, Reward args) { OnRewardedInterstitialAdRewarded?.Invoke(null, args); }
 
         private void InvokeRewardedInterstitialAdPaid(AdmobRewardedInterstitialLoader instance, object sender, AdValueEventArgs args)
         {
             OnRewardedInterstitialAdPaid?.Invoke(sender, args);
-        }
-
-        private void InvokeRewardedInterstitialAdOpening(AdmobRewardedInterstitialLoader instance, object sender, EventArgs args)
-        {
-            OnRewardedInterstitialAdOpening?.Invoke(sender, args);
         }
 
         private void InvokeRewardedInterstitialAdLoaded(AdmobRewardedInterstitialLoader instance) { OnRewardedInterstitialAdLoaded?.Invoke(null, null); }
@@ -238,14 +237,17 @@ namespace Pancake.Monetization
 
 
         protected virtual void InternalInterstitialCompleted(AdmobInterstitialLoader instance) { InvokeInterstitialAdCompleted(); }
+        protected virtual void InternalInterstitialDisplayed(AdmobInterstitialLoader instance) { InvokeInterstitialAdDisplayed(); }
 
         protected virtual void InternalRewardSkipped(AdmobRewardedLoader instance) { InvokeRewardedAdSkipped(); }
 
         protected virtual void InternalRewaredCompleted(AdmobRewardedLoader instance) { InvokeRewardedAdCompleted(); }
+        protected virtual void InternalRewardedDisplayed(AdmobRewardedLoader instance) { InvokeRewardedAdDisplayed(); }
 
         protected virtual void InternalRewardedInterstitialSkipped(AdmobRewardedInterstitialLoader instance) { InvokeRewardedInterstitialAdSkipped(); }
 
         protected virtual void InternalRewaredInterstitialCompleted(AdmobRewardedInterstitialLoader instance) { InvokeRewardedInterstitialAdCompleted(); }
+        protected virtual void InternalRewaredInterstitialDisplayed(AdmobRewardedInterstitialLoader instance) { InvokeRewardedInterstitialAdDisplayed(); }
 
         protected virtual void InternalAppOpenCompleted(AdmobAppOpenLoader instance) { InvokeAppOpenAdCompleted(); }
 
@@ -306,7 +308,6 @@ namespace Pancake.Monetization
 
 #endif
         }
-        
     }
 }
 #endif
