@@ -79,9 +79,8 @@ namespace Pancake.IAP
         [Group("button"), Button("Generate Product")]
         private void GenerateImplProduct()
         {
-            const string path = "Assets/_Root/Scripts";
-            var productImplPath = $"{path}/Product.cs";
-            if (!path.DirectoryExists()) path.CreateDirectory();
+            Global.ValidateScriptGenPath();
+            var productImplPath = $"{Global.DEFAULT_SCRIPT_GEN_PATH}/Product.cs";
 
             var str = "namespace Pancake.IAP\n{";
             str += "\n\tpublic static class Product\n\t{";
@@ -332,7 +331,7 @@ namespace Pancake.IAP
 
         private class TangleFileConsts
         {
-            internal const string k_OutputPath = "Assets/_Root/Scripts/UnityPurchasing/generated";
+            internal const string k_OutputPath = $"{Global.DEFAULT_SCRIPT_GEN_PATH}/UnityPurchasing/generated";
 
             internal const string k_AppleClassPrefix = "Apple";
             internal const string k_AppleStoreKitTestClassPrefix = "AppleStoreKitTest";

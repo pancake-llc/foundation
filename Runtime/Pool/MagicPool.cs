@@ -9,7 +9,7 @@ namespace Pancake
     {
         public static event Action<GameObject> OnSpawned;
         public static event Action<GameObject> OnDespawned;
-        public static readonly List<Pool> Pools = new List<Pool>(64);
+        private static readonly List<Pool> Pools = new List<Pool>(64);
         private static readonly List<IPoolable> PoolableComponents = new List<IPoolable>(32);
 
         public static void InstallPoolPreset(PoolPreset preset)
@@ -19,7 +19,7 @@ namespace Pancake
             for (int i = 0; i < preset.PoolObjects.Count; i++)
             {
                 var poolObject = preset.PoolObjects[i];
-                var pool = GetPoolByPrefab(poolObject.Prefab);
+                var pool = GetOrCreatePool(poolObject.Prefab);
                 pool.Populate(poolObject.Size);
             }
         }
@@ -142,7 +142,7 @@ namespace Pancake
             ResetActions();
         }
 
-        public static Pool GetPoolByPrefab(GameObject prefab)
+        public static Pool GetOrCreatePool(GameObject prefab)
         {
             int count = Pools.Count;
             for (int i = 0; i < count; i++)
@@ -151,6 +151,17 @@ namespace Pancake
             }
 
             return CreateNewPool(prefab);
+        }
+
+        public static Pool GetPool(GameObject prefab)
+        {
+            int count = Pools.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (Pools[i].Prefab == prefab) return Pools[i];
+            }
+
+            return null;
         }
 
         private static Pool CreateNewPool(GameObject prefab)
@@ -170,7 +181,7 @@ namespace Pancake
         {
             if (!Application.isPlaying) return default;
 
-            var pool = GetPoolByPrefab(prefab);
+            var pool = GetOrCreatePool(prefab);
             var freePoolable = pool.Get();
             var gameObject = freePoolable.gameObject;
 

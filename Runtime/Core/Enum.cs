@@ -127,4 +127,21 @@ namespace Pancake
         /// <summary>Rotation around its pre-rotation axes, usually "world" space. Equivalent to <c>rotation*q</c></summary>
         Extrinsic
     }
+    
+    public enum AudioState
+    {
+        Stop = 0,
+        Playing = 1,
+        Pause = 2,
+        AwaitPlaying = 3,
+        AwaitPause = 4,
+        AwaitStop = 5,
+    }
+
+    public enum SoundLoop
+    {
+        None,
+        Loop,
+        Number
+    }
 }
