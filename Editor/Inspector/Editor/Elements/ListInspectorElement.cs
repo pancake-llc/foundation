@@ -310,7 +310,8 @@ namespace Pancake.Editor
 
                             foreach (var objectDrop in DragAndDrop.objectReferences)
                             {
-                                if (objectDrop.GetType() == _property.ArrayElementType)
+                                var objDropType = objectDrop.GetType();
+                                if (objDropType == _property.ArrayElementType || (objDropType == typeof(GameObject) && _property.ArrayElementType == typeof(Transform)))
                                 {
                                     AddElementCallback(_reorderableListGui);
 
