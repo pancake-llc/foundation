@@ -11,13 +11,14 @@ namespace Pancake
         public static event Action<Finger> FingerUpEvent;
         public static event Action<Finger> FingerMoveEvent;
 
-        private void OnEnable()
+        protected override void OnEnabled()
         {
             EnhancedTouchSupport.Enable();
             Touch.onFingerDown += OnFingerDown;
             Touch.onFingerUp += OnFingerUp;
             Touch.onFingerMove += OnFingerMove;
         }
+        
 
         private void OnFingerMove(Finger finger) { FingerMoveEvent?.Invoke(finger); }
 
@@ -25,13 +26,15 @@ namespace Pancake
 
         private void OnFingerDown(Finger finger) { FingerDownEvent?.Invoke(finger); }
 
-        private void OnDisable()
+
+        protected override void OnDisabled()
         {
             Touch.onFingerDown -= OnFingerDown;
             Touch.onFingerUp -= OnFingerUp;
             Touch.onFingerMove -= OnFingerMove;
             EnhancedTouchSupport.Disable();
         }
+        
     }
 }
 #endif

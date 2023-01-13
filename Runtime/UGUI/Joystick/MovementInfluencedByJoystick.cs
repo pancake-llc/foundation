@@ -13,14 +13,14 @@ namespace Pancake.UI
 
         private void Awake() { _cacheTransform = transform; }
 
-        private void OnEnable()
+        protected override void OnEnabled()
         {
             MyInput.FingerDownEvent += OnFingerDown;
             MyInput.FingerUpEvent += OnFingerUp;
             MyInput.FingerMoveEvent += OnFingerMove;
         }
 
-        private void OnDisable()
+        protected override void OnDisabled()
         {
             MyInput.FingerDownEvent -= OnFingerDown;
             MyInput.FingerUpEvent -= OnFingerUp;
