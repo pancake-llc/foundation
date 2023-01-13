@@ -331,7 +331,7 @@ namespace Pancake.IAP
 
         private class TangleFileConsts
         {
-            internal const string k_OutputPath = $"{Global.DEFAULT_SCRIPT_GEN_PATH}/UnityPurchasing/generated";
+            internal const string k_OutputPath = "Assets/_Root/Scripts/UnityPurchasing/generated";
 
             internal const string k_AppleClassPrefix = "Apple";
             internal const string k_AppleStoreKitTestClassPrefix = "AppleStoreKitTest";
