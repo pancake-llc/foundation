@@ -40,6 +40,21 @@ namespace Pancake
             var implPath = $"{Global.DEFAULT_SCRIPT_GEN_PATH}/Audio.cs";
 
             var typeStr = typeof(SoundPreset).ToString();
+            var temp = TempCollection.GetList<Sound>();
+            var guids = UnityEditor.AssetDatabase.FindAssets("t:" + typeStr);
+            foreach (var guid in guids)
+            {
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                SoundPreset preset = UnityEditor.AssetDatabase.LoadAssetAtPath<SoundPreset>(path);
+                if (preset != null)
+                {
+                    for (int i = 0; i < preset.sounds.Count; i++)
+                    {
+                        var s = preset.sounds[i];
+                        if (!temp.Contains(s)) temp.Add(s);
+                    }
+                }
+            }
 
             var str = "namespace Pancake\n{";
             str += "\n\tpublic static class Audio\n\t{";
@@ -48,13 +63,13 @@ namespace Pancake
             str += "\n\t\tpublic static void ResumeAll() => Pancake.MagicAudio.ResumeAll();";
             str += "\n\t\tpublic static void StopAll() => Pancake.MagicAudio.StopAll();\n";
             
-            for (int i = 0; i < sounds.Count; i++)
+            for (int i = 0; i < temp.Count; i++)
             {
-                var item = sounds[i].soundName.Replace(" ", "");
-                str += $"\n\t\t[Identificate(\"{sounds[i].ID}\")]";
+                var item = temp[i].soundName.Replace(" ", "");
+                str += $"\n\t\t[Identificate(\"{temp[i].ID}\")]";
                 str += $"\n\t\tpublic static AudioHandle Play{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item)}()";
                 str += " {";
-                str += $" return Pancake.MagicAudio.Play(\"{sounds[i].ID}\");";
+                str += $" return Pancake.MagicAudio.Play(\"{temp[i].ID}\");";
                 str += " }";
                 str += "\n";
             }
@@ -62,7 +77,8 @@ namespace Pancake
             str += "\n\t}";
             str += "\n}";
 
-            var writer = new StreamWriter(implPath, true);
+            temp.Dispose();
+            var writer = new StreamWriter(implPath, false);
             writer.Write(str);
             writer.Close();
             UnityEditor.AssetDatabase.ImportAsset(implPath);
