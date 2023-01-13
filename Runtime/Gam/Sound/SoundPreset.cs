@@ -39,16 +39,22 @@ namespace Pancake
             Global.ValidateScriptGenPath();
             var implPath = $"{Global.DEFAULT_SCRIPT_GEN_PATH}/Audio.cs";
 
+            var typeStr = typeof(SoundPreset).ToString();
+
             var str = "namespace Pancake\n{";
             str += "\n\tpublic static class Audio\n\t{";
 
+            str += "\n\t\tpublic static void PauseAll() => Pancake.MagicAudio.PauseAll();";
+            str += "\n\t\tpublic static void ResumeAll() => Pancake.MagicAudio.ResumeAll();";
+            str += "\n\t\tpublic static void StopAll() => Pancake.MagicAudio.StopAll();\n";
+            
             for (int i = 0; i < sounds.Count; i++)
             {
                 var item = sounds[i].soundName.Replace(" ", "");
                 str += $"\n\t\t[Identificate(\"{sounds[i].ID}\")]";
-                str += $"\n\t\tpublic static void Play{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item)}()";
+                str += $"\n\t\tpublic static AudioHandle Play{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item)}()";
                 str += " {";
-                str += $" Pancake.MagicAudio.Play(\"{sounds[i].ID}\");";
+                str += $" return Pancake.MagicAudio.Play(\"{sounds[i].ID}\");";
                 str += " }";
                 str += "\n";
             }
@@ -56,7 +62,7 @@ namespace Pancake
             str += "\n\t}";
             str += "\n}";
 
-            var writer = new StreamWriter(implPath, false);
+            var writer = new StreamWriter(implPath, true);
             writer.Write(str);
             writer.Close();
             UnityEditor.AssetDatabase.ImportAsset(implPath);
@@ -96,7 +102,7 @@ namespace Pancake
                 var sources = new Dictionary<string, string>();
                 foreach (var t in sounds)
                 {
-                    sources.Add(t.ID, $"Play{t.soundName.Replace(" ", "")}");
+                    sources.Add(t.ID, $"Play{System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(t.soundName.Replace(" ", ""))}");
                 }
 
                 var bindingFlag = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.DeclaredOnly;

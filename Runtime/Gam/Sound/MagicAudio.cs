@@ -6,6 +6,7 @@ namespace Pancake
 {
     public static class MagicAudio
     {
+        private static readonly List<AudioHandle> Handles = new List<AudioHandle>();
         private static readonly List<Sound> SoundAssets = new List<Sound>();
         private static GameObject prefab;
         public static TimeMode TimeMode { get; private set; } = TimeMode.Normal;
@@ -42,7 +43,32 @@ namespace Pancake
             var audioHandle = obj.GetComponent<AudioHandle>();
             audioHandle.Init(sound);
             audioHandle.Play(onCompleted);
+            if (!Handles.Contains(audioHandle)) Handles.Add(audioHandle);
             return audioHandle;
+        }
+
+        public static void PauseAll()
+        {
+            foreach (var handle in Handles)
+            {
+                if (handle.IsPlaying) handle.Pause();
+            }
+        }
+
+        public static void ResumeAll()
+        {
+            foreach (var handle in Handles)
+            {
+                if (handle.IsPause) handle.Resume();
+            }
+        }
+
+        public static void StopAll()
+        {
+            foreach (var handle in Handles)
+            {
+                if (handle.IsPlaying) handle.Stop();
+            }
         }
 
         internal static void Complete(AudioHandle audio) { MagicPool.Despawn(audio.gameObject); }
