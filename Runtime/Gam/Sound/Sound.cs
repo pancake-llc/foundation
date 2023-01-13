@@ -1,5 +1,3 @@
-//#if PANCAKE_GAM
-
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -43,5 +41,3 @@ namespace Pancake
 #endif
     }
 }
-
-//#endif
