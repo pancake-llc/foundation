@@ -25,7 +25,6 @@ namespace Pancake.Monetization
         public event Action<AdmobAppOpenLoader, object, AdErrorEventArgs> OnFailToShowEvent = delegate { };
         public event Action<AdmobAppOpenLoader, AdFailedToLoadEventArgs> OnFailToLoadEvent = delegate { };
         public event Action<AdmobAppOpenLoader, object, EventArgs> OnRecordImpressionEvent = delegate { };
-        public event Action<AdmobAppOpenLoader, object, EventArgs> OnClosedEvent = delegate { };
 
         internal override bool IsReady()
         {
@@ -76,7 +75,6 @@ namespace Pancake.Monetization
         private void OnAdClosed(object sender, EventArgs e)
         {
             R.isShowingAd = false;
-            OnClosedEvent.Invoke(this, sender, e);
             OnCompleted.Invoke(this);
             Destroy();
         }

@@ -9,12 +9,46 @@ namespace Pancake.Monetization
     public class Advertising : MonoBehaviour
     {
         public static Advertising Instance { get; private set; }
-        public static event Action<EInterstitialAdNetwork> InterstitialAdCompletedEvent;
-        public static event Action<ERewardedAdNetwork> RewardedAdCompletedEvent;
-        public static event Action<ERewardedAdNetwork> RewardedAdSkippedEvent;
-        public static event Action<ERewardedInterstitialAdNetwork> RewardedInterstitialAdCompletedEvent;
-        public static event Action<ERewardedInterstitialAdNetwork> RewardedInterstitialAdSkippedEvent;
-        public static event Action<EAppOpenAdNetwork> AppOpenAdCompletedEvent;
+
+        #region banner event
+
+        public static event Action BannerlAdDisplayedEvent;
+        public static event Action BannerlAdClosedEvent;
+
+        #endregion
+
+        #region interstitial event
+
+        public static event Action InterstitialAdCompletedEvent;
+        public static event Action InterstitialAdDisplayedEvent;
+
+        #endregion
+
+        #region rewarded event
+
+        public static event Action RewardedAdCompletedEvent;
+        public static event Action RewardedAdSkippedEvent;
+        public static event Action RewardedAdDisplayedEvent;
+        public static event Action RewardedAdClosedEvent;
+
+        #endregion
+
+        #region rewarded interstitial
+
+        public static event Action RewardedInterstitialAdCompletedEvent;
+        public static event Action RewardedInterstitialAdSkippedEvent;
+        public static event Action RewardedInterstitialAdDisplayedEvent;
+        public static event Action RewardedInterstitialAdClosedEvent;
+
+        #endregion
+
+        #region open ad event
+
+        public static event Action AppOpenAdCompletedEvent;
+        public static event Action AppOpenAdDisplayedEvent;
+
+        #endregion
+
         public static event Action RemoveAdsEvent;
 
         private static AdmobAdClient admobAdClient;
@@ -218,23 +252,46 @@ namespace Pancake.Monetization
             lastTimeLoadAppOpenTimestamp = Time.realtimeSinceStartup;
         }
 
-        private static void OnInterstitialAdCompleted(IAdClient client) { InterstitialAdCompletedEvent?.Invoke((EInterstitialAdNetwork) client.Network); }
+        #region banner event
 
-        private static void OnRewardedAdCompleted(IAdClient client) { RewardedAdCompletedEvent?.Invoke((ERewardedAdNetwork) client.Network); }
+        private static void OnBannerAdDisplayed(IAdClient client) { BannerlAdDisplayedEvent?.Invoke(); }
+        private static void OnBannerAdCompleted(IAdClient client) { BannerlAdClosedEvent?.Invoke(); }
 
-        private static void OnRewardedAdSkipped(IAdClient client) { RewardedAdSkippedEvent?.Invoke((ERewardedAdNetwork) client.Network); }
+        #endregion
 
-        private static void OnRewardedInterstitialAdCompleted(IAdClient client)
-        {
-            RewardedInterstitialAdCompletedEvent?.Invoke((ERewardedInterstitialAdNetwork) client.Network);
-        }
+        #region interstitial event
 
-        private static void OnRewardedInterstitialAdSkipped(IAdClient client)
-        {
-            RewardedInterstitialAdSkippedEvent?.Invoke((ERewardedInterstitialAdNetwork) client.Network);
-        }
+        private static void OnInterstitialAdCompleted(IAdClient client) { InterstitialAdCompletedEvent?.Invoke(); }
+        private static void OnInterstitialAdDisplayed(IAdClient client) { InterstitialAdDisplayedEvent?.Invoke(); }
 
-        private static void OnAppOpenAdCompleted(IAdClient client) { AppOpenAdCompletedEvent?.Invoke((EAppOpenAdNetwork) client.Network); }
+        #endregion
+
+        #region rewarded event
+
+        private static void OnRewardedAdCompleted(IAdClient client) { RewardedAdCompletedEvent?.Invoke(); }
+        private static void OnRewardedAdSkipped(IAdClient client) { RewardedAdSkippedEvent?.Invoke(); }
+        private static void OnRewardedAdClosed(IAdClient client) { RewardedAdClosedEvent?.Invoke(); }
+        private static void OnRewardedAdDisplayed(IAdClient client) { RewardedAdDisplayedEvent?.Invoke(); }
+
+        #endregion
+
+        #region rewarded interstitial
+
+        private static void OnRewardedInterstitialAdCompleted(IAdClient client) { RewardedInterstitialAdCompletedEvent?.Invoke(); }
+
+        private static void OnRewardedInterstitialAdSkipped(IAdClient client) { RewardedInterstitialAdSkippedEvent?.Invoke(); }
+        private static void OnRewardedInterstitialAdClosed(IAdClient client) { RewardedInterstitialAdClosedEvent?.Invoke(); }
+        private static void OnRewardedInterstitialAdDisplayed(IAdClient client) { RewardedInterstitialAdDisplayedEvent?.Invoke(); }
+
+        #endregion
+
+        #region open ad event
+
+        private static void OnAppOpenAdCompleted(IAdClient client) { AppOpenAdCompletedEvent?.Invoke(); }
+        private static void OnAppOpenAdDisplayed(IAdClient client) { AppOpenAdDisplayedEvent?.Invoke(); }
+
+        #endregion
+
 
         private static AdClient GetClient(EAdNetwork network)
         {
@@ -263,12 +320,24 @@ namespace Pancake.Monetization
         {
             if (client == null) return;
 
+            client.OnBannerAdCompleted += OnBannerAdCompleted;
+            client.OnBannerAdDisplayed += OnBannerAdDisplayed;
+            
             client.OnInterstitialAdCompleted += OnInterstitialAdCompleted;
+            client.OnInterstitialAdDisplayed += OnInterstitialAdDisplayed;
+            
             client.OnRewardedAdCompleted += OnRewardedAdCompleted;
             client.OnRewardedAdSkipped += OnRewardedAdSkipped;
+            client.OnRewardedAdClosed += OnRewardedAdClosed;
+            client.OnRewardedAdDisplayed += OnRewardedAdDisplayed;
+            
             client.OnRewardedInterstitialAdCompleted += OnRewardedInterstitialAdCompleted;
             client.OnRewardedInterstitialAdSkipped += OnRewardedInterstitialAdSkipped;
+            client.OnRewardedInterstitialAdClosed += OnRewardedInterstitialAdClosed;
+            client.OnRewardedInterstitialAdDisplayed += OnRewardedInterstitialAdDisplayed;
+            
             client.OnAppOpenAdCompleted += OnAppOpenAdCompleted;
+            client.OnAppOpenAdDisplayed += OnAppOpenAdDisplayed;
         }
 
         private static AdClient SetupClient(EAdNetwork network)

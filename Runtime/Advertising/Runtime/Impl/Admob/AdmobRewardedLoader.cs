@@ -76,7 +76,7 @@ namespace Pancake.Monetization
         private void OnAdClosed(object sender, EventArgs e)
         {
             R.isShowingAd = false;
-            OnClosedEvent.Invoke(this, sender, e);
+            OnClosedEvent.Invoke(this, sender, e); 
             if (IsEarnRewarded)
             {
                 OnCompleted.Invoke(this);
