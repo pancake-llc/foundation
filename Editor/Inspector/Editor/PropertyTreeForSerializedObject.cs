@@ -8,10 +8,12 @@ namespace Pancake.Editor
     public sealed class PropertyTreeForSerializedObject : PropertyTree
     {
         private readonly SerializedObject _serializedObject;
+        private readonly SerializedProperty _scriptProperty;
 
         public PropertyTreeForSerializedObject([NotNull] SerializedObject serializedObject)
         {
             _serializedObject = serializedObject ?? throw new ArgumentNullException(nameof(serializedObject));
+            _scriptProperty = serializedObject.FindProperty("m_Script");
 
             TargetObjectType = _serializedObject.targetObject.GetType();
             TargetsCount = _serializedObject.targetObjects.Length;
@@ -51,6 +53,13 @@ namespace Pancake.Editor
 
             base.Update(forceUpdate);
         }
+        
+        public override void Draw(float? viewWidth = null)
+        {
+            DrawMonoScriptProperty();
+
+            base.Draw(viewWidth);
+        }
 
         public override bool ApplyChanges()
         {
@@ -74,6 +83,20 @@ namespace Pancake.Editor
 
             RequestValidation();
             RequestRepaint();
+        }
+        
+        private void DrawMonoScriptProperty()
+        {
+            if (RootProperty.TryGetAttribute(out HideMonoAttribute _))
+            {
+                return;
+            }
+
+            EditorGUI.BeginDisabledGroup(true);
+            var scriptRect = EditorGUILayout.GetControlRect(true);
+            scriptRect.xMin += 3;
+            EditorGUI.PropertyField(scriptRect, _scriptProperty);
+            EditorGUI.EndDisabledGroup();
         }
     }
 }
