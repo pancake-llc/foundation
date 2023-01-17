@@ -162,7 +162,7 @@ namespace Pancake.Editor
 
                             if (enableNotification)
                             {
-                                RegistryManager.Add("com.unity.mobile.notifications", "2.1.0");
+                                RegistryManager.Add("com.unity.mobile.notifications", "2.1.1");
                                 InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_NOTIFICATION");
                             }
                             else
