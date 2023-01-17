@@ -99,6 +99,10 @@ namespace Pancake.Monetization
             return false;
         }
 
+        /**
+         * For Applovin :  Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
+         * Admob still work correctly
+         */
         public static IRewarded OnDisplayed(this IRewarded rewarded, Action onDisplayed)
         {
             rewarded?.Register(nameof(OnDisplayed), onDisplayed);
@@ -121,6 +125,22 @@ namespace Pancake.Monetization
         {
             rewarded?.Register(nameof(OnSkipped), onSkipped);
             return rewarded;
+        }
+
+        /**
+         * For Applovin : Fired when an interstitial ad is displayed (may not be received by Unity until the interstitial ad closes).
+         * Admob still work correctly
+         */
+        public static IInterstitial OnDisplayed(this IInterstitial interstitial, Action onDisplayed)
+        {
+            interstitial?.Register(nameof(OnDisplayed), onDisplayed);
+            return interstitial;
+        }
+
+        public static IInterstitial OnCompleted(this IInterstitial interstitial, Action onCompleted)
+        {
+            interstitial?.Register(nameof(OnCompleted), onCompleted);
+            return interstitial;
         }
     }
 }
