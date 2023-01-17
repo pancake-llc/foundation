@@ -23,6 +23,8 @@ namespace Pancake.Monetization
         internal Action rewardedDisplayChain;
         internal Action rewardedSkippedChain;
         internal Action rewardedClosedChain;
+        internal Action interstitialDisplayChain;
+        internal Action interstitialCompletedChain;
         public static ApplovinAdClient Instance => client ?? (client = new ApplovinAdClient());
 
 #if PANCAKE_MAX_ENABLE
@@ -30,20 +32,20 @@ namespace Pancake.Monetization
         public event Action OnBannerAdFaildToLoad;
         public event Action OnBannerAdClicked;
         public event Action<MaxSdkBase.AdInfo> OnBannerAdRevenuePaid;
-        
+
         public event Action OnInterstitialAdClicked;
         public event Action OnInterstitialAdLoaded;
         public event Action OnInterstitialAdFaildToLoad;
         public event Action OnInterstitialAdFaildToDisplay;
         public event Action<MaxSdkBase.AdInfo> OnInterstitialAdRevenuePaid;
-        
+
         public event Action OnRewardedAdClicked;
         public event Action OnRewardedAdLoaded;
         public event Action OnRewardedAdFaildToLoad;
         public event Action OnRewardedAdFaildToDisplay;
         public event Action<MaxSdkBase.AdInfo> OnRewardedAdRevenuePaid;
         public event Action<MaxSdkBase.Reward> OnRewardedAdReceivedReward;
-        
+
         public event Action OnRewardedInterstitialAdClicked;
         public event Action OnRewardedInterstitialAdLoaded;
         public event Action OnRewardedInterstitialAdFaildToLoad;
@@ -96,8 +98,19 @@ namespace Pancake.Monetization
         internal void InvokeInterstitialAdFaildToLoad() { OnInterstitialAdFaildToLoad?.Invoke(); }
         internal void InvokeInterstitialAdFaildToDisplay() { OnInterstitialAdFaildToDisplay?.Invoke(); }
         internal void InvokeInterstitialAdClicked() { OnInterstitialAdClicked?.Invoke(); }
-        internal void InvokeInterstitialAdDisplay() { CallInterstitialAdDisplayed(); }
-        internal void InvokeInterstitialAdHidden() { CallInterstitialAdCompleted(); }
+
+        internal void InvokeInterstitialAdDisplay()
+        {
+            CallInterstitialAdDisplayed();
+            C.CallCacheCleanAction(ref interstitialDisplayChain);
+        }
+
+        internal void InvokeInterstitialAdHidden()
+        {
+            CallInterstitialAdCompleted();
+            C.CallCacheCleanAction(ref interstitialCompletedChain);
+        }
+
         internal void InvokeInterstitialAdRevenuePaid(MaxSdkBase.AdInfo info) { OnInterstitialAdRevenuePaid?.Invoke(info); }
         internal void InvokeRewardedAdLoaded() { OnRewardedAdLoaded?.Invoke(); }
         internal void InvokeRewardedAdFaildToLoad() { OnRewardedAdFaildToLoad?.Invoke(); }
@@ -124,7 +137,7 @@ namespace Pancake.Monetization
             CallRewardedAdSkipped();
             C.CallCacheCleanAction(ref rewardedSkippedChain);
         }
-        
+
         internal void InvokeRewardedAdRevenuePaid(MaxSdkBase.AdInfo info) { OnRewardedAdRevenuePaid?.Invoke(info); }
 
         internal void InvokeRewardedAdReceivedReward(MaxSdkBase.Reward reward)
@@ -150,7 +163,7 @@ namespace Pancake.Monetization
 
             CallRewardedInterstitialAdSkipped();
         }
-        
+
         internal void InvokeRewardedInterstitialAdRevenuePaid(MaxSdkBase.AdInfo info) { OnRewardedInterstitialAdRevenuePaid?.Invoke(info); }
 
         internal void InvokeRewardedInterstitialAdReceivedReward(MaxSdkBase.Reward reward)
@@ -251,13 +264,14 @@ namespace Pancake.Monetization
 #endif
         }
 
-        protected override void InternalShowInterstitialAd()
+        protected override IInterstitial InternalShowInterstitialAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(AdSettings.MaxSettings.InterstitialAdUnit.Id)) return;
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.InterstitialAdUnit.Id)) return null;
             R.isShowingAd = true;
             MaxSdk.ShowInterstitial(AdSettings.MaxSettings.InterstitialAdUnit.Id);
 #endif
+            return _interstitial;
         }
 
         protected override bool InternalIsInterstitialAdReady()

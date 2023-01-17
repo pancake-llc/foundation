@@ -27,7 +27,7 @@ namespace Pancake.Monetization
 
         protected override bool InternalIsInterstitialAdReady() { return false; }
 
-        protected override void InternalShowInterstitialAd() { }
+        protected override IInterstitial InternalShowInterstitialAd() { return null;}
 
         protected override void InternalLoadRewardedAd() { }
 

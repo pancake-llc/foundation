@@ -1,4 +1,4 @@
-#if  PANCAKE_ADS
+#if PANCAKE_ADS
 
 using UnityEngine;
 #if PANCAKE_ADMOB_ENABLE
@@ -8,18 +8,20 @@ using GoogleMobileAds.Api;
 
 namespace Pancake.Monetization
 {
-    public class AdmobInterstitialLoader : AdLoader<AdUnit>
+    public class AdmobInterstitialLoader : AdLoader<AdUnit>, IInterstitial
     {
 #if PANCAKE_ADMOB_ENABLE
         private InterstitialAd _interstitialAd;
         public event Action<AdmobInterstitialLoader> OnCompleted = delegate { };
-        public event Action<AdmobInterstitialLoader, object, EventArgs> OnClosedEvent = delegate { };
         public event Action<AdmobInterstitialLoader, object, AdFailedToLoadEventArgs> OnFailToLoadEvent = delegate { };
         public event Action<AdmobInterstitialLoader, object, AdErrorEventArgs> OnFailToShowEvent = delegate { };
         public event Action<AdmobInterstitialLoader, object, EventArgs> OnLoadedEvent = delegate { };
         public event Action<AdmobInterstitialLoader, object, EventArgs> OnOpeningEvent = delegate { };
         public event Action<AdmobInterstitialLoader, object, EventArgs> OnRecordImpressionEvent = delegate { };
         public event Action<AdmobInterstitialLoader, object, AdValueEventArgs> OnPaidEvent = delegate { };
+
+        private Action _completedCallback;
+        private Action _displayCallback;
 
         public AdmobInterstitialLoader() { unit = AdSettings.AdmobSettings.InterstitialAdUnit; }
 
@@ -38,9 +40,9 @@ namespace Pancake.Monetization
 
         private void OnPaidHandleEvent(object sender, AdValueEventArgs e)
         {
-            OnPaidEvent.Invoke(this, sender, e); 
+            OnPaidEvent.Invoke(this, sender, e);
 #if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(e, unit.Id);  
+            AppTracking.TrackingRevenue(e, unit.Id);
 #endif
         }
 
@@ -50,6 +52,7 @@ namespace Pancake.Monetization
         {
             R.isShowingAd = true;
             OnOpeningEvent.Invoke(this, sender, e);
+            C.CallCacheCleanAction(ref _displayCallback);
         }
 
         private void OnAdLoaded(object sender, EventArgs e) { OnLoadedEvent.Invoke(this, sender, e); }
@@ -61,8 +64,8 @@ namespace Pancake.Monetization
         private void OnAdClosed(object sender, EventArgs e)
         {
             R.isShowingAd = false;
-            OnClosedEvent.Invoke(this, sender, e);
             OnCompleted.Invoke(this);
+            C.CallCacheCleanAction(ref _completedCallback);
             Destroy();
         }
 
@@ -77,6 +80,18 @@ namespace Pancake.Monetization
             _interstitialAd = null;
         }
 #endif
+        public void Register(string key, Action action)
+        {
+            switch (key)
+            {
+                case "OnDisplayed":
+                    _displayCallback = action;
+                    break;
+                case "OnCompleted":
+                    _completedCallback = action;
+                    break;
+            }
+        }
     }
 }
 #endif

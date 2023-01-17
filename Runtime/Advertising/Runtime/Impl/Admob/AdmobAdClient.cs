@@ -70,8 +70,7 @@ namespace Pancake.Monetization
             _banner.OnLoadedEvent += InvokeBannerAdLoaded;
             _banner.OnOpeningEvent += HandleBannerOpening;
             _banner.OnPaidEvent += InvokeBannerAdPaid;
-
-            _interstitial.OnClosedEvent += HandleInterstitialClosed;
+            
             _interstitial.OnFailToLoadEvent += InvokeInterstitialAdFailedToLoad;
             _interstitial.OnFailToShowEvent += InvokeInterstitialAdFailedToShow;
             _interstitial.OnLoadedEvent += InvokeInterstitialAdLoaded;
@@ -166,7 +165,6 @@ namespace Pancake.Monetization
         private void InvokeRewardedAdRewared(AdLoader<AdUnit> instance, object sender, Reward args) { OnRewardedAdRewarded?.Invoke(sender, args); }
 
         private void HandleInterstitialCompleted(AdmobInterstitialLoader instance) { InternalInterstitialCompleted(instance); }
-        private void HandleInterstitialClosed(AdmobInterstitialLoader instance, object sender, EventArgs args) { InternalInterstitialClosed(instance); }
         private void HandleInterstitialDisplayed(AdmobInterstitialLoader instance, object sender, EventArgs args) { InternalInterstitialDispalyed(instance); }
 
         private void HandleRewaredCompleted(AdmobRewardedLoader instance) { InternalRewaredCompleted(instance); }
@@ -225,7 +223,6 @@ namespace Pancake.Monetization
         protected virtual void InternalBannerDisplayed(AdLoader<AdUnit> _) { CallBannerAdDisplayed(); }
         protected virtual void InternalBannerCompleted(AdLoader<AdUnit> _) { CallBannerAdCompleted(); }
         protected virtual void InternalInterstitialCompleted(AdLoader<AdUnit> _) { CallInterstitialAdCompleted(); }
-        protected virtual void InternalInterstitialClosed(AdLoader<AdUnit> _) { CallInterstitialAdClosed(); }
         protected virtual void InternalInterstitialDispalyed(AdLoader<AdUnit> _) { CallInterstitialAdDisplayed(); }
 
         protected virtual void InternalRewardSkipped(AdLoader<AdUnit> _) { CallRewardedAdSkipped(); }
@@ -256,7 +253,11 @@ namespace Pancake.Monetization
 
         protected override bool InternalIsInterstitialAdReady() { return _interstitial.IsReady(); }
 
-        protected override void InternalShowInterstitialAd() { _interstitial?.Show(); }
+        protected override IInterstitial InternalShowInterstitialAd()
+        {
+            _interstitial?.Show();
+            return _interstitial;
+        }
 
         protected override void InternalLoadRewardedAd() { _rewarded?.Load(); }
 

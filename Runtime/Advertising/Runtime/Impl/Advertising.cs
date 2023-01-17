@@ -322,20 +322,20 @@ namespace Pancake.Monetization
 
             client.OnBannerAdCompleted += OnBannerAdCompleted;
             client.OnBannerAdDisplayed += OnBannerAdDisplayed;
-            
+
             client.OnInterstitialAdCompleted += OnInterstitialAdCompleted;
             client.OnInterstitialAdDisplayed += OnInterstitialAdDisplayed;
-            
+
             client.OnRewardedAdCompleted += OnRewardedAdCompleted;
             client.OnRewardedAdSkipped += OnRewardedAdSkipped;
             client.OnRewardedAdClosed += OnRewardedAdClosed;
             client.OnRewardedAdDisplayed += OnRewardedAdDisplayed;
-            
+
             client.OnRewardedInterstitialAdCompleted += OnRewardedInterstitialAdCompleted;
             client.OnRewardedInterstitialAdSkipped += OnRewardedInterstitialAdSkipped;
             client.OnRewardedInterstitialAdClosed += OnRewardedInterstitialAdClosed;
             client.OnRewardedInterstitialAdDisplayed += OnRewardedInterstitialAdDisplayed;
-            
+
             client.OnAppOpenAdCompleted += OnAppOpenAdCompleted;
             client.OnAppOpenAdDisplayed += OnAppOpenAdDisplayed;
         }
@@ -407,10 +407,10 @@ namespace Pancake.Monetization
             return client.IsInterstitialAdReady();
         }
 
-        private static void ShowInterstitialAd(IAdClient client)
+        private static IInterstitial ShowInterstitialAd(IAdClient client)
         {
-            if (IsAdRemoved || !Application.isMobilePlatform) return;
-            client.ShowInterstitialAd();
+            if (IsAdRemoved || !Application.isMobilePlatform) return null;
+            return client.ShowInterstitialAd();
         }
 
         private static void LoadRewardedAd(IAdClient client)
@@ -477,7 +477,7 @@ namespace Pancake.Monetization
 
         public static bool IsInterstitialAdReady() { return IsInterstitialAdReady(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void ShowInterstitialAd() { ShowInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
+        public static IInterstitial ShowInterstitialAd() { return ShowInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
         public static void LoadRewardedAd() { LoadRewardedAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 

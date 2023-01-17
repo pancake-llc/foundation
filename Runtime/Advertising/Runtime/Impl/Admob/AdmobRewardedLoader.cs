@@ -109,7 +109,6 @@ namespace Pancake.Monetization
 #endif
         public void Register(string key, Action action)
         {
-            
             switch (key)
             {
                 case "OnDisplayed":

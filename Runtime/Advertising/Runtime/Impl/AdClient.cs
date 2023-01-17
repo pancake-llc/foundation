@@ -9,7 +9,6 @@ namespace Pancake.Monetization
         protected bool isInitialized;
 
         public event Action<IAdClient> OnInterstitialAdCompleted;
-        public event Action<IAdClient> OnInterstitialAdClosed;
         public event Action<IAdClient> OnInterstitialAdDisplayed;
         public event Action<IAdClient> OnRewardedAdSkipped;
         public event Action<IAdClient> OnRewardedAdCompleted;
@@ -67,7 +66,7 @@ namespace Pancake.Monetization
         protected abstract void InternalHideBannerAd();
         protected abstract void InternalDestroyBannerAd();
         protected abstract void InternalLoadInterstitialAd();
-        protected abstract void InternalShowInterstitialAd();
+        protected abstract IInterstitial InternalShowInterstitialAd();
         protected abstract bool InternalIsInterstitialAdReady();
         protected abstract void InternalLoadRewardedAd();
         protected abstract IRewarded InternalShowRewardedAd();
@@ -103,7 +102,6 @@ namespace Pancake.Monetization
         protected virtual void CallBannerAdDisplayed() { Runtime.RunOnMainThread(() => { OnBannerAdDisplayed?.Invoke(this); }); }
         protected virtual void CallBannerAdCompleted() { Runtime.RunOnMainThread(() => { OnBannerAdCompleted?.Invoke(this); }); }
         protected virtual void CallInterstitialAdCompleted() { Runtime.RunOnMainThread(() => { OnInterstitialAdCompleted?.Invoke(this); }); }
-        protected virtual void CallInterstitialAdClosed() { Runtime.RunOnMainThread(() => { OnInterstitialAdClosed?.Invoke(this); }); }
         protected virtual void CallInterstitialAdDisplayed() { Runtime.RunOnMainThread(() => { OnInterstitialAdDisplayed?.Invoke(this); }); }
 
         public void LoadInterstitialAd()
@@ -120,23 +118,22 @@ namespace Pancake.Monetization
             }
         }
 
-        public void ShowInterstitialAd()
+        public IInterstitial ShowInterstitialAd()
         {
             if (IsSdkAvaiable)
             {
-                if (!CheckInitialize()) return;
+                if (!CheckInitialize()) return null;
                 if (!IsInterstitialAdReady())
                 {
                     Debug.Log($"Cannot show {Network} interstitial ad. Ad is not loaded.");
-                    return;
+                    return null;
                 }
-                
-                InternalShowInterstitialAd();
+
+                return InternalShowInterstitialAd();
             }
-            else
-            {
-                Debug.Log(NoSdkMessage);
-            }
+
+            Debug.Log(NoSdkMessage);
+            return null;
         }
 
         public bool IsInterstitialAdReady() { return CheckInitialize(false) && InternalIsInterstitialAdReady(); }

@@ -32,7 +32,7 @@ namespace Pancake.Monetization
         event Action<IAdClient> OnInterstitialAdDisplayed;
         void LoadInterstitialAd();
         bool IsInterstitialAdReady();
-        void ShowInterstitialAd();
+        IInterstitial ShowInterstitialAd();
 
         #endregion
 
