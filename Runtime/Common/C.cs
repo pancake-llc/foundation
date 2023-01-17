@@ -591,6 +591,20 @@ namespace Pancake
 
         public static string Format(this string fmt, params object[] args) => string.Format(System.Globalization.CultureInfo.InvariantCulture.NumberFormat, fmt, args);
 
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="refAction"></param>
+        // ReSharper disable Unity.PerformanceAnalysis
+        public static void CallCacheCleanAction(ref Action refAction)
+        {
+            var action = refAction;
+            if (action == null) return;
+            
+            action();
+            refAction = null;
+        }
         #endregion
     }
 }

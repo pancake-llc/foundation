@@ -2,12 +2,13 @@
 using UnityEngine;
 #if PANCAKE_ADMOB_ENABLE
 using System;
+using System.Collections.Generic;
 using GoogleMobileAds.Api;
 #endif
 
 namespace Pancake.Monetization
 {
-    public class AdmobRewardedLoader : AdLoader<AdUnit>
+    public class AdmobRewardedLoader : AdLoader<AdUnit>, IRewarded
     {
 #if PANCAKE_ADMOB_ENABLE
         private RewardedAd _rewardedAd;
@@ -22,6 +23,11 @@ namespace Pancake.Monetization
         public event Action<AdmobRewardedLoader, object, EventArgs> OnRecordImpressionEvent = delegate { };
         public event Action<AdmobRewardedLoader, object, EventArgs> OnClosedEvent = delegate { };
         public event Action<AdmobRewardedLoader, object, Reward> OnRewardEvent = delegate { };
+
+        private Action _completedCallback;
+        private Action _skippedCallback;
+        private Action _closedCallback;
+        private Action _displayCallback;
 
         public AdmobRewardedLoader() { unit = AdSettings.AdmobSettings.RewardedAdUnit; }
 
@@ -51,7 +57,7 @@ namespace Pancake.Monetization
         {
             OnPaidEvent.Invoke(this, sender, e);
 #if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(e, unit.Id);  
+            AppTracking.TrackingRevenue(e, unit.Id);
 #endif
         }
 
@@ -61,6 +67,7 @@ namespace Pancake.Monetization
         {
             R.isShowingAd = true;
             OnOpeningEvent.Invoke(this, sender, e);
+            C.CallCacheCleanAction(ref _displayCallback);
         }
 
         private void OnAdLoaded(object sender, EventArgs e) { OnLoadedEvent.Invoke(this, sender, e); }
@@ -77,13 +84,16 @@ namespace Pancake.Monetization
         {
             R.isShowingAd = false;
             OnClosedEvent.Invoke(this, sender, e);
+            C.CallCacheCleanAction(ref _closedCallback);
             if (IsEarnRewarded)
             {
                 OnCompleted.Invoke(this);
+                C.CallCacheCleanAction(ref _completedCallback);
             }
             else
             {
                 OnSkipped.Invoke(this);
+                C.CallCacheCleanAction(ref _skippedCallback);
             }
 
             Destroy();
@@ -97,6 +107,24 @@ namespace Pancake.Monetization
             _rewardedAd = null;
         }
 #endif
+        public void Register(string key, Action action)
+        {
+            switch (key)
+            {
+                case "OnDisplayed":
+                    _displayCallback = action;
+                    break;
+                case "OnCompleted":
+                    _completedCallback = action;
+                    break;
+                case "OnClosed":
+                    _closedCallback = action;
+                    break;
+                case  "OnSkipped":
+                    _skippedCallback = action;
+                    break;
+            }
+        }
     }
 }
 #endif

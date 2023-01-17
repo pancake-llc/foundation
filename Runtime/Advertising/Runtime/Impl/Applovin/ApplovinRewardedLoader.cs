@@ -1,9 +1,11 @@
 #if PANCAKE_ADS
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
-    public class ApplovinRewardedLoader
+    public class ApplovinRewardedLoader : IRewarded
     {
         private readonly ApplovinAdClient _client;
 
@@ -34,7 +36,7 @@ namespace Pancake.Monetization
         {
             _client.InvokeRewardedAdRevenuePaid(info);
 #if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(info);  
+            AppTracking.TrackingRevenue(info);
 #endif
         }
 
@@ -55,6 +57,24 @@ namespace Pancake.Monetization
 
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeRewardedAdClicked(); }
 #endif
+        public void Register(string key, Action action)
+        {
+            switch (key)
+            {
+                case "OnDisplayed":
+                    _client.rewardedDisplayChain = action;
+                    break;
+                case "OnCompleted":
+                    _client.rewardedCompletedChain = action;
+                    break;
+                case "OnClosed":
+                    _client.rewardedClosedChain = action;
+                    break;
+                case  "OnSkipped":
+                    _client.rewardedSkippedChain = action;
+                    break;
+            }
+        }
     }
 }
 #endif

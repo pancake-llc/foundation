@@ -19,7 +19,7 @@ namespace Pancake.Editor
             {
                 foreach (var dependency in dependencies)
                 {
-                    if (dependency.Key.Equals(name)) break;
+                    if (dependency.Key.Equals(name)) return;
                 }
 
                 dependencies.Add(name, version);

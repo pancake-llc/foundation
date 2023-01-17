@@ -46,15 +46,10 @@ namespace Pancake.Monetization
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
             R.isShowingAd = false;
-            _client.InvokeAppOpenAdHidden();
-            _client.InternalAppOpenAdCompleted(this);
+            _client.InternalAppOpenAdCompleted();
         }
 
-        private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info)
-        {
-            R.isShowingAd = true;
-            _client.InvokeAppOpenAdDisplay();
-        }
+        private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdDisplay(); }
 
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdClicked(); }
 #endif

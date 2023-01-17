@@ -1,9 +1,10 @@
 #if PANCAKE_ADS
+using System;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
-    public class ApplovinInterstitialLoader
+    public class ApplovinInterstitialLoader : IInterstitial
     {
         private readonly ApplovinAdClient _client;
 
@@ -52,6 +53,18 @@ namespace Pancake.Monetization
 
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeInterstitialAdClicked(); }
 #endif
+        public void Register(string key, Action action)
+        {
+            switch (key)
+            {
+                case "OnDisplayed":
+                    _client.interstitialDisplayChain = action;
+                    break;
+                case "OnCompleted":
+                    _client.interstitialCompletedChain = action;
+                    break;
+            }
+        }
     }
 }
 #endif

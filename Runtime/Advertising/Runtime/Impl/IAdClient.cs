@@ -18,6 +18,8 @@ namespace Pancake.Monetization
 
         #region banner ad
 
+        event Action<IAdClient> OnBannerAdDisplayed;
+        event Action<IAdClient> OnBannerAdCompleted;
         void ShowBannerAd();
         void HideBannerAd();
         void DestroyBannerAd();
@@ -30,7 +32,7 @@ namespace Pancake.Monetization
         event Action<IAdClient> OnInterstitialAdDisplayed;
         void LoadInterstitialAd();
         bool IsInterstitialAdReady();
-        void ShowInterstitialAd();
+        IInterstitial ShowInterstitialAd();
 
         #endregion
 
@@ -38,10 +40,11 @@ namespace Pancake.Monetization
 
         event Action<IAdClient> OnRewardedAdSkipped;
         event Action<IAdClient> OnRewardedAdCompleted;
+        event Action<IAdClient> OnRewardedAdClosed;
         event Action<IAdClient> OnRewardedAdDisplayed;
         void LoadRewardedAd();
         bool IsRewardedAdReady();
-        void ShowRewardedAd();
+        IRewarded ShowRewardedAd();
 
         #endregion
 
@@ -49,6 +52,7 @@ namespace Pancake.Monetization
 
         event Action<IAdClient> OnRewardedInterstitialAdSkipped;
         event Action<IAdClient> OnRewardedInterstitialAdCompleted;
+        event Action<IAdClient> OnRewardedInterstitialAdClosed;
         event Action<IAdClient> OnRewardedInterstitialAdDisplayed;
         void LoadRewardedInterstitialAd();
         bool IsRewardedInterstitialAdReady();
@@ -59,6 +63,7 @@ namespace Pancake.Monetization
         #region app open ad
 
         event Action<IAdClient> OnAppOpenAdCompleted;
+        event Action<IAdClient> OnAppOpenAdDisplayed;
         void LoadAppOpenAd();
         bool IsAppOpenAdReady();
         void ShowAppOpenAd();

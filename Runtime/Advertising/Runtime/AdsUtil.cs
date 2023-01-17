@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Pancake.Monetization
 {
-    public class AdsUtil
+    public static class AdsUtil
     {
         /// <summary>
         /// Compares its two arguments for order.  Returns <see cref="EVersionComparisonResult.Lesser"/>, <see cref="EVersionComparisonResult.Equal"/>,
@@ -83,6 +83,7 @@ namespace Pancake.Monetization
             return EVersionComparisonResult.Equal;
         }
 
+        // ReSharper disable once InconsistentNaming
         public static bool IsInEEA()
         {
             string code = RegionInfo.CurrentRegion.Name;
@@ -96,6 +97,50 @@ namespace Pancake.Monetization
             }
 
             return false;
+        }
+
+        /**
+         * For Applovin :  Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
+         * Admob still work correctly
+         */
+        public static IRewarded OnDisplayed(this IRewarded rewarded, Action onDisplayed)
+        {
+            rewarded?.Register(nameof(OnDisplayed), onDisplayed);
+            return rewarded;
+        }
+
+        public static IRewarded OnCompleted(this IRewarded rewarded, Action onCompleted)
+        {
+            rewarded?.Register(nameof(OnCompleted), onCompleted);
+            return rewarded;
+        }
+
+        public static IRewarded OnClosed(this IRewarded rewarded, Action onClosed)
+        {
+            rewarded?.Register(nameof(OnClosed), onClosed);
+            return rewarded;
+        }
+
+        public static IRewarded OnSkipped(this IRewarded rewarded, Action onSkipped)
+        {
+            rewarded?.Register(nameof(OnSkipped), onSkipped);
+            return rewarded;
+        }
+
+        /**
+         * For Applovin : Fired when an interstitial ad is displayed (may not be received by Unity until the interstitial ad closes).
+         * Admob still work correctly
+         */
+        public static IInterstitial OnDisplayed(this IInterstitial interstitial, Action onDisplayed)
+        {
+            interstitial?.Register(nameof(OnDisplayed), onDisplayed);
+            return interstitial;
+        }
+
+        public static IInterstitial OnCompleted(this IInterstitial interstitial, Action onCompleted)
+        {
+            interstitial?.Register(nameof(OnCompleted), onCompleted);
+            return interstitial;
         }
     }
 }
