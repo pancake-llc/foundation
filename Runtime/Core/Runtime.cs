@@ -432,11 +432,7 @@ namespace Pancake
             {
                 if (action == null) throw new ArgumentNullException(nameof(action));
 
-                if (!IsInitialized)
-                {
-                    Debug.LogError("Using RunOnMainThread without initializing Runtime");
-                    return;
-                }
+                if (!IsInitialized) return;
 
                 lock (toMainThreads)
                 {

@@ -70,7 +70,7 @@ namespace Pancake.Monetization
         protected abstract void InternalShowInterstitialAd();
         protected abstract bool InternalIsInterstitialAdReady();
         protected abstract void InternalLoadRewardedAd();
-        protected abstract void InternalShowRewardedAd();
+        protected abstract IRewarded InternalShowRewardedAd();
         protected abstract bool InternalIsRewardedAdReady();
         protected virtual void InternalLoadRewardedInterstitialAd() { }
         protected virtual void InternalShowRewardedInterstitialAd() { }
@@ -159,23 +159,22 @@ namespace Pancake.Monetization
             }
         }
 
-        public void ShowRewardedAd()
+        public IRewarded ShowRewardedAd()
         {
             if (IsSdkAvaiable)
             {
-                if (!CheckInitialize()) return;
+                if (!CheckInitialize()) return null;
                 if (!IsRewardedAdReady())
                 {
                     Debug.LogFormat($"Cannot show {Network} rewarded ad : ad is not loaded.");
-                    return;
+                    return null;
                 }
                 
-                InternalShowRewardedAd();
+                return InternalShowRewardedAd();
             }
-            else
-            {
-                Debug.Log(NoSdkMessage);
-            }
+
+            Debug.Log(NoSdkMessage);
+            return null;
         }
 
         public bool IsRewardedAdReady() { return CheckInitialize(false) && InternalIsRewardedAdReady(); }

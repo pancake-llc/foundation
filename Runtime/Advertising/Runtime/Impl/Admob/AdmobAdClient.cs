@@ -2,7 +2,6 @@
 #if PANCAKE_ADMOB_ENABLE
 using System;
 using GoogleMobileAds.Api;
-using GoogleMobileAds.Common;
 #endif
 
 
@@ -56,7 +55,7 @@ namespace Pancake.Monetization
         protected override void InternalInit()
         {
 #if PANCAKE_ADMOB_ENABLE
-            MobileAds.Initialize(status =>
+            MobileAds.Initialize(_ =>
             {
                 Runtime.RunOnMainThread(() =>
                 {
@@ -66,10 +65,10 @@ namespace Pancake.Monetization
                 });
             });
 
-            _banner.OnClosedEvent += InvokeBannerAdClosed;
+            _banner.OnClosedEvent += HandleBannerClosed;
             _banner.OnFailToLoadEvent += InvokeBannerAdFailedToLoad;
             _banner.OnLoadedEvent += InvokeBannerAdLoaded;
-            _banner.OnOpeningEvent += InvokeBannerAdOpening;
+            _banner.OnOpeningEvent += HandleBannerOpening;
             _banner.OnPaidEvent += InvokeBannerAdPaid;
 
             _interstitial.OnClosedEvent += HandleInterstitialClosed;
@@ -110,10 +109,8 @@ namespace Pancake.Monetization
         }
 
 #if PANCAKE_ADMOB_ENABLE
-        public event EventHandler<EventArgs> OnBannerAdClosed;
         public event EventHandler<AdFailedToLoadEventArgs> OnBannerAdFailedToLoad;
         public event EventHandler<EventArgs> OnBannerAdLoaded;
-        public event EventHandler<EventArgs> OnBannerAdOpening;
         public event EventHandler<AdValueEventArgs> OnBannerAdPaid;
 
         public event EventHandler<AdFailedToLoadEventArgs> OnInterstitialAdFailedToLoad;
@@ -140,9 +137,9 @@ namespace Pancake.Monetization
 
 
         private void InvokeBannerAdLoaded(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnBannerAdLoaded?.Invoke(sender, args); }
-        private void InvokeBannerAdClosed(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnBannerAdClosed?.Invoke(sender, args); }
+        private void HandleBannerClosed(AdLoader<AdUnit> instance, object sender, EventArgs args) { InternalBannerCompleted(instance); }
         private void InvokeBannerAdFailedToLoad(AdLoader<AdUnit> instance, object sender, AdFailedToLoadEventArgs args) { OnBannerAdFailedToLoad?.Invoke(sender, args); }
-        private void InvokeBannerAdOpening(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnBannerAdOpening?.Invoke(sender, args); }
+        private void HandleBannerOpening(AdLoader<AdUnit> instance, object sender, EventArgs args) { InternalBannerDisplayed(instance); }
         private void InvokeBannerAdPaid(AdLoader<AdUnit> instance, object sender, AdValueEventArgs args) { OnBannerAdPaid?.Invoke(sender, args); }
 
         private void InvokeInterstitialAdFailedToLoad(AdLoader<AdUnit> instance, object sender, AdFailedToLoadEventArgs args)
@@ -225,25 +222,25 @@ namespace Pancake.Monetization
 
 #endif
 
-        protected virtual void InternalBannerDisplayed(AdmobBannerLoader isntance) { CallBannerAdDisplayed(); }
-        protected virtual void InternalBannerCompleted(AdmobBannerLoader isntance) { CallBannerAdCompleted(); }
-        protected virtual void InternalInterstitialCompleted(AdmobInterstitialLoader instance) { CallInterstitialAdCompleted(); }
-        protected virtual void InternalInterstitialClosed(AdmobInterstitialLoader instance) { CallInterstitialAdClosed(); }
-        protected virtual void InternalInterstitialDispalyed(AdmobInterstitialLoader instance) { CallInterstitialAdDisplayed(); }
+        protected virtual void InternalBannerDisplayed(AdLoader<AdUnit> _) { CallBannerAdDisplayed(); }
+        protected virtual void InternalBannerCompleted(AdLoader<AdUnit> _) { CallBannerAdCompleted(); }
+        protected virtual void InternalInterstitialCompleted(AdLoader<AdUnit> _) { CallInterstitialAdCompleted(); }
+        protected virtual void InternalInterstitialClosed(AdLoader<AdUnit> _) { CallInterstitialAdClosed(); }
+        protected virtual void InternalInterstitialDispalyed(AdLoader<AdUnit> _) { CallInterstitialAdDisplayed(); }
 
-        protected virtual void InternalRewardSkipped(AdmobRewardedLoader instance) { CallRewardedAdSkipped(); }
+        protected virtual void InternalRewardSkipped(AdLoader<AdUnit> _) { CallRewardedAdSkipped(); }
 
-        protected virtual void InternalRewaredCompleted(AdmobRewardedLoader instance) { CallRewardedAdCompleted(); }
-        protected virtual void InternalRewaredClosed(AdmobRewardedLoader instance) { CallRewardedAdClosed(); }
-        protected virtual void InternalRewaredDisplayed(AdmobRewardedLoader instance) { CallRewardedAdDisplayed(); }
+        protected virtual void InternalRewaredCompleted(AdLoader<AdUnit> _) { CallRewardedAdCompleted(); }
+        protected virtual void InternalRewaredClosed(AdLoader<AdUnit> _) { CallRewardedAdClosed(); }
+        protected virtual void InternalRewaredDisplayed(AdLoader<AdUnit> _) { CallRewardedAdDisplayed(); }
 
-        protected virtual void InternalRewardedInterstitialSkipped(AdmobRewardedInterstitialLoader instance) { CallRewardedInterstitialAdSkipped(); }
-        protected virtual void InternalRewaredInterstitialCompleted(AdmobRewardedInterstitialLoader instance) { CallRewardedInterstitialAdCompleted(); }
-        protected virtual void InternalRewaredInterstitialClosed(AdmobRewardedInterstitialLoader instance) { CallRewardedInterstitialAdClosed(); }
-        protected virtual void InternalRewaredInterstitialDisplayed(AdmobRewardedInterstitialLoader instance) { CallRewardedInterstitialAdDisplayed(); }
+        protected virtual void InternalRewardedInterstitialSkipped(AdLoader<AdUnit> _) { CallRewardedInterstitialAdSkipped(); }
+        protected virtual void InternalRewaredInterstitialCompleted(AdLoader<AdUnit> _) { CallRewardedInterstitialAdCompleted(); }
+        protected virtual void InternalRewaredInterstitialClosed(AdLoader<AdUnit> _) { CallRewardedInterstitialAdClosed(); }
+        protected virtual void InternalRewaredInterstitialDisplayed(AdLoader<AdUnit> _) { CallRewardedInterstitialAdDisplayed(); }
 
-        protected virtual void InternalAppOpenCompleted(AdmobAppOpenLoader instance) { CallAppOpenAdCompleted(); }
-        protected virtual void InternalAppOpenDisplayed(AdmobAppOpenLoader instance) { CallAppOpenAdDisplayed(); }
+        protected virtual void InternalAppOpenCompleted(AdLoader<AdUnit> _) { CallAppOpenAdCompleted(); }
+        protected virtual void InternalAppOpenDisplayed(AdLoader<AdUnit> _) { CallAppOpenAdDisplayed(); }
 
         protected override void InternalShowBannerAd()
         {
@@ -265,7 +262,11 @@ namespace Pancake.Monetization
 
         protected override bool InternalIsRewardedAdReady() { return _rewarded.IsReady(); }
 
-        protected override void InternalShowRewardedAd() { _rewarded?.Show(); }
+        protected override IRewarded InternalShowRewardedAd()
+        {
+            _rewarded?.Show();
+            return _rewarded;
+        }
 
         protected override void InternalLoadRewardedInterstitialAd() { _rewardedInterstitial.Load(); }
 

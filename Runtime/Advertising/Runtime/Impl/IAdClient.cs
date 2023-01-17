@@ -44,7 +44,7 @@ namespace Pancake.Monetization
         event Action<IAdClient> OnRewardedAdDisplayed;
         void LoadRewardedAd();
         bool IsRewardedAdReady();
-        void ShowRewardedAd();
+        IRewarded ShowRewardedAd();
 
         #endregion
 

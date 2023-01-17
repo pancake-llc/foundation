@@ -33,7 +33,7 @@ namespace Pancake.Monetization
 
         protected override bool InternalIsRewardedAdReady() { return false; }
 
-        protected override void InternalShowRewardedAd() { }
+        protected override IRewarded InternalShowRewardedAd() { return null; }
     }
 }
 #endif

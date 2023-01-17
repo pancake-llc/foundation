@@ -425,7 +425,7 @@ namespace Pancake.Monetization
             return client.IsRewardedAdReady();
         }
 
-        private static void ShowRewardedAd(IAdClient client) { client.ShowRewardedAd(); }
+        private static IRewarded ShowRewardedAd(IAdClient client) { return client.ShowRewardedAd(); }
 
         private static void LoadRewardedInterstitialAd(IAdClient client)
         {
@@ -483,7 +483,7 @@ namespace Pancake.Monetization
 
         public static bool IsRewardedAdReady() { return IsRewardedAdReady(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
-        public static void ShowRewardedAd() { ShowRewardedAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
+        public static IRewarded ShowRewardedAd() { return ShowRewardedAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
         public static void LoadRewardedInterstitialAd() { LoadRewardedInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 

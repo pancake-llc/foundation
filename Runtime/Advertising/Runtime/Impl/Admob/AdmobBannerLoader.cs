@@ -18,8 +18,7 @@ namespace Pancake.Monetization
         public event Action<AdmobBannerLoader, object, EventArgs> OnLoadedEvent = delegate { };
         public event Action<AdmobBannerLoader, object, EventArgs> OnOpeningEvent = delegate { };
         public event Action<AdmobBannerLoader, object, AdValueEventArgs> OnPaidEvent = delegate { };
-
-
+        
         public AdmobBannerLoader() { unit = AdSettings.AdmobSettings.BannerAdUnit; }
 
         internal override void Load()

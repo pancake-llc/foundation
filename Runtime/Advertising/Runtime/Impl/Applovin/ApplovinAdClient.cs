@@ -1,5 +1,6 @@
 #if PANCAKE_ADS
 using System;
+using JetBrains.Annotations;
 
 #pragma warning disable CS0414
 // ReSharper disable AccessToStaticMemberViaDerivedType
@@ -18,6 +19,10 @@ namespace Pancake.Monetization
         private bool _isBannerDestroyed;
         private bool _isRewardedCompleted;
         private bool _isRewardedInterstitialCompleted;
+        internal Action rewardedCompletedChain;
+        internal Action rewardedDisplayChain;
+        internal Action rewardedSkippedChain;
+        internal Action rewardedClosedChain;
         public static ApplovinAdClient Instance => client ?? (client = new ApplovinAdClient());
 
 #if PANCAKE_MAX_ENABLE
@@ -98,20 +103,28 @@ namespace Pancake.Monetization
         internal void InvokeRewardedAdFaildToLoad() { OnRewardedAdFaildToLoad?.Invoke(); }
         internal void InvokeRewardedAdFaildToDisplay() { OnRewardedAdFaildToDisplay?.Invoke(); }
         internal void InvokeRewardedAdClicked() { OnRewardedAdClicked?.Invoke(); }
-        internal void InvokeRewardedAdDisplay() { CallRewardedAdDisplayed(); }
+
+        internal void InvokeRewardedAdDisplay()
+        {
+            CallRewardedAdDisplayed();
+            C.CallCacheCleanAction(ref rewardedDisplayChain);
+        }
 
         internal void InvokeRewardedAdHidden()
         {
             CallRewardedAdClosed();
+            C.CallCacheCleanAction(ref rewardedClosedChain);
             if (_isRewardedCompleted)
             {
                 CallRewardedAdCompleted();
+                C.CallCacheCleanAction(ref rewardedCompletedChain);
                 return;
             }
 
             CallRewardedAdSkipped();
+            C.CallCacheCleanAction(ref rewardedSkippedChain);
         }
-
+        
         internal void InvokeRewardedAdRevenuePaid(MaxSdkBase.AdInfo info) { OnRewardedAdRevenuePaid?.Invoke(info); }
 
         internal void InvokeRewardedAdReceivedReward(MaxSdkBase.Reward reward)
@@ -265,14 +278,16 @@ namespace Pancake.Monetization
 #endif
         }
 
-        protected override void InternalShowRewardedAd()
+        [CanBeNull]
+        protected override IRewarded InternalShowRewardedAd()
         {
 #if PANCAKE_MAX_ENABLE
-            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedAdUnit.Id)) return;
+            if (string.IsNullOrEmpty(AdSettings.MaxSettings.RewardedAdUnit.Id)) return null;
             _isRewardedCompleted = false;
             R.isShowingAd = true;
             MaxSdk.ShowRewardedAd(AdSettings.MaxSettings.RewardedAdUnit.Id);
 #endif
+            return _rewarded;
         }
 
         protected override bool InternalIsRewardedAdReady()
