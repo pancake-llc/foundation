@@ -21,7 +21,7 @@ namespace Pancake.Loader
         public void LoadScene(string sceneName, Func<bool> funcWaiting = null, Action prepareActiveScene = null)
         {
             LoadingComponent.instance = Instantiate(prefabLoading);
-            LoadingComponent.LoadScene(sceneName,
+            LoadingComponent.instance.LoadScene(sceneName,
                 funcWaiting,
                 prepareActiveScene,
                 onBeginEvents,
@@ -44,7 +44,7 @@ namespace Pancake.Loader
         public void LoadScene(string sceneName, string subScene, Func<bool> funcWaiting = null, Action prepareActiveScene = null)
         {
             LoadingComponent.instance = Instantiate(prefabLoading);
-            LoadingComponent.LoadScene(sceneName,
+            LoadingComponent.instance.LoadScene(sceneName,
                 subScene,
                 funcWaiting,
                 prepareActiveScene,

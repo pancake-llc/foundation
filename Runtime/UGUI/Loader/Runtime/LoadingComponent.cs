@@ -14,7 +14,7 @@ namespace Pancake.Loader
     [AddComponentMenu("")]
     public sealed class LoadingComponent : MonoBehaviour
     {
-        public static LoadingComponent instance;
+        internal static LoadingComponent instance;
 
         #region pak
 
@@ -85,7 +85,6 @@ namespace Pancake.Loader
         public CanvasGroup canvasGroup;
         public Slider progressBar;
         public Animator mainLoadingAnimator;
-        public static string prefabName = "Common";
 
         [Tooltip("Second(s)")] public float virtualLoadTime = 5;
         private float _currentTimeLoading;
@@ -99,7 +98,7 @@ namespace Pancake.Loader
         public UnityEvent onBeginEvents;
         public UnityEvent onFinishEvents;
 
-        public static bool processLoading;
+        private static bool processLoading;
         public bool updateHelper = false;
         private bool _onFinishInvoked;
         private AsyncOperation _loadingOperation;
@@ -146,7 +145,7 @@ namespace Pancake.Loader
             progressBar.value = 0;
         }
 
-        public static void LoadScene(
+        public void LoadScene(
             string sceneName,
             Func<bool> funcWaiting = null,
             Action prepareActiveScene = null,
@@ -154,19 +153,19 @@ namespace Pancake.Loader
             UnityEvent onFinishEvent = null)
         {
             processLoading = true;
-            DontDestroyOnLoad(instance.gameObject);
-            instance._waitingComplete = funcWaiting;
-            instance._prepareActiveScene = prepareActiveScene;
-            instance._onFinishAction = onFinishEvent;
-            instance._isWaitingPrepareActiveScene = false;
-            instance.gameObject.SetActive(true);
-            instance._loadingOperation = SceneManager.LoadSceneAsync(sceneName);
+            DontDestroyOnLoad(gameObject);
+            _waitingComplete = funcWaiting;
+            _prepareActiveScene = prepareActiveScene;
+            _onFinishAction = onFinishEvent;
+            _isWaitingPrepareActiveScene = false;
+            gameObject.SetActive(true);
+            _loadingOperation = SceneManager.LoadSceneAsync(sceneName);
             onBeginEvent?.Invoke();
-            instance.onBeginEvents.Invoke();
-            instance._loadingOperation.allowSceneActivation = false;
+            onBeginEvents.Invoke();
+            _loadingOperation.allowSceneActivation = false;
         }
 
-        public static void LoadScene(
+        public void LoadScene(
             string sceneName,
             string subScene,
             Func<bool> funcWaiting = null,
@@ -175,18 +174,18 @@ namespace Pancake.Loader
             UnityEvent onFinishEvent = null)
         {
             processLoading = true;
-            DontDestroyOnLoad(instance.gameObject);
-            instance._waitingComplete = funcWaiting;
-            instance._prepareActiveScene = prepareActiveScene;
-            instance._onFinishAction = onFinishEvent;
-            instance._isWaitingPrepareActiveScene = false;
-            instance.gameObject.SetActive(true);
-            instance._loadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-            instance._loadingOperationSubScene = SceneManager.LoadSceneAsync(subScene, LoadSceneMode.Additive);
+            DontDestroyOnLoad(gameObject);
+            _waitingComplete = funcWaiting;
+            _prepareActiveScene = prepareActiveScene;
+            _onFinishAction = onFinishEvent;
+            _isWaitingPrepareActiveScene = false;
+            gameObject.SetActive(true);
+            _loadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            _loadingOperationSubScene = SceneManager.LoadSceneAsync(subScene, LoadSceneMode.Additive);
             onBeginEvent?.Invoke();
-            instance.onBeginEvents.Invoke();
-            instance._loadingOperation.allowSceneActivation = false;
-            instance._loadingOperationSubScene.allowSceneActivation = true;
+            onBeginEvents.Invoke();
+            _loadingOperation.allowSceneActivation = false;
+            _loadingOperationSubScene.allowSceneActivation = true;
         }
 
         private void Update()
