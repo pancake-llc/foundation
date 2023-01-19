@@ -16,22 +16,6 @@ namespace Pancake.Loader
     {
         internal static LoadingComponent instance;
 
-        #region pak
-
-        public bool enablePressAnyKey;
-        public float pakSize = 35;
-        public TMP_FontAsset pakFont;
-        public Color pakColor = Color.white;
-        [TextArea] public string pakText = "Press {KEY} to continue";
-        public TextMeshProUGUI txtPak;
-        public TextMeshProUGUI txtCountdownPak;
-        public Slider sliderCountdownPak;
-        public KeyCode keyCode = KeyCode.Space;
-        public bool useSpecificKey;
-        [Tooltip("Second(s)")] [Range(1, 30)] public int pakCountdownTimer = 5;
-
-        #endregion
-
         #region spinner
 
         public Color spinnerColor = Color.white;
@@ -128,17 +112,10 @@ namespace Pancake.Loader
             {
                 background.sprite = backgroundCollection.PickRandom();
             }
-
             else
             {
                 backgroundAnimator.enabled = false;
                 background.sprite = singleBackgroundSprite;
-            }
-
-            if (enablePressAnyKey && sliderCountdownPak != null)
-            {
-                sliderCountdownPak.maxValue = pakCountdownTimer;
-                sliderCountdownPak.value = pakCountdownTimer;
             }
 
             backgroundAnimator.speed = backgroundFadingSpeed;
@@ -216,68 +193,18 @@ namespace Pancake.Loader
                         }
 
                         if (_waitingComplete != null && !_waitingComplete.Invoke()) return;
+                        
+                        _loadingOperation.allowSceneActivation = true;
+                        canvasGroup.alpha -= fadingAnimationSpeed * Time.deltaTime;
 
-                        if (enablePressAnyKey)
+                        if (canvasGroup.alpha <= 0)
+                            Destroy(gameObject);
+
+                        if (_onFinishInvoked == false)
                         {
-                            _loadingOperation.allowSceneActivation = true;
-
-                            if (_onFinishInvoked == false)
-                            {
-                                onFinishEvents.Invoke();
-                                _onFinishAction?.Invoke();
-                                _onFinishInvoked = true;
-                            }
-
-                            if (mainLoadingAnimator.GetCurrentAnimatorStateInfo(0).IsName("main_start"))
-                                mainLoadingAnimator.Play("main_switch_pak");
-
-                            if (_enableFading) canvasGroup.alpha -= fadingAnimationSpeed * Time.deltaTime;
-
-                            else
-                            {
-                                sliderCountdownPak.value -= 1 * Time.deltaTime;
-                                txtCountdownPak.text = $"{Mathf.Round(sliderCountdownPak.value * 1)}";
-
-                                if (sliderCountdownPak.value == 0)
-                                {
-                                    _enableFading = true;
-                                    DestroyLoadingScreen().RunCoroutine();
-                                    canvasGroup.interactable = false;
-                                    canvasGroup.blocksRaycasts = false;
-                                }
-                            }
-
-                            if (_enableFading == false && useSpecificKey == false && Input.anyKeyDown)
-                            {
-                                _enableFading = true;
-                                DestroyLoadingScreen().RunCoroutine();
-                                canvasGroup.interactable = false;
-                                canvasGroup.blocksRaycasts = false;
-                            }
-
-                            else if (_enableFading == false && useSpecificKey && Input.GetKeyDown(keyCode))
-                            {
-                                _enableFading = true;
-                                DestroyLoadingScreen().RunCoroutine();
-                                canvasGroup.interactable = false;
-                                canvasGroup.blocksRaycasts = false;
-                            }
-                        }
-
-                        else
-                        {
-                            _loadingOperation.allowSceneActivation = true;
-                            canvasGroup.alpha -= fadingAnimationSpeed * Time.deltaTime;
-
-                            if (canvasGroup.alpha <= 0)
-                                Destroy(gameObject);
-
-                            if (_onFinishInvoked == false)
-                            {
-                                onFinishEvents.Invoke();
-                                _onFinishAction?.Invoke();
-                                _onFinishInvoked = true;
-                            }
+                            onFinishEvents.Invoke();
+                            _onFinishAction?.Invoke();
+                            _onFinishInvoked = true;
                         }
                     }
 
@@ -292,7 +219,7 @@ namespace Pancake.Loader
                     progressBar.value = _loadingOperation.progress;
                     txtStatus.text = string.Format(statusSchema, Mathf.Round(progressBar.value * 100).ToString(CultureInfo.InvariantCulture));
 
-                    if (_loadingOperation.isDone && enablePressAnyKey == false)
+                    if (_loadingOperation.isDone)
                     {
                         canvasGroup.alpha -= fadingAnimationSpeed * Time.deltaTime;
 
@@ -311,52 +238,6 @@ namespace Pancake.Loader
                         canvasGroup.alpha += fadingAnimationSpeed * Time.deltaTime;
 
                         if (canvasGroup.alpha >= 1) _loadingOperation.allowSceneActivation = true;
-                    }
-
-                    if (_loadingOperation.isDone && enablePressAnyKey)
-                    {
-                        _loadingOperation.allowSceneActivation = true;
-
-                        if (_onFinishInvoked == false)
-                        {
-                            onFinishEvents.Invoke();
-                            _onFinishAction?.Invoke();
-                            _onFinishInvoked = true;
-                        }
-
-                        if (mainLoadingAnimator.GetCurrentAnimatorStateInfo(0).IsName("main_start")) mainLoadingAnimator.Play("main_switch_pak");
-
-                        if (_enableFading) canvasGroup.alpha -= fadingAnimationSpeed * Time.deltaTime;
-
-                        else
-                        {
-                            sliderCountdownPak.value -= Time.deltaTime;
-                            txtCountdownPak.text = $"{Mathf.Round(sliderCountdownPak.value * 1)}";
-
-                            if (sliderCountdownPak.value == 0)
-                            {
-                                _enableFading = true;
-                                DestroyLoadingScreen().RunCoroutine();
-                                canvasGroup.interactable = false;
-                                canvasGroup.blocksRaycasts = false;
-                            }
-                        }
-
-                        if (_enableFading == false && useSpecificKey == false && Input.anyKeyDown)
-                        {
-                            _enableFading = true;
-                            DestroyLoadingScreen().RunCoroutine();
-                            canvasGroup.interactable = false;
-                            canvasGroup.blocksRaycasts = false;
-                        }
-
-                        else if (_enableFading == false && useSpecificKey && Input.GetKeyDown(keyCode))
-                        {
-                            _enableFading = true;
-                            DestroyLoadingScreen().RunCoroutine();
-                            canvasGroup.interactable = false;
-                            canvasGroup.blocksRaycasts = false;
-                        }
                     }
                 }
 

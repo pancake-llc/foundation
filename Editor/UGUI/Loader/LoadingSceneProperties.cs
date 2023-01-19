@@ -12,18 +12,6 @@ namespace Pancake.Editor
         public static Field backgroundFadingSpeed = new Field(new GUIContent("  Fade Speed"));
         public static Field backgroundAnimator = new Field(new GUIContent("Animator"));
 
-        public static Field enablePressAnyKey = new Field(new GUIContent("Enable"));
-        public static Field pakSize = new Field(new GUIContent("  Text Size"));
-        public static Field pakFont = new Field(new GUIContent("  Text Font"));
-        public static Field pakColor = new Field(new GUIContent("  Text Color"));
-        public static Field pakText = new Field(new GUIContent("pakText"));
-        public static Field txtPak = new Field(new GUIContent("Text"));
-        public static Field txtCountdownPak = new Field(new GUIContent("Text Cooldown"));
-        public static Field sliderCountdownPak = new Field(new GUIContent("Slider"));
-        public static Field keyCode = new Field(new GUIContent("  Key Code"));
-        public static Field useSpecificKey = new Field(new GUIContent("Use Specific Key"));
-        public static Field pakCountdownTimer = new Field(new GUIContent("Countdown(s)"));
-
         public static Field spinnerColor = new Field(new GUIContent("Color"));
         public static Field spinnerItem = new Field(new GUIContent("spinnerItem"));
         public static Field spinnerParent = new Field(new GUIContent("Root Spinner"));

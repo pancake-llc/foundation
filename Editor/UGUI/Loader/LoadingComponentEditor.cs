@@ -32,9 +32,6 @@ namespace Pancake.Editor
             LoadingSceneProperties.statusColor.property = serializedObject.FindProperty("statusColor");
             LoadingSceneProperties.statusSize.property = serializedObject.FindProperty("statusSize");
             LoadingSceneProperties.statusFont.property = serializedObject.FindProperty("statusFont");
-            LoadingSceneProperties.pakColor.property = serializedObject.FindProperty("pakColor");
-            LoadingSceneProperties.pakSize.property = serializedObject.FindProperty("pakSize");
-            LoadingSceneProperties.pakFont.property = serializedObject.FindProperty("pakFont");
             LoadingSceneProperties.spinnerColor.property = serializedObject.FindProperty("spinnerColor");
             LoadingSceneProperties.spinnerIndex.property = serializedObject.FindProperty("spinnerIndex");
             LoadingSceneProperties.statusSchema.property = serializedObject.FindProperty("statusSchema");
@@ -57,16 +54,8 @@ namespace Pancake.Editor
             LoadingSceneProperties.background.property = serializedObject.FindProperty("background");
             LoadingSceneProperties.backgroundAnimator.property = serializedObject.FindProperty("backgroundAnimator");
             LoadingSceneProperties.mainLoadingAnimator.property = serializedObject.FindProperty("mainLoadingAnimator");
-            LoadingSceneProperties.txtPak.property = serializedObject.FindProperty("txtPak");
-            LoadingSceneProperties.sliderCountdownPak.property = serializedObject.FindProperty("sliderCountdownPak");
-            LoadingSceneProperties.txtCountdownPak.property = serializedObject.FindProperty("txtCountdownPak");
             LoadingSceneProperties.spinnerParent.property = serializedObject.FindProperty("spinnerParent");
             LoadingSceneProperties.enableStatusLabel.property = serializedObject.FindProperty("enableStatusLabel");
-            LoadingSceneProperties.enablePressAnyKey.property = serializedObject.FindProperty("enablePressAnyKey");
-            LoadingSceneProperties.useSpecificKey.property = serializedObject.FindProperty("useSpecificKey");
-            LoadingSceneProperties.keyCode.property = serializedObject.FindProperty("keyCode");
-            LoadingSceneProperties.pakText.property = serializedObject.FindProperty("pakText");
-            LoadingSceneProperties.pakCountdownTimer.property = serializedObject.FindProperty("pakCountdownTimer");
             LoadingSceneProperties.enableVirtualLoading.property = serializedObject.FindProperty("enableVirtualLoading");
             LoadingSceneProperties.virtualLoadTime.property = serializedObject.FindProperty("virtualLoadTime");
             LoadingSceneProperties.fadingAnimationSpeed.property = serializedObject.FindProperty("fadingAnimationSpeed");
@@ -96,8 +85,6 @@ namespace Pancake.Editor
             Uniform.DrawGroupFoldout("LOADING_BACKGROUND", "BG", DrawBackground, false);
             Uniform.SpaceOneLine();
             Uniform.DrawGroupFoldout("LOADING_STATUS", "STATUS", DrawStatus, false);
-            Uniform.SpaceOneLine();
-            Uniform.DrawGroupFoldout("LOADING_PAK", "PRESS ANY KEY", DrawPak, false);
             Uniform.SpaceOneLine();
             Uniform.DrawGroupFoldout("LOADING_SETTING", "SETTING", DrawSetting, false);
 
@@ -140,13 +127,6 @@ namespace Pancake.Editor
                         _loading.statusFont = _loading.txtStatus.font;
                         _loading.statusColor = _loading.txtStatus.color;
                     }
-
-                    if (LoadingSceneProperties.enablePressAnyKey.property.boolValue)
-                    {
-                        _loading.pakSize = _loading.txtPak.fontSize;
-                        _loading.pakFont = _loading.txtPak.font;
-                        _loading.pakColor = _loading.txtPak.color;
-                    }
                 }
 
                 if (GUILayout.Button("Update Color"))
@@ -163,31 +143,6 @@ namespace Pancake.Editor
                         _loading.txtStatus.fontSize = _loading.statusSize;
                         _loading.txtStatus.font = _loading.statusFont;
                         _loading.txtStatus.color = _loading.statusColor;
-                    }
-
-                    if (LoadingSceneProperties.enablePressAnyKey.property.boolValue)
-                    {
-                        _loading.txtPak.fontSize = _loading.pakSize;
-                        _loading.txtPak.font = _loading.pakFont;
-                        _loading.txtPak.color = _loading.pakColor;
-                        _loading.txtCountdownPak.color = _loading.pakColor;
-
-                        try
-                        {
-                            _pakCountdownFilled = _loading.sliderCountdownPak.transform.Find("Filled").GetComponent<Image>();
-                            _pakCountdownBg = _loading.sliderCountdownPak.transform.Find("Background").GetComponent<Image>();
-                        }
-
-                        catch
-                        {
-                            //
-                        }
-
-                        if (_pakCountdownFilled != null && _pakCountdownBg != null)
-                        {
-                            _pakCountdownFilled.color = _loading.spinnerColor;
-                            _pakCountdownBg.color = new Color(_loading.spinnerColor.r, _loading.spinnerColor.g, _loading.spinnerColor.b, 0.08f);
-                        }
                     }
 
                     try
@@ -317,66 +272,6 @@ namespace Pancake.Editor
 
                 if (LoadingSceneProperties.txtStatus.property != null && LoadingSceneProperties.txtStatus.property.objectReferenceValue != null)
                     _loading.txtStatus.gameObject.SetActive(LoadingSceneProperties.enableStatusLabel.property.boolValue);
-            }
-
-            void DrawPak()
-            {
-                Uniform.Toggle(LoadingSceneProperties.enablePressAnyKey.property, LoadingSceneProperties.enablePressAnyKey.content);
-                if (LoadingSceneProperties.enablePressAnyKey.property.boolValue)
-                {
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.txtCountdownPak.property, LoadingSceneProperties.txtCountdownPak.content);
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.txtPak.property, LoadingSceneProperties.txtPak.content);
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.pakSize.property, LoadingSceneProperties.pakSize.content);
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.pakFont.property, LoadingSceneProperties.pakFont.content);
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.pakColor.property, LoadingSceneProperties.pakColor.content);
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.sliderCountdownPak.property, LoadingSceneProperties.sliderCountdownPak.content);
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.pakCountdownTimer.property, LoadingSceneProperties.pakCountdownTimer.content);
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.pakText.property, new GUIContent(""));
-
-                    if (LoadingSceneProperties.txtPak.property != null && LoadingSceneProperties.txtPak.property.objectReferenceValue != null)
-                    {
-                        _loading.txtPak.text = _loading.pakText;
-
-                        _loading.txtPak.fontSize = _loading.pakSize;
-                        _loading.txtPak.font = _loading.pakFont;
-                        _loading.txtPak.color = _loading.pakColor;
-                        _loading.txtCountdownPak.color = _loading.pakColor;
-
-                        try
-                        {
-                            _pakCountdownFilled = _loading.sliderCountdownPak.transform.Find("Filled").GetComponent<Image>();
-                            _pakCountdownBg = _loading.sliderCountdownPak.transform.Find("Background").GetComponent<Image>();
-                        }
-                        catch
-                        {
-                            //
-                        }
-
-                        if (_pakCountdownFilled != null && _pakCountdownBg != null)
-                        {
-                            _pakCountdownFilled.color = _loading.spinnerColor;
-                            _pakCountdownBg.color = new Color(_loading.spinnerColor.r, _loading.spinnerColor.g, _loading.spinnerColor.b, 0.08f);
-                        }
-                    }
-
-                    Uniform.SpaceTwoLine();
-
-                    Uniform.Toggle(LoadingSceneProperties.useSpecificKey.property, LoadingSceneProperties.useSpecificKey.content);
-                    if (LoadingSceneProperties.useSpecificKey.property.boolValue)
-                    {
-                        EditorGUILayout.PropertyField(LoadingSceneProperties.keyCode.property, LoadingSceneProperties.keyCode.content);
-                    }
-
-                    if (_loading.mainLoadingAnimator == null && LoadingSceneProperties.enablePressAnyKey.property.boolValue)
-                    {
-                        GUILayout.Space(2);
-                        GUILayout.BeginHorizontal();
-                        EditorGUILayout.HelpBox("'Main Animator' is not assigned. Please assign the correct variable.", MessageType.Error);
-                        GUILayout.EndHorizontal();
-                    }
-
-                    GUILayout.Space(2);
-                }
             }
 
             void DrawSetting()
