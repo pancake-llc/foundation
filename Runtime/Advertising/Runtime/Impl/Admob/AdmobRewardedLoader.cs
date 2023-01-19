@@ -1,7 +1,7 @@
 #if PANCAKE_ADS
 using UnityEngine;
-#if PANCAKE_ADMOB_ENABLE
 using System;
+#if PANCAKE_ADMOB_ENABLE
 using System.Collections.Generic;
 using GoogleMobileAds.Api;
 #endif
@@ -109,6 +109,7 @@ namespace Pancake.Monetization
 #endif
         public void Register(string key, Action action)
         {
+#if PANCAKE_ADMOB_ENABLE
             switch (key)
             {
                 case "OnDisplayed":
@@ -124,6 +125,7 @@ namespace Pancake.Monetization
                     _skippedCallback = action;
                     break;
             }
+#endif
         }
     }
 }
