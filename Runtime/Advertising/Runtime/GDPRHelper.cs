@@ -1,4 +1,3 @@
-#if PANCAKE_ADS
 using UnityEngine;
 
 namespace Pancake.Monetization
@@ -36,7 +35,11 @@ namespace Pancake.Monetization
             Time.timeScale = 1;
         }
 
-        public void OnButtonPrivacyPolicyPressed() { Application.OpenURL(AdSettings.AdCommonSettings.PrivacyPolicyUrl); }
+        public void OnButtonPrivacyPolicyPressed()
+        {
+#if PANCAKE_ADS
+            Application.OpenURL(AdSettings.AdCommonSettings.PrivacyPolicyUrl);
+#endif
+        }
     }
 }
-#endif
