@@ -7,9 +7,6 @@ namespace Pancake.Loader
     {
         [Header("SETTING")] public Slider slider;
 
-        public override void UpdateValue(float value)
-        {
-            
-        }
+        public override void UpdateValue(float value) { }
     }
 }

@@ -86,10 +86,10 @@ namespace Pancake.Loader
         public Slider progressBar;
         public Animator mainLoadingAnimator;
 
-        [Tooltip("Second(s)")] public float virtualLoadTime = 5;
+        [Tooltip("Second(s)")] public float virtualLoadTime = 2;
         private float _currentTimeLoading;
 
-        public bool enableVirtualLoading;
+        public bool enableVirtualLoading = true;
         public bool enableRandomBackground = true;
 
         [Range(0.1f, 10)] public float fadingAnimationSpeed = 2.0f;
