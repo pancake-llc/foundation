@@ -172,8 +172,13 @@ namespace Pancake.Notification
         
         public IEnumerator RequestNotificationPermission()
         {
-            var request = new PermissionRequest();
-            while (request.Status == PermissionStatus.RequestPending) yield return null;
+            if (AndroidNotificationCenter.UserPermissionToPost != PermissionStatus.Allowed)
+            {
+                var request = new PermissionRequest();
+                while (request.Status == PermissionStatus.RequestPending) yield return null;
+            }
+
+            yield return null;
         }
     }
 }
