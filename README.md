@@ -47,9 +47,9 @@ Add the lines below to `Packages/manifest.json`
 - With out `heart`
 > Size apk : 7.21mb
 
-> Default not turn on any module in wizard : 4.09mb
+> Default not turn on any module in wizard => `heart` size : 4.09mb
 
-> Enable all module in wizard : 12.1mb - 7.21mb = 4.89mb
+> Enable all module in wizard => `heart` size : 12.1mb - 7.21mb = 4.89mb
 
 # Table of Contents
 
