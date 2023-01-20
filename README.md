@@ -12,10 +12,10 @@
 
 Add the lines below to `Packages/manifest.json`
 
-- for version `1.2.22`
+- for version `1.2.24`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.2.22",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.2.24",
 ```
 
 
@@ -68,7 +68,6 @@ Add the lines below to `Packages/manifest.json`
 - [Linq](https://github.com/pancake-llc/heart/wiki/linq)
 - [Loading Scene](https://github.com/pancake-llc/heart/wiki/loading-scene)
 - [Notification](https://github.com/pancake-llc/heart/wiki/notification)
-- [Observer Collection](https://github.com/pancake-llc/heart/wiki/observable-collection)
 - [Playfab](https://github.com/pancake-llc/heart/wiki/playfab)
 - [Pool](https://github.com/pancake-llc/heart/wiki/pool)
 - [Simple Json](https://github.com/pancake-llc/heart/wiki/simple-json)
