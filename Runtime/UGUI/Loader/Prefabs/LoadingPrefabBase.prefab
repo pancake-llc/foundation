@@ -977,8 +977,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 4647301718394447486}
   progressBar: {fileID: 3920709171825963789}
   mainLoadingAnimator: {fileID: 4793683857312699445}
-  virtualLoadTime: 2
-  enableVirtualLoading: 1
+  virtualLoadTime: 1.5
   enableRandomBackground: 0
   fadingAnimationSpeed: 2
   timeDelayDestroy: 1.5

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Pancake.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -73,7 +74,6 @@ namespace Pancake.Loader
         [Tooltip("Second(s)")] public float virtualLoadTime = 2;
         private float _currentTimeLoading;
 
-        public bool enableVirtualLoading = true;
         public bool enableRandomBackground = true;
 
         [Range(0.1f, 10)] public float fadingAnimationSpeed = 2.0f;
@@ -88,6 +88,7 @@ namespace Pancake.Loader
         private AsyncOperation _loadingOperation;
         private AsyncOperation _loadingOperationSubScene;
         private Func<bool> _waitingComplete;
+        private Func<bool> _funcWaitBeforeLoadScene;
         private Action _prepareActiveScene;
         private bool _isWaitingPrepareActiveScene;
         private UnityEvent _onFinishAction;
@@ -125,6 +126,7 @@ namespace Pancake.Loader
         public void LoadScene(
             string sceneName,
             Func<bool> funcWaiting = null,
+            Func<bool> funcWaitBeforeLoadScene = null,
             Action prepareActiveScene = null,
             UnityEvent onBeginEvent = null,
             UnityEvent onFinishEvent = null)
@@ -133,12 +135,21 @@ namespace Pancake.Loader
             DontDestroyOnLoad(gameObject);
             _waitingComplete = funcWaiting;
             _prepareActiveScene = prepareActiveScene;
+            _funcWaitBeforeLoadScene = funcWaitBeforeLoadScene;
             _onFinishAction = onFinishEvent;
             _isWaitingPrepareActiveScene = false;
             gameObject.SetActive(true);
-            _loadingOperation = SceneManager.LoadSceneAsync(sceneName);
+
             onBeginEvent?.Invoke();
             onBeginEvents.Invoke();
+            WaitDoneBeforeLoadSceneAsync(sceneName);
+        }
+
+        private async void WaitDoneBeforeLoadSceneAsync(string sceneName)
+        {
+            if (_funcWaitBeforeLoadScene != null) await UniTask.WaitUntil(_funcWaitBeforeLoadScene);
+
+            _loadingOperation = SceneManager.LoadSceneAsync(sceneName);
             _loadingOperation.allowSceneActivation = false;
         }
 
@@ -146,6 +157,7 @@ namespace Pancake.Loader
             string sceneName,
             string subScene,
             Func<bool> funcWaiting = null,
+            Func<bool> funcWaitBeforeLoadScene = null,
             Action prepareActiveScene = null,
             UnityEvent onBeginEvent = null,
             UnityEvent onFinishEvent = null)
@@ -154,73 +166,59 @@ namespace Pancake.Loader
             DontDestroyOnLoad(gameObject);
             _waitingComplete = funcWaiting;
             _prepareActiveScene = prepareActiveScene;
+            _funcWaitBeforeLoadScene = funcWaitBeforeLoadScene;
             _onFinishAction = onFinishEvent;
             _isWaitingPrepareActiveScene = false;
             gameObject.SetActive(true);
-            _loadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-            _loadingOperationSubScene = SceneManager.LoadSceneAsync(subScene, LoadSceneMode.Additive);
+
             onBeginEvent?.Invoke();
             onBeginEvents.Invoke();
+            WaitDoneBeforeLoadSceneAsyncSub(sceneName, subScene);
+        }
+
+        private async void WaitDoneBeforeLoadSceneAsyncSub(string sceneName, string subScene)
+        {
+            if (_funcWaitBeforeLoadScene != null) await UniTask.WaitUntil(_funcWaitBeforeLoadScene);
+
+            _loadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            _loadingOperationSubScene = SceneManager.LoadSceneAsync(subScene, LoadSceneMode.Additive);
             _loadingOperation.allowSceneActivation = false;
-            _loadingOperationSubScene.allowSceneActivation = true;
+            _loadingOperationSubScene.allowSceneActivation = false;
         }
 
         private void Update()
         {
             if (processLoading)
             {
-                if (enableVirtualLoading)
+                #region virtual loading
+
+                if (progressBar.value < 0.4f)
                 {
-                    if (progressBar.value < 0.4f)
-                    {
-                        progressBar.value += 1 / virtualLoadTime / 3 * Time.deltaTime;
-                        _currentTimeLoading += Time.deltaTime / 3f;
-                    }
-                    else
-                    {
-                        progressBar.value += 1 / virtualLoadTime * Time.deltaTime;
-                        _currentTimeLoading += Time.deltaTime;
-                    }
-
-                    txtStatus.text = string.Format(statusSchema, Mathf.Round(progressBar.value * 100).ToString(CultureInfo.InvariantCulture));
-
-                    if (_currentTimeLoading >= virtualLoadTime)
-                    {
-                        if (_prepareActiveScene != null && !_isWaitingPrepareActiveScene)
-                        {
-                            _isWaitingPrepareActiveScene = true;
-                            _prepareActiveScene.Invoke();
-                        }
-
-                        if (_waitingComplete != null && !_waitingComplete.Invoke()) return;
-                        
-                        _loadingOperation.allowSceneActivation = true;
-                        canvasGroup.alpha -= fadingAnimationSpeed * Time.deltaTime;
-
-                        if (canvasGroup.alpha <= 0)
-                            Destroy(gameObject);
-
-                        if (_onFinishInvoked == false)
-                        {
-                            onFinishEvents.Invoke();
-                            _onFinishAction?.Invoke();
-                            _onFinishInvoked = true;
-                        }
-                    }
-
-                    else
-                    {
-                        if (canvasGroup.alpha < 1) canvasGroup.alpha += fadingAnimationSpeed * Time.deltaTime;
-                    }
+                    progressBar.value += 1 / virtualLoadTime / 3 * Time.deltaTime;
+                    _currentTimeLoading += Time.deltaTime / 3f;
                 }
-
                 else
                 {
-                    progressBar.value = _loadingOperation.progress;
-                    txtStatus.text = string.Format(statusSchema, Mathf.Round(progressBar.value * 100).ToString(CultureInfo.InvariantCulture));
+                    progressBar.value += 1 / virtualLoadTime * Time.deltaTime;
+                    _currentTimeLoading += Time.deltaTime;
+                }
 
-                    if (_loadingOperation.isDone)
+                txtStatus.text = string.Format(statusSchema, Mathf.Round(progressBar.value * 100).ToString(CultureInfo.InvariantCulture));
+
+                if (_currentTimeLoading >= virtualLoadTime)
+                {
+                    if (_prepareActiveScene != null && !_isWaitingPrepareActiveScene)
                     {
+                        _isWaitingPrepareActiveScene = true;
+                        _prepareActiveScene.Invoke();
+                    }
+
+                    if (_waitingComplete != null && !_waitingComplete.Invoke()) return;
+
+                    if (_loadingOperation != null)
+                    {
+                        _loadingOperation.allowSceneActivation = true;
+                        if (_loadingOperationSubScene != null) _loadingOperationSubScene.allowSceneActivation = true;
                         canvasGroup.alpha -= fadingAnimationSpeed * Time.deltaTime;
 
                         if (canvasGroup.alpha <= 0) Destroy(gameObject);
@@ -232,14 +230,13 @@ namespace Pancake.Loader
                             _onFinishInvoked = true;
                         }
                     }
-
-                    else if (!_loadingOperation.isDone)
-                    {
-                        canvasGroup.alpha += fadingAnimationSpeed * Time.deltaTime;
-
-                        if (canvasGroup.alpha >= 1) _loadingOperation.allowSceneActivation = true;
-                    }
                 }
+                else
+                {
+                    if (canvasGroup.alpha < 1) canvasGroup.alpha += fadingAnimationSpeed * Time.deltaTime;
+                }
+
+                #endregion
 
                 if (enableRandomBackground)
                 {

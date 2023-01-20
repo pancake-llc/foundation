@@ -36,8 +36,7 @@ namespace Pancake.Editor
         public static Field canvasGroup = new Field(new GUIContent("Root"));
         public static Field progressBar = new Field(new GUIContent("ProgressBar"));
         public static Field mainLoadingAnimator = new Field(new GUIContent("Canvas Animator"));
-        public static Field virtualLoadTime = new Field(new GUIContent("  Duration(s)"));
-        public static Field enableVirtualLoading = new Field(new GUIContent("Virtual Loading"));
+        public static Field virtualLoadTime = new Field(new GUIContent("Duration Loading(s)"));
         public static Field enableRandomBackground = new Field(new GUIContent("Enable Random"));
         public static Field fadingAnimationSpeed = new Field(new GUIContent("Fade Speed"));
         public static Field timeDelayDestroy = new Field(new GUIContent("Delay Destroy"));

@@ -56,7 +56,6 @@ namespace Pancake.Editor
             LoadingSceneProperties.mainLoadingAnimator.property = serializedObject.FindProperty("mainLoadingAnimator");
             LoadingSceneProperties.spinnerParent.property = serializedObject.FindProperty("spinnerParent");
             LoadingSceneProperties.enableStatusLabel.property = serializedObject.FindProperty("enableStatusLabel");
-            LoadingSceneProperties.enableVirtualLoading.property = serializedObject.FindProperty("enableVirtualLoading");
             LoadingSceneProperties.virtualLoadTime.property = serializedObject.FindProperty("virtualLoadTime");
             LoadingSceneProperties.fadingAnimationSpeed.property = serializedObject.FindProperty("fadingAnimationSpeed");
             LoadingSceneProperties.timeDelayDestroy.property = serializedObject.FindProperty("timeDelayDestroy");
@@ -283,9 +282,8 @@ namespace Pancake.Editor
                 EditorGUILayout.PropertyField(LoadingSceneProperties.fadingAnimationSpeed.property, LoadingSceneProperties.fadingAnimationSpeed.content);
                 EditorGUILayout.PropertyField(LoadingSceneProperties.timeDelayDestroy.property, LoadingSceneProperties.timeDelayDestroy.content);
                 Uniform.SpaceOneLine();
-                Uniform.Toggle(LoadingSceneProperties.enableVirtualLoading.property, LoadingSceneProperties.enableVirtualLoading.content);
-                if (LoadingSceneProperties.enableVirtualLoading.property.boolValue)
-                    EditorGUILayout.PropertyField(LoadingSceneProperties.virtualLoadTime.property, LoadingSceneProperties.virtualLoadTime.content);
+               
+                EditorGUILayout.PropertyField(LoadingSceneProperties.virtualLoadTime.property, LoadingSceneProperties.virtualLoadTime.content);
                 Uniform.SpaceOneLine();
                 EditorGUILayout.PropertyField(LoadingSceneProperties.onBeginEvents.property);
                 EditorGUILayout.PropertyField(LoadingSceneProperties.onFinishEvents.property);
