@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using Pancake.Linq;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -58,9 +59,10 @@ namespace Pancake.Editor
         public static Texture2D EvenBackgroundDark => InEditor.FindAssetWithPath<Texture2D>("even_bg_dark.png", RELATIVE_PATH);
         public static Texture2D EvenBackgroundBlue => InEditor.FindAssetWithPath<Texture2D>("even_bg_select.png", RELATIVE_PATH);
 
-        public static Sprite FetchSpriteZero => InEditor.FindAssetWithPath<Sprite>("fetch_01.png", "Runtime/DefaultAssets/Sprites");
-        public static Sprite CircleRingJoystick => InEditor.FindAssetWithPath<Sprite>("circle-border-06.png", "Runtime/DefaultAssets/Sprites");
-        public static Sprite KnobJoystick => InEditor.FindAssetWithPath<Sprite>("circle.png", "Runtime/DefaultAssets/Sprites");
+        public static Sprite FetchSpriteZero => InEditor.FindAssetsWithPath<Sprite>("default.png", "Runtime/DefaultAssets/Sprites").First(_=>_.name.Equals("fetch_01"));
+        public static Sprite CircleRingJoystick => InEditor.FindAssetsWithPath<Sprite>("default.png", "Runtime/DefaultAssets/Sprites").First(_=>_.name.Equals("circle-border-06"));
+        
+        public static Sprite KnobJoystick => InEditor.FindAssetsWithPath<Sprite>("default.png", "Runtime/DefaultAssets/Sprites").First(_=>_.name.Equals("circle"));
         public static AnimatorController FetchAnimator => InEditor.FindAssetWithPath<AnimatorController>("FetchAnimator.controller", "Runtime/DefaultAssets/Animation");
     }
 }
