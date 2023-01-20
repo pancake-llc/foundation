@@ -18,7 +18,7 @@ namespace Pancake.Loader
         /// <param name="sceneName">name scene to load</param>
         /// <param name="funcWaiting"> condition to waiting done loading progress</param>
         /// <param name="actionWaitBeforeLoadScene">action wait done before call load scene async</param>
-        /// <param name="prepareActiveScene">action prepare call before action scene</param>
+        /// <param name="prepareActiveScene">action prepare call before active scene</param>
         public void LoadScene(string sceneName, Func<bool> funcWaiting = null, Func<bool> actionWaitBeforeLoadScene = null, Action prepareActiveScene = null)
         {
             LoadingComponent.instance = Instantiate(prefabLoading);
@@ -43,7 +43,7 @@ namespace Pancake.Loader
         /// <param name="subScene">sub scene name to load</param>
         /// <param name="funcWaiting"> condition to waiting done loading progress</param>
         /// <param name="actionWaitBeforeLoadScene">action wait done before call load scene async</param>
-        /// <param name="prepareActiveScene">action prepare call before action scene</param>
+        /// <param name="prepareActiveScene">action prepare call before active scene</param>
         public void LoadScene(
             string sceneName,
             string subScene,
