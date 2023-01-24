@@ -30,9 +30,9 @@ namespace Pancake
         public static event Action<bool> onGameFocus;
         public static event Action onGameQuit;
 
-        public static readonly List<ITickSystem> tickSystems = new List<ITickSystem>(1024);
-        public static readonly List<IFixedTickSystem> fixedTickSystems = new List<IFixedTickSystem>(512);
-        public static readonly List<ILateTickSystem> lateTickSystems = new List<ILateTickSystem>(256);
+        private static readonly List<ITickSystem> tickSystems = new List<ITickSystem>(1024);
+        private static readonly List<IFixedTickSystem> fixedTickSystems = new List<IFixedTickSystem>(512);
+        private static readonly List<ILateTickSystem> lateTickSystems = new List<ILateTickSystem>(256);
 
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
         private const string APP_INSTALLATION_TIMESTAMP_PPKEY = "APP_INSTALLATION_TIMESTAMP";
@@ -125,6 +125,18 @@ namespace Pancake
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
         }
+
+        public static void AddTick(ITickSystem tick) { tickSystems.Add(tick); }
+
+        public static void AddFixedTick(IFixedTickSystem tick) { fixedTickSystems.Add(tick); }
+
+        public static void AddLateTick(ILateTickSystem tick) { lateTickSystems.Add(tick); }
+
+        public static void RemoveTick(ITickSystem tick) { tickSystems.Remove(tick); }
+
+        public static void RemoveFixedTick(IFixedTickSystem tick) { fixedTickSystems.Remove(tick); }
+
+        public static void RemoveLateTick(ILateTickSystem tick) { lateTickSystems.Remove(tick); }
 
         public static void AddPauseCallback(Action<bool> callback)
         {
