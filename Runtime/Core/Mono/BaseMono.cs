@@ -3,7 +3,7 @@ namespace Pancake
     /// <summary>
     /// Base class MonoBehavior
     /// </summary>
-    public class BaseMono : MonoAllocation, ITickSystem, IFixedTickSystem, ILateTickSystem
+    public class BaseMono : Mono, ITickSystem, IFixedTickSystem, ILateTickSystem
     {
         private void OnEnable()
         {

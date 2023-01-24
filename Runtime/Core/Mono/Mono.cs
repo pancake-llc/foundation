@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace Pancake
 {
-    public class MonoAllocation : MonoBehaviour
+    public class Mono : MonoBehaviour
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Get<T>() => GetComponent<T>();
