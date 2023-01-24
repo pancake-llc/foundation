@@ -6,9 +6,9 @@ namespace Pancake.Editor
     using UnityEditor;
     using UnityEngine;
 
-    public delegate void ProbeHitSelectHandler(bool add);
+    internal delegate void ProbeHitSelectHandler(bool add);
 
-    public struct ProbeHit
+    internal struct ProbeHit
     {
         public GameObject gameObject;
 
@@ -92,19 +92,19 @@ namespace Pancake.Editor
         }
     }
 
-    public static class Probe
+    internal static class Probe
     {
         #region Object Picking
 
-        public const int DEFAULT_LIMIT = 100;
+        private const int DEFAULT_LIMIT = 100;
 
-        public static bool CanPickHandles =>
+        private static bool CanPickHandles =>
             E != null && (E.type == EventType.MouseMove || E.type == EventType.MouseDown || E.type == EventType.MouseUp || E.type == EventType.MouseDrag ||
                           E.type == EventType.MouseEnterWindow || E.type == EventType.MouseLeaveWindow);
 
-        public static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point)
+        internal static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point)
         {
-            var results = TempCollection.GetList<ProbeHit>();
+            var results = new List<ProbeHit>();
 
             try
             {
@@ -124,13 +124,13 @@ namespace Pancake.Editor
             }
             finally
             {
-                results.Dispose();
+                results = null;
             }
         }
         
-        public static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point, out Vector3 normal)
+        internal static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point, out Vector3 normal)
         {
-            var results = TempCollection.GetList<ProbeHit>();
+            var results = new List<ProbeHit>();
 
             try
             {
@@ -152,7 +152,7 @@ namespace Pancake.Editor
             }
             finally
             {
-                results.Dispose();
+                results = null;
             }
         }
         
@@ -163,18 +163,19 @@ namespace Pancake.Editor
             PickAllNonAlloc(results, filter, sceneView, guiPosition, limit);
             return results.ToArray();
         }
-        public static void PickAllNonAlloc(List<ProbeHit> hits, ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, int limit = DEFAULT_LIMIT)
+
+        private static void PickAllNonAlloc(List<ProbeHit> hits, ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, int limit = DEFAULT_LIMIT)
         {
             var screenPosition = HandleUtility.GUIPointToScreenPixelCoordinate(guiPosition);
             var ray3D = HandleUtility.GUIPointToWorldRay(guiPosition);
             var worldPosition = sceneView.camera.ScreenToWorldPoint(screenPosition);
             var layerMask = Physics.DefaultRaycastLayers;
 
-            var raycastHits = TempArray.TryGetTemp<RaycastHit>(limit);
-            var overlapHits = TempArray.TryGetTemp<Collider2D>(limit);
-            var handleHits = TempHashSet<GameObject>.Get();
-            var ancestorHits = TempHashSet<ProbeHit>.Get();
-            var gameObjectHits = TempDictionary<GameObject, ProbeHit>.Get();
+            var raycastHits = new RaycastHit[limit];
+            var overlapHits = new Collider2D[limit];
+            var handleHits = new HashSet<GameObject>();
+            var ancestorHits = new HashSet<ProbeHit>();
+            var gameObjectHits = new Dictionary<GameObject, ProbeHit>();
 
             try
             {
@@ -303,11 +304,16 @@ namespace Pancake.Editor
             }
             finally
             {
-                TempArray.Release(raycastHits);
-                TempArray.Release(overlapHits);
-                handleHits.Dispose();
-                ancestorHits.Dispose();
-                gameObjectHits.Dispose();
+                raycastHits = null;
+                overlapHits = null;
+                
+                handleHits.Clear();
+                ancestorHits.Clear();
+                gameObjectHits.Clear();
+                
+                handleHits = null;
+                ancestorHits = null;
+                gameObjectHits = null;
             }
         }
 
@@ -369,13 +375,13 @@ namespace Pancake.Editor
         private static Vector2? pressPosition;
         private static GameObject highlight;
 
-        public static void Highlight(GameObject selection)
+        internal static void Highlight(GameObject selection)
         {
             highlight = selection;
             SceneView.RepaintAll();
         }
 
-        public static void ClearHighlight()
+        internal static void ClearHighlight()
         {
             highlight = null;
             SceneView.RepaintAll();

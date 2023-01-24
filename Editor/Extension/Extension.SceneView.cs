@@ -6,7 +6,7 @@ namespace Pancake.Editor
 {
     public static partial class InEditor
     {
-        public static ProbeHit? GetMousePosition(out Vector3 mousePosition, SceneView sceneView)
+        internal static ProbeHit? GetMousePosition(out Vector3 mousePosition, SceneView sceneView)
         {
             var e = Event.current;
             var position = sceneView.GetInnerGuiPosition();
@@ -76,14 +76,14 @@ namespace Pancake.Editor
 
         public static Rect? BoundsToGUIRect(this SceneView sceneView, Bounds worldBounds)
         {
-            var worldPoints = TempArray.Temp(Vector3.zero,
+            var worldPoints = new Vector3[8]{Vector3.zero,
                 Vector3.zero,
                 Vector3.zero,
                 Vector3.zero,
                 Vector3.zero,
                 Vector3.zero,
                 Vector3.zero,
-                Vector3.zero);            
+                Vector3.zero};            
             worldBounds.GetPointsNoAlloc(worldPoints);
 
             Rect? guiRect = null;
@@ -100,8 +100,7 @@ namespace Pancake.Editor
                 guiRect = guiRect.Encompass(guiPoint);
             }
 
-            TempArray.Release(worldPoints);
-
+            worldPoints = null;
             return guiRect;
         }
 

@@ -40,7 +40,7 @@ namespace Pancake
             var implPath = $"{Global.DEFAULT_SCRIPT_GEN_PATH}/Audio.cs";
 
             var typeStr = typeof(SoundPreset).ToString();
-            var temp = TempCollection.GetList<Sound>();
+            var temp = new List<Sound>();
             var guids = UnityEditor.AssetDatabase.FindAssets("t:" + typeStr);
             foreach (var guid in guids)
             {
@@ -77,7 +77,6 @@ namespace Pancake
             str += "\n\t}";
             str += "\n}";
 
-            temp.Dispose();
             var writer = new StreamWriter(implPath, false);
             writer.Write(str);
             writer.Close();
