@@ -8,6 +8,7 @@ namespace Pancake.Editor
     {
         private static GUIStyle styleTitle;
 
+        private static bool enableAtom;
         private static bool enableIap;
         private static bool enableAds;
         private static bool enableGam;
@@ -38,6 +39,7 @@ namespace Pancake.Editor
         {
             var target = EditorUserBuildSettings.activeBuildTarget;
             var group = BuildPipeline.GetBuildTargetGroup(target);
+            enableAtom = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ATOM", group);
             enableIap = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_IAP", group);
             enableAds = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADS", group);
             enableGam = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_GAM", group);
@@ -59,6 +61,7 @@ namespace Pancake.Editor
 
             GUILayout.FlexibleSpace();
             GUI.enabled = !EditorApplication.isCompiling && enable;
+            enableAtom = EditorGUILayout.Toggle("Atom", enableAtom);
             enableAds = EditorGUILayout.Toggle("Advertising", enableAds);
             enableIap = EditorGUILayout.Toggle("In-App-Purchase", enableIap);
             enableNotification = EditorGUILayout.Toggle("Local Notification", enableNotification);
@@ -132,6 +135,9 @@ namespace Pancake.Editor
                         void Execute()
                         {
                             enable = false;
+
+                            if (enableAtom) InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ATOM");
+                            else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ATOM");
 
                             if (enableAds)
                             {
