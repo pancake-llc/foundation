@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#if PANCAKE_ATOM
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -55,9 +56,8 @@ namespace UnityAtoms.SceneMgmt.Editor
                     // Update values cause the build index could've changed
                     property.FindPropertyRelative("_sceneName").stringValue = scene.name;
                     property.FindPropertyRelative("_scenePath").stringValue = AssetDatabase.GetAssetPath(scene);
-                    property.FindPropertyRelative("_buildIndex").intValue = SceneUtility.GetBuildIndexByScenePath(
-                        property.FindPropertyRelative("_scenePath").stringValue
-                    );
+                    property.FindPropertyRelative("_buildIndex").intValue =
+                        SceneUtility.GetBuildIndexByScenePath(property.FindPropertyRelative("_scenePath").stringValue);
                 }
             }
             else
@@ -79,9 +79,8 @@ namespace UnityAtoms.SceneMgmt.Editor
                 {
                     property.FindPropertyRelative("_sceneName").stringValue = scene.name;
                     property.FindPropertyRelative("_scenePath").stringValue = AssetDatabase.GetAssetPath(scene);
-                    property.FindPropertyRelative("_buildIndex").intValue = SceneUtility.GetBuildIndexByScenePath(
-                        property.FindPropertyRelative("_scenePath").stringValue
-                    );
+                    property.FindPropertyRelative("_buildIndex").intValue =
+                        SceneUtility.GetBuildIndexByScenePath(property.FindPropertyRelative("_scenePath").stringValue);
                 }
             }
 
@@ -108,3 +107,5 @@ namespace UnityAtoms.SceneMgmt.Editor
         }
     }
 }
+
+#endif

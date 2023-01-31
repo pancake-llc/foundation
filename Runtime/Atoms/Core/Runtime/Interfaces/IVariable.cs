@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 namespace UnityAtoms
 {
     /// <summary>
@@ -8,3 +9,4 @@ namespace UnityAtoms
         T Variable { get; }
     }
 }
+#endif

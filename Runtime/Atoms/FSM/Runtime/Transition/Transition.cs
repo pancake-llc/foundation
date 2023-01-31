@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
@@ -14,20 +15,15 @@ namespace UnityAtoms.FSM
         public string ToState { get => _toState.Value; }
         public string Command { get => _command.Value; }
 
-        [SerializeField]
-        private StringReference _fromState = default;
+        [SerializeField] private StringReference _fromState = default;
 
-        [SerializeField]
-        private StringReference _toState = default;
+        [SerializeField] private StringReference _toState = default;
 
-        [SerializeField]
-        private StringReference _command = default;
+        [SerializeField] private StringReference _command = default;
 
-        [SerializeField]
-        private BoolVariable _testCondition = default;
+        [SerializeField] private BoolVariable _testCondition = default;
 
-        [SerializeField]
-        private bool _raiseEventToCompleteTransition = default;
+        [SerializeField] private bool _raiseEventToCompleteTransition = default;
 
         private FiniteStateMachine _fsmReference;
         private Action _onComplete;
@@ -50,7 +46,8 @@ namespace UnityAtoms.FSM
             {
                 if (_fsmReference.CompleteCurrentTransition == null)
                 {
-                    Debug.LogWarning("Complete Current Transition on State Machine needs to pe specified when using Raise Event To Complete Transition. Ignoring and completing transition immediatly.");
+                    Debug.LogWarning(
+                        "Complete Current Transition on State Machine needs to pe specified when using Raise Event To Complete Transition. Ignoring and completing transition immediatly.");
                 }
                 else
                 {
@@ -74,3 +71,4 @@ namespace UnityAtoms.FSM
         public bool TestCondition() => _testCondition == null || _testCondition.Value;
     }
 }
+#endif

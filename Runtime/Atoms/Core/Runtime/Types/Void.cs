@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms
@@ -6,5 +7,9 @@ namespace UnityAtoms
     /// Dummy module class used for representing nothing in for example empty Events, eg: `AtomEvent&lt;Void&gt;`
     /// </summary>
     [Serializable]
-    public struct Void { }
+    public struct Void
+    {
+    }
 }
+
+#endif

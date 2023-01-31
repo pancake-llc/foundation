@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.MonoHooks;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-piglet")]
     [CreateAssetMenu(menuName = "Unity Atoms/Value Lists/Collider2DGameObject", fileName = "Collider2DGameObjectValueList")]
-    public sealed class Collider2DGameObjectValueList : AtomValueList<Collider2DGameObject, Collider2DGameObjectEvent> { }
+    public sealed class Collider2DGameObjectValueList : AtomValueList<Collider2DGameObject, Collider2DGameObjectEvent>
+    {
+    }
 }
+
+#endif

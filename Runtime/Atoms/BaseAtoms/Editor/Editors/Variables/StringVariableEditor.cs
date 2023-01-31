@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 
@@ -7,5 +8,8 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Variable Inspector of type `string`. Inherits from `AtomVariableEditor`
     /// </summary>
     [CustomEditor(typeof(StringVariable))]
-    public sealed class StringVariableEditor : AtomVariableEditor<string, StringPair> { }
+    public sealed class StringVariableEditor : AtomVariableEditor<string, StringPair>
+    {
+    }
 }
+#endif

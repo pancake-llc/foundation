@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -7,11 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// Event Reference of type `Color`. Inherits from `AtomEventReference&lt;Color, ColorVariable, ColorEvent, ColorVariableInstancer, ColorEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class ColorEventReference : AtomEventReference<
-        Color,
-        ColorVariable,
-        ColorEvent,
-        ColorVariableInstancer,
-        ColorEventInstancer>, IGetEvent 
-    { }
+    public sealed class ColorEventReference : AtomEventReference<Color, ColorVariable, ColorEvent, ColorVariableInstancer, ColorEventInstancer>, IGetEvent
+    {
+    }
 }
+
+#endif

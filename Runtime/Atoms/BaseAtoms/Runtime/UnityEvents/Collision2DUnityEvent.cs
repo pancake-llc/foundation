@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 using UnityEngine;
@@ -8,5 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `Collision2D`. Inherits from `UnityEvent&lt;Collision2D&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class Collision2DUnityEvent : UnityEvent<Collision2D> { }
+    public sealed class Collision2DUnityEvent : UnityEvent<Collision2D>
+    {
+    }
 }
+
+#endif

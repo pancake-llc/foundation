@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -10,9 +11,8 @@ namespace UnityAtoms.BaseAtoms
     [CreateAssetMenu(menuName = "Unity Atoms/Variables/GameObject", fileName = "GameObjectVariable")]
     public sealed class GameObjectVariable : AtomVariable<GameObject, GameObjectPair, GameObjectEvent, GameObjectPairEvent, GameObjectGameObjectFunction>
     {
-        protected override bool ValueEquals(GameObject other)
-        {
-            return _value == other;
-        }
+        protected override bool ValueEquals(GameObject other) { return _value == other; }
     }
 }
+
+#endif

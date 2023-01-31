@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityEditor;
 using System.IO;
@@ -19,10 +20,7 @@ namespace UnityAtoms.Editor
             if (GUILayout.Button("Add Generator", (GUIStyle) "LargeButton"))
             {
                 var asset = CreateInstance<AtomGenerator>();
-                var newPath = Path.Combine(
-                    AssetDatabase.GetAssetPath(target),
-                    "New Atom Type.asset"
-                );
+                var newPath = Path.Combine(AssetDatabase.GetAssetPath(target), "New Atom Type.asset");
                 newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
                 Debug.Log(newPath);
                 AssetDatabase.CreateAsset(asset, newPath);
@@ -31,3 +29,5 @@ namespace UnityAtoms.Editor
         }
     }
 }
+
+#endif

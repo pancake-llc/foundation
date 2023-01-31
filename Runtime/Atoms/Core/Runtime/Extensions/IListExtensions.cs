@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,12 @@ namespace UnityAtoms
             return first != null ? true : false;
         }
 
-        public static GameObject GetOrInstantiate(this IList<GameObject> list, UnityEngine.Object prefab, Vector3 position, Quaternion quaternion, Func<GameObject, bool> condition)
+        public static GameObject GetOrInstantiate(
+            this IList<GameObject> list,
+            UnityEngine.Object prefab,
+            Vector3 position,
+            Quaternion quaternion,
+            Func<GameObject, bool> condition)
         {
             var component = list.First(condition);
 
@@ -39,3 +45,5 @@ namespace UnityAtoms
         }
     }
 }
+
+#endif

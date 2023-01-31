@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.MonoHooks
@@ -12,18 +13,17 @@ namespace UnityAtoms.MonoHooks
         /// <summary>
         /// Set to true if Event should be triggered on `OnTriggerEnter`
         /// </summary>
-        [SerializeField]
-        private bool _triggerOnEnter = default(bool);
+        [SerializeField] private bool _triggerOnEnter = default(bool);
+
         /// <summary>
         /// Set to true if Event should be triggered on `OnTriggerExit`
         /// </summary>
-        [SerializeField]
-        private bool _triggerOnExit = default(bool);
+        [SerializeField] private bool _triggerOnExit = default(bool);
+
         /// <summary>
         /// Set to true if Event should be triggered on `OnTriggerStay`
         /// </summary>
-        [SerializeField]
-        private bool _triggerOnStay = default(bool);
+        [SerializeField] private bool _triggerOnStay = default(bool);
 
         private void OnTriggerEnter(Collider other)
         {
@@ -41,3 +41,5 @@ namespace UnityAtoms.MonoHooks
         }
     }
 }
+
+#endif

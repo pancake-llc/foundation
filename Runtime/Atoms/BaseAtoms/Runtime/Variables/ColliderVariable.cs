@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -10,9 +11,8 @@ namespace UnityAtoms.BaseAtoms
     [CreateAssetMenu(menuName = "Unity Atoms/Variables/Collider", fileName = "ColliderVariable")]
     public sealed class ColliderVariable : AtomVariable<Collider, ColliderPair, ColliderEvent, ColliderPairEvent, ColliderColliderFunction>
     {
-        protected override bool ValueEquals(Collider other)
-        {
-            return _value == other;
-        }
+        protected override bool ValueEquals(Collider other) { return _value == other; }
     }
 }
+
+#endif

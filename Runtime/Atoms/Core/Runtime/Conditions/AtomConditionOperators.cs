@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 namespace UnityAtoms
 {
     /// <summary>
@@ -9,3 +10,5 @@ namespace UnityAtoms
         Or
     }
 }
+
+#endif

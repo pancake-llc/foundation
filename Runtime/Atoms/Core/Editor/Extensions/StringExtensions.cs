@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System.Linq;
 using System.Text;
 
@@ -26,8 +27,7 @@ namespace UnityAtoms
         /// <param name="str">The string to repeat.</param>
         /// <param name="times">The number of times to repeat the provided string.</param>
         /// <returns>The string repeated X amount of times.</returns>
-        public static string Repeat(this string str, int times)
-            => times == 1 ? str : new StringBuilder(str.Length * times).Insert(0, str, times).ToString();
+        public static string Repeat(this string str, int times) => times == 1 ? str : new StringBuilder(str.Length * times).Insert(0, str, times).ToString();
 
         /// <summary>
         /// Capitalize the provided string.
@@ -46,8 +46,10 @@ namespace UnityAtoms
 
         public static string GetFirstLine(this string str)
         {
-            var indexFirstNewLineChar = str.IndexOfAny(new char[] { '\r', '\n' });
+            var indexFirstNewLineChar = str.IndexOfAny(new char[] {'\r', '\n'});
             return indexFirstNewLineChar == -1 ? str : str.Substring(0, indexFirstNewLineChar);
         }
     }
 }
+
+#endif

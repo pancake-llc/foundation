@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.MonoHooks;
 
@@ -8,10 +9,10 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/ColliderGameObject Event Reference Listener")]
-    public sealed class ColliderGameObjectEventReferenceListener : AtomEventReferenceListener<
-        ColliderGameObject,
-        ColliderGameObjectEvent,
-        ColliderGameObjectEventReference,
-        ColliderGameObjectUnityEvent>
-    { }
+    public sealed class ColliderGameObjectEventReferenceListener : AtomEventReferenceListener<ColliderGameObject, ColliderGameObjectEvent,
+        ColliderGameObjectEventReference, ColliderGameObjectUnityEvent>
+    {
+    }
 }
+
+#endif

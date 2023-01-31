@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.SceneMgmt;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.SceneMgmt
     /// </summary>
     [EditorIcon("atom-icon-piglet")]
     [CreateAssetMenu(menuName = "Unity Atoms/Value Lists/SceneField", fileName = "SceneFieldValueList")]
-    public sealed class SceneFieldValueList : AtomValueList<SceneField, SceneFieldEvent> { }
+    public sealed class SceneFieldValueList : AtomValueList<SceneField, SceneFieldEvent>
+    {
+    }
 }
+
+#endif

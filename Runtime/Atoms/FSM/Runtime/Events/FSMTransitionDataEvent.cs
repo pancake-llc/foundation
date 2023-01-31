@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.FSM
@@ -11,3 +12,5 @@ namespace UnityAtoms.FSM
     {
     }
 }
+
+#endif

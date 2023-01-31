@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/Vector2", fileName = "Vector2Constant")]
-    public sealed class Vector2Constant : AtomBaseVariable<Vector2> { }
+    public sealed class Vector2Constant : AtomBaseVariable<Vector2>
+    {
+    }
 }
+
+#endif

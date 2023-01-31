@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
@@ -8,12 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-hotpink")]
     [AddComponentMenu("Unity Atoms/Variable Instancers/Vector3 Variable Instancer")]
-    public class Vector3VariableInstancer : AtomVariableInstancer<
-        Vector3Variable,
-        Vector3Pair,
-        Vector3,
-        Vector3Event,
-        Vector3PairEvent,
-        Vector3Vector3Function>
-    { }
+    public class Vector3VariableInstancer : AtomVariableInstancer<Vector3Variable, Vector3Pair, Vector3, Vector3Event, Vector3PairEvent, Vector3Vector3Function>
+    {
+    }
 }
+
+#endif

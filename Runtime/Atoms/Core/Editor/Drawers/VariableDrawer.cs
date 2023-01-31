@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityEngine;
 
@@ -7,8 +8,7 @@ namespace UnityAtoms.Editor
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.serializedObject.isEditingMultipleObjects
-             || property.objectReferenceValue == null)
+            if (property.serializedObject.isEditingMultipleObjects || property.objectReferenceValue == null)
             {
                 base.OnGUI(position, property, label);
                 return;
@@ -35,6 +35,7 @@ namespace UnityAtoms.Editor
             {
                 EditorGUI.LabelField(previewRect, "[Non serialized value]");
             }
+
             EditorGUI.EndDisabledGroup();
 
             position.x = position.x + 6f;
@@ -58,3 +59,5 @@ namespace UnityAtoms.Editor
         }
     }
 }
+
+#endif

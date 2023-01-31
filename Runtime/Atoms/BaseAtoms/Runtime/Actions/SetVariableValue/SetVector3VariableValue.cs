@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
@@ -8,15 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-purple")]
     [CreateAssetMenu(menuName = "Unity Atoms/Actions/Set Variable Value/Vector3", fileName = "SetVector3VariableValue")]
-    public sealed class SetVector3VariableValue : SetVariableValue<
-        Vector3,
-        Vector3Pair,
-        Vector3Variable,
-        Vector3Constant,
-        Vector3Reference,
-        Vector3Event,
-        Vector3PairEvent,
-        Vector3Vector3Function,
-        Vector3VariableInstancer>
-    { }
+    public sealed class SetVector3VariableValue : SetVariableValue<Vector3, Vector3Pair, Vector3Variable, Vector3Constant, Vector3Reference, Vector3Event,
+        Vector3PairEvent, Vector3Vector3Function, Vector3VariableInstancer>
+    {
+    }
 }
+#endif

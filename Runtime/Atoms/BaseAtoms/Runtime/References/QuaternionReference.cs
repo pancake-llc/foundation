@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -9,17 +10,22 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class QuaternionReference : EquatableAtomReference<
-        Quaternion,
-        QuaternionPair,
-        QuaternionConstant,
-        QuaternionVariable,
-        QuaternionEvent,
-        QuaternionPairEvent,
-        QuaternionQuaternionFunction,
-        QuaternionVariableInstancer>, IEquatable<QuaternionReference>
+            Quaternion, QuaternionPair, QuaternionConstant, QuaternionVariable, QuaternionEvent, QuaternionPairEvent, QuaternionQuaternionFunction,
+            QuaternionVariableInstancer>,
+        IEquatable<QuaternionReference>
     {
-        public QuaternionReference() : base() { }
-        public QuaternionReference(Quaternion value) : base(value) { }
+        public QuaternionReference()
+            : base()
+        {
+        }
+
+        public QuaternionReference(Quaternion value)
+            : base(value)
+        {
+        }
+
         public bool Equals(QuaternionReference other) { return base.Equals(other); }
     }
 }
+
+#endif

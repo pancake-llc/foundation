@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 using UnityAtoms.SceneMgmt;
@@ -8,5 +9,9 @@ namespace UnityAtoms.SceneMgmt
     /// None generic Unity Event of type `SceneField`. Inherits from `UnityEvent&lt;SceneField&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class SceneFieldUnityEvent : UnityEvent<SceneField> { }
+    public sealed class SceneFieldUnityEvent : UnityEvent<SceneField>
+    {
+    }
 }
+
+#endif

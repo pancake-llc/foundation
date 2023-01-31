@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,10 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/GameObject Event Reference Listener")]
-    public sealed class GameObjectEventReferenceListener : AtomEventReferenceListener<
-        GameObject,
-        GameObjectEvent,
-        GameObjectEventReference,
-        GameObjectUnityEvent>
-    { }
+    public sealed class GameObjectEventReferenceListener : AtomEventReferenceListener<GameObject, GameObjectEvent, GameObjectEventReference, GameObjectUnityEvent>
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-piglet")]
     [CreateAssetMenu(menuName = "Unity Atoms/Value Lists/String", fileName = "StringValueList")]
-    public sealed class StringValueList : AtomValueList<string, StringEvent> { }
+    public sealed class StringValueList : AtomValueList<string, StringEvent>
+    {
+    }
 }
+
+#endif

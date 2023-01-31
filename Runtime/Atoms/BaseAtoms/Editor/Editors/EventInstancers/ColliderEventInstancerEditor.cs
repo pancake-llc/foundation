@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -11,6 +12,9 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Event property drawer of type `Collider`. Inherits from `AtomEventInstancerEditor&lt;Collider, ColliderEvent&gt;`. Only availble in `UNITY_2019_1_OR_NEWER`.
     /// </summary>
     [CustomEditor(typeof(ColliderEventInstancer))]
-    public sealed class ColliderEventInstancerEditor : AtomEventInstancerEditor<Collider, ColliderEvent> { }
+    public sealed class ColliderEventInstancerEditor : AtomEventInstancerEditor<Collider, ColliderEvent>
+    {
+    }
 }
+#endif
 #endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
@@ -8,15 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-purple")]
     [CreateAssetMenu(menuName = "Unity Atoms/Actions/Set Variable Value/GameObject", fileName = "SetGameObjectVariableValue")]
-    public sealed class SetGameObjectVariableValue : SetVariableValue<
-        GameObject,
-        GameObjectPair,
-        GameObjectVariable,
-        GameObjectConstant,
-        GameObjectReference,
-        GameObjectEvent,
-        GameObjectPairEvent,
-        GameObjectGameObjectFunction,
-        GameObjectVariableInstancer>
-    { }
+    public sealed class SetGameObjectVariableValue : SetVariableValue<GameObject, GameObjectPair, GameObjectVariable, GameObjectConstant, GameObjectReference,
+        GameObjectEvent, GameObjectPairEvent, GameObjectGameObjectFunction, GameObjectVariableInstancer>
+    {
+    }
 }
+#endif

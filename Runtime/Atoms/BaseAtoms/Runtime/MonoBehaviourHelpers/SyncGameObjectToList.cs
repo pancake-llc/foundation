@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -10,8 +11,7 @@ namespace UnityAtoms.BaseAtoms
     [EditorIcon("atom-icon-delicate")]
     public class SyncGameObjectToList : MonoBehaviour
     {
-        [SerializeField]
-        private GameObjectValueList _list = default;
+        [SerializeField] private GameObjectValueList _list = default;
 
         void OnEnable()
         {
@@ -19,9 +19,7 @@ namespace UnityAtoms.BaseAtoms
             _list.Add(gameObject);
         }
 
-        void OnDestroy()
-        {
-            _list.Remove(gameObject);
-        }
+        void OnDestroy() { _list.Remove(gameObject); }
     }
 }
+#endif

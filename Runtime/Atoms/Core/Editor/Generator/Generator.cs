@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2018_3_OR_NEWER
 using System;
 using System.Linq;
@@ -15,8 +16,9 @@ namespace UnityAtoms.Editor
     {
         public static string[] GetTemplatePaths()
         {
-            var templateSearchPath = Runtime.IsUnityAtomsRepo ?
-                Directory.GetParent(Application.dataPath).Parent.FullName : // "Packages"
+            var templateSearchPath = Runtime.IsUnityAtomsRepo
+                ? Directory.GetParent(Application.dataPath).Parent.FullName
+                : // "Packages"
                 Directory.GetParent(Application.dataPath).FullName;
 
             return Directory.GetFiles(templateSearchPath, "UA_Template*.txt", SearchOption.AllDirectories);
@@ -26,24 +28,51 @@ namespace UnityAtoms.Editor
         {
             var templateConditions = new List<string>();
             templateConditions.Add("TYPE_IS_" + valueType.ToUpper());
-            if (valueType == "int" || valueType == "float") { templateConditions.Add("IS_NUMERIC");}
-            if (valueType == "Vector2" || valueType == "Vector3") { templateConditions.Add("IS_VECTOR");}
-            if (isValueTypeEquatable) { templateConditions.Add("EQUATABLE"); }
-            if (!string.IsNullOrEmpty(valueTypeNamespace)) { templateConditions.Add("TYPE_HAS_NAMESPACE"); }
-            if (!string.IsNullOrEmpty(subUnityAtomsNamespace)) { templateConditions.Add("HAS_SUB_UA_NAMESPACE"); }
+            if (valueType == "int" || valueType == "float")
+            {
+                templateConditions.Add("IS_NUMERIC");
+            }
+
+            if (valueType == "Vector2" || valueType == "Vector3")
+            {
+                templateConditions.Add("IS_VECTOR");
+            }
+
+            if (isValueTypeEquatable)
+            {
+                templateConditions.Add("EQUATABLE");
+            }
+
+            if (!string.IsNullOrEmpty(valueTypeNamespace))
+            {
+                templateConditions.Add("TYPE_HAS_NAMESPACE");
+            }
+
+            if (!string.IsNullOrEmpty(subUnityAtomsNamespace))
+            {
+                templateConditions.Add("HAS_SUB_UA_NAMESPACE");
+            }
 
             return templateConditions;
         }
 
         public static Dictionary<string, string> CreateTemplateVariablesMap(string valueType, string valueTypeNamespace, string subUnityAtomsNamespace)
         {
-            var templateVariables = new Dictionary<string, string>() {
-                { "VALUE_TYPE_NAME", valueType.Replace('.', '_').Capitalize() },
-                { "VALUE_TYPE", valueType },
-                { "VALUE_TYPE_NAME_NO_PAIR", valueType.Contains("Pair") ? valueType.Capitalize().Remove(valueType.IndexOf("Pair")) : valueType.Capitalize() }
+            var templateVariables = new Dictionary<string, string>()
+            {
+                {"VALUE_TYPE_NAME", valueType.Replace('.', '_').Capitalize()},
+                {"VALUE_TYPE", valueType},
+                {"VALUE_TYPE_NAME_NO_PAIR", valueType.Contains("Pair") ? valueType.Capitalize().Remove(valueType.IndexOf("Pair")) : valueType.Capitalize()}
             };
-            if (!string.IsNullOrEmpty(valueTypeNamespace)) { templateVariables.Add("TYPE_NAMESPACE", valueTypeNamespace); }
-            if (!string.IsNullOrEmpty(subUnityAtomsNamespace)) { templateVariables.Add("SUB_UA_NAMESPACE", subUnityAtomsNamespace); }
+            if (!string.IsNullOrEmpty(valueTypeNamespace))
+            {
+                templateVariables.Add("TYPE_NAMESPACE", valueTypeNamespace);
+            }
+
+            if (!string.IsNullOrEmpty(subUnityAtomsNamespace))
+            {
+                templateVariables.Add("SUB_UA_NAMESPACE", subUnityAtomsNamespace);
+            }
 
             return templateVariables;
         }
@@ -71,7 +100,12 @@ namespace UnityAtoms.Editor
         /// generator.Generate("MyStruct", "", false, new List&lt;AtomType&gt;() { AtomTypes.ACTION }, "MyNamespace", ""); // Generates an Atom Action of type MyStruct
         /// </code>
         /// </example>
-        public static void Generate(AtomReceipe atomReceipe, string baseWritePath, string[] templatePaths, List<string> templateConditions, Dictionary<string, string> templateVariables)
+        public static void Generate(
+            AtomReceipe atomReceipe,
+            string baseWritePath,
+            string[] templatePaths,
+            List<string> templateConditions,
+            Dictionary<string, string> templateVariables)
         {
             var (atomType, valueType) = atomReceipe;
 
@@ -81,6 +115,7 @@ namespace UnityAtoms.Editor
                 Debug.LogWarning($"{Runtime.Constants.LOG_PREFIX} You need to specify a value type. Aborting!");
                 return;
             }
+
             if (string.IsNullOrEmpty(baseWritePath) || !Directory.Exists(baseWritePath))
             {
                 Debug.LogWarning($"{Runtime.Constants.LOG_PREFIX} You need to specify a valid base write path. Aborting!");
@@ -89,7 +124,8 @@ namespace UnityAtoms.Editor
 
             Debug.Log($"{Runtime.Constants.LOG_PREFIX} Generating atom {atomType.Name} for value type {valueType}");
 
-            List<Tuple<string, string>> filesToGenerate = new List<Tuple<string, string>>() { new Tuple<string, string>(atomType.TemplateName, atomType.RelativeFileNameAndPath) };
+            List<Tuple<string, string>> filesToGenerate =
+                new List<Tuple<string, string>>() {new Tuple<string, string>(atomType.TemplateName, atomType.RelativeFileNameAndPath)};
             if (atomType.HasDrawerTemplate) filesToGenerate.Add(new Tuple<string, string>(atomType.DrawerTemplateName, atomType.RelativeDrawerFileNameAndPath));
             if (atomType.HasEditorTemplate) filesToGenerate.Add(new Tuple<string, string>(atomType.EditorTemplateName, atomType.RelativeEditorFileNameAndPath));
 
@@ -146,6 +182,7 @@ namespace UnityAtoms.Editor
                 {
                     countNamespaces.Add(ns, 1);
                 }
+
                 currentIndex = namespaceEndIndex;
             }
 
@@ -155,7 +192,7 @@ namespace UnityAtoms.Editor
                 if (kvp.Value > 1)
                 {
                     var usingStr = $"using {kvp.Key};";
-                    contentCopy = contentCopy.Remove(contentCopy.IndexOf(usingStr), usingStr.Length+1);
+                    contentCopy = contentCopy.Remove(contentCopy.IndexOf(usingStr), usingStr.Length + 1);
                 }
             }
 
@@ -163,4 +200,6 @@ namespace UnityAtoms.Editor
         }
     }
 }
+#endif
+
 #endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.SceneMgmt;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.SceneMgmt
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/SceneField", fileName = "SceneFieldConstant")]
-    public sealed class SceneFieldConstant : AtomBaseVariable<SceneField> { }
+    public sealed class SceneFieldConstant : AtomBaseVariable<SceneField>
+    {
+    }
 }
+
+#endif

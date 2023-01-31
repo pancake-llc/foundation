@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -37,7 +38,7 @@ namespace UnityAtoms
         /// <summary>
         /// Describes how we use the Reference and where the value comes from.
         /// </summary>
-        [SerializeField]
-        protected int _usage;
+        [SerializeField] protected int _usage;
     }
 }
+#endif

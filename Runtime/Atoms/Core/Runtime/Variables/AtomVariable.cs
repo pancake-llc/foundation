@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,10 +19,7 @@ namespace UnityAtoms
     /// <typeparam name="F">Function of type `FunctionEvent&lt;T, T&gt;`.</typeparam>
     [EditorIcon("atom-icon-lush")]
     public abstract class AtomVariable<T, P, E1, E2, F> : AtomBaseVariable<T>, IGetEvent, ISetEvent, IGetOrCreateEvent
-        where P : struct, IPair<T>
-        where E1 : AtomEvent<T>
-        where E2 : AtomEvent<P>
-        where F : AtomFunction<T, T>
+        where P : struct, IPair<T> where E1 : AtomEvent<T> where E2 : AtomEvent<P> where F : AtomFunction<T, T>
     {
         /// <summary>
         /// The Variable value as a property.
@@ -44,9 +42,8 @@ namespace UnityAtoms
         /// <summary>
         /// Changed Event triggered when the Variable value gets changed.
         /// </summary>
-        [SerializeField]
-        [FormerlySerializedAs("Changed")]
-        private E1 _changed;
+        [SerializeField] [FormerlySerializedAs("Changed")] private E1 _changed;
+
         public E1 Changed
         {
             get
@@ -54,18 +51,15 @@ namespace UnityAtoms
                 GetOrCreateEvent<E1>();
                 return _changed;
             }
-            set
-            {
-                _changed = value;
-            }
+            set { _changed = value; }
         }
 
         /// <summary>
         /// Changed with history Event triggered when the Variable value gets changed.
         /// </summary>
-        [SerializeField]
-        [FormerlySerializedAs("ChangedWithHistory")]
+        [SerializeField] [FormerlySerializedAs("ChangedWithHistory")]
         private E2 _changedWithHistory;
+
         public E2 ChangedWithHistory
         {
             get
@@ -73,32 +67,25 @@ namespace UnityAtoms
                 GetOrCreateEvent<E2>();
                 return _changedWithHistory;
             }
-            set
-            {
-                _changedWithHistory = value;
-            }
+            set { _changedWithHistory = value; }
         }
 
         /// <summary>
         /// Whether Changed Event should be triggered on OnEnable or not
         /// </summary>
-        [SerializeField]
-        private bool _triggerChangedOnOnEnable = default;
+        [SerializeField] private bool _triggerChangedOnOnEnable = default;
 
         /// <summary>
         /// Whether ChangedWithHistory Event should be triggered on OnEnable or not
         /// </summary>
-        [SerializeField]
-        private bool _triggerChangedWithHistoryOnOnEnable = default;
+        [SerializeField] private bool _triggerChangedWithHistoryOnOnEnable = default;
 
-        [SerializeField]
-        private T _oldValue;
+        [SerializeField] private T _oldValue;
 
         /// <summary>
         /// The inital value of the Variable.
         /// </summary>
-        [SerializeField]
-        private T _initialValue = default(T);
+        [SerializeField] private T _initialValue = default(T);
 
 #if UNITY_EDITOR
         /// <summary>
@@ -127,8 +114,7 @@ namespace UnityAtoms
             }
         }
 
-        [SerializeField]
-        private List<F> _preChangeTransformers = new List<F>();
+        [SerializeField] private List<F> _preChangeTransformers = new List<F>();
 
         protected abstract bool ValueEquals(T other);
 
@@ -153,7 +139,7 @@ namespace UnityAtoms
             }
 #endif
         }
-        
+
 
         /// <summary>
         /// Set initial values
@@ -176,6 +162,7 @@ namespace UnityAtoms
 
                 Changed.Raise(Value);
             }
+
             if (_triggerChangedWithHistoryOnOnEnable)
             {
                 if (ChangedWithHistory == null)
@@ -204,7 +191,9 @@ namespace UnityAtoms
                 foreach (var instance in _instances)
                 {
                     instance.TriggerInitialEvents();
-                };
+                }
+
+                ;
             }
         }
 #endif
@@ -245,7 +234,11 @@ namespace UnityAtoms
 
             if (triggerEvents)
             {
-                if (Changed != null) { Changed.Raise(_value); }
+                if (Changed != null)
+                {
+                    Changed.Raise(_value);
+                }
+
                 if (ChangedWithHistory != null)
                 {
                     // NOTE: Doing new P() here, even though it is cleaner, generates garbage.
@@ -264,10 +257,7 @@ namespace UnityAtoms
         /// </summary>
         /// <param name="variable">The value to set provided from another Variable.</param>
         /// <returns>`true` if the value got changed, otherwise `false`.</returns>
-        public bool SetValue(AtomVariable<T, P, E1, E2, F> variable)
-        {
-            return SetValue(variable.Value);
-        }
+        public bool SetValue(AtomVariable<T, P, E1, E2, F> variable) { return SetValue(variable.Value); }
 
         #region Observable
 
@@ -298,6 +288,7 @@ namespace UnityAtoms
 
             return new ObservableEvent<P>(ChangedWithHistory.Register, ChangedWithHistory.Unregister);
         }
+
         #endregion // Observable
 
         private T RunPreChangeTransformers(T value)
@@ -335,6 +326,7 @@ namespace UnityAtoms
             {
                 return Changed as E;
             }
+
             if (typeof(E) == typeof(E2))
             {
                 return ChangedWithHistory as E;
@@ -355,6 +347,7 @@ namespace UnityAtoms
                 Changed = (e as E1);
                 return;
             }
+
             if (typeof(E) == typeof(E2))
             {
                 ChangedWithHistory = (e as E2);
@@ -384,6 +377,7 @@ namespace UnityAtoms
 
                 return _changed as E;
             }
+
             if (typeof(E) == typeof(E2))
             {
                 if (_changedWithHistory == null)
@@ -399,3 +393,5 @@ namespace UnityAtoms
         }
     }
 }
+
+#endif

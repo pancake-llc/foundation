@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityAtoms;
@@ -81,7 +82,8 @@ namespace UnityAtoms.Mobile
         /// <returns>`true` if equal, otherwise `false`.</returns>
         public bool Equals(TouchUserInput other)
         {
-            return this.InputState == other.InputState && this.InputWorldPos == other.InputWorldPos && this.InputWorldPosLastFrame == other.InputWorldPosLastFrame && this.InputPosLastDown == other.InputPosLastDown;
+            return this.InputState == other.InputState && this.InputWorldPos == other.InputWorldPos && this.InputWorldPosLastFrame == other.InputWorldPosLastFrame &&
+                   this.InputPosLastDown == other.InputPosLastDown;
         }
 
         /// <summary>
@@ -91,7 +93,7 @@ namespace UnityAtoms.Mobile
         /// <returns>`true` if equal, otherwise `false`.</returns>
         public override bool Equals(object obj)
         {
-            TouchUserInput tui = (TouchUserInput)obj;
+            TouchUserInput tui = (TouchUserInput) obj;
             return Equals(tui);
         }
 
@@ -114,10 +116,7 @@ namespace UnityAtoms.Mobile
         /// <param name="touch1">First `TouchUserInput`.</param>
         /// <param name="touch2">Other `TouchUserInput`.</param>
         /// <returns>`true` if equal, otherwise `false`.</returns>
-        public static bool operator ==(TouchUserInput touch1, TouchUserInput touch2)
-        {
-            return touch1.Equals(touch2);
-        }
+        public static bool operator ==(TouchUserInput touch1, TouchUserInput touch2) { return touch1.Equals(touch2); }
 
         /// <summary>
         /// Inequality operator
@@ -125,9 +124,8 @@ namespace UnityAtoms.Mobile
         /// <param name="touch1">First `TouchUserInput`.</param>
         /// <param name="touch2">Other `TouchUserInput`.</param>
         /// <returns>`true` if they are not equal, otherwise `false`.</returns>
-        public static bool operator !=(TouchUserInput touch1, TouchUserInput touch2)
-        {
-            return !touch1.Equals(touch2);
-        }
+        public static bool operator !=(TouchUserInput touch1, TouchUserInput touch2) { return !touch1.Equals(touch2); }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -9,9 +10,7 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// <summary>
     /// A custom property drawer for SerializableDictionary. 
     /// </summary>
-    public abstract class SerializableDictionaryDrawer<K, V, T> : PropertyDrawer
-        where K : IEquatable<K>
-        where T : SerializableDictionary<K, V>
+    public abstract class SerializableDictionaryDrawer<K, V, T> : PropertyDrawer where K : IEquatable<K> where T : SerializableDictionary<K, V>
     {
         static int BUTTON_WIDTH = 24;
         static GUIContent PLUS_ICON = IconContent("Toolbar Plus", "Add entry");
@@ -19,7 +18,10 @@ namespace UnityAtoms.BaseAtoms.Editor
         static float DRAWER_MARGIN = 6f;
         static float LINE_BOTTOM_MARGIN = 4f;
         static float GUTTER = 6f;
-        static string WARNING_TEXT = "There are 1 or more duplicate keys. Duplicate keys are marked in red, are only shown in the editor and not included in the collection itself.";
+
+        static string WARNING_TEXT =
+            "There are 1 or more duplicate keys. Duplicate keys are marked in red, are only shown in the editor and not included in the collection itself.";
+
         static string SERIALIZED_KEYS_PROPNAME = "_serializedKeys";
         static string SERIALIZED_VALUES_PROPNAME = "_serializedValues";
         static string DUPLICATE_KEY_INDICES_PROPNAME = "_duplicateKeyIndices";
@@ -40,6 +42,7 @@ namespace UnityAtoms.BaseAtoms.Editor
                 drawerData = new DrawerData();
                 _perPropertyViewData[propertyPath] = drawerData;
             }
+
             return drawerData;
         }
 
@@ -119,6 +122,7 @@ namespace UnityAtoms.BaseAtoms.Editor
                     invalidKeyExists = true;
                     EditorGUI.DrawRect(keyPosition, Color.red);
                 }
+
                 EditorGUI.PropertyField(keyPosition, keyProperty, GUIContent.none, false);
 
                 EditorGUI.BeginDisabledGroup(!isKeyValid);
@@ -211,7 +215,8 @@ namespace UnityAtoms.BaseAtoms.Editor
                 {
                     yield return new EnumerationEntry(keyProperty, valueProperty, index);
                     index++;
-                } while (keyProperty.Next(false) && (valueProperty != null ? valueProperty.Next(false) : true) && !SerializedProperty.EqualContents(keyProperty, endProperty));
+                } while (keyProperty.Next(false) && (valueProperty != null ? valueProperty.Next(false) : true) &&
+                         !SerializedProperty.EqualContents(keyProperty, endProperty));
             }
         }
 
@@ -226,3 +231,4 @@ namespace UnityAtoms.BaseAtoms.Editor
         }
     }
 }
+#endif

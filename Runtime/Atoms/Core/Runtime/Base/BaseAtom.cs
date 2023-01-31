@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms
@@ -11,8 +12,8 @@ namespace UnityAtoms
         /// <summary>
         /// A description of the Atom made for documentation purposes.
         /// </summary>
-        [SerializeField]
-        [TextArea(3, 6)]
-        private string _developerDescription;
+        [SerializeField] [TextArea(3, 6)] private string _developerDescription;
     }
 }
+
+#endif

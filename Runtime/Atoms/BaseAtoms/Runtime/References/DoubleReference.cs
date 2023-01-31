@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 
@@ -8,17 +9,20 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class DoubleReference : EquatableAtomReference<
-        double,
-        DoublePair,
-        DoubleConstant,
-        DoubleVariable,
-        DoubleEvent,
-        DoublePairEvent,
-        DoubleDoubleFunction,
-        DoubleVariableInstancer>, IEquatable<DoubleReference>
+            double, DoublePair, DoubleConstant, DoubleVariable, DoubleEvent, DoublePairEvent, DoubleDoubleFunction, DoubleVariableInstancer>,
+        IEquatable<DoubleReference>
     {
-        public DoubleReference() : base() { }
-        public DoubleReference(double value) : base(value) { }
+        public DoubleReference()
+            : base()
+        {
+        }
+
+        public DoubleReference(double value)
+            : base(value)
+        {
+        }
+
         public bool Equals(DoubleReference other) { return base.Equals(other); }
     }
 }
+#endif

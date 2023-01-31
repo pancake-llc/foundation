@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.SceneMgmt;
@@ -9,12 +10,10 @@ namespace UnityAtoms.SceneMgmt
     /// </summary>
     [EditorIcon("atom-icon-hotpink")]
     [AddComponentMenu("Unity Atoms/Variable Instancers/SceneField Variable Instancer")]
-    public class SceneFieldVariableInstancer : AtomVariableInstancer<
-        SceneFieldVariable,
-        SceneFieldPair,
-        SceneField,
-        SceneFieldEvent,
-        SceneFieldPairEvent,
+    public class SceneFieldVariableInstancer : AtomVariableInstancer<SceneFieldVariable, SceneFieldPair, SceneField, SceneFieldEvent, SceneFieldPairEvent,
         SceneFieldSceneFieldFunction>
-    { }
+    {
+    }
 }
+
+#endif

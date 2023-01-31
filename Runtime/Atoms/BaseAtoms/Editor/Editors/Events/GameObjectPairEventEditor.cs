@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -10,6 +11,9 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Event property drawer of type `GameObjectPair`. Inherits from `AtomEventEditor&lt;GameObjectPair, GameObjectPairEvent&gt;`. Only availble in `UNITY_2019_1_OR_NEWER`.
     /// </summary>
     [CustomEditor(typeof(GameObjectPairEvent))]
-    public sealed class GameObjectPairEventEditor : AtomEventEditor<GameObjectPair, GameObjectPairEvent> { }
+    public sealed class GameObjectPairEventEditor : AtomEventEditor<GameObjectPair, GameObjectPairEvent>
+    {
+    }
 }
+#endif
 #endif

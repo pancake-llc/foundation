@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityAtoms.BaseAtoms;
@@ -14,16 +15,14 @@ namespace UnityAtoms.SceneMgmt
         /// <summary>
         /// Scene to change to.
         /// </summary>
-        [SerializeField]
-        private StringReference _sceneName = null;
+        [SerializeField] private StringReference _sceneName = null;
 
         /// <summary>
         /// Change the scene.
         /// </summary>
-        public override void Do()
-        {
-            SceneManager.LoadScene(_sceneName.Value);
-        }
+        public override void Do() { SceneManager.LoadScene(_sceneName.Value); }
     }
 }
 
+
+#endif

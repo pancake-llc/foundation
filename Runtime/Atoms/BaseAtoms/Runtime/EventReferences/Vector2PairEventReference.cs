@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -8,10 +9,10 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class Vector2PairEventReference : AtomEventReference<
-        Vector2Pair,
-        Vector2Variable,
-        Vector2PairEvent,
-        Vector2VariableInstancer,
-        Vector2PairEventInstancer>, IGetEvent 
-    { }
+            Vector2Pair, Vector2Variable, Vector2PairEvent, Vector2VariableInstancer, Vector2PairEventInstancer>,
+        IGetEvent
+    {
+    }
 }
+
+#endif

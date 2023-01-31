@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.MonoHooks;
@@ -9,17 +10,21 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [Serializable]
     public sealed class ColliderGameObjectReference : EquatableAtomReference<
-        ColliderGameObject,
-        ColliderGameObjectPair,
-        ColliderGameObjectConstant,
-        ColliderGameObjectVariable,
-        ColliderGameObjectEvent,
-        ColliderGameObjectPairEvent,
-        ColliderGameObjectColliderGameObjectFunction,
-        ColliderGameObjectVariableInstancer>, IEquatable<ColliderGameObjectReference>
+            ColliderGameObject, ColliderGameObjectPair, ColliderGameObjectConstant, ColliderGameObjectVariable, ColliderGameObjectEvent, ColliderGameObjectPairEvent,
+            ColliderGameObjectColliderGameObjectFunction, ColliderGameObjectVariableInstancer>,
+        IEquatable<ColliderGameObjectReference>
     {
-        public ColliderGameObjectReference() : base() { }
-        public ColliderGameObjectReference(ColliderGameObject value) : base(value) { }
+        public ColliderGameObjectReference()
+            : base()
+        {
+        }
+
+        public ColliderGameObjectReference(ColliderGameObject value)
+            : base(value)
+        {
+        }
+
         public bool Equals(ColliderGameObjectReference other) { return base.Equals(other); }
     }
 }
+#endif

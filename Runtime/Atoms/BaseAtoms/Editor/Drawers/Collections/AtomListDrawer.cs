@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityEngine;
 using UnityAtoms.Editor;
@@ -8,5 +9,8 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// A custom property drawer for AtomBaseVariableList. 
     /// </summary>
     [CustomPropertyDrawer(typeof(AtomBaseVariableList))]
-    public class AtomListDrawer : AtomListAttributeDrawer { }
+    public class AtomListDrawer : AtomListAttributeDrawer
+    {
+    }
 }
+#endif

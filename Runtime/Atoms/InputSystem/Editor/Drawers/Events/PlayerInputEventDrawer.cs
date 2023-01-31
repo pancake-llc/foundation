@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER && PANCAKE_INPUTSYSTEM
 using UnityEditor;
 using UnityAtoms.Editor;
@@ -10,4 +11,6 @@ namespace UnityAtoms.InputSystem.Editor
     [CustomPropertyDrawer(typeof(PlayerInputEvent))]
     public class PlayerInputEventDrawer : AtomDrawer<PlayerInputEvent> { }
 }
+#endif
+
 #endif

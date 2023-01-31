@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,45 +29,30 @@ namespace UnityAtoms
         /// Register handler to be called when the Event triggers.
         /// </summary>
         /// <param name="del">The handler.</param>
-        public void Register(Action del)
-        {
-            OnEventNoValue += del;
-        }
+        public void Register(Action del) { OnEventNoValue += del; }
 
         /// <summary>
         /// Unregister handler that was registered using the `Register` method.
         /// </summary>
         /// <param name="del">The handler.</param>
-        public void Unregister(Action del)
-        {
-            OnEventNoValue -= del;
-        }
+        public void Unregister(Action del) { OnEventNoValue -= del; }
 
         /// <summary>
         /// Unregister all handlers that were registered using the `Register` method.
         /// </summary>
-        public virtual void UnregisterAll()
-        {
-            OnEventNoValue = null;
-        }
+        public virtual void UnregisterAll() { OnEventNoValue = null; }
 
         /// <summary>
         /// Register a Listener that in turn trigger all its associated handlers when the Event triggers.
         /// </summary>
         /// <param name="listener">The Listener to register.</param>
-        public void RegisterListener(IAtomListener listener)
-        {
-            OnEventNoValue += listener.OnEventRaised;
-        }
+        public void RegisterListener(IAtomListener listener) { OnEventNoValue += listener.OnEventRaised; }
 
         /// <summary>
         /// Unregister a listener that was registered using the `RegisterListener` method.
         /// </summary>
         /// <param name="listener">The Listener to unregister.</param>
-        public void UnregisterListener(IAtomListener listener)
-        {
-            OnEventNoValue -= listener.OnEventRaised;
-        }
+        public void UnregisterListener(IAtomListener listener) { OnEventNoValue -= listener.OnEventRaised; }
 
         public void OnBeforeSerialize() { }
 
@@ -77,10 +63,11 @@ namespace UnityAtoms
             {
                 foreach (var d in OnEventNoValue.GetInvocationList())
                 {
-                    OnEventNoValue -= (Action)d;
+                    OnEventNoValue -= (Action) d;
                 }
             }
         }
-
     }
 }
+
+#endif

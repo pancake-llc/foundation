@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityAtoms;
@@ -33,14 +34,11 @@ namespace UnityAtoms.BaseAtoms
         public VoidEvent Cleared { get => _cleared; set => _cleared = value; }
 
 
-        [SerializeField]
-        private AtomBaseVariableEvent _added;
+        [SerializeField] private AtomBaseVariableEvent _added;
 
-        [SerializeField]
-        private AtomBaseVariableEvent _removed;
+        [SerializeField] private AtomBaseVariableEvent _removed;
 
-        [SerializeField]
-        private VoidEvent _cleared;
+        [SerializeField] private VoidEvent _cleared;
 
         void OnEnable()
         {
@@ -61,6 +59,7 @@ namespace UnityAtoms.BaseAtoms
         }
 
         #region Observable
+
         /// <summary>
         /// Make the add event into an `IObservable&lt;T&gt;`. Makes List's add Event compatible with for example UniRx.
         /// </summary>
@@ -127,3 +126,4 @@ namespace UnityAtoms.BaseAtoms
         }
     }
 }
+#endif

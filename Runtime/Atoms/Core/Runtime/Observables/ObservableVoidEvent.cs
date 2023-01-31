@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 
@@ -8,10 +9,7 @@ namespace UnityAtoms
         private Action<Action> _unregister = default(Action<Action>);
         private List<IObserver<Void>> _observers = new List<IObserver<Void>>();
 
-        public ObservableVoidEvent(Action<Action> register, Action<Action> unregister)
-        {
-            register(NotifyObservers);
-        }
+        public ObservableVoidEvent(Action<Action> register, Action<Action> unregister) { register(NotifyObservers); }
 
         ~ObservableVoidEvent()
         {
@@ -37,3 +35,4 @@ namespace UnityAtoms
         }
     }
 }
+#endif

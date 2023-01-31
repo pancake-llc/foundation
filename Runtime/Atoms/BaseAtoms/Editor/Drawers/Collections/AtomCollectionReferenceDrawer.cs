@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 
@@ -23,8 +24,9 @@ namespace UnityAtoms.BaseAtoms.Editor
             public override string DisplayName { get => "Use Collection Instancer"; }
         }
 
-        private readonly UsageData[] _usages = new UsageData[2] { new UsageCollection(), new UsageCollectionInstancer() };
+        private readonly UsageData[] _usages = new UsageData[2] {new UsageCollection(), new UsageCollectionInstancer()};
 
         protected override UsageData[] GetUsages(SerializedProperty prop = null) => _usages;
     }
 }
+#endif

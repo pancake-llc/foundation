@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.MonoHooks
@@ -9,9 +10,8 @@ namespace UnityAtoms.MonoHooks
     [AddComponentMenu("Unity Atoms/Hooks/On Update Hook")]
     public sealed class OnUpdateHook : VoidHook
     {
-        private void Update()
-        {
-            OnHook();
-        }
+        private void Update() { OnHook(); }
     }
 }
+
+#endif

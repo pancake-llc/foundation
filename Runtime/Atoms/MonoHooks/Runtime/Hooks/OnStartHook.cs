@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.MonoHooks
@@ -9,9 +10,8 @@ namespace UnityAtoms.MonoHooks
     [AddComponentMenu("Unity Atoms/Hooks/On Start Hook")]
     public sealed class OnStartHook : VoidHook
     {
-        private void Start()
-        {
-            OnHook();
-        }
+        private void Start() { OnHook(); }
     }
 }
+
+#endif

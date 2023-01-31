@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -22,8 +23,7 @@ namespace UnityAtoms
         /// <summary>
         /// Describes how we use the Event Reference.
         /// </summary>
-        [SerializeField]
-        protected int _usage;
+        [SerializeField] protected int _usage;
     }
 
     /// <summary>
@@ -32,9 +32,7 @@ namespace UnityAtoms
     /// <typeparam name="T">The type of the event.</typeparam>
     /// <typeparam name="E">Event of type `T`.</typeparam>
     /// <typeparam name="EI">Event Instancer of type `T`.</typeparam>
-    public abstract class AtomBaseEventReference<T, E, EI> : AtomBaseEventReference, IGetEvent, ISetEvent
-        where E : AtomEvent<T>
-        where EI : AtomEventInstancer<T, E>
+    public abstract class AtomBaseEventReference<T, E, EI> : AtomBaseEventReference, IGetEvent, ISetEvent where E : AtomEvent<T> where EI : AtomEventInstancer<T, E>
     {
         /// <summary>
         /// Get the event for the Event Reference.
@@ -57,10 +55,10 @@ namespace UnityAtoms
                 switch (_usage)
                 {
                     case (AtomEventReferenceUsage.EVENT):
-                        {
-                            _event = value;
-                            break;
-                        }
+                    {
+                        _event = value;
+                        break;
+                    }
                     default:
                         throw new NotSupportedException($"Event not reassignable for usage {_usage}.");
                 }
@@ -70,24 +68,16 @@ namespace UnityAtoms
         /// <summary>
         /// Event used if `Usage` is set to `Event`.
         /// </summary>
-        [SerializeField]
-        protected E _event = default(E);
+        [SerializeField] protected E _event = default(E);
 
         /// <summary>
         /// EventInstancer used if `Usage` is set to `EventInstancer`.
         /// </summary>
-        [SerializeField]
-        protected EI _eventInstancer = default(EI);
+        [SerializeField] protected EI _eventInstancer = default(EI);
 
-        protected AtomBaseEventReference()
-        {
-            _usage = AtomEventReferenceUsage.EVENT;
-        }
+        protected AtomBaseEventReference() { _usage = AtomEventReferenceUsage.EVENT; }
 
-        public static implicit operator E(AtomBaseEventReference<T, E, EI> reference)
-        {
-            return reference.Event;
-        }
+        public static implicit operator E(AtomBaseEventReference<T, E, EI> reference) { return reference.Event; }
 
         /// <summary>
         /// Get event by type.
@@ -119,3 +109,4 @@ namespace UnityAtoms
         }
     }
 }
+#endif

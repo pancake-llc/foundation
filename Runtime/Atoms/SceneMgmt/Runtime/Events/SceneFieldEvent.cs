@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.SceneMgmt;
 
@@ -12,3 +13,5 @@ namespace UnityAtoms.SceneMgmt
     {
     }
 }
+
+#endif

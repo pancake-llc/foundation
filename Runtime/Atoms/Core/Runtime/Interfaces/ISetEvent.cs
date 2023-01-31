@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 namespace UnityAtoms
 {
     /// <summary>
@@ -8,3 +9,4 @@ namespace UnityAtoms
         void SetEvent<E>(E e) where E : AtomEventBase;
     }
 }
+#endif

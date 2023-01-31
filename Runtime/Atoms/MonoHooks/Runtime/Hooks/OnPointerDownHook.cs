@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,9 +11,8 @@ namespace UnityAtoms.MonoHooks
     [AddComponentMenu("Unity Atoms/Hooks/On Pointer Down Hook")]
     public sealed class OnPointerDownHook : VoidHook, IPointerDownHandler
     {
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            OnHook();
-        }
+        public void OnPointerDown(PointerEventData eventData) { OnHook(); }
     }
 }
+
+#endif

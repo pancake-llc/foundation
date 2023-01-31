@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System.Collections.Generic;
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
@@ -15,28 +16,20 @@ namespace UnityAtoms.UI
         /// <summary>
         /// Variable that we listens to.
         /// </summary>
-        [SerializeField]
-        private StringVariable _currentUIState = null;
+        [SerializeField] private StringVariable _currentUIState = null;
 
         /// <summary>
         /// A list of states that this `UIContainer` will be visible for.
         /// </summary>
-        [SerializeField]
-        private List<StringReference> _visibleForStates = null;
+        [SerializeField] private List<StringReference> _visibleForStates = null;
 
-        private void Start()
-        {
-            StateNameChanged(_currentUIState.Value);
-        }
+        private void Start() { StateNameChanged(_currentUIState.Value); }
 
         /// <summary>
         /// Handler for when the state is changed.
         /// </summary>
         /// <param name="stateName"></param>
-        public void OnEventRaised(string stateName)
-        {
-            StateNameChanged(stateName);
-        }
+        public void OnEventRaised(string stateName) { StateNameChanged(stateName); }
 
         private void StateNameChanged(string stateName)
         {
@@ -71,3 +64,5 @@ namespace UnityAtoms.UI
         }
     }
 }
+
+#endif

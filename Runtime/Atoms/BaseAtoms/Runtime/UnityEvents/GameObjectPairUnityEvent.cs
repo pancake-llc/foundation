@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 using UnityEngine;
@@ -8,5 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `GameObjectPair`. Inherits from `UnityEvent&lt;GameObjectPair&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class GameObjectPairUnityEvent : UnityEvent<GameObjectPair> { }
+    public sealed class GameObjectPairUnityEvent : UnityEvent<GameObjectPair>
+    {
+    }
 }
+
+#endif

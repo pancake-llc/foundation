@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 
@@ -7,5 +8,8 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Variable Inspector of type `float`. Inherits from `AtomVariableEditor`
     /// </summary>
     [CustomEditor(typeof(FloatVariable))]
-    public sealed class FloatVariableEditor : AtomVariableEditor<float, FloatPair> { }
+    public sealed class FloatVariableEditor : AtomVariableEditor<float, FloatPair>
+    {
+    }
 }
+#endif

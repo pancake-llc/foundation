@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -9,6 +10,9 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Event property drawer of type `bool`. Inherits from `AtomEventEditor&lt;bool, BoolEvent&gt;`. Only availble in `UNITY_2019_1_OR_NEWER`.
     /// </summary>
     [CustomEditor(typeof(BoolEvent))]
-    public sealed class BoolEventEditor : AtomEventEditor<bool, BoolEvent> { }
+    public sealed class BoolEventEditor : AtomEventEditor<bool, BoolEvent>
+    {
+    }
 }
+#endif
 #endif

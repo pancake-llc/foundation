@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -17,8 +18,7 @@ namespace UnityAtoms
     /// <typeparam name="F">Function of type T => T</typeparam>
     [EditorIcon("atom-icon-hotpink")]
     [DefaultExecutionOrder(Runtime.ExecutionOrder.VARIABLE_INSTANCER)]
-    public abstract class AtomBaseVariableInstancer<T, V> : MonoBehaviour, IVariable<V>
-        where V : AtomBaseVariable<T>
+    public abstract class AtomBaseVariableInstancer<T, V> : MonoBehaviour, IVariable<V> where V : AtomBaseVariable<T>
     {
         /// <summary>
         /// Getter for retrieving the in memory runtime variable.
@@ -32,15 +32,12 @@ namespace UnityAtoms
 
         public virtual V Base { get => _base; }
 
-        [SerializeField]
-        [ReadOnly]
-        protected V _inMemoryCopy = default(V);
+        [SerializeField] [ReadOnly] protected V _inMemoryCopy = default(V);
 
         /// <summary>
         /// The variable that the in memory copy will be based on when created at runtime.
         /// </summary>
-        [SerializeField]
-        protected V _base = null;
+        [SerializeField] protected V _base = null;
 
         /// <summary>
         /// Override to add implementation specific setup on `OnEnable`.
@@ -53,11 +50,14 @@ namespace UnityAtoms
             {
                 _inMemoryCopy = ScriptableObject.CreateInstance<V>();
             }
-            else if(_inMemoryCopy == null)
+            else if (_inMemoryCopy == null)
             {
                 _inMemoryCopy = Instantiate(Base);
             }
+
             ImplSpecificSetup();
         }
     }
 }
+
+#endif

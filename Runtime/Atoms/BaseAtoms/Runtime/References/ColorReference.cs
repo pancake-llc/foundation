@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -9,18 +10,21 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class ColorReference : EquatableAtomReference<
-        Color,
-        ColorPair,
-        ColorConstant,
-        ColorVariable,
-        ColorEvent,
-        ColorPairEvent,
-        ColorColorFunction,
-        ColorVariableInstancer>, IEquatable<ColorReference>
+            Color, ColorPair, ColorConstant, ColorVariable, ColorEvent, ColorPairEvent, ColorColorFunction, ColorVariableInstancer>,
+        IEquatable<ColorReference>
     {
-        public ColorReference() : base() { }
-        public ColorReference(Color value) : base(value) { }
+        public ColorReference()
+            : base()
+        {
+        }
+
+        public ColorReference(Color value)
+            : base(value)
+        {
+        }
+
         public bool Equals(ColorReference other) { return base.Equals(other); }
+
         /// <summary>
         /// Set Alpha of Color by value.
         /// </summary>
@@ -34,3 +38,5 @@ namespace UnityAtoms.BaseAtoms
         public void SetAlpha(AtomBaseVariable<float> variable) => SetAlpha(variable.Value);
     }
 }
+
+#endif

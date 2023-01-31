@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
@@ -8,15 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-purple")]
     [CreateAssetMenu(menuName = "Unity Atoms/Actions/Set Variable Value/Quaternion", fileName = "SetQuaternionVariableValue")]
-    public sealed class SetQuaternionVariableValue : SetVariableValue<
-        Quaternion,
-        QuaternionPair,
-        QuaternionVariable,
-        QuaternionConstant,
-        QuaternionReference,
-        QuaternionEvent,
-        QuaternionPairEvent,
-        QuaternionQuaternionFunction,
-        QuaternionVariableInstancer>
-    { }
+    public sealed class SetQuaternionVariableValue : SetVariableValue<Quaternion, QuaternionPair, QuaternionVariable, QuaternionConstant, QuaternionReference,
+        QuaternionEvent, QuaternionPairEvent, QuaternionQuaternionFunction, QuaternionVariableInstancer>
+    {
+    }
 }
+#endif

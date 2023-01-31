@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.Mobile;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.Mobile
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/TouchUserInputPair Event Instancer")]
-    public class TouchUserInputPairEventInstancer : AtomEventInstancer<TouchUserInputPair, TouchUserInputPairEvent> { }
+    public class TouchUserInputPairEventInstancer : AtomEventInstancer<TouchUserInputPair, TouchUserInputPairEvent>
+    {
+    }
 }
+
+#endif

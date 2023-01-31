@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER && PANCAKE_INPUTSYSTEM
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -12,4 +13,6 @@ namespace UnityAtoms.InputSystem.Editor
     [CustomEditor(typeof(PlayerInputEvent))]
     public sealed class PlayerInputEventEditor : AtomEventEditor<PlayerInput, PlayerInputEvent> { }
 }
+#endif
+
 #endif

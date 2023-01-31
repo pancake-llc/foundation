@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/Collision2D", fileName = "Collision2DConstant")]
-    public sealed class Collision2DConstant : AtomBaseVariable<Collision2D> { }
+    public sealed class Collision2DConstant : AtomBaseVariable<Collision2D>
+    {
+    }
 }
+
+#endif

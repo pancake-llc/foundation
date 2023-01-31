@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,10 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/ColorPair Event Reference Listener")]
-    public sealed class ColorPairEventReferenceListener : AtomEventReferenceListener<
-        ColorPair,
-        ColorPairEvent,
-        ColorPairEventReference,
-        ColorPairUnityEvent>
-    { }
+    public sealed class ColorPairEventReferenceListener : AtomEventReferenceListener<ColorPair, ColorPairEvent, ColorPairEventReference, ColorPairUnityEvent>
+    {
+    }
 }
+
+#endif

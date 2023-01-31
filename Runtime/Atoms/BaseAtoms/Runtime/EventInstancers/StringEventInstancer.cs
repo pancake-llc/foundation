@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/String Event Instancer")]
-    public class StringEventInstancer : AtomEventInstancer<string, StringEvent> { }
+    public class StringEventInstancer : AtomEventInstancer<string, StringEvent>
+    {
+    }
 }
+
+#endif

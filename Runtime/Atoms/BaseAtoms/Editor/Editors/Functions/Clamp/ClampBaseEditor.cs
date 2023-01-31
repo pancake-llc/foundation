@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Reflection;
 using UnityEditor;
@@ -14,7 +15,7 @@ namespace UnityAtoms.BaseAtoms.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            IIsValid iIsValid = (IIsValid)target;
+            IIsValid iIsValid = (IIsValid) target;
             if (iIsValid != null && !iIsValid.IsValid())
             {
                 EditorGUILayout.HelpBox("Min value must be less than or equal to Max value.", MessageType.Warning);
@@ -22,3 +23,4 @@ namespace UnityAtoms.BaseAtoms.Editor
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Diagnostics;
 using UnityEngine;
@@ -34,6 +35,7 @@ namespace UnityAtoms
                 _frameCount = Time.frameCount;
             }
         }
+
         private StackTraceEntry(string stackTrace, object value)
         {
             _value = value;
@@ -61,7 +63,8 @@ namespace UnityAtoms
         }
 
 #if UNITY_EDITOR
-        public static StackTraceEntry Create(object obj, int skipFrames = 0) => AtomPreferences.IsDebugModeEnabled ? new StackTraceEntry(new StackTrace(skipFrames), obj) : null;
+        public static StackTraceEntry Create(object obj, int skipFrames = 0) =>
+            AtomPreferences.IsDebugModeEnabled ? new StackTraceEntry(new StackTrace(skipFrames), obj) : null;
 
         public static StackTraceEntry Create(int skipFrames = 0) => AtomPreferences.IsDebugModeEnabled ? new StackTraceEntry(new StackTrace(skipFrames)) : null;
 #else
@@ -84,9 +87,9 @@ namespace UnityAtoms
                 _stackTrace = _trace.ToString();
             }
 
-            return _constructedWithValue
-                ? $"{_frameCount}   [{(_value == null ? "null" : _value.ToString())}] {_stackTrace}"
-                : $"{_frameCount} {_stackTrace}";
+            return _constructedWithValue ? $"{_frameCount}   [{(_value == null ? "null" : _value.ToString())}] {_stackTrace}" : $"{_frameCount} {_stackTrace}";
         }
     }
 }
+
+#endif

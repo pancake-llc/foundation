@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.SceneMgmt
@@ -12,10 +13,9 @@ namespace UnityAtoms.SceneMgmt
         /// <summary>
         /// Do quit the apllication.
         /// </summary>
-        public override void Do()
-        {
-            Application.Quit();
-        }
+        public override void Do() { Application.Quit(); }
     }
 }
 
+
+#endif

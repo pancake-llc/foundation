@@ -1,6 +1,8 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityAtoms.MonoHooks;
+
 namespace UnityAtoms.MonoHooks
 {
     /// <summary>
@@ -12,11 +14,14 @@ namespace UnityAtoms.MonoHooks
         public Collision2DGameObject Item1 { get => _item1; set => _item1 = value; }
         public Collision2DGameObject Item2 { get => _item2; set => _item2 = value; }
 
-        [SerializeField]
-        private Collision2DGameObject _item1;
-        [SerializeField]
-        private Collision2DGameObject _item2;
+        [SerializeField] private Collision2DGameObject _item1;
+        [SerializeField] private Collision2DGameObject _item2;
 
-        public void Deconstruct(out Collision2DGameObject item1, out Collision2DGameObject item2) { item1 = Item1; item2 = Item2; }
+        public void Deconstruct(out Collision2DGameObject item1, out Collision2DGameObject item2)
+        {
+            item1 = Item1;
+            item2 = Item2;
+        }
     }
 }
+#endif

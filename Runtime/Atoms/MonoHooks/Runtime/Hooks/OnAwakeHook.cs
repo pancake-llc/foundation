@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 
@@ -13,14 +14,12 @@ namespace UnityAtoms.MonoHooks
         /// <summary>
         /// Listener
         /// </summary>
-        [SerializeField]
-        private VoidBaseEventReferenceListener _listener = null;
+        [SerializeField] private VoidBaseEventReferenceListener _listener = null;
 
         /// <summary>
         /// Listener with GameObject reference
         /// </summary>
-        [SerializeField]
-        private GameObjectEventReferenceListener _gameObjectListener = null;
+        [SerializeField] private GameObjectEventReferenceListener _gameObjectListener = null;
 
         private void Awake()
         {
@@ -29,6 +28,7 @@ namespace UnityAtoms.MonoHooks
             {
                 _event.RegisterListener(_listener);
             }
+
             if (_eventWithGameObjectReference != null && _gameObjectListener != null)
             {
                 _eventWithGameObjectReference.RegisterListener(_gameObjectListener);
@@ -38,3 +38,5 @@ namespace UnityAtoms.MonoHooks
         }
     }
 }
+
+#endif

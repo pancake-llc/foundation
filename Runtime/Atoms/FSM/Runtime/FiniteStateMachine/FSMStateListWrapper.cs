@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.FSM
@@ -6,5 +7,8 @@ namespace UnityAtoms.FSM
     /// Needed in order to use our custom property drawer for states in the FSM.
     /// </summary>
     [Serializable]
-    public class FSMStateListWrapper : AtomListWrapper<FSMState> { }
+    public class FSMStateListWrapper : AtomListWrapper<FSMState>
+    {
+    }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿#if UNITY_EDITOR
+﻿#if PANCAKE_ATOM
+#if UNITY_EDITOR
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
@@ -34,4 +35,6 @@ namespace UnityAtoms
         }
     }
 }
+#endif
+
 #endif

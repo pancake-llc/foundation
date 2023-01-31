@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -8,10 +9,10 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class CollisionPairEventReference : AtomEventReference<
-        CollisionPair,
-        CollisionVariable,
-        CollisionPairEvent,
-        CollisionVariableInstancer,
-        CollisionPairEventInstancer>, IGetEvent 
-    { }
+            CollisionPair, CollisionVariable, CollisionPairEvent, CollisionVariableInstancer, CollisionPairEventInstancer>,
+        IGetEvent
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2018_3_OR_NEWER
 using System.Collections.Generic;
 using System.IO;
@@ -44,6 +45,7 @@ namespace UnityAtoms.Editor
                 drawerData = new DrawerData();
                 _perPropertyViewData[propertyPath] = drawerData;
             }
+
             return drawerData;
         }
 
@@ -77,7 +79,9 @@ namespace UnityAtoms.Editor
 
             var defaultGUIColor = GUI.color;
             GUI.color = isCreatingSO ? Color.yellow : defaultGUIColor;
-            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), isCreatingSO && label != GUIContent.none ? new GUIContent("Name of New Atom") : label);
+            position = EditorGUI.PrefixLabel(position,
+                GUIUtility.GetControlID(FocusType.Passive),
+                isCreatingSO && label != GUIContent.none ? new GUIContent("Name of New Atom") : label);
             GUI.color = defaultGUIColor;
 
             var indent = EditorGUI.indentLevel;
@@ -103,9 +107,7 @@ namespace UnityAtoms.Editor
                     var buttonWidth = 24;
                     Rect secondButtonRect;
                     Rect firstButtonRect = IMGUIUtils.SnipRectH(restRect, restRect.width - buttonWidth, out secondButtonRect, gutter);
-                    if (GUI.Button(firstButtonRect, "✓")
-                        || (Event.current.keyCode == KeyCode.Return
-                            && GUI.GetNameOfFocusedControl() == NAMING_FIELD_CONTROL_NAME))
+                    if (GUI.Button(firstButtonRect, "✓") || (Event.current.keyCode == KeyCode.Return && GUI.GetNameOfFocusedControl() == NAMING_FIELD_CONTROL_NAME))
                     {
                         if (drawerData.NameOfNewAtom.Length > 0)
                         {
@@ -134,9 +136,8 @@ namespace UnityAtoms.Editor
                             EditorGUI.FocusTextInControl(NAMING_FIELD_CONTROL_NAME);
                         }
                     }
-                    if (GUI.Button(secondButtonRect, "✗")
-                        || (Event.current.keyCode == KeyCode.Escape
-                            && GUI.GetNameOfFocusedControl() == NAMING_FIELD_CONTROL_NAME))
+
+                    if (GUI.Button(secondButtonRect, "✗") || (Event.current.keyCode == KeyCode.Escape && GUI.GetNameOfFocusedControl() == NAMING_FIELD_CONTROL_NAME))
                     {
                         drawerData.UserClickedToCreateAtom = false;
                         drawerData.WarningText = "";
@@ -164,4 +165,6 @@ namespace UnityAtoms.Editor
         }
     }
 }
+#endif
+
 #endif

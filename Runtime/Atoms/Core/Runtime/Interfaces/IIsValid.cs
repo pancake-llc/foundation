@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 namespace UnityAtoms
 {
     /// <summary>
@@ -8,3 +9,5 @@ namespace UnityAtoms
         bool IsValid();
     }
 }
+
+#endif

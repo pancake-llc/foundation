@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
@@ -8,12 +9,10 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-hotpink")]
     [AddComponentMenu("Unity Atoms/Variable Instancers/Collider2D Variable Instancer")]
-    public class Collider2DVariableInstancer : AtomVariableInstancer<
-        Collider2DVariable,
-        Collider2DPair,
-        Collider2D,
-        Collider2DEvent,
-        Collider2DPairEvent,
+    public class Collider2DVariableInstancer : AtomVariableInstancer<Collider2DVariable, Collider2DPair, Collider2D, Collider2DEvent, Collider2DPairEvent,
         Collider2DCollider2DFunction>
-    { }
+    {
+    }
 }
+
+#endif

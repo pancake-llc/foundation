@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 using UnityEngine;
@@ -8,5 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `Vector2Pair`. Inherits from `UnityEvent&lt;Vector2Pair&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class Vector2PairUnityEvent : UnityEvent<Vector2Pair> { }
+    public sealed class Vector2PairUnityEvent : UnityEvent<Vector2Pair>
+    {
+    }
 }
+
+#endif

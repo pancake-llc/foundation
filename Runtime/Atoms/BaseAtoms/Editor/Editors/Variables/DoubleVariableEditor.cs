@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 
@@ -7,5 +8,8 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Variable Inspector of type `double`. Inherits from `AtomVariableEditor`
     /// </summary>
     [CustomEditor(typeof(DoubleVariable))]
-    public sealed class DoubleVariableEditor : AtomVariableEditor<double, DoublePair> { }
+    public sealed class DoubleVariableEditor : AtomVariableEditor<double, DoublePair>
+    {
+    }
 }
+#endif

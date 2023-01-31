@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,8 +12,7 @@ namespace UnityAtoms
     /// <typeparam name="T">The list item type.</typeparam>
     /// <typeparam name="E">Event of type `AtomEvent&lt;T&gt;`.</typeparam>
     [EditorIcon("atom-icon-piglet")]
-    public abstract class AtomValueList<T, E> : BaseAtomValueList, IList<T>
-        where E : AtomEvent<T>
+    public abstract class AtomValueList<T, E> : BaseAtomValueList, IList<T> where E : AtomEvent<T>
     {
         /// <summary>
         /// Event for when something is added to the list.
@@ -39,8 +39,7 @@ namespace UnityAtoms
         /// </summary>
         /// <typeparam name="T">The list item type.</typeparam>
         /// <returns>The actual `List&lt;T&gt;`.</returns>
-        [SerializeField]
-        protected List<T> list = new List<T>();
+        [SerializeField] protected List<T> list = new List<T>();
 
         /// <summary>
         /// Add an item to the list.
@@ -68,6 +67,7 @@ namespace UnityAtoms
             {
                 Removed.Raise(item);
             }
+
             return true;
         }
 
@@ -76,56 +76,33 @@ namespace UnityAtoms
         /// </summary>
         /// <param name="item">The item to check if it is contained in the list.</param>
         /// <returns>`true` if the item exists in the list, otherwise `false`.</returns>
-        public bool Contains(T item)
-        {
-            return list.Contains(item);
-        }
+        public bool Contains(T item) { return list.Contains(item); }
 
         /// <summary>
         /// Get item at index.
         /// </summary>
         /// <param name="i">The index.</param>
         /// <returns>The item if it exists.</returns>
-        public T Get(int i)
-        {
-            return list[i];
-        }
+        public T Get(int i) { return list[i]; }
 
         /// <summary>
         /// The actual `List&lt;T&gt;` as a property.
         /// </summary>
         /// <value>Get or set the value of the list.</value>
-        public List<T> List
-        {
-            get { return list; }
-            set { list = value; }
-        }
+        public List<T> List { get { return list; } set { list = value; } }
 
         /// <summary>
         /// Indexer of the list.
         /// </summary>
         /// <value>Get or set an item via index in the list.</value>
-        public T this[int index]
-        {
-            get
-            {
-                return list[index];
-            }
-            set
-            {
-                list[index] = value;
-            }
-        }
+        public T this[int index] { get { return list[index]; } set { list[index] = value; } }
 
         /// <summary>
         /// Copies the entire List to a compatible one-dimensional array, starting at the specified index of the target array.
         /// </summary>
         /// <param name="array">The one-dimensional Array that is the destination of the elements copied from List. The Array must have zero-based indexing.</param>
         /// <param name="arrayIndex">The zero-based index in `array` at which copying begins.</param>
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            list.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(T[] array, int arrayIndex) { list.CopyTo(array, arrayIndex); }
 
         IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
 
@@ -171,6 +148,7 @@ namespace UnityAtoms
         }
 
         #region Observable
+
         /// <summary>
         /// Make the add event into an `IObservable&lt;T&gt;`. Makes Value List's add Event compatible with for example UniRx.
         /// </summary>
@@ -218,3 +196,5 @@ namespace UnityAtoms
         protected override IList IList { get => List; }
     }
 }
+
+#endif

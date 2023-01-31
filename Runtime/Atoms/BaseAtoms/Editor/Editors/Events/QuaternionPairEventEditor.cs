@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -10,6 +11,9 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Event property drawer of type `QuaternionPair`. Inherits from `AtomEventEditor&lt;QuaternionPair, QuaternionPairEvent&gt;`. Only availble in `UNITY_2019_1_OR_NEWER`.
     /// </summary>
     [CustomEditor(typeof(QuaternionPairEvent))]
-    public sealed class QuaternionPairEventEditor : AtomEventEditor<QuaternionPair, QuaternionPairEvent> { }
+    public sealed class QuaternionPairEventEditor : AtomEventEditor<QuaternionPair, QuaternionPairEvent>
+    {
+    }
 }
+#endif
 #endif

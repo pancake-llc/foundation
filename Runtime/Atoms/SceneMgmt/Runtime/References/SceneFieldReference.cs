@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.SceneMgmt;
@@ -9,17 +10,22 @@ namespace UnityAtoms.SceneMgmt
     /// </summary>
     [Serializable]
     public sealed class SceneFieldReference : EquatableAtomReference<
-        SceneField,
-        SceneFieldPair,
-        SceneFieldConstant,
-        SceneFieldVariable,
-        SceneFieldEvent,
-        SceneFieldPairEvent,
-        SceneFieldSceneFieldFunction,
-        SceneFieldVariableInstancer>, IEquatable<SceneFieldReference>
+            SceneField, SceneFieldPair, SceneFieldConstant, SceneFieldVariable, SceneFieldEvent, SceneFieldPairEvent, SceneFieldSceneFieldFunction,
+            SceneFieldVariableInstancer>,
+        IEquatable<SceneFieldReference>
     {
-        public SceneFieldReference() : base() { }
-        public SceneFieldReference(SceneField value) : base(value) { }
+        public SceneFieldReference()
+            : base()
+        {
+        }
+
+        public SceneFieldReference(SceneField value)
+            : base(value)
+        {
+        }
+
         public bool Equals(SceneFieldReference other) { return base.Equals(other); }
     }
 }
+
+#endif

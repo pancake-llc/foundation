@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -18,18 +19,14 @@ namespace UnityAtoms
     [EditorIcon("atom-icon-hotpink")]
     [DefaultExecutionOrder(Runtime.ExecutionOrder.VARIABLE_INSTANCER)]
     public abstract class AtomVariableInstancer<V, P, T, E1, E2, F> : AtomBaseVariableInstancer<T, V>, IGetEvent, ISetEvent, IGetOrCreateEvent
-        where V : AtomVariable<T, P, E1, E2, F>
-        where P : struct, IPair<T>
-        where E1 : AtomEvent<T>
-        where E2 : AtomEvent<P>
-        where F : AtomFunction<T, T>
+        where V : AtomVariable<T, P, E1, E2, F> where P : struct, IPair<T> where E1 : AtomEvent<T> where E2 : AtomEvent<P> where F : AtomFunction<T, T>
     {
         /// <summary>
         /// Override to add implementation specific setup on `OnEnable`.
         /// </summary>
         protected override void ImplSpecificSetup()
         {
-            if(Base != null)
+            if (Base != null)
             {
                 if (Base.Changed != null)
                 {
@@ -57,29 +54,22 @@ namespace UnityAtoms
         /// </summary>
         /// <typeparam name="E"></typeparam>
         /// <returns>The event.</returns>
-        public E GetEvent<E>() where E : AtomEventBase
-        {
-            return _inMemoryCopy.GetEvent<E>();
-        }
+        public E GetEvent<E>() where E : AtomEventBase { return _inMemoryCopy.GetEvent<E>(); }
 
         /// <summary>
         /// Set event by type. 
         /// </summary>
         /// <param name="e">The new event value.</param>
         /// <typeparam name="E"></typeparam>
-        public void SetEvent<E>(E e) where E : AtomEventBase
-        {
-            _inMemoryCopy.SetEvent<E>(e);
-        }
+        public void SetEvent<E>(E e) where E : AtomEventBase { _inMemoryCopy.SetEvent<E>(e); }
 
         /// <summary>
         /// Get event by type. Creates it if it doesn't exist.
         /// </summary>
         /// <typeparam name="E"></typeparam>
         /// <returns>The event.</returns>
-        public E GetOrCreateEvent<E>() where E : AtomEventBase
-        {
-            return _inMemoryCopy.GetOrCreateEvent<E>();
-        }
+        public E GetOrCreateEvent<E>() where E : AtomEventBase { return _inMemoryCopy.GetOrCreateEvent<E>(); }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 
@@ -38,3 +39,5 @@ namespace UnityAtoms
         }
     }
 }
+
+#endif

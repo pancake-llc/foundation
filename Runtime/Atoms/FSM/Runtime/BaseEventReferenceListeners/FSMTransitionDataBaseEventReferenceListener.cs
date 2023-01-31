@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.FSM
@@ -7,10 +8,10 @@ namespace UnityAtoms.FSM
     /// </summary>
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/FSMTransitionData Base Event Reference Listener")]
-    public sealed class FSMTransitionDataBaseEventReferenceListener : AtomEventReferenceListener<
-        FSMTransitionData,
-        FSMTransitionDataEvent,
-        FSMTransitionDataBaseEventReference,
-        FSMTransitionDataUnityEvent>
-    { }
+    public sealed class FSMTransitionDataBaseEventReferenceListener : AtomEventReferenceListener<FSMTransitionData, FSMTransitionDataEvent,
+        FSMTransitionDataBaseEventReference, FSMTransitionDataUnityEvent>
+    {
+    }
 }
+
+#endif

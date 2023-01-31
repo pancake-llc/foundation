@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.Mobile;
@@ -9,17 +10,22 @@ namespace UnityAtoms.Mobile
     /// </summary>
     [Serializable]
     public sealed class TouchUserInputReference : EquatableAtomReference<
-        TouchUserInput,
-        TouchUserInputPair,
-        TouchUserInputConstant,
-        TouchUserInputVariable,
-        TouchUserInputEvent,
-        TouchUserInputPairEvent,
-        TouchUserInputTouchUserInputFunction,
-        TouchUserInputVariableInstancer>, IEquatable<TouchUserInputReference>
+            TouchUserInput, TouchUserInputPair, TouchUserInputConstant, TouchUserInputVariable, TouchUserInputEvent, TouchUserInputPairEvent,
+            TouchUserInputTouchUserInputFunction, TouchUserInputVariableInstancer>,
+        IEquatable<TouchUserInputReference>
     {
-        public TouchUserInputReference() : base() { }
-        public TouchUserInputReference(TouchUserInput value) : base(value) { }
+        public TouchUserInputReference()
+            : base()
+        {
+        }
+
+        public TouchUserInputReference(TouchUserInput value)
+            : base(value)
+        {
+        }
+
         public bool Equals(TouchUserInputReference other) { return base.Equals(other); }
     }
 }
+
+#endif

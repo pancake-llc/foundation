@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.MonoHooks;
@@ -9,15 +10,11 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-purple")]
     [CreateAssetMenu(menuName = "Unity Atoms/Actions/Set Variable Value/ColliderGameObject", fileName = "SetColliderGameObjectVariableValue")]
-    public sealed class SetColliderGameObjectVariableValue : SetVariableValue<
-        ColliderGameObject,
-        ColliderGameObjectPair,
-        ColliderGameObjectVariable,
-        ColliderGameObjectConstant,
-        ColliderGameObjectReference,
-        ColliderGameObjectEvent,
-        ColliderGameObjectPairEvent,
-        ColliderGameObjectColliderGameObjectFunction,
+    public sealed class SetColliderGameObjectVariableValue : SetVariableValue<ColliderGameObject, ColliderGameObjectPair, ColliderGameObjectVariable,
+        ColliderGameObjectConstant, ColliderGameObjectReference, ColliderGameObjectEvent, ColliderGameObjectPairEvent, ColliderGameObjectColliderGameObjectFunction,
         ColliderGameObjectVariableInstancer>
-    { }
+    {
+    }
 }
+
+#endif

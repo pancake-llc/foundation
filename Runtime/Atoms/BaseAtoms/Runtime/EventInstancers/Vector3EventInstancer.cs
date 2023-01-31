@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/Vector3 Event Instancer")]
-    public class Vector3EventInstancer : AtomEventInstancer<Vector3, Vector3Event> { }
+    public class Vector3EventInstancer : AtomEventInstancer<Vector3, Vector3Event>
+    {
+    }
 }
+
+#endif

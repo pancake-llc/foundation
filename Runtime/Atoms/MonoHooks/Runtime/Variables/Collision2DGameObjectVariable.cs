@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.MonoHooks;
 
@@ -8,7 +9,10 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-lush")]
     [CreateAssetMenu(menuName = "Unity Atoms/Variables/Collision2DGameObject", fileName = "Collision2DGameObjectVariable")]
-    public sealed class Collision2DGameObjectVariable : EquatableAtomVariable<Collision2DGameObject, Collision2DGameObjectPair, Collision2DGameObjectEvent, Collision2DGameObjectPairEvent, Collision2DGameObjectCollision2DGameObjectFunction>
+    public sealed class Collision2DGameObjectVariable : EquatableAtomVariable<Collision2DGameObject, Collision2DGameObjectPair, Collision2DGameObjectEvent,
+        Collision2DGameObjectPairEvent, Collision2DGameObjectCollision2DGameObjectFunction>
     {
     }
 }
+
+#endif

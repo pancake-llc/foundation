@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.SceneMgmt;
 
@@ -9,9 +10,9 @@ namespace UnityAtoms.SceneMgmt
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/SceneFieldPair Event Reference Listener")]
     public sealed class SceneFieldPairEventReferenceListener : AtomEventReferenceListener<
-        SceneFieldPair,
-        SceneFieldPairEvent,
-        SceneFieldPairEventReference,
-        SceneFieldPairUnityEvent>
-    { }
+        SceneFieldPair, SceneFieldPairEvent, SceneFieldPairEventReference, SceneFieldPairUnityEvent>
+    {
+    }
 }
+
+#endif

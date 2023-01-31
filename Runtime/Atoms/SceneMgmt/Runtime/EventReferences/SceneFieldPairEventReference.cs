@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.SceneMgmt;
 
@@ -8,10 +9,10 @@ namespace UnityAtoms.SceneMgmt
     /// </summary>
     [Serializable]
     public sealed class SceneFieldPairEventReference : AtomEventReference<
-        SceneFieldPair,
-        SceneFieldVariable,
-        SceneFieldPairEvent,
-        SceneFieldVariableInstancer,
-        SceneFieldPairEventInstancer>, IGetEvent 
-    { }
+            SceneFieldPair, SceneFieldVariable, SceneFieldPairEvent, SceneFieldVariableInstancer, SceneFieldPairEventInstancer>,
+        IGetEvent
+    {
+    }
 }
+
+#endif

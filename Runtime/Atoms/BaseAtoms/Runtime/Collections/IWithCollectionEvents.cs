@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -13,3 +14,4 @@ namespace UnityAtoms.BaseAtoms
         VoidEvent Cleared { get; set; }
     }
 }
+#endif

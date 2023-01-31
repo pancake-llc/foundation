@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_ATOM
+using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -10,5 +11,8 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Custom editor for ClampInt.
     /// </summary>
     [CustomEditor(typeof(ClampInt))]
-    public class ClampIntEditor : UnityEditor.Editor { }
+    public class ClampIntEditor : UnityEditor.Editor
+    {
+    }
 }
+#endif

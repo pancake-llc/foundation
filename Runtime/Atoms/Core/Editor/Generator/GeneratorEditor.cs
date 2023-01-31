@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2018_3_OR_NEWER
 using System;
 using System.Linq;
@@ -6,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 #if UNITY_2019_1_OR_NEWER
 using UnityEngine.UIElements;
+
 #elif UNITY_2018_3_OR_NEWER
 using UnityEditor.Experimental.UIElements;
 using UnityEngine.Experimental.UIElements;
@@ -106,8 +108,7 @@ namespace UnityAtoms.Editor
             }
         }
 
-        private static string _baseWritePath = Runtime.IsUnityAtomsRepo
-            ? "../Packages/BaseAtoms" : "Assets/Atoms";
+        private static string _baseWritePath = Runtime.IsUnityAtomsRepo ? "../Packages/BaseAtoms" : "Assets/Atoms";
 
         /// <summary>
         /// Called when editor is enabled.
@@ -119,45 +120,45 @@ namespace UnityAtoms.Editor
 #elif UNITY_2018_3_OR_NEWER
             var root = this.GetRootVisualContainer();
 #endif
-            var pathRow = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
-            pathRow.Add(new Label() { text = "Relative Write Path", style = { width = 180, marginRight = 8 } });
-            var textfield = new TextField() { value = _baseWritePath, style = { flexGrow = 1 } };
+            var pathRow = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            pathRow.Add(new Label() {text = "Relative Write Path", style = {width = 180, marginRight = 8}});
+            var textfield = new TextField() {value = _baseWritePath, style = {flexGrow = 1}};
             textfield.RegisterCallback<ChangeEvent<string>>(evt => _baseWritePath = evt.newValue);
             pathRow.Add(textfield);
             root.Add(pathRow);
 
-            var typeNameRow = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
-            typeNameRow.Add(new Label() { text = "Type", style = { width = 180, marginRight = 8 } });
-            textfield = new TextField() { value = _valueType, style = { flexGrow = 1 } };
+            var typeNameRow = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            typeNameRow.Add(new Label() {text = "Type", style = {width = 180, marginRight = 8}});
+            textfield = new TextField() {value = _valueType, style = {flexGrow = 1}};
             textfield.RegisterCallback<ChangeEvent<string>>(evt => _valueType = evt.newValue);
             typeNameRow.Add(textfield);
             root.Add(typeNameRow);
 
-            var equatableRow = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
-            equatableRow.Add(new Label() { text = "Is Type Equatable?", style = { width = 180, marginRight = 8 } });
-            var equatableToggle = new Toggle() { value = _isValueTypeEquatable, style = { flexGrow = 1 } };
+            var equatableRow = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            equatableRow.Add(new Label() {text = "Is Type Equatable?", style = {width = 180, marginRight = 8}});
+            var equatableToggle = new Toggle() {value = _isValueTypeEquatable, style = {flexGrow = 1}};
             equatableToggle.RegisterCallback<ChangeEvent<bool>>(evt => _isValueTypeEquatable = evt.newValue);
             equatableRow.Add(equatableToggle);
             root.Add(equatableRow);
 
-            var typeNamespaceRow = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
-            typeNamespaceRow.Add(new Label() { text = "Type Namespace", style = { width = 180, marginRight = 8 } });
-            textfield = new TextField() { value = _valueTypeNamespace, style = { flexGrow = 1 } };
+            var typeNamespaceRow = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            typeNamespaceRow.Add(new Label() {text = "Type Namespace", style = {width = 180, marginRight = 8}});
+            textfield = new TextField() {value = _valueTypeNamespace, style = {flexGrow = 1}};
             textfield.RegisterCallback<ChangeEvent<string>>(evt => _valueTypeNamespace = evt.newValue);
             typeNamespaceRow.Add(textfield);
             root.Add(typeNamespaceRow);
 
-            var subUnityAtomsNamespaceRow = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
-            subUnityAtomsNamespaceRow.Add(new Label() { text = "Sub Unity Atoms Namespace", style = { width = 180, marginRight = 8 } });
-            textfield = new TextField() { value = _subUnityAtomsNamespace, style = { flexGrow = 1 } };
+            var subUnityAtomsNamespaceRow = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            subUnityAtomsNamespaceRow.Add(new Label() {text = "Sub Unity Atoms Namespace", style = {width = 180, marginRight = 8}});
+            textfield = new TextField() {value = _subUnityAtomsNamespace, style = {flexGrow = 1}};
             textfield.RegisterCallback<ChangeEvent<string>>(evt => _subUnityAtomsNamespace = evt.newValue);
             subUnityAtomsNamespaceRow.Add(textfield);
             root.Add(subUnityAtomsNamespaceRow);
 
             root.Add(CreateDivider());
 
-            var typesToGenerateLabelRow = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
-            typesToGenerateLabelRow.Add(new Label() { text = "Type(s) to Generate" });
+            var typesToGenerateLabelRow = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            typesToGenerateLabelRow.Add(new Label() {text = "Type(s) to Generate"});
             root.Add(typesToGenerateLabelRow);
 
             foreach (var atomType in AtomTypes.ALL_ATOM_TYPES)
@@ -168,22 +169,15 @@ namespace UnityAtoms.Editor
 
             root.Add(CreateDivider());
 
-            _typesToGenerateInfoRow = new VisualElement() { style = { flexDirection = FlexDirection.Column } };
-            _typesToGenerateInfoRow.Add(new Label() { style = { color = Color.yellow, height = 12 } });
+            _typesToGenerateInfoRow = new VisualElement() {style = {flexDirection = FlexDirection.Column}};
+            _typesToGenerateInfoRow.Add(new Label() {style = {color = Color.yellow, height = 12}});
             _typesToGenerateInfoRow.RegisterCallback<MouseUpEvent>((e) => { _typesToGenerateInfoRow.Query<Label>().First().text = ""; });
             root.Add(_typesToGenerateInfoRow);
 
             root.Add(CreateDivider());
 
-            var buttonRow = new VisualElement()
-            {
-                style = { flexDirection = FlexDirection.Row }
-            };
-            var button1 = new Button(Close)
-            {
-                text = "Close",
-                style = { flexGrow = 1 }
-            };
+            var buttonRow = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            var button1 = new Button(Close) {text = "Close", style = {flexGrow = 1}};
             buttonRow.Add(button1);
 
             var button2 = new Button(() =>
@@ -198,15 +192,15 @@ namespace UnityAtoms.Editor
                     templateVariables["VALUE_TYPE_NAME"] = atomType.IsValuePair ? $"{capitalizedValueType}Pair" : capitalizedValueType;
                     var valueType = atomType.IsValuePair ? $"{capitalizedValueType}Pair" : _valueType;
                     templateVariables["VALUE_TYPE"] = valueType;
-                    Generator.Generate(new AtomReceipe(atomType, valueType), _baseWritePath, templates, templateConditions, templateVariables);
+                    Generator.Generate(new AtomReceipe(atomType, valueType),
+                        _baseWritePath,
+                        templates,
+                        templateConditions,
+                        templateVariables);
                 });
 
                 AssetDatabase.Refresh();
-            })
-            {
-                text = "Generate",
-                style = { flexGrow = 1 }
-            };
+            }) {text = "Generate", style = {flexGrow = 1}};
             buttonRow.Add(button2);
             root.Add(buttonRow);
         }
@@ -219,7 +213,15 @@ namespace UnityAtoms.Editor
         {
             return new VisualElement()
             {
-                style = { flexDirection = FlexDirection.Row, marginBottom = 2, marginTop = 2, marginLeft = 2, marginRight = 2, height = 1 }
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                    marginBottom = 2,
+                    marginTop = 2,
+                    marginLeft = 2,
+                    marginRight = 2,
+                    height = 1
+                }
             };
         }
 
@@ -230,9 +232,9 @@ namespace UnityAtoms.Editor
         /// <returns>A new toggle row (`VisualElement`).</returns>
         private VisualElement CreateAtomTypeToGenerateToggleRow(AtomType atomType)
         {
-            var row = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
-            row.Add(new Label() { text = atomType.DisplayName, style = { width = 220, marginRight = 8 } });
-            var toggle = new Toggle() { value = _atomTypesToGenerate.Contains(atomType) };
+            var row = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
+            row.Add(new Label() {text = atomType.DisplayName, style = {width = 220, marginRight = 8}});
+            var toggle = new Toggle() {value = _atomTypesToGenerate.Contains(atomType)};
             toggle.RegisterCallback<ChangeEvent<bool>>(evt =>
             {
                 if (evt.newValue)
@@ -251,4 +253,6 @@ namespace UnityAtoms.Editor
         }
     }
 }
+#endif
+
 #endif

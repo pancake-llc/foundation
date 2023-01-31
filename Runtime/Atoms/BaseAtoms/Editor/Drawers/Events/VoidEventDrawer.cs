@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER
 using UnityEditor;
 using UnityAtoms.Editor;
@@ -8,6 +9,9 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Event property drawer of type `Void`. Inherits from `AtomDrawer&lt;VoidEvent&gt;`. Only availble in `UNITY_2019_1_OR_NEWER`.
     /// </summary>
     [CustomPropertyDrawer(typeof(VoidEvent))]
-    public class VoidEventDrawer : AtomDrawer<VoidEvent> { }
+    public class VoidEventDrawer : AtomDrawer<VoidEvent>
+    {
+    }
 }
+#endif
 #endif

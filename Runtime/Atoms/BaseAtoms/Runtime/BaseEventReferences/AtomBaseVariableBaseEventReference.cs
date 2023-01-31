@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -19,14 +20,12 @@ namespace UnityAtoms.BaseAtoms
         public const int LIST_INSTANCER_ADDED_EVENT = 8;
         public const int LIST_INSTANCER_REMOVED_EVENT = 9;
     }
+
     /// <summary>
     /// Event Reference of type `AtomBaseVariable`. Inherits from `AtomBaseEventReference&lt;AtomBaseVariable, AtomBaseVariableEvent, AtomBaseVariableEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class AtomBaseVariableBaseEventReference : AtomBaseEventReference<
-        AtomBaseVariable,
-        AtomBaseVariableEvent,
-        AtomBaseVariableEventInstancer>, IGetEvent
+    public sealed class AtomBaseVariableBaseEventReference : AtomBaseEventReference<AtomBaseVariable, AtomBaseVariableEvent, AtomBaseVariableEventInstancer>, IGetEvent
     {
         /// <summary>
         /// Get or set the Event used by the Event Reference.
@@ -43,7 +42,8 @@ namespace UnityAtoms.BaseAtoms
                     case (AtomBaseVariableEventReferenceUsage.LIST_ADDED_EVENT): return _list != null ? _list.Added : null;
                     case (AtomBaseVariableEventReferenceUsage.LIST_REMOVED_EVENT): return _list != null ? _list.Removed : null;
                     case (AtomBaseVariableEventReferenceUsage.COLLECTION_INSTANCER_ADDED_EVENT): return _collectionInstancer != null ? _collectionInstancer.Added : null;
-                    case (AtomBaseVariableEventReferenceUsage.COLLECTION_INSTANCER_REMOVED_EVENT): return _collectionInstancer != null ? _collectionInstancer.Removed : null;
+                    case (AtomBaseVariableEventReferenceUsage.COLLECTION_INSTANCER_REMOVED_EVENT):
+                        return _collectionInstancer != null ? _collectionInstancer.Removed : null;
                     case (AtomBaseVariableEventReferenceUsage.LIST_INSTANCER_ADDED_EVENT): return _listInstancer != null ? _listInstancer.Added : null;
                     case (AtomBaseVariableEventReferenceUsage.LIST_INSTANCER_REMOVED_EVENT): return _listInstancer != null ? _listInstancer.Removed : null;
                     case (AtomBaseVariableEventReferenceUsage.EVENT_INSTANCER): return _eventInstancer != null ? _eventInstancer.Event : null;
@@ -57,50 +57,50 @@ namespace UnityAtoms.BaseAtoms
                 switch (_usage)
                 {
                     case (AtomBaseVariableEventReferenceUsage.COLLECTION_ADDED_EVENT):
-                        {
-                            _collection.Added = value;
-                            break;
-                        }
+                    {
+                        _collection.Added = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.COLLECTION_REMOVED_EVENT):
-                        {
-                            _collection.Removed = value;
-                            break;
-                        }
+                    {
+                        _collection.Removed = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.LIST_ADDED_EVENT):
-                        {
-                            _list.Added = value;
-                            break;
-                        }
+                    {
+                        _list.Added = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.LIST_REMOVED_EVENT):
-                        {
-                            _list.Removed = value;
-                            break;
-                        }
+                    {
+                        _list.Removed = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.COLLECTION_INSTANCER_ADDED_EVENT):
-                        {
-                            _collectionInstancer.Added = value;
-                            break;
-                        }
+                    {
+                        _collectionInstancer.Added = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.COLLECTION_INSTANCER_REMOVED_EVENT):
-                        {
-                            _collectionInstancer.Removed = value;
-                            break;
-                        }
+                    {
+                        _collectionInstancer.Removed = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.LIST_INSTANCER_ADDED_EVENT):
-                        {
-                            _listInstancer.Added = value;
-                            break;
-                        }
+                    {
+                        _listInstancer.Added = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.LIST_INSTANCER_REMOVED_EVENT):
-                        {
-                            _listInstancer.Removed = value;
-                            break;
-                        }
+                    {
+                        _listInstancer.Removed = value;
+                        break;
+                    }
                     case (AtomBaseVariableEventReferenceUsage.EVENT):
-                        {
-                            _event = value;
-                            break;
-                        }
+                    {
+                        _event = value;
+                        break;
+                    }
                     default:
                         throw new NotSupportedException($"Event not reassignable for usage {_usage}.");
                 }
@@ -110,25 +110,22 @@ namespace UnityAtoms.BaseAtoms
         /// <summary>
         /// Collection used if `Usage` is set to `COLLECTION_ADDED_EVENT` or `COLLECTION_REMOVED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomCollection _collection = default(AtomCollection);
+        [SerializeField] private AtomCollection _collection = default(AtomCollection);
 
         /// <summary>
         /// List used if `Usage` is set to `LIST_ADDED_EVENT` or `LIST_REMOVED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomList _list = default(AtomList);
+        [SerializeField] private AtomList _list = default(AtomList);
 
         /// <summary>
         /// Collection Instancer used if `Usage` is set to `COLLECTION_INSTANCER_ADDED_EVENT` or `COLLECTION_INSTANCER_REMOVED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomCollectionInstancer _collectionInstancer = default(AtomCollectionInstancer);
+        [SerializeField] private AtomCollectionInstancer _collectionInstancer = default(AtomCollectionInstancer);
 
         /// <summary>
         /// List Instancer used if `Usage` is set to `LIST_INSTANCER_ADDED_EVENT` or `LIST_INSTANCER_REMOVED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomListInstancer _listInstancer = default(AtomListInstancer);
+        [SerializeField] private AtomListInstancer _listInstancer = default(AtomListInstancer);
     }
 }
+#endif

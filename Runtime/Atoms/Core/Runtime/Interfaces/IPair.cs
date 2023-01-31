@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 namespace UnityAtoms
 {
     /// <summary>
@@ -11,3 +12,5 @@ namespace UnityAtoms
         void Deconstruct(out T item1, out T item2);
     }
 }
+
+#endif

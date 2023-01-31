@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -22,15 +23,12 @@ namespace UnityAtoms
 
         public int ReplayBufferSize { get => _replayBufferSize; set => _replayBufferSize = value; }
 
-        [SerializeField]
-        protected event Action<T> _onEvent;
+        [SerializeField] protected event Action<T> _onEvent;
 
         /// <summary>
         /// The event replays the specified number of old values to new subscribers. Works like a ReplaySubject in Rx.
         /// </summary>
-        [SerializeField]
-        [Range(0, 10)]
-        [Tooltip("The number of old values (between 0-10) being replayed when someone subscribes to this Event.")]
+        [SerializeField] [Range(0, 10)] [Tooltip("The number of old values (between 0-10) being replayed when someone subscribes to this Event.")]
         private int _replayBufferSize = 1;
 
         private Queue<T> _replayBuffer = new Queue<T>();
@@ -43,7 +41,7 @@ namespace UnityAtoms
                 var invocationList = _onEvent.GetInvocationList();
                 foreach (var d in invocationList)
                 {
-                    _onEvent -= (Action<T>)d;
+                    _onEvent -= (Action<T>) d;
                 }
             }
         }
@@ -51,8 +49,7 @@ namespace UnityAtoms
         /// <summary>
         /// Used when raising values from the inspector for debugging purposes.
         /// </summary>
-        [SerializeField]
-        [Tooltip("Value that will be used when using the Raise button in the editor inspector.")]
+        [SerializeField] [Tooltip("Value that will be used when using the Raise button in the editor inspector.")]
         private T _inspectorRaiseValue = default(T);
 
         /// <summary>
@@ -89,10 +86,7 @@ namespace UnityAtoms
         /// Unregister handler that was registered using the `Register` method.
         /// </summary>
         /// <param name="action">The handler.</param>
-        public void Unregister(Action<T> action)
-        {
-            _onEvent -= action;
-        }
+        public void Unregister(Action<T> action) { _onEvent -= action; }
 
         /// <summary>
         /// Unregister all handlers that were registered using the `Register` method.
@@ -120,27 +114,27 @@ namespace UnityAtoms
         /// Unregister a listener that was registered using the `RegisterListener` method.
         /// </summary>
         /// <param name="listener">The Listener to unregister.</param>
-        public void UnregisterListener(IAtomListener<T> listener)
-        {
-            _onEvent -= listener.OnEventRaised;
-        }
+        public void UnregisterListener(IAtomListener<T> listener) { _onEvent -= listener.OnEventRaised; }
 
         #region Observable
+
         /// <summary>
         /// Turn the Event into an `IObservable&lt;T&gt;`. Makes Events compatible with for example UniRx.
         /// </summary>
         /// <returns>The Event as an `IObservable&lt;T&gt;`.</returns>
-        public IObservable<T> Observe()
-        {
-            return new ObservableEvent<T>(Register, Unregister);
-        }
+        public IObservable<T> Observe() { return new ObservableEvent<T>(Register, Unregister); }
+
         #endregion // Observable
 
         protected void AddToReplayBuffer(T item)
         {
             if (_replayBufferSize > 0)
             {
-                while (_replayBuffer.Count >= _replayBufferSize) { _replayBuffer.Dequeue(); }
+                while (_replayBuffer.Count >= _replayBufferSize)
+                {
+                    _replayBuffer.Dequeue();
+                }
+
                 _replayBuffer.Enqueue(item);
             }
         }
@@ -165,3 +159,5 @@ namespace UnityAtoms
         }
     }
 }
+
+#endif

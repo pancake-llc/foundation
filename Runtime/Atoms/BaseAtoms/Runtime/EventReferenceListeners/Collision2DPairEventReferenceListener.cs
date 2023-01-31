@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -8,9 +9,9 @@ namespace UnityAtoms.BaseAtoms
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/Collision2DPair Event Reference Listener")]
     public sealed class Collision2DPairEventReferenceListener : AtomEventReferenceListener<
-        Collision2DPair,
-        Collision2DPairEvent,
-        Collision2DPairEventReference,
-        Collision2DPairUnityEvent>
-    { }
+        Collision2DPair, Collision2DPairEvent, Collision2DPairEventReference, Collision2DPairUnityEvent>
+    {
+    }
 }
+
+#endif

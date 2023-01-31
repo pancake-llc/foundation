@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,8 +12,11 @@ namespace UnityAtoms.BaseAtoms
     /// <typeparam name="K">Key type.</typeparam>
     /// <typeparam name="V">Value type.</typeparam>
     [Serializable]
-    public abstract class SerializableDictionary<K, V> : IDictionary<K, V>, ISerializationCallbackReceiver, IEnumerable<KeyValuePair<K, V>>, IEnumerable, ICollection<KeyValuePair<K, V>>
-        where K : IEquatable<K>
+    public abstract class SerializableDictionary<K, V> : IDictionary<K, V>,
+        ISerializationCallbackReceiver,
+        IEnumerable<KeyValuePair<K, V>>,
+        IEnumerable,
+        ICollection<KeyValuePair<K, V>> where K : IEquatable<K>
     {
         public Action<V> Added { get => _added; set => _added = value; }
         public Action<V> Removed { get => _removed; set => _removed = value; }
@@ -24,18 +28,15 @@ namespace UnityAtoms.BaseAtoms
 
         private Dictionary<K, V> _dict = new Dictionary<K, V>();
 
-        [SerializeField]
-        private List<K> _serializedKeys = new List<K>();
-        [SerializeField]
-        private List<V> _serializedValues = new List<V>();
+        [SerializeField] private List<K> _serializedKeys = new List<K>();
+        [SerializeField] private List<V> _serializedValues = new List<V>();
 
         /// <summary>
         /// Needed in order to keep track of duplicate keys in the dictionary.
         /// </summary>
         /// <typeparam name="int"></typeparam>
         /// <returns></returns>
-        [SerializeField]
-        private List<int> _duplicateKeyIndices = new List<int>();
+        [SerializeField] private List<int> _duplicateKeyIndices = new List<int>();
 
         public void OnAfterDeserialize()
         {
@@ -102,15 +103,12 @@ namespace UnityAtoms.BaseAtoms
         }
 
         #region IDictionary<K, V>
+
         public ICollection<K> Keys { get => _dict.Keys; }
         public ICollection<V> Values { get => _dict.Values; }
         public int Count { get => _dict.Count; }
         public bool IsReadOnly { get => false; }
-        public V this[K key]
-        {
-            get => _dict[key];
-            set => _dict[key] = value;
-        }
+        public V this[K key] { get => _dict[key]; set => _dict[key] = value; }
 
         public void Add(K key, V value)
         {
@@ -121,10 +119,7 @@ namespace UnityAtoms.BaseAtoms
             _added?.Invoke(value);
         }
 
-        public void Add(KeyValuePair<K, V> kvp)
-        {
-            Add(kvp.Key, kvp.Value);
-        }
+        public void Add(KeyValuePair<K, V> kvp) { Add(kvp.Key, kvp.Value); }
 
         public bool ContainsKey(K key) { return _dict.ContainsKey(key); }
 
@@ -141,10 +136,7 @@ namespace UnityAtoms.BaseAtoms
             return true;
         }
 
-        public bool Remove(KeyValuePair<K, V> kvp)
-        {
-            return Remove(kvp.Key);
-        }
+        public bool Remove(KeyValuePair<K, V> kvp) { return Remove(kvp.Key); }
 
         public bool TryGetValue(K key, out V value) { return _dict.TryGetValue(key, out value); }
 
@@ -184,6 +176,7 @@ namespace UnityAtoms.BaseAtoms
                     {
                         array[cur] = new KeyValuePair<K, V>(enumerator.Current.Key, enumerator.Current.Value);
                     }
+
                     ++cur;
                 }
             }
@@ -200,3 +193,4 @@ namespace UnityAtoms.BaseAtoms
         #endregion
     }
 }
+#endif

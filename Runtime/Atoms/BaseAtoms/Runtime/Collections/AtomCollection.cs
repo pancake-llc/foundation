@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityAtoms;
@@ -32,14 +33,11 @@ namespace UnityAtoms.BaseAtoms
         /// </summary>
         public VoidEvent Cleared { get => _cleared; set => _cleared = value; }
 
-        [SerializeField]
-        private AtomBaseVariableEvent _added;
+        [SerializeField] private AtomBaseVariableEvent _added;
 
-        [SerializeField]
-        private AtomBaseVariableEvent _removed;
+        [SerializeField] private AtomBaseVariableEvent _removed;
 
-        [SerializeField]
-        private VoidEvent _cleared;
+        [SerializeField] private VoidEvent _cleared;
 
         void OnEnable()
         {
@@ -53,8 +51,8 @@ namespace UnityAtoms.BaseAtoms
         void OnDisable()
         {
             if (Value == null) return;
-			
-			//Calling OnAfterDeserialize again here, as Collection may use StringConstant or StringVariable as key, and Unity doesnt ensures execution order in Scriptable Objects
+
+            //Calling OnAfterDeserialize again here, as Collection may use StringConstant or StringVariable as key, and Unity doesnt ensures execution order in Scriptable Objects
             // As such is possible that the Collection is called before its keys are ready to be used.
             // On OnEnable, all atoms are supposed to already have been initialized, and calling OnAfterDeserialize, will fix any issue with not ready keys
             Value.OnAfterDeserialize();
@@ -65,6 +63,7 @@ namespace UnityAtoms.BaseAtoms
         }
 
         #region Observable
+
         /// <summary>
         /// Make the add event into an `IObservable&lt;T&gt;`. Makes Collection's add Event compatible with for example UniRx.
         /// </summary>
@@ -131,3 +130,4 @@ namespace UnityAtoms.BaseAtoms
         }
     }
 }
+#endif

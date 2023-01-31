@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -11,14 +12,13 @@ namespace UnityAtoms.FSM
         public const int FSM = 2;
         public const int FSM_INSTANCER = 3;
     }
+
     /// <summary>
     /// Event Reference of type `FSMTransitionData`. Inherits from `AtomBaseEventReference&lt;FSMTransitionData, FSMTransitionDataEvent, FSMTransitionDataEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class FSMTransitionDataBaseEventReference : AtomBaseEventReference<
-        FSMTransitionData,
-        FSMTransitionDataEvent,
-        FSMTransitionDataEventInstancer>, IGetEvent
+    public sealed class FSMTransitionDataBaseEventReference : AtomBaseEventReference<FSMTransitionData, FSMTransitionDataEvent, FSMTransitionDataEventInstancer>,
+        IGetEvent
     {
         /// <summary>
         /// Get the value for the Reference.
@@ -30,7 +30,7 @@ namespace UnityAtoms.FSM
             {
                 switch (_usage)
                 {
-                    case (FSMTransitionDataBaseEventReferenceUsage.FSM_INSTANCER): return ((FiniteStateMachine)_fsmInstancer.Variable).TransitionStarted;
+                    case (FSMTransitionDataBaseEventReferenceUsage.FSM_INSTANCER): return ((FiniteStateMachine) _fsmInstancer.Variable).TransitionStarted;
                     case (FSMTransitionDataBaseEventReferenceUsage.FSM): return _fsm.TransitionStarted;
                     default:
                         return base.Event;
@@ -41,7 +41,7 @@ namespace UnityAtoms.FSM
                 switch (_usage)
                 {
                     case (FSMTransitionDataBaseEventReferenceUsage.FSM_INSTANCER):
-                        ((FiniteStateMachine)_fsmInstancer.Variable).TransitionStarted = value;
+                        ((FiniteStateMachine) _fsmInstancer.Variable).TransitionStarted = value;
                         break;
                     case (FSMTransitionDataBaseEventReferenceUsage.FSM):
                         _fsm.TransitionStarted = value;
@@ -56,13 +56,13 @@ namespace UnityAtoms.FSM
         /// <summary>
         /// Takes event from this FiniteStateMachine if `Usage` is set to `FSM`.
         /// </summary>
-        [SerializeField]
-        private FiniteStateMachine _fsm = default(FiniteStateMachine);
+        [SerializeField] private FiniteStateMachine _fsm = default(FiniteStateMachine);
 
         /// <summary>
         /// Takes event from this FiniteStateMachineInstancer if `Usage` is set to `FSM Instancer`.
         /// </summary>
-        [SerializeField]
-        private FiniteStateMachineInstancer _fsmInstancer = default(FiniteStateMachineInstancer);
+        [SerializeField] private FiniteStateMachineInstancer _fsmInstancer = default(FiniteStateMachineInstancer);
     }
 }
+
+#endif

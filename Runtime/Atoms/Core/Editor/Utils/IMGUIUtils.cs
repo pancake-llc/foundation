@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms
@@ -13,7 +14,6 @@ namespace UnityAtoms
         /// <param name="rect">The rect.</param>
         /// <param name="range">The range.</param>
         /// <returns>A new `Rect` snipped horizontally.</returns>
-
         private static Rect SnipRectH(Rect rect, float range)
         {
             if (range == 0) return new Rect(rect);
@@ -89,3 +89,5 @@ namespace UnityAtoms
         }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.BaseAtoms
@@ -6,11 +7,9 @@ namespace UnityAtoms.BaseAtoms
     /// Event Reference of type `IntPair`. Inherits from `AtomEventReference&lt;IntPair, IntVariable, IntPairEvent, IntVariableInstancer, IntPairEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class IntPairEventReference : AtomEventReference<
-        IntPair,
-        IntVariable,
-        IntPairEvent,
-        IntVariableInstancer,
-        IntPairEventInstancer>, IGetEvent 
-    { }
+    public sealed class IntPairEventReference : AtomEventReference<IntPair, IntVariable, IntPairEvent, IntVariableInstancer, IntPairEventInstancer>, IGetEvent
+    {
+    }
 }
+
+#endif

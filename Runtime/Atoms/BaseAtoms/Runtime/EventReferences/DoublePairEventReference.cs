@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.BaseAtoms
@@ -6,11 +7,10 @@ namespace UnityAtoms.BaseAtoms
     /// Event Reference of type `DoublePair`. Inherits from `AtomEventReference&lt;DoublePair, DoubleVariable, DoublePairEvent, DoubleVariableInstancer, DoublePairEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class DoublePairEventReference : AtomEventReference<
-        DoublePair,
-        DoubleVariable,
-        DoublePairEvent,
-        DoubleVariableInstancer,
-        DoublePairEventInstancer>, IGetEvent 
-    { }
+    public sealed class DoublePairEventReference : AtomEventReference<DoublePair, DoubleVariable, DoublePairEvent, DoubleVariableInstancer, DoublePairEventInstancer>,
+        IGetEvent
+    {
+    }
 }
+
+#endif

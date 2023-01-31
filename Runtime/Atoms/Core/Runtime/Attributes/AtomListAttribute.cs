@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms
@@ -16,3 +17,4 @@ namespace UnityAtoms
         }
     }
 }
+#endif

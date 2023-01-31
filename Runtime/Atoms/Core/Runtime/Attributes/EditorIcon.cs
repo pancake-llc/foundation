@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_ATOM
+using System;
 
 namespace UnityAtoms
 {
@@ -8,11 +9,10 @@ namespace UnityAtoms
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     public class EditorIcon : Attribute
     {
-        public EditorIcon(string name)
-        {
-            Name = name;
-        }
+        public EditorIcon(string name) { Name = name; }
 
         public string Name { get; set; }
     }
 }
+
+#endif

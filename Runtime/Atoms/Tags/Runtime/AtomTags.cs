@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,16 +37,13 @@ namespace UnityAtoms.Tags
 
         private ReadOnlyList<StringConstant> _readOnlyTags;
 
-        [SerializeField]
-        private List<StringConstant> _tags = new List<StringConstant>();
+        [SerializeField] private List<StringConstant> _tags = new List<StringConstant>();
 
         private SortedList<string, StringConstant> _sortedTags = new SortedList<string, StringConstant>();
 
-        private static readonly Dictionary<string, List<GameObject>> TaggedGameObjects
-            = new Dictionary<string, List<GameObject>>();
+        private static readonly Dictionary<string, List<GameObject>> TaggedGameObjects = new Dictionary<string, List<GameObject>>();
 
-        private static readonly Dictionary<GameObject, AtomTags> TagInstances
-            = new Dictionary<GameObject, AtomTags>();
+        private static readonly Dictionary<GameObject, AtomTags> TagInstances = new Dictionary<GameObject, AtomTags>();
         private static Action _onInitialization;
 
         #region Serialization
@@ -53,9 +51,7 @@ namespace UnityAtoms.Tags
         public void OnBeforeSerialize()
         {
 #if UNITY_EDITOR
-            if (!EditorApplication.isPlaying
-            && !EditorApplication.isUpdating
-            && !EditorApplication.isCompiling) return;
+            if (!EditorApplication.isPlaying && !EditorApplication.isUpdating && !EditorApplication.isCompiling) return;
 #endif
             _tags.Clear();
             foreach (var kvp in _sortedTags)
@@ -75,6 +71,7 @@ namespace UnityAtoms.Tags
                 _sortedTags.Add(_tags[i].Value, _tags[i]);
             }
         }
+
         #endregion
 
 #if UNITY_EDITOR
@@ -84,7 +81,10 @@ namespace UnityAtoms.Tags
             _tags = _sortedTags.Values.ToList();
 
             // this null value is just for easier editing and could also be archived with an custom inspector
-            if (!EditorApplication.isPlaying) { _tags.Add(null); }
+            if (!EditorApplication.isPlaying)
+            {
+                _tags.Add(null);
+            }
         }
 #endif
 
@@ -258,3 +258,5 @@ namespace UnityAtoms.Tags
         private static bool IsInitialized(GameObject go) => TagInstances.ContainsKey(go);
     }
 }
+
+#endif

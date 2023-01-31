@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -7,7 +8,6 @@ namespace UnityAtoms.Editor
     /// <summary>
     /// A custom property drawer for References (Events and regular). Makes it possible to reference a resources (Variable or Event) through multiple options.
     /// </summary>
-
     public abstract class AtomBaseReferenceDrawer : PropertyDrawer
     {
         protected abstract class UsageData
@@ -36,9 +36,7 @@ namespace UnityAtoms.Editor
             }
 
             var innerProperty = property.FindPropertyRelative(usageData.PropertyName);
-            return innerProperty == null ?
-                EditorGUIUtility.singleLineHeight :
-                EditorGUI.GetPropertyHeight(innerProperty, label);
+            return innerProperty == null ? EditorGUIUtility.singleLineHeight : EditorGUI.GetPropertyHeight(innerProperty, label);
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -73,8 +71,8 @@ namespace UnityAtoms.Editor
 
             var usageTypePropertyName = GetUsages(property)[newUsageValue].PropertyName;
             var usageTypeProperty = property.FindPropertyRelative(usageTypePropertyName);
-            
-            if (usageTypeProperty  == null)
+
+            if (usageTypeProperty == null)
             {
                 EditorGUI.LabelField(position, "[Non serialized value]");
             }
@@ -103,3 +101,5 @@ namespace UnityAtoms.Editor
         }
     }
 }
+
+#endif

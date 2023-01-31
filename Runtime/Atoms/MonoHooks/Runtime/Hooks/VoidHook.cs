@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 
@@ -12,20 +13,17 @@ namespace UnityAtoms.MonoHooks
         /// <summary>
         /// The Event
         /// </summary>
-        [SerializeField]
-        protected VoidEvent _event;
+        [SerializeField] protected VoidEvent _event;
 
         /// <summary>
         /// Event including a GameObject reference.
         /// </summary>
-        [SerializeField]
-        protected GameObjectEvent _eventWithGameObjectReference;
+        [SerializeField] protected GameObjectEvent _eventWithGameObjectReference;
 
         /// <summary>
         /// Selector function for the Event `EventWithGameObjectReference`. Makes it possible to for example select the parent GameObject and pass that a long to the `EventWithGameObjectReference`.
         /// </summary>
-        [SerializeField]
-        protected GameObjectGameObjectFunction _selectGameObjectReference;
+        [SerializeField] protected GameObjectGameObjectFunction _selectGameObjectReference;
 
         protected void OnHook()
         {
@@ -33,6 +31,7 @@ namespace UnityAtoms.MonoHooks
             {
                 _event.Raise();
             }
+
             if (_eventWithGameObjectReference != null)
             {
                 _eventWithGameObjectReference.Raise(_selectGameObjectReference != null ? _selectGameObjectReference.Call(gameObject) : gameObject);
@@ -40,3 +39,5 @@ namespace UnityAtoms.MonoHooks
         }
     }
 }
+
+#endif

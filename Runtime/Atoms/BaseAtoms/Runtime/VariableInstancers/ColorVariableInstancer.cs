@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
@@ -8,12 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-hotpink")]
     [AddComponentMenu("Unity Atoms/Variable Instancers/Color Variable Instancer")]
-    public class ColorVariableInstancer : AtomVariableInstancer<
-        ColorVariable,
-        ColorPair,
-        Color,
-        ColorEvent,
-        ColorPairEvent,
-        ColorColorFunction>
-    { }
+    public class ColorVariableInstancer : AtomVariableInstancer<ColorVariable, ColorPair, Color, ColorEvent, ColorPairEvent, ColorColorFunction>
+    {
+    }
 }
+
+#endif

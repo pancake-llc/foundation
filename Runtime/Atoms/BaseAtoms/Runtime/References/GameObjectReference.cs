@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -9,21 +10,22 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class GameObjectReference : AtomReference<
-        GameObject,
-        GameObjectPair,
-        GameObjectConstant,
-        GameObjectVariable,
-        GameObjectEvent,
-        GameObjectPairEvent,
-        GameObjectGameObjectFunction,
-        GameObjectVariableInstancer>, IEquatable<GameObjectReference>
+            GameObject, GameObjectPair, GameObjectConstant, GameObjectVariable, GameObjectEvent, GameObjectPairEvent, GameObjectGameObjectFunction,
+            GameObjectVariableInstancer>,
+        IEquatable<GameObjectReference>
     {
-        public GameObjectReference() : base() { }
-        public GameObjectReference(GameObject value) : base(value) { }
-        public bool Equals(GameObjectReference other) { return base.Equals(other); }
-        protected override bool ValueEquals(GameObject other)
+        public GameObjectReference()
+            : base()
         {
-            return Value == other;
         }
+
+        public GameObjectReference(GameObject value)
+            : base(value)
+        {
+        }
+
+        public bool Equals(GameObjectReference other) { return base.Equals(other); }
+        protected override bool ValueEquals(GameObject other) { return Value == other; }
     }
 }
+#endif

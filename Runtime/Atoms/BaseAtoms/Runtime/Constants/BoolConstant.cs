@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/Bool", fileName = "BoolConstant")]
-    public sealed class BoolConstant : AtomBaseVariable<bool> { }
+    public sealed class BoolConstant : AtomBaseVariable<bool>
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.Editor
@@ -5,7 +6,6 @@ namespace UnityAtoms.Editor
     /// <summary>
     /// Internal module class that holds that regarding an Atom type.
     /// </summary>
-
     internal struct AtomReceipe : IEquatable<AtomReceipe>
     {
         public AtomType AtomType { get; set; }
@@ -17,15 +17,9 @@ namespace UnityAtoms.Editor
             this.ValueType = valueType;
         }
 
-        public bool Equals(AtomReceipe other)
-        {
-            return this.AtomType.Equals(other) && this.ValueType == other.ValueType;
-        }
+        public bool Equals(AtomReceipe other) { return this.AtomType.Equals(other) && this.ValueType == other.ValueType; }
 
-        public override bool Equals(object obj)
-        {
-            return Equals((AtomReceipe)obj);
-        }
+        public override bool Equals(object obj) { return Equals((AtomReceipe) obj); }
 
         public override int GetHashCode()
         {
@@ -42,3 +36,5 @@ namespace UnityAtoms.Editor
         }
     }
 }
+
+#endif

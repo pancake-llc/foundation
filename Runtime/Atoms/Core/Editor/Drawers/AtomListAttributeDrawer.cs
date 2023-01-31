@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +25,9 @@ namespace UnityAtoms.Editor
             AtomListAttribute atomListAttr = attribute as AtomListAttribute;
 
             var propertyHeight = EditorGUIUtility.singleLineHeight + LINE_BOTTOM_MARGIN + DRAWER_MARGIN * 2f;
-            var listProperty = property.FindPropertyRelative(atomListAttr != null && !string.IsNullOrWhiteSpace(atomListAttr.ChildPropName) ? atomListAttr.ChildPropName : SERIALIZED_LIST_PROPNAME);
+            var listProperty = property.FindPropertyRelative(atomListAttr != null && !string.IsNullOrWhiteSpace(atomListAttr.ChildPropName)
+                ? atomListAttr.ChildPropName
+                : SERIALIZED_LIST_PROPNAME);
 
             var length = listProperty.arraySize;
             for (var i = 0; i < length; ++i)
@@ -50,7 +53,9 @@ namespace UnityAtoms.Editor
             EditorGUI.indentLevel = 0;
             EditorGUI.BeginChangeCheck();
 
-            var listArrayProperty = property.FindPropertyRelative(atomListAttr != null && !string.IsNullOrWhiteSpace(atomListAttr.ChildPropName) ? atomListAttr.ChildPropName : SERIALIZED_LIST_PROPNAME);
+            var listArrayProperty = property.FindPropertyRelative(atomListAttr != null && !string.IsNullOrWhiteSpace(atomListAttr.ChildPropName)
+                ? atomListAttr.ChildPropName
+                : SERIALIZED_LIST_PROPNAME);
 
             var restRect = new Rect();
             var initialPosition = new Rect(position);
@@ -129,3 +134,4 @@ namespace UnityAtoms.Editor
         }
     }
 }
+#endif

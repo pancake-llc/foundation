@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.MonoHooks;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/Collider2DGameObject", fileName = "Collider2DGameObjectConstant")]
-    public sealed class Collider2DGameObjectConstant : AtomBaseVariable<Collider2DGameObject> { }
+    public sealed class Collider2DGameObjectConstant : AtomBaseVariable<Collider2DGameObject>
+    {
+    }
 }
+
+#endif

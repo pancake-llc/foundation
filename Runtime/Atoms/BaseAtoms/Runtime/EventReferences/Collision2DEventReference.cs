@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -8,10 +9,10 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class Collision2DEventReference : AtomEventReference<
-        Collision2D,
-        Collision2DVariable,
-        Collision2DEvent,
-        Collision2DVariableInstancer,
-        Collision2DEventInstancer>, IGetEvent 
-    { }
+            Collision2D, Collision2DVariable, Collision2DEvent, Collision2DVariableInstancer, Collision2DEventInstancer>,
+        IGetEvent
+    {
+    }
 }
+
+#endif

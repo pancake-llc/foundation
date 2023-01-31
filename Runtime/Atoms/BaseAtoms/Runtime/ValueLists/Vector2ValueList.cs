@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-piglet")]
     [CreateAssetMenu(menuName = "Unity Atoms/Value Lists/Vector2", fileName = "Vector2ValueList")]
-    public sealed class Vector2ValueList : AtomValueList<Vector2, Vector2Event> { }
+    public sealed class Vector2ValueList : AtomValueList<Vector2, Vector2Event>
+    {
+    }
 }
+
+#endif

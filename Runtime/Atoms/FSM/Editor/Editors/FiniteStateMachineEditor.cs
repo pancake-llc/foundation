@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Reflection;
 using UnityEditor;
@@ -44,10 +45,9 @@ namespace UnityAtoms.FSM.Editor
                     GUILayout.Space(2);
                     if (GUILayout.Button("Raise", GUILayout.Width(raiseButtonWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
                     {
-                        evt.GetType().GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)?.Invoke(evt, new[] { atomTarget.BaseValue });
+                        evt.GetType().GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)?.Invoke(evt, new[] {atomTarget.BaseValue});
                     }
                 }
-
             }
 
             using (new EditorGUILayout.HorizontalScope())
@@ -56,23 +56,32 @@ namespace UnityAtoms.FSM.Editor
                 var changedWithHistory = serializedObject.FindProperty("_changedWithHistory").objectReferenceValue;
                 if (changedWithHistory != null && changedWithHistory is AtomEventBase evt && target is AtomBaseVariable atomTarget)
                 {
-
                     GUILayout.Space(2);
                     if (GUILayout.Button("Raise", GUILayout.Width(raiseButtonWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
                     {
                         var oldValueProp = serializedObject.FindProperty("_oldValue");
                         object oldValue = oldValueProp.GetPropertyValue();
-                        evt.GetType().GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)?.Invoke(evt, new[] { (object)(new StringPair() { Item1 = (string)atomTarget.BaseValue, Item2 = (string)oldValue }) });
+                        evt.GetType()
+                            .GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)
+                            ?.Invoke(evt, new[] {(object) (new StringPair() {Item1 = (string) atomTarget.BaseValue, Item2 = (string) oldValue})});
                     }
                 }
-
             }
 
             var transitionStartedProp = serializedObject.FindProperty("_transitionStarted");
-            EditorGUILayout.PropertyField(transitionStartedProp, new GUIContent() { tooltip = "Event raised when a transition is started.", text = transitionStartedProp.displayName }, true);
+            EditorGUILayout.PropertyField(transitionStartedProp,
+                new GUIContent() {tooltip = "Event raised when a transition is started.", text = transitionStartedProp.displayName},
+                true);
 
             var completeCurrentTransitionProp = serializedObject.FindProperty("_completeCurrentTransition");
-            EditorGUILayout.PropertyField(completeCurrentTransitionProp, new GUIContent() { tooltip = "A Bool Event that is passed along in the Transition Started event (an event that is required when using this event). The transition needs also to be marked with 'Raise Event To Complete Transition in order to use this event.'", text = completeCurrentTransitionProp.displayName }, true);
+            EditorGUILayout.PropertyField(completeCurrentTransitionProp,
+                new GUIContent()
+                {
+                    tooltip =
+                        "A Bool Event that is passed along in the Transition Started event (an event that is required when using this event). The transition needs also to be marked with 'Raise Event To Complete Transition in order to use this event.'",
+                    text = completeCurrentTransitionProp.displayName
+                },
+                true);
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_states"), true);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_transitions"), true);
@@ -81,3 +90,5 @@ namespace UnityAtoms.FSM.Editor
         }
     }
 }
+
+#endif

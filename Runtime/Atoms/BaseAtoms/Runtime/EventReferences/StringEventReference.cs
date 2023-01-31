@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.BaseAtoms
@@ -6,11 +7,9 @@ namespace UnityAtoms.BaseAtoms
     /// Event Reference of type `string`. Inherits from `AtomEventReference&lt;string, StringVariable, StringEvent, StringVariableInstancer, StringEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class StringEventReference : AtomEventReference<
-        string,
-        StringVariable,
-        StringEvent,
-        StringVariableInstancer,
-        StringEventInstancer>, IGetEvent 
-    { }
+    public sealed class StringEventReference : AtomEventReference<string, StringVariable, StringEvent, StringVariableInstancer, StringEventInstancer>, IGetEvent
+    {
+    }
 }
+
+#endif

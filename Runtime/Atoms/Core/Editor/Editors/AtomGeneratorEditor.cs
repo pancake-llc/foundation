@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,20 +33,19 @@ namespace UnityAtoms.Editor
 
             // Check if the current type is unsafe.
             var currentType = Type.GetType(fullQualifiedName.stringValue);
-            if(currentType == null
-                || currentType.IsSubclassOf(typeof(Object)))
+            if (currentType == null || currentType.IsSubclassOf(typeof(Object)))
             {
                 safeSearch = true;
             }
-            else if(!currentType.IsSerializable)
+            else if (!currentType.IsSerializable)
             {
                 safeSearch = false;
             }
             else
             {
                 var assemblies = from assemblyDefinition in CompilationPipeline.GetAssemblies(AssembliesType.Player)
-                                 let assembly = Assembly.Load(assemblyDefinition.name)
-                                 select assembly;
+                    let assembly = Assembly.Load(assemblyDefinition.name)
+                    select assembly;
                 safeSearch = assemblies.Contains(currentType.Assembly);
             }
 
@@ -56,45 +56,43 @@ namespace UnityAtoms.Editor
         {
             // Search Player assemblies only if safe searching, else search all assemblies.
             IEnumerable<Assembly> assemblies;
-            if(safeSearch)
+            if (safeSearch)
             {
                 assemblies = from assemblyDefinition in CompilationPipeline.GetAssemblies(AssembliesType.Player)
-                             let assembly = Assembly.Load(assemblyDefinition.name)
-                             select assembly;
+                    let assembly = Assembly.Load(assemblyDefinition.name)
+                    select assembly;
             }
             else
             {
-                assemblies = from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                             select assembly;
+                assemblies = from assembly in AppDomain.CurrentDomain.GetAssemblies() select assembly;
             }
 
             // Find all types in unity that are not generic or abstract.
             var types = from assembly in assemblies
-                        where !assembly.IsDynamic
-                        from type in assembly.GetExportedTypes()
-                        where !type.IsGenericType
-                        where !type.IsAbstract
-                        select type;
+                where !assembly.IsDynamic
+                from type in assembly.GetExportedTypes()
+                where !type.IsGenericType
+                where !type.IsAbstract
+                select type;
 
             // Disregard non serializable types if safe searching.
-            if(safeSearch)
+            if (safeSearch)
             {
-                types = from type in types
-                        where type.IsUnitySerializable()
-                        select type;
+                types = from type in types where type.IsUnitySerializable() select type;
             }
 
             // Create a type selector dropdown that sets properties when something is selected.
-            typeSelectorDropdown = new TypeSelectorDropdown(types, selectedType =>
-            {
-                serializedObject.Update();
+            typeSelectorDropdown = new TypeSelectorDropdown(types,
+                selectedType =>
+                {
+                    serializedObject.Update();
 
-                fullQualifiedName.stringValue = selectedType.AssemblyQualifiedName;
-                typeNamespace.stringValue = selectedType.Namespace;
-                baseType.stringValue = selectedType.Name;
+                    fullQualifiedName.stringValue = selectedType.AssemblyQualifiedName;
+                    typeNamespace.stringValue = selectedType.Namespace;
+                    baseType.stringValue = selectedType.Name;
 
-                serializedObject.ApplyModifiedProperties();
-            });
+                    serializedObject.ApplyModifiedProperties();
+                });
         }
 
         public override void OnInspectorGUI()
@@ -104,7 +102,8 @@ namespace UnityAtoms.Editor
             // Draw our type dropdown and result.
             var buttonContent = safeSearch
                 ? new GUIContent($"Select Unity Type", $"Select from all Unity compatible types.")
-                : new GUIContent($"Select Unsafe Type", $"Select from all types, serializable or not. Be aware that some types may not be compatible with all platforms!");
+                : new GUIContent($"Select Unsafe Type",
+                    $"Select from all types, serializable or not. Be aware that some types may not be compatible with all platforms!");
             var buttonStyle = GUI.skin.button;
             var dropdownRect = EditorGUILayout.GetControlRect(false, buttonStyle.CalcHeight(buttonContent, 0f), buttonStyle);
             var toggleRect = new Rect(dropdownRect);
@@ -116,15 +115,16 @@ namespace UnityAtoms.Editor
             EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginChangeCheck();
             safeSearch = EditorGUI.Toggle(toggleRect, safeSearch);
-            if(EditorGUI.EndChangeCheck())
+            if (EditorGUI.EndChangeCheck())
             {
                 RefreshDropdown();
             }
 
-            if(GUI.Button(buttonRect, buttonContent))
+            if (GUI.Button(buttonRect, buttonContent))
             {
                 typeSelectorDropdown.Show(dropdownRect);
             }
+
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.PropertyField(fullQualifiedName);
 
@@ -191,24 +191,26 @@ namespace UnityAtoms.Editor
 
             private Dictionary<int, Type> idTypePairs;
 
-            public NamespaceLevel(IEnumerable<Type> types) : this(0, types) { }
+            public NamespaceLevel(IEnumerable<Type> types)
+                : this(0, types)
+            {
+            }
+
             private NamespaceLevel(int level, IEnumerable<Type> types)
             {
                 var typeNamespaceLevelLookup = types.ToLookup(type => type.Namespace != null && type.Namespace.Split('.').Length > level);
 
                 // Populate namespaceLevels.
                 var namespaceTypeGroups = from type in typeNamespaceLevelLookup[true]
-                                          group type by type.Namespace.Split('.')[level] into namespaceTypeGroup
-                                          orderby namespaceTypeGroup.Key
-                                          select namespaceTypeGroup;
-                this.namespaceLevels = namespaceTypeGroups.ToDictionary(
-                    namespaceTypeGroup => namespaceTypeGroup.Key
-                    , namespaceTypeGroup => new NamespaceLevel(level + 1, namespaceTypeGroup));
+                    group type by type.Namespace.Split('.')[level]
+                    into namespaceTypeGroup
+                    orderby namespaceTypeGroup.Key
+                    select namespaceTypeGroup;
+                this.namespaceLevels = namespaceTypeGroups.ToDictionary(namespaceTypeGroup => namespaceTypeGroup.Key,
+                    namespaceTypeGroup => new NamespaceLevel(level + 1, namespaceTypeGroup));
 
                 // Populate types.
-                this.types = from type in typeNamespaceLevelLookup[false]
-                             orderby type.FullName.Substring(type.FullName.LastIndexOf('.') + 1)
-                             select type;
+                this.types = from type in typeNamespaceLevelLookup[false] orderby type.FullName.Substring(type.FullName.LastIndexOf('.') + 1) select type;
 
                 // Initialize other values.
                 this.idTypePairs = new Dictionary<int, Type>();
@@ -217,10 +219,10 @@ namespace UnityAtoms.Editor
             public AdvancedDropdownItem GetDropdownItem(AdvancedDropdownItem parent)
             {
                 // Draw all the subnamespaces of this namespace level.
-                if(namespaceLevels.Count > 0)
+                if (namespaceLevels.Count > 0)
                 {
-                    parent.AddChild(new AdvancedDropdownItem("Namespaces") { enabled = false });
-                    foreach(KeyValuePair<string, NamespaceLevel> namespaceLevel in namespaceLevels)
+                    parent.AddChild(new AdvancedDropdownItem("Namespaces") {enabled = false});
+                    foreach (KeyValuePair<string, NamespaceLevel> namespaceLevel in namespaceLevels)
                     {
                         var groupItem = new AdvancedDropdownItem(namespaceLevel.Key);
                         groupItem = namespaceLevel.Value.GetDropdownItem(groupItem);
@@ -231,18 +233,18 @@ namespace UnityAtoms.Editor
 
                 // Draw all the types of this namespace level.
                 idTypePairs.Clear();
-                if(types.Any())
+                if (types.Any())
                 {
-                    if(namespaceLevels.Count > 0)
+                    if (namespaceLevels.Count > 0)
                     {
                         parent.AddSeparator();
                     }
 
-                    parent.AddChild(new AdvancedDropdownItem("Types") { enabled = false });
-                    foreach(Type type in types)
+                    parent.AddChild(new AdvancedDropdownItem("Types") {enabled = false});
+                    foreach (Type type in types)
                     {
                         var name = type.FullName.Substring(type.FullName.LastIndexOf('.') + 1);
-                        if(!type.IsUnitySerializable())
+                        if (!type.IsUnitySerializable())
                         {
                             name += " (Not Serializable)";
                         }
@@ -261,14 +263,14 @@ namespace UnityAtoms.Editor
             // Find the type associated with the AdvancedDropdownItem.
             public Type FindType(AdvancedDropdownItem item)
             {
-                if(idTypePairs.TryGetValue(item.GetHashCode(), out var type))
+                if (idTypePairs.TryGetValue(item.GetHashCode(), out var type))
                 {
                     return type;
                 }
 
-                foreach(NamespaceLevel namespaceLevel in namespaceLevels.Values)
+                foreach (NamespaceLevel namespaceLevel in namespaceLevels.Values)
                 {
-                    if(namespaceLevel.TryGetType(item, out type))
+                    if (namespaceLevel.TryGetType(item, out type))
                     {
                         return type;
                     }
@@ -291,8 +293,13 @@ namespace UnityAtoms.Editor
             private readonly NamespaceLevel typeLevel;
             private readonly Action<Type> typeSelected;
 
-            public TypeSelectorDropdown(IEnumerable<Type> types, Action<Type> typeSelected) : this(new AdvancedDropdownState(), types, typeSelected) { }
-            public TypeSelectorDropdown(AdvancedDropdownState state, IEnumerable<Type> types, Action<Type> typeSelected) : base(state)
+            public TypeSelectorDropdown(IEnumerable<Type> types, Action<Type> typeSelected)
+                : this(new AdvancedDropdownState(), types, typeSelected)
+            {
+            }
+
+            public TypeSelectorDropdown(AdvancedDropdownState state, IEnumerable<Type> types, Action<Type> typeSelected)
+                : base(state)
             {
                 this.typeLevel = new NamespaceLevel(types);
                 this.typeSelected = typeSelected;
@@ -303,16 +310,15 @@ namespace UnityAtoms.Editor
             protected override void ItemSelected(AdvancedDropdownItem item)
             {
                 base.ItemSelected(item);
-                if(item.enabled && typeLevel.TryGetType(item, out var type))
+                if (item.enabled && typeLevel.TryGetType(item, out var type))
                 {
                     typeSelected?.Invoke(type);
                 }
             }
 
-            protected override AdvancedDropdownItem BuildRoot()
-            {
-                return typeLevel.GetDropdownItem(new AdvancedDropdownItem("Serializable Types"));
-            }
+            protected override AdvancedDropdownItem BuildRoot() { return typeLevel.GetDropdownItem(new AdvancedDropdownItem("Serializable Types")); }
         }
     }
 }
+
+#endif

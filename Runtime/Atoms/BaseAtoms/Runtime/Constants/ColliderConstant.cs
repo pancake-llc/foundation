@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/Collider", fileName = "ColliderConstant")]
-    public sealed class ColliderConstant : AtomBaseVariable<Collider> { }
+    public sealed class ColliderConstant : AtomBaseVariable<Collider>
+    {
+    }
 }
+
+#endif

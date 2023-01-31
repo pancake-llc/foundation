@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 
 namespace UnityAtoms.Editor
@@ -5,7 +6,6 @@ namespace UnityAtoms.Editor
     /// <summary>
     /// A custom property drawer for References. Makes it possible to choose between a Value, Variable, Constant or a Variable Instancer.
     /// </summary>
-
     [CustomPropertyDrawer(typeof(AtomBaseReference), true)]
     public class AtomReferenceDrawer : AtomBaseReferenceDrawer
     {
@@ -37,8 +37,10 @@ namespace UnityAtoms.Editor
             public override string DisplayName { get => "Use Variable Instancer"; }
         }
 
-        private readonly UsageData[] _usages = new UsageData[4] { new UsageValue(), new UsageConstant(), new UsageVariable(), new UsageVariableInstancer() };
+        private readonly UsageData[] _usages = new UsageData[4] {new UsageValue(), new UsageConstant(), new UsageVariable(), new UsageVariableInstancer()};
 
         protected override UsageData[] GetUsages(SerializedProperty prop = null) => _usages;
     }
 }
+
+#endif

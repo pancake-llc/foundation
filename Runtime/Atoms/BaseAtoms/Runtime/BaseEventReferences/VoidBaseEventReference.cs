@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -12,14 +13,12 @@ namespace UnityAtoms.BaseAtoms
         public const int COLLECTION_INSTANCER_CLEARED_EVENT = 4;
         public const int LIST_INSTANCER_CLEARED_EVENT = 5;
     }
+
     /// <summary>
     /// Event Reference of type `Void`. Inherits from `AtomBaseEventReference&lt;Void, VoidEvent, VoidEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class VoidBaseEventReference : AtomBaseEventReference<
-        Void,
-        VoidEvent,
-        VoidEventInstancer>, IGetEvent
+    public sealed class VoidBaseEventReference : AtomBaseEventReference<Void, VoidEvent, VoidEventInstancer>, IGetEvent
     {
         /// <summary>
         /// Get or set the Event used by the Event Reference.
@@ -46,30 +45,30 @@ namespace UnityAtoms.BaseAtoms
                 switch (_usage)
                 {
                     case (VoidBaseEventReferenceUsage.COLLECTION_CLEARED_EVENT):
-                        {
-                            _collection.Cleared = value;
-                            break;
-                        }
+                    {
+                        _collection.Cleared = value;
+                        break;
+                    }
                     case (VoidBaseEventReferenceUsage.LIST_CLEARED_EVENT):
-                        {
-                            _list.Cleared = value;
-                            break;
-                        }
+                    {
+                        _list.Cleared = value;
+                        break;
+                    }
                     case (VoidBaseEventReferenceUsage.COLLECTION_INSTANCER_CLEARED_EVENT):
-                        {
-                            _collectionInstancer.Cleared = value;
-                            break;
-                        }
+                    {
+                        _collectionInstancer.Cleared = value;
+                        break;
+                    }
                     case (VoidBaseEventReferenceUsage.LIST_INSTANCER_CLEARED_EVENT):
-                        {
-                            _listInstancer.Cleared = value;
-                            break;
-                        }
+                    {
+                        _listInstancer.Cleared = value;
+                        break;
+                    }
                     case (VoidBaseEventReferenceUsage.EVENT):
-                        {
-                            _event = value;
-                            break;
-                        }
+                    {
+                        _event = value;
+                        break;
+                    }
                     default:
                         throw new NotSupportedException($"Event not reassignable for usage {_usage}.");
                 }
@@ -79,25 +78,22 @@ namespace UnityAtoms.BaseAtoms
         /// <summary>
         /// Collection used if `Usage` is set to `COLLECTION_CLEARED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomCollection _collection = default(AtomCollection);
+        [SerializeField] private AtomCollection _collection = default(AtomCollection);
 
         /// <summary>
         /// List used if `Usage` is set to `LIST_CLEARED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomList _list = default(AtomList);
+        [SerializeField] private AtomList _list = default(AtomList);
 
         /// <summary>
         /// Collection Instancer used if `Usage` is set to `COLLECTION_INSTANCER_CLEARED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomCollectionInstancer _collectionInstancer = default(AtomCollectionInstancer);
+        [SerializeField] private AtomCollectionInstancer _collectionInstancer = default(AtomCollectionInstancer);
 
         /// <summary>
         /// List Instancer used if `Usage` is set to `LIST_INSTANCER_CLEARED_EVENT`.
         /// </summary>
-        [SerializeField]
-        private AtomListInstancer _listInstancer = default(AtomListInstancer);
+        [SerializeField] private AtomListInstancer _listInstancer = default(AtomListInstancer);
     }
 }
+#endif

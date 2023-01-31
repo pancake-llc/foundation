@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Reflection;
 using System.Linq;
@@ -33,7 +34,8 @@ namespace UnityAtoms.Editor
                 {
                 }
             }
-            return (T)box;
+
+            return (T) box;
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace UnityAtoms.Editor
                 case SerializedPropertyType.Float: return property.floatValue;
                 case SerializedPropertyType.String: return property.stringValue;
                 case SerializedPropertyType.Color: return property.colorValue;
-                case SerializedPropertyType.LayerMask: return (LayerMask)property.intValue;
+                case SerializedPropertyType.LayerMask: return (LayerMask) property.intValue;
                 case SerializedPropertyType.Enum: return property.intValue;
                 case SerializedPropertyType.Vector2: return property.vector2Value;
                 case SerializedPropertyType.Vector3: return property.vector3Value;
@@ -65,7 +67,7 @@ namespace UnityAtoms.Editor
                 case SerializedPropertyType.RectInt: return property.rectIntValue;
                 case SerializedPropertyType.BoundsInt: return property.boundsIntValue;
                 case SerializedPropertyType.Bounds: return property.boundsValue;
-                case SerializedPropertyType.Character: return (char)property.intValue;
+                case SerializedPropertyType.Character: return (char) property.intValue;
                 case SerializedPropertyType.AnimationCurve: return property.animationCurveValue;
                 case SerializedPropertyType.FixedBufferSize: return property.fixedBufferSize;
                 case SerializedPropertyType.ExposedReference: return property.exposedReferenceValue;
@@ -145,6 +147,7 @@ namespace UnityAtoms.Editor
                     obj = obj.GetValue(element);
                 }
             }
+
             return obj;
         }
 
@@ -161,6 +164,7 @@ namespace UnityAtoms.Editor
                     return null;
                 return p.GetValue(source, null);
             }
+
             return f.GetValue(source);
         }
 
@@ -174,3 +178,5 @@ namespace UnityAtoms.Editor
         }
     }
 }
+
+#endif

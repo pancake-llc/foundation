@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
@@ -30,7 +31,7 @@ namespace UnityAtoms.FSM
                 switch (_usage)
                 {
                     case (FiniteStateMachineReferenceUsage.FSM_INSTANCER):
-                        return _fsmInstancer == null ? default(FiniteStateMachine) : (FiniteStateMachine)_fsmInstancer.Variable;
+                        return _fsmInstancer == null ? default(FiniteStateMachine) : (FiniteStateMachine) _fsmInstancer.Variable;
                     case (FiniteStateMachineReferenceUsage.FSM):
                     default:
                         return _fsm;
@@ -41,13 +42,13 @@ namespace UnityAtoms.FSM
         /// <summary>
         /// Variable used if `Usage` is set to `FSM`.
         /// </summary>
-        [SerializeField]
-        private FiniteStateMachine _fsm = default(FiniteStateMachine);
+        [SerializeField] private FiniteStateMachine _fsm = default(FiniteStateMachine);
 
         /// <summary>
         /// Variable Instancer used if `Usage` is set to `FSM_INSTANCER`.
         /// </summary>
-        [SerializeField]
-        private FiniteStateMachineInstancer _fsmInstancer = default(FiniteStateMachineInstancer);
+        [SerializeField] private FiniteStateMachineInstancer _fsmInstancer = default(FiniteStateMachineInstancer);
     }
 }
+
+#endif

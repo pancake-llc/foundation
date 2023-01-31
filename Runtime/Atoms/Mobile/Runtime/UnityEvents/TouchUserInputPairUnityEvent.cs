@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 using UnityAtoms.Mobile;
@@ -8,5 +9,9 @@ namespace UnityAtoms.Mobile
     /// None generic Unity Event of type `TouchUserInputPair`. Inherits from `UnityEvent&lt;TouchUserInputPair&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class TouchUserInputPairUnityEvent : UnityEvent<TouchUserInputPair> { }
+    public sealed class TouchUserInputPairUnityEvent : UnityEvent<TouchUserInputPair>
+    {
+    }
 }
+
+#endif

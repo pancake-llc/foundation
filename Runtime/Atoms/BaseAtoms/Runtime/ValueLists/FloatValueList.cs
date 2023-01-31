@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-piglet")]
     [CreateAssetMenu(menuName = "Unity Atoms/Value Lists/Float", fileName = "FloatValueList")]
-    public sealed class FloatValueList : AtomValueList<float, FloatEvent> { }
+    public sealed class FloatValueList : AtomValueList<float, FloatEvent>
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 
@@ -8,12 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-hotpink")]
     [AddComponentMenu("Unity Atoms/Variable Instancers/String Variable Instancer")]
-    public class StringVariableInstancer : AtomVariableInstancer<
-        StringVariable,
-        StringPair,
-        string,
-        StringEvent,
-        StringPairEvent,
-        StringStringFunction>
-    { }
+    public class StringVariableInstancer : AtomVariableInstancer<StringVariable, StringPair, string, StringEvent, StringPairEvent, StringStringFunction>
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -46,13 +47,12 @@ namespace UnityAtoms.BaseAtoms
         /// <summary>
         /// Variable used if `Usage` is set to `LIST`.
         /// </summary>
-        [SerializeField]
-        private AtomList _list = default(AtomList);
+        [SerializeField] private AtomList _list = default(AtomList);
 
         /// <summary>
         /// Variable Instancer used if `Usage` is set to `LIST_INSTANCER`.
         /// </summary>
-        [SerializeField]
-        private AtomListInstancer _instancer = default(AtomListInstancer);
+        [SerializeField] private AtomListInstancer _instancer = default(AtomListInstancer);
     }
 }
+#endif

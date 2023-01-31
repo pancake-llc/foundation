@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -9,9 +10,8 @@ namespace UnityAtoms.BaseAtoms
     [CreateAssetMenu(menuName = "Unity Atoms/Events/Void", fileName = "VoidEvent")]
     public sealed class VoidEvent : AtomEvent<Void>
     {
-        public override void Raise()
-        {
-            Raise(new Void());
-        }
+        public override void Raise() { Raise(new Void()); }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 
@@ -10,25 +11,27 @@ namespace UnityAtoms.FSM
     [AddComponentMenu("Unity Atoms/FSM/Finite State Machine Instancer")]
     public class FiniteStateMachineInstancer : StringVariableInstancer
     {
-        public override StringVariable Base { get => (StringVariable)_fsmBase; }
+        public override StringVariable Base { get => (StringVariable) _fsmBase; }
 
         /// <summary>
         /// The variable that the in memory copy will be based on when created at runtime.
         /// </summary>
-        [SerializeField]
-        private FiniteStateMachine _fsmBase = null;
+        [SerializeField] private FiniteStateMachine _fsmBase = null;
 
         protected override void ImplSpecificSetup()
         {
-            if (((FiniteStateMachine)Base).TransitionStarted != null)
+            if (((FiniteStateMachine) Base).TransitionStarted != null)
             {
-                ((FiniteStateMachine)_inMemoryCopy).TransitionStarted = Instantiate(((FiniteStateMachine)Base).TransitionStarted);
+                ((FiniteStateMachine) _inMemoryCopy).TransitionStarted = Instantiate(((FiniteStateMachine) Base).TransitionStarted);
             }
-            if (((FiniteStateMachine)Base).CompleteCurrentTransition != null)
+
+            if (((FiniteStateMachine) Base).CompleteCurrentTransition != null)
             {
-                ((FiniteStateMachine)_inMemoryCopy).CompleteCurrentTransition = Instantiate(((FiniteStateMachine)Base).CompleteCurrentTransition);
+                ((FiniteStateMachine) _inMemoryCopy).CompleteCurrentTransition = Instantiate(((FiniteStateMachine) Base).CompleteCurrentTransition);
             }
+
             base.ImplSpecificSetup();
         }
     }
 }
+#endif

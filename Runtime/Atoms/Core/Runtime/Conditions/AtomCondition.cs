@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -26,3 +27,5 @@ namespace UnityAtoms
         public virtual bool Call(T t) => base.Call();
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if PANCAKE_INPUTSYSTEM
 using System;
 using UnityEngine.Events;
@@ -12,4 +13,5 @@ namespace UnityAtoms.InputSystem
     public sealed class InputAction_CallbackContextUnityEvent : UnityEvent<InputAction.CallbackContext> { }
 }
 
+#endif
 #endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 
@@ -7,5 +8,9 @@ namespace UnityAtoms.FSM
     /// None generic Unity Event of type `FSMTransitionData`. Inherits from `UnityEvent&lt;FSMTransitionData&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class FSMTransitionDataUnityEvent : UnityEvent<FSMTransitionData> { }
+    public sealed class FSMTransitionDataUnityEvent : UnityEvent<FSMTransitionData>
+    {
+    }
 }
+
+#endif

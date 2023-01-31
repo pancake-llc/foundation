@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.Mobile;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.Mobile
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/TouchUserInput", fileName = "TouchUserInputConstant")]
-    public sealed class TouchUserInputConstant : AtomBaseVariable<TouchUserInput> { }
+    public sealed class TouchUserInputConstant : AtomBaseVariable<TouchUserInput>
+    {
+    }
 }
+
+#endif

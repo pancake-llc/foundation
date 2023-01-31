@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 using UnityEngine;
@@ -8,5 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `Vector3`. Inherits from `UnityEvent&lt;Vector3&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class Vector3UnityEvent : UnityEvent<Vector3> { }
+    public sealed class Vector3UnityEvent : UnityEvent<Vector3>
+    {
+    }
 }
+
+#endif

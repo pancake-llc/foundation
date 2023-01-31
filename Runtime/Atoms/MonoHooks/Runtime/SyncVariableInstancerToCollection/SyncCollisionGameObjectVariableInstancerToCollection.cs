@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.MonoHooks;
@@ -9,5 +10,9 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [AddComponentMenu("Unity Atoms/Sync Variable Instancer to Collection/Sync CollisionGameObject Variable Instancer to Collection")]
     [EditorIcon("atom-icon-delicate")]
-    public class SyncCollisionGameObjectVariableInstancerToCollection : SyncVariableInstancerToCollection<CollisionGameObject, CollisionGameObjectVariable, CollisionGameObjectVariableInstancer> { }
+    public class SyncCollisionGameObjectVariableInstancerToCollection : SyncVariableInstancerToCollection<CollisionGameObject, CollisionGameObjectVariable,
+        CollisionGameObjectVariableInstancer>
+    {
+    }
 }
+#endif

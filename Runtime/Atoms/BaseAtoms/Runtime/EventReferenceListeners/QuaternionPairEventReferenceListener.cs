@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -8,9 +9,8 @@ namespace UnityAtoms.BaseAtoms
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/QuaternionPair Event Reference Listener")]
     public sealed class QuaternionPairEventReferenceListener : AtomEventReferenceListener<
-        QuaternionPair,
-        QuaternionPairEvent,
-        QuaternionPairEventReference,
-        QuaternionPairUnityEvent>
-    { }
+        QuaternionPair, QuaternionPairEvent, QuaternionPairEventReference, QuaternionPairUnityEvent>
+    {
+    }
 }
+#endif

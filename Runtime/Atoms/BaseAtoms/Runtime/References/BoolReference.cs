@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 
@@ -8,17 +9,20 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class BoolReference : EquatableAtomReference<
-        bool,
-        BoolPair,
-        BoolConstant,
-        BoolVariable,
-        BoolEvent,
-        BoolPairEvent,
-        BoolBoolFunction,
-        BoolVariableInstancer>, IEquatable<BoolReference>
+            bool, BoolPair, BoolConstant, BoolVariable, BoolEvent, BoolPairEvent, BoolBoolFunction, BoolVariableInstancer>,
+        IEquatable<BoolReference>
     {
-        public BoolReference() : base() { }
-        public BoolReference(bool value) : base(value) { }
+        public BoolReference()
+            : base()
+        {
+        }
+
+        public BoolReference(bool value)
+            : base(value)
+        {
+        }
+
         public bool Equals(BoolReference other) { return base.Equals(other); }
     }
 }
+#endif

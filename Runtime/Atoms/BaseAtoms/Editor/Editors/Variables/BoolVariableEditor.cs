@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 
@@ -7,5 +8,8 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Variable Inspector of type `bool`. Inherits from `AtomVariableEditor`
     /// </summary>
     [CustomEditor(typeof(BoolVariable))]
-    public sealed class BoolVariableEditor : AtomVariableEditor<bool, BoolPair> { }
+    public sealed class BoolVariableEditor : AtomVariableEditor<bool, BoolPair>
+    {
+    }
 }
+#endif

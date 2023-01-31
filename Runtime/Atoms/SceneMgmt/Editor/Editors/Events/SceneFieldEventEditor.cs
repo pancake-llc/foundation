@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -10,6 +11,10 @@ namespace UnityAtoms.SceneMgmt.Editor
     /// Event property drawer of type `SceneField`. Inherits from `AtomEventEditor&lt;SceneField, SceneFieldEvent&gt;`. Only availble in `UNITY_2019_1_OR_NEWER`.
     /// </summary>
     [CustomEditor(typeof(SceneFieldEvent))]
-    public sealed class SceneFieldEventEditor : AtomEventEditor<SceneField, SceneFieldEvent> { }
+    public sealed class SceneFieldEventEditor : AtomEventEditor<SceneField, SceneFieldEvent>
+    {
+    }
 }
+#endif
+
 #endif

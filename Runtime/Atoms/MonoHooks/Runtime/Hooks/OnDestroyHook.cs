@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.MonoHooks
@@ -9,9 +10,8 @@ namespace UnityAtoms.MonoHooks
     [AddComponentMenu("Unity Atoms/Hooks/On Destroy Hook")]
     public sealed class OnDestroyHook : VoidHook
     {
-        private void OnDestroy()
-        {
-            OnHook();
-        }
+        private void OnDestroy() { OnHook(); }
     }
 }
+
+#endif

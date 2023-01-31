@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_ATOM
+using System;
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -22,13 +23,16 @@ namespace UnityAtoms.BaseAtoms
 
         public override int Call(int value)
         {
-            if (!IsValid()) { throw new Exception("Min value must be less than or equal to Max value."); }
+            if (!IsValid())
+            {
+                throw new Exception("Min value must be less than or equal to Max value.");
+            }
+
             return Mathf.Clamp(value, Min.Value, Max.Value);
         }
 
-        public bool IsValid()
-        {
-            return Min.Value <= Max.Value;
-        }
+        public bool IsValid() { return Min.Value <= Max.Value; }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.FSM
@@ -7,5 +8,9 @@ namespace UnityAtoms.FSM
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/FSMTransitionData Event Instancer")]
-    public class FSMTransitionDataEventInstancer : AtomEventInstancer<FSMTransitionData, FSMTransitionDataEvent> { }
+    public class FSMTransitionDataEventInstancer : AtomEventInstancer<FSMTransitionData, FSMTransitionDataEvent>
+    {
+    }
 }
+
+#endif

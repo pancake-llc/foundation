@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Reflection;
 using UnityEditor;
@@ -8,19 +9,20 @@ namespace UnityAtoms.Editor
     /// <summary>
     /// Custom editor for Variables. Provides a better user workflow and indicates when which variables can be edited
     /// </summary>
-    public abstract class AtomVariableEditor<T, P> : UnityEditor.Editor
-        where P : IPair<T>, new()
+    public abstract class AtomVariableEditor<T, P> : UnityEditor.Editor where P : IPair<T>, new()
     {
         private bool _lockedInitialValue = true;
         private bool _onEnableTriggerSectionVisible = true;
-        
+
         private void DrawPotentiallyUnserializablePropertyField(SerializedProperty property, bool drawWarningWhenUnserializable = false)
         {
             if (property == null)
             {
                 if (drawWarningWhenUnserializable)
                 {
-                    EditorGUILayout.HelpBox("Can't display values because the type is not serializable! You can still use this type, but won't be able to show values in the Editor.", MessageType.Warning);
+                    EditorGUILayout.HelpBox(
+                        "Can't display values because the type is not serializable! You can still use this type, but won't be able to show values in the Editor.",
+                        MessageType.Warning);
                 }
             }
             else
@@ -33,7 +35,7 @@ namespace UnityAtoms.Editor
         {
             serializedObject.Update();
 
-            
+
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_developerDescription"));
             EditorGUILayout.Space();
 
@@ -45,8 +47,9 @@ namespace UnityAtoms.Editor
             EditorGUI.EndDisabledGroup();
             if (EditorApplication.isPlaying)
             {
-                _lockedInitialValue = GUILayout.Toggle(_lockedInitialValue, "", new GUIStyle("IN LockButton") { fixedHeight = 16, margin = new RectOffset(0, 2, 4, 0) });
+                _lockedInitialValue = GUILayout.Toggle(_lockedInitialValue, "", new GUIStyle("IN LockButton") {fixedHeight = 16, margin = new RectOffset(0, 2, 4, 0)});
             }
+
             EditorGUILayout.EndHorizontal();
 
 
@@ -63,18 +66,17 @@ namespace UnityAtoms.Editor
                         // Doubles are for some reason deserialized to floats. The BaseValue assignment below will fail if we don't cast it to float and then to double before assignment (since the assigment itself will otherwise do a cast from object to double which will crash).
                         if (typeof(T) == typeof(double))
                         {
-                            atomTarget.BaseValue = (double)(float)value;
+                            atomTarget.BaseValue = (double) (float) value;
                         }
                         //Ulong is deserialized to System32 Int.
                         else if (typeof(T) == typeof(ulong))
                         {
-                            atomTarget.BaseValue = (ulong)(int)value;
+                            atomTarget.BaseValue = (ulong) (int) value;
                         }
                         else
                         {
                             atomTarget.BaseValue = value;
                         }
-
                     }
                     catch (InvalidOperationException)
                     {
@@ -82,6 +84,7 @@ namespace UnityAtoms.Editor
                         var value = serializedObject.FindProperty("_value").GetGenericPropertyValue(JsonUtility.FromJson<T>(JsonUtility.ToJson(atomTarget.BaseValue)));
                         atomTarget.BaseValue = value;
                     }
+
                     serializedObject.Update();
                 }
             }
@@ -102,10 +105,9 @@ namespace UnityAtoms.Editor
                     GUILayout.Space(2);
                     if (GUILayout.Button("Raise", GUILayout.Width(raiseButtonWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
                     {
-                        evt.GetType().GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)?.Invoke(evt, new[] { atomTarget.BaseValue });
+                        evt.GetType().GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)?.Invoke(evt, new[] {atomTarget.BaseValue});
                     }
                 }
-
             }
 
             using (new EditorGUILayout.HorizontalScope())
@@ -114,16 +116,16 @@ namespace UnityAtoms.Editor
                 var changedWithHistory = serializedObject.FindProperty("_changedWithHistory").objectReferenceValue;
                 if (changedWithHistory != null && changedWithHistory is AtomEventBase evt && target is AtomBaseVariable atomTarget)
                 {
-
                     GUILayout.Space(2);
                     if (GUILayout.Button("Raise", GUILayout.Width(raiseButtonWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
                     {
                         var oldValueProp = serializedObject.FindProperty("_oldValue");
                         object oldValue = oldValueProp.GetPropertyValue();
-                        evt.GetType().GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)?.Invoke(evt, new[] { (object)(new P() { Item1 = (T)atomTarget.BaseValue, Item2 = (T)oldValue }) });
+                        evt.GetType()
+                            .GetMethod("RaiseEditor", BindingFlags.Public | BindingFlags.Instance)
+                            ?.Invoke(evt, new[] {(object) (new P() {Item1 = (T) atomTarget.BaseValue, Item2 = (T) oldValue})});
                     }
                 }
-
             }
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_preChangeTransformers"), true);
@@ -139,3 +141,5 @@ namespace UnityAtoms.Editor
         }
     }
 }
+
+#endif

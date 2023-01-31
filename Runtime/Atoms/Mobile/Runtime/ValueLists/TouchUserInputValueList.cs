@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.Mobile;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.Mobile
     /// </summary>
     [EditorIcon("atom-icon-piglet")]
     [CreateAssetMenu(menuName = "Unity Atoms/Value Lists/TouchUserInput", fileName = "TouchUserInputValueList")]
-    public sealed class TouchUserInputValueList : AtomValueList<TouchUserInput, TouchUserInputEvent> { }
+    public sealed class TouchUserInputValueList : AtomValueList<TouchUserInput, TouchUserInputEvent>
+    {
+    }
 }
+
+#endif

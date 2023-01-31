@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/Bool Event Instancer")]
-    public class BoolEventInstancer : AtomEventInstancer<bool, BoolEvent> { }
+    public class BoolEventInstancer : AtomEventInstancer<bool, BoolEvent>
+    {
+    }
 }
+
+#endif

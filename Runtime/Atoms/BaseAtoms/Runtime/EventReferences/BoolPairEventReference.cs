@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.BaseAtoms
@@ -6,11 +7,9 @@ namespace UnityAtoms.BaseAtoms
     /// Event Reference of type `BoolPair`. Inherits from `AtomEventReference&lt;BoolPair, BoolVariable, BoolPairEvent, BoolVariableInstancer, BoolPairEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class BoolPairEventReference : AtomEventReference<
-        BoolPair,
-        BoolVariable,
-        BoolPairEvent,
-        BoolVariableInstancer,
-        BoolPairEventInstancer>, IGetEvent 
-    { }
+    public sealed class BoolPairEventReference : AtomEventReference<BoolPair, BoolVariable, BoolPairEvent, BoolVariableInstancer, BoolPairEventInstancer>, IGetEvent
+    {
+    }
 }
+
+#endif

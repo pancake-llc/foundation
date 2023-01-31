@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.MonoHooks;
 
@@ -12,3 +13,5 @@ namespace UnityAtoms.MonoHooks
     {
     }
 }
+
+#endif

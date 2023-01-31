@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -34,3 +35,5 @@ namespace UnityAtoms.BaseAtoms
         public void DivideBy(AtomBaseVariable<float> variable) => DivideBy(variable.Value);
     }
 }
+
+#endif

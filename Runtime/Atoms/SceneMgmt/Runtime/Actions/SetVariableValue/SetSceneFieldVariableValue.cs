@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.SceneMgmt;
@@ -9,15 +10,10 @@ namespace UnityAtoms.SceneMgmt
     /// </summary>
     [EditorIcon("atom-icon-purple")]
     [CreateAssetMenu(menuName = "Unity Atoms/Actions/Set Variable Value/SceneField", fileName = "SetSceneFieldVariableValue")]
-    public sealed class SetSceneFieldVariableValue : SetVariableValue<
-        SceneField,
-        SceneFieldPair,
-        SceneFieldVariable,
-        SceneFieldConstant,
-        SceneFieldReference,
-        SceneFieldEvent,
-        SceneFieldPairEvent,
-        SceneFieldSceneFieldFunction,
-        SceneFieldVariableInstancer>
-    { }
+    public sealed class SetSceneFieldVariableValue : SetVariableValue<SceneField, SceneFieldPair, SceneFieldVariable, SceneFieldConstant, SceneFieldReference,
+        SceneFieldEvent, SceneFieldPairEvent, SceneFieldSceneFieldFunction, SceneFieldVariableInstancer>
+    {
+    }
 }
+
+#endif

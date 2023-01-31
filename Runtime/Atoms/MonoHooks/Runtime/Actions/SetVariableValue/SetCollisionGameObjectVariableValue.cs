@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.MonoHooks;
@@ -9,15 +10,11 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-purple")]
     [CreateAssetMenu(menuName = "Unity Atoms/Actions/Set Variable Value/CollisionGameObject", fileName = "SetCollisionGameObjectVariableValue")]
-    public sealed class SetCollisionGameObjectVariableValue : SetVariableValue<
-        CollisionGameObject,
-        CollisionGameObjectPair,
-        CollisionGameObjectVariable,
-        CollisionGameObjectConstant,
-        CollisionGameObjectReference,
-        CollisionGameObjectEvent,
-        CollisionGameObjectPairEvent,
-        CollisionGameObjectCollisionGameObjectFunction,
+    public sealed class SetCollisionGameObjectVariableValue : SetVariableValue<CollisionGameObject, CollisionGameObjectPair, CollisionGameObjectVariable,
+        CollisionGameObjectConstant, CollisionGameObjectReference, CollisionGameObjectEvent, CollisionGameObjectPairEvent, CollisionGameObjectCollisionGameObjectFunction,
         CollisionGameObjectVariableInstancer>
-    { }
+    {
+    }
 }
+
+#endif

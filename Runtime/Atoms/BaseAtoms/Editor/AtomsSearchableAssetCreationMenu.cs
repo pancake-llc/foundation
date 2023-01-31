@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_ATOM
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,10 +16,7 @@ namespace UnityAtoms.Editor
             public Dictionary<string, StringTree<T>> SubTrees { get; } = new Dictionary<string, StringTree<T>>();
             public T Value { get; private set; }
 
-            public void Insert(string path, T value, int idx = 0)
-            {
-                Internal_Insert(path.Split('/'), idx, value);
-            }
+            public void Insert(string path, T value, int idx = 0) { Internal_Insert(path.Split('/'), idx, value); }
 
             private void Internal_Insert(string[] path, int idx, T value)
             {
@@ -38,8 +36,7 @@ namespace UnityAtoms.Editor
         {
             StringTree<Type> typeTree = new StringTree<Type>();
 
-            foreach (var type in TypeCache.GetTypesWithAttribute<CreateAssetMenuAttribute>()
-                .Where(t => t.GetCustomAttribute<AtomsSearchable>(true) != null))
+            foreach (var type in TypeCache.GetTypesWithAttribute<CreateAssetMenuAttribute>().Where(t => t.GetCustomAttribute<AtomsSearchable>(true) != null))
             {
                 var name = type.GetCustomAttribute<CreateAssetMenuAttribute>().menuName;
                 var i = name.LastIndexOf('/');
@@ -52,14 +49,13 @@ namespace UnityAtoms.Editor
 
             Vector2 xy = new Vector2(projectBrowser.position.x + 10, projectBrowser.position.y + 60);
 
-            var dropdown = new SearchTypeDropdown(new AdvancedDropdownState(), typeTree,
-                (s) =>
+            var dropdown =
+                new SearchTypeDropdown(new AdvancedDropdownState(),
+                    typeTree,
+                    (s) => { EditorApplication.ExecuteMenuItem("Assets/Create/" + s.GetCustomAttribute<CreateAssetMenuAttribute>().menuName); })
                 {
-                    EditorApplication.ExecuteMenuItem("Assets/Create/" + s.GetCustomAttribute<CreateAssetMenuAttribute>().menuName);
-                })
-            {
-                MinimumSize = new Vector2(projectBrowser.position.width - 20, projectBrowser.position.height - 80)
-            };
+                    MinimumSize = new Vector2(projectBrowser.position.width - 20, projectBrowser.position.height - 80)
+                };
 
             var rect = new Rect(xy.x, xy.y, projectBrowser.position.width - 20, projectBrowser.position.height);
 
@@ -75,13 +71,10 @@ namespace UnityAtoms.Editor
 
             private readonly List<Type> _lookup = new List<Type>();
 
-            public Vector2 MinimumSize
-            {
-                get => minimumSize;
-                set => minimumSize = value;
-            }
+            public Vector2 MinimumSize { get => minimumSize; set => minimumSize = value; }
 
-            public SearchTypeDropdown(AdvancedDropdownState state, StringTree<Type> list, Action<Type> func) : base(state)
+            public SearchTypeDropdown(AdvancedDropdownState state, StringTree<Type> list, Action<Type> func)
+                : base(state)
             {
                 _list = list;
                 _func = func;
@@ -98,7 +91,7 @@ namespace UnityAtoms.Editor
                 if (tree.Value != null)
                 {
                     _lookup.Add(tree.Value);
-                    parentGroup.AddChild(new AdvancedDropdownItem(key) { id = _lookup.Count - 1 });
+                    parentGroup.AddChild(new AdvancedDropdownItem(key) {id = _lookup.Count - 1});
                 }
                 else
                 {
@@ -126,3 +119,4 @@ namespace UnityAtoms.Editor
         }
     }
 }
+#endif

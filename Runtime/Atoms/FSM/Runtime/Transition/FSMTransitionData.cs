@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 
 namespace UnityAtoms.FSM
@@ -13,3 +14,4 @@ namespace UnityAtoms.FSM
         public BoolEvent CompleteTransition { get; set; }
     }
 }
+#endif

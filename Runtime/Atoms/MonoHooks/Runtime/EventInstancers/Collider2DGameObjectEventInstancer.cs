@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.MonoHooks;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/Collider2DGameObject Event Instancer")]
-    public class Collider2DGameObjectEventInstancer : AtomEventInstancer<Collider2DGameObject, Collider2DGameObjectEvent> { }
+    public class Collider2DGameObjectEventInstancer : AtomEventInstancer<Collider2DGameObject, Collider2DGameObjectEvent>
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -22,3 +23,5 @@ namespace UnityAtoms.BaseAtoms
         public void SetAlpha(AtomBaseVariable<float> variable) => SetAlpha(variable.Value);
     }
 }
+
+#endif

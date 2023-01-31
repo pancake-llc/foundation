@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -13,8 +14,7 @@ namespace UnityAtoms
         /// <summary>
         /// The actual function.
         /// </summary>
-        [HideInInspector]
-        public Func<R> Func;
+        [HideInInspector] public Func<R> Func;
 
         /// <summary>
         /// Call the Function.
@@ -53,8 +53,7 @@ namespace UnityAtoms
         /// <summary>
         /// The actual function.
         /// </summary>
-        [HideInInspector]
-        public Func<T1, R> Func;
+        [HideInInspector] public Func<T1, R> Func;
 
         /// <summary>
         /// Call the Function.
@@ -95,8 +94,7 @@ namespace UnityAtoms
         /// <summary>
         /// The actual function.
         /// </summary>
-        [HideInInspector]
-        public Func<T1, T2, R> Func;
+        [HideInInspector] public Func<T1, T2, R> Func;
 
         /// <summary>
         /// Call the Function.
@@ -139,8 +137,7 @@ namespace UnityAtoms
         /// <summary>
         /// The actual function.
         /// </summary>
-        [HideInInspector]
-        public Func<T1, T2, T3, R> Func;
+        [HideInInspector] public Func<T1, T2, T3, R> Func;
 
         /// <summary>
         /// Call the Function.
@@ -185,8 +182,7 @@ namespace UnityAtoms
         /// <summary>
         /// The actual function.
         /// </summary>
-        [HideInInspector]
-        public Func<T1, T2, T3, T4, R> Func;
+        [HideInInspector] public Func<T1, T2, T3, T4, R> Func;
 
         /// <summary>
         /// Call the Function.
@@ -233,8 +229,7 @@ namespace UnityAtoms
         /// <summary>
         /// The actual function.
         /// </summary>
-        [HideInInspector]
-        public Func<T1, T2, T3, T4, T5, R> Func;
+        [HideInInspector] public Func<T1, T2, T3, T4, T5, R> Func;
 
         /// <summary>
         /// Call the Function.
@@ -249,7 +244,11 @@ namespace UnityAtoms
         {
             if (Func != null)
             {
-                return Func(t1, t2, t3, t4, t5);
+                return Func(t1,
+                    t2,
+                    t3,
+                    t4,
+                    t5);
             }
 
             throw new Exception("Either set Func or override the Call method.");
@@ -267,3 +266,4 @@ namespace UnityAtoms
         }
     }
 }
+#endif

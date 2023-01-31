@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `int`. Inherits from `UnityEvent&lt;int&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class IntUnityEvent : UnityEvent<int> { }
+    public sealed class IntUnityEvent : UnityEvent<int>
+    {
+    }
 }
+
+#endif

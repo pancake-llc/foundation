@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,8 +30,7 @@ namespace UnityAtoms.BaseAtoms
         private event Action<AtomBaseVariable> _removed;
         private event Action _cleared;
 
-        [SerializeField]
-        private List<AtomBaseVariable> _serializedList = new List<AtomBaseVariable>();
+        [SerializeField] private List<AtomBaseVariable> _serializedList = new List<AtomBaseVariable>();
 
         public void OnAfterDeserialize()
         {
@@ -59,10 +59,7 @@ namespace UnityAtoms.BaseAtoms
         /// <param name="index">The index you want to retrieve.</param>
         /// <typeparam name="T">The expected type of the value you want to retrieve.</typeparam>
         /// <returns>The value of type T at specified index.</returns>
-        public T Get<T>(int index) where T : AtomBaseVariable
-        {
-            return (T)this[index];
-        }
+        public T Get<T>(int index) where T : AtomBaseVariable { return (T) this[index]; }
 
         /// <summary>
         /// Generic getter.
@@ -73,7 +70,7 @@ namespace UnityAtoms.BaseAtoms
         public T Get<T>(AtomBaseVariable<int> index) where T : AtomBaseVariable
         {
             if (index == null) throw new ArgumentNullException("index");
-            return (T)this[index.Value];
+            return (T) this[index.Value];
         }
 
         /// <summary>
@@ -136,3 +133,4 @@ namespace UnityAtoms.BaseAtoms
         }
     }
 }
+#endif

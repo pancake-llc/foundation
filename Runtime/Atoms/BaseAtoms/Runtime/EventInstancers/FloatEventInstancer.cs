@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/Float Event Instancer")]
-    public class FloatEventInstancer : AtomEventInstancer<float, FloatEvent> { }
+    public class FloatEventInstancer : AtomEventInstancer<float, FloatEvent>
+    {
+    }
 }
+
+#endif

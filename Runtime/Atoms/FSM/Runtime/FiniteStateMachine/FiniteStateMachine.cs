@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,6 +28,7 @@ namespace UnityAtoms.FSM
             }
             set => Dispatch(value);
         }
+
         public FSMTransitionDataEvent TransitionStarted { get => _transitionStarted; set => _transitionStarted = value; }
         public BoolEvent CompleteCurrentTransition { get => _completeCurrentTransition; set => _completeCurrentTransition = value; }
         public override string InitialValue { get => _states?.List != null && _states.List.Count > 0 ? _states.List[0].Id : ""; }
@@ -36,19 +38,13 @@ namespace UnityAtoms.FSM
         /// </summary>
         public bool IsTransitioning { get => _currentTransition != null; }
 
-        [SerializeField]
-        private FSMTransitionDataEvent _transitionStarted = default;
+        [SerializeField] private FSMTransitionDataEvent _transitionStarted = default;
 
-        [SerializeField]
-        private BoolEvent _completeCurrentTransition = default;
+        [SerializeField] private BoolEvent _completeCurrentTransition = default;
 
-        [SerializeField]
-        [AtomList]
-        private FSMStateListWrapper _states = default;
+        [SerializeField] [AtomList] private FSMStateListWrapper _states = default;
 
-        [SerializeField]
-        [AtomList]
-        private TransitionListWrapper _transitions = default;
+        [SerializeField] [AtomList] private TransitionListWrapper _transitions = default;
 
         private bool _isUpdatingState = false;
         private Transition _currentTransition = null;
@@ -68,7 +64,8 @@ namespace UnityAtoms.FSM
         {
             if (CompleteCurrentTransition != null && CompleteCurrentTransition.ReplayBufferSize > 0)
             {
-                Debug.LogWarning("The Complete Current Transition event had a replay buffer size great than 0, which would cause unwanted behaviour. Setting it to 0 in order to avoid unexpected behaviour.");
+                Debug.LogWarning(
+                    "The Complete Current Transition event had a replay buffer size great than 0, which would cause unwanted behaviour. Setting it to 0 in order to avoid unexpected behaviour.");
                 CompleteCurrentTransition.ReplayBufferSize = 0;
             }
 
@@ -117,6 +114,7 @@ namespace UnityAtoms.FSM
                 FiniteStateMachineMonoHook.GetInstance().OnFixedUpdate -= OnFixedUpdate;
                 FiniteStateMachineMonoHook.GetInstance().OnStart -= OnStart;
             }
+
             _onUpdate = null;
             _onFixedUpdate = null;
             _dispatchWhen = null;
@@ -273,15 +271,13 @@ namespace UnityAtoms.FSM
                     transition.Begin(this, EndCurrentTransition);
                     if (_transitionStarted != null)
                     {
-                        _transitionStarted.Raise(
-                            new FSMTransitionData()
-                            {
-                                FromState = transition.FromState,
-                                ToState = transition.ToState,
-                                Command = transition.Command,
-                                CompleteTransition = _completeCurrentTransition,
-                            }
-                        );
+                        _transitionStarted.Raise(new FSMTransitionData()
+                        {
+                            FromState = transition.FromState,
+                            ToState = transition.ToState,
+                            Command = transition.Command,
+                            CompleteTransition = _completeCurrentTransition,
+                        });
                     }
                 }
             }
@@ -304,6 +300,7 @@ namespace UnityAtoms.FSM
                 {
                     Debug.LogError($"Transition with From State {transition.FromState} can't be found in the defined states.");
                 }
+
                 if (_states == null || _states.List == null || !_states.List.Exists((s) => s.Id == transition.ToState))
                 {
                     Debug.LogError($"Transition with To State {transition.ToState} can't be found in the defined states.");
@@ -347,10 +344,7 @@ namespace UnityAtoms.FSM
             }
         }
 
-        private void OnStart()
-        {
-            Reset();
-        }
+        private void OnStart() { Reset(); }
 
         private void OnUpdate(float deltaTime)
         {
@@ -386,6 +380,7 @@ namespace UnityAtoms.FSM
             {
                 _onUpdate.Invoke(deltaTime, currentValue);
             }
+
             // Call DispatchWhen handlers
             if (_dispatchWhen != null)
             {
@@ -432,3 +427,5 @@ namespace UnityAtoms.FSM
         }
     }
 }
+
+#endif

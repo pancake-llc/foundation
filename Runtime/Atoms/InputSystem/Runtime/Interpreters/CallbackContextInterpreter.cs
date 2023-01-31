@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if PANCAKE_INPUTSYSTEM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -82,4 +83,5 @@ namespace UnityAtoms.InputSystem
     }
 }
 
+#endif
 #endif

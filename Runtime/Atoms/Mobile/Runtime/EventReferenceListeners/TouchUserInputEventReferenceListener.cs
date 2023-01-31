@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.Mobile;
 
@@ -9,9 +10,9 @@ namespace UnityAtoms.Mobile
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/TouchUserInput Event Reference Listener")]
     public sealed class TouchUserInputEventReferenceListener : AtomEventReferenceListener<
-        TouchUserInput,
-        TouchUserInputEvent,
-        TouchUserInputEventReference,
-        TouchUserInputUnityEvent>
-    { }
+        TouchUserInput, TouchUserInputEvent, TouchUserInputEventReference, TouchUserInputUnityEvent>
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 
@@ -7,11 +8,7 @@ namespace UnityAtoms.MonoHooks
     /// Base class for all `MonoHook`s of type `Collider2D`.
     /// </summary>
     [EditorIcon("atom-icon-delicate")]
-    public abstract class Collider2DHook : MonoHook<
-        Collider2DEvent,
-        Collider2D,
-        Collider2DEventReference,
-        GameObjectGameObjectFunction>
+    public abstract class Collider2DHook : MonoHook<Collider2DEvent, Collider2D, Collider2DEventReference, GameObjectGameObjectFunction>
     {
         /// <summary>
         /// Event including a GameObject reference.
@@ -28,15 +25,16 @@ namespace UnityAtoms.MonoHooks
             }
         }
 
-        [SerializeField]
-        private Collider2DGameObjectEventReference _eventWithGameObjectReference = default(Collider2DGameObjectEventReference);
+        [SerializeField] private Collider2DGameObjectEventReference _eventWithGameObjectReference = default(Collider2DGameObjectEventReference);
 
         protected override void RaiseWithGameObject(Collider2D value, GameObject gameObject)
         {
             if (EventWithGameObject)
             {
-                EventWithGameObject.Raise(new Collider2DGameObject() { Collider2D = value, GameObject = gameObject });
+                EventWithGameObject.Raise(new Collider2DGameObject() {Collider2D = value, GameObject = gameObject});
             }
         }
     }
 }
+
+#endif

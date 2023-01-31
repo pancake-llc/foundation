@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -8,10 +9,10 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class QuaternionPairEventReference : AtomEventReference<
-        QuaternionPair,
-        QuaternionVariable,
-        QuaternionPairEvent,
-        QuaternionVariableInstancer,
-        QuaternionPairEventInstancer>, IGetEvent 
-    { }
+            QuaternionPair, QuaternionVariable, QuaternionPairEvent, QuaternionVariableInstancer, QuaternionPairEventInstancer>,
+        IGetEvent
+    {
+    }
 }
+
+#endif

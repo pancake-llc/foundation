@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -10,11 +11,9 @@ namespace UnityAtoms.MonoHooks
         public GameObject GameObject { get => _gameObject; set => _gameObject = value; }
 
 
-        [SerializeField]
-        private Collision2D _collision2D;
+        [SerializeField] private Collision2D _collision2D;
 
-        [SerializeField]
-        private GameObject _gameObject;
+        [SerializeField] private GameObject _gameObject;
 
 
         /// <summary>
@@ -22,10 +21,7 @@ namespace UnityAtoms.MonoHooks
         /// </summary>
         /// <param name="other">The other `Collider2DGameObject` to compare with.</param>
         /// <returns>`true` if equal, otherwise `false`.</returns>
-        public bool Equals(Collision2DGameObject other)
-        {
-            return this.Collision2D == other.Collision2D && this.GameObject == other.GameObject;
-        }
+        public bool Equals(Collision2DGameObject other) { return this.Collision2D == other.Collision2D && this.GameObject == other.GameObject; }
 
         /// <summary>
         /// Determine if 2 `Collider2DGameObject` are equal comparing against another `object`.
@@ -34,7 +30,7 @@ namespace UnityAtoms.MonoHooks
         /// <returns>`true` if equal, otherwise `false`.</returns>
         public override bool Equals(object obj)
         {
-            Collision2DGameObject cgo = (Collision2DGameObject)obj;
+            Collision2DGameObject cgo = (Collision2DGameObject) obj;
             return Equals(cgo);
         }
 
@@ -56,10 +52,7 @@ namespace UnityAtoms.MonoHooks
         /// <param name="first">First `Collider2DGameObject`.</param>
         /// <param name="second">Other `Collider2DGameObject`.</param>
         /// <returns>`true` if equal, otherwise `false`.</returns>
-        public static bool operator ==(Collision2DGameObject first, Collision2DGameObject second)
-        {
-            return first.Equals(second);
-        }
+        public static bool operator ==(Collision2DGameObject first, Collision2DGameObject second) { return first.Equals(second); }
 
         /// <summary>
         /// Inequality operator
@@ -67,9 +60,8 @@ namespace UnityAtoms.MonoHooks
         /// <param name="first">First `Collider2DGameObject`.</param>
         /// <param name="second">Other `Collider2DGameObject`.</param>
         /// <returns>`true` if they are not equal, otherwise `false`.</returns>
-        public static bool operator !=(Collision2DGameObject first, Collision2DGameObject second)
-        {
-            return !first.Equals(second);
-        }
+        public static bool operator !=(Collision2DGameObject first, Collision2DGameObject second) { return !first.Equals(second); }
     }
 }
+
+#endif

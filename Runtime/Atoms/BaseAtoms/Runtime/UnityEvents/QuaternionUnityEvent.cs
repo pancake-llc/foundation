@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 using UnityEngine;
@@ -8,5 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `Quaternion`. Inherits from `UnityEvent&lt;Quaternion&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class QuaternionUnityEvent : UnityEvent<Quaternion> { }
+    public sealed class QuaternionUnityEvent : UnityEvent<Quaternion>
+    {
+    }
 }
+
+#endif

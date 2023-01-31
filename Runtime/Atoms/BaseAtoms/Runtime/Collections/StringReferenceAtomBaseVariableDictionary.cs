@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.BaseAtoms
@@ -25,7 +26,7 @@ namespace UnityAtoms.BaseAtoms
                     var value = enumerator.Current.Value;
                     if (enumerator.Current.Key == key)
                     {
-                        toReturn = (T)enumerator.Current.Value;
+                        toReturn = (T) enumerator.Current.Value;
                         break;
                     }
                 }
@@ -97,3 +98,4 @@ namespace UnityAtoms.BaseAtoms
         }
     }
 }
+#endif

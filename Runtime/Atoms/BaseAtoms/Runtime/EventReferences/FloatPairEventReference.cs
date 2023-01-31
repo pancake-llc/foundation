@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 
 namespace UnityAtoms.BaseAtoms
@@ -6,11 +7,9 @@ namespace UnityAtoms.BaseAtoms
     /// Event Reference of type `FloatPair`. Inherits from `AtomEventReference&lt;FloatPair, FloatVariable, FloatPairEvent, FloatVariableInstancer, FloatPairEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class FloatPairEventReference : AtomEventReference<
-        FloatPair,
-        FloatVariable,
-        FloatPairEvent,
-        FloatVariableInstancer,
-        FloatPairEventInstancer>, IGetEvent 
-    { }
+    public sealed class FloatPairEventReference : AtomEventReference<FloatPair, FloatVariable, FloatPairEvent, FloatVariableInstancer, FloatPairEventInstancer>, IGetEvent
+    {
+    }
 }
+
+#endif

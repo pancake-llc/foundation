@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System.Collections.Generic;
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
@@ -16,10 +17,7 @@ namespace UnityAtoms.Tags
         /// <returns>
         /// A `ReadOnlyList&lt;T&gt;` of tags stored as `StringContant`s. Returns `null` if the `GameObject` does not have any tags or if the `GameObject` is disabled.
         /// </returns>
-        public static ReadOnlyList<StringConstant> GetTags(this GameObject go)
-        {
-            return AtomTags.GetTags(go);
-        }
+        public static ReadOnlyList<StringConstant> GetTags(this GameObject go) { return AtomTags.GetTags(go); }
 
         /// <summary>
         /// Check if the tag provided is associated with this `GameObject`.
@@ -40,10 +38,7 @@ namespace UnityAtoms.Tags
         /// <param name="go">This `GameObject`</param>
         /// <param name="tag">The tag to search for.</param>
         /// <returns>`true` if the tag exists, otherwise `false`.</returns>
-        public static bool HasTag(this GameObject go, StringConstant tag)
-        {
-            return go.HasTag(tag.Value);
-        }
+        public static bool HasTag(this GameObject go, StringConstant tag) { return go.HasTag(tag.Value); }
 
 
         /// <summary>
@@ -61,6 +56,7 @@ namespace UnityAtoms.Tags
             {
                 if (goTags.HasTag(tags[i])) return true;
             }
+
             return false;
         }
 
@@ -81,7 +77,10 @@ namespace UnityAtoms.Tags
             {
                 if (tags.HasTag(stringConstants[i].Value)) return true;
             }
+
             return false;
         }
     }
 }
+
+#endif

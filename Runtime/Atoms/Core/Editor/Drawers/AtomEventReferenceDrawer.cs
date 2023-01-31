@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 
 namespace UnityAtoms.Editor
@@ -36,9 +37,11 @@ namespace UnityAtoms.Editor
             public override string DisplayName { get => "Use Variable Instancer"; }
         }
 
-        private readonly UsageData[] _usagesOnlyEvents = new UsageData[2] { new UsageEvent(), new UsageEventInstancer() };
-        private readonly UsageData[] _usages = new UsageData[4] { new UsageEvent(), new UsageEventInstancer(), new UsageVariable(), new UsageVariableInstancer() };
+        private readonly UsageData[] _usagesOnlyEvents = new UsageData[2] {new UsageEvent(), new UsageEventInstancer()};
+        private readonly UsageData[] _usages = new UsageData[4] {new UsageEvent(), new UsageEventInstancer(), new UsageVariable(), new UsageVariableInstancer()};
 
         protected override UsageData[] GetUsages(SerializedProperty prop = null) => prop.FindPropertyRelative("_variable") != null ? _usages : _usagesOnlyEvents;
     }
 }
+
+#endif

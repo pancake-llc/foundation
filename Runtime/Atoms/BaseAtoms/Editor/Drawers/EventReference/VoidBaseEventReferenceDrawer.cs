@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 
@@ -51,15 +52,13 @@ namespace UnityAtoms.BaseAtoms.Editor
             public override string DisplayName { get => "Use List Instancer Cleared Event"; }
         }
 
-        private readonly UsageData[] _usages = new UsageData[6] {
-            new UsageEvent(),
-            new UsageEventInstancer(),
-            new UsageCollectionCleared(),
-            new UsageListCleared(),
-            new UsageCollectionInstancerCleared(),
+        private readonly UsageData[] _usages = new UsageData[6]
+        {
+            new UsageEvent(), new UsageEventInstancer(), new UsageCollectionCleared(), new UsageListCleared(), new UsageCollectionInstancerCleared(),
             new UsageListInstancerCleared()
         };
 
         protected override UsageData[] GetUsages(SerializedProperty prop = null) => _usages;
     }
 }
+#endif

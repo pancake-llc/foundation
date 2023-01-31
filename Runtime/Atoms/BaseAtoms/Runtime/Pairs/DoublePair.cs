@@ -1,5 +1,7 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
+
 namespace UnityAtoms.BaseAtoms
 {
     /// <summary>
@@ -11,11 +13,14 @@ namespace UnityAtoms.BaseAtoms
         public double Item1 { get => _item1; set => _item1 = value; }
         public double Item2 { get => _item2; set => _item2 = value; }
 
-        [SerializeField]
-        private double _item1;
-        [SerializeField]
-        private double _item2;
+        [SerializeField] private double _item1;
+        [SerializeField] private double _item2;
 
-        public void Deconstruct(out double item1, out double item2) { item1 = Item1; item2 = Item2; }
+        public void Deconstruct(out double item1, out double item2)
+        {
+            item1 = Item1;
+            item2 = Item2;
+        }
     }
 }
+#endif

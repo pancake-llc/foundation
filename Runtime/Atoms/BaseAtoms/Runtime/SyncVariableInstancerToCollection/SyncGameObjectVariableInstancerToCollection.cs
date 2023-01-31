@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
@@ -8,5 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [AddComponentMenu("Unity Atoms/Sync Variable Instancer to Collection/Sync GameObject Variable Instancer to Collection")]
     [EditorIcon("atom-icon-delicate")]
-    public class SyncGameObjectVariableInstancerToCollection : SyncVariableInstancerToCollection<GameObject, GameObjectVariable, GameObjectVariableInstancer> { }
+    public class SyncGameObjectVariableInstancerToCollection : SyncVariableInstancerToCollection<GameObject, GameObjectVariable, GameObjectVariableInstancer>
+    {
+    }
 }
+
+#endif

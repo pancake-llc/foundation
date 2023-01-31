@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -12,10 +13,7 @@ namespace UnityAtoms
     /// <typeparam name="VI">Variable Instancer of type `T`.</typeparam>
     /// <typeparam name="EI">Event Instancer of type `T`.</typeparam>
     public abstract class AtomEventReference<T, V, E, VI, EI> : AtomBaseEventReference<T, E, EI>, IGetEvent, ISetEvent
-        where V : IGetOrCreateEvent, ISetEvent
-        where E : AtomEvent<T>
-        where VI : IGetOrCreateEvent, ISetEvent
-        where EI : AtomEventInstancer<T, E>
+        where V : IGetOrCreateEvent, ISetEvent where E : AtomEvent<T> where VI : IGetOrCreateEvent, ISetEvent where EI : AtomEventInstancer<T, E>
     {
         /// <summary>
         /// Get or set the Event used by the Event Reference.
@@ -40,20 +38,20 @@ namespace UnityAtoms
                 switch (_usage)
                 {
                     case (AtomEventReferenceUsage.VARIABLE):
-                        {
-                            _variable.SetEvent<E>(value);
-                            break;
-                        }
+                    {
+                        _variable.SetEvent<E>(value);
+                        break;
+                    }
                     case (AtomEventReferenceUsage.VARIABLE_INSTANCER):
-                        {
-                            _variableInstancer.SetEvent<E>(value);
-                            break;
-                        }
+                    {
+                        _variableInstancer.SetEvent<E>(value);
+                        break;
+                    }
                     case (AtomEventReferenceUsage.EVENT):
-                        {
-                            _event = value;
-                            break;
-                        }
+                    {
+                        _event = value;
+                        break;
+                    }
                     default:
                         throw new NotSupportedException($"Event not reassignable for usage {_usage}.");
                 }
@@ -63,23 +61,17 @@ namespace UnityAtoms
         /// <summary>
         /// Variable used if `Usage` is set to `Variable`.
         /// </summary>
-        [SerializeField]
-        private V _variable = default(V);
+        [SerializeField] private V _variable = default(V);
 
         /// <summary>
         /// Variable Instancer used if `Usage` is set to `VariableInstancer`.
         /// </summary>
-        [SerializeField]
-        private VI _variableInstancer = default(VI);
+        [SerializeField] private VI _variableInstancer = default(VI);
 
-        protected AtomEventReference()
-        {
-            _usage = AtomEventReferenceUsage.EVENT;
-        }
+        protected AtomEventReference() { _usage = AtomEventReferenceUsage.EVENT; }
 
-        public static implicit operator E(AtomEventReference<T, V, E, VI, EI> reference)
-        {
-            return reference.Event;
-        }
+        public static implicit operator E(AtomEventReference<T, V, E, VI, EI> reference) { return reference.Event; }
     }
 }
+
+#endif

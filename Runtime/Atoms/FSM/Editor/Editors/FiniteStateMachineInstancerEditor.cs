@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 
 namespace UnityAtoms.FSM.Editor
@@ -10,8 +11,10 @@ namespace UnityAtoms.FSM.Editor
     {
         public override void OnInspectorGUI()
         {
-            DrawPropertiesExcluding(serializedObject, new string[] { "_base" });
+            DrawPropertiesExcluding(serializedObject, new string[] {"_base"});
             serializedObject.ApplyModifiedProperties();
         }
     }
 }
+
+#endif

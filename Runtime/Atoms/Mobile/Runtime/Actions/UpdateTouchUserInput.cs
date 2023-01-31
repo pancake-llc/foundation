@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 
@@ -77,3 +78,4 @@ namespace UnityAtoms.Mobile
         }
     }
 }
+#endif

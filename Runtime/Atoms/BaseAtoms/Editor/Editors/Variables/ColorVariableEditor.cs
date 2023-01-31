@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 using UnityEngine;
@@ -8,5 +9,8 @@ namespace UnityAtoms.BaseAtoms.Editor
     /// Variable Inspector of type `Color`. Inherits from `AtomVariableEditor`
     /// </summary>
     [CustomEditor(typeof(ColorVariable))]
-    public sealed class ColorVariableEditor : AtomVariableEditor<Color, ColorPair> { }
+    public sealed class ColorVariableEditor : AtomVariableEditor<Color, ColorPair>
+    {
+    }
 }
+#endif

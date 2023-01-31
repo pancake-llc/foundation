@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,9 +13,7 @@ namespace UnityAtoms
         /// <summary>
         /// A description of the Listener made for documentation purposes.
         /// </summary>
-        [SerializeField]
-        [TextArea(3, 6)]
-        private string _developerDescription;
+        [SerializeField] [TextArea(3, 6)] private string _developerDescription;
     }
 
     /// <summary>
@@ -24,9 +23,7 @@ namespace UnityAtoms
     /// <typeparam name="E">Event of type `T`.</typeparam>
     /// <typeparam name="UER">UnityEvent of type `T`.</typeparam>
     [EditorIcon("atom-icon-orange")]
-    public abstract class AtomBaseListener<T, E, UER> : AtomBaseListener, IAtomListener<T>
-        where E : AtomEvent<T>
-        where UER : UnityEvent<T>
+    public abstract class AtomBaseListener<T, E, UER> : AtomBaseListener, IAtomListener<T> where E : AtomEvent<T> where UER : UnityEvent<T>
     {
         /// <summary>
         /// The Event we are listening for as a property.
@@ -45,25 +42,21 @@ namespace UnityAtoms
         /// </summary>
         /// <typeparam name="A">The Action type.</typeparam>
         /// <returns>A `List&lt;A&gt;` of Actions.</returns>
-        [SerializeField]
-        private List<AtomAction> _actionResponses = new List<AtomAction>();
+        [SerializeField] private List<AtomAction> _actionResponses = new List<AtomAction>();
 
         /// <summary>
         /// The Conditions to evaluate;
         /// </summary>
         /// <typeparam name="A">The Condition type.</typeparam>
         /// <returns>A `List&lt;A&gt;` of Conditions.</returns>
-        [SerializeField]
-        private List<AtomCondition> _conditions = new List<AtomCondition>();
+        [SerializeField] private List<AtomCondition> _conditions = new List<AtomCondition>();
 
         /// <summary>
         /// The logical operator to apply for conditions
         /// </summary>
-        [SerializeField]
-        private AtomConditionOperators _operator = AtomConditionOperators.And;
+        [SerializeField] private AtomConditionOperators _operator = AtomConditionOperators.And;
 
-        [SerializeField]
-        private bool _replayEventBufferOnRegister = true;
+        [SerializeField] private bool _replayEventBufferOnRegister = true;
 
         private void OnEnable()
         {
@@ -90,7 +83,7 @@ namespace UnityAtoms
             {
                 var condition = _conditions[i];
 
-                if(condition == null) continue;
+                if (condition == null) continue;
 
                 if (condition is AtomCondition<T> conditionWithParam)
                 {
@@ -101,11 +94,11 @@ namespace UnityAtoms
                     shouldRespond = condition.Call();
                 }
 
-                if(_operator == AtomConditionOperators.And && !shouldRespond) return;
-                if(_operator == AtomConditionOperators.Or  &&  shouldRespond) break;
+                if (_operator == AtomConditionOperators.And && !shouldRespond) return;
+                if (_operator == AtomConditionOperators.Or && shouldRespond) break;
             }
-            
-            if(! shouldRespond) return;
+
+            if (!shouldRespond) return;
 
             _unityEventResponse?.Invoke(item);
             for (int i = 0; _actionResponses != null && i < _actionResponses.Count; ++i)
@@ -128,9 +121,8 @@ namespace UnityAtoms
         /// <summary>
         /// Helper to register as listener callback
         /// </summary>
-        public void DebugLog(T item)
-        {
-            Debug.Log(item.ToString());
-        }
+        public void DebugLog(T item) { Debug.Log(item.ToString()); }
     }
 }
+
+#endif

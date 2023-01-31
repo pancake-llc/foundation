@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace UnityAtoms
     {
         public List<T> List { get => _list; }
 
-        [SerializeField]
-        private List<T> _list = default;
+        [SerializeField] private List<T> _list = default;
     }
 }
+#endif

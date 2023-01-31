@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `FloatPair`. Inherits from `UnityEvent&lt;FloatPair&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class FloatPairUnityEvent : UnityEvent<FloatPair> { }
+    public sealed class FloatPairUnityEvent : UnityEvent<FloatPair>
+    {
+    }
 }
+
+#endif

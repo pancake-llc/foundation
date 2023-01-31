@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.Mobile;
 
@@ -7,11 +8,11 @@ namespace UnityAtoms.Mobile
     /// Event Reference of type `TouchUserInputPair`. Inherits from `AtomEventReference&lt;TouchUserInputPair, TouchUserInputVariable, TouchUserInputPairEvent, TouchUserInputVariableInstancer, TouchUserInputPairEventInstancer&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class TouchUserInputPairEventReference : AtomEventReference<
-        TouchUserInputPair,
-        TouchUserInputVariable,
-        TouchUserInputPairEvent,
-        TouchUserInputVariableInstancer,
-        TouchUserInputPairEventInstancer>, IGetEvent 
-    { }
+    public sealed class TouchUserInputPairEventReference : AtomEventReference<TouchUserInputPair, TouchUserInputVariable, TouchUserInputPairEvent,
+            TouchUserInputVariableInstancer, TouchUserInputPairEventInstancer>,
+        IGetEvent
+    {
+    }
 }
+
+#endif

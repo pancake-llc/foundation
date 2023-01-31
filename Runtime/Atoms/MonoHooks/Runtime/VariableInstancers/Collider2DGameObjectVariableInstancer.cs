@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms.MonoHooks;
@@ -9,12 +10,10 @@ namespace UnityAtoms.MonoHooks
     /// </summary>
     [EditorIcon("atom-icon-hotpink")]
     [AddComponentMenu("Unity Atoms/Variable Instancers/Collider2DGameObject Variable Instancer")]
-    public class Collider2DGameObjectVariableInstancer : AtomVariableInstancer<
-        Collider2DGameObjectVariable,
-        Collider2DGameObjectPair,
-        Collider2DGameObject,
-        Collider2DGameObjectEvent,
-        Collider2DGameObjectPairEvent,
-        Collider2DGameObjectCollider2DGameObjectFunction>
-    { }
+    public class Collider2DGameObjectVariableInstancer : AtomVariableInstancer<Collider2DGameObjectVariable, Collider2DGameObjectPair, Collider2DGameObject,
+        Collider2DGameObjectEvent, Collider2DGameObjectPairEvent, Collider2DGameObjectCollider2DGameObjectFunction>
+    {
+    }
 }
+
+#endif

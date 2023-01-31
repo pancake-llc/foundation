@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine.Events;
 
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// None generic Unity Event of type `bool`. Inherits from `UnityEvent&lt;bool&gt;`.
     /// </summary>
     [Serializable]
-    public sealed class BoolUnityEvent : UnityEvent<bool> { }
+    public sealed class BoolUnityEvent : UnityEvent<bool>
+    {
+    }
 }
+
+#endif

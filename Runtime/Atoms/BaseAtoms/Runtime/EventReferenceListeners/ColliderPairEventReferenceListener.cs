@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -8,9 +9,9 @@ namespace UnityAtoms.BaseAtoms
     [EditorIcon("atom-icon-orange")]
     [AddComponentMenu("Unity Atoms/Listeners/ColliderPair Event Reference Listener")]
     public sealed class ColliderPairEventReferenceListener : AtomEventReferenceListener<
-        ColliderPair,
-        ColliderPairEvent,
-        ColliderPairEventReference,
-        ColliderPairUnityEvent>
-    { }
+        ColliderPair, ColliderPairEvent, ColliderPairEventReference, ColliderPairUnityEvent>
+    {
+    }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 namespace UnityAtoms
 {
     public interface IAtomListener
@@ -10,3 +11,5 @@ namespace UnityAtoms
         void OnEventRaised(T item);
     }
 }
+
+#endif

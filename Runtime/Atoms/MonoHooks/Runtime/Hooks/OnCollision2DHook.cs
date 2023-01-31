@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.MonoHooks
@@ -12,32 +13,33 @@ namespace UnityAtoms.MonoHooks
         /// <summary>
         /// Set to true if Event should be triggered on `OnCollisionEnter2D`
         /// </summary>
-        [SerializeField]
-        private bool _collisionOnEnter = default(bool);
+        [SerializeField] private bool _collisionOnEnter = default(bool);
+
         /// <summary>
         /// Set to true if Event should be triggered on `OnCollisionExit2D`
         /// </summary>
-        [SerializeField]
-        private bool _collisionOnExit = default(bool);
+        [SerializeField] private bool _collisionOnExit = default(bool);
+
         /// <summary>
         /// Set to true if Event should be triggered on `OnCollisionStay2D`
         /// </summary>
-        [SerializeField]
-        private bool _collisionOnStay = default(bool);
+        [SerializeField] private bool _collisionOnStay = default(bool);
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if(_collisionOnEnter) OnHook(other);
+            if (_collisionOnEnter) OnHook(other);
         }
 
         private void OnCollisionExit2D(Collision2D other)
         {
-            if(_collisionOnExit) OnHook(other);
+            if (_collisionOnExit) OnHook(other);
         }
 
         private void OnCollisionStay2D(Collision2D other)
         {
-            if(_collisionOnStay) OnHook(other);
+            if (_collisionOnStay) OnHook(other);
         }
     }
 }
+
+#endif

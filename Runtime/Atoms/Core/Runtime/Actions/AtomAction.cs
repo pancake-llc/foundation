@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityEngine;
 
@@ -27,3 +28,5 @@ namespace UnityAtoms
         public virtual void Do(T1 t1) => base.Do();
     }
 }
+
+#endif

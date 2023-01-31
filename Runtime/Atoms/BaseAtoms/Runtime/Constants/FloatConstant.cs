@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-teal")]
     [CreateAssetMenu(menuName = "Unity Atoms/Constants/Float", fileName = "FloatConstant")]
-    public sealed class FloatConstant : AtomBaseVariable<float> { }
+    public sealed class FloatConstant : AtomBaseVariable<float>
+    {
+    }
 }
+
+#endif

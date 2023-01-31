@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 #if UNITY_2019_1_OR_NEWER && !UNITY_ATOMS_GENERATE_DOCS
 using System;
 using System.Collections.ObjectModel;
@@ -16,45 +17,50 @@ namespace UnityAtoms.Editor
             if (!AtomPreferences.IsDebugModeEnabled) return null;
             var stackTraces = StackTraces.GetStackTraces(instanceId);
 
-            var foldout = GetOrCreate<Foldout>(parent, "STACK_TRACES_FOLDOUT", (element) =>
-            {
-                element.style.marginTop = 4;
-                element.style.marginBottom = 4;
-                element.text = "Stack traces";
-            });
-
-            var wrapper = GetOrCreate<VisualElement>(foldout, "STACK_TRACES_ROOT", (element) =>
-            {
-                element.style.flexDirection = FlexDirection.Column;
-            });
-
-            var header = GetOrCreate<VisualElement>(wrapper, "HEADER", (element) =>
-            {
-                element.style.flexDirection = FlexDirection.Row;
-                element.style.justifyContent = Justify.SpaceBetween;
-                element.style.alignItems = Align.Center;
-                element.style.backgroundColor = GetHeaderColor();
-                element.style.paddingLeft = 4;
-                element.style.paddingRight = 4;
-                element.style.paddingTop = 2;
-                element.style.paddingBottom = 2;
-            });
-
-            var title = GetOrCreate<Label>(header, "TITLE", (label) =>
-            {
-                label.text = "Overview";
-                label.style.unityFontStyleAndWeight = FontStyle.Bold;
-            });
-
-            var clearButton = GetOrCreate<Button>(header, "CLEAR_BUTTON", (button) =>
-            {
-                button.text = "Clear";
-                button.clickable.clicked += () =>
+            var foldout = GetOrCreate<Foldout>(parent,
+                "STACK_TRACES_FOLDOUT",
+                (element) =>
                 {
-                    SetSelectedStackTraceId(instanceId, -1);
-                    StackTraces.ClearStackTraces(instanceId);
-                };
-            });
+                    element.style.marginTop = 4;
+                    element.style.marginBottom = 4;
+                    element.text = "Stack traces";
+                });
+
+            var wrapper = GetOrCreate<VisualElement>(foldout, "STACK_TRACES_ROOT", (element) => { element.style.flexDirection = FlexDirection.Column; });
+
+            var header = GetOrCreate<VisualElement>(wrapper,
+                "HEADER",
+                (element) =>
+                {
+                    element.style.flexDirection = FlexDirection.Row;
+                    element.style.justifyContent = Justify.SpaceBetween;
+                    element.style.alignItems = Align.Center;
+                    element.style.backgroundColor = GetHeaderColor();
+                    element.style.paddingLeft = 4;
+                    element.style.paddingRight = 4;
+                    element.style.paddingTop = 2;
+                    element.style.paddingBottom = 2;
+                });
+
+            var title = GetOrCreate<Label>(header,
+                "TITLE",
+                (label) =>
+                {
+                    label.text = "Overview";
+                    label.style.unityFontStyleAndWeight = FontStyle.Bold;
+                });
+
+            var clearButton = GetOrCreate<Button>(header,
+                "CLEAR_BUTTON",
+                (button) =>
+                {
+                    button.text = "Clear";
+                    button.clickable.clicked += () =>
+                    {
+                        SetSelectedStackTraceId(instanceId, -1);
+                        StackTraces.ClearStackTraces(instanceId);
+                    };
+                });
 
             // All stack traces
             RenderStackTracesOverview(wrapper, stackTraces, instanceId);
@@ -76,65 +82,75 @@ namespace UnityAtoms.Editor
 
             var wrapper = GetOrCreate<VisualElement>(parent, "STACK_TRACES_DETAILS_WRAPPER");
 
-            var header = GetOrCreate<VisualElement>(wrapper, "HEADER", (element) =>
-            {
-                element.style.flexDirection = FlexDirection.Row;
-                element.style.justifyContent = Justify.FlexStart;
-                element.style.alignItems = Align.Center;
-                element.style.backgroundColor = GetHeaderColor();
-                element.style.paddingLeft = 4;
-                element.style.paddingRight = 4;
-                element.style.paddingTop = 6;
-                element.style.paddingBottom = 6;
-                element.style.display = selectedStackTraceId != -1 ? DisplayStyle.Flex : DisplayStyle.None;
-            });
+            var header = GetOrCreate<VisualElement>(wrapper,
+                "HEADER",
+                (element) =>
+                {
+                    element.style.flexDirection = FlexDirection.Row;
+                    element.style.justifyContent = Justify.FlexStart;
+                    element.style.alignItems = Align.Center;
+                    element.style.backgroundColor = GetHeaderColor();
+                    element.style.paddingLeft = 4;
+                    element.style.paddingRight = 4;
+                    element.style.paddingTop = 6;
+                    element.style.paddingBottom = 6;
+                    element.style.display = selectedStackTraceId != -1 ? DisplayStyle.Flex : DisplayStyle.None;
+                });
 
-            var title = GetOrCreate<Label>(header, "TITLE", (label) =>
-            {
-                label.text = "Details";
-                label.style.unityFontStyleAndWeight = FontStyle.Bold;
-            });
+            var title = GetOrCreate<Label>(header,
+                "TITLE",
+                (label) =>
+                {
+                    label.text = "Details";
+                    label.style.unityFontStyleAndWeight = FontStyle.Bold;
+                });
 
-            var stackTracesDetails = GetOrCreate<ScrollView>(wrapper, "SCROLL_VIEW", (scrollView) =>
-            {
-                scrollView.style.maxHeight = 100;
-                scrollView.style.height = 100;
-                scrollView.style.backgroundColor = GetBodyColor();
+            var stackTracesDetails = GetOrCreate<ScrollView>(wrapper,
+                "SCROLL_VIEW",
+                (scrollView) =>
+                {
+                    scrollView.style.maxHeight = 100;
+                    scrollView.style.height = 100;
+                    scrollView.style.backgroundColor = GetBodyColor();
 #pragma warning disable CS0618
-                scrollView.showVertical = true;
+                    scrollView.showVertical = true;
 #pragma warning restore CS0618
-                scrollView.style.display = selectedStackTraceId != -1 ? DisplayStyle.Flex : DisplayStyle.None;
-            });
+                    scrollView.style.display = selectedStackTraceId != -1 ? DisplayStyle.Flex : DisplayStyle.None;
+                });
 
-            var details = GetOrCreate<TextField>(stackTracesDetails, "DETAILS", (field) =>
-            {
-                field.isReadOnly = true;
-                field.multiline = true;
-                field.value = selectedStackTraceId != -1 ? stackTraces[selectedStackTraceId].ToString() : "";
-                field.style.borderLeftWidth = 0;
-                field.style.borderRightWidth = 0;
-                field.style.borderTopWidth = 0;
-                field.style.borderBottomWidth = 0;
-                field.style.marginLeft = 1;
-                field.style.marginRight = 1;
-                field.style.marginTop = 1;
-                field.style.marginBottom = 1;
-            });
+            var details = GetOrCreate<TextField>(stackTracesDetails,
+                "DETAILS",
+                (field) =>
+                {
+                    field.isReadOnly = true;
+                    field.multiline = true;
+                    field.value = selectedStackTraceId != -1 ? stackTraces[selectedStackTraceId].ToString() : "";
+                    field.style.borderLeftWidth = 0;
+                    field.style.borderRightWidth = 0;
+                    field.style.borderTopWidth = 0;
+                    field.style.borderBottomWidth = 0;
+                    field.style.marginLeft = 1;
+                    field.style.marginRight = 1;
+                    field.style.marginTop = 1;
+                    field.style.marginBottom = 1;
+                });
         }
 
         private static void RenderStackTracesOverview(VisualElement parent, ObservableCollection<StackTraceEntry> stackTraces, int instanceId)
         {
             var selectedStackTraceId = GetSelectedStackTraceId(instanceId);
 
-            var stackTracesOverview = GetOrCreate<ScrollView>(parent, "STACK_TRACES_OVERVIEW_SCROLL_VIEW", (scrollView) =>
-            {
-                scrollView.style.maxHeight = 100;
-                scrollView.style.height = 100;
-                scrollView.style.backgroundColor = GetBodyColor();
+            var stackTracesOverview = GetOrCreate<ScrollView>(parent,
+                "STACK_TRACES_OVERVIEW_SCROLL_VIEW",
+                (scrollView) =>
+                {
+                    scrollView.style.maxHeight = 100;
+                    scrollView.style.height = 100;
+                    scrollView.style.backgroundColor = GetBodyColor();
 #pragma warning disable CS0618
-                scrollView.showVertical = true;
+                    scrollView.showVertical = true;
 #pragma warning restore CS0618
-            });
+                });
             var stackTracesOverviewRowContainer = GetOrCreate<VisualElement>(stackTracesOverview, "STACK_TRACES_OVERVIEW_ROW_CONTAINER");
             stackTracesOverviewRowContainer.style.flexDirection = FlexDirection.Column;
 
@@ -148,10 +164,7 @@ namespace UnityAtoms.Editor
                     text = stackTrace.ToString().GetFirstLine(),
                     style =
                     {
-                        paddingTop = 4,
-                        paddingBottom = 4,
-                        paddingLeft = 4,
-                        paddingRight = 4,
+                        paddingTop = 4, paddingBottom = 4, paddingLeft = 4, paddingRight = 4,
                     }
                 };
 
@@ -173,11 +186,12 @@ namespace UnityAtoms.Editor
 
         private static T GetOrCreate<T>(VisualElement parent, string name, Action<T> initializer = null) where T : VisualElement, new()
         {
-            var element = (T)parent.Query<VisualElement>(name: name).First() ?? new T() { name = name };
+            var element = (T) parent.Query<VisualElement>(name: name).First() ?? new T() {name = name};
             if (initializer != null)
             {
                 initializer(element);
             }
+
             if (!parent.Contains(element))
                 parent.Add(element);
             return element;
@@ -198,6 +212,7 @@ namespace UnityAtoms.Editor
         }
 
         private static Dictionary<int, int> _stackTraceIdSelectedPerInstanceId = new Dictionary<int, int>();
+
         private static int GetSelectedStackTraceId(int instanceId)
         {
             if (!_stackTraceIdSelectedPerInstanceId.ContainsKey(instanceId)) _stackTraceIdSelectedPerInstanceId.Add(instanceId, -1);
@@ -213,4 +228,5 @@ namespace UnityAtoms.Editor
         }
     }
 }
+#endif
 #endif

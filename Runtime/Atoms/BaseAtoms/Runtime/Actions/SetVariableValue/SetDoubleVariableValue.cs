@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityAtoms.BaseAtoms;
 
@@ -8,15 +9,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-purple")]
     [CreateAssetMenu(menuName = "Unity Atoms/Actions/Set Variable Value/Double", fileName = "SetDoubleVariableValue")]
-    public sealed class SetDoubleVariableValue : SetVariableValue<
-        double,
-        DoublePair,
-        DoubleVariable,
-        DoubleConstant,
-        DoubleReference,
-        DoubleEvent,
-        DoublePairEvent,
-        DoubleDoubleFunction,
-        DoubleVariableInstancer>
-    { }
+    public sealed class SetDoubleVariableValue : SetVariableValue<double, DoublePair, DoubleVariable, DoubleConstant, DoubleReference, DoubleEvent, DoublePairEvent,
+        DoubleDoubleFunction, DoubleVariableInstancer>
+    {
+    }
 }
+#endif

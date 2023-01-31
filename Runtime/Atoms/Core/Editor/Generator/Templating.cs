@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -30,12 +31,10 @@ namespace UnityAtoms.Editor
             // NOTE: Only supports OR:ed conditions ATM
             var conditions = new List<Tuple<string, bool>>();
             var conditionStrings = templateCopy.Substring(indexIfOpened + 5, indexIfClosed - (indexIfOpened + 5)).Split('|').ToList();
-            conditionStrings.ForEach((c) => {
+            conditionStrings.ForEach((c) =>
+            {
                 var isNegated = c.Substring(0, 1) == "!";
-                conditions.Add(new Tuple<string, bool>(
-                    isNegated ? c.Substring(1) : c,
-                    isNegated
-                ));
+                conditions.Add(new Tuple<string, bool>(isNegated ? c.Substring(1) : c, isNegated));
             });
 
             var indexOfNextEndIf = templateCopy.IndexOf("<%ENDIF%>", indexIfClosed, StringComparison.Ordinal);
@@ -45,8 +44,7 @@ namespace UnityAtoms.Editor
             // However, this is not always true (you can have an inline conditional at the end of a line). This implementation
             // works for our cases for now, but we might need to come back and change this in the future for other use cases.
             var indexOfNextCharAfterEndIf = indexOfNextEndIf + "<%ENDIF%>".Length;
-            var indexOfLFAfterEndIf =
-                templateCopy.IndexOf("\n", indexOfNextEndIf, StringComparison.Ordinal);
+            var indexOfLFAfterEndIf = templateCopy.IndexOf("\n", indexOfNextEndIf, StringComparison.Ordinal);
             var inline = true;
             if (indexOfLFAfterEndIf == indexOfNextCharAfterEndIf)
             {
@@ -88,7 +86,10 @@ namespace UnityAtoms.Editor
             {
                 resolvedString = resolvedString.Replace("{" + kvp.Key + "}", kvp.Value);
             }
+
             return resolvedString;
         }
     }
 }
+
+#endif

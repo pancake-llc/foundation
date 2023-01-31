@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,9 +24,8 @@ namespace UnityAtoms.MonoHooks
             button.onClick.RemoveListener(OnClick);
         }
 
-        private void OnClick()
-        {
-            OnHook();
-        }
+        private void OnClick() { OnHook(); }
     }
 }
+
+#endif

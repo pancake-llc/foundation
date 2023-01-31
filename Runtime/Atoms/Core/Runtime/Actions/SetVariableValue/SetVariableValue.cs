@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -28,21 +29,18 @@ namespace UnityAtoms
         /// <summary>
         /// The Variable to set.
         /// </summary>
-        [SerializeField]
-        private V _variable = null;
+        [SerializeField] private V _variable = null;
 
         /// <summary>
         /// The value to use.
         /// </summary>
-        [SerializeField]
-        private R _value = null;
+        [SerializeField] private R _value = null;
 
         /// <summary>
         /// Perform the action.
         /// </summary>
-        public override void Do()
-        {
-            _variable.Value = _value.Value;
-        }
+        public override void Do() { _variable.Value = _value.Value; }
     }
 }
+
+#endif

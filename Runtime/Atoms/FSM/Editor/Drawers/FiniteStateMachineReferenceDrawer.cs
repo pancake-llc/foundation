@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEditor;
 using UnityAtoms.Editor;
 
@@ -23,8 +24,10 @@ namespace UnityAtoms.FSM.Editor
             public override string DisplayName { get => "Use FSM Instancer"; }
         }
 
-        private readonly UsageData[] _usages = new UsageData[2] { new UsageFSM(), new UsageFSMInstancer() };
+        private readonly UsageData[] _usages = new UsageData[2] {new UsageFSM(), new UsageFSMInstancer()};
 
         protected override UsageData[] GetUsages(SerializedProperty prop = null) => _usages;
     }
 }
+
+#endif

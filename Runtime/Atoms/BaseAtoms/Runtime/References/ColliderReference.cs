@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
@@ -9,21 +10,22 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [Serializable]
     public sealed class ColliderReference : AtomReference<
-        Collider,
-        ColliderPair,
-        ColliderConstant,
-        ColliderVariable,
-        ColliderEvent,
-        ColliderPairEvent,
-        ColliderColliderFunction,
-        ColliderVariableInstancer>, IEquatable<ColliderReference>
+            Collider, ColliderPair, ColliderConstant, ColliderVariable, ColliderEvent, ColliderPairEvent, ColliderColliderFunction, ColliderVariableInstancer>,
+        IEquatable<ColliderReference>
     {
-        public ColliderReference() : base() { }
-        public ColliderReference(Collider value) : base(value) { }
-        public bool Equals(ColliderReference other) { return base.Equals(other); }
-        protected override bool ValueEquals(Collider other)
+        public ColliderReference()
+            : base()
         {
-            return Value == other;
         }
+
+        public ColliderReference(Collider value)
+            : base(value)
+        {
+        }
+
+        public bool Equals(ColliderReference other) { return base.Equals(other); }
+        protected override bool ValueEquals(Collider other) { return Value == other; }
     }
 }
+
+#endif

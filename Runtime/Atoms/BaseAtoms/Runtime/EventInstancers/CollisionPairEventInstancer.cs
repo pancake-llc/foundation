@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using UnityEngine;
 
 namespace UnityAtoms.BaseAtoms
@@ -7,5 +8,9 @@ namespace UnityAtoms.BaseAtoms
     /// </summary>
     [EditorIcon("atom-icon-sign-blue")]
     [AddComponentMenu("Unity Atoms/Event Instancers/CollisionPair Event Instancer")]
-    public class CollisionPairEventInstancer : AtomEventInstancer<CollisionPair, CollisionPairEvent> { }
+    public class CollisionPairEventInstancer : AtomEventInstancer<CollisionPair, CollisionPairEvent>
+    {
+    }
 }
+
+#endif

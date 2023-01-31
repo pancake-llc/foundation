@@ -1,3 +1,4 @@
+#if PANCAKE_ATOM
 using System.Collections;
 using UnityEngine;
 
@@ -13,13 +14,13 @@ namespace UnityAtoms
         /// Event for when the list is cleared.
         /// </summary>
         public AtomEventBase Cleared;
+
         protected abstract IList IList { get; }
 
         /// <summary>
         /// Whether the list should start cleared
         /// </summary>
-        [SerializeField]
-        protected bool _startCleared;
+        [SerializeField] protected bool _startCleared;
 
         /// <summary>
         /// Clear the list.
@@ -32,6 +33,7 @@ namespace UnityAtoms
                 Cleared.Raise();
             }
         }
+
         private void OnEnable()
         {
             if (_startCleared)
@@ -41,3 +43,5 @@ namespace UnityAtoms
         }
     }
 }
+
+#endif
