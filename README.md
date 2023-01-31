@@ -18,39 +18,6 @@ Add the lines below to `Packages/manifest.json`
 "com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.2.27",
 ```
 
-
-# Size build android
-
-- Build with Unity 2022.2.2f1 + IL2CPP + ARMv7 + LZ4LC
-- Manifest
-```json
-{
-  "dependencies": {
-    "com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.2.24",
-    "com.unity.ide.rider": "3.0.17",
-    "com.unity.textmeshpro": "3.0.6",
-    "com.unity.ugui": "1.0.0",
-    "com.unity.modules.animation": "1.0.0",
-    "com.unity.modules.audio": "1.0.0",
-    "com.unity.modules.jsonserialize": "1.0.0",
-    "com.unity.modules.particlesystem": "1.0.0",
-    "com.unity.modules.physics": "1.0.0",
-    "com.unity.modules.physics2d": "1.0.0",
-    "com.unity.modules.ui": "1.0.0",
-    "com.unity.modules.uielements": "1.0.0",
-    "com.unity.modules.unitywebrequest": "1.0.0"
-  }
-}
-```
-> Size apk : 11.3mb
-
-- With out `heart`
-> Size apk : 7.21mb
-
-> Default not turn on any module in wizard => `heart` size : 4.09mb
-
-> Enable all module in wizard => `heart` size : 12.1mb - 7.21mb = 4.89mb
-
 # Table of Contents
 
 - [Advertisement](https://github.com/pancake-llc/heart/wiki/advertisement)
