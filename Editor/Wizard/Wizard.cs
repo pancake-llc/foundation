@@ -61,19 +61,18 @@ namespace Pancake.Editor
 
             GUILayout.FlexibleSpace();
             GUI.enabled = !EditorApplication.isCompiling && enable;
-            enableAtom = EditorGUILayout.Toggle("Atom", enableAtom);
-            enableAds = EditorGUILayout.Toggle("Advertising", enableAds);
-            enableIap = EditorGUILayout.Toggle("In-App-Purchase", enableIap);
-            enableNotification = EditorGUILayout.Toggle("Local Notification", enableNotification);
-            enableAddressable = EditorGUILayout.Toggle("Addressable", enableAddressable);
+            Uniform.Toggle(ref enableAtom, "Atom (Scriptable Object Architecture)", 240);
+            Uniform.Toggle(ref enableAds, "Advertising", 240);
+            Uniform.Toggle(ref enableIap, "In-App-Purchase", 240);
+            Uniform.Toggle(ref enableNotification, "Local Notification", 240);
+            Uniform.Toggle(ref enableAddressable, "Addressable", 240);
             if (enableAddressable)
             {
                 EditorGUI.indentLevel++;
-                enableUsingAddressableForPopup = EditorGUILayout.Toggle("For Popup", enableUsingAddressableForPopup);
+                Uniform.Toggle(ref enableUsingAddressableForPopup, "For Popup", 225);
                 EditorGUI.indentLevel--;
             }
-
-            enableGam = EditorGUILayout.Toggle("Game Base Flow", enableGam);
+            Uniform.Toggle(ref enableGam, "Game Base Flow", 240);
 
             Uniform.SpaceTwoLine();
             Uniform.Horizontal(() =>

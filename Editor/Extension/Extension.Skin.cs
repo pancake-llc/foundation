@@ -25,7 +25,7 @@ namespace Pancake.Editor
         private static GUIStyle groupHeader;
         private static GUIStyle groupHeaderCollapse;
         private static GUIStyle toggleToolbar;
-        
+
         private static readonly Dictionary<string, GUIContent> CachedIconContent = new Dictionary<string, GUIContent>();
 
         private const int CHEVRON_ICON_WIDTH = 10;
@@ -183,53 +183,41 @@ namespace Pancake.Editor
 
                 return contentBox;
             }
-        }      
-        
+        }
+
         public static GUIStyle ContentList
         {
             get
             {
                 if (contentList == null)
                 {
-                    contentList = new GUIStyle
-                    {
-                        border = new RectOffset(2, 2, 2, 2),
-                        normal = {background = EditorResources.EvenBackground},
-                    };
+                    contentList = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.EvenBackground},};
                 }
 
                 return contentList;
             }
         }
-        
+
         public static GUIStyle ContentListDark
         {
             get
             {
                 if (contentListDark == null)
                 {
-                    contentListDark = new GUIStyle
-                    {
-                        border = new RectOffset(2, 2, 2, 2),
-                        normal = {background = EditorResources.EvenBackgroundDark},
-                    };
+                    contentListDark = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.EvenBackgroundDark},};
                 }
 
                 return contentListDark;
             }
         }
-        
+
         public static GUIStyle ContentListBlue
         {
             get
             {
                 if (contentListBlue == null)
                 {
-                    contentListBlue = new GUIStyle
-                    {
-                        border = new RectOffset(2, 2, 2, 2),
-                        normal = {background = EditorResources.EvenBackgroundBlue},
-                    };
+                    contentListBlue = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.EvenBackgroundBlue},};
                 }
 
                 return contentListBlue;
@@ -755,6 +743,20 @@ namespace Pancake.Editor
                 property.boolValue = GUILayout.Toggle(property.boolValue, new GUIContent(""));
                 optionalDraw?.Invoke();
             });
+        }
+
+        public static void Toggle(ref bool toggle, GUIContent content, float width = 120f, Action optionalDraw = null)
+        {
+            var r = EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(content, GUILayout.Width(width));
+            toggle = EditorGUILayout.Toggle("", toggle);
+            optionalDraw?.Invoke();
+            EditorGUILayout.EndHorizontal();
+        }
+
+        public static void Toggle(ref bool toggle, string content, float width = 120f, Action optionalDraw = null)
+        {
+            Toggle(ref toggle, new GUIContent(content), width, optionalDraw);
         }
 
         public static void SpaceHalfLine() => GUILayout.Space(SPACE_HALF_LINE);
