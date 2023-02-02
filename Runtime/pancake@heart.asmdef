@@ -26,7 +26,8 @@
         "GUID:e63a64384cc3ef04cac761c1ce76e9c2",
         "GUID:94e1de2458b07d0bf1e9f13e6ae06443",
         "GUID:64558922946e126408dfcf889cd7b890",
-        "GUID:69448af7b92c7f342b298e06a37122aa"
+        "GUID:69448af7b92c7f342b298e06a37122aa",
+        "GUID:f06555f75b070af458a003d92f9efb00"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -116,6 +117,11 @@
             "name": "com.unity.inputsystem",
             "expression": "",
             "define": "PANCAKE_INPUTSYSTEM"
+        },
+        {
+            "name": "com.unity.timeline",
+            "expression": "",
+            "define": "PANCAKE_TIMELINE"
         }
     ],
     "noEngineReferences": false
