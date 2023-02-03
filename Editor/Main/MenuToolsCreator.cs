@@ -118,7 +118,7 @@ namespace Pancake.Editor
             }
         }
         
-        [MenuItem("Tools/Pancake/Wizard")]
+        [MenuItem("Tools/Pancake/Wizard #W")]
         private static void OpenWizard()
         {
             Wizard.Open();

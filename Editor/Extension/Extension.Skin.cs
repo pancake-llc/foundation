@@ -745,18 +745,27 @@ namespace Pancake.Editor
             });
         }
 
-        public static void Toggle(ref bool toggle, GUIContent content, float width = 120f, Action optionalDraw = null)
+        public static void Toggle(ref bool toggle, GUIContent content, float width = 120f, Action optionalDraw = null, bool highlight = false)
         {
             var r = EditorGUILayout.BeginHorizontal();
+            Color color = Color.white;
+            if (highlight )
+            {
+                color = toggle ? Paint.Green : Paint.Orange;
+            }
+
+            var previousColor = GUI.color;
+            GUI.color = color;
             EditorGUILayout.LabelField(content, GUILayout.Width(width));
+            GUI.color = previousColor;
             toggle = EditorGUILayout.Toggle("", toggle);
             optionalDraw?.Invoke();
             EditorGUILayout.EndHorizontal();
         }
 
-        public static void Toggle(ref bool toggle, string content, float width = 120f, Action optionalDraw = null)
+        public static void Toggle(ref bool toggle, string content, float width = 120f, Action optionalDraw = null, bool highlight = false)
         {
-            Toggle(ref toggle, new GUIContent(content), width, optionalDraw);
+            Toggle(ref toggle, new GUIContent(content), width, optionalDraw, highlight);
         }
 
         public static void SpaceHalfLine() => GUILayout.Space(SPACE_HALF_LINE);

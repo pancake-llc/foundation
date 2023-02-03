@@ -15,12 +15,13 @@ namespace Pancake.Editor
         private static bool enableNotification;
         private static bool enableAddressable;
         private static bool enableUsingAddressableForPopup;
+        private static bool enablePlayfab;
         private static bool enable = true;
 
         internal static bool Status
         {
             get => EditorPrefs.GetBool($"wizard_{PlayerSettings.productGUID}", false);
-            set => EditorPrefs.SetBool($"wizard_{PlayerSettings.productGUID}", value);
+            private set => EditorPrefs.SetBool($"wizard_{PlayerSettings.productGUID}", value);
         }
 
 
@@ -44,6 +45,7 @@ namespace Pancake.Editor
             enableAds = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADS", group);
             enableGam = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_GAM", group);
             enableNotification = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_NOTIFICATION", group);
+            enablePlayfab = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_PLAYFAB", group);
             enableAddressable = RegistryManager.IsInstalled("com.unity.addressables");
             enableUsingAddressableForPopup = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADDRESSABLE_POPUP", group);
         }
@@ -61,18 +63,19 @@ namespace Pancake.Editor
 
             GUILayout.FlexibleSpace();
             GUI.enabled = !EditorApplication.isCompiling && enable;
-            Uniform.Toggle(ref enableAtom, "Atom (Scriptable Object Architecture)", 240);
-            Uniform.Toggle(ref enableAds, "Advertising", 240);
-            Uniform.Toggle(ref enableIap, "In-App-Purchase", 240);
-            Uniform.Toggle(ref enableNotification, "Local Notification", 240);
-            Uniform.Toggle(ref enableAddressable, "Addressable", 240);
+            Uniform.Toggle(ref enableAtom, "Atom (Scriptable Object Architecture)", 240, highlight: true);
+            Uniform.Toggle(ref enableAds, "Advertising", 240, highlight: true);
+            Uniform.Toggle(ref enableIap, "In-App-Purchase", 240, highlight: true);
+            Uniform.Toggle(ref enableNotification, "Local Notification", 240, highlight: true);
+            Uniform.Toggle(ref enableAddressable, "Addressable", 240, highlight: true);
             if (enableAddressable)
             {
                 EditorGUI.indentLevel++;
-                Uniform.Toggle(ref enableUsingAddressableForPopup, "For Popup", 225);
+                Uniform.Toggle(ref enableUsingAddressableForPopup, "For Popup", 225, highlight: true);
                 EditorGUI.indentLevel--;
             }
-            Uniform.Toggle(ref enableGam, "Game Base Flow", 240);
+            Uniform.Toggle(ref enablePlayfab, "Playfab", 240, highlight: true);
+            Uniform.Toggle(ref enableGam, "Game Base Flow", 240, highlight: true);
 
             Uniform.SpaceTwoLine();
             Uniform.Horizontal(() =>
@@ -194,6 +197,17 @@ namespace Pancake.Editor
                                 InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADDRESSABLE_POPUP");
                             }
 
+                            if (enablePlayfab)
+                            {
+                                RegistryManager.Add("com.pancake.playfab", "https://github.com/pancake-llc/playfab.git#2.157.230123");
+                                InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_PLAYFAB");
+                            }
+                            else
+                            {
+                                RegistryManager.Remove("com.pancake.playfab");
+                                InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_PLAYFAB");
+                            }
+                            
                             RegistryManager.Resolve();
                             Close();
                         }
