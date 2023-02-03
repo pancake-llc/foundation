@@ -630,7 +630,7 @@ namespace Pancake.GameService
             Action<UpdateUserDataResult> resultCallback,
             Action<PlayFabError> errorCallback)
         {
-            var changes = new Dictionary<string, string>() {{key, PlayFabSimpleJson.SerializeObject(value)}};
+            var changes = new Dictionary<string, string>() {{key, Newtonsoft.Json.JsonConvert.SerializeObject(value)}};
 
             PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest {Data = changes, Permission = permission}, resultCallback, errorCallback);
         }
@@ -655,7 +655,7 @@ namespace Pancake.GameService
                 result =>
                 {
                     flag = true;
-                    t = PlayFabSimpleJson.DeserializeObject<T>(result.Data[key].Value);
+                    t = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(result.Data[key].Value);
                     resultCallback?.Invoke(t);
                 },
                 errorCallback);
@@ -682,7 +682,7 @@ namespace Pancake.GameService
                     flag = true;
                     if (result.Data.ContainsKey(key))
                     {
-                        t = PlayFabSimpleJson.DeserializeObject<T>(result.Data[key].Value);
+                        t = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(result.Data[key].Value);
                         resultCallback?.Invoke(t);
                     }
                     else
