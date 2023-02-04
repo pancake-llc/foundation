@@ -36,7 +36,7 @@ namespace Pancake.Editor
             Write(json);
         }
 
-        public static bool IsInstalled(string name)
+        public static (bool, string) IsInstalled(string name)
         {
             var json = JObject.Parse(File.ReadAllText(Manifest));
             var dependencies = (JObject) json["dependencies"];
@@ -44,11 +44,11 @@ namespace Pancake.Editor
             {
                 foreach (var dependency in dependencies)
                 {
-                    if (dependency.Key.Equals(name)) return true;
+                    if (dependency.Key.Equals(name)) return (true, dependency.Value.ToString());
                 }
             }
 
-            return false;
+            return (false, "");
         }
 
         public static void Resolve()

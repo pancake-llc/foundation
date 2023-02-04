@@ -749,16 +749,12 @@ namespace Pancake.Editor
         {
             var r = EditorGUILayout.BeginHorizontal();
             Color color = Color.white;
-            if (highlight )
-            {
-                color = toggle ? Paint.Green : Paint.Orange;
-            }
-
+            if (highlight ) color = toggle ? Paint.Green : Paint.Orange;
             var previousColor = GUI.color;
             GUI.color = color;
             EditorGUILayout.LabelField(content, GUILayout.Width(width));
             GUI.color = previousColor;
-            toggle = EditorGUILayout.Toggle("", toggle);
+            toggle = EditorGUILayout.Toggle("", toggle, GUILayout.Width(20));
             optionalDraw?.Invoke();
             EditorGUILayout.EndHorizontal();
         }
@@ -768,6 +764,11 @@ namespace Pancake.Editor
             Toggle(ref toggle, new GUIContent(content), width, optionalDraw, highlight);
         }
 
+        public static void Dropdown(ref int index, string[] data, params GUILayoutOption[] options)
+        {
+            index = EditorGUILayout.Popup(index, data, options);
+        }
+        
         public static void SpaceHalfLine() => GUILayout.Space(SPACE_HALF_LINE);
         public static void SpaceOneLine() => GUILayout.Space(SPACE_ONE_LINE);
         public static void SpaceTwoLine() => GUILayout.Space(SPACE_TWO_LINE);
