@@ -12,10 +12,10 @@
 
 Add the lines below to `Packages/manifest.json`
 
-- for version `1.3.0`
+- for version `1.3.1`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.3.0",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.3.1",
 ```
 
 # Table of Contents
