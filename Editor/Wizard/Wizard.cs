@@ -49,7 +49,7 @@ namespace Pancake.Editor
             var window = EditorWindow.GetWindow<Wizard>(true, "Wizard", true);
             window.minSize = window.maxSize = new Vector2(400, 440);
             window.ShowUtility();
-            
+
             selectedTags = new Dictionary<string, int>()
             {
                 {FIREBASE_ANALYTIC_PACKAGE, 0},
@@ -60,7 +60,8 @@ namespace Pancake.Editor
             };
             string lastTimeFetch = EditorPrefs.GetString(Application.identifier + "_lastime_fetch", "");
             var forceFetchData = false;
-            if (string.IsNullOrEmpty(lastTimeFetch))
+            if (string.IsNullOrEmpty(lastTimeFetch) || string.IsNullOrEmpty(EditorPrefs.GetString(Application.identifier + "_cache_repotag")) ||
+                string.IsNullOrEmpty(EditorPrefs.GetString(Application.identifier + "_cache_edmmodel")))
             {
                 forceFetchData = true;
             }
@@ -81,18 +82,18 @@ namespace Pancake.Editor
                     {FIREBASE_MESSAGE_PACKAGE, Fetch("firebase-unity", "firebase-messaging")},
                     {IN_APP_REVIEW_PACKAGE, Fetch("google-unity", "in-app-review")}
                 };
-                
+
                 edmModel = LoadEdmVersion();
-                
-                EditorPrefs.SetString(Application.identifier +"_cache_repotag", JsonConvert.SerializeObject(repoTags));
-                EditorPrefs.SetString(Application.identifier +"_cache_edmmodel", JsonConvert.SerializeObject(edmModel));
+
+                EditorPrefs.SetString(Application.identifier + "_cache_repotag", JsonConvert.SerializeObject(repoTags));
+                EditorPrefs.SetString(Application.identifier + "_cache_edmmodel", JsonConvert.SerializeObject(edmModel));
             }
             else
             {
                 repoTags = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(EditorPrefs.GetString(Application.identifier + "_cache_repotag"));
                 edmModel = JsonConvert.DeserializeObject<EdmModel>(EditorPrefs.GetString(Application.identifier + "_cache_edmmodel"));
             }
-            
+
             repoTags[IN_APP_REVIEW_PACKAGE].Remove("1.8.1");
             Refresh();
             Status = true;
@@ -133,8 +134,7 @@ namespace Pancake.Editor
         {
             using var client = new WebClient();
             client.Headers.Add(HttpRequestHeader.UserAgent, "request");
-            string raw = client.DownloadString(
-                "https://gist.githubusercontent.com/yenmoc/2334e5a93dddc849a557a18882ea406a/raw");
+            string raw = client.DownloadString("https://gist.githubusercontent.com/yenmoc/2334e5a93dddc849a557a18882ea406a/raw");
             return JsonConvert.DeserializeObject<EdmModel>(raw);
         }
 
@@ -241,14 +241,17 @@ namespace Pancake.Editor
 
             Uniform.SpaceThreeLine();
             Uniform.SpaceThreeLine();
-            Uniform.Toggle(ref enableInAppReview, "In-app Review", 240,
+            Uniform.Toggle(ref enableInAppReview,
+                "In-app Review",
+                240,
                 () =>
                 {
                     if (!enableInAppReview) return;
                     int index = selectedTags[IN_APP_REVIEW_PACKAGE];
                     Uniform.Dropdown(ref index, repoTags[IN_APP_REVIEW_PACKAGE].ToArray(), GUILayout.Width(90));
                     selectedTags[IN_APP_REVIEW_PACKAGE] = index;
-                }, true);
+                },
+                true);
 
 
             Uniform.SpaceTwoLine();
@@ -394,7 +397,7 @@ namespace Pancake.Editor
                             if (enableCloudMessage) InstallFirebasePackage(FIREBASE_MESSAGE_PACKAGE, "firebase-messaging");
                             else RegistryManager.Remove(FIREBASE_MESSAGE_PACKAGE);
 
-                            if (enableInAppReview) 
+                            if (enableInAppReview)
                             {
                                 string version = repoTags[IN_APP_REVIEW_PACKAGE][selectedTags[IN_APP_REVIEW_PACKAGE]];
                                 string versionEdm = edmModel.inappreview.edm[Array.FindIndex(edmModel.inappreview.source, _ => _ == version)];
@@ -402,7 +405,8 @@ namespace Pancake.Editor
                                 RegistryManager.Add("com.google.play.core", $"https://github.com/google-unity/google-play-core.git#{version}");
                                 RegistryManager.Add("com.google.play.common", $"https://github.com/google-unity/google-play-common.git#{version}");
                                 RegistryManager.Add("com.google.android.appbundle", $"https://github.com/google-unity/android-app-bundle.git#{version}");
-                                RegistryManager.Add("com.google.external-dependency-manager", $"https://github.com/google-unity/external-dependency-manager.git#{versionEdm}");
+                                RegistryManager.Add("com.google.external-dependency-manager",
+                                    $"https://github.com/google-unity/external-dependency-manager.git#{versionEdm}");
                             }
                             else
                             {
