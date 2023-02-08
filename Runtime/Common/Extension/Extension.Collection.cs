@@ -109,6 +109,15 @@ namespace Pancake
         public static bool IsNullOrEmpty<T>(this T[] source) { return source == null || source.Length == 0; }
 
         /// <summary>
+        /// Check null for <paramref name="source"/>
+        /// </summary>
+        /// <param name="source"></param>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
+        public static bool IsNullOrEmpty<TKey, TValue>(this Dictionary<TKey, TValue> source) { return source == null || source.Keys.Count == 0;}
+
+        /// <summary>
         /// Ensure <paramref name="source"/> have data for <paramref name="key"/>
         /// otherwise asign the value return form expression <paramref name="newValue"/> to <paramref name="key"/>
         /// </summary>
