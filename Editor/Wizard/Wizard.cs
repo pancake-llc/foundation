@@ -199,6 +199,7 @@ namespace Pancake.Editor
                 () =>
                 {
                     if (!enableAnalytic) return;
+                    if (repoTags.IsNullOrEmpty()) return;
                     int index = selectedTags[FIREBASE_ANALYTIC_PACKAGE];
                     Uniform.Dropdown(ref index, repoTags[FIREBASE_ANALYTIC_PACKAGE].ToArray(), GUILayout.Width(90));
                     selectedTags[FIREBASE_ANALYTIC_PACKAGE] = index;
@@ -211,6 +212,7 @@ namespace Pancake.Editor
                 () =>
                 {
                     if (!enableRemoteConfig) return;
+                    if (repoTags.IsNullOrEmpty()) return;
                     int index = selectedTags[FIREBASE_REMOTE_CONFIG_PACKAGE];
                     Uniform.Dropdown(ref index, repoTags[FIREBASE_REMOTE_CONFIG_PACKAGE].ToArray(), GUILayout.Width(90));
                     selectedTags[FIREBASE_REMOTE_CONFIG_PACKAGE] = index;
@@ -222,6 +224,7 @@ namespace Pancake.Editor
                 () =>
                 {
                     if (!enableCrashlytic) return;
+                    if (repoTags.IsNullOrEmpty()) return;
                     int index = selectedTags[FIREBASE_CRASHLYTIC_PACKAGE];
                     Uniform.Dropdown(ref index, repoTags[FIREBASE_CRASHLYTIC_PACKAGE].ToArray(), GUILayout.Width(90));
                     selectedTags[FIREBASE_CRASHLYTIC_PACKAGE] = index;
@@ -233,6 +236,7 @@ namespace Pancake.Editor
                 () =>
                 {
                     if (!enableCloudMessage) return;
+                    if (repoTags.IsNullOrEmpty()) return;
                     int index = selectedTags[FIREBASE_MESSAGE_PACKAGE];
                     Uniform.Dropdown(ref index, repoTags[FIREBASE_MESSAGE_PACKAGE].ToArray(), GUILayout.Width(90));
                     selectedTags[FIREBASE_MESSAGE_PACKAGE] = index;
@@ -247,6 +251,7 @@ namespace Pancake.Editor
                 () =>
                 {
                     if (!enableInAppReview) return;
+                    if (repoTags.IsNullOrEmpty()) return;
                     int index = selectedTags[IN_APP_REVIEW_PACKAGE];
                     Uniform.Dropdown(ref index, repoTags[IN_APP_REVIEW_PACKAGE].ToArray(), GUILayout.Width(90));
                     selectedTags[IN_APP_REVIEW_PACKAGE] = index;
