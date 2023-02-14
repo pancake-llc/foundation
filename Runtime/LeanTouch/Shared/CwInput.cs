@@ -1,4 +1,6 @@
-﻿#if ENABLE_INPUT_SYSTEM && PANCAKE_INPUTSYSTEM
+﻿#if PANCAKE_LEANTOUCH
+
+#if ENABLE_INPUT_SYSTEM && PANCAKE_INPUTSYSTEM
 #define USE_NEW_INPUT_SYSTEM
 using NewCode = UnityEngine.InputSystem.Key;
 #endif
@@ -335,3 +337,4 @@ namespace CW.Common
         }
     }
 }
+#endif

@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 using UnityEngine;
 using CW.Common;
 
@@ -101,4 +103,5 @@ namespace Lean.Common.Editor
         protected override void OnInspector() { base.OnInspector(); }
     }
 }
+#endif
 #endif

@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
@@ -492,4 +494,5 @@ namespace CW.Common
         protected virtual void OnInspector() { }
     }
 }
+#endif
 #endif

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#if PANCAKE_LEANTOUCH
+
+using System.Collections;
 using UnityEngine;
 
 namespace Lean.Common
@@ -95,4 +97,5 @@ namespace Lean.Common
         }
     }
 }
+#endif
 #endif

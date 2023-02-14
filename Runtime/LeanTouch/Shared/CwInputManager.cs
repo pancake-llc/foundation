@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
@@ -649,3 +651,4 @@ namespace CW.Common
         }
     }
 }
+#endif

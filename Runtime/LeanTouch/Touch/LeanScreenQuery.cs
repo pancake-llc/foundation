@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#if PANCAKE_LEANTOUCH
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using CW.Common;
@@ -468,4 +470,5 @@ namespace Lean.Common.Editor
         }
     }
 }
+#endif
 #endif

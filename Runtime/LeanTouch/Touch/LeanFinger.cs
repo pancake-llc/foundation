@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if PANCAKE_LEANTOUCH
+
+using UnityEngine;
 using System.Collections.Generic;
 using Lean.Common;
 using CW.Common;
@@ -400,3 +402,4 @@ namespace Lean.Touch
         }
     }
 }
+#endif

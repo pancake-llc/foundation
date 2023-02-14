@@ -1,5 +1,5 @@
-﻿// Some platforms may report incorrect finger ID data, or be too strict with how close a finger must be between taps
-// If you're developing on a platform or device like this, you can uncomment this to enable manual override of the ID.
+﻿#if PANCAKE_LEANTOUCH
+
 //#define LEAN_ALLOW_RECLAIM
 
 using UnityEngine;
@@ -1004,4 +1004,5 @@ namespace Lean.Touch.Editor
         }
     }
 }
+#endif
 #endif

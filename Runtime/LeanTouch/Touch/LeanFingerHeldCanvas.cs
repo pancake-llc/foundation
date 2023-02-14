@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 using UnityEngine;
 
 namespace Lean.Touch
@@ -34,4 +36,5 @@ namespace Lean.Touch.Editor
         protected override void OnInspector() { base.OnInspector(); }
     }
 }
+#endif
 #endif

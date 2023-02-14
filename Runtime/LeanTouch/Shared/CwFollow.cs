@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 using UnityEngine;
 
 namespace CW.Common
@@ -153,4 +155,5 @@ namespace CW.Common
         }
     }
 }
+#endif
 #endif

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if PANCAKE_LEANTOUCH
+
+using UnityEngine;
 
 namespace Lean.Touch
 {
@@ -8,3 +10,4 @@ namespace Lean.Touch
         void HandleDrop(GameObject droppedGameObject, LeanFinger finger);
     }
 }
+#endif

@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 using System.Collections.Generic;
 
 namespace Lean.Touch
@@ -127,3 +129,4 @@ namespace Lean.Touch
         }
     }
 }
+#endif

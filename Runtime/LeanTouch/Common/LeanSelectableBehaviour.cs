@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 using UnityEngine;
 
 namespace Lean.Common
@@ -77,3 +79,4 @@ namespace Lean.Common
         protected virtual void OnDeselected(LeanSelect select) { }
     }
 }
+#endif

@@ -1,2 +1,3 @@
-﻿// Remove
+﻿#if PANCAKE_LEANTOUCH
 
+#endif

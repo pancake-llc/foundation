@@ -1,3 +1,5 @@
+#if PANCAKE_LEANTOUCH
+
 using UnityEngine;
 
 namespace Lean.Touch
@@ -43,4 +45,5 @@ namespace Lean.Touch.Editor
         }
     }
 }
+#endif
 #endif
