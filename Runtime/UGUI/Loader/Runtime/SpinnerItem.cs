@@ -8,6 +8,7 @@ namespace Pancake.Loader
     public class SpinnerItem : MonoBehaviour
     {
 #if UNITY_EDITOR
+        [Range(0f, 1f)] public float alpha = 0.08f;
         [Header("RESOURCES")] public List<Image> foreground = new List<Image>();
         public List<Image> background = new List<Image>();
 
@@ -20,7 +21,7 @@ namespace Pancake.Loader
 
             foreach (var image in background)
             {
-                image.color = new Color(color.r, color.g, color.b, 0.08f);
+                image.color = new Color(color.r, color.g, color.b, alpha);
             }
         }
 #endif
