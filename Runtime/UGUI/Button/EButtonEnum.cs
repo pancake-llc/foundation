@@ -13,7 +13,9 @@ namespace Pancake.UI
         OnlyDoubleClick = 1,
 
         /// <summary>
+        /// (single click or long click)
         /// Execute button onClick event after a period of time
+        /// If onLongClick is already called then onClick will not be called again when you release your hand
         /// remove double click executed
         /// </summary>
         LongClick = 2,
@@ -29,7 +31,15 @@ namespace Pancake.UI
         /// use this if you want to make sure single click not execute before a double click
         /// the downside is that there is a delay when executing the single click (the delay is the double click register interval)
         /// </summary>
-        Delayed = 4
+        Delayed = 4,
+        
+        /// <summary>
+        /// (single click or hold)
+        /// Execute button onClick event as normal
+        /// If hold is already called then onClick will not be called again when you release your hand
+        /// remove double click executed
+        /// </summary>
+        Hold = 5
     }
 
     public enum EButtonMotion
