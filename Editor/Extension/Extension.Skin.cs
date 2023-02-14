@@ -38,16 +38,16 @@ namespace Pancake.Editor
 
         private static InEditor.ProjectSetting<UniformFoldoutState> FoldoutSettings { get; set; } = new InEditor.ProjectSetting<UniformFoldoutState>();
 
-        public static bool GetFoldoutState<T>(string name)
+        public static bool GetFoldoutState<T>(string name, bool defaultFoldout = true)
         {
             var key = $"{nameof(T)}_{name}";
-            return GetFoldoutState(key);
+            return GetFoldoutState(key, defaultFoldout);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool GetFoldoutState(string key)
+        public static bool GetFoldoutState(string key, bool defaultFoldout = true)
         {
-            if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, false);
+            if (!FoldoutSettings.Settings.ContainsKey(key)) FoldoutSettings.Settings.Add(key, defaultFoldout);
             return FoldoutSettings.Settings[key];
         }
 
@@ -58,7 +58,12 @@ namespace Pancake.Editor
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetFoldoutState(string key, bool state) { FoldoutSettings.Settings[key] = state; }
+        public static void SetFoldoutState(string key, bool state)
+        {
+            bool flag = FoldoutSettings.Settings[key] != state;
+            FoldoutSettings.Settings[key] = state;
+            if (flag) SaveFoldoutSetting();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LoadFoldoutSetting() { FoldoutSettings.LoadSetting(); }
