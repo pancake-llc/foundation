@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Pancake.OdinSerializer;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ namespace Pancake
 
         #region Internal Stuff
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Init()
         {
             if (isInitialized) return;
@@ -38,18 +40,21 @@ namespace Pancake
             Runtime.AddFocusCallback(OnApplicationFocus);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte[] Serialize<T>(T data)
         {
             byte[] bytes = SerializationUtility.SerializeValue(data, FORMAT);
             return bytes;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static T Deserialize<T>(byte[] bytes)
         {
             var data = SerializationUtility.DeserializeValue<T>(bytes, FORMAT);
             return data;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void GeneratePath() { path = Path.Combine(Application.persistentDataPath, $"masterdata_{profile}.data"); }
 
         private static void OnApplicationFocus(bool focus)
@@ -64,6 +69,7 @@ namespace Pancake
 
         #region Public API
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ChangeProfile(int value)
         {
             if (profile == value) return;
@@ -74,6 +80,7 @@ namespace Pancake
             Load();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Save()
         {
             OnSaveEvent?.Invoke();
@@ -82,6 +89,7 @@ namespace Pancake
             File.WriteAllBytes(path, bytes);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Load()
         {
             if (!path.FileExists())
@@ -94,6 +102,7 @@ namespace Pancake
             datas = Deserialize<Dictionary<string, DataSegment>>(bytes) ?? new Dictionary<string, DataSegment>(INIT_SIZE);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Load<T>(string key)
         {
             datas.TryGetValue(key, out var value);
@@ -101,6 +110,7 @@ namespace Pancake
             return Deserialize<T>(value.value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryLoad<T>(string key, out T data)
         {
             bool hasKey;
@@ -118,6 +128,7 @@ namespace Pancake
             return hasKey;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Save<T>(string key, T data)
         {
             if (datas.TryGetValue(key, out var value))
@@ -131,10 +142,13 @@ namespace Pancake
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasKey(string key) => datas.ContainsKey(key);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeleteKey(string key) => datas.Remove(key);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeleteAll() => datas.Clear();
 
         #endregion
