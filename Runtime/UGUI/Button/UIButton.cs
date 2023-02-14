@@ -53,12 +53,15 @@ namespace Pancake.UI
         [SerializeField] private MotionData motionData = new MotionData {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new MotionData {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
+        private CoroutineHandle _routineLongClick;
         private CoroutineHandle _routineHold;
         private CoroutineHandle _routineMultiple;
         private bool _clickedOnce; // marked as true after one click. (only check for double click)
-        private bool _holdDone; // marks as true after long click or hold up
+        private bool _longClickDone; // marks as true after long click or hold up
+        private bool _holdDone;
         private bool _holding;
         private float _doubleClickTimer; // calculate the time interval between two sequential clicks. (use for double click)
+        private float _longClickTimer; // calculate how long was the button pressed
         private float _holdTimer; // calculate how long was the button pressed
         private Vector2 _endValue;
         private bool _isCompletePhaseUp;
@@ -110,12 +113,12 @@ namespace Pancake.UI
             base.Reset();
             _doubleClickTimer = 0;
             doubleClickInterval = DOUBLE_CLICK_TIME_INTERVAL;
-            _holdTimer = 0;
+            _longClickTimer = 0;
             longClickInterval = LONG_CLICK_TIME_INTERVAL;
             delayDetectHold = DOUBLE_CLICK_TIME_INTERVAL;
             _clickedOnce = false;
+            _longClickDone = false;
             _holdDone = false;
-            _holding = false;
         }
 #endif
 
@@ -123,27 +126,15 @@ namespace Pancake.UI
         {
             base.OnDisable();
             Timing.KillCoroutines(_routineMultiple);
-            Timing.KillCoroutines(_routineHold);
+            Timing.KillCoroutines(_routineLongClick);
             interactable = true;
             _clickedOnce = false;
+            _longClickDone = false;
             _holdDone = false;
-            _holding = false;
             _doubleClickTimer = 0;
-            _holdTimer = 0;
+            _longClickTimer = 0;
             if (AffectObject != null) AffectObject.localScale = DefaultScale;
         }
-
-        #region Overrides of Selectable
-
-        public override void OnPointerExit(PointerEventData eventData)
-        {
-            if (IsRelease) return;
-            base.OnPointerExit(eventData);
-            IsPrevent = true;
-            OnPointerUp(eventData);
-        }
-
-        #endregion
 
         #region Overrides of Button
 
@@ -152,6 +143,7 @@ namespace Pancake.UI
             base.OnPointerDown(eventData);
             IsRelease = false;
             IsPrevent = false;
+            if (IsDetectLongCLick && interactable) RegisterLongClick();
             if (IsDetectHold && interactable) RegisterHold();
 
             RunMotionPointerDown();
@@ -163,8 +155,16 @@ namespace Pancake.UI
             base.OnPointerUp(eventData);
             IsRelease = true;
             onPointerUp.Invoke();
-            if (IsDetectHold) CancelHold();
-
+            if (IsDetectLongCLick) CancelLongClick();
+            if (IsDetectHold)
+            {
+                if (_holding)
+                {
+                    _holding = false;
+                    _holdDone = true;
+                }
+                CancelHold();
+            }
             RunMotionPointerUp();
         }
 
@@ -173,6 +173,24 @@ namespace Pancake.UI
             if (IsRelease && IsPrevent || !interactable) return;
 
             StartClick(eventData);
+        }
+        
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            if (IsRelease) return;
+            base.OnPointerExit(eventData);
+            IsPrevent = true;
+            if (IsDetectLongCLick) ResetLongClick();
+            if (IsDetectHold)
+            {
+                if (_holding)
+                {
+                    _holding = false;
+                    _holdDone = true;
+                }
+                ResetHold();
+            }
+            OnPointerUp(eventData);
         }
 
         /// <summary>
@@ -218,6 +236,12 @@ namespace Pancake.UI
 
         private void StartClick(PointerEventData eventData)
         {
+            if (IsDetectLongCLick && _longClickDone)
+            {
+                ResetLongClick();
+                return;
+            }
+            
             if (IsDetectHold && _holdDone)
             {
                 ResetHold();
@@ -295,13 +319,13 @@ namespace Pancake.UI
 
         #endregion
 
-        #region LongClick
+        #region long click
 
         /// <summary>
-        /// button is allow hold
+        /// button is allow long click
         /// </summary>
         /// <returns></returns>
-        private bool IsDetectHold => clickType == EButtonClickType.LongClick || clickType == EButtonClickType.Hold;
+        private bool IsDetectLongCLick => clickType == EButtonClickType.LongClick;
 
         /// <summary>
         /// waiting check long click done
@@ -309,23 +333,73 @@ namespace Pancake.UI
         /// <returns></returns>
         private IEnumerator<float> IeExcuteLongClick()
         {
-            while (_holdTimer < longClickInterval)
+            while (_longClickTimer < longClickInterval)
             {
-                if (ignoreTimeScale) _holdTimer += Time.unscaledDeltaTime;
-                else _holdTimer += Time.deltaTime;
+                if (ignoreTimeScale) _longClickTimer += Time.unscaledDeltaTime;
+                else _longClickTimer += Time.deltaTime;
                 yield return Timing.WaitForOneFrame;
             }
 
             ExecuteLongClick();
-            _holdDone = true;
+            _longClickDone = true;
         }
 
         /// <summary>
-        /// waiting check long click done
+        /// execute for long click button
+        /// </summary>
+        private void ExecuteLongClick()
+        {
+            if (!IsActive() || !IsInteractable() || !IsDetectLongCLick) return;
+            onLongClick.Invoke();
+        }
+
+        /// <summary>
+        /// reset
+        /// </summary>
+        private void ResetLongClick()
+        {
+            if (!IsDetectLongCLick) return;
+            _longClickDone = false;
+            _longClickTimer = 0;
+            Timing.KillCoroutines(_routineLongClick);
+        }
+
+        /// <summary>
+        /// register
+        /// </summary>
+        private void RegisterLongClick()
+        {
+            if (_longClickDone || !IsDetectLongCLick) return;
+            ResetLongClick();
+            _routineLongClick = Timing.RunCoroutine(IeExcuteLongClick());
+        }
+        
+        /// <summary>
+        /// reset long click and stop sheduler wait detect long click
+        /// </summary>
+        private void CancelLongClick()
+        {
+            if (_longClickDone || !IsDetectLongCLick) return;
+            ResetLongClick();
+        }
+
+        #endregion
+
+        #region hold
+
+        /// <summary>
+        /// button is allow hold
+        /// </summary>
+        /// <returns></returns>
+        private bool IsDetectHold => clickType == EButtonClickType.Hold;
+
+        /// <summary>
+        /// update hold
         /// </summary>
         /// <returns></returns>
         private IEnumerator<float> IeExcuteHold()
         {
+            _holding = false;
             yield return Timing.WaitForSeconds(delayDetectHold);
             _holding = true;
             while (true)
@@ -339,7 +413,7 @@ namespace Pancake.UI
         }
 
         /// <summary>
-        /// execute for long click button
+        /// execute hold
         /// </summary>
         private void ExecuteHold(float time)
         {
@@ -348,22 +422,13 @@ namespace Pancake.UI
         }
 
         /// <summary>
-        /// execute for long click button
-        /// </summary>
-        private void ExecuteLongClick()
-        {
-            if (!IsActive() || !IsInteractable() || !IsDetectHold) return;
-            onLongClick.Invoke();
-        }
-
-        /// <summary>
         /// reset
         /// </summary>
-        private void ResetHold(bool isDone = false)
+        private void ResetHold()
         {
             if (!IsDetectHold) return;
-            _holdTimer = 0;
             _holdDone = false;
+            _holdTimer = 0;
             Timing.KillCoroutines(_routineHold);
         }
 
@@ -372,29 +437,21 @@ namespace Pancake.UI
         /// </summary>
         private void RegisterHold()
         {
-            _holding = false;
             if (_holdDone || !IsDetectHold) return;
             ResetHold();
-            _routineHold = clickType switch
-            {
-                EButtonClickType.LongClick => Timing.RunCoroutine(IeExcuteLongClick()),
-                EButtonClickType.Hold => Timing.RunCoroutine(IeExcuteHold()),
-                _ => _routineHold
-            };
+            _routineHold = Timing.RunCoroutine(IeExcuteHold());
         }
-
+        
         /// <summary>
-        /// reset long click and stop sheduler wait detect long click
+        /// reset hold and stop sheduler wait detect hold
         /// </summary>
         private void CancelHold()
         {
             if (_holdDone || !IsDetectHold) return;
-            if (_holding) ResetHold(true);
-            else ResetHold();
+            ResetHold();
         }
 
         #endregion
-
         #endregion
 
         #region Motion
