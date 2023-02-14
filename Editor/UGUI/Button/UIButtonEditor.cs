@@ -9,19 +9,21 @@ namespace Pancake.Editor
     [CanEditMultipleObjects]
     public class UIButtonEditor : UnityEditor.UI.ButtonEditor
     {
-        protected const int DEFAULT_LABEL_WIDTH = 110;
+        protected const int DEFAULT_LABEL_WIDTH = 115;
         protected static readonly string[] ButtonMotion = {"Immediate", "Normal", "Uniform", "Late"};
-        public static readonly string[] ButtonTypeClick = {"OnlySingleClick", "OnlyDoubleClick", "LongClick", "Instant", "Delayed"};
+        public static readonly string[] ButtonTypeClick = {"OnlySingleClick", "OnlyDoubleClick", "LongClick", "Instant", "Delayed", "Hold"};
         private SerializedProperty _isMotion;
         private SerializedProperty _clickType;
         private SerializedProperty _onLongClick;
         private SerializedProperty _onDoubleClick;
         private SerializedProperty _onPointerUp;
+        private SerializedProperty _onHold;
         private SerializedProperty _isMotionUnableInteract;
         private SerializedProperty _isAffectToSelf;
         private SerializedProperty _allowMultipleClick;
         private SerializedProperty _timeDisableButton;
         private SerializedProperty _longClickInterval;
+        private SerializedProperty _delayDetectHold;
         private SerializedProperty _doubleClickInterval;
         private SerializedProperty _ignoreTimeScale;
         private SerializedProperty _affectObject;
@@ -45,9 +47,11 @@ namespace Pancake.Editor
             _onLongClick = serializedObject.FindProperty("onLongClick");
             _onDoubleClick = serializedObject.FindProperty("onDoubleClick");
             _onPointerUp = serializedObject.FindProperty("onPointerUp");
+            _onHold = serializedObject.FindProperty("onHold");
             _allowMultipleClick = serializedObject.FindProperty("allowMultipleClick");
             _timeDisableButton = serializedObject.FindProperty("timeDisableButton");
             _longClickInterval = serializedObject.FindProperty("longClickInterval");
+            _delayDetectHold = serializedObject.FindProperty("delayDetectHold");
             _doubleClickInterval = serializedObject.FindProperty("doubleClickInterval");
             _ignoreTimeScale = serializedObject.FindProperty("ignoreTimeScale");
             _isAffectToSelf = serializedObject.FindProperty("isAffectToSelf");
@@ -104,7 +108,7 @@ namespace Pancake.Editor
                     if (!_allowMultipleClick.boolValue)
                     {
                         EditorGUILayout.BeginHorizontal();
-                        GUILayout.Label(new GUIContent("  Duration(s)", "Second to trigger next click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                        GUILayout.Label(new GUIContent("  Duration(s)", "Number of seconds to trigger next click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                         _timeDisableButton.floatValue = EditorGUILayout.Slider(_timeDisableButton.floatValue, 0.05f, 1f);
                         EditorGUILayout.EndHorizontal();
                     }
@@ -113,7 +117,7 @@ namespace Pancake.Editor
                 }
                 case EButtonClickType.LongClick:
                     EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label(new GUIContent("  Duration(s)", "Second to trigger long click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    GUILayout.Label(new GUIContent("  Duration(s)", "Number of seconds to trigger long click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                     _longClickInterval.floatValue = EditorGUILayout.Slider(_longClickInterval.floatValue, 0.1f, 5f);
                     EditorGUILayout.EndHorizontal();
                     break;
@@ -121,10 +125,15 @@ namespace Pancake.Editor
                 case EButtonClickType.Instant:
                 case EButtonClickType.Delayed:
                     EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label(new GUIContent("  Duration(s)", "Second to trigger double click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    GUILayout.Label(new GUIContent("  Duration(s)", "Number of seconds to trigger double click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                     _doubleClickInterval.floatValue = EditorGUILayout.Slider(_doubleClickInterval.floatValue, 0.05f, 1f);
                     EditorGUILayout.EndHorizontal();
-
+                    break;
+                case EButtonClickType.Hold:
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label(new GUIContent("  Delay Detect(s)", "Number of seconds to detect hold"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    _delayDetectHold.floatValue = EditorGUILayout.Slider(_delayDetectHold.floatValue, 0.2f, 1f);
+                    EditorGUILayout.EndHorizontal();
                     break;
             }
 
@@ -232,12 +241,14 @@ namespace Pancake.Editor
                     Uniform.SpaceOneLine();
                 }
             }
-
-
+            
             switch ((EButtonClickType) _clickType.enumValueIndex)
             {
                 case EButtonClickType.LongClick:
                     EditorGUILayout.PropertyField(_onLongClick);
+                    break;
+                case EButtonClickType.Hold:
+                    EditorGUILayout.PropertyField(_onHold);
                     break;
                 case EButtonClickType.OnlyDoubleClick:
                 case EButtonClickType.Instant:
@@ -246,10 +257,10 @@ namespace Pancake.Editor
                     break;
             }
 
-            EditorGUILayout.PropertyField(_onPointerUp);
             Uniform.HelpBox(
                 "In case you move the mouse pointer away from the button while holding down the OnPointerUp event is still called. So be careful when using it",
                 MessageType.Info);
+            EditorGUILayout.PropertyField(_onPointerUp);
 
             EditorGUILayout.Space();
             Repaint();
