@@ -67,7 +67,7 @@ namespace Pancake.Editor
             _durationUpUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("durationUp");
             _isMotionUnableInteract = serializedObject.FindProperty("isMotionUnableInteract");
             _interpolatorUp = serializedObject.FindProperty("motionData").FindPropertyRelative("interpolatorUp");
-            _interpolatorDown = serializedObject.FindProperty("motionData").FindPropertyRelative("interpolatorDown");     
+            _interpolatorDown = serializedObject.FindProperty("motionData").FindPropertyRelative("interpolatorDown");
             _interpolatorUpInteract = serializedObject.FindProperty("motionData").FindPropertyRelative("interpolatorUp");
             _interpolatorDownInteract = serializedObject.FindProperty("motionData").FindPropertyRelative("interpolatorDown");
         }
@@ -166,7 +166,6 @@ namespace Pancake.Editor
                 GUILayout.Label("  Scale(%)", GUILayout.Width(DEFAULT_LABEL_WIDTH - 50));
                 GUILayout.FlexibleSpace();
                 _scale.vector2Value = EditorGUILayout.Vector2Field("", _scale.vector2Value);
-
                 EditorGUILayout.EndHorizontal();
 
                 switch ((EButtonMotion) _motion.enumValueIndex)
@@ -210,6 +209,7 @@ namespace Pancake.Editor
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Label("  Scale(%)", GUILayout.Width(DEFAULT_LABEL_WIDTH - 50));
+                    GUILayout.FlexibleSpace();
                     _scaleUnableInteract.vector2Value = EditorGUILayout.Vector2Field("", _scaleUnableInteract.vector2Value);
                     EditorGUILayout.EndHorizontal();
 
@@ -229,6 +229,7 @@ namespace Pancake.Editor
                             EditorGUILayout.EndHorizontal();
                             break;
                     }
+
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Label(new GUIContent("  Interpolator Down"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                     EditorGUILayout.PropertyField(_interpolatorDownInteract, new GUIContent(""));
@@ -237,11 +238,11 @@ namespace Pancake.Editor
                     GUILayout.Label(new GUIContent("  Interpolator Up"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                     EditorGUILayout.PropertyField(_interpolatorUpInteract, new GUIContent(""));
                     EditorGUILayout.EndHorizontal();
-                    
+
                     Uniform.SpaceOneLine();
                 }
             }
-            
+
             switch ((EButtonClickType) _clickType.enumValueIndex)
             {
                 case EButtonClickType.LongClick:
@@ -257,9 +258,11 @@ namespace Pancake.Editor
                     break;
             }
 
+            Uniform.SpaceOneLine();
             Uniform.HelpBox(
                 "In case you move the mouse pointer away from the button while holding down the OnPointerUp event is still called. So be careful when using it",
                 MessageType.Info);
+            Uniform.SpaceHalfLine();
             EditorGUILayout.PropertyField(_onPointerUp);
 
             EditorGUILayout.Space();
