@@ -25,6 +25,7 @@ namespace Pancake.Editor
         private static bool enableCrashlytic;
         private static bool enableCloudMessage;
         private static bool enableInAppReview;
+        private static bool enableLeanTouch;
         private static bool enable = true;
         private static Dictionary<string, List<string>> repoTags;
         private static Dictionary<string, int> selectedTags;
@@ -109,6 +110,7 @@ namespace Pancake.Editor
             enableGam = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_GAM", group);
             enableNotification = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_NOTIFICATION", group);
             enablePlayfab = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_PLAYFAB", group);
+            enableLeanTouch = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_LEANTOUCH", group);
             enableAddressable = RegistryManager.IsInstalled("com.unity.addressables").Item1;
             enableUsingAddressableForPopup = InEditor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADDRESSABLE_POPUP", group);
             var analyticPackage = RegistryManager.IsInstalled(FIREBASE_ANALYTIC_PACKAGE);
@@ -184,6 +186,7 @@ namespace Pancake.Editor
 
             Uniform.Toggle(ref enablePlayfab, "Playfab", 240, highlight: true);
             Uniform.Toggle(ref enableGam, "Game Base Flow", 240, highlight: true);
+            Uniform.Toggle(ref enableLeanTouch, "Lean Touch", 240, highlight: true);
 
             Uniform.SpaceThreeLine();
             Uniform.SpaceThreeLine();
@@ -349,6 +352,9 @@ namespace Pancake.Editor
 
                             if (enableGam) InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_GAM");
                             else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_GAM");
+                            
+                            if (enableLeanTouch) InEditor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_LEANTOUCH");
+                            else InEditor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_LEANTOUCH");
 
                             if (enableNotification)
                             {
