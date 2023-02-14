@@ -14,6 +14,34 @@ namespace Pancake
 
     public static partial class C
     {
+        public static T GetOrAddComponent<T>(GameObject gameObject, bool recordUndo = true) where T : Component
+        {
+            if (gameObject != null)
+            {
+                var component = gameObject.GetComponent<T>();
+                if (component == null) component = AddComponent<T>(gameObject, recordUndo);
+                return component;
+            }
+
+            return null;
+        }
+
+        public static T AddComponent<T>(GameObject gameObject, bool recordUndo = true) where T : Component
+        {
+            if (gameObject != null)
+            {
+#if UNITY_EDITOR
+                if (Application.isPlaying) return gameObject.AddComponent<T>();
+                if (recordUndo) return UnityEditor.Undo.AddComponent<T>(gameObject);
+                return gameObject.AddComponent<T>();
+#else
+                return gameObject.AddComponent<T>();
+#endif
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// add blank button
         /// </summary>
@@ -124,6 +152,23 @@ namespace Pancake
             return instance;
         }
 
+        // Check is component is active and enable
+        public static bool IsEnabled(this Behaviour behaviour)
+        {
+            return behaviour != null && behaviour.isActiveAndEnabled;
+        }
+        
+        /// <summary>
+        /// add blank button
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        internal static UnityEngine.UI.Button AddBlankButtonComponent(this GameObject target)
+        {
+            var button = target.AddComponent<UnityEngine.UI.Button>();
+            button.transition = UnityEngine.UI.Selectable.Transition.None;
+            return button;
+        }
 
         #region field info
 

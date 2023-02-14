@@ -59,6 +59,16 @@ namespace Pancake
                 : new Vector4((float) (1.0 - fpn), (float) fpn, (float) (rf - rn), (float) rn);
         }
 
+        public static Camera GetCamera(Camera camera, GameObject gameObject = null)
+        {
+            if (camera == null)
+            {
+                if (gameObject != null) camera = gameObject.GetComponent<Camera>();
+                if (camera == null) camera = Camera.main;
+            }
+
+            return camera;
+        }
 
         public static void AddListener(this EventTrigger eventTrigger, EventTriggerType type, UnityAction<BaseEventData> callback)
         {
