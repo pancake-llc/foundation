@@ -1,3 +1,0 @@
-﻿#if PANCAKE_LEANTOUCH
-
-#endif
