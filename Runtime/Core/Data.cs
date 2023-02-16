@@ -69,6 +69,8 @@ namespace Pancake
 
         #region Public API
 
+        public static bool IsInitialized => isInitialized;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ChangeProfile(int value)
         {
