@@ -9,7 +9,7 @@ namespace Pancake.Editor
 
         public static bool MustDrawWithUnity(Property property)
         {
-            if (property.FieldType == typeof(GUIStyle))
+            if (property.FieldType == typeof(GUIStyle) || property.FieldType == typeof(RectOffset))
             {
                 return true;
             }
