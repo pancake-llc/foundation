@@ -24,7 +24,16 @@ namespace Pancake.Editor.Finder
         public bool WillRepaint { get; set; }
 
         private static InEditor.UserSetting<FinderCache> cache;
-        internal static InEditor.UserSetting<FinderSetting> Setting { get; set; } = new InEditor.UserSetting<FinderSetting>();
+        private static InEditor.UserSetting<FinderSetting> setting;
+
+        internal static InEditor.UserSetting<FinderSetting> Setting
+        {
+            get
+            {
+                if (setting == null) setting = new InEditor.UserSetting<FinderSetting>();
+                return setting;
+            }
+        }
 
         internal static InEditor.UserSetting<FinderCache> Cache
         {
