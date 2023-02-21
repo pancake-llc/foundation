@@ -43,6 +43,7 @@ namespace Pancake.Monetization.Editor
                     "General data protection regulation \nApp requires user consent before these events can be sent, you can delay app measurement until you explicitly initialize the Mobile Ads SDK or load an ad."));
 
             public static Property enableMultipleDex = new Property(null, new GUIContent("Multiple Dex"));
+            public static Property hideAppOpenAdStartup = new Property(null, new GUIContent("Hide AppOpenAd Startup", "Hide App Open Ad When Startup"));
             public static Property currentNetwork = new Property(null, new GUIContent("Current Network", "Current network use show ad"));
         }
 
@@ -140,6 +141,7 @@ namespace Pancake.Monetization.Editor
             AdProperties.enableGDPR.property = AdProperties.main.FindPropertyRelative("enableGDPR");
             AdProperties.privacyPolicyUrl.property = AdProperties.main.FindPropertyRelative("privacyPolicyUrl");
             AdProperties.enableMultipleDex.property = AdProperties.main.FindPropertyRelative("enableMultipleDex");
+            AdProperties.hideAppOpenAdStartup.property = AdProperties.main.FindPropertyRelative("hideAppOpenAdStartup");
             AdProperties.currentNetwork.property = AdProperties.main.FindPropertyRelative("currentNetwork");
 
             AdmobProperties.main = serializedObject.FindProperty("admobSettings");
@@ -193,6 +195,7 @@ namespace Pancake.Monetization.Editor
                     EditorGUILayout.PropertyField(AdProperties.autoInit.property, AdProperties.autoInit.content);
                     EditorGUILayout.PropertyField(AdProperties.enableGDPR.property, AdProperties.enableGDPR.content);
                     EditorGUILayout.PropertyField(AdProperties.enableMultipleDex.property, AdProperties.enableMultipleDex.content);
+                    EditorGUILayout.PropertyField(AdProperties.hideAppOpenAdStartup.property, AdProperties.hideAppOpenAdStartup.content);
 
                     EditorGUILayout.PropertyField(AdProperties.currentNetwork.property, AdProperties.currentNetwork.content);
 

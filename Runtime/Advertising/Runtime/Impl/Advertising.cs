@@ -61,6 +61,7 @@ namespace Pancake.Monetization
         private static float lastTimeLoadRewardedTimestamp = DEFAULT_TIMESTAMP;
         private static float lastTimeLoadRewardedInterstitialTimestamp = DEFAULT_TIMESTAMP;
         private static float lastTimeLoadAppOpenTimestamp = DEFAULT_TIMESTAMP;
+        private static bool flagStartupOpenAd;
         private const string REMOVE_ADS_KEY = "remove_ads";
         private const string APP_OPEN_ADS_KEY = "flag_app_open_ads";
         private const float DEFAULT_TIMESTAMP = -1000;
@@ -126,6 +127,7 @@ namespace Pancake.Monetization
             else
             {
                 Instance = this;
+                flagStartupOpenAd = true;
             }
         }
 
@@ -456,6 +458,14 @@ namespace Pancake.Monetization
         private static void ShowAppOpenAd(IAdClient client)
         {
             if (IsAdRemoved || IsAppOpenRemoved || !Application.isMobilePlatform) return;
+            if (AdSettings.AdCommonSettings.HideAppOpenAdWhenStartup)
+            {
+                if (flagStartupOpenAd)
+                {
+                    flagStartupOpenAd = false;
+                    return;
+                }
+            }
             client.ShowAppOpenAd();
         }
 
