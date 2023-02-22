@@ -317,7 +317,13 @@ namespace Pancake.Editor
 
                                     if (_property.TryGetSerializedProperty(out var x))
                                     {
-                                        x.GetArrayElementAtIndex(x.arraySize - 1).objectReferenceValue = objectDrop;
+                                        var element = x.GetArrayElementAtIndex(x.arraySize - 1);
+                                        element.objectReferenceValue = objectDrop;
+                                        if (element.objectReferenceValue == null)
+                                        {
+                                            Debug.LogWarning($"[Drag and Drop]: Object {objectDrop.name} has a data type that doesn't match with type of List <{_property.ArrayElementType}>");
+                                            x.RemoveElement(x.arraySize - 1);
+                                        }
                                         _property.NotifyValueChanged();
                                     }
                                 }
