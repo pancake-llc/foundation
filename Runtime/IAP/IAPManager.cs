@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Services.Core;
+using Unity.Services.Core.Environments;
 #if PANCAKE_ADS
 using Pancake.Monetization;
 #endif
@@ -36,14 +38,16 @@ namespace Pancake.IAP
         public List<IAPData> Skus { get; set; } = new List<IAPData>();
         public bool IsInitialized { get; set; }
 
-        public static void Init()
+        public static async void Init()
         {
             if (instance != null) return;
 
             if (Application.isPlaying)
             {
+                var options = new InitializationOptions().SetEnvironmentName("production");
                 var obj = new GameObject("IAPManager") {hideFlags = HideFlags.HideInHierarchy};
                 instance = obj.AddComponent<IAPManager>();
+                await UnityServices.InitializeAsync(options);
                 instance.InitImpl(IAPSettings.SkusData);
                 DontDestroyOnLoad(obj);
             }
