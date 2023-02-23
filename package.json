@@ -1,9 +1,9 @@
 {
   "name": "com.pancake.heart",
   "displayName": "Heart",
-  "description": "The heart of the world tree",
+  "description": "The heart of the world tree, use for make game in Unity3D",
   "version": "2.0.0-pre",
-  "unity": "2021.3",
+  "unity": "2022.2",
   "category": "core",
   "author": {
     "name": "yenmoc",
@@ -11,7 +11,9 @@
     "url": "https://github.com/yenmoc"
   },
   "license": "MIT",
-  "keywords": [ "unity" ],
+  "keywords": [
+    "unity"
+  ],
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.0.2",
     "com.unity.2d.sprite": "1.0.0"
@@ -23,17 +25,5 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@pancake-llc"
-  },
-  "samples": [
-  {
-    "displayName": "Leaderboard",
-    "description": "Demo leaderboard using PlayFab",
-    "path": "Samples~/Leaderboard"
-  },
-  {
-    "displayName": "Resources",
-    "description": "Resources using for heart package",
-    "path": "Samples~/EssentialResources"
   }
-]
 }
