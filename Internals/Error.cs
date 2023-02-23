@@ -6,7 +6,7 @@ namespace Pancake
     public static class Error
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowArgumentNullException<T>(this T value, string paramName) where T : class
+        internal static void ThrowArgumentNullException<T>(this T value, string paramName) where T : class
         {
             if (value == null) ThrowArgumentNullExceptionCore(paramName);
         }
@@ -15,25 +15,25 @@ namespace Pancake
         private static void ThrowArgumentNullExceptionCore(string paramName) { throw new ArgumentNullException(paramName); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Exception ArgumentOutOfRange(string paramName) { return new ArgumentOutOfRangeException(paramName); }
+        internal static Exception ArgumentOutOfRange(string paramName) { return new ArgumentOutOfRangeException(paramName); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Exception NoElements() { return new InvalidOperationException("Source sequence doesn't contain any elements."); }
+        internal static Exception NoElements() { return new InvalidOperationException("Source sequence doesn't contain any elements."); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Exception MoreThanOneElement() { return new InvalidOperationException("Source sequence contains more than one element."); }
+        internal static Exception MoreThanOneElement() { return new InvalidOperationException("Source sequence contains more than one element."); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowArgumentException(string message) { throw new ArgumentException(message); }
+        internal static void ThrowArgumentException(string message) { throw new ArgumentException(message); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowNotYetCompleted() { throw new InvalidOperationException("Not yet completed."); }
+        internal static void ThrowNotYetCompleted() { throw new InvalidOperationException("Not yet completed."); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T ThrowNotYetCompleted<T>() { throw new InvalidOperationException("Not yet completed."); }
+        internal static T ThrowNotYetCompleted<T>() { throw new InvalidOperationException("Not yet completed."); }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowWhenContinuationIsAlreadyRegistered<T>(T continuationField) where T : class
+        internal static void ThrowWhenContinuationIsAlreadyRegistered<T>(T continuationField) where T : class
         {
             if (continuationField != null) ThrowInvalidOperationExceptionCore("continuation is already registered.");
         }
@@ -42,21 +42,21 @@ namespace Pancake
         private static void ThrowInvalidOperationExceptionCore(string message) { throw new InvalidOperationException(message); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowOperationCanceledException() { throw new OperationCanceledException(); }
+        internal static void ThrowOperationCanceledException() { throw new OperationCanceledException(); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static Exception ArgumentNull(string s) { return new ArgumentNullException(s); }
+        internal static Exception ArgumentNull(string s) { return new ArgumentNullException(s); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static Exception MoreThanOneMatch() { return new InvalidOperationException("Sequence contains more than one matching element"); }
+        internal static Exception MoreThanOneMatch() { return new InvalidOperationException("Sequence contains more than one matching element"); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static Exception NoMatch() { return new InvalidOperationException("Sequence contains no matching element"); }
+        internal static Exception NoMatch() { return new InvalidOperationException("Sequence contains no matching element"); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static Exception NotFound(string key) { return new Exception($"No data saved with key: {key}"); }
+        internal static Exception NotFound(string key) { return new Exception($"No data saved with key: {key}"); }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static Exception NotSupported() { return new NotSupportedException(); }
+        internal static Exception NotSupported() { return new NotSupportedException(); }
     }
 }
