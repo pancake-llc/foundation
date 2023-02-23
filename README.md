@@ -4,9 +4,9 @@
 
 # Environment
 
-- unity 2022.2.0f1
+- unity 2022.2.7f1
 - scriptingBackend : IL2CPP
-- apiCompatibilityLevel : .NetFramework
+- apiCompatibilityLevel : .NET Standard 2.1
 
 # How To Install
 

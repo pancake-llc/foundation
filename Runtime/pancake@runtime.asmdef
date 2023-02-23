@@ -1,0 +1,16 @@
+{
+    "name": "pancake@runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9cc0d35f2f404de4c98b658ad7bc300e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
