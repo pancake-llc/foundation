@@ -1,6 +1,4 @@
-﻿
-
-namespace Pancake.Tween
+﻿namespace Pancake.Tween
 {
     /// <summary>
     /// Predefined Interpolators
@@ -17,11 +15,11 @@ namespace Pancake.Tween
         /// <returns> Interpolation result </returns>
         public static float Linear(float t) { return t; }
 
-        public static float InSine(float t) { return 1f - M.Sin(((1f - t) * M.PI) / 2f); }
+        public static float InSine(float t) { return 1f - (((1f - t) * Math.PI) / 2f).Sin(); }
 
-        public static float OutSine(float t) { return M.Sin((t * M.PI) / 2f); }
+        public static float OutSine(float t) { return ((t * Math.PI) / 2f).Sin(); }
 
-        public static float InOutSine(float t) { return 0.5f * (1f - M.Sin(M.PI * (0.5f - t))); }
+        public static float InOutSine(float t) { return 0.5f * (1f - (Math.PI * (0.5f - t)).Sin()); }
 
         /// <summary>
         /// Speed up interpolation (a.k.a Accelerate)
@@ -84,38 +82,38 @@ namespace Pancake.Tween
             return 0.5f * ((t -= 2f) * t * t * t * t + 2f);
         }
 
-        public static float InExpo(float t) { return M.Approximately(0f, t) ? 0f : M.Pow(1024f, t - 1f); }
+        public static float InExpo(float t) { return t.Approximately(0f) ? 0f : 1024f.Pow(t - 1f); }
 
-        public static float OutExpo(float t) { return M.Approximately(1f, t) ? 1f : 1f - M.Pow(2f, -10f * t); }
+        public static float OutExpo(float t) { return t.Approximately(1f) ? 1f : 1f - 2f.Pow(-10f * t); }
 
         public static float InOutExpo(float t)
         {
-            if (M.Approximately(0f, t) || M.Approximately(1f, t)) return t;
+            if (t.Approximately(0f) || t.Approximately(1f)) return t;
 
             if ((t *= 2) < 1)
             {
-                return 0.5f * M.Pow(1024, t - 1);
+                return 0.5f * Math.Pow(1024, t - 1);
             }
 
-            return 0.5f * (-M.Pow(2, -10 * (t - 1)) + 2);
+            return 0.5f * (-Math.Pow(2, -10 * (t - 1)) + 2);
         }
 
-        public static float InCirc(float t) { return 1f - M.Sqrt(1f - t * t); }
-        public static float OutCirc(float t) { return M.Sqrt(1f - --t * t); }
+        public static float InCirc(float t) { return 1f - (1f - t * t).Sqrt(); }
+        public static float OutCirc(float t) { return (1f - --t * t).Sqrt(); }
 
         public static float InOutCirc(float t)
         {
             if ((t *= 2f) < 1f)
             {
-                return -0.5f * (M.Sqrt(1f - t * t) - 1f);
+                return -0.5f * ((1f - t * t).Sqrt() - 1f);
             }
 
-            return 0.5f * (M.Sqrt(1f - (t -= 2f) * t) + 1f);
+            return 0.5f * ((1f - (t -= 2f) * t).Sqrt() + 1f);
         }
 
-        public static float InBack(float t) { return M.Approximately(1f, t) ? 1f : t * t * ((s + 1f) * t - s); }
+        public static float InBack(float t) { return t.Approximately(1f) ? 1f : t * t * ((s + 1f) * t - s); }
 
-        public static float OutBack(float t) { return M.Approximately(0f, t) ? 0f : --t * t * ((s + 1f) * t + s) + 1f; }
+        public static float OutBack(float t) { return t.Approximately(0f) ? 0f : --t * t * ((s + 1f) * t + s) + 1f; }
 
         public static float InOutBack(float t)
         {
@@ -129,28 +127,28 @@ namespace Pancake.Tween
 
         public static float InElastic(float t)
         {
-            if (M.Approximately(0f, t) || M.Approximately(1f, t)) return t;
-            return -M.Pow(2f, 10f * (t - 1)) * M.Sin((t - 1.1f) * 5f * M.PI);
+            if (t.Approximately(0f) || t.Approximately(1f)) return t;
+            return -2f.Pow(10f * (t - 1)) * ((t - 1.1f) * 5f * Math.PI).Sin();
         }
 
         public static float OutElastic(float t)
         {
-            if (M.Approximately(0f, t) || M.Approximately(1f, t)) return t;
-            return M.Pow(2f, -10f * t) * M.Sin((t - 0.1f) * 5f * M.PI) + 1f;
+            if (t.Approximately(0f) || t.Approximately(1f)) return t;
+            return 2f.Pow(-10f * t) * ((t - 0.1f) * 5f * Math.PI).Sin() + 1f;
         }
 
         public static float InOutElastic(float t)
         {
-            if (M.Approximately(0f, t) || M.Approximately(1f, t)) return t;
+            if (t.Approximately(0f) || t.Approximately(1f)) return t;
 
             t *= 2;
 
             if (t < 1)
             {
-                return -0.5f * M.Pow(2f, 10f * (t - 1f)) * M.Sin((t - 1.1f) * 5f * M.PI);
+                return -0.5f * 2f.Pow(10f * (t - 1f)) * ((t - 1.1f) * 5f * Math.PI).Sin();
             }
 
-            return 0.5f * M.Pow(2f, -10f * (t - 1f)) * M.Sin((t - 1.1f) * 5f * M.PI) + 1f;
+            return 0.5f * 2f.Pow(-10f * (t - 1f)) * ((t - 1.1f) * 5f * Math.PI).Sin() + 1f;
         }
 
         public static float InBounce(float t) { return 1f - OutBounce(1f - t); }
@@ -388,6 +386,6 @@ namespace Pancake.Tween
         /// </summary>
         /// <param name="t"> Unitized time, i.e. a value in the range [0, 1] </param>
         /// <returns> Interpolation result </returns>
-        public static float Sine(float t) { return M.Sin((t + t + 1.5f) * M.PI) * 0.5f + 0.5f; }
+        public static float Sine(float t) { return ((t + t + 1.5f) * Math.PI).Sin() * 0.5f + 0.5f; }
     } // struct Interpolator
 } // namespace Pancake.Core

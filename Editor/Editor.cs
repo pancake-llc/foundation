@@ -30,7 +30,7 @@ namespace PancakeEditor
             if (t.Length == 0) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t;
         }
-        
+
         /// <summary>
         /// Returns the exact path used for the current environment
         /// In use under upm package => return upm path
@@ -52,7 +52,32 @@ namespace PancakeEditor
             var normalPath = $"Assets/heart/{fullRelativePath}";
             return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
         }
-        
+
+        /// <summary>
+        /// thanks @JoshuaMcKenzie and @Edvard-D
+        /// remove all empty object reference elements
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static int RemoveEmptyArrayElements(this SerializedProperty list)
+        {
+            var elementsRemoved = 0;
+            if (list == null) return elementsRemoved;
+
+            for (int i = list.arraySize - 1; i >= 0; i--)
+            {
+                var element = list.GetArrayElementAtIndex(i);
+                if (element.propertyType != SerializedPropertyType.ObjectReference) continue;
+                if (list.GetArrayElementAtIndex(i).objectReferenceValue == null)
+                {
+                    list.RemoveElement(i);
+                    elementsRemoved++;
+                }
+            }
+
+            return elementsRemoved;
+        }
+
         /// <summary>
         /// thanks @JoshuaMcKenzie
         /// </summary>
@@ -60,18 +85,91 @@ namespace PancakeEditor
         /// <param name="index"></param>
         public static void RemoveElement(this SerializedProperty list, int index)
         {
-            if (list == null) throw Error.ArgumentNullException("list");
+            if (list == null) Error.ThrowArgumentNull("list");
 
-            if (!list.isArray) throw Error.arg
-                throw new ArgumentException("Property is not an array");
+            if (!list.isArray) Error.ThrowArgumentException("Property is not an array");
 
-            if (index < 0 || index >= list.arraySize)
-                throw new IndexOutOfRangeException();
+            if (index < 0 || index >= list.arraySize) Error.ThrowArgumentOutOfRange("list");
 
             list.GetArrayElementAtIndex(index).SetPropertyValue(null);
             list.DeleteArrayElementAtIndex(index);
 
             list.serializedObject.ApplyModifiedProperties();
+        }
+
+        /// <summary>
+        /// thanks @JoshuaMcKenzie
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
+        public static void SetPropertyValue(this SerializedProperty property, object value)
+        {
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.AnimationCurve:
+                    property.animationCurveValue = value as AnimationCurve;
+                    break;
+
+                case SerializedPropertyType.ArraySize:
+                    property.intValue = System.Convert.ToInt32(value);
+                    break;
+
+                case SerializedPropertyType.Boolean:
+                    property.boolValue = System.Convert.ToBoolean(value);
+                    break;
+
+                case SerializedPropertyType.Bounds:
+                    property.boundsValue = (Bounds?) value ?? new Bounds();
+                    break;
+
+                case SerializedPropertyType.Character:
+                    property.intValue = System.Convert.ToInt32(value);
+                    break;
+
+                case SerializedPropertyType.Color:
+                    property.colorValue = (Color?) value ?? new Color();
+                    break;
+
+                case SerializedPropertyType.Float:
+                    property.floatValue = System.Convert.ToSingle(value);
+                    break;
+
+                case SerializedPropertyType.Integer:
+                    property.intValue = System.Convert.ToInt32(value);
+                    break;
+
+                case SerializedPropertyType.LayerMask:
+                    property.intValue = (value as LayerMask?)?.value ?? System.Convert.ToInt32(value);
+                    break;
+
+                case SerializedPropertyType.ObjectReference:
+                    property.objectReferenceValue = value as UnityEngine.Object;
+                    break;
+
+                case SerializedPropertyType.Quaternion:
+                    property.quaternionValue = (Quaternion?) value ?? Quaternion.identity;
+                    break;
+
+                case SerializedPropertyType.Rect:
+                    property.rectValue = (Rect?) value ?? new Rect();
+                    break;
+
+                case SerializedPropertyType.String:
+                    property.stringValue = value as string;
+                    break;
+
+                case SerializedPropertyType.Vector2:
+                    property.vector2Value = (Vector2?) value ?? Vector2.zero;
+                    break;
+
+                case SerializedPropertyType.Vector3:
+                    property.vector3Value = (Vector3?) value ?? Vector3.zero;
+                    break;
+
+                case SerializedPropertyType.Vector4:
+                    property.vector4Value = (Vector4?) value ?? Vector4.zero;
+                    break;
+            }
         }
     }
 }

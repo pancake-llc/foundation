@@ -205,7 +205,7 @@ namespace Pancake.Tween
         {
             TimeMode = timeMode;
             OnTimeModeChange(timeMode);
-            if (M.Approximately(TimeScale, timeScale)) return this;
+            if (TimeScale.Approximately(timeScale)) return this;
             TimeScale = timeScale;
             OnTimeScaleChange(timeScale);
             OnTimeScaleChangedCallback?.Invoke(timeScale);
@@ -250,7 +250,7 @@ namespace Pancake.Tween
 
         public ITween SetLoops(int loops, ResetMode resetMode)
         {
-            Loops = M.Max(loops, -1);
+            Loops = loops.Max(-1);
             _loopsRemaining = Loops;
             LoopResetMode = resetMode;
             return this;
