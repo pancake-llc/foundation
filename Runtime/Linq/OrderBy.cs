@@ -17,12 +17,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (keySelector == null)
             {
-                throw Error.ArgumentNull("keySelector");
+                Error.ThrowArgumentNull("keySelector");
             }
 
             if (comparer == null)
@@ -53,12 +53,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (keySelector == null)
             {
-                throw Error.ArgumentNull("keySelector");
+                Error.ThrowArgumentNull("keySelector");
             }
 
             if (comparer == null)
@@ -92,12 +92,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (keySelector == null)
             {
-                throw Error.ArgumentNull("keySelector");
+                Error.ThrowArgumentNull("keySelector");
             }
 
             if (comparer == null)
@@ -123,12 +123,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (keySelector == null)
             {
-                throw Error.ArgumentNull("keySelector");
+                Error.ThrowArgumentNull("keySelector");
             }
 
             if (comparer == null)

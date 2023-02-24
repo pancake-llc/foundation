@@ -16,12 +16,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             long sum = 0;
@@ -47,17 +47,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long sum = 0;
@@ -81,12 +81,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             long sum = 0;
@@ -113,17 +113,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long sum = 0;
@@ -147,12 +147,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             double sum = 0;
@@ -176,17 +176,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double sum = 0;
@@ -208,12 +208,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             double sum = 0;
@@ -237,17 +237,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double sum = 0;
@@ -269,12 +269,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             decimal sum = 0;
@@ -298,17 +298,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
 
@@ -334,12 +334,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             long sum = 0;
@@ -365,17 +365,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long sum = 0;
@@ -399,12 +399,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             long sum = 0;
@@ -431,17 +431,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long sum = 0;
@@ -465,12 +465,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             double sum = 0;
@@ -494,17 +494,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double sum = 0;
@@ -526,12 +526,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             double sum = 0;
@@ -555,17 +555,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double sum = 0;
@@ -587,12 +587,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             decimal sum = 0;
@@ -616,17 +616,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
 
@@ -652,12 +652,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             long sum = 0;
@@ -683,17 +683,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long sum = 0;
@@ -717,12 +717,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             long sum = 0;
@@ -748,17 +748,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long sum = 0;
@@ -782,12 +782,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             double sum = 0;
@@ -811,17 +811,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double sum = 0;
@@ -843,12 +843,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             double sum = 0;
@@ -872,17 +872,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double sum = 0;
@@ -904,12 +904,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             decimal sum = 0;
@@ -933,17 +933,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
 

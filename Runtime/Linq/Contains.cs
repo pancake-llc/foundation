@@ -17,16 +17,9 @@ namespace Pancake.Linq
         /// <returns>true if the source sequence contains an element that has the specified value; otherwise, false.</returns>
         public static bool Contains<TSource>(this TSource[] source, TSource value, IEqualityComparer<TSource> comparer = null)
         {
-            if (source == null)
-            {
-                throw Error.ArgumentNull("source");
-            }
+            if (source == null) Error.ThrowArgumentNull("source");
 
-            if (comparer == null)
-            {
-                return Array.IndexOf(source, value) != -1;
-            }
-
+            if (comparer == null) return Array.IndexOf(source, value) != -1;
 
             foreach (TSource e in source)
             {
@@ -52,16 +45,9 @@ namespace Pancake.Linq
         /// <returns>true if the source sequence contains an element that has the specified value; otherwise, false.</returns>
         public static bool Contains<TSource>(this Span<TSource> source, TSource value, IEqualityComparer<TSource> comparer = null)
         {
-            if (source == null)
-            {
-                throw Error.ArgumentNull("source");
-            }
-
-            if (comparer == null)
-            {
-                comparer = EqualityComparer<TSource>.Default;
-            }
-
+            if (source == null) Error.ThrowArgumentNull("source");
+          
+            if (comparer == null) comparer = EqualityComparer<TSource>.Default;
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -88,16 +74,9 @@ namespace Pancake.Linq
         /// <returns>true if the source sequence contains an element that has the specified value; otherwise, false.</returns>
         public static bool Contains<TSource>(this List<TSource> source, TSource value, IEqualityComparer<TSource> comparer = null)
         {
-            if (source == null)
-            {
-                throw Error.ArgumentNull("source");
-            }
+            if (source == null) Error.ThrowArgumentNull("source");
 
-            if (comparer == null)
-            {
-                return source.IndexOf(value) != -1;
-            }
-
+            if (comparer == null) return source.IndexOf(value) != -1;
 
             for (int i = 0; i < source.Count; i++)
             {

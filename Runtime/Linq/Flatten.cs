@@ -13,7 +13,7 @@ namespace Pancake.Linq
         /// <returns>The concatenation of all the nested sequences' elements.</returns>
         public static TSource[] Flatten<TSource>(this TSource[][] source)
         {
-            if (source == null) throw Error.ArgumentNull("source");
+            if (source == null) Error.ThrowArgumentNull("source");
 
             var result = new List<TSource>();
 
@@ -37,7 +37,7 @@ namespace Pancake.Linq
         /// <returns>The concatenation of all the nested sequences' elements.</returns>
         public static List<TSource> Flatten<TSource>(this List<List<TSource>> source)
         {
-            if (source == null) throw Error.ArgumentNull("source");
+            if (source == null) Error.ThrowArgumentNull("source");
 
             var result = new List<TSource>();
 
@@ -57,7 +57,7 @@ namespace Pancake.Linq
         /// <returns>The concatenation of all the nested sequences' elements.</returns>
         public static List<TSource> Flatten<TSource>(this List<TSource[]> source)
         {
-            if (source == null) throw Error.ArgumentNull("source");
+            if (source == null) Error.ThrowArgumentNull("source");
 
             var result = new List<TSource>();
 

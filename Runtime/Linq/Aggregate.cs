@@ -21,17 +21,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             TSource result = source[0];
@@ -55,12 +55,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             TAccumulate result = seed;
@@ -90,17 +90,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             if (resultSelector == null)
             {
-                throw Error.ArgumentNull("resultSelector");
+                Error.ThrowArgumentNull("resultSelector");
             }
 
             TAccumulate result = seed;
@@ -125,17 +125,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             TSource result = source[0];
@@ -159,12 +159,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             TAccumulate result = seed;
@@ -194,17 +194,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             if (resultSelector == null)
             {
-                throw Error.ArgumentNull("resultSelector");
+                Error.ThrowArgumentNull("resultSelector");
             }
 
             TAccumulate result = seed;
@@ -230,17 +230,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             TSource result = source[0];
@@ -264,12 +264,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             TAccumulate result = seed;
@@ -299,17 +299,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (func == null)
             {
-                throw Error.ArgumentNull("func");
+                Error.ThrowArgumentNull("func");
             }
 
             if (resultSelector == null)
             {
-                throw Error.ArgumentNull("resultSelector");
+                Error.ThrowArgumentNull("resultSelector");
             }
 
             TAccumulate result = seed;

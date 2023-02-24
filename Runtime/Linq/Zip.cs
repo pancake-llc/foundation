@@ -16,17 +16,17 @@ namespace Pancake.Linq
         {
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             //maintain array bounds elision
@@ -64,17 +64,17 @@ namespace Pancake.Linq
         {
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             //maintain array bounds elision
@@ -112,17 +112,17 @@ namespace Pancake.Linq
         {
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             //maintain array bounds elision

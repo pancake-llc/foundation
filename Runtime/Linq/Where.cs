@@ -17,12 +17,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             T[] result = new T[source.Length];
@@ -50,12 +50,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
 
@@ -87,12 +87,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             T[] result = new T[source.Length];
@@ -120,12 +120,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
 
@@ -157,12 +157,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             return source.FindAll(predicate);
@@ -179,12 +179,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             List<T> r = new List<T>();

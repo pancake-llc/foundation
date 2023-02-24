@@ -17,11 +17,11 @@ namespace Pancake.Linq
         {            
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             Comparer<T> comparer = Comparer<T>.Default;
@@ -55,15 +55,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             Comparer<TResult> comparer = Comparer<TResult>.Default;
@@ -98,11 +98,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             int r = int.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -122,15 +122,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             int r = int.MinValue;
@@ -151,11 +151,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             long r = long.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -176,15 +176,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long r = long.MinValue;
@@ -205,11 +205,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             float r = source[0];
             int startIndex = 0;
@@ -238,15 +238,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             float r = selector(source[0]);
@@ -277,11 +277,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             double r = source[0];
             int startIndex = 0;
@@ -310,15 +310,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double r = selector(source[0]);
@@ -350,11 +350,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -374,15 +374,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -405,11 +405,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             Comparer<T> comparer = Comparer<T>.Default;
@@ -443,15 +443,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             Comparer<TResult> comparer = Comparer<TResult>.Default;
@@ -486,11 +486,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             int r = int.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -510,15 +510,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             int r = int.MinValue;
@@ -539,11 +539,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             long r = long.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -564,15 +564,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             long r = long.MinValue;
@@ -593,11 +593,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             float r = source[0];
             int startIndex = 0;
@@ -626,15 +626,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             float r = selector(source[0]);
@@ -665,11 +665,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             double r = source[0];
             int startIndex = 0;
@@ -698,15 +698,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             double r = selector(source[0]);
@@ -738,11 +738,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -762,15 +762,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
@@ -793,11 +793,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             Comparer<T> comparer = Comparer<T>.Default;
@@ -831,17 +831,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             Comparer<TResult> comparer = Comparer<TResult>.Default;
@@ -877,11 +877,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             int r = int.MinValue;
             for (int i = 0; i < source.Count; i++)
@@ -901,15 +901,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             int r = int.MinValue;
@@ -930,11 +930,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             long r = long.MinValue;
             for (int i = 0; i < source.Count; i++)
@@ -954,15 +954,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             long r = long.MinValue;
             for (int i = 0; i < source.Count; i++)
@@ -982,11 +982,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             float r = source[0];
             int startIndex = 0;
@@ -1015,15 +1015,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
             float r = selector(source[0]);
             int startIndex = 0;
@@ -1053,11 +1053,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             double r = source[0];
             int startIndex = 0;
@@ -1086,15 +1086,15 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
             double r = selector(source[0]);
             int startIndex = 0;
@@ -1124,11 +1124,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Count; i++)
@@ -1148,11 +1148,11 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Count; i++)

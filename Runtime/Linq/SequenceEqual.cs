@@ -23,12 +23,12 @@ namespace Pancake.Linq
 
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (first.Length != second.Length) return false;
@@ -54,12 +54,12 @@ namespace Pancake.Linq
         {
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (comparer == null)
@@ -67,7 +67,7 @@ namespace Pancake.Linq
                 comparer = Comparer<T>.Default;
             }
 
-            if (first.Length != second.Length) throw Error.NotSupported();
+            if (first.Length != second.Length) Error.ThrowNotSupported();
 
             var result = new int[first.Length];
             for (int i = 0; i < first.Length; i++)
@@ -97,12 +97,12 @@ namespace Pancake.Linq
 
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (first.Length != second.Count) return false;
@@ -133,12 +133,12 @@ namespace Pancake.Linq
 
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (first.Count != second.Length) return false;
@@ -171,12 +171,12 @@ namespace Pancake.Linq
 
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (first.Length != second.Length) return false;
@@ -209,12 +209,12 @@ namespace Pancake.Linq
 
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (first.Length != second.Count) return false;
@@ -245,12 +245,12 @@ namespace Pancake.Linq
 
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (first.Count != second.Length) return false;
@@ -284,12 +284,12 @@ namespace Pancake.Linq
 
             if (first == null)
             {
-                throw Error.ArgumentNull("first");
+                Error.ThrowArgumentNull("first");
             }
 
             if (second == null)
             {
-                throw Error.ArgumentNull("second");
+                Error.ThrowArgumentNull("second");
             }
 
             if (first.Count != second.Count) return false;

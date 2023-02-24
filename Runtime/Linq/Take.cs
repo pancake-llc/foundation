@@ -15,7 +15,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (count < 0)
@@ -46,12 +46,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             int count = 0;
@@ -80,12 +80,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             int count = 0;
@@ -116,7 +116,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (count < 0)
@@ -148,12 +148,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             int count = 0;
@@ -182,12 +182,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             int count = 0;
@@ -220,7 +220,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (count < 0)
@@ -251,12 +251,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             var result = new List<T>();
@@ -285,12 +285,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             var result = new List<T>();

@@ -17,9 +17,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static TSource[][] Chunk<TSource>(this TSource[] source, int chunkSize)
         {
-            if (source == null) throw Error.ArgumentNull("source");
+            if (source == null) Error.ThrowArgumentNull("source");
 
-            if (chunkSize <= 0) throw Error.ArgumentOutOfRange("chunkSize");
+            if (chunkSize <= 0) Error.ThrowArgumentOutOfRange("chunkSize");
 
             int size = source.Length / chunkSize;
             int extraSize = source.Length % chunkSize;
@@ -70,9 +70,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static List<List<TSource>> Chunk<TSource>(this List<TSource> source, int chunkSize)
         {
-            if (source == null) throw Error.ArgumentNull("source");
+            if (source == null) Error.ThrowArgumentNull("source");
 
-            if (chunkSize <= 0) throw Error.ArgumentOutOfRange("chunkSize");
+            if (chunkSize <= 0) Error.ThrowArgumentOutOfRange("chunkSize");
 
             int size = source.Count / chunkSize;
             int extraSize = source.Count % chunkSize;
@@ -115,9 +115,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static TSource[][] ChunkToArray<TSource>(this List<TSource> source, int chunkSize)
         {
-            if (source == null) throw Error.ArgumentNull("source");
+            if (source == null) Error.ThrowArgumentNull("source");
 
-            if (chunkSize <= 0) throw Error.ArgumentOutOfRange("chunkSize");
+            if (chunkSize <= 0) Error.ThrowArgumentOutOfRange("chunkSize");
 
             int size = source.Count / chunkSize;
             int extraSize = source.Count % chunkSize;

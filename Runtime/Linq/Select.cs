@@ -18,12 +18,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             for (int i = 0; i < source.Length; i++)
@@ -42,12 +42,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             for (int i = 0; i < source.Length; i++)
@@ -67,12 +67,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             var r = new TResult[source.Length];
@@ -95,12 +95,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             var r = new TResult[source.Length];
@@ -125,12 +125,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             for (int i = 0; i < source.Length; i++)
@@ -149,12 +149,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             for (int i = 0; i < source.Length; i++)
@@ -174,12 +174,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             var r = new TResult[source.Length];
@@ -202,12 +202,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             var r = new TResult[source.Length];
@@ -232,12 +232,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             for (int i = 0; i < source.Count; i++)
@@ -256,12 +256,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             for (int i = 0; i < source.Count; i++)
@@ -281,12 +281,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             var r = new List<TResult>(source.Count);
@@ -310,12 +310,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (selector == null)
             {
-                throw Error.ArgumentNull("selector");
+                Error.ThrowArgumentNull("selector");
             }
 
             var r = new List<TResult>(source.Count);

@@ -33,8 +33,8 @@
         /// <returns>A sequence of elements whose projected values are distinct.</returns>
         public static System.Collections.Generic.IEnumerable<TSource> Distinct<TSource, TResult>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, TResult> projection)
         {
-            if (source == null) throw Error.ArgumentNull("source");
-            if (projection == null) Error.ArgumentNull("projection");
+            if (source == null) Error.ThrowArgumentNull("source");
+            if (projection == null) Error.ThrowArgumentNull("projection");
 
             return DistinctIterator(source, projection, System.Collections.Generic.EqualityComparer<TResult>.Default);
         }
@@ -51,9 +51,9 @@
         /// <returns>A sequence of elements whose projected values are considered distinct by the specified equality comparer.</returns>
         public static System.Collections.Generic.IEnumerable<TSource> Distinct<TSource, TResult>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, TResult> projection, System.Collections.Generic.IEqualityComparer<TResult> equalityComparer)
         {
-            if (source == null) throw Error.ArgumentNull("source");
-            if (projection == null) Error.ArgumentNull("projection");
-            if (equalityComparer == null) Error.ArgumentNull("equalityComparer");
+            if (source == null) Error.ThrowArgumentNull("source");
+            if (projection == null) Error.ThrowArgumentNull("projection");
+            if (equalityComparer == null) Error.ThrowArgumentNull("equalityComparer");
 
             return DistinctIterator(source, projection, equalityComparer);
         }

@@ -16,17 +16,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (source.Length > 1)
             {
-                throw Error.MoreThanOneElement();
+                Error.ThrowMoreThanOneElement();
             }
 
             return source[0];
@@ -41,7 +41,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
@@ -51,7 +51,7 @@ namespace Pancake.Linq
 
             if (source.Length > 1)
             {
-                throw Error.MoreThanOneElement();
+                Error.ThrowMoreThanOneElement();
             }
 
             return source[0];
@@ -67,12 +67,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             T result = default(T);
@@ -83,7 +83,7 @@ namespace Pancake.Linq
                 {
                     if (foundMatch)
                     {
-                        throw Error.MoreThanOneMatch();
+                        Error.ThrowMoreThanOneMatch();
                     }
 
                     result = source[i];
@@ -91,14 +91,9 @@ namespace Pancake.Linq
                 }
             }
 
-            if (foundMatch)
-            {
-                return result;
-            }
-            else
-            {
-                throw Error.NoMatch();
-            }
+            if (foundMatch) return result;
+
+            throw new InvalidOperationException("Sequence contains no matching element");
         }
 
         /// <summary>
@@ -112,12 +107,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
 
@@ -129,7 +124,7 @@ namespace Pancake.Linq
                 {
                     if (foundMatch)
                     {
-                        throw Error.MoreThanOneMatch();
+                        Error.ThrowMoreThanOneMatch();
                     }
 
                     result = source[i];
@@ -152,17 +147,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (source.Length > 1)
             {
-                throw Error.MoreThanOneElement();
+                Error.ThrowMoreThanOneElement();
             }
 
             return source[0];
@@ -177,7 +172,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
@@ -187,7 +182,7 @@ namespace Pancake.Linq
 
             if (source.Length > 1)
             {
-                throw Error.MoreThanOneElement();
+                Error.ThrowMoreThanOneElement();
             }
 
             return source[0];
@@ -203,12 +198,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             T result = default(T);
@@ -219,7 +214,7 @@ namespace Pancake.Linq
                 {
                     if (foundMatch)
                     {
-                        throw Error.MoreThanOneMatch();
+                        Error.ThrowMoreThanOneMatch();
                     }
 
                     result = source[i];
@@ -233,7 +228,7 @@ namespace Pancake.Linq
             }
             else
             {
-                throw Error.NoMatch();
+                Error.ThrowNoMatch();
             }
         }
 
@@ -248,12 +243,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
 
@@ -263,10 +258,7 @@ namespace Pancake.Linq
             {
                 if (predicate(source[i]))
                 {
-                    if (foundMatch)
-                    {
-                        throw Error.MoreThanOneMatch();
-                    }
+                    if (foundMatch) Error.ThrowMoreThanOneMatch();
 
                     result = source[i];
                     foundMatch = true;
@@ -288,17 +280,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             if (source.Count > 1)
             {
-                throw Error.MoreThanOneElement();
+                Error.ThrowMoreThanOneElement();
             }
 
             return source[0];
@@ -313,7 +305,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
@@ -323,7 +315,7 @@ namespace Pancake.Linq
 
             if (source.Count > 1)
             {
-                throw Error.MoreThanOneElement();
+                Error.ThrowMoreThanOneElement();
             }
 
             return source[0];
@@ -339,12 +331,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             T result = default(T);
@@ -355,7 +347,7 @@ namespace Pancake.Linq
                 {
                     if (foundMatch)
                     {
-                        throw Error.MoreThanOneMatch();
+                        Error.ThrowMoreThanOneMatch();
                     }
 
                     result = source[i];
@@ -367,10 +359,8 @@ namespace Pancake.Linq
             {
                 return result;
             }
-            else
-            {
-                throw Error.NoMatch();
-            }
+
+            throw new InvalidOperationException("Sequence contains no matching element");
         }
 
         /// <summary>
@@ -384,12 +374,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             T result = default(T);
@@ -400,7 +390,7 @@ namespace Pancake.Linq
                 {
                     if (foundMatch)
                     {
-                        throw Error.MoreThanOneMatch();
+                        Error.ThrowMoreThanOneMatch();
                     }
 
                     result = source[i];

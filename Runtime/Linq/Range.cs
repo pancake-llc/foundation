@@ -15,7 +15,7 @@ namespace Pancake.Linq
             long max = ((long)start) + count - 1;
             if (count < 0 || max > int.MaxValue)
             {
-                throw Error.ArgumentOutOfRange("count");
+                Error.ThrowArgumentOutOfRange("count");
             }
 
             
@@ -40,7 +40,7 @@ namespace Pancake.Linq
             long max = ((long)start) + count - 1;
             if (count < 0 || max > int.MaxValue)
             {
-                throw Error.ArgumentOutOfRange("count");
+                Error.ThrowArgumentOutOfRange("count");
             }
 
             

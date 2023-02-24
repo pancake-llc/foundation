@@ -16,12 +16,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             return source[source.Length - 1];
@@ -37,17 +37,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             var lastIndex = Array.FindLastIndex(source, predicate);
 
-            if (lastIndex == -1) throw Error.NoMatch();
+            if (lastIndex == -1) Error.ThrowNoMatch();
             return source[lastIndex];
         }
 
@@ -61,7 +61,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
@@ -84,12 +84,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             var lastIndex = Array.FindLastIndex(source, predicate);
@@ -110,12 +110,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             return source[source.Length - 1];
@@ -131,12 +131,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             for (int i = source.Length - 1; i >= 0; i--)
@@ -144,7 +144,7 @@ namespace Pancake.Linq
                 if (predicate(source[i])) return source[i];
             }
 
-            throw Error.NoMatch();
+            throw new InvalidOperationException("Sequence contains no matching element");
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Length == 0)
@@ -180,12 +180,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             for (int i = source.Length - 1; i >= 0; i--)
@@ -209,12 +209,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
             {
-                throw Error.NoElements();
+                Error.ThrowNoElements();
             }
 
             return source[source.Count - 1];
@@ -230,17 +230,17 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             var lastIndex = source.FindLastIndex(predicate);
 
-            if (lastIndex == -1) throw Error.NoMatch();
+            if (lastIndex == -1) Error.ThrowNoMatch();
             return source[lastIndex];
         }
 
@@ -254,7 +254,7 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (source.Count == 0)
@@ -277,12 +277,12 @@ namespace Pancake.Linq
         {
             if (source == null)
             {
-                throw Error.ArgumentNull("source");
+                Error.ThrowArgumentNull("source");
             }
 
             if (predicate == null)
             {
-                throw Error.ArgumentNull("predicate");
+                Error.ThrowArgumentNull("predicate");
             }
 
             var lastIndex = source.FindLastIndex(predicate);
