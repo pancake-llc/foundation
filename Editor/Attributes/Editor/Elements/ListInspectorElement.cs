@@ -312,13 +312,19 @@ namespace Pancake.AttributeDrawer
                             foreach (var objectDrop in DragAndDrop.objectReferences)
                             {
                                 var objDropType = objectDrop.GetType();
-                                if (objDropType == _property.ArrayElementType || (objDropType == typeof(GameObject) && _property.ArrayElementType == typeof(Transform)))
+                                if (objDropType == _property.ArrayElementType || (objDropType == typeof(GameObject) && (_property.ArrayElementType == typeof(Transform) || _property.ArrayElementType.BaseType == typeof(MonoBehaviour))))
                                 {
                                     AddElementCallback(_reorderableListGui);
 
                                     if (_property.TryGetSerializedProperty(out var x))
                                     {
-                                        x.GetArrayElementAtIndex(x.arraySize - 1).objectReferenceValue = objectDrop;
+                                        var element = x.GetArrayElementAtIndex(x.arraySize - 1);
+                                        element.objectReferenceValue = objectDrop;
+                                        if (element.objectReferenceValue == null)
+                                        {
+                                            Debug.LogWarning($"[Drag and Drop]: Object {objectDrop.name} has a data type that doesn't match with type of List <{_property.ArrayElementType}>");
+                                            x.RemoveElement(x.arraySize - 1);
+                                        }
                                         _property.NotifyValueChanged();
                                     }
                                 }
