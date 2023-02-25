@@ -17,9 +17,9 @@ namespace Pancake.Linq
         /// in the predicate function.</returns>
         public static int Count<T>(this T[] source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             int count = 0;
             for (int i = 0; i < source.Length; i++)
@@ -49,10 +49,10 @@ namespace Pancake.Linq
         /// in the predicate function.</returns>
         public static int Count<T>(this Span<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
-           
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
-            
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
             int count = 0;
             for (int i = 0; i < source.Length; i++)
             {
@@ -82,9 +82,9 @@ namespace Pancake.Linq
         /// in the predicate function.</returns>
         public static int Count<T>(this List<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             int count = 0;
             for (int i = 0; i < source.Count; i++)

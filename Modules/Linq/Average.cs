@@ -14,15 +14,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average(this int[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long sum = 0;
             checked
@@ -45,20 +39,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this T[] source, Func<T, int> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long sum = 0;
             checked
@@ -79,15 +64,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average(this long[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long sum = 0;
             checked
@@ -111,20 +90,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this T[] source, Func<T, long> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long sum = 0;
             checked
@@ -145,15 +115,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static float Average(this float[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double sum = 0;
 
@@ -174,20 +138,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static float Average<T>(this T[] source, Func<T, float> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double sum = 0;
 
@@ -206,15 +161,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average(this double[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double sum = 0;
 
@@ -235,20 +184,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this T[] source, Func<T, double> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double sum = 0;
 
@@ -267,15 +207,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static decimal Average(this decimal[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             decimal sum = 0;
 
@@ -296,20 +230,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static decimal Average<T>(this T[] source, Func<T, decimal> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
 
             decimal sum = 0;
@@ -332,15 +257,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average(this Span<int> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long sum = 0;
             checked
@@ -363,20 +282,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this Span<T> source, Func<T, int> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long sum = 0;
             checked
@@ -397,15 +307,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average(this Span<long> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long sum = 0;
             checked
@@ -429,20 +333,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this Span<T> source, Func<T, long> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long sum = 0;
             checked
@@ -463,15 +358,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static float Average(this Span<float> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double sum = 0;
 
@@ -492,20 +381,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static float Average<T>(this Span<T> source, Func<T, float> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double sum = 0;
 
@@ -524,15 +404,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average(this Span<double> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double sum = 0;
 
@@ -553,20 +427,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this Span<T> source, Func<T, double> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double sum = 0;
 
@@ -585,15 +450,9 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static decimal Average(this Span<decimal> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             decimal sum = 0;
 
@@ -614,20 +473,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static decimal Average<T>(this Span<T> source, Func<T, decimal> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
 
             decimal sum = 0;
@@ -650,15 +500,9 @@ namespace Pancake.Linq
         /// <returns>The average of the list.</returns>
         public static double Average(this List<int> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long sum = 0;
             checked
@@ -681,20 +525,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this List<T> source, Func<T, int> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long sum = 0;
             checked
@@ -715,15 +550,9 @@ namespace Pancake.Linq
         /// <returns>The average of the list.</returns>
         public static double Average(this List<long> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long sum = 0;
             checked
@@ -746,20 +575,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this List<T> source, Func<T, long> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long sum = 0;
             checked
@@ -780,15 +600,9 @@ namespace Pancake.Linq
         /// <returns>The average of the list.</returns>
         public static float Average(this List<float> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double sum = 0;
 
@@ -809,20 +623,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static float Average<T>(this List<T> source, Func<T, float> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double sum = 0;
 
@@ -841,15 +646,9 @@ namespace Pancake.Linq
         /// <returns>The average of the list.</returns>
         public static double Average(this List<double> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double sum = 0;
 
@@ -870,20 +669,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static double Average<T>(this List<T> source, Func<T, double> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double sum = 0;
 
@@ -902,15 +692,9 @@ namespace Pancake.Linq
         /// <returns>The average of the list.</returns>
         public static decimal Average(this List<decimal> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             decimal sum = 0;
 
@@ -931,20 +715,11 @@ namespace Pancake.Linq
         /// <returns>The average of the array.</returns>
         public static decimal Average<T>(this List<T> source, Func<T, decimal> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
 
             decimal sum = 0;

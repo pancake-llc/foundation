@@ -1,13 +1,14 @@
-﻿namespace Pancake.Linq
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor.PackageManager;
+
+namespace Pancake.Linq
 {
     public static partial class L
     {
-        public static System.Collections.Generic.IEnumerable<TSource> Distinct<TSource>(this System.Collections.Generic.IEnumerable<TSource> source)
-        {
-            return System.Linq.Enumerable.Distinct(source);
-        }
+        public static IEnumerable<TSource> Distinct<TSource>(this IEnumerable<TSource> source) { return System.Linq.Enumerable.Distinct(source); }
 
-        public static System.Collections.Generic.IEnumerable<TSource> Distinct<TSource>(this System.Collections.Generic.IEnumerable<TSource> source, System.Collections.Generic.IEqualityComparer<TSource> comparer)
+        public static IEnumerable<TSource> Distinct<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
             return System.Linq.Enumerable.Distinct(source, comparer);
         }
@@ -17,11 +18,11 @@
             return System.Linq.ParallelEnumerable.Distinct(source);
         }
 
-        public static System.Linq.ParallelQuery<TSource> Distinct<TSource>(this System.Linq.ParallelQuery<TSource> source, System.Collections.Generic.IEqualityComparer<TSource> comparer)
+        public static System.Linq.ParallelQuery<TSource> Distinct<TSource>(this System.Linq.ParallelQuery<TSource> source, IEqualityComparer<TSource> comparer)
         {
             return System.Linq.ParallelEnumerable.Distinct(source, comparer);
         }
-        
+
         /// <summary>
         /// Returns distinct elements from the given sequence using the default equality comparer
         /// to compare values projected by <paramref name="projection"/>.
@@ -31,12 +32,12 @@
         /// <param name="source">The sequence.</param>
         /// <param name="projection">The projection that is applied to each element to retrieve the value which is being compared.</param>
         /// <returns>A sequence of elements whose projected values are distinct.</returns>
-        public static System.Collections.Generic.IEnumerable<TSource> Distinct<TSource, TResult>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, TResult> projection)
+        public static IEnumerable<TSource> Distinct<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> projection)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
-            if (projection == null) Error.ThrowArgumentNull("projection");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (projection == null) throw new ArgumentNullException(nameof(projection));
 
-            return DistinctIterator(source, projection, System.Collections.Generic.EqualityComparer<TResult>.Default);
+            return DistinctIterator(source, projection, EqualityComparer<TResult>.Default);
         }
 
         /// <summary>
@@ -49,18 +50,24 @@
         /// <param name="projection">The projection that is applied to each element to retrieve the value which is being compared.</param>
         /// <param name="equalityComparer">The equality comparer to use for comparing the projected values.</param>
         /// <returns>A sequence of elements whose projected values are considered distinct by the specified equality comparer.</returns>
-        public static System.Collections.Generic.IEnumerable<TSource> Distinct<TSource, TResult>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, TResult> projection, System.Collections.Generic.IEqualityComparer<TResult> equalityComparer)
+        public static IEnumerable<TSource> Distinct<TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TResult> projection,
+            IEqualityComparer<TResult> equalityComparer)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
-            if (projection == null) Error.ThrowArgumentNull("projection");
-            if (equalityComparer == null) Error.ThrowArgumentNull("equalityComparer");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (projection == null) throw new ArgumentNullException(nameof(projection));
+            if (equalityComparer== null) throw new ArgumentNullException(nameof(equalityComparer));
 
             return DistinctIterator(source, projection, equalityComparer);
         }
 
-        private static System.Collections.Generic.IEnumerable<TSource> DistinctIterator<TSource, TResult>(System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, TResult> projection, System.Collections.Generic.IEqualityComparer<TResult> equalityComparer)
+        private static IEnumerable<TSource> DistinctIterator<TSource, TResult>(
+            IEnumerable<TSource> source,
+            Func<TSource, TResult> projection,
+            IEqualityComparer<TResult> equalityComparer)
         {
-            var alreadySeenValues = new System.Collections.Generic.HashSet<TResult>(equalityComparer);
+            var alreadySeenValues = new HashSet<TResult>(equalityComparer);
 
             foreach (var element in source)
             {

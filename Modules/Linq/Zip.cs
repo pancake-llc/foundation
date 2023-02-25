@@ -14,20 +14,11 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains merged elements of two input sequences.</returns>
         public static TR[] ZipF<T, TU, TR>(this T[] first, TU[] second, Func<T, TU, TR> selector)
         {
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             //maintain array bounds elision
             if (first.Length < second.Length)
@@ -62,20 +53,11 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains merged elements of two input sequences.</returns>
         public static TR[] ZipF<T, TU, TR>(this Span<T> first, Span<TU> second, Func<T, TU, TR> selector)
         {
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             //maintain array bounds elision
             if (first.Length < second.Length)
@@ -110,20 +92,11 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains merged elements of two input sequences.</returns>
         public static List<TR> ZipF<T, TU, TR>(this List<T> first, List<TU> second, Func<T, TU, TR> selector)
         {
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             //maintain array bounds elision
             if (first.Count < second.Count)

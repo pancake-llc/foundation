@@ -16,20 +16,11 @@ namespace Pancake.Linq
         /// <returns>The filtered then aggregated sequence.</returns>
         public static T FilterReduce<T>(this T[] source, Func<T, bool> predicate, Func<T, T, T> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
             var result = default(T);
 
@@ -64,15 +55,9 @@ namespace Pancake.Linq
         /// <returns>The filtered then aggregated sequence.</returns>
         public static T FilterReduce<T>(this T[] source, Func<T, int, bool> predicate, Func<T, T, T> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var result = default(T);
 
@@ -112,20 +97,11 @@ namespace Pancake.Linq
             TAccumulate seed,
             Func<TAccumulate, TSource, TAccumulate> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             TAccumulate result = seed;
             foreach (var v in source)
@@ -153,25 +129,13 @@ namespace Pancake.Linq
             Func<TAccumulate, TSource, TAccumulate> func,
             Func<TAccumulate, TResult> resultSelector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (resultSelector == null)
-            {
-                Error.ThrowArgumentNull("resultSelector");
-            }
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             TAccumulate result = seed;
             //int count = 0;
@@ -199,20 +163,11 @@ namespace Pancake.Linq
         /// <returns>The filtered then aggregated sequence.</returns>
         public static T FilterReduce<T>(this Span<T> source, Func<T, bool> predicate, Func<T, T, T> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
             var result = default(T);
 
@@ -247,15 +202,9 @@ namespace Pancake.Linq
         /// <returns>The filtered then aggregated sequence.</returns>
         public static T FilterReduce<T>(this Span<T> source, Func<T, int, bool> predicate, Func<T, T, T> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var result = default(T);
 
@@ -295,20 +244,11 @@ namespace Pancake.Linq
             TAccumulate seed,
             Func<TAccumulate, TSource, TAccumulate> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             TAccumulate result = seed;
             foreach (var v in source)
@@ -336,25 +276,13 @@ namespace Pancake.Linq
             Func<TAccumulate, TSource, TAccumulate> func,
             Func<TAccumulate, TResult> resultSelector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (resultSelector == null)
-            {
-                Error.ThrowArgumentNull("resultSelector");
-            }
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             TAccumulate result = seed;
             //int count = 0;
@@ -383,20 +311,11 @@ namespace Pancake.Linq
         /// <returns>The filtered then aggregated sequence.</returns>
         public static T FilterReduce<T>(this List<T> source, Func<T, bool> predicate, Func<T, T, T> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
             var result = default(T);
 
@@ -431,15 +350,9 @@ namespace Pancake.Linq
         /// <returns>The filtered then aggregated sequence.</returns>
         public static T FilterReduce<T>(this List<T> source, Func<T, int, bool> predicate, Func<T, T, T> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var result = default(T);
 
@@ -479,20 +392,11 @@ namespace Pancake.Linq
             TAccumulate seed,
             Func<TAccumulate, TSource, TAccumulate> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             TAccumulate result = seed;
             for (int i = 0; i < source.Count; i++)
@@ -521,20 +425,11 @@ namespace Pancake.Linq
             Func<TAccumulate, TSource, TAccumulate> func,
             Func<TAccumulate, TResult> resultSelector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
-            if (resultSelector == null)
-            {
-                Error.ThrowArgumentNull("resultSelector");
-            }
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             TAccumulate result = seed;
             for (int i = 0; i < source.Count; i++)

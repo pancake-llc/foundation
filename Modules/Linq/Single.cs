@@ -14,11 +14,11 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence or default if no elements exist.</returns>
         public static T Single<T>(this T[] source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0) Error.ThrowNoElements();
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (source.Length > 1) Error.ThrowMoreThanOneElement();
+            if (source.Length > 1) throw new InvalidOperationException("Source sequence contains more than one element.");
 
             return source[0];
         }
@@ -30,11 +30,11 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence</returns>
         public static T SingleOrDefault<T>(this T[] source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Length == 0) return default(T);
 
-            if (source.Length > 1) Error.ThrowMoreThanOneElement();
+            if (source.Length > 1) throw new InvalidOperationException("Source sequence contains more than one element.");
 
             return source[0];
         }
@@ -47,9 +47,9 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence that satisfies a condition.</returns>
         public static T Single<T>(this T[] source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T result = default(T);
             bool foundMatch = false;
@@ -57,7 +57,7 @@ namespace Pancake.Linq
             {
                 if (predicate(source[i]))
                 {
-                    if (foundMatch) Error.ThrowMoreThanOneMatch();
+                    if (foundMatch) throw new InvalidOperationException("Sequence contains more than one matching element");
 
                     result = source[i];
                     foundMatch = true;
@@ -78,9 +78,9 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence that satisfies a condition or default value if no such element is found.</returns>
         public static T SingleOrDefault<T>(this T[] source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T result = default(T);
             bool foundMatch = false;
@@ -88,7 +88,7 @@ namespace Pancake.Linq
             {
                 if (predicate(source[i]))
                 {
-                    if (foundMatch) Error.ThrowMoreThanOneMatch();
+                    if (foundMatch) throw new InvalidOperationException("Sequence contains more than one matching element");
 
                     result = source[i];
                     foundMatch = true;
@@ -108,11 +108,11 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence or default if no elements exist.</returns>
         public static T Single<T>(this Span<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0) Error.ThrowNoElements();
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (source.Length > 1) Error.ThrowMoreThanOneElement();
+            if (source.Length > 1) throw new InvalidOperationException("Source sequence contains more than one element.");
 
             return source[0];
         }
@@ -124,11 +124,11 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence</returns>
         public static T SingleOrDefault<T>(this Span<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Length == 0) return default(T);
 
-            if (source.Length > 1) Error.ThrowMoreThanOneElement();
+            if (source.Length > 1) throw new InvalidOperationException("Source sequence contains more than one element.");
 
             return source[0];
         }
@@ -141,9 +141,9 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence that satisfies a condition.</returns>
         public static T Single<T>(this Span<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T result = default(T);
             bool foundMatch = false;
@@ -151,8 +151,8 @@ namespace Pancake.Linq
             {
                 if (predicate(source[i]))
                 {
-                    if (foundMatch) Error.ThrowMoreThanOneMatch();
-                    
+                    if (foundMatch) throw new InvalidOperationException("Sequence contains more than one matching element");
+
                     result = source[i];
                     foundMatch = true;
                 }
@@ -172,9 +172,9 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence that satisfies a condition or default value if no such element is found.</returns>
         public static T SingleOrDefault<T>(this Span<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T result = default(T);
             bool foundMatch = false;
@@ -182,7 +182,7 @@ namespace Pancake.Linq
             {
                 if (predicate(source[i]))
                 {
-                    if (foundMatch) Error.ThrowMoreThanOneMatch();
+                    if (foundMatch) throw new InvalidOperationException("Sequence contains more than one matching element");
 
                     result = source[i];
                     foundMatch = true;
@@ -202,11 +202,11 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence</returns>
         public static T Single<T>(this List<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0) Error.ThrowNoElements();
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (source.Count > 1) Error.ThrowMoreThanOneElement();
+            if (source.Count > 1) throw new InvalidOperationException("Source sequence contains more than one element.");
 
             return source[0];
         }
@@ -218,11 +218,11 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence or default if no elements exist.</returns>
         public static T SingleOrDefault<T>(this List<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Count == 0) return default(T);
 
-            if (source.Count > 1) Error.ThrowMoreThanOneElement();
+            if (source.Count > 1) throw new InvalidOperationException("Source sequence contains more than one element.");
 
             return source[0];
         }
@@ -235,9 +235,9 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence that satisfies a condition.</returns>
         public static T Single<T>(this List<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T result = default(T);
             bool foundMatch = false;
@@ -245,8 +245,8 @@ namespace Pancake.Linq
             {
                 if (predicate(source[i]))
                 {
-                    if (foundMatch) Error.ThrowMoreThanOneMatch();
-                   
+                    if (foundMatch) throw new InvalidOperationException("Sequence contains more than one matching element");
+
                     result = source[i];
                     foundMatch = true;
                 }
@@ -266,9 +266,9 @@ namespace Pancake.Linq
         /// <returns>The single element of the input sequence that satisfies a condition or default value if no such element is found.</returns>
         public static T SingleOrDefault<T>(this List<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T result = default(T);
             bool foundMatch = false;
@@ -276,7 +276,7 @@ namespace Pancake.Linq
             {
                 if (predicate(source[i]))
                 {
-                    if (foundMatch) Error.ThrowMoreThanOneMatch();
+                    if (foundMatch) throw new InvalidOperationException("Sequence contains more than one matching element");
 
                     result = source[i];
                     foundMatch = true;

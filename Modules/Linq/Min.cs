@@ -15,15 +15,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static T Min<T>(this T[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             Comparer<T> comparer = Comparer<T>.Default;
             T r = default(T);
@@ -55,20 +49,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static TResult Min<T, TResult>(this T[] source, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             Comparer<TResult> comparer = Comparer<TResult>.Default;
             TResult r = default(TResult);
@@ -101,15 +86,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static int Min(this int[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             int r = int.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -128,20 +107,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static int Min<T>(this T[] source, Func<T, int> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             int r = int.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -160,15 +130,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static long Min(this long[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long r = long.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -187,20 +151,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static long Min<T>(this T[] source, Func<T, long> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long r = long.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -219,15 +174,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static float Min(this float[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             float r = float.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -247,20 +196,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static float Min<T>(this T[] source, Func<T, float> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             float r = float.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -280,15 +220,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static double Min(this double[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double r = double.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -308,20 +242,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static double Min<T>(this T[] source, Func<T, double> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double r = double.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -341,15 +266,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static decimal Min(this decimal[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             decimal r = decimal.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -368,20 +287,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static decimal Min<T>(this T[] source, Func<T, decimal> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             decimal r = decimal.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -402,15 +312,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static T Min<T>(this Span<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             Comparer<T> comparer = Comparer<T>.Default;
             T r = default(T);
@@ -442,20 +346,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static TResult Min<T, TResult>(this Span<T> source, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             Comparer<TResult> comparer = Comparer<TResult>.Default;
             TResult r = default(TResult);
@@ -488,15 +383,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static int Min(this Span<int> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             int r = int.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -515,20 +404,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static int Min<T>(this Span<T> source, Func<T, int> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             int r = int.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -547,15 +427,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static long Min(this Span<long> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long r = long.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -574,20 +448,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static long Min<T>(this Span<T> source, Func<T, long> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long r = long.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -606,15 +471,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static float Min(this Span<float> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             float r = float.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -634,20 +493,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static float Min<T>(this Span<T> source, Func<T, float> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             float r = float.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -667,15 +517,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static double Min(this Span<double> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double r = double.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -695,20 +539,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static double Min<T>(this Span<T> source, Func<T, double> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double r = double.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -728,15 +563,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static decimal Min(this Span<decimal> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             decimal r = decimal.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -755,20 +584,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static decimal Min<T>(this Span<T> source, Func<T, decimal> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             decimal r = decimal.MaxValue;
             for (int i = 0; i < source.Length; i++)
@@ -790,15 +610,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static T Min<T>(this List<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             Comparer<T> comparer = Comparer<T>.Default;
             T r = default(T);
@@ -829,15 +643,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static int Min(this List<int> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             int r = int.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -856,20 +664,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static int Min<T>(this List<T> source, Func<T, int> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             int r = int.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -888,15 +687,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static long Min(this List<long> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             long r = long.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -915,20 +708,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static long Min<T>(this List<T> source, Func<T, long> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             long r = long.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -947,15 +731,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static float Min(this List<float> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             float r = float.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -975,20 +753,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static float Min<T>(this List<T> source, Func<T, float> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             float r = float.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -1008,15 +777,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static double Min(this List<double> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             double r = double.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -1036,20 +799,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static double Min<T>(this List<T> source, Func<T, double> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             double r = double.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -1069,15 +823,9 @@ namespace Pancake.Linq
         /// <returns>The minimum value in the sequence</returns>
         public static decimal Min(this List<decimal> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             decimal r = decimal.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -1096,15 +844,9 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static decimal Min<T>(this List<T> source, Func<T, decimal> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             decimal r = decimal.MaxValue;
             for (int i = 0; i < source.Count; i++)
@@ -1124,20 +866,11 @@ namespace Pancake.Linq
         /// <returns>The maximum value in the transform of the sequence.</returns>
         public static TResult Min<T, TResult>(this List<T> source, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             Comparer<TResult> comparer = Comparer<TResult>.Default;
             TResult r = default(TResult);

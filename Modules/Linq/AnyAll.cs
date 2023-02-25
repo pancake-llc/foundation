@@ -27,15 +27,9 @@ namespace Pancake.Linq
         /// <returns>true if any elements in the source array pass the test in the specified predicate; otherwise, false.</returns>
         public static bool Any<TSource>(this TSource[] source, Predicate<TSource> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return Array.Exists(source, predicate);
         }
@@ -50,15 +44,9 @@ namespace Pancake.Linq
         /// predicate, or if the array is empty; otherwise, false</returns>
         public static bool AllF<TSource>(this TSource[] source, Predicate<TSource> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return Array.TrueForAll(source, predicate);
         }
@@ -73,10 +61,7 @@ namespace Pancake.Linq
         /// <returns>true if the source array contains any elements, otherwise, false/</returns>
         public static bool Any<T>(this Span<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.Length > 0;
         }
@@ -90,15 +75,9 @@ namespace Pancake.Linq
         /// <returns>true if any elements in the source array pass the test in the specified predicate; otherwise, false.</returns>
         public static bool Any<TSource>(this Span<TSource> source, Predicate<TSource> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -118,15 +97,9 @@ namespace Pancake.Linq
         /// predicate, or if the array is empty; otherwise, false</returns>
         public static bool AllF<TSource>(this Span<TSource> source, Predicate<TSource> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -146,10 +119,7 @@ namespace Pancake.Linq
         /// <returns>true if the source list contains any elements, otherwise, false/</returns>
         public static bool Any<T>(this List<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             return source.Count > 0;
         }
@@ -162,15 +132,9 @@ namespace Pancake.Linq
         /// <returns>true if any elements in the source array pass the test in the specified predicate; otherwise, false.</returns>
         public static bool Any<TSource>(this List<TSource> source, Predicate<TSource> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.Exists(predicate);
         }
@@ -184,15 +148,9 @@ namespace Pancake.Linq
         /// predicate, or if the list is empty; otherwise, false</returns>
         public static bool AllF<TSource>(this List<TSource> source, Predicate<TSource> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.TrueForAll(predicate);
         }

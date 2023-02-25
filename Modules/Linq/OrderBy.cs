@@ -15,15 +15,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are ordered according to a key</returns>
         public static TSource[] OrderBy<TSource, TKey>(this TSource[] source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer = null)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (keySelector == null)
-            {
-                Error.ThrowArgumentNull("keySelector");
-            }
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             if (comparer == null)
             {
@@ -51,15 +45,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are ordered according to a key</returns>
         public static TSource[] OrderByDescending<TSource, TKey>(this TSource[] source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer = null)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (keySelector == null)
-            {
-                Error.ThrowArgumentNull("keySelector");
-            }
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             if (comparer == null)
             {
@@ -90,15 +78,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are ordered according to a key</returns>
         public static List<TSource> OrderBy<TSource, TKey>(this List<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer = null)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (keySelector == null)
-            {
-                Error.ThrowArgumentNull("keySelector");
-            }
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             if (comparer == null)
             {
@@ -121,15 +103,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are ordered according to a key</returns>
         public static List<TSource> OrderByDescending<TSource, TKey>(this List<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer = null)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (keySelector == null)
-            {
-                Error.ThrowArgumentNull("keySelector");
-            }
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
             if (comparer == null)
             {

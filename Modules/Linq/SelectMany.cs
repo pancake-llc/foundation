@@ -16,15 +16,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the one-to-many transform function on each element of the input sequence.</returns>
         public static TResult[] SelectMany<TSource, TResult>(this TSource[] source, Func<TSource, TResult[]> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new List<TResult>(source.Length);
             for (int i = 0; i < source.Length; i++)
@@ -48,15 +42,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the one-to-many transform function on each element and index of the input sequence.</returns>
         public static TResult[] SelectMany<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult[]> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new List<TResult>(source.Length);
             for (int i = 0; i < source.Length; i++)
@@ -83,15 +71,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the one-to-many transform function on each element of the input sequence.</returns>
         public static TResult[] SelectMany<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult[]> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new List<TResult>(source.Length);
             for (int i = 0; i < source.Length; i++)
@@ -115,15 +97,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the one-to-many transform function on each element and index of the input sequence.</returns>
         public static TResult[] SelectMany<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult[]> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new List<TResult>(source.Length);
             for (int i = 0; i < source.Length; i++)
@@ -149,15 +125,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the one-to-many transform function on each element of the input sequence.</returns>
         public static List<TResult> SelectMany<TSource, TResult>(this List<TSource> source, Func<TSource, List<TResult>> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new List<TResult>(source.Count);
             for (int i = 0; i < source.Count; i++)
@@ -181,15 +151,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the one-to-many transform function on each element and index of the input sequence.</returns>
         public static List<TResult> SelectMany<TSource, TResult>(this List<TSource> source, Func<TSource, int, List<TResult>> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new List<TResult>(source.Count);
             for (int i = 0; i < source.Count; i++)

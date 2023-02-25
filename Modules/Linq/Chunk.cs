@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor.PackageManager;
 
 namespace Pancake.Linq
 {
@@ -17,9 +19,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static TSource[][] Chunk<TSource>(this TSource[] source, int chunkSize)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (chunkSize <= 0) Error.ThrowArgumentOutOfRange("chunkSize");
+            if (chunkSize <= 0) throw new ArgumentOutOfRangeException(nameof(chunkSize));
 
             int size = source.Length / chunkSize;
             int extraSize = source.Length % chunkSize;
@@ -70,9 +72,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static List<List<TSource>> Chunk<TSource>(this List<TSource> source, int chunkSize)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (chunkSize <= 0) Error.ThrowArgumentOutOfRange("chunkSize");
+            if (chunkSize <= 0) throw new ArgumentOutOfRangeException(nameof(chunkSize));
 
             int size = source.Count / chunkSize;
             int extraSize = source.Count % chunkSize;
@@ -115,9 +117,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static TSource[][] ChunkToArray<TSource>(this List<TSource> source, int chunkSize)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (chunkSize <= 0) Error.ThrowArgumentOutOfRange("chunkSize");
+            if (chunkSize <= 0) throw new ArgumentOutOfRangeException(nameof(chunkSize));
 
             int size = source.Count / chunkSize;
             int extraSize = source.Count % chunkSize;

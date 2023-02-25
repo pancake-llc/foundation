@@ -17,20 +17,11 @@ namespace Pancake.Linq
         /// <returns>A sequence of filtered and transformed elements.</returns>
         public static TResult[] FilterMap<T, TResult>(this T[] source, Func<T, bool> predicate, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -57,20 +48,11 @@ namespace Pancake.Linq
         /// <returns>A sequence of filtered and transformed elements.</returns>
         public static TResult[] FilterMap<T, TResult>(this T[] source, Func<T, int, bool> predicate, Func<T, int, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -101,20 +83,11 @@ namespace Pancake.Linq
         /// <returns>A sequence of filtered and transformed elements.</returns>
         public static TResult[] FilterMap<T, TResult>(this Span<T> source, Func<T, bool> predicate, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -141,20 +114,11 @@ namespace Pancake.Linq
         /// <returns>A sequence of filtered and transformed elements.</returns>
         public static TResult[] FilterMap<T, TResult>(this Span<T> source, Func<T, int, bool> predicate, Func<T, int, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -184,20 +148,11 @@ namespace Pancake.Linq
         /// <returns>A sequence of filtered and transformed elements.</returns>
         public static List<TResult> FilterMap<T, TResult>(this List<T> source, Func<T, bool> predicate, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new List<TResult>();
             for (int i = 0; i < source.Count; i++)
@@ -218,20 +173,11 @@ namespace Pancake.Linq
         /// <returns>A sequence of filtered and transformed elements.</returns>
         public static List<TResult> FilterMap<T, TResult>(this List<T> source, Func<T, int, bool> predicate, Func<T, int, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new List<TResult>();
             int idx = 0;

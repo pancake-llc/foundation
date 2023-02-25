@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Pancake.Linq
 {
@@ -13,7 +14,7 @@ namespace Pancake.Linq
         /// <returns>The concatenation of all the nested sequences' elements.</returns>
         public static TSource[] Flatten<TSource>(this TSource[][] source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             var result = new List<TSource>();
 
@@ -27,7 +28,7 @@ namespace Pancake.Linq
 
 
         // --------------------------  LISTS  --------------------------------------------
-        
+
         // --------------------------  ARRAYS  --------------------------------------------
         /// <summary>
         /// Returns a flattened sequence that contains the concatenation of all the nested sequences' elements.
@@ -37,7 +38,7 @@ namespace Pancake.Linq
         /// <returns>The concatenation of all the nested sequences' elements.</returns>
         public static List<TSource> Flatten<TSource>(this List<List<TSource>> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             var result = new List<TSource>();
 
@@ -48,7 +49,7 @@ namespace Pancake.Linq
 
             return result;
         }
-        
+
         /// <summary>
         /// Returns a flattened sequence that contains the concatenation of all the nested sequences' elements.
         /// </summary>
@@ -57,7 +58,7 @@ namespace Pancake.Linq
         /// <returns>The concatenation of all the nested sequences' elements.</returns>
         public static List<TSource> Flatten<TSource>(this List<TSource[]> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             var result = new List<TSource>();
 

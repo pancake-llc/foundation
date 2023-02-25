@@ -21,15 +21,9 @@ namespace Pancake.Linq
                 comparer = EqualityComparer<T>.Default;
             }
 
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (first.Length != second.Length) return false;
             if (first == second) return true;
@@ -52,22 +46,16 @@ namespace Pancake.Linq
         /// <returns>An array of integers, where the value corresponds to IComparer.Compare indicating less than, greater than, or equals</returns>     
         public static int[] SequenceCompare<T>(this T[] first, T[] second, IComparer<T> comparer = null)
         {
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (comparer == null)
             {
                 comparer = Comparer<T>.Default;
             }
 
-            if (first.Length != second.Length) Error.ThrowNotSupported();
+            if (first.Length != second.Length) throw new NotSupportedException();
 
             var result = new int[first.Length];
             for (int i = 0; i < first.Length; i++)
@@ -95,15 +83,9 @@ namespace Pancake.Linq
                 comparer = EqualityComparer<T>.Default;
             }
 
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (first.Length != second.Count) return false;
 
@@ -131,15 +113,9 @@ namespace Pancake.Linq
                 comparer = EqualityComparer<T>.Default;
             }
 
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (first.Count != second.Length) return false;
 
@@ -169,15 +145,9 @@ namespace Pancake.Linq
                 comparer = EqualityComparer<T>.Default;
             }
 
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (first.Length != second.Length) return false;
             if (first == second) return true;
@@ -207,15 +177,9 @@ namespace Pancake.Linq
                 comparer = EqualityComparer<T>.Default;
             }
 
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (first.Length != second.Count) return false;
 
@@ -243,15 +207,9 @@ namespace Pancake.Linq
                 comparer = EqualityComparer<T>.Default;
             }
 
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (first.Count != second.Length) return false;
 
@@ -282,15 +240,9 @@ namespace Pancake.Linq
                 comparer = EqualityComparer<T>.Default;
             }
 
-            if (first == null)
-            {
-                Error.ThrowArgumentNull("first");
-            }
+            if (first == null) throw new ArgumentNullException(nameof(first));
 
-            if (second == null)
-            {
-                Error.ThrowArgumentNull("second");
-            }
+            if (second == null) throw new ArgumentNullException(nameof(second));
 
             if (first.Count != second.Count) return false;
             if (first == second) return true;

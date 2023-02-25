@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Pancake.Linq
 {
-
     public static partial class L
     {
         // --------------------------  ARRAYS --------------------------------------------
@@ -18,15 +17,9 @@ namespace Pancake.Linq
         /// <returns>A sequence transformed and then filtered by selector and predicate.</returns>
         public static TResult[] MapFilter<T, TResult>(this T[] source, Func<T, TResult> selector, Func<TResult, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -39,6 +32,7 @@ namespace Pancake.Linq
                     idx++;
                 }
             }
+
             Array.Resize(ref result, idx);
             return result;
         }
@@ -53,15 +47,9 @@ namespace Pancake.Linq
         /// <returns>A sequence transformed and then filtered by selector and predicate with indexes.</returns>
         public static TResult[] MapFilter<T, TResult>(this T[] source, Func<T, int, TResult> selector, Func<TResult, int, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -74,6 +62,7 @@ namespace Pancake.Linq
                     idx++;
                 }
             }
+
             Array.Resize(ref result, idx);
             return result;
         }
@@ -91,15 +80,9 @@ namespace Pancake.Linq
         /// <returns>A sequence transformed and then filtered by selector and predicate.</returns>
         public static TResult[] MapFilter<T, TResult>(this Span<T> source, Func<T, TResult> selector, Func<TResult, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -112,6 +95,7 @@ namespace Pancake.Linq
                     idx++;
                 }
             }
+
             Array.Resize(ref result, idx);
             return result;
         }
@@ -126,15 +110,9 @@ namespace Pancake.Linq
         /// <returns>A sequence transformed and then filtered by selector and predicate with indexes.</returns>
         public static TResult[] MapFilter<T, TResult>(this Span<T> source, Func<T, int, TResult> selector, Func<TResult, int, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var result = new TResult[source.Length];
             int idx = 0;
@@ -147,6 +125,7 @@ namespace Pancake.Linq
                     idx++;
                 }
             }
+
             Array.Resize(ref result, idx);
             return result;
         }
@@ -164,15 +143,9 @@ namespace Pancake.Linq
         /// <returns>A sequence transformed and then filtered by selector and predicate.</returns>
         public static List<TResult> MapFilter<T, TResult>(this List<T> source, Func<T, TResult> selector, Func<TResult, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var r = new List<TResult>();
             for (int i = 0; i < source.Count; i++)
@@ -180,6 +153,7 @@ namespace Pancake.Linq
                 var s = selector(source[i]);
                 if (predicate(s)) r.Add(s);
             }
+
             return r;
         }
 
@@ -193,15 +167,9 @@ namespace Pancake.Linq
         /// <returns>A sequence transformed and then filtered by selector and predicate with indexes.</returns>
         public static List<TResult> MapFilter<T, TResult>(this List<T> source, Func<T, int, TResult> selector, Func<TResult, int, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var r = new List<TResult>();
             for (int i = 0; i < source.Count; i++)
@@ -209,8 +177,8 @@ namespace Pancake.Linq
                 var s = selector(source[i], i);
                 if (predicate(s, i)) r.Add(s);
             }
+
             return r;
         }
-
     }
 }

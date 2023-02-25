@@ -2,7 +2,6 @@
     "name": "pancake@editor",
     "rootNamespace": "",
     "references": [
-        "GUID:9cc0d35f2f404de4c98b658ad7bc300e",
         "GUID:a824ce4dde854994ab15209834381e6f",
         "GUID:087e107ac31b88743919d55b204ac023",
         "GUID:adac8d59ad7e8504f82d387cded797a7"

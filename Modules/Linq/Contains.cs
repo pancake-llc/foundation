@@ -17,7 +17,7 @@ namespace Pancake.Linq
         /// <returns>true if the source sequence contains an element that has the specified value; otherwise, false.</returns>
         public static bool Contains<TSource>(this TSource[] source, TSource value, IEqualityComparer<TSource> comparer = null)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (comparer == null) return Array.IndexOf(source, value) != -1;
 
@@ -45,8 +45,8 @@ namespace Pancake.Linq
         /// <returns>true if the source sequence contains an element that has the specified value; otherwise, false.</returns>
         public static bool Contains<TSource>(this Span<TSource> source, TSource value, IEqualityComparer<TSource> comparer = null)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
-          
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
             if (comparer == null) comparer = EqualityComparer<TSource>.Default;
 
             for (int i = 0; i < source.Length; i++)
@@ -74,7 +74,7 @@ namespace Pancake.Linq
         /// <returns>true if the source sequence contains an element that has the specified value; otherwise, false.</returns>
         public static bool Contains<TSource>(this List<TSource> source, TSource value, IEqualityComparer<TSource> comparer = null)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (comparer == null) return source.IndexOf(value) != -1;
 

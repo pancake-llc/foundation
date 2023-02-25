@@ -14,15 +14,9 @@ namespace Pancake.Linq
         /// <returns>The value at the last position in the source sequence.</returns>
         public static T Last<T>(this T[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             return source[source.Length - 1];
         }
@@ -35,19 +29,13 @@ namespace Pancake.Linq
         /// <returns></returns>       
         public static T Last<T>(this T[] source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var lastIndex = Array.FindLastIndex(source, predicate);
 
-            if (lastIndex == -1) Error.ThrowNoMatch();
+            if (lastIndex == -1) throw new InvalidOperationException("Sequence contains no matching element");
             return source[lastIndex];
         }
 
@@ -59,10 +47,7 @@ namespace Pancake.Linq
         /// the last element in the sequence</returns>
         public static T LastOrDefault<T>(this T[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Length == 0)
             {
@@ -82,15 +67,9 @@ namespace Pancake.Linq
         /// predicate function.</returns>
         public static T LastOrDefault<T>(this T[] source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var lastIndex = Array.FindLastIndex(source, predicate);
 
@@ -108,15 +87,9 @@ namespace Pancake.Linq
         /// <returns>The value at the last position in the source sequence.</returns>
         public static T Last<T>(this Span<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             return source[source.Length - 1];
         }
@@ -129,15 +102,9 @@ namespace Pancake.Linq
         /// <returns></returns>       
         public static T Last<T>(this Span<T> source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = source.Length - 1; i >= 0; i--)
             {
@@ -155,10 +122,7 @@ namespace Pancake.Linq
         /// the last element in the sequence</returns>
         public static T LastOrDefault<T>(this Span<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Length == 0)
             {
@@ -178,15 +142,9 @@ namespace Pancake.Linq
         /// predicate function.</returns>
         public static T LastOrDefault<T>(this Span<T> source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = source.Length - 1; i >= 0; i--)
             {
@@ -207,15 +165,9 @@ namespace Pancake.Linq
         /// <returns>The value at the last position in the source sequence.</returns>
         public static T Last<T>(this List<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             return source[source.Count - 1];
         }
@@ -228,19 +180,13 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static T Last<T>(this List<T> source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var lastIndex = source.FindLastIndex(predicate);
 
-            if (lastIndex == -1) Error.ThrowNoMatch();
+            if (lastIndex == -1) throw new InvalidOperationException("Sequence contains no matching element");
             return source[lastIndex];
         }
 
@@ -252,10 +198,7 @@ namespace Pancake.Linq
         /// the last element in the sequence</returns>        
         public static T LastOrDefault<T>(this List<T> source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Count == 0)
             {
@@ -275,15 +218,9 @@ namespace Pancake.Linq
         /// predicate function.</returns>
         public static T LastOrDefault<T>(this List<T> source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var lastIndex = source.FindLastIndex(predicate);
 

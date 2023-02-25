@@ -16,15 +16,9 @@ namespace Pancake.Linq
         /// <param name="selector">A transform function to apply (map) to each element.</param>        
         public static void MapOrigin<T>(this T[] source, Func<T, T> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -40,15 +34,9 @@ namespace Pancake.Linq
         /// <param name="selector">A transform function to apply to each source element; the second parameter of the function represents the index of the source element.</param>        
         public static void MapOrigin<T>(this T[] source, Func<T, int, T> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -65,15 +53,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the transform function on each element (mapping) of source.</returns>
         public static TResult[] Map<T, TResult>(this T[] source, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new TResult[source.Length];
             for (int i = 0; i < source.Length; i++)
@@ -93,15 +75,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the transform function on each element of source.</returns>
         public static TResult[] Map<T, TResult>(this T[] source, Func<T, int, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new TResult[source.Length];
             for (int i = 0; i < source.Length; i++)
@@ -123,15 +99,9 @@ namespace Pancake.Linq
         /// <param name="selector">A transform function to apply (map) to each element.</param>        
         public static void MapOrigin<T>(this Span<T> source, Func<T, T> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -147,15 +117,9 @@ namespace Pancake.Linq
         /// <param name="selector">A transform function to apply to each source element; the second parameter of the function represents the index of the source element.</param>        
         public static void MapOrigin<T>(this Span<T> source, Func<T, int, T> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -172,15 +136,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the transform function on each element (mapping) of source.</returns>
         public static TResult[] Map<T, TResult>(this Span<T> source, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new TResult[source.Length];
             for (int i = 0; i < source.Length; i++)
@@ -200,15 +158,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the transform function on each element of source.</returns>
         public static TResult[] Map<T, TResult>(this Span<T> source, Func<T, int, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new TResult[source.Length];
             for (int i = 0; i < source.Length; i++)
@@ -230,15 +182,9 @@ namespace Pancake.Linq
         /// <param name="selector">A transform function to apply (map) to each element.</param>        
         public static void MapOrigin<T>(this List<T> source, Func<T, T> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             for (int i = 0; i < source.Count; i++)
             {
@@ -254,15 +200,9 @@ namespace Pancake.Linq
         /// <param name="selector">A transform function to apply to each source element; the second parameter of the function represents the index of the source element.</param>        
         public static void MapOrigin<T>(this List<T> source, Func<T, int, T> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             for (int i = 0; i < source.Count; i++)
             {
@@ -279,15 +219,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the transform function on each element (mapping) of source.</returns>
         public static List<TResult> Map<T, TResult>(this List<T> source, Func<T, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new List<TResult>(source.Count);
 
@@ -308,15 +242,9 @@ namespace Pancake.Linq
         /// <returns>A sequence whose elements are the result of invoking the transform function on each element of source.</returns>
         public static List<TResult> Map<T, TResult>(this List<T> source, Func<T, int, TResult> selector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (selector == null)
-            {
-                Error.ThrowArgumentNull("selector");
-            }
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
 
             var r = new List<TResult>(source.Count);
 

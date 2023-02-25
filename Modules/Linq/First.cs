@@ -14,9 +14,9 @@ namespace Pancake.Linq
         /// <returns>The first element in the specified array.</returns>
         public static T First<T>(this T[] source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0) Error.ThrowNoElements();
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             return source[0];
         }
@@ -29,9 +29,9 @@ namespace Pancake.Linq
         /// <returns>The first element that satisfies the condition.</returns>
         public static T First<T>(this T[] source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -54,7 +54,7 @@ namespace Pancake.Linq
         /// in source.</returns>        
         public static T FirstOrDefault<T>(this T[] source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Length == 0) return default;
 
@@ -70,9 +70,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static T FirstOrDefault<T>(this T[] source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -94,9 +94,9 @@ namespace Pancake.Linq
         /// <returns>The first element in the specified array.</returns>
         public static T First<T>(this Span<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (source.Length == 0) Error.ThrowNoElements();
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             return source[0];
         }
@@ -109,9 +109,9 @@ namespace Pancake.Linq
         /// <returns>The first element that satisfies the condition.</returns>
         public static T First<T>(this Span<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
-           
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -134,7 +134,7 @@ namespace Pancake.Linq
         /// in source.</returns>        
         public static T FirstOrDefault<T>(this Span<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Length == 0) return default;
 
@@ -150,9 +150,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static T FirstOrDefault<T>(this Span<T> source, Func<T, bool> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             for (int i = 0; i < source.Length; i++)
             {
@@ -165,7 +165,7 @@ namespace Pancake.Linq
             return default;
         }
 #endif
-        
+
         // --------------------------  Lists --------------------------------------------
 
         /// <summary>
@@ -175,9 +175,9 @@ namespace Pancake.Linq
         /// <returns>The first element in the specified list.</returns>   
         public static T First<T>(this List<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
-          
-            if (source.Count == 0) Error.ThrowNoElements();
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             return source[0];
         }
@@ -190,12 +190,12 @@ namespace Pancake.Linq
         /// <returns>The first element in the list that satisfies the condition.</returns>       
         public static T First<T>(this List<T> source, Predicate<T> predicate)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null) Error.ThrowArgumentNull("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var firstIndex = source.FindIndex(predicate);
-            if (firstIndex == -1) Error.ThrowNoMatch();
+            if (firstIndex == -1) throw new InvalidOperationException("Sequence contains no matching element");
             return source[firstIndex];
         }
 
@@ -208,7 +208,7 @@ namespace Pancake.Linq
         /// in source.</returns>      
         public static T FirstOrDefault<T>(this List<T> source)
         {
-            if (source == null) Error.ThrowArgumentNull("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             if (source.Count == 0) return default;
 
@@ -224,15 +224,9 @@ namespace Pancake.Linq
         /// <returns></returns>
         public static T FirstOrDefault<T>(this List<T> source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var firstIndex = source.FindIndex(predicate);
             if (firstIndex == -1) return default;

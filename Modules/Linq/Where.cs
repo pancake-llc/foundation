@@ -15,15 +15,9 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains elements from the input sequence that satisfy the condition.</returns>        
         public static T[] Filter<T>(this T[] source, Func<T, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T[] result = new T[source.Length];
             int idx = 0;
@@ -48,15 +42,9 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains elements from the input sequence that satisfy the condition.</returns>
         public static T[] Filter<T>(this T[] source, Func<T, int, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
 
             T[] result = new T[source.Length];
@@ -85,15 +73,9 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains elements from the input sequence that satisfy the condition.</returns>        
         public static T[] Filter<T>(this Span<T> source, Func<T, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             T[] result = new T[source.Length];
             int idx = 0;
@@ -118,15 +100,9 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains elements from the input sequence that satisfy the condition.</returns>
         public static T[] Filter<T>(this Span<T> source, Func<T, int, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
 
             T[] result = new T[source.Length];
@@ -155,15 +131,9 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains elements from the input sequence that satisfy the condition.</returns>
         public static List<T> Filter<T>(this List<T> source, Predicate<T> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return source.FindAll(predicate);
         }
@@ -177,15 +147,9 @@ namespace Pancake.Linq
         /// <returns>A sequence that contains elements from the input sequence that satisfy the condition.</returns>
         public static List<T> Filter<T>(this List<T> source, Func<T, int, bool> predicate)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            if (predicate == null)
-            {
-                Error.ThrowArgumentNull("predicate");
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             List<T> r = new List<T>();
             for (int i = 0; i < source.Count; i++)
