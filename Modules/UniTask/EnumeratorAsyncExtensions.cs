@@ -16,19 +16,19 @@ namespace Pancake.Threading.Tasks
             where T : IEnumerator
         {
             var e = (IEnumerator)enumerator;
-            Error.ThrowArgumentNullException(e, nameof(enumerator));
+            if (e == null) throw new ArgumentNullException(nameof(enumerator));
             return new UniTask(EnumeratorPromise.Create(e, PlayerLoopTiming.Update, CancellationToken.None, out var token), token).GetAwaiter();
         }
 
         public static UniTask WithCancellation(this IEnumerator enumerator, CancellationToken cancellationToken)
         {
-            Error.ThrowArgumentNullException(enumerator, nameof(enumerator));
+            if (enumerator == null) throw new ArgumentNullException(nameof(enumerator));
             return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, cancellationToken, out var token), token);
         }
 
         public static UniTask ToUniTask(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Error.ThrowArgumentNullException(enumerator, nameof(enumerator));
+            if (enumerator == null) throw new ArgumentNullException(nameof(enumerator));
             return new UniTask(EnumeratorPromise.Create(enumerator, timing, cancellationToken, out var token), token);
         }
 

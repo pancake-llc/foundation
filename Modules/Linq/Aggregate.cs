@@ -19,20 +19,9 @@ namespace Pancake.Linq
         /// <returns>The final accumulator value</returns>
         public static TSource Reduce<TSource>(this TSource[] source, Func<TSource, TSource, TSource> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
-
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             TSource result = source[0];
             for (int i = 1; i < source.Length; i++)
@@ -53,15 +42,8 @@ namespace Pancake.Linq
         /// <returns>The final accumulator value</returns>
         public static TAccumulate Reduce<TSource, TAccumulate>(this TSource[] source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
             TAccumulate result = seed;
             foreach (var v in source)
@@ -88,20 +70,9 @@ namespace Pancake.Linq
             Func<TAccumulate, TSource, TAccumulate> func,
             Func<TAccumulate, TResult> resultSelector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
-
-            if (resultSelector == null)
-            {
-                Error.ThrowArgumentNull("resultSelector");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             TAccumulate result = seed;
             foreach (var v in source)
@@ -123,20 +94,9 @@ namespace Pancake.Linq
         /// <returns>The final accumulator value</returns>
         public static TSource Reduce<TSource>(this Span<TSource> source, Func<TSource, TSource, TSource> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
-
-            if (source.Length == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (source.Length == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             TSource result = source[0];
             for (int i = 1; i < source.Length; i++)
@@ -157,15 +117,8 @@ namespace Pancake.Linq
         /// <returns>The final accumulator value</returns>
         public static TAccumulate Reduce<TSource, TAccumulate>(this Span<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
             TAccumulate result = seed;
             foreach (var v in source)
@@ -192,20 +145,9 @@ namespace Pancake.Linq
             Func<TAccumulate, TSource, TAccumulate> func,
             Func<TAccumulate, TResult> resultSelector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
-
-            if (resultSelector == null)
-            {
-                Error.ThrowArgumentNull("resultSelector");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             TAccumulate result = seed;
             foreach (var v in source)
@@ -228,20 +170,9 @@ namespace Pancake.Linq
         /// <returns>The final accumulator value</returns>
         public static TSource Reduce<TSource>(this List<TSource> source, Func<TSource, TSource, TSource> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
-
-            if (source.Count == 0)
-            {
-                Error.ThrowNoElements();
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (source.Count == 0) throw new InvalidOperationException("Source sequence doesn't contain any elements.");
 
             TSource result = source[0];
             for (int i = 1; i < source.Count; i++)
@@ -262,15 +193,8 @@ namespace Pancake.Linq
         /// <returns>The final accumulator value</returns>
         public static TAccumulate Reduce<TSource, TAccumulate>(this List<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
 
             TAccumulate result = seed;
             for (int i = 0; i < source.Count; i++)
@@ -297,20 +221,9 @@ namespace Pancake.Linq
             Func<TAccumulate, TSource, TAccumulate> func,
             Func<TAccumulate, TResult> resultSelector)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
-            if (func == null)
-            {
-                Error.ThrowArgumentNull("func");
-            }
-
-            if (resultSelector == null)
-            {
-                Error.ThrowArgumentNull("resultSelector");
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (func == null) throw new ArgumentNullException(nameof(func));
+            if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
             TAccumulate result = seed;
             for (int i = 0; i < source.Count; i++)

@@ -406,7 +406,7 @@ namespace Pancake.Threading.Tasks
 
             if (taskResultIsCanceled)
             {
-                Error.ThrowOperationCanceledException();
+                throw new OperationCanceledException();
             }
         }
 
@@ -447,7 +447,7 @@ namespace Pancake.Threading.Tasks
 
             if (taskResult.IsCanceled)
             {
-                Error.ThrowOperationCanceledException();
+                throw new OperationCanceledException();
             }
 
             return taskResult.Result;

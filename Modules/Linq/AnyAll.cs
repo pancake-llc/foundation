@@ -14,11 +14,7 @@ namespace Pancake.Linq
         /// <returns>true if the source array contains any elements, otherwise, false/</returns>
         public static bool Any<T>(this T[] source)
         {
-            if (source == null)
-            {
-                Error.ThrowArgumentNull("source");
-            }
-
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Length > 0;
         }
 

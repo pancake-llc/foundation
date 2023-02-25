@@ -69,7 +69,7 @@ namespace Pancake.Threading.Tasks
 
         public static SwitchToSynchronizationContextAwaitable SwitchToSynchronizationContext(SynchronizationContext synchronizationContext, CancellationToken cancellationToken = default)
         {
-            Error.ThrowArgumentNullException(synchronizationContext, nameof(synchronizationContext));
+            if (synchronizationContext == null) throw new ArgumentNullException(nameof(synchronizationContext));
             return new SwitchToSynchronizationContextAwaitable(synchronizationContext, cancellationToken);
         }
 

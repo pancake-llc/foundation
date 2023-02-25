@@ -130,7 +130,8 @@ namespace Pancake
 
         /// <inheritdoc cref="Approximately(float,float)"/>
         [MethodImpl(INLINE)]
-        public static bool Approximately(this Color a, Color b) => Approximately(a.r, b.r) && Approximately(a.g, b.g) && Approximately(a.b, b.b) && Approximately(a.a, b.a);
+        public static bool Approximately(this Color a, Color b) =>
+            Approximately(a.r, b.r) && Approximately(a.g, b.g) && Approximately(a.b, b.b) && Approximately(a.a, b.a);
 
         #endregion
 
@@ -370,21 +371,76 @@ namespace Pancake
         [MethodImpl(INLINE)]
         public static int Max(this int a, int b, int c, int d) => Max(Max(a, b), Max(c, d));
 
+        private static float MinCopyLinq(float[] source)
+        {
+            float r = float.MaxValue;
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (source[i] < r) r = source[i];
+                else if (float.IsNaN(source[i])) return source[i];
+            }
+
+            return r;
+        }
+
+        private static int MinCopyLinq(int[] source)
+        {
+            int r = int.MaxValue;
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (source[i] < r) r = source[i];
+            }
+
+            return r;
+        }
+
+        private static int MaxCopyLinq(int[] source)
+        {
+            int r = int.MinValue;
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (source[i] > r) r = source[i];
+            }
+
+            return r;
+        }
+
+        private static float MaxCopyLinq(float[] source)
+        {
+            float r = source[0];
+            int startIndex = 0;
+            for (; startIndex < source.Length; startIndex++)
+            {
+                if (!float.IsNaN(source[startIndex]))
+                {
+                    r = source[startIndex];
+                    break;
+                }
+            }
+
+            for (int i = startIndex; i < source.Length; i++)
+            {
+                if (source[i] > r) r = source[i];
+            }
+
+            return r;
+        }
+
         /// <summary>Returns the smallest of the given values</summary>
         [MethodImpl(INLINE)]
-        public static float Min(params float[] values) => Linq.L.Min(values);
+        public static float Min(params float[] values) => MinCopyLinq(values);
 
         /// <summary>Returns the largest of the given values</summary>
         [MethodImpl(INLINE)]
-        public static float Max(params float[] values) => Linq.L.Max(values);
+        public static float Max(params float[] values) => MaxCopyLinq(values);
 
         /// <summary>Returns the smallest of the given values</summary>
         [MethodImpl(INLINE)]
-        public static int Min(params int[] values) => Linq.L.Min(values);
+        public static int Min(params int[] values) => MinCopyLinq(values);
 
         /// <summary>Returns the largest of the given values</summary>
         [MethodImpl(INLINE)]
-        public static int Max(params int[] values) => Linq.L.Max(values);
+        public static int Max(params int[] values) => MaxCopyLinq(values);
 
         /// <summary>Returns the minimum value of all components in the vector</summary>
         [MethodImpl(INLINE)]

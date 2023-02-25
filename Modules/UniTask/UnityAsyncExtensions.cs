@@ -20,7 +20,7 @@ namespace Pancake.Threading.Tasks
 
         public static AsyncOperationAwaiter GetAwaiter(this AsyncOperation asyncOperation)
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            if (asyncOperation == null) throw new ArgumentNullException(nameof(asyncOperation));
             return new AsyncOperationAwaiter(asyncOperation);
         }
 #endif
@@ -32,7 +32,7 @@ namespace Pancake.Threading.Tasks
 
         public static UniTask ToUniTask(this AsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            if (asyncOperation == null) throw new ArgumentNullException(nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled(cancellationToken);
             if (asyncOperation.isDone) return UniTask.CompletedTask;
             return new UniTask(AsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
@@ -72,7 +72,7 @@ namespace Pancake.Threading.Tasks
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
+                if (continuationAction != null) throw new InvalidOperationException("continuation is already registered.");
                 continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
@@ -191,7 +191,7 @@ namespace Pancake.Threading.Tasks
 
         public static ResourceRequestAwaiter GetAwaiter(this ResourceRequest asyncOperation)
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            if (asyncOperation == null) throw new ArgumentNullException(nameof(asyncOperation));
             return new ResourceRequestAwaiter(asyncOperation);
         }
 
@@ -202,7 +202,7 @@ namespace Pancake.Threading.Tasks
 
         public static UniTask<UnityEngine.Object> ToUniTask(this ResourceRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
+            if (asyncOperation == null)throw new ArgumentNullException(nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityEngine.Object>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.asset);
             return new UniTask<UnityEngine.Object>(ResourceRequestConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
@@ -246,7 +246,7 @@ namespace Pancake.Threading.Tasks
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
+                if (continuation == null) throw new InvalidOperationException("continuation is already registered.");
                 continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }

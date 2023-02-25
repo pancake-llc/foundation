@@ -14,11 +14,12 @@ namespace Pancake.Linq
         /// <param name="source">A sequence of values to determine the maximum of.</param>
         /// <returns>The maximum value in the sequence</returns>
         public static T Max<T>(this T[] source)
-        {            
+        {
             if (source == null)
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
@@ -42,9 +43,10 @@ namespace Pancake.Linq
                     if (comparer.Compare(source[i], r) > 0) r = source[i];
                 }
             }
+
             return r;
         }
-       
+
         /// <summary>
         /// Invokes a transform function on each element of a sequence and returns the maximum value.
         /// </summary>        
@@ -57,10 +59,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
@@ -79,13 +83,14 @@ namespace Pancake.Linq
             }
             else
             {
-                r = selector(source[0]);                
+                r = selector(source[0]);
                 for (int i = 1; i < source.Length; i++)
                 {
                     var v = selector(source[i]);
                     if (comparer.Compare(v, r) > 0) r = v;
                 }
             }
+
             return r;
         }
 
@@ -100,15 +105,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             int r = int.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -124,10 +132,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -139,6 +149,7 @@ namespace Pancake.Linq
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -153,15 +164,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             long r = long.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -178,10 +192,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -193,6 +209,7 @@ namespace Pancake.Linq
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -207,10 +224,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             float r = source[0];
             int startIndex = 0;
             for (; startIndex < source.Length; startIndex++)
@@ -221,10 +240,12 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -240,10 +261,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -260,11 +283,13 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -279,10 +304,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             double r = source[0];
             int startIndex = 0;
             for (; startIndex < source.Length; startIndex++)
@@ -293,10 +320,12 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -312,10 +341,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -332,11 +363,13 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -352,15 +385,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -376,20 +412,24 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
             }
+
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -407,6 +447,7 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
@@ -430,6 +471,7 @@ namespace Pancake.Linq
                     if (comparer.Compare(source[i], r) > 0) r = source[i];
                 }
             }
+
             return r;
         }
 
@@ -445,10 +487,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
@@ -474,6 +518,7 @@ namespace Pancake.Linq
                     if (comparer.Compare(v, r) > 0) r = v;
                 }
             }
+
             return r;
         }
 
@@ -488,15 +533,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             int r = int.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -512,10 +560,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -527,6 +577,7 @@ namespace Pancake.Linq
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -541,15 +592,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             long r = long.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -566,10 +620,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -581,6 +637,7 @@ namespace Pancake.Linq
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -595,10 +652,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             float r = source[0];
             int startIndex = 0;
             for (; startIndex < source.Length; startIndex++)
@@ -609,10 +668,12 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -628,10 +689,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -648,11 +711,13 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -667,10 +732,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             double r = source[0];
             int startIndex = 0;
             for (; startIndex < source.Length; startIndex++)
@@ -681,10 +748,12 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -700,10 +769,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -720,11 +791,13 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Length; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -740,15 +813,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -764,20 +840,24 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Length == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
             }
+
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Length; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 #endif
@@ -795,6 +875,7 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
@@ -818,6 +899,7 @@ namespace Pancake.Linq
                     if (comparer.Compare(source[i], r) > 0) r = source[i];
                 }
             }
+
             return r;
         }
 
@@ -864,6 +946,7 @@ namespace Pancake.Linq
                     if (comparer.Compare(v, r) > 0) r = v;
                 }
             }
+
             return r;
         }
 
@@ -879,15 +962,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             int r = int.MinValue;
             for (int i = 0; i < source.Count; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -903,10 +989,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
@@ -918,6 +1006,7 @@ namespace Pancake.Linq
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -932,15 +1021,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             long r = long.MinValue;
             for (int i = 0; i < source.Count; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -956,20 +1048,24 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("source");
             }
+
             long r = long.MinValue;
             for (int i = 0; i < source.Count; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -984,10 +1080,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             float r = source[0];
             int startIndex = 0;
             for (; startIndex < source.Count; startIndex++)
@@ -998,10 +1096,12 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Count; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -1017,14 +1117,17 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
             }
+
             float r = selector(source[0]);
             int startIndex = 0;
             for (; startIndex < source.Count; startIndex++)
@@ -1036,11 +1139,13 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Count; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -1055,10 +1160,12 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             double r = source[0];
             int startIndex = 0;
             for (; startIndex < source.Count; startIndex++)
@@ -1069,10 +1176,12 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Count; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -1088,14 +1197,17 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             if (selector == null)
             {
                 Error.ThrowArgumentNull("selector");
             }
+
             double r = selector(source[0]);
             int startIndex = 0;
             for (; startIndex < source.Count; startIndex++)
@@ -1107,11 +1219,13 @@ namespace Pancake.Linq
                     break;
                 }
             }
+
             for (int i = startIndex; i < source.Count; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
 
@@ -1126,15 +1240,18 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Count; i++)
             {
                 if (source[i] > r) r = source[i];
             }
+
             return r;
         }
 
@@ -1150,19 +1267,20 @@ namespace Pancake.Linq
             {
                 Error.ThrowArgumentNull("source");
             }
+
             if (source.Count == 0)
             {
                 Error.ThrowNoElements();
             }
+
             decimal r = decimal.MinValue;
             for (int i = 0; i < source.Count; i++)
             {
                 var v = selector(source[i]);
                 if (v > r) r = v;
             }
+
             return r;
         }
-
-
     }
 }

@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using System.Linq;
 using Pancake;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PancakeEditor
 {
@@ -85,11 +87,11 @@ namespace PancakeEditor
         /// <param name="index"></param>
         public static void RemoveElement(this SerializedProperty list, int index)
         {
-            if (list == null) Error.ThrowArgumentNull("list");
+            if (list == null) throw new ArgumentNullException(nameof(list));
 
-            if (!list.isArray) Error.ThrowArgumentException("Property is not an array");
+            if (!list.isArray) throw new ArgumentException("Property is not an array");
 
-            if (index < 0 || index >= list.arraySize) Error.ThrowArgumentOutOfRange("list");
+            if (index < 0 || index >= list.arraySize) throw new ArgumentOutOfRangeException(nameof(list));
 
             list.GetArrayElementAtIndex(index).SetPropertyValue(null);
             list.DeleteArrayElementAtIndex(index);
