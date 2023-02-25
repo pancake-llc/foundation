@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class Editor
+    public static partial class Editor
     {
         /// <summary>
         /// Search for assets with type <typeparamref name="T"/> by specified <paramref name="nameAsset"/> and relative path <paramref name="relativePath"/>

@@ -82,6 +82,18 @@ namespace PancakeEditor
 
         #endregion
 
+
+        #region color
+
+        public static readonly Color Green = new(0.31f, 0.98f, 0.48f, 0.66f);
+        public static readonly Color Orange = new(1f, 0.72f, 0.42f, 0.66f);
+        public static readonly Color Blue = new(0f, 1f, 0.97f, 0.27f);
+        public static readonly Color Purple = new(0.74f, 0.58f, 0.98f, 0.39f);
+        public static readonly Color Red = new(1f, 0.16f, 0.16f, 0.66f);
+        public static readonly Color Pink = new(1f, 0.47f, 0.78f, 0.66f);
+
+        #endregion
+
         public static void DrawBox(Rect position, GUIStyle style, bool isHover = false, bool isActive = false, bool on = false, bool hasKeyboardFocus = false)
         {
             if (Event.current.type == EventType.Repaint)
