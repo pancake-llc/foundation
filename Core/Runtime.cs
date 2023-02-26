@@ -207,7 +207,7 @@ namespace Pancake
                 runtime.AddComponent<GlobalComponent>();
                 UnityEngine.Object.DontDestroyOnLoad(runtime);
 
-                //Data.Init();
+                Data.Init();
 
 #if PANCAKE_ADS
                 if (Monetization.AdSettings.RuntimeAutoInitialize) runtime.AddComponent<Monetization.Advertising>();

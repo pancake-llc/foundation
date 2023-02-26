@@ -8,7 +8,7 @@ namespace Pancake
         Normal = 0,
         Unscaled = 1,
     }
-    
+
     /// <summary>
     /// UpdateMode
     /// </summary>
