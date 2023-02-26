@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using Pancake;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -172,6 +171,25 @@ namespace PancakeEditor
                     property.vector4Value = (Vector4?) value ?? Vector4.zero;
                     break;
             }
+        }
+
+        /// <summary>
+        /// get inspector type to display window
+        /// </summary>
+        public static Type InspectorWindow => typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+        
+        public static string GetSizeInMemory(this long byteSize)
+        {
+            string[] sizes = {"B", "KB", "MB", "GB", "TB"};
+            double len = Convert.ToDouble(byteSize);
+            int order = 0;
+            while (len >= 1024D && order < sizes.Length - 1)
+            {
+                order++;
+                len /= 1024;
+            }
+
+            return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
         }
     }
 }
