@@ -42,7 +42,7 @@ namespace PancakeEditor
             }
             catch (Exception e)
             {
-                Debug.LogError($"Unable to save {typeof(T).Name} to UserSettings!\n" + e.Message);
+                Debug.LogError($"Unable to save setting with path : {string.Format(DEFAULT_PATH, _name)}\n" + e.Message);
             }
         }
 

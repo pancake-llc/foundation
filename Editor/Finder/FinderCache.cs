@@ -186,6 +186,7 @@ namespace PancakeEditor
 
         public Color32 rowColor = new Color32(0, 0, 0, 12);
         public Color32 scanColor = new Color32(0, 204, 102, 255);
+        [Newtonsoft.Json.JsonIgnore]
         public Color selectedColor = new Color(0, 0f, 1f, 0.25f);
 
         [NonSerialized] internal static HashSet<string> hashIgnore;

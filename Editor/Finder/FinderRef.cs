@@ -836,7 +836,6 @@ namespace PancakeEditor
             Type,
             Extension,
             Folder,
-            Atlas,
             AssetBundle,
 
             None
@@ -1138,7 +1137,6 @@ namespace PancakeEditor
                     return "Level " + rf.depth.ToString();
                 }
 
-                case Mode.Atlas: return rf.isSceneRef ? "(not in atlas)" : (string.IsNullOrEmpty(rf.asset.AtlasName) ? "(not in atlas)" : rf.asset.AtlasName);
                 case Mode.AssetBundle:
                     return rf.isSceneRef ? "(not in assetbundle)" : (string.IsNullOrEmpty(rf.asset.AssetBundleName) ? "(not in assetbundle)" : rf.asset.AssetBundleName);
             }

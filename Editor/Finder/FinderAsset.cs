@@ -105,7 +105,6 @@ namespace PancakeEditor
         [FormerlySerializedAs("m_assetbundle")] [SerializeField] private string mAssetbundle;
         [FormerlySerializedAs("m_addressable")] [SerializeField] private string mAddressable;
 
-        [FormerlySerializedAs("m_atlas")] [SerializeField] private string mAtlas;
         [FormerlySerializedAs("m_fileSize")] [SerializeField] private long mFileSize;
 
         [FormerlySerializedAs("m_assetChangeTS")] [SerializeField] private int mAssetChangeTs; // Realtime when asset changed (trigger by import asset operation)
@@ -315,19 +314,6 @@ namespace PancakeEditor
             //if (!string.IsNullOrEmpty(m_addressable)) Debug.LogWarning(guid + " --> " + m_addressable);
             mAssetbundle = AssetDatabase.GetImplicitAssetBundleName(_mAssetPath);
 
-            if (assetType == typeof(Texture2D))
-            {
-                var importer = AssetImporter.GetAtPath(_mAssetPath);
-                if (importer is TextureImporter)
-                {
-                    var tImporter = importer as TextureImporter;
-                    if (tImporter.qualifiesForSpritePacking)
-                    {
-                        mAtlas = tImporter.spritePackingTag;
-                    }
-                }
-            }
-
             // check if file content changed
             var metaInfo = new FileInfo(_mAssetPath + ".meta");
             var assetTime = FinderUnity.Epoch(info.LastWriteTime);
@@ -352,15 +338,6 @@ namespace PancakeEditor
             {
                 LoadFileInfo();
                 return mFileSize;
-            }
-        }
-
-        public string AtlasName
-        {
-            get
-            {
-                LoadFileInfo();
-                return mAtlas;
             }
         }
 
@@ -902,16 +879,6 @@ namespace PancakeEditor
                             //
                         }
                     }
-                }
-            }
-
-            if (showAtlasName)
-            {
-                GUI2.RightRect(10f, ref r); //margin
-                Rect abRect = GUI2.RightRect(120f, ref r); // filesize label
-                if (!string.IsNullOrEmpty(mAtlas))
-                {
-                    GUI.Label(abRect, mAtlas, GUI2.MiniLabelAlignRight);
                 }
             }
 
