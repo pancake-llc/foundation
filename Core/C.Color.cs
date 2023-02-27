@@ -23,7 +23,7 @@ namespace Pancake
         /// <returns>
         ///   <para>Hexadecimal string representing the color.</para>
         /// </returns>
-        public static string ToHtmlStringRGB(Color color)
+        public static string ToHtmlStringRGB(this Color color)
         {
             var color32 = new Color32((byte) Mathf.Clamp(Mathf.RoundToInt(color.r * (float) byte.MaxValue), 0, (int) byte.MaxValue),
                 (byte) Mathf.Clamp(Mathf.RoundToInt(color.g * (float) byte.MaxValue), 0, (int) byte.MaxValue),

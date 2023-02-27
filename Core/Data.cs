@@ -98,8 +98,8 @@ namespace Pancake
             if (datas == null) throw new NullReferenceException();
             
             datas.TryGetValue(key, out string value);
-            if (value != null && string.IsNullOrEmpty(value)) return Deserialize<T>(value);
-            DebugEditor.Log($"Value of key <color=#52D5F2>'{key}'</color> can not be found or empty! So will return the default value of data type!");
+            if (value != null && !string.IsNullOrEmpty(value)) return Deserialize<T>(value);
+            Debug.Log($"Value of key <color=#52D5F2>'{key}'</color> can not be found or empty! So will return the default value of data type!");
             return @default;
         }
 
