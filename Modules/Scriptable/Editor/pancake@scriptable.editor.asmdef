@@ -1,8 +1,10 @@
 {
-    "name": "pancake@runtime",
+    "name": "pancake@scriptable.editor",
     "rootNamespace": "",
     "references": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

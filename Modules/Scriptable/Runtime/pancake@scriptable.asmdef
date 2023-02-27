@@ -1,7 +1,9 @@
 {
-    "name": "pancake@runtime",
+    "name": "pancake@scriptable",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:adac8d59ad7e8504f82d387cded797a7"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
