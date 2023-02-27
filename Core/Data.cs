@@ -29,7 +29,7 @@ namespace Pancake
             isInitialized = true;
 
             GeneratePath();
-            Load();
+            LoadAll();
             Runtime.AddFocusCallback(OnApplicationFocus);
         }
 
@@ -44,7 +44,7 @@ namespace Pancake
 
         private static void OnApplicationFocus(bool focus)
         {
-            if (!focus) Save();
+            if (!focus) SaveAll();
         }
 
         #endregion
@@ -58,14 +58,14 @@ namespace Pancake
         {
             if (Data.profile == profile) return;
 
-            Save();
+            SaveAll();
             Data.profile = profile;
             GeneratePath();
-            Load();
+            LoadAll();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Save()
+        public static void SaveAll()
         {
             OnSaveEvent?.Invoke();
 
@@ -74,12 +74,12 @@ namespace Pancake
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Load()
+        public static void LoadAll()
         {
             if (!File.Exists(path))
             {
                 var stream = File.Create(path);
-                stream?.Close();
+                stream.Close();
             }
 
             var json = File.ReadAllText(path);
@@ -87,16 +87,33 @@ namespace Pancake
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Load<T>(string key)
+        public static T Load<T>(string key, T @default = default)
         {
+            if (datas == null)
+            {
+                GeneratePath();
+                LoadAll();
+            }
+
+            if (datas == null) throw new NullReferenceException();
+            
             datas.TryGetValue(key, out string value);
-            if (value == null) throw new Exception($"No data saved with key: {key}");
-            return Deserialize<T>(value);
+            if (value != null && string.IsNullOrEmpty(value)) return Deserialize<T>(value);
+            DebugEditor.Log($"Value of key <color=#52D5F2>'{key}'</color> can not be found or empty! So will return the default value of data type!");
+            return @default;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryLoad<T>(string key, out T data)
         {
+            if (datas == null)
+            {
+                GeneratePath();
+                LoadAll();
+            }
+
+            if (datas == null) throw new NullReferenceException();
+            
             bool hasKey;
             if (datas.TryGetValue(key, out string value))
             {
@@ -121,7 +138,7 @@ namespace Pancake
             }
             else
             {
-                string json = Serialize<T>(data);
+                string json = Serialize(data);
                 datas.Add(key, json);
             }
         }
