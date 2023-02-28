@@ -3,16 +3,10 @@ namespace Pancake
     /// <summary>
     /// Base class MonoBehavior
     /// </summary>
-    public class BaseMono : Mono, ITickSystem, IFixedTickSystem, ILateTickSystem
+    public abstract class BaseMono : Mono, ITickSystem, IFixedTickSystem, ILateTickSystem
     {
-        /// <summary>
-        /// Cached transform
-        /// </summary>
-        public UnityEngine.Transform CachedTransform { get; private set; }
-
         private void OnEnable()
         {
-            if (CachedTransform == null) CachedTransform = transform;
             OnEnabled();
             Subscribe();
         }
