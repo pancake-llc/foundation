@@ -2,7 +2,7 @@ namespace Pancake.Scriptable
 {
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "scriptable_variable_color.asset", menuName = "Pancake/ScriptableVariables/color")]
+    [CreateAssetMenu(fileName = "scriptable_variable_color.asset", menuName = "Pancake/Scriptable Variable/color")]
     [System.Serializable]
     public class ColorVariable : ScriptableVariable<Color>
     {

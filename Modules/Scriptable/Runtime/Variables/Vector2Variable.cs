@@ -2,7 +2,7 @@ namespace Pancake.Scriptable
 {
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "scriptable_variable_vector2.asset", menuName = "Pancake/ScriptableVariables/vector2")]
+    [CreateAssetMenu(fileName = "scriptable_variable_vector2.asset", menuName = "Pancake/Scriptable Variable/vector2")]
     [System.Serializable]
     public class Vector2Variable : ScriptableVariable<Vector2>
     {

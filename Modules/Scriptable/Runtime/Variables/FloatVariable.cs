@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_float.asset", menuName = "Pancake/ScriptableVariables/float")]
+    [CreateAssetMenu(fileName = "scriptable_variable_float.asset", menuName = "Pancake/Scriptable Variable/float")]
     [System.Serializable]
     public class FloatVariable : ScriptableVariable<float>
     {
