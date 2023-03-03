@@ -241,5 +241,16 @@ namespace PancakeEditor
 
             serializedObject.ApplyModifiedProperties();
         }
+
+        /// <summary>
+        /// Draws a line in the inspector.
+        /// </summary>
+        /// <param name="height"></param>
+        public static void DrawLine(int height = 1)
+        {
+            var rect = EditorGUILayout.GetControlRect(false, height);
+            rect.height = height;
+            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
+        }
     }
 }
