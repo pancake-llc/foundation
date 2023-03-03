@@ -21,8 +21,8 @@ namespace PancakeEditor.Scriptable
                 //Do not draw the native list.
                 if (_serializedObject == null) _serializedObject = new SerializedObject(target);
 
-                _serializedObject.DrawOnlyField("m_Script", true);
-                _serializedObject.DrawOnlyField("resetOn", false);
+                Uniform.DrawOnlyField(_serializedObject, "m_Script", true);
+                Uniform.DrawOnlyField(_serializedObject, "resetOn", false);
             }
             else
             {
@@ -35,7 +35,7 @@ namespace PancakeEditor.Scriptable
             var container = (IDrawObjectsInInspector) target;
             var gameObjects = container.GetAllObjects();
 
-            Editor.DrawLine();
+            Uniform.DrawLine();
 
             if (gameObjects.Count > 0) DisplayAll(gameObjects);
         }
@@ -47,7 +47,7 @@ namespace PancakeEditor.Scriptable
             GUILayout.BeginVertical(title, "window");
             foreach (var obj in gameObjects)
             {
-                Editor.DrawSelectableObject(obj, new[] {obj.name, "Select"});
+                Uniform.DrawSelectableObject(obj, new[] {obj.name, "Select"});
             }
 
             GUILayout.EndVertical();

@@ -20,7 +20,7 @@ namespace PancakeEditor.Scriptable
 
             if (!EditorApplication.isPlaying) return;
 
-            Editor.DrawLine();
+            Uniform.DrawLine();
 
             var container = (IDrawObjectsInInspector) target;
             var gameObjects = container.GetAllObjects();
@@ -35,7 +35,7 @@ namespace PancakeEditor.Scriptable
             GUILayout.BeginVertical(title, "window");
             foreach (var obj in gameObjects)
             {
-                Editor.DrawSelectableObject(obj, new[] {obj.name, "Select"});
+                Uniform.DrawSelectableObject(obj, new[] {obj.name, "Select"});
             }
 
             GUILayout.EndVertical();

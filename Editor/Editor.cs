@@ -216,64 +216,19 @@ namespace PancakeEditor
 
             return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
         }
+        
 
         /// <summary>
-        /// Draw only the property specified.
+        /// Create Texture2D from color
         /// </summary>
-        /// <param name="serializedObject"></param>
-        /// <param name="fieldName"></param>
-        /// <param name="isReadOnly"></param>
-        public static void DrawOnlyField(this SerializedObject serializedObject, string fieldName, bool isReadOnly)
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static Texture2D CreateTexture(Color color)
         {
-            serializedObject.Update();
-            var prop = serializedObject.GetIterator();
-            if (prop.NextVisible(true))
-            {
-                do
-                {
-                    if (prop.name != fieldName) continue;
-
-                    GUI.enabled = !isReadOnly;
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty(prop.name), true);
-                    GUI.enabled = true;
-                } while (prop.NextVisible(false));
-            }
-
-            serializedObject.ApplyModifiedProperties();
-        }
-
-        /// <summary>
-        /// Draws a line in the inspector.
-        /// </summary>
-        /// <param name="height"></param>
-        public static void DrawLine(int height = 1)
-        {
-            var rect = EditorGUILayout.GetControlRect(false, height);
-            rect.height = height;
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
-        }
-
-        /// <summary>
-        /// Draw a selectable object
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="labels"></param>
-        public static void DrawSelectableObject(Object obj, string[] labels)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button(labels[0], GUILayout.MaxWidth(300))) EditorGUIUtility.PingObject(obj);
-
-            if (GUILayout.Button(labels[1], GUILayout.MaxWidth(75)))
-            {
-                EditorWindow.FocusWindowIfItsOpen(typeof(SceneView));
-                Selection.activeObject = obj;
-                SceneView.FrameLastActiveSceneView();
-            }
-
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            GUILayout.Space(2);
+            var result = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            result.SetPixel(0, 0, color);
+            result.Apply();
+            return result;
         }
     }
 }
