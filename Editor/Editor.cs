@@ -32,7 +32,7 @@ namespace PancakeEditor
             if (t.Length == 0) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t;
         }
-        
+
         /// <summary>
         /// Find all asset with type
         /// </summary>
@@ -215,6 +215,31 @@ namespace PancakeEditor
             }
 
             return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
+        }
+
+        /// <summary>
+        /// Draw only the property specified.
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="isReadOnly"></param>
+        public static void DrawOnlyField(this SerializedObject serializedObject, string fieldName, bool isReadOnly)
+        {
+            serializedObject.Update();
+            var prop = serializedObject.GetIterator();
+            if (prop.NextVisible(true))
+            {
+                do
+                {
+                    if (prop.name != fieldName) continue;
+
+                    GUI.enabled = !isReadOnly;
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty(prop.name), true);
+                    GUI.enabled = true;
+                } while (prop.NextVisible(false));
+            }
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
