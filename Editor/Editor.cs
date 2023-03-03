@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -30,6 +31,30 @@ namespace PancakeEditor
             var t = AssetDatabase.LoadAllAssetsAtPath(path).OfType<T>().ToArray();
             if (t.Length == 0) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t;
+        }
+        
+        /// <summary>
+        /// Find all asset with type
+        /// </summary>
+        /// <param name="path">path use for find all asset</param>
+        /// <typeparam name="T">type asset to find</typeparam>
+        /// <returns></returns>
+        public static List<T> FindAll<T>(string path) where T : Object
+        {
+            var results = new List<T>();
+            var filter = $"t:{typeof(T).Name}";
+            var assetNames = AssetDatabase.FindAssets(filter, new[] {path});
+
+            foreach (string assetName in assetNames)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(assetName);
+                var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if (asset == null) continue;
+
+                results.Add(asset);
+            }
+
+            return results;
         }
 
         /// <summary>
@@ -177,7 +202,7 @@ namespace PancakeEditor
         /// get inspector type to display window
         /// </summary>
         public static Type InspectorWindow => typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
-        
+
         public static string GetSizeInMemory(this long byteSize)
         {
             string[] sizes = {"B", "KB", "MB", "GB", "TB"};
