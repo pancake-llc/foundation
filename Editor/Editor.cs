@@ -240,7 +240,6 @@ namespace PancakeEditor
             return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
         }
 
-
         /// <summary>
         /// Create Texture2D from color
         /// </summary>
@@ -252,6 +251,22 @@ namespace PancakeEditor
             result.SetPixel(0, 0, color);
             result.Apply();
             return result;
+        }
+
+        internal static TextAsset CreateTextFile(string content, string fileName, string relativePath)
+        {
+            string filePath = relativePath + "/" + fileName;
+            string folderPath = Directory.GetParent(Application.dataPath)?.FullName + "/" + relativePath;
+            string fullPath = folderPath + "/" + fileName;
+
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+            if (File.Exists(fullPath)) throw new IOException($"A file with the name {filePath} already exists.");
+
+            File.WriteAllText(fullPath, content);
+            AssetDatabase.Refresh();
+            var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(filePath);
+            return textAsset;
         }
     }
 }

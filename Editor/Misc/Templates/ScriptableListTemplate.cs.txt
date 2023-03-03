@@ -1,0 +1,10 @@
+﻿using UnityEngine;
+
+namespace Pancake.Scriptable
+{
+    [CreateAssetMenu(fileName = "scriptable_list_#TYPE#.asset", menuName = "Pancake/Scriptable/Lists/#TYPE#")]
+    public class ScriptableList#TYPE# : ScriptableList<#TYPE#>
+    {
+        
+    }
+}

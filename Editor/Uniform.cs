@@ -96,6 +96,9 @@ namespace PancakeEditor
 
         #endregion
 
+        
+        #region draw
+
         public static void DrawBox(Rect position, GUIStyle style, bool isHover = false, bool isActive = false, bool on = false, bool hasKeyboardFocus = false)
         {
             if (Event.current.type == EventType.Repaint)
@@ -216,7 +219,7 @@ namespace PancakeEditor
             GUILayout.EndHorizontal();
             GUILayout.Space(2);
         }
-        
+
         /// <summary>
         /// Draws all properties like base.OnInspectorGUI() but excludes a field by name.
         /// </summary>
@@ -251,5 +254,23 @@ namespace PancakeEditor
 
             serializedObject.ApplyModifiedProperties();
         }
+
+        /// <summary>
+        /// Centers a rect inside another window.
+        /// </summary>
+        /// <param name="window"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static Rect CenterInWindow(Rect window, Rect origin)
+        {
+            var pos = window;
+            float w = (origin.width - pos.width) * 0.5f;
+            float h = (origin.height - pos.height) * 0.5f;
+            pos.x = origin.x + w;
+            pos.y = origin.y + h;
+            return pos;
+        }
+
+        #endregion
     }
 }

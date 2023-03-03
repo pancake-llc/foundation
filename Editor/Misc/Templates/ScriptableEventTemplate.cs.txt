@@ -1,0 +1,10 @@
+﻿using UnityEngine;
+
+namespace Pancake.Scriptable
+{
+    [CreateAssetMenu(fileName = "scriptable_event_#TYPE#.asset", menuName = "Pancake/Scriptable/Events/#TYPE#")]
+    public class ScriptableEvent#TYPE# : ScriptableEvent<#TYPE#>
+    {
+        
+    }
+}
