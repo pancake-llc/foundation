@@ -34,7 +34,7 @@ namespace PancakeEditor
         }
 
         /// <summary>
-        /// Find all asset with type
+        /// Find all asset with type <typeparamref name="T"/>
         /// </summary>
         /// <param name="path">path use for find all asset</param>
         /// <typeparam name="T">type asset to find</typeparam>
@@ -44,6 +44,29 @@ namespace PancakeEditor
             var results = new List<T>();
             var filter = $"t:{typeof(T).Name}";
             var assetNames = AssetDatabase.FindAssets(filter, new[] {path});
+
+            foreach (string assetName in assetNames)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(assetName);
+                var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if (asset == null) continue;
+
+                results.Add(asset);
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Find all asset with type <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> FindAll<T>() where T : Object
+        {
+            var results = new List<T>();
+            var filter = $"t:{typeof(T).Name}";
+            var assetNames = AssetDatabase.FindAssets(filter);
 
             foreach (string assetName in assetNames)
             {
@@ -216,7 +239,7 @@ namespace PancakeEditor
 
             return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
         }
-        
+
 
         /// <summary>
         /// Create Texture2D from color

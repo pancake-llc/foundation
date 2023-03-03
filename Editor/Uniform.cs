@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -214,6 +215,41 @@ namespace PancakeEditor
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Space(2);
+        }
+        
+        /// <summary>
+        /// Draws all properties like base.OnInspectorGUI() but excludes a field by name.
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <param name="fieldToSkip">The name of the field that should be excluded. Example: "m_Script" will skip the default Script field.</param>
+        public static void DrawInspectorExcept(SerializedObject serializedObject, string fieldToSkip)
+        {
+            Uniform.DrawInspectorExcept(serializedObject, new[] {fieldToSkip});
+        }
+
+        /// <summary>
+        /// Draws all properties like base.OnInspectorGUI() but excludes the specified fields by name.
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <param name="fieldsToSkip">
+        /// An array of names that should be excluded.
+        /// Example: new string[] { "m_Script" , "myInt" } will skip the default Script field and the Integer field myInt.
+        /// </param>
+        public static void DrawInspectorExcept(SerializedObject serializedObject, string[] fieldsToSkip)
+        {
+            serializedObject.Update();
+            var prop = serializedObject.GetIterator();
+            if (prop.NextVisible(true))
+            {
+                do
+                {
+                    if (fieldsToSkip.Any(prop.name.Contains)) continue;
+
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty(prop.name), true);
+                } while (prop.NextVisible(false));
+            }
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
