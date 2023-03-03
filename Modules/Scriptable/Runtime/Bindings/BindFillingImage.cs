@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using Pancake.Attribute;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Image))]
     public class BindFillingImage : CacheComponent<Image>
     {

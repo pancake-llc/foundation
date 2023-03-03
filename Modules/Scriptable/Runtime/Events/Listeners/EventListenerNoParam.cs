@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Pancake.Attribute;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_event_listener")]
     public class EventListenerNoParam : EventListenerBase
     {
         [System.Serializable]

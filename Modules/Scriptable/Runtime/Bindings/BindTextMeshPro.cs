@@ -1,10 +1,12 @@
 ﻿#if PANCAKE_TMP
 using System.Text;
+using Pancake.Attribute;
 using TMPro;
 using UnityEngine;
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(TMP_Text))]
     public class BindTextMeshPro : CacheComponent<TMP_Text>
     {

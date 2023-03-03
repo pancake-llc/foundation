@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_variable")]
     [CreateAssetMenu(fileName = "scriptable_variable_int.asset", menuName = "Pancake/Scriptable/Variables/int")]
     [System.Serializable]
     public class IntVariable : ScriptableVariable<int>

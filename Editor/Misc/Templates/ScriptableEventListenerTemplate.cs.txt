@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using Pancake.Attribute;
+
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_event_listener")]
     public class EventListener#TYPE# : EventListenerGeneric<#TYPE#>
     {
         [SerializeField] private EventResponse[] eventResponses;

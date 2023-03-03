@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using Pancake.Attribute;
+using UnityEngine;
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Renderer))]
     public class BindRendererColor : CacheComponent<Renderer>
     {

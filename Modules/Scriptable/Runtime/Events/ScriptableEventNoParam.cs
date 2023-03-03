@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pancake.Attribute;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_event")]
     [CreateAssetMenu(fileName = "scriptable_event_noParam.asset", menuName = "Pancake/Scriptable/Events/noParam")]
     public class ScriptableEventNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {

@@ -1,9 +1,11 @@
 ﻿using System.Text;
+using Pancake.Attribute;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Text))]
     public class BindText : CacheComponent<Text>
     {

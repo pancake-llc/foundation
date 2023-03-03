@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Pancake.Attribute;
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace PancakeEditor.Scriptable
     /// Because during the fast play mode, "OnEnable" on scriptable objects is not called.
     /// Therefore we need to manually reset them ! A bit annoying, but the speed gain from using the fast play mode outweigh the cost.
     /// </summary>
+    [EditorIcon("scriptable_playmode_resetter")]
     [CreateAssetMenu(fileName = "PlayModeResetter.asset", menuName = "Pancake/Scriptable/PlayModeResetter")]
     public class PlayModeResetter : ScriptableObject
     {
