@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Pancake.Scriptable
 {
     [RequireComponent(typeof(Toggle))]
-    public class BindingToggle : CacheComponent<Toggle>
+    public class BindToggle : CacheComponent<Toggle>
     {
         [SerializeField] private BoolVariable boolVariable;
 

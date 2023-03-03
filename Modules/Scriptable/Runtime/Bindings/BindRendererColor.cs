@@ -3,7 +3,7 @@
 namespace Pancake.Scriptable
 {
     [RequireComponent(typeof(Renderer))]
-    public class BindingRendererColor : CacheComponent<Renderer>
+    public class BindRendererColor : CacheComponent<Renderer>
     {
         [SerializeField] private ColorVariable colorVariable;
 

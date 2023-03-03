@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace PancakeEditor.References
+namespace PancakeEditor.Scriptable
 {
     [CustomPropertyDrawer(typeof(VariableReference<,>), true)]
     public class VariableReferenceDrawer : UnityEditor.PropertyDrawer

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.Scriptable
 {
     [RequireComponent(typeof(TMP_Text))]
-    public class BindingTextMeshPro : CacheComponent<TMP_Text>
+    public class BindTextMeshPro : CacheComponent<TMP_Text>
     {
         public CustomVariableType type = CustomVariableType.None;
 

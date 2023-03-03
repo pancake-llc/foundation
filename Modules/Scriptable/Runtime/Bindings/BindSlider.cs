@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Pancake.Scriptable
 {
     [RequireComponent(typeof(Slider))]
-    public class BindingSlider : CacheComponent<Slider>
+    public class BindSlider : CacheComponent<Slider>
     {
         [SerializeField] private FloatVariable floatVariable;
 

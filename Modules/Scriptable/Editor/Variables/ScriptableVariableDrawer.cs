@@ -3,7 +3,7 @@ using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace PancakeEditor
+namespace PancakeEditor.Scriptable
 {
     [CustomEditor(typeof(ScriptableVariableBase), true)]
     public class ScriptableVariableDrawer : UnityEditor.Editor
