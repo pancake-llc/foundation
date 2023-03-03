@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal class InlineGenericInspectorElement : PropertyCollectionBaseInspectorElement
     {

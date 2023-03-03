@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(MonoBehaviour), editorForChildClasses: true, isFallback = true)]

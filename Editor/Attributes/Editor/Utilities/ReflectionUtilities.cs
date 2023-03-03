@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal static class ReflectionUtilities
     {
-        private static readonly Dictionary<Type, IReadOnlyList<Attribute>> AttributesCache = new Dictionary<Type, IReadOnlyList<Attribute>>();
+        private static readonly Dictionary<Type, IReadOnlyList<System.Attribute>> AttributesCache = new Dictionary<Type, IReadOnlyList<System.Attribute>>();
 
         private static IReadOnlyList<Assembly> _assemblies;
         private static IReadOnlyList<Type> _allNonAbstractTypesBackingField;
@@ -51,7 +51,7 @@ namespace Pancake.AttributeDrawer
             }
         }
 
-        public static IReadOnlyList<Attribute> GetAttributesCached(Type type)
+        public static IReadOnlyList<System.Attribute> GetAttributesCached(Type type)
         {
             if (AttributesCache.TryGetValue(type, out var attributes))
             {

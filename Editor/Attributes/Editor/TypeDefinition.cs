@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class TypeDefinition
     {

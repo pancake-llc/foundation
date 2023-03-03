@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     [Conditional("UNITY_EDITOR")]
-    public class ListDrawerSettingsAttribute : Attribute
+    public class ListDrawerSettingsAttribute : System.Attribute
     {
         public bool Draggable { get; set; } = true;
         public bool HideAddButton { get; set; }

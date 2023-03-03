@@ -1,10 +1,11 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEditor;
 using UnityEngine;
 
 [assembly: RegisterAttributeValidator(typeof(AssetsOnlyValidator))]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class AssetsOnlyValidator : AttributeValidator<AssetsOnlyAttribute>
     {

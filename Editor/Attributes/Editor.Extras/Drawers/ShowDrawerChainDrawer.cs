@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Pancake.AttributeDrawer;
+using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 
 [assembly: RegisterAttributeDrawer(typeof(ShowDrawerChainDrawer), DrawerOrder.System)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class ShowDrawerChainDrawer : AttributeDrawer<ShowDrawerChainAttribute>
     {

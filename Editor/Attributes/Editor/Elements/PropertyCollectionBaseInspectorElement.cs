@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using Pancake.Attribute;
 
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public abstract class PropertyCollectionBaseInspectorElement : InspectorElement
     {

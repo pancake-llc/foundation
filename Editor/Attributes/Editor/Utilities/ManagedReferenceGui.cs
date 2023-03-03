@@ -7,7 +7,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal static class ManagedReferenceGui
     {

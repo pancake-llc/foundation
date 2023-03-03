@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public abstract class PropertyOverrideContext
     {

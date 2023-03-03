@@ -1,9 +1,9 @@
-﻿using Pancake.AttributeDrawer;
+﻿using PancakeEditor.Attribute;
 using InspectorUnityInternalBridge;
 
 [assembly: RegisterValueDrawer(typeof(CustomBuiltInDrawer), DrawerOrder.Fallback - 999)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class CustomBuiltInDrawer : ValueDrawer<object>
     {

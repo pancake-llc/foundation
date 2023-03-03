@@ -1,10 +1,11 @@
 ﻿
 
-using Pancake.AttributeDrawer;
+using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 [assembly: RegisterAttributeValidator(typeof(ValidateInputValidator))]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class ValidateInputValidator : AttributeValidator<ValidateInputAttribute>
     {

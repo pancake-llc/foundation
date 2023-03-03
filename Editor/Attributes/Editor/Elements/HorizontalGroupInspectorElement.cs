@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class HorizontalGroupInspectorElement : PropertyCollectionBaseInspectorElement
     {

@@ -1,9 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEngine;
 
 [assembly: RegisterAttributeDrawer(typeof(PropertySpaceDrawer), DrawerOrder.Inspector)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class PropertySpaceDrawer : AttributeDrawer<PropertySpaceAttribute>
     {

@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+using Pancake.Attribute;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class PropertyDefinition
     {
@@ -15,7 +16,7 @@ namespace Pancake.AttributeDrawer
 
         private readonly List<string> _extensionErrors = new List<string>();
         private readonly MemberInfo _memberInfo;
-        private readonly List<Attribute> _attributes;
+        private readonly List<System.Attribute> _attributes;
 
         private PropertyDefinition _arrayElementDefinitionBackingField;
 
@@ -84,7 +85,7 @@ namespace Pancake.AttributeDrawer
             Type fieldType,
             ValueGetterDelegate valueGetter,
             ValueSetterDelegate valueSetter,
-            List<Attribute> attributes,
+            List<System.Attribute> attributes,
             bool isArrayElement)
         {
             OwnerType = ownerType;
@@ -92,7 +93,7 @@ namespace Pancake.AttributeDrawer
             FieldType = fieldType;
             IsArrayElement = isArrayElement;
 
-            _attributes = attributes ?? new List<Attribute>();
+            _attributes = attributes ?? new List<System.Attribute>();
             _memberInfo = memberInfo;
             _valueGetter = valueGetter;
             _valueSetter = valueSetter;
@@ -125,7 +126,7 @@ namespace Pancake.AttributeDrawer
 
         public int Order { get; internal set; }
 
-        public IReadOnlyList<Attribute> Attributes => _attributes;
+        public IReadOnlyList<System.Attribute> Attributes => _attributes;
 
         public bool IsReadOnly { get; }
 
@@ -154,7 +155,7 @@ namespace Pancake.AttributeDrawer
             }
         }
 
-        public List<Attribute> GetEditableAttributes() { return _attributes; }
+        public List<System.Attribute> GetEditableAttributes() { return _attributes; }
 
         public bool TryGetMemberInfo(out MemberInfo memberInfo)
         {

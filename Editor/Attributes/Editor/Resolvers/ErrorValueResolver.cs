@@ -1,4 +1,4 @@
-﻿namespace Pancake.AttributeDrawer
+﻿namespace PancakeEditor.Attribute
 {
     internal class ErrorValueResolver<T> : ValueResolver<T>
     {

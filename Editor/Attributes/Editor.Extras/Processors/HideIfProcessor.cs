@@ -1,8 +1,9 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 [assembly: RegisterPropertyHideProcessor(typeof(HideIfProcessor))]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class HideIfProcessor : PropertyHideProcessor<HideIfAttribute>
     {

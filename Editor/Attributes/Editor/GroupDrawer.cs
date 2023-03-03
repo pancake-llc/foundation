@@ -2,16 +2,16 @@
 using JetBrains.Annotations;
 
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public abstract class GroupDrawer
     {
-        public abstract PropertyCollectionBaseInspectorElement CreateElementInternal(Attribute attribute);
+        public abstract PropertyCollectionBaseInspectorElement CreateElementInternal(System.Attribute attribute);
     }
 
-    public abstract class GroupDrawer<TAttribute> : GroupDrawer where TAttribute : Attribute
+    public abstract class GroupDrawer<TAttribute> : GroupDrawer where TAttribute : System.Attribute
     {
-        public sealed override PropertyCollectionBaseInspectorElement CreateElementInternal(Attribute attribute) { return CreateElement((TAttribute) attribute); }
+        public sealed override PropertyCollectionBaseInspectorElement CreateElementInternal(System.Attribute attribute) { return CreateElement((TAttribute) attribute); }
 
         [PublicAPI]
         public abstract PropertyCollectionBaseInspectorElement CreateElement(TAttribute attribute);

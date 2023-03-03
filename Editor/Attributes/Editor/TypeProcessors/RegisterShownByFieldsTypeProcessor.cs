@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Pancake.AttributeDrawer;
+using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 [assembly: RegisterTypeProcessor(typeof(RegisterShownByFieldsTypeProcessor), 1)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class RegisterShownByFieldsTypeProcessor : TypeProcessor
     {

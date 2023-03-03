@@ -1,8 +1,9 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 [assembly: RegisterAttributeDrawer(typeof(OnValueChangedDrawer), DrawerOrder.System)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class OnValueChangedDrawer : AttributeDrawer<OnValueChangedAttribute>
     {

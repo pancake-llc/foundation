@@ -1,9 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEngine;
 
 [assembly: RegisterAttributeDrawer(typeof(GUIColorDrawer), DrawerOrder.Decorator)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class GUIColorDrawer : AttributeDrawer<GUIColorAttribute>
     {

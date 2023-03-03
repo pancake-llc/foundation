@@ -1,4 +1,4 @@
-namespace Pancake
+namespace Pancake.Attribute
 {
     /// <summary>
     /// Use for define size of <see cref="ButtonAttribute"/>

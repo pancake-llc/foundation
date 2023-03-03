@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public static class ValueResolver
     {

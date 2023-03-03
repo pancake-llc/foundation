@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
+using Pancake.Attribute;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public abstract class PropertyTree
     {

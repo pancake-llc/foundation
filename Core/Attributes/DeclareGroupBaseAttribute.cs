@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
-    public abstract class DeclareGroupBaseAttribute : Attribute
+    public abstract class DeclareGroupBaseAttribute : System.Attribute
     {
         protected DeclareGroupBaseAttribute(string path) { Path = path ?? "None"; }
 

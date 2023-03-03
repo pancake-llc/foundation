@@ -1,9 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using PancakeEditor.Attribute;
+using Pancake.Attribute;
 using UnityEditor;
 
 [assembly: RegisterValueValidator(typeof(TypeMismatchValidator<>))]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class TypeMismatchValidator<T> : ValueValidator<T> where T : UnityEngine.Object
     {

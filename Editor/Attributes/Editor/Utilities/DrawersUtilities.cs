@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Pancake.Attribute;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal class DrawersUtilities
     {
@@ -180,7 +181,7 @@ namespace Pancake.AttributeDrawer
                     });
         }
 
-        public static IEnumerable<AttributeDrawer> CreateAttributeDrawersFor(Type valueType, IReadOnlyList<Attribute> attributes)
+        public static IEnumerable<AttributeDrawer> CreateAttributeDrawersFor(Type valueType, IReadOnlyList<System.Attribute> attributes)
         {
             return from attribute in attributes
                 from drawer in AllAttributeDrawerTypes
@@ -208,7 +209,7 @@ namespace Pancake.AttributeDrawer
                     });
         }
 
-        public static IEnumerable<AttributeValidator> CreateAttributeValidatorsFor(Type valueType, IReadOnlyList<Attribute> attributes)
+        public static IEnumerable<AttributeValidator> CreateAttributeValidatorsFor(Type valueType, IReadOnlyList<System.Attribute> attributes)
         {
             return from attribute in attributes
                 from validator in AllAttributeValidatorTypes
@@ -222,7 +223,7 @@ namespace Pancake.AttributeDrawer
                     });
         }
 
-        public static IEnumerable<PropertyHideProcessor> CreateHideProcessorsFor(Type valueType, IReadOnlyList<Attribute> attributes)
+        public static IEnumerable<PropertyHideProcessor> CreateHideProcessorsFor(Type valueType, IReadOnlyList<System.Attribute> attributes)
         {
             return from attribute in attributes
                 from processor in AllHideProcessors
@@ -236,7 +237,7 @@ namespace Pancake.AttributeDrawer
                     });
         }
 
-        public static IEnumerable<PropertyDisableProcessor> CreateDisableProcessorsFor(Type valueType, IReadOnlyList<Attribute> attributes)
+        public static IEnumerable<PropertyDisableProcessor> CreateDisableProcessorsFor(Type valueType, IReadOnlyList<System.Attribute> attributes)
         {
             return from attribute in attributes
                 from processor in AllDisableProcessors

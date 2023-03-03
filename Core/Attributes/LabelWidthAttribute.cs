@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class LabelWidthAttribute : Attribute
+    public sealed class LabelWidthAttribute : System.Attribute
     {
         public float Width { get; }
 

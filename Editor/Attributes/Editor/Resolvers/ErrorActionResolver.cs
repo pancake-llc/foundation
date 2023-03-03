@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal sealed class ErrorActionResolver : ActionResolver
     {

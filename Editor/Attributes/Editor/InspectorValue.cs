@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public struct InspectorValue<T>
     {

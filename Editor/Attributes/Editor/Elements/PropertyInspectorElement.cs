@@ -1,8 +1,9 @@
 ﻿using System;
+using Pancake.Attribute;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class PropertyInspectorElement : InspectorElement
     {

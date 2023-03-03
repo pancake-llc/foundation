@@ -1,7 +1,8 @@
 using System.Reflection;
+using Pancake.Attribute;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class UnityInspectorUtilities
     {

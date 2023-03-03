@@ -1,4 +1,5 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using PancakeEditor;
 using UnityEditor;
 using UnityEngine;
@@ -6,7 +7,7 @@ using Object = UnityEngine.Object;
 
 [assembly: RegisterAttributeDrawer(typeof(InlineEditorDrawer), DrawerOrder.Drawer - 100, ApplyOnArrayElement = true)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class InlineEditorDrawer : AttributeDrawer<InlineEditorAttribute>
     {

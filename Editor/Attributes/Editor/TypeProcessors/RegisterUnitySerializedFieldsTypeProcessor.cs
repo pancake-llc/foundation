@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Pancake.AttributeDrawer;
+using PancakeEditor.Attribute;
 
 
 [assembly: RegisterTypeProcessor(typeof(RegisterUnitySerializedFieldsTypeProcessor), 0)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class RegisterUnitySerializedFieldsTypeProcessor : TypeProcessor
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterValueDrawerAttribute : Attribute
+    public class RegisterValueDrawerAttribute : System.Attribute
     {
         public RegisterValueDrawerAttribute(Type drawerType, int order)
         {
@@ -17,7 +17,7 @@ namespace Pancake.AttributeDrawer
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterAttributeDrawerAttribute : Attribute
+    public class RegisterAttributeDrawerAttribute : System.Attribute
     {
         public RegisterAttributeDrawerAttribute(Type drawerType, int order)
         {
@@ -31,7 +31,7 @@ namespace Pancake.AttributeDrawer
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterGroupDrawerAttribute : Attribute
+    public class RegisterGroupDrawerAttribute : System.Attribute
     {
         public RegisterGroupDrawerAttribute(Type drawerType) { DrawerType = drawerType; }
 
@@ -39,7 +39,7 @@ namespace Pancake.AttributeDrawer
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterPropertyHideProcessor : Attribute
+    public class RegisterPropertyHideProcessor : System.Attribute
     {
         public RegisterPropertyHideProcessor(Type processorType) { ProcessorType = processorType; }
 
@@ -48,7 +48,7 @@ namespace Pancake.AttributeDrawer
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterPropertyDisableProcessor : Attribute
+    public class RegisterPropertyDisableProcessor : System.Attribute
     {
         public RegisterPropertyDisableProcessor(Type processorType) { ProcessorType = processorType; }
 
@@ -57,7 +57,7 @@ namespace Pancake.AttributeDrawer
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterValueValidatorAttribute : Attribute
+    public class RegisterValueValidatorAttribute : System.Attribute
     {
         public RegisterValueValidatorAttribute(Type validatorType) { ValidatorType = validatorType; }
 
@@ -66,7 +66,7 @@ namespace Pancake.AttributeDrawer
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterAttributeValidatorAttribute : Attribute
+    public class RegisterAttributeValidatorAttribute : System.Attribute
     {
         public RegisterAttributeValidatorAttribute(Type validatorType) { ValidatorType = validatorType; }
 
@@ -75,7 +75,7 @@ namespace Pancake.AttributeDrawer
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterTypeProcessorAttribute : Attribute
+    public class RegisterTypeProcessorAttribute : System.Attribute
     {
         public RegisterTypeProcessorAttribute(Type processorType, int order)
         {

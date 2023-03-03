@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = true)]
     [Conditional("UNITY_EDITOR")]
-    public class DisableIfAttribute : Attribute
+    public class DisableIfAttribute : System.Attribute
     {
         public DisableIfAttribute(string condition)
             : this(condition, true)

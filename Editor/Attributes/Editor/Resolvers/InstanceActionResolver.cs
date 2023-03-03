@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal sealed class InstanceActionResolver : ActionResolver
     {

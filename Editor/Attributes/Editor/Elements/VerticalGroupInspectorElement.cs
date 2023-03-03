@@ -1,4 +1,4 @@
-﻿namespace Pancake.AttributeDrawer
+﻿namespace PancakeEditor.Attribute
 {
     public class VerticalGroupInspectorElement : PropertyCollectionBaseInspectorElement
     {

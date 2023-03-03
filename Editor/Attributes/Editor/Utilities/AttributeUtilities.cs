@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal static class AttributeUtilities
     {
-        public static bool TryGet<T>(this IReadOnlyList<Attribute> attributes, out T it) where T : Attribute
+        public static bool TryGet<T>(this IReadOnlyList<System.Attribute> attributes, out T it) where T : System.Attribute
         {
             foreach (var attribute in attributes)
             {

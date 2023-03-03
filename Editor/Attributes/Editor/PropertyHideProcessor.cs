@@ -1,17 +1,17 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public abstract class PropertyHideProcessor : PropertyExtension
     {
-        internal Attribute RawAttribute { get; set; }
+        internal System.Attribute RawAttribute { get; set; }
 
         [PublicAPI]
         public abstract bool IsHidden(Property property);
     }
 
-    public abstract class PropertyHideProcessor<TAttribute> : PropertyHideProcessor where TAttribute : Attribute
+    public abstract class PropertyHideProcessor<TAttribute> : PropertyHideProcessor where TAttribute : System.Attribute
     {
         [PublicAPI] public TAttribute Attribute => (TAttribute) RawAttribute;
     }

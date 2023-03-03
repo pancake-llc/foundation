@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method)]
     [Conditional("UNITY_EDITOR")]
-    public class GroupNextAttribute : Attribute
+    public class GroupNextAttribute : System.Attribute
     {
         public GroupNextAttribute(string path) { Path = path; }
 

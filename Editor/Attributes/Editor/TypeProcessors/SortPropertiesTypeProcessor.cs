@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pancake.AttributeDrawer;
+using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 
 [assembly: RegisterTypeProcessor(typeof(SortPropertiesTypeProcessor), 10000)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class SortPropertiesTypeProcessor : TypeProcessor
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Pancake.AttributeDrawer;
+using PancakeEditor.Attribute;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ using UnityEngine;
 [assembly: RegisterValueDrawer(typeof(RectIntDrawer), DrawerOrder.Fallback)]
 [assembly: RegisterValueDrawer(typeof(BoundsIntDrawer), DrawerOrder.Fallback)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class StringDrawer : BuiltinDrawerBase<string>
     {

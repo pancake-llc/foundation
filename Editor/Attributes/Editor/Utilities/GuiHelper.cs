@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public static class GuiHelper
     {

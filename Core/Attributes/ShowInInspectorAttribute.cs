@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     [Conditional("UNITY_EDITOR")]
-    public class ShowInInspectorAttribute : Attribute
+    public class ShowInInspectorAttribute : System.Attribute
     {
     }
 }

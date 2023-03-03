@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Method)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class ButtonAttribute : Attribute
+    public sealed class ButtonAttribute : System.Attribute
     {
         public ButtonAttribute() { }
 

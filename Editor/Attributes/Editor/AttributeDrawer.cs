@@ -2,14 +2,14 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public abstract class AttributeDrawer : CustomDrawer
     {
-        internal Attribute RawAttribute { get; set; }
+        internal System.Attribute RawAttribute { get; set; }
     }
 
-    public abstract class AttributeDrawer<TAttribute> : AttributeDrawer where TAttribute : Attribute
+    public abstract class AttributeDrawer<TAttribute> : AttributeDrawer where TAttribute : System.Attribute
     {
         [PublicAPI] public TAttribute Attribute => (TAttribute) RawAttribute;
 

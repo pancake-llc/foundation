@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class TitleAttribute : Attribute
+    public sealed class TitleAttribute : System.Attribute
     {
         public string Title { get; }
 

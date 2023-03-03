@@ -1,9 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEditor;
 
 [assembly: RegisterAttributeValidator(typeof(SceneValidator))]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class SceneValidator : AttributeValidator<SceneAttribute>
     {

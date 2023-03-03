@@ -1,7 +1,7 @@
 ﻿using InspectorUnityInternalBridge;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class InlineEditorInspectorElement : InspectorElement
     {

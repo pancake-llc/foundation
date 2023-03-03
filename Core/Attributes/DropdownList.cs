@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     public class DropdownList<T> : List<DropdownItem<T>>
     {

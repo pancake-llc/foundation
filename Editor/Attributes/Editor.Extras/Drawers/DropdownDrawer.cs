@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Pancake.AttributeDrawer;
+using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 
 [assembly: RegisterAttributeDrawer(typeof(DropdownDrawer<>), DrawerOrder.Decorator)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class DropdownDrawer<T> : AttributeDrawer<DropdownAttribute>
     {

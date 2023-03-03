@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+using Pancake.Attribute;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public sealed class Property
     {
@@ -477,7 +478,7 @@ namespace Pancake.AttributeDrawer
         }
 
         [PublicAPI]
-        public bool TryGetAttribute<TAttribute>(out TAttribute attribute) where TAttribute : Attribute
+        public bool TryGetAttribute<TAttribute>(out TAttribute attribute) where TAttribute : System.Attribute
         {
             if (ValueType != null)
             {

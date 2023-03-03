@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using Pancake.Attribute;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     internal class ValidatorsDrawer : CustomDrawer
     {

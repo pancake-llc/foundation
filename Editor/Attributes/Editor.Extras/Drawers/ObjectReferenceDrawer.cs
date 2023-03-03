@@ -1,10 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using PancakeEditor.Attribute;
 using UnityEditor;
 using UnityEngine;
 
 [assembly: RegisterValueDrawer(typeof(ObjectReferenceDrawer), DrawerOrder.Fallback)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class ObjectReferenceDrawer : ValueDrawer<Object>
     {

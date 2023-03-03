@@ -1,10 +1,11 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Pancake.Attribute;
 using PancakeEditor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class BoxGroupInspectorElement : HeaderGroupBaseInspectorElement
     {

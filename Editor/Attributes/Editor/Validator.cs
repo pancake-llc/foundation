@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Pancake.Attribute;
 using JetBrains.Annotations;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public abstract class Validator : PropertyExtension
     {
@@ -11,10 +11,10 @@ namespace Pancake.AttributeDrawer
 
     public abstract class AttributeValidator : Validator
     {
-        internal Attribute RawAttribute { get; set; }
+        internal System.Attribute RawAttribute { get; set; }
     }
 
-    public abstract class AttributeValidator<TAttribute> : AttributeValidator where TAttribute : Attribute
+    public abstract class AttributeValidator<TAttribute> : AttributeValidator where TAttribute : System.Attribute
     {
         [PublicAPI] public TAttribute Attribute => (TAttribute) RawAttribute;
     }

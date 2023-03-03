@@ -1,9 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEngine;
 
 [assembly: RegisterAttributeDrawer(typeof(IndentDrawer), DrawerOrder.Decorator)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class IndentDrawer : AttributeDrawer<IndentAttribute>
     {

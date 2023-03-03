@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Pancake.Attribute;
 using UnityEditor;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public sealed class PropertyTreeForSerializedObject : PropertyTree
     {
@@ -26,7 +27,7 @@ namespace Pancake.AttributeDrawer
                 fieldType: TargetObjectType,
                 valueGetter: (self, targetIndex) => _serializedObject.targetObjects[targetIndex],
                 valueSetter: (self, targetIndex, value) => _serializedObject.targetObjects[targetIndex],
-                attributes: new List<Attribute>(),
+                attributes: new List<System.Attribute>(),
                 isArrayElement: false);
 
             RootProperty = new Property(this, null, RootPropertyDefinition, serializedObject);

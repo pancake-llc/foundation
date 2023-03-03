@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public static class InspectorEqualityComparer
     {

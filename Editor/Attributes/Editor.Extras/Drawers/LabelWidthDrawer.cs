@@ -1,10 +1,11 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEditor;
 using UnityEngine;
 
 [assembly: RegisterAttributeDrawer(typeof(LabelWidthDrawer), DrawerOrder.Decorator)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class LabelWidthDrawer : AttributeDrawer<LabelWidthAttribute>
     {

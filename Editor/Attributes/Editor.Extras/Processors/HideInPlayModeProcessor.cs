@@ -1,9 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEngine;
 
 [assembly: RegisterPropertyHideProcessor(typeof(HideInPlayModeProcessor))]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class HideInPlayModeProcessor : PropertyHideProcessor<HideInPlayModeAttribute>
     {

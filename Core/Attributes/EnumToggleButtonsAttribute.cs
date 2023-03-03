@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake
+namespace Pancake.Attribute
 {
     [AttributeUsage((AttributeTargets.Field | AttributeTargets.Property))]
     [Conditional("UNITY_EDITOR")]
-    public sealed class EnumToggleButtonsAttribute : Attribute
+    public sealed class EnumToggleButtonsAttribute : System.Attribute
     {
     }
 }

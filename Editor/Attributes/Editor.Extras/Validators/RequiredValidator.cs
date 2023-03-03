@@ -1,8 +1,9 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 
 [assembly: RegisterAttributeValidator(typeof(RequiredValidator), ApplyOnArrayElement = true)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class RequiredValidator : AttributeValidator<RequiredAttribute>
     {

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using InspectorUnityInternalBridge;
+using Pancake.Attribute;
 using PancakeEditor;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class ListInspectorElement : InspectorElement
     {

@@ -1,4 +1,4 @@
-﻿namespace Pancake
+﻿namespace Pancake.Attribute
 {
     public readonly struct ValidationResult
     {

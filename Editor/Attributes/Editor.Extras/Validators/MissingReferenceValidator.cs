@@ -1,9 +1,10 @@
-﻿using Pancake.AttributeDrawer;
+﻿using PancakeEditor.Attribute;
 using UnityEditor;
+using Pancake.Attribute;
 
 [assembly: RegisterValueValidator(typeof(MissingReferenceValidator))]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class MissingReferenceValidator : ValueValidator<UnityEngine.Object>
     {

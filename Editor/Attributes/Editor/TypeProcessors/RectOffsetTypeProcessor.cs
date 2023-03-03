@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Pancake.AttributeDrawer;
+using PancakeEditor.Attribute;
 using UnityEngine;
 
 [assembly: RegisterTypeProcessor(typeof(RectOffsetTypeProcessor), 1)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class RectOffsetTypeProcessor : TypeProcessor
     {

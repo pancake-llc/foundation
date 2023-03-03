@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using InspectorUnityInternalBridge;
-using Pancake.AttributeDrawer;
+using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEditorInternal;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 [assembly: RegisterAttributeDrawer(typeof(TableListDrawer), DrawerOrder.Drawer)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class TableListDrawer : AttributeDrawer<TableListAttribute>
     {

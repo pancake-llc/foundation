@@ -1,10 +1,11 @@
-﻿using Pancake.AttributeDrawer;
+﻿using Pancake.Attribute;
+using PancakeEditor.Attribute;
 using UnityEditor;
 using UnityEngine;
 
 [assembly: RegisterAttributeDrawer(typeof(SceneDrawer), DrawerOrder.Decorator)]
 
-namespace Pancake.AttributeDrawer
+namespace PancakeEditor.Attribute
 {
     public class SceneDrawer : AttributeDrawer<SceneAttribute>
     {
