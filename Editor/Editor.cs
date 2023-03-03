@@ -252,5 +252,28 @@ namespace PancakeEditor
             rect.height = height;
             EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
         }
+
+        /// <summary>
+        /// Draw a selectable object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="labels"></param>
+        public static void DrawSelectableObject(Object obj, string[] labels)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(labels[0], GUILayout.MaxWidth(300))) EditorGUIUtility.PingObject(obj);
+
+            if (GUILayout.Button(labels[1], GUILayout.MaxWidth(75)))
+            {
+                EditorWindow.FocusWindowIfItsOpen(typeof(SceneView));
+                Selection.activeObject = obj;
+                SceneView.FrameLastActiveSceneView();
+            }
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(2);
+        }
     }
 }
