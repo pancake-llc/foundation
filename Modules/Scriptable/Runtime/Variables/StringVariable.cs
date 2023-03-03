@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_string.asset", menuName = "Pancake/Scriptable Variable/string")]
+    [CreateAssetMenu(fileName = "scriptable_variable_string.asset", menuName = "Pancake/Scriptable/Variables/string")]
     [System.Serializable]
     public class StringVariable : ScriptableVariable<string>
     {

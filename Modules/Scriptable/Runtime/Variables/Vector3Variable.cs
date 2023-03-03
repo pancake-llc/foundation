@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "scriptable_variable_vector3.asset", menuName = "Pancake/Scriptable Variable/vector3")]
+    [CreateAssetMenu(fileName = "scriptable_variable_vector3.asset", menuName = "Pancake/Scriptable/Variables/vector3")]
     [System.Serializable]
     public class Vector3Variable : ScriptableVariable<Vector3>
     {

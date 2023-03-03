@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_bool.asset", menuName = "Pancake/Scriptable Variable/bool")]
+    [CreateAssetMenu(fileName = "scriptable_variable_bool.asset", menuName = "Pancake/Scriptable/Variables/bool")]
     [System.Serializable]
     public class BoolVariable : ScriptableVariable<bool>
     {
