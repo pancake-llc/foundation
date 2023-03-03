@@ -1,7 +1,10 @@
 {
     "name": "pancake@scriptable.editor",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
+        "GUID:d43f774d56c534e4b84fe18247432afb"
+    ],
     "includePlatforms": [
         "Editor"
     ],
