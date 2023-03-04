@@ -6,6 +6,24 @@ namespace PancakeEditor
 {
     internal static class MenuToolsCreator
     {
+        #region 1
+
+        [MenuItem("Tools/Fast Play Mode", validate = false)]
+        private static void ToggleFastPlayMode()
+        {
+            EditorSettings.enterPlayModeOptionsEnabled = !EditorSettings.enterPlayModeOptionsEnabled;
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Tools/Fast Play Mode", validate = true)]
+        private static bool ValidateToggleFastPlayMode()
+        {
+            Menu.SetChecked("Tools/Fast Play Mode", EditorSettings.enterPlayModeOptionsEnabled);
+            return true;
+        }
+
+        #endregion
+
         #region 2
 
         [MenuItem("Tools/Project Settings", priority = 30000), UsedImplicitly]
