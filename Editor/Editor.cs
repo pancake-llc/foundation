@@ -268,5 +268,64 @@ namespace PancakeEditor
             var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(filePath);
             return textAsset;
         }
+
+        /// <summary>
+        /// Rename asset
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="newName"></param>
+        internal static void RenameAsset(Object obj, string newName)
+        {
+            string path = AssetDatabase.GetAssetPath(obj);
+            AssetDatabase.RenameAsset(path, newName);
+            AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>
+        /// Creates a copy of an object. Also adds a number to the copy name.
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void CreateCopyAsset(Object obj)
+        {
+            string path = AssetDatabase.GetAssetPath(obj);
+            string copyPath = GenerateCopyPath(obj.name, path);
+            AssetDatabase.CopyAsset(path, copyPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            var newAsset = AssetDatabase.LoadMainAssetAtPath(copyPath);
+            EditorGUIUtility.PingObject(newAsset);
+        }
+
+        private static string GenerateCopyPath(string fileName, string filePath)
+        {
+            var count = 0;
+            string copyPath;
+            do
+            {
+                count++;
+                var newName = $"{fileName}_{count}";
+                copyPath = filePath.Replace($"{fileName}.asset", $"{newName}.asset");
+            } while (File.Exists(copyPath));
+
+            return copyPath;
+        }
+
+        /// <summary>
+        /// Deletes an object after showing a confirmation dialog.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool DeleteObjectWithConfirmation(Object obj)
+        {
+            bool confirmDelete = EditorUtility.DisplayDialog("Delete " + obj.name + "?", "Are you sure you want to delete '" + obj.name + "'?", "Yes", "No");
+            if (confirmDelete)
+            {
+                string path = AssetDatabase.GetAssetPath(obj);
+                AssetDatabase.DeleteAsset(path);
+                return true;
+            }
+
+            return false;
+        }
     }
 }

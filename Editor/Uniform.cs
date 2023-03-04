@@ -145,7 +145,7 @@ namespace PancakeEditor
                 margin = new RectOffset(4, 4, 4, 4),
                 fontSize = 20,
                 fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleCenter,
+                alignment = TextAnchor.MiddleLeft,
                 wordWrap = false,
                 richText = true,
                 imagePosition = ImagePosition.ImageLeft,
