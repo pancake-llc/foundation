@@ -20,6 +20,8 @@ namespace PancakeEditor
         internal static Texture2D ScriptablePlaymodeResetter => Editor.FindAssetWithPath<Texture2D>("scriptable_playmode_resetter.png", RELATIVE_PATH);
         internal static Texture2D ScriptableVariable => Editor.FindAssetWithPath<Texture2D>("scriptable_variable.png", RELATIVE_PATH);
         internal static Texture2D Dreamblale => Editor.FindAssetWithPath<Texture2D>("dreamblade.png", RELATIVE_PATH);
+        internal static Texture2D StarEmpty => Editor.FindAssetWithPath<Texture2D>("star_empty.png", RELATIVE_PATH);
+        internal static Texture2D StarFull => Editor.FindAssetWithPath<Texture2D>("star_full.png", RELATIVE_PATH);
         internal static TextAsset ScriptableEventListenerTemplate => Editor.FindAssetWithPath<TextAsset>("ScriptableEventListenerTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
         internal static TextAsset ScriptableEventTemplate => Editor.FindAssetWithPath<TextAsset>("ScriptableEventTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
         internal static TextAsset ScriptableListTemplate => Editor.FindAssetWithPath<TextAsset>("ScriptableListTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
