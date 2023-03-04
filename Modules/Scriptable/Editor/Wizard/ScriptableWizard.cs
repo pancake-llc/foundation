@@ -28,7 +28,7 @@ namespace PancakeEditor.Scriptable
         private List<ScriptableBase> _scriptableObjects;
         private ScriptableType _currentType = ScriptableType.All;
         private List<ScriptableBase> Favorites => favoriteData?.favorites;
-        private readonly Color[] _colors = {Color.gray, Uniform.Blue, Uniform.Green, Color.yellow, Uniform.Pink};
+        private readonly Color[] _colors = {Color.gray, Color.blue, Color.green, Color.yellow, Color.magenta};
 
         private const float TAB_WIDTH = 55f;
         private const float BUTTON_HEIGHT = 40f;
@@ -157,8 +157,8 @@ namespace PancakeEditor.Scriptable
         private void DrawTabs()
         {
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
-            const float width = TAB_WIDTH * 5 + 4;
-
+            const float width = TAB_WIDTH * 5;
+            GUILayout.Space(5);
             var style = new GUIStyle(EditorStyles.toolbarButton);
             tabIndex = GUILayout.Toolbar(tabIndex, System.Enum.GetNames(typeof(ScriptableType)), style, GUILayout.MaxWidth(width));
 
@@ -170,20 +170,16 @@ namespace PancakeEditor.Scriptable
         private void DrawLeftSide()
         {
             const float width = TAB_WIDTH * 5f;
-
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
             EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(width), GUILayout.ExpandHeight(true));
 
             _leftSideScrollPosition = EditorGUILayout.BeginScrollView(_leftSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
             GUI.backgroundColor = color;
-
             DrawScriptableBases(_scriptableObjects);
-
             EditorGUILayout.EndScrollView();
-
+            
             if (GUILayout.Button("Create Type", GUILayout.MaxHeight(BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypeWindow(position));
-
             EditorGUILayout.EndVertical();
         }
 
