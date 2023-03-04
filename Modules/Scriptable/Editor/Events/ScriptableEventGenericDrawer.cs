@@ -18,11 +18,14 @@ namespace PancakeEditor.Scriptable
         {
             DrawDefaultInspector();
 
+            GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Raise"))
             {
                 var property = serializedObject.FindProperty("debugValue");
-                _methodInfo.Invoke(target, new object[1] {GetDebugValue(property)});
+                _methodInfo.Invoke(target, new[] {GetDebugValue(property)});
             }
+
+            GUI.enabled = true;
 
             if (!EditorApplication.isPlaying) return;
 

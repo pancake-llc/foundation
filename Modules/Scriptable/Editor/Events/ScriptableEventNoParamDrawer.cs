@@ -12,11 +12,14 @@ namespace PancakeEditor.Scriptable
         {
             DrawDefaultInspector();
 
+            GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Raise"))
             {
                 var eventNoParam = (ScriptableEventNoParam) target;
                 eventNoParam.Raise();
             }
+
+            GUI.enabled = true;
 
             if (!EditorApplication.isPlaying) return;
 
