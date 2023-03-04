@@ -23,8 +23,8 @@ namespace PancakeEditor.Scriptable
             public List<ScriptableBase> favorites = new List<ScriptableBase>();
         }
 
-        private Vector2 _scrollPosition = Vector2.zero;
-        private Vector2 _itemScrollPosition = Vector2.zero;
+        private Vector2 _leftSideScrollPosition = Vector2.zero;
+        private Vector2 _rightSideScrollPosition = Vector2.zero;
         private List<ScriptableBase> _scriptableObjects;
         private ScriptableType _currentType = ScriptableType.All;
         private List<ScriptableBase> Favorites => favoriteData?.favorites;
@@ -175,7 +175,7 @@ namespace PancakeEditor.Scriptable
             GUI.backgroundColor = _colors[(int) _currentType];
             EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(width), GUILayout.ExpandHeight(true));
 
-            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
+            _leftSideScrollPosition = EditorGUILayout.BeginScrollView(_leftSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
             GUI.backgroundColor = color;
 
             DrawScriptableBases(_scriptableObjects);
@@ -195,7 +195,7 @@ namespace PancakeEditor.Scriptable
 
             DrawRightSideHeader();
 
-            _itemScrollPosition = EditorGUILayout.BeginScrollView(_itemScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
+            _rightSideScrollPosition = EditorGUILayout.BeginScrollView(_rightSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 
             var editor = UnityEditor.Editor.CreateEditor(scriptableBase);
             editor.OnInspectorGUI();
