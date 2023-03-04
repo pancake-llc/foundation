@@ -13,16 +13,24 @@ namespace PancakeEditor.Scriptable
             All,
             Variable,
             Event,
-            List
+            List,
+            Favorite
+        }
+
+        [System.Serializable]
+        private class FavoriteData
+        {
+            public List<ScriptableBase> favorites = new List<ScriptableBase>();
         }
 
         private Vector2 _scrollPosition = Vector2.zero;
         private Vector2 _itemScrollPosition = Vector2.zero;
         private List<ScriptableBase> _scriptableObjects;
         private ScriptableType _currentType = ScriptableType.All;
-        private Color[] _colors = {Color.gray, Color.cyan, Color.green, Color.yellow};
+        private List<ScriptableBase> Favorites => favoriteData?.favorites;
+        private readonly Color[] _colors = {Color.gray, Uniform.Blue, Uniform.Green, Color.yellow, Uniform.Pink};
 
-        private const float TAB_WIDTH = 65f;
+        private const float TAB_WIDTH = 55f;
         private const float BUTTON_HEIGHT = 40f;
 
         [SerializeField] private string currentFolder = "Assets";
@@ -30,12 +38,15 @@ namespace PancakeEditor.Scriptable
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
         [SerializeField] private ScriptableBase scriptableBase;
+        [SerializeField] private FavoriteData favoriteData;
+
 
         [MenuItem("Tools/Pancake/Scriptable/Wizard")]
         public new static void Show() => GetWindow<ScriptableWizard>("Scriptable Wizard");
 
         private void OnEnable()
         {
+            LoadSavedData();
             if (isInitialized)
             {
                 SelectTab(tabIndex);
@@ -44,6 +55,21 @@ namespace PancakeEditor.Scriptable
 
             SelectTab((int) _currentType, true);
             isInitialized = true;
+        }
+
+        private void OnDisable()
+        {
+            string data = JsonUtility.ToJson(favoriteData, false);
+            EditorPrefs.SetString(Application.identifier + "_scriptable_favorite", data);
+        }
+
+        private void LoadSavedData()
+        {
+            currentFolder = EditorPrefs.GetString(Application.identifier + "_scriptable_folder", "Assets");
+            favoriteData = new FavoriteData();
+            string favoriteDataJson = JsonUtility.ToJson(favoriteData, false);
+            string json = EditorPrefs.GetString(Application.identifier + "_scriptable_favorite", favoriteDataJson);
+            JsonUtility.FromJsonOverwrite(json, favoriteData);
         }
 
         private void OnGUI()
@@ -56,8 +82,8 @@ namespace PancakeEditor.Scriptable
             DrawTabs();
             EditorGUILayout.EndVertical();
             EditorGUILayout.BeginHorizontal();
-            DrawScriptableList();
-            DrawSelectedScriptable();
+            DrawLeftSide();
+            DrawRightSide();
             EditorGUILayout.EndHorizontal();
         }
 
@@ -97,6 +123,9 @@ namespace PancakeEditor.Scriptable
                     var lists = Editor.FindAll<ScriptableListBase>(currentFolder);
                     _scriptableObjects = lists.Cast<ScriptableBase>().ToList();
                     break;
+                case ScriptableType.Favorite:
+                    _scriptableObjects = Favorites;
+                    break;
             }
         }
 
@@ -116,6 +145,7 @@ namespace PancakeEditor.Scriptable
                 else
                 {
                     currentFolder = path;
+                    EditorPrefs.SetString(Application.identifier + "_scriptable_folder", currentFolder);
                     OnTabSelected(_currentType, true);
                 }
             }
@@ -127,7 +157,7 @@ namespace PancakeEditor.Scriptable
         private void DrawTabs()
         {
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
-            const float width = TAB_WIDTH * 4;
+            const float width = TAB_WIDTH * 5 + 4;
 
             var style = new GUIStyle(EditorStyles.toolbarButton);
             tabIndex = GUILayout.Toolbar(tabIndex, System.Enum.GetNames(typeof(ScriptableType)), style, GUILayout.MaxWidth(width));
@@ -137,9 +167,9 @@ namespace PancakeEditor.Scriptable
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawScriptableList()
+        private void DrawLeftSide()
         {
-            const float width = TAB_WIDTH * 4f;
+            const float width = TAB_WIDTH * 5f;
 
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
@@ -157,18 +187,13 @@ namespace PancakeEditor.Scriptable
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawSelectedScriptable()
+        private void DrawRightSide()
         {
             if (scriptableBase == null) return;
 
             EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
 
-            //Draw name and icon
-            EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
-            var icon = GetIconFor(_currentType, scriptableBase);
-            GUILayout.Box(icon, GUIStyle.none, GUILayout.Width(32), GUILayout.Height(32));
-            GUILayout.Label(scriptableBase.name, EditorStyles.label);
-            EditorGUILayout.EndHorizontal();
+            DrawRightSideHeader();
 
             _itemScrollPosition = EditorGUILayout.BeginScrollView(_itemScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 
@@ -177,7 +202,7 @@ namespace PancakeEditor.Scriptable
 
             Uniform.DrawLine();
             GUILayout.FlexibleSpace();
-            DrawSelectedButtons();
+            DrawScriptableSelectedButtons();
 
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
@@ -235,13 +260,19 @@ namespace PancakeEditor.Scriptable
             }
         }
 
-        private void DrawSelectedButtons()
+        private void DrawScriptableSelectedButtons()
         {
-            if (GUILayout.Button("Select in Project", GUILayout.MaxHeight(BUTTON_HEIGHT)))
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Ping", GUILayout.MaxHeight(BUTTON_HEIGHT)))
+            {
+                Selection.activeObject = scriptableBase;
                 EditorGUIUtility.PingObject(scriptableBase);
+            }
 
             if (GUILayout.Button("Rename", GUILayout.MaxHeight(BUTTON_HEIGHT)))
+            {
                 PopupWindow.Show(new Rect(), new RenameWindow(position, scriptableBase));
+            }
 
             if (GUILayout.Button("Create Copy", GUILayout.MaxHeight(BUTTON_HEIGHT)))
             {
@@ -249,6 +280,7 @@ namespace PancakeEditor.Scriptable
                 Refresh(_currentType);
             }
 
+            EditorGUILayout.EndHorizontal();
             GUI.backgroundColor = Uniform.Red;
             if (GUILayout.Button("Delete", GUI.skin.button, GUILayout.MaxHeight(BUTTON_HEIGHT)))
             {
@@ -261,6 +293,29 @@ namespace PancakeEditor.Scriptable
             }
 
             GUI.backgroundColor = Color.white;
+        }
+
+        private void DrawRightSideHeader()
+        {
+            //Draw name and icon
+            EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
+            var icon = GetIconFor(_currentType, scriptableBase);
+            GUILayout.Box(icon, GUIStyle.none, GUILayout.Width(32), GUILayout.Height(32));
+            GUILayout.Label(scriptableBase.name, EditorStyles.label);
+            GUILayout.FlexibleSpace();
+
+            //Draw Favorite
+            GUILayout.Label("Favorite", EditorStyles.label);
+            icon = Favorites.Contains(scriptableBase) ? EditorResources.StarFull : EditorResources.StarEmpty;
+            var style = new GUIStyle(GUIStyle.none) {margin = {top = 2}};
+            if (GUILayout.Button(icon, style, GUILayout.Width(16), GUILayout.Height(16)))
+            {
+                if (Favorites.Contains(scriptableBase)) Favorites.Remove(scriptableBase);
+                else Favorites.Add(scriptableBase);
+            }
+
+            GUILayout.Space(5);
+            EditorGUILayout.EndHorizontal();
         }
     }
 }
