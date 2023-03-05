@@ -190,9 +190,7 @@ namespace PancakeEditor.Scriptable
             EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
 
             DrawRightSideHeader();
-
             _rightSideScrollPosition = EditorGUILayout.BeginScrollView(_rightSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
-
             var editor = UnityEditor.Editor.CreateEditor(scriptableBase);
             editor.OnInspectorGUI();
 
@@ -206,8 +204,7 @@ namespace PancakeEditor.Scriptable
 
         private void DrawScriptableBases(List<ScriptableBase> scriptables)
         {
-            if (scriptables is null)
-                return;
+            if (scriptables is null) return;
 
             var count = 0;
             foreach (var scriptable in scriptables)
