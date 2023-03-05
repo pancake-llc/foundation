@@ -209,14 +209,6 @@ namespace Pancake
 
                 Data.Init();
 
-#if PANCAKE_ADS
-                if (Monetization.AdSettings.RuntimeAutoInitialize) runtime.AddComponent<Monetization.Advertising>();
-#endif
-
-#if PANCAKE_INPUTSYSTEM
-                runtime.AddComponent<Pancake.MyInput>();
-#endif
-
                 // Store the timestamp of the *first* init which can be used 
                 // as a rough approximation of the installation time.
                 if (Storage.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch) == UnixEpoch) Storage.SetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, DateTime.Now);

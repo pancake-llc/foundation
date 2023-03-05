@@ -55,7 +55,7 @@ namespace PancakeEditor
         [SerializeField] private bool isInitialized;
 
 
-        [MenuItem("Tools/Pancake/Wizard")]
+        [MenuItem("Tools/Pancake/Wizard %W")]
         public new static void Show() => GetWindow<Wizard>("Wizard");
 
         private void OnEnable()
@@ -88,6 +88,7 @@ namespace PancakeEditor
             EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
             DrawRightSideHeader();
             _rightSideScrollPosition = EditorGUILayout.BeginScrollView(_rightSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
+            DrawContentRightSide();
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
         }
@@ -97,7 +98,7 @@ namespace PancakeEditor
             const float width = TAB_WIDTH * 4f;
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
-            EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(width), GUILayout.ExpandHeight(true));
+            EditorGUILayout.BeginVertical("box", GUILayout.Width(width), GUILayout.ExpandHeight(true));
 
             _leftSideScrollPosition = EditorGUILayout.BeginScrollView(_leftSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
             GUI.backgroundColor = color;
@@ -139,7 +140,21 @@ namespace PancakeEditor
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawContentRightSide() { }
+        private void DrawContentRightSide()
+        {
+            switch (_selectedItemType)
+            {
+                case WizardAllType.Advertisement when _currentType is WizardType.Monetize or WizardType.All:
+                    break;
+                case WizardAllType.InAppPurchase when _currentType is WizardType.Monetize or WizardType.All:
+                    MonetizeIAPDrawer.OnInspectorGUI();
+                    break;
+                case WizardAllType.Firebase when _currentType is WizardType.Monetize or WizardType.All:
+                    break;
+                case WizardAllType.Adjust when _currentType is WizardType.Monetize or WizardType.All:
+                    break;
+            }
+        }
 
         private void DrawTabs()
         {

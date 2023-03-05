@@ -172,7 +172,7 @@ namespace PancakeEditor.Scriptable
             const float width = TAB_WIDTH * 5f;
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
-            EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(width), GUILayout.ExpandHeight(true));
+            EditorGUILayout.BeginVertical("box", GUILayout.Width(width), GUILayout.ExpandHeight(true));
 
             _leftSideScrollPosition = EditorGUILayout.BeginScrollView(_leftSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
             GUI.backgroundColor = color;
