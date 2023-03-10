@@ -17,7 +17,7 @@ namespace Pancake.Monetization
             // targetting setting
             // extra options
             // consent
-            if (AdSettings.AdCommonSettings.EnableGDPR) builder.AddExtra("npa", GDPRHelper.GetValueGDPR().ToString());
+            //if (AdSettings.AdCommonSettings.EnableGDPR) builder.AddExtra("npa", GDPRHelper.GetValueGDPR().ToString());
 
             return builder.Build();
         }

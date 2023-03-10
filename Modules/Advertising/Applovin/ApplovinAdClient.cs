@@ -8,7 +8,7 @@ namespace Pancake.Monetization
 {
     public class ApplovinAdClient : AdClient
     {
-        private const string NO_SDK_MESSAGE = "SDK missing. Please import applovin max plugin.";
+        private const string NO_SDK_MESSAGE = "SDK missing. Please import AppLovin plugin.";
         private ApplovinBannerLoader _banner;
         private ApplovinInterstitialLoader _interstitial;
         private ApplovinRewardedLoader _rewarded;

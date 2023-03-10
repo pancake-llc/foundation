@@ -9,12 +9,18 @@ namespace Pancake.Monetization
     public class AdmobAdClient : AdClient
     {
         private const string NO_SDK_MESSAGE = "SDK missing. Please import the AdMob (Google Mobile Ads) plugin.";
-        private AdmobBannerLoader _banner = new AdmobBannerLoader();
-        private AdmobInterstitialLoader _interstitial = new AdmobInterstitialLoader();
-        private AdmobRewardedLoader _rewarded = new AdmobRewardedLoader();
-        private AdmobRewardedInterstitialLoader _rewardedInterstitial = new AdmobRewardedInterstitialLoader();
-        private AdmobAppOpenLoader _appOpen = new AdmobAppOpenLoader();
+        private AdmobBannerLoader _banner;
+        private AdmobInterstitialLoader _interstitial;
+        private AdmobRewardedLoader _rewarded;
+        private AdmobRewardedInterstitialLoader _rewardedInterstitial;
+        private AdmobAppOpenLoader _appOpen;
         private static AdmobAdClient client;
+        internal Action interstitialDisplayChain;
+        internal Action interstitialCompletedChain;
+        internal Action rewardedCompletedChain;
+        internal Action rewardedDisplayChain;
+        internal Action rewardedSkippedChain;
+        internal Action rewardedClosedChain;
         public static AdmobAdClient Instance => client ?? (client = new AdmobAdClient());
 
         public override EAdNetwork Network => EAdNetwork.Admob;
@@ -35,10 +41,6 @@ namespace Pancake.Monetization
 #endif
             }
         }
-
-#if PANCAKE_ADMOB
-        public override float GetAdaptiveBannerHeight => _banner.GetAdaptiveBannerHeight();
-#endif
 
         protected override string NoSdkMessage => NO_SDK_MESSAGE;
 
@@ -64,179 +66,98 @@ namespace Pancake.Monetization
                 });
             });
 
-            _banner.OnClosedEvent += HandleBannerClosed;
-            _banner.OnFailToLoadEvent += InvokeBannerAdFailedToLoad;
-            _banner.OnLoadedEvent += InvokeBannerAdLoaded;
-            _banner.OnOpeningEvent += HandleBannerOpening;
-            _banner.OnPaidEvent += InvokeBannerAdPaid;
-            
-            _interstitial.OnFailToLoadEvent += InvokeInterstitialAdFailedToLoad;
-            _interstitial.OnFailToShowEvent += InvokeInterstitialAdFailedToShow;
-            _interstitial.OnLoadedEvent += InvokeInterstitialAdLoaded;
-            _interstitial.OnOpeningEvent += HandleInterstitialDisplayed;
-            _interstitial.OnPaidEvent += InvokeInterstitialAdPaid;
-            _interstitial.OnCompleted += HandleInterstitialCompleted;
 
-            _rewarded.OnClosedEvent += HandleRewardedClosed;
-            _rewarded.OnFailToLoadEvent += InvokeRewardedAdFailedToLoad;
-            _rewarded.OnFailToShowEvent += InvokeRewardedAdFailedToShow;
-            _rewarded.OnLoadedEvent += InvokeRewardedAdLoaded;
-            _rewarded.OnOpeningEvent += HandleRewardedDisplayed;
-            _rewarded.OnPaidEvent += InvokeRewardedAdPaid;
-            _rewarded.OnRewardEvent += InvokeRewardedAdRewared;
-            _rewarded.OnCompleted += HandleRewaredCompleted;
-            _rewarded.OnSkipped += HandleRewardedSkipped;
-
-            _rewardedInterstitial.OnClosedEvent += HandleRewardedInterstitialClosed;
-            _rewardedInterstitial.OnFailToLoadEvent += InvokeRewardedInterstitialAdFailedToLoad;
-            _rewardedInterstitial.OnFailToShowEvent += InvokeRewardedInterstitialAdFailedToShow;
-            _rewardedInterstitial.OnLoadedEvent += InvokeRewardedInterstitialAdLoaded;
-            _rewardedInterstitial.OnOpeningEvent += HandleRewardedInterstitialDisplayed;
-            _rewardedInterstitial.OnPaidEvent += InvokeRewardedInterstitialAdPaid;
-            _rewardedInterstitial.OnRewardEvent += InvokeRewardedInterstitialAdRewared;
-            _rewardedInterstitial.OnCompleted += HandleRewardedInterstitialCompleted;
-            _rewardedInterstitial.OnSkipped += HandleRewardedInterstitialSkipped;
-            
-            _appOpen.OnFailToLoadEvent += InvokeAppOpenAdFailedToLoad;
-            _appOpen.OnFailToShowEvent += InvokeAppOpenAdFailedToShow;
-            _appOpen.OnLoadedEvent += InvokeAppOpenAdLoaded;
-            _appOpen.OnOpeningEvent += HandleAppOpenDisplayed;
-            _appOpen.OnPaidEvent += InvokeAppOpenAdPaid;
-            _appOpen.OnCompleted += HandleAppOpenCompleted;
 #endif
         }
 
 #if PANCAKE_ADMOB
-        public event EventHandler<AdFailedToLoadEventArgs> OnBannerAdFailedToLoad;
-        public event EventHandler<EventArgs> OnBannerAdLoaded;
-        public event EventHandler<AdValueEventArgs> OnBannerAdPaid;
-
-        public event EventHandler<AdFailedToLoadEventArgs> OnInterstitialAdFailedToLoad;
-        public event EventHandler<AdErrorEventArgs> OnInterstitialAdFailedToShow;
-        public event EventHandler<EventArgs> OnInterstitialAdLoaded;
-        public event EventHandler<AdValueEventArgs> OnInterstititalAdPaid;
-
-        public event EventHandler<AdValueEventArgs> OnRewardedAdPaid;
-        public event EventHandler<EventArgs> OnRewardedAdLoaded;
-        public event EventHandler<AdErrorEventArgs> OnRewardedAdFailedToShow;
-        public event EventHandler<AdFailedToLoadEventArgs> OnRewardedAdFailedToLoad;
-        public event EventHandler<Reward> OnRewardedAdRewarded;
-
-        public event EventHandler<AdValueEventArgs> OnRewardedInterstitialAdPaid;
-        public event EventHandler<EventArgs> OnRewardedInterstitialAdLoaded;
-        public event EventHandler<AdErrorEventArgs> OnRewardedInterstitialAdFailedToShow;
-        public event EventHandler<AdFailedToLoadEventArgs> OnRewardedInterstitialAdFailedToLoad;
-        public event EventHandler<Reward> OnRewardedInterstitialAdRewarded;
-
-        public event EventHandler<AdValueEventArgs> OnAppOpenAdPaid;
-        public event EventHandler<EventArgs> OnAppOpenAdLoaded;
-        public event EventHandler<AdErrorEventArgs> OnRAppOpenAdFailedToShow;
-        public event EventHandler<AdFailedToLoadEventArgs> OnAppOpenAdFailedToLoad;
 
 
-        private void InvokeBannerAdLoaded(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnBannerAdLoaded?.Invoke(sender, args); }
-        private void HandleBannerClosed(AdLoader<AdUnit> instance, object sender, EventArgs args) { InternalBannerCompleted(instance); }
-        private void InvokeBannerAdFailedToLoad(AdLoader<AdUnit> instance, object sender, AdFailedToLoadEventArgs args) { OnBannerAdFailedToLoad?.Invoke(sender, args); }
-        private void HandleBannerOpening(AdLoader<AdUnit> instance, object sender, EventArgs args) { InternalBannerDisplayed(instance); }
-        private void InvokeBannerAdPaid(AdLoader<AdUnit> instance, object sender, AdValueEventArgs args) { OnBannerAdPaid?.Invoke(sender, args); }
+        #region banner
 
-        private void InvokeInterstitialAdFailedToLoad(AdLoader<AdUnit> instance, object sender, AdFailedToLoadEventArgs args)
-        {
-            OnInterstitialAdFailedToLoad?.Invoke(sender, args);
-        }
-
-        private void InvokeInterstitialAdFailedToShow(AdLoader<AdUnit> instance, object sender, AdErrorEventArgs args)
-        {
-            OnInterstitialAdFailedToShow?.Invoke(sender, args);
-        }
-
-        private void InvokeInterstitialAdLoaded(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnInterstitialAdLoaded?.Invoke(sender, args); }
-        private void InvokeInterstitialAdPaid(AdLoader<AdUnit> instance, object sender, AdValueEventArgs args) { OnInterstititalAdPaid?.Invoke(sender, args); }
-        private void InvokeRewardedAdPaid(AdLoader<AdUnit> instance, object sender, AdValueEventArgs args) { OnRewardedAdPaid?.Invoke(sender, args); }
-        private void InvokeRewardedAdLoaded(AdLoader<AdUnit> instance, object sender, EventArgs args) { OnRewardedAdLoaded?.Invoke(sender, args); }
-        private void InvokeRewardedAdFailedToShow(AdLoader<AdUnit> instance, object sender, AdErrorEventArgs args) { OnRewardedAdFailedToShow?.Invoke(sender, args); }
-
-        private void InvokeRewardedAdFailedToLoad(AdLoader<AdUnit> instance, object sender, AdFailedToLoadEventArgs args)
-        {
-            OnRewardedAdFailedToLoad?.Invoke(sender, args);
-        }
-
-        private void InvokeRewardedAdRewared(AdLoader<AdUnit> instance, object sender, Reward args) { OnRewardedAdRewarded?.Invoke(sender, args); }
-
-        private void HandleInterstitialCompleted(AdmobInterstitialLoader instance) { InternalInterstitialCompleted(instance); }
-        private void HandleInterstitialDisplayed(AdmobInterstitialLoader instance, object sender, EventArgs args) { InternalInterstitialDispalyed(instance); }
-
-        private void HandleRewaredCompleted(AdmobRewardedLoader instance) { InternalRewaredCompleted(instance); }
-
-        private void HandleRewardedSkipped(AdmobRewardedLoader instance) { InternalRewardSkipped(instance); }
-        private void HandleRewardedClosed(AdmobRewardedLoader instance, object sender, EventArgs args) { InternalRewaredClosed(instance); }
-        private void HandleRewardedDisplayed(AdmobRewardedLoader instance, object sender, EventArgs args) { InternalRewaredDisplayed(instance); }
-
-        private void HandleRewardedInterstitialSkipped(AdmobRewardedInterstitialLoader instance) { InternalRewardedInterstitialSkipped(instance); }
-
-        private void HandleRewardedInterstitialCompleted(AdmobRewardedInterstitialLoader instance) { InternalRewaredInterstitialCompleted(instance); }
-
-        private void HandleRewardedInterstitialClosed(AdmobRewardedInterstitialLoader instance, object sender, EventArgs args)
-        {
-            InternalRewaredInterstitialClosed(instance);
-        }
-
-        private void HandleRewardedInterstitialDisplayed(AdmobRewardedInterstitialLoader instance, object sender, EventArgs args)
-        {
-            InternalRewaredInterstitialDisplayed(instance);
-        }
-
-        private void InvokeRewardedInterstitialAdRewared(AdmobRewardedInterstitialLoader instance, Reward args) { OnRewardedInterstitialAdRewarded?.Invoke(null, args); }
-
-        private void InvokeRewardedInterstitialAdPaid(AdmobRewardedInterstitialLoader instance, object sender, AdValueEventArgs args)
-        {
-            OnRewardedInterstitialAdPaid?.Invoke(sender, args);
-        }
-
-        private void InvokeRewardedInterstitialAdLoaded(AdmobRewardedInterstitialLoader instance) { OnRewardedInterstitialAdLoaded?.Invoke(null, null); }
-
-        private void InvokeRewardedInterstitialAdFailedToShow(AdmobRewardedInterstitialLoader instance, object sender, AdErrorEventArgs args)
-        {
-            OnRewardedInterstitialAdFailedToShow?.Invoke(sender, args);
-        }
-
-        private void InvokeRewardedInterstitialAdFailedToLoad(AdmobRewardedInterstitialLoader instance, AdFailedToLoadEventArgs args)
-        {
-            OnRewardedInterstitialAdFailedToLoad?.Invoke(null, args);
-        }
-        
-        private void HandleAppOpenCompleted(AdmobAppOpenLoader instance) { InternalAppOpenCompleted(instance); }
-        private void HandleAppOpenDisplayed(AdmobAppOpenLoader instance, object sender, EventArgs args) { InternalAppOpenDisplayed(instance); }
-
-        private void InvokeAppOpenAdPaid(AdmobAppOpenLoader instance, object sender, AdValueEventArgs args) { OnAppOpenAdPaid?.Invoke(sender, args); }
+        public event Action OnBannerAdLoaded;
+        public event Action<LoadAdError> OnBannerAdFaildedToLoad;
+        public event Action<AdValue> OnBannerAdPaided;
 
 
-        private void InvokeAppOpenAdLoaded(AdmobAppOpenLoader instance) { OnAppOpenAdLoaded?.Invoke(null, null); }
+        internal void InvokeBannerAdLoaded() { OnBannerAdLoaded?.Invoke(); }
+        internal void InvokeBannerAdFailedToLoad(LoadAdError error) { OnBannerAdFaildedToLoad?.Invoke(error); }
+        internal void InvokeBannerAdDisplayed() { CallBannerAdDisplayed(); }
+        internal void InvokeBannerAdCompleted() { CallBannerAdCompleted(); }
+        internal void InvokeBannerAdPaided(AdValue value) { OnBannerAdPaided?.Invoke(value); }
 
-        private void InvokeAppOpenAdFailedToShow(AdmobAppOpenLoader instance, object sender, AdErrorEventArgs args) { OnRAppOpenAdFailedToShow?.Invoke(sender, args); }
+        #endregion
 
-        private void InvokeAppOpenAdFailedToLoad(AdmobAppOpenLoader instance, AdFailedToLoadEventArgs args) { OnAppOpenAdFailedToLoad?.Invoke(null, args); }
+
+        #region interstitial
+
+        public event Action<AdError> OnInterAdFailedToShow;
+        public event Action<LoadAdError> OnInterAdFailedToLoad;
+        public event Action OnInterAdLoaded;
+        public event Action<AdValue> OnInterAdPaided;
+        public event Action OnInterAdImpressionRecorded;
+
+
+        internal void InvokeInterAdFailedToShow(AdError error) { OnInterAdFailedToShow?.Invoke(error); }
+        public void InvokeInterAdFailedToLoad(LoadAdError error) { OnInterAdFailedToLoad?.Invoke(error); }
+        internal void InvokeInterAdPaided(AdValue value) { OnInterAdPaided?.Invoke(value); }
+        internal void InvokeInterAdImpressionRecorded() { OnInterAdImpressionRecorded?.Invoke(); }
+        internal void InvokeInterAdLoaded() { OnInterAdLoaded?.Invoke(); }
+        internal void InvokeInterAdDisplayed() { CallInterstitialAdDisplayed(); }
+        internal void InvokeInterAdCompleted() { CallInterstitialAdCompleted(); }
+
+        #endregion
+
+
+        #region rewarded
+
+        public event Action<AdError> OnRewardAdFailedToShow;
+        public event Action<AdValue> OnRewardAdPaided;
+        public event Action<LoadAdError> OnRewardAdFailedToLoad;
+        public event Action OnRewardAdLoaded;
+        public event Action OnRewardAdImpressionRecorded;
+
+        internal void InvokeRewardAdPaided(AdValue value) { OnRewardAdPaided?.Invoke(value); }
+        internal void InvokeRewardAdFailedToShow(AdError error) { OnRewardAdFailedToShow?.Invoke(error); }
+        internal void InvokeRewardAdFailedToLoad(LoadAdError error) { OnRewardAdFailedToLoad?.Invoke(error); }
+        internal void InvokeRewardAdLoaded() { OnRewardAdLoaded?.Invoke(); }
+        internal void InvokeRewardAdImpressionRecorded() { OnRewardAdImpressionRecorded?.Invoke(); }
+        internal void InvokeRewardAdDisplayed() { CallRewardedAdDisplayed(); }
+        internal void InvokeRewardAdCompleted() { CallRewardedAdCompleted(); }
+        internal void InvokeRewardAdSkipped() { CallRewardedAdSkipped(); }
+        internal void InvokeRewardAdClosed() { CallRewardedAdClosed(); }
+
+        #endregion
+
+        #region rewarded interstitial
+
+        public event Action<AdError> OnRewardedInterAdFailedToShow;
+        public event Action<AdValue> OnRewardedInterAdPaided;
+        public event Action<LoadAdError> OnRewardInterAdFailedToLoad;
+        public event Action OnRewardInterAdLoaded;
+        public event Action OnRewardedInterAdImpressionRecorded;
+
+        internal void InvokeRewardedInterAdPaided(AdValue value) { OnRewardedInterAdPaided?.Invoke(value); }
+        internal void InvokeRewardedInterAdFailedToShow(AdError error) { OnRewardedInterAdFailedToShow?.Invoke(error); }
+        internal void InvokeRewardedInterAdFailedToLoad(LoadAdError error) { OnRewardInterAdFailedToLoad?.Invoke(error); }
+        internal void InvokeRewardedInterAdLoaded() { OnRewardInterAdLoaded?.Invoke(); }
+        internal void InvokeRewardedInterAdImpressionRecorded() { OnRewardedInterAdImpressionRecorded?.Invoke(); }
+        internal void InvokeRewardedInterAdDisplayed() { CallRewardedInterstitialAdDisplayed(); }
+        internal void InvokeRewardedInterAdCompleted() { CallRewardedInterstitialAdCompleted(); }
+        internal void InvokeRewardedInterAdSkipped() { CallRewardedInterstitialAdSkipped(); }
+        internal void InvokeRewardedInterAdClosed() { CallRewardedInterstitialAdClosed(); }
+
+        #endregion
+
+        #region open ad
+
+        internal void InvokeAppOpenAdDisplayed() { CallAppOpenAdDisplayed(); }
+        internal void InvokeAppOpenAdCompleted() { CallAppOpenAdCompleted(); }
+
+        #endregion
+
 
 #endif
-
-        protected virtual void InternalBannerDisplayed(AdLoader<AdUnit> _) { CallBannerAdDisplayed(); }
-        protected virtual void InternalBannerCompleted(AdLoader<AdUnit> _) { CallBannerAdCompleted(); }
-        protected virtual void InternalInterstitialCompleted(AdLoader<AdUnit> _) { CallInterstitialAdCompleted(); }
-        protected virtual void InternalInterstitialDispalyed(AdLoader<AdUnit> _) { CallInterstitialAdDisplayed(); }
-
-        protected virtual void InternalRewardSkipped(AdLoader<AdUnit> _) { CallRewardedAdSkipped(); }
-
-        protected virtual void InternalRewaredCompleted(AdLoader<AdUnit> _) { CallRewardedAdCompleted(); }
-        protected virtual void InternalRewaredClosed(AdLoader<AdUnit> _) { CallRewardedAdClosed(); }
-        protected virtual void InternalRewaredDisplayed(AdLoader<AdUnit> _) { CallRewardedAdDisplayed(); }
-
-        protected virtual void InternalRewardedInterstitialSkipped(AdLoader<AdUnit> _) { CallRewardedInterstitialAdSkipped(); }
-        protected virtual void InternalRewaredInterstitialCompleted(AdLoader<AdUnit> _) { CallRewardedInterstitialAdCompleted(); }
-        protected virtual void InternalRewaredInterstitialClosed(AdLoader<AdUnit> _) { CallRewardedInterstitialAdClosed(); }
-        protected virtual void InternalRewaredInterstitialDisplayed(AdLoader<AdUnit> _) { CallRewardedInterstitialAdDisplayed(); }
-
-        protected virtual void InternalAppOpenCompleted(AdLoader<AdUnit> _) { CallAppOpenAdCompleted(); }
-        protected virtual void InternalAppOpenDisplayed(AdLoader<AdUnit> _) { CallAppOpenAdDisplayed(); }
 
         protected override void InternalShowBannerAd()
         {
@@ -254,6 +175,7 @@ namespace Pancake.Monetization
 
         protected override IInterstitial InternalShowInterstitialAd()
         {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.InterstitialAdUnit.Id)) return null;
             _interstitial?.Show();
             return _interstitial;
         }
@@ -284,15 +206,15 @@ namespace Pancake.Monetization
         {
 #if UNITY_ANDROID
 #if PANCAKE_ADMOB
-            if (AdsUtil.IsInEEA())
-            {
-                var prefab = UnityEngine.Resources.Load<UnityEngine.GameObject>("GDPR");
-                if (prefab != null)
-                {
-                    UnityEngine.GameObject.Instantiate(prefab);
-                    UnityEngine.Time.timeScale = 0;
-                }
-            }
+            // if (AdsUtil.IsInEEA())
+            // {
+            //     var prefab = UnityEngine.Resources.Load<UnityEngine.GameObject>("GDPR");
+            //     if (prefab != null)
+            //     {
+            //         UnityEngine.GameObject.Instantiate(prefab);
+            //         UnityEngine.Time.timeScale = 0;
+            //     }
+            // }
 #endif
 #elif UNITY_IOS
             if (Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() ==

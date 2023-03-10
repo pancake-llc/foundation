@@ -1,3 +1,4 @@
+using UnityEngine;
 #if PANCAKE_ADMOB
 using System;
 using GoogleMobileAds.Api;
@@ -5,99 +6,56 @@ using GoogleMobileAds.Api;
 
 namespace Pancake.Monetization
 {
-    public class AdmobRewardedInterstitialLoader : AdLoader<AdUnit>
+    public class AdmobRewardedInterstitialLoader
     {
 #if PANCAKE_ADMOB
         private RewardedInterstitialAd _rewardedInterstitialAd;
+        private AdmobAdClient _client;
         public bool IsEarnRewardedInterstitial { get; private set; }
-        public event Action<AdmobRewardedInterstitialLoader> OnCompleted = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader> OnSkipped = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader, object, AdValueEventArgs> OnPaidEvent = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader, object, EventArgs> OnOpeningEvent = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader> OnLoadedEvent = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader, object, AdErrorEventArgs> OnFailToShowEvent = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader, AdFailedToLoadEventArgs> OnFailToLoadEvent = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader, object, EventArgs> OnRecordImpressionEvent = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader, object, EventArgs> OnClosedEvent = delegate { };
-        public event Action<AdmobRewardedInterstitialLoader, Reward> OnRewardEvent = delegate { };
 
-        public AdmobRewardedInterstitialLoader() { unit = AdSettings.AdmobSettings.RewardedInterstitialAdUnit; }
-
-        internal override bool IsReady() { return _rewardedInterstitialAd != null; }
-
-        internal override void Load() { RewardedInterstitialAd.LoadAd(unit.Id, Admob.CreateRequest(), OnAdLoadCallback); }
-
-        private void OnAdLoadCallback(RewardedInterstitialAd rewardedInterstitialAd, AdFailedToLoadEventArgs error)
+        public AdmobRewardedInterstitialLoader(AdmobAdClient client)
         {
-            if (error != null)
+            _client = client;
+            Load();
+        }
+
+        public void Load()
+        {
+            Destroy();
+            RewardedInterstitialAd.Load(AdSettings.AdmobSettings.RewardedInterstitialAdUnit.Id, Admob.CreateRequest(), OnAdLoadCallback);
+        }
+
+        private void OnAdLoadCallback(RewardedInterstitialAd ad, LoadAdError error)
+        {
+            // if error is not null, the load request failed.
+            if (error != null || ad == null)
             {
                 OnAdFailedToLoad(error);
                 return;
             }
 
-            _rewardedInterstitialAd = rewardedInterstitialAd;
+            _rewardedInterstitialAd = ad;
+            _rewardedInterstitialAd.OnAdFullScreenContentClosed += OnAdClosed;
+            _rewardedInterstitialAd.OnAdImpressionRecorded += OnAdImpressionRecorded;
+            _rewardedInterstitialAd.OnAdFullScreenContentOpened += OnAdOpening;
+            _rewardedInterstitialAd.OnAdFullScreenContentFailed += OnAdFailedToShow;
+            _rewardedInterstitialAd.OnAdPaid += OnAdPaided;
             OnAdLoaded();
-
-            _rewardedInterstitialAd.OnAdDidDismissFullScreenContent += OnAdClosed;
-            _rewardedInterstitialAd.OnAdDidRecordImpression += OnAdDidRecordImpression;
-            _rewardedInterstitialAd.OnAdDidPresentFullScreenContent += OnAdOpening;
-            _rewardedInterstitialAd.OnAdFailedToPresentFullScreenContent += OnAdFailedToShow;
-            _rewardedInterstitialAd.OnPaidEvent += OnPaidHandleEvent;
         }
 
-        private void OnRewardHandleEvent(Reward e)
+        private void OnAdPaided(AdValue value) { _client.InvokeRewardedInterAdPaided(value); }
+        private void OnAdImpressionRecorded() { _client.InvokeRewardedInterAdImpressionRecorded(); }
+        private void OnAdClosed() { _client.InvokeRewardedInterAdClosed(); }
+        private void OnAdOpening() { _client.InvokeRewardedInterAdDisplayed(); }
+        private void OnAdLoaded() { _client.InvokeRewardedInterAdLoaded(); }
+        private void OnAdFailedToLoad(LoadAdError error) { _client.InvokeRewardedInterAdFailedToLoad(error); }
+        private void OnAdFailedToShow(AdError error) { _client.InvokeRewardedInterAdFailedToShow(error); }
+
+
+        internal void Destroy()
         {
-            IsEarnRewardedInterstitial = true;
-            OnRewardEvent.Invoke(this, e);
-        }
-
-        private void OnPaidHandleEvent(object sender, AdValueEventArgs e)
-        {
-            OnPaidEvent.Invoke(this, sender, e);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(e, unit.Id);  
-#endif
-        }
-
-        private void OnAdDidRecordImpression(object sender, EventArgs e) { OnRecordImpressionEvent.Invoke(this, sender, e); }
-
-        private void OnAdOpening(object sender, EventArgs e)
-        {
-            R.isShowingAd = true;
-            OnOpeningEvent.Invoke(this, sender, e);
-        }
-
-        private void OnAdLoaded() { OnLoadedEvent.Invoke(this); }
-
-        private void OnAdFailedToShow(object sender, AdErrorEventArgs e) { OnFailToShowEvent.Invoke(this, sender, e); }
-
-        private void OnAdFailedToLoad(AdFailedToLoadEventArgs e)
-        {
-            OnFailToLoadEvent.Invoke(this, e);
-            Destroy();
-        }
-
-        private void OnAdClosed(object sender, EventArgs e)
-        {
-            R.isShowingAd = false;
-            OnClosedEvent.Invoke(this, sender, e);
-            if (IsEarnRewardedInterstitial)
-            {
-                OnCompleted.Invoke(this);
-            }
-            else
-            {
-                OnSkipped.Invoke(this);
-            }
-
-            Destroy();
-        }
-
-        internal override void Show() { _rewardedInterstitialAd?.Show(OnRewardHandleEvent); }
-
-        internal override void Destroy()
-        {
-            _rewardedInterstitialAd?.Destroy();
+            if (_rewardedInterstitialAd == null) return;
+            _rewardedInterstitialAd.Destroy();
             _rewardedInterstitialAd = null;
         }
 #endif

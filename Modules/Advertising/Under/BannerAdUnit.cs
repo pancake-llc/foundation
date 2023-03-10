@@ -3,11 +3,13 @@ namespace Pancake.Monetization
     [System.Serializable]
     public class BannerAdUnit : AdUnit
     {
+        public EBannerSize size;
         public EBannerPosition position;
 
         public BannerAdUnit(string iOSId, string androidId) : base(iOSId, androidId)
         {
-            position = EBannerPosition.Bottom; // default set banner display in bottom
+            position = EBannerPosition.Bottom;
+            size = EBannerSize.Adaptive;
         }
     }
 }
