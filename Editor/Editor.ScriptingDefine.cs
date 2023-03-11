@@ -38,7 +38,6 @@ namespace PancakeEditor
                 return workingBuildTargetGroups;
             }
 
-
             public static bool IsSymbolDefined(string symbol, BuildTargetGroup platform)
             {
                 var currentSymbol = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform);

@@ -55,7 +55,7 @@ namespace PancakeEditor
         [SerializeField] private bool isInitialized;
 
 
-        [MenuItem("Tools/Pancake/Wizard %W")]
+        [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show() => GetWindow<Wizard>("Wizard");
 
         private void OnEnable()
@@ -145,6 +145,7 @@ namespace PancakeEditor
             switch (_selectedItemType)
             {
                 case WizardAllType.Advertisement when _currentType is WizardType.Monetize or WizardType.All:
+                    MonetizeAdvertisingDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.InAppPurchase when _currentType is WizardType.Monetize or WizardType.All:
                     MonetizeIAPDrawer.OnInspectorGUI();
