@@ -1,6 +1,8 @@
+using System;
+
 namespace Pancake.Monetization
 {
-    public class ApplovinRewardedInterstitialLoader
+    public class ApplovinRewardedInterstitialLoader : IRewardedInterstitial
     {
         private readonly ApplovinAdClient _client;
 
@@ -12,7 +14,6 @@ namespace Pancake.Monetization
 
         private void Initialized()
         {
-#if PANCAKE_APPLOVIN
             MaxSdkCallbacks.RewardedInterstitial.OnAdClickedEvent += OnAdClicked;
             MaxSdkCallbacks.RewardedInterstitial.OnAdDisplayedEvent += OnAdDisplayed;
             MaxSdkCallbacks.RewardedInterstitial.OnAdHiddenEvent += OnAdHidden;
@@ -21,17 +22,9 @@ namespace Pancake.Monetization
             MaxSdkCallbacks.RewardedInterstitial.OnAdLoadFailedEvent += OnAdLoadFailed;
             MaxSdkCallbacks.RewardedInterstitial.OnAdReceivedRewardEvent += OnAdReceivedReward;
             MaxSdkCallbacks.RewardedInterstitial.OnAdRevenuePaidEvent += OnAdRevenuePaid;
-#endif
         }
 
-#if PANCAKE_APPLOVIN
-        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
-        {
-            _client.InvokeRewardedInterstitialAdRevenuePaid(info);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(info);  
-#endif
-        }
+        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { _client.InvokeRewardedInterstitialAdRevenuePaid(info); }
 
         private void OnAdReceivedReward(string unit, MaxSdkBase.Reward reward, MaxSdkBase.AdInfo info) { _client.InvokeRewardedInterstitialAdReceivedReward(reward); }
 
@@ -41,16 +34,29 @@ namespace Pancake.Monetization
 
         private void OnAdDisplayFailed(string unit, MaxSdkBase.ErrorInfo error, MaxSdkBase.AdInfo info) { _client.InvokeRewardedInterstitialAdFaildToDisplay(); }
 
-        private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
-        {
-            R.isShowingAd = false;
-            _client.InvokeRewardedInterstitialAdHidden();
-            if (AdSettings.MaxSettings.EnableRequestAdAfterHidden) _client.LoadRewardedInterstitialAd();
-        }
+        private void OnAdHidden(string unit, MaxSdkBase.AdInfo info) { _client.InvokeRewardedInterstitialAdHidden(); }
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.InvokeRewardedInterstitialAdDisplay(); }
 
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeRewardedInterstitialAdClicked(); }
-#endif
+
+        public void Register(string key, Action action)
+        {
+            switch (key)
+            {
+                case "OnDisplayed":
+                    _client.rewardedInterstitialDisplayChain = action;
+                    break;
+                case "OnCompleted":
+                    _client.rewardedInterstitialCompletedChain = action;
+                    break;
+                case "OnClosed":
+                    _client.rewardedInterstitialClosedChain = action;
+                    break;
+                case "OnSkipped":
+                    _client.rewardedInterstitialSkippedChain = action;
+                    break;
+            }
+        }
     }
 }

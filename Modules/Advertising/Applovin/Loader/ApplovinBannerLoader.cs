@@ -1,6 +1,7 @@
+// ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
 {
-    public class ApplovinBannerLoader
+    public sealed class ApplovinBannerLoader
     {
         private readonly ApplovinAdClient _client;
 
@@ -12,7 +13,6 @@ namespace Pancake.Monetization
 
         private void Initialized()
         {
-#if PANCAKE_APPLOVIN
             MaxSdkCallbacks.Banner.OnAdLoadedEvent += OnAdLoaded;
             MaxSdkCallbacks.Banner.OnAdClickedEvent += OnAdClicked;
             MaxSdkCallbacks.Banner.OnAdExpandedEvent += OnAdExpanded;
@@ -20,21 +20,14 @@ namespace Pancake.Monetization
             MaxSdkCallbacks.Banner.OnAdCollapsedEvent += OnAdCollapsed;
             MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaid;
             MaxSdk.CreateBanner(AdSettings.MaxSettings.BannerAdUnit.Id, AdSettings.MaxSettings.BannerAdUnit.ConvertPosition());
-            if (AdSettings.MaxSettings.BannerAdUnit.useAdaptiveBanner)
+            if (AdSettings.MaxSettings.BannerAdUnit.size != EBannerSize.Adaptive)
             {
-                MaxSdk.SetBannerExtraParameter(AdSettings.MaxSettings.BannerAdUnit.Id, "adaptive_banner", "true");
+                // The latest MAX Unity plugin (versions 4.3.1 and above) enables adaptive banners automatically
+                MaxSdk.SetBannerExtraParameter(AdSettings.MaxSettings.BannerAdUnit.Id, "adaptive_banner", "false");
             }
-#endif
         }
 
-#if PANCAKE_APPLOVIN
-        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
-        {
-            _client.InvokeBannerAdRevenuePaid(info);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(info);  
-#endif
-        }
+        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { _client.InvokeBannerAdRevenuePaid(info); }
 
         private void OnAdCollapsed(string unit, MaxSdkBase.AdInfo info) { _client.InvokeBannerAdCollapsed(); }
 
@@ -45,8 +38,5 @@ namespace Pancake.Monetization
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeBannerAdClicked(); }
 
         private void OnAdLoaded(string unit, MaxSdkBase.AdInfo info) { _client.InvokeBannerAdLoaded(); }
-
-        internal float GetAdaptiveBannerHeight() { return MaxSdkUtils.GetAdaptiveBannerHeight(UnityEngine.Screen.width); }
-#endif
     }
 }

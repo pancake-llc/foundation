@@ -3,10 +3,6 @@ namespace Pancake.Monetization
     [System.Serializable]
     public class ApplovinBannerUnit : BannerAdUnit
     {
-        [UnityEngine.Tooltip("if you are using adaptive banner, you will need to also integrate AdMob " +
-                 "(as it is a Google ad format and the AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize() is from the AdMob SDK).")]
-        public bool useAdaptiveBanner;
-
         public ApplovinBannerUnit(string iOSId, string androidId)
             : base(iOSId, androidId)
         {

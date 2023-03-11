@@ -12,13 +12,11 @@ namespace Pancake.Monetization
         protected override string NoSdkMessage => "";
 
         private static NoneAdClient client;
-        public static NoneAdClient Instance => client ?? (client = new NoneAdClient());
+        public static NoneAdClient Instance => client ??= new NoneAdClient();
 
         protected override void InternalInit() { }
 
         protected override void InternalShowBannerAd() { }
-
-        protected override void InternalHideBannerAd() { }
 
         protected override void InternalDestroyBannerAd() { }
 
@@ -33,5 +31,17 @@ namespace Pancake.Monetization
         protected override bool InternalIsRewardedAdReady() { return false; }
 
         protected override IRewarded InternalShowRewardedAd() { return null; }
+
+        protected override void InternalLoadRewardedInterstitialAd() { }
+
+        protected override IRewardedInterstitial InternalShowRewardedInterstitialAd() { return null; }
+
+        protected override bool InternalIsRewardedInterstitialAdReady() { return false; }
+
+        protected override void InternalLoadAppOpenAd() { }
+
+        protected override void InternalShowAppOpenAd() { }
+
+        protected override bool InternalIsAppOpenAdReady() { return false; }
     }
 }

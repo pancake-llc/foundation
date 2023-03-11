@@ -11,11 +11,13 @@ namespace Pancake.Monetization
         public event Action<IAdClient> OnInterstitialAdDisplayed;
         public event Action<IAdClient> OnRewardedAdSkipped;
         public event Action<IAdClient> OnRewardedAdCompleted;
+
         /// <summary>
         /// call when close rewarded ad
         /// it's more general than <see cref="OnRewardedAdSkipped"/> and <see cref="OnRewardedAdCompleted"/>
         /// </summary>
         public event Action<IAdClient> OnRewardedAdClosed;
+
         public event Action<IAdClient> OnRewardedAdDisplayed;
         public event Action<IAdClient> OnRewardedInterstitialAdSkipped;
         public event Action<IAdClient> OnRewardedInterstitialAdCompleted;
@@ -62,7 +64,6 @@ namespace Pancake.Monetization
 
         protected abstract void InternalInit();
         protected abstract void InternalShowBannerAd();
-        protected abstract void InternalHideBannerAd();
         protected abstract void InternalDestroyBannerAd();
         protected abstract void InternalLoadInterstitialAd();
         protected abstract IInterstitial InternalShowInterstitialAd();
@@ -70,12 +71,12 @@ namespace Pancake.Monetization
         protected abstract void InternalLoadRewardedAd();
         protected abstract IRewarded InternalShowRewardedAd();
         protected abstract bool InternalIsRewardedAdReady();
-        protected virtual void InternalLoadRewardedInterstitialAd() { }
-        protected virtual void InternalShowRewardedInterstitialAd() { }
-        protected virtual bool InternalIsRewardedInterstitialAdReady() { return false; }
-        protected virtual void InternalLoadAppOpenAd() { }
-        protected virtual void InternalShowAppOpenAd() { }
-        protected virtual bool InternalIsAppOpenAdReady() { return false; }
+        protected abstract void InternalLoadRewardedInterstitialAd();
+        protected abstract IRewardedInterstitial InternalShowRewardedInterstitialAd();
+        protected abstract bool InternalIsRewardedInterstitialAdReady();
+        protected abstract void InternalLoadAppOpenAd();
+        protected abstract void InternalShowAppOpenAd();
+        protected abstract bool InternalIsAppOpenAdReady();
 
         public virtual void ShowBannerAd()
         {
@@ -89,15 +90,11 @@ namespace Pancake.Monetization
             }
         }
 
-        public void HideBannerAd()
-        {
-            if (CheckInitialize()) InternalHideBannerAd();
-        }
-
         public void DestroyBannerAd()
         {
             if (CheckInitialize()) InternalDestroyBannerAd();
         }
+
         protected virtual void CallBannerAdDisplayed() { Runtime.RunOnMainThread(() => { OnBannerAdDisplayed?.Invoke(this); }); }
         protected virtual void CallBannerAdCompleted() { Runtime.RunOnMainThread(() => { OnBannerAdCompleted?.Invoke(this); }); }
         protected virtual void CallInterstitialAdCompleted() { Runtime.RunOnMainThread(() => { OnInterstitialAdCompleted?.Invoke(this); }); }
@@ -165,7 +162,7 @@ namespace Pancake.Monetization
                     Debug.LogFormat($"Cannot show {Network} rewarded ad : ad is not loaded.");
                     return null;
                 }
-                
+
                 return InternalShowRewardedAd();
             }
 
@@ -193,23 +190,22 @@ namespace Pancake.Monetization
             }
         }
 
-        public void ShowRewardedInterstitialAd()
+        public IRewardedInterstitial ShowRewardedInterstitialAd()
         {
             if (IsSdkAvaiable)
             {
-                if (!CheckInitialize()) return;
+                if (!CheckInitialize()) return null;
                 if (!IsRewardedInterstitialAdReady())
                 {
                     Debug.LogFormat($"Cannot show {Network} rewarded interstitial ad : ad is not loaded.");
-                    return;
+                    return null;
                 }
-                
-                InternalShowRewardedInterstitialAd();
+
+                return InternalShowRewardedInterstitialAd();
             }
-            else
-            {
-                Debug.Log(NoSdkMessage);
-            }
+
+            Debug.Log(NoSdkMessage);
+            return null;
         }
 
         public bool IsRewardedInterstitialAdReady() { return CheckInitialize(false) && InternalIsRewardedInterstitialAdReady(); }
@@ -240,9 +236,9 @@ namespace Pancake.Monetization
                     Debug.LogFormat($"Cannot show {Network} app open ad : ad is not loaded.");
                     return;
                 }
-                
+
                 //if (R.isShowingAd) return; // dose not show app open ad when interstitial or rewarded still displayed
-                
+
                 InternalShowAppOpenAd();
             }
             else

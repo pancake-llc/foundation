@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     {
         private RewardedInterstitialAd _rewardedInterstitialAd;
         private readonly AdmobAdClient _client;
-        public bool IsEarnRewardedInterstitial { get; private set; }
+        public bool IsEarnRewarded { get; private set; }
 
         public AdmobRewardedInterstitialLoader(AdmobAdClient client)
         {
@@ -41,19 +41,19 @@ namespace Pancake.Monetization
 
         private void OnAdPaided(AdValue value) { _client.InvokeRewardedInterAdPaided(value); }
         private void OnAdImpressionRecorded() { _client.InvokeRewardedInterAdImpressionRecorded(); }
-        private void OnAdClosed() { _client.InvokeRewardedInterAdClosed(); }
+        private void OnAdClosed() { _client.InvokeRewardedInterAdCompleted(); }
         private void OnAdOpening() { _client.InvokeRewardedInterAdDisplayed(); }
         private void OnAdLoaded() { _client.InvokeRewardedInterAdLoaded(); }
         private void OnAdFailedToLoad(LoadAdError error) { _client.InvokeRewardedInterAdFailedToLoad(error); }
         private void OnAdFailedToShow(AdError error) { _client.InvokeRewardedInterAdFailedToShow(error); }
+        private void UserEarnedRewardCallback(Reward reward) { IsEarnRewarded = true; }
 
-        private void UserEarnedRewardCallback(Reward reward) { }
-
-        private void Destroy()
+        internal void Destroy()
         {
             if (_rewardedInterstitialAd == null) return;
             _rewardedInterstitialAd.Destroy();
             _rewardedInterstitialAd = null;
+            IsEarnRewarded = false;
         }
 
         public bool IsReady => _rewardedInterstitialAd != null && _rewardedInterstitialAd.CanShowAd();
@@ -72,6 +72,12 @@ namespace Pancake.Monetization
                     break;
                 case "OnCompleted":
                     _client.rewardedInterstitialCompletedChain = action;
+                    break;
+                case "OnClosed":
+                    _client.rewardedInterstitialClosedChain = action;
+                    break;
+                case "OnSkipped":
+                    _client.rewardedInterstitialSkippedChain = action;
                     break;
             }
         }

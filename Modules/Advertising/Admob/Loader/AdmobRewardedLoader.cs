@@ -1,7 +1,5 @@
 using System;
-#if PANCAKE_ADMOB
 using GoogleMobileAds.Api;
-#endif
 
 namespace Pancake.Monetization
 {
@@ -11,15 +9,17 @@ namespace Pancake.Monetization
         private readonly AdmobAdClient _client;
         public bool IsEarnRewarded { get; private set; }
 
-
         public AdmobRewardedLoader(AdmobAdClient client)
         {
             _client = client;
             Load();
         }
 
-
-        private void Load() { RewardedAd.Load(AdSettings.AdmobSettings.RewardedAdUnit.Id, Admob.CreateRequest(), AdLoadCallback); }
+        public void Load()
+        {
+            Destroy();
+            RewardedAd.Load(AdSettings.AdmobSettings.RewardedAdUnit.Id, Admob.CreateRequest(), AdLoadCallback);
+        }
 
         private void AdLoadCallback(RewardedAd ad, LoadAdError error)
         {
@@ -41,10 +41,10 @@ namespace Pancake.Monetization
 
         private void OnAdPaided(AdValue value) { _client.InvokeRewardAdPaided(value); }
         private void OnAdImpressionRecorded() { _client.InvokeRewardAdImpressionRecorded(); }
-        private void OnAdOpening() { _client.InvokeRewardAdDisplayed(); }
         private void OnAdFailedToShow(AdError error) { _client.InvokeRewardAdFailedToShow(error); }
         private void OnAdFailedToLoad(LoadAdError error) { _client.InvokeRewardAdFailedToLoad(error); }
         private void OnAdLoaded() { _client.InvokeRewardAdLoaded(); }
+        private void OnAdOpening() { _client.InvokeRewardAdDisplayed(); }
         private void OnAdClosed() { _client.InvokeRewardAdCompleted(); }
 
         public void Register(string key, Action action)
@@ -66,11 +66,12 @@ namespace Pancake.Monetization
             }
         }
 
-        private void Destroy()
+        internal void Destroy()
         {
             if (_rewardedAd == null) return;
             _rewardedAd.Destroy();
             _rewardedAd = null;
+            IsEarnRewarded = false;
         }
 
         public bool IsReady => _rewardedAd != null && _rewardedAd.CanShowAd();
@@ -80,6 +81,6 @@ namespace Pancake.Monetization
             if (IsReady) _rewardedAd.Show(UserRewardEarnedCallback);
         }
 
-        private void UserRewardEarnedCallback(Reward reward) { }
+        private void UserRewardEarnedCallback(Reward reward) { IsEarnRewarded = true; }
     }
 }

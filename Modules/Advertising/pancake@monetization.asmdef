@@ -2,7 +2,8 @@
     "name": "pancake@monetization",
     "rootNamespace": "",
     "references": [
-        "GUID:adac8d59ad7e8504f82d387cded797a7"
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
+        "GUID:a4cfc1a18fa3a469b96d885db522f42e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

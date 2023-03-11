@@ -1,7 +1,7 @@
-#if PANCAKE_ADMOB
+using UnityEngine;
 using System;
+using System.Collections;
 using GoogleMobileAds.Api;
-#endif
 
 
 namespace Pancake.Monetization
@@ -21,9 +21,12 @@ namespace Pancake.Monetization
         internal Action rewardedDisplayChain;
         internal Action rewardedSkippedChain;
         internal Action rewardedClosedChain;
-        internal Action rewardedInterstitialDisplayChain;
         internal Action rewardedInterstitialCompletedChain;
-        public static AdmobAdClient Instance => client ?? (client = new AdmobAdClient());
+        internal Action rewardedInterstitialDisplayChain;
+        internal Action rewardedInterstitialSkippedChain;
+        internal Action rewardedInterstitialClosedChain;
+        private readonly WaitForSeconds _waitBannerReload = new WaitForSeconds(5f);
+        public static AdmobAdClient Instance => client ??= new AdmobAdClient();
 
         public override EAdNetwork Network => EAdNetwork.Admob;
         public override bool IsBannerAdSupported => true;
@@ -46,15 +49,6 @@ namespace Pancake.Monetization
 
         protected override string NoSdkMessage => NO_SDK_MESSAGE;
 
-        public AdmobBannerLoader Banner => _banner;
-
-        public AdmobInterstitialLoader Interstitial => _interstitial;
-
-        public AdmobRewardedLoader Rewarded => _rewarded;
-
-        public AdmobRewardedInterstitialLoader RewardedInterstitial => _rewardedInterstitial;
-        public AdmobAppOpenLoader AppOpen => _appOpen;
-
         protected override void InternalInit()
         {
 #if PANCAKE_ADMOB
@@ -64,7 +58,6 @@ namespace Pancake.Monetization
                 {
                     if (AdSettings.AdmobSettings.EnableTestMode) Admob.SetupDeviceTest();
                     if (AdSettings.AdCommonSettings.EnableGDPR) ShowConsentForm();
-                    isInitialized = true;
                 });
             });
 
@@ -73,10 +66,13 @@ namespace Pancake.Monetization
             _rewarded = new AdmobRewardedLoader(this);
             _rewardedInterstitial = new AdmobRewardedInterstitialLoader(this);
             _appOpen = new AdmobAppOpenLoader(this);
+            
+            LoadInterstitialAd();
+            LoadRewardedAd();
+            LoadRewardedInterstitialAd();
+            isInitialized = true;
 #endif
         }
-
-#if PANCAKE_ADMOB
 
 
         #region banner
@@ -87,10 +83,22 @@ namespace Pancake.Monetization
 
 
         internal void InvokeBannerAdLoaded() { OnBannerAdLoaded?.Invoke(); }
-        internal void InvokeBannerAdFailedToLoad(LoadAdError error) { OnBannerAdFaildedToLoad?.Invoke(error); }
+
+        internal void InvokeBannerAdFailedToLoad(LoadAdError error)
+        {
+            OnBannerAdFaildedToLoad?.Invoke(error);
+            Runtime.RunCoroutine(DelayBannerReload());
+        }
+
         internal void InvokeBannerAdDisplayed() { CallBannerAdDisplayed(); }
         internal void InvokeBannerAdCompleted() { CallBannerAdCompleted(); }
         internal void InvokeBannerAdPaided(AdValue value) { OnBannerAdPaided?.Invoke(value); }
+
+        private IEnumerator DelayBannerReload()
+        {
+            yield return _waitBannerReload;
+            _banner?.Load();
+        }
 
         #endregion
 
@@ -105,12 +113,27 @@ namespace Pancake.Monetization
 
 
         internal void InvokeInterAdFailedToShow(AdError error) { OnInterAdFailedToShow?.Invoke(error); }
-        public void InvokeInterAdFailedToLoad(LoadAdError error) { OnInterAdFailedToLoad?.Invoke(error); }
+        internal void InvokeInterAdFailedToLoad(LoadAdError error) { OnInterAdFailedToLoad?.Invoke(error); }
         internal void InvokeInterAdPaided(AdValue value) { OnInterAdPaided?.Invoke(value); }
         internal void InvokeInterAdImpressionRecorded() { OnInterAdImpressionRecorded?.Invoke(); }
         internal void InvokeInterAdLoaded() { OnInterAdLoaded?.Invoke(); }
         internal void InvokeInterAdDisplayed() { CallInterstitialAdDisplayed(); }
         internal void InvokeInterAdCompleted() { CallInterstitialAdCompleted(); }
+
+        protected override void CallInterstitialAdDisplayed()
+        {
+            R.isShowingAd = true;
+            C.CallActionClean(ref interstitialDisplayChain);
+            base.CallInterstitialAdDisplayed();
+        }
+
+        protected override void CallInterstitialAdCompleted()
+        {
+            R.isShowingAd = false;
+            C.CallActionClean(ref interstitialCompletedChain);
+            base.CallInterstitialAdCompleted();
+            _interstitial.Destroy();
+        }
 
         #endregion
 
@@ -129,11 +152,49 @@ namespace Pancake.Monetization
         internal void InvokeRewardAdLoaded() { OnRewardAdLoaded?.Invoke(); }
         internal void InvokeRewardAdImpressionRecorded() { OnRewardAdImpressionRecorded?.Invoke(); }
         internal void InvokeRewardAdDisplayed() { CallRewardedAdDisplayed(); }
-        internal void InvokeRewardAdCompleted() { CallRewardedAdCompleted(); }
-        internal void InvokeRewardAdSkipped() { CallRewardedAdSkipped(); }
-        internal void InvokeRewardAdClosed() { CallRewardedAdClosed(); }
+
+        internal void InvokeRewardAdCompleted()
+        {
+            R.isShowingAd = false;
+            CallRewardedAdClosed();
+            if (_rewarded.IsEarnRewarded)
+            {
+                CallRewardedAdCompleted();
+                return;
+            }
+
+            CallRewardedAdSkipped();
+        }
+
+        protected override void CallRewardedAdDisplayed()
+        {
+            R.isShowingAd = true;
+            C.CallActionClean(ref rewardedDisplayChain);
+            base.CallRewardedAdDisplayed();
+        }
+
+        protected override void CallRewardedAdSkipped()
+        {
+            C.CallActionClean(ref rewardedSkippedChain);
+            base.CallRewardedAdSkipped();
+            _rewarded.Destroy();
+        }
+
+        protected override void CallRewardedAdCompleted()
+        {
+            C.CallActionClean(ref rewardedCompletedChain);
+            base.CallRewardedAdCompleted();
+            _rewarded.Destroy();
+        }
+
+        protected override void CallRewardedAdClosed()
+        {
+            C.CallActionClean(ref rewardedClosedChain);
+            base.CallRewardedAdClosed();
+        }
 
         #endregion
+
 
         #region rewarded interstitial
 
@@ -149,11 +210,49 @@ namespace Pancake.Monetization
         internal void InvokeRewardedInterAdLoaded() { OnRewardInterAdLoaded?.Invoke(); }
         internal void InvokeRewardedInterAdImpressionRecorded() { OnRewardedInterAdImpressionRecorded?.Invoke(); }
         internal void InvokeRewardedInterAdDisplayed() { CallRewardedInterstitialAdDisplayed(); }
-        internal void InvokeRewardedInterAdCompleted() { CallRewardedInterstitialAdCompleted(); }
-        internal void InvokeRewardedInterAdSkipped() { CallRewardedInterstitialAdSkipped(); }
-        internal void InvokeRewardedInterAdClosed() { CallRewardedInterstitialAdClosed(); }
+
+        internal void InvokeRewardedInterAdCompleted()
+        {
+            R.isShowingAd = false;
+            CallRewardedInterstitialAdClosed();
+            if (_rewardedInterstitial.IsEarnRewarded)
+            {
+                CallRewardedInterstitialAdCompleted();
+                return;
+            }
+
+            CallRewardedInterstitialAdSkipped();
+        }
+
+        protected override void CallRewardedInterstitialAdDisplayed()
+        {
+            R.isShowingAd = true;
+            C.CallActionClean(ref rewardedInterstitialDisplayChain);
+            base.CallRewardedInterstitialAdDisplayed();
+        }
+
+        protected override void CallRewardedInterstitialAdSkipped()
+        {
+            C.CallActionClean(ref rewardedInterstitialSkippedChain);
+            base.CallRewardedInterstitialAdSkipped();
+            _rewardedInterstitial.Destroy();
+        }
+
+        protected override void CallRewardedInterstitialAdCompleted()
+        {
+            C.CallActionClean(ref rewardedInterstitialCompletedChain);
+            base.CallRewardedInterstitialAdCompleted();
+            _rewardedInterstitial.Destroy();
+        }
+
+        protected override void CallRewardedInterstitialAdClosed()
+        {
+            C.CallActionClean(ref rewardedInterstitialClosedChain);
+            base.CallRewardedInterstitialAdClosed();
+        }
 
         #endregion
+
 
         #region open ad
 
@@ -172,53 +271,88 @@ namespace Pancake.Monetization
         internal void InvokeAppOpenAdDisplayed() { CallAppOpenAdDisplayed(); }
         internal void InvokeAppOpenAdCompleted() { CallAppOpenAdCompleted(); }
 
+        protected override void CallAppOpenAdDisplayed()
+        {
+            R.isShowingAd = true;
+            base.CallAppOpenAdDisplayed();
+        }
+
+        protected override void CallAppOpenAdCompleted()
+        {
+            R.isShowingAd = false;
+            base.CallAppOpenAdCompleted();
+        }
+
         #endregion
 
 
-#endif
-
         protected override void InternalShowBannerAd()
         {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.BannerAdUnit.Id)) return;
             _banner.Load();
             _banner.Show();
         }
 
-        protected override void InternalHideBannerAd() { _banner.Hide(); }
-
         protected override void InternalDestroyBannerAd() { _banner.Destroy(); }
 
-        protected override void InternalLoadInterstitialAd() { _interstitial?.Load(); }
+        protected override void InternalLoadInterstitialAd()
+        {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.InterstitialAdUnit.Id)) return;
+            _interstitial.Load();
+        }
 
-        protected override bool InternalIsInterstitialAdReady() { return _interstitial.IsReady(); }
+        protected override bool InternalIsInterstitialAdReady() { return _interstitial.IsReady; }
 
         protected override IInterstitial InternalShowInterstitialAd()
         {
             if (string.IsNullOrEmpty(AdSettings.AdmobSettings.InterstitialAdUnit.Id)) return null;
-            _interstitial?.Show();
+            _interstitial.Show();
             return _interstitial;
         }
 
-        protected override void InternalLoadRewardedAd() { _rewarded?.Load(); }
+        protected override void InternalLoadRewardedAd()
+        {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.RewardedAdUnit.Id)) return;
+            _rewarded.Load();
+        }
 
-        protected override bool InternalIsRewardedAdReady() { return _rewarded.IsReady(); }
+        protected override bool InternalIsRewardedAdReady() { return _rewarded.IsReady; }
 
         protected override IRewarded InternalShowRewardedAd()
         {
-            _rewarded?.Show();
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.RewardedAdUnit.Id)) return null;
+            _rewarded.Show();
             return _rewarded;
         }
 
-        protected override void InternalLoadRewardedInterstitialAd() { _rewardedInterstitial.Load(); }
+        protected override void InternalLoadRewardedInterstitialAd()
+        {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.RewardedInterstitialAdUnit.Id)) return;
+            _rewardedInterstitial.Load();
+        }
 
-        protected override bool InternalIsRewardedInterstitialAdReady() { return _rewardedInterstitial.IsReady(); }
+        protected override bool InternalIsRewardedInterstitialAdReady() { return _rewardedInterstitial.IsReady; }
 
-        protected override void InternalShowRewardedInterstitialAd() { _rewardedInterstitial.Show(); }
+        protected override IRewardedInterstitial InternalShowRewardedInterstitialAd()
+        {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.RewardedInterstitialAdUnit.Id)) return null;
+            _rewardedInterstitial.Show();
+            return _rewardedInterstitial;
+        }
 
-        protected override void InternalLoadAppOpenAd() { _appOpen.Load(); }
+        protected override void InternalLoadAppOpenAd()
+        {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.AppOpenAdUnit.Id)) return;
+            _appOpen.Load();
+        }
 
-        protected override void InternalShowAppOpenAd() { _appOpen.Show(); }
+        protected override void InternalShowAppOpenAd()
+        {
+            if (string.IsNullOrEmpty(AdSettings.AdmobSettings.AppOpenAdUnit.Id)) return;
+            _appOpen.Show();
+        }
 
-        protected override bool InternalIsAppOpenAdReady() { return _appOpen.IsReady(); }
+        protected override bool InternalIsAppOpenAdReady() { return _appOpen.IsReady; }
 
         public override void ShowConsentForm()
         {

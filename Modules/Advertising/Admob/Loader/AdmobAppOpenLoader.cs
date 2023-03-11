@@ -17,8 +17,9 @@ namespace Pancake.Monetization
             Load();
         }
 
-        private void Load()
+        public void Load()
         {
+            Destroy();
             AppOpenAd.Load(AdSettings.AdmobSettings.AppOpenAdUnit.Id, AdSettings.AdmobSettings.AppOpenAdUnit.orientation, Admob.CreateRequest(), OnAdLoadCallback);
         }
 
@@ -49,7 +50,11 @@ namespace Pancake.Monetization
 
         private void OnAdFailedToShow(AdError error) { _client.InvokeAppOpenAdFailedToShow(error); }
 
-        private void OnAdClosed() { _client.InvokeAppOpenAdCompleted(); }
+        private void OnAdClosed()
+        {
+            _client.InvokeAppOpenAdCompleted();
+            Destroy();
+        }
 
         private void OnAdPaided(AdValue value) { _client.InvokeAppOpenAdPaided(value); }
 

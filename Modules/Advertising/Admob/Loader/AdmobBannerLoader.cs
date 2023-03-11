@@ -1,6 +1,4 @@
-using System.Collections;
 using GoogleMobileAds.Api;
-using UnityEngine;
 
 namespace Pancake.Monetization
 {
@@ -9,8 +7,7 @@ namespace Pancake.Monetization
         private BannerView _bannerView;
         private bool _isLoaded;
         private readonly AdmobAdClient _client;
-        private readonly WaitForSeconds _waitReload = new WaitForSeconds(5f);
-
+        
         public AdmobBannerLoader(AdmobAdClient client)
         {
             _client = client;
@@ -32,25 +29,12 @@ namespace Pancake.Monetization
         }
 
         private void OnAdPaided(AdValue value) { _client.InvokeBannerAdPaided(value); }
-
         private void OnAdOpening() { _client.InvokeBannerAdDisplayed(); }
-
         private void OnAdLoaded() { _client.InvokeBannerAdLoaded(); }
-
-        private void OnAdFailedToLoad(LoadAdError error)
-        {
-            _client.InvokeBannerAdFailedToLoad(error);
-            Runtime.RunCoroutine(DelayReload());
-        }
-
-        private IEnumerator DelayReload()
-        {
-            yield return _waitReload;
-            Load();
-        }
+        private void OnAdFailedToLoad(LoadAdError error) { _client.InvokeBannerAdFailedToLoad(error); }
 
         private void OnAdClosed() { _client.InvokeBannerAdCompleted(); }
-        
+
         public void Destroy()
         {
             if (_bannerView == null) return;

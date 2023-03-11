@@ -20,7 +20,6 @@ namespace Pancake.Monetization
         event Action<IAdClient> OnBannerAdDisplayed;
         event Action<IAdClient> OnBannerAdCompleted;
         void ShowBannerAd();
-        void HideBannerAd();
         void DestroyBannerAd();
 
         #endregion
@@ -55,7 +54,7 @@ namespace Pancake.Monetization
         event Action<IAdClient> OnRewardedInterstitialAdDisplayed;
         void LoadRewardedInterstitialAd();
         bool IsRewardedInterstitialAdReady();
-        void ShowRewardedInterstitialAd();
+        IRewardedInterstitial ShowRewardedInterstitialAd();
 
         #endregion
 

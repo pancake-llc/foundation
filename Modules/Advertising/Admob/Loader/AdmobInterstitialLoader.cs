@@ -1,8 +1,5 @@
 using System;
-using UnityEngine;
-#if PANCAKE_ADMOB
 using GoogleMobileAds.Api;
-#endif
 
 namespace Pancake.Monetization
 {
@@ -46,7 +43,13 @@ namespace Pancake.Monetization
         private void OnAdFailedToLoad(LoadAdError error) { _client.InvokeInterAdFailedToLoad(error); }
         private void OnAdLoaded() { _client.InvokeInterAdLoaded(); }
         private void OnAdOpening() { _client.InvokeInterAdDisplayed(); }
-        private void OnAdClosed() { _client.InvokeInterAdCompleted(); }
+
+        private void OnAdClosed()
+        {
+            _client.InvokeInterAdCompleted();
+            Destroy();
+        }
+
         private void OnAdPaided(AdValue value) { _client.InvokeInterAdPaided(value); }
 
         public void Register(string key, Action action)
@@ -65,7 +68,6 @@ namespace Pancake.Monetization
         internal void Destroy()
         {
             if (_interstitialAd == null) return;
-
             _interstitialAd.Destroy();
             _interstitialAd = null;
         }
