@@ -1,7 +1,3 @@
-#if PANCAKE_APPLOVIN
-using System;
-#endif
-
 namespace Pancake.Monetization
 {
     public class ApplovinAppOpenLoader
@@ -16,7 +12,6 @@ namespace Pancake.Monetization
 
         private void Initialized()
         {
-#if PANCAKE_APPLOVIN
             MaxSdkCallbacks.AppOpen.OnAdClickedEvent += OnAdClicked;
             MaxSdkCallbacks.AppOpen.OnAdDisplayedEvent += OnAdDisplayed;
             MaxSdkCallbacks.AppOpen.OnAdHiddenEvent += OnAdHidden;
@@ -24,33 +19,20 @@ namespace Pancake.Monetization
             MaxSdkCallbacks.AppOpen.OnAdDisplayFailedEvent += OnAdDisplayFailed;
             MaxSdkCallbacks.AppOpen.OnAdLoadFailedEvent += OnAdLoadFailed;
             MaxSdkCallbacks.AppOpen.OnAdRevenuePaidEvent += OnAdRevenuePaid;
-#endif
         }
 
-#if PANCAKE_APPLOVIN
         private void OnAdLoaded(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdLoaded(); }
 
-        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
-        {
-            _client.InvokeAppOpenAdRevenuePaid(info);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(info);
-#endif
-        }
+        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdRevenuePaid(info); }
 
         private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo info) { _client.InvokeAppOpenAdFaildToLoaded(); }
 
         private void OnAdDisplayFailed(string unit, MaxSdkBase.ErrorInfo errorInfo, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdFaildToDisplay(); }
 
-        private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
-        {
-            R.isShowingAd = false;
-            _client.InvokeAppOpenAdCompleted();
-        }
+        private void OnAdHidden(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdCompleted(); }
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdDisplay(); }
 
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdClicked(); }
-#endif
     }
 }

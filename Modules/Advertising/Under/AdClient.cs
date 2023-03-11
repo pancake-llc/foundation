@@ -237,7 +237,7 @@ namespace Pancake.Monetization
                     return;
                 }
 
-                //if (R.isShowingAd) return; // dose not show app open ad when interstitial or rewarded still displayed
+                if (R.isShowingAd) return; // dose not show app open ad when interstitial or rewarded still displayed
 
                 InternalShowAppOpenAd();
             }

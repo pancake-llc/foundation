@@ -230,6 +230,12 @@ namespace Pancake.Monetization
         internal void InvokeAppOpenAdDisplay() { CallAppOpenAdDisplayed(); }
         internal void InvokeAppOpenAdCompleted() { CallAppOpenAdCompleted(); }
 
+        protected override void CallAppOpenAdCompleted()
+        {
+            R.isShowingAd = false;
+            base.CallAppOpenAdCompleted();
+        }
+
         #endregion
 
 
@@ -279,18 +285,9 @@ namespace Pancake.Monetization
 
         private void OnSdkInitializedEvent(MaxSdkBase.SdkConfiguration configuration)
         {
-            if (configuration.ConsentDialogState == MaxSdkBase.ConsentDialogState.Applies)
+            if (configuration.AppTrackingStatus == MaxSdkBase.AppTrackingStatus.NotDetermined)
             {
                 ShowConsentForm();
-            }
-            else if (configuration.ConsentDialogState == MaxSdkBase.ConsentDialogState.DoesNotApply)
-            {
-                // No need to show consent dialog, proceed with initialization
-            }
-            else
-            {
-                // Consent dialog state is unknown. Proceed with initialization, but check if the consent
-                // dialog should be shown on the next application initialization
             }
         }
 
