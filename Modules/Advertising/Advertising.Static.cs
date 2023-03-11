@@ -1,9 +1,18 @@
 using System;
+using UnityEngine;
 
 namespace Pancake.Monetization
 {
     public static class AdsUtil
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void AutoInitialize()
+        {
+            var obj = new GameObject("Advertising") /*{hideFlags = HideFlags.HideInHierarchy}*/;
+            obj.AddComponent<Advertising>();
+            UnityEngine.Object.DontDestroyOnLoad(obj);
+        }
+
         /**
          * For Applovin :  Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
          * Admob still work correctly
