@@ -50,8 +50,12 @@ namespace Pancake.Monetization
 
         public static event Action RemoveAdsEvent;
 
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private static AdmobAdClient admobAdClient;
+#endif
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
         private static ApplovinAdClient applovinAdClient;
+#endif
         private static bool isInitialized;
         private static EAutoLoadingAd autoLoadingAdMode = EAutoLoadingAd.All;
         private static bool flagAutoLoadingModeChange;
@@ -97,6 +101,7 @@ namespace Pancake.Monetization
 
         public static bool IsInitialized => isInitialized;
 
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private static AdmobAdClient AdmobAdClient
         {
             get
@@ -106,7 +111,9 @@ namespace Pancake.Monetization
                 return admobAdClient;
             }
         }
+#endif
 
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
         private static ApplovinAdClient ApplovinAdClient
         {
             get
@@ -116,7 +123,8 @@ namespace Pancake.Monetization
                 return applovinAdClient;
             }
         }
-
+#endif
+        
         private void Awake()
         {
             if (Instance != null)
@@ -298,10 +306,13 @@ namespace Pancake.Monetization
         {
             switch (network)
             {
-                case EAdNetwork.None: return NoneAdClient.Instance;
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
                 case EAdNetwork.Admob: return AdmobAdClient.Instance;
+#endif
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
                 case EAdNetwork.Applovin: return ApplovinAdClient.Instance;
-                default: return null;
+#endif
+                default: return NoneAdClient.Instance;
             }
         }
 
@@ -310,10 +321,13 @@ namespace Pancake.Monetization
             if (!InitializeCheck()) return NoneAdClient.Instance;
             switch (network)
             {
-                case EAdNetwork.None: return NoneAdClient.Instance;
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
                 case EAdNetwork.Admob: return AdmobAdClient;
+#endif
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
                 case EAdNetwork.Applovin: return ApplovinAdClient;
-                default: return null;
+#endif
+                default: return NoneAdClient.Instance;
             }
         }
 
@@ -472,7 +486,7 @@ namespace Pancake.Monetization
         public static void ShowBannerAd() { ShowBannerAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
         public static void DestroyBannerAd() { DestroyBannerAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
-        
+
         public static void LoadInsterstitialAd() { LoadInterstitialAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
         public static bool IsInterstitialAdReady() { return IsInterstitialAdReady(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
@@ -513,7 +527,7 @@ namespace Pancake.Monetization
             if(!pauseStatus) ShowAppOpenAd();
         }
 #endif
-        
+
         public static void ShowConsentFrom() { ShowConsentForm(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
         /// <summary>

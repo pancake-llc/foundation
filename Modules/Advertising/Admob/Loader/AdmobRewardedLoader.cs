@@ -1,3 +1,4 @@
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using System;
 using GoogleMobileAds.Api;
 
@@ -84,3 +85,4 @@ namespace Pancake.Monetization
         private void UserRewardEarnedCallback(Reward reward) { IsEarnRewarded = true; }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
 namespace Pancake.Monetization
 {
     public class ApplovinAppOpenLoader
@@ -36,3 +37,4 @@ namespace Pancake.Monetization
         private void OnAdClicked(string unit, MaxSdkBase.AdInfo info) { _client.InvokeAppOpenAdClicked(); }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
 using System;
 
 namespace Pancake.Monetization
@@ -51,3 +52,4 @@ namespace Pancake.Monetization
         }
     }
 }
+#endif

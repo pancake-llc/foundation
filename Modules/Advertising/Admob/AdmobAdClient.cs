@@ -1,3 +1,4 @@
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using UnityEngine;
 using System;
 using System.Collections;
@@ -379,3 +380,4 @@ namespace Pancake.Monetization
         }
     }
 }
+#endif

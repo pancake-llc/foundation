@@ -1,3 +1,4 @@
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
 // ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
 {
@@ -40,3 +41,4 @@ namespace Pancake.Monetization
         private void OnAdLoaded(string unit, MaxSdkBase.AdInfo info) { _client.InvokeBannerAdLoaded(); }
     }
 }
+#endif

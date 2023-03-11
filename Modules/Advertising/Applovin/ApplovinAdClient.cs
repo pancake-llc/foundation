@@ -1,3 +1,4 @@
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
 using System;
 using JetBrains.Annotations;
 
@@ -397,12 +398,10 @@ namespace Pancake.Monetization
         public override void ShowConsentForm()
         {
 #if UNITY_ANDROID
-#if PANCAKE_APPLOVIN
             // if (AdsUtil.IsInEEA())
             // {
             //     MaxSdk.UserService.ShowConsentDialog();
             // }
-#endif
 #elif UNITY_IOS
             if (Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() == Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
             {
@@ -412,3 +411,4 @@ namespace Pancake.Monetization
         }
     }
 }
+#endif

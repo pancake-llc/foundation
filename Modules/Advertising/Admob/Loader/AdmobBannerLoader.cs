@@ -1,3 +1,4 @@
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
 
 namespace Pancake.Monetization
@@ -45,3 +46,4 @@ namespace Pancake.Monetization
         public void Show() { _bannerView?.Show(); }
     }
 }
+#endif
