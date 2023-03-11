@@ -1,16 +1,12 @@
-using UnityEngine;
-#if PANCAKE_ADMOB
 using System;
 using GoogleMobileAds.Api;
-#endif
 
 namespace Pancake.Monetization
 {
-    public class AdmobRewardedInterstitialLoader
+    public class AdmobRewardedInterstitialLoader : IRewardedInterstitial
     {
-#if PANCAKE_ADMOB
         private RewardedInterstitialAd _rewardedInterstitialAd;
-        private AdmobAdClient _client;
+        private readonly AdmobAdClient _client;
         public bool IsEarnRewardedInterstitial { get; private set; }
 
         public AdmobRewardedInterstitialLoader(AdmobAdClient client)
@@ -51,13 +47,33 @@ namespace Pancake.Monetization
         private void OnAdFailedToLoad(LoadAdError error) { _client.InvokeRewardedInterAdFailedToLoad(error); }
         private void OnAdFailedToShow(AdError error) { _client.InvokeRewardedInterAdFailedToShow(error); }
 
+        private void UserEarnedRewardCallback(Reward reward) { }
 
-        internal void Destroy()
+        private void Destroy()
         {
             if (_rewardedInterstitialAd == null) return;
             _rewardedInterstitialAd.Destroy();
             _rewardedInterstitialAd = null;
         }
-#endif
+
+        public bool IsReady => _rewardedInterstitialAd != null && _rewardedInterstitialAd.CanShowAd();
+
+        public void Show()
+        {
+            if (IsReady) _rewardedInterstitialAd.Show(UserEarnedRewardCallback);
+        }
+
+        public void Register(string key, Action action)
+        {
+            switch (key)
+            {
+                case "OnDisplayed":
+                    _client.rewardedInterstitialDisplayChain = action;
+                    break;
+                case "OnCompleted":
+                    _client.rewardedInterstitialCompletedChain = action;
+                    break;
+            }
+        }
     }
 }

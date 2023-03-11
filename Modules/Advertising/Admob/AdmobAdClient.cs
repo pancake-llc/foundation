@@ -21,6 +21,8 @@ namespace Pancake.Monetization
         internal Action rewardedDisplayChain;
         internal Action rewardedSkippedChain;
         internal Action rewardedClosedChain;
+        internal Action rewardedInterstitialDisplayChain;
+        internal Action rewardedInterstitialCompletedChain;
         public static AdmobAdClient Instance => client ?? (client = new AdmobAdClient());
 
         public override EAdNetwork Network => EAdNetwork.Admob;
@@ -66,7 +68,11 @@ namespace Pancake.Monetization
                 });
             });
 
-
+            _banner = new AdmobBannerLoader(this);
+            _interstitial = new AdmobInterstitialLoader(this);
+            _rewarded = new AdmobRewardedLoader(this);
+            _rewardedInterstitial = new AdmobRewardedInterstitialLoader(this);
+            _appOpen = new AdmobAppOpenLoader(this);
 #endif
         }
 
@@ -151,6 +157,18 @@ namespace Pancake.Monetization
 
         #region open ad
 
+        public event Action<AdError> OnAppOpenAdFailedToShow;
+        public event Action<LoadAdError> OnAppOpenAdFailedToLoad;
+        public event Action OnAppOpenAdLoaded;
+        public event Action<AdValue> OnAppOpenAdPaided;
+        public event Action OnAppOpenAdImpressionRecorded;
+
+
+        internal void InvokeAppOpenAdFailedToShow(AdError error) { OnAppOpenAdFailedToShow?.Invoke(error); }
+        public void InvokeAppOpenAdFailedToLoad(LoadAdError error) { OnAppOpenAdFailedToLoad?.Invoke(error); }
+        internal void InvokeAppOpenAdPaided(AdValue value) { OnAppOpenAdPaided?.Invoke(value); }
+        internal void InvokeAppOpenAdImpressionRecorded() { OnAppOpenAdImpressionRecorded?.Invoke(); }
+        internal void InvokeAppOpenAdLoaded() { OnAppOpenAdLoaded?.Invoke(); }
         internal void InvokeAppOpenAdDisplayed() { CallAppOpenAdDisplayed(); }
         internal void InvokeAppOpenAdCompleted() { CallAppOpenAdCompleted(); }
 

@@ -1,4 +1,3 @@
-
 #if PANCAKE_ADMOB
 using System;
 using GoogleMobileAds.Api;
@@ -6,94 +5,70 @@ using GoogleMobileAds.Api;
 
 namespace Pancake.Monetization
 {
-    public class AdmobAppOpenLoader : AdLoader<AdUnit>
+    public class AdmobAppOpenLoader
     {
-#if PANCAKE_ADMOB
         private AppOpenAd _appOpenAd;
+        private readonly AdmobAdClient _client;
+        private DateTime _expireTime;
 
-        /// <summary>
-        /// Ad references in the app open beta will time out after four hours.
-        /// Ads rendered more than four hours after request time will no longer be valid and may not earn revenue.
-        /// This time limit is being carefully considered and may change in future beta versions of the app open format.
-        /// </summary>
-        private DateTime _loadTime;
-
-        public event Action<AdmobAppOpenLoader> OnCompleted = delegate { };
-        public event Action<AdmobAppOpenLoader, object, AdValueEventArgs> OnPaidEvent = delegate { };
-        public event Action<AdmobAppOpenLoader, object, EventArgs> OnOpeningEvent = delegate { };
-        public event Action<AdmobAppOpenLoader> OnLoadedEvent = delegate { };
-        public event Action<AdmobAppOpenLoader, object, AdErrorEventArgs> OnFailToShowEvent = delegate { };
-        public event Action<AdmobAppOpenLoader, AdFailedToLoadEventArgs> OnFailToLoadEvent = delegate { };
-        public event Action<AdmobAppOpenLoader, object, EventArgs> OnRecordImpressionEvent = delegate { };
-
-        internal override bool IsReady()
+        public AdmobAppOpenLoader(AdmobAdClient client)
         {
-            return _appOpenAd != null && (DateTime.UtcNow - _loadTime).TotalHours < 4;
-            ;
+            _client = client;
+            Load();
         }
 
-        public AdmobAppOpenLoader() { unit = AdSettings.AdmobSettings.AppOpenAdUnit; }
-
-        internal override void Load() { AppOpenAd.LoadAd(unit.Id, ((AdmobAppOpenUnit) unit).orientation, Admob.CreateRequest(), OnAdLoadCallback); }
-
-        private void OnAdLoadCallback(AppOpenAd appOpenAd, AdFailedToLoadEventArgs error)
+        private void Load()
         {
-            if (error != null)
+            AppOpenAd.Load(AdSettings.AdmobSettings.AppOpenAdUnit.Id, AdSettings.AdmobSettings.AppOpenAdUnit.orientation, Admob.CreateRequest(), OnAdLoadCallback);
+        }
+
+        private void OnAdLoadCallback(AppOpenAd ad, LoadAdError error)
+        {
+            // if error is not null, the load request failed.
+            if (error != null || ad == null)
             {
-                OnAdFaildToLoad(error);
+                OnAdFailedToLoad(error);
                 return;
             }
 
-            _appOpenAd = appOpenAd;
-            _loadTime = DateTime.UtcNow;
+            _appOpenAd = ad;
+            _appOpenAd.OnAdPaid += OnAdPaided;
+            _appOpenAd.OnAdFullScreenContentClosed += OnAdClosed;
+            _appOpenAd.OnAdFullScreenContentFailed += OnAdFailedToShow;
+            _appOpenAd.OnAdFullScreenContentOpened += OnAdOpening;
+            _appOpenAd.OnAdImpressionRecorded += OnAdImpressionRecorded;
             OnAdLoaded();
-            _appOpenAd.OnAdDidDismissFullScreenContent += OnAdClosed;
-            _appOpenAd.OnAdDidRecordImpression += OnAdDidRecordImpression;
-            _appOpenAd.OnAdDidPresentFullScreenContent += OnAdOpening;
-            _appOpenAd.OnAdFailedToPresentFullScreenContent += OnAdFailedToShow;
-            _appOpenAd.OnPaidEvent += OnPaidHandleEvent;
+
+            // App open ads can be preloaded for up to 4 hours.
+            _expireTime = DateTime.Now + TimeSpan.FromHours(4);
         }
 
-        private void OnPaidHandleEvent(object sender, AdValueEventArgs e)
+        private void OnAdImpressionRecorded() { _client.InvokeAppOpenAdImpressionRecorded(); }
+
+        private void OnAdOpening() { _client.InvokeAppOpenAdDisplayed(); }
+
+        private void OnAdFailedToShow(AdError error) { _client.InvokeAppOpenAdFailedToShow(error); }
+
+        private void OnAdClosed() { _client.InvokeAppOpenAdCompleted(); }
+
+        private void OnAdPaided(AdValue value) { _client.InvokeAppOpenAdPaided(value); }
+
+        private void OnAdFailedToLoad(LoadAdError error) { _client.InvokeAppOpenAdFailedToLoad(error); }
+
+        private void OnAdLoaded() { _client.InvokeAppOpenAdLoaded(); }
+
+        private void Destroy()
         {
-            OnPaidEvent.Invoke(this, sender, e);
-#if PANCAKE_ANALYTIC
-            AppTracking.TrackingRevenue(e, unit.Id);  
-#endif
-        }
-
-        private void OnAdFailedToShow(object sender, AdErrorEventArgs e) { OnFailToShowEvent.Invoke(this, sender, e); }
-
-        private void OnAdOpening(object sender, EventArgs e)
-        {
-            R.isShowingAd = true;
-            OnOpeningEvent.Invoke(this, sender, e);
-        }
-
-        private void OnAdDidRecordImpression(object sender, EventArgs e) { OnRecordImpressionEvent.Invoke(this, sender, e); }
-
-        private void OnAdClosed(object sender, EventArgs e)
-        {
-            R.isShowingAd = false;
-            OnCompleted.Invoke(this);
-            Destroy();
-        }
-
-        private void OnAdLoaded() { OnLoadedEvent.Invoke(this); }
-
-        private void OnAdFaildToLoad(AdFailedToLoadEventArgs e)
-        {
-            OnFailToLoadEvent.Invoke(this, e);
-            Destroy();
-        }
-
-        internal override void Show() { _appOpenAd?.Show(); }
-
-        internal override void Destroy()
-        {
-            _appOpenAd?.Destroy();
+            if (_appOpenAd == null) return;
+            _appOpenAd.Destroy();
             _appOpenAd = null;
         }
-#endif
+
+        public bool IsReady => _appOpenAd != null && _appOpenAd.CanShowAd() && DateTime.Now < _expireTime;
+
+        public void Show()
+        {
+            if (IsReady) _appOpenAd.Show();
+        }
     }
 }

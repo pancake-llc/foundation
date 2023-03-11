@@ -15,11 +15,11 @@ namespace Pancake.Monetization
         public AdmobRewardedLoader(AdmobAdClient client)
         {
             _client = client;
-            Initialized();
+            Load();
         }
 
 
-        private void Initialized() { RewardedAd.Load(AdSettings.AdmobSettings.RewardedAdUnit.Id, Admob.CreateRequest(), AdLoadCallback); }
+        private void Load() { RewardedAd.Load(AdSettings.AdmobSettings.RewardedAdUnit.Id, Admob.CreateRequest(), AdLoadCallback); }
 
         private void AdLoadCallback(RewardedAd ad, LoadAdError error)
         {
@@ -65,5 +65,21 @@ namespace Pancake.Monetization
                     break;
             }
         }
+
+        private void Destroy()
+        {
+            if (_rewardedAd == null) return;
+            _rewardedAd.Destroy();
+            _rewardedAd = null;
+        }
+
+        public bool IsReady => _rewardedAd != null && _rewardedAd.CanShowAd();
+
+        public void Show()
+        {
+            if (IsReady) _rewardedAd.Show(UserRewardEarnedCallback);
+        }
+
+        private void UserRewardEarnedCallback(Reward reward) { }
     }
 }

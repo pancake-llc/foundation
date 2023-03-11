@@ -14,10 +14,14 @@ namespace Pancake.Monetization
         public AdmobInterstitialLoader(AdmobAdClient client)
         {
             _client = client;
-            Initialized();
+            Load();
         }
 
-        private void Initialized() { InterstitialAd.Load(AdSettings.AdmobSettings.InterstitialAdUnit.Id, Admob.CreateRequest(), AdLoadCallback); }
+        public void Load()
+        {
+            Destroy();
+            InterstitialAd.Load(AdSettings.AdmobSettings.InterstitialAdUnit.Id, Admob.CreateRequest(), AdLoadCallback);
+        }
 
         private void AdLoadCallback(InterstitialAd ad, LoadAdError error)
         {
@@ -56,6 +60,21 @@ namespace Pancake.Monetization
                     _client.interstitialCompletedChain = action;
                     break;
             }
+        }
+
+        internal void Destroy()
+        {
+            if (_interstitialAd == null) return;
+
+            _interstitialAd.Destroy();
+            _interstitialAd = null;
+        }
+
+        public bool IsReady => _interstitialAd != null && _interstitialAd.CanShowAd();
+
+        public void Show()
+        {
+            if (IsReady) _interstitialAd.Show();
         }
     }
 }
