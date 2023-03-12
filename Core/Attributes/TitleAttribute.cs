@@ -8,6 +8,7 @@ namespace Pancake.Attribute
     public sealed class TitleAttribute : System.Attribute
     {
         public string Title { get; }
+        public bool HorizontalLine { get; set; } = true;
 
         public TitleAttribute(string title) { Title = title; }
     }
