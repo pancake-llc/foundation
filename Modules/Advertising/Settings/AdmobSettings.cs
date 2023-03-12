@@ -17,8 +17,8 @@ namespace Pancake.Monetization
         [SerializeField,] private AdmobAppOpenUnit appOpenAdUnit;
         
 #if UNITY_EDITOR
-        [NonSerialized] public List<Network> editorListNetwork = new List<Network>();
-        [NonSerialized] public Network editorImportingNetwork;
+        [NonSerialized] internal List<Network> editorListNetwork = new List<Network>();
+        [NonSerialized] internal Network editorImportingNetwork;
 #endif
 
         public bool Enable => enable;

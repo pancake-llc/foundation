@@ -265,7 +265,7 @@ namespace Pancake.Monetization
         {
 #if PANCAKE_APPLOVIN
             MaxSdk.SetSdkKey(AdSettings.MaxSettings.SdkKey);
-            if (AdSettings.AdCommonSettings.EnableGDPR) MaxSdkCallbacks.OnSdkInitializedEvent += OnSdkInitializedEvent;
+            if (AdSettings.AdCommonSettings.EnableGdpr) MaxSdkCallbacks.OnSdkInitializedEvent += OnSdkInitializedEvent;
 
             MaxSdk.InitializeSdk();
             MaxSdk.SetIsAgeRestrictedUser(AdSettings.MaxSettings.EnableAgeRestrictedUser);

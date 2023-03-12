@@ -6,6 +6,8 @@ namespace Pancake.Monetization
         public ApplovinBannerUnit(string iOSId, string androidId)
             : base(iOSId, androidId)
         {
+            position = EBannerPosition.Bottom;
+            size = EBannerSize.Adaptive;
         }
 
 #if PANCAKE_APPLOVIN

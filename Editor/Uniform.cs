@@ -88,7 +88,7 @@ namespace PancakeEditor
                     stretchWidth = true,
                     richText = true
                 };
-                
+
                 return foldoutButton;
             }
         }
@@ -286,10 +286,7 @@ namespace PancakeEditor
 
             // The expand/collapse icon.
             var buttonRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(buttonRect.x + buttonRect.width - 15,
-                buttonRect.y,
-                10,
-                buttonRect.height);
+            var iconRect = new Rect(buttonRect.x + buttonRect.width - 15, buttonRect.y, 10, buttonRect.height);
             //GUI.Label(iconRect, GetChevronIcon(foldout), Cheveron);
 
             EditorGUILayout.EndHorizontal();
@@ -303,6 +300,28 @@ namespace PancakeEditor
             height += 4;
             //Uniform.SpaceOneLine();
             return height;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldTitle"></param>
+        /// <param name="text"></param>
+        /// <param name="labelWidth"></param>
+        /// <param name="textFieldWidthOption"></param>
+        /// <returns></returns>
+        public static string DrawTextField(string fieldTitle, string text, GUILayoutOption labelWidth, GUILayoutOption textFieldWidthOption = null)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(4);
+            EditorGUILayout.LabelField(new GUIContent(fieldTitle), labelWidth);
+            GUILayout.Space(4);
+            text = textFieldWidthOption == null ? GUILayout.TextField(text) : GUILayout.TextField(text, textFieldWidthOption);
+            GUILayout.Space(4);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(4);
+
+            return text;
         }
 
         /// <summary>
@@ -322,6 +341,7 @@ namespace PancakeEditor
         }
 
         #endregion
+
 
         #region foldout state
 

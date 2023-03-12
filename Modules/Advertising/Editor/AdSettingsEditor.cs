@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
+#if PANCAKE_APPLOVIN
+using AppLovinMax.Scripts.IntegrationManager.Editor;
+#endif
 #if PANCAKE_ADMOB
 using GoogleMobileAds.Editor;
 #endif
@@ -75,19 +78,19 @@ namespace Pancake.Monetization
         private static class ApplovinProperties
         {
             public static SerializedProperty main;
-            public static Property enable = new Property(new GUIContent("Enable", "Enable using applovin ad"));
-            public static Property sdkKey = new Property(new GUIContent("Sdk Key", "Sdk of applovin"));
-            public static Property bannerAdUnit = new Property(new GUIContent("Banner Ad"));
-            public static Property interstitialAdUnit = new Property(new GUIContent("Interstitial Ad"));
-            public static Property rewardedAdUnit = new Property(new GUIContent("Rewarded Ad"));
-            public static Property rewardedInterstitialAdUnit = new Property(new GUIContent("Rewarded Interstitial Ad"));
-            public static Property appOpenAdUnit = new Property(new GUIContent("App Open Ad"));
-            public static Property enableAgeRestrictedUser = new Property(new GUIContent("Age Restrictd User"));
+            public static readonly Property Enable = new Property(new GUIContent("Enable", "Enable using applovin ad"));
+            public static readonly Property SDKKey = new Property(new GUIContent("Sdk Key", "Sdk of applovin"));
+            public static readonly Property BannerAdUnit = new Property(new GUIContent("Banner Ad"));
+            public static readonly Property InterstitialAdUnit = new Property(new GUIContent("Interstitial Ad"));
+            public static readonly Property RewardedAdUnit = new Property(new GUIContent("Rewarded Ad"));
+            public static readonly Property RewardedInterstitialAdUnit = new Property(new GUIContent("Rewarded Interstitial Ad"));
+            public static readonly Property AppOpenAdUnit = new Property(new GUIContent("App Open Ad"));
+            public static readonly Property EnableAgeRestrictedUser = new Property(new GUIContent("Age Restrictd User"));
 
-            public static Property enableRequestAdAfterHidden = new Property(new GUIContent("Request Ad After Hidden",
+            public static readonly Property EnableRequestAdAfterHidden = new Property(new GUIContent("Request Ad After Hidden",
                 "Request to add new interstitial and rewarded ad after user finish view ad. Need kick-off request to cache ads as quickly as possible"));
 
-            public static Property enableMaxAdReview = new Property(new GUIContent("Enable MAX Ad Review"));
+            public static readonly Property EnableMaxAdReview = new Property(new GUIContent("Enable MAX Ad Review"));
         }
 
         /// <summary>
@@ -106,8 +109,6 @@ namespace Pancake.Monetization
 
         #region properties
 
-        //Runtime auto initialization
-        private SerializedProperty _autoInitializeProperty;
         public static UnityWebRequest webRequest;
         public static DownloadMediationProgressCallback downloadMediationProgressCallback;
         public static AdmobImportMediationCompleted admobImportMediationCompleted;
@@ -142,7 +143,6 @@ namespace Pancake.Monetization
             AssetDatabase.importPackageFailed += OnAdmobMediationPackageImportFailed;
         }
 
-
         private void OnDownloadMediationProgress(string pluginName, float progress, bool done)
         {
             // Download is complete. Clear progress bar.
@@ -167,8 +167,6 @@ namespace Pancake.Monetization
             _iconUnintall = Uniform.IconContent("d_TreeEditor.Trash", "Uninstall");
             _headerLabelStyle = new GUIStyle(EditorStyles.label) {fontSize = 12, fontStyle = FontStyle.Bold, fixedHeight = 18};
 
-            _autoInitializeProperty = serializedObject.FindProperty("runtimeAutoInitialize");
-
             AdProperties.main = serializedObject.FindProperty("adCommonSettings");
             AdProperties.AutoInit.property = AdProperties.main.FindPropertyRelative("autoInit");
             AdProperties.AutoLoadAdsMode.property = AdProperties.main.FindPropertyRelative("autoLoadingAd");
@@ -191,23 +189,34 @@ namespace Pancake.Monetization
             AdmobProperties.EnableTestMode.property = AdmobProperties.main.FindPropertyRelative("enableTestMode");
 
             ApplovinProperties.main = serializedObject.FindProperty("maxSettings");
-            ApplovinProperties.enable.property = ApplovinProperties.main.FindPropertyRelative("enable");
-            ApplovinProperties.sdkKey.property = ApplovinProperties.main.FindPropertyRelative("sdkKey");
-            ApplovinProperties.bannerAdUnit.property = ApplovinProperties.main.FindPropertyRelative("bannerAdUnit");
-            ApplovinProperties.interstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("interstitialAdUnit");
-            ApplovinProperties.rewardedAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedAdUnit");
-            ApplovinProperties.rewardedInterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
-            ApplovinProperties.appOpenAdUnit.property = ApplovinProperties.main.FindPropertyRelative("appOpenAdUnit");
+            ApplovinProperties.Enable.property = ApplovinProperties.main.FindPropertyRelative("enable");
+            ApplovinProperties.SDKKey.property = ApplovinProperties.main.FindPropertyRelative("sdkKey");
+            ApplovinProperties.BannerAdUnit.property = ApplovinProperties.main.FindPropertyRelative("bannerAdUnit");
+            ApplovinProperties.InterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("interstitialAdUnit");
+            ApplovinProperties.RewardedAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedAdUnit");
+            ApplovinProperties.RewardedInterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
+            ApplovinProperties.AppOpenAdUnit.property = ApplovinProperties.main.FindPropertyRelative("appOpenAdUnit");
 
-            ApplovinProperties.enableAgeRestrictedUser.property = ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
-            ApplovinProperties.enableRequestAdAfterHidden.property = ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
-            ApplovinProperties.enableMaxAdReview.property = ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
+            ApplovinProperties.EnableAgeRestrictedUser.property = ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
+            ApplovinProperties.EnableRequestAdAfterHidden.property = ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
+            ApplovinProperties.EnableMaxAdReview.property = ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
 
+#if PANCAKE_ADMOB
             if (AdSettings.AdmobSettings.editorListNetwork.IsNullOrEmpty()) LoadAdmobMediation();
             else
             {
                 foreach (var n in AdSettings.AdmobSettings.editorListNetwork) UpdateCurrentVersionAdmobMediation(n);
             }
+#endif
+
+#if PANCAKE_APPLOVIN
+            if (AdSettings.MaxSettings.editorListNetwork.IsNullOrEmpty()) LoadApplovinMediation();
+            else
+            {
+                string p = ParentApplovinDirectory();
+                foreach (var n in AdSettings.MaxSettings.editorListNetwork) UpdateCurrentVersionApplovinMediation(n, p);
+            }
+#endif
         }
 
         public override void OnInspectorGUI()
@@ -313,7 +322,7 @@ namespace Pancake.Monetization
                             {
                                 EditorGUILayout.PropertyField(AdmobProperties.DevicesTest.property, AdmobProperties.DevicesTest.content);
                             }
-                            
+
                             EditorGUILayout.Space();
                             EditorGUI.indentLevel++;
                             EditorGUILayout.PropertyField(AdmobProperties.BannerAdUnit.property, AdmobProperties.BannerAdUnit.content, true);
@@ -346,82 +355,92 @@ namespace Pancake.Monetization
                 });
 
             EditorGUILayout.Space();
-//             Uniform.DrawGroupFoldout("MAX_MODULE",
-//                 "MAX",
-//                 () =>
-//                 {
-//                     EditorGUILayout.PropertyField(ApplovinProperties.enable.property, ApplovinProperties.enable.content);
-//                     if (AdSettings.MaxSettings.Enable)
-//                     {
-//                         SettingManager.ValidateApplovinSdkImported();
-//                         if (IsApplovinSdkAvaiable)
-//                         {
-//                             EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
-//
-//                             if (AdSettings.MaxSettings.editorImportingSdk != null && !string.IsNullOrEmpty(AdSettings.MaxSettings.editorImportingSdk.lastVersion.unity) &&
-//                                 AdSettings.MaxSettings.editorImportingSdk.CurrentToLatestVersionComparisonResult == EVersionComparisonResult.Lesser)
-//                             {
-//                                 if (GUILayout.Button("Update MaxSdk Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
-//                                 {
-//                                     EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(AdSettings.MaxSettings.editorImportingSdk));
-//                                 }
-//                             }
-//
-//                             EditorGUILayout.Space();
-//                             EditorGUILayout.PropertyField(ApplovinProperties.sdkKey.property, ApplovinProperties.sdkKey.content);
-//                             EditorGUILayout.PropertyField(ApplovinProperties.enableAgeRestrictedUser.property, ApplovinProperties.enableAgeRestrictedUser.content);
-//                             EditorGUILayout.PropertyField(ApplovinProperties.enableRequestAdAfterHidden.property, ApplovinProperties.enableRequestAdAfterHidden.content);
-//                             EditorGUILayout.PropertyField(ApplovinProperties.enableMaxAdReview.property, ApplovinProperties.enableMaxAdReview.content);
-// #if PANCAKE_MAX_ENABLE
-//                             AppLovinSettings.Instance.QualityServiceEnabled = AdSettings.MaxSettings.EnableMaxAdReview;
-//                             AppLovinSettings.Instance.ConsentFlowEnabled = AdSettings.AdCommonSettings.EnableGDPR;
-//                             AppLovinSettings.Instance.ConsentFlowPrivacyPolicyUrl = AdSettings.AdCommonSettings.PrivacyPolicyUrl;
-// #endif
-//                             EditorGUILayout.Space();
-//                             EditorGUI.indentLevel++;
-//                             EditorGUILayout.PropertyField(ApplovinProperties.bannerAdUnit.property, ApplovinProperties.bannerAdUnit.content);
-//                             EditorGUILayout.PropertyField(ApplovinProperties.interstitialAdUnit.property, ApplovinProperties.interstitialAdUnit.content);
-//                             EditorGUILayout.PropertyField(ApplovinProperties.rewardedAdUnit.property, ApplovinProperties.rewardedAdUnit.content);
-//                             EditorGUILayout.PropertyField(ApplovinProperties.rewardedInterstitialAdUnit.property, ApplovinProperties.rewardedInterstitialAdUnit.content);
-//                             EditorGUILayout.PropertyField(ApplovinProperties.appOpenAdUnit.property, ApplovinProperties.appOpenAdUnit.content);
-//                             EditorGUI.indentLevel--;
-//                             EditorGUILayout.Space();
-//
-//                             Uniform.DrawGroupFoldout("APPLOVIN_MODULE_MEDIATION",
-//                                 "MEDIATION",
-//                                 () =>
-//                                 {
-//                                     DrawHeaderMediation();
-//                                     foreach (var network in AdSettings.MaxSettings.editorListNetwork)
-//                                     {
-//                                         DrawApplovinNetworkDetailRow(network);
-//                                     }
-//
-//                                     DrawApplovinInstallAllNetwork();
-//                                 });
-//                             EditorGUILayout.Space();
-//                         }
-//                         else
-//                         {
-//                             EditorGUILayout.HelpBox("Max plugin not found. Please import it to show ads from Applovin", MessageType.Warning);
-//                             if (GUILayout.Button("Import MAX Plugin", GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.3f)))
-//                             {
-//                                 if (AdSettings.MaxSettings.editorImportingSdk != null)
-//                                 {
-//                                     EditorCoroutine.Start(MaxManager.Instance.DownloadMaxSdk(AdSettings.MaxSettings.editorImportingSdk));
-//                                 }
-//                                 else
-//                                 {
-//                                     Application.OpenURL("https://github.com/gamee-studio/ads/releases/tag/1.0.21");
-//                                 }
-//                             }
-//                         }
-//
-// #if PANCAKE_MAX_ENABLE
-//                         if (GUI.changed) AppLovinSettings.Instance.SaveAsync();
-// #endif
-//                     }
-//                 });
+            Uniform.DrawGroupFoldout("monetization_ads_applovin",
+                "AppLovin",
+                () =>
+                {
+                    EditorGUILayout.PropertyField(ApplovinProperties.Enable.property, ApplovinProperties.Enable.content);
+                    if (AdSettings.MaxSettings.Enable)
+                    {
+                        var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+                        if (IsApplovinSdkImported())
+                        {
+                            if (!Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                            {
+                                Editor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                                AssetDatabase.Refresh();
+                            }
+                        }
+                        else
+                        {
+                            if (Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                            {
+                                Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                                AssetDatabase.Refresh();
+                            }
+
+                            // show button install admob sdk
+                            GUI.enabled = !EditorApplication.isCompiling;
+
+                            if (GUILayout.Button("Install Applovin SDK", GUILayout.MaxHeight(40f)))
+                            {
+                                AssetDatabase.ImportPackage(Editor.AssetInPackagePath("Editor/UnityPackages", "applovin.unitypackage"), false);
+                            }
+
+                            GUI.enabled = true;
+                        }
+
+                        if (IsApplovinSdkImported() && Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                        {
+                            EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
+
+                            EditorGUILayout.Space();
+                            EditorGUILayout.PropertyField(ApplovinProperties.SDKKey.property, ApplovinProperties.SDKKey.content);
+                            EditorGUILayout.PropertyField(ApplovinProperties.EnableAgeRestrictedUser.property, ApplovinProperties.EnableAgeRestrictedUser.content);
+                            EditorGUILayout.PropertyField(ApplovinProperties.EnableRequestAdAfterHidden.property, ApplovinProperties.EnableRequestAdAfterHidden.content);
+                            EditorGUILayout.PropertyField(ApplovinProperties.EnableMaxAdReview.property, ApplovinProperties.EnableMaxAdReview.content);
+#if PANCAKE_APPLOVIN
+                            AppLovinSettings.Instance.QualityServiceEnabled = AdSettings.MaxSettings.EnableMaxAdReview;
+                            AppLovinSettings.Instance.ConsentFlowEnabled = AdSettings.AdCommonSettings.EnableGdpr;
+                            AppLovinSettings.Instance.ConsentFlowPrivacyPolicyUrl = AdSettings.AdCommonSettings.PrivacyUrl;
+#endif
+                            EditorGUILayout.Space();
+                            EditorGUI.indentLevel++;
+                            EditorGUILayout.PropertyField(ApplovinProperties.BannerAdUnit.property, ApplovinProperties.BannerAdUnit.content);
+                            EditorGUILayout.PropertyField(ApplovinProperties.InterstitialAdUnit.property, ApplovinProperties.InterstitialAdUnit.content);
+                            EditorGUILayout.PropertyField(ApplovinProperties.RewardedAdUnit.property, ApplovinProperties.RewardedAdUnit.content);
+                            EditorGUILayout.PropertyField(ApplovinProperties.RewardedInterstitialAdUnit.property, ApplovinProperties.RewardedInterstitialAdUnit.content);
+                            EditorGUILayout.PropertyField(ApplovinProperties.AppOpenAdUnit.property, ApplovinProperties.AppOpenAdUnit.content);
+                            EditorGUI.indentLevel--;
+                            EditorGUILayout.Space();
+
+                            Uniform.DrawGroupFoldout("monetization_ads_applovin_mediation",
+                                "Mediation",
+                                () =>
+                                {
+                                    DrawHeaderMediation();
+                                    foreach (var network in AdSettings.MaxSettings.editorListNetwork)
+                                    {
+                                        DrawApplovinNetworkDetailRow(network);
+                                    }
+                                });
+                            EditorGUILayout.Space();
+                        }
+
+#if PANCAKE_APPLOVIN
+                        if (GUI.changed) AppLovinSettings.Instance.SaveAsync();
+#endif
+                    }
+                    else
+                    {
+                        var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+                        if (Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                        {
+                            Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                            AssetDatabase.Refresh();
+                        }
+                    }
+                });
 
             #endregion
 
@@ -443,159 +462,6 @@ namespace Pancake.Monetization
                 GUILayout.Space(5);
             }
         }
-
-
-//         private void DrawApplovinNetworkDetailRow(MaxNetwork network)
-//         {
-//             string currentVersion = network.CurrentVersions != null ? network.CurrentVersions.Unity : "";
-//             string latestVersion = network.LatestVersions.Unity;
-//             var status = "";
-//             var isActionEnabled = false;
-//             var isInstalled = false;
-//             ValidateVersionMax(network.CurrentToLatestVersionComparisonResult,
-//                 ref currentVersion,
-//                 ref status,
-//                 ref isActionEnabled,
-//                 ref isInstalled);
-//
-//             GUILayout.Space(4);
-//             using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandHeight(false)))
-//             {
-//                 GUILayout.Space(5);
-//                 EditorGUILayout.LabelField(new GUIContent(network.DisplayName), NetworkWidthOption);
-//                 EditorGUILayout.LabelField(new GUIContent(currentVersion), VersionWidthOption);
-//                 GUILayout.Space(3);
-//                 EditorGUILayout.LabelField(new GUIContent(latestVersion), VersionWidthOption);
-//                 GUILayout.FlexibleSpace();
-//
-//                 if (network.RequiresUpdate)
-//                 {
-//                     GUILayout.Label(_warningIcon);
-//                 }
-//
-//                 GUI.enabled = isActionEnabled && !EditorApplication.isCompiling;
-//                 if (GUILayout.Button(new GUIContent(status), FieldWidth))
-//                 {
-//                     // Download the plugin.
-//                     EditorCoroutine.Start(MaxManager.Instance.DownloadPlugin(network));
-//                     if (network.Name.Equals("ALGORIX_NETWORK"))
-//                     {
-//                         AdsEditorUtil.CreateMainTemplateGradle();
-//                         AdsEditorUtil.AddSettingProguardFile(new List<string>()
-//                         {
-//                             "-keep class com.alxad.* {;}",
-//                             "-keep class admob.custom.adapter.* {;}",
-//                             "-keep class anythink.custom.adapter.* {;}",
-//                             "-keep class com.mopub.mobileads.* {;}",
-//                             "-keep class com.applovin.mediation.adapters.* {;}"
-//                         });
-//                         AdsEditorUtil.AddAlgorixSettingGradle(network);
-//                     }
-//                 }
-//
-//                 GUI.enabled = !EditorApplication.isCompiling;
-//                 GUILayout.Space(2);
-//
-//                 GUI.enabled = isInstalled && !EditorApplication.isCompiling;
-//                 if (GUILayout.Button(_iconUnintall, FieldWidth))
-//                 {
-//                     EditorUtility.DisplayProgressBar("Ads", "Deleting " + network.DisplayName + "...", 0.5f);
-//                     var pluginRoot = SettingManager.MediationSpecificPluginParentDirectory;
-//                     foreach (var pluginFilePath in network.PluginFilePaths)
-//                     {
-//                         FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath));
-//                         FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath + ".meta"));
-//                     }
-//
-//                     if (network.Name.Equals("ALGORIX_NETWORK"))
-//                     {
-//                         AdsEditorUtil.RemoveAlgorixSettingGradle();
-//                         AdsEditorUtil.DeleteProguardFile();
-//                     }
-//
-//                     SettingManager.RemoveAllEmptyFolder(new DirectoryInfo(pluginRoot));
-//                     MaxManager.UpdateCurrentVersions(network, pluginRoot);
-//
-//                     // Refresh UI
-//                     AssetDatabase.Refresh();
-//                     EditorUtility.ClearProgressBar();
-//                 }
-//
-//                 GUI.enabled = !EditorApplication.isCompiling;
-//                 GUILayout.Space(5);
-//             }
-//
-//             if (isInstalled)
-//             {
-//                 if (network.Name.Equals("ADMOB_NETWORK"))
-//                 {
-// #if PANCAKE_MAX_ENABLE
-//                     // ReSharper disable once PossibleNullReferenceException
-//                     if ((int) MaxSdkUtils.CompareUnityMediationVersions(network.CurrentVersions.Unity, "android_19.0.1.0_ios_7.57.0.0") ==
-//                         (int) EVersionComparisonResult.Greater)
-//                     {
-//                         GUILayout.BeginHorizontal();
-//                         GUILayout.Space(20);
-//
-//                         using (new EditorGUILayout.VerticalScope())
-//                         {
-//                             AppLovinSettings.Instance.AdMobAndroidAppId =
-//                                 Uniform.DrawTextField("App ID (Android)", AppLovinSettings.Instance.AdMobAndroidAppId, NetworkWidthOption);
-//                             AppLovinSettings.Instance.AdMobIosAppId = Uniform.DrawTextField("App ID (iOS)", AppLovinSettings.Instance.AdMobIosAppId, NetworkWidthOption);
-//                         }
-//
-//                         GUILayout.EndHorizontal();
-//                     }
-// #endif
-//                 }
-//             }
-//         }
-
-
-        private bool ValidateVersionMax(
-            EVersionComparisonResult comparisonResult,
-            ref string currentVersion,
-            // ReSharper disable once RedundantAssignment
-            ref string status,
-            // ReSharper disable once RedundantAssignment
-            ref bool isActionEnabled,
-            // ReSharper disable once RedundantAssignment
-            ref bool isInstalled)
-        {
-            if (string.IsNullOrEmpty(currentVersion))
-            {
-                status = "Install";
-                currentVersion = "Not Installed";
-                isActionEnabled = true;
-                isInstalled = false;
-            }
-            else
-            {
-                isInstalled = true;
-
-                // A newer version is available
-                if (comparisonResult == EVersionComparisonResult.Lesser)
-                {
-                    status = "Upgrade";
-                    isActionEnabled = true;
-                }
-                // Current installed version is newer than latest version from DB (beta version)
-                else if (comparisonResult == EVersionComparisonResult.Greater)
-                {
-                    status = "Installed";
-                    isActionEnabled = false;
-                }
-                // Already on the latest version
-                else
-                {
-                    status = "Installed";
-                    isActionEnabled = false;
-                }
-            }
-
-            return isActionEnabled;
-        }
-
 
         private static void CreateMainTemplateGradle(bool multiDex)
         {
@@ -794,7 +660,7 @@ namespace Pancake.Monetization
                 if (GUILayout.Button(new GUIContent(status), FieldWidth))
                 {
                     // Download the plugin.
-                    EditorCoroutine.Start(AdmobDownloadPlugin(network));
+                    EditorCoroutine.Start(AdmobDownloadMediation(network));
                 }
 
                 GUI.enabled = !EditorApplication.isCompiling;
@@ -852,7 +718,7 @@ namespace Pancake.Monetization
             return Path.Combine("Assets", "GoogleMobileAds");
         }
 
-        public IEnumerator AdmobDownloadPlugin(Network network)
+        public IEnumerator AdmobDownloadMediation(Network network)
         {
             string pathFile = Path.Combine(Application.temporaryCachePath, $"{network.name.ToLowerInvariant()}_{network.lastVersion.unity}.zip");
             string urlDownload = string.Format(network.path, network.lastVersion.unity);
@@ -866,13 +732,7 @@ namespace Pancake.Monetization
                 downloadMediationProgressCallback?.Invoke(network.displayName, operation.progress, operation.isDone);
             }
 
-#if UNITY_2020_1_OR_NEWER
             if (webRequest.result != UnityWebRequest.Result.Success)
-#elif UNITY_2017_2_OR_NEWER
-            if (webRequest.isNetworkError || webRequest.isHttpError)
-#else
-            if (webRequest.isError)
-#endif
             {
                 Debug.LogError(webRequest.error);
             }
@@ -1073,10 +933,7 @@ namespace Pancake.Monetization
                 // Check if the destination folder exists and create it if it doesn't exist
                 var parentDirectory = Path.GetDirectoryName(file);
                 var destinationDirectoryPath = parentDirectory.Replace(defaultPluginExportPath, pluginRoot);
-                if (!Directory.Exists(destinationDirectoryPath))
-                {
-                    Directory.CreateDirectory(destinationDirectoryPath);
-                }
+                if (!Directory.Exists(destinationDirectoryPath)) Directory.CreateDirectory(destinationDirectoryPath);
 
                 // If the meta file is of a folder asset and doesn't have labels (it is auto generated by Unity), just delete it.
                 if (IsAutoGeneratedFolderMetaFile(file))
@@ -1136,6 +993,429 @@ namespace Pancake.Monetization
             // If it is a folder asset and doesn't have a label, the meta file is auto generated by 
             return isFolderAsset && !hasLabels;
         }
+
+        #endregion
+
+        #region applovin
+
+        private readonly WaitForSeconds _wait = new WaitForSeconds(0.1f);
+
+        private void DrawApplovinNetworkDetailRow(MaxNetwork network)
+        {
+            string currentVersion = network.CurrentVersions != null ? network.CurrentVersions.Unity : "";
+            string latestVersion = network.LatestVersions.Unity;
+            var status = "";
+            var isActionEnabled = false;
+            var isInstalled = false;
+            ValidateVersionMax(network.CurrentToLatestVersionComparisonResult,
+                ref currentVersion,
+                ref status,
+                ref isActionEnabled,
+                ref isInstalled);
+
+            GUILayout.Space(4);
+            using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandHeight(false)))
+            {
+                GUILayout.Space(5);
+                EditorGUILayout.LabelField(new GUIContent(network.DisplayName), NetworkWidthOption);
+                EditorGUILayout.LabelField(new GUIContent(currentVersion.Equals("Not Installed") ? currentVersion : currentVersion.Split("_")[1]), VersionWidthOption);
+                GUILayout.Space(3);
+                EditorGUILayout.LabelField(new GUIContent(string.IsNullOrEmpty(latestVersion) ? latestVersion : latestVersion.Split("_")[1]), VersionWidthOption);
+                GUILayout.FlexibleSpace();
+
+                if (network.RequiresUpdate)
+                {
+                    GUILayout.Label(_warningIcon);
+                }
+
+                GUI.enabled = isActionEnabled && !EditorApplication.isCompiling;
+                if (GUILayout.Button(new GUIContent(status), FieldWidth))
+                {
+                    // Download the plugin.
+                    EditorCoroutine.Start(ApplovinDownloadMediation(network));
+                }
+
+                GUI.enabled = !EditorApplication.isCompiling;
+                GUILayout.Space(2);
+
+                GUI.enabled = isInstalled && !EditorApplication.isCompiling;
+                if (GUILayout.Button(_iconUnintall, FieldWidth))
+                {
+                    EditorUtility.DisplayProgressBar("Ads", "Deleting " + network.DisplayName + "...", 0.5f);
+                    string parentDir = ParentApplovinDirectory();
+                    string pluginRoot = !parentDir.StartsWith("Assets") ? "Assets" : parentDir;
+                    foreach (var pluginFilePath in network.PluginFilePaths)
+                    {
+                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath));
+                        FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath + ".meta"));
+                    }
+
+                    Editor.RemoveAllEmptyFolder(new DirectoryInfo(pluginRoot));
+                    UpdateCurrentVersionApplovinMediation(network, pluginRoot);
+
+                    // Refresh UI
+                    AssetDatabase.Refresh();
+                    EditorUtility.ClearProgressBar();
+                }
+
+                GUI.enabled = !EditorApplication.isCompiling;
+                GUILayout.Space(5);
+            }
+
+            if (isInstalled)
+            {
+                if (network.Name.Equals("ADMOB_NETWORK"))
+                {
+#if PANCAKE_APPLOVIN
+                    // ReSharper disable once PossibleNullReferenceException
+                    if ((int) MaxSdkUtils.CompareUnityMediationVersions(network.CurrentVersions.Unity, "android_19.0.1.0_ios_7.57.0.0") ==
+                        (int) EVersionComparisonResult.Greater)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(20);
+
+                        using (new EditorGUILayout.VerticalScope())
+                        {
+                            AppLovinSettings.Instance.AdMobAndroidAppId =
+                                Uniform.DrawTextField("App ID (Android)", AppLovinSettings.Instance.AdMobAndroidAppId, NetworkWidthOption);
+                            AppLovinSettings.Instance.AdMobIosAppId = Uniform.DrawTextField("App ID (iOS)", AppLovinSettings.Instance.AdMobIosAppId, NetworkWidthOption);
+                        }
+
+                        GUILayout.EndHorizontal();
+                    }
+#endif
+                }
+            }
+        }
+
+        private static string GetPluginFileName(MaxNetwork network) { return network.Name.ToLowerInvariant() + "_" + network.LatestVersions.Unity + ".unitypackage"; }
+
+        /// <summary>
+        /// Downloads the plugin file for a given network.
+        /// </summary>
+        /// <param name="network">Network for which to download the current version.</param>
+        /// <returns></returns>
+        public IEnumerator ApplovinDownloadMediation(MaxNetwork network)
+        {
+            string path = Path.Combine(Application.temporaryCachePath, GetPluginFileName(network));
+            var downloadHandler = new DownloadHandlerFile(path);
+            webRequest = new UnityWebRequest(network.DownloadUrl) {method = UnityWebRequest.kHttpVerbGET, downloadHandler = downloadHandler};
+            var operation = webRequest.SendWebRequest();
+
+            while (!operation.isDone)
+            {
+                yield return _wait; // Just wait till webRequest is completed. Our coroutine is pretty rudimentary.
+                downloadMediationProgressCallback?.Invoke(network.DisplayName, operation.progress, operation.isDone);
+            }
+
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(webRequest.error);
+            }
+            else
+            {
+                AdSettings.MaxSettings.editorImportingNetwork = network;
+                AssetDatabase.ImportPackage(path, false);
+            }
+
+            webRequest = null;
+        }
+
+        private bool ValidateVersionMax(
+            EVersionComparisonResult comparisonResult,
+            ref string currentVersion,
+            // ReSharper disable once RedundantAssignment
+            ref string status,
+            // ReSharper disable once RedundantAssignment
+            ref bool isActionEnabled,
+            // ReSharper disable once RedundantAssignment
+            ref bool isInstalled)
+        {
+            if (string.IsNullOrEmpty(currentVersion))
+            {
+                status = "Install";
+                currentVersion = "Not Installed";
+                isActionEnabled = true;
+                isInstalled = false;
+            }
+            else
+            {
+                isInstalled = true;
+
+                // A newer version is available
+                if (comparisonResult == EVersionComparisonResult.Lesser)
+                {
+                    status = "Upgrade";
+                    isActionEnabled = true;
+                }
+                // Current installed version is newer than latest version from DB (beta version)
+                else if (comparisonResult == EVersionComparisonResult.Greater)
+                {
+                    status = "Installed";
+                    isActionEnabled = false;
+                }
+                // Already on the latest version
+                else
+                {
+                    status = "Installed";
+                    isActionEnabled = false;
+                }
+            }
+
+            return isActionEnabled;
+        }
+
+        private static bool IsApplovinSdkImported() { return AssetDatabase.FindAssets("l:al_max_export_path-MaxSdk/Scripts/MaxSdk.cs").Length >= 1; }
+
+        private string ParentApplovinDirectory()
+        {
+            string[] guids = AssetDatabase.FindAssets("l:al_max_export_path-MaxSdk/Scripts/MaxSdk.cs");
+            if (!guids.IsNullOrEmpty())
+            {
+                return AssetDatabase.GUIDToAssetPath(guids[0])
+                    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+                    .Replace(@"MaxSdk\Scripts\MaxSdk.cs", "")
+                    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            }
+
+            return Path.Combine("Assets", "MaxSdk");
+        }
+
+        /// <summary>
+        /// Updates the CurrentVersion fields for a given network data object.
+        /// </summary>
+        /// <param name="network">Network for which to update the current versions.</param>
+        /// <param name="mediationPluginParentDirectory">The parent directory of where the mediation adapter plugins are imported to.</param>
+        public static void UpdateCurrentVersionApplovinMediation(MaxNetwork network, string mediationPluginParentDirectory)
+        {
+#if PANCAKE_APPLOVIN
+            var dependencyFilePath = Path.Combine(mediationPluginParentDirectory, network.DependenciesFilePath);
+            MaxVersions currentVersions;
+            currentVersions = ApplovinGetCurrentVersions(dependencyFilePath);
+
+
+            network.CurrentVersions = currentVersions;
+
+            // If AppLovin mediation plugin, get the version from MaxSdk and the latest and current version comparison.
+            if (network.Name.Equals("APPLOVIN_NETWORK"))
+            {
+                network.CurrentVersions.Unity = MaxSdk.Version;
+
+                var unityVersionComparison = (EVersionComparisonResult) (int) MaxSdkUtils.CompareVersions(network.CurrentVersions.Unity, network.LatestVersions.Unity);
+                var androidVersionComparison =
+                    (EVersionComparisonResult) (int) MaxSdkUtils.CompareVersions(network.CurrentVersions.Android, network.LatestVersions.Android);
+                var iosVersionComparison = (EVersionComparisonResult) (int) MaxSdkUtils.CompareVersions(network.CurrentVersions.Ios, network.LatestVersions.Ios);
+
+                // Overall version is same if all the current and latest (from db) versions are same.
+                if (unityVersionComparison == EVersionComparisonResult.Equal && androidVersionComparison == EVersionComparisonResult.Equal &&
+                    iosVersionComparison == EVersionComparisonResult.Equal)
+                {
+                    network.CurrentToLatestVersionComparisonResult = EVersionComparisonResult.Equal;
+                }
+                // One of the installed versions is newer than the latest versions which means that the publisher is on a beta version.
+                else if (unityVersionComparison == EVersionComparisonResult.Greater || androidVersionComparison == EVersionComparisonResult.Greater ||
+                         iosVersionComparison == EVersionComparisonResult.Greater)
+                {
+                    network.CurrentToLatestVersionComparisonResult = EVersionComparisonResult.Greater;
+                }
+                // We have a new version available if all Android, iOS and Unity has a newer version available in db.
+                else
+                {
+                    network.CurrentToLatestVersionComparisonResult = EVersionComparisonResult.Lesser;
+                }
+            }
+            // For all other mediation adapters, get the version comparison using their Unity versions.
+            else
+            {
+                // If adapter is indeed installed, compare the current (installed) and the latest (from db) versions, so that we can determine if the publisher is on an older, current or a newer version of the adapter.
+                // If the publisher is on a newer version of the adapter than the db version, that means they are on a beta version.
+                if (!string.IsNullOrEmpty(currentVersions.Unity))
+                {
+                    network.CurrentToLatestVersionComparisonResult =
+                        (EVersionComparisonResult) (int) MaxSdkUtils.CompareUnityMediationVersions(currentVersions.Unity, network.LatestVersions.Unity);
+                }
+
+                if (!string.IsNullOrEmpty(network.CurrentVersions.Unity) && AppLovinAutoUpdater.MinAdapterVersions.ContainsKey(network.Name))
+                {
+                    var comparisonResult = MaxSdkUtils.CompareUnityMediationVersions(network.CurrentVersions.Unity, AppLovinAutoUpdater.MinAdapterVersions[network.Name]);
+                    // Requires update if current version is lower than the min required version.
+                    network.RequiresUpdate = comparisonResult < 0;
+                }
+                else
+                {
+                    // Reset value so that the Integration manager can hide the alert icon once adapter is updated.
+                    network.RequiresUpdate = false;
+                }
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Gets the current versions for a given network's dependency file path.
+        /// </summary>
+        /// <param name="dependencyPath">A dependency file path that from which to extract current versions.</param>
+        /// <returns>Current versions of a given network's dependency file.</returns>
+        public static MaxVersions ApplovinGetCurrentVersions(string dependencyPath)
+        {
+            XDocument dependency;
+            try
+            {
+                dependency = XDocument.Load(dependencyPath);
+            }
+#pragma warning disable 0168
+            catch (IOException exception)
+#pragma warning restore 0168
+            {
+                // Couldn't find the dependencies file. The plugin is not installed.
+                return new MaxVersions();
+            }
+
+            // <dependencies>
+            //  <androidPackages>
+            //      <androidPackage spec="com.applovin.mediation:network_name-adapter:1.2.3.4" />
+            //  </androidPackages>
+            //  <iosPods>
+            //      <iosPod name="AppLovinMediationNetworkNameAdapter" version="2.3.4.5" />
+            //  </iosPods>
+            // </dependencies>
+            string androidVersion = null;
+            string iosVersion = null;
+            var dependenciesElement = dependency.Element("dependencies");
+            if (dependenciesElement != null)
+            {
+                var androidPackages = dependenciesElement.Element("androidPackages");
+                if (androidPackages != null)
+                {
+                    var adapterPackage = androidPackages.Descendants()
+                        .FirstOrDefault(element =>
+                            element.Name.LocalName.Equals("androidPackage") && element.FirstAttribute.Name.LocalName.Equals("spec") &&
+                            element.FirstAttribute.Value.StartsWith("com.applovin"));
+                    if (adapterPackage != null)
+                    {
+                        androidVersion = adapterPackage.FirstAttribute.Value.Split(':').Last();
+                        // Hack alert: Some Android versions might have square brackets to force a specific version. Remove them if they are detected.
+                        if (androidVersion.StartsWith("["))
+                        {
+                            androidVersion = androidVersion.Trim('[', ']');
+                        }
+                    }
+                }
+
+                var iosPods = dependenciesElement.Element("iosPods");
+                if (iosPods != null)
+                {
+                    var adapterPod = iosPods.Descendants()
+                        .FirstOrDefault(element =>
+                            element.Name.LocalName.Equals("iosPod") && element.FirstAttribute.Name.LocalName.Equals("name") &&
+                            element.FirstAttribute.Value.StartsWith("AppLovin"));
+                    if (adapterPod != null)
+                    {
+                        iosVersion = adapterPod.Attributes().First(attribute => attribute.Name.LocalName.Equals("version")).Value;
+                    }
+                }
+            }
+
+            var currentVersions = new MaxVersions();
+            if (androidVersion != null && iosVersion != null)
+            {
+                currentVersions.Unity = string.Format("android_{0}_ios_{1}", androidVersion, iosVersion);
+                currentVersions.Android = androidVersion;
+                currentVersions.Ios = iosVersion;
+            }
+            else if (androidVersion != null)
+            {
+                currentVersions.Unity = string.Format("android_{0}", androidVersion);
+                currentVersions.Android = androidVersion;
+            }
+            else if (iosVersion != null)
+            {
+                currentVersions.Unity = string.Format("ios_{0}", iosVersion);
+                currentVersions.Ios = iosVersion;
+            }
+
+            return currentVersions;
+        }
+
+#if PANCAKE_APPLOVIN
+        public void LoadApplovinMediation()
+        {
+            EditorCoroutine.Start(LoadApplovinMediation(_ =>
+            {
+                AdSettings.MaxSettings.editorListNetwork = _.MediatedNetworks;
+                foreach (var mediationNetwork in AdSettings.MaxSettings.editorListNetwork.ToList())
+                {
+                    if (!mediationNetwork.Name.Equals("ADCOLONY_NETWORK") && !mediationNetwork.Name.Equals("CHARTBOOST_NETWORK") &&
+                        !mediationNetwork.Name.Equals("FACEBOOK_MEDIATE") && !mediationNetwork.Name.Equals("ADMOB_NETWORK") &&
+                        !mediationNetwork.Name.Equals("INMOBI_NETWORK") && !mediationNetwork.Name.Equals("IRONSOURCE_NETWORK") &&
+                        !mediationNetwork.Name.Equals("MINTEGRAL_NETWORK") && !mediationNetwork.Name.Equals("TIKTOK_NETWORK") &&
+                        !mediationNetwork.Name.Equals("UNITY_NETWORK") && !mediationNetwork.Name.Equals("VUNGLE_NETWORK"))
+                    {
+                        AdSettings.MaxSettings.editorListNetwork.Remove(mediationNetwork);
+                    }
+                }
+            }));
+        }
+
+        /// <summary>
+        /// Loads the plugin data to be display by integration manager window.
+        /// </summary>
+        /// <param name="callback">Callback to be called once the plugin data download completes.</param>
+        private IEnumerator LoadApplovinMediation(Action<MaxPluginData> callback)
+        {
+            var url = string.Format("https://dash.applovin.com/docs/v1/unity_integration_manager?plugin_version={0}", GetPluginVersionForUrl());
+            var www = UnityWebRequest.Get(url);
+            var operation = www.SendWebRequest();
+
+            while (!operation.isDone) yield return new WaitForSeconds(0.1f); // Just wait till www is done. Our coroutine is pretty rudimentary.
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                callback(null);
+            }
+            else
+            {
+                MaxPluginData pluginData;
+                try
+                {
+                    pluginData = JsonUtility.FromJson<MaxPluginData>(www.downloadHandler.text);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                    pluginData = null;
+                }
+
+                if (pluginData != null)
+                {
+                    // Get current version of the plugin
+                    var appLovinMax = pluginData.AppLovinMax;
+                    string parentDir = ParentApplovinDirectory();
+                    UpdateCurrentVersionApplovinMediation(appLovinMax, parentDir);
+
+                    // Get current versions for all the mediation networks.
+                    string mediationPluginParentDirectory = !parentDir.StartsWith("Assets") ? "Assets" : parentDir;
+                    foreach (var network in pluginData.MediatedNetworks)
+                    {
+                        UpdateCurrentVersionApplovinMediation(network, mediationPluginParentDirectory);
+                    }
+                }
+
+                callback(pluginData);
+            }
+        }
+#endif
+
+#if PANCAKE_APPLOVIN
+        /// <summary>
+        /// Returns a URL friendly version string by replacing periods with underscores.
+        /// </summary>
+        private static string GetPluginVersionForUrl()
+        {
+            var version = MaxSdk.Version;
+            var versionsSplit = version.Split('.');
+            return string.Join("_", versionsSplit);
+        }
+#endif
 
         #endregion
     }
