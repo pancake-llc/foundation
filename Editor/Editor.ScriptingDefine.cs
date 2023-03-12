@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 
 namespace PancakeEditor
 {
-    public static partial class Editor
+    public partial class Editor
     {
         public class ScriptingDefinition
         {

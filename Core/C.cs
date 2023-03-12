@@ -15,7 +15,7 @@ namespace Pancake
         {
             var a = action;
             if (a == null) return;
-            
+
             a();
             action = null;
         }

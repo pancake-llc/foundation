@@ -8,43 +8,22 @@ namespace Pancake.Monetization
     public class AdmobSettings
     {
         [SerializeField] private bool enable;
+        [SerializeField] private bool enableTestMode;
         [SerializeField] private List<string> devicesTest;
         [SerializeField] private AdmobBannerUnit bannerAdUnit;
         [SerializeField] private AdmobIntestitialUnit interstitialAdUnit;
         [SerializeField] private AdmobRewardedUnit rewardedAdUnit;
         [SerializeField] private AdmobRewardedInterstitialUnit rewardedInterstitialAdUnit;
-        [SerializeField] private AdmobAppOpenUnit appOpenAdUnit;
-        [SerializeField] private bool enableTestMode;
-        [SerializeField] private bool useAdaptiveBanner;
-
+        [SerializeField,] private AdmobAppOpenUnit appOpenAdUnit;
+        
 #if UNITY_EDITOR
-        public List<Network> editorListNetwork = new List<Network>();
-
-        /// <summary>
-        /// editor only
-        /// </summary>
-        public Network editorImportingNetwork;
-
-        /// <summary>
-        /// editor only
-        /// </summary>
-        public Network editorImportingSdk;
-
-        /// <summary>
-        /// editor only
-        /// </summary>
-        public List<Network> editorImportingListNetwork = new List<Network>();
-
-        /// <summary>
-        /// editor only
-        /// </summary>
-        public bool editorInstallAllFlag;
+        [NonSerialized] public List<Network> editorListNetwork = new List<Network>();
+        [NonSerialized] public Network editorImportingNetwork;
 #endif
 
         public bool Enable => enable;
         public List<string> DevicesTest => devicesTest;
         public bool EnableTestMode => enableTestMode;
-        public bool UseAdaptiveBanner => useAdaptiveBanner;
         public AdmobBannerUnit BannerAdUnit => bannerAdUnit;
         public AdmobIntestitialUnit InterstitialAdUnit => interstitialAdUnit;
         public AdmobRewardedUnit RewardedAdUnit => rewardedAdUnit;

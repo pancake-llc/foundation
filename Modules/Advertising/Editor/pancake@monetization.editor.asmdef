@@ -1,19 +1,19 @@
 {
-    "name": "pancake@monetization",
+    "name": "pancake@monetization.editor",
     "rootNamespace": "",
     "references": [
-        "GUID:adac8d59ad7e8504f82d387cded797a7",
-        "GUID:a4cfc1a18fa3a469b96d885db522f42e"
+        "GUID:d43f774d56c534e4b84fe18247432afb",
+        "GUID:38036840b8620d443a0acf3e48f20d6f",
+        "GUID:cbb42e4cfd9484f52972c8f05e1c3252",
+        "GUID:adac8d59ad7e8504f82d387cded797a7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "GoogleMobileAds.dll",
-        "GoogleMobileAds.Common.dll",
-        "GoogleMobileAds.Core.dll",
-        "Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll",
+        "Unity.SharpZipLib.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

@@ -81,28 +81,6 @@ namespace PancakeEditor
         }
 
         /// <summary>
-        /// Returns the exact path used for the current environment
-        /// In use under upm package => return upm path
-        /// In use directly in folder Assets => return normal path under folder, (only should use for development, recomment use upm instead)
-        /// <param name="relativePath">path to convert</param>
-        /// <param name="nameAsset"> it will include file name and file extension</param>
-        /// </summary>
-        private static string AssetInPackagePath(string relativePath, string nameAsset) { return GetPathInCurrentEnvironent($"{relativePath}/{nameAsset}"); }
-
-        /// <summary>
-        /// Returns the exact path used for the current environment
-        /// In use under upm package => return upm path
-        /// In use directly in folder Assets => return normal path under folder, (only should use for development, recomment use upm instead)
-        /// <param name="fullRelativePath">path to convert, it will include file name and file extension</param>
-        /// </summary>
-        internal static string GetPathInCurrentEnvironent(string fullRelativePath)
-        {
-            var upmPath = $"Packages/com.pancake.heart/{fullRelativePath}";
-            var normalPath = $"Assets/heart/{fullRelativePath}";
-            return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
-        }
-
-        /// <summary>
         /// thanks @JoshuaMcKenzie and @Edvard-D
         /// remove all empty object reference elements
         /// </summary>
@@ -326,6 +304,64 @@ namespace PancakeEditor
             }
 
             return false;
+        }
+        
+        /// <summary>
+        /// Returns the exact path used for the current environment
+        /// In use under upm package => return upm path
+        /// In use directly in folder Assets => return normal path under folder, (only should use for development, recomment use upm instead)
+        /// <param name="relativePath">path to convert</param>
+        /// <param name="nameAsset"> it will include file name and file extension</param>
+        /// </summary>
+        public static string AssetInPackagePath(string relativePath, string nameAsset) { return GetPathInCurrentEnvironent($"{relativePath}/{nameAsset}"); }
+
+        /// <summary>
+        /// Returns the exact path used for the current environment
+        /// In use under upm package => return upm path
+        /// In use directly in folder Assets => return normal path under folder, (only should use for development, recomment use upm instead)
+        /// <param name="fullRelativePath">path to convert, it will include file name and file extension</param>
+        /// </summary>
+        private static string GetPathInCurrentEnvironent(string fullRelativePath)
+        {
+            var upmPath = $"Packages/com.pancake.heart/{fullRelativePath}";
+            var normalPath = $"Assets/heart/{fullRelativePath}";
+            return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
+        }
+        
+        private static bool GetEmptyDirectories(DirectoryInfo dir, List<DirectoryInfo> results)
+        {
+            var isEmpty = true;
+            try
+            {
+                isEmpty = dir.GetDirectories().Count(x => !GetEmptyDirectories(x, results)) == 0 // Are sub directories empty?
+                          && dir.GetFiles("*.*").All(x => x.Extension == ".meta"); // No file exist?
+            }
+            catch
+            {
+                //
+            }
+
+            // Store empty directory to results.
+            if (isEmpty) results.Add(dir);
+
+            return isEmpty;
+        }
+        
+        public static void RemoveAllEmptyFolder(DirectoryInfo dir)
+        {
+            var result = new List<DirectoryInfo>();
+            GetEmptyDirectories(dir, result);
+
+            if (result.Count > 0)
+            {
+                foreach (var d in result)
+                {
+                    FileUtil.DeleteFileOrDirectory(d.FullName);
+                    FileUtil.DeleteFileOrDirectory(d.Parent + "\\" + d.Name + ".meta"); // unity 2020.2 need to delete the meta too
+                }
+
+                AssetDatabase.Refresh();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Pancake.Monetization
 {
+    [HideMono]
     public class AdSettings : ScriptableSettings<AdSettings>
     {
         [SerializeField, LabelText("Settings")] private AdCommonSettings adCommonSettings = new AdCommonSettings();
