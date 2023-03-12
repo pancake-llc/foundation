@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage((AttributeTargets.Field | AttributeTargets.Property))]
     [Conditional("UNITY_EDITOR")]
-    public sealed class EnumToggleButtonsAttribute : System.Attribute
+    public class EnumToggleButtonsAttribute : System.Attribute
     {
     }
 }

@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class LabelTextAttribute : System.Attribute
+    public class LabelTextAttribute : System.Attribute
     {
         public string Text { get; }
 

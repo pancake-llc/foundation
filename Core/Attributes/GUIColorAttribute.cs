@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Struct)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class GUIColorAttribute : System.Attribute
+    public class GUIColorAttribute : System.Attribute
     {
         public float R { get; }
         public float G { get; }

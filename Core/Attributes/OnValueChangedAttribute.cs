@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class OnValueChangedAttribute : System.Attribute
+    public class OnValueChangedAttribute : System.Attribute
     {
         public OnValueChangedAttribute(string method) { Method = method; }
 

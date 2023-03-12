@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage((AttributeTargets.Class | AttributeTargets.Struct))]
     [Conditional("UNITY_EDITOR")]
-    public sealed class HideMonoAttribute : System.Attribute
+    public class HideMonoAttribute : System.Attribute
     {
     }
 }

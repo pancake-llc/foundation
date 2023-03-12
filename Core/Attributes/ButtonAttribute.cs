@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Method)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class ButtonAttribute : System.Attribute
+    public class ButtonAttribute : System.Attribute
     {
         public ButtonAttribute() { }
 

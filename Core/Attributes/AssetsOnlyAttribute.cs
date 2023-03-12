@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage((AttributeTargets.Field | AttributeTargets.Property))]
     [Conditional("UNITY_EDITOR")]
-    public sealed class AssetsOnlyAttribute : System.Attribute
+    public class AssetsOnlyAttribute : System.Attribute
     {
     }
 }

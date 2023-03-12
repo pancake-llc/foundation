@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class PropertyTooltipAttribute : System.Attribute
+    public class PropertyTooltipAttribute : System.Attribute
     {
         public string Tooltip { get; }
 

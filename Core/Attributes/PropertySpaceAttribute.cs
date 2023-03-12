@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Struct)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class PropertySpaceAttribute : System.Attribute
+    public class PropertySpaceAttribute : System.Attribute
     {
         public float SpaceBefore { get; set; }
         public float SpaceAfter { get; set; }

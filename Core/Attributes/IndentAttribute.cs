@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class IndentAttribute : System.Attribute
+    public class IndentAttribute : System.Attribute
     {
         public int Indent { get; }
 

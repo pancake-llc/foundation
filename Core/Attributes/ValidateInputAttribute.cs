@@ -5,7 +5,7 @@ namespace Pancake.Attribute
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     [Conditional("UNITY_EDITOR")]
-    public sealed class ValidateInputAttribute : System.Attribute
+    public class ValidateInputAttribute : System.Attribute
     {
         public string Method { get; }
 
