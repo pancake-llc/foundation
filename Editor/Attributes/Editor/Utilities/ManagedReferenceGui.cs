@@ -46,7 +46,7 @@ namespace PancakeEditor.Attribute
             {
                 var types = ReflectionUtilities.AllNonAbstractTypes.Where(type => !typeof(Object).IsAssignableFrom(type))
                     .Where(type => _property.FieldType.IsAssignableFrom(type))
-                    .Where(type => type.GetConstructor(Type.EmptyTypes) != null)
+                    .Where(type => type.IsValueType || type.GetConstructor(Type.EmptyTypes) != null)
                     .ToList();
 
                 var groupByNamespace = types.Count > 20;
