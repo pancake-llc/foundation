@@ -22,7 +22,7 @@ namespace PancakeEditor.Attribute
 
         private static bool IsSerialized(FieldInfo fieldInfo)
         {
-            return fieldInfo.GetCustomAttribute<ShowInInspectorAttribute>() != null && UnitySerializationUtilities.IsSerializableByUnity(fieldInfo) == false;
+            return fieldInfo.GetCustomAttribute<ShowInInspectorAttribute>(false) != null && UnitySerializationUtilities.IsSerializableByUnity(fieldInfo) == false;
         }
     }
 }

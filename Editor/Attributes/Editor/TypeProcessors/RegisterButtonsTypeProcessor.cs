@@ -21,6 +21,6 @@ namespace PancakeEditor.Attribute
                 .Select((it, ind) => PropertyDefinition.CreateForMethodInfo(ind + methodsOffset, it)));
         }
 
-        private static bool IsSerialized(MethodInfo methodInfo) { return methodInfo.GetCustomAttribute<ButtonAttribute>() != null; }
+        private static bool IsSerialized(MethodInfo methodInfo) { return methodInfo.GetCustomAttribute<ButtonAttribute>(false) != null; }
     }
 }
