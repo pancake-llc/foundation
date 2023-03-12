@@ -7,6 +7,8 @@ namespace Pancake.Attribute
     [Conditional("UNITY_EDITOR")]
     public class DeclareHorizontalGroupAttribute : DeclareGroupBaseAttribute
     {
+        public float[] Sizes { get; set; }
+
         public DeclareHorizontalGroupAttribute(string path)
             : base(path)
         {

@@ -7,6 +7,9 @@ namespace PancakeEditor.Attribute
 {
     public class HorizontalGroupDrawer : GroupDrawer<DeclareHorizontalGroupAttribute>
     {
-        public override PropertyCollectionBaseInspectorElement CreateElement(DeclareHorizontalGroupAttribute attribute) { return new HorizontalGroupInspectorElement(); }
+        public override PropertyCollectionBaseInspectorElement CreateElement(DeclareHorizontalGroupAttribute attribute)
+        {
+            return new HorizontalGroupInspectorElement(attribute.Sizes);
+        }
     }
 }
