@@ -68,10 +68,11 @@ namespace Pancake.Monetization
             _rewardedInterstitial = new AdmobRewardedInterstitialLoader(this);
             _appOpen = new AdmobAppOpenLoader(this);
             
+            isInitialized = true;
             LoadInterstitialAd();
             LoadRewardedAd();
             LoadRewardedInterstitialAd();
-            isInitialized = true;
+            LoadAppOpenAd();
 #endif
         }
 
@@ -358,7 +359,6 @@ namespace Pancake.Monetization
         public override void ShowConsentForm()
         {
 #if UNITY_ANDROID
-#if PANCAKE_ADMOB
             // if (AdsUtil.IsInEEA())
             // {
             //     var prefab = UnityEngine.Resources.Load<UnityEngine.GameObject>("GDPR");
@@ -368,7 +368,6 @@ namespace Pancake.Monetization
             //         UnityEngine.Time.timeScale = 0;
             //     }
             // }
-#endif
 #elif UNITY_IOS
             if (Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() ==
                 Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)

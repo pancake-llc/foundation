@@ -277,11 +277,11 @@ namespace Pancake.Monetization
             _rewardedInterstitial = new ApplovinRewardedInterstitialLoader(this);
             _appOpen = new ApplovinAppOpenLoader(this);
 
+            isInitialized = true;
             LoadInterstitialAd();
             LoadRewardedAd();
             LoadRewardedInterstitialAd();
             LoadAppOpenAd();
-            isInitialized = true;
             _isBannerDestroyed = false;
         }
 
