@@ -280,13 +280,14 @@ namespace Pancake.Monetization
             LoadInterstitialAd();
             LoadRewardedAd();
             LoadRewardedInterstitialAd();
+            LoadAppOpenAd();
             isInitialized = true;
             _isBannerDestroyed = false;
         }
 
         private void OnSdkInitializedEvent(MaxSdkBase.SdkConfiguration configuration)
         {
-            if (configuration.AppTrackingStatus == MaxSdkBase.AppTrackingStatus.NotDetermined)
+            if (configuration.ConsentDialogState == MaxSdkBase.ConsentDialogState.DoesNotApply)
             {
                 ShowConsentForm();
             }
@@ -398,10 +399,10 @@ namespace Pancake.Monetization
         public override void ShowConsentForm()
         {
 #if UNITY_ANDROID
-            // if (AdsUtil.IsInEEA())
-            // {
-            //     MaxSdk.UserService.ShowConsentDialog();
-            // }
+            if (AdsUtil.IsInEEA())
+            {
+                MaxSdk.UserService.ShowConsentDialog();
+            }
 #elif UNITY_IOS
             if (Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() == Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
             {

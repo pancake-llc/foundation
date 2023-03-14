@@ -13,7 +13,6 @@ namespace Pancake.Monetization
         [SerializeField] private bool enableGdpr;
         [SerializeField] private string privacyUrl;
         [SerializeField] private bool multiDex;
-        [SerializeField] private bool hideAppOpenAdStartup;
         [SerializeField] private EAdNetwork currentNetwork = EAdNetwork.Applovin;
 
         public bool AutoInit => autoInit;
@@ -22,7 +21,6 @@ namespace Pancake.Monetization
         public string PrivacyUrl => privacyUrl;
         public bool EnableGdpr => enableGdpr;
         public bool MultiDex => multiDex;
-        public bool HideAppOpenAdWhenStartup => hideAppOpenAdStartup;
 
         public EAdNetwork CurrentNetwork { get => currentNetwork; set => currentNetwork = value; }
         public EAutoLoadingAd AutoLoadingAd { get => autoLoadingAd; set => autoLoadingAd = value; }

@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     [AddComponentMenu("")]
     public class Advertising : MonoBehaviour
     {
-        public static Advertising Instance { get; private set; }
+        private static Advertising Instance { get; set; }
 
         #region banner event
 
@@ -57,7 +57,7 @@ namespace Pancake.Monetization
         private static ApplovinAdClient applovinAdClient;
 #endif
         private static bool isInitialized;
-        private static EAutoLoadingAd autoLoadingAdMode = EAutoLoadingAd.All;
+        private static EAutoLoadingAd autoLoadingAdMode;
         private static bool flagAutoLoadingModeChange;
         private static IEnumerator autoLoadAdCoroutine;
         private static float lastTimeLoadInterstitialAdTimestamp = DEFAULT_TIMESTAMP;
@@ -106,7 +106,7 @@ namespace Pancake.Monetization
         {
             get
             {
-                if (!InitializeCheck()) return null;
+                if (!IsInitialized) return null;
                 if (admobAdClient == null) admobAdClient = SetupClient(EAdNetwork.Admob) as AdmobAdClient;
                 return admobAdClient;
             }
@@ -118,7 +118,7 @@ namespace Pancake.Monetization
         {
             get
             {
-                if (!InitializeCheck()) return null;
+                if (!IsInitialized) return null;
                 if (applovinAdClient == null) applovinAdClient = SetupClient(EAdNetwork.Applovin) as ApplovinAdClient;
                 return applovinAdClient;
             }
@@ -160,17 +160,6 @@ namespace Pancake.Monetization
 #if PANCAKE_ADMOB
             if (AdSettings.AdCommonSettings.CurrentNetwork == EAdNetwork.Admob) RegisterAppStateChange();
 #endif
-        }
-
-        private static bool InitializeCheck()
-        {
-            if (!IsInitialized)
-            {
-                Debug.LogError("You need to initialize the advertising to use");
-                return false;
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -318,7 +307,7 @@ namespace Pancake.Monetization
 
         private static AdClient GetClientAlreadySetup(EAdNetwork network)
         {
-            if (!InitializeCheck()) return NoneAdClient.Instance;
+            if (!IsInitialized) return NoneAdClient.Instance;
             switch (network)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -465,13 +454,10 @@ namespace Pancake.Monetization
         private static void ShowAppOpenAd(IAdClient client)
         {
             if (IsAdRemoved || IsAppOpenRemoved || !Application.isMobilePlatform) return;
-            if (AdSettings.AdCommonSettings.HideAppOpenAdWhenStartup)
+            if (flagStartupOpenAd)
             {
-                if (flagStartupOpenAd)
-                {
-                    flagStartupOpenAd = false;
-                    return;
-                }
+                flagStartupOpenAd = false;
+                return;
             }
 
             client.ShowAppOpenAd();

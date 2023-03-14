@@ -58,7 +58,6 @@ namespace Pancake.Monetization
                 "General data protection regulation \nApp requires user consent before these events can be sent, you can delay app measurement until you explicitly initialize the Mobile Ads SDK or load an ad."));
 
             public static readonly Property EnableMultipleDex = new Property(new GUIContent("MultiDex"));
-            public static readonly Property HideAppOpenAdStartup = new Property(new GUIContent("Hide AppOpenAd Startup", "Hide App Open Ad When Startup"));
             public static readonly Property CurrentNetwork = new Property(new GUIContent("Current Network", "Current network use show ad"));
         }
 
@@ -175,7 +174,6 @@ namespace Pancake.Monetization
             AdProperties.EnableGdpr.property = AdProperties.main.FindPropertyRelative("enableGdpr");
             AdProperties.PrivacyPolicyUrl.property = AdProperties.main.FindPropertyRelative("privacyUrl");
             AdProperties.EnableMultipleDex.property = AdProperties.main.FindPropertyRelative("multiDex");
-            AdProperties.HideAppOpenAdStartup.property = AdProperties.main.FindPropertyRelative("hideAppOpenAdStartup");
             AdProperties.CurrentNetwork.property = AdProperties.main.FindPropertyRelative("currentNetwork");
 
             AdmobProperties.main = serializedObject.FindProperty("admobSettings");
@@ -237,7 +235,6 @@ namespace Pancake.Monetization
                     if (AdSettings.AdCommonSettings.EnableGdpr)
                         EditorGUILayout.PropertyField(AdProperties.PrivacyPolicyUrl.property, AdProperties.PrivacyPolicyUrl.content);
                     EditorGUILayout.PropertyField(AdProperties.EnableMultipleDex.property, AdProperties.EnableMultipleDex.content);
-                    EditorGUILayout.PropertyField(AdProperties.HideAppOpenAdStartup.property, AdProperties.HideAppOpenAdStartup.content);
                     EditorGUILayout.PropertyField(AdProperties.CurrentNetwork.property, AdProperties.CurrentNetwork.content);
                     CreateMainTemplateGradle(AdSettings.AdCommonSettings.MultiDex);
                     GUILayout.Space(8);
