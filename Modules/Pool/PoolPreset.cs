@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using Pancake.Attribute;
 using UnityEngine;
 
 namespace Pancake
 {
     [CreateAssetMenu(fileName = "PoolPreset", menuName = "Pancake/Create Pool Preset", order = 0)]
+    [Searchable]
     public class PoolPreset : ScriptableObject
     {
         [SerializeField, TextArea] private string developerDescription;
