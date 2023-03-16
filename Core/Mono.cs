@@ -1,33 +1,48 @@
-﻿using System.Runtime.CompilerServices;
-using UnityEngine;
-using Object = UnityEngine.Object;
-
 namespace Pancake
 {
-    public class Mono : MonoBehaviour
+    /// <summary>
+    /// Base class MonoBehavior
+    /// </summary>
+    public abstract class Mono : BaseMono, ITickSystem, IFixedTickSystem, ILateTickSystem
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Get<T>() => GetComponent<T>();
+        private void OnEnable()
+        {
+            OnEnabled();
+            Subscribe();
+        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] Gets<T>() => GetComponents<T>();
+        private void OnDisable()
+        {
+            Unsubscribe();
+            OnDisabled();
+        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T ChildrenGet<T>() => GetComponentInChildren<T>();
+        private void Subscribe()
+        {
+            Runtime.AddTick(this);
+            Runtime.AddFixedTick(this);
+            Runtime.AddLateTick(this);
+        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ChildrenGets<T>() => GetComponentsInChildren<T>();
+        private void Unsubscribe()
+        {
+            Runtime.RemoveTick(this);
+            Runtime.RemoveFixedTick(this);
+            Runtime.RemoveLateTick(this);
+        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T ParentGet<T>() => GetComponentInParent<T>();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ParentGets<T>() => GetComponentsInParent<T>();
+        void ITickSystem.OnTick() => Tick();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Find<T>() where T : Object => FindObjectOfType<T>();
+        void IFixedTickSystem.OnFixedTick() => FixedTick();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] Finds<T>() where T : Object => FindObjectsOfType<T>();
+        void ILateTickSystem.OnLateTick() => LateTick();
+
+
+        protected virtual void OnEnabled() { }
+        protected virtual void OnDisabled() { }
+        protected virtual void Tick() { }
+        protected virtual void FixedTick() { }
+        protected virtual void LateTick() { }
     }
 }

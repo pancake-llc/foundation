@@ -11,7 +11,7 @@ namespace PancakeEditor
 
         public void CheckForExceptions()
         {
-            var subclassTypes = typeof(BaseMono).GetAllSubClass(type => type.IsSubclassOf(typeof(BaseMono)));
+            var subclassTypes = typeof(Pancake.Mono).GetAllSubClass(type => type.IsSubclassOf(typeof(Pancake.Mono)));
 
             foreach (var type in subclassTypes)
             {
@@ -52,7 +52,7 @@ namespace PancakeEditor
         private string GetExceptionBaseText(string methodName, string className)
         {
             var classNameColored = className.TextColor(Uniform.Red);
-            var monoCacheNameColored = nameof(BaseMono).TextColor(Uniform.Orange);
+            var monoCacheNameColored = nameof(Mono).TextColor(Uniform.Orange);
             var methodNameColored = methodName.TextColor(Uniform.Red);
 
             return $"{methodNameColored} can't be implemented in subclass {classNameColored} of {monoCacheNameColored}. Use ";
@@ -61,7 +61,7 @@ namespace PancakeEditor
         private string GetWarningBaseText(string methodName, string recommendedMethod, string className)
         {
             var coloredClass = className.TextColor(Uniform.Orange);
-            var monoCacheNameColored = nameof(BaseMono).TextColor(Uniform.Orange);
+            var monoCacheNameColored = nameof(Mono).TextColor(Uniform.Orange);
             var coloredMethod = methodName.TextColor(Uniform.Orange);
 
             var coloredRecommendedMethod = "protected override void ".TextColor(Uniform.Blue) + recommendedMethod.TextColor(Uniform.Orange);

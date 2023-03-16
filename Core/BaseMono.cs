@@ -1,48 +1,33 @@
+﻿using System.Runtime.CompilerServices;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
 namespace Pancake
 {
-    /// <summary>
-    /// Base class MonoBehavior
-    /// </summary>
-    public abstract class BaseMono : Mono, ITickSystem, IFixedTickSystem, ILateTickSystem
+    public class BaseMono : MonoBehaviour
     {
-        private void OnEnable()
-        {
-            OnEnabled();
-            Subscribe();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T Get<T>() => GetComponent<T>();
 
-        private void OnDisable()
-        {
-            Unsubscribe();
-            OnDisabled();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] Gets<T>() => GetComponents<T>();
 
-        private void Subscribe()
-        {
-            Runtime.AddTick(this);
-            Runtime.AddFixedTick(this);
-            Runtime.AddLateTick(this);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T ChildrenGet<T>() => GetComponentInChildren<T>();
 
-        private void Unsubscribe()
-        {
-            Runtime.RemoveTick(this);
-            Runtime.RemoveFixedTick(this);
-            Runtime.RemoveLateTick(this);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] ChildrenGets<T>() => GetComponentsInChildren<T>();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T ParentGet<T>() => GetComponentInParent<T>();
 
-        void ITickSystem.OnTick() => Tick();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] ParentGets<T>() => GetComponentsInParent<T>();
 
-        void IFixedTickSystem.OnFixedTick() => FixedTick();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T Find<T>() where T : Object => FindObjectOfType<T>();
 
-        void ILateTickSystem.OnLateTick() => LateTick();
-
-
-        protected virtual void OnEnabled() { }
-        protected virtual void OnDisabled() { }
-        protected virtual void Tick() { }
-        protected virtual void FixedTick() { }
-        protected virtual void LateTick() { }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] Finds<T>() where T : Object => FindObjectsOfType<T>();
     }
 }
