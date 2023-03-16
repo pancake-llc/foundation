@@ -8,7 +8,7 @@ namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(TMP_Text))]
-    public class BindTextMeshPro : CacheComponent<TMP_Text>
+    public class BindTextMeshPro : RefPassenger<TMP_Text>
     {
         public CustomVariableType type = CustomVariableType.None;
 

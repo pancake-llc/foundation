@@ -6,7 +6,7 @@ namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Toggle))]
-    public class BindToggle : CacheComponent<Toggle>
+    public class BindToggle : RefPassenger<Toggle>
     {
         [SerializeField] private BoolVariable boolVariable;
 

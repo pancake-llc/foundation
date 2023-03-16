@@ -1,6 +1,10 @@
 ﻿namespace Pancake
 {
-    public abstract class CacheComponent<T> : Passenger
+    /// <summary>
+    /// Cache component with type <typeparamref name="T"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class RefPassenger<T> : Passenger
     {
         public UnityEngine.Transform CachedTransform { get; private set; }
         protected T component;
