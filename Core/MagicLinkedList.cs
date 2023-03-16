@@ -135,8 +135,8 @@ namespace Pancake
         /// <summary>
         /// Add values to the end of ICollection`1.
         /// </summary>
-        /// <param name="item">The value to be added. </param>
-        public void Add(T item) { AddLast(item); }
+        /// <param name="value">The value to be added. </param>
+        public void Add(T value) { AddLast(value); }
 
         /// <summary>
         /// Remove all nodes from the linked list.
@@ -161,16 +161,16 @@ namespace Pancake
         /// <summary>
         /// Determine whether a value is in the linked list.
         /// </summary>
-        /// <param name="item">Specify the value.</param>
+        /// <param name="value">Specify the value.</param>
         /// <returns>Whether a value is in the linked list.</returns>
-        public bool Contains(T item) { return _linkedList.Contains(item); }
+        public bool Contains(T value) { return _linkedList.Contains(value); }
 
         /// <summary>
         /// Copy the entire linked list to a compatible one-dimensional array starting from the specified index of the target array.
         /// </summary>
         /// <param name="array">One-dimensional array, which is the target of elements copied from the linked list. Arrays must have zero-based indices.</param>
-        /// <param name="arrayIndex">The zero-based index in the array from which to start copying.</param>
-        public void CopyTo(T[] array, int arrayIndex) { _linkedList.CopyTo(array, arrayIndex); }
+        /// <param name="index">The zero-based index in the array from which to start copying.</param>
+        public void CopyTo(T[] array, int index) { _linkedList.CopyTo(array, index); }
 
         /// <summary>
         /// Starting from a specific ICollection index, copy the elements of the array into an array.
@@ -182,11 +182,11 @@ namespace Pancake
         /// <summary>
         /// Remove the first occurrence of the specified value from the linked list.
         /// </summary>
-        /// <param name="item">Specify the value.</param>
+        /// <param name="value">Specify the value.</param>
         /// <returns>Whether the removal is successful.</returns>
-        public bool Remove(T item)
+        public bool Remove(T value)
         {
-            var node = _linkedList.Find(item);
+            var node = _linkedList.Find(value);
             while (node != null)
             {
                 _linkedList.Remove(node);
@@ -273,7 +273,7 @@ namespace Pancake
         /// An enumerator to iterate over the collection.
         /// </summary>
         [StructLayout(LayoutKind.Auto)]
-        public struct Enumerator : IEnumerator<T>, IEnumerator
+        public struct Enumerator : IEnumerator<T>
         {
             private LinkedList<T>.Enumerator _enumerator;
 
