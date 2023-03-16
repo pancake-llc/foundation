@@ -1,6 +1,6 @@
 ﻿namespace Pancake
 {
-    public abstract class CacheComponent<T> : Mono
+    public abstract class CacheComponent<T> : Passenger
     {
         public UnityEngine.Transform CachedTransform { get; private set; }
         protected T component;

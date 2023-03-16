@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake
 {
-    public class Pool : Mono
+    public class Pool : Passenger
     {
         public GameObject Prefab { get; private set; }
         public Transform Parent { get; private set; }

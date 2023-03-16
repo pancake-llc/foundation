@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pancake
 {
-    public class PoolEntry : Mono
+    public class PoolEntry : Passenger
     {
         [SerializeField] private PoolPreset poolPreset;
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pancake
 {
-    public class PoolDespawner : Mono
+    public class PoolDespawner : Passenger
     {
         [SerializeField] private float time;
 

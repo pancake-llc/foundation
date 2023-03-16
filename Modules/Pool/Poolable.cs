@@ -7,7 +7,7 @@ namespace Pancake
     /// <summary>
     /// Attached in each object marked as object in the pool
     /// </summary>
-    public class Poolable : Mono, IPoolable
+    public class Poolable : Passenger, IPoolable
     {
         public Pool Pool { get; private set; }
         public GameObject Prefab { get; private set; }

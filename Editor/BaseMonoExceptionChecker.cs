@@ -11,7 +11,7 @@ namespace PancakeEditor
 
         public void CheckForExceptions()
         {
-            var subclassTypes = typeof(Pancake.Mono).GetAllSubClass(type => type.IsSubclassOf(typeof(Pancake.Mono)));
+            var subclassTypes = typeof(Pancake.Passenger).GetAllSubClass(type => type.IsSubclassOf(typeof(Pancake.Passenger)));
 
             foreach (var type in subclassTypes)
             {

@@ -7,8 +7,6 @@ namespace Pancake
     {
         #region Constants
 
-        private const MethodImplOptions INLINE = MethodImplOptions.AggressiveInlining;
-
         /// <summary>The circle constant. Defined as the circumference of a circle divided by its radius. Equivalent to 2*pi</summary>
         public const float TWO_PI = 6.28318530717959f;
 
@@ -58,39 +56,39 @@ namespace Pancake
         #region Math operations
 
         /// <summary>Returns the square root of the given value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sqrt(this float value) => (float) System.Math.Sqrt(value);
 
         /// <summary>Returns the square root of each component</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Sqrt(this Vector2 v) => new Vector2(Sqrt(v.x), Sqrt(v.y));
 
         /// <inheritdoc cref="Math.Sqrt(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Sqrt(this Vector3 v) => new Vector3(Sqrt(v.x), Sqrt(v.y), Sqrt(v.z));
 
         /// <inheritdoc cref="Math.Sqrt(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Sqrt(this Vector4 v) => new Vector4(Sqrt(v.x), Sqrt(v.y), Sqrt(v.z), Sqrt(v.w));
 
         /// <summary>Returns <c>value</c> raised to the power of <c>exponent</c></summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this float value, float exponent) => (float) System.Math.Pow(value, exponent);
 
         /// <summary>Returns e to the power of the given value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Exp(this float power) => (float) System.Math.Exp(power);
 
         /// <summary>Returns the logarithm of a value, with the given base</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Log(this float value, float @base) => (float) System.Math.Log(value, @base);
 
         /// <summary>Returns the natural logarithm of the given value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Log(this float value) => (float) System.Math.Log(value);
 
         /// <summary>Returns the base 10 logarithm of the given value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Log10(this float value) => (float) System.Math.Log10(value);
 
         #endregion
@@ -112,24 +110,24 @@ namespace Pancake
         /// They are considered equal if they are within a <c>M.Epsilon*8</c> or <c>max(a,b)*0.000001f</c> range of each other</summary>
         /// <param name="a">The first value to compare</param>
         /// <param name="b">The second value to compare</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Approximately(this float a, float b) => Abs(b - a) < Max(0.000001f * Max(Abs(a), Abs(b)), Epsilon * 8);
 
         /// <inheritdoc cref="Approximately(float,float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Approximately(this Vector2 a, Vector2 b) => Approximately(a.x, b.x) && Approximately(a.y, b.y);
 
         /// <inheritdoc cref="Approximately(float,float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Approximately(this Vector3 a, Vector3 b) => Approximately(a.x, b.x) && Approximately(a.y, b.y) && Approximately(a.z, b.z);
 
         /// <inheritdoc cref="Approximately(float,float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Approximately(this Vector4 a, Vector4 b) =>
             Approximately(a.x, b.x) && Approximately(a.y, b.y) && Approximately(a.z, b.z) && Approximately(a.w, b.w);
 
         /// <inheritdoc cref="Approximately(float,float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Approximately(this Color a, Color b) =>
             Approximately(a.r, b.r) && Approximately(a.g, b.g) && Approximately(a.b, b.b) && Approximately(a.a, b.a);
 
@@ -139,68 +137,68 @@ namespace Pancake
 
         /// <summary>Returns the cosine of the given angle. Equivalent to the x-component of a unit vector with the same angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cos(this float angRad) => (float) System.Math.Cos(angRad);
 
         /// <summary>Returns the sine of the given angle. Equivalent to the y-component of a unit vector with the same angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sin(this float angRad) => (float) System.Math.Sin(angRad);
 
         /// <summary>Returns the tangent of the given angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Tan(this float angRad) => (float) System.Math.Tan(angRad);
 
         /// <summary>Returns the arc cosine of the given value, in radians</summary>
         /// <param name="value">A value between -1 and 1</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Acos(this float value) => (float) System.Math.Acos(value);
 
         /// <summary>Returns the arc sine of the given value, in radians</summary>
         /// <param name="value">A value between -1 and 1</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Asin(this float value) => (float) System.Math.Asin(value);
 
         /// <summary>Returns the arc tangent of the given value, in radians</summary>
         /// <param name="value">A value between -1 and 1</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atan(this float value) => (float) System.Math.Atan(value);
 
         /// <summary>Returns the angle of a vector. I don't recommend using this function, it's confusing~ Use M.DirToAng instead</summary>
         /// <param name="y">The y component of the vector. They're flipped yeah I know but this is how everyone implements if for some godforsaken reason</param>
         /// <param name="x">The x component of the vector. They're flipped yeah I know but this is how everyone implements if for some godforsaken reason</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atan2(this float y, float x) => (float) System.Math.Atan2(y, x);
 
         /// <summary>Returns the cosecant of the given angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Csc(this float angRad) => 1f / (float) System.Math.Sin(angRad);
 
         /// <summary>Returns the secant of the given angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sec(this float angRad) => 1f / (float) System.Math.Cos(angRad);
 
         /// <summary>Returns the cotangent of the given angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cot(this float angRad) => 1f / (float) System.Math.Tan(angRad);
 
         /// <summary>Returns the versine of the given angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Ver(this float angRad) => 1 - (float) System.Math.Cos(angRad);
 
         /// <summary>Returns the coversine of the given angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cvs(this float angRad) => 1 - (float) System.Math.Sin(angRad);
 
         /// <summary>Returns the chord of the given angle</summary>
         /// <param name="angRad">Angle in radians</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Crd(this float angRad) => 2 * (float) System.Math.Sin(angRad / 2);
 
         #endregion
@@ -208,27 +206,27 @@ namespace Pancake
         #region Hyperbolic Trigonometry
 
         /// <summary>Returns the hyperbolic cosine of the given hyperbolic angle</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cosh(this float x) => (float) System.Math.Cosh(x);
 
         /// <summary>Returns the hyperbolic sine of the given hyperbolic angle</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sinh(this float x) => (float) System.Math.Sinh(x);
 
         /// <summary>Returns the hyperbolic tangent of the given hyperbolic angle</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Tanh(this float x) => (float) System.Math.Tanh(x);
 
         /// <summary>Returns the hyperbolic arc cosine of the given value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Acosh(this float x) => (float) System.Math.Log(x + Mathf.Sqrt(x * x - 1));
 
         /// <summary>Returns the hyperbolic arc sine of the given value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Asinh(this float x) => (float) System.Math.Log(x + Mathf.Sqrt(x * x + 1));
 
         /// <summary>Returns the hyperbolic arc tangent of the given value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atanh(this float x) => (float) (0.5 * System.Math.Log((1 + x) / (1 - x)));
 
         #endregion
@@ -236,23 +234,23 @@ namespace Pancake
         #region Absolute Values
 
         /// <summary>Returns the absolute value. Basically makes negative numbers positive</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Abs(this float value) => System.Math.Abs(value);
 
         /// <inheritdoc cref="Math.Abs(float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Abs(this int value) => System.Math.Abs(value);
 
         /// <summary>Returns the absolute value, per component. Basically makes negative numbers positive</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Abs(this Vector2 v) => new Vector2(Abs(v.x), Abs(v.y));
 
         /// <inheritdoc cref="Math.Abs(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Abs(this Vector3 v) => new Vector3(Abs(v.x), Abs(v.y), Abs(v.z));
 
         /// <inheritdoc cref="Math.Abs(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Abs(this Vector4 v) => new Vector4(Abs(v.x), Abs(v.y), Abs(v.z), Abs(v.w));
 
         #endregion
@@ -324,51 +322,51 @@ namespace Pancake
         #region Min & Max
 
         /// <summary>Returns the smallest of the two values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this float a, float b) => a < b ? a : b;
 
         /// <summary>Returns the smallest of the three values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this float a, float b, float c) => Min(Min(a, b), c);
 
         /// <summary>Returns the smallest of the four values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this float a, float b, float c, float d) => Min(Min(a, b), Min(c, d));
 
         /// <summary>Returns the largest of the two values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this float a, float b) => a > b ? a : b;
 
         /// <summary>Returns the largest of the three values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this float a, float b, float c) => Max(Max(a, b), c);
 
         /// <summary>Returns the largest of the four values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this float a, float b, float c, float d) => Max(Max(a, b), Max(c, d));
 
         /// <summary>Returns the smallest of the two values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(this int a, int b) => a < b ? a : b;
 
         /// <summary>Returns the smallest of the three values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(this int a, int b, int c) => Min(Min(a, b), c);
 
         /// <summary>Returns the smallest of the four values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(this int a, int b, int c, int d) => Min(Min(a, b), Min(c, d));
 
         /// <summary>Returns the largest of the two values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(this int a, int b) => a > b ? a : b;
 
         /// <summary>Returns the largest of the three values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(this int a, int b, int c) => Max(Max(a, b), c);
 
         /// <summary>Returns the largest of the four values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(this int a, int b, int c, int d) => Max(Max(a, b), Max(c, d));
 
         private static float MinCopyLinq(float[] source)
@@ -427,43 +425,43 @@ namespace Pancake
         }
 
         /// <summary>Returns the smallest of the given values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(params float[] values) => MinCopyLinq(values);
 
         /// <summary>Returns the largest of the given values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(params float[] values) => MaxCopyLinq(values);
 
         /// <summary>Returns the smallest of the given values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(params int[] values) => MinCopyLinq(values);
 
         /// <summary>Returns the largest of the given values</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(params int[] values) => MaxCopyLinq(values);
 
         /// <summary>Returns the minimum value of all components in the vector</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this Vector2 v) => Min(v.x, v.y);
 
         /// <inheritdoc cref="Math.Min(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this Vector3 v) => Min(v.x, v.y, v.z);
 
         /// <inheritdoc cref="Math.Min(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this Vector4 v) => Min(v.x, v.y, v.z, v.w);
 
         /// <summary>Returns the maximum value of all components in the vector</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this Vector2 v) => Max(v.x, v.y);
 
         /// <inheritdoc cref="Math.Max(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this Vector3 v) => Max(v.x, v.y, v.z);
 
         /// <inheritdoc cref="Math.Max(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this Vector4 v) => Max(v.x, v.y, v.z, v.w);
 
         #endregion
@@ -471,51 +469,51 @@ namespace Pancake
         #region Rounding
 
         /// <summary>Rounds the value down to the nearest integer</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Floor(this float value) => (float) System.Math.Floor(value);
 
         /// <summary>Rounds the vector components down to the nearest integer</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Floor(this Vector2 value) => new Vector2((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y));
 
         /// <inheritdoc cref="Math.Floor(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Floor(this Vector3 value) =>
             new Vector3((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y), (float) System.Math.Floor(value.z));
 
         /// <inheritdoc cref="Math.Floor(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Floor(this Vector4 value) =>
             new Vector4((float) System.Math.Floor(value.x), (float) System.Math.Floor(value.y), (float) System.Math.Floor(value.z), (float) System.Math.Floor(value.w));
 
         /// <summary>Rounds the value down to the nearest integer, returning an int value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FloorToInt(this float value) => (int) System.Math.Floor(value);
 
         /// <summary>Rounds the vector components down to the nearest integer, returning an integer vector</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2Int FloorToInt(this Vector2 value) => new Vector2Int((int) System.Math.Floor(value.x), (int) System.Math.Floor(value.y));
 
         /// <inheritdoc cref="Math.FloorToInt(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3Int FloorToInt(this Vector3 value) =>
             new Vector3Int((int) System.Math.Floor(value.x), (int) System.Math.Floor(value.y), (int) System.Math.Floor(value.z));
 
         /// <summary>Rounds the value up to the nearest integer</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Ceil(this float value) => (float) System.Math.Ceiling(value);
 
         /// <summary>Rounds the vector components up to the nearest integer</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Ceil(this Vector2 value) => new Vector2((float) System.Math.Ceiling(value.x), (float) System.Math.Ceiling(value.y));
 
         /// <inheritdoc cref="Math.Ceil(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Ceil(this Vector3 value) =>
             new Vector3((float) System.Math.Ceiling(value.x), (float) System.Math.Ceiling(value.y), (float) System.Math.Ceiling(value.z));
 
         /// <inheritdoc cref="Math.Ceil(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Ceil(this Vector4 value) =>
             new Vector4((float) System.Math.Ceiling(value.x),
                 (float) System.Math.Ceiling(value.y),
@@ -523,64 +521,64 @@ namespace Pancake
                 (float) System.Math.Ceiling(value.w));
 
         /// <summary>Rounds the value up to the nearest integer, returning an int value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CeilToInt(this float value) => (int) System.Math.Ceiling(value);
 
         /// <summary>Rounds the vector components up to the nearest integer, returning an integer vector</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2Int CeilToInt(this Vector2 value) => new Vector2Int((int) System.Math.Ceiling(value.x), (int) System.Math.Ceiling(value.y));
 
         /// <inheritdoc cref="Math.CeilToInt(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3Int CeilToInt(this Vector3 value) =>
             new Vector3Int((int) System.Math.Ceiling(value.x), (int) System.Math.Ceiling(value.y), (int) System.Math.Ceiling(value.z));
 
         /// <summary>Rounds the value to the nearest integer</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float value) => (float) System.Math.Round(value);
 
         /// <summary>Rounds the vector components to the nearest integer</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Round(this Vector2 value) => new Vector2((float) System.Math.Round(value.x), (float) System.Math.Round(value.y));
 
         /// <inheritdoc cref="Math.Round(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Round(this Vector3 value) =>
             new Vector3((float) System.Math.Round(value.x), (float) System.Math.Round(value.y), (float) System.Math.Round(value.z));
 
         /// <inheritdoc cref="Math.Round(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Round(this Vector4 value) =>
             new Vector4((float) System.Math.Round(value.x), (float) System.Math.Round(value.y), (float) System.Math.Round(value.z), (float) System.Math.Round(value.w));
 
         /// <summary>Rounds the value to the nearest value, snapped to the given interval size</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float value, float snapInterval) => Mathf.Round(value / snapInterval) * snapInterval;
 
         /// <summary>Rounds the vector components to the nearest value, snapped to the given interval size</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Round(this Vector2 value, float snapInterval) => new Vector2(Round(value.x, snapInterval), Round(value.y, snapInterval));
 
         /// <inheritdoc cref="Math.Round(Vector2,float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Round(this Vector3 value, float snapInterval) =>
             new Vector3(Round(value.x, snapInterval), Round(value.y, snapInterval), Round(value.z, snapInterval));
 
         /// <inheritdoc cref="Math.Round(Vector2,float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Round(this Vector4 value, float snapInterval) =>
             new Vector4(Round(value.x, snapInterval), Round(value.y, snapInterval), Round(value.z, snapInterval), Round(value.w, snapInterval));
 
         /// <summary>Rounds the value to the nearest integer, returning an int value</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int RoundToInt(this float value) => (int) System.Math.Round(value);
 
         /// <summary>Rounds the vector components to the nearest integer, returning an integer vector</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2Int RoundToInt(this Vector2 value) => new Vector2Int((int) System.Math.Round(value.x), (int) System.Math.Round(value.y));
 
         /// <inheritdoc cref="Math.RoundToInt(Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3Int RoundToInt(this Vector3 value) =>
             new Vector3Int((int) System.Math.Round(value.x), (int) System.Math.Round(value.y), (int) System.Math.Round(value.z));
 
@@ -589,11 +587,11 @@ namespace Pancake
         #region Repeat
 
         /// <summary>Repeats the given value in the interval specified by length</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Repeat(this float value, float length) => Clamp(value - Floor(value / length) * length, 0.0f, length);
 
         /// <summary>Repeats a value within a range, going back and forth</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float PingPong(float t, float length) => length - Abs(Repeat(t, length * 2f) - length);
 
         #endregion
@@ -601,15 +599,15 @@ namespace Pancake
         #region Smoothing
 
         /// <summary>Applies cubic smoothing to the 0-1 interval, also known as the smoothstep function. Similar to an EaseInOut operation</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Smooth01(float x) => x * x * (3 - 2 * x);
 
         /// <summary>Applies quintic smoothing to the 0-1 interval, also known as the smootherstep function. Similar to an EaseInOut operation</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Smoother01(float x) => x * x * x * (x * (x * 6 - 15) + 10);
 
         /// <summary>Applies trigonometric smoothing to the 0-1 interval. Similar to an EaseInOut operation</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float SmoothCos01(float x) => Cos(x * PI) * -0.5f + 0.5f;
 
         /// <summary>Applies a gamma curve or something idk I've never used this function before but it was part of Unity's original M.cs and it's undocumented</summary>
@@ -696,22 +694,22 @@ namespace Pancake
         /// <param name="a">The start value, when t is 0</param>
         /// <param name="b">The start value, when t is 1</param>
         /// <param name="t">The t-value from 0 to 1 representing position along the lerp</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Lerp(float a, float b, float t) => (1f - t) * a + t * b;
 
         /// <summary>Blends between a and b of each component, based on the t-value of each component in the t-vector. When t = 0 it returns a, when t = 1 it returns b, and any values between are blended linearly </summary>
         /// <param name="a">The start value, when t is 0</param>
         /// <param name="b">The start value, when t is 1</param>
         /// <param name="t">The t-values from 0 to 1 representing position along the lerp</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Lerp(Vector2 a, Vector2 b, Vector2 t) => new Vector2(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y));
 
         /// <inheritdoc cref="Math.Lerp(Vector2,Vector2,Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Lerp(Vector3 a, Vector3 b, Vector3 t) => new Vector3(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y), Lerp(a.z, b.z, t.z));
 
         /// <inheritdoc cref="Math.Lerp(Vector2,Vector2,Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Lerp(Vector4 a, Vector4 b, Vector4 t) => new Vector4(Lerp(a.x, b.x, t.x), Lerp(a.y, b.y, t.y), Lerp(a.z, b.z, t.z), Lerp(a.w, b.w, t.w));
 
         /// <summary>Linearly blends between two rectangles, moving and resizing from the center. Note: this lerp is unclamped</summary>
@@ -729,21 +727,21 @@ namespace Pancake
         /// <param name="a">The start value, when t is 0</param>
         /// <param name="b">The start value, when t is 1</param>
         /// <param name="t">The t-value from 0 to 1 representing position along the lerp, clamped between 0 and 1</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LerpClamped(float a, float b, float t) => Lerp(a, b, Clamp01(t));
 
         /// <summary>Lerps between a and b, applying cubic smoothing to the t-value</summary>
         /// <param name="a">The start value, when t is 0</param>
         /// <param name="b">The start value, when t is 1</param>
         /// <param name="t">The t-value from 0 to 1 representing position along the lerp, clamped between 0 and 1</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LerpSmooth(float a, float b, float t) => Lerp(a, b, Smooth01(Clamp01(t)));
 
         /// <summary>Given a value between a and b, returns its normalized location in that range, as a t-value (interpolant) from 0 to 1</summary>
         /// <param name="a">The start of the range, where it would return 0</param>
         /// <param name="b">The end of the range, where it would return 1</param>
         /// <param name="value">A value between a and b. Note: values outside this range are still valid, and will be extrapolated</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InverseLerp(float a, float b, float value) => (value - a) / (b - a);
 
         /// <summary>Given a value between a and b, returns its normalized location in that range, as a t-value (interpolant) from 0 to 1.
@@ -751,7 +749,7 @@ namespace Pancake
         /// <param name="a">The start of the range, where it would return 0</param>
         /// <param name="b">The end of the range, where it would return 1</param>
         /// <param name="value">A value between a and b. Note: values outside this range are still valid, and will be extrapolated</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InverseLerpSafe(float a, float b, float value)
         {
             float den = b - a;
@@ -764,16 +762,16 @@ namespace Pancake
         /// <param name="a">The start of the ranges, where it would return 0</param>
         /// <param name="b">The end of the ranges, where it would return 1</param>
         /// <param name="v">A value between a and b. Note: values outside this range are still valid, and will be extrapolated</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 InverseLerp(Vector2 a, Vector2 b, Vector2 v) => new Vector2((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y));
 
         /// <inheritdoc cref="Math.InverseLerp(Vector2,Vector2,Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 InverseLerp(Vector3 a, Vector3 b, Vector3 v) =>
             new Vector3((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y), (v.z - a.z) / (b.z - a.z));
 
         /// <inheritdoc cref="Math.InverseLerp(Vector2,Vector2,Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 InverseLerp(Vector4 a, Vector4 b, Vector4 v) =>
             new Vector4((v.x - a.x) / (b.x - a.x), (v.y - a.y) / (b.y - a.y), (v.z - a.z) / (b.z - a.z), (v.w - a.w) / (b.w - a.w));
 
@@ -781,7 +779,7 @@ namespace Pancake
         /// <param name="a">The start of the range, where it would return 0</param>
         /// <param name="b">The end of the range, where it would return 1</param>
         /// <param name="value">A value between a and b</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InverseLerpClamped(float a, float b, float value) => Clamp01((value - a) / (b - a));
 
         /// <summary>Given a value between a and b, returns its normalized location in that range, as a t-value (interpolant) from 0 to 1, with cubic smoothing applied.
@@ -789,7 +787,7 @@ namespace Pancake
         /// <param name="a">The start of the range, where it would return 0</param>
         /// <param name="b">The end of the range, where it would return 1</param>
         /// <param name="value">A value between a and b. Note: values outside this range are still valid, and will be extrapolated</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InverseLerpSmooth(float a, float b, float value) => Smooth01(Clamp01((value - a) / (b - a)));
 
         /// <summary>Remaps a value from the input range [iMin to iMax] into the output range [oMin to oMax].
@@ -799,11 +797,11 @@ namespace Pancake
         /// <param name="oMin">The start value of the output range</param>
         /// <param name="oMax">The end value of the output range</param>
         /// <param name="value">The value to remap</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Remap(float iMin, float iMax, float oMin, float oMax, float value) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
 
         /// <inheritdoc cref="Math.Remap(float,float,float,float,float)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Remap(float iMin, float iMax, float oMin, float oMax, int value) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
 
         /// <summary>Remaps values from the input range [iMin to iMax] into the output range [oMin to oMax] on a per-component basis.
@@ -813,15 +811,15 @@ namespace Pancake
         /// <param name="oMin">The start values of the output ranges</param>
         /// <param name="oMax">The end values of the output ranges</param>
         /// <param name="value">The values to remap</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Remap(Vector2 iMin, Vector2 iMax, Vector2 oMin, Vector2 oMax, Vector2 value) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
 
         /// <inheritdoc cref="Math.Remap(Vector2,Vector2,Vector2,Vector2,Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Remap(Vector3 iMin, Vector3 iMax, Vector3 oMin, Vector3 oMax, Vector3 value) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
 
         /// <inheritdoc cref="Math.Remap(Vector2,Vector2,Vector2,Vector2,Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 Remap(Vector4 iMin, Vector4 iMax, Vector4 oMin, Vector4 oMax, Vector4 value) => Lerp(oMin, oMax, InverseLerp(iMin, iMax, value));
 
         /// <summary>Remaps a value from the input range [iMin to iMax] into the output range [oMin to oMax], clamping to make sure it does not extrapolate.
@@ -831,14 +829,14 @@ namespace Pancake
         /// <param name="oMin">The start value of the output range</param>
         /// <param name="oMax">The end value of the output range</param>
         /// <param name="value">The value to remap</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float RemapClamped(float iMin, float iMax, float oMin, float oMax, float value) => Lerp(oMin, oMax, InverseLerpClamped(iMin, iMax, value));
 
         /// <summary>Remaps a value from the input Rect to the output Rect</summary>
         /// <param name="iRect">The input Rect</param>
         /// <param name="oRect">The output Rect</param>
         /// <param name="iPos">The input position in the input Rect space</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Remap(Rect iRect, Rect oRect, Vector2 iPos) =>
             Remap(iRect.min,
                 iRect.max,
@@ -850,7 +848,7 @@ namespace Pancake
         /// <param name="iBounds">The input Bounds</param>
         /// <param name="oBounds">The output Bounds</param>
         /// <param name="iPos">The input position in the input Bounds space</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Remap(Bounds iBounds, Bounds oBounds, Vector3 iPos) =>
             Remap(iBounds.min,
                 iBounds.max,
@@ -862,14 +860,14 @@ namespace Pancake
         /// <param name="a">The start value</param>
         /// <param name="b">The end value</param>
         /// <param name="t">The t-value from 0 to 1 representing position along the eerp</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Eerp(float a, float b, float t) => Mathf.Pow(a, 1 - t) * Mathf.Pow(b, t);
 
         /// <summary>Inverse exponential interpolation, the multiplicative version of InverseLerp, useful for values such as scaling or zooming</summary>
         /// <param name="a">The start value</param>
         /// <param name="b">The end value</param>
         /// <param name="v">A value between a and b. Note: values outside this range are still valid, and will be extrapolated</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InverseEerp(float a, float b, float v) => Mathf.Log(a / v) / Mathf.Log(a / b);
 
         #endregion
@@ -878,13 +876,13 @@ namespace Pancake
 
         /// <summary>Returns the angle of this vector, in radians</summary>
         /// <param name="v">The vector to get the angle of. It does not have to be normalized</param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Angle(this Vector2 v) => Mathf.Atan2(v.y, v.x);
 
         /// <summary>Get the angle in degrees off the forward defined by x.</summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Angle(this float x, float y) => Mathf.Atan2(y, x);
 
         public static Vector2 Reflect(this Vector2 v, Vector2 normal)
@@ -930,11 +928,11 @@ namespace Pancake
         }
 
         /// <summary>Returns the shortest angle between <c>a</c> and <c>b</c>, in the range 0 to tau/2 (0 to pi)</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AngleBetween(this Vector2 a, Vector2 b) => Mathf.Acos(Vector2.Dot(a.normalized, b.normalized).ClampNeg1To1());
 
         /// <inheritdoc cref="AngleBetween(Vector2,Vector2)"/>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AngleBetween(this Vector3 a, Vector3 b) => Mathf.Acos(Vector3.Dot(a.normalized, b.normalized).ClampNeg1To1());
 
         /// <summary>
@@ -972,7 +970,7 @@ namespace Pancake
         }
 
         /// <summary>Returns the shortest angle between the two input angles, in radians</summary>
-        [MethodImpl(INLINE)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float DeltaAngle(this float a, float b) => (b - a + PI).Repeat(TWO_PI) - PI;
 
         /// <summary>Given an angle between a and b, returns its normalized location in that range, as a t-value (interpolant) from 0 to 1</summary>
