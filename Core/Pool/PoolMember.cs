@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Pancake
@@ -10,9 +11,8 @@ namespace Pancake
     [AddComponentMenu("")]
     public class PoolMember : Passenger
     {
-        public Pool Pool { get; private set; }
-        public string NameContext { get; private set; }
-
+        private Pool _pool;
+        private string _nameContext;
         private bool _isInitialized;
         private Action<Action<string>> _registerAction;
         private Action<Action<string>> _unregisterAction;
@@ -22,7 +22,7 @@ namespace Pancake
             if (_isInitialized) return;
 
             gameObject.SetActive(active);
-            Pool = pool;
+            _pool = pool;
             _registerAction = registerAction;
             _unregisterAction = unregisterAction;
             _isInitialized = true;
@@ -30,25 +30,35 @@ namespace Pancake
 
         private void PoolMemberOnsceneUnloaded(string sceneName)
         {
-            _unregisterAction?.Invoke(PoolMemberOnsceneUnloaded);
-            if (sceneName.Equals(NameContext)) Pool.Despawn(this);
+            if (sceneName.Equals(_nameContext)) Return();
         }
 
         public void SetContext(string context)
         {
-            NameContext = context;
+            _nameContext = context;
             _unregisterAction?.Invoke(PoolMemberOnsceneUnloaded);
             _registerAction?.Invoke(PoolMemberOnsceneUnloaded);
         }
-        
+
+        public void Return()
+        {
+            gameObject.SetActive(false);
+            _unregisterAction?.Invoke(PoolMemberOnsceneUnloaded);
+            _pool.PoolMembers.AddLast(this);
+        }
+
+        public void Return(float delay) { Runtime.RunCoroutine(IeReturn(delay)); }
+
+        private IEnumerator IeReturn(float delay)
+        {
+            if (delay > 0) yield return new WaitForSeconds(delay);
+            Return();
+        }
 
         private void OnDestroy()
         {
-            if (Pool != null)
-            {
-                _unregisterAction?.Invoke(PoolMemberOnsceneUnloaded);
-                Pool.PoolMembers.Remove(this);
-            }
+            _unregisterAction?.Invoke(PoolMemberOnsceneUnloaded);
+            _pool.PoolMembers.Remove(this);
         }
     }
 }

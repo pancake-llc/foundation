@@ -14,7 +14,7 @@ public class PoolDespawner : Passenger
         if (_poolMember != null) _timer = Timer.Register(time, OnDespawn);
     }
 
-    private void OnDespawn() { _poolMember.Pool.Despawn(_poolMember); }
+    private void OnDespawn() { _poolMember.Return(); }
 
     protected override void OnDisabled() { _timer?.Cancel(); }
 }

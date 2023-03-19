@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Pancake
@@ -7,32 +6,62 @@ namespace Pancake
     {
         public static T Spawn<T>(this Pool pool, Vector3 position = default, Quaternion rotation = default) where T : Component
         {
-            return DefaultSpawn(pool, position, rotation, null, false).GetComponent<T>();
+            return DefaultSpawn(pool,
+                    position,
+                    rotation,
+                    null,
+                    false)
+                .GetComponent<T>();
         }
 
         public static T Spawn<T>(this Pool pool, Transform parent, Quaternion rotation = default, bool worldStaysPosition = false) where T : Component
         {
             var position = parent != null ? parent.position : Vector3.zero;
 
-            return DefaultSpawn(pool, position, rotation, parent, worldStaysPosition).GetComponent<T>();
+            return DefaultSpawn(pool,
+                    position,
+                    rotation,
+                    parent,
+                    worldStaysPosition)
+                .GetComponent<T>();
         }
 
         public static GameObject Spawn(this Pool pool, Vector3 position = default, Quaternion rotation = default)
         {
-            return DefaultSpawn(pool, position, rotation, null, false);
+            return DefaultSpawn(pool,
+                position,
+                rotation,
+                null,
+                false);
         }
 
         public static GameObject Spawn(this Pool pool, Transform parent, Quaternion rotation = default, bool worldPositionStays = false)
         {
             var position = parent != null ? parent.position : Vector3.zero;
 
-            return DefaultSpawn(pool, position, rotation, parent, worldPositionStays);
+            return DefaultSpawn(pool,
+                position,
+                rotation,
+                parent,
+                worldPositionStays);
         }
 
-        public static void Despawn(this Pool pool, Component component, float delay = 0f) { DefaultDespawn(component.gameObject, delay); }
+        public static void ReturnPool(this Component component, float delay = 0f) { component.gameObject.ReturnPool(delay); }
 
-        public static void Despawn(this Pool pool, GameObject gameObject, float delay = 0f) { DefaultDespawn(gameObject, delay); }
-        public static void Despawn(this Pool pool, PoolMember toDespawn, float delay = 0f) { Runtime.RunCoroutine(DefaultDespawn(toDespawn, delay)); }
+        public static void ReturnPool(this GameObject gameObject, float delay = 0f)
+        {
+            if (gameObject.TryGetComponent(out PoolMember member))
+            {
+                member.Return(delay);
+            }
+            else
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"{gameObject.name} was not created by pool so it will be destroyed!");
+#endif
+                UnityEngine.Object.Destroy(gameObject, delay);
+            }
+        }
 
         /// <summary>
         /// Default spawn method
@@ -51,51 +80,6 @@ namespace Pancake
             member.transform.SetPositionAndRotation(position, rotation);
 
             return gameObject;
-        }
-
-        /// <summary>
-        /// Default despawn method
-        /// </summary>
-        /// <param name="gameObject"> GameObject to despawn </param>
-        /// <param name="delay"> For despawn with a delay </param>
-        private static void DefaultDespawn(GameObject gameObject, float delay = 0f)
-        {
-            if (!Application.isPlaying) return;
-
-            if (gameObject.TryGetComponent(out PoolMember member))
-            {
-                Runtime.RunCoroutine(DefaultDespawn(member));
-            }
-            else
-            {
-#if UNITY_EDITOR
-                Debug.LogError($"{gameObject.name} was not created by pool so it will be destroyed!");
-#endif
-                UnityEngine.Object.Destroy(gameObject, delay);
-            }
-        }
-
-        /// <summary>
-        /// Default despawn method
-        /// </summary>
-        /// <param name="member"> GameObject to despawn </param>
-        /// <param name="delay"> For despawn with a delay </param>
-        private static IEnumerator DefaultDespawn(PoolMember member, float delay = 0f)
-        {
-            if (delay > 0) yield return new WaitForSeconds(delay);
-
-            var pool = member.Pool;
-            if (pool != null)
-            {
-                member.gameObject.SetActive(false);
-                member.gameObject.transform.SetParent(null, false);
-
-                member.Pool.PoolMembers.AddLast(member);
-            }
-            else
-            {
-                UnityEngine.Object.Destroy(member.gameObject);
-            }
         }
     }
 }
