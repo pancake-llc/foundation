@@ -124,7 +124,7 @@ namespace Pancake.Monetization
             }
         }
 #endif
-        
+
         private void Awake()
         {
             if (Instance != null)
@@ -356,34 +356,23 @@ namespace Pancake.Monetization
             return client;
         }
 
-        public static bool IsAdRemoved => Storage.GetBool(REMOVE_ADS_KEY, false);
+        public static bool IsAdRemoved => Data.Load(REMOVE_ADS_KEY, false);
 
         public static void RemoveAds()
         {
-            Storage.SetBool(REMOVE_ADS_KEY, true);
-            Storage.Save();
-
+            Data.Save(REMOVE_ADS_KEY, true);
             RemoveAdsEvent?.Invoke();
         }
 
-        public static void TurnOffAppOpenAds()
-        {
-            Storage.SetBool(APP_OPEN_ADS_KEY, false);
-            Storage.Save();
-        }
+        public static void TurnOffAppOpenAds() { Data.Save(APP_OPEN_ADS_KEY, false); }
 
-        public static void TurnOnAppOpenAds()
-        {
-            Storage.SetBool(APP_OPEN_ADS_KEY, true);
-            Storage.Save();
-        }
+        public static void TurnOnAppOpenAds() { Data.Save(APP_OPEN_ADS_KEY, true); }
 
-        public static bool IsAppOpenRemoved => !Storage.GetBool(APP_OPEN_ADS_KEY, true) || IsAdRemoved;
+        public static bool IsAppOpenRemoved => !Data.Load(APP_OPEN_ADS_KEY, true) || IsAdRemoved;
 
         private static void ShowBannerAd(IAdClient client)
         {
             if (IsAdRemoved || !Application.isMobilePlatform) return;
-
             client.ShowBannerAd();
         }
 

@@ -12,7 +12,7 @@ namespace Pancake.Monetization
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
         {
-            var obj = new GameObject("Advertising") /*{hideFlags = HideFlags.HideInHierarchy}*/;
+            var obj = new GameObject("Advertising") {hideFlags = HideFlags.HideInHierarchy};
             obj.AddComponent<Advertising>();
             UnityEngine.Object.DontDestroyOnLoad(obj);
         }

@@ -35,7 +35,7 @@ namespace Pancake
         private static readonly List<ILateTickSystem> lateTickSystems = new List<ILateTickSystem>(256);
 
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
-        private const string APP_INSTALLATION_TIMESTAMP_PPKEY = "APP_INSTALLATION_TIMESTAMP";
+        private const string FIRST_INSTALL_TIMESTAMP_KEY = "first_install_timestamp";
 
         private static float UnitedDeltaTime
         {
@@ -74,7 +74,7 @@ namespace Pancake
         /// provided that the initialization is done soon after app launch.
         /// </summary>
         /// <returns>The installation timestamp.</returns>
-        public static DateTime GetAppInstallTimestamp => Storage.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch);
+        public static DateTime GetAppInstallTimestamp => Data.Load(FIRST_INSTALL_TIMESTAMP_KEY, UnixEpoch);
 
         public static float GetDeltaTime(TimeMode mode) => mode == TimeMode.Normal ? UnitedDeltaTime : UnitedUnscaledDeltaTime;
 
@@ -209,12 +209,11 @@ namespace Pancake
 
                 Data.Init();
 
-                // Store the timestamp of the *first* init which can be used 
-                // as a rough approximation of the installation time.
-                if (Storage.GetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, UnixEpoch) == UnixEpoch) Storage.SetTime(APP_INSTALLATION_TIMESTAMP_PPKEY, DateTime.Now);
+                // Store the timestamp of the *first* init which can be used as a rough approximation of the installation time.
+                if (!Data.HasKey(FIRST_INSTALL_TIMESTAMP_KEY)) Data.Save(FIRST_INSTALL_TIMESTAMP_KEY, DateTime.Now);
 
                 IsRuntimeInitialized = true;
-                Debug.Log("Runtime has been initialized!");
+                Debug.Log("<color=#52D5F2>Runtime has been initialized!</color>");
             }
         }
 
