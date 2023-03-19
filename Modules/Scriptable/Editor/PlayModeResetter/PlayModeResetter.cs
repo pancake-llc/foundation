@@ -13,7 +13,7 @@ namespace PancakeEditor.Scriptable
     /// </summary>
     [EditorIcon("scriptable_playmode_resetter")]
     [Searchable]
-    [CreateAssetMenu(fileName = "PlayModeResetter.asset", menuName = "Pancake/Scriptable/PlayModeResetter")]
+    [CreateAssetMenu(fileName = "Assets/_Root/Resources/PlayModeResetter.asset", menuName = "Pancake/Scriptable/PlayModeResetter")]
     public class PlayModeResetter : ScriptableObject
     {
         [Tooltip("Change this to the path where are located your scriptable variables & lists")] [SerializeField]
@@ -24,16 +24,18 @@ namespace PancakeEditor.Scriptable
 
         [Tooltip("Serialized list so that you can have a view of all your variables")] [SerializeField]
         private List<ScriptableObject> variablesToReset;
-        
+
         private static PlayModeResetter[] instances;
         public static PlayModeResetter[] Instances => instances;
-        
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void Reset()
+        private static void ResetInternal()
         {
-            instances = Resources.LoadAll<PlayModeResetter>("PlayModeResetter") ;
+            instances = Resources.LoadAll<PlayModeResetter>("PlayModeResetter");
             ResetManually();
         }
+
+        public void Reset() { ResetInternal(); }
 
         public void GetAllIResetAtPath()
         {
@@ -50,7 +52,7 @@ namespace PancakeEditor.Scriptable
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
-        
+
         private static void ResetManually()
         {
             var isFastPlayMode = EditorSettings.enterPlayModeOptionsEnabled;
