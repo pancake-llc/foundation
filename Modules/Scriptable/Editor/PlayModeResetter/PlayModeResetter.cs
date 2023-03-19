@@ -12,6 +12,7 @@ namespace PancakeEditor.Scriptable
     /// Therefore we need to manually reset them ! A bit annoying, but the speed gain from using the fast play mode outweigh the cost.
     /// </summary>
     [EditorIcon("scriptable_playmode_resetter")]
+    [Searchable]
     [CreateAssetMenu(fileName = "PlayModeResetter.asset", menuName = "Pancake/Scriptable/PlayModeResetter")]
     public class PlayModeResetter : ScriptableObject
     {
