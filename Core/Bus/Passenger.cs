@@ -48,30 +48,5 @@ namespace Pancake
         protected virtual void Tick() { }
         protected virtual void FixedTick() { }
         protected virtual void LateTick() { }
-        
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Get<T>() => GetComponent<T>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] Gets<T>() => GetComponents<T>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T ChildrenGet<T>() => GetComponentInChildren<T>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ChildrenGets<T>() => GetComponentsInChildren<T>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T ParentGet<T>() => GetComponentInParent<T>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ParentGets<T>() => GetComponentsInParent<T>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Find<T>() where T : Object => FindObjectOfType<T>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] Finds<T>() where T : Object => FindObjectsOfType<T>();
     }
 }

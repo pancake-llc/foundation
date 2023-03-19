@@ -9,7 +9,7 @@
         public UnityEngine.Transform CachedTransform { get; private set; }
         protected T component;
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
             if (CachedTransform == null) CachedTransform = transform;
             GetReference();
@@ -19,7 +19,7 @@
 
         private void GetReference()
         {
-            if (component == null) component = Get<T>();
+            if (component == null) component = GetComponent<T>();
         }
     }
 }

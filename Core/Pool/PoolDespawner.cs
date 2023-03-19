@@ -10,7 +10,7 @@ public class PoolDespawner : Passenger
 
     protected override void OnEnabled()
     {
-        if (_poolMember == null) _poolMember = Get<PoolMember>();
+        if (_poolMember == null) _poolMember = GetComponent<PoolMember>();
         if (_poolMember != null) _timer = Timer.Register(time, OnDespawn);
     }
 
