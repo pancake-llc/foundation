@@ -1,63 +1,51 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pancake.Attribute;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
-#if PANCAKE_ADS
-using Pancake.Monetization;
-#endif
 using UnityEngine;
 using UnityEngine.Purchasing;
-using UnityEngine.Purchasing.Security;
 
 namespace Pancake.IAP
 {
     [AddComponentMenu("")]
+    [HideMono]
     public class IAPManager : MonoBehaviour, IStoreListener
     {
         public static event Action<string> OnPurchaseSucceedEvent;
         public static event Action<string> OnPurchaseFailedEvent;
-        internal static event Action OnPurchaseAddtionalEvent;
+        public static event Action OnPurchaseEvent;
         private static readonly Dictionary<string, Action> CompletedDict = new Dictionary<string, Action>();
         private static readonly Dictionary<string, Action> FaildDict = new Dictionary<string, Action>();
 
-        private static IAPManager instance;
         private IStoreController _controller;
         private IExtensionProvider _extensions;
-
-        public static IAPManager Instance
-        {
-            get
-            {
-                if (instance == null) Init();
-
-                return instance;
-            }
-        }
+        private static IAPManager Instance { get; set; }
 
         public List<IAPData> Skus { get; set; } = new List<IAPData>();
         public bool IsInitialized { get; set; }
 
-        public static async void Init()
+        private void Awake()
         {
-            if (!Application.isPlaying) return;
-            if (instance != null) return;
-
-            if (Application.isPlaying)
+            if (Instance != null)
             {
-                var options = new InitializationOptions().SetEnvironmentName("production");
-                var obj = new GameObject("IAPManager") {hideFlags = HideFlags.HideInHierarchy};
-                instance = obj.AddComponent<IAPManager>();
-                await UnityServices.InitializeAsync(options);
-                instance.InitImpl(IAPSettings.SkusData);
-                DontDestroyOnLoad(obj);
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
             }
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void AutoInitialize()
+        public static async void Init()
         {
-            if (IAPSettings.RuntimeAutoInitialize) Init();
+            OnPurchaseSucceedEvent = null;
+            OnPurchaseFailedEvent = null;
+            OnPurchaseEvent = null;
+            var options = new InitializationOptions().SetEnvironmentName("production");
+            await UnityServices.InitializeAsync(options);
+            Instance.InitImpl(IAPSettings.SkusData);
         }
 
         private void InitImpl(List<IAPData> skuItems)
@@ -101,6 +89,8 @@ namespace Pancake.IAP
             }
         }
 
+        public void OnInitializeFailed(InitializationFailureReason error, string message) { OnInitializeFailed(error); }
+
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
             bool validPurchase = true;
@@ -139,7 +129,7 @@ namespace Pancake.IAP
 
         public static IAPData Purchase(IAPData product)
         {
-            OnPurchaseAddtionalEvent?.Invoke();
+            OnPurchaseEvent?.Invoke();
             return Instance.PurchaseProduct(product);
         }
 

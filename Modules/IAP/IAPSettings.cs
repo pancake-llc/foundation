@@ -17,16 +17,11 @@ namespace Pancake.IAP
     public class IAPSettings : ScriptableSettings<IAPSettings>
     {
         [InfoBox("Product id should look like : com.appname.itemid\nEx: com.eldenring.doublesoul\n\nConsumable        : purchase multiple time\nNon Consumable : purchase once time")]
-        [SerializeField]
-        private bool runtimeAutoInitialize = true;
-
         [InfoBox("When test mode is enabled all products will be initialized as Consumable (Android Only)")] [SerializeField]
         private bool testMode;
 
         [SerializeField] private List<IAPData> skusData = new List<IAPData>();
-
-        public static bool RuntimeAutoInitialize => Instance.runtimeAutoInitialize;
-
+        
         public static bool TestMode => Instance.testMode;
 
         public static List<IAPData> SkusData => Instance.skusData;

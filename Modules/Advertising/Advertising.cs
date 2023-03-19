@@ -140,13 +140,6 @@ namespace Pancake.Monetization
             }
         }
 
-        private void Start()
-        {
-#if PANCAKE_ADVERTISING
-            if (AdSettings.AdCommonSettings.AutoInit) Initialize();
-#endif
-        }
-
         private void Update()
         {
             if (!IsInitialized) return;
@@ -157,7 +150,7 @@ namespace Pancake.Monetization
             }
         }
 
-        public static void Initialize()
+        public static void Init()
         {
 #if PANCAKE_ADVERTISING
             isInitialized = true;
@@ -515,6 +508,8 @@ namespace Pancake.Monetization
         /// Please only use this method when you are sure that your app switches to android activity and you don't want to show app-open-ad when you return to the game.
         /// <para>OTHERWISE DON'T USE IT</para>
         /// </summary>
-        public static void SwitchToActivityNoOpenAd() { R.isShowingAd = true; }
+        public static void SwitchAdThread() { R.isShowingAd = true; }
+
+        public static void SwitchBackUnity(string _) { R.isShowingAd = false; }
     }
 }
