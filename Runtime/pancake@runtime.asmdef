@@ -1,7 +1,11 @@
 {
     "name": "pancake@runtime",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
+        "GUID:38036840b8620d443a0acf3e48f20d6f",
+        "GUID:1fc40a42fd9ba86428b9f1a1bc03d8a6"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

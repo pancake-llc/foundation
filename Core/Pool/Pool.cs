@@ -8,7 +8,7 @@ namespace Pancake
 {
     [EditorIcon("script_pool")]
     [Searchable]
-    [CreateAssetMenu(fileName = "Pool", menuName = "Pancake/Scriptable/Pool")]
+    [CreateAssetMenu(fileName = "Pool", menuName = "Pancake/Misc/Pool")]
     public class Pool : ScriptableObject
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;

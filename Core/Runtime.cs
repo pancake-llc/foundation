@@ -29,6 +29,7 @@ namespace Pancake
         public static event Action<bool> onGamePause;
         public static event Action<bool> onGameFocus;
         public static event Action onGameQuit;
+        public static event Action onAppPrewarm; 
 
         private static readonly List<ITickSystem> tickSystems = new List<ITickSystem>(1024);
         private static readonly List<IFixedTickSystem> fixedTickSystems = new List<IFixedTickSystem>(512);
@@ -196,18 +197,25 @@ namespace Pancake
 #endif
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        /// <summary>
+        /// <inheritdoc cref="GlobalComponent.AttachImpl"/>
+        /// </summary>
+        /// <param name="prefab"></param>
+        public static void Attach(AutoInitialize prefab) { GlobalComponent.AttachImpl(prefab); }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitialize()
         {
             if (IsRuntimeInitialized) return;
 
             if (Application.isPlaying)
             {
-                var runtime = new GameObject("Runtime") {hideFlags = HideFlags.HideInHierarchy};
+                var runtime = new GameObject("Runtime");
                 runtime.AddComponent<GlobalComponent>();
                 UnityEngine.Object.DontDestroyOnLoad(runtime);
 
                 Data.Init();
+                onAppPrewarm?.Invoke();
 
                 // Store the timestamp of the *first* init which can be used as a rough approximation of the installation time.
                 if (!Data.HasKey(FIRST_INSTALL_TIMESTAMP_KEY)) Data.Save(FIRST_INSTALL_TIMESTAMP_KEY, DateTime.Now);
@@ -247,13 +255,7 @@ namespace Pancake
 
             private List<Action> _localToMainThreads = new();
 
-            private void Awake()
-            {
-                if (global != null) Destroy(this);
-                else global = this;
-
-                DontDestroyOnLoad(gameObject);
-            }
+            private void Awake() { global = this; }
 
             private void Start()
             {
@@ -500,6 +502,16 @@ namespace Pancake
             {
                 if (action == null) return delegate { };
                 return (arg1, arg2, arg3) => RunOnMainThread(() => action(arg1, arg2, arg3));
+            }
+
+            /// <summary>
+            /// add <paramref name="prefab"/> as a children of runtime
+            /// </summary>
+            /// <param name="prefab"></param>
+            internal static void AttachImpl(AutoInitialize prefab)
+            {
+                var obj = Instantiate(prefab, global.transform, false);
+                obj.Init();
             }
 
             #endregion
