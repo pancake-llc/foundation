@@ -363,5 +363,11 @@ namespace PancakeEditor
                 AssetDatabase.Refresh();
             }
         }
+        
+        public static void SelectAndPing(this Object @object)
+        {
+            UnityEditor.Selection.activeObject = @object;
+            UnityEditor.EditorApplication.delayCall += () => UnityEditor.EditorGUIUtility.PingObject(@object);
+        }
     }
 }
