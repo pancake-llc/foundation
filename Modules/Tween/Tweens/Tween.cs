@@ -341,7 +341,7 @@ namespace Pancake.Tween
 
         protected bool ValidateDelay()
         {
-            float deltaTime = Runtime.GetDeltaTime(TimeMode);
+            float deltaTime = App.GetDeltaTime(TimeMode);
             float dt = deltaTime * TweenManager.TimeScale * TimeScale;
 
             if (timeDelay > 0.0f && !markDelayCompelted)

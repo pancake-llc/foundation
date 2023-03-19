@@ -95,10 +95,10 @@ namespace Pancake.Monetization
             if (CheckInitialize()) InternalDestroyBannerAd();
         }
 
-        protected virtual void CallBannerAdDisplayed() { Runtime.RunOnMainThread(() => { OnBannerAdDisplayed?.Invoke(this); }); }
-        protected virtual void CallBannerAdCompleted() { Runtime.RunOnMainThread(() => { OnBannerAdCompleted?.Invoke(this); }); }
-        protected virtual void CallInterstitialAdCompleted() { Runtime.RunOnMainThread(() => { OnInterstitialAdCompleted?.Invoke(this); }); }
-        protected virtual void CallInterstitialAdDisplayed() { Runtime.RunOnMainThread(() => { OnInterstitialAdDisplayed?.Invoke(this); }); }
+        protected virtual void CallBannerAdDisplayed() { App.RunOnMainThread(() => { OnBannerAdDisplayed?.Invoke(this); }); }
+        protected virtual void CallBannerAdCompleted() { App.RunOnMainThread(() => { OnBannerAdCompleted?.Invoke(this); }); }
+        protected virtual void CallInterstitialAdCompleted() { App.RunOnMainThread(() => { OnInterstitialAdCompleted?.Invoke(this); }); }
+        protected virtual void CallInterstitialAdDisplayed() { App.RunOnMainThread(() => { OnInterstitialAdDisplayed?.Invoke(this); }); }
 
         public void LoadInterstitialAd()
         {
@@ -134,10 +134,10 @@ namespace Pancake.Monetization
 
         public bool IsInterstitialAdReady() { return CheckInitialize(false) && InternalIsInterstitialAdReady(); }
 
-        protected virtual void CallRewardedAdSkipped() { Runtime.RunOnMainThread(() => { OnRewardedAdSkipped?.Invoke(this); }); }
-        protected virtual void CallRewardedAdCompleted() { Runtime.RunOnMainThread(() => { OnRewardedAdCompleted?.Invoke(this); }); }
-        protected virtual void CallRewardedAdClosed() { Runtime.RunOnMainThread(() => { OnRewardedAdClosed?.Invoke(this); }); }
-        protected virtual void CallRewardedAdDisplayed() { Runtime.RunOnMainThread(() => { OnRewardedAdDisplayed?.Invoke(this); }); }
+        protected virtual void CallRewardedAdSkipped() { App.RunOnMainThread(() => { OnRewardedAdSkipped?.Invoke(this); }); }
+        protected virtual void CallRewardedAdCompleted() { App.RunOnMainThread(() => { OnRewardedAdCompleted?.Invoke(this); }); }
+        protected virtual void CallRewardedAdClosed() { App.RunOnMainThread(() => { OnRewardedAdClosed?.Invoke(this); }); }
+        protected virtual void CallRewardedAdDisplayed() { App.RunOnMainThread(() => { OnRewardedAdDisplayed?.Invoke(this); }); }
 
         public void LoadRewardedAd()
         {
@@ -172,10 +172,10 @@ namespace Pancake.Monetization
 
         public bool IsRewardedAdReady() { return CheckInitialize(false) && InternalIsRewardedAdReady(); }
 
-        protected virtual void CallRewardedInterstitialAdSkipped() { Runtime.RunOnMainThread(() => { OnRewardedInterstitialAdSkipped?.Invoke(this); }); }
-        protected virtual void CallRewardedInterstitialAdCompleted() { Runtime.RunOnMainThread(() => { OnRewardedInterstitialAdCompleted?.Invoke(this); }); }
-        protected virtual void CallRewardedInterstitialAdClosed() { Runtime.RunOnMainThread(() => { OnRewardedInterstitialAdClosed?.Invoke(this); }); }
-        protected virtual void CallRewardedInterstitialAdDisplayed() { Runtime.RunOnMainThread(() => { OnRewardedInterstitialAdDisplayed?.Invoke(this); }); }
+        protected virtual void CallRewardedInterstitialAdSkipped() { App.RunOnMainThread(() => { OnRewardedInterstitialAdSkipped?.Invoke(this); }); }
+        protected virtual void CallRewardedInterstitialAdCompleted() { App.RunOnMainThread(() => { OnRewardedInterstitialAdCompleted?.Invoke(this); }); }
+        protected virtual void CallRewardedInterstitialAdClosed() { App.RunOnMainThread(() => { OnRewardedInterstitialAdClosed?.Invoke(this); }); }
+        protected virtual void CallRewardedInterstitialAdDisplayed() { App.RunOnMainThread(() => { OnRewardedInterstitialAdDisplayed?.Invoke(this); }); }
 
         public void LoadRewardedInterstitialAd()
         {
@@ -210,8 +210,8 @@ namespace Pancake.Monetization
 
         public bool IsRewardedInterstitialAdReady() { return CheckInitialize(false) && InternalIsRewardedInterstitialAdReady(); }
 
-        protected virtual void CallAppOpenAdCompleted() { Runtime.RunOnMainThread(() => { OnAppOpenAdCompleted?.Invoke(this); }); }
-        protected virtual void CallAppOpenAdDisplayed() { Runtime.RunOnMainThread(() => { OnAppOpenAdDisplayed?.Invoke(this); }); }
+        protected virtual void CallAppOpenAdCompleted() { App.RunOnMainThread(() => { OnAppOpenAdCompleted?.Invoke(this); }); }
+        protected virtual void CallAppOpenAdDisplayed() { App.RunOnMainThread(() => { OnAppOpenAdDisplayed?.Invoke(this); }); }
 
         public void LoadAppOpenAd()
         {

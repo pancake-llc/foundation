@@ -41,10 +41,7 @@ namespace Pancake.Monetization
         private static class AdProperties
         {
             public static SerializedProperty main;
-
-            public static readonly Property AutoInit = new Property(new GUIContent("Auto Initialize",
-                "When AutoInitialize is enabled it will automatically create a gameObject in Runtime containing the component Advertising and init it!"));
-
+            
             public static readonly Property AutoLoadAdsMode = new Property(new GUIContent("Auto Ad-Loading Mode"));
 
             public static readonly Property ADCheckingInterval = new Property(new GUIContent("  Checking Interval", "Time (seconds) between 2 ad-availability checks"));
@@ -167,7 +164,6 @@ namespace Pancake.Monetization
             _headerLabelStyle = new GUIStyle(EditorStyles.label) {fontSize = 12, fontStyle = FontStyle.Bold, fixedHeight = 18};
 
             AdProperties.main = serializedObject.FindProperty("adCommonSettings");
-            AdProperties.AutoInit.property = AdProperties.main.FindPropertyRelative("autoInit");
             AdProperties.AutoLoadAdsMode.property = AdProperties.main.FindPropertyRelative("autoLoadingAd");
             AdProperties.ADCheckingInterval.property = AdProperties.main.FindPropertyRelative("adCheckingInterval");
             AdProperties.ADLoadingInterval.property = AdProperties.main.FindPropertyRelative("adLoadingInterval");
@@ -230,7 +226,6 @@ namespace Pancake.Monetization
                 "Setting",
                 () =>
                 {
-                    EditorGUILayout.PropertyField(AdProperties.AutoInit.property, AdProperties.AutoInit.content);
                     EditorGUILayout.PropertyField(AdProperties.EnableGdpr.property, AdProperties.EnableGdpr.content);
                     if (AdSettings.AdCommonSettings.EnableGdpr)
                         EditorGUILayout.PropertyField(AdProperties.PrivacyPolicyUrl.property, AdProperties.PrivacyPolicyUrl.content);
@@ -557,9 +552,9 @@ namespace Pancake.Monetization
             SetNetworkUnityVersion(network.name, network.currentVersion.unity);
 
 
-            var unityVersionComparison = AdsUtil.CompareVersions(network.currentVersion.unity, network.lastVersion.unity);
-            var androidVersionComparison = AdsUtil.CompareVersions(network.currentVersion.android, network.lastVersion.android);
-            var iosVersionComparison = AdsUtil.CompareVersions(network.currentVersion.ios, network.lastVersion.ios);
+            var unityVersionComparison = AdUtility.CompareVersions(network.currentVersion.unity, network.lastVersion.unity);
+            var androidVersionComparison = AdUtility.CompareVersions(network.currentVersion.android, network.lastVersion.android);
+            var iosVersionComparison = AdUtility.CompareVersions(network.currentVersion.ios, network.lastVersion.ios);
 
             // Overall version is same if all the current and latest (from db) versions are same.
             if (unityVersionComparison == EVersionComparisonResult.Equal && androidVersionComparison == EVersionComparisonResult.Equal &&
@@ -756,9 +751,9 @@ namespace Pancake.Monetization
             network.currentVersion = currentVersion;
             SetNetworkUnityVersion(network.name, network.currentVersion.unity);
 
-            var unityVersionComparison = AdsUtil.CompareVersions(network.currentVersion.unity, network.lastVersion.unity);
-            var androidVersionComparison = AdsUtil.CompareVersions(network.currentVersion.android, network.lastVersion.android);
-            var iosVersionComparison = AdsUtil.CompareVersions(network.currentVersion.ios, network.lastVersion.ios);
+            var unityVersionComparison = AdUtility.CompareVersions(network.currentVersion.unity, network.lastVersion.unity);
+            var androidVersionComparison = AdUtility.CompareVersions(network.currentVersion.android, network.lastVersion.android);
+            var iosVersionComparison = AdUtility.CompareVersions(network.currentVersion.ios, network.lastVersion.ios);
 
             // Overall version is same if all the current and latest (from db) versions are same.
             if (unityVersionComparison == EVersionComparisonResult.Equal && androidVersionComparison == EVersionComparisonResult.Equal &&

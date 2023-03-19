@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using Pancake.Attribute;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
     [AddComponentMenu("")]
+    [HideMono]
     public class Advertising : MonoBehaviour
     {
         private static Advertising Instance { get; set; }
@@ -157,10 +159,12 @@ namespace Pancake.Monetization
 
         public static void Initialize()
         {
+#if PANCAKE_ADVERTISING
             isInitialized = true;
             AutoLoadingAdMode = AdSettings.AdCommonSettings.AutoLoadingAd;
 #if PANCAKE_ADMOB
             if (AdSettings.AdCommonSettings.CurrentNetwork == EAdNetwork.Admob) RegisterAppStateChange();
+#endif
 #endif
         }
 

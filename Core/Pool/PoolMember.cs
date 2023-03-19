@@ -47,7 +47,7 @@ namespace Pancake
             _pool.PoolMembers.AddLast(this);
         }
 
-        public void Return(float delay) { Runtime.RunCoroutine(IeReturn(delay)); }
+        public void Return(float delay) { App.RunCoroutine(IeReturn(delay)); }
 
         private IEnumerator IeReturn(float delay)
         {

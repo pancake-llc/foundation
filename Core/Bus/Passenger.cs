@@ -24,16 +24,16 @@ namespace Pancake
 
         private void Subscribe()
         {
-            Runtime.AddTick(this);
-            Runtime.AddFixedTick(this);
-            Runtime.AddLateTick(this);
+            App.AddTick(this);
+            App.AddFixedTick(this);
+            App.AddLateTick(this);
         }
 
         private void Unsubscribe()
         {
-            Runtime.RemoveTick(this);
-            Runtime.RemoveFixedTick(this);
-            Runtime.RemoveLateTick(this);
+            App.RemoveTick(this);
+            App.RemoveFixedTick(this);
+            App.RemoveLateTick(this);
         }
 
 

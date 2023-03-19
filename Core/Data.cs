@@ -30,7 +30,7 @@ namespace Pancake
 
             GeneratePath();
             LoadAll();
-            Runtime.AddFocusCallback(OnApplicationFocus);
+            App.AddFocusCallback(OnApplicationFocus);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

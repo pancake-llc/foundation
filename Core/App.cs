@@ -6,7 +6,7 @@ using UnityEngine;
 // ReSharper disable InconsistentNaming
 namespace Pancake
 {
-    public struct Runtime
+    public struct App
     {
         public static event Action fixedUpdate;
         public static event Action waitForFixedUpdate;
@@ -29,14 +29,13 @@ namespace Pancake
         public static event Action<bool> onGamePause;
         public static event Action<bool> onGameFocus;
         public static event Action onGameQuit;
-        public static event Action onAppPrewarm; 
 
         private static readonly List<ITickSystem> tickSystems = new List<ITickSystem>(1024);
         private static readonly List<IFixedTickSystem> fixedTickSystems = new List<IFixedTickSystem>(512);
         private static readonly List<ILateTickSystem> lateTickSystems = new List<ILateTickSystem>(256);
 
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
-        private const string FIRST_INSTALL_TIMESTAMP_KEY = "first_install_timestamp";
+        internal const string FIRST_INSTALL_TIMESTAMP_KEY = "first_install_timestamp";
 
         private static float UnitedDeltaTime
         {
@@ -64,7 +63,7 @@ namespace Pancake
             }
         }
 
-        public static bool IsRuntimeInitialized { get; private set; }
+        public static bool IsRuntimeInitialized { get; internal set; }
 
         public static int FixedFrameCount { get; private set; }
 
@@ -202,29 +201,7 @@ namespace Pancake
         /// </summary>
         /// <param name="prefab"></param>
         public static void Attach(AutoInitialize prefab) { GlobalComponent.AttachImpl(prefab); }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void AutoInitialize()
-        {
-            if (IsRuntimeInitialized) return;
-
-            if (Application.isPlaying)
-            {
-                var runtime = new GameObject("Runtime");
-                runtime.AddComponent<GlobalComponent>();
-                UnityEngine.Object.DontDestroyOnLoad(runtime);
-
-                Data.Init();
-                onAppPrewarm?.Invoke();
-
-                // Store the timestamp of the *first* init which can be used as a rough approximation of the installation time.
-                if (!Data.HasKey(FIRST_INSTALL_TIMESTAMP_KEY)) Data.Save(FIRST_INSTALL_TIMESTAMP_KEY, DateTime.Now);
-
-                IsRuntimeInitialized = true;
-                Debug.Log("<color=#52D5F2>Runtime has been initialized!</color>");
-            }
-        }
-
+        
 #if UNITY_EDITOR
         [UnityEditor.InitializeOnLoadMethod]
         private static void EditorInitialize()
@@ -247,7 +224,7 @@ namespace Pancake
 #endif
 
         [DisallowMultipleComponent]
-        private class GlobalComponent : MonoBehaviour
+        internal class GlobalComponent : MonoBehaviour
         {
             private static GlobalComponent global;
 

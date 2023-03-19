@@ -65,20 +65,20 @@ namespace Pancake.Tween
         {
             gameObject.hideFlags = HideFlags.HideInHierarchy;
             _timeScale = 1.0f;
-            Runtime.Add(UpdateMode.Update, UpdateTweens_Update);
-            Runtime.Add(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
-            Runtime.Add(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
-            Runtime.Add(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
-            Runtime.Add(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
+            App.Add(UpdateMode.Update, UpdateTweens_Update);
+            App.Add(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
+            App.Add(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
+            App.Add(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
+            App.Add(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
         }
 
         private void Dispose()
         {
-            Runtime.Remove(UpdateMode.Update, UpdateTweens_Update);
-            Runtime.Remove(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
-            Runtime.Remove(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
-            Runtime.Remove(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
-            Runtime.Remove(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
+            App.Remove(UpdateMode.Update, UpdateTweens_Update);
+            App.Remove(UpdateMode.LateUpdate, UpdateTweens_LateUpdate);
+            App.Remove(UpdateMode.FixedUpdate, UpdateTweens_FixedUpdate);
+            App.Remove(UpdateMode.WaitForFixedUpdate, UpdateTweens_WaitForFixedUpdate);
+            App.Remove(UpdateMode.WaitForEndOfFrame, UpdateTweens_WaitForEndOfFrame);
 
             _aliveTweens_Update.Clear();
             _aliveTweens_FixedUpdate.Clear();

@@ -6,7 +6,6 @@ namespace Pancake.Monetization
     [Serializable]
     public class AdCommonSettings
     {
-        [SerializeField] private bool autoInit = true;
         [SerializeField] private EAutoLoadingAd autoLoadingAd = EAutoLoadingAd.All;
         [Range(5, 100), SerializeField] private float adCheckingInterval = 8f;
         [Range(5, 100), SerializeField] private float adLoadingInterval = 15f;
@@ -15,7 +14,6 @@ namespace Pancake.Monetization
         [SerializeField] private bool multiDex;
         [SerializeField] private EAdNetwork currentNetwork = EAdNetwork.Applovin;
 
-        public bool AutoInit => autoInit;
         public float AdCheckingInterval => adCheckingInterval;
         public float AdLoadingInterval => adLoadingInterval;
         public string PrivacyUrl => privacyUrl;
