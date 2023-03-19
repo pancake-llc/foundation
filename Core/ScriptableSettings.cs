@@ -14,7 +14,7 @@ namespace Pancake
                 if (instance != null) return instance;
 
                 instance = Resources.Load<T>(typeof(T).Name);
-                if (instance == null) throw new Exception($"Scriptable setting for {typeof(T)} must be create before run!. Please setup it in wizard!");
+                if (instance == null) throw new Exception($"Scriptable setting for {typeof(T)} must be create before run!. Please find and setup it in wizard!");
                 return instance;
             }
         }

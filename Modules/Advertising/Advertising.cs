@@ -140,7 +140,9 @@ namespace Pancake.Monetization
 
         private void Start()
         {
+#if PANCAKE_ADVERTISING
             if (AdSettings.AdCommonSettings.AutoInit) Initialize();
+#endif
         }
 
         private void Update()
