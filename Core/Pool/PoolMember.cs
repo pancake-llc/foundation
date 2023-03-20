@@ -9,7 +9,7 @@ namespace Pancake
     /// Auto add by pool
     /// </summary>
     [AddComponentMenu("")]
-    public class PoolMember : Passenger
+    public class PoolMember : GameComponent
     {
         private Pool _pool;
         private string _nameContext;

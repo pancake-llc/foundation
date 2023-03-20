@@ -7,7 +7,7 @@ namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Text))]
-    public class BindText : RefPassenger<Text>
+    public class BindText : CacheGameComponent<Text>
     {
         public CustomVariableType type = CustomVariableType.None;
 

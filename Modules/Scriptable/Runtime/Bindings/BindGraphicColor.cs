@@ -6,7 +6,7 @@ namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Graphic))]
-    public class BindingGraphicColor : RefPassenger<Graphic>
+    public class BindingGraphicColor : CacheGameComponent<Graphic>
     {
         [SerializeField] private ColorVariable colorVariable;
 

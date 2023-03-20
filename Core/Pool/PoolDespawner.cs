@@ -1,7 +1,7 @@
 using Pancake;
 using UnityEngine;
 
-public class PoolDespawner : Passenger
+public class PoolDespawner : GameComponent
 {
     [SerializeField] private float time;
 

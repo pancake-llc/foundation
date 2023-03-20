@@ -6,7 +6,7 @@ namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Slider))]
-    public class BindSlider : RefPassenger<Slider>
+    public class BindSlider : CacheGameComponent<Slider>
     {
         [SerializeField] private FloatVariable floatVariable;
 

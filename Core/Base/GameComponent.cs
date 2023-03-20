@@ -8,7 +8,7 @@ namespace Pancake
     /// Passenger : a person who is travelling in a vehicle but is not driving it, flying it, or working on it
     /// Is the basic unit, Your entities need to inherit this class
     /// </summary>
-    public abstract class Passenger : Entity, ITickSystem, IFixedTickSystem, ILateTickSystem
+    public abstract class GameComponent : MonoBehaviour, ITickSystem, IFixedTickSystem, ILateTickSystem
     {
         private void OnEnable()
         {

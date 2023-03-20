@@ -4,12 +4,12 @@
     /// Cache component with type <typeparamref name="T"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class RefPassenger<T> : Passenger
+    public abstract class CacheGameComponent<T> : GameComponent
     {
         public UnityEngine.Transform CachedTransform { get; private set; }
         protected T component;
 
-        protected override void Awake()
+        protected virtual void Awake()
         {
             if (CachedTransform == null) CachedTransform = transform;
             GetReference();

@@ -6,7 +6,7 @@ namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_bind")]
     [RequireComponent(typeof(Image))]
-    public class BindFillingImage : RefPassenger<Image>
+    public class BindFillingImage : CacheGameComponent<Image>
     {
         [SerializeField] private FloatVariable floatVariable;
         [SerializeField] private FloatReference maxValue;
