@@ -13,7 +13,11 @@ using GoogleMobileAds.Editor;
 #endif
 using Newtonsoft.Json;
 using PancakeEditor;
+
+#if PANCAKE_ADVERTISING
 using Unity.SharpZipLib.Zip;
+#endif
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -41,7 +45,7 @@ namespace Pancake.Monetization
         private static class AdProperties
         {
             public static SerializedProperty main;
-            
+
             public static readonly Property AutoLoadAdsMode = new Property(new GUIContent("Auto Ad-Loading Mode"));
 
             public static readonly Property ADCheckingInterval = new Property(new GUIContent("  Checking Interval", "Time (seconds) between 2 ad-availability checks"));
@@ -485,6 +489,7 @@ namespace Pancake.Monetization
         /// </summary>
         private static void UnZip(string filePath, byte[] data)
         {
+#if PANCAKE_ADVERTISING
             using (var s = new ZipInputStream(new MemoryStream(data)))
             {
                 ZipEntry theEntry;
@@ -523,8 +528,9 @@ namespace Pancake.Monetization
                             }
                         }
                     }
-                } //end of while
-            } //end of using
+                }
+            }
+#endif
         }
 
         #endregion
