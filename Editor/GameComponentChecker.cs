@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public class BaseMonoExceptionChecker
+    public class GameComponentChecker
     {
         private const BindingFlags METHOD_FLAGS = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
@@ -66,6 +66,19 @@ namespace PancakeEditor
 
             var coloredRecommendedMethod = "protected override void ".TextColor(Uniform.Blue) + recommendedMethod.TextColor(Uniform.Orange);
             return $"It is recommended to replace {coloredMethod} method with {coloredRecommendedMethod} " + $"in subclass {coloredClass} of {monoCacheNameColored}";
+        }
+    }
+    
+    internal static class GameComponentCheckerRunner
+    {
+        private static bool IsEditimeInitialized { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void AutoInitialize()
+        {
+            if (IsEditimeInitialized) return;
+            new GameComponentChecker().CheckForExceptions();
+            IsEditimeInitialized = true;
         }
     }
 }

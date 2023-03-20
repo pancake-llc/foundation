@@ -20,9 +20,6 @@ namespace Pancake
         public static event Action lateUpdateOnceTime;
         public static event Action waitForEndOfFrameOnceTime;
 
-        public static event Action editorUpdate; // An update callback can be used in edit-mode
-        public static event Action editorUpdateOnceTime; // An update callback (will be executed once) can be used in edit-mode
-
         public static readonly List<Action> toMainThreads = new();
         private static volatile bool isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
 
@@ -37,31 +34,9 @@ namespace Pancake
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
         internal const string FIRST_INSTALL_TIMESTAMP_KEY = "first_install_timestamp";
 
-        private static float UnitedDeltaTime
-        {
-            get
-            {
-#if UNITY_EDITOR
-                if (!Application.isPlaying) return Editortime.UnscaledDeltaTime * Time.timeScale;
-                return Time.deltaTime;
-#else
-                return Time.deltaTime;
-#endif
-            }
-        }
+        private static float UnitedDeltaTime => Time.deltaTime;
 
-        private static float UnitedUnscaledDeltaTime
-        {
-            get
-            {
-#if UNITY_EDITOR
-                if (!Application.isPlaying) return Editortime.UnscaledDeltaTime;
-                return Time.unscaledDeltaTime;
-#else
-                return Time.unscaledDeltaTime;
-#endif
-            }
-        }
+        private static float UnitedUnscaledDeltaTime => Time.unscaledDeltaTime;
 
         public static bool IsRuntimeInitialized { get; internal set; }
 
@@ -202,27 +177,6 @@ namespace Pancake
         /// <param name="prefab"></param>
         public static void Attach(AutoInitialize prefab) { GlobalComponent.AttachImpl(prefab); }
         
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnLoadMethod]
-        private static void EditorInitialize()
-        {
-            UnityEditor.EditorApplication.update += () =>
-            {
-                if (!Application.isPlaying)
-                {
-                    editorUpdate?.Invoke();
-
-                    if (editorUpdateOnceTime != null)
-                    {
-                        var call = editorUpdateOnceTime;
-                        editorUpdateOnceTime = null;
-                        call();
-                    }
-                }
-            };
-        }
-#endif
-
         [DisallowMultipleComponent]
         internal class GlobalComponent : MonoBehaviour
         {
@@ -281,9 +235,6 @@ namespace Pancake
                 }
 
                 update?.Invoke();
-#if UNITY_EDITOR
-                editorUpdate?.Invoke();
-#endif
 
                 if (updateOnceTime != null)
                 {
@@ -291,15 +242,6 @@ namespace Pancake
                     updateOnceTime = null;
                     call();
                 }
-
-#if UNITY_EDITOR
-                if (editorUpdateOnceTime != null)
-                {
-                    var call = editorUpdateOnceTime;
-                    editorUpdateOnceTime = null;
-                    call();
-                }
-#endif
 
                 if (isToMainThreadQueueEmpty) return;
                 _localToMainThreads.Clear();
@@ -407,7 +349,7 @@ namespace Pancake
             /// <summary>
             /// Schedules the specifies action to be run on the main thread (game thread).
             /// The action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="Runtime.AutoInitialize"/>).
+            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
             /// </summary>
             /// <param name="action">Action.</param>
             internal static void RunOnMainThreadImpl(Action action)
@@ -426,7 +368,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="Runtime.AutoInitialize"/>).
+            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>
@@ -439,7 +381,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="Runtime.AutoInitialize"/>).
+            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>
@@ -453,7 +395,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="Runtime.AutoInitialize"/>).
+            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>
@@ -468,7 +410,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="Runtime.AutoInitialize"/>).
+            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>
@@ -494,24 +436,4 @@ namespace Pancake
             #endregion
         }
     }
-
-#if UNITY_EDITOR
-    internal struct Editortime
-    {
-        private static float unscaledDeltaTime;
-        private static double lastTimeSinceStartup = -0.01;
-
-        [UnityEditor.InitializeOnLoadMethod]
-        private static void Init()
-        {
-            UnityEditor.EditorApplication.update += () =>
-            {
-                unscaledDeltaTime = (float) (UnityEditor.EditorApplication.timeSinceStartup - lastTimeSinceStartup);
-                lastTimeSinceStartup = UnityEditor.EditorApplication.timeSinceStartup;
-            };
-        }
-
-        public static float UnscaledDeltaTime => unscaledDeltaTime;
-    }
-#endif
 }
