@@ -8,6 +8,9 @@ namespace PancakeEditor
     {
         #region 1
 
+        [MenuItem("Tools/Pancake/Finder %#K")]
+        private static void OpenFinder() { FinderWindow.ShowWindow(); }
+
         [MenuItem("Tools/Fast Play Mode", validate = false)]
         private static void ToggleFastPlayMode()
         {
