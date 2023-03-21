@@ -172,20 +172,32 @@ namespace Pancake
         /// <param name="prefab"></param>
         public static void Attach(AutoInitialize prefab) { GlobalComponent.AttachImpl(prefab); }
 
+        /// <summary>
+        /// Delay call
+        /// </summary>
+        /// <param name="duration">The duration to wait before the DelayHandle fires.</param>
+        /// <param name="onComplete">The action to run when the DelayHandle elapses.</param>
+        /// <param name="onUpdate">A function to call each tick of the DelayHandle. Takes the number of seconds elapsed since
+        /// the start of the current cycle.</param>
+        /// <param name="isLooped">Whether the DelayHandle should restart after executing.</param>
+        /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow-mo or pausing) or
+        /// game-time(affected by time scale changes).</param>
+        /// <param name="target">The target (behaviour) to attach this DelayHandle to.</param>
+        /// <returns></returns>
         public static DelayHandle Delay(
             float duration,
             Action onComplete,
             Action<float> onUpdate = null,
             bool isLooped = false,
             bool useRealTime = false,
-            MonoBehaviour autoDestroyOwner = null)
+            MonoBehaviour target = null)
         {
             var timer = new DelayHandle(duration,
                 onComplete,
                 onUpdate,
                 isLooped,
                 useRealTime,
-                autoDestroyOwner);
+                target);
             GlobalComponent.RegisterDelayHandle(timer);
             return timer;
         }
