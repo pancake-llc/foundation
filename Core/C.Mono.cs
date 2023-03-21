@@ -110,6 +110,19 @@ namespace Pancake
         }
 
         /// <summary>
+        /// Destroy your self
+        /// </summary>
+        /// <param name="gameObject"></param>
+        public static void Destroy(this GameObject gameObject)
+        {
+#if UNITY_EDITOR
+            Object.DestroyImmediate(gameObject);
+#else
+            Object.Destroy(gameObject);
+#endif
+        }
+        
+        /// <summary>
         /// Destroys all gameObject's children
         /// </summary>
         /// <param name="transform"></param>
