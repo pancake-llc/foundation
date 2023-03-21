@@ -13,9 +13,8 @@ namespace Pancake
         /// <param name="action"></param>
         public static void CallActionClean(ref Action action)
         {
+            if (action == null) return;
             var a = action;
-            if (a == null) return;
-
             a();
             action = null;
         }

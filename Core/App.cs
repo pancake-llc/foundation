@@ -3,42 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ReSharper disable InconsistentNaming
 namespace Pancake
 {
     public struct App
     {
-        public static event Action fixedUpdate;
-        public static event Action waitForFixedUpdate;
-        public static event Action update;
-        public static event Action lateUpdate;
-        public static event Action waitForEndOfFrame;
+        private static event Action FixedUpdateInternal;
+        private static event Action WaitForFixedUpdateInternal;
+        private static event Action UpdateInternal;
+        private static event Action LateUpdateInternal;
+        private static event Action WaitForEndOfFrameInternal;
 
-        public static event Action fixedUpdateOnceTime;
-        public static event Action waitForFixedUpdateOnceTime;
-        public static event Action updateOnceTime;
-        public static event Action lateUpdateOnceTime;
-        public static event Action waitForEndOfFrameOnceTime;
+        public static event Action FixedUpdateOnceTime;
+        public static event Action WaitForFixedUpdateOnceTime;
+        public static event Action UpdateOnceTime;
+        public static event Action LateUpdateOnceTime;
+        public static event Action WaitForEndOfFrameOnceTime;
 
-        public static readonly List<Action> toMainThreads = new();
+        private static readonly List<Action> ToMainThreads = new();
         private static volatile bool isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
 
-        public static event Action<bool> onGamePause;
-        public static event Action<bool> onGameFocus;
-        public static event Action onGameQuit;
+        private static event Action<bool> OnGamePause;
+        private static event Action<bool> OnGameFocus;
+        private static event Action OnGameQuit;
 
-        private static readonly List<ITickSystem> tickSystems = new List<ITickSystem>(1024);
-        private static readonly List<IFixedTickSystem> fixedTickSystems = new List<IFixedTickSystem>(512);
-        private static readonly List<ILateTickSystem> lateTickSystems = new List<ILateTickSystem>(256);
+        private static readonly List<ITickProcess> TickProcesses = new List<ITickProcess>(1024);
+        private static readonly List<IFixedTickProcess> FixedTickProcesses = new List<IFixedTickProcess>(512);
+        private static readonly List<ILateTickProcess> LateTickProcesses = new List<ILateTickProcess>(256);
 
         public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
         internal const string FIRST_INSTALL_TIMESTAMP_KEY = "first_install_timestamp";
 
-        private static float UnitedDeltaTime => Time.deltaTime;
-
-        private static float UnitedUnscaledDeltaTime => Time.unscaledDeltaTime;
-
-        public static bool IsRuntimeInitialized { get; internal set; }
+        public static bool IsAppInitialized { get; internal set; }
 
         public static int FixedFrameCount { get; private set; }
 
@@ -51,26 +46,26 @@ namespace Pancake
         /// <returns>The installation timestamp.</returns>
         public static DateTime GetAppInstallTimestamp => Data.Load(FIRST_INSTALL_TIMESTAMP_KEY, UnixEpoch);
 
-        public static float GetDeltaTime(TimeMode mode) => mode == TimeMode.Normal ? UnitedDeltaTime : UnitedUnscaledDeltaTime;
+        public static float DeltaTime(TimeMode mode) => mode == TimeMode.Normal ? Time.deltaTime : Time.unscaledDeltaTime;
 
         public static void Add(UpdateMode mode, Action action)
         {
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    fixedUpdate += action;
+                    FixedUpdateInternal += action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    waitForFixedUpdate += action;
+                    WaitForFixedUpdateInternal += action;
                     return;
                 case UpdateMode.Update:
-                    update += action;
+                    UpdateInternal += action;
                     return;
                 case UpdateMode.LateUpdate:
-                    lateUpdate += action;
+                    LateUpdateInternal += action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
-                    waitForEndOfFrame += action;
+                    WaitForEndOfFrameInternal += action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -82,60 +77,60 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    fixedUpdate -= action;
+                    FixedUpdateInternal -= action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    waitForFixedUpdate -= action;
+                    WaitForFixedUpdateInternal -= action;
                     return;
                 case UpdateMode.Update:
-                    update -= action;
+                    UpdateInternal -= action;
                     return;
                 case UpdateMode.LateUpdate:
-                    lateUpdate -= action;
+                    LateUpdateInternal -= action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
-                    waitForEndOfFrame -= action;
+                    WaitForEndOfFrameInternal -= action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
         }
 
-        public static void AddTick(ITickSystem tick) { tickSystems.Add(tick); }
+        public static void AddTick(ITickProcess tick) { TickProcesses.Add(tick); }
 
-        public static void AddFixedTick(IFixedTickSystem tick) { fixedTickSystems.Add(tick); }
+        public static void AddFixedTick(IFixedTickProcess tick) { FixedTickProcesses.Add(tick); }
 
-        public static void AddLateTick(ILateTickSystem tick) { lateTickSystems.Add(tick); }
+        public static void AddLateTick(ILateTickProcess tick) { LateTickProcesses.Add(tick); }
 
-        public static void RemoveTick(ITickSystem tick) { tickSystems.Remove(tick); }
+        public static void RemoveTick(ITickProcess tick) { TickProcesses.Remove(tick); }
 
-        public static void RemoveFixedTick(IFixedTickSystem tick) { fixedTickSystems.Remove(tick); }
+        public static void RemoveFixedTick(IFixedTickProcess tick) { FixedTickProcesses.Remove(tick); }
 
-        public static void RemoveLateTick(ILateTickSystem tick) { lateTickSystems.Remove(tick); }
+        public static void RemoveLateTick(ILateTickProcess tick) { LateTickProcesses.Remove(tick); }
 
         public static void AddPauseCallback(Action<bool> callback)
         {
-            onGamePause -= callback;
-            onGamePause += callback;
+            OnGamePause -= callback;
+            OnGamePause += callback;
         }
 
-        public static void RemovePauseCallback(Action<bool> callback) { onGamePause -= callback; }
+        public static void RemovePauseCallback(Action<bool> callback) { OnGamePause -= callback; }
 
         public static void AddFocusCallback(Action<bool> callback)
         {
-            onGameFocus -= callback;
-            onGameFocus += callback;
+            OnGameFocus -= callback;
+            OnGameFocus += callback;
         }
 
-        public static void RemoveFocusCallback(Action<bool> callback) { onGameFocus -= callback; }
+        public static void RemoveFocusCallback(Action<bool> callback) { OnGameFocus -= callback; }
 
         public static void AddQuitCallback(Action callback)
         {
-            onGameQuit -= callback;
-            onGameQuit += callback;
+            OnGameQuit -= callback;
+            OnGameQuit += callback;
         }
 
-        public static void RemoveQuitCallback(Action callback) { onGameQuit -= callback; }
+        public static void RemoveQuitCallback(Action callback) { OnGameQuit -= callback; }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static Coroutine RunCoroutine(IEnumerator routine) => GlobalComponent.RunCoroutineImpl(routine);
@@ -176,7 +171,7 @@ namespace Pancake
         /// </summary>
         /// <param name="prefab"></param>
         public static void Attach(AutoInitialize prefab) { GlobalComponent.AttachImpl(prefab); }
-        
+
         [DisallowMultipleComponent]
         internal class GlobalComponent : MonoBehaviour
         {
@@ -200,12 +195,8 @@ namespace Pancake
                     {
                         yield return wait;
                         FixedFrameCount += 1;
-                        waitForFixedUpdate?.Invoke();
-
-                        if (waitForFixedUpdateOnceTime == null) continue;
-                        var call = waitForFixedUpdateOnceTime;
-                        waitForFixedUpdateOnceTime = null;
-                        call();
+                        WaitForFixedUpdateInternal?.Invoke();
+                        C.CallActionClean(ref WaitForFixedUpdateOnceTime);
                     }
                     // ReSharper disable once IteratorNeverReturns
                 }
@@ -216,12 +207,8 @@ namespace Pancake
                     while (true)
                     {
                         yield return wait;
-                        waitForEndOfFrame?.Invoke();
-
-                        if (waitForEndOfFrameOnceTime == null) continue;
-                        var call = waitForEndOfFrameOnceTime;
-                        waitForEndOfFrameOnceTime = null;
-                        call();
+                        WaitForEndOfFrameInternal?.Invoke();
+                        C.CallActionClean(ref WaitForEndOfFrameOnceTime);
                     }
                     // ReSharper disable once IteratorNeverReturns
                 }
@@ -229,26 +216,20 @@ namespace Pancake
 
             private void Update()
             {
-                for (int i = 0; i < tickSystems.Count; i++)
+                for (int i = 0; i < TickProcesses.Count; i++)
                 {
-                    tickSystems[i]?.OnTick();
+                    TickProcesses[i]?.OnTick();
                 }
 
-                update?.Invoke();
-
-                if (updateOnceTime != null)
-                {
-                    var call = updateOnceTime;
-                    updateOnceTime = null;
-                    call();
-                }
+                UpdateInternal?.Invoke();
+                C.CallActionClean(ref UpdateOnceTime);
 
                 if (isToMainThreadQueueEmpty) return;
                 _localToMainThreads.Clear();
-                lock (toMainThreads)
+                lock (ToMainThreads)
                 {
-                    _localToMainThreads.AddRange(toMainThreads);
-                    toMainThreads.Clear();
+                    _localToMainThreads.AddRange(ToMainThreads);
+                    ToMainThreads.Clear();
                     isToMainThreadQueueEmpty = true;
                 }
 
@@ -260,36 +241,25 @@ namespace Pancake
 
             private void FixedUpdate()
             {
-                for (int i = 0; i < fixedTickSystems.Count; i++)
+                for (int i = 0; i < FixedTickProcesses.Count; i++)
                 {
-                    fixedTickSystems[i]?.OnFixedTick();
+                    FixedTickProcesses[i]?.OnFixedTick();
                 }
 
-                fixedUpdate?.Invoke();
+                FixedUpdateInternal?.Invoke();
 
-                if (fixedUpdateOnceTime != null)
-                {
-                    var call = fixedUpdateOnceTime;
-                    fixedUpdateOnceTime = null;
-                    call();
-                }
+                C.CallActionClean(ref FixedUpdateOnceTime);
             }
 
             private void LateUpdate()
             {
-                for (int i = 0; i < lateTickSystems.Count; i++)
+                for (int i = 0; i < LateTickProcesses.Count; i++)
                 {
-                    lateTickSystems[i]?.OnLateTick();
+                    LateTickProcesses[i]?.OnLateTick();
                 }
 
-                lateUpdate?.Invoke();
-
-                if (lateUpdateOnceTime != null)
-                {
-                    var call = lateUpdateOnceTime;
-                    lateUpdateOnceTime = null;
-                    call();
-                }
+                LateUpdateInternal?.Invoke();
+                C.CallActionClean(ref LateUpdateOnceTime);
             }
 
             /// <summary>
@@ -300,13 +270,13 @@ namespace Pancake
             /// On Windows Store Apps and Windows Phone 8.1 there's no application quit event,
             /// consider using OnApplicationFocus event when hasFocus equals false.
             /// </remarks>
-            private void OnApplicationFocus(bool hasFocus) { onGameFocus?.Invoke(hasFocus); }
+            private void OnApplicationFocus(bool hasFocus) { OnGameFocus?.Invoke(hasFocus); }
 
             /// <summary>
             /// Called when the application pauses.
             /// </summary>
             /// <param name="pauseStatus"><c>true</c> if the application is paused, else <c>false</c>.</param>
-            private void OnApplicationPause(bool pauseStatus) { onGamePause?.Invoke(pauseStatus); }
+            private void OnApplicationPause(bool pauseStatus) { OnGamePause?.Invoke(pauseStatus); }
 
             /// <summary>
             /// Called before the application quits.
@@ -318,7 +288,7 @@ namespace Pancake
             /// On WebGL is not possible to implement OnApplicationQuit due to nature of the
             /// browser tabs closing.
             /// </remarks>
-            private void OnApplicationQuit() { onGameQuit?.Invoke(); }
+            private void OnApplicationQuit() { OnGameQuit?.Invoke(); }
 
             private void OnDisable()
             {
@@ -349,7 +319,7 @@ namespace Pancake
             /// <summary>
             /// Schedules the specifies action to be run on the main thread (game thread).
             /// The action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
+            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
             /// </summary>
             /// <param name="action">Action.</param>
             internal static void RunOnMainThreadImpl(Action action)
@@ -358,9 +328,9 @@ namespace Pancake
 
                 if (!IsInitialized) return;
 
-                lock (toMainThreads)
+                lock (ToMainThreads)
                 {
-                    toMainThreads.Add(action);
+                    ToMainThreads.Add(action);
                     isToMainThreadQueueEmpty = false;
                 }
             }
@@ -368,7 +338,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
+            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>
@@ -381,7 +351,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
+            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>
@@ -395,7 +365,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
+            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>
@@ -410,7 +380,7 @@ namespace Pancake
             /// <summary>
             /// Converts the specified action to one that runs on the main thread.
             /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsRuntimeInitialized"/>).
+            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
             /// </summary>
             /// <returns>The main thread.</returns>
             /// <param name="action">Act.</param>

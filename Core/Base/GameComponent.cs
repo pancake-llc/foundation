@@ -1,14 +1,10 @@
-using System.Runtime.CompilerServices;
-using UnityEngine;
-using Object = UnityEngine.Object;
-
 namespace Pancake
 {
     /// <summary>
     /// Passenger : a person who is travelling in a vehicle but is not driving it, flying it, or working on it
     /// Is the basic unit, Your entities need to inherit this class
     /// </summary>
-    public abstract class GameComponent : MonoBehaviour, ITickSystem, IFixedTickSystem, ILateTickSystem
+    public abstract class GameComponent : UnityEngine.MonoBehaviour, ITickProcess, IFixedTickProcess, ILateTickProcess
     {
         private void OnEnable()
         {
@@ -35,12 +31,12 @@ namespace Pancake
             App.RemoveFixedTick(this);
             App.RemoveLateTick(this);
         }
-        
-        void ITickSystem.OnTick() => Tick();
 
-        void IFixedTickSystem.OnFixedTick() => FixedTick();
+        void ITickProcess.OnTick() => Tick();
 
-        void ILateTickSystem.OnLateTick() => LateTick();
+        void IFixedTickProcess.OnFixedTick() => FixedTick();
+
+        void ILateTickProcess.OnLateTick() => LateTick();
 
 
         protected virtual void OnEnabled() { }

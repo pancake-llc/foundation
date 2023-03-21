@@ -12,7 +12,7 @@ namespace Pancake
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
         {
-            if (App.IsRuntimeInitialized) return;
+            if (App.IsAppInitialized) return;
 
             if (Application.isPlaying)
             {
@@ -38,7 +38,7 @@ namespace Pancake
                 // Store the timestamp of the *first* init which can be used as a rough approximation of the installation time.
                 if (!Data.HasKey(App.FIRST_INSTALL_TIMESTAMP_KEY)) Data.Save(App.FIRST_INSTALL_TIMESTAMP_KEY, DateTime.Now);
 
-                App.IsRuntimeInitialized = true;
+                App.IsAppInitialized = true;
                 Debug.Log("<color=#52D5F2>Runtime has been initialized!</color>");
 
                 var initProfile = Resources.Load<InitProfile>("InitProfile");
