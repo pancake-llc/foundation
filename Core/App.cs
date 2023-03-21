@@ -172,6 +172,36 @@ namespace Pancake
         /// <param name="prefab"></param>
         public static void Attach(AutoInitialize prefab) { GlobalComponent.AttachImpl(prefab); }
 
+        public static DelayHandle Delay(
+            float duration,
+            Action onComplete,
+            Action<float> onUpdate = null,
+            bool isLooped = false,
+            bool useRealTime = false,
+            MonoBehaviour autoDestroyOwner = null)
+        {
+            var timer = new DelayHandle(duration,
+                onComplete,
+                onUpdate,
+                isLooped,
+                useRealTime,
+                autoDestroyOwner);
+            GlobalComponent.RegisterDelayHandle(timer);
+            return timer;
+        }
+
+        public static void CancelDelay(DelayHandle delayHandle) { delayHandle?.Cancel(); }
+
+        public static void PauseDelay(DelayHandle delayHandle) { delayHandle?.Pause(); }
+
+        public static void ResumeDelay(DelayHandle delayHandle) { delayHandle?.Resume(); }
+
+        public static void CancelAllDelay() { GlobalComponent.CancelAllDelayHandle(); }
+
+        public static void PauseAllDelay() { GlobalComponent.PauseAllDelayHandle(); }
+
+        public static void ResumeAllDelay() { GlobalComponent.ResumeAllDelayHandle(); }
+
         [DisallowMultipleComponent]
         internal class GlobalComponent : MonoBehaviour
         {
@@ -181,6 +211,67 @@ namespace Pancake
 
             private List<Action> _localToMainThreads = new();
 
+            #region delay handle
+
+            private List<DelayHandle> _timers = new List<DelayHandle>();
+
+            // buffer adding timers so we don't edit a collection during iteration
+            private List<DelayHandle> _timersToAdd = new List<DelayHandle>();
+
+            public static void RegisterDelayHandle(DelayHandle delayHandle)
+            {
+                if (!IsInitialized) return;
+                global._timersToAdd.Add(delayHandle);
+            }
+
+            public static void CancelAllDelayHandle()
+            {
+                if (!IsInitialized) return;
+                foreach (var timer in global._timers)
+                {
+                    timer.Cancel();
+                }
+
+                global._timers = new List<DelayHandle>();
+                global._timersToAdd = new List<DelayHandle>();
+            }
+
+            public static void PauseAllDelayHandle()
+            {
+                if (!IsInitialized) return;
+                foreach (var timer in global._timers)
+                {
+                    timer.Pause();
+                }
+            }
+
+            public static void ResumeAllDelayHandle()
+            {
+                if (!IsInitialized) return;
+                foreach (var timer in global._timers)
+                {
+                    timer.Resume();
+                }
+            }
+
+            private void UpdateAllDelayHandle()
+            {
+                if (_timersToAdd.Count > 0)
+                {
+                    _timers.AddRange(_timersToAdd);
+                    _timersToAdd.Clear();
+                }
+
+                foreach (var timer in _timers)
+                {
+                    timer.Update();
+                }
+
+                _timers.RemoveAll(t => t.IsDone);
+            }
+
+            #endregion
+            
             private void Awake() { global = this; }
 
             private void Start()
@@ -216,13 +307,14 @@ namespace Pancake
 
             private void Update()
             {
-                for (int i = 0; i < TickProcesses.Count; i++)
+                for (var i = 0; i < TickProcesses.Count; i++)
                 {
                     TickProcesses[i]?.OnTick();
                 }
 
                 UpdateInternal?.Invoke();
                 C.CallActionClean(ref UpdateOnceTime);
+                UpdateAllDelayHandle();
 
                 if (isToMainThreadQueueEmpty) return;
                 _localToMainThreads.Clear();
