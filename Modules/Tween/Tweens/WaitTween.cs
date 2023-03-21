@@ -12,7 +12,7 @@ namespace Pancake.Tween
 
         protected override void OnTweenUpdate()
         {
-            float deltaTime = App.GetDeltaTime(TimeMode);
+            float deltaTime = App.DeltaTime(TimeMode);
             float dt = deltaTime * TweenManager.TimeScale * TimeScale;
 
             elapsedDelay += dt;
