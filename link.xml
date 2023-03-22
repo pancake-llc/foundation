@@ -1,0 +1,3 @@
+<linker>
+    <assembly fullname="Unity.Burst" preserve="all"/>
+</linker>
