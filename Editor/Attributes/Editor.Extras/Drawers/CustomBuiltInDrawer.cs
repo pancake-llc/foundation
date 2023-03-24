@@ -1,5 +1,5 @@
 ﻿using PancakeEditor.Attribute;
-using InspectorUnityInternalBridge;
+using UnityInternalBridge;
 
 [assembly: RegisterValueDrawer(typeof(CustomBuiltInDrawer), DrawerOrder.Fallback - 999)]
 

@@ -52,11 +52,7 @@ namespace PancakeEditor.Attribute
             serializedObject.UpdateIfRequiredOrScript();
 
             _inspector.Update();
-
-            if (_inspector.ValidationRequired)
-            {
-                _inspector.RunValidation();
-            }
+            _inspector.RunValidationIfRequired();
 
             using (GuiHelper.PushEditorTarget(target))
             {

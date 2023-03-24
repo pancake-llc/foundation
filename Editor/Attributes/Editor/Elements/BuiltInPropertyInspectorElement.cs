@@ -1,4 +1,4 @@
-﻿using InspectorUnityInternalBridge;
+﻿using UnityInternalBridge;
 using UnityEditor;
 using UnityEngine;
 

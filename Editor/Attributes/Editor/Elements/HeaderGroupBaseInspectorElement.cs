@@ -28,7 +28,14 @@ namespace PancakeEditor.Attribute
 
             var headerBgRect = new Rect(position) {height = headerHeight,};
             var contentBgRect = new Rect(position) {yMin = headerBgRect.yMax,};
-            var contentRect = new Rect(contentBgRect) {xMin = contentBgRect.xMin + InsetLeft, xMax = contentBgRect.xMax - InsetRight, height = contentHeight};
+            var contentRect = new Rect(contentBgRect)
+            {
+                xMin = contentBgRect.xMin + InsetLeft, 
+                xMax = contentBgRect.xMax - InsetRight,
+                yMin = contentBgRect.yMin + InsetTop,
+                yMax = contentBgRect.yMax - InsetBottom,
+                height = contentHeight
+            };
 
             if (headerHeight > 0f)
             {

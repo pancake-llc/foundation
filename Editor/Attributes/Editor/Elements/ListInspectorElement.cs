@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
-using InspectorUnityInternalBridge;
+using System.Linq;
+using UnityInternalBridge;
 using Pancake.Attribute;
-using PancakeEditor;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PancakeEditor.Attribute
 {
@@ -121,9 +122,14 @@ namespace PancakeEditor.Attribute
 
         private void AddElementCallback(ReorderableList reorderableList)
         {
+            AddElementCallback(reorderableList, null);
+        }
+
+        private void AddElementCallback(ReorderableList reorderableList, Object addedReferenceValue)
+        {
             if (_property.TryGetSerializedProperty(out _))
             {
-                ReorderableListProxy.defaultBehaviours.DoAddButton(reorderableList);
+                ReorderableListProxy.DoAddButton(reorderableList, addedReferenceValue);
                 _property.NotifyValueChanged();
                 return;
             }
@@ -138,6 +144,12 @@ namespace PancakeEditor.Attribute
                 {
                     var array = Array.CreateInstance(_property.ArrayElementType, template.Length + 1);
                     Array.Copy(template, array, template.Length);
+                    
+                    if (addedReferenceValue != null)
+                    {
+                        array.SetValue(addedReferenceValue, array.Length - 1);
+                    }
+                    
                     value = array;
                 }
                 else
@@ -147,7 +159,9 @@ namespace PancakeEditor.Attribute
                         value = (IList) Activator.CreateInstance(_property.FieldType);
                     }
 
-                    var newElement = CreateDefaultElementValue(_property);
+                    var newElement = addedReferenceValue != null
+                        ? addedReferenceValue
+                        : CreateDefaultElementValue(_property);
                     value.Add(newElement);
                 }
 
@@ -294,46 +308,27 @@ namespace PancakeEditor.Attribute
 
             var label = _reorderableListGui.count == 0 ? "Empty" : $"{_reorderableListGui.count} items";
             GUI.Label(arraySizeRect, label, Styles.ItemsCount);
-            var previousColor = GUI.color;
-            GUI.color = new Color(1f, 1f, 1f, 0f);
-            GUI.Box(rect, "", new GUIStyle());
-            GUI.color = previousColor;
-            var @event = Event.current;
-            switch (@event.type)
+            if (Event.current.type == EventType.DragUpdated && rect.Contains(Event.current.mousePosition))
             {
-                case EventType.DragUpdated:
-                case EventType.DragPerform:
-                    if (rect.Contains(@event.mousePosition))
+                DragAndDrop.visualMode = DragAndDrop.objectReferences.All(obj => TryGetDragAndDropObject(obj, out _))
+                    ? DragAndDropVisualMode.Copy
+                    : DragAndDropVisualMode.Rejected;
+
+                Event.current.Use();
+            }
+            else if (Event.current.type == EventType.DragPerform && rect.Contains(Event.current.mousePosition))
+            {
+                DragAndDrop.AcceptDrag();
+
+                foreach (var obj in DragAndDrop.objectReferences)
+                {
+                    if (TryGetDragAndDropObject(obj, out var addedReferenceValue))
                     {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                        if (@event.type == EventType.DragPerform)
-                        {
-                            DragAndDrop.AcceptDrag();
-
-                            foreach (var objectDrop in DragAndDrop.objectReferences)
-                            {
-                                var objDropType = objectDrop.GetType();
-                                if (objDropType == _property.ArrayElementType || (objDropType == typeof(GameObject) && (_property.ArrayElementType == typeof(Transform) || _property.ArrayElementType.BaseType == typeof(MonoBehaviour))))
-                                {
-                                    AddElementCallback(_reorderableListGui);
-
-                                    if (_property.TryGetSerializedProperty(out var x))
-                                    {
-                                        var element = x.GetArrayElementAtIndex(x.arraySize - 1);
-                                        element.objectReferenceValue = objectDrop;
-                                        if (element.objectReferenceValue == null)
-                                        {
-                                            Debug.LogWarning($"[Drag and Drop]: Object {objectDrop.name} has a data type that doesn't match with type of List <{_property.ArrayElementType}>");
-                                            x.RemoveElement(x.arraySize - 1);
-                                        }
-                                        _property.NotifyValueChanged();
-                                    }
-                                }
-                            }
-                        }
+                        AddElementCallback(_reorderableListGui, addedReferenceValue);
                     }
+                }
 
-                    break;
+                Event.current.Use();
             }
         }
 
@@ -378,6 +373,34 @@ namespace PancakeEditor.Attribute
             GetChild(index).OnGUI(rect);
         }
 
+        private bool TryGetDragAndDropObject(Object obj, out Object result)
+        {
+            if (obj == null)
+            {
+                result = null;
+                return false;
+            }
+
+            var elementType = _property.ArrayElementType;
+            var objType = obj.GetType();
+
+            if (elementType == objType || elementType.IsAssignableFrom(objType))
+            {
+                result = obj;
+                return true;
+            }
+
+            if (obj is GameObject go && typeof(Component).IsAssignableFrom(elementType) &&
+                go.TryGetComponent(elementType, out var component))
+            {
+                result = component;
+                return true;
+            }
+
+            result = null;
+            return false;
+        }
+        
         private float ElementHeightCallback(int index)
         {
             if (index >= ChildrenCount)

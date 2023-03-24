@@ -55,11 +55,11 @@ namespace PancakeEditor.Attribute
             base.Update(forceUpdate);
         }
         
-        public override void Draw(float? viewWidth = null)
+        public override void Draw()
         {
             DrawMonoScriptProperty();
 
-            base.Draw(viewWidth);
+            base.Draw();
         }
 
         public override bool ApplyChanges()

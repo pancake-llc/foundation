@@ -2,8 +2,9 @@ using System;
 using System.Reflection;
 using UnityEditorInternal;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace InspectorUnityInternalBridge
+namespace UnityInternalBridge
 {
     internal static class ReorderableListProxy
     {
@@ -58,6 +59,11 @@ namespace InspectorUnityInternalBridge
 #else
             ClearCacheMethod?.Invoke(list, Array.Empty<object>());
 #endif
+        }
+        
+        public static void DoAddButton(ReorderableList list, Object value)
+        {
+            defaultBehaviours.DoAddButton(list, value);
         }
     }
 }

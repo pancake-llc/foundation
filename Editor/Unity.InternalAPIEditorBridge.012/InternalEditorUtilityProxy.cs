@@ -1,6 +1,6 @@
 ﻿using UnityEditorInternal;
 
-namespace InspectorUnityInternalBridge
+namespace UnityInternalBridge
 {
     internal static class InternalEditorUtilityProxy
     {

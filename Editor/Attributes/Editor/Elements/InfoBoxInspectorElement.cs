@@ -1,4 +1,4 @@
-﻿using InspectorUnityInternalBridge;
+﻿using UnityInternalBridge;
 using Pancake.Attribute;
 using UnityEditor;
 using UnityEngine;

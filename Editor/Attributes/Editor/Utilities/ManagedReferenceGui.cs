@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using InspectorUnityInternalBridge;
+using UnityInternalBridge;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;

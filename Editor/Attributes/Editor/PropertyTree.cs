@@ -7,7 +7,8 @@ namespace PancakeEditor.Attribute
 {
     public abstract class PropertyTree
     {
-        private PropertyInspectorElement _rootPropertyInspectorElement;
+        private PropertyInspectorElement _rootPropertyElement;
+        private Rect _cachedOuterRect = new Rect(0, 0, 0, 0);
 
         public PropertyDefinition RootPropertyDefinition { get; protected set; }
         public Property RootProperty { get; protected set; }
@@ -23,9 +24,9 @@ namespace PancakeEditor.Attribute
 
         public virtual void Dispose()
         {
-            if (_rootPropertyInspectorElement != null && _rootPropertyInspectorElement.IsAttached)
+            if (_rootPropertyElement != null && _rootPropertyElement.IsAttached)
             {
-                _rootPropertyInspectorElement.DetachInternal();
+                _rootPropertyElement.DetachInternal();
             }
         }
 
@@ -33,6 +34,16 @@ namespace PancakeEditor.Attribute
 
         public virtual bool ApplyChanges() { return false; }
 
+        public void RunValidationIfRequired()
+        {
+            if (!ValidationRequired)
+            {
+                return;
+            }
+
+            RunValidation();
+        }
+        
         public void RunValidation()
         {
             ValidationRequired = false;
@@ -42,32 +53,31 @@ namespace PancakeEditor.Attribute
             RequestRepaint();
         }
 
-        public virtual void Draw(float? viewWidth = null)
+        public virtual void Draw()
         {
             RepaintRequired = false;
 
-            if (_rootPropertyInspectorElement == null)
+            if (_rootPropertyElement == null)
             {
-                _rootPropertyInspectorElement =
+                _rootPropertyElement =
                     new PropertyInspectorElement(RootProperty, new PropertyInspectorElement.Props {forceInline = !RootProperty.TryGetMemberInfo(out _),});
-                _rootPropertyInspectorElement.AttachInternal();
+                _rootPropertyElement.AttachInternal();
             }
 
-            _rootPropertyInspectorElement.Update();
-            var width = viewWidth ?? GUILayoutUtility.GetRect(0, 9999, 0, 0).width;
-            var height = _rootPropertyInspectorElement.GetHeight(width);
-            var rect = GUILayoutUtility.GetRect(width, height);
+            _rootPropertyElement.Update();
+            var rectOuter = GUILayoutUtility.GetRect(0, 9999, 0, 0);
+            _cachedOuterRect = Event.current.type == EventType.Layout ? _cachedOuterRect : rectOuter;
 
-            if (viewWidth == null)
-            {
-                rect.xMin += 3;
-            }
+            var rect = new Rect(_cachedOuterRect);
+            rect.height = _rootPropertyElement.GetHeight(rect.width);
 
             rect = EditorGUI.IndentedRect(rect);
             var oldIndent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
 
-            _rootPropertyInspectorElement.OnGUI(rect);
+            GUILayoutUtility.GetRect(_cachedOuterRect.width, rect.height);
+            
+            _rootPropertyElement.OnGUI(rect);
 
             EditorGUI.indentLevel = oldIndent;
         }

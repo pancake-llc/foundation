@@ -1,6 +1,6 @@
 ﻿using UnityEditor.IMGUI.Controls;
 
-namespace InspectorUnityInternalBridge
+namespace UnityInternalBridge
 {
     internal class AdvancedDropdownProxy
     {

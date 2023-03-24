@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace InspectorUnityInternalBridge
+namespace UnityInternalBridge
 {
     internal static class ScriptAttributeUtilityProxy
     {

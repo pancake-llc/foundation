@@ -1,4 +1,4 @@
-﻿using InspectorUnityInternalBridge;
+﻿using UnityInternalBridge;
 using UnityEngine;
 
 namespace PancakeEditor.Attribute

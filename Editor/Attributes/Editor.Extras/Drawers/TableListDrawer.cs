@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using InspectorUnityInternalBridge;
+using UnityInternalBridge;
 using Pancake.Attribute;
 using PancakeEditor.Attribute;
 using UnityEditor;
