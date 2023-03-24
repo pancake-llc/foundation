@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Pancake.Tween;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -56,8 +57,42 @@ namespace Pancake
             //Start the clip at the same time the previous one left, if length allows
             //TODO: find a better way to sync fading songs
             if (startTime <= component.clip.length) component.time = startTime;
-            
-            
+
+            component.ActionVolumeTo(config.volume, duration).Play();
+        }
+
+        public float FadeMusicOut(float duration)
+        {
+            component.ActionVolumeOut(duration).Play();
+            return component.time;
+        }
+
+        private void OnFadeOutCompleted() { NotifyBeingDone(); }
+
+        public AudioClip GetClip() => component.clip;
+        public bool IsPlaying() => component.isPlaying;
+        public bool IsLooping() => component.loop;
+
+        /// <summary>
+        /// Used when the game is unpaused, to pick up SFX from where they left.
+        /// </summary>
+        public void Resume() { component.Play(); }
+
+        /// <summary>
+        /// Used when the game is paused.
+        /// </summary>
+        public void Pause() { component.Pause(); }
+
+        public void Stop() { component.Stop(); }
+
+        public void Finish()
+        {
+            if (component.loop)
+            {
+                component.loop = false;
+                float remainingTime = component.clip.length - component.time;
+                StartCoroutine(IeFinishPlaying(remainingTime));
+            }
         }
     }
 }
