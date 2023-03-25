@@ -1,8 +1,32 @@
+using Pancake.Attribute;
 using System;
-using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Sound
 {
+    using UnityEngine;
+
+    [Searchable]
+    [EditorIcon("scriptable_audio")]
+    [CreateAssetMenu(fileName = "Audio", menuName = "Pancake/Sound/Audio Signal")]
+    public class Audio : ScriptableObject
+    {
+        public bool loop;
+        [SerializeField] private AudioGroup[] groups;
+
+        public AudioClip[] GetClips()
+        {
+            int count = groups.Length;
+            var result = new AudioClip[count];
+            for (var i = 0; i < count; i++)
+            {
+                result[i] = groups[i].GetNextClip();
+            }
+
+            return result;
+        }
+    }
+
+
     /// <summary>
     /// Represents a group of AudioClips that can be treated as one
     /// and provides automatic randomisation or sequencing based on the <c>SequenceMode</c> value.

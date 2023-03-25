@@ -1,10 +1,11 @@
 using Pancake.Attribute;
 using UnityEngine.Audio;
 
-namespace Pancake
+namespace Pancake.Sound
 {
     using UnityEngine;
 
+    //TODO: Check which settings we really need at this level
     [Searchable]
     [EditorIcon("scriptable_sfx")]
     [CreateAssetMenu(fileName = "AudioConfig", menuName = "Pancake/Misc/AudioConfig")]

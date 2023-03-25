@@ -1,25 +1,25 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Pancake.Attribute;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
+    using UnityEngine;
+
     [Serializable]
     [EditorIcon("scriptable_event")]
-    public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector
+    public abstract class ScriptableEventFunc<T, TResult> : ScriptableEventBase, IDrawObjectsInInspector
     {
         [SerializeField] private bool debugLogEnabled;
         [SerializeField] protected T debugValue = default;
 
-        private readonly List<EventListenerGeneric<T>> _eventListeners = new List<EventListenerGeneric<T>>();
+        private readonly List<EventListenerFunc<T, TResult>> _eventListeners = new List<EventListenerFunc<T, TResult>>();
         private readonly List<Object> _listenerObjects = new List<Object>();
-        private Action<T> _onRaised;
+        private Func<T, TResult> _onRaised;
 
-        public event Action<T> OnRaised
+        public event Func<T, TResult> OnRaised
         {
             add
             {
@@ -36,27 +36,30 @@ namespace Pancake.Scriptable
             }
         }
 
-        public void Raise(T param)
+        public TResult Raise(T param)
         {
-            if (!Application.isPlaying) return;
+            TResult result = default;
+            if (!Application.isPlaying) return result;
 
             for (int i = _eventListeners.Count - 1; i >= 0; i--)
             {
                 _eventListeners[i].OnEventRaised(this, param, debugLogEnabled);
             }
 
-            _onRaised?.Invoke(param);
+            if (_onRaised != null) result = _onRaised.Invoke(param);
 
             // As this uses reflection, I only allow it to be called in Editor. So you need remember turnoff debug when build
             if (debugLogEnabled) Debug();
+
+            return result;
         }
 
-        public void RegisterListener(EventListenerGeneric<T> listener)
+        public void RegisterListener(EventListenerFunc<T, TResult> listener)
         {
             if (!_eventListeners.Contains(listener)) _eventListeners.Add(listener);
         }
 
-        public void UnregisterListener(EventListenerGeneric<T> listener)
+        public void UnregisterListener(EventListenerFunc<T, TResult> listener)
         {
             if (_eventListeners.Contains(listener)) _eventListeners.Remove(listener);
         }

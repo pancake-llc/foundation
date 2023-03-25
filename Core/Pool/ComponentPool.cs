@@ -6,7 +6,7 @@ namespace Pancake
     /// Implements a Pool for Component types.
     /// </summary>
     /// <typeparam name="T">Specifies the component to pool.</typeparam>
-    public abstract class ComponentPool<T> : Pool<T> where T : Component
+    public abstract class ComponentPool<T> : ScriptablePool<T> where T : Component
     {
         private Transform _root;
         private Transform _parent;

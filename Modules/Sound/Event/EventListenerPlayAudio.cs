@@ -1,23 +1,25 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Pancake.Attribute;
+using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Pancake.Scriptable
+namespace Pancake.Sound
 {
     [EditorIcon("scriptable_event_listener")]
-    public class EventListenerNoParam : EventListenerBase
+    public class EventListenerPlayAudio : EventListenerBase
     {
         [System.Serializable]
         public struct EventResponse
         {
-            public ScriptableEventNoParam scriptableEvent;
+            public ScriptableEventPlayAudio scriptableEvent;
             public UnityEvent response;
         }
 
         [SerializeField] private EventResponse[] eventResponses;
 
-        private Dictionary<ScriptableEventNoParam, UnityEvent> _dictionary = new Dictionary<ScriptableEventNoParam, UnityEvent>();
+        private Dictionary<ScriptableEventPlayAudio, UnityEvent> _dictionary = new Dictionary<ScriptableEventPlayAudio, UnityEvent>();
+
 
         protected override void ToggleRegistration(bool toggle)
         {
@@ -36,15 +38,15 @@ namespace Pancake.Scriptable
                 }
             }
         }
-        
-        public void OnEventRaised(ScriptableEventNoParam eventRaised, bool debug = false)
+
+        public void OnEventRaised(ScriptableEventPlayAudio eventRaised, bool debug = false)
         {
             _dictionary[eventRaised].Invoke();
 
             if (debug) Debug(eventRaised);
         }
         
-        private void Debug(ScriptableEventNoParam eventRaised)
+        private void Debug(ScriptableEventPlayAudio eventRaised)
         {
             var listener = _dictionary[eventRaised];
             var registeredListenerCount = listener.GetPersistentEventCount();

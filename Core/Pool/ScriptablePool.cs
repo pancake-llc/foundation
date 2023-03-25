@@ -9,7 +9,7 @@ namespace Pancake
     /// </summary>
     /// <typeparam name="T">Specifies the type of elements to pool.</typeparam>
     [EditorIcon("script_pool")]
-    public abstract class Pool<T> : ScriptableObject, IPool<T>
+    public abstract class ScriptablePool<T> : ScriptableObject, IPool<T>
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
 

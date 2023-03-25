@@ -1,10 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Pancake.Tween;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Pancake
+namespace Pancake.Sound
 {
     [RequireComponent(typeof(AudioSource))]
     public class SoundEmitter : CacheGameComponent<AudioSource>
