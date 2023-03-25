@@ -3,6 +3,7 @@ using Pancake.Attribute;
 using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Pancake.Sound
 {
@@ -12,13 +13,13 @@ namespace Pancake.Sound
         [System.Serializable]
         public struct EventResponse
         {
-            public ScriptableEventPlayAudio scriptableEvent;
+            [FormerlySerializedAs("scriptableEvent")] public AudioPlayEvent audioPlayEvent;
             public UnityEvent response;
         }
 
         [SerializeField] private EventResponse[] eventResponses;
 
-        private Dictionary<ScriptableEventPlayAudio, UnityEvent> _dictionary = new Dictionary<ScriptableEventPlayAudio, UnityEvent>();
+        private Dictionary<AudioPlayEvent, UnityEvent> _dictionary = new Dictionary<AudioPlayEvent, UnityEvent>();
 
 
         protected override void ToggleRegistration(bool toggle)
@@ -27,26 +28,26 @@ namespace Pancake.Sound
             {
                 if (toggle)
                 {
-                    eventResponses[i].scriptableEvent.RegisterListener(this);
+                    eventResponses[i].audioPlayEvent.RegisterListener(this);
 
-                    if (!_dictionary.ContainsKey(eventResponses[i].scriptableEvent)) _dictionary.Add(eventResponses[i].scriptableEvent, eventResponses[i].response);
+                    if (!_dictionary.ContainsKey(eventResponses[i].audioPlayEvent)) _dictionary.Add(eventResponses[i].audioPlayEvent, eventResponses[i].response);
                 }
                 else
                 {
-                    eventResponses[i].scriptableEvent.UnregisterListener(this);
-                    if (_dictionary.ContainsKey(eventResponses[i].scriptableEvent)) _dictionary.Remove(eventResponses[i].scriptableEvent);
+                    eventResponses[i].audioPlayEvent.UnregisterListener(this);
+                    if (_dictionary.ContainsKey(eventResponses[i].audioPlayEvent)) _dictionary.Remove(eventResponses[i].audioPlayEvent);
                 }
             }
         }
 
-        public void OnEventRaised(ScriptableEventPlayAudio eventRaised, bool debug = false)
+        public void OnEventRaised(AudioPlayEvent eventRaised, bool debug = false)
         {
             _dictionary[eventRaised].Invoke();
 
             if (debug) Debug(eventRaised);
         }
         
-        private void Debug(ScriptableEventPlayAudio eventRaised)
+        private void Debug(AudioPlayEvent eventRaised)
         {
             var listener = _dictionary[eventRaised];
             var registeredListenerCount = listener.GetPersistentEventCount();
@@ -77,7 +78,7 @@ namespace Pancake.Sound
                     {
                         var debugText = $"<color=#52D5F2>{methodName}()</color>";
                         debugText += " is called by the event: <color=#52D5F2>";
-                        debugText += r.scriptableEvent.name;
+                        debugText += r.audioPlayEvent.name;
                         debugText += "</color>";
                         UnityEngine.Debug.Log(debugText, gameObject);
                         containsMethod = true;

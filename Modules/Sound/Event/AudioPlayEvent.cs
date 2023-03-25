@@ -9,8 +9,8 @@ namespace Pancake.Sound
 {
     [Searchable]
     [EditorIcon("scriptable_event")]
-    [CreateAssetMenu(fileName = "scriptable_event_play_audio.asset", menuName = "Pancake/Sound/PlayEvent")]
-    public class ScriptableEventPlayAudio : ScriptableEventBase, IDrawObjectsInInspector
+    [CreateAssetMenu(fileName = "audio_play_channel.asset", menuName = "Pancake/Sound/AudioPlayEvent")]
+    public class AudioPlayEvent : ScriptableEventBase, IDrawObjectsInInspector
     {
         [SerializeField] private bool debugLogEnabled;
         private readonly List<EventListenerPlayAudio> _eventListeners = new List<EventListenerPlayAudio>();

@@ -8,7 +8,7 @@ namespace Pancake.Sound
     //TODO: Check which settings we really need at this level
     [Searchable]
     [EditorIcon("scriptable_sfx")]
-    [CreateAssetMenu(fileName = "AudioConfig", menuName = "Pancake/Misc/AudioConfig")]
+    [CreateAssetMenu(fileName = "AudioConfig", menuName = "Pancake/Sound/AudioConfig")]
     public class AudioConfig : ScriptableObject
     {
         private enum PriorityLevel
@@ -26,10 +26,10 @@ namespace Pancake.Sound
 
         public int Priority { get => (int) priorityLevel; set => priorityLevel = (PriorityLevel) value; }
 
-        [Header("Properties")] public bool mute = false;
+        [Header("Properties")] public bool mute;
         [Range(0f, 1f)] public float volume = 1f;
         [Range(-3f, 3f)] public float pitch = 1f;
-        [Range(-1f, 1f)] public float panStereo = 0f;
+        [Range(-1f, 1f)] public float panStereo;
         [Range(0f, 1.1f)] public float reverbZoneMix = 1f;
 
         [Header("Spatialisation")] [Range(0f, 1f)] public float spatialBlend = 1f;
@@ -37,14 +37,14 @@ namespace Pancake.Sound
         public AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic;
         [Range(0.01f, 5f)] public float minDistance = 0.1f;
         [Range(5f, 100f)] public float maxDistance = 50f;
-        [Range(0, 360)] public int spread = 0;
+        [Range(0, 360)] public int spread;
         [Range(0f, 5f)] public float dopplerLevel = 1f;
 
-        [Header("Ignores")] public bool bypassEffects = false;
-        public bool bypassListenerEffects = false;
-        public bool bypassReverbZones = false;
-        public bool ignoreListenerVolume = false;
-        public bool ignoreListenerPause = false;
+        [Header("Ignores")] public bool bypassEffects;
+        public bool bypassListenerEffects;
+        public bool bypassReverbZones;
+        public bool ignoreListenerVolume;
+        public bool ignoreListenerPause;
 
         public void ApplyTo(AudioSource audioSource)
         {

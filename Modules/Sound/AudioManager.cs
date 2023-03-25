@@ -10,19 +10,19 @@ namespace Pancake.Sound
         [SerializeField] private int initialSize = 10;
 
         [Header("Listening Channel")] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to play SFXs")] [SerializeField]
-        private ScriptableEventPlayAudio sfxPlayChannel;
+        private AudioPlayEvent sfxPlayChannel;
 
         [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to stop SFXs")] [SerializeField]
-        private ScriptableEventHandleAudio sfxStopChannel;
+        private AudioHandleEvent sfxStopChannel;
 
         [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to finish SFXs")] [SerializeField]
-        private ScriptableEventHandleAudio sfxFinishChannel;
+        private AudioHandleEvent sfxFinishChannel;
 
         [Space] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to play Music")] [SerializeField]
-        private ScriptableEventPlayAudio musicPlayChannel;
+        private AudioPlayEvent musicPlayChannel;
 
         [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to stop Music")] [SerializeField]
-        private ScriptableEventHandleAudio musicStopChannel;
+        private AudioHandleEvent musicStopChannel;
 
         [Space] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to change SFXs volume")] [SerializeField]
         private ScriptableEventFloat sfxVolumeEventChanel;

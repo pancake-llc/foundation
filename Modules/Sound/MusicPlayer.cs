@@ -6,30 +6,28 @@ namespace Pancake.Sound
     public class MusicPlayer : GameComponent
     {
         [SerializeField] private ScriptableEventNoParam onSceneReady;
-        [SerializeField] private ScriptableEventPlayAudio playMusicEvent;
+        [SerializeField] private AudioPlayEvent playMusicEvent;
         [SerializeField] private Audio bgmMusic;
         [SerializeField] private AudioConfig audioConfig;
 
-        [Header("Pause Menu Music")]
-        [SerializeField] private Audio pauseMusic;
-        [SerializeField] private ScriptableEventBool onPauseOpened; 
+        [Header("Pause Menu Music")] [SerializeField] private Audio pauseMusic;
+        [SerializeField] private ScriptableEventBool onPauseOpened;
 
-        private void OnEnable()
+        protected override void OnEnabled()
         {
+            base.OnEnabled();
             onPauseOpened.OnRaised += PlayPauseMusic;
             onSceneReady.OnRaised += PlayMusic;
         }
 
-        private void OnDisable()
+        protected override void OnDisabled()
         {
+            base.OnDisabled();
             onPauseOpened.OnRaised -= PlayPauseMusic;
             onSceneReady.OnRaised -= PlayMusic;
         }
 
-        private void PlayMusic()
-        {
-            playMusicEvent.Raise(bgmMusic, audioConfig, Vector3.zero);
-        }
+        private void PlayMusic() { playMusicEvent.Raise(bgmMusic, audioConfig, Vector3.zero); }
 
         private void PlayPauseMusic(bool open)
         {
@@ -37,5 +35,4 @@ namespace Pancake.Sound
             else PlayMusic();
         }
     }
-
 }

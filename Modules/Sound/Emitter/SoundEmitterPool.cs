@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using Pancake.Attribute;
+using UnityEngine;
 
 namespace Pancake.Sound
 {
+    [Searchable]
+    [EditorIcon("script_pool")]
     [CreateAssetMenu(fileName = "SoundEmitterPool", menuName = "Pancake/Sound/Emitter Pool")]
     public class SoundEmitterPool : ComponentPool<SoundEmitter>
     {

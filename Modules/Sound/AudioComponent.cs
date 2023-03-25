@@ -12,9 +12,9 @@ namespace Pancake.Sound
         [Header("Sound definition")] [SerializeField] private Audio au;
         [SerializeField] private bool playOnStart;
 
-        [Header("Configuration")] [SerializeField] private ScriptableEventPlayAudio audioPlayChannel;
-        [SerializeField] private ScriptableEventHandleAudio audioStopChannel;
-        [SerializeField] private ScriptableEventHandleAudio audioFinishChannel;
+        [Header("Configuration")] [SerializeField] private AudioPlayEvent audioPlayChannel;
+        [SerializeField] private AudioHandleEvent audioStopChannel;
+        [SerializeField] private AudioHandleEvent audioFinishChannel;
         [SerializeField] private AudioConfig audioConfig;
 
         private AudioHandle _audioHandle = AudioHandle.invalid;
