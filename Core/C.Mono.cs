@@ -1475,7 +1475,23 @@ namespace Pancake
 
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="coroutine"></param>
+        /// <returns></returns>
         public static CoroutineHandle RunCoroutine(this MonoBehaviour owner, IEnumerator coroutine) { return new CoroutineHandle(owner, coroutine); }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="coroutine"></param>
+        public static void KillCoroutine(this MonoBehaviour owner, IEnumerator coroutine)
+        {
+            if (coroutine != null) owner.StopCoroutine(coroutine);
+        }
 
         /// <summary>
         /// Destroy your self
