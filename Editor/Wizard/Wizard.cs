@@ -25,6 +25,8 @@ namespace PancakeEditor
             Tween,
             Notification,
             InAppReview,
+            NeedleConsole,
+            SelectiveProfiling,
         }
 
         private enum WizardMonetizeType
@@ -43,7 +45,9 @@ namespace PancakeEditor
         {
             Notification = WizardAllType.Notification,
             Tween = WizardAllType.Tween,
-            InAppReview = WizardAllType.InAppReview
+            InAppReview = WizardAllType.InAppReview,
+            NeedleConsole = WizardAllType.NeedleConsole,
+            SelectiveProfiling = WizardAllType.SelectiveProfiling,
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -169,6 +173,12 @@ namespace PancakeEditor
                 case WizardAllType.InAppReview when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesInAppReviewDrawer.OnInspectorGUI();
                     break;
+                case WizardAllType.NeedleConsole when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesNeedleConsoleDrawer.OnInspectorGUI();
+                    break;
+                case WizardAllType.SelectiveProfiling when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesSelectiveProfilingDrawer.OnInspectorGUI();
+                    break;
             }
         }
 
@@ -233,6 +243,8 @@ namespace PancakeEditor
                 case WizardAllType.Tween: return EditorResources.ScriptableTween;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 case WizardAllType.InAppReview: return EditorResources.ScriptableStar;
+                case WizardAllType.NeedleConsole: return EditorResources.ScriptableConsole;
+                case WizardAllType.SelectiveProfiling: return EditorResources.ScriptableProfiler;
                 default:
                     return null;
             }

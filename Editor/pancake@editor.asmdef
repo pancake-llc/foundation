@@ -63,6 +63,16 @@
             "name": "com.google.play.review",
             "expression": "1.8.0",
             "define": "PANCAKE_IN_APP_REVIEW"
+        },
+        {
+            "name": "com.needle.selective-profiling",
+            "expression": "1.0.0",
+            "define": "PANCAKE_SELECTIVE_PROFILING"
+        },
+        {
+            "name": "com.needle.console",
+            "expression": "2.3.14",
+            "define": "PANCAKE_NEEDLE_CONSOLE"
         }
     ],
     "noEngineReferences": false
