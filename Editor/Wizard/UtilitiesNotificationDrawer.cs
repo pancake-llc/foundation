@@ -8,12 +8,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_NOTIFICATION
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("Installed");
-            var lastRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(lastRect.x + 55, lastRect.y, 10, lastRect.height);
-            GUI.Label(iconRect, Uniform.IconContent("CollabNew"), Uniform.InstalledIcon);
-            EditorGUILayout.EndHorizontal();
+            Uniform.DrawInstalled("1.0.0");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(40f)))
             {

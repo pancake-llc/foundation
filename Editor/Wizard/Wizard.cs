@@ -23,7 +23,8 @@ namespace PancakeEditor
             Firebase,
             Adjust,
             Tween,
-            Notification
+            Notification,
+            InAppReview,
         }
 
         private enum WizardMonetizeType
@@ -42,6 +43,7 @@ namespace PancakeEditor
         {
             Notification = WizardAllType.Notification,
             Tween = WizardAllType.Tween,
+            InAppReview = WizardAllType.InAppReview
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -118,7 +120,7 @@ namespace PancakeEditor
         private void DrawContentLeftSide(List<int> contentsIndex)
         {
             if (contentsIndex == null) return;
-            
+
             foreach (int i in contentsIndex)
             {
                 EditorGUILayout.BeginHorizontal();
@@ -152,15 +154,20 @@ namespace PancakeEditor
                 case WizardAllType.InAppPurchase when _currentType is WizardType.Monetize or WizardType.All:
                     MonetizeIAPDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Firebase when _currentType is WizardType.Monetize or WizardType.All:
+                case WizardAllType.Firebase when _currentType is WizardType.Tracking or WizardType.All:
+                    TrackingFirebaseDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Adjust when _currentType is WizardType.Monetize or WizardType.All:
+                case WizardAllType.Adjust when _currentType is WizardType.Tracking or WizardType.All:
+                    TrackingAdjustDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Tween when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesTweenDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Notification when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesNotificationDrawer.OnInspectorGUI();
+                    break;
+                case WizardAllType.InAppReview when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesInAppReviewDrawer.OnInspectorGUI();
                     break;
             }
         }
@@ -225,6 +232,7 @@ namespace PancakeEditor
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
                 case WizardAllType.Tween: return EditorResources.ScriptableTween;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
+                case WizardAllType.InAppReview: return EditorResources.ScriptableStar;
                 default:
                     return null;
             }

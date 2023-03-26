@@ -395,6 +395,20 @@ namespace PancakeEditor
             return pos;
         }
 
+        /// <summary>
+        /// Draw label installed and icon
+        /// </summary>
+        public static void DrawInstalled(string version)
+        {
+            EditorGUILayout.BeginHorizontal();
+            var label = $"Installed {version}";
+            GUILayout.Label(label);
+            var lastRect = GUILayoutUtility.GetLastRect();
+            var iconRect = new Rect(lastRect.x + label.Length * 6f, lastRect.y, 10, lastRect.height);
+            GUI.Label(iconRect, Uniform.IconContent("CollabNew"), InstalledIcon);
+            EditorGUILayout.EndHorizontal();
+        }
+
         #endregion
 
 
