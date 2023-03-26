@@ -15,6 +15,7 @@ namespace PancakeEditor
         private static GUIStyle contentBox;
         private static GUIStyle box;
         private static GUIStyle foldoutButton;
+        private static GUIStyle foldoutIcon;
 
         private static readonly Dictionary<string, GUIContent> CachedIconContent = new Dictionary<string, GUIContent>();
         private static readonly UniformFoldoutState FoldoutSettings = new UniformFoldoutState();
@@ -54,12 +55,16 @@ namespace PancakeEditor
             }
         }
 
-        public static GUIStyle ContentBox
+        public static GUIStyle BoxContent
         {
             get
             {
                 if (contentBox != null) return contentBox;
-                contentBox = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.ContentBackgroundDark}};
+                contentBox = new GUIStyle
+                {
+                    border = new RectOffset(2, 2, 2, 2),
+                    normal = {background = EditorResources.BoxContentDark, scaledBackgrounds = new[] {EditorResources.BoxContentDark}}
+                };
                 return contentBox;
             }
         }
@@ -69,7 +74,12 @@ namespace PancakeEditor
             get
             {
                 if (box != null) return box;
-                box = new GUIStyle {border = new RectOffset(2, 2, 2, 2), margin = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.BoxBackgroundDark}};
+                box = new GUIStyle
+                {
+                    border = new RectOffset(2, 2, 2, 2),
+                    margin = new RectOffset(2, 2, 2, 2),
+                    normal = {background = EditorResources.BoxBackgroundDark, scaledBackgrounds = new[] {EditorResources.BoxBackgroundDark}}
+                };
                 return box;
             }
         }
@@ -90,6 +100,18 @@ namespace PancakeEditor
                 };
 
                 return foldoutButton;
+            }
+        }
+
+        public static GUIStyle FoldoutIcon
+        {
+            get
+            {
+                if (foldoutIcon != null) return foldoutIcon;
+
+                foldoutIcon = new GUIStyle {padding = new RectOffset(0, 0, 5, 0)};
+
+                return foldoutIcon;
             }
         }
 
@@ -274,26 +296,35 @@ namespace PancakeEditor
         /// <param name="sectionName"></param>
         /// <param name="drawer"></param>
         /// <param name="defaultFoldout"></param>
-        public static float DrawGroupFoldout(string key, string sectionName, System.Action drawer, bool defaultFoldout = true)
+        /// <param name="isShowContent"></param>
+        public static float DrawGroupFoldout(string key, string sectionName, System.Action drawer, bool defaultFoldout = true, bool isShowContent = true)
         {
             bool foldout = GetFoldoutState(key, defaultFoldout);
 
-            var rect = EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout ? 30 : 0));
-            EditorGUILayout.BeginHorizontal();
+            var rect = EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout && isShowContent ? 30 : 0));
 
-            // Header label (and button).
-            if (GUILayout.Button(sectionName, FoldoutButton)) SetFoldoutState(key, !foldout);
+            if (!isShowContent)
+            {
+                EditorGUILayout.LabelField(sectionName);
+            }
+            else
+            {
+                EditorGUILayout.BeginHorizontal();
 
-            // The expand/collapse icon.
-            var buttonRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(buttonRect.x + buttonRect.width - 15, buttonRect.y, 10, buttonRect.height);
-            //GUI.Label(iconRect, GetChevronIcon(foldout), Cheveron);
+                // Header label (and button).
+                if (GUILayout.Button($"    {sectionName}", FoldoutButton)) SetFoldoutState(key, !foldout);
 
-            EditorGUILayout.EndHorizontal();
+                // The expand/collapse icon.
+                var buttonRect = GUILayoutUtility.GetLastRect();
+                var iconRect = new Rect(buttonRect.x, buttonRect.y, 10, buttonRect.height);
+                GUI.Label(iconRect, foldout ? IconContent("d_IN_foldout_act_on") : IconContent("d_IN_foldout"), FoldoutIcon);
 
-            // Draw the section content.
-            if (foldout) GUILayout.Space(5);
-            if (foldout && drawer != null) drawer();
+                EditorGUILayout.EndHorizontal();
+
+                // Draw the section content.
+                if (foldout) GUILayout.Space(5);
+                if (foldout && drawer != null) drawer();
+            }
 
             float height = rect.height;
             EditorGUILayout.EndVertical();

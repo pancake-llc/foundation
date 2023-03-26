@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -22,7 +21,8 @@ namespace PancakeEditor
             Advertisement,
             InAppPurchase,
             Firebase,
-            Adjust
+            Adjust,
+            Tween
         }
 
         private enum WizardMonetizeType
@@ -39,6 +39,7 @@ namespace PancakeEditor
 
         private enum WizardUtilitiesType
         {
+            Tween = WizardAllType.Tween,
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -56,7 +57,12 @@ namespace PancakeEditor
 
 
         [MenuItem("Tools/Pancake/Wizard #W")]
-        public new static void Show() => GetWindow<Wizard>("Wizard");
+        public new static void Show()
+        {
+            var window = GetWindow<Wizard>("Wizard");
+            window.autoRepaintOnSceneChange = true;
+            window.Show(true);
+        }
 
         private void OnEnable()
         {
@@ -154,6 +160,9 @@ namespace PancakeEditor
                     break;
                 case WizardAllType.Adjust when _currentType is WizardType.Monetize or WizardType.All:
                     break;
+                case WizardAllType.Tween when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesTweenDrawer.OnInspectorGUI();
+                    break;
             }
         }
 
@@ -215,6 +224,7 @@ namespace PancakeEditor
                 case WizardAllType.InAppPurchase: return EditorResources.ScriptableIap;
                 case WizardAllType.Firebase: return EditorResources.ScriptableFirebase;
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
+                case WizardAllType.Tween: return EditorResources.ScriptableTween;
                 default:
                     return null;
             }

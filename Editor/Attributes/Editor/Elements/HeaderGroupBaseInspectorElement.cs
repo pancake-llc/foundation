@@ -44,7 +44,7 @@ namespace PancakeEditor.Attribute
 
             if (contentHeight > 0)
             {
-                Uniform.DrawBox(contentBgRect, headerHeight > 0f ? Uniform.ContentBox : Uniform.Box);
+                Uniform.DrawBox(contentBgRect, headerHeight > 0f ? Uniform.BoxContent : Uniform.Box);
 
                 using (GuiHelper.PushLabelWidth(EditorGUIUtility.labelWidth - InsetLeft))
                 {
