@@ -22,7 +22,8 @@ namespace PancakeEditor
             InAppPurchase,
             Firebase,
             Adjust,
-            Tween
+            Tween,
+            Notification
         }
 
         private enum WizardMonetizeType
@@ -39,6 +40,7 @@ namespace PancakeEditor
 
         private enum WizardUtilitiesType
         {
+            Notification = WizardAllType.Notification,
             Tween = WizardAllType.Tween,
         }
 
@@ -116,23 +118,17 @@ namespace PancakeEditor
         private void DrawContentLeftSide(List<int> contentsIndex)
         {
             if (contentsIndex == null) return;
-
-            var index = 0;
+            
             foreach (int i in contentsIndex)
             {
                 EditorGUILayout.BeginHorizontal();
                 var icon = GetIcon((WizardAllType) i);
                 var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 5)};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
-                bool clicked = GUILayout.Toggle((int) _selectedItemType == index, ((WizardAllType) i).ToString(), GUI.skin.button, GUILayout.ExpandWidth(true));
+                bool clicked = GUILayout.Toggle((int) _selectedItemType == i, ((WizardAllType) i).ToString(), GUI.skin.button, GUILayout.ExpandWidth(true));
                 EditorGUILayout.EndHorizontal();
 
-                if (clicked)
-                {
-                    _selectedItemType = (WizardAllType) index;
-                }
-
-                index++;
+                if (clicked) _selectedItemType = (WizardAllType) i;
             }
         }
 
@@ -162,6 +158,9 @@ namespace PancakeEditor
                     break;
                 case WizardAllType.Tween when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesTweenDrawer.OnInspectorGUI();
+                    break;
+                case WizardAllType.Notification when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesNotificationDrawer.OnInspectorGUI();
                     break;
             }
         }
@@ -225,6 +224,7 @@ namespace PancakeEditor
                 case WizardAllType.Firebase: return EditorResources.ScriptableFirebase;
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
                 case WizardAllType.Tween: return EditorResources.ScriptableTween;
+                case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 default:
                     return null;
             }
