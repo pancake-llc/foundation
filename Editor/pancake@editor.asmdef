@@ -23,6 +23,11 @@
             "name": "com.unity.purchasing",
             "expression": "",
             "define": "PANCAKE_IAP"
+        },
+        {
+            "name": "com.pancake.notification",
+            "expression": "1.0.0",
+            "define": "PANCAKE_NOTIFICATION"
         }
     ],
     "noEngineReferences": false

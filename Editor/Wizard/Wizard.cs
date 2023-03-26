@@ -138,7 +138,7 @@ namespace PancakeEditor
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
             var icon = GetIcon(_selectedItemType);
             GUILayout.Box(icon, GUIStyle.none, GUILayout.Width(32), GUILayout.Height(32));
-            GUILayout.Label(((WizardAllType) _selectedItemType).ToString(), EditorStyles.label);
+            GUILayout.Label(((WizardAllType) _selectedItemType).ToString(), Uniform.HeaderLabel);
             EditorGUILayout.EndHorizontal();
         }
 

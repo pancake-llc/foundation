@@ -16,6 +16,8 @@ namespace PancakeEditor
         private static GUIStyle box;
         private static GUIStyle foldoutButton;
         private static GUIStyle foldoutIcon;
+        private static GUIStyle installedIcon;
+        private static GUIStyle headerLabel;
 
         private static readonly Dictionary<string, GUIContent> CachedIconContent = new Dictionary<string, GUIContent>();
         private static readonly UniformFoldoutState FoldoutSettings = new UniformFoldoutState();
@@ -112,6 +114,28 @@ namespace PancakeEditor
                 foldoutIcon = new GUIStyle {padding = new RectOffset(0, 0, 5, 0)};
 
                 return foldoutIcon;
+            }
+        }      
+        
+        public static GUIStyle InstalledIcon
+        {
+            get
+            {
+                if (installedIcon != null) return installedIcon;
+
+                installedIcon = new GUIStyle {padding = new RectOffset(0, 0, 3, 0), fixedWidth = 30, fixedHeight = 30};
+
+                return installedIcon;
+            }
+        }
+
+        public static GUIStyle HeaderLabel
+        {
+            get
+            {
+                if (headerLabel != null) return headerLabel;
+                headerLabel = new GUIStyle(EditorStyles.label) {fontSize = 13, fontStyle = FontStyle.Bold};
+                return headerLabel;
             }
         }
 
