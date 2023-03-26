@@ -28,6 +28,11 @@
             "name": "com.pancake.notification",
             "expression": "1.0.0",
             "define": "PANCAKE_NOTIFICATION"
+        },
+        {
+            "name": "com.pancake.adjust",
+            "expression": "4.33.0",
+            "define": "PANCAKE_ADJUST"
         }
     ],
     "noEngineReferences": false
