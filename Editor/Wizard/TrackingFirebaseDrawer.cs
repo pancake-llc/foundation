@@ -10,7 +10,24 @@ namespace PancakeEditor
 #if PANCAKE_FIREBASE_ANALYTIC
             Uniform.DrawInstalled("analytic 10.6.0");
             EditorGUILayout.Space();
-#else
+#endif
+
+#if PANCAKE_FIREBASE_REMOTECONFIG
+            Uniform.DrawInstalled("remote config 10.6.0");
+            EditorGUILayout.Space();
+#endif
+
+#if PANCAKE_FIREBASE_MESSAGING
+            Uniform.DrawInstalled("messaging 10.6.0");
+            EditorGUILayout.Space();
+#endif
+
+#if PANCAKE_FIREBASE_CRASHLYTIC
+            Uniform.DrawInstalled("crashlytic 10.6.0");
+            EditorGUILayout.Space();
+#endif
+
+#if !PANCAKE_FIREBASE_ANALYTIC
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Analytic", GUILayout.MaxHeight(40f)))
             {
@@ -23,10 +40,8 @@ namespace PancakeEditor
             GUI.enabled = true;
 #endif
 
-#if PANCAKE_FIREBASE_REMOTECONFIG
-            Uniform.DrawInstalled("remote config 10.6.0");
-            EditorGUILayout.Space();
-#else
+
+#if !PANCAKE_FIREBASE_REMOTECONFIG
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Remote Config", GUILayout.MaxHeight(40f)))
             {
@@ -39,10 +54,7 @@ namespace PancakeEditor
             GUI.enabled = true;
 #endif
 
-#if PANCAKE_FIREBASE_MESSAGING
-            Uniform.DrawInstalled("messaging 10.6.0");
-            EditorGUILayout.Space();
-#else
+#if !PANCAKE_FIREBASE_MESSAGING
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Messaging", GUILayout.MaxHeight(40f)))
             {
@@ -55,10 +67,7 @@ namespace PancakeEditor
             GUI.enabled = true;
 #endif
 
-#if PANCAKE_FIREBASE_CRASHLYTIC
-            Uniform.DrawInstalled("crashlytic 10.6.0");
-            EditorGUILayout.Space();
-#else
+#if !PANCAKE_FIREBASE_CRASHLYTIC
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Firebase Crashlytic", GUILayout.MaxHeight(40f)))
             {
