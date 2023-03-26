@@ -58,6 +58,11 @@
             "name": "com.google.external-dependency-manager",
             "expression": "1.2.169",
             "define": "PANCAKE_GOOGLE_EDM"
+        },
+        {
+            "name": "com.google.play.review",
+            "expression": "1.8.0",
+            "define": "PANCAKE_IN_APP_REVIEW"
         }
     ],
     "noEngineReferences": false
