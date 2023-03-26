@@ -10,8 +10,8 @@ namespace PancakeEditor
 #if PANCAKE_NOTIFICATION
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Installed");
-            var buttonRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(buttonRect.x + 55, buttonRect.y, 10, buttonRect.height);
+            var lastRect = GUILayoutUtility.GetLastRect();
+            var iconRect = new Rect(lastRect.x + 55, lastRect.y, 10, lastRect.height);
             GUI.Label(iconRect, Uniform.IconContent("CollabNew"), Uniform.InstalledIcon);
             EditorGUILayout.EndHorizontal();
             GUILayout.FlexibleSpace();
