@@ -10,6 +10,10 @@ namespace PancakeEditor
 #if PANCAKE_NEEDLE_CONSOLE
             Uniform.DrawInstalled("2.3.15");
             EditorGUILayout.Space();
+            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(25f)))
+            {
+                SettingsService.OpenUserPreferences("Preferences/Needle/Console");
+            }
            
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;

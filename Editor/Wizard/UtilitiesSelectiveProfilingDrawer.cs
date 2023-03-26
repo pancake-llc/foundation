@@ -10,12 +10,19 @@ namespace PancakeEditor
 #if PANCAKE_SELECTIVE_PROFILING
             Uniform.DrawInstalled("1.0.1-pre.1");
             EditorGUILayout.Space();
-           
+            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(25f)))
+            {
+                SettingsService.OpenProjectSettings("Project/Needle/Selective Profiler");
+            }
+
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
             if (GUILayout.Button("Uninstall Selective Profiling", GUILayout.MaxHeight(25f)))
             {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Selective Profiling", "Are you sure you want to uninstall selective profiling package ?", "Yes", "No");
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Selective Profiling",
+                    "Are you sure you want to uninstall selective profiling package ?",
+                    "Yes",
+                    "No");
                 if (confirmDelete)
                 {
                     RegistryManager.Remove("com.needle.selective-profiling");

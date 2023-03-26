@@ -43,7 +43,7 @@ namespace PancakeEditor
         private static void OpenPreferences()
         {
 #if UNITY_2019_1_OR_NEWER
-            SettingsService.OpenUserPreferences("Preferences/Pancake");
+            SettingsService.OpenUserPreferences("Preferences/External Tools");
 #else
 			EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
 #endif
