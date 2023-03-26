@@ -2,7 +2,7 @@
 using Pancake.Attribute;
 using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Spring
 {
     [EditorIcon("script_spring")]
     public class SpringPosition3DComponent : BaseSpringComponent, ISpringTo<Vector3>, INudgeable<Vector3>

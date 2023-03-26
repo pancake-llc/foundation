@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Spring
 {
     public class SpringVector3 : BaseSpring<Vector3>
     {

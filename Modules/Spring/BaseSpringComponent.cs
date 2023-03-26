@@ -1,7 +1,7 @@
 ﻿using Pancake.Attribute;
 using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Spring
 {
     [EditorIcon("script_spring")]
     public abstract class BaseSpringComponent : GameComponent

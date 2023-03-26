@@ -1,4 +1,4 @@
-﻿namespace Pancake
+﻿namespace Pancake.Spring
 {
     public interface INudgeable<T>
     {

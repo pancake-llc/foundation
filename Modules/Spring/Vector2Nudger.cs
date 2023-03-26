@@ -1,7 +1,7 @@
 ﻿using Pancake.Attribute;
 using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Spring
 {
     [EditorIcon("script_nudge")]
     public class Vector2Nudger : GameComponent

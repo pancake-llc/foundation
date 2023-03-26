@@ -2,7 +2,7 @@
 using Pancake.Attribute;
 using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Spring
 {
     [EditorIcon("script_local_spring")]
     public class SpringLocalScaleComponent : BaseSpringComponent, ISpringTo<Vector3>, INudgeable<Vector3>
