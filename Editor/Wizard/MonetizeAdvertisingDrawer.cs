@@ -29,12 +29,29 @@ namespace PancakeEditor
                 }
 
                 GUI.enabled = true;
+
+                GUILayout.FlexibleSpace();
+                GUI.backgroundColor = Uniform.Red;
+                if (GUILayout.Button("Uninstall Advertising", GUILayout.MaxHeight(25f)))
+                {
+                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Advertising", "Are you sure you want to uninstall advertising package ?", "Yes", "No");
+                    if (confirmDelete)
+                    {
+                        RegistryManager.Remove("com.unity.sharp-zip-lib");
+                        Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
+                        AssetDatabase.Refresh();
+                        RegistryManager.Resolve();
+                    }
+                }
+
+                GUI.backgroundColor = Color.white;
             }
             else
             {
                 var editor = UnityEditor.Editor.CreateEditor(adSetting);
                 editor.OnInspectorGUI();
             }
+
 #else
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install", GUILayout.MaxHeight(40f)))
