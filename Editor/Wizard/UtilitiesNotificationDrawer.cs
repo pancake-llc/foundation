@@ -14,6 +14,20 @@ namespace PancakeEditor
             {
                 Application.OpenURL("https://github.com/pancake-llc/notification/wiki");
             }
+
+            EditorGUILayout.Space();
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Uninstall Notification", GUILayout.MaxHeight(25f)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Notification", "Are you sure you want to uninstall notification package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.pancake.notification");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
 #else
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(40f)))
