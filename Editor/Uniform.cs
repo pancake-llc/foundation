@@ -98,7 +98,9 @@ namespace PancakeEditor
                     margin = new RectOffset(4, 4, 4, 4),
                     padding = new RectOffset(0, 0, 2, 3),
                     stretchWidth = true,
-                    richText = true
+                    richText = true,
+                    fontSize = 12,
+                    fontStyle = FontStyle.Bold
                 };
 
                 return foldoutButton;
@@ -115,8 +117,8 @@ namespace PancakeEditor
 
                 return foldoutIcon;
             }
-        }      
-        
+        }
+
         public static GUIStyle InstalledIcon
         {
             get
