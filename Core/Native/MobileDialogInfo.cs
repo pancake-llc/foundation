@@ -3,6 +3,7 @@ using System;
 
 namespace Pancake
 {
+    [AddComponentMenu("")]
     public class MobileDialogInfo : MonoBehaviour
     {
         public Action okAction;
@@ -23,7 +24,7 @@ namespace Pancake
             return dialog;
         }
 
-        public void Init() { MobileNative.ShowInfoPopup(title, message, ok); }
+        private void Init() { MobileNative.ShowInfoPopup(title, message, ok); }
 
 
         public void OnOkCallback(string message)

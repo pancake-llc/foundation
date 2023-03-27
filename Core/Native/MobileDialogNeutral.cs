@@ -3,6 +3,7 @@ using System;
 
 namespace Pancake
 {
+    [AddComponentMenu("")]
     public class MobileDialogNeutral : MonoBehaviour
     {
         public Action acceptAction;
@@ -39,7 +40,7 @@ namespace Pancake
             return dialog;
         }
 
-        public void Init()
+        private void Init()
         {
             MobileNative.ShowDialogNeutral(title,
                 message,

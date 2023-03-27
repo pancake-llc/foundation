@@ -18,9 +18,6 @@ namespace Pancake
 
         [DllImport("__Internal")]
         private static extern void _TAG_DismissCurrentAlert();
-	
-        [DllImport ("__Internal")]
-        private static extern void _TAG_ShowDatePicker(int mode, double unix);
 
 #endif
 

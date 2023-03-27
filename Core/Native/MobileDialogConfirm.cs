@@ -3,6 +3,7 @@ using System;
 
 namespace Pancake
 {
+    [AddComponentMenu("")]
     public class MobileDialogConfirm : MonoBehaviour
     {
         public Action yesAction;
@@ -26,7 +27,7 @@ namespace Pancake
             return dialog;
         }
 
-        public void Init() { MobileNative.ShowDialogConfirm(title, message, yes, no); }
+        private void Init() { MobileNative.ShowDialogConfirm(title, message, yes, no); }
 
 
         public void OnYesCallback(string message)
