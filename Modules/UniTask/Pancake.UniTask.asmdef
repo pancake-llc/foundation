@@ -1,11 +1,7 @@
 {
-    "name": "pancake@sound",
+    "name": "Pancake.UniTask",
     "rootNamespace": "",
-    "references": [
-        "GUID:adac8d59ad7e8504f82d387cded797a7",
-        "GUID:10507a3c16a6d88428b6e2a636fb7438",
-        "GUID:b0a110e2f808b4d4d82f5694f91b251a"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

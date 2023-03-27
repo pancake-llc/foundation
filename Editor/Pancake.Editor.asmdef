@@ -1,5 +1,5 @@
 {
-    "name": "pancake@editor",
+    "name": "Pancake.Editor",
     "rootNamespace": "",
     "references": [
         "GUID:a824ce4dde854994ab15209834381e6f",

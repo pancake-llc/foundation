@@ -1,0 +1,19 @@
+{
+    "name": "Pancake.UGUI.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:71a2e5fd62742b447a45a06bf18f9a7d",
+        "GUID:d43f774d56c534e4b84fe18247432afb"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

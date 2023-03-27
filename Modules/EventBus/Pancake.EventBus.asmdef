@@ -1,9 +1,7 @@
 {
-    "name": "pancake@spring",
+    "name": "Pancake.EventBus",
     "rootNamespace": "",
-    "references": [
-        "GUID:adac8d59ad7e8504f82d387cded797a7"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

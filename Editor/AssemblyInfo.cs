@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("pancake@scriptable.editor")]
+[assembly: InternalsVisibleTo("Pancake.Scriptable.Editor")]

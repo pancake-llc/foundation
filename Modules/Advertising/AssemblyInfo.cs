@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("pancake@monetization.editor")]
+[assembly: InternalsVisibleTo("Pancake.Monetization.Editor")]
