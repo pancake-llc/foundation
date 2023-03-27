@@ -12,9 +12,19 @@ namespace Pancake
         public string message;
         public string yes;
         public string no;
+        public bool cancelable;
+        public bool touchOutSide;
 
         // Constructor
-        public static MobileDialogConfirm Create(string title, string message, string yes, string no, Action yesAction, Action noAction)
+        public static MobileDialogConfirm Create(
+            string title,
+            string message,
+            string yes,
+            string no,
+            bool cancelable,
+            bool touchOutSide,
+            Action yesAction,
+            Action noAction)
         {
             var dialog = new GameObject("MobileDialogConfirm").AddComponent<MobileDialogConfirm>();
             dialog.title = title;
@@ -23,11 +33,21 @@ namespace Pancake
             dialog.no = no;
             dialog.yesAction = yesAction;
             dialog.noAction = noAction;
+            dialog.cancelable = cancelable;
+            dialog.touchOutSide = touchOutSide;
             dialog.Init();
             return dialog;
         }
 
-        private void Init() { MobileNative.ShowDialogConfirm(title, message, yes, no); }
+        private void Init()
+        {
+            MobileNative.ShowDialogConfirm(title,
+                message,
+                yes,
+                no,
+                cancelable,
+                touchOutSide);
+        }
 
 
         public void OnYesCallback(string message)

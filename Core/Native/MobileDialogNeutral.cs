@@ -14,6 +14,7 @@ namespace Pancake
         public string accept;
         public string neutral;
         public string decline;
+        public bool touchOutSide;
 
 
         public static MobileDialogNeutral Create(
@@ -22,6 +23,7 @@ namespace Pancake
             string accept,
             string neutral,
             string decline,
+            bool touchOutSide,
             Action acceptAction,
             Action neutralAction,
             Action declineAction)
@@ -32,6 +34,7 @@ namespace Pancake
             dialog.accept = accept;
             dialog.neutral = neutral;
             dialog.decline = decline;
+            dialog.touchOutSide = touchOutSide;
             dialog.acceptAction = acceptAction;
             dialog.neutralAction = neutralAction;
             dialog.declineAction = declineAction;
@@ -46,7 +49,8 @@ namespace Pancake
                 message,
                 accept,
                 neutral,
-                decline);
+                decline,
+                touchOutSide);
         }
 
 
