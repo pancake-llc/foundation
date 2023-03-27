@@ -39,16 +39,15 @@ namespace Pancake
         /// <param name="message">Dialog message text</param>
         /// <param name="yes">Accept Button text</param>
         /// <param name="no">Cancel Button text</param>
-        /// <param name="cancelable">Android only. Allows setting the cancelable property of the dialog</param>
         /// <param name="touchOutSide"></param>
-        public static void ShowDialogConfirm(string title, string message, string yes, string no, bool cancelable, bool touchOutSide)
+        public static void ShowDialogConfirm(string title, string message, string yes, string no, bool touchOutSide)
         {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
             _TAG_ShowDialogConfirm(title, message, yes, no);
 #elif UNITY_ANDROID
             AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.pancake.unitynative.Bridge");
-            javaUnityClass.CallStatic("ShowDialogConfirm", title, message, yes, no, cancelable, touchOutSide);
+            javaUnityClass.CallStatic("ShowDialogConfirm", title, message, yes, no, touchOutSide);
 #endif
         }
 

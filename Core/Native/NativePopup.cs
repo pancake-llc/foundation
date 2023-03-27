@@ -20,14 +20,12 @@ namespace Pancake
             string no,
             Action yesAction = null,
             Action noAction = null,
-            bool cancelable = true,
             bool touchOutSide = false)
         {
             MobileDialogConfirm.Create(title,
                 message,
                 yes,
                 no,
-                cancelable,
                 touchOutSide,
                 yesAction,
                 noAction);

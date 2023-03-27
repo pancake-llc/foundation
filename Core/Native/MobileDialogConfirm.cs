@@ -12,7 +12,6 @@ namespace Pancake
         public string message;
         public string yes;
         public string no;
-        public bool cancelable;
         public bool touchOutSide;
 
         // Constructor
@@ -21,7 +20,6 @@ namespace Pancake
             string message,
             string yes,
             string no,
-            bool cancelable,
             bool touchOutSide,
             Action yesAction,
             Action noAction)
@@ -33,7 +31,6 @@ namespace Pancake
             dialog.no = no;
             dialog.yesAction = yesAction;
             dialog.noAction = noAction;
-            dialog.cancelable = cancelable;
             dialog.touchOutSide = touchOutSide;
             dialog.Init();
             return dialog;
@@ -45,7 +42,6 @@ namespace Pancake
                 message,
                 yes,
                 no,
-                cancelable,
                 touchOutSide);
         }
 
