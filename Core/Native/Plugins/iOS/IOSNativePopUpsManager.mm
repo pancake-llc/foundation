@@ -1,4 +1,6 @@
 #import "IOSNativePopUpsManager.h"
+#import "ToastView.h"
+#import "UnityAppController.h"
 
 @implementation IOSNativePopUpsManager
 
@@ -81,6 +83,26 @@ static UIAlertController* _currentAllert =  nil;
     _currentAllert = alertController;
 }
 
++(void) ShowLongToast: (NSString *) message
+{
+    UIViewController* rootViewController = UnityGetGLViewController();
+    
+    UIView* view = rootViewController.view;
+    
+    [ToastView makeToast:view withText:message withDuaration:3.5];
+}
+
++(void) ShowShortToast: (NSString *) message
+{
+    UIViewController* rootViewController = UnityGetGLViewController();
+    
+    UIView* view = rootViewController.view;
+    
+    [ToastView makeToast:view withText:message withDuaration:2];
+}
+
+extern UIViewController* UnityGetGLViewController();
+
 extern "C" {
     // Unity Call
     
@@ -98,6 +120,14 @@ extern "C" {
     
     void _TAG_DismissCurrentAlert() {
         [IOSNativePopUpsManager dismissCurrentAlert];
+    }
+    
+    void _TAG_ShowLongToast(char* message){
+        [IOSNativePopUpsManager ShowLongToast:[DataConvertor charToNSString:message]];
+    }
+    
+    void _TAG_ShowShortToast(char* message){
+        [IOSNativePopUpsManager ShowShortToast:[DataConvertor charToNSString:message]];
     }
 }
 

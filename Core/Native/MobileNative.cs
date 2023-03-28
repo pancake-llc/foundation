@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using UnityEngine;
+﻿using System.Runtime.InteropServices;
 
 namespace Pancake
 {
@@ -15,6 +13,12 @@ namespace Pancake
 
         [DllImport("__Internal")]
         private static extern void _TAG_ShowDialogInfo(string title, string message, string ok);
+
+        [DllImport("__Internal")]
+        private static extern void _TAG_ShowLongToast(string message);
+
+        [DllImport("__Internal")]
+        private static extern void _TAG_ShowShortToast(string message);
 
         [DllImport("__Internal")]
         private static extern void _TAG_DismissCurrentAlert();
@@ -66,7 +70,8 @@ namespace Pancake
         {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
-            
+            if(style == 0) _TAG_ShowShortToast(message);
+            else _TAG_ShowLongToast(message);
 #elif UNITY_ANDROID
             AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.pancake.unitynative.Bridge");
             javaUnityClass.CallStatic("ShowToast", message, style);

@@ -6,3 +6,4 @@
 + (void) unregisterAllertView;
 
 @end
+
