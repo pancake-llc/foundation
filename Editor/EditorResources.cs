@@ -24,7 +24,8 @@ namespace PancakeEditor
         internal static Texture2D ScriptableFirebase => Editor.FindAssetWithPath<Texture2D>("scriptable_firebase.png", RELATIVE_PATH);
         internal static Texture2D ScriptableAdjust => Editor.FindAssetWithPath<Texture2D>("scriptable_adjust.png", RELATIVE_PATH);
         internal static Texture2D ScriptableTween => Editor.FindAssetWithPath<Texture2D>("scriptable_tween.png", RELATIVE_PATH);
-        internal static Texture2D ScriptableNotification => Editor.FindAssetWithPath<Texture2D>("scriptable_noti.png", RELATIVE_PATH);
+        internal static Texture2D ScriptableNotification => Editor.FindAssetWithPath<Texture2D>("scriptable_notification.png", RELATIVE_PATH);
+        internal static Texture2D ScriptableHeartConfig => Editor.FindAssetWithPath<Texture2D>("scriptable_setting.png", RELATIVE_PATH);
         internal static Texture2D ScriptableStar => Editor.FindAssetWithPath<Texture2D>("scriptable_star.png", RELATIVE_PATH);
         internal static Texture2D ScriptableConsole => Editor.FindAssetWithPath<Texture2D>("scriptable_console.png", RELATIVE_PATH);
         internal static Texture2D ScriptableProfiler => Editor.FindAssetWithPath<Texture2D>("scriptable_profiler.png", RELATIVE_PATH);

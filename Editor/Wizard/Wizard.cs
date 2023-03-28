@@ -22,6 +22,7 @@ namespace PancakeEditor
             InAppPurchase,
             Firebase,
             Adjust,
+            HeartConfig,
             Tween,
             Notification,
             InAppReview,
@@ -48,6 +49,7 @@ namespace PancakeEditor
             InAppReview = WizardAllType.InAppReview,
             NeedleConsole = WizardAllType.NeedleConsole,
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
+            HeartConfig = WizardAllType.HeartConfig,
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -179,6 +181,9 @@ namespace PancakeEditor
                 case WizardAllType.SelectiveProfiling when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesSelectiveProfilingDrawer.OnInspectorGUI();
                     break;
+                case WizardAllType.HeartConfig when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesHeartSettingDrawer.OnInspectorGUI();
+                    break;
             }
         }
 
@@ -245,6 +250,7 @@ namespace PancakeEditor
                 case WizardAllType.InAppReview: return EditorResources.ScriptableStar;
                 case WizardAllType.NeedleConsole: return EditorResources.ScriptableConsole;
                 case WizardAllType.SelectiveProfiling: return EditorResources.ScriptableProfiler;
+                case WizardAllType.HeartConfig: return EditorResources.ScriptableHeartConfig;
                 default:
                     return null;
             }
