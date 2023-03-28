@@ -13,14 +13,7 @@ namespace Pancake
                 okAction);
         }
 
-        public static void ShowQuestion(
-            string title,
-            string message,
-            string yes,
-            string no,
-            Action yesAction = null,
-            Action noAction = null,
-            bool touchOutSide = false)
+        public static void ShowQuestion(string title, string message, string yes, string no, Action yesAction = null, Action noAction = null, bool touchOutSide = false)
         {
             MobileDialogConfirm.Create(title,
                 message,
@@ -51,6 +44,14 @@ namespace Pancake
                 acceptAction,
                 neutralAction,
                 declineAction);
+        }
+
+        public static void ShowToast(string message, ToastStyle style = ToastStyle.Short) { MobileNative.ShowToast(message, (int)style); }
+
+        public enum ToastStyle
+        {
+            Short = 0,
+            Long = 1,
         }
     }
 }

@@ -61,6 +61,17 @@ namespace Pancake
             javaUnityClass.CallStatic("ShowDialogInfo", title, message, ok, touchOutSide);
 #endif
         }
+        
+        internal static void ShowToast(string message, int style)
+        {
+#if UNITY_EDITOR
+#elif UNITY_IPHONE
+            
+#elif UNITY_ANDROID
+            AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.pancake.unitynative.Bridge");
+            javaUnityClass.CallStatic("ShowToast", message, style);
+#endif
+        }
 
         internal static void DismissCurrentAlert()
         {
