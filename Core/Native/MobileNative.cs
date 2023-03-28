@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake
 {
-    public static class MobileNative
+    internal static class MobileNative
     {
 #if UNITY_IPHONE
         [DllImport("__Internal")]
@@ -20,8 +20,8 @@ namespace Pancake
         private static extern void _TAG_DismissCurrentAlert();
 
 #endif
-
-        public static void ShowDialogNeutral(string title, string message, string accept, string neutral, string decline, bool touchOutSide)
+    
+        internal static void ShowDialogNeutral(string title, string message, string accept, string neutral, string decline, bool touchOutSide)
         {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
@@ -40,7 +40,7 @@ namespace Pancake
         /// <param name="yes">Accept Button text</param>
         /// <param name="no">Cancel Button text</param>
         /// <param name="touchOutSide"></param>
-        public static void ShowDialogConfirm(string title, string message, string yes, string no, bool touchOutSide)
+        internal static void ShowDialogConfirm(string title, string message, string yes, string no, bool touchOutSide)
         {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
@@ -51,7 +51,7 @@ namespace Pancake
 #endif
         }
 
-        public static void ShowInfoPopup(string title, string message, string ok, bool touchOutSide)
+        internal static void ShowInfoPopup(string title, string message, string ok, bool touchOutSide)
         {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
@@ -62,7 +62,7 @@ namespace Pancake
 #endif
         }
 
-        public static void DismissCurrentAlert()
+        internal static void DismissCurrentAlert()
         {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
