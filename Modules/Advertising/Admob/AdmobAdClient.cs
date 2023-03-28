@@ -55,10 +55,9 @@ namespace Pancake.Monetization
 #if PANCAKE_ADMOB
             MobileAds.Initialize(_ =>
             {
-                Runtime.RunOnMainThread(() =>
+                App.RunOnMainThread(() =>
                 {
                     if (AdSettings.AdmobSettings.EnableTestMode) Admob.SetupDeviceTest();
-                    if (AdSettings.AdCommonSettings.EnableGdpr) ShowConsentForm();
                 });
             });
 
@@ -67,7 +66,7 @@ namespace Pancake.Monetization
             _rewarded = new AdmobRewardedLoader(this);
             _rewardedInterstitial = new AdmobRewardedInterstitialLoader(this);
             _appOpen = new AdmobAppOpenLoader(this);
-            
+
             isInitialized = true;
             LoadInterstitialAd();
             LoadRewardedAd();
@@ -89,7 +88,7 @@ namespace Pancake.Monetization
         internal void InvokeBannerAdFailedToLoad(LoadAdError error)
         {
             OnBannerAdFaildedToLoad?.Invoke(error);
-            Runtime.RunCoroutine(DelayBannerReload());
+            App.RunCoroutine(DelayBannerReload());
         }
 
         internal void InvokeBannerAdDisplayed() { CallBannerAdDisplayed(); }
@@ -355,28 +354,6 @@ namespace Pancake.Monetization
         }
 
         protected override bool InternalIsAppOpenAdReady() { return _appOpen.IsReady; }
-
-        public override void ShowConsentForm()
-        {
-#if UNITY_ANDROID
-            // if (AdsUtil.IsInEEA())
-            // {
-            //     var prefab = UnityEngine.Resources.Load<UnityEngine.GameObject>("GDPR");
-            //     if (prefab != null)
-            //     {
-            //         UnityEngine.GameObject.Instantiate(prefab);
-            //         UnityEngine.Time.timeScale = 0;
-            //     }
-            // }
-#elif UNITY_IOS
-            if (Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() ==
-                Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
-            {
-                Unity.Advertisement.IosSupport.ATTrackingStatusBinding.RequestAuthorizationTracking();
-            }
-
-#endif
-        }
     }
 }
 #endif

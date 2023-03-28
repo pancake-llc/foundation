@@ -17,7 +17,7 @@ namespace PancakeEditor
             if (adSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                if (GUILayout.Button("Create IAP Setting", GUILayout.MaxHeight(40f)))
+                if (GUILayout.Button("Create Adverisement Setting", GUILayout.MaxHeight(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdSettings>();
                     const string path = "Assets/_Root/Resources";

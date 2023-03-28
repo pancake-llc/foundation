@@ -451,12 +451,6 @@ namespace Pancake.Monetization
             client.ShowAppOpenAd();
         }
 
-        private static void ShowConsentForm(IAdClient client)
-        {
-            if (!Application.isMobilePlatform) return;
-            client.ShowConsentForm();
-        }
-
         public static void ShowBannerAd() { ShowBannerAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
         public static void DestroyBannerAd() { DestroyBannerAd(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
@@ -501,8 +495,6 @@ namespace Pancake.Monetization
             if(!pauseStatus) ShowAppOpenAd();
         }
 #endif
-
-        public static void ShowConsentFrom() { ShowConsentForm(GetClientAlreadySetup(AdSettings.CurrentNetwork)); }
 
         /// <summary>
         /// Please only use this method when you are sure that your app switches to android activity and you don't want to show app-open-ad when you return to the game.

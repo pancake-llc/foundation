@@ -41,6 +41,11 @@ namespace Pancake
                 App.IsAppInitialized = true;
                 Debug.Log("<color=#52D5F2>Runtime has been initialized!</color>");
 
+                if (HeartSettings.EnablePrivacyFirstOpen)
+                {
+                    
+                }
+                
                 var initProfile = Resources.Load<InitProfile>("InitProfile");
                 if (initProfile != null)
                 {

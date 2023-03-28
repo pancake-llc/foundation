@@ -13,7 +13,7 @@ namespace PancakeEditor
             if (heartSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                if (GUILayout.Button("Create IAP Setting", GUILayout.MaxHeight(40f)))
+                if (GUILayout.Button("Create Heart Setting", GUILayout.MaxHeight(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<HeartSettings>();
                     const string path = "Assets/_Root/Resources";

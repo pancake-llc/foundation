@@ -67,11 +67,5 @@ namespace Pancake.Monetization
         void ShowAppOpenAd();
 
         #endregion
-
-        #region privacy
-
-        void ShowConsentForm();
-
-        #endregion
     }
 }

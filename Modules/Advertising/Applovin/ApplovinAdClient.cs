@@ -265,8 +265,6 @@ namespace Pancake.Monetization
         {
 #if PANCAKE_APPLOVIN
             MaxSdk.SetSdkKey(AdSettings.MaxSettings.SdkKey);
-            if (AdSettings.AdCommonSettings.EnableGdpr) MaxSdkCallbacks.OnSdkInitializedEvent += OnSdkInitializedEvent;
-
             MaxSdk.InitializeSdk();
             MaxSdk.SetIsAgeRestrictedUser(AdSettings.MaxSettings.EnableAgeRestrictedUser);
 #endif
@@ -283,14 +281,6 @@ namespace Pancake.Monetization
             LoadRewardedInterstitialAd();
             LoadAppOpenAd();
             _isBannerDestroyed = false;
-        }
-
-        private void OnSdkInitializedEvent(MaxSdkBase.SdkConfiguration configuration)
-        {
-            if (configuration.ConsentDialogState == MaxSdkBase.ConsentDialogState.DoesNotApply)
-            {
-                ShowConsentForm();
-            }
         }
 
         protected override void InternalShowBannerAd()
@@ -394,21 +384,6 @@ namespace Pancake.Monetization
         {
             if (string.IsNullOrEmpty(AdSettings.MaxSettings.AppOpenAdUnit.Id)) return false;
             return MaxSdk.IsAppOpenAdReady(AdSettings.MaxSettings.AppOpenAdUnit.Id);
-        }
-
-        public override void ShowConsentForm()
-        {
-#if UNITY_ANDROID
-            if (AdsUtil.IsInEEA())
-            {
-                MaxSdk.UserService.ShowConsentDialog();
-            }
-#elif UNITY_IOS
-            if (Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() == Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
-            {
-                Unity.Advertisement.IosSupport.ATTrackingStatusBinding.RequestAuthorizationTracking();
-            }
-#endif
         }
     }
 }

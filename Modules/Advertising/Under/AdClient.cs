@@ -248,8 +248,5 @@ namespace Pancake.Monetization
         }
 
         public bool IsAppOpenAdReady() { return CheckInitialize(false) && InternalIsAppOpenAdReady(); }
-
-
-        public virtual void ShowConsentForm() { }
     }
 }

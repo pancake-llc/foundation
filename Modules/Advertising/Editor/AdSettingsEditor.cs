@@ -53,11 +53,6 @@ namespace Pancake.Monetization
             public static readonly Property ADLoadingInterval = new Property(new GUIContent("  Loading Interval",
                 "Minimum time (seconds) between two ad-loading requests, this is to restrict the number of requests sent to ad networks"));
 
-            public static readonly Property PrivacyPolicyUrl = new Property(new GUIContent("  Privacy&Policy Url", "Privacy policy url"));
-
-            public static readonly Property EnableGdpr = new Property(new GUIContent("GDPR",
-                "General data protection regulation \nApp requires user consent before these events can be sent, you can delay app measurement until you explicitly initialize the Mobile Ads SDK or load an ad."));
-
             public static readonly Property EnableMultipleDex = new Property(new GUIContent("MultiDex"));
             public static readonly Property CurrentNetwork = new Property(new GUIContent("Current Network", "Current network use show ad"));
         }
@@ -141,6 +136,23 @@ namespace Pancake.Monetization
             AssetDatabase.importPackageCancelled += OnAdmobMediationPackageImportCancelled;
             AssetDatabase.importPackageFailed -= OnAdmobMediationPackageImportFailed;
             AssetDatabase.importPackageFailed += OnAdmobMediationPackageImportFailed;
+
+#if PANCAKE_ADMOB
+            if (AdSettings.AdmobSettings.editorListNetwork.IsNullOrEmpty()) LoadAdmobMediation();
+            else
+            {
+                foreach (var n in AdSettings.AdmobSettings.editorListNetwork) UpdateCurrentVersionAdmobMediation(n);
+            }
+#endif
+
+#if PANCAKE_APPLOVIN
+            if (AdSettings.MaxSettings.editorListNetwork.IsNullOrEmpty()) LoadApplovinMediation();
+            else
+            {
+                string p = ParentApplovinDirectory();
+                foreach (var n in AdSettings.MaxSettings.editorListNetwork) UpdateCurrentVersionApplovinMediation(n, p);
+            }
+#endif
         }
 
         private void OnDownloadMediationProgress(string pluginName, float progress, bool done)
@@ -167,61 +179,41 @@ namespace Pancake.Monetization
             _iconUnintall = Uniform.IconContent("d_TreeEditor.Trash", "Uninstall");
             _headerLabelStyle = new GUIStyle(EditorStyles.label) {fontSize = 12, fontStyle = FontStyle.Bold, fixedHeight = 18};
 
-            AdProperties.main = serializedObject.FindProperty("adCommonSettings");
-            AdProperties.AutoLoadAdsMode.property = AdProperties.main.FindPropertyRelative("autoLoadingAd");
-            AdProperties.ADCheckingInterval.property = AdProperties.main.FindPropertyRelative("adCheckingInterval");
-            AdProperties.ADLoadingInterval.property = AdProperties.main.FindPropertyRelative("adLoadingInterval");
-            AdProperties.EnableGdpr.property = AdProperties.main.FindPropertyRelative("enableGdpr");
-            AdProperties.PrivacyPolicyUrl.property = AdProperties.main.FindPropertyRelative("privacyUrl");
-            AdProperties.EnableMultipleDex.property = AdProperties.main.FindPropertyRelative("multiDex");
-            AdProperties.CurrentNetwork.property = AdProperties.main.FindPropertyRelative("currentNetwork");
+            AdProperties.main ??= serializedObject.FindProperty("adCommonSettings");
+            AdProperties.AutoLoadAdsMode.property ??= AdProperties.main.FindPropertyRelative("autoLoadingAd");
+            AdProperties.ADCheckingInterval.property ??= AdProperties.main.FindPropertyRelative("adCheckingInterval");
+            AdProperties.ADLoadingInterval.property ??= AdProperties.main.FindPropertyRelative("adLoadingInterval");
+            AdProperties.EnableMultipleDex.property ??= AdProperties.main.FindPropertyRelative("multiDex");
+            AdProperties.CurrentNetwork.property ??= AdProperties.main.FindPropertyRelative("currentNetwork");
 
-            AdmobProperties.main = serializedObject.FindProperty("admobSettings");
-            AdmobProperties.Enable.property = AdmobProperties.main.FindPropertyRelative("enable");
-            AdmobProperties.DevicesTest.property = AdmobProperties.main.FindPropertyRelative("devicesTest");
-            AdmobProperties.BannerAdUnit.property = AdmobProperties.main.FindPropertyRelative("bannerAdUnit");
-            AdmobProperties.InterstitialAdUnit.property = AdmobProperties.main.FindPropertyRelative("interstitialAdUnit");
-            AdmobProperties.RewardedAdUnit.property = AdmobProperties.main.FindPropertyRelative("rewardedAdUnit");
-            AdmobProperties.RewardedInterstitialAdUnit.property = AdmobProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
-            AdmobProperties.AppOpenAdUnit.property = AdmobProperties.main.FindPropertyRelative("appOpenAdUnit");
-            AdmobProperties.EnableTestMode.property = AdmobProperties.main.FindPropertyRelative("enableTestMode");
+            AdmobProperties.main ??= serializedObject.FindProperty("admobSettings");
+            AdmobProperties.Enable.property ??= AdmobProperties.main.FindPropertyRelative("enable");
+            AdmobProperties.DevicesTest.property ??= AdmobProperties.main.FindPropertyRelative("devicesTest");
+            AdmobProperties.BannerAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("bannerAdUnit");
+            AdmobProperties.InterstitialAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("interstitialAdUnit");
+            AdmobProperties.RewardedAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("rewardedAdUnit");
+            AdmobProperties.RewardedInterstitialAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
+            AdmobProperties.AppOpenAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("appOpenAdUnit");
+            AdmobProperties.EnableTestMode.property ??= AdmobProperties.main.FindPropertyRelative("enableTestMode");
 
-            ApplovinProperties.main = serializedObject.FindProperty("maxSettings");
-            ApplovinProperties.Enable.property = ApplovinProperties.main.FindPropertyRelative("enable");
-            ApplovinProperties.SDKKey.property = ApplovinProperties.main.FindPropertyRelative("sdkKey");
-            ApplovinProperties.BannerAdUnit.property = ApplovinProperties.main.FindPropertyRelative("bannerAdUnit");
-            ApplovinProperties.InterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("interstitialAdUnit");
-            ApplovinProperties.RewardedAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedAdUnit");
-            ApplovinProperties.RewardedInterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
-            ApplovinProperties.AppOpenAdUnit.property = ApplovinProperties.main.FindPropertyRelative("appOpenAdUnit");
+            ApplovinProperties.main ??= serializedObject.FindProperty("maxSettings");
+            ApplovinProperties.Enable.property ??= ApplovinProperties.main.FindPropertyRelative("enable");
+            ApplovinProperties.SDKKey.property ??= ApplovinProperties.main.FindPropertyRelative("sdkKey");
+            ApplovinProperties.BannerAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("bannerAdUnit");
+            ApplovinProperties.InterstitialAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("interstitialAdUnit");
+            ApplovinProperties.RewardedAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("rewardedAdUnit");
+            ApplovinProperties.RewardedInterstitialAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
+            ApplovinProperties.AppOpenAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("appOpenAdUnit");
 
-            ApplovinProperties.EnableAgeRestrictedUser.property = ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
-            ApplovinProperties.EnableRequestAdAfterHidden.property = ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
-            ApplovinProperties.EnableMaxAdReview.property = ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
-
-#if PANCAKE_ADMOB
-            if (AdSettings.AdmobSettings.editorListNetwork.IsNullOrEmpty()) LoadAdmobMediation();
-            else
-            {
-                foreach (var n in AdSettings.AdmobSettings.editorListNetwork) UpdateCurrentVersionAdmobMediation(n);
-            }
-#endif
-
-#if PANCAKE_APPLOVIN
-            if (AdSettings.MaxSettings.editorListNetwork.IsNullOrEmpty()) LoadApplovinMediation();
-            else
-            {
-                string p = ParentApplovinDirectory();
-                foreach (var n in AdSettings.MaxSettings.editorListNetwork) UpdateCurrentVersionApplovinMediation(n, p);
-            }
-#endif
+            ApplovinProperties.EnableAgeRestrictedUser.property ??= ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
+            ApplovinProperties.EnableRequestAdAfterHidden.property ??= ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
+            ApplovinProperties.EnableMaxAdReview.property ??= ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
             Init();
-
             EditorGUI.BeginDisabledGroup(EditorApplication.isCompiling);
 
             #region draw
@@ -230,11 +222,8 @@ namespace Pancake.Monetization
                 "Setting",
                 () =>
                 {
-                    EditorGUILayout.PropertyField(AdProperties.EnableGdpr.property, AdProperties.EnableGdpr.content);
-                    if (AdSettings.AdCommonSettings.EnableGdpr)
-                        EditorGUILayout.PropertyField(AdProperties.PrivacyPolicyUrl.property, AdProperties.PrivacyPolicyUrl.content);
-                    EditorGUILayout.PropertyField(AdProperties.EnableMultipleDex.property, AdProperties.EnableMultipleDex.content);
                     EditorGUILayout.PropertyField(AdProperties.CurrentNetwork.property, AdProperties.CurrentNetwork.content);
+                    EditorGUILayout.PropertyField(AdProperties.EnableMultipleDex.property, AdProperties.EnableMultipleDex.content);
                     CreateMainTemplateGradle(AdSettings.AdCommonSettings.MultiDex);
                     GUILayout.Space(8);
                     EditorGUILayout.PropertyField(AdProperties.AutoLoadAdsMode.property, AdProperties.AutoLoadAdsMode.content);
@@ -282,7 +271,7 @@ namespace Pancake.Monetization
                         if (IsAdmobSdkImported() && Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
                         {
                             EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
-                            if (AdSettings.AdCommonSettings.EnableGdpr)
+                            if (HeartSettings.EnablePrivacyFirstOpen)
                             {
                                 EditorGUILayout.HelpBox("GDPR is enable so you should turn on Delay app measurement in GoogleMobileAds setting", MessageType.Info);
                             }
@@ -303,7 +292,7 @@ namespace Pancake.Monetization
                                     AssetDatabase.Refresh();
                                     Debug.Log($"{nameof(GoogleMobileAdsSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(GoogleMobileAdsSettings)}.asset");
                                 }
-                            
+
                                 GUI.enabled = true;
                             }
                             else
@@ -397,8 +386,6 @@ namespace Pancake.Monetization
                             EditorGUILayout.PropertyField(ApplovinProperties.EnableMaxAdReview.property, ApplovinProperties.EnableMaxAdReview.content);
 #if PANCAKE_APPLOVIN
                             AppLovinSettings.Instance.QualityServiceEnabled = AdSettings.MaxSettings.EnableMaxAdReview;
-                            AppLovinSettings.Instance.ConsentFlowEnabled = AdSettings.AdCommonSettings.EnableGdpr;
-                            AppLovinSettings.Instance.ConsentFlowPrivacyPolicyUrl = AdSettings.AdCommonSettings.PrivacyUrl;
 #endif
                             EditorGUILayout.Space();
                             EditorGUI.indentLevel++;
@@ -695,10 +682,6 @@ namespace Pancake.Monetization
 
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUILayout.Space(5);
-            }
-
-            if (isInstalled)
-            {
             }
         }
 
