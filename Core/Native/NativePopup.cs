@@ -53,5 +53,10 @@ namespace Pancake
             Short = 0,
             Long = 1,
         }
+
+        public static void DismissCurrentAlert()
+        {
+            MobileNative.DismissCurrentAlert();
+        }
     }
 }

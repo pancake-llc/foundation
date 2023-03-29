@@ -41,11 +41,8 @@ namespace Pancake
                 App.IsAppInitialized = true;
                 Debug.Log("<color=#52D5F2>Runtime has been initialized!</color>");
 
-                if (HeartSettings.EnablePrivacyFirstOpen)
-                {
-                    
-                }
-                
+                if (HeartSettings.EnablePrivacyFirstOpen && !Data.Load<bool>(Invariant.USER_AGREE_PRIVACY_KEY)) ShowPrivacy();
+
                 var initProfile = Resources.Load<InitProfile>("InitProfile");
                 if (initProfile != null)
                 {
@@ -55,6 +52,34 @@ namespace Pancake
                     }
                 }
             }
+        }
+
+        private static void PrivacyPolicyValidate(bool status)
+        {
+            if (status)
+            {
+                if (!Data.Load<bool>(Invariant.USER_AGREE_PRIVACY_KEY)) ShowPrivacy();
+            }
+        }
+
+        private static void ShowPrivacy()
+        {
+            App.RemoveFocusCallback(PrivacyPolicyValidate);
+            NativePopup.ShowNeutral(HeartSettings.PrivacyTitle,
+                HeartSettings.PrivacyMessage,
+                "Continue",
+                "Privacy",
+                "",
+                () =>
+                {
+                    Data.Save(Invariant.USER_AGREE_PRIVACY_KEY, true);
+                    App.RemoveFocusCallback(PrivacyPolicyValidate);
+                },
+                () =>
+                {
+                    App.AddFocusCallback(PrivacyPolicyValidate);
+                    Application.OpenURL(HeartSettings.PrivacyUrl);
+                });
         }
     }
 }
