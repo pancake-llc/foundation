@@ -179,35 +179,35 @@ namespace Pancake.Monetization
             _iconUnintall = Uniform.IconContent("d_TreeEditor.Trash", "Uninstall");
             _headerLabelStyle = new GUIStyle(EditorStyles.label) {fontSize = 12, fontStyle = FontStyle.Bold, fixedHeight = 18};
 
-            AdProperties.main ??= serializedObject.FindProperty("adCommonSettings");
-            AdProperties.AutoLoadAdsMode.property ??= AdProperties.main.FindPropertyRelative("autoLoadingAd");
-            AdProperties.ADCheckingInterval.property ??= AdProperties.main.FindPropertyRelative("adCheckingInterval");
-            AdProperties.ADLoadingInterval.property ??= AdProperties.main.FindPropertyRelative("adLoadingInterval");
-            AdProperties.EnableMultipleDex.property ??= AdProperties.main.FindPropertyRelative("multiDex");
-            AdProperties.CurrentNetwork.property ??= AdProperties.main.FindPropertyRelative("currentNetwork");
+            AdProperties.main = serializedObject.FindProperty("adCommonSettings");
+            AdProperties.AutoLoadAdsMode.property = AdProperties.main.FindPropertyRelative("autoLoadingAd");
+            AdProperties.ADCheckingInterval.property = AdProperties.main.FindPropertyRelative("adCheckingInterval");
+            AdProperties.ADLoadingInterval.property = AdProperties.main.FindPropertyRelative("adLoadingInterval");
+            AdProperties.EnableMultipleDex.property = AdProperties.main.FindPropertyRelative("multiDex");
+            AdProperties.CurrentNetwork.property = AdProperties.main.FindPropertyRelative("currentNetwork");
 
-            AdmobProperties.main ??= serializedObject.FindProperty("admobSettings");
-            AdmobProperties.Enable.property ??= AdmobProperties.main.FindPropertyRelative("enable");
-            AdmobProperties.DevicesTest.property ??= AdmobProperties.main.FindPropertyRelative("devicesTest");
-            AdmobProperties.BannerAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("bannerAdUnit");
-            AdmobProperties.InterstitialAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("interstitialAdUnit");
-            AdmobProperties.RewardedAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("rewardedAdUnit");
-            AdmobProperties.RewardedInterstitialAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
-            AdmobProperties.AppOpenAdUnit.property ??= AdmobProperties.main.FindPropertyRelative("appOpenAdUnit");
-            AdmobProperties.EnableTestMode.property ??= AdmobProperties.main.FindPropertyRelative("enableTestMode");
+            AdmobProperties.main = serializedObject.FindProperty("admobSettings");
+            AdmobProperties.Enable.property = AdmobProperties.main.FindPropertyRelative("enable");
+            AdmobProperties.DevicesTest.property = AdmobProperties.main.FindPropertyRelative("devicesTest");
+            AdmobProperties.BannerAdUnit.property = AdmobProperties.main.FindPropertyRelative("bannerAdUnit");
+            AdmobProperties.InterstitialAdUnit.property = AdmobProperties.main.FindPropertyRelative("interstitialAdUnit");
+            AdmobProperties.RewardedAdUnit.property = AdmobProperties.main.FindPropertyRelative("rewardedAdUnit");
+            AdmobProperties.RewardedInterstitialAdUnit.property = AdmobProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
+            AdmobProperties.AppOpenAdUnit.property = AdmobProperties.main.FindPropertyRelative("appOpenAdUnit");
+            AdmobProperties.EnableTestMode.property = AdmobProperties.main.FindPropertyRelative("enableTestMode");
 
-            ApplovinProperties.main ??= serializedObject.FindProperty("maxSettings");
-            ApplovinProperties.Enable.property ??= ApplovinProperties.main.FindPropertyRelative("enable");
-            ApplovinProperties.SDKKey.property ??= ApplovinProperties.main.FindPropertyRelative("sdkKey");
-            ApplovinProperties.BannerAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("bannerAdUnit");
-            ApplovinProperties.InterstitialAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("interstitialAdUnit");
-            ApplovinProperties.RewardedAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("rewardedAdUnit");
-            ApplovinProperties.RewardedInterstitialAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
-            ApplovinProperties.AppOpenAdUnit.property ??= ApplovinProperties.main.FindPropertyRelative("appOpenAdUnit");
+            ApplovinProperties.main = serializedObject.FindProperty("maxSettings");
+            ApplovinProperties.Enable.property = ApplovinProperties.main.FindPropertyRelative("enable");
+            ApplovinProperties.SDKKey.property = ApplovinProperties.main.FindPropertyRelative("sdkKey");
+            ApplovinProperties.BannerAdUnit.property = ApplovinProperties.main.FindPropertyRelative("bannerAdUnit");
+            ApplovinProperties.InterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("interstitialAdUnit");
+            ApplovinProperties.RewardedAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedAdUnit");
+            ApplovinProperties.RewardedInterstitialAdUnit.property = ApplovinProperties.main.FindPropertyRelative("rewardedInterstitialAdUnit");
+            ApplovinProperties.AppOpenAdUnit.property = ApplovinProperties.main.FindPropertyRelative("appOpenAdUnit");
 
-            ApplovinProperties.EnableAgeRestrictedUser.property ??= ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
-            ApplovinProperties.EnableRequestAdAfterHidden.property ??= ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
-            ApplovinProperties.EnableMaxAdReview.property ??= ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
+            ApplovinProperties.EnableAgeRestrictedUser.property = ApplovinProperties.main.FindPropertyRelative("enableAgeRestrictedUser");
+            ApplovinProperties.EnableRequestAdAfterHidden.property = ApplovinProperties.main.FindPropertyRelative("enableRequestAdAfterHidden");
+            ApplovinProperties.EnableMaxAdReview.property = ApplovinProperties.main.FindPropertyRelative("enableMaxAdReview");
         }
 
         public override void OnInspectorGUI()

@@ -7,8 +7,8 @@ namespace PancakeEditor
         private const string RELATIVE_PATH = "Editor/Misc/Icons";
         private const string RELATIVE_TEMPLATE_PATH = "Editor/Misc/Templates";
 
-        internal static Texture2D BoxContentDark => Editor.FindAssetWithPath<Texture2D>("box_content_dark.png", RELATIVE_PATH);
-        internal static Texture2D BoxBackgroundDark => Editor.FindAssetWithPath<Texture2D>("box_bg_dark.png", RELATIVE_PATH);
+        internal static Texture2D BoxContentDark => Editor.FindAssetWithPath<Texture2D>("box_content_dark.psd", RELATIVE_PATH);
+        internal static Texture2D BoxBackgroundDark => Editor.FindAssetWithPath<Texture2D>("box_bg_dark.psd", RELATIVE_PATH);
         internal static Texture2D EvenBackground => Editor.FindAssetWithPath<Texture2D>("even_bg.png", RELATIVE_PATH);
         internal static Texture2D EvenBackgroundBlue => Editor.FindAssetWithPath<Texture2D>("even_bg_select.png", RELATIVE_PATH);
         internal static Texture2D EvenBackgroundDark => Editor.FindAssetWithPath<Texture2D>("even_bg_dark.png", RELATIVE_PATH);
