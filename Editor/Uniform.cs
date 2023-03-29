@@ -355,7 +355,6 @@ namespace PancakeEditor
             float height = rect.height;
             EditorGUILayout.EndVertical();
             height += 4;
-            //Uniform.SpaceOneLine();
             return height;
         }
 

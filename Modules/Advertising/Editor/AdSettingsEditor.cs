@@ -129,7 +129,7 @@ namespace Pancake.Monetization
         {
             downloadMediationProgressCallback = OnDownloadMediationProgress;
             admobImportMediationCompleted = OnAdmobImportMediationCompleted;
-
+            
             AssetDatabase.importPackageCompleted -= OnAdmobMediationPackageImportCompleted;
             AssetDatabase.importPackageCompleted += OnAdmobMediationPackageImportCompleted;
             AssetDatabase.importPackageCancelled -= OnAdmobMediationPackageImportCancelled;
@@ -137,6 +137,15 @@ namespace Pancake.Monetization
             AssetDatabase.importPackageFailed -= OnAdmobMediationPackageImportFailed;
             AssetDatabase.importPackageFailed += OnAdmobMediationPackageImportFailed;
 
+            if (!Wizard.advertisingFlag)
+            {
+                CallLoad();
+                Wizard.advertisingFlag = true;
+            }
+        }
+
+        private void CallLoad()
+        {
 #if PANCAKE_ADMOB
             if (AdSettings.AdmobSettings.editorListNetwork.IsNullOrEmpty()) LoadAdmobMediation();
             else
@@ -271,10 +280,6 @@ namespace Pancake.Monetization
                         if (IsAdmobSdkImported() && Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
                         {
                             EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
-                            if (HeartSettings.EnablePrivacyFirstOpen)
-                            {
-                                EditorGUILayout.HelpBox("GDPR is enable so you should turn on Delay app measurement in GoogleMobileAds setting", MessageType.Info);
-                            }
 
                             EditorGUILayout.Space();
 #if PANCAKE_ADMOB
@@ -282,7 +287,8 @@ namespace Pancake.Monetization
                             if (googleMobileAdSetting == null)
                             {
                                 GUI.enabled = !EditorApplication.isCompiling;
-                                if (GUILayout.Button("Create GoogleMobileAd Setting", GUILayout.MaxHeight(40f)))
+                                GUI.backgroundColor = Uniform.Pink;
+                                if (GUILayout.Button("Create GoogleMobileAd Setting", GUILayout.Height(30f)))
                                 {
                                     var setting = ScriptableObject.CreateInstance<GoogleMobileAdsSettings>();
                                     const string path = "Assets/GoogleMobileAds/Resources";
@@ -292,7 +298,7 @@ namespace Pancake.Monetization
                                     AssetDatabase.Refresh();
                                     Debug.Log($"{nameof(GoogleMobileAdsSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(GoogleMobileAdsSettings)}.asset");
                                 }
-
+                                GUI.backgroundColor = Color.white;
                                 GUI.enabled = true;
                             }
                             else
@@ -441,7 +447,7 @@ namespace Pancake.Monetization
                 GUILayout.Space(3);
                 EditorGUILayout.LabelField("Latest Version", _headerLabelStyle, VersionWidthOption);
                 GUILayout.FlexibleSpace();
-                GUILayout.Button("Actions", _headerLabelStyle, FieldWidth);
+                EditorGUILayout.LabelField("Actions", _headerLabelStyle, FieldWidth);
                 GUILayout.Space(5);
             }
         }

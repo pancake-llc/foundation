@@ -65,6 +65,8 @@ namespace PancakeEditor
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
 
+        public static bool advertisingFlag;
+
 
         [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show()
@@ -81,9 +83,10 @@ namespace PancakeEditor
                 SelectTab(tabIndex);
                 return;
             }
-
+            
             SelectTab((int) _currentType, true);
             isInitialized = true;
+            advertisingFlag = false;
         }
 
         private void OnGUI()
@@ -204,10 +207,7 @@ namespace PancakeEditor
         {
             Refresh(type);
             _currentType = type;
-            if (deselectCurrent)
-            {
-                _selectedItemType = WizardAllType.None;
-            }
+            if (deselectCurrent) _selectedItemType = WizardAllType.None;
         }
 
         private void Refresh(WizardType type)
