@@ -40,11 +40,13 @@ namespace Pancake.IAP
         {
             ObfuscateSecrets(true);
 
-            var asmdef = (TextAsset) Resources.Load("iapGeneratedAsmdef", typeof(TextAsset));
-            var meta = (TextAsset) Resources.Load("iapGeneratedAsmdefMeta", typeof(TextAsset));
+            string pathAsmdef = GetPathInCurrentEnvironent($"Editor/Misc/Templates/PurchasingGeneratedAsmdef.txt");
+            string pathAsmdefMeta = GetPathInCurrentEnvironent($"Editor/Misc/Templates/PurchasingGeneratedAsmdefMeta.txt");
+            var asmdef = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdef, typeof(TextAsset));
+            var meta = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdefMeta, typeof(TextAsset));
 
-            string path = Path.Combine(TangleFileConsts.k_OutputPath, "pancake@iap.generated.asmdef");
-            string pathMeta = Path.Combine(TangleFileConsts.k_OutputPath, "pancake@iap.generated.asmdef.meta");
+            string path = Path.Combine(TangleFileConsts.k_OutputPath, "Pancake.Purchasing.Generated.asmdef");
+            string pathMeta = Path.Combine(TangleFileConsts.k_OutputPath, "Pancake.Purchasing.Generated.asmdef.meta");
             if (!File.Exists(path))
             {
                 var writer = new StreamWriter(path, false);
@@ -60,6 +62,13 @@ namespace Pancake.IAP
             }
 
             AssetDatabase.ImportAsset(path);
+        }
+        
+        private static string GetPathInCurrentEnvironent(string fullRelativePath)
+        {
+            var upmPath = $"Packages/com.pancake.heart/{fullRelativePath}";
+            var normalPath = $"Assets/heart/{fullRelativePath}";
+            return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
         }
 
         [Group("button"), Button("Generate Product")]
