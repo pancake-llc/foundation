@@ -37,9 +37,23 @@ namespace PancakeEditor
                 var editor = UnityEditor.Editor.CreateEditor(iapSetting);
                 editor.OnInspectorGUI();
             }
+            
+            GUILayout.FlexibleSpace();
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Uninstall IAP Package", GUILayout.MaxHeight(25f)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall IAP", "Are you sure you want to uninstall in-app-purchase package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.unity.purchasing");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Unity Purchasing Package", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Unity Purchasing", GUILayout.MaxHeight(40f)))
             {
                 RegistryManager.Add("com.unity.purchasing", "4.7.0");
                 RegistryManager.Resolve();

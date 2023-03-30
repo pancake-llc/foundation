@@ -56,7 +56,7 @@ namespace PancakeEditor
 
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Advertisement", GUILayout.MaxHeight(40f)))
             {
                 RegistryManager.Add("com.unity.sharp-zip-lib", "1.3.3-preview");
                 Editor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
