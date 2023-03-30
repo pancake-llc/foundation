@@ -3,11 +3,11 @@ using System;
 
 namespace Pancake.Monetization
 {
-    public class ApplovinRewardedInterstitialLoader : IRewardedInterstitial
+    public class ApplovinRewardedInterLoader : IRewardedInterstitial
     {
         private readonly ApplovinAdClient _client;
 
-        public ApplovinRewardedInterstitialLoader(ApplovinAdClient client)
+        public ApplovinRewardedInterLoader(ApplovinAdClient client)
         {
             _client = client;
             Initialized();
@@ -46,16 +46,16 @@ namespace Pancake.Monetization
             switch (key)
             {
                 case "OnDisplayed":
-                    _client.rewardedInterstitialDisplayChain = action;
+                    _client.rewardedInterDisplayChain = action;
                     break;
                 case "OnCompleted":
-                    _client.rewardedInterstitialCompletedChain = action;
+                    _client.rewardedInterCompletedChain = action;
                     break;
                 case "OnClosed":
-                    _client.rewardedInterstitialClosedChain = action;
+                    _client.rewardedInterClosedChain = action;
                     break;
                 case "OnSkipped":
-                    _client.rewardedInterstitialSkippedChain = action;
+                    _client.rewardedInterSkippedChain = action;
                     break;
             }
         }

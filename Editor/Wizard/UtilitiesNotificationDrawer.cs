@@ -8,7 +8,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_NOTIFICATION
-            Uniform.DrawInstalled("1.0.0");
+            Uniform.DrawInstalled("1.0.1");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(40f)))
             {
@@ -32,7 +32,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(40f)))
             {
-                RegistryManager.Add("com.pancake.notification", "https://github.com/pancake-llc/notification.git#1.0.0");
+                RegistryManager.Add("com.pancake.notification", "https://github.com/pancake-llc/notification.git#1.0.1");
                 RegistryManager.Resolve();
             }
 

@@ -11,9 +11,10 @@ using System.IO;
 #endif
 
 namespace Pancake.IAP
-{
-    [DeclareHorizontalGroup("button")]
+{ 
     [HideMono]
+    [EditorIcon("scriptable_iap")]
+    [DeclareHorizontalGroup("button")]
     public class IAPSettings : ScriptableSettings<IAPSettings>
     {
         [InfoBox("Product id should look like : com.appname.itemid\nEx: com.eldenring.doublesoul\n\nConsumable        : purchase multiple time\nNon Consumable : purchase once time")]

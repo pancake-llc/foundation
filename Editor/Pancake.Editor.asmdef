@@ -7,7 +7,8 @@
         "GUID:adac8d59ad7e8504f82d387cded797a7",
         "GUID:1fc40a42fd9ba86428b9f1a1bc03d8a6",
         "GUID:38036840b8620d443a0acf3e48f20d6f",
-        "GUID:10507a3c16a6d88428b6e2a636fb7438"
+        "GUID:10507a3c16a6d88428b6e2a636fb7438",
+        "GUID:f7dabdcbede30aa4d84803a163c2fa1b"
     ],
     "includePlatforms": [
         "Editor"
@@ -73,6 +74,11 @@
             "name": "com.needle.console",
             "expression": "2.3.14",
             "define": "PANCAKE_NEEDLE_CONSOLE"
+        },
+        {
+            "name": "com.unity.ads.ios-support",
+            "expression": "1.2.0",
+            "define": "PANCAKE_ATT"
         }
     ],
     "noEngineReferences": false

@@ -1,4 +1,7 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using Pancake;
+using Pancake.Tracking;
+using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
@@ -10,9 +13,31 @@ namespace PancakeEditor
 #if PANCAKE_ADJUST
             Uniform.DrawInstalled("4.33.0");
             EditorGUILayout.Space();
-            EditorGUILayout.HelpBox(" Attach component Adjust into GameObject in Initial Scene" +
-                                    "\n Adjust was mark as Dont DestroyOnload and all setting was already config" + "\n All you need to do is enter the token id",
-                MessageType.Info);
+
+            var adjustSetting = Resources.Load<AdjustConfig>(nameof(AdjustConfig));
+            if (adjustSetting == null)
+            {
+                GUI.enabled = !EditorApplication.isCompiling;
+                GUI.backgroundColor = Uniform.Pink;
+                if (GUILayout.Button("Create Adjust Setting", GUILayout.Height(40)))
+                {
+                    var setting = ScriptableObject.CreateInstance<AdjustConfig>();
+                    const string path = "Assets/_Root/Resources";
+                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(AdjustConfig)}.asset");
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                    Debug.Log($"{nameof(AdjustConfig).TextColor("#52D5F2")} was created ad {path}/{nameof(AdjustConfig)}.asset");
+                }
+
+                GUI.backgroundColor = Color.white;
+                GUI.enabled = true;
+            }
+            else
+            {
+                var editor = UnityEditor.Editor.CreateEditor(adjustSetting);
+                editor.OnInspectorGUI();
+            }
 
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;

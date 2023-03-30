@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Pancake
 {
     [HideMono]
+    [EditorIcon("scriptable_setting")]
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
         [SerializeField, LabelText("Privacy on FirstOpen")] private bool enablePrivacyFirstOpen;

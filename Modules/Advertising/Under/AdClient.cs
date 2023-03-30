@@ -6,11 +6,15 @@ namespace Pancake.Monetization
     public abstract class AdClient : IAdClient
     {
         protected bool isInitialized;
-
+        public event Action<IAdClient> OnBannerAdDisplayed;
+        public event Action<IAdClient> OnBannerAdCompleted;
+        public event Action<double, string, string, string, EAdNetwork> OnBannerAdPaid;
         public event Action<IAdClient> OnInterstitialAdCompleted;
         public event Action<IAdClient> OnInterstitialAdDisplayed;
+        public event Action<double, string, string, string, EAdNetwork> OnInterstitialAdPaid;
         public event Action<IAdClient> OnRewardedAdSkipped;
         public event Action<IAdClient> OnRewardedAdCompleted;
+        public event Action<double, string, string, string, EAdNetwork> OnRewardedAdPaid;
 
         /// <summary>
         /// call when close rewarded ad
@@ -19,12 +23,14 @@ namespace Pancake.Monetization
         public event Action<IAdClient> OnRewardedAdClosed;
 
         public event Action<IAdClient> OnRewardedAdDisplayed;
-        public event Action<IAdClient> OnRewardedInterstitialAdSkipped;
-        public event Action<IAdClient> OnRewardedInterstitialAdCompleted;
-        public event Action<IAdClient> OnRewardedInterstitialAdClosed;
-        public event Action<IAdClient> OnRewardedInterstitialAdDisplayed;
+        public event Action<IAdClient> OnRewardedInterAdSkipped;
+        public event Action<IAdClient> OnRewardedInterAdCompleted;
+        public event Action<IAdClient> OnRewardedInterAdClosed;
+        public event Action<IAdClient> OnRewardedInterAdDisplayed;
+        public event Action<double, string, string, string, EAdNetwork> OnRewardedInterAdPaid;
         public event Action<IAdClient> OnAppOpenAdCompleted;
         public event Action<IAdClient> OnAppOpenAdDisplayed;
+        public event Action<double, string, string, string, EAdNetwork> OnAppOpenAdPaid;
 
         public abstract EAdNetwork Network { get; }
         public abstract bool IsBannerAdSupported { get; }
@@ -51,8 +57,6 @@ namespace Pancake.Monetization
         }
 
         public virtual void RegisterAppStateChange() { }
-        public event Action<IAdClient> OnBannerAdDisplayed;
-        public event Action<IAdClient> OnBannerAdCompleted;
 
         protected virtual bool CheckInitialize(bool logMessage = true)
         {
@@ -97,8 +101,33 @@ namespace Pancake.Monetization
 
         protected virtual void CallBannerAdDisplayed() { App.RunOnMainThread(() => { OnBannerAdDisplayed?.Invoke(this); }); }
         protected virtual void CallBannerAdCompleted() { App.RunOnMainThread(() => { OnBannerAdCompleted?.Invoke(this); }); }
+
+        protected virtual void CallBannerAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
+        {
+            App.RunOnMainThread(() =>
+            {
+                OnBannerAdPaid?.Invoke(value,
+                    network,
+                    unitId,
+                    placement,
+                    adNetwork);
+            });
+        }
+
         protected virtual void CallInterstitialAdCompleted() { App.RunOnMainThread(() => { OnInterstitialAdCompleted?.Invoke(this); }); }
         protected virtual void CallInterstitialAdDisplayed() { App.RunOnMainThread(() => { OnInterstitialAdDisplayed?.Invoke(this); }); }
+
+        protected virtual void CallInterstitialAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
+        {
+            App.RunOnMainThread(() =>
+            {
+                OnInterstitialAdPaid?.Invoke(value,
+                    network,
+                    unitId,
+                    placement,
+                    adNetwork);
+            });
+        }
 
         public void LoadInterstitialAd()
         {
@@ -139,6 +168,18 @@ namespace Pancake.Monetization
         protected virtual void CallRewardedAdClosed() { App.RunOnMainThread(() => { OnRewardedAdClosed?.Invoke(this); }); }
         protected virtual void CallRewardedAdDisplayed() { App.RunOnMainThread(() => { OnRewardedAdDisplayed?.Invoke(this); }); }
 
+        protected virtual void CallRewardedAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
+        {
+            App.RunOnMainThread(() =>
+            {
+                OnRewardedAdPaid?.Invoke(value,
+                    network,
+                    unitId,
+                    placement,
+                    adNetwork);
+            });
+        }
+
         public void LoadRewardedAd()
         {
             if (IsSdkAvaiable)
@@ -172,17 +213,29 @@ namespace Pancake.Monetization
 
         public bool IsRewardedAdReady() { return CheckInitialize(false) && InternalIsRewardedAdReady(); }
 
-        protected virtual void CallRewardedInterstitialAdSkipped() { App.RunOnMainThread(() => { OnRewardedInterstitialAdSkipped?.Invoke(this); }); }
-        protected virtual void CallRewardedInterstitialAdCompleted() { App.RunOnMainThread(() => { OnRewardedInterstitialAdCompleted?.Invoke(this); }); }
-        protected virtual void CallRewardedInterstitialAdClosed() { App.RunOnMainThread(() => { OnRewardedInterstitialAdClosed?.Invoke(this); }); }
-        protected virtual void CallRewardedInterstitialAdDisplayed() { App.RunOnMainThread(() => { OnRewardedInterstitialAdDisplayed?.Invoke(this); }); }
+        protected virtual void CallRewardedInterAdSkipped() { App.RunOnMainThread(() => { OnRewardedInterAdSkipped?.Invoke(this); }); }
+        protected virtual void CallRewardedInterAdCompleted() { App.RunOnMainThread(() => { OnRewardedInterAdCompleted?.Invoke(this); }); }
+        protected virtual void CallRewardedInterAdClosed() { App.RunOnMainThread(() => { OnRewardedInterAdClosed?.Invoke(this); }); }
+        protected virtual void CallRewardedInterAdDisplayed() { App.RunOnMainThread(() => { OnRewardedInterAdDisplayed?.Invoke(this); }); }
 
-        public void LoadRewardedInterstitialAd()
+        protected virtual void CallRewardedInterAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
+        {
+            App.RunOnMainThread(() =>
+            {
+                OnRewardedInterAdPaid?.Invoke(value,
+                    network,
+                    unitId,
+                    placement,
+                    adNetwork);
+            });
+        }
+
+        public void LoadRewardedInterAd()
         {
             if (IsSdkAvaiable)
             {
                 if (!CheckInitialize()) return;
-                if (!IsRewardedInterstitialAdReady()) InternalLoadRewardedInterstitialAd();
+                if (!IsRewardedInterAdReady()) InternalLoadRewardedInterstitialAd();
             }
             else
             {
@@ -190,12 +243,12 @@ namespace Pancake.Monetization
             }
         }
 
-        public IRewardedInterstitial ShowRewardedInterstitialAd()
+        public IRewardedInterstitial ShowRewardedInterAd()
         {
             if (IsSdkAvaiable)
             {
                 if (!CheckInitialize()) return null;
-                if (!IsRewardedInterstitialAdReady())
+                if (!IsRewardedInterAdReady())
                 {
                     Debug.LogFormat($"Cannot show {Network} rewarded interstitial ad : ad is not loaded.");
                     return null;
@@ -208,10 +261,22 @@ namespace Pancake.Monetization
             return null;
         }
 
-        public bool IsRewardedInterstitialAdReady() { return CheckInitialize(false) && InternalIsRewardedInterstitialAdReady(); }
+        public bool IsRewardedInterAdReady() { return CheckInitialize(false) && InternalIsRewardedInterstitialAdReady(); }
 
         protected virtual void CallAppOpenAdCompleted() { App.RunOnMainThread(() => { OnAppOpenAdCompleted?.Invoke(this); }); }
         protected virtual void CallAppOpenAdDisplayed() { App.RunOnMainThread(() => { OnAppOpenAdDisplayed?.Invoke(this); }); }
+
+        protected virtual void CallAppOpenAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
+        {
+            App.RunOnMainThread(() =>
+            {
+                OnAppOpenAdPaid?.Invoke(value,
+                    network,
+                    unitId,
+                    placement,
+                    adNetwork);
+            });
+        }
 
         public void LoadAppOpenAd()
         {

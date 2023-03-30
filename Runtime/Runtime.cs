@@ -3,6 +3,10 @@ using System;
 using Pancake.IAP;
 #endif
 using Pancake.Monetization;
+using Pancake.Tracking;
+#if UNITY_IOS
+using Unity.Advertisement.IosSupport;
+#endif
 using UnityEngine;
 
 namespace Pancake
@@ -24,6 +28,11 @@ namespace Pancake
                 var advertising = new GameObject("Advertising");
                 advertising.AddComponent<Advertising>();
                 advertising.transform.SetParent(app.transform);
+                Advertising.OnBannerAdPaidEvent += AppTracking.TrackRevenue;
+                Advertising.OnInterstitialAdPaidEvent += AppTracking.TrackRevenue;
+                Advertising.OnRewardedAdPaidEvent += AppTracking.TrackRevenue;
+                Advertising.OnRewardedInterAdPaidEvent += AppTracking.TrackRevenue;
+                Advertising.OnAppOpenAdPaidEvent += AppTracking.TrackRevenue;
                 Advertising.Init();
 
 #if PANCAKE_IAP
@@ -41,7 +50,15 @@ namespace Pancake
                 App.IsAppInitialized = true;
                 Debug.Log("<color=#52D5F2>Runtime has been initialized!</color>");
 
+#if UNITY_IOS
+                SkAdNetworkBinding.SkAdNetworkRegisterAppForNetworkAttribution();
+                SkAdNetworkBinding.SkAdNetworkUpdateConversionValue(IOS14AdSupportSetting.SkAdConversionValue);
+#endif
                 if (HeartSettings.EnablePrivacyFirstOpen && !Data.Load<bool>(Invariant.USER_AGREE_PRIVACY_KEY)) ShowPrivacy();
+                else
+                {
+                    RequestAuthorizationTracking();
+                }
 
                 var initProfile = Resources.Load<InitProfile>("InitProfile");
                 if (initProfile != null)
@@ -54,6 +71,28 @@ namespace Pancake
             }
         }
 
+        private static void RequestAuthorizationTracking()
+        {
+#if UNITY_IOS
+            if (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() == ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
+            {
+                ATTrackingStatusBinding.RequestAuthorizationTracking(CallbackAuthorizationTracking);
+            }
+            else
+            {
+                AppTracking.CreateAdjustObject();
+            }
+#else
+            AppTracking.CreateAdjustObject();
+#endif
+        }
+
+        private static void CallbackAuthorizationTracking(int status)
+        {
+            AppTracking.CreateAdjustObject();
+            FirebaseTracking.TrackATTResult(status); // todo: need confirm work?
+        }
+
         private static void PrivacyPolicyValidate(bool status)
         {
             if (status)
@@ -64,6 +103,7 @@ namespace Pancake
 
         private static void ShowPrivacy()
         {
+            if (Application.isEditor) return;
             App.RemoveFocusCallback(PrivacyPolicyValidate);
             NativePopup.ShowNeutral(HeartSettings.PrivacyTitle,
                 HeartSettings.PrivacyMessage,
@@ -72,14 +112,19 @@ namespace Pancake
                 "",
                 () =>
                 {
+                    Time.timeScale = 1;
                     Data.Save(Invariant.USER_AGREE_PRIVACY_KEY, true);
                     App.RemoveFocusCallback(PrivacyPolicyValidate);
+
+                    // Show ATT
+                    RequestAuthorizationTracking();
                 },
                 () =>
                 {
                     App.AddFocusCallback(PrivacyPolicyValidate);
                     Application.OpenURL(HeartSettings.PrivacyUrl);
                 });
+            Time.timeScale = 0;
         }
     }
 }

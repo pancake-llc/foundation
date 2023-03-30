@@ -28,6 +28,7 @@ namespace PancakeEditor
             InAppReview,
             NeedleConsole,
             SelectiveProfiling,
+            IOS14AdvertisingSupport,
         }
 
         private enum WizardMonetizeType
@@ -40,6 +41,7 @@ namespace PancakeEditor
         {
             Firebase = WizardAllType.Firebase,
             Adjust = WizardAllType.Adjust,
+            IOS14AdvertisingSupport = WizardAllType.IOS14AdvertisingSupport
         }
 
         private enum WizardUtilitiesType
@@ -83,7 +85,7 @@ namespace PancakeEditor
                 SelectTab(tabIndex);
                 return;
             }
-            
+
             SelectTab((int) _currentType, true);
             isInitialized = true;
             advertisingFlag = false;
@@ -187,6 +189,9 @@ namespace PancakeEditor
                 case WizardAllType.HeartSetting when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesHeartSettingDrawer.OnInspectorGUI();
                     break;
+                case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Tracking or  WizardType.All:
+                    TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
+                    break;
             }
         }
 
@@ -251,6 +256,7 @@ namespace PancakeEditor
                 case WizardAllType.NeedleConsole: return EditorResources.ScriptableConsole;
                 case WizardAllType.SelectiveProfiling: return EditorResources.ScriptableProfiler;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableHeartSetting;
+                case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
                 default:
                     return null;
             }

@@ -17,7 +17,8 @@ namespace PancakeEditor
             if (adSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                if (GUILayout.Button("Create Adverisement Setting", GUILayout.MaxHeight(40f)))
+                GUI.backgroundColor = Uniform.Pink;
+                if (GUILayout.Button("Create Adverisement Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdSettings>();
                     const string path = "Assets/_Root/Resources";
@@ -28,6 +29,7 @@ namespace PancakeEditor
                     Debug.Log($"{nameof(AdSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(AdSettings)}.asset");
                 }
 
+                GUI.backgroundColor = Color.white;
                 GUI.enabled = true;
 
                 GUILayout.FlexibleSpace();

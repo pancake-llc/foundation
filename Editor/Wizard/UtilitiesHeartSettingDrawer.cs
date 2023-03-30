@@ -13,7 +13,8 @@ namespace PancakeEditor
             if (heartSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                if (GUILayout.Button("Create Heart Setting", GUILayout.MaxHeight(40f)))
+                GUI.backgroundColor = Uniform.Pink;
+                if (GUILayout.Button("Create Heart Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<HeartSettings>();
                     const string path = "Assets/_Root/Resources";
@@ -24,6 +25,7 @@ namespace PancakeEditor
                     Debug.Log($"{nameof(HeartSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(HeartSettings)}.asset");
                 }
 
+                GUI.backgroundColor = Color.white;
                 GUI.enabled = true;
             }
             else

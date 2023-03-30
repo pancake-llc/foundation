@@ -17,7 +17,8 @@ namespace PancakeEditor
             if (iapSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
-                if (GUILayout.Button("Create IAP Setting", GUILayout.MaxHeight(40f)))
+                GUI.backgroundColor = Uniform.Pink;
+                if (GUILayout.Button("Create IAP Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<IAPSettings>();
                     const string path = "Assets/_Root/Resources";
@@ -27,7 +28,8 @@ namespace PancakeEditor
                     AssetDatabase.Refresh();
                     Debug.Log($"{nameof(IAPSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(IAPSettings)}.asset");
                 }
-
+                
+                GUI.backgroundColor = Color.white;
                 GUI.enabled = true;
             }
             else

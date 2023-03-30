@@ -1,0 +1,32 @@
+{
+    "name": "Pancake.Tracking",
+    "rootNamespace": "",
+    "references": [
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
+        "GUID:73cfe616a226dd64690d08b6164cb0e2",
+        "GUID:38036840b8620d443a0acf3e48f20d6f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Firebase.App.dll",
+        "Firebase.Analytics.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.pancake.adjust",
+            "expression": "4.32.0",
+            "define": "PANCAKE_ADJUST"
+        },
+        {
+            "name": "com.google.firebase.analytics",
+            "expression": "8.1.0",
+            "define": "PANCAKE_FIREBASE_ANALYTIC"
+        }
+    ],
+    "noEngineReferences": false
+}

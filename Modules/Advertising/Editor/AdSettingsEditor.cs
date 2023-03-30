@@ -129,7 +129,7 @@ namespace Pancake.Monetization
         {
             downloadMediationProgressCallback = OnDownloadMediationProgress;
             admobImportMediationCompleted = OnAdmobImportMediationCompleted;
-            
+
             AssetDatabase.importPackageCompleted -= OnAdmobMediationPackageImportCompleted;
             AssetDatabase.importPackageCompleted += OnAdmobMediationPackageImportCompleted;
             AssetDatabase.importPackageCancelled -= OnAdmobMediationPackageImportCancelled;
@@ -298,6 +298,7 @@ namespace Pancake.Monetization
                                     AssetDatabase.Refresh();
                                     Debug.Log($"{nameof(GoogleMobileAdsSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(GoogleMobileAdsSettings)}.asset");
                                 }
+
                                 GUI.backgroundColor = Color.white;
                                 GUI.enabled = true;
                             }
