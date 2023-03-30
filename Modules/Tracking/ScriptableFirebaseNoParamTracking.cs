@@ -13,8 +13,10 @@ namespace Pancake.Tracking
 
         public override void Track()
         {
+#if PANCAKE_FIREBASE_ANALYTIC
             if (Application.isEditor) return;
             Firebase.Analytics.FirebaseAnalytics.LogEvent(eventName);
+#endif
         }
     }
 }

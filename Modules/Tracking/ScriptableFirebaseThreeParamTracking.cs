@@ -21,9 +21,11 @@ namespace Pancake.Tracking
 
         public void Track(string param1Value, string param2Value, string param3Value)
         {
+#if PANCAKE_FIREBASE_ANALYTIC
             if (Application.isEditor) return;
             Firebase.Analytics.Parameter[] parameters = {new(paramName1, param1Value), new(paramName2, param2Value), new(paramName3, param3Value)};
             Firebase.Analytics.FirebaseAnalytics.LogEvent(eventName, parameters);
+#endif
         }
     }
 }
