@@ -1112,7 +1112,7 @@ namespace PancakeEditor
 
             if (_mAssetPath == "ProjectSettings/EditorBuildSettings.asset")
             {
-                var listScenes = EditorBuildSettings.scenes;
+                var listScenes = UnityEditor.EditorBuildSettings.scenes;
                 foreach (var scene in listScenes)
                 {
                     if (!scene.enabled) continue;

@@ -14,7 +14,7 @@ namespace PancakeEditor.Attribute
             {
                 var value = property.Value;
 
-                foreach (var scene in EditorBuildSettings.scenes)
+                foreach (var scene in UnityEditor.EditorBuildSettings.scenes)
                 {
                     if (!property.Comparer.Equals(value, scene.path))
                     {

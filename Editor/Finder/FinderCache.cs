@@ -28,8 +28,8 @@ namespace PancakeEditor
                 InitIgnore();
 
 #if UNITY_2018_1_OR_NEWER
-                EditorBuildSettings.sceneListChanged -= InitListScene;
-                EditorBuildSettings.sceneListChanged += InitListScene;
+                UnityEditor.EditorBuildSettings.sceneListChanged -= InitListScene;
+                UnityEditor.EditorBuildSettings.sceneListChanged += InitListScene;
 #endif
 
                 EditorApplication.projectWindowItemOnGUI -= OnGUIProjectItem;
@@ -68,7 +68,7 @@ namespace PancakeEditor
         {
             scenes = new HashSet<string>();
 
-            foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
+            foreach (EditorBuildSettingsScene scene in UnityEditor.EditorBuildSettings.scenes)
             {
                 string sce = AssetDatabase.AssetPathToGUID(scene.path);
 

@@ -18,6 +18,7 @@ namespace PancakeEditor
         private enum WizardAllType
         {
             None = -1,
+            Build = 0,
             Advertisement,
             InAppPurchase,
             Firebase,
@@ -189,8 +190,11 @@ namespace PancakeEditor
                 case WizardAllType.HeartSetting when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesHeartSettingDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Tracking or  WizardType.All:
+                case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Tracking or WizardType.All:
                     TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
+                    break;
+                case WizardAllType.Build when _currentType is WizardType.All:
+                    AllBuildDrawer.OnInspectorGUI();
                     break;
             }
         }
@@ -257,6 +261,7 @@ namespace PancakeEditor
                 case WizardAllType.SelectiveProfiling: return EditorResources.ScriptableProfiler;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableHeartSetting;
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
+                case WizardAllType.Build: return EditorResources.ScriptableBuild;
                 default:
                     return null;
             }
