@@ -5,6 +5,6 @@ namespace PancakeEditor
     [EditorIcon("scriptable_build")]
     public class EditorPreBuildValidateAdvertising : EditorPreBuildCondition
     {
-        public override bool Validate() { return false; }
+        public override (bool, string) Validate() { return (false, ""); }
     }
 }

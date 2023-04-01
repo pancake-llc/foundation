@@ -14,13 +14,15 @@ namespace Pancake.Tracking
         private string appToken;
 
         public static string AppToken => Instance.appToken;
-        
+
 #if PANCAKE_ADJUST
         [SerializeField] private AdjustEnvironment environment = AdjustEnvironment.Production;
         [SerializeField] private AdjustLogLevel logLevel = AdjustLogLevel.Error;
-        
+
         public static AdjustEnvironment Environment => Instance.environment;
         public static AdjustLogLevel LogLevel => Instance.logLevel;
+        public static bool IsProductEnvironment => Environment == AdjustEnvironment.Production;
+        public static bool IsErrorLogLevel => LogLevel == AdjustLogLevel.Error;
 #endif
     }
 }

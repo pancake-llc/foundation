@@ -69,6 +69,7 @@ namespace PancakeEditor
         [SerializeField] private bool isInitialized;
 
         public static bool advertisingFlag;
+        public static bool buildFetchSettingFlag;
 
 
         [MenuItem("Tools/Pancake/Wizard #W")]
@@ -90,6 +91,7 @@ namespace PancakeEditor
             SelectTab((int) _currentType, true);
             isInitialized = true;
             advertisingFlag = false;
+            buildFetchSettingFlag = false;
         }
 
         private void OnGUI()

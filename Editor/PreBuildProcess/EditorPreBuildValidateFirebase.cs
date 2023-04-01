@@ -5,10 +5,7 @@ namespace PancakeEditor
     [EditorIcon("scriptable_build")]
     public class EditorPreBuildValidateFirebase : EditorPreBuildCondition
     {
-        public override bool Validate()
-        {
-            return false;
-        }
+        public override (bool, string) Validate() { return (false, ""); }
     }
 
 }

@@ -9,6 +9,10 @@ namespace PancakeEditor
     [EditorIcon("scriptable_build")]
     public abstract class EditorPreBuildCondition : ScriptableSettings<EditorPreBuildCondition>
     {
-        public abstract bool Validate();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>(result + reason)</returns>
+        public abstract (bool, string) Validate();
     }
 }

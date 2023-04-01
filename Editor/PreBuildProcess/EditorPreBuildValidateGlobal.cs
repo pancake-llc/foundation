@@ -5,6 +5,6 @@ namespace PancakeEditor
     [EditorIcon("scriptable_build")]
     public class EditorPreBuildValidateGlobal : EditorPreBuildCondition
     {
-        public override bool Validate() { return false; }
+        public override (bool, string) Validate() { return (false, ""); }
     }
 }
