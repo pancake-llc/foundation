@@ -12,7 +12,7 @@ namespace PancakeEditor
         {
 #if !PANCAKE_ADJUST
             return (true, "");
-#endif
+#else
             var adjustSetting = Resources.Load<AdjustConfig>(nameof(AdjustConfig));
             if (adjustSetting == null)
             {
@@ -41,6 +41,7 @@ namespace PancakeEditor
             }
 
             return (true, "");
+#endif
         }
     }
 }
