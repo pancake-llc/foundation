@@ -4,18 +4,18 @@
 
 # Environment
 
-- unity 2022.2.0f1
+- unity 2022.2.7f1
 - scriptingBackend : IL2CPP
-- apiCompatibilityLevel : .NetFramework
+- apiCompatibilityLevel : .NET Standard 2.1
 
 # How To Install
 
 Add the lines below to `Packages/manifest.json`
 
-- for version `1.3.5`
+- for version `2.0.0`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git#1.3.5",
+"com.pancake.heart": "https://github.com/pancake-llc/heart.git#2.0.0",
 ```
 
 # Table of Contents

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Pancake.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -20,7 +19,7 @@ using UnityEditor.Experimental.SceneManagement;
 #endif
 
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class FinderSceneCache
     {

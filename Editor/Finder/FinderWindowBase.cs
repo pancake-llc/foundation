@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Pancake;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public interface IWindow
     {
@@ -23,19 +24,19 @@ namespace Pancake.Editor.Finder
     {
         public bool WillRepaint { get; set; }
 
-        private static InEditor.UserSetting<FinderCache> cache;
-        private static InEditor.UserSetting<FinderSetting> setting;
+        private static UserSetting<FinderCache> cache;
+        private static UserSetting<FinderSetting> setting;
 
-        internal static InEditor.UserSetting<FinderSetting> Setting
+        internal static UserSetting<FinderSetting> Setting
         {
             get
             {
-                if (setting == null) setting = new InEditor.UserSetting<FinderSetting>();
+                if (setting == null) setting = new UserSetting<FinderSetting>();
                 return setting;
             }
         }
 
-        internal static InEditor.UserSetting<FinderCache> Cache
+        internal static UserSetting<FinderCache> Cache
         {
             get
             {
@@ -133,7 +134,7 @@ namespace Pancake.Editor.Finder
         public static int GetExcludeType() => Setting.Settings.excludeTypes;
 
         public static bool IsIncludeAllType() =>
-            Setting.Settings.excludeTypes == 0 || M.Approximately(M.Abs(Setting.Settings.excludeTypes), M.Pow(2, FinderAssetType.Filters.Length));
+            Setting.Settings.excludeTypes == 0 || Math.Approximately(Setting.Settings.excludeTypes.Abs(), Math.Pow(2, FinderAssetType.Filters.Length));
 
         public static void ExcludeAllType() => Setting.Settings.excludeTypes = -1;
         public static void IncludeAllType() => Setting.Settings.excludeTypes = 0;
@@ -208,7 +209,7 @@ namespace Pancake.Editor.Finder
 
         internal static void CreateCache()
         {
-            cache = new InEditor.UserSetting<FinderCache>();
+            cache = new UserSetting<FinderCache>();
             FoundCache();
         }
 
@@ -222,7 +223,7 @@ namespace Pancake.Editor.Finder
 
         private static void RestoreCacheFromPath()
         {
-            cache = new InEditor.UserSetting<FinderCache>();
+            cache = new UserSetting<FinderCache>();
             cache.LoadSetting();
             FoundCache();
         }

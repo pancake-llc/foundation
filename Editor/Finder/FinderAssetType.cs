@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class FinderAssetType
     {

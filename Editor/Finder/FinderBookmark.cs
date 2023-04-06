@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class FinderBookmark : IRefDraw
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class DrawCallback
     {
