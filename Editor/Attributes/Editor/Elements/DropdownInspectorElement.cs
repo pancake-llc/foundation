@@ -41,7 +41,8 @@ namespace PancakeEditor.Attribute
             if (!_property.Comparer.Equals(_currentValue, _property.Value))
             {
                 _currentValue = _property.Value;
-                _currentText = _valuesGetter.Invoke(_property).FirstOrDefault(it => _property.Comparer.Equals(it.Value, _property.Value))?.Text ?? "";
+                _currentText = _valuesGetter.Invoke(_property).FirstOrDefault(it => _property.Comparer.Equals(it.Value, _property.Value))?.Text ??
+                               (_property.Value?.ToString() ?? string.Empty);
             }
 
             var controlId = GUIUtility.GetControlID(FocusType.Passive);
@@ -65,7 +66,7 @@ namespace PancakeEditor.Attribute
             }
 
             menu.DropDown(position);
-            
+
             void ChangeValue(object v)
             {
                 _nextValue = v;

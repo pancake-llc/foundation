@@ -1,11 +1,10 @@
 ﻿using Pancake.Attribute;
 using PancakeEditor.Attribute;
-using PancakeEditor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-[assembly: RegisterAttributeDrawer(typeof(InlineEditorDrawer), DrawerOrder.Drawer - 100, ApplyOnArrayElement = true)]
+[assembly: RegisterAttributeDrawer(typeof(InlineEditorDrawer), DrawerOrder.Decorator, ApplyOnArrayElement = true)]
 
 namespace PancakeEditor.Attribute
 {

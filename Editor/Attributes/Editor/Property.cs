@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using JetBrains.Annotations;
 using Pancake.Attribute;
 using UnityEditor;
@@ -12,6 +13,7 @@ namespace PancakeEditor.Attribute
 {
     public sealed class Property
     {
+        private static readonly StringBuilder SharedPropertyPathStringBuilder = new StringBuilder();
         private static readonly IReadOnlyList<ValidationResult> EmptyValidationResults = new List<ValidationResult>();
 
         private readonly PropertyDefinition _definition;
@@ -23,6 +25,7 @@ namespace PancakeEditor.Attribute
 
         private GUIContent _displayNameBackingField;
 
+        private string _propertyPath;
         private string _isExpandedPrefsKey;
 
         private int _lastUpdateFrame;
@@ -121,7 +124,22 @@ namespace PancakeEditor.Attribute
                 return _displayNameBackingField;
             }
         }
+        [PublicAPI]
+        public string PropertyPath
+        {
+            get
+            {
+                if (_propertyPath == null)
+                {
+                    SharedPropertyPathStringBuilder.Clear();
+                    BuildPropertyPath(this, SharedPropertyPathStringBuilder);
+                    _propertyPath = SharedPropertyPathStringBuilder.ToString();
+                }
 
+                return _propertyPath;
+            }
+        }
+        
         [PublicAPI] public bool IsVisible
         {
             get
@@ -188,10 +206,10 @@ namespace PancakeEditor.Attribute
 
                 if (_isExpandedPrefsKey == null)
                 {
-                    _isExpandedPrefsKey = $"TriInspector.expanded.{PropertyTree.TargetObjectType}.{RawName}";
+                    _isExpandedPrefsKey = $"TriInspector.expanded.{PropertyPath}";
                 }
 
-                return EditorPrefs.GetBool(_isExpandedPrefsKey, false);
+                return SessionState.GetBool(_isExpandedPrefsKey, false);
             }
             set
             {
@@ -206,7 +224,7 @@ namespace PancakeEditor.Attribute
                 }
                 else if (_isExpandedPrefsKey != null)
                 {
-                    EditorPrefs.SetBool(_isExpandedPrefsKey, value);
+                    SessionState.SetBool(_isExpandedPrefsKey, value);
                 }
             }
         }
@@ -505,6 +523,29 @@ namespace PancakeEditor.Attribute
             return false;
         }
 
+        internal static void BuildPropertyPath(Property property, StringBuilder sb)
+        {
+            if (property.IsRootProperty)
+            {
+                return;
+            }
+
+            if (property.Parent != null && !property.Parent.IsRootProperty)
+            {
+                BuildPropertyPath(property.Parent, sb);
+                sb.Append('.');
+            }
+
+            if (property.IsArrayElement)
+            {
+                sb.Append("Array.data[").Append(property.IndexInArray).Append(']');
+            }
+            else
+            {
+                sb.Append(property.RawName);
+            }
+        }
+        
         private static void SetValueRecursive(Property property, object value, int targetIndex)
         {
             // for value types we must recursively set all parent objects

@@ -15,6 +15,8 @@
         public string Message { get; }
         public EMessageType MessageType { get; }
 
+        public static ValidationResult Info(string error) { return new ValidationResult(false, error, EMessageType.Info); }
+
         public static ValidationResult Error(string error) { return new ValidationResult(false, error, EMessageType.Error); }
 
         public static ValidationResult Warning(string error) { return new ValidationResult(false, error, EMessageType.Warning); }

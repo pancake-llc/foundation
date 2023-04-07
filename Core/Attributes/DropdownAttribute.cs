@@ -8,6 +8,7 @@ namespace Pancake.Attribute
     public class DropdownAttribute : System.Attribute
     {
         public string Values { get; }
+        public EMessageType ValidationMessageType { get; set; } = EMessageType.Error;
 
         public DropdownAttribute(string values) { Values = values; }
     }
