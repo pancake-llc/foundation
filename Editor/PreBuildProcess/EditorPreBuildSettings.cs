@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using Pancake;
 using Pancake.Attribute;
-using Unity.Android.Types;
-using UnityEditor;
 using UnityEngine;
-using AndroidArchitecture = UnityEditor.AndroidArchitecture;
 
 namespace PancakeEditor
 {

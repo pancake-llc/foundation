@@ -17,7 +17,8 @@ namespace PancakeEditor
 
         private static void SyncSetting()
         {
-            
+
+#if UNITY_ANDROID
             switch (PlayerSettings.Android.targetArchitectures)
             {
                 case AndroidArchitecture.ARMv7:
@@ -51,10 +52,12 @@ namespace PancakeEditor
             EditorPreBuildSettings.KeystorePass = PlayerSettings.Android.keystorePass;
             EditorPreBuildSettings.PathKeystore = PlayerSettings.Android.keystoreName;
             EditorPreBuildSettings.KeyaliasName = PlayerSettings.Android.keyaliasName;
+#endif
         }
 
         public static void OnInspectorGUI()
         {
+#if UNITY_ANDROID
             var buildSetting = Resources.Load<EditorPreBuildSettings>(nameof(EditorPreBuildSettings));
             if (buildSetting == null)
             {
@@ -228,6 +231,7 @@ namespace PancakeEditor
 
                 GUI.backgroundColor = Color.white;
             }
+#endif
         }
     }
 }
