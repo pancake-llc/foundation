@@ -16,7 +16,7 @@ namespace PancakeEditor
             var adjustSetting = Resources.Load<AdjustConfig>(nameof(AdjustConfig));
             if (adjustSetting == null)
             {
-                return (false, "Adjust was installed but AdjustConfig can not be found!");
+                return (false, "Adjust was installed but AdjustConfig not found!");
             }
 
             if (string.IsNullOrEmpty(AdjustConfig.AppToken))

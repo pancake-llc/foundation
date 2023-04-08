@@ -8,9 +8,6 @@ using System.Xml.Linq;
 #if PANCAKE_APPLOVIN
 using AppLovinMax.Scripts.IntegrationManager.Editor;
 #endif
-#if PANCAKE_ADMOB
-using GoogleMobileAds.Editor;
-#endif
 using Newtonsoft.Json;
 using PancakeEditor;
 
@@ -283,20 +280,13 @@ namespace Pancake.Monetization
 
                             EditorGUILayout.Space();
 #if PANCAKE_ADMOB
-                            var googleMobileAdSetting = Resources.Load<GoogleMobileAdsSettings>(nameof(GoogleMobileAdsSettings));
-                            if (googleMobileAdSetting == null)
+                            if (!AdmobHelper.BridgeCheckGoogleMobileAdsSettingExist())
                             {
                                 GUI.enabled = !EditorApplication.isCompiling;
                                 GUI.backgroundColor = Uniform.Pink;
                                 if (GUILayout.Button("Create GoogleMobileAd Setting", GUILayout.Height(30f)))
                                 {
-                                    var setting = ScriptableObject.CreateInstance<GoogleMobileAdsSettings>();
-                                    const string path = "Assets/GoogleMobileAds/Resources";
-                                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(GoogleMobileAdsSettings)}.asset");
-                                    AssetDatabase.SaveAssets();
-                                    AssetDatabase.Refresh();
-                                    Debug.Log($"{nameof(GoogleMobileAdsSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(GoogleMobileAdsSettings)}.asset");
+                                    AdmobHelper.BridgeCreateGoogleMobileAdsSetting();
                                 }
 
                                 GUI.backgroundColor = Color.white;
@@ -304,8 +294,7 @@ namespace Pancake.Monetization
                             }
                             else
                             {
-                                var editor = UnityEditor.Editor.CreateEditor(googleMobileAdSetting);
-                                editor.OnInspectorGUI();
+                                AdmobHelper.DrawSetting();
                             }
 #endif
                             EditorGUILayout.Space();
