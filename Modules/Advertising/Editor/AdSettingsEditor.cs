@@ -277,6 +277,47 @@ namespace Pancake.Monetization
                         if (IsAdmobSdkImported() && Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
                         {
                             EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
+                            EditorGUILayout.Space();
+
+                            Uniform.DrawGroupFoldout("admob_id_test",
+                                "Id Test",
+                                () =>
+                                {
+                                    void DrawIdTest(string id, string label)
+                                    {
+                                        GUILayout.BeginHorizontal();
+                                        GUI.enabled = false;
+                                        GUILayout.Label($"{label}{id}", GUILayout.Width(400));
+                                        GUI.enabled = true;
+                                        if (GUILayout.Button("Copy", GUILayout.Width(100))) id.CopyToClipboard();
+                                        GUILayout.EndHorizontal();
+                                    }
+
+                                    DrawIdTest("ca-app-pub-3940256099942544~3347511713", "AppId           :");
+#if UNITY_ANDROID
+                                    DrawIdTest("ca-app-pub-3940256099942544/6300978111", "Banner        :");
+#elif UNITY_IOS
+                                    DrawIdTest("ca-app-pub-3940256099942544/2934735716", "Banner        :");
+#endif
+
+#if UNITY_ANDROID
+                                    DrawIdTest("ca-app-pub-3940256099942544/1033173712", "Interstitial   :");
+#elif UNITY_IOS
+                                    DrawIdTest("ca-app-pub-3940256099942544/4411468910", "Interstitial   :");
+#endif
+
+#if UNITY_ANDROID
+                                    DrawIdTest("ca-app-pub-3940256099942544/5224354917", "Rewarded   :");
+#elif UNITY_IOS
+                                    DrawIdTest("ca-app-pub-3940256099942544/1712485313", "Rewarded   :");
+#endif
+
+#if UNITY_ANDROID
+                                    DrawIdTest("ca-app-pub-3940256099942544/3419835294", "AppOpen    :");
+#elif UNITY_IOS
+                                    DrawIdTest("ca-app-pub-3940256099942544/5662855259", "AppOpen    :");
+#endif
+                                });
 
                             EditorGUILayout.Space();
 #if PANCAKE_ADMOB
