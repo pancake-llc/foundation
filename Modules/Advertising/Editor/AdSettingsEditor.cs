@@ -289,7 +289,7 @@ namespace Pancake.Monetization
                                         GUI.enabled = false;
                                         GUILayout.Label($"{label}{id}", GUILayout.Width(400));
                                         GUI.enabled = true;
-                                        if (GUILayout.Button("Copy", GUILayout.Width(100))) id.CopyToClipboard();
+                                        if (GUILayout.Button("Copy", GUILayout.Width(80))) id.CopyToClipboard();
                                         GUILayout.EndHorizontal();
                                     }
 

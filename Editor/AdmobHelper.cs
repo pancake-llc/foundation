@@ -42,6 +42,7 @@ namespace PancakeEditor
 #elif UNITY_IOS
             return string.IsNullOrEmpty(googleMobileAdSetting.GoogleMobileAdsIOSAppId);
 #endif
+#pragma warning disable CS0162
             return false;
         }
     }

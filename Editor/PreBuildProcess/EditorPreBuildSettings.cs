@@ -67,8 +67,7 @@ namespace PancakeEditor
                 EditorResources.PreBuildConditionAdjustAsset,
                 EditorResources.PreBuildConditionAdvertisingAsset,
                 EditorResources.PreBuildConditionFirebaseAsset,
-                EditorResources.PreBuildConditionNotificationAsset,
-                EditorResources.PreBuildConditionPurchasingAsset
+                EditorResources.PreBuildConditionNotificationAsset
             };
         }
     }

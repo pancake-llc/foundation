@@ -41,6 +41,5 @@ namespace PancakeEditor
         internal static EditorPreBuildCondition PreBuildConditionFirebaseAsset => Editor.FindAssetWithPath<ScriptableObject>("[editor]-prebuild-validate-firebase.asset", RELATIVE_PRE_BUILD_PROCESS_PATH) as EditorPreBuildCondition;
         internal static EditorPreBuildCondition PreBuildConditionGlobalAsset => Editor.FindAssetWithPath<ScriptableObject>("[editor]-prebuild-validate-global.asset", RELATIVE_PRE_BUILD_PROCESS_PATH) as EditorPreBuildCondition;
         internal static EditorPreBuildCondition PreBuildConditionNotificationAsset => Editor.FindAssetWithPath<ScriptableObject>("[editor]-prebuild-validate-notification.asset", RELATIVE_PRE_BUILD_PROCESS_PATH) as EditorPreBuildCondition;
-        internal static EditorPreBuildCondition PreBuildConditionPurchasingAsset => Editor.FindAssetWithPath<ScriptableObject>("[editor]-prebuild-validate-purchasing.asset", RELATIVE_PRE_BUILD_PROCESS_PATH) as EditorPreBuildCondition;
     }
 }
