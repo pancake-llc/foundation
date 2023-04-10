@@ -30,6 +30,7 @@ namespace PancakeEditor
             NeedleConsole,
             SelectiveProfiling,
             IOS14AdvertisingSupport,
+            LevelSystem,
         }
 
         private enum WizardMonetizeType
@@ -53,6 +54,7 @@ namespace PancakeEditor
             NeedleConsole = WizardAllType.NeedleConsole,
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
             HeartConfig = WizardAllType.HeartSetting,
+            LevelSystem = WizardAllType.LevelSystem,
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;

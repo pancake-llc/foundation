@@ -63,11 +63,8 @@ namespace PancakeEditor
         {
             defaultConditions = new List<EditorPreBuildCondition>
             {
-                EditorResources.PreBuildConditionGlobalAsset,
                 EditorResources.PreBuildConditionAdjustAsset,
                 EditorResources.PreBuildConditionAdvertisingAsset,
-                EditorResources.PreBuildConditionFirebaseAsset,
-                EditorResources.PreBuildConditionNotificationAsset
             };
         }
     }

@@ -1,5 +1,4 @@
 using Pancake.Monetization;
-using UnityEngine;
 
 namespace Pancake.Tracking
 {
@@ -19,12 +18,11 @@ namespace Pancake.Tracking
                 adNetwork);
         }
 
-        public static void CreateAdjustObject()
+        public static void StartTrackingAdjust()
         {
 #if PANCAKE_ADJUST
-            var _ = new GameObject("Adjust", typeof(com.adjust.sdk.Adjust));
+            var _ = new UnityEngine.GameObject("Adjust", typeof(com.adjust.sdk.Adjust));
             com.adjust.sdk.Adjust.StartTracking(AdjustConfig.AppToken, AdjustConfig.Environment, AdjustConfig.LogLevel);
-            Debug.Log("YEAHHHHHHHH: Start Tracking ADJUST");
 #endif
         }
     }

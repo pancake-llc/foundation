@@ -83,13 +83,13 @@ namespace Pancake
                 AppTracking.CreateAdjustObject();
             }
 #else
-            AppTracking.CreateAdjustObject();
+            AppTracking.StartTrackingAdjust();
 #endif
         }
 
         private static void CallbackAuthorizationTracking(int status)
         {
-            AppTracking.CreateAdjustObject();
+            AppTracking.StartTrackingAdjust();
             FirebaseTracking.TrackATTResult(status); // todo: need confirm work?
         }
 
