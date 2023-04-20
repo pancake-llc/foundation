@@ -18,7 +18,6 @@ namespace PancakeEditor
         private enum WizardAllType
         {
             None = -1,
-            Build = 0,
             Advertisement,
             InAppPurchase,
             Firebase,
@@ -30,7 +29,6 @@ namespace PancakeEditor
             NeedleConsole,
             SelectiveProfiling,
             IOS14AdvertisingSupport,
-            LevelSystem,
         }
 
         private enum WizardMonetizeType
@@ -54,7 +52,6 @@ namespace PancakeEditor
             NeedleConsole = WizardAllType.NeedleConsole,
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
             HeartConfig = WizardAllType.HeartSetting,
-            LevelSystem = WizardAllType.LevelSystem,
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -197,9 +194,6 @@ namespace PancakeEditor
                 case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Tracking or WizardType.All:
                     TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Build when _currentType is WizardType.All:
-                    AllBuildDrawer.OnInspectorGUI();
-                    break;
             }
         }
 
@@ -265,7 +259,6 @@ namespace PancakeEditor
                 case WizardAllType.SelectiveProfiling: return EditorResources.ScriptableProfiler;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableHeartSetting;
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
-                case WizardAllType.Build: return EditorResources.ScriptableBuild;
                 default:
                     return null;
             }
