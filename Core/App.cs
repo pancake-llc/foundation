@@ -13,12 +13,6 @@ namespace Pancake
         private static event Action LateUpdateInternal;
         private static event Action WaitForEndOfFrameInternal;
 
-        public static event Action FixedUpdateOnceTime;
-        public static event Action WaitForFixedUpdateOnceTime;
-        public static event Action UpdateOnceTime;
-        public static event Action LateUpdateOnceTime;
-        public static event Action WaitForEndOfFrameOnceTime;
-
         private static readonly List<Action> ToMainThreads = new();
         private static volatile bool isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
 
@@ -299,7 +293,6 @@ namespace Pancake
                         yield return wait;
                         FixedFrameCount += 1;
                         WaitForFixedUpdateInternal?.Invoke();
-                        C.CallActionClean(ref WaitForFixedUpdateOnceTime);
                     }
                     // ReSharper disable once IteratorNeverReturns
                 }
@@ -311,7 +304,6 @@ namespace Pancake
                     {
                         yield return wait;
                         WaitForEndOfFrameInternal?.Invoke();
-                        C.CallActionClean(ref WaitForEndOfFrameOnceTime);
                     }
                     // ReSharper disable once IteratorNeverReturns
                 }
@@ -325,7 +317,6 @@ namespace Pancake
                 }
 
                 UpdateInternal?.Invoke();
-                C.CallActionClean(ref UpdateOnceTime);
                 UpdateAllDelayHandle();
 
                 if (isToMainThreadQueueEmpty) return;
@@ -351,8 +342,6 @@ namespace Pancake
                 }
 
                 FixedUpdateInternal?.Invoke();
-
-                C.CallActionClean(ref FixedUpdateOnceTime);
             }
 
             private void LateUpdate()
@@ -363,7 +352,6 @@ namespace Pancake
                 }
 
                 LateUpdateInternal?.Invoke();
-                C.CallActionClean(ref LateUpdateOnceTime);
             }
 
             /// <summary>
