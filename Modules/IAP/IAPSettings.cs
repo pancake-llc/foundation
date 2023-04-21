@@ -11,18 +11,20 @@ using System.IO;
 #endif
 
 namespace Pancake.IAP
-{ 
+{
     [HideMono]
     [EditorIcon("scriptable_iap")]
     [DeclareHorizontalGroup("button")]
     public class IAPSettings : ScriptableSettings<IAPSettings>
     {
-        [InfoBox("Product id should look like : com.appname.itemid\nEx: com.eldenring.doublesoul\n\nConsumable        : purchase multiple time\nNon Consumable : purchase once time")]
-        [InfoBox("When test mode is enabled all products will be initialized as Consumable (Android Only)")] [SerializeField]
+        [InfoBox(
+            "Product id should look like : com.appname.itemid\nEx: com.eldenring.doublesoul\n\nConsumable        : purchase multiple time\nNon Consumable : purchase once time")]
+        [InfoBox("When test mode is enabled all products will be initialized as Consumable (Android Only)")]
+        [SerializeField]
         private bool testMode;
 
         [SerializeField] private List<IAPData> skusData = new List<IAPData>();
-        
+
         public static bool TestMode => Instance.testMode;
 
         public static List<IAPData> SkusData => Instance.skusData;
@@ -64,7 +66,7 @@ namespace Pancake.IAP
 
             AssetDatabase.ImportAsset(path);
         }
-        
+
         private static string GetPathInCurrentEnvironent(string fullRelativePath)
         {
             var upmPath = $"Packages/com.pancake.heart/{fullRelativePath}";
@@ -77,6 +79,8 @@ namespace Pancake.IAP
         {
             const string path = "Assets/_Root/Scripts";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+
             var productImplPath = $"{path}/Product.cs";
 
             var str = "namespace Pancake.IAP\n{";
@@ -85,6 +89,9 @@ namespace Pancake.IAP
             var skus = SkusData;
             for (int i = 0; i < skus.Count; i++)
             {
+                var scriptable = CreateInstance<ProductVarriable>();
+                scriptable.Value = skus[i];
+
                 var itemName = skus[i].sku.Id.Split('.').Last();
                 str += $"\n\t\tpublic static IAPData Purchase{CultureInfo.CurrentCulture.TextInfo.ToTitleCase(itemName)}()";
                 str += "\n\t\t{";

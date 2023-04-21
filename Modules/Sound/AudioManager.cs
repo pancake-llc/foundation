@@ -181,7 +181,7 @@ namespace Pancake.Sound
             _musicSoundEmitter.OnCompleted += StopMusicEmitter;
 
             return AudioHandle.invalid;
-            ; //No need to return a valid key for music
+            //No need to return a valid key for music
         }
 
         private bool StopMusic(AudioHandle handle)

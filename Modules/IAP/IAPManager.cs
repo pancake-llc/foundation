@@ -6,14 +6,13 @@ using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 using UnityEngine;
 using UnityEngine.Purchasing;
-using UnityEngine.Purchasing.Security;
 
 namespace Pancake.IAP
 {
-    [AddComponentMenu("")]
     [HideMono]
-    public class IAPManager : MonoBehaviour, IStoreListener
+    public class IAPManager : GameComponent, IStoreListener
     {
+        [SerializeField] private IapPurchaseEvent iapPurchaseEvent;
         public static event Action<string> OnPurchaseSucceedEvent;
         public static event Action<string> OnPurchaseFailedEvent;
         public static event Action OnPurchaseEvent;
@@ -26,6 +25,25 @@ namespace Pancake.IAP
 
         public List<IAPData> Skus { get; set; } = new List<IAPData>();
         public bool IsInitialized { get; set; }
+
+
+        protected override void OnEnabled()
+        {
+            base.OnEnabled();
+            iapPurchaseEvent.OnRaised += PurchaseProduct;
+        }
+
+        private IAPData PurchaseProduct(ProductVarriable product)
+        {
+            return product.Value;
+        }
+
+        protected override void OnDisabled()
+        {
+            base.OnDisabled();
+            iapPurchaseEvent.OnRaised -= PurchaseProduct;
+        }
+
 
         private void Awake()
         {

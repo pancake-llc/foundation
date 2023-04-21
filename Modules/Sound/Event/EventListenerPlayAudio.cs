@@ -13,7 +13,7 @@ namespace Pancake.Sound
         [System.Serializable]
         public struct EventResponse
         {
-            [FormerlySerializedAs("scriptableEvent")] public AudioPlayEvent audioPlayEvent;
+            public AudioPlayEvent audioPlayEvent;
             public UnityEvent response;
         }
 
@@ -30,7 +30,7 @@ namespace Pancake.Sound
                 {
                     eventResponses[i].audioPlayEvent.RegisterListener(this);
 
-                    if (!_dictionary.ContainsKey(eventResponses[i].audioPlayEvent)) _dictionary.Add(eventResponses[i].audioPlayEvent, eventResponses[i].response);
+                    _dictionary.TryAdd(eventResponses[i].audioPlayEvent, eventResponses[i].response);
                 }
                 else
                 {
