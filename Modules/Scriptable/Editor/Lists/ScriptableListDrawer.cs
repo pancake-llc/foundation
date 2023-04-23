@@ -8,7 +8,6 @@ namespace PancakeEditor.Scriptable
     [CustomEditor(typeof(ScriptableListBase), true)]
     public class ScriptableListDrawer : UnityEditor.Editor
     {
-        private SerializedObject _serializedObject;
         private ScriptableListBase _list;
 
         public override void OnInspectorGUI()
@@ -18,11 +17,8 @@ namespace PancakeEditor.Scriptable
             bool isMonoOrGameObject = _list.GetElementType.IsSubclassOf(typeof(MonoBehaviour)) || _list.GetElementType == typeof(GameObject);
             if (isMonoOrGameObject)
             {
-                //Do not draw the native list.
-                if (_serializedObject == null) _serializedObject = new SerializedObject(target);
-
-                Uniform.DrawOnlyField(_serializedObject, "m_Script", true);
-                Uniform.DrawOnlyField(_serializedObject, "resetOn", false);
+                Uniform.DrawOnlyField(serializedObject, "m_Script", true);
+                Uniform.DrawOnlyField(serializedObject, "resetOn", false);
             }
             else
             {
