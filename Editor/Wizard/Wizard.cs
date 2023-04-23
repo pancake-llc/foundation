@@ -28,6 +28,7 @@ namespace PancakeEditor
             InAppReview,
             NeedleConsole,
             SelectiveProfiling,
+            Scriptable,
             IOS14AdvertisingSupport,
         }
 
@@ -51,6 +52,7 @@ namespace PancakeEditor
             InAppReview = WizardAllType.InAppReview,
             NeedleConsole = WizardAllType.NeedleConsole,
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
+            Scriptable = WizardAllType.Scriptable,
             HeartConfig = WizardAllType.HeartSetting,
         }
 
@@ -194,6 +196,9 @@ namespace PancakeEditor
                 case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Tracking or WizardType.All:
                     TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
                     break;
+                case WizardAllType.Scriptable when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesScriptableDrawer.OnInspectorGUI();
+                    break;
             }
         }
 
@@ -257,8 +262,9 @@ namespace PancakeEditor
                 case WizardAllType.InAppReview: return EditorResources.ScriptableStar;
                 case WizardAllType.NeedleConsole: return EditorResources.ScriptableConsole;
                 case WizardAllType.SelectiveProfiling: return EditorResources.ScriptableProfiler;
-                case WizardAllType.HeartSetting: return EditorResources.ScriptableHeartSetting;
+                case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
+                case WizardAllType.Scriptable: return EditorResources.ScriptableSetting;
                 default:
                     return null;
             }

@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using System.Reflection;
+#endif
+using System.Text;
 using Pancake.Attribute;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -44,6 +48,12 @@ namespace Pancake.Scriptable
             }
 
             _onRaised?.Invoke();
+            
+#if UNITY_EDITOR
+            //As this uses reflection, I only allow it to be called in Editor.
+            //If you want to display debug in builds, delete the #if UNITY_EDITOR
+            if (debugLogEnabled) Debug();
+#endif
         }
 
         public void RegisterListener(EventListenerNoParam listener)
@@ -61,6 +71,31 @@ namespace Pancake.Scriptable
             var allObjects = new List<Object>(_eventListeners);
             allObjects.AddRange(_listenerObjects);
             return allObjects;
+        }
+
+#if UNITY_EDITOR
+        private void Debug()
+        {
+            if (_onRaised == null)
+                return;
+            var delegates = _onRaised.GetInvocationList();
+            foreach (var del in delegates)
+            {
+                var sb = new StringBuilder();
+                sb.Append("<color=#52D5F2>[Event] </color>");
+                sb.Append(name);
+                sb.Append(" => ");
+                sb.Append(del.GetMethodInfo().Name);
+                sb.Append("()");
+                var monoBehaviour = del.Target as MonoBehaviour;
+                UnityEngine.Debug.Log(sb.ToString(), monoBehaviour?.gameObject);
+            }
+        }
+#endif
+
+        public override void Reset()
+        {
+            debugLogEnabled = false;
         }
     }
 }

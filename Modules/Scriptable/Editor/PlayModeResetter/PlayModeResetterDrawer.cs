@@ -6,8 +6,6 @@ namespace PancakeEditor.Scriptable
     [CustomEditor(typeof(PlayModeResetter))]
     public class PlayModeResetterDrawer : UnityEditor.Editor
     {
-        private SerializedObject _serializedObject;
-
         public override void OnInspectorGUI()
         {
             DrawWarningLabel();
@@ -15,9 +13,8 @@ namespace PancakeEditor.Scriptable
             EditorGUILayout.Space();
             DrawPathInstructions();
 
-            if (_serializedObject == null) _serializedObject = new SerializedObject(target);
-
-            Uniform.DrawInspectorExcept(_serializedObject, "m_Script");
+            Uniform.DrawInspectorExcept(serializedObject, "m_Script");
+            serializedObject.ApplyModifiedProperties();
             Uniform.DrawLine();
             DrawButton();
         }

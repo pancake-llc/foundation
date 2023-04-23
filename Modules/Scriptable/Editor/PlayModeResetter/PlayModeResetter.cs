@@ -49,6 +49,7 @@ namespace PancakeEditor.Scriptable
                 variablesToReset.RemoveAt(i);
             }
 
+            // Marks the object as dirty so it is visible in Version control.
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
@@ -61,7 +62,7 @@ namespace PancakeEditor.Scriptable
             foreach (var playModeResetter in Instances)
             {
                 if (playModeResetter.autoPopulate) playModeResetter.GetAllIResetAtPath();
-                playModeResetter.variablesToReset.ForEach(i => (i as IReset)?.Reset());
+                //playModeResetter.variablesToReset.ForEach(i => (i as IReset)?.ResetToInitialValue());
             }
         }
     }

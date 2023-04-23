@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Pancake.Scriptable;
 using UnityEditor;
@@ -29,6 +30,7 @@ namespace PancakeEditor.Scriptable
         private ScriptableType _currentType = ScriptableType.All;
         private List<ScriptableBase> Favorites => favoriteData?.favorites;
         private readonly Color[] _colors = {Color.gray, Color.blue, Color.green, Color.yellow, Color.magenta};
+        private string _searchContent = string.Empty;
 
         private const float TAB_WIDTH = 55f;
         private const float BUTTON_HEIGHT = 40f;
@@ -169,6 +171,8 @@ namespace PancakeEditor.Scriptable
 
         private void DrawLeftSide()
         {
+            EditorGUILayout.BeginVertical();
+            DrawSearchBar();
             const float width = TAB_WIDTH * 5f;
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
@@ -178,8 +182,9 @@ namespace PancakeEditor.Scriptable
             GUI.backgroundColor = color;
             DrawScriptableBases(_scriptableObjects);
             EditorGUILayout.EndScrollView();
-            
+
             if (GUILayout.Button("Create Type", GUILayout.MaxHeight(BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypeWindow(position));
+            EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
         }
 
@@ -193,7 +198,8 @@ namespace PancakeEditor.Scriptable
             _rightSideScrollPosition = EditorGUILayout.BeginScrollView(_rightSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
             var editor = UnityEditor.Editor.CreateEditor(scriptableBase);
             editor.OnInspectorGUI();
-
+            // needed to refresh directly even if not focused during play mode.
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
             Uniform.DrawLine();
             GUILayout.FlexibleSpace();
             DrawScriptableSelectedButtons();
@@ -211,6 +217,9 @@ namespace PancakeEditor.Scriptable
             {
                 if (scriptable == null) continue;
 
+                //filter search
+                if (scriptable.name.IndexOf(_searchContent, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                
                 EditorGUILayout.BeginHorizontal();
 
                 var icon = GetIconFor(_currentType, scriptable);
@@ -229,6 +238,35 @@ namespace PancakeEditor.Scriptable
 
                 count++;
             }
+        }
+
+        private void DrawSearchBar()
+        {
+            var width = TAB_WIDTH * 5 + 1f;
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(width));
+            _searchContent = EditorGUILayout.TextField(_searchContent, EditorStyles.textField, GUILayout.MaxWidth(width));
+
+            //Draw placeholder Text
+            if (string.IsNullOrEmpty(_searchContent))
+            {
+                var guiColor = GUI.color;
+                GUI.color = Color.grey;
+                var rect = GUILayoutUtility.GetLastRect();
+                rect.x += 3f; //little offset due to the search bar hiding the first letter ^^.
+                EditorGUI.LabelField(rect, "Search:");
+                GUI.color = guiColor;
+            }
+
+            //Clear Button
+            GUI.SetNextControlName("clearButton");
+            if (GUILayout.Button("Clear"))
+            {
+                _searchContent = "";
+                //focus the button to defocus the TextField and so clear the text inside!
+                GUI.FocusControl("clearButton");
+            }
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private Texture2D GetIconFor(ScriptableBase scriptableBase)

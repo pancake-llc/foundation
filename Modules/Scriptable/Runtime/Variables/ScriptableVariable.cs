@@ -14,7 +14,7 @@ namespace Pancake.Scriptable
         protected T value;
 
         [Tooltip("The initial value of this variable. When reset is called, it is set to this value")] [SerializeField]
-        protected T initialValue;
+        private T initialValue;
 
         [Tooltip("Log in the console whenever this variable is changed, loaded or saved.")] [SerializeField]
         private bool debugLogEnabled;
@@ -28,7 +28,9 @@ namespace Pancake.Scriptable
         private readonly List<Object> _listenersObjects = new List<Object>();
         private Action<T> _onValueChanged;
 
-        //Register to this action if you want to be notified when this variable changes value.
+        /// <summary>
+        /// Event raised when the variable value changes.
+        /// </summary>
         public event Action<T> OnValueChanged
         {
             add
@@ -49,6 +51,22 @@ namespace Pancake.Scriptable
 
         public T PreviousValue { get; private set; }
 
+        public T InitialValue
+        {
+            get => initialValue;
+            set
+            {
+                initialValue = value;
+#if UNITY_EDITOR
+                SetDirtyInPlayMode();
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Modify this to change the value of the variable.
+        /// Triggers OnValueChanged event.
+        /// </summary>
         public virtual T Value
         {
             get => value;
@@ -69,6 +87,15 @@ namespace Pancake.Scriptable
             if (saved) Save();
 
             PreviousValue = value;
+#if UNITY_EDITOR
+            SetDirtyInPlayMode();
+#endif
+        }
+
+        private void SetDirtyInPlayMode()
+        {
+            //When the SV is changed by code, make sure it is marked dirty to be saved and picked up by Version Control.
+            if (Application.isPlaying) UnityEditor.EditorUtility.SetDirty(this);
         }
 
         private void Awake()
@@ -81,7 +108,7 @@ namespace Pancake.Scriptable
         {
             if (resetOn == ResetType.SceneLoaded) SceneManager.sceneLoaded += OnSceneLoaded;
 
-            Reset();
+            ResetToInitialValue();
         }
 
 
@@ -92,7 +119,7 @@ namespace Pancake.Scriptable
 
         protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (mode == LoadSceneMode.Single) Reset();
+            if (mode == LoadSceneMode.Single) ResetToInitialValue();
         }
 
 #if UNITY_EDITOR
@@ -107,26 +134,40 @@ namespace Pancake.Scriptable
 
         public virtual void Save()
         {
-            if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#52D5F2>[Saved]</color>");
+            if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Saved]</color>");
         }
 
         public virtual void Load()
         {
             PreviousValue = value;
-            if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#52D5F2>[Loaded].</color>");
+            if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
         }
 
+        /// <summary> Reset the SO to default.</summary>
+        public override void Reset()
+        {
+            _listenersObjects.Clear();
+            Value = default;
+            InitialValue = default;
+            PreviousValue = default;
+            saved = false;
+            resetOn = ResetType.SceneLoaded;
+            debugLogEnabled = false;
+        }
+
+        /// <summary> Reset to initial value or loads and clears the list</summary>
         public void ResetToInitialValue()
+        {
+            _listenersObjects.Clear();
+
+            if (saved) Load();
+            else SetToInitialValue();
+        }
+
+        public void SetToInitialValue()
         {
             Value = initialValue;
             PreviousValue = initialValue;
-        }
-
-        public void Reset()
-        {
-            _listenersObjects.Clear();
-            if (saved) Load();
-            else ResetToInitialValue();
         }
 
         public List<Object> GetAllObjects() { return _listenersObjects; }
@@ -139,7 +180,7 @@ namespace Pancake.Scriptable
             return builder.ToString();
         }
 
-        private string GetColorizedString() { return $"<color=#52D5F2>[Variable]</color> {ToString()}"; }
+        private string GetColorizedString() { return $"<color=#f75369>[Variable]</color> {ToString()}"; }
 
         public static implicit operator T(ScriptableVariable<T> variable) { return variable.Value; }
     }

@@ -6,8 +6,10 @@ namespace Pancake.Scriptable
 {
     [Serializable]
     [Searchable]
-    public class ScriptableBase : ScriptableObject
+    public abstract class ScriptableBase : ScriptableObject
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
+
+        public virtual void Reset() { }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -29,6 +30,11 @@ namespace Pancake.Scriptable
         public event Action<IEnumerable<T>> OnItemsRemoved;
         public event Action OnCleared;
 
+        /// <summary>
+        /// Adds an item to the list only if its not in the list.
+        /// Triggers OnItemCountChanged and OnItemAdded event.
+        /// </summary>
+        /// <param name="item"></param>
         public void Add(T item)
         {
             if (list.Contains(item)) return;
@@ -38,18 +44,29 @@ namespace Pancake.Scriptable
             OnItemAdded?.Invoke(item);
         }
 
+        /// <summary>
+        /// Adds a range of items to the list. An item is only added if its not in the list.
+        /// Triggers OnItemCountChanged and OnItemsAdded event once, after all items have been added.
+        /// </summary>
+        /// <param name="items"></param>
         public void AddRange(IEnumerable<T> items)
         {
-            foreach (var item in items)
+            var enumerable = items.ToList();
+            foreach (var item in enumerable)
             {
                 if (list.Contains(item)) return;
                 list.Add(item);
             }
 
             OnItemCountChanged?.Invoke();
-            OnItemsAdded?.Invoke(items);
+            OnItemsAdded?.Invoke(enumerable);
         }
 
+        /// <summary>
+        /// Removes an item from the list only if its in the list.
+        /// Triggers OnItemCountChanged and OnItemRemoved event.
+        /// </summary>
+        /// <param name="item"></param>
         public void Remove(T item)
         {
             if (!list.Contains(item)) return;
@@ -59,6 +76,12 @@ namespace Pancake.Scriptable
             OnItemRemoved?.Invoke(item);
         }
 
+        /// <summary>
+        /// Removes a range of items from the list.
+        /// Triggers OnItemCountChanged and OnItemsAdded event once, after all items have been added.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="count"></param>
         public void RemoveRange(int index, int count)
         {
             var items = list.GetRange(index, count);
@@ -97,21 +120,22 @@ namespace Pancake.Scriptable
             if (mode == LoadSceneMode.Single) Clear();
         }
 
-        public void Reset() { Clear(); }
+        public override void Reset()
+        {
+            resetOn = ResetType.SceneLoaded;
+            Clear();
+        }
 
-        public IEnumerator<T> GetEnumerator() { return list.GetEnumerator(); }
+        public void ResetToInitialValue() => Clear();
 
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
+        
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public List<Object> GetAllObjects()
         {
             var l = new List<Object>(Count);
-            foreach (var t in list)
-            {
-                var obj = t as Object;
-                if (obj != null) l.Add(obj);
-            }
-
+            l.AddRange(list.OfType<Object>());
             return l;
         }
     }

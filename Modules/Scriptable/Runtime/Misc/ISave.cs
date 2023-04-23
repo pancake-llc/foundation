@@ -4,6 +4,6 @@ namespace Pancake.Scriptable
     {
         void Save();
         void Load();
-        void ResetToInitialValue();
+        void SetToInitialValue();
     }
 }

@@ -16,7 +16,7 @@ namespace Pancake.Scriptable
 
         public override void Load()
         {
-            Value = Data.Load(Id, initialValue ? 1 : 0) == 1;
+            Value = Data.Load(Id, InitialValue ? 1 : 0) == 1;
             base.Load();
         }
 

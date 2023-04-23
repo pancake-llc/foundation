@@ -70,11 +70,12 @@ namespace Pancake.Scriptable
 
         private void Debug()
         {
+            if (_onRaised == null) return;
             var delegates = _onRaised.GetInvocationList();
             foreach (var del in delegates)
             {
                 var sb = new StringBuilder();
-                sb.Append($"<color=#52D5F2>[Event] </color>");
+                sb.Append("<color=#52D5F2>[Event] </color>");
                 sb.Append(name);
                 sb.Append(" => ");
                 sb.Append(del.GetMethodInfo().Name);
@@ -82,6 +83,12 @@ namespace Pancake.Scriptable
                 var monoBehaviour = del.Target as MonoBehaviour;
                 UnityEngine.Debug.Log(sb.ToString(), monoBehaviour?.gameObject);
             }
+        }
+
+        public override void Reset()
+        {
+            debugLogEnabled = false;
+            debugValue = default;
         }
     }
 }

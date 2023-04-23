@@ -51,7 +51,7 @@ namespace Pancake.Scriptable
 
             for (var i = 0; i < registeredListenerCount; i++)
             {
-                var debugText = $"<color=#52D5F2>[Event] ";
+                var debugText = $"<color=#f75369>[Event] ";
                 debugText += eventRaised.name;
                 debugText += " => </color>";
                 debugText += listener.GetPersistentTarget(i);
@@ -73,8 +73,8 @@ namespace Pancake.Scriptable
                 {
                     if (r.response.GetPersistentMethodName(i) == methodName)
                     {
-                        var debugText = $"<color=#52D5F2>{methodName}()</color>";
-                        debugText += " is called by the event: <color=#52D5F2>";
+                        var debugText = $"<color=#f75369>{methodName}()</color>";
+                        debugText += " is called by the event: <color=#f75369>";
                         debugText += r.scriptableEvent.name;
                         debugText += "</color>";
                         UnityEngine.Debug.Log(debugText, gameObject);
