@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Pancake.Attribute;
+using Pancake;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;

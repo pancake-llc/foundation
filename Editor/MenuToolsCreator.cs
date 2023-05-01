@@ -16,6 +16,8 @@ namespace PancakeEditor
         {
             EditorSettings.enterPlayModeOptionsEnabled = !EditorSettings.enterPlayModeOptionsEnabled;
             AssetDatabase.Refresh();
+            string text = EditorSettings.enterPlayModeOptionsEnabled ? " <color=#52D5F2>Enabled" : "<color=#FF2828>Disabled";
+            Debug.Log($"Fast Play Mode {text}</color>");
         }
 
         [MenuItem("Tools/Fast Play Mode", validate = true)]

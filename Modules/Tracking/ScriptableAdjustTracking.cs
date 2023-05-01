@@ -1,13 +1,12 @@
 #if PANCAKE_ADJUST
 using com.adjust.sdk;
 #endif
-using Pancake.Attribute;
 using UnityEngine;
 
 namespace Pancake.Tracking
 {
     [Searchable]
-    [HideMono]
+    //[HideMonoScript]
     [CreateAssetMenu(fileName = "adjust_tracking_name", menuName = "Pancake/Tracking/Adjust")]
     [EditorIcon("scriptable_adjust")]
     public class ScriptableAdjustTracking : ScriptableTracking

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pancake.Attribute
+namespace Pancake
 {
     /// <summary>
     /// Attribute that makes an searchable.

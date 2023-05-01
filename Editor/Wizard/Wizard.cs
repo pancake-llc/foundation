@@ -30,6 +30,7 @@ namespace PancakeEditor
             SelectiveProfiling,
             Scriptable,
             IOS14AdvertisingSupport,
+            Odin
         }
 
         private enum WizardMonetizeType
@@ -54,6 +55,7 @@ namespace PancakeEditor
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
             Scriptable = WizardAllType.Scriptable,
             HeartConfig = WizardAllType.HeartSetting,
+            Odin = WizardAllType.Odin
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -198,6 +200,9 @@ namespace PancakeEditor
                     break;
                 case WizardAllType.Scriptable when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesScriptableDrawer.OnInspectorGUI();
+                    break;           
+                case WizardAllType.Odin when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesOdinDrawer.OnInspectorGUI();
                     break;
             }
         }
@@ -265,6 +270,7 @@ namespace PancakeEditor
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
                 case WizardAllType.Scriptable: return EditorResources.ScriptableSetting;
+                case WizardAllType.Odin: return EditorResources.ScriptableOdin;
                 default:
                     return null;
             }

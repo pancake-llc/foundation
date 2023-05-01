@@ -1,152 +1,169 @@
-﻿using Pancake.Attribute;
+﻿using UnityEngine.Events;
 using UnityEngine;
-using UnityEngine.Events;
 
-namespace Pancake.Scriptable
+namespace Obvious.Soap
 {
-    [EditorIcon("scriptable_bind")]
+    [AddComponentMenu("Soap/Bindings/BindComparisonToUnityEvent")]
     public class BindComparisonToUnityEvent : MonoBehaviour
     {
-        public CustomVariableType type = CustomVariableType.None;
+        public CustomVariableType Type = CustomVariableType.None;
 
-        [SerializeField] private BoolVariable boolVariable;
-        [SerializeField] private BoolReference boolComparer;
+        [SerializeField] private BoolVariable _boolVariable = null;
+        [SerializeField] private BoolReference _boolComparer = null;
 
-        [SerializeField] private IntVariable intVariable;
-        [SerializeField] private IntReference intComparer;
+        [SerializeField] private IntVariable _intVariable = null;
+        [SerializeField] private IntReference _intComparer = null;
+  
+        [SerializeField] private FloatVariable _floatVariable = null;
+        [SerializeField] private FloatReference _floatComparer = null;
 
-        [SerializeField] private FloatVariable floatVariable;
-        [SerializeField] private FloatReference floatComparer;
+        [SerializeField] private StringVariable _stringVariable = null;
+        [SerializeField] private StringReference _stringComparer = null;
+  
+        public Comparator Comparison = Comparator.EQUAL;
 
-        [SerializeField] private StringVariable stringVariable;
-        [SerializeField] private StringReference stringComparer;
+        [SerializeField] private UnityEvent _unityEvent = null;
 
-        public Comparator comparison = Comparator.Equal;
+        private void Awake()
+        {
+            Subscribe();
+        }
 
-        [SerializeField] private UnityEvent unityEvent;
-
-        private void Awake() { Subscribe(); }
-
-        private void Start() { Evaluate(); }
+        private void Start()
+        {
+            Evaluate();
+        }
 
         private void Evaluate()
         {
-            switch (type)
+            switch (Type)
             {
                 case CustomVariableType.Bool:
-                    Evaluate(boolVariable.Value);
+                    Evaluate(_boolVariable.Value);
                     break;
                 case CustomVariableType.Int:
-                    Evaluate(intVariable.Value);
+                    Evaluate(_intVariable.Value);
                     break;
                 case CustomVariableType.Float:
-                    Evaluate(floatVariable.Value);
+                    Evaluate(_floatVariable.Value);
                     break;
                 case CustomVariableType.String:
-                    Evaluate(stringVariable.Value);
+                    Evaluate(_stringVariable.Value);
                     break;
             }
         }
 
         private void Evaluate(bool value)
         {
-            if (value == boolComparer) unityEvent.Invoke();
+            if (value == _boolComparer)
+                _unityEvent.Invoke();
         }
 
         private void Evaluate(int value)
         {
-            switch (comparison)
+            switch (Comparison)
             {
-                case Comparator.Equal:
-                    if (value == intComparer.Value) unityEvent.Invoke();
+                case Comparator.EQUAL:
+                    if (value == _intComparer.Value)
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.Smaller:
-                    if (value < intComparer.Value) unityEvent.Invoke();
+                case Comparator.SMALLER:
+                    if (value < _intComparer.Value)
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.Bigger:
-                    if (value > intComparer.Value) unityEvent.Invoke();
+                case Comparator.BIGGER:
+                    if (value > _intComparer.Value)
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.BiggerOrEqual:
-                    if (value >= intComparer.Value) unityEvent.Invoke();
+                case Comparator.BIGGER_OR_EQUAL:
+                    if (value >= _intComparer.Value)
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.SmallerOrEqual:
-                    if (value <= intComparer.Value) unityEvent.Invoke();
+                case Comparator.SMALLER_OR_EQUAL:
+                    if (value <= _intComparer.Value)
+                        _unityEvent.Invoke();
                     break;
             }
         }
 
         private void Evaluate(float value)
         {
-            switch (comparison)
+            switch (Comparison)
             {
-                case Comparator.Equal:
-                    if (Mathf.Approximately(value, floatComparer.Value)) unityEvent.Invoke();
+                case Comparator.EQUAL:
+                    if (Mathf.Approximately(value, _floatComparer.Value))
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.Smaller:
-                    if (value < floatComparer.Value) unityEvent.Invoke();
+                case Comparator.SMALLER:
+                    if (value < _floatComparer.Value)
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.Bigger:
-                    if (value > floatComparer.Value) unityEvent.Invoke();
+                case Comparator.BIGGER:
+                    if (value > _floatComparer.Value)
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.BiggerOrEqual:
-                    if (value >= floatComparer.Value) unityEvent.Invoke();
+                case Comparator.BIGGER_OR_EQUAL:
+                    if (value >= _floatComparer.Value)
+                        _unityEvent.Invoke();
                     break;
-                case Comparator.SmallerOrEqual:
-                    if (value <= floatComparer.Value) unityEvent.Invoke();
+                case Comparator.SMALLER_OR_EQUAL:
+                    if (value <= _floatComparer.Value)
+                        _unityEvent.Invoke();
                     break;
             }
         }
 
         private void Evaluate(string value)
         {
-            if (value.Equals(stringComparer.Value)) unityEvent.Invoke();
+            if (value.Equals(_stringComparer.Value))
+                _unityEvent.Invoke();
         }
 
         private void Subscribe()
         {
-            switch (type)
+            switch (Type)
             {
                 case CustomVariableType.Bool:
-                    boolVariable.OnValueChanged += Evaluate;
+                    _boolVariable.OnValueChanged += Evaluate;
                     break;
                 case CustomVariableType.Int:
-                    intVariable.OnValueChanged += Evaluate;
+                    _intVariable.OnValueChanged += Evaluate;
                     break;
                 case CustomVariableType.Float:
-                    floatVariable.OnValueChanged += Evaluate;
+                    _floatVariable.OnValueChanged += Evaluate;
                     break;
                 case CustomVariableType.String:
-                    stringVariable.OnValueChanged += Evaluate;
+                    _stringVariable.OnValueChanged += Evaluate;
                     break;
             }
         }
 
         private void OnDestroy()
         {
-            switch (type)
+            switch (Type)
             {
                 case CustomVariableType.Bool:
-                    boolVariable.OnValueChanged -= Evaluate;
+                    _boolVariable.OnValueChanged -= Evaluate;
                     break;
                 case CustomVariableType.Int:
-                    intVariable.OnValueChanged -= Evaluate;
+                    _intVariable.OnValueChanged -= Evaluate;
                     break;
                 case CustomVariableType.Float:
-                    floatVariable.OnValueChanged -= Evaluate;
+                    _floatVariable.OnValueChanged -= Evaluate;
                     break;
                 case CustomVariableType.String:
-                    stringVariable.OnValueChanged -= Evaluate;
+                    _stringVariable.OnValueChanged -= Evaluate;
                     break;
             }
         }
 
         public enum Comparator
         {
-            Equal,
-            Smaller,
-            Bigger,
-            BiggerOrEqual,
-            SmallerOrEqual
+            EQUAL,
+            SMALLER,
+            BIGGER,
+            BIGGER_OR_EQUAL,
+            SMALLER_OR_EQUAL
         }
     }
 }

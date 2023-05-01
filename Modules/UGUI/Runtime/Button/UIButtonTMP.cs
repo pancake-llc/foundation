@@ -1,7 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
 #endif
-using Pancake.Attribute;
 using TMPro;
 using UnityEngine;
 

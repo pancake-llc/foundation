@@ -1,16 +1,16 @@
 #if PANCAKE_ADJUST
 using com.adjust.sdk;
 #endif
-using Pancake.Attribute;
 using UnityEngine;
 
 namespace Pancake.Tracking
 {
-    [HideMono]
+    //[HideMonoScript]
     [EditorIcon("scriptable_adjust")]
     public class AdjustConfig : ScriptableSettings<AdjustConfig>
     {
-        [InfoBox("On iOS Adjust will be initial after ATT popup completed!")] [SerializeField]
+        //[InfoBox("On iOS Adjust will be initial after ATT popup completed!")] 
+        [SerializeField]
         private string appToken;
 
         public static string AppToken => Instance.appToken;

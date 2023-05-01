@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections;
-using Pancake.Attribute;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
     [AddComponentMenu("")]
-    [HideMono]
+    //[HideMonoScript]
     public class Advertising : MonoBehaviour
     {
         private static Advertising Instance { get; set; }

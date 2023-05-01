@@ -1,27 +1,32 @@
-﻿using Pancake.Attribute;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Pancake.Scriptable
+namespace Obvious.Soap
 {
-    [EditorIcon("scriptable_bind")]
+    [AddComponentMenu("Soap/Bindings/BindFillingImage")]
     [RequireComponent(typeof(Image))]
-    public class BindFillingImage : CacheGameComponent<Image>
+    public class BindFillingImage : CacheComponent<Image>
     {
-        [SerializeField] private FloatVariable floatVariable;
-        [SerializeField] private FloatReference maxValue;
+        [SerializeField] private FloatVariable _floatVariable = null;
+        [SerializeField] private FloatReference _maxValue = null;
 
         protected override void Awake()
         {
             base.Awake();
-            component.type = Image.Type.Filled;
-
-            Refresh(floatVariable);
-            floatVariable.OnValueChanged += Refresh;
+            _component.type = Image.Type.Filled;
+            
+            Refresh(_floatVariable);
+            _floatVariable.OnValueChanged += Refresh;
         }
 
-        private void OnDestroy() { floatVariable.OnValueChanged -= Refresh; }
+        private void OnDestroy()
+        {
+            _floatVariable.OnValueChanged -= Refresh;
+        }
 
-        private void Refresh(float currentValue) { component.fillAmount = floatVariable.Value / maxValue.Value; }
+        private void Refresh(float currentValue)
+        {
+            _component.fillAmount = _floatVariable.Value / _maxValue.Value;
+        }
     }
 }

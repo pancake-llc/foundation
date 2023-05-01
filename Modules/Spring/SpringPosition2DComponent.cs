@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Pancake.Attribute;
 using UnityEngine;
 
 namespace Pancake.Spring

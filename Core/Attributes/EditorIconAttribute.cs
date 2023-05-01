@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pancake.Attribute
+namespace Pancake
 {
     /// <summary>
     /// Specify a texture name from your assets which you want to be assigned as an icon to the MonoScript.

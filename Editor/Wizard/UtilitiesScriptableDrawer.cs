@@ -30,9 +30,11 @@ namespace PancakeEditor
             }
             else
             {
+                EditorGUILayout.LabelField("Default: displays all the parameters of variables. " + "\nMinimal : only displays the value.",
+                    EditorStyles.wordWrappedLabel);
                 var editor = UnityEditor.Editor.CreateEditor(scriptableSetting);
                 editor.OnInspectorGUI();
-                
+
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Green;
                 if (GUILayout.Button("Open Scriptable Wizard", GUILayout.MaxHeight(25f)))

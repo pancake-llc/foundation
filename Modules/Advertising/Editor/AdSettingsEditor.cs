@@ -11,10 +11,6 @@ using AppLovinMax.Scripts.IntegrationManager.Editor;
 using Newtonsoft.Json;
 using PancakeEditor;
 
-#if PANCAKE_ADVERTISING
-using Unity.SharpZipLib.Zip;
-#endif
-
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -506,57 +502,7 @@ namespace Pancake.Monetization
                 AssetDatabase.Refresh();
             }
         }
-
-        /// <summary>
-        /// Write the given bytes data under the given filePath. 
-        /// The filePath should be given with its path and filename. (e.g. c:/tmp/test.zip)
-        /// </summary>
-        private static void UnZip(string filePath, byte[] data)
-        {
-#if PANCAKE_ADVERTISING
-            using (var s = new ZipInputStream(new MemoryStream(data)))
-            {
-                ZipEntry theEntry;
-                while ((theEntry = s.GetNextEntry()) != null)
-                {
-                    string directoryName = Path.GetDirectoryName(theEntry.Name);
-                    string fileName = Path.GetFileName(theEntry.Name);
-
-                    // create directory
-                    if (directoryName?.Length > 0)
-                    {
-                        var dirPath = Path.Combine(filePath, directoryName);
-
-                        if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-                    }
-
-                    if (fileName != string.Empty)
-                    {
-                        // retrieve directory name only from persistence data path.
-                        var entryFilePath = Path.Combine(filePath, theEntry.Name);
-                        using (var streamWriter = File.Create(entryFilePath))
-                        {
-                            var size = 2048;
-                            var fdata = new byte[size];
-                            while (true)
-                            {
-                                size = s.Read(fdata, 0, fdata.Length);
-                                if (size > 0)
-                                {
-                                    streamWriter.Write(fdata, 0, size);
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-#endif
-        }
-
+        
         #endregion
 
         #region admob
@@ -759,7 +705,7 @@ namespace Pancake.Monetization
                 AdSettings.AdmobSettings.editorImportingNetwork = network;
 
                 string folderUnZip = Path.Combine(Application.temporaryCachePath, "UnZip");
-                UnZip(folderUnZip, File.ReadAllBytes(pathFile));
+                PancakeEditor.Editor.UnZip(folderUnZip, File.ReadAllBytes(pathFile));
 
                 AssetDatabase.ImportPackage(Path.Combine(folderUnZip,
                         $"{network.displayName}UnityAdapter-{network.lastVersion.unity}",

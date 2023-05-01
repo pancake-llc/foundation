@@ -39,7 +39,6 @@ namespace PancakeEditor
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Advertising", "Are you sure you want to uninstall advertising package ?", "Yes", "No");
                     if (confirmDelete)
                     {
-                        RegistryManager.Remove("com.unity.sharp-zip-lib");
                         Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
                         AssetDatabase.Refresh();
                         RegistryManager.Resolve();
@@ -58,7 +57,6 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Advertisement", GUILayout.MaxHeight(40f)))
             {
-                RegistryManager.Add("com.unity.sharp-zip-lib", "1.3.4-preview");
                 Editor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
                 AssetDatabase.Refresh();
                 RegistryManager.Resolve();

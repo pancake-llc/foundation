@@ -1,31 +1,36 @@
-﻿using Pancake.Attribute;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Pancake.Scriptable
+namespace Obvious.Soap
 {
-    [EditorIcon("scriptable_bind")]
+    [AddComponentMenu("Soap/Bindings/BindSlider")]
     [RequireComponent(typeof(Slider))]
-    public class BindSlider : CacheGameComponent<Slider>
+    public class BindSlider : CacheComponent<Slider>
     {
-        [SerializeField] private FloatVariable floatVariable;
+        [SerializeField] private FloatVariable _floatVariable = null;
 
         protected override void Awake()
         {
             base.Awake();
-            OnValueChanged(floatVariable);
-            component.onValueChanged.AddListener(SetBoundVariable);
-            floatVariable.OnValueChanged += OnValueChanged;
+            OnValueChanged(_floatVariable);
+            _component.onValueChanged.AddListener(SetBoundVariable);
+            _floatVariable.OnValueChanged += OnValueChanged;
         }
 
         private void OnDestroy()
         {
-            component.onValueChanged.RemoveListener(SetBoundVariable);
-            floatVariable.OnValueChanged -= OnValueChanged;
+            _component.onValueChanged.RemoveListener(SetBoundVariable);
+            _floatVariable.OnValueChanged -= OnValueChanged;
         }
 
-        private void OnValueChanged(float value) { component.value = value; }
+        private void OnValueChanged(float value)
+        {
+            _component.value = value;
+        }
 
-        private void SetBoundVariable(float value) { floatVariable.Value = value; }
+        private void SetBoundVariable(float value)
+        {
+            _floatVariable.Value = value;
+        }
     }
 }

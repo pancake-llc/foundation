@@ -1,19 +1,25 @@
-﻿using Pancake.Attribute;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake
 {
-    [HideMono]
+    //[HideMonoScript]
     [EditorIcon("scriptable_setting")]
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
-        [SerializeField, LabelText("Privacy on FirstOpen")] private bool enablePrivacyFirstOpen;
+        //[LabelText("Privacy on FirstOpen")]
+        [SerializeField] private bool enablePrivacyFirstOpen;
 
-        [SerializeField, Indent, ShowIf(nameof(enablePrivacyFirstOpen))]
+        //[Indent, ShowIf(nameof(enablePrivacyFirstOpen))]
+        [SerializeField]
         private string privacyUrl;
 
-        [SerializeField, Indent, LabelText("Title"), ShowIf(nameof(enablePrivacyFirstOpen))] private string privacyTitle;
-        [SerializeField, Indent, LabelText("Message"), TextArea(3, 6), ShowIf(nameof(enablePrivacyFirstOpen))] private string privacyMessage;
+        //[Indent, LabelText("Title"), ShowIf(nameof(enablePrivacyFirstOpen))]
+        [SerializeField]
+        private string privacyTitle;
+
+        //[Indent, LabelText("Message"), TextArea(3, 6), ShowIf(nameof(enablePrivacyFirstOpen))]
+        [SerializeField]
+        private string privacyMessage;
 
         public static bool EnablePrivacyFirstOpen => Instance.enablePrivacyFirstOpen;
         public static string PrivacyUrl => Instance.privacyUrl;

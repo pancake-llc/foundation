@@ -1,5 +1,4 @@
-﻿using Pancake.Attribute;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake.Spring
 {
@@ -8,7 +7,8 @@ namespace Pancake.Spring
     {
         public BaseSpringComponent nudgeable;
         public Vector2 value = new Vector2(20f, 20f);
-        [InlineProperty(LabelWidth = 20)] public Vector2 frequency = new Vector2(2f, 10f);
+        //[InlineProperty(LabelWidth = 20)]
+        public Vector2 frequency = new Vector2(2f, 10f);
         public bool autoNudge;
 
         private float _lastNudgeTime;

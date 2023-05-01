@@ -1,31 +1,36 @@
-﻿using Pancake.Attribute;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Pancake.Scriptable
+namespace Obvious.Soap
 {
-    [EditorIcon("scriptable_bind")]
+    [AddComponentMenu("Soap/Bindings/BindToggle")]
     [RequireComponent(typeof(Toggle))]
-    public class BindToggle : CacheGameComponent<Toggle>
+    public class BindToggle : CacheComponent<Toggle>
     {
-        [SerializeField] private BoolVariable boolVariable;
+        [SerializeField] private BoolVariable _boolVariable = null;
 
         protected override void Awake()
         {
             base.Awake();
-            OnValueChanged(boolVariable);
-            component.onValueChanged.AddListener(SetBoundVariable);
-            boolVariable.OnValueChanged += OnValueChanged;
+            OnValueChanged(_boolVariable);
+            _component.onValueChanged.AddListener(SetBoundVariable);
+            _boolVariable.OnValueChanged += OnValueChanged;
         }
 
         private void OnDestroy()
         {
-            component.onValueChanged.RemoveListener(SetBoundVariable);
-            boolVariable.OnValueChanged -= OnValueChanged;
+            _component.onValueChanged.RemoveListener(SetBoundVariable);
+            _boolVariable.OnValueChanged -= OnValueChanged;
         }
 
-        private void OnValueChanged(bool value) { component.isOn = value; }
+        private void OnValueChanged(bool value)
+        {
+            _component.isOn = value;
+        }
 
-        private void SetBoundVariable(bool value) { boolVariable.Value = value; }
+        private void SetBoundVariable(bool value)
+        {
+            _boolVariable.Value = value;
+        }
     }
 }

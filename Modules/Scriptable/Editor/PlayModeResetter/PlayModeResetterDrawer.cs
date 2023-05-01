@@ -1,7 +1,8 @@
-﻿using UnityEditor;
+﻿using PancakeEditor;
+using UnityEditor;
 using UnityEngine;
 
-namespace PancakeEditor.Scriptable
+namespace Obvious.Soap.Editor
 {
     [CustomEditor(typeof(PlayModeResetter))]
     public class PlayModeResetterDrawer : UnityEditor.Editor
@@ -12,7 +13,6 @@ namespace PancakeEditor.Scriptable
             Uniform.DrawLine();
             EditorGUILayout.Space();
             DrawPathInstructions();
-
             Uniform.DrawInspectorExcept(serializedObject, "m_Script");
             serializedObject.ApplyModifiedProperties();
             Uniform.DrawLine();

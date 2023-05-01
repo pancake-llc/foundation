@@ -1,50 +1,47 @@
 ﻿using System.Text;
-using Pancake.Attribute;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Pancake.Scriptable
+namespace Obvious.Soap
 {
-    [EditorIcon("scriptable_bind")]
+    [AddComponentMenu("Soap/Bindings/BindText")]
     [RequireComponent(typeof(Text))]
-    public class BindText : CacheGameComponent<Text>
+    public class BindText: CacheComponent<Text>
     {
-        public CustomVariableType type = CustomVariableType.None;
+        public CustomVariableType Type = CustomVariableType.None;
+        
+        [SerializeField] private BoolVariable _boolVariable = null;
+        [SerializeField] private IntVariable _intVariable = null;
+        [SerializeField] private FloatVariable _floatVariable = null;
+        [SerializeField] private StringVariable _stringVariable = null;
 
-        [SerializeField] private BoolVariable boolVariable;
-        [SerializeField] private IntVariable intVariable;
-        [SerializeField] private FloatVariable floatVariable;
-        [SerializeField] private StringVariable stringVariable;
-
-        public string prefix = string.Empty;
-        public string suffix = string.Empty;
+        public string Prefix = string.Empty;
+        public string Suffix = string.Empty;
 
         //int specific
         [Tooltip("Useful too an offset, for example for Level counts. If your level index is  0, add 1, so it displays Level : 1")]
-        public int increment;
-
+        public int Increment = 0;
         [Tooltip("Clamps the value shown to a minimum and a maximum.")]
-        public Vector2Int minMaxInt = new Vector2Int(int.MinValue, int.MaxValue);
-
+        public Vector2Int MinMaxInt = new Vector2Int(int.MinValue, int.MaxValue);
+        
         //float specific
-        [Min(1)] public int decimalAmount = 2;
-
+        [Min(1)]
+        public int DecimalAmount = 2;
         [Tooltip("Clamps the value shown to a minimum and a maximum.")]
-        public bool isClamped;
-
-        public Vector2 minMaxFloat = new Vector2(float.MinValue, float.MaxValue);
-
+        public bool IsClamped = false;
+        public Vector2 MinMaxFloat = new Vector2(float.MinValue, float.MaxValue);
+        
         private readonly StringBuilder _stringBuilder = new StringBuilder();
-
+        
         protected override void Awake()
         {
             base.Awake();
-            if (type == CustomVariableType.None)
+            if (Type == CustomVariableType.None)
             {
                 Debug.LogError("Select a type for this binding component", gameObject);
                 return;
             }
-
+            
             Refresh();
             Subscribe();
         }
@@ -52,72 +49,76 @@ namespace Pancake.Scriptable
         private void Refresh()
         {
             _stringBuilder.Clear();
-            _stringBuilder.Append(prefix);
+            _stringBuilder.Append(Prefix);
 
-            switch (type)
+            switch (Type)
             {
                 case CustomVariableType.Bool:
-                    _stringBuilder.Append(boolVariable.Value ? "True" : "False");
+                    _stringBuilder.Append(_boolVariable.Value ? "True" : "False");
                     break;
                 case CustomVariableType.Int:
-                    var clampedInt = isClamped ? Mathf.Clamp(intVariable.Value, minMaxInt.x, minMaxInt.y) : intVariable.Value;
-                    _stringBuilder.Append(clampedInt + increment);
+                    var clampedInt = IsClamped ? Mathf.Clamp(_intVariable.Value, MinMaxInt.x, MinMaxInt.y) : _intVariable.Value;
+                    _stringBuilder.Append(clampedInt + Increment);
                     break;
                 case CustomVariableType.Float:
-                    double clampedFloat = isClamped ? Mathf.Clamp(floatVariable.Value, minMaxFloat.x, minMaxFloat.y) : floatVariable.Value;
-                    double rounded = System.Math.Round(clampedFloat, decimalAmount);
+                    double clampedFloat = IsClamped ? Mathf.Clamp(_floatVariable.Value, MinMaxFloat.x, MinMaxFloat.y) : _floatVariable.Value;
+                    double rounded = System.Math.Round(clampedFloat, DecimalAmount);
                     _stringBuilder.Append(rounded);
                     break;
                 case CustomVariableType.String:
-                    _stringBuilder.Append(stringVariable.Value);
+                    _stringBuilder.Append(_stringVariable.Value);
                     break;
             }
 
-            _stringBuilder.Append(suffix);
-            component.text = _stringBuilder.ToString();
+            _stringBuilder.Append(Suffix);
+            _component.text = _stringBuilder.ToString();
         }
-
-        private void Refresh(int _) { Refresh(); }
-        private void Refresh(float _) { Refresh(); }
-        private void Refresh(bool _) { Refresh(); }
-        private void Refresh(string _) { Refresh(); }
 
         private void Subscribe()
         {
-            switch (type)
+            switch (Type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null) boolVariable.OnValueChanged += Refresh;
+                    if (_boolVariable != null)
+                        _boolVariable.OnValueChanged += (value)=> Refresh();
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null) intVariable.OnValueChanged += Refresh;
+                    if (_intVariable != null)
+                        _intVariable.OnValueChanged += (value)=> Refresh();
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null) floatVariable.OnValueChanged += Refresh;
+                    if (_floatVariable != null)
+                        _floatVariable.OnValueChanged += (value)=> Refresh();
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null) stringVariable.OnValueChanged += Refresh;
+                    if (_stringVariable != null)
+                        _stringVariable.OnValueChanged += (value)=> Refresh();
                     break;
             }
         }
 
         private void OnDestroy()
         {
-            switch (type)
+            switch (Type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null) boolVariable.OnValueChanged -= Refresh;
+                    if (_boolVariable != null)
+                        _boolVariable.OnValueChanged -= (value)=> Refresh();
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null) intVariable.OnValueChanged -= Refresh;
+                    if (_intVariable != null)
+                        _intVariable.OnValueChanged -= (value)=> Refresh();
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null) floatVariable.OnValueChanged -= Refresh;
+                    if (_floatVariable != null)
+                        _floatVariable.OnValueChanged -= (value)=> Refresh();
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null) stringVariable.OnValueChanged -= Refresh;
+                    if (_stringVariable != null)
+                        _stringVariable.OnValueChanged -= (value)=> Refresh();
                     break;
             }
         }
+
     }
 }

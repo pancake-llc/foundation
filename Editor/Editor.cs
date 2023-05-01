@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.SharpZipLib.Zip;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -10,6 +11,9 @@ namespace PancakeEditor
 {
     public static partial class Editor
     {
+        public const string DEFAULT_PATH_SCRIPT_GENERATED = "Assets/_Root/Scripts/Generated";
+        public const string DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED = "Assets/_Root/Storages/Generated/Scriptable";
+
         /// <summary>
         /// Search for assets with type <typeparamref name="T"/> by specified <paramref name="nameAsset"/> and relative path <paramref name="relativePath"/>
         /// </summary>
@@ -266,26 +270,12 @@ namespace PancakeEditor
         public static void CreateCopyAsset(Object obj)
         {
             string path = AssetDatabase.GetAssetPath(obj);
-            string copyPath = GenerateCopyPath(obj.name, path);
+            string copyPath = AssetDatabase.GenerateUniqueAssetPath(path);
             AssetDatabase.CopyAsset(path, copyPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             var newAsset = AssetDatabase.LoadMainAssetAtPath(copyPath);
             EditorGUIUtility.PingObject(newAsset);
-        }
-
-        private static string GenerateCopyPath(string fileName, string filePath)
-        {
-            var count = 0;
-            string copyPath;
-            do
-            {
-                count++;
-                var newName = $"{fileName}_{count}";
-                copyPath = filePath.Replace($"{fileName}.asset", $"{newName}.asset");
-            } while (File.Exists(copyPath));
-
-            return copyPath;
         }
 
         /// <summary>
@@ -295,7 +285,7 @@ namespace PancakeEditor
         /// <returns></returns>
         public static bool DeleteObjectWithConfirmation(Object obj)
         {
-            bool confirmDelete = EditorUtility.DisplayDialog("Delete " + obj.name + "?", "Are you sure you want to delete '" + obj.name + "'?", "Yes", "No");
+            bool confirmDelete = EditorUtility.DisplayDialog($"Delete {obj.name}?", $"Are you sure you want to delete '{obj.name}'?", "Yes", "No");
             if (confirmDelete)
             {
                 string path = AssetDatabase.GetAssetPath(obj);
@@ -409,6 +399,54 @@ namespace PancakeEditor
             }
 
             return bound;
+        }
+        
+        /// <summary>
+        /// Write the given bytes data under the given filePath. 
+        /// The filePath should be given with its path and filename. (e.g. c:/tmp/test.zip)
+        /// </summary>
+        public static void UnZip(string filePath, byte[] data, string password = "")
+        {
+            using (var s = new ZipInputStream(new MemoryStream(data)))
+            {
+                s.Password = password;
+                while (s.GetNextEntry() is { } theEntry)
+                {
+                    string directoryName = Path.GetDirectoryName(theEntry.Name);
+                    string fileName = Path.GetFileName(theEntry.Name);
+
+                    // create directory
+                    if (directoryName?.Length > 0)
+                    {
+                        string dirPath = Path.Combine(filePath, directoryName);
+
+                        if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+                    }
+
+                    if (fileName != string.Empty)
+                    {
+                        // retrieve directory name only from persistence data path.
+                        string entryFilePath = Path.Combine(filePath, theEntry.Name);
+                        using (var streamWriter = File.Create(entryFilePath))
+                        {
+                            var size = 2048;
+                            var fdata = new byte[size];
+                            while (true)
+                            {
+                                size = s.Read(fdata, 0, fdata.Length);
+                                if (size > 0)
+                                {
+                                    streamWriter.Write(fdata, 0, size);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -1,24 +1,29 @@
-﻿using Pancake.Attribute;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Pancake.Scriptable
+namespace Obvious.Soap
 {
-    [EditorIcon("scriptable_bind")]
+    [AddComponentMenu("Soap/Bindings/BindGraphicColor")]
     [RequireComponent(typeof(Graphic))]
-    public class BindingGraphicColor : CacheGameComponent<Graphic>
+    public class BindGraphicColor : CacheComponent<Graphic>
     {
-        [SerializeField] private ColorVariable colorVariable;
-
+        [SerializeField] private ColorVariable _colorVariable = null;
+      
         protected override void Awake()
         {
             base.Awake();
-            Refresh(colorVariable);
-            colorVariable.OnValueChanged += Refresh;
+            Refresh(_colorVariable);
+            _colorVariable.OnValueChanged += Refresh;
         }
 
-        private void OnDestroy() { colorVariable.OnValueChanged -= Refresh; }
+        private void OnDestroy()
+        {
+            _colorVariable.OnValueChanged -= Refresh;
+        }
 
-        private void Refresh(Color color) { component.color = color; }
+        private void Refresh(Color color)
+        {
+            _component.color = color;
+        }
     }
 }

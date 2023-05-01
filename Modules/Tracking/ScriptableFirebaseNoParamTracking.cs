@@ -1,10 +1,10 @@
-using Pancake.Attribute;
+
 using UnityEngine;
 
 namespace Pancake.Tracking
 {
     [Searchable]
-    [HideMono]
+    //[HideMonoScript]
     [CreateAssetMenu(fileName = "firebase_tracking_name", menuName = "Pancake/Tracking/Firebase No Param")]
     [EditorIcon("scriptable_firebase")]
     public class ScriptableFirebaseNoParamTracking : ScriptableTracking

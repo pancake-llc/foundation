@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using Pancake.Attribute;
 using Pancake.Threading.Tasks;
 using Pancake.Tween;
 using UnityEngine;
