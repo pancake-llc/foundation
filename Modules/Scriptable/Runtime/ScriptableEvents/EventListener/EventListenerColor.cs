@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/EventListeners/EventListenerColor")]
+    [AddComponentMenu("Scriptable/EventListeners/EventListenerColor")]
+    [EditorIcon("scriptable_event_listener")]
     public class EventListenerColor : EventListenerGeneric<Color>
     {
         [SerializeField] private EventResponse[] m_eventResponses = null;
@@ -18,7 +19,7 @@ namespace Obvious.Soap
             [SerializeField] private ColorUnityEvent m_response = null;
             public override UnityEvent<Color> Response => m_response;
         }
-        
+
         [System.Serializable]
         public class ColorUnityEvent : UnityEvent<Color>
         {

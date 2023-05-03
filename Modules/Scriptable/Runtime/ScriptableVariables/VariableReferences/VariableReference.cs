@@ -1,4 +1,4 @@
-﻿namespace Obvious.Soap
+﻿namespace Pancake.Scriptable
 {
     [System.Serializable]
     public abstract class VariableReference<V, T> where V : ScriptableVariable<T>
@@ -6,7 +6,7 @@
         public bool UseLocal = false;
         public T LocalValue;
         public V Variable;
-        
+
         public T Value
         {
             get => UseLocal ? LocalValue : Variable.Value;
@@ -19,9 +19,6 @@
             }
         }
 
-        public static implicit operator T(VariableReference<V, T> reference)
-        {
-            return reference.Value;
-        }
+        public static implicit operator T(VariableReference<V, T> reference) { return reference.Value; }
     }
 }

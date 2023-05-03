@@ -1,4 +1,4 @@
-﻿namespace Obvious.Soap
+﻿namespace Pancake.Scriptable
 {
     public interface ISave
     {

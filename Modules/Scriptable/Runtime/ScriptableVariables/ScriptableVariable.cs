@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
     [Serializable]
     public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IDrawObjectsInInspector
@@ -22,10 +22,7 @@ namespace Obvious.Soap
         [Tooltip("If true, saves the value to Player Prefs and loads it onEnable.")] [SerializeField]
         private bool _saved = false;
 
-        [Tooltip("Reset to initial value." +
-                 " Scene Loaded : when the scene is loaded." +
-                 " Application Start : Once, when the application starts.")]
-        [SerializeField]
+        [Tooltip("Reset to initial value." + " Scene Loaded : when the scene is loaded." + " Application Start : Once, when the application starts.")] [SerializeField]
         private ResetType _resetOn = ResetType.SceneLoaded;
 
         private readonly List<Object> _listenersObjects = new List<Object>();
@@ -195,20 +192,11 @@ namespace Obvious.Soap
             return sb.ToString();
         }
 
-        private string GetColorizedString()
-        {
-            return $"<color=#f75369>[Variable]</color> {ToString()}";
-        }
+        private string GetColorizedString() { return $"<color=#f75369>[Variable]</color> {ToString()}"; }
 
-        public List<Object> GetAllObjects()
-        {
-            return _listenersObjects;
-        }
+        public List<Object> GetAllObjects() { return _listenersObjects; }
 
-        public static implicit operator T(ScriptableVariable<T> variable)
-        {
-            return variable.Value;
-        }
+        public static implicit operator T(ScriptableVariable<T> variable) { return variable.Value; }
     }
 
     public enum ResetType

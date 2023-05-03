@@ -2,15 +2,15 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/EventListeners/EventListenerNoParam")]
+    [AddComponentMenu("Scriptable/EventListeners/EventListenerNoParam")]
+    [EditorIcon("scriptable_event_listener")]
     public class EventListenerNoParam : EventListenerBase
     {
         [SerializeField] private EventResponse[] _eventResponses = null;
 
-        private Dictionary<ScriptableEventNoParam, UnityEvent> _dictionary =
-            new Dictionary<ScriptableEventNoParam, UnityEvent>();
+        private Dictionary<ScriptableEventNoParam, UnityEvent> _dictionary = new Dictionary<ScriptableEventNoParam, UnityEvent>();
 
         protected override void ToggleRegistration(bool toggle)
         {
@@ -19,14 +19,14 @@ namespace Obvious.Soap
                 if (toggle)
                 {
                     _eventResponses[i].ScriptableEvent.RegisterListener(this);
-                    
-                    if(!_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
+
+                    if (!_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
                         _dictionary.Add(_eventResponses[i].ScriptableEvent, _eventResponses[i].Response);
                 }
                 else
                 {
                     _eventResponses[i].ScriptableEvent.UnregisterListener(this);
-                    if(_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
+                    if (_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
                         _dictionary.Remove(_eventResponses[i].ScriptableEvent);
                 }
             }

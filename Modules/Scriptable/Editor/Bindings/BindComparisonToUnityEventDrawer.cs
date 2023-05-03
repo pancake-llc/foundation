@@ -1,8 +1,9 @@
-﻿using UnityEditor;
+﻿using Pancake.Scriptable;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     [CustomEditor(typeof(BindComparisonToUnityEvent))]
     [CanEditMultipleObjects]
@@ -21,7 +22,7 @@ namespace Obvious.Soap.Editor
 
         void OnEnable()
         {
-            _targetScript = (BindComparisonToUnityEvent)target;
+            _targetScript = (BindComparisonToUnityEvent) target;
             _boolVariable = serializedObject.FindProperty("_boolVariable");
             _boolComparer = serializedObject.FindProperty("_boolComparer");
             _intVariable = serializedObject.FindProperty("_intVariable");
@@ -37,7 +38,7 @@ namespace Obvious.Soap.Editor
         {
             EditorGUI.BeginChangeCheck();
             Undo.RecordObject(_targetScript, "Modified Custom Inspector");
-            _targetScript.Type = (CustomVariableType)EditorGUILayout.EnumPopup("Variable Type", _targetScript.Type);
+            _targetScript.Type = (CustomVariableType) EditorGUILayout.EnumPopup("Variable Type", _targetScript.Type);
 
             switch (_targetScript.Type)
             {
@@ -50,17 +51,13 @@ namespace Obvious.Soap.Editor
                     break;
                 case CustomVariableType.Int:
                     EditorGUILayout.PropertyField(_intVariable, new GUIContent("Int Variable"));
-                    _targetScript.Comparison =
-                        (BindComparisonToUnityEvent.Comparator)EditorGUILayout.EnumPopup("Operation",
-                            _targetScript.Comparison);
+                    _targetScript.Comparison = (BindComparisonToUnityEvent.Comparator) EditorGUILayout.EnumPopup("Operation", _targetScript.Comparison);
                     EditorGUILayout.PropertyField(_intComparer, new GUIContent("Int Comparer"));
                     EditorGUILayout.PropertyField(_unityEvent, new GUIContent("Event"));
                     break;
                 case CustomVariableType.Float:
                     EditorGUILayout.PropertyField(_floatVariable, new GUIContent("Float Variable"));
-                    _targetScript.Comparison =
-                        (BindComparisonToUnityEvent.Comparator)EditorGUILayout.EnumPopup("Operation",
-                            _targetScript.Comparison);
+                    _targetScript.Comparison = (BindComparisonToUnityEvent.Comparator) EditorGUILayout.EnumPopup("Operation", _targetScript.Comparison);
                     EditorGUILayout.PropertyField(_floatComparer, new GUIContent("Float Comparer"));
                     EditorGUILayout.PropertyField(_unityEvent, new GUIContent("Event"));
                     break;

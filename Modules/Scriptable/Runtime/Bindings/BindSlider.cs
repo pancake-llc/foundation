@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/Bindings/BindSlider")]
+    [AddComponentMenu("Scriptable/Bindings/BindSlider")]
     [RequireComponent(typeof(Slider))]
-    public class BindSlider : CacheComponent<Slider>
+    public class BindSlider : CacheGameComponent<Slider>
     {
         [SerializeField] private FloatVariable _floatVariable = null;
 
@@ -13,24 +13,18 @@ namespace Obvious.Soap
         {
             base.Awake();
             OnValueChanged(_floatVariable);
-            _component.onValueChanged.AddListener(SetBoundVariable);
+            component.onValueChanged.AddListener(SetBoundVariable);
             _floatVariable.OnValueChanged += OnValueChanged;
         }
 
         private void OnDestroy()
         {
-            _component.onValueChanged.RemoveListener(SetBoundVariable);
+            component.onValueChanged.RemoveListener(SetBoundVariable);
             _floatVariable.OnValueChanged -= OnValueChanged;
         }
 
-        private void OnValueChanged(float value)
-        {
-            _component.value = value;
-        }
+        private void OnValueChanged(float value) { component.value = value; }
 
-        private void SetBoundVariable(float value)
-        {
-            _floatVariable.Value = value;
-        }
+        private void SetBoundVariable(float value) { _floatVariable.Value = value; }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using PancakeEditor;
+using Pancake.ExLibEditor;
+using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     [CustomEditor(typeof(ScriptableEventNoParam))]
     public class ScriptableEventNoParamDrawer : UnityEditor.Editor
@@ -15,9 +16,10 @@ namespace Obvious.Soap.Editor
             GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Raise"))
             {
-                var eventNoParam = (ScriptableEventNoParam)target;
+                var eventNoParam = (ScriptableEventNoParam) target;
                 eventNoParam.Raise();
             }
+
             GUI.enabled = true;
 
             if (!EditorApplication.isPlaying)
@@ -25,7 +27,7 @@ namespace Obvious.Soap.Editor
 
             Uniform.DrawLine();
 
-            var goContainer = (IDrawObjectsInInspector)target;
+            var goContainer = (IDrawObjectsInInspector) target;
             var gameObjects = goContainer.GetAllObjects();
             if (gameObjects.Count > 0)
                 DisplayAll(gameObjects);
@@ -35,10 +37,10 @@ namespace Obvious.Soap.Editor
         {
             GUILayout.Space(15);
             var title = $"Listener Amount : {objects.Count}";
-            
+
             GUILayout.BeginVertical(title, "window");
             foreach (var obj in objects)
-                Uniform.DrawSelectableObject(obj, new[] { obj.name, "Select" });
+                Uniform.DrawSelectableObject(obj, new[] {obj.name, "Select"});
             GUILayout.EndVertical();
         }
     }

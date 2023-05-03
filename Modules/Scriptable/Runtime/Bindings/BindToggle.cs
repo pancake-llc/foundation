@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/Bindings/BindToggle")]
+    [AddComponentMenu("Scriptable/Bindings/BindToggle")]
     [RequireComponent(typeof(Toggle))]
-    public class BindToggle : CacheComponent<Toggle>
+    public class BindToggle : CacheGameComponent<Toggle>
     {
         [SerializeField] private BoolVariable _boolVariable = null;
 
@@ -13,24 +13,18 @@ namespace Obvious.Soap
         {
             base.Awake();
             OnValueChanged(_boolVariable);
-            _component.onValueChanged.AddListener(SetBoundVariable);
+            component.onValueChanged.AddListener(SetBoundVariable);
             _boolVariable.OnValueChanged += OnValueChanged;
         }
 
         private void OnDestroy()
         {
-            _component.onValueChanged.RemoveListener(SetBoundVariable);
+            component.onValueChanged.RemoveListener(SetBoundVariable);
             _boolVariable.OnValueChanged -= OnValueChanged;
         }
 
-        private void OnValueChanged(bool value)
-        {
-            _component.isOn = value;
-        }
+        private void OnValueChanged(bool value) { component.isOn = value; }
 
-        private void SetBoundVariable(bool value)
-        {
-            _boolVariable.Value = value;
-        }
+        private void SetBoundVariable(bool value) { _boolVariable.Value = value; }
     }
 }

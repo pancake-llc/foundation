@@ -1,13 +1,13 @@
-﻿using UnityEditor;
+﻿using Pancake.Scriptable;
+using UnityEditor;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
-    [CustomPropertyDrawer(typeof(VariableReference<,>),true)]
+    [CustomPropertyDrawer(typeof(VariableReference<,>), true)]
     public class VariableReferenceDrawer : PropertyDrawer
     {
-        private readonly string[] _popupOptions =
-            { "Use Local", "Use Variable" };
+        private readonly string[] _popupOptions = {"Use Local", "Use Variable"};
 
         private GUIStyle _popupStyle;
 
@@ -40,9 +40,7 @@ namespace Obvious.Soap.Editor
 
             useLocal.boolValue = result == 0;
 
-            EditorGUI.PropertyField(position,
-                useLocal.boolValue ? localValue : variable,
-                GUIContent.none);
+            EditorGUI.PropertyField(position, useLocal.boolValue ? localValue : variable, GUIContent.none);
 
             if (EditorGUI.EndChangeCheck())
                 property.serializedObject.ApplyModifiedProperties();

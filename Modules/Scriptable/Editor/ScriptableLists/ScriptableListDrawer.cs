@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using PancakeEditor;
+using Pancake.ExLibEditor;
+using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     [CustomEditor(typeof(ScriptableListBase), true)]
     public class ScriptableListDrawer : UnityEditor.Editor
@@ -15,8 +16,8 @@ namespace Obvious.Soap.Editor
             if (_targetScriptableList == null)
                 _targetScriptableList = target as ScriptableListBase;
 
-            var isMonoBehaviourOrGameObject = _targetScriptableList.GetElementType.IsSubclassOf(typeof(MonoBehaviour))
-                                              || _targetScriptableList.GetElementType == typeof(GameObject);
+            var isMonoBehaviourOrGameObject = _targetScriptableList.GetElementType.IsSubclassOf(typeof(MonoBehaviour)) ||
+                                              _targetScriptableList.GetElementType == typeof(GameObject);
             if (isMonoBehaviourOrGameObject)
             {
                 Uniform.DrawOnlyField(serializedObject, "m_Script", true);
@@ -31,7 +32,7 @@ namespace Obvious.Soap.Editor
             if (!EditorApplication.isPlaying)
                 return;
 
-            var container = (IDrawObjectsInInspector)target;
+            var container = (IDrawObjectsInInspector) target;
             var gameObjects = container.GetAllObjects();
 
             Uniform.DrawLine();
@@ -46,7 +47,7 @@ namespace Obvious.Soap.Editor
             var title = $"List Count : {objects.Count}";
             GUILayout.BeginVertical(title, "window");
             foreach (var obj in objects)
-                Uniform.DrawSelectableObject(obj, new[] { obj.name, "Select" });
+                Uniform.DrawSelectableObject(obj, new[] {obj.name, "Select"});
 
             GUILayout.EndVertical();
         }

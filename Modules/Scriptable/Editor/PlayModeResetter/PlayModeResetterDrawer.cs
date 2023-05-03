@@ -1,8 +1,8 @@
-﻿using PancakeEditor;
+﻿using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     [CustomEditor(typeof(PlayModeResetter))]
     public class PlayModeResetterDrawer : UnityEditor.Editor

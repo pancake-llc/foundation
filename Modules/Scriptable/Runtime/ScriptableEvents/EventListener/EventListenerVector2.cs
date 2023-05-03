@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/EventListeners/EventListenerVector2")]
+    [AddComponentMenu("Scriptable/EventListeners/EventListenerVector2")]
+    [EditorIcon("scriptable_event_listener")]
     public class EventListenerVector2 : EventListenerGeneric<Vector2>
     {
         [SerializeField] private EventResponse[] m_eventResponses = null;
@@ -18,11 +19,10 @@ namespace Obvious.Soap
             [SerializeField] private Vector2UnityEvent m_response = null;
             public override UnityEvent<Vector2> Response => m_response;
         }
-        
+
         [System.Serializable]
         public class Vector2UnityEvent : UnityEvent<Vector2>
         {
         }
-
     }
 }

@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using PancakeEditor;
+using Pancake.ExLibEditor;
+using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     [CustomEditor(typeof(ScriptableEventBase), true)]
     public class ScriptableEventGenericDrawer : UnityEditor.Editor
     {
         private MethodInfo _methodInfo;
 
-        private void OnEnable()
-        {
-            _methodInfo = target.GetType().BaseType.GetMethod("Raise",
-                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-        }
+        private void OnEnable() { _methodInfo = target.GetType().BaseType.GetMethod("Raise", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public); }
 
         public override void OnInspectorGUI()
         {
@@ -25,8 +22,9 @@ namespace Obvious.Soap.Editor
             if (GUILayout.Button("Raise"))
             {
                 var property = serializedObject.FindProperty("_debugValue");
-                _methodInfo.Invoke(target, new [] { GetDebugValue(property) });
+                _methodInfo.Invoke(target, new[] {GetDebugValue(property)});
             }
+
             GUI.enabled = true;
 
             if (!EditorApplication.isPlaying)
@@ -34,7 +32,7 @@ namespace Obvious.Soap.Editor
 
             Uniform.DrawLine();
 
-            var goContainer = (IDrawObjectsInInspector)target;
+            var goContainer = (IDrawObjectsInInspector) target;
             var gameObjects = goContainer.GetAllObjects();
             if (gameObjects.Count > 0)
                 DisplayAll(gameObjects);
@@ -44,10 +42,10 @@ namespace Obvious.Soap.Editor
         {
             GUILayout.Space(15);
             var title = $"Listener Amount : {objects.Count}";
-            
+
             GUILayout.BeginVertical(title, "window");
             foreach (var obj in objects)
-                Uniform.DrawSelectableObject(obj, new[] { obj.name, "Select" });
+                Uniform.DrawSelectableObject(obj, new[] {obj.name, "Select"});
             GUILayout.EndVertical();
         }
 

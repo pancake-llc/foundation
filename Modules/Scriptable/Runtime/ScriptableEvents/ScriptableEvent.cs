@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
     [Serializable]
     public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector

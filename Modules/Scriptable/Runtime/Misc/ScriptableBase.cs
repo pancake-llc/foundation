@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
+    [Searchable]
     [System.Serializable]
     public abstract class ScriptableBase : ScriptableObject
     {

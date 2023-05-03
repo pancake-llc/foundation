@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
     public interface IDrawObjectsInInspector
     {

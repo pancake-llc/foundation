@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_event_color.asset", menuName = "Soap/ScriptableEvents/color")]
+    [CreateAssetMenu(fileName = "scriptable_event_color.asset", menuName = "Pancake/Scriptable/ScriptableEvents/color")]
+    [EditorIcon("scriptable_event")]
     public class ScriptableEventColor : ScriptableEvent<Color>
     {
-       
     }
 }

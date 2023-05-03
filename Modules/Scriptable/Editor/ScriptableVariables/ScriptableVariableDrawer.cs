@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Pancake.ExLibEditor;
+using Pancake.Scriptable;
 using PancakeEditor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     [CustomEditor(typeof(ScriptableVariableBase), true)]
     public class ScriptableVariableDrawer : UnityEditor.Editor
@@ -12,24 +14,19 @@ namespace Obvious.Soap.Editor
         {
             serializedObject.UpdateIfRequiredOrScript();
 
-            if (ScriptableEditorSetting.DrawMode == EVariableDrawMode.Minimal)
-                DrawMinimal();
-            else
-                DrawDefault();
+            if (ScriptableEditorSetting.DrawMode == EVariableDrawMode.Minimal) DrawMinimal();
+            else DrawDefault();
 
-            if (serializedObject.ApplyModifiedProperties())
-                EditorUtility.SetDirty(target);
+            if (serializedObject.ApplyModifiedProperties()) EditorUtility.SetDirty(target);
 
-            if (!EditorApplication.isPlaying)
-                return;
+            if (!EditorApplication.isPlaying) return;
 
             var container = (IDrawObjectsInInspector) target;
             var objects = container.GetAllObjects();
 
             Uniform.DrawLine();
 
-            if (objects.Count > 0)
-                DisplayAll(objects);
+            if (objects.Count > 0) DisplayAll(objects);
         }
 
         private void DrawMinimal() { Uniform.DrawOnlyField(serializedObject, "_value", false); }
@@ -42,8 +39,7 @@ namespace Obvious.Soap.Editor
 
             //hack, weirdly in the wizard, the Vector2 fields are drawn on the line below. 
             //So in order the see them, we need some space. Otherwise they are hidden behind the button.
-            if (IsInSoapWizard())
-                GUILayout.Space(20f);
+            if (IsInScriptableWizard()) GUILayout.Space(20f);
 
             if (GUILayout.Button("Reset to initial value"))
             {
@@ -52,7 +48,7 @@ namespace Obvious.Soap.Editor
             }
         }
 
-        private bool IsInSoapWizard() { return EditorWindow.focusedWindow != null && EditorWindow.focusedWindow.GetType() == typeof(SoapWizardWindow); }
+        private bool IsInScriptableWizard() { return EditorWindow.focusedWindow != null && EditorWindow.focusedWindow.GetType() == typeof(ScriptableWizardWindow); }
 
         private bool CanShowMinMaxProperty(Object targetObject) { return IsIntClamped(targetObject) || IsFloatClamped(targetObject); }
 

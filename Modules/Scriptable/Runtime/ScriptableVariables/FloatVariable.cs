@@ -1,35 +1,33 @@
-﻿using UnityEngine;
-using Obvious.Soap.Attributes;
+﻿using Pancake.Apex;
+using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_float.asset", menuName = "Soap/ScriptableVariables/float")]
+    [CreateAssetMenu(fileName = "scriptable_variable_float.asset", menuName = "Pancake/Scriptable/ScriptableVariables/float")]
+    [EditorIcon("scriptable_variable")]
     public class FloatVariable : ScriptableVariable<float>
     {
         [SerializeField] private bool _isClamped = false;
         public bool IsClamped => _isClamped;
 
-        [Tooltip("If clamped, sets the minimum and maximum")] 
-        [SerializeField][ShowIf("_isClamped",true)]
+        [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf("_isClamped", true)]
         private Vector2 _minMax = new Vector2(float.MinValue, float.MaxValue);
-        public Vector2 MinMax { get => _minMax; set => _minMax = value;}
+
+        public Vector2 MinMax { get => _minMax; set => _minMax = value; }
 
         public override void Save()
         {
-            PlayerPrefs.SetFloat(Guid, Value);
+            Data.Save(Guid, Value);
             base.Save();
         }
 
         public override void Load()
         {
-            Value = PlayerPrefs.GetFloat(Guid, InitialValue);
+            Value = Data.Load(Guid, InitialValue);
             base.Load();
         }
 
-        public void Add(float value)
-        {
-            Value += value;
-        }
+        public void Add(float value) { Value += value; }
 
         public override float Value
         {

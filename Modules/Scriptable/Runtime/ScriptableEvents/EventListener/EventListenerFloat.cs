@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/EventListeners/EventListenerFloat")]
+    [AddComponentMenu("Scriptable/EventListeners/EventListenerFloat")]
+    [EditorIcon("scriptable_event_listener")]
     public class EventListenerFloat : EventListenerGeneric<float>
     {
         [SerializeField] private EventResponse[] m_eventResponses = null;
@@ -22,7 +23,6 @@ namespace Obvious.Soap
         [System.Serializable]
         public class FloatUnityEvent : UnityEvent<float>
         {
-            
         }
     }
 }

@@ -1,29 +1,26 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using PancakeEditor;
+using Pancake.ExLibEditor;
+using Pancake.Scriptable;
 using UnityEngine.SceneManagement;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
-    public class EventsDebugWindow : SoapWindowBase
+    public class EventsDebugWindow : ScriptableWindowBase
     {
         protected override string HeaderTitle => "Event Debug Window";
-        
+
         private string _methodName = string.Empty;
         private bool _hasClicked = false;
         private bool _wasFound = false;
 
-        [MenuItem("Window/Obvious/Soap/Events Debug Window")]
-        public new static void Show() => GetWindow<EventsDebugWindow>("Events Debug Window");
+        private new static void Show() => GetWindow<EventsDebugWindow>("Events Debug Window");
 
-        [MenuItem("Tools/Obvious/Soap/Event Debug Window")]
+        [MenuItem("Tools/Pancake/Scriptable/Event Debug Window")]
         private static void OpenEventDebugWindow() => Show();
 
-        private void OnLostFocus()
-        {
-            GUI.FocusControl(null);
-        }
+        private void OnLostFocus() { GUI.FocusControl(null); }
 
         protected override void OnGUI()
         {

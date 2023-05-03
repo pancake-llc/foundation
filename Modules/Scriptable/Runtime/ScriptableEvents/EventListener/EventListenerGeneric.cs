@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_event_listener")]
     public abstract class EventListenerGeneric<T> : EventListenerBase
     {
         protected virtual EventResponse<T>[] EventResponses { get; }
 
-        private readonly Dictionary<ScriptableEvent<T>, UnityEvent<T>> _dictionary =
-            new Dictionary<ScriptableEvent<T>, UnityEvent<T>>();
+        private readonly Dictionary<ScriptableEvent<T>, UnityEvent<T>> _dictionary = new Dictionary<ScriptableEvent<T>, UnityEvent<T>>();
 
         public void OnEventRaised(ScriptableEvent<T> scriptableEventRaised, T param, bool debug = false)
         {
@@ -42,7 +42,7 @@ namespace Obvious.Soap
         {
             var listener = _dictionary[eventRaised];
             var registeredListenerCount = listener.GetPersistentEventCount();
-      
+
             for (var i = 0; i < registeredListenerCount; i++)
             {
                 var sb = new StringBuilder();
@@ -90,6 +90,4 @@ namespace Obvious.Soap
             public virtual UnityEvent<U> Response { get; }
         }
     }
-
-    
 }

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_event_float.asset", menuName = "Soap/ScriptableEvents/float")]
+    [CreateAssetMenu(fileName = "scriptable_event_float.asset", menuName = "Pancake/Scriptable/ScriptableEvents/float")]
+    [EditorIcon("scriptable_event")]
     public class ScriptableEventFloat : ScriptableEvent<float>
     {
-
     }
 }

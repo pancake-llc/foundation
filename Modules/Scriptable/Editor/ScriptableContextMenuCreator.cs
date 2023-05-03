@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Pancake.Scriptable;
+using UnityEngine;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     public static class ScriptableContextMenuCreator
     {

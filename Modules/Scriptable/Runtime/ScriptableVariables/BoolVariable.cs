@@ -1,26 +1,24 @@
 ﻿using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_bool.asset", menuName = "Soap/ScriptableVariables/bool")]
+    [CreateAssetMenu(fileName = "scriptable_variable_bool.asset", menuName = "Pancake/Scriptable/ScriptableVariables/bool")]
     [System.Serializable]
+    [EditorIcon("scriptable_variable")]
     public class BoolVariable : ScriptableVariable<bool>
     {
         public override void Save()
         {
-            PlayerPrefs.SetInt(Guid, Value ? 1 : 0);
+            Data.Save(Guid, Value);
             base.Save();
         }
 
         public override void Load()
         {
-            Value = PlayerPrefs.GetInt(Guid, InitialValue ? 1 : 0) > 0;
+            Value = Data.Load(Guid, InitialValue);
             base.Load();
         }
 
-        public void Toggle()
-        {
-            Value = !Value;
-        }
+        public void Toggle() { Value = !Value; }
     }
 }

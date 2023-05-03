@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_gameObject.asset", menuName = "Soap/ScriptableVariables/gameObject")]
+    [CreateAssetMenu(fileName = "scriptable_variable_gameObject.asset", menuName = "Pancake/Scriptable/ScriptableVariables/gameObject")]
+    [EditorIcon("scriptable_variable")]
     public class GameObjectVariable : ScriptableVariable<GameObject>
     {
-        
     }
 }

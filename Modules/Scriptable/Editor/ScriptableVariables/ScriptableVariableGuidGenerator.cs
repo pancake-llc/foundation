@@ -1,17 +1,17 @@
 using System.Collections.Generic;
+using Pancake.ExLibEditor;
+using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Obvious.Soap.Editor
+namespace Pancake.ScriptableEditor
 {
     class ScriptableVariableGuidGenerator : AssetPostprocessor
     {
         //this gets cleared every time the domain reloads
         private static readonly HashSet<string> _guidsCache = new HashSet<string>();
 
-        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
-            string[] movedAssets,
-            string[] movedFromAssetPaths)
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
             var isInitialized = SessionState.GetBool("initialized", false);
             if (!isInitialized)
@@ -26,10 +26,10 @@ namespace Obvious.Soap.Editor
                 OnAssetMoved(movedFromAssetPaths, movedAssets);
             }
         }
-        
+
         private static void RegenerateAllGuids()
         {
-            var scriptableVariableBases = PancakeEditor.Editor.FindAll<ScriptableVariableBase>();
+            var scriptableVariableBases = ProjectDatabase.FindAll<ScriptableVariableBase>();
             foreach (var scriptableVariable in scriptableVariableBases)
             {
                 scriptableVariable.Guid = GenerateGuid(scriptableVariable);
@@ -72,7 +72,7 @@ namespace Obvious.Soap.Editor
             OnAssetDeleted(movedFromAssetPaths);
             OnAssetCreated(movedAssets);
         }
-        
+
         private static string GenerateGuid(ScriptableObject scriptableObject)
         {
             var path = AssetDatabase.GetAssetPath(scriptableObject);

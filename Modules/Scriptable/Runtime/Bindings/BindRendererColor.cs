@@ -1,33 +1,31 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/Bindings/BindRendererColor")]
+    [AddComponentMenu("Scriptable/Bindings/BindRendererColor")]
     [RequireComponent(typeof(Renderer))]
-    public class BindRendererColor : CacheComponent<Renderer>
+    public class BindRendererColor : CacheGameComponent<Renderer>
     {
-        [SerializeField] private ColorVariable _colorVariable = null;
+        [SerializeField] private ColorVariable colorVariable = null;
 
         private MaterialPropertyBlock _block = null;
-        
+
         protected override void Awake()
         {
             base.Awake();
             _block = new MaterialPropertyBlock();
-            
-            Refresh(_colorVariable);
-            _colorVariable.OnValueChanged += Refresh;
+
+            Refresh(colorVariable);
+            colorVariable.OnValueChanged += Refresh;
         }
 
-        private void OnDestroy()
-        {
-            _colorVariable.OnValueChanged -= Refresh;
-        }
+        private void OnDestroy() { colorVariable.OnValueChanged -= Refresh; }
 
         private void Refresh(Color color)
         {
-            _block.SetColor("_Color",color);
-            _component.SetPropertyBlock(_block);
+            _block.SetColor("_Color", color);
+            component.SetPropertyBlock(_block);
         }
     }
 }

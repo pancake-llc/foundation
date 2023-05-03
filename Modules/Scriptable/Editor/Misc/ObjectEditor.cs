@@ -1,15 +1,13 @@
-﻿using UnityEditor;
-using Object = UnityEngine.Object;
+﻿using Pancake.Scriptable;
+using UnityEditor;
 
-namespace Obvious.Soap.Editor
+
+namespace Pancake.ScriptableEditor
 {
-    [CustomEditor(typeof(Object), true)]
+    [CustomEditor(typeof(ScriptableBase), true)]
     [CanEditMultipleObjects]
     internal class ObjectEditor : UnityEditor.Editor
     {
-        public override void OnInspectorGUI()
-        {
-            DrawDefaultInspector();
-        }
+        public override void OnInspectorGUI() { DrawDefaultInspector(); }
     }
 }

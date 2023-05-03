@@ -6,14 +6,12 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
     public abstract class ScriptableList<T> : ScriptableListBase, IReset, IEnumerable<T>, IDrawObjectsInInspector
     {
-        [Tooltip(
-            "Clear the list when:" +
-            " Scene Loaded : when a scene is loaded." +
-            " Application Start : Once, when the application starts. Modifications persists between scenes")]
+        [Tooltip("Clear the list when:" + " Scene Loaded : when a scene is loaded." +
+                 " Application Start : Once, when the application starts. Modifications persists between scenes")]
         [SerializeField]
         private ResetType _resetOn = ResetType.SceneLoaded;
 
@@ -26,11 +24,7 @@ namespace Obvious.Soap
         //feel free to uncomment this property if you need to access the list for more functionalities.
         //public List<T> List => _list; 
 
-        public T this[int index]
-        {
-            get => _list[index];
-            set => _list[index] = value;
-        }
+        public T this[int index] { get => _list[index]; set => _list[index] = value; }
 
         public event Action OnItemCountChanged;
         public event Action<T> OnItemAdded;
@@ -141,7 +135,7 @@ namespace Obvious.Soap
         public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        
+
         public List<Object> GetAllObjects()
         {
             var list = new List<Object>(Count);

@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_event_vector2.asset", menuName = "Soap/ScriptableEvents/vector2")]
+    [CreateAssetMenu(fileName = "scriptable_event_vector2.asset", menuName = "Pancake/Scriptable/ScriptableEvents/vector2")]
+    [EditorIcon("scriptable_event")]
     public class ScriptableEventVector2 : ScriptableEvent<Vector2>
     {
-       
     }
 }

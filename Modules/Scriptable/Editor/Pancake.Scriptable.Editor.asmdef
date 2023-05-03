@@ -1,20 +1,20 @@
 {
-    "name": "Pancake.Scriptable.Editor",
-    "rootNamespace": "",
-    "references": [
-        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
-        "GUID:d43f774d56c534e4b84fe18247432afb",
-        "GUID:adac8d59ad7e8504f82d387cded797a7"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Pancake.Scriptable.Editor",
+  "rootNamespace": "",
+  "references": [
+    "GUID:b0a110e2f808b4d4d82f5694f91b251a",
+    "GUID:87eaf3fd1840b5c42a5f00c0a45ccaa1",
+    "GUID:adac8d59ad7e8504f82d387cded797a7"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

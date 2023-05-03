@@ -1,9 +1,9 @@
 ﻿using UnityEngine.Events;
 using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [AddComponentMenu("Soap/Bindings/BindComparisonToUnityEvent")]
+    [AddComponentMenu("Scriptable/Bindings/BindComparisonToUnityEvent")]
     public class BindComparisonToUnityEvent : MonoBehaviour
     {
         public CustomVariableType Type = CustomVariableType.None;
@@ -13,26 +13,20 @@ namespace Obvious.Soap
 
         [SerializeField] private IntVariable _intVariable = null;
         [SerializeField] private IntReference _intComparer = null;
-  
+
         [SerializeField] private FloatVariable _floatVariable = null;
         [SerializeField] private FloatReference _floatComparer = null;
 
         [SerializeField] private StringVariable _stringVariable = null;
         [SerializeField] private StringReference _stringComparer = null;
-  
+
         public Comparator Comparison = Comparator.EQUAL;
 
         [SerializeField] private UnityEvent _unityEvent = null;
 
-        private void Awake()
-        {
-            Subscribe();
-        }
+        private void Awake() { Subscribe(); }
 
-        private void Start()
-        {
-            Evaluate();
-        }
+        private void Start() { Evaluate(); }
 
         private void Evaluate()
         {

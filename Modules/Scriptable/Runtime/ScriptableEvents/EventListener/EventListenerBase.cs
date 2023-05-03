@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
+    [EditorIcon("scriptable_event_listener")]
     public abstract class EventListenerBase : MonoBehaviour
     {
         protected enum Binding
@@ -9,7 +10,7 @@ namespace Obvious.Soap
             UNTIL_DESTROY,
             UNTIL_DISABLE
         }
-        
+
         [SerializeField] protected Binding _binding = Binding.UNTIL_DESTROY;
 
         [SerializeField] protected bool _disableAfterSubscribing = false;
@@ -17,7 +18,7 @@ namespace Obvious.Soap
         protected abstract void ToggleRegistration(bool toggle);
 
         public abstract bool ContainsCallToMethod(string methodName);
-        
+
         private void Awake()
         {
             if (_binding == Binding.UNTIL_DESTROY)
@@ -43,6 +44,5 @@ namespace Obvious.Soap
             if (_binding == Binding.UNTIL_DESTROY)
                 ToggleRegistration(false);
         }
-
     }
 }

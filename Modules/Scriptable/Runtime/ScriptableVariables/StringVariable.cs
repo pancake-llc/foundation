@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_string.asset", menuName = "Soap/ScriptableVariables/string")]
+    [CreateAssetMenu(fileName = "scriptable_variable_string.asset", menuName = "Pancake/Scriptable/ScriptableVariables/string")]
+    [EditorIcon("scriptable_variable")]
     public class StringVariable : ScriptableVariable<string>
     {
         public override void Save()
         {
-            PlayerPrefs.SetString(Guid, Value);
+            Data.Save(Guid, Value);
             base.Save();
         }
 
         public override void Load()
         {
-            Value = PlayerPrefs.GetString(Guid, InitialValue);
+            Value = Data.Load(Guid, InitialValue);
             base.Load();
         }
     }

@@ -9,12 +9,10 @@ using System.Xml.Linq;
 using AppLovinMax.Scripts.IntegrationManager.Editor;
 #endif
 using Newtonsoft.Json;
-using PancakeEditor;
-
+using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using Editor = PancakeEditor.Editor;
 
 namespace Pancake.Monetization
 {
@@ -129,11 +127,11 @@ namespace Pancake.Monetization
             AssetDatabase.importPackageCancelled += OnAdmobMediationPackageImportCancelled;
             AssetDatabase.importPackageFailed -= OnAdmobMediationPackageImportFailed;
             AssetDatabase.importPackageFailed += OnAdmobMediationPackageImportFailed;
-
-            if (!Wizard.advertisingFlag)
+            
+            if (!SessionState.GetBool("advertising_flag", false))
             {
                 CallLoad();
-                Wizard.advertisingFlag = true;
+                SessionState.SetBool("advertising_flag", true);
             }
         }
 
@@ -245,17 +243,17 @@ namespace Pancake.Monetization
                         var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
                         if (IsAdmobSdkImported())
                         {
-                            if (!Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
+                            if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
                             {
-                                Editor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
+                                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
                                 AssetDatabase.Refresh();
                             }
                         }
                         else
                         {
-                            if (Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
+                            if (ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
                             {
-                                Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
+                                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
                                 AssetDatabase.Refresh();
                             }
 
@@ -264,13 +262,13 @@ namespace Pancake.Monetization
 
                             if (GUILayout.Button("Install Admob SDK", GUILayout.MaxHeight(40f)))
                             {
-                                AssetDatabase.ImportPackage(Editor.AssetInPackagePath("Editor/UnityPackages", "admob.unitypackage"), false);
+                                AssetDatabase.ImportPackage(ProjectDatabase.AssetInPackagePath("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages", "admob.unitypackage"), false);
                             }
 
                             GUI.enabled = true;
                         }
 
-                        if (IsAdmobSdkImported() && Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
+                        if (IsAdmobSdkImported() && ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
                         {
                             EditorGUILayout.HelpBox("Admob plugin was imported", MessageType.Info);
                             EditorGUILayout.Space();
@@ -364,9 +362,9 @@ namespace Pancake.Monetization
                     else
                     {
                         var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                        if (Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
+                        if (ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
                         {
-                            Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
+                            ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
                             AssetDatabase.Refresh();
                         }
                     }
@@ -383,17 +381,17 @@ namespace Pancake.Monetization
                         var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
                         if (IsApplovinSdkImported())
                         {
-                            if (!Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                            if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
                             {
-                                Editor.ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
                                 AssetDatabase.Refresh();
                             }
                         }
                         else
                         {
-                            if (Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                            if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
                             {
-                                Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
                                 AssetDatabase.Refresh();
                             }
 
@@ -402,13 +400,13 @@ namespace Pancake.Monetization
 
                             if (GUILayout.Button("Install Applovin SDK", GUILayout.MaxHeight(40f)))
                             {
-                                AssetDatabase.ImportPackage(Editor.AssetInPackagePath("Editor/UnityPackages", "applovin.unitypackage"), false);
+                                AssetDatabase.ImportPackage(ProjectDatabase.AssetInPackagePath("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages", "applovin.unitypackage"), false);
                             }
 
                             GUI.enabled = true;
                         }
 
-                        if (IsApplovinSdkImported() && Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                        if (IsApplovinSdkImported() && ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
                         {
                             EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
 
@@ -450,9 +448,9 @@ namespace Pancake.Monetization
                     else
                     {
                         var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                        if (Editor.ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                        if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
                         {
-                            Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                            ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
                             AssetDatabase.Refresh();
                         }
                     }
@@ -487,7 +485,7 @@ namespace Pancake.Monetization
             {
                 if (!Directory.Exists(androidPath)) Directory.CreateDirectory(androidPath);
                 if (File.Exists(mainTemplatePath)) return;
-                string path = Editor.AssetInPackagePath("Editor/Misc/Templates", "mainTemplate.txt");
+                string path = ProjectDatabase.AssetInPackagePath("Modules/Apex/ExLib/Core/Editor/Misc/Templates", "mainTemplate.txt");
                 string mainTemplate = (AssetDatabase.LoadAssetAtPath(path, typeof(TextAsset)) as TextAsset)?.text;
                 var writer = new StreamWriter(mainTemplatePath, false);
                 writer.Write(mainTemplate);
@@ -655,7 +653,7 @@ namespace Pancake.Monetization
                     }
 
                     network.currentVersion = new NetworkVersion();
-                    Editor.RemoveAllEmptyFolder(new DirectoryInfo(pluginRoot));
+                    ProjectDatabase.RemoveAllEmptyFolder(new DirectoryInfo(pluginRoot));
                     AdmobUpdateCurrentVersion(network);
 
                     // Refresh UI
@@ -705,7 +703,7 @@ namespace Pancake.Monetization
                 AdSettings.AdmobSettings.editorImportingNetwork = network;
 
                 string folderUnZip = Path.Combine(Application.temporaryCachePath, "UnZip");
-                PancakeEditor.Editor.UnZip(folderUnZip, File.ReadAllBytes(pathFile));
+                EditorUnZip.UnZip(folderUnZip, File.ReadAllBytes(pathFile));
 
                 AssetDatabase.ImportPackage(Path.Combine(folderUnZip,
                         $"{network.displayName}UnityAdapter-{network.lastVersion.unity}",
@@ -1014,7 +1012,7 @@ namespace Pancake.Monetization
                         FileUtil.DeleteFileOrDirectory(Path.Combine(pluginRoot, pluginFilePath + ".meta"));
                     }
 
-                    Editor.RemoveAllEmptyFolder(new DirectoryInfo(pluginRoot));
+                    ProjectDatabase.RemoveAllEmptyFolder(new DirectoryInfo(pluginRoot));
                     UpdateCurrentVersionApplovinMediation(network, pluginRoot);
 
                     // Refresh UI

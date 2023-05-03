@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Text;
 using Object = UnityEngine.Object;
 
-namespace Obvious.Soap
+namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_event_noParam.asset", menuName = "Soap/ScriptableEvents/No Parameters")]
+    [CreateAssetMenu(fileName = "scriptable_event_noParam.asset", menuName = "Pancake/Scriptable/ScriptableEvents/No Parameters")]
     public class ScriptableEventNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {
         [SerializeField] private bool _debugLogEnabled = false;
@@ -92,9 +92,6 @@ namespace Obvious.Soap
             }
         }
 
-        public override void Reset()
-        {
-            _debugLogEnabled = false;
-        }
+        public override void Reset() { _debugLogEnabled = false; }
     }
 }
