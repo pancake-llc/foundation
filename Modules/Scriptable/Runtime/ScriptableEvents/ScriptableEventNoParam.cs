@@ -8,6 +8,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.Scriptable
 {
     [CreateAssetMenu(fileName = "scriptable_event_noParam.asset", menuName = "Pancake/Scriptable/ScriptableEvents/No Parameters")]
+    [EditorIcon("scriptable_event")]
     public class ScriptableEventNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {
         [SerializeField] private bool _debugLogEnabled = false;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -8,6 +11,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.Scriptable
 {
     [Serializable]
+    [EditorIcon("scriptable_variable")]
     public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IDrawObjectsInInspector
     {
         [Tooltip("The value of the variable, this is changed at runtime.")] [SerializeField]
@@ -100,9 +104,10 @@ namespace Pancake.Scriptable
 
         private void SetDirtyInPlayMode()
         {
+#if UNITY_EDITOR
             //When the SV is changed by code, make sure it is marked dirty to be saved and picked up by Version Control.
-            if (Application.isPlaying)
-                UnityEditor.EditorUtility.SetDirty(this);
+            if (Application.isPlaying) EditorUtility.SetDirty(this);
+#endif
         }
 
         private void Awake()
