@@ -1,0 +1,13 @@
+﻿using UnityEngine;
+using Pancake.Attribute;
+
+namespace Pancake.Scriptable
+{
+    [EditorIcon("scriptable_variable")]
+    [CreateAssetMenu(fileName = "scriptable_variable_#TYPE#.asset", menuName = "Pancake/Scriptable/Variables/#TYPE#")]
+    [System.Serializable]
+    public class #TYPE#Variable : ScriptableVariable<#TYPE#>
+    {
+        
+    }
+}

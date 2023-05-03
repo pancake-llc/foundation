@@ -10,6 +10,7 @@ namespace Pancake.Scriptable
         [System.Serializable]
         public class EventResponse<TV, TR>
         {
+            public virtual ScriptableEventFunc<TV, TR> ScriptableEvent { get; }
             public virtual UnityEvent<TV> Response { get; }
         }
         

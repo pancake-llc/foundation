@@ -1,0 +1,18 @@
+{
+  "name": "Pancake.ExLibEditor",
+  "rootNamespace": "",
+  "references": [
+    "GUID:d54e067e22b30d84d974d345601e49b6"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
