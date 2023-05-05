@@ -3,6 +3,7 @@ using System.IO;
 using Pancake.IAP;
 using Pancake;
 #endif
+using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,16 +29,15 @@ namespace PancakeEditor
                     AssetDatabase.Refresh();
                     Debug.Log($"{nameof(IAPSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(IAPSettings)}.asset");
                 }
-                
+
                 GUI.backgroundColor = Color.white;
                 GUI.enabled = true;
             }
             else
             {
-                var editor = UnityEditor.Editor.CreateEditor(iapSetting);
-                editor.OnInspectorGUI();
+                if (GUILayout.Button("Edit", GUILayout.MaxHeight(40f))) iapSetting.SelectAndPing();
             }
-            
+
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
             if (GUILayout.Button("Uninstall IAP Package", GUILayout.MaxHeight(25f)))

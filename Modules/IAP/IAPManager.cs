@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.Attribute;
+using Pancake.Apex;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 using UnityEngine;
@@ -9,10 +9,10 @@ using UnityEngine.Purchasing;
 
 namespace Pancake.IAP
 {
-    [HideMono]
+    [HideMonoScript]
     public class IAPManager : GameComponent, IStoreListener
     {
-        [SerializeField] private IapPurchaseEvent iapPurchaseEvent;
+        [SerializeField] private IAPPurchaseEvent iapPurchaseEvent;
         public static event Action<string> OnPurchaseSucceedEvent;
         public static event Action<string> OnPurchaseFailedEvent;
         public static event Action OnPurchaseEvent;

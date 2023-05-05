@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Pancake.Attribute;
+using Pancake.Apex;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -12,18 +12,17 @@ using System.IO;
 
 namespace Pancake.IAP
 {
-    [HideMono]
+    [HideMonoScript]
     [EditorIcon("scriptable_iap")]
-    [DeclareHorizontalGroup("button")]
     public class IAPSettings : ScriptableSettings<IAPSettings>
     {
-        [InfoBox(
-            "Product id should look like : com.appname.itemid\nEx: com.eldenring.doublesoul\n\nConsumable        : purchase multiple time\nNon Consumable : purchase once time")]
-        [InfoBox("When test mode is enabled all products will be initialized as Consumable (Android Only)")]
+        [Message(
+            "Product id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time", Height = 100)]
+        [Message("When test mode is enabled all products will be initialized as Consumable (Android Only)")]
         [SerializeField]
         private bool testMode;
 
-        [SerializeField] private List<IAPData> skusData = new List<IAPData>();
+        [SerializeField, Array] private List<IAPData> skusData = new List<IAPData>();
 
         public static bool TestMode => Instance.testMode;
 
@@ -38,13 +37,14 @@ namespace Pancake.IAP
         private string m_AppleError;
         [Space(20)] [SerializeField, TextArea] private string googlePlayStorePublicKey;
 
-        [Group("button"), Button("Obfuscate Key")]
+        [SerializeMethod]
+        [HorizontalGroup("button")]
         private void ValidateObfuscator()
         {
             ObfuscateSecrets(true);
 
-            string pathAsmdef = GetPathInCurrentEnvironent($"Editor/Misc/Templates/PurchasingGeneratedAsmdef.txt");
-            string pathAsmdefMeta = GetPathInCurrentEnvironent($"Editor/Misc/Templates/PurchasingGeneratedAsmdefMeta.txt");
+            string pathAsmdef = GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdef.txt");
+            string pathAsmdefMeta = GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdefMeta.txt");
             var asmdef = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdef, typeof(TextAsset));
             var meta = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdefMeta, typeof(TextAsset));
 
@@ -74,7 +74,8 @@ namespace Pancake.IAP
             return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
         }
 
-        [Group("button"), Button("Generate Product")]
+        [SerializeMethod]
+        [HorizontalGroup("button")]
         private void GenerateImplProduct()
         {
             const string path = "Assets/_Root/Scripts";

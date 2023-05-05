@@ -8,7 +8,7 @@ namespace Pancake
     {
         [Label("Privacy on FirstOpen")] [SerializeField] private bool enablePrivacyFirstOpen;
 
-        [Indent, ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
+        [Indent, Label("Url"), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
         private string privacyUrl;
 
         [Indent, Label("Title"), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]

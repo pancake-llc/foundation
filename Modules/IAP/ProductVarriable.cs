@@ -1,5 +1,4 @@
-﻿using Pancake.Attribute;
-using Pancake.Scriptable;
+﻿using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.IAP

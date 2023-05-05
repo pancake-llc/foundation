@@ -1,7 +1,6 @@
-using Pancake;
 using UnityEngine;
 
-namespace PancakeEditor
+namespace Pancake.ScriptableEditor
 {
     [EditorIcon("scriptable_setting")]
     public class ScriptableEditorSetting : ScriptableSettings<ScriptableEditorSetting>

@@ -33,7 +33,7 @@ namespace PancakeEditor
             {
                 EditorGUILayout.Space();
                 var editor = UnityEditor.Editor.CreateEditor(heartSetting);
-                editor.DrawDefaultInspector();
+                editor.OnInspectorGUI();
             }
         }
     }

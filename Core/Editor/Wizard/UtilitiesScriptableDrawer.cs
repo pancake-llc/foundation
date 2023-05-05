@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Pancake;
 using Pancake.ExLibEditor;
+using Pancake.ScriptableEditor;
 using UnityEditor;
 using UnityEngine;
 
