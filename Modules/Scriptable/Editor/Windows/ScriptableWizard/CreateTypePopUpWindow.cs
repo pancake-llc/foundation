@@ -102,7 +102,7 @@ namespace Pancake.ScriptableEditor
                 {
                     newFile = CreateNewClass(EditorResources.ScriptableEventTemplate.text,
                         _typeText,
-                        nameof(EditorResources.ScriptableEventTemplate).Replace("Template", _typeText),
+                        $"{nameof(EditorResources.ScriptableEventTemplate).Replace("Template", _typeText)}.cs",
                         _path);
                     if (newFile == null)
                     {
@@ -118,7 +118,7 @@ namespace Pancake.ScriptableEditor
                 {
                     newFile = CreateNewClass(EditorResources.ScriptableEventListenerTemplate.text,
                         _typeText,
-                        nameof(EditorResources.ScriptableEventListenerTemplate).Replace("Template", _typeText),
+                        $"{nameof(EditorResources.ScriptableEventListenerTemplate).Replace("Template", _typeText)}.cs",
                         _path);
                     if (newFile == null)
                     {
@@ -134,7 +134,7 @@ namespace Pancake.ScriptableEditor
                 {
                     newFile = CreateNewClass(EditorResources.ScriptableListTemplate.text,
                         _typeText,
-                        nameof(EditorResources.ScriptableListTemplate).Replace("Template", _typeText),
+                        $"{nameof(EditorResources.ScriptableListTemplate).Replace("Template", _typeText)}.cs",
                         _path);
                     if (newFile == null)
                     {
