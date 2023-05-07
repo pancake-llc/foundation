@@ -42,8 +42,8 @@ namespace Pancake.ScriptableEditor
 
             if (GUILayout.Button("Reset to initial value"))
             {
-                var so = (ISave) target;
-                so.SetToInitialValue();
+                var so = target as ISave;
+                so?.SetToInitialValue();
             }
         }
 
