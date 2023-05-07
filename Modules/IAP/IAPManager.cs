@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Pancake.Apex;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
@@ -12,20 +11,13 @@ namespace Pancake.IAP
     [HideMonoScript]
     public class IAPManager : GameComponent, IStoreListener
     {
-        [SerializeField] private IAPPurchaseEvent iapPurchaseEvent;
-        public static event Action<string> OnPurchaseSucceedEvent;
-        public static event Action<string> OnPurchaseFailedEvent;
-        public static event Action OnPurchaseEvent;
-        private static readonly Dictionary<string, Action> CompletedDict = new Dictionary<string, Action>();
-        private static readonly Dictionary<string, Action> FaildDict = new Dictionary<string, Action>();
+        [SerializeField, Array] private List<IAPDataVariable> products;
+        [SerializeField] private ScriptableEventIAPData iapPurchaseEvent;
 
         private IStoreController _controller;
         private IExtensionProvider _extensions;
-        private static IAPManager Instance { get; set; }
 
-        public List<IAPData> Skus { get; set; } = new List<IAPData>();
         public bool IsInitialized { get; set; }
-
 
         protected override void OnEnabled()
         {
@@ -33,9 +25,10 @@ namespace Pancake.IAP
             iapPurchaseEvent.OnRaised += PurchaseProduct;
         }
 
-        private IAPData PurchaseProduct(ProductVarriable product)
+        private void PurchaseProduct(IAPDataVariable product)
         {
-            return product.Value;
+            // call when IAPDataVariable raise event
+            PurchaseProductInternal(product);
         }
 
         protected override void OnDisabled()
@@ -44,41 +37,18 @@ namespace Pancake.IAP
             iapPurchaseEvent.OnRaised -= PurchaseProduct;
         }
 
+        private void Start() { Init(); }
 
-        private void Awake()
+        private async void Init()
         {
-            if (Instance != null)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                Instance = this;
-            }
-        }
-
-        public static async void Init()
-        {
-            OnPurchaseSucceedEvent = null;
-            OnPurchaseFailedEvent = null;
-            OnPurchaseEvent = null;
             var options = new InitializationOptions().SetEnvironmentName("production");
             await UnityServices.InitializeAsync(options);
-            Instance.InitImpl(IAPSettings.SkusData);
+            InitImpl();
         }
 
-        private void InitImpl(List<IAPData> skuItems)
+        private void InitImpl()
         {
-            if (this != Instance) return;
-
             if (IsInitialized) return;
-            Skus.Clear();
-            Skus.AddRange(skuItems);
-            CompletedDict.Clear();
-            foreach (var item in skuItems)
-            {
-                CompletedDict.Add(item.sku.Id, null);
-            }
 
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
             RequestProductData(builder);
@@ -87,8 +57,6 @@ namespace Pancake.IAP
             UnityPurchasing.Initialize(this, builder);
             IsInitialized = true;
         }
-
-        public static void ForceInit(List<IAPData> skuItems) { Instance.InitImpl(skuItems); }
 
         public void OnInitializeFailed(InitializationFailureReason error)
         {
@@ -130,50 +98,27 @@ namespace Pancake.IAP
             }
 #endif
 
-            if (validPurchase)
-            {
-                PurchaseVerified(purchaseEvent);
-            }
+            if (validPurchase) PurchaseVerified(purchaseEvent);
 
             return PurchaseProcessingResult.Complete;
         }
 
-        private IAPData PurchaseProduct(IAPData product)
+        private IAPDataVariable PurchaseProductInternal(IAPDataVariable product)
         {
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
-            _controller?.InitiatePurchase(product.sku.Id);
+            _controller?.InitiatePurchase(product.Value.id);
 #endif
             return product;
         }
 
-        public static IAPData Purchase(IAPData product)
-        {
-            OnPurchaseEvent?.Invoke();
-            return Instance.PurchaseProduct(product);
-        }
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { }
 
-        public static void RegisterCompletedEvent(string key, Action action)
+        private void PurchaseVerified(PurchaseEventArgs e)
         {
-            foreach (var e in CompletedDict.ToArray())
+            string id = e.purchasedProduct.definition.id;
+            foreach (var product in products)
             {
-                if (e.Key.Equals(key)) CompletedDict[key] = action;
-            }
-        }
-
-        public static void RegisterFaildEvent(string key, Action action)
-        {
-            foreach (var e in FaildDict.ToArray())
-            {
-                if (e.Key.Equals(key)) FaildDict[key] = action;
-            }
-        }
-
-        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
-        {
-            OnPurchaseFailedEvent?.Invoke(failureReason.ToString());
-            foreach (var e in FaildDict)
-            {
-                if (e.Key.Equals(product.definition.id)) e.Value?.Invoke();
+                if (product.id.Equals(id)) product.onPurchaseSuccess.Raise();
             }
         }
 
@@ -198,35 +143,19 @@ namespace Pancake.IAP
             return type == ProductType.NonConsumable && _controller.products.WithID(sku).hasReceipt;
         }
 
-        private void PurchaseVerified(PurchaseEventArgs e)
-        {
-            OnPurchaseSucceedEvent?.Invoke(e.purchasedProduct.definition.id);
-            foreach (var completeEvent in CompletedDict)
-            {
-                if (completeEvent.Key.Equals(e.purchasedProduct.definition.id)) completeEvent.Value?.Invoke();
-            }
-        }
-
         private void RequestProductData(ConfigurationBuilder builder)
         {
-            foreach (var p in Skus)
+            foreach (var p in products)
             {
-                if (IAPSettings.TestMode)
-                {
-                    builder.AddProduct(p.sku.Id, ProductType.Consumable);
-                }
-                else
-                {
-                    builder.AddProduct(p.sku.Id, p.productType);
-                }
+                builder.AddProduct(p.id, p.isTest ? ProductType.Consumable : p.productType);
             }
         }
 
         private ProductType GetIapType(string sku)
         {
-            foreach (var item in Skus)
+            foreach (var item in products)
             {
-                if (item.sku.Id.Equals(sku)) return item.productType;
+                if (item.id.Equals(sku)) return item.productType;
             }
 
             return ProductType.Consumable;

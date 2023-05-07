@@ -1,37 +1,38 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using Pancake.Apex;
 using UnityEngine;
-
-#if UNITY_EDITOR
 using System;
 using System.Linq;
 using UnityEditor;
-using System.Globalization;
 using System.IO;
-#endif
+using UnityEngine.Purchasing;
 
+// ReSharper disable InconsistentNaming
 namespace Pancake.IAP
 {
     [HideMonoScript]
     [EditorIcon("scriptable_iap")]
-    public class IAPSettings : ScriptableSettings<IAPSettings>
+    public class IAPSettings : ScriptableObject
     {
+        [Serializable]
+        private class IAPData
+        {
+            public bool isTest;
+            public string id;
+            public ProductType productType;
+        }
+
         [Message(
-            "Product id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time", Height = 100)]
-        [Message("When test mode is enabled all products will be initialized as Consumable (Android Only)")]
-        [SerializeField]
-        private bool testMode;
-
-        [SerializeField, Array] private List<IAPData> skusData = new List<IAPData>();
-
-        public static bool TestMode => Instance.testMode;
-
-        public static List<IAPData> SkusData => Instance.skusData;
+            "Product id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time",
+            Height = 100)]
+        [Space]
+        [SerializeField, Array]
+        private List<IAPData> skusData = new List<IAPData>();
 
         /// <summary>
         /// IAP 4.5.2
         /// </summary>
-#if UNITY_EDITOR
         private string m_GoogleError;
 
         private string m_AppleError;
@@ -78,42 +79,20 @@ namespace Pancake.IAP
         [HorizontalGroup("button")]
         private void GenerateImplProduct()
         {
-            const string path = "Assets/_Root/Scripts";
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-
-            var productImplPath = $"{path}/Product.cs";
-
-            var str = "namespace Pancake.IAP\n{";
-            str += "\n\tpublic static class Product\n\t{";
-
-            var skus = SkusData;
+            var skus = skusData;
+            const string p = "Assets/_Root/Storages/Generated/IAP";
+            if (!Directory.Exists(p)) Directory.CreateDirectory(p);
             for (int i = 0; i < skus.Count; i++)
             {
-                var scriptable = CreateInstance<ProductVarriable>();
-                scriptable.Value = skus[i];
-
-                var itemName = skus[i].sku.Id.Split('.').Last();
-                str += $"\n\t\tpublic static IAPData Purchase{CultureInfo.CurrentCulture.TextInfo.ToTitleCase(itemName)}()";
-                str += "\n\t\t{";
-                str += $"\n\t\t\treturn IAPManager.Purchase(IAPSettings.SkusData[{i}]);";
-                str += "\n\t\t}";
-                str += "\n";
-
-                str += $"\n\t\tpublic static bool IsPurchased{CultureInfo.CurrentCulture.TextInfo.ToTitleCase(itemName)}()";
-                str += "\n\t\t{";
-                str += $"\n\t\t\treturn IAPManager.Instance.IsPurchased(IAPSettings.SkusData[{i}].sku.Id);";
-                str += "\n\t\t}";
-                str += "\n";
+                var scriptable = CreateInstance<IAPDataVariable>();
+                scriptable.id = skus[i].id;
+                scriptable.isTest = skus[i].isTest;
+                scriptable.productType = skus[i].productType;
+                string itemName = skus[i].id.Split('.').Last();
+                AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
-
-            str += "\n\t}";
-            str += "\n}";
-
-            var writer = new StreamWriter(productImplPath, false);
-            writer.Write(str);
-            writer.Close();
-            AssetDatabase.ImportAsset(productImplPath);
         }
 
         private class ObfuscationGenerator
@@ -408,6 +387,7 @@ namespace Pancake.IAP
                 googleError: ref m_GoogleError,
                 googlePlayPublicKey: googlePlayStorePublicKey);
         }
-#endif
     }
 }
+
+#endif

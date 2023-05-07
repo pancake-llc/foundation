@@ -22,7 +22,7 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create IAP Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<IAPSettings>();
-                    const string path = "Assets/_Root/Resources";
+                    const string path = "Assets/_Root/Editor/Resources";
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(IAPSettings)}.asset");
                     AssetDatabase.SaveAssets();
