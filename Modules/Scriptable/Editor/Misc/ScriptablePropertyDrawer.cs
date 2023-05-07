@@ -17,6 +17,14 @@ namespace Pancake.ScriptableEditor
             EditorGUI.BeginProperty(position, label, property);
 
             var targetObject = property.objectReferenceValue;
+            
+            if (fieldInfo.FieldType.IsArray || fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                // ignore draw when inside list or array
+                EditorGUI.PropertyField(position, property, label);
+                return;
+            }
+            
             if (targetObject == null)
             {
                 //Draw property and a create button
@@ -34,17 +42,7 @@ namespace Pancake.ScriptableEditor
                     bool isAbstract = fieldInfo.DeclaringType?.IsAbstract == true;
                     string newName = isAbstract ? fieldInfo.FieldType.Name : fieldInfo.Name;
 
-                    var type = fieldInfo.FieldType;
-                    if (type.IsArray)
-                    {
-                        type = fieldInfo.FieldType.GetElementType();
-                    }
-                    else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                    {
-                        type = type.GetGenericArguments()[0];
-                    }
-
-                    var instance = ScriptableObject.CreateInstance(type);
+                    var instance = ScriptableObject.CreateInstance(fieldInfo.FieldType);
                     instance.name = newName == "" ? fieldInfo.FieldType.ToString().Replace("Pancake.Scriptalbe.", "") : newName;
                     var creationPath = $"{ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED}/{instance.name}.asset";
                     string uniqueFilePath = AssetDatabase.GenerateUniqueAssetPath(creationPath);
