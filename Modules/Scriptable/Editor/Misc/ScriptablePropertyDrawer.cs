@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
 using Pancake.ExLibEditor;
 using Pancake.Scriptable;
 
@@ -34,7 +34,17 @@ namespace Pancake.ScriptableEditor
                     bool isAbstract = fieldInfo.DeclaringType?.IsAbstract == true;
                     string newName = isAbstract ? fieldInfo.FieldType.Name : fieldInfo.Name;
 
-                    var instance = ScriptableObject.CreateInstance(fieldInfo.FieldType);
+                    var type = fieldInfo.FieldType;
+                    if (type.IsArray)
+                    {
+                        type = fieldInfo.FieldType.GetElementType();
+                    }
+                    else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                    {
+                        type = type.GetGenericArguments()[0];
+                    }
+
+                    var instance = ScriptableObject.CreateInstance(type);
                     instance.name = newName == "" ? fieldInfo.FieldType.ToString().Replace("Pancake.Scriptalbe.", "") : newName;
                     var creationPath = $"{ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED}/{instance.name}.asset";
                     string uniqueFilePath = AssetDatabase.GenerateUniqueAssetPath(creationPath);
