@@ -111,14 +111,25 @@ namespace Pancake.IAP
             return product;
         }
 
-        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { }
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
+        {
+            string id = product.definition.id;
+            foreach (var p in products)
+            {
+                if (!p.id.Equals(id)) continue;
+                p.OnPurchaseFaild.Raise();
+                C.CallActionClean(ref p.purchaseFaildCallback);
+            }
+        }
 
         private void PurchaseVerified(PurchaseEventArgs e)
         {
             string id = e.purchasedProduct.definition.id;
             foreach (var product in products)
             {
-                if (product.id.Equals(id)) product.onPurchaseSuccess.Raise();
+                if (!product.id.Equals(id)) continue;
+                product.OnPurchaseSuccess.Raise();
+                C.CallActionClean(ref product.purchaseSuccessCallback);
             }
         }
 

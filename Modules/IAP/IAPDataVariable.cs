@@ -1,3 +1,4 @@
+using System;
 using Pancake.Apex;
 using UnityEngine;
 using UnityEngine.Purchasing;
@@ -14,7 +15,13 @@ namespace Pancake.IAP
         [ReadOnly] public string id;
         [ReadOnly] public ProductType productType;
 
-        [Space] public IAPPurchaseSuccess onPurchaseSuccess;
-        public IAPPurchaseFaild onPurchaseFaild;
+        [Space] [SerializeField] private IAPPurchaseSuccess onPurchaseSuccess;
+        [SerializeField] private IAPPurchaseFaild onPurchaseFaild;
+
+        internal IAPPurchaseSuccess OnPurchaseSuccess => onPurchaseSuccess;
+        internal IAPPurchaseFaild OnPurchaseFaild => onPurchaseFaild;
+
+        [NonSerialized] public Action purchaseSuccessCallback;
+        [NonSerialized] public Action purchaseFaildCallback;
     }
 }
