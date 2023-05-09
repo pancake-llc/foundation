@@ -12,7 +12,7 @@ namespace Pancake.IAP
     public class IAPManager : GameComponent, IStoreListener
     {
         [SerializeField, Array] private List<IAPDataVariable> products;
-        [SerializeField] private ScriptableEventIAPData iapPurchaseEvent;
+        [SerializeField] private ScriptableEventIAPPurchase iapPurchaseEvent;
 
         private IStoreController _controller;
         private IExtensionProvider _extensions;

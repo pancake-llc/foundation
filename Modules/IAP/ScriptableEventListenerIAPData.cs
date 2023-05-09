@@ -14,7 +14,7 @@ namespace Pancake.IAP
         [System.Serializable]
         public class EventResponse : EventResponse<IAPDataVariable>
         {
-            [SerializeField] private ScriptableEventIAPData scriptableEvent = null;
+            [SerializeField] private ScriptableEventIAPPurchase scriptableEvent = null;
             [SerializeField] private IAPDataUnityEvent response = null;
 
             public override ScriptableEvent<IAPDataVariable> ScriptableEvent => scriptableEvent;

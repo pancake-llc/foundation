@@ -33,6 +33,6 @@ namespace Pancake.IAP
         /// </summary>
         /// <param name="product"></param>
         /// <param name="event"></param>
-        public static void Purchase(this IAPDataVariable product, ScriptableEventIAPData @event) { @event.Raise(product); }
+        public static void Purchase(this IAPDataVariable product, ScriptableEventIAPPurchase @event) { @event.Raise(product); }
     }
 }
