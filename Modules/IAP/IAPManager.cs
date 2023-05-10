@@ -82,7 +82,7 @@ namespace Pancake.IAP
         {
             bool validPurchase = true;
 #if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
-            var validator = new CrossPlatformValidator(GooglePlayTangle.Data(), AppleTangle.Data(), Application.identifier);
+            var validator = new UnityEngine.Purchasing.Security.CrossPlatformValidator(UnityEngine.Purchasing.Security.GooglePlayTangle.Data(), UnityEngine.Purchasing.Security.AppleTangle.Data(), Application.identifier);
 
             try
             {
@@ -91,7 +91,7 @@ namespace Pancake.IAP
                 var result = validator.Validate(purchaseEvent.purchasedProduct.receipt);
                 Debug.Log("Receipt is valid");
             }
-            catch (IAPSecurityException)
+            catch (UnityEngine.Purchasing.Security.IAPSecurityException)
             {
                 Debug.Log("Invalid receipt, not unlocking content");
                 validPurchase = false;
@@ -106,7 +106,7 @@ namespace Pancake.IAP
         private IAPDataVariable PurchaseProductInternal(IAPDataVariable product)
         {
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
-            _controller?.InitiatePurchase(product.Value.id);
+            _controller?.InitiatePurchase(product.id);
 #endif
             return product;
         }
