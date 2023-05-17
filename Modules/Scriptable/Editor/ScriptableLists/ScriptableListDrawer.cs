@@ -10,6 +10,8 @@ namespace Pancake.ScriptableEditor
     public class ScriptableListDrawer : UnityEditor.Editor
     {
         private ScriptableListBase _targetScriptableList;
+        private ScriptableBase _scriptableBase;
+        private static bool repaintFlag;
 
         public override void OnInspectorGUI()
         {
@@ -51,5 +53,31 @@ namespace Pancake.ScriptableEditor
 
             GUILayout.EndVertical();
         }
+
+        #region Repaint
+
+        private void OnEnable()
+        {
+            if (repaintFlag)
+                return;
+
+            _scriptableBase = target as ScriptableBase;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            repaintFlag = true;
+        }
+
+        private void OnDisable() { EditorApplication.playModeStateChanged -= OnPlayModeStateChanged; }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange obj)
+        {
+            if (obj == PlayModeStateChange.EnteredPlayMode)
+                _scriptableBase.repaintRequest += OnRepaintRequested;
+            else if (obj == PlayModeStateChange.ExitingPlayMode)
+                _scriptableBase.repaintRequest -= OnRepaintRequested;
+        }
+
+        private void OnRepaintRequested() => Repaint();
+
+        #endregion
     }
 }

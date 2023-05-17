@@ -7,5 +7,6 @@ namespace Pancake.Scriptable
     public abstract class ScriptableBase : ScriptableObject
     {
         public virtual void Reset() { }
+        public System.Action repaintRequest;
     }
 }

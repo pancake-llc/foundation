@@ -37,18 +37,10 @@ namespace Pancake.ScriptableEditor
                 var guiContent = new GUIContent("Create", "Creates the SO at current selected folder in the Project Window");
                 if (GUI.Button(rectPosition, guiContent))
                 {
-                    ProjectDatabase.EnsureDirectoryExists($"{ProjectDatabase.ProjectDir}/{ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED}");
                     //fieldInfo.Name does not work for VariableReferences so we have to make an edge case for that.
                     bool isAbstract = fieldInfo.DeclaringType?.IsAbstract == true;
                     string newName = isAbstract ? fieldInfo.FieldType.Name : fieldInfo.Name;
-
-                    var instance = ScriptableObject.CreateInstance(fieldInfo.FieldType);
-                    instance.name = newName == "" ? fieldInfo.FieldType.ToString().Replace("Pancake.Scriptalbe.", "") : newName;
-                    var creationPath = $"{ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED}/{instance.name}.asset";
-                    string uniqueFilePath = AssetDatabase.GenerateUniqueAssetPath(creationPath);
-                    AssetDatabase.CreateAsset(instance, uniqueFilePath);
-                    EditorGUIUtility.PingObject(instance);
-                    property.objectReferenceValue = instance;
+                    property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED);;
                 }
 
                 EditorGUI.EndProperty();

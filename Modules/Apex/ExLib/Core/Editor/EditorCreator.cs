@@ -61,5 +61,24 @@ namespace Pancake.ExLibEditor
             AssetDatabase.RenameAsset(path, newName);
             AssetDatabase.SaveAssets();
         }
+
+        /// <summary>
+        /// Creates a Scriptable object at a certain path
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="name"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static ScriptableObject CreateScriptableAt(System.Type type, string name, string path)
+        {
+            ProjectDatabase.EnsureDirectoryExists($"{ProjectDatabase.ProjectDir}/{path}");
+            var instance = ScriptableObject.CreateInstance(type);
+            instance.name = string.IsNullOrEmpty(name) ? type.ToString().Replace("Pancake.Scriptalbe.", "") : name;
+            var creationPath = $"{path}/{instance.name}.asset";
+            string uniqueFilePath = AssetDatabase.GenerateUniqueAssetPath(creationPath);
+            AssetDatabase.CreateAsset(instance, uniqueFilePath);
+            EditorGUIUtility.PingObject(instance);
+            return instance;
+        }
     }
 }

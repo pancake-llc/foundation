@@ -22,12 +22,14 @@ namespace Pancake.ScriptableEditor
         private Texture[] _icons;
         private readonly Color[] _colors = {Color.gray, Color.cyan, Color.green, Color.yellow, Color.gray};
         private string _searchText = "";
+        private UnityEditor.Editor _editor;
 
         [SerializeField] private string currentFolderPath = "Assets";
         [SerializeField] private int selectedScriptableIndex;
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
         [SerializeField] private ScriptableBase scriptableBase;
+        [SerializeField] private ScriptableBase previousScriptableBase;
         [SerializeField] private FavoriteData favoriteData;
 
         private List<ScriptableBase> Favorites => favoriteData.favorites;
@@ -71,6 +73,7 @@ namespace Pancake.ScriptableEditor
         {
             var data = JsonUtility.ToJson(favoriteData, false);
             EditorPrefs.SetString(FAVORITE_KEY, data);
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
         protected override void Init()
@@ -78,7 +81,10 @@ namespace Pancake.ScriptableEditor
             base.Init();
             LoadAssets();
             LoadSavedData();
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange state) { }
 
         private void LoadAssets()
         {
@@ -209,85 +215,65 @@ namespace Pancake.ScriptableEditor
             if (scriptables is null)
                 return;
 
-            var count = 0;
-            foreach (var scriptable in scriptables)
+            var count = scriptables.Count;
+            for (var i = count - 1; i >= 0; i--)
             {
-                if (scriptable == null)
-                    continue;
+                var scriptable = scriptables[i];
+                if (scriptable == null) continue;
 
                 //filter search
-                if (scriptable.name.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) < 0)
-                    continue;
+                if (scriptable.name.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) < 0) continue;
 
                 EditorGUILayout.BeginHorizontal();
 
                 var icon = _currentType == ScriptableType.All || _currentType == ScriptableType.Favorite ? GetIconFor(scriptable) : _icons[(int) _currentType];
 
-                var style = new GUIStyle(GUIStyle.none);
-                style.contentOffset = new Vector2(0, 5);
+                var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 5)};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
 
-                var clicked = GUILayout.Toggle(selectedScriptableIndex == count, scriptable.name, Uniform.FoldoutButton, GUILayout.ExpandWidth(true));
-
+                var clicked = GUILayout.Toggle(selectedScriptableIndex == i, scriptable.name, Uniform.FoldoutButton, GUILayout.ExpandWidth(true));
+                DrawFavorite(scriptable);
                 EditorGUILayout.EndHorizontal();
                 if (clicked)
                 {
-                    selectedScriptableIndex = count;
+                    selectedScriptableIndex = i;
                     scriptableBase = scriptable;
                 }
+            }
+        }
 
-                //HandleRightClick(count);
-                count++;
+        private void DrawFavorite(ScriptableBase scriptableBase)
+        {
+            var icon = Favorites.Contains(scriptableBase) ? _icons[4] : _icons[0];
+            var style = new GUIStyle(GUIStyle.none) {margin = {top = 5}};
+            if (GUILayout.Button(icon, style, GUILayout.Width(16), GUILayout.Height(16)))
+            {
+                if (Favorites.Contains(scriptableBase)) Favorites.Remove(scriptableBase);
+                else Favorites.Add(scriptableBase);
             }
         }
 
         private void DrawRightPanel()
         {
-            if (scriptableBase == null)
-                return;
+            if (scriptableBase == null) return;
 
             EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
-
-            DrawRightPanelHeader();
 
             _itemScrollPosition = EditorGUILayout.BeginScrollView(_itemScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 
             //Draw Selected Scriptable
-            var editor = UnityEditor.Editor.CreateEditor(scriptableBase);
-            editor.OnInspectorGUI();
-            //needed to refresh directly even if not focused during play mode.
-            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+            if (_editor == null || scriptableBase != previousScriptableBase)
+            {
+                _editor = UnityEditor.Editor.CreateEditor(scriptableBase);
+                previousScriptableBase = scriptableBase;
+            }
+            _editor.DrawHeader();
+            _editor.OnInspectorGUI();
             Uniform.DrawLine();
             GUILayout.FlexibleSpace();
             DrawSelectedButtons();
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
-        }
-
-
-        private void DrawRightPanelHeader()
-        {
-            //Draw name and icon
-            EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
-            var icon = _currentType == ScriptableType.All || _currentType == ScriptableType.Favorite ? GetIconFor(scriptableBase) : _icons[(int) _currentType];
-            GUILayout.Box(icon, GUIStyle.none, GUILayout.Width(32), GUILayout.Height(32));
-            GUILayout.Label(scriptableBase.name, EditorStyles.label);
-            GUILayout.FlexibleSpace();
-
-            //Draw Favorite
-            GUILayout.Label("Favorite", EditorStyles.label);
-            icon = Favorites.Contains(scriptableBase) ? _icons[4] : _icons[0];
-            var style = new GUIStyle(GUIStyle.none) {margin = {top = 1}};
-            if (GUILayout.Button(icon, style, GUILayout.Width(18), GUILayout.Height(18)))
-            {
-                if (Favorites.Contains(scriptableBase))
-                    Favorites.Remove(scriptableBase);
-                else
-                    Favorites.Add(scriptableBase);
-            }
-
-            GUILayout.Space(5);
-            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawSelectedButtons()

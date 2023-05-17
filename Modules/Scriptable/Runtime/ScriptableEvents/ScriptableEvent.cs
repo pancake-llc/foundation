@@ -17,6 +17,7 @@ namespace Pancake.Scriptable
         private readonly List<Object> _listenersObjects = new List<Object>();
         private Action<T> _onRaised = null;
 
+        /// <summary> Event raised when the event is raised. </summary>
         public event Action<T> OnRaised
         {
             add
@@ -37,6 +38,7 @@ namespace Pancake.Scriptable
             }
         }
 
+        /// <summary> Raise the event </summary>
         public void Raise(T param)
         {
             if (!Application.isPlaying)

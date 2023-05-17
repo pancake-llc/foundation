@@ -31,6 +31,7 @@ namespace Pancake.Scriptable
 
         private readonly List<Object> _listenersObjects = new List<Object>();
 
+        /// <summary> Event raised when the variable value changes. </summary>
         private Action<T> _onValueChanged;
 
         /// <summary>
@@ -58,6 +59,7 @@ namespace Pancake.Scriptable
 
         public T PreviousValue { get; private set; }
 
+        /// <summary> The initial value of the variable to which it will be reset. </summary>
         public T InitialValue
         {
             get => _initialValue;
@@ -106,7 +108,11 @@ namespace Pancake.Scriptable
         {
 #if UNITY_EDITOR
             //When the SV is changed by code, make sure it is marked dirty to be saved and picked up by Version Control.
-            if (Application.isPlaying) EditorUtility.SetDirty(this);
+            if (Application.isPlaying)
+            {
+                EditorUtility.SetDirty(this);
+                repaintRequest?.Invoke();
+            }
 #endif
         }
 

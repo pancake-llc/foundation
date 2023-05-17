@@ -26,16 +26,27 @@ namespace Pancake.Scriptable
 
         public T this[int index] { get => _list[index]; set => _list[index] = value; }
 
+        /// <summary> Event raised when an item is added or removed from the list. </summary>
         public event Action OnItemCountChanged;
+        
+        /// <summary> Event raised  when an item is added to the list. </summary>
         public event Action<T> OnItemAdded;
+        
+        /// <summary> Event raised  when an item is removed from the list. </summary>
         public event Action<T> OnItemRemoved;
+        
+        /// <summary> Event raised  when multiple item are added to the list. </summary>
         public event Action<IEnumerable<T>> OnItemsAdded;
+        
+        /// <summary> Event raised  when multiple items are removed from the list. </summary>
         public event Action<IEnumerable<T>> OnItemsRemoved;
+        
+        /// <summary> Event raised  when the list is cleared. </summary>
         public event Action OnCleared;
 
         /// <summary>
         /// Adds an item to the list only if its not in the list.
-        /// Triggers OnItemCountChanged and OnItemAdded event.
+        /// Raises OnItemCountChanged and OnItemAdded event.
         /// </summary>
         /// <param name="item"></param>
         public void Add(T item)
@@ -46,6 +57,9 @@ namespace Pancake.Scriptable
             _list.Add(item);
             OnItemCountChanged?.Invoke();
             OnItemAdded?.Invoke(item);
+#if UNITY_EDITOR
+            repaintRequest?.Invoke();
+#endif
         }
 
         /// <summary>
@@ -61,11 +75,14 @@ namespace Pancake.Scriptable
 
             OnItemCountChanged?.Invoke();
             OnItemsAdded?.Invoke(itemList);
+#if UNITY_EDITOR
+            repaintRequest?.Invoke();
+#endif
         }
 
         /// <summary>
         /// Removes an item from the list only if its in the list.
-        /// Triggers OnItemCountChanged and OnItemRemoved event.
+        /// Raises OnItemCountChanged and OnItemRemoved event.
         /// </summary>
         /// <param name="item"></param>
         public void Remove(T item)
@@ -76,11 +93,14 @@ namespace Pancake.Scriptable
             _list.Remove(item);
             OnItemCountChanged?.Invoke();
             OnItemRemoved?.Invoke(item);
+#if UNITY_EDITOR
+            repaintRequest?.Invoke();
+#endif
         }
 
         /// <summary>
         /// Removes a range of items from the list.
-        /// Triggers OnItemCountChanged and OnItemsAdded event once, after all items have been added.
+        /// Raises OnItemCountChanged and OnItemsAdded event once, after all items have been added.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="count"></param>
@@ -90,12 +110,18 @@ namespace Pancake.Scriptable
             _list.RemoveRange(index, count);
             OnItemCountChanged?.Invoke();
             OnItemsRemoved?.Invoke(items);
+#if UNITY_EDITOR
+            repaintRequest?.Invoke();
+#endif
         }
 
         private void Clear()
         {
             _list.Clear();
             OnCleared?.Invoke();
+#if UNITY_EDITOR
+            repaintRequest?.Invoke();
+#endif
         }
 
         private void Awake()
