@@ -11,8 +11,8 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_event")]
     public abstract class ScriptableEventFunc<T, TResult> : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [SerializeField] private bool debugLogEnabled;
-        [SerializeField] protected T debugValue = default;
+        [SerializeField] private bool _debugLogEnabled;
+        [SerializeField] protected T _debugValue = default;
 
         private readonly List<EventListenerFunc<T, TResult>> _eventListeners = new List<EventListenerFunc<T, TResult>>();
         private readonly List<Object> _listenerObjects = new List<Object>();
@@ -42,13 +42,13 @@ namespace Pancake.Scriptable
 
             for (int i = _eventListeners.Count - 1; i >= 0; i--)
             {
-                _eventListeners[i].OnEventRaised(this, param, debugLogEnabled);
+                _eventListeners[i].OnEventRaised(this, param, _debugLogEnabled);
             }
 
             if (_onRaised != null) result = _onRaised.Invoke(param);
 
             // As this uses reflection, I only allow it to be called in Editor. So you need remember turnoff debug when build
-            if (debugLogEnabled) Debug();
+            if (_debugLogEnabled) Debug();
 
             return result;
         }

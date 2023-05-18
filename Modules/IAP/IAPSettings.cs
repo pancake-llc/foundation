@@ -1,19 +1,21 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using Pancake.Apex;
 using UnityEngine;
 using System;
 using System.Linq;
-using UnityEditor;
 using System.IO;
 using UnityEngine.Purchasing;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 // ReSharper disable InconsistentNaming
 namespace Pancake.IAP
 {
     [HideMonoScript]
     [EditorIcon("scriptable_iap")]
-    public class IAPSettings : ScriptableObject
+    public class IAPSettings : ScriptableSettings<IAPSettings>
     {
         [Serializable]
         private class IAPData
@@ -30,6 +32,12 @@ namespace Pancake.IAP
         [SerializeField, Array]
         private List<IAPData> skusData = new List<IAPData>();
 
+        [Space] [SerializeField, Array, ReadOnly] private List<IAPDataVariable> products = new List<IAPDataVariable>();
+
+        public static List<IAPDataVariable> Products => Instance.products;
+
+
+#if UNITY_EDITOR
         /// <summary>
         /// IAP 4.5.2
         /// </summary>
@@ -77,22 +85,30 @@ namespace Pancake.IAP
 
         [SerializeMethod]
         [HorizontalGroup("button")]
-        private void GenerateImplProduct()
+        private void GenerateProduct()
         {
             var skus = skusData;
             const string p = "Assets/_Root/Storages/Generated/IAP";
             if (!Directory.Exists(p)) Directory.CreateDirectory(p);
+            products.Clear();
             for (int i = 0; i < skus.Count; i++)
             {
+                string itemName = skus[i].id.Split('.').Last();
+                AssetDatabase.DeleteAsset($"{p}/scriptable_iap_{itemName.ToLower()}.asset"); // delete previous product same name
                 var scriptable = CreateInstance<IAPDataVariable>();
+                products.Add(scriptable);
                 scriptable.id = skus[i].id;
                 scriptable.isTest = skus[i].isTest;
                 scriptable.productType = skus[i].productType;
-                string itemName = skus[i].id.Split('.').Last();
                 AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
+                
+                Selection.activeObject = scriptable; // trick to repaint scriptable
             }
+            
+            Selection.activeObject = Instance;                                                                                                                     
+            EditorApplication.delayCall += () => EditorGUIUtility.PingObject(Instance);
         }
 
         private class ObfuscationGenerator
@@ -387,7 +403,7 @@ namespace Pancake.IAP
                 googleError: ref m_GoogleError,
                 googlePlayPublicKey: googlePlayStorePublicKey);
         }
+#endif
+
     }
 }
-
-#endif

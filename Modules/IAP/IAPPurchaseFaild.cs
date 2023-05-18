@@ -1,10 +1,10 @@
 namespace Pancake.IAP
 {
     using UnityEngine;
-    
+
     [EditorIcon("scriptable_event")]
-    public class IAPPurchaseFaild : ScriptableObject
+    public abstract class IAPPurchaseFaild : ScriptableObject
     {
-        public virtual void Raise() { }
+        public abstract void Raise();
     }
 }

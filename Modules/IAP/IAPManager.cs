@@ -11,21 +11,35 @@ namespace Pancake.IAP
     [HideMonoScript]
     public class IAPManager : GameComponent, IStoreListener
     {
-        [SerializeField, Array] private List<IAPDataVariable> products;
-        [SerializeField] private ScriptableEventIAPPurchase iapPurchaseEvent;
+        [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
+        [SerializeField] private ScriptableEventIAPFuncProduct productOnwershipCheckEvent;
+#if UNITY_IOS
+        [SerializeField] private Pancake.Scriptable.ScriptableEventNoParam restoreEvent;
+#endif
 
         private IStoreController _controller;
         private IExtensionProvider _extensions;
+        private List<IAPDataVariable> _products;
 
         public bool IsInitialized { get; set; }
 
         protected override void OnEnabled()
         {
             base.OnEnabled();
-            iapPurchaseEvent.OnRaised += PurchaseProduct;
+            purchaseEvent.OnRaised += PruchaseProduct;
+            productOnwershipCheckEvent.OnRaised += IsPurchasedProduct;
+#if UNITY_IOS
+            restoreEvent.OnRaised += RestorePurchase;
+#endif
         }
 
-        private void PurchaseProduct(IAPDataVariable product)
+        private bool IsPurchasedProduct(IAPDataVariable product)
+        {
+            if (_controller == null) return false;
+            return product.productType == ProductType.NonConsumable && _controller.products.WithID(product.id).hasReceipt;
+        }
+
+        private void PruchaseProduct(IAPDataVariable product)
         {
             // call when IAPDataVariable raise event
             PurchaseProductInternal(product);
@@ -34,13 +48,18 @@ namespace Pancake.IAP
         protected override void OnDisabled()
         {
             base.OnDisabled();
-            iapPurchaseEvent.OnRaised -= PurchaseProduct;
+            purchaseEvent.OnRaised -= PruchaseProduct;
+            productOnwershipCheckEvent.OnRaised -= IsPurchasedProduct;
+#if UNITY_IOS
+            restoreEvent.OnRaised -= RestorePurchase;
+#endif
         }
 
         private void Start() { Init(); }
 
         private async void Init()
         {
+            _products = IAPSettings.Products;
             var options = new InitializationOptions().SetEnvironmentName("production");
             await UnityServices.InitializeAsync(options);
             InitImpl();
@@ -82,7 +101,8 @@ namespace Pancake.IAP
         {
             bool validPurchase = true;
 #if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
-            var validator = new UnityEngine.Purchasing.Security.CrossPlatformValidator(UnityEngine.Purchasing.Security.GooglePlayTangle.Data(), UnityEngine.Purchasing.Security.AppleTangle.Data(), Application.identifier);
+            var validator =
+ new UnityEngine.Purchasing.Security.CrossPlatformValidator(UnityEngine.Purchasing.Security.GooglePlayTangle.Data(), UnityEngine.Purchasing.Security.AppleTangle.Data(), Application.identifier);
 
             try
             {
@@ -98,6 +118,7 @@ namespace Pancake.IAP
             }
 #endif
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (validPurchase) PurchaseVerified(purchaseEvent);
 
             return PurchaseProcessingResult.Complete;
@@ -114,7 +135,7 @@ namespace Pancake.IAP
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
             string id = product.definition.id;
-            foreach (var p in products)
+            foreach (var p in _products)
             {
                 if (!p.id.Equals(id)) continue;
                 p.OnPurchaseFaild.Raise();
@@ -125,7 +146,7 @@ namespace Pancake.IAP
         private void PurchaseVerified(PurchaseEventArgs e)
         {
             string id = e.purchasedProduct.definition.id;
-            foreach (var product in products)
+            foreach (var product in _products)
             {
                 if (!product.id.Equals(id)) continue;
                 product.OnPurchaseSuccess.Raise();
@@ -142,38 +163,21 @@ namespace Pancake.IAP
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
             foreach (var product in _controller.products.all)
             {
-                if (product != null && string.IsNullOrEmpty(product.transactionID)) _controller.ConfirmPendingPurchase(product);
+                if (product != null && !string.IsNullOrEmpty(product.transactionID)) _controller.ConfirmPendingPurchase(product);
             }
 #endif
         }
 
-        public bool IsPurchased(string sku)
-        {
-            if (_controller == null) return false;
-            var type = GetIapType(sku);
-            return type == ProductType.NonConsumable && _controller.products.WithID(sku).hasReceipt;
-        }
-
         private void RequestProductData(ConfigurationBuilder builder)
         {
-            foreach (var p in products)
+            foreach (var p in _products)
             {
                 builder.AddProduct(p.id, p.isTest ? ProductType.Consumable : p.productType);
             }
         }
 
-        private ProductType GetIapType(string sku)
-        {
-            foreach (var item in products)
-            {
-                if (item.id.Equals(sku)) return item.productType;
-            }
-
-            return ProductType.Consumable;
-        }
-
 #if UNITY_IOS
-        public void RestorePurchase()
+        private void RestorePurchase()
         {
             if (!IsInitialized)
             {

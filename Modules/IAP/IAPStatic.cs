@@ -29,10 +29,17 @@ namespace Pancake.IAP
         }
 
         /// <summary>
+        /// wrapper 
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="event">event purchase</param>
+        public static void Purchase(this IAPDataVariable product, ScriptableEventIAPProduct @event) { @event.Raise(product); }
+
+        /// <summary>
         /// wrapper
         /// </summary>
         /// <param name="product"></param>
-        /// <param name="event"></param>
-        public static void Purchase(this IAPDataVariable product, ScriptableEventIAPPurchase @event) { @event.Raise(product); }
+        /// <param name="event">event check is product purchased</param>
+        public static bool IsPurchased(this IAPDataVariable product, ScriptableEventIAPFuncProduct @event) { return @event.Raise(product); }
     }
 }
