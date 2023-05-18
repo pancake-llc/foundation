@@ -289,29 +289,29 @@ namespace Pancake.MonetizationEditor
                                         GUILayout.EndHorizontal();
                                     }
 
-                                    DrawIdTest("ca-app-pub-3940256099942544~3347511713", "AppId           :");
+                                    DrawIdTest("ca-app-pub-3940256099942544~3347511713", "AppId           : ");
 #if UNITY_ANDROID
-                                    DrawIdTest("ca-app-pub-3940256099942544/6300978111", "Banner        :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/6300978111", "Banner        : ");
 #elif UNITY_IOS
-                                    DrawIdTest("ca-app-pub-3940256099942544/2934735716", "Banner        :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/2934735716", "Banner        : ");
 #endif
 
 #if UNITY_ANDROID
-                                    DrawIdTest("ca-app-pub-3940256099942544/1033173712", "Interstitial   :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/1033173712", "Interstitial   : ");
 #elif UNITY_IOS
-                                    DrawIdTest("ca-app-pub-3940256099942544/4411468910", "Interstitial   :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/4411468910", "Interstitial   : ");
 #endif
 
 #if UNITY_ANDROID
-                                    DrawIdTest("ca-app-pub-3940256099942544/5224354917", "Rewarded   :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/5224354917", "Rewarded   : ");
 #elif UNITY_IOS
-                                    DrawIdTest("ca-app-pub-3940256099942544/1712485313", "Rewarded   :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/1712485313", "Rewarded   : ");
 #endif
 
 #if UNITY_ANDROID
-                                    DrawIdTest("ca-app-pub-3940256099942544/3419835294", "AppOpen    :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/3419835294", "AppOpen    : ");
 #elif UNITY_IOS
-                                    DrawIdTest("ca-app-pub-3940256099942544/5662855259", "AppOpen    :");
+                                    DrawIdTest("ca-app-pub-3940256099942544/5662855259", "AppOpen    : ");
 #endif
                                 });
 
