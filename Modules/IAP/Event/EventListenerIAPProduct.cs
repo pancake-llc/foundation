@@ -6,7 +6,8 @@ using UnityEngine.Events;
 namespace Pancake.IAP
 {
     [EditorIcon("scriptable_event_listener")]
-    public class EventListenerIAPData : EventListenerGeneric<IAPDataVariable>
+    [AddComponentMenu("Scriptable/EventListeners/EventListenerIAPProduct")]
+    public class EventListenerIAPProduct : EventListenerGeneric<IAPDataVariable>
     {
         [SerializeField] private EventResponse[] eventResponses;
         protected override EventResponse<IAPDataVariable>[] EventResponses => eventResponses;
@@ -15,14 +16,14 @@ namespace Pancake.IAP
         public class EventResponse : EventResponse<IAPDataVariable>
         {
             [SerializeField] private ScriptableEventIAPProduct scriptableEvent = null;
-            [SerializeField] private IAPDataUnityEvent response = null;
+            [SerializeField] private IAPProductUnityEvent response = null;
 
             public override ScriptableEvent<IAPDataVariable> ScriptableEvent => scriptableEvent;
             public override UnityEvent<IAPDataVariable> Response => response;
         }
 
         [System.Serializable]
-        public class IAPDataUnityEvent : UnityEvent<IAPDataVariable>
+        public class IAPProductUnityEvent : UnityEvent<IAPDataVariable>
         {
         }
     }

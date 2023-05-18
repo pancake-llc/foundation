@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
+using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Pancake.Scriptable
+namespace Pancake.IAP
 {
-    [AddComponentMenu("Scriptable/EventListeners/EventListenerNoParam")]
     [EditorIcon("scriptable_event_listener")]
-    public class EventListenerNoParam : EventListenerBase
+    [AddComponentMenu("Scriptable/EventListeners/EventListenerIAPNoParam")]
+    public class EventListenerIAPNoParam : EventListenerBase
     {
         [SerializeField] private EventResponse[] _eventResponses = null;
-
-        private Dictionary<ScriptableEventNoParam, UnityEvent> _dictionary = new Dictionary<ScriptableEventNoParam, UnityEvent>();
+        private Dictionary<ScriptableEventIAPNoParam, UnityEvent> _dictionary = new Dictionary<ScriptableEventIAPNoParam, UnityEvent>();
 
         protected override void ToggleRegistration(bool toggle)
         {
@@ -32,39 +32,7 @@ namespace Pancake.Scriptable
             }
         }
 
-        public void OnEventRaised(ScriptableEventNoParam eventRaised, bool debug = false)
-        {
-            _dictionary[eventRaised].Invoke();
-
-            if (debug) Debug(eventRaised);
-        }
-
-        [System.Serializable]
-        public struct EventResponse
-        {
-            public ScriptableEventNoParam ScriptableEvent;
-            public UnityEvent Response;
-        }
-
-        #region Debugging
-
-        private void Debug(ScriptableEventNoParam eventRaised)
-        {
-            var listener = _dictionary[eventRaised];
-            var registeredListenerCount = listener.GetPersistentEventCount();
-
-            for (var i = 0; i < registeredListenerCount; i++)
-            {
-                var debugText = "<color=#f75369>[Event] ";
-                debugText += eventRaised.name;
-                debugText += " => </color>";
-                debugText += listener.GetPersistentTarget(i);
-                debugText += ".";
-                debugText += listener.GetPersistentMethodName(i);
-                debugText += "()";
-                UnityEngine.Debug.Log(debugText, gameObject);
-            }
-        }
+        public void OnEventRaised(ScriptableEventIAPNoParam eventRaised) { _dictionary[eventRaised].Invoke(); }
 
         public override bool ContainsCallToMethod(string methodName)
         {
@@ -91,6 +59,12 @@ namespace Pancake.Scriptable
             return containsMethod;
         }
 
-        #endregion
+
+        [System.Serializable]
+        public struct EventResponse
+        {
+            public ScriptableEventIAPNoParam ScriptableEvent;
+            public UnityEvent Response;
+        }
     }
 }

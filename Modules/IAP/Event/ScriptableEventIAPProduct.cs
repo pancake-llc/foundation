@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace Pancake.IAP
 {
+    [Searchable]
     [EditorIcon("scriptable_event")]
-    [CreateAssetMenu(fileName = "scriptable_event_iap_product.asset", menuName = "Pancake/Scriptable/ScriptableEvents/IAP Product")]
+    [CreateAssetMenu(fileName = "iap_purchase_product_chanel.asset", menuName = "Pancake/IAP/Product Event")]
     public class ScriptableEventIAPProduct : ScriptableEvent<IAPDataVariable>
     {
     }

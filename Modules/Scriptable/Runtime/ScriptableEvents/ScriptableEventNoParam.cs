@@ -58,14 +58,12 @@ namespace Pancake.Scriptable
 
         public void RegisterListener(EventListenerNoParam listener)
         {
-            if (!_eventListeners.Contains(listener))
-                _eventListeners.Add(listener);
+            if (!_eventListeners.Contains(listener)) _eventListeners.Add(listener);
         }
 
         public void UnregisterListener(EventListenerNoParam listener)
         {
-            if (_eventListeners.Contains(listener))
-                _eventListeners.Remove(listener);
+            if (_eventListeners.Contains(listener)) _eventListeners.Remove(listener);
         }
 
         public List<Object> GetAllObjects()

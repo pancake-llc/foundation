@@ -1,4 +1,5 @@
 using System;
+using Pancake.Scriptable;
 
 namespace Pancake.IAP
 {
@@ -41,5 +42,11 @@ namespace Pancake.IAP
         /// <param name="product"></param>
         /// <param name="event">event check is product purchased</param>
         public static bool IsPurchased(this IAPDataVariable product, ScriptableEventIAPFuncProduct @event) { return @event.Raise(product); }
+
+        /// <summary>
+        /// restore purchase wrapper
+        /// </summary>
+        /// <param name="event"></param>
+        public static void RestorePurchase(this ScriptableEventIAPNoParam @event) { @event.Raise(); }
     }
 }

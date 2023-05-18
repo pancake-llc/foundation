@@ -14,7 +14,7 @@ namespace Pancake.IAP
         [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
         [SerializeField] private ScriptableEventIAPFuncProduct productOnwershipCheckEvent;
 #if UNITY_IOS
-        [SerializeField] private Pancake.Scriptable.ScriptableEventNoParam restoreEvent;
+        [SerializeField] private ScriptableEventIAPNoParam restoreEvent;
 #endif
 
         private IStoreController _controller;

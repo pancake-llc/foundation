@@ -5,7 +5,7 @@ namespace Pancake.IAP
     using UnityEngine;
 
     [EditorIcon("scriptable_event")]
-    [CreateAssetMenu(fileName = "scriptable_event_iap_func_product.asset", menuName = "Pancake/Scriptable/ScriptableEvents/IAP Func Product")]
+    [CreateAssetMenu(fileName = "iap_func_product_chanel.asset", menuName = "Pancake/IAP/Func Product Event")]
     public class ScriptableEventIAPFuncProduct : ScriptableEventFunc<IAPDataVariable, bool>
     {
     }
