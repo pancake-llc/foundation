@@ -1,11 +1,10 @@
 #if PANCAKE_ADMOB
 using System.IO;
 using GoogleMobileAds.Editor;
-using Pancake;
 using UnityEditor;
 using UnityEngine;
 
-namespace PancakeEditor
+namespace Pancake.MonetizationEditor
 {
     public static class AdmobHelper 
     {

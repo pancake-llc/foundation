@@ -13,8 +13,10 @@ using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Pancake.Monetization;
+using Network = Pancake.Monetization.Network;
 
-namespace Pancake.Monetization
+namespace Pancake.MonetizationEditor
 {
     [CustomEditor(typeof(AdSettings))]
     public class AdSettingsEditor : UnityEditor.Editor

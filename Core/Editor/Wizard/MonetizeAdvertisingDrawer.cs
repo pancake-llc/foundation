@@ -40,7 +40,7 @@ namespace PancakeEditor
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Advertising", "Are you sure you want to uninstall advertising package ?", "Yes", "No");
                     if (confirmDelete)
                     {
-                        Editor.ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
+                        ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
                         AssetDatabase.Refresh();
                         RegistryManager.Resolve();
                     }
