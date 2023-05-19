@@ -64,51 +64,31 @@ namespace Pancake.Monetization
 
         private void Awake()
         {
-            if (Instance != null)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                Instance = this;
-                flagStartupOpenAd = true;
-            }
+            flagStartupOpenAd = true;
         }
 
         public static void Init()
         {
 #if PANCAKE_ADVERTISING
             isInitialized = true;
-            AutoLoadingAdMode = AdSettings.AdCommonSettings.AutoLoadingAd;
 #if PANCAKE_ADMOB
-            if (AdSettings.AdCommonSettings.CurrentNetwork == EAdNetwork.Admob) RegisterAppStateChange();
+            if (AdSettings.CurrentNetwork == EAdNetwork.Admob) RegisterAppStateChange();
 #endif
 #endif
         }
 
         /// <summary>
-        /// none
         /// admob
         /// applovin
         /// </summary>
         /// <param name="network"></param>
         public static void SetCurrentNetwork(string network)
         {
-            switch (network.Trim().ToLower())
+            AdSettings.CurrentNetwork = network.Trim().ToLower() switch
             {
-                case "none":
-                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.None;
-                    break;
-                case "admob":
-                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Admob;
-                    break;
-                case "applovin":
-                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Applovin;
-                    break;
-                default:
-                    AdSettings.AdCommonSettings.CurrentNetwork = EAdNetwork.Admob;
-                    break;
-            }
+                "admob" => EAdNetwork.Admob,
+                _ => EAdNetwork.Applovin
+            };
         }
 
         /// <summary>
@@ -127,7 +107,7 @@ namespace Pancake.Monetization
                 AutoLoadRewardedAd();
                 AutoLoadRewardedInterstitialAd();
                 AutoLoadAppOpenAd();
-                yield return new WaitForSeconds(AdSettings.AdCommonSettings.AdCheckingInterval);
+                yield return new WaitForSeconds(AdSettings.AdCheckingInterval);
             }
             // ReSharper disable once IteratorNeverReturns
         }
@@ -137,7 +117,7 @@ namespace Pancake.Monetization
             if (IsAdRemoved) return;
             if (IsInterstitialAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadInterstitialAdTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadInterstitialAdTimestamp < AdSettings.AdLoadingInterval) return;
 
             LoadInsterstitialAd();
             lastTimeLoadInterstitialAdTimestamp = Time.realtimeSinceStartup;
@@ -147,7 +127,7 @@ namespace Pancake.Monetization
         {
             if (IsRewardedAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadRewardedTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadRewardedTimestamp < AdSettings.AdLoadingInterval) return;
 
             LoadRewardedAd();
             lastTimeLoadRewardedTimestamp = Time.realtimeSinceStartup;
@@ -157,7 +137,7 @@ namespace Pancake.Monetization
         {
             if (IsRewardedInterstitialAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadRewardedInterstitialTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadRewardedInterstitialTimestamp < AdSettings.AdLoadingInterval) return;
 
             LoadRewardedInterstitialAd();
             lastTimeLoadRewardedInterstitialTimestamp = Time.realtimeSinceStartup;
@@ -168,98 +148,12 @@ namespace Pancake.Monetization
             if (IsAdRemoved || IsAppOpenRemoved) return;
             if (IsAppOpenAdReady()) return;
 
-            if (Time.realtimeSinceStartup - lastTimeLoadAppOpenTimestamp < AdSettings.AdCommonSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - lastTimeLoadAppOpenTimestamp < AdSettings.AdLoadingInterval) return;
 
             LoadAppOpenAd();
             lastTimeLoadAppOpenTimestamp = Time.realtimeSinceStartup;
         }
-
-        #region banner event
-
-        private static void OnBannerAdDisplayed(IAdClient client) { BannerlAdDisplayedEvent?.Invoke(); }
-        private static void OnBannerAdCompleted(IAdClient client) { BannerlAdClosedEvent?.Invoke(); }
-
-        private static void OnBannerAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
-        {
-            OnBannerAdPaidEvent?.Invoke(value,
-                network,
-                unitId,
-                placement,
-                adNetwork);
-        }
-
-        #endregion
-
-        #region interstitial event
-
-        private static void OnInterstitialAdCompleted(IAdClient client) { InterstitialAdCompletedEvent?.Invoke(); }
-        private static void OnInterstitialAdDisplayed(IAdClient client) { InterstitialAdDisplayedEvent?.Invoke(); }
-
-        private static void OnInterstitialAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
-        {
-            OnInterstitialAdPaidEvent?.Invoke(value,
-                network,
-                unitId,
-                placement,
-                adNetwork);
-        }
-
-        #endregion
-
-        #region rewarded event
-
-        private static void OnRewardedAdCompleted(IAdClient client) { RewardedAdCompletedEvent?.Invoke(); }
-        private static void OnRewardedAdSkipped(IAdClient client) { RewardedAdSkippedEvent?.Invoke(); }
-        private static void OnRewardedAdClosed(IAdClient client) { RewardedAdClosedEvent?.Invoke(); }
-        private static void OnRewardedAdDisplayed(IAdClient client) { RewardedAdDisplayedEvent?.Invoke(); }
-
-        private static void OnRewardedAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
-        {
-            OnRewardedAdPaidEvent?.Invoke(value,
-                network,
-                unitId,
-                placement,
-                adNetwork);
-        }
-
-        #endregion
-
-        #region rewarded interstitial
-
-        private static void OnRewardedInterAdCompleted(IAdClient client) { RewardedInterAdCompletedEvent?.Invoke(); }
-
-        private static void OnRewardedInterAdSkipped(IAdClient client) { RewardedInterAdSkippedEvent?.Invoke(); }
-        private static void OnRewardedInterAdClosed(IAdClient client) { RewardedInterAdClosedEvent?.Invoke(); }
-        private static void OnRewardedInterAdDisplayed(IAdClient client) { RewardedInterAdDisplayedEvent?.Invoke(); }
-
-        private static void OnRewardedInterAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
-        {
-            OnRewardedInterAdPaidEvent?.Invoke(value,
-                network,
-                unitId,
-                placement,
-                adNetwork);
-        }
-
-        #endregion
-
-        #region open ad event
-
-        private static void OnAppOpenAdCompleted(IAdClient client) { AppOpenAdCompletedEvent?.Invoke(); }
-        private static void OnAppOpenAdDisplayed(IAdClient client) { AppOpenAdDisplayedEvent?.Invoke(); }
-
-        private static void OnAppOpenAdPaid(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
-        {
-            OnAppOpenAdPaidEvent?.Invoke(value,
-                network,
-                unitId,
-                placement,
-                adNetwork);
-        }
-
-        #endregion
-
-
+        
         private static AdClient GetClient(EAdNetwork network)
         {
             switch (network)

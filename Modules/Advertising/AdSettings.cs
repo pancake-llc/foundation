@@ -51,9 +51,9 @@ namespace Pancake.Monetization
         [SerializeField, Label("Max Ad Review")] private bool applovinEnableMaxAdReview;
 
 
-        public float AdCheckingInterval => adCheckingInterval;
-        public float AdLoadingInterval => adLoadingInterval;
-        public EAdNetwork CurrentNetwork { get => currentNetwork; set => currentNetwork = value; }
+        public static float AdCheckingInterval => Instance.adCheckingInterval;
+        public static float AdLoadingInterval => Instance.adLoadingInterval;
+        public static EAdNetwork CurrentNetwork { get => Instance.currentNetwork; set => Instance.currentNetwork = value; }
         public static List<string> AdmobDevicesTest => Instance.admobDevicesTest;
         public static bool ApplovinEnableRequestAdAfterHidden => Instance.applovinEnableRequestAdAfterHidden;
     }

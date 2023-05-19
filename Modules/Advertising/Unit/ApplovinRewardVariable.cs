@@ -14,6 +14,24 @@ namespace Pancake.Monetization
         private bool _registerCallback;
         public bool IsEarnRewarded { get; private set; }
 
+        public override bool IsReady()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            return MaxSdk.IsRewardedAdReady(Id) && !string.IsNullOrEmpty(Id);
+#else
+            return false;
+#endif
+        }
+
+        protected override void ShowImpl()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            MaxSdk.ShowRewardedAd(Id);
+#endif
+        }
+
+        public override void Destroy() { }
+
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
@@ -33,6 +51,7 @@ namespace Pancake.Monetization
 #endif
         }
 
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
         private void OnAdReceivedReward(string unit, MaxSdkBase.Reward reward, MaxSdkBase.AdInfo info) { IsEarnRewarded = true; }
 
         private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { paidedCallback?.Invoke(info.Revenue, unit, info.NetworkName); }
@@ -63,11 +82,6 @@ namespace Pancake.Monetization
             AdSettings.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
-
-        public override bool IsReady() { return MaxSdk.IsRewardedAdReady(Id) && !string.IsNullOrEmpty(Id); }
-
-        protected override void ShowImpl() { MaxSdk.ShowRewardedAd(Id); }
-
-        public override void Destroy() { }
+#endif
     }
 }

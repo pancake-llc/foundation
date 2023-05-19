@@ -18,9 +18,8 @@ namespace Pancake.Monetization
     
     public enum EAdNetwork
     {
-        None = 0,
+        Applovin = 0,
         Admob = 1,
-        Applovin = 2
     }
     
     public enum EAdapterStatus

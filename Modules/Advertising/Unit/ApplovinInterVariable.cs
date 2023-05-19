@@ -29,9 +29,21 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override bool IsReady() { return !string.IsNullOrEmpty(Id) && MaxSdk.IsInterstitialReady(Id); }
+        public override bool IsReady()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            return !string.IsNullOrEmpty(Id) && MaxSdk.IsInterstitialReady(Id);
+#else
+            return false;
+#endif
+        }
 
-        protected override void ShowImpl() { MaxSdk.ShowInterstitial(Id); }
+        protected override void ShowImpl()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            MaxSdk.ShowInterstitial(Id);
+#endif
+        }
 
         public override void Destroy() { }
 
