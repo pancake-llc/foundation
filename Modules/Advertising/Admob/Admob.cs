@@ -1,4 +1,4 @@
-#if PANCAKE_ADMOB
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
 
 namespace Pancake.Monetization
@@ -7,19 +7,8 @@ namespace Pancake.Monetization
     {
         internal static void SetupDeviceTest()
         {
-            var configuration = new RequestConfiguration.Builder().SetTestDeviceIds(AdSettings.AdmobSettings.DevicesTest).build();
+            var configuration = new RequestConfiguration {TestDeviceIds = AdSettings.AdmobDevicesTest};
             MobileAds.SetRequestConfiguration(configuration);
-        }
-
-        internal static AdRequest CreateRequest()
-        {
-            var builder = new AdRequest.Builder();
-            // targetting setting
-            // extra options
-            // consent
-            //if (AdSettings.AdCommonSettings.EnableGDPR) builder.AddExtra("npa", GDPRHelper.GetValueGDPR().ToString());
-
-            return builder.Build();
         }
     }
 }

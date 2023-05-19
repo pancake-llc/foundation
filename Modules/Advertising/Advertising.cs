@@ -1,58 +1,21 @@
 ﻿using System;
 using System.Collections;
+using Pancake.Apex;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
     [AddComponentMenu("")]
-    //[HideMonoScript]
-    public class Advertising : MonoBehaviour
+    [HideMonoScript]
+    public class Advertising : GameComponent
     {
-        private static Advertising Instance { get; set; }
+        private void Start()
+        {
+            if (autoLoadAdCoroutine != null) StopCoroutine(autoLoadAdCoroutine);
+            autoLoadAdCoroutine = IeAutoLoadAll();
+            StartCoroutine(autoLoadAdCoroutine);
+        }
 
-        #region banner event
-
-        public static event Action BannerlAdDisplayedEvent;
-        public static event Action BannerlAdClosedEvent;
-        public static event Action<double, string, string, string, EAdNetwork> OnBannerAdPaidEvent;
-
-        #endregion
-
-        #region interstitial event
-
-        public static event Action InterstitialAdCompletedEvent;
-        public static event Action InterstitialAdDisplayedEvent;
-        public static event Action<double, string, string, string, EAdNetwork> OnInterstitialAdPaidEvent;
-
-        #endregion
-
-        #region rewarded event
-
-        public static event Action RewardedAdCompletedEvent;
-        public static event Action RewardedAdSkippedEvent;
-        public static event Action RewardedAdDisplayedEvent;
-        public static event Action RewardedAdClosedEvent;
-        public static event Action<double, string, string, string, EAdNetwork> OnRewardedAdPaidEvent;
-
-        #endregion
-
-        #region rewarded interstitial
-
-        public static event Action RewardedInterAdCompletedEvent;
-        public static event Action RewardedInterAdSkippedEvent;
-        public static event Action RewardedInterAdDisplayedEvent;
-        public static event Action RewardedInterAdClosedEvent;
-        public static event Action<double, string, string, string, EAdNetwork> OnRewardedInterAdPaidEvent;
-
-        #endregion
-
-        #region open ad event
-
-        public static event Action AppOpenAdCompletedEvent;
-        public static event Action AppOpenAdDisplayedEvent;
-        public static event Action<double, string, string, string, EAdNetwork> OnAppOpenAdPaidEvent;
-
-        #endregion
 
         public static event Action RemoveAdsEvent;
 
@@ -63,8 +26,6 @@ namespace Pancake.Monetization
         private static ApplovinAdClient applovinAdClient;
 #endif
         private static bool isInitialized;
-        private static EAutoLoadingAd autoLoadingAdMode;
-        private static bool flagAutoLoadingModeChange;
         private static IEnumerator autoLoadAdCoroutine;
         private static float lastTimeLoadInterstitialAdTimestamp = DEFAULT_TIMESTAMP;
         private static float lastTimeLoadRewardedTimestamp = DEFAULT_TIMESTAMP;
@@ -74,36 +35,6 @@ namespace Pancake.Monetization
         private const string REMOVE_ADS_KEY = "remove_ads";
         private const string APP_OPEN_ADS_KEY = "flag_app_open_ads";
         private const float DEFAULT_TIMESTAMP = -1000;
-
-
-        public static EAutoLoadingAd AutoLoadingAdMode
-        {
-            get => autoLoadingAdMode;
-            set
-            {
-                if (value == autoLoadingAdMode) return;
-
-                flagAutoLoadingModeChange = true;
-                AdSettings.AdCommonSettings.AutoLoadingAd = value;
-                autoLoadingAdMode = value;
-                flagAutoLoadingModeChange = false;
-
-                if (autoLoadAdCoroutine != null) Instance.StopCoroutine(autoLoadAdCoroutine);
-                switch (value)
-                {
-                    case EAutoLoadingAd.None:
-                        autoLoadAdCoroutine = null;
-                        break;
-                    case EAutoLoadingAd.All:
-                        autoLoadAdCoroutine = IeAutoLoadAll();
-                        Instance.StartCoroutine(autoLoadAdCoroutine);
-                        break;
-                    default:
-                        autoLoadAdCoroutine = null;
-                        break;
-                }
-            }
-        }
 
         public static bool IsInitialized => isInitialized;
 
@@ -141,16 +72,6 @@ namespace Pancake.Monetization
             {
                 Instance = this;
                 flagStartupOpenAd = true;
-            }
-        }
-
-        private void Update()
-        {
-            if (!IsInitialized) return;
-
-            if (!flagAutoLoadingModeChange && autoLoadingAdMode != AdSettings.AdCommonSettings.AutoLoadingAd)
-            {
-                AutoLoadingAdMode = AdSettings.AdCommonSettings.AutoLoadingAd;
             }
         }
 

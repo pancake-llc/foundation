@@ -23,12 +23,6 @@ namespace Pancake.Monetization
         Applovin = 2
     }
     
-    public enum EAutoLoadingAd
-    {
-        None = 0,
-        All = 1,
-    }
-    
     public enum EAdapterStatus
     {
         NotInstall = 0,
