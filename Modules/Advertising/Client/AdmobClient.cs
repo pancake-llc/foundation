@@ -1,4 +1,6 @@
-﻿using GoogleMobileAds.Api;
+﻿#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+using GoogleMobileAds.Api;
+#endif
 using Pancake.Tracking;
 using UnityEngine;
 
@@ -10,6 +12,7 @@ namespace Pancake.Monetization
 
         public override void Init()
         {
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
             MobileAds.Initialize(_ =>
             {
                 App.RunOnMainThread(() =>
@@ -19,6 +22,7 @@ namespace Pancake.Monetization
                     MobileAds.SetRequestConfiguration(configuration);
                 });
             });
+#endif
 
             adSettings.AdmobBanner.paidedCallback = AppTracking.TrackRevenue;
             adSettings.AdmobInter.paidedCallback = AppTracking.TrackRevenue;
@@ -76,11 +80,18 @@ namespace Pancake.Monetization
 
         public override bool IsAppOpenReady() { return adSettings.AdmobAppOpen.IsReady(); }
 
-        private void RegisterAppStateChange() { GoogleMobileAds.Api.AppStateEventNotifier.AppStateChanged += OnAppStateChanged; }
+        private void RegisterAppStateChange()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            GoogleMobileAds.Api.AppStateEventNotifier.AppStateChanged += OnAppStateChanged;
+#endif
+        }
 
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private void OnAppStateChanged(GoogleMobileAds.Common.AppState state)
         {
             if (state == GoogleMobileAds.Common.AppState.Foreground) ShowAppOpen();
         }
+#endif
     }
 }

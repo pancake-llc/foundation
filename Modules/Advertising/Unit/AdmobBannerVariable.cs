@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using System.Collections;
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
 #endif
 
