@@ -13,21 +13,21 @@ namespace Pancake.Monetization
         private float adCheckingInterval = 8f;
 
         [Range(5, 100), SerializeField] private float adLoadingInterval = 15f;
-        [SerializeField] private EAdNetwork currentNetwork = EAdNetwork.Applovin;
+        [HorizontalLine] [SerializeField] private EAdNetwork currentNetwork = EAdNetwork.Applovin;
 
-        [HorizontalLine] [Header("admob")] [SerializeField, Label("Enable Test Mode")] private bool admobEnableTestMode;
-        [SerializeField, Label("Devices Test")] private List<string> admobDevicesTest;
+        [Header("[admob]")] [SerializeField, Label("Test Mode")]
+        private bool admobEnableTestMode;
+
+        [SerializeField, Array, ShowIf(nameof(admobEnableTestMode)), Label("Devices Test")]
+        private List<string> admobDevicesTest;
 
         [SerializeField, Label("Banner")] private AdmobBannerVariable admobBanner;
         [SerializeField, Label("Interstitial")] private AdmobInterVariable admobInter;
         [SerializeField, Label("Rewarded")] private AdmobRewardVariable admobReward;
         [SerializeField, Label("Inter Rewarded")] private AdmobRewardInterVariable admobRewardInter;
-        [SerializeField, Label("App Open")] private AdmobAppOpenVariable admobAppOpen;
+        [HorizontalLine] [SerializeField, Label("App Open")] private AdmobAppOpenVariable admobAppOpen;
 
-
-        [HorizontalLine] [Header("applovin")] [SerializeField, TextArea]
-        private string sdkKey;
-
+        [Header("[applovin]")] [SerializeField, TextArea] private string sdkKey;
         [SerializeField, Label("Banner")] private AdmobBannerVariable applovinBanner;
         [SerializeField, Label("Interstitial")] private AdmobInterVariable applovinInter;
         [SerializeField, Label("Rewarded")] private AdmobRewardVariable applovinReward;
