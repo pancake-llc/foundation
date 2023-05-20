@@ -14,15 +14,15 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_ADVERTISING
-            var adSetting = Resources.Load<AdSettings>(nameof(AdSettings));
-            if (adSetting == null)
+            var adSetting = ProjectDatabase.FindAll<AdSettings>();
+            if (adSetting.IsNullOrEmpty())
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
                 if (GUILayout.Button("Create Adverisement Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdSettings>();
-                    const string path = "Assets/_Root/Resources";
+                    const string path = "Assets/_Root/Storages/Settings";
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(AdSettings)}.asset");
                     AssetDatabase.SaveAssets();
@@ -50,8 +50,35 @@ namespace PancakeEditor
             }
             else
             {
-                var editor = UnityEditor.Editor.CreateEditor(adSetting);
-                editor.OnInspectorGUI();
+                if (adSetting.Count > 1)
+                {
+                    EditorGUILayout.HelpBox("There is more than one AdSettings file in the project.\nPlease delete duplicate files keep only one file",
+                        MessageType.Error);
+
+                    EditorGUILayout.BeginVertical();
+                    foreach (var t in adSetting.ToArray())
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        GUI.enabled = false;
+                        EditorGUILayout.ObjectField(t, typeof(AdSettings), false);
+                        GUI.enabled = true;
+                        if (GUILayout.Button("delete", GUILayout.Width(50))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(t));
+                        EditorGUILayout.EndHorizontal();
+                    }
+
+                    EditorGUILayout.EndVertical();
+                }
+                else
+                {
+                    GUI.enabled = false;
+                    EditorGUILayout.ObjectField(adSetting[0], typeof(AdSettings), false);
+                    GUI.enabled = true;
+                    GUILayout.Space(10);
+                    if (GUILayout.Button("Edit", GUILayout.MaxHeight(40f))) adSetting[0].SelectAndPing();
+                    GUI.backgroundColor = Uniform.Red;
+                    if (GUILayout.Button("Delete Setting", GUILayout.MaxHeight(30f))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(adSetting[0]));
+                    GUI.backgroundColor = Color.white;
+                }
             }
 
 #else

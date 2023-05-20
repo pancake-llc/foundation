@@ -14,15 +14,15 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_IAP
-            var iapSetting = Resources.Load<IAPSettings>(nameof(IAPSettings));
-            if (iapSetting == null)
+            var iapSetting = ProjectDatabase.FindAll<IAPSettings>();
+            if (iapSetting.IsNullOrEmpty())
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
                 if (GUILayout.Button("Create IAP Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<IAPSettings>();
-                    const string path = "Assets/_Root/Resources";
+                    const string path = "Assets/_Root/Storages/Settings";
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(IAPSettings)}.asset");
                     AssetDatabase.SaveAssets();
@@ -35,7 +35,35 @@ namespace PancakeEditor
             }
             else
             {
-                if (GUILayout.Button("Edit", GUILayout.MaxHeight(40f))) iapSetting.SelectAndPing();
+                if (iapSetting.Count > 1)
+                {
+                    EditorGUILayout.HelpBox("There is more than one IAPSettings file in the project.\nPlease delete duplicate files keep only one file",
+                        MessageType.Error);
+
+                    EditorGUILayout.BeginVertical();
+                    foreach (var t in iapSetting.ToArray())
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        GUI.enabled = false;
+                        EditorGUILayout.ObjectField(t, typeof(IAPSettings), false);
+                        GUI.enabled = true;
+                        if (GUILayout.Button("delete", GUILayout.Width(50))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(t));
+                        EditorGUILayout.EndHorizontal();
+                    }
+
+                    EditorGUILayout.EndVertical();
+                }
+                else
+                {
+                    GUI.enabled = false;
+                    EditorGUILayout.ObjectField(iapSetting[0], typeof(IAPSettings), false);
+                    GUI.enabled = true;
+                    GUILayout.Space(10);
+                    if (GUILayout.Button("Edit", GUILayout.MaxHeight(40f))) iapSetting[0].SelectAndPing();
+                    GUI.backgroundColor = Uniform.Red;
+                    if (GUILayout.Button("Delete Setting", GUILayout.MaxHeight(30f))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(iapSetting[0]));
+                    GUI.backgroundColor = Color.white;
+                }
             }
 
             GUILayout.FlexibleSpace();
