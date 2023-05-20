@@ -18,7 +18,7 @@ namespace Pancake.ApexEditor
         /// Called when element decorator becomes initialized.
         /// </summary>
         /// <param name="element">Serialized element reference with current decorator attribute.</param>
-        /// <param name="element">Reference of serialized property decorator attribute.</param>
+        /// <param name="decoratorAttribute">Reference of serialized property decorator attribute.</param>
         /// <param name="label">Display label of serialized property.</param>
         public override void Initialize(SerializedField element, DecoratorAttribute decoratorAttribute, GUIContent label)
         {
