@@ -15,7 +15,7 @@ namespace Pancake.IAP
 {
     [HideMonoScript]
     [EditorIcon("scriptable_iap")]
-    public class IAPSettings : ScriptableSettings<IAPSettings>
+    public class IAPSettings : ScriptableObject
     {
         [Serializable]
         private class IAPData
@@ -34,7 +34,7 @@ namespace Pancake.IAP
 
         [Space] [SerializeField, Array, ReadOnly] private List<IAPDataVariable> products = new List<IAPDataVariable>();
 
-        public static List<IAPDataVariable> Products => Instance.products;
+        public List<IAPDataVariable> Products => products;
 
 
 #if UNITY_EDITOR
@@ -103,12 +103,12 @@ namespace Pancake.IAP
                 AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-                
+
                 Selection.activeObject = scriptable; // trick to repaint scriptable
             }
-            
-            Selection.activeObject = Instance;                                                                                                                     
-            EditorApplication.delayCall += () => EditorGUIUtility.PingObject(Instance);
+
+            Selection.activeObject = this;
+            EditorApplication.delayCall += () => EditorGUIUtility.PingObject(this);
         }
 
         private class ObfuscationGenerator
@@ -404,6 +404,5 @@ namespace Pancake.IAP
                 googlePlayPublicKey: googlePlayStorePublicKey);
         }
 #endif
-
     }
 }

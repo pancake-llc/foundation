@@ -1,5 +1,7 @@
 ﻿using System;
+using UnityEngine;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+using System.Collections;
 using GoogleMobileAds.Api;
 #endif
 
@@ -16,9 +18,14 @@ namespace Pancake.Monetization
         private BannerView _bannerView;
 #endif
 
+        private readonly WaitForSeconds _waitBannerReload = new WaitForSeconds(5f);
+        private IEnumerator _reload;
+
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+
             Destroy();
             _bannerView = new BannerView(Id, ConvertSize(), ConvertPosition());
             _bannerView.OnAdFullScreenContentClosed += OnAdClosed;
@@ -80,15 +87,34 @@ namespace Pancake.Monetization
             }
         }
 
-        private void OnAdPaided(AdValue value) { paidedCallback?.Invoke(value.Value / 1000000f, Id, EAdNetwork.Admob.ToString()); }
+        private void OnAdPaided(AdValue value)
+        {
+            paidedCallback?.Invoke(value.Value / 1000000f,
+                "Admob",
+                Id,
+                "BannerAd",
+                EAdNetwork.Admob.ToString());
+        }
 
         private void OnAdOpening() { C.CallActionClean(ref displayedCallback); }
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
-        private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref faildedToLoadCallback); }
+        private void OnAdFailedToLoad(LoadAdError error)
+        {
+            C.CallActionClean(ref faildedToLoadCallback);
+            if (_reload != null) App.EndCoroutine(_reload);
+            _reload = DelayBannerReload();
+            App.RunCoroutine(_reload);
+        }
 
         private void OnAdClosed() { C.CallActionClean(ref closedCallback); }
+
+        private IEnumerator DelayBannerReload()
+        {
+            yield return _waitBannerReload;
+            Load();
+        }
 #endif
     }
 }

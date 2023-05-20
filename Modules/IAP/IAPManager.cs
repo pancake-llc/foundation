@@ -11,6 +11,7 @@ namespace Pancake.IAP
     [HideMonoScript]
     public class IAPManager : GameComponent, IStoreListener
     {
+        [SerializeField] private IAPSettings iapSettings;
         [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
         [SerializeField] private ScriptableEventIAPFuncProduct productOnwershipCheckEvent;
 #if UNITY_IOS
@@ -19,7 +20,6 @@ namespace Pancake.IAP
 
         private IStoreController _controller;
         private IExtensionProvider _extensions;
-        private List<IAPDataVariable> _products;
 
         public bool IsInitialized { get; set; }
 
@@ -59,7 +59,6 @@ namespace Pancake.IAP
 
         private async void Init()
         {
-            _products = IAPSettings.Products;
             var options = new InitializationOptions().SetEnvironmentName("production");
             await UnityServices.InitializeAsync(options);
             InitImpl();
@@ -135,7 +134,7 @@ namespace Pancake.IAP
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
             string id = product.definition.id;
-            foreach (var p in _products)
+            foreach (var p in iapSettings.Products)
             {
                 if (!p.id.Equals(id)) continue;
                 p.OnPurchaseFaild.Raise();
@@ -146,7 +145,7 @@ namespace Pancake.IAP
         private void PurchaseVerified(PurchaseEventArgs e)
         {
             string id = e.purchasedProduct.definition.id;
-            foreach (var product in _products)
+            foreach (var product in iapSettings.Products)
             {
                 if (!product.id.Equals(id)) continue;
                 product.OnPurchaseSuccess.Raise();
@@ -170,7 +169,7 @@ namespace Pancake.IAP
 
         private void RequestProductData(ConfigurationBuilder builder)
         {
-            foreach (var p in _products)
+            foreach (var p in iapSettings.Products)
             {
                 builder.AddProduct(p.id, p.isTest ? ProductType.Consumable : p.productType);
             }

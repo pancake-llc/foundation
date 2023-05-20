@@ -17,8 +17,11 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+
             Destroy();
             InterstitialAd.Load(Id, new AdRequest(), AdLoadCallback);
+
 #endif
         }
 
@@ -70,7 +73,7 @@ namespace Pancake.Monetization
 
         private void OnAdOpening()
         {
-            AdSettings.isShowingAd = true;
+            AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 
@@ -78,12 +81,19 @@ namespace Pancake.Monetization
 
         private void OnAdClosed()
         {
-            AdSettings.isShowingAd = false;
+            AdStatic.isShowingAd = false;
             C.CallActionClean(ref completedCallback);
             Destroy();
         }
 
-        private void OnAdPaided(AdValue value) { paidedCallback?.Invoke(value.Value / 1000000f, Id, EAdNetwork.Admob.ToString()); }
+        private void OnAdPaided(AdValue value)
+        {
+            paidedCallback?.Invoke(value.Value / 1000000f,
+                "Admob",
+                Id,
+                "InterstitialAd",
+                EAdNetwork.Admob.ToString());
+        }
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 

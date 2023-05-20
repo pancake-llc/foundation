@@ -1,21 +1,19 @@
-using Pancake.Monetization;
-
 namespace Pancake.Tracking
 {
     public static class AppTracking
     {
-        public static void TrackRevenue(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
+        public static void TrackRevenue(double value, string network, string unitId, string format, string clientType)
         {
             AdjustTracking.TrackRevenue(value,
                 network,
                 unitId,
-                placement,
-                adNetwork);
+                format,
+                clientType);
             FirebaseTracking.TrackRevenue(value,
                 network,
                 unitId,
-                placement,
-                adNetwork);
+                format,
+                clientType);
         }
 
         public static void StartTrackingAdjust()

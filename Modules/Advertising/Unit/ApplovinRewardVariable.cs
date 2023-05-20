@@ -30,6 +30,13 @@ namespace Pancake.Monetization
 #endif
         }
 
+        public override AdUnitVariable Show()
+        {
+            if (!UnityEngine.Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady()) return this;
+            ShowImpl();
+            return this;
+        }
+
         public override void Destroy() { }
 
         public override void Load()

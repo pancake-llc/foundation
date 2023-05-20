@@ -9,7 +9,7 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("scriptable_variable")]
-    public class AdmobOpenAdVariable : AdUnitVariable
+    public class AdmobAppOpenVariable : AdUnitVariable
     {
         public ScreenOrientation orientation = ScreenOrientation.Portrait;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -20,6 +20,8 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+
             Destroy();
             AppOpenAd.Load(Id, orientation, new AdRequest(), OnAdLoadCallback);
 #endif
@@ -76,7 +78,7 @@ namespace Pancake.Monetization
 
         private void OnAdOpening()
         {
-            AdSettings.isShowingAd = true;
+            AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 
@@ -84,12 +86,19 @@ namespace Pancake.Monetization
 
         private void OnAdClosed()
         {
-            AdSettings.isShowingAd = false;
+            AdStatic.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
             Destroy();
         }
 
-        private void OnAdPaided(AdValue value) { paidedCallback?.Invoke(value.Value / 1000000f, Id, EAdNetwork.Admob.ToString()); }
+        private void OnAdPaided(AdValue value)
+        {
+            paidedCallback?.Invoke(value.Value / 1000000f,
+                "Admob",
+                Id,
+                "AppOpenAd",
+                EAdNetwork.Admob.ToString());
+        }
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 

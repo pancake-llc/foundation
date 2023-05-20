@@ -1,20 +1,19 @@
 #if PANCAKE_FIREBASE_ANALYTIC
 using Firebase.Analytics;
 #endif
-using Pancake.Monetization;
 
 namespace Pancake.Tracking
 {
     public static class FirebaseTracking
     {
-        public static void TrackRevenue(double value, string network, string unitId, string format, EAdNetwork adNetwork)
+        public static void TrackRevenue(double value, string network, string unitId, string format, string clientType)
         {
 #if PANCAKE_FIREBASE_ANALYTIC
-            switch (adNetwork)
+            switch (clientType.ToLower())
             {
-                case EAdNetwork.Admob:
+                case "admob":
                     return;
-                case EAdNetwork.Applovin:
+                default:
                     Parameter[] parameters =
                     {
                         new("value", value),

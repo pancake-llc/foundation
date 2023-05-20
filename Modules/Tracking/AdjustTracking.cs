@@ -1,30 +1,27 @@
 #if PANCAKE_ADJUST
 using com.adjust.sdk;
 #endif
-using Pancake.Monetization;
 
 namespace Pancake.Tracking
 {
     public static class AdjustTracking
     {
-        public static void TrackRevenue(double value, string network, string unitId, string placement, EAdNetwork adNetwork)
+        public static void TrackRevenue(double value, string network, string unitId, string placement, string clientType)
         {
 #if PANCAKE_ADJUST
             var source = "";
-            double revenue = value;
-            switch (adNetwork)
+            switch (clientType.ToLower())
             {
-                case EAdNetwork.Admob:
-                    revenue = value / 1000000f;
+                case "admob":
                     source = com.adjust.sdk.AdjustConfig.AdjustAdRevenueSourceAdMob;
                     break;
-                case EAdNetwork.Applovin:
+                default:
                     source = com.adjust.sdk.AdjustConfig.AdjustAdRevenueSourceAppLovinMAX;
                     break;
             }
 
             var adRevenue = new AdjustAdRevenue(source);
-            adRevenue.setRevenue(revenue, "USD");
+            adRevenue.setRevenue(value, "USD");
             adRevenue.setAdRevenueNetwork(network);
             adRevenue.setAdRevenuePlacement(placement);
             adRevenue.setAdRevenueUnit(unitId);

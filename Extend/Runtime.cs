@@ -2,7 +2,6 @@ using System;
 #if PANCAKE_IAP
 //using Pancake.IAP;
 #endif
-using Pancake.Monetization;
 using Pancake.Tracking;
 #if UNITY_IOS
 using Unity.Advertisement.IosSupport;
@@ -25,15 +24,6 @@ namespace Pancake
                 UnityEngine.Object.DontDestroyOnLoad(app);
 
                 Data.Init();
-                var advertising = new GameObject("Advertising");
-                advertising.AddComponent<Advertising>();
-                advertising.transform.SetParent(app.transform);
-                Advertising.OnBannerAdPaidEvent += AppTracking.TrackRevenue;
-                Advertising.OnInterstitialAdPaidEvent += AppTracking.TrackRevenue;
-                Advertising.OnRewardedAdPaidEvent += AppTracking.TrackRevenue;
-                Advertising.OnRewardedInterAdPaidEvent += AppTracking.TrackRevenue;
-                Advertising.OnAppOpenAdPaidEvent += AppTracking.TrackRevenue;
-                Advertising.Init();
 
 #if PANCAKE_IAP
                 // var pruchase = new GameObject("Purchase");

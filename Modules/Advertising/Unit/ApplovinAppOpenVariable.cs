@@ -4,7 +4,7 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("scriptable_variable")]
-    public class ApplovinOpenAdVariable : AdUnitVariable
+    public class ApplovinAppOpenVariable : AdUnitVariable
     {
         public override void Load() { }
         public override bool IsReady() { throw new NotImplementedException(); }

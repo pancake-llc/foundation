@@ -9,6 +9,13 @@ namespace Pancake.Monetization
 {
     public static class AdStatic
     {
+        /// <summary>
+        /// prevent show app open ad, it will become true when interstitial or rewarded was showed
+        /// </summary>
+        internal static bool isShowingAd;
+
+        public static bool IsRemoveAd { get => Data.Load($"{Application.identifier}_removeads", false); set => Data.Save($"{Application.identifier}_removeads", value); }
+
         /**
          * For Applovin :  Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
          * Admob still work correctly

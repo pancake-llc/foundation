@@ -21,6 +21,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            if (string.IsNullOrEmpty(Id)) return;
             Destroy();
             RewardedInterstitialAd.Load(Id, new AdRequest(), OnAdLoadCallback);
 #endif
@@ -40,6 +41,13 @@ namespace Pancake.Monetization
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
             _rewardedInterstitialAd.Show(UserEarnedRewardCallback);
 #endif
+        }
+
+        public override AdUnitVariable Show()
+        {
+            if (!UnityEngine.Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady()) return this;
+            ShowImpl();
+            return this;
         }
 
         public override void Destroy()
@@ -75,13 +83,17 @@ namespace Pancake.Monetization
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
-        private void OnAdPaided(AdValue value) { paidedCallback?.Invoke(value.Value / 1000000f, Id, EAdNetwork.Admob.ToString()); }
+        private void OnAdPaided(AdValue value) { paidedCallback?.Invoke(value.Value / 1000000f,
+            "Admob",
+            Id, 
+            "RewardedInterstitialAd",
+            EAdNetwork.Admob.ToString()); }
 
         private void OnAdFailedToShow(AdError error) { C.CallActionClean(ref faildedToDisplayCallback); }
 
         private void OnAdOpening()
         {
-            AdSettings.isShowingAd = true;
+            AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 
@@ -89,7 +101,7 @@ namespace Pancake.Monetization
 
         private void OnAdClosed()
         {
-            AdSettings.isShowingAd = false;
+            AdStatic.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
             if (IsEarnRewarded)
             {

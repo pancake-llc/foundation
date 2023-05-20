@@ -22,7 +22,7 @@ namespace Pancake.Monetization
         [NonSerialized] public Action displayedCallback;
         [NonSerialized] public Action faildedToDisplayCallback;
         [NonSerialized] public Action closedCallback;
-        [NonSerialized] public Action<double, string, string> paidedCallback; // units are dollars
+        [NonSerialized] public Action<double, string, string, string, string> paidedCallback; // units are dollars
 
         public string Id
         {
@@ -44,7 +44,7 @@ namespace Pancake.Monetization
 
         public virtual AdUnitVariable Show()
         {
-            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady() || AdSettings.IsRemoveAd) return this;
+            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady() || AdStatic.IsRemoveAd) return this;
             ShowImpl();
             return this;
         }
