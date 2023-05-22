@@ -34,7 +34,7 @@ namespace Pancake.ScriptableEditor
 
                 rectPosition.x += rectPosition.width + 5f;
                 rectPosition.width = position.width * 0.2f - 5f;
-                var guiContent = new GUIContent("Create", "Creates the SO at current selected folder in the Project Window");
+                var guiContent = new GUIContent("Create", "Creates the SO at default script generate path");
                 if (GUI.Button(rectPosition, guiContent))
                 {
                     //fieldInfo.Name does not work for VariableReferences so we have to make an edge case for that.
