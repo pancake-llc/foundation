@@ -1,7 +1,10 @@
-﻿using Pancake.ExLibEditor;
+﻿using System;
+using System.Collections.Generic;
+using Pancake.ExLibEditor;
 using Pancake.Monetization;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.MonetizationEditor
 {
@@ -17,14 +20,21 @@ namespace Pancake.MonetizationEditor
             EditorGUI.BeginProperty(position, label, property);
 
             var targetObject = property.objectReferenceValue;
+            if (fieldInfo.FieldType.IsArray || fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                // ignore draw when inside list or array
+                EditorGUI.PropertyField(position, property, label);
+                return;
+            }
+
             if (targetObject == null)
             {
+                if (DrawAbstractPropertyField(fieldInfo.FieldType, position, property, label)) return;
                 DrawIfNull(position, property, label);
                 return;
             }
 
             DrawIfNotNull(position, property, label, targetObject);
-
             EditorGUI.EndProperty();
         }
 
@@ -46,11 +56,23 @@ namespace Pancake.MonetizationEditor
         {
             var rectPosition = position;
             rectPosition.width = position.width * PROPERTY_WIDTH_RATIO;
-            EditorGUI.PropertyField(rectPosition, property, label);
+            EditorGUI.PropertyField(position, property, label);
 
             rectPosition.x += rectPosition.width + 5f;
             rectPosition.width = position.width * (1 - PROPERTY_WIDTH_RATIO) - 5f;
-            return rectPosition;
+            return position;
+        }
+
+        private bool DrawAbstractPropertyField(Type type, Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (type == typeof(AdUnitVariable))
+            {
+                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.EndProperty();
+                return true;
+            }
+
+            return false;
         }
 
         protected void DrawIfNotNull(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
@@ -75,8 +97,7 @@ namespace Pancake.MonetizationEditor
                 GUILayout.EndVertical();
                 EditorGUI.indentLevel--;
             }
-            else
-                DrawUnExpanded(position, property, label, targetObject);
+            else DrawUnExpanded(position, property, label, targetObject);
         }
 
         private string GetFieldName() { return fieldInfo.Name; }

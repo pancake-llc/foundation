@@ -82,8 +82,7 @@ namespace Pancake.ScriptableEditor
                 GUILayout.EndVertical();
                 EditorGUI.indentLevel--;
             }
-            else
-                DrawUnExpanded(position, property, label, targetObject);
+            else DrawUnExpanded(position, property, label, targetObject);
         }
 
         protected virtual string GetFieldName() { return fieldInfo.Name; }
