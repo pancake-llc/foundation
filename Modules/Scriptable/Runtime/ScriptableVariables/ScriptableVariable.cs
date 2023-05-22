@@ -177,16 +177,17 @@ namespace Pancake.Scriptable
 
         public virtual void Save()
         {
-            if (_debugLogEnabled)
-                Debug.Log(GetColorizedString() + " <color=#f75369>[Saved]</color>");
+#if UNITY_EDITOR
+            Data.SaveAll();
+#endif
+            if (_debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Saved]</color>");
         }
 
         public virtual void Load()
         {
             PreviousValue = _value;
 
-            if (_debugLogEnabled)
-                Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
+            if (_debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
         }
 
         public void SetToInitialValue()
