@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Pancake.Apex;
+using Pancake.ExLib;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -20,7 +21,8 @@ namespace Pancake.Monetization
 
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-        [Header("[admob]")] [SerializeField, Label("Test Mode")] private bool admobEnableTestMode;
+        [Header("[admob]")] [SerializeField, Label("Test Mode")]
+        private bool admobEnableTestMode;
 
         [SerializeField, Array, ShowIf(nameof(admobEnableTestMode)), Label("Devices Test")]
         private List<string> admobDevicesTest;
@@ -73,7 +75,14 @@ namespace Pancake.Monetization
         [HorizontalGroup("button-install")]
         private void InstallAdmobSdk()
         {
-            
+            var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+            if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
+            {
+                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
+                AssetDatabase.Refresh();
+            }
+
+            AssetDatabase.ImportPackage(GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/admob.unitypackage"), false);
         }
 
         [ShowIf(nameof(IsAdmobSdkImported))]
@@ -84,13 +93,30 @@ namespace Pancake.Monetization
             0.88f,
             Target = ColorTarget.Background)]
         [HorizontalGroup("button-uninstall")]
-        private void UnInstallAdmobSdk() { }
+        private void UnInstallAdmobSdk()
+        {
+            
+        }
 
         private bool IsAdmobSdkImported() { return UnityEditor.AssetDatabase.FindAssets("l:gvhp_exportpath-GoogleMobileAds/GoogleMobileAds.dll").Length >= 1; }
 
         private bool IsAdmobSdkNotImported() => !IsAdmobSdkImported();
 
+        private bool IsInstallAdmob()
+        {
+            var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+            return IsAdmobSdkImported() && ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group);
+        }
+
         private void InstallApplovinSdk() { }
+
+
+        private string GetPathInCurrentEnvironent(string fullRelativePath)
+        {
+            var upmPath = $"Packages/com.pancake.heart/{fullRelativePath}";
+            var normalPath = $"Assets/heart/{fullRelativePath}";
+            return !System.IO.File.Exists(System.IO.Path.GetFullPath(upmPath)) ? normalPath : upmPath;
+        }
 #endif
     }
 }

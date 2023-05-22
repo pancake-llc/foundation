@@ -51,5 +51,12 @@ namespace Pancake.Monetization
 
         protected abstract void ShowImpl();
         public abstract void Destroy();
+
+#if UNITY_EDITOR
+        private void FillDefaultTestId()
+        {
+            
+        }
+#endif
     }
 }

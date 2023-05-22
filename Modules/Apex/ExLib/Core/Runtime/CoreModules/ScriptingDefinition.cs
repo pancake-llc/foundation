@@ -1,8 +1,10 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 
-namespace Pancake.ExLibEditor
+namespace Pancake.ExLib
 {
     public static class ScriptingDefinition
     {
@@ -21,11 +23,11 @@ namespace Pancake.ExLibEditor
             var groups = new List<BuildTargetGroup>();
             var btgType = typeof(BuildTargetGroup);
 
-            foreach (var name in System.Enum.GetNames(btgType))
+            foreach (var name in Enum.GetNames(btgType))
             {
                 // First check obsolete.
                 var memberInfo = btgType.GetMember(name)[0];
-                if (System.Attribute.IsDefined(memberInfo, typeof(ObsoleteAttribute))) continue;
+                if (Attribute.IsDefined(memberInfo, typeof(ObsoleteAttribute))) continue;
 
                 // Name -> enum value and exclude the 'Unknown'.
                 var g = (BuildTargetGroup) Enum.Parse(btgType, name);
@@ -90,7 +92,7 @@ namespace Pancake.ExLibEditor
 
             if (added > 0)
             {
-                var sb = new System.Text.StringBuilder();
+                var sb = new StringBuilder();
 
                 for (var i = 0; i < currentSymbols.Count; i++)
                 {
@@ -117,7 +119,7 @@ namespace Pancake.ExLibEditor
             {
                 symbols.Add(symbol);
 
-                var sb = new System.Text.StringBuilder();
+                var sb = new StringBuilder();
 
                 for (var i = 0; i < symbols.Count; i++)
                 {
@@ -176,7 +178,7 @@ namespace Pancake.ExLibEditor
 
             if (removed > 0)
             {
-                var sb = new System.Text.StringBuilder();
+                var sb = new StringBuilder();
 
                 for (var i = 0; i < currentSymbols.Count; i++)
                 {
@@ -203,7 +205,7 @@ namespace Pancake.ExLibEditor
             {
                 symbols.Remove(symbol);
 
-                var settings = new System.Text.StringBuilder();
+                var settings = new StringBuilder();
 
                 for (var i = 0; i < symbols.Count; i++)
                 {
@@ -217,3 +219,4 @@ namespace Pancake.ExLibEditor
         }
     }
 }
+#endif

@@ -2,9 +2,9 @@
     "name": "Pancake.Monetization.Editor",
     "rootNamespace": "",
     "references": [
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
         "GUID:87eaf3fd1840b5c42a5f00c0a45ccaa1",
         "GUID:38036840b8620d443a0acf3e48f20d6f",
-        "GUID:adac8d59ad7e8504f82d387cded797a7",
         "GUID:a4cfc1a18fa3a469b96d885db522f42e",
         "GUID:a10a05a8449c42519fd80f2b8b580de3",
         "GUID:cbb42e4cfd9484f52972c8f05e1c3252"
