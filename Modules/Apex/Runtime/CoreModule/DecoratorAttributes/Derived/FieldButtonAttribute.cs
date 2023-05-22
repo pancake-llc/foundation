@@ -12,7 +12,7 @@ namespace Pancake.Apex
             this.name = name;
             Label = name;
             Height = 20.0f;
-            Style = "Button";
+            Style = "";
         }
 
         #region [Parameters]
