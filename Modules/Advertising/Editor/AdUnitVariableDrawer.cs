@@ -56,11 +56,11 @@ namespace Pancake.MonetizationEditor
         {
             var rectPosition = position;
             rectPosition.width = position.width * PROPERTY_WIDTH_RATIO;
-            EditorGUI.PropertyField(position, property, label);
+            EditorGUI.PropertyField(rectPosition, property, label);
 
             rectPosition.x += rectPosition.width + 5f;
             rectPosition.width = position.width * (1 - PROPERTY_WIDTH_RATIO) - 5f;
-            return position;
+            return rectPosition;
         }
 
         private bool DrawAbstractPropertyField(Type type, Rect position, SerializedProperty property, GUIContent label)
@@ -107,7 +107,7 @@ namespace Pancake.MonetizationEditor
             if (_serializedObject == null || _serializedObject.targetObject != targetObject) _serializedObject = new SerializedObject(targetObject);
 
             _serializedObject.UpdateIfRequiredOrScript();
-            DrawPropertyField(position, property, label);
+            EditorGUI.PropertyField(position, property, label);
             _serializedObject.ApplyModifiedProperties();
         }
     }
