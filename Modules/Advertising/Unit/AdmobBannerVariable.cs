@@ -11,8 +11,8 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public class AdmobBannerVariable : AdUnitVariable
     {
-        public EBannerSize size;
-        public EBannerPosition position;
+        public EBannerSize size = EBannerSize.Adaptive;
+        public EBannerPosition position = EBannerPosition.Bottom;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private BannerView _bannerView;
