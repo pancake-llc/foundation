@@ -1,4 +1,5 @@
-﻿using Pancake.ExLibEditor;
+﻿using System.Collections.Generic;
+using Pancake.ExLibEditor;
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
@@ -16,6 +17,13 @@ namespace Pancake.ScriptableEditor
             EditorGUI.BeginProperty(position, label, property);
 
             var targetObject = property.objectReferenceValue;
+            if (fieldInfo.FieldType.IsArray || fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                // ignore draw when inside list or array
+                EditorGUI.PropertyField(position, property, label);
+                return;
+            }
+
             if (targetObject == null)
             {
                 DrawIfNull(position, property, label);
