@@ -17,7 +17,7 @@ namespace Pancake.Monetization
         public override bool IsReady()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return MaxSdk.IsRewardedAdReady(Id) && !string.IsNullOrEmpty(Id);
+            return !string.IsNullOrEmpty(Id) && MaxSdk.IsRewardedAdReady(Id);
 #else
             return false;
 #endif
@@ -32,7 +32,7 @@ namespace Pancake.Monetization
 
         public override AdUnitVariable Show()
         {
-            if (!UnityEngine.Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady()) return this;
+            if (!UnityEngine.Application.isMobilePlatform || !IsReady()) return this;
             ShowImpl();
             return this;
         }
@@ -61,7 +61,14 @@ namespace Pancake.Monetization
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
         private void OnAdReceivedReward(string unit, MaxSdkBase.Reward reward, MaxSdkBase.AdInfo info) { IsEarnRewarded = true; }
 
-        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { paidedCallback?.Invoke(info.Revenue, unit, info.NetworkName); }
+        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
+        {
+            paidedCallback?.Invoke(info.Revenue,
+                info.NetworkName,
+                unit,
+                info.AdFormat,
+                EAdNetwork.Applovin.ToString());
+        }
 
         private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo error) { C.CallActionClean(ref faildedToLoadCallback); }
 
@@ -71,9 +78,9 @@ namespace Pancake.Monetization
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
-            AdSettings.isShowingAd = false;
+            AdStatic.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
-            if (AdSettings.ApplovinEnableRequestAdAfterHidden && !IsReady()) MaxSdk.LoadRewardedAd(Id);
+            if (!IsReady()) MaxSdk.LoadRewardedAd(Id);
             if (IsEarnRewarded)
             {
                 C.CallActionClean(ref completedCallback);
@@ -86,7 +93,7 @@ namespace Pancake.Monetization
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info)
         {
-            AdSettings.isShowingAd = true;
+            AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 #endif

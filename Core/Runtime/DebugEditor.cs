@@ -18,5 +18,15 @@ namespace Pancake
 
         [Conditional("UNITY_EDITOR")]
         public static void LogError(object message, Object context = null) { Debug.LogError(message, context); }
+
+        [Conditional("UNITY_EDITOR")]
+        public static void Toast(string message, float duration = 1f)
+        {
+            foreach (UnityEditor.SceneView scene in UnityEditor.SceneView.sceneViews)
+            {
+                scene.ShowNotification(new UnityEngine.GUIContent(message), duration);
+                scene.Repaint();
+            }
+        }
     }
 }

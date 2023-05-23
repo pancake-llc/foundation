@@ -1,0 +1,12 @@
+-AdColony
+-Chartboost
+-Facebook
+-DTExchange
+-Admob
+-AdmobManager
+-InMobi
+-ironSource
+-Mintegral
+-Pangle
+-UnityAds
+-LiftoffMonetize

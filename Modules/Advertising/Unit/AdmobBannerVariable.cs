@@ -122,16 +122,11 @@ namespace Pancake.Monetization
         protected void FillDefaultTestId()
         {
 #if UNITY_ANDROID
-            androidId = "ca-app-pub-3940256099942544/6300978111";
+            "ca-app-pub-3940256099942544/6300978111".CopyToClipboard();
 #elif UNITY_IOS
-            iOSId = "ca-app-pub-3940256099942544/2934735716";
+            "ca-app-pub-3940256099942544/2934735716".CopyToClipboard();
 #endif
-            
-            foreach (UnityEditor.SceneView scene in UnityEditor.SceneView.sceneViews)
-            {
-                scene.ShowNotification(new UnityEngine.GUIContent("[Admob] Copy Banner Test Unit Id!"), 1.0f);
-                scene.Repaint();
-            }
+            DebugEditor.Toast("[Admob] Copy Banner Test Unit Id!");
         }
 #endif
     }

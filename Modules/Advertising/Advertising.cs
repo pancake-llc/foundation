@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using Pancake.Apex;
 using UnityEngine;
@@ -105,7 +104,7 @@ namespace Pancake.Monetization
 #if PANCAKE_APPLOVIN
         private void OnApplicationPause(bool pauseStatus)
         {
-            if(!pauseStatus) ShowAppOpenAd();
+            //if(!pauseStatus) ShowAppOpenAd();
         }
 #endif
     }

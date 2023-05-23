@@ -31,7 +31,7 @@ namespace Pancake.Monetization
 
         public override AdUnitVariable Show()
         {
-            if (!UnityEngine.Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady()) return this;
+            if (!UnityEngine.Application.isMobilePlatform || !IsReady()) return this;
             ShowImpl();
             return this;
         }
@@ -59,7 +59,14 @@ namespace Pancake.Monetization
 
 
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { paidedCallback?.Invoke(info.Revenue, unit, info.NetworkName); }
+        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
+        {
+            paidedCallback?.Invoke(info.Revenue,
+                info.NetworkName,
+                unit,
+                info.AdFormat,
+                EAdNetwork.Applovin.ToString());
+        }
 
         private void OnAdReceivedReward(string unit, MaxSdkBase.Reward reward, MaxSdkBase.AdInfo info) { IsEarnRewarded = true; }
 
@@ -71,9 +78,9 @@ namespace Pancake.Monetization
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
-            AdSettings.isShowingAd = false;
+            AdStatic.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
-            if (AdSettings.ApplovinEnableRequestAdAfterHidden && !string.IsNullOrEmpty(Id)) MaxSdk.LoadRewardedInterstitialAd(Id);
+            if (!IsReady()) MaxSdk.LoadRewardedInterstitialAd(Id); // ApplovinEnableRequestAdAfterHidden as true
 
             if (IsEarnRewarded)
             {
@@ -87,7 +94,7 @@ namespace Pancake.Monetization
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info)
         {
-            AdSettings.isShowingAd = true;
+            AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 #endif

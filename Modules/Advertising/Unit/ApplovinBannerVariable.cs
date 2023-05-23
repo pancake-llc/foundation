@@ -70,14 +70,21 @@ namespace Pancake.Monetization
             }
         }
 
-        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { paidedCallback?.Invoke(info.Revenue, unit, info.NetworkName); }
+        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
+        {
+            paidedCallback?.Invoke(info.Revenue,
+                info.NetworkName,
+                unit,
+                info.AdFormat,
+                EAdNetwork.Applovin.ToString());
+        }
 
         private void OnAdCollapsed(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref closedCallback); }
 
         private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo info) { C.CallActionClean(ref faildedToLoadCallback); }
 
         private void OnAdExpanded(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref displayedCallback); }
-        
+
         private void OnAdLoaded(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref loadedCallback); }
 
 #endif

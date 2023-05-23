@@ -130,11 +130,7 @@ namespace Pancake.Monetization
 #elif UNITY_IOS
             "ca-app-pub-3940256099942544/1712485313".CopyToClipboard();
 #endif
-            foreach (UnityEditor.SceneView scene in UnityEditor.SceneView.sceneViews)
-            {
-                scene.ShowNotification(new UnityEngine.GUIContent("[Admob] Copy Rewarded Test Unit Id!"), 1.0f);
-                scene.Repaint();
-            }
+            DebugEditor.Toast("[Admob] Copy Rewarded Test Unit Id!");
         }
 #endif
     }

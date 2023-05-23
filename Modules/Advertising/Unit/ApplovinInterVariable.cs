@@ -52,18 +52,26 @@ namespace Pancake.Monetization
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
-            AdSettings.isShowingAd = false;
+            AdStatic.isShowingAd = false;
             C.CallActionClean(ref completedCallback);
-            if (!AdSettings.ApplovinEnableRequestAdAfterHidden || string.IsNullOrEmpty(Id)) MaxSdk.LoadInterstitial(Id);
+            
+            if (!string.IsNullOrEmpty(Id)) MaxSdk.LoadInterstitial(Id);  // ApplovinEnableRequestAdAfterHidden as true
         }
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info)
         {
-            AdSettings.isShowingAd = true;
+            AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 
-        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info) { paidedCallback?.Invoke(info.Revenue, unit, info.NetworkName); }
+        private void OnAdRevenuePaid(string unit, MaxSdkBase.AdInfo info)
+        {
+            paidedCallback?.Invoke(info.Revenue,
+                info.NetworkName,
+                unit,
+                info.AdFormat,
+                EAdNetwork.Applovin.ToString());
+        }
 
         private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo error) { C.CallActionClean(ref faildedToLoadCallback); }
 
