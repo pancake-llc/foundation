@@ -101,8 +101,8 @@ namespace Pancake.Monetization
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "googlemobileads-unity.aar"));
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "googlemobileads-unity.aar.meta"));
 
-            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPlugin.androidlib"));
-            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPlugin.androidlib.meta"));
+            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPluginAndroidlib"));
+            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPluginAndroidlib.meta"));
 
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/iOS", "GADUAdNetworkExtras.h"));
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/iOS", "GADUAdNetworkExtras.h.meta"));
