@@ -116,5 +116,23 @@ namespace Pancake.Monetization
             Load();
         }
 #endif
+
+#if UNITY_EDITOR
+        [UnityEngine.ContextMenu("Copy Default Test Id")]
+        protected void FillDefaultTestId()
+        {
+#if UNITY_ANDROID
+            androidId = "ca-app-pub-3940256099942544/6300978111";
+#elif UNITY_IOS
+            iOSId = "ca-app-pub-3940256099942544/2934735716";
+#endif
+            
+            foreach (UnityEditor.SceneView scene in UnityEditor.SceneView.sceneViews)
+            {
+                scene.ShowNotification(new UnityEngine.GUIContent("[Admob] Copy Banner Test Unit Id!"), 1.0f);
+                scene.Repaint();
+            }
+        }
+#endif
     }
 }

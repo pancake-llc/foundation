@@ -99,5 +99,22 @@ namespace Pancake.Monetization
 
         private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref faildedToLoadCallback); }
 #endif
+        
+#if UNITY_EDITOR
+        [UnityEngine.ContextMenu("Copy Default Test Id")]
+        protected void FillDefaultTestId()
+        {
+#if UNITY_ANDROID
+            androidId = "ca-app-pub-3940256099942544/1033173712";
+#elif UNITY_IOS
+            iOSId = "ca-app-pub-3940256099942544/4411468910";
+#endif
+            foreach (UnityEditor.SceneView scene in UnityEditor.SceneView.sceneViews)
+            {
+                scene.ShowNotification(new UnityEngine.GUIContent("[Admob] Copy Interstitial Test Unit Id!"), 1.0f);
+                scene.Repaint();
+            }
+        }
+#endif
     }
 }

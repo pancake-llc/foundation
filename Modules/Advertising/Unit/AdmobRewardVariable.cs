@@ -1,4 +1,5 @@
 ﻿using System;
+using Pancake.Apex;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
@@ -118,6 +119,23 @@ namespace Pancake.Monetization
         private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref faildedToLoadCallback); }
 
         private void UserRewardEarnedCallback(Reward reward) { IsEarnRewarded = true; }
+#endif
+
+#if UNITY_EDITOR
+        [UnityEngine.ContextMenu("Copy Default Test Id")]
+        protected void FillDefaultTestId()
+        {
+#if UNITY_ANDROID
+            "ca-app-pub-3940256099942544/5224354917".CopyToClipboard();
+#elif UNITY_IOS
+            "ca-app-pub-3940256099942544/1712485313".CopyToClipboard();
+#endif
+            foreach (UnityEditor.SceneView scene in UnityEditor.SceneView.sceneViews)
+            {
+                scene.ShowNotification(new UnityEngine.GUIContent("[Admob] Copy Rewarded Test Unit Id!"), 1.0f);
+                scene.Repaint();
+            }
+        }
 #endif
     }
 }

@@ -11,10 +11,9 @@ namespace Pancake.Monetization
     {
         [Message("When you change the platform need to double check if the id is empty?")]
 #if UNITY_ANDROID
-        [SerializeField]
-        private string androidId;
+        [SerializeField] protected string androidId;
 #elif UNITY_IOS
-        [SerializeField] private string iOSId;
+        [SerializeField] protected string iOSId;
 #endif
 
         [NonSerialized] public Action loadedCallback;
@@ -51,12 +50,5 @@ namespace Pancake.Monetization
 
         protected abstract void ShowImpl();
         public abstract void Destroy();
-
-#if UNITY_EDITOR
-        private void FillDefaultTestId()
-        {
-            
-        }
-#endif
     }
 }
