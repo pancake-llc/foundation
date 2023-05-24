@@ -16,11 +16,11 @@ namespace Pancake.Monetization
         [SerializeField] protected string iOSId;
 #endif
 
-        [NonSerialized] public Action loadedCallback;
-        [NonSerialized] public Action faildedToLoadCallback;
-        [NonSerialized] public Action displayedCallback;
-        [NonSerialized] public Action faildedToDisplayCallback;
-        [NonSerialized] public Action closedCallback;
+        [NonSerialized] internal Action loadedCallback;
+        [NonSerialized] internal Action faildedToLoadCallback;
+        [NonSerialized] internal Action displayedCallback;
+        [NonSerialized] internal Action faildedToDisplayCallback;
+        [NonSerialized] internal Action closedCallback;
         [NonSerialized] public Action<double, string, string, string, string> paidedCallback; // units are dollars
 
         public string Id
@@ -43,9 +43,18 @@ namespace Pancake.Monetization
 
         public virtual AdUnitVariable Show()
         {
-            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady() || AdStatic.IsRemoveAd) return this;
+            ResetChainCallback();
+            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || AdStatic.IsRemoveAd) return this;
             ShowImpl();
             return this;
+        }
+
+        protected virtual void ResetChainCallback()
+        {
+            loadedCallback = null;
+            faildedToDisplayCallback = null;
+            faildedToLoadCallback = null;
+            closedCallback = null;
         }
 
         protected abstract void ShowImpl();

@@ -6,11 +6,9 @@ using UnityEngine;
 // ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
 {
+    [EditorIcon("scriptable_ad")]
     public class ApplovinAdClient : AdClient
     {
-        [field: SerializeField] public override EAdNetwork ClientType { get; } = EAdNetwork.Applovin;
-
-
         public override void Init()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
@@ -26,32 +24,6 @@ namespace Pancake.Monetization
             LoadRewarded();
             LoadRewardedInterstitial();
             LoadAppOpen();
-#endif
-        }
-
-        public override AdUnitVariable ShowBanner()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            adSettings.ApplovinBanner.Load();
-            return adSettings.ApplovinBanner.Show();
-#else
-            return null;
-#endif
-        }
-
-        public override void DestroyBanner()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            adSettings.ApplovinBanner.Destroy();
-#endif
-        }
-
-        public override AdUnitVariable ShowInterstitial()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinInter.Show();
-#else
-            return null;
 #endif
         }
 
@@ -71,15 +43,6 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override AdUnitVariable ShowRewarded()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinReward.Show();
-#else
-            return null;
-#endif
-        }
-
         public override void LoadRewarded()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
@@ -93,15 +56,6 @@ namespace Pancake.Monetization
             return adSettings.ApplovinReward.IsReady();
 #else
             return false;
-#endif
-        }
-
-        public override AdUnitVariable ShowRewardedInterstitial()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinRewardInter.Show();
-#else
-            return null;
 #endif
         }
 
@@ -121,12 +75,11 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override AdUnitVariable ShowAppOpen()
+        private void ShowAppOpen()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinAppOpen.Show();
-#else
-            return null;
+            if (statusAppOpenFirtIgnore) adSettings.ApplovinAppOpen.Show();
+            statusAppOpenFirstIgnore = true;
 #endif
         }
 

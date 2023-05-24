@@ -21,18 +21,4 @@ namespace Pancake.Monetization
         Applovin = 0,
         Admob = 1,
     }
-    
-    public enum EAdapterStatus
-    {
-        NotInstall = 0,
-        Installed = 1,
-        Upgrade = 2
-    }
-    
-    public enum EVersionComparisonResult
-    {
-        Lesser = -1,
-        Equal = 0,
-        Greater = 1
-    }
 }

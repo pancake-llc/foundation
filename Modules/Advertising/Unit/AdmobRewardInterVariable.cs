@@ -10,8 +10,8 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public class AdmobRewardInterVariable : AdUnitVariable
     {
-        [NonSerialized] public Action completedCallback;
-        [NonSerialized] public Action skippedCallback;
+        [NonSerialized] internal Action completedCallback;
+        [NonSerialized] internal Action skippedCallback;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private RewardedInterstitialAd _rewardedInterstitialAd;
 #endif
@@ -41,6 +41,13 @@ namespace Pancake.Monetization
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
             _rewardedInterstitialAd.Show(UserEarnedRewardCallback);
 #endif
+        }
+        
+        protected override void ResetChainCallback()
+        {
+            base.ResetChainCallback();
+            completedCallback = null;
+            skippedCallback = null;
         }
 
         public override AdUnitVariable Show()
@@ -72,7 +79,6 @@ namespace Pancake.Monetization
 
             _rewardedInterstitialAd = ad;
             _rewardedInterstitialAd.OnAdFullScreenContentClosed += OnAdClosed;
-            _rewardedInterstitialAd.OnAdImpressionRecorded += OnAdImpressionRecorded;
             _rewardedInterstitialAd.OnAdFullScreenContentOpened += OnAdOpening;
             _rewardedInterstitialAd.OnAdFullScreenContentFailed += OnAdFailedToShow;
             _rewardedInterstitialAd.OnAdPaid += OnAdPaided;
@@ -96,8 +102,6 @@ namespace Pancake.Monetization
             AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
-
-        private void OnAdImpressionRecorded() { throw new NotImplementedException(); }
 
         private void OnAdClosed()
         {
@@ -126,7 +130,7 @@ namespace Pancake.Monetization
 #elif UNITY_IOS
             "ca-app-pub-3940256099942544/6978759866".CopyToClipboard();
 #endif
-            DebugEditor.Toast("[Admob] Copy Rewarded Interstitial Test Unit Id!");
+            DebugEditor.Toast("[Admob] Copy Rewarded Interstitial Test Unit Id Success!");
         }
 #endif
     }

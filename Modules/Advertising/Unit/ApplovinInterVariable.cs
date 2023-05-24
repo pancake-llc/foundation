@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public class ApplovinInterVariable : AdUnitVariable
     {
-        [NonSerialized] public Action completedCallback;
+        [NonSerialized] internal Action completedCallback;
 
         private bool _registerCallback;
 
@@ -43,6 +43,12 @@ namespace Pancake.Monetization
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
             MaxSdk.ShowInterstitial(Id);
 #endif
+        }
+        
+        protected override void ResetChainCallback()
+        {
+            base.ResetChainCallback();
+            completedCallback = null;
         }
 
         public override void Destroy() { }

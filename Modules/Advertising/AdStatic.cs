@@ -1,8 +1,5 @@
 using System;
 using System.Globalization;
-#if UNITY_EDITOR
-using System.Linq;
-#endif
 using UnityEngine;
 
 namespace Pancake.Monetization
@@ -20,150 +17,95 @@ namespace Pancake.Monetization
          * For Applovin :  Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
          * Admob still work correctly
          */
-        public static IRewarded OnDisplayed(this IRewarded rewarded, Action onDisplayed)
+        public static AdUnitVariable OnDisplayed(this AdUnitVariable unit, Action onDisplayed)
         {
-            rewarded?.Register(nameof(OnDisplayed), onDisplayed);
-            return rewarded;
+            unit.displayedCallback = onDisplayed;
+            return unit;
         }
 
-        public static IRewarded OnCompleted(this IRewarded rewarded, Action onCompleted)
+        public static AdUnitVariable OnClosed(this AdUnitVariable unit, Action onClosed)
         {
-            rewarded?.Register(nameof(OnCompleted), onCompleted);
-            return rewarded;
+            unit.closedCallback = onClosed;
+            return unit;
         }
 
-        public static IRewarded OnClosed(this IRewarded rewarded, Action onClosed)
+        public static AdUnitVariable OnLoaded(this AdUnitVariable unit, Action onLoaded)
         {
-            rewarded?.Register(nameof(OnClosed), onClosed);
-            return rewarded;
+            unit.loadedCallback = onLoaded;
+            return unit;
         }
 
-        public static IRewarded OnSkipped(this IRewarded rewarded, Action onSkipped)
+        public static AdUnitVariable OnFaildedToLoad(this AdUnitVariable unit, Action onFailedToLoad)
         {
-            rewarded?.Register(nameof(OnSkipped), onSkipped);
-            return rewarded;
+            unit.faildedToLoadCallback = onFailedToLoad;
+            return unit;
         }
 
-        /**
-         * For Applovin : Fired when an interstitial ad is displayed (may not be received by Unity until the interstitial ad closes).
-         * Admob still work correctly
-         */
-        public static IInterstitial OnDisplayed(this IInterstitial interstitial, Action onDisplayed)
+        public static AdUnitVariable OnFaildedToDisplay(this AdUnitVariable unit, Action onFailedToDisplay)
         {
-            interstitial?.Register(nameof(OnDisplayed), onDisplayed);
-            return interstitial;
+            unit.faildedToDisplayCallback = onFailedToDisplay;
+            return unit;
         }
 
-        public static IInterstitial OnCompleted(this IInterstitial interstitial, Action onCompleted)
-        {
-            interstitial?.Register(nameof(OnCompleted), onCompleted);
-            return interstitial;
-        }
-
-        /**
-         * For Applovin :  Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
-         * Admob still work correctly
-         */
-        public static IRewardedInterstitial OnDisplayed(this IRewardedInterstitial rewarded, Action onDisplayed)
-        {
-            rewarded?.Register(nameof(OnDisplayed), onDisplayed);
-            return rewarded;
-        }
-
-        public static IRewardedInterstitial OnCompleted(this IRewardedInterstitial rewarded, Action onCompleted)
-        {
-            rewarded?.Register(nameof(OnCompleted), onCompleted);
-            return rewarded;
-        }
-
-        public static IRewardedInterstitial OnClosed(this IRewardedInterstitial rewarded, Action onClosed)
-        {
-            rewarded?.Register(nameof(OnClosed), onClosed);
-            return rewarded;
-        }
-
-        public static IRewardedInterstitial OnSkipped(this IRewardedInterstitial rewarded, Action onSkipped)
-        {
-            rewarded?.Register(nameof(OnSkipped), onSkipped);
-            return rewarded;
-        }
-
-#if UNITY_EDITOR
         /// <summary>
-        /// Compares its two arguments for order.  Returns <see cref="EVersionComparisonResult.Lesser"/>, <see cref="EVersionComparisonResult.Equal"/>,
-        /// or <see cref="EVersionComparisonResult.Greater"/> as the first version is less than, equal to, or greater than the second.
+        /// Not affect for banner and app open ad
         /// </summary>
-        /// <param name="versionA">The first version to be compared.</param>
-        /// <param name="versionB">The second version to be compared.</param>
-        /// <returns>
-        /// <see cref="EVersionComparisonResult.Lesser"/> if versionA is less than versionB.
-        /// <see cref="EVersionComparisonResult.Equal"/> if versionA and versionB are equal.
-        /// <see cref="EVersionComparisonResult.Greater"/> if versionA is greater than versionB.
-        /// </returns>
-        public static EVersionComparisonResult CompareVersions(string versionA, string versionB)
+        /// <param name="unit"></param>
+        /// <param name="onCompleted"></param>
+        /// <returns></returns>
+        public static AdUnitVariable OnCompleted(this AdUnitVariable unit, Action onCompleted)
         {
-            if (versionA.Equals(versionB)) return EVersionComparisonResult.Equal;
-
-            // Check if either of the versions are beta versions. Beta versions could be of format x.y.z-beta or x.y.z-betaX.
-            // Split the version string into beta component and the underlying version.
-            int piece;
-            var isVersionABeta = versionA.Contains("-beta");
-            var versionABetaNumber = 0;
-            if (isVersionABeta)
+            switch (unit)
             {
-                var components = versionA.Split(new[] {"-beta"}, StringSplitOptions.None);
-                versionA = components[0];
-                versionABetaNumber = int.TryParse(components[1], out piece) ? piece : 0;
+                case AdmobInterVariable inter:
+                    inter.completedCallback = onCompleted;
+                    return unit;
+                case AdmobRewardVariable reward:
+                    reward.completedCallback = onCompleted;
+                    return unit;
+                case AdmobRewardInterVariable rewardInter:
+                    rewardInter.completedCallback = onCompleted;
+                    return unit;
+                case ApplovinInterVariable applovinInter:
+                    applovinInter.completedCallback = onCompleted;
+                    return unit;
+                case ApplovinRewardVariable applovinReward:
+                    applovinReward.completedCallback = onCompleted;
+                    return unit;
+                case ApplovinRewardInterVariable applovinRewardInter:
+                    applovinRewardInter.completedCallback = onCompleted;
+                    return unit;
             }
 
-            var isVersionBBeta = versionB.Contains("-beta");
-            var versionBBetaNumber = 0;
-            if (isVersionBBeta)
-            {
-                var components = versionB.Split(new[] {"-beta"}, StringSplitOptions.None);
-                versionB = components[0];
-                versionBBetaNumber = int.TryParse(components[1], out piece) ? piece : 0;
-            }
-
-            // Now that we have separated the beta component, check if the underlying versions are the same.
-            if (versionA.Equals(versionB))
-            {
-                // The versions are the same, compare the beta components.
-                if (isVersionABeta && isVersionBBeta)
-                {
-                    if (versionABetaNumber < versionBBetaNumber) return EVersionComparisonResult.Lesser;
-
-                    if (versionABetaNumber > versionBBetaNumber) return EVersionComparisonResult.Greater;
-                }
-                // Only VersionA is beta, so A is older.
-                else if (isVersionABeta)
-                {
-                    return EVersionComparisonResult.Lesser;
-                }
-                // Only VersionB is beta, A is newer.
-                else
-                {
-                    return EVersionComparisonResult.Greater;
-                }
-            }
-
-            // Compare the non beta component of the version string.
-            var versionAComponents = versionA.Split('.').Select(version => int.TryParse(version, out piece) ? piece : 0).ToArray();
-            var versionBComponents = versionB.Split('.').Select(version => int.TryParse(version, out piece) ? piece : 0).ToArray();
-            var length = Mathf.Max(versionAComponents.Length, versionBComponents.Length);
-            for (var i = 0; i < length; i++)
-            {
-                var aComponent = i < versionAComponents.Length ? versionAComponents[i] : 0;
-                var bComponent = i < versionBComponents.Length ? versionBComponents[i] : 0;
-
-                if (aComponent < bComponent) return EVersionComparisonResult.Lesser;
-
-                if (aComponent > bComponent) return EVersionComparisonResult.Greater;
-            }
-
-            return EVersionComparisonResult.Equal;
+            return unit;
         }
-#endif
+
+        /// <summary>
+        /// Only affect for rewarded and rewarded interstitial
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="onSkipped"></param>
+        /// <returns></returns>
+        public static AdUnitVariable OnSkipped(this AdUnitVariable unit, Action onSkipped)
+        {
+            switch (unit)
+            {
+                case AdmobRewardVariable reward:
+                    reward.completedCallback = onSkipped;
+                    return unit;
+                case AdmobRewardInterVariable rewardInter:
+                    rewardInter.completedCallback = onSkipped;
+                    return unit;
+                case ApplovinRewardVariable applovinReward:
+                    applovinReward.completedCallback = onSkipped;
+                    return unit;
+                case ApplovinRewardInterVariable applovinRewardInter:
+                    applovinRewardInter.completedCallback = onSkipped;
+                    return unit;
+            }
+
+            return unit;
+        }
 
         // ReSharper disable once InconsistentNaming
         public static bool IsInEEA()

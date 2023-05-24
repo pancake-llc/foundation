@@ -67,14 +67,11 @@ namespace Pancake.Monetization
             _appOpenAd.OnAdFullScreenContentClosed += OnAdClosed;
             _appOpenAd.OnAdFullScreenContentFailed += OnAdFailedToShow;
             _appOpenAd.OnAdFullScreenContentOpened += OnAdOpening;
-            _appOpenAd.OnAdImpressionRecorded += OnAdImpressionRecorded;
             OnAdLoaded();
 
             // App open ads can be preloaded for up to 4 hours.
             _expireTime = DateTime.Now + TimeSpan.FromHours(4);
         }
-
-        private void OnAdImpressionRecorded() { throw new NotImplementedException(); }
 
         private void OnAdOpening()
         {
@@ -114,7 +111,7 @@ namespace Pancake.Monetization
 #elif UNITY_IOS
             "ca-app-pub-3940256099942544/5662855259".CopyToClipboard();
 #endif
-            DebugEditor.Toast("[Admob] Copy App Open Test Unit Id!");
+            DebugEditor.Toast("[Admob] Copy App Open Test Unit Id Success!");
         }
 #endif
     }

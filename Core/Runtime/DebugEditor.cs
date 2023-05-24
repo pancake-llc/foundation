@@ -1,3 +1,6 @@
+using UnityEditor;
+using UnityEngine;
+
 namespace Pancake
 {
     using System.Diagnostics;
@@ -22,11 +25,13 @@ namespace Pancake
         [Conditional("UNITY_EDITOR")]
         public static void Toast(string message, float duration = 1f)
         {
-            foreach (UnityEditor.SceneView scene in UnityEditor.SceneView.sceneViews)
+#if UNITY_EDITOR
+            foreach (SceneView scene in SceneView.sceneViews)
             {
-                scene.ShowNotification(new UnityEngine.GUIContent(message), duration);
+                scene.ShowNotification(new GUIContent(message), duration);
                 scene.Repaint();
             }
+#endif
         }
     }
 }

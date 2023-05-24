@@ -3,14 +3,11 @@ using GoogleMobileAds.Api;
 using Pancake.Tracking;
 #endif
 
-using UnityEngine;
-
 namespace Pancake.Monetization
 {
+    [EditorIcon("scriptable_ad")]
     public class AdmobClient : AdClient
     {
-        [field: SerializeField] public override EAdNetwork ClientType { get; } = EAdNetwork.Admob;
-
         public override void Init()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -37,32 +34,6 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override AdUnitVariable ShowBanner()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            adSettings.AdmobBanner.Load();
-            return adSettings.AdmobBanner.Show();
-#else
-            return null;
-#endif
-        }
-
-        public override void DestroyBanner()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            adSettings.AdmobBanner.Destroy();
-#endif
-        }
-
-        public override AdUnitVariable ShowInterstitial()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobInter.Show();
-#else
-            return null;
-#endif
-        }
-
         public override void LoadInterstitial()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -76,15 +47,6 @@ namespace Pancake.Monetization
             return adSettings.AdmobInter.IsReady();
 #else
             return false;
-#endif
-        }
-
-        public override AdUnitVariable ShowRewarded()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobReward.Show();
-#else
-            return null;
 #endif
         }
 
@@ -104,15 +66,6 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override AdUnitVariable ShowRewardedInterstitial()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobRewardInter.Show();
-#else
-            return null;
-#endif
-        }
-
         public override void LoadRewardedInterstitial()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -129,12 +82,11 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override AdUnitVariable ShowAppOpen()
+        private void ShowAppOpen()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobAppOpen.Show();
-#else
-            return null;
+            if (statusAppOpenFirstIgnore) adSettings.AdmobAppOpen.Show();
+            statusAppOpenFirstIgnore = true;
 #endif
         }
 
@@ -155,10 +107,7 @@ namespace Pancake.Monetization
         }
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-        private void RegisterAppStateChange()
-        {
-            GoogleMobileAds.Api.AppStateEventNotifier.AppStateChanged += OnAppStateChanged;
-        }
+        private void RegisterAppStateChange() { GoogleMobileAds.Api.AppStateEventNotifier.AppStateChanged += OnAppStateChanged; }
 
         private void OnAppStateChanged(GoogleMobileAds.Common.AppState state)
         {

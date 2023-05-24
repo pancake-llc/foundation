@@ -8,8 +8,8 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public class ApplovinRewardVariable : AdUnitVariable
     {
-        [NonSerialized] public Action completedCallback;
-        [NonSerialized] public Action skippedCallback;
+        [NonSerialized] internal Action completedCallback;
+        [NonSerialized] internal Action skippedCallback;
 
         private bool _registerCallback;
         public bool IsEarnRewarded { get; private set; }
@@ -35,6 +35,13 @@ namespace Pancake.Monetization
             if (!UnityEngine.Application.isMobilePlatform || !IsReady()) return this;
             ShowImpl();
             return this;
+        }
+        
+        protected override void ResetChainCallback()
+        {
+            base.ResetChainCallback();
+            completedCallback = null;
+            skippedCallback = null;
         }
 
         public override void Destroy() { }

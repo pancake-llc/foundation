@@ -49,6 +49,7 @@ namespace Pancake.Monetization
         protected override void ShowImpl()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            Load();
             _bannerView.Show();
 #endif
         }
@@ -126,7 +127,7 @@ namespace Pancake.Monetization
 #elif UNITY_IOS
             "ca-app-pub-3940256099942544/2934735716".CopyToClipboard();
 #endif
-            DebugEditor.Toast("[Admob] Copy Banner Test Unit Id!");
+            DebugEditor.Toast("[Admob] Copy Banner Test Unit Id Success!");
         }
 #endif
     }

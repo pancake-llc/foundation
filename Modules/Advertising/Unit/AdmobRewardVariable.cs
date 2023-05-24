@@ -1,5 +1,4 @@
 ﻿using System;
-using Pancake.Apex;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
@@ -11,8 +10,8 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public class AdmobRewardVariable : AdUnitVariable
     {
-        [NonSerialized] public Action completedCallback;
-        [NonSerialized] public Action skippedCallback;
+        [NonSerialized] internal Action completedCallback;
+        [NonSerialized] internal Action skippedCallback;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private RewardedAd _rewardedAd;
 #endif
@@ -50,6 +49,13 @@ namespace Pancake.Monetization
             ShowImpl();
             return this;
         }
+        
+        protected override void ResetChainCallback()
+        {
+            base.ResetChainCallback();
+            completedCallback = null;
+            skippedCallback = null;
+        }
 
         public override void Destroy()
         {
@@ -75,7 +81,6 @@ namespace Pancake.Monetization
             _rewardedAd.OnAdFullScreenContentClosed += OnAdClosed;
             _rewardedAd.OnAdFullScreenContentFailed += OnAdFailedToShow;
             _rewardedAd.OnAdFullScreenContentOpened += OnAdOpening;
-            _rewardedAd.OnAdImpressionRecorded += OnAdImpressionRecorded;
             _rewardedAd.OnAdPaid += OnAdPaided;
             OnAdLoaded();
         }
@@ -88,8 +93,6 @@ namespace Pancake.Monetization
                 "RewardedAd",
                 EAdNetwork.Admob.ToString());
         }
-
-        private void OnAdImpressionRecorded() { throw new NotImplementedException(); }
 
         private void OnAdOpening()
         {
@@ -130,7 +133,7 @@ namespace Pancake.Monetization
 #elif UNITY_IOS
             "ca-app-pub-3940256099942544/1712485313".CopyToClipboard();
 #endif
-            DebugEditor.Toast("[Admob] Copy Rewarded Test Unit Id!");
+            DebugEditor.Toast("[Admob] Copy Rewarded Test Unit Id Success!");
         }
 #endif
     }

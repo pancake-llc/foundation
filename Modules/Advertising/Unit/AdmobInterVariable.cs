@@ -10,7 +10,7 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public class AdmobInterVariable : AdUnitVariable
     {
-        [NonSerialized] public Action completedCallback;
+        [NonSerialized] internal Action completedCallback;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private InterstitialAd _interstitialAd;
 #endif
@@ -41,6 +41,12 @@ namespace Pancake.Monetization
 #endif
         }
 
+        protected override void ResetChainCallback()
+        {
+            base.ResetChainCallback();
+            completedCallback = null;
+        }
+
         public override void Destroy()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -65,11 +71,8 @@ namespace Pancake.Monetization
             _interstitialAd.OnAdFullScreenContentClosed += OnAdClosed;
             _interstitialAd.OnAdFullScreenContentFailed += OnAdFailedToShow;
             _interstitialAd.OnAdFullScreenContentOpened += OnAdOpening;
-            _interstitialAd.OnAdImpressionRecorded += OnAdImpressionRecorded;
             OnAdLoaded();
         }
-
-        private void OnAdImpressionRecorded() { throw new NotImplementedException(); }
 
         private void OnAdOpening()
         {
@@ -109,7 +112,7 @@ namespace Pancake.Monetization
 #elif UNITY_IOS
             "ca-app-pub-3940256099942544/4411468910".CopyToClipboard();
 #endif
-            DebugEditor.Toast("[Admob] Copy Interstitial Test Unit Id!");
+            DebugEditor.Toast("[Admob] Copy Interstitial Test Unit Id Success!");
         }
 #endif
     }

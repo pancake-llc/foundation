@@ -34,10 +34,11 @@ namespace Pancake.Monetization
         [SerializeField, Array, ShowIf(nameof(admobEnableTestMode)), Label("Devices Test"), Order(5)]
         private List<string> admobDevicesTest;
 
-        [SerializeField, Label("Banner"), Order(6)] private AdmobBannerVariable admobBanner;
-        [SerializeField, Label("Interstitial"), Order(7)] private AdmobInterVariable admobInter;
-        [SerializeField, Label("Rewarded"), Order(8)] private AdmobRewardVariable admobReward;
-        [SerializeField, Label("Inter Rewarded"), Order(9)] private AdmobRewardInterVariable admobRewardInter;
+        [SerializeField, Label("Client"), Order(6)] private AdmobClient admobClient;
+        [SerializeField, Label("Banner"), Order(7)] private AdmobBannerVariable admobBanner;
+        [SerializeField, Label("Interstitial"), Order(8)] private AdmobInterVariable admobInter;
+        [SerializeField, Label("Rewarded"), Order(9)] private AdmobRewardVariable admobReward;
+        [SerializeField, Label("Inter Rewarded"), Order(10)] private AdmobRewardInterVariable admobRewardInter;
 
         [HorizontalLine]
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
@@ -45,11 +46,12 @@ namespace Pancake.Monetization
 #else
         [Message("Applovin plugin not found", Style = MessageStyle.Warning)]
 #endif
-        [SerializeField, Label("App Open"), Order(10)]
+        [SerializeField, Label("App Open"), Order(11)]
         private AdmobAppOpenVariable admobAppOpen;
 
         public List<string> AdmobDevicesTest => admobDevicesTest;
         public bool AdmobEnableTestMode => admobEnableTestMode;
+        public AdmobClient AdmobClient => admobClient;
         public AdmobBannerVariable AdmobBanner => admobBanner;
         public AdmobInterVariable AdmobInter => admobInter;
         public AdmobRewardVariable AdmobReward => admobReward;
@@ -57,21 +59,23 @@ namespace Pancake.Monetization
         public AdmobAppOpenVariable AdmobAppOpen => admobAppOpen;
 
 
-        [Header("[applovin]")] [SerializeField, TextArea, Order(13)] private string sdkKey;
+        [Header("[applovin]")] [SerializeField, TextArea, Order(14)] private string sdkKey;
 
-        [SerializeField, Label("Banner"), Order(14)] private AdmobBannerVariable applovinBanner;
-        [SerializeField, Label("Interstitial"), Order(15)] private AdmobInterVariable applovinInter;
-        [SerializeField, Label("Rewarded"), Order(16)] private AdmobRewardVariable applovinReward;
-        [SerializeField, Label("Inter Rewarded"), Order(17)] private AdmobRewardInterVariable applovinRewardInter;
-        [SerializeField, Label("App Open"), Order(18)] private AdmobAppOpenVariable applovinAppOpen;
-        [SerializeField, Label("Age Restricted"), Order(19)] private bool applovinEnableAgeRestrictedUser;
+        [SerializeField, Label("Client"), Order(15)] private ApplovinAdClient applovinClient;
+        [SerializeField, Label("Banner"), Order(16)] private ApplovinBannerVariable applovinBanner;
+        [SerializeField, Label("Interstitial"), Order(17)] private ApplovinInterVariable applovinInter;
+        [SerializeField, Label("Rewarded"), Order(18)] private ApplovinRewardVariable applovinReward;
+        [SerializeField, Label("Inter Rewarded"), Order(19)] private ApplovinRewardInterVariable applovinRewardInter;
+        [SerializeField, Label("App Open"), Order(20)] private ApplovinAppOpenVariable applovinAppOpen;
+        [SerializeField, Label("Age Restricted"), Order(21)] private bool applovinEnableAgeRestrictedUser;
 
         public string SDKKey => sdkKey;
-        public AdmobBannerVariable ApplovinBanner => applovinBanner;
-        public AdmobInterVariable ApplovinInter => applovinInter;
-        public AdmobRewardVariable ApplovinReward => applovinReward;
-        public AdmobRewardInterVariable ApplovinRewardInter => applovinRewardInter;
-        public AdmobAppOpenVariable ApplovinAppOpen => applovinAppOpen;
+        public ApplovinAdClient ApplovinClient => applovinClient;
+        public ApplovinBannerVariable ApplovinBanner => applovinBanner;
+        public ApplovinInterVariable ApplovinInter => applovinInter;
+        public ApplovinRewardVariable ApplovinReward => applovinReward;
+        public ApplovinRewardInterVariable ApplovinRewardInter => applovinRewardInter;
+        public ApplovinAppOpenVariable ApplovinAppOpen => applovinAppOpen;
         public bool ApplovinEnableAgeRestrictedUser => applovinEnableAgeRestrictedUser;
 
         public float AdCheckingInterval => adCheckingInterval;
@@ -164,7 +168,7 @@ namespace Pancake.Monetization
             0.66f,
             Target = ColorTarget.Background)]
         [HorizontalGroup("applovin-uninstall")]
-        [Order(11)]
+        [Order(13)]
         private void Uninstall_ApplovinSdk()
         {
             var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
@@ -183,7 +187,7 @@ namespace Pancake.Monetization
             1,
             Target = ColorTarget.Background)]
         [HorizontalGroup("applovin-uninstall")]
-        [Order(11)]
+        [Order(12)]
         private void OpenApplovinManager() { UnityEditor.EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager"); }
 #else
         [SerializeMethod]
@@ -193,7 +197,7 @@ namespace Pancake.Monetization
             1,
             Target = ColorTarget.Background)]
         [HorizontalGroup("applovin-install")]
-        [Order(11)]
+        [Order(12)]
         private void Install_ApplovinSdk()
         {
             DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing <color=#FF77C6>applovin</color> sdk");
@@ -207,7 +211,7 @@ namespace Pancake.Monetization
             1,
             Target = ColorTarget.Background)]
         [HorizontalGroup("applovin-install")]
-        [Order(12)]
+        [Order(13)]
         private void AddApplovinSymbol()
         {
             var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
@@ -225,6 +229,14 @@ namespace Pancake.Monetization
             var normalPath = $"Assets/heart/{fullRelativePath}";
             return !System.IO.File.Exists(System.IO.Path.GetFullPath(upmPath)) ? normalPath : upmPath;
         }
+        
+        [UnityEngine.ContextMenu("Copy Admob Test AppId")]
+        protected void FillDefaultTestId()
+        {
+            "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
+            DebugEditor.Toast("[Admob] Copy AppId Test Id Success!");
+        }
+        
 #endif
     }
 }
