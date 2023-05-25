@@ -7,10 +7,12 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_variable")]
     public class FloatVariable : ScriptableVariable<float>
     {
-        [SerializeField] private bool _isClamped = false;
-        public bool IsClamped => _isClamped;
+        [Tooltip("Clamps the value of this variable to a minimum and maximum.")] [SerializeField]
+        private bool isClamped;
 
-        [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf("_isClamped", true)]
+        public bool IsClamped => isClamped;
+
+        [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf(nameof(isClamped), true)]
         private Vector2 _minMax = new Vector2(float.MinValue, float.MaxValue);
 
         public Vector2 MinMax { get => _minMax; set => _minMax = value; }
@@ -23,7 +25,7 @@ namespace Pancake.Scriptable
 
         public override void Load()
         {
-            Value = Data.Load(Guid, InitialValue);
+            Value = Data.Load(Guid, DefaultValue);
             base.Load();
         }
 
@@ -31,10 +33,10 @@ namespace Pancake.Scriptable
 
         public override float Value
         {
-            get => _value;
+            get => value;
             set
             {
-                var clampedValue = _isClamped ? Mathf.Clamp(value, _minMax.x, _minMax.y) : value;
+                float clampedValue = isClamped ? Mathf.Clamp(value, _minMax.x, _minMax.y) : value;
                 base.Value = clampedValue;
             }
         }
@@ -42,11 +44,10 @@ namespace Pancake.Scriptable
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
-            if (_isClamped)
+            if (isClamped)
             {
-                var clampedValue = Mathf.Clamp(_value, _minMax.x, _minMax.y);
-                if (_value < clampedValue || _value > clampedValue)
-                    _value = clampedValue;
+                float clampedValue = Mathf.Clamp(value, _minMax.x, _minMax.y);
+                if (value < clampedValue || value > clampedValue) value = clampedValue;
             }
 
             base.OnValidate();

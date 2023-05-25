@@ -7,17 +7,17 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_event_listener")]
     public class EventListenerGameObject : EventListenerGeneric<GameObject>
     {
-        [SerializeField] private EventResponse[] m_eventResponses = null;
-        protected override EventResponse<GameObject>[] EventResponses => m_eventResponses;
+        [SerializeField] private EventResponse[] eventResponses;
+        protected override EventResponse<GameObject>[] EventResponses => eventResponses;
 
         [System.Serializable]
         public class EventResponse : EventResponse<GameObject>
         {
-            [SerializeField] private ScriptableEventGameObject mScriptableEvent = null;
-            public override ScriptableEvent<GameObject> ScriptableEvent => mScriptableEvent;
+            [SerializeField] private ScriptableEventGameObject scriptableEvent;
+            public override ScriptableEvent<GameObject> ScriptableEvent => scriptableEvent;
 
-            [SerializeField] private GameObjectUnityEvent m_response = null;
-            public override UnityEvent<GameObject> Response => m_response;
+            [SerializeField] private GameObjectUnityEvent response;
+            public override UnityEvent<GameObject> Response => response;
         }
 
         [System.Serializable]

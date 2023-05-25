@@ -28,7 +28,7 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(AdSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(AdSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(AdSettings)}.asset");
+                    Debug.Log($"{nameof(AdSettings).TextColor("#f75369")} was created ad {path}/{nameof(AdSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

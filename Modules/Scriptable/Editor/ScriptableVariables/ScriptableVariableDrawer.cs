@@ -31,26 +31,20 @@ namespace Pancake.ScriptableEditor
             if (objects.Count > 0) DisplayAll(objects);
         }
 
-        private void DrawMinimal() { Uniform.DrawOnlyField(serializedObject, "_value", false); }
+        private void DrawMinimal() { Uniform.DrawOnlyField(serializedObject, "value", false); }
 
         private void DrawDefault()
         {
             Uniform.DrawOnlyField(serializedObject, "m_Script", true);
-            var propertiesToHide = CanShowMinMaxProperty(target) ? new[] {"m_Script"} : new[] {"m_Script", "_minMax"};
+            var propertiesToHide = CanShowMinMaxProperty(target) ? new[] {"m_Script"} : new[] {"m_Script", "minMax"};
             Uniform.DrawInspectorExcept(serializedObject, propertiesToHide);
-
-            //hack, weirdly in the wizard, the Vector2 fields are drawn on the line below. 
-            //So in order the see them, we need some space. Otherwise they are hidden behind the button.
-            if (IsInScriptableWizard()) GUILayout.Space(20f);
 
             if (GUILayout.Button("Reset to initial value"))
             {
-                var so = target as ISave;
-                so?.SetToInitialValue();
+                var so = (IReset) target;
+                so.ResetToInitialValue();
             }
         }
-
-        private bool IsInScriptableWizard() { return EditorWindow.focusedWindow != null && EditorWindow.focusedWindow.GetType() == typeof(ScriptableWizardWindow); }
 
         private bool CanShowMinMaxProperty(Object targetObject) { return IsIntClamped(targetObject) || IsFloatClamped(targetObject); }
 
@@ -96,7 +90,13 @@ namespace Pancake.ScriptableEditor
 
         private void OnPlayModeStateChanged(PlayModeStateChange obj)
         {
-            if (obj == PlayModeStateChange.EnteredPlayMode) _scriptableBase.repaintRequest += OnRepaintRequested;
+            if (target == null) return;
+
+            if (obj == PlayModeStateChange.EnteredPlayMode)
+            {
+                if (_scriptableBase == null) _scriptableBase = (ScriptableBase) target;
+                _scriptableBase.repaintRequest += OnRepaintRequested;
+            }
             else if (obj == PlayModeStateChange.ExitingPlayMode) _scriptableBase.repaintRequest -= OnRepaintRequested;
         }
 

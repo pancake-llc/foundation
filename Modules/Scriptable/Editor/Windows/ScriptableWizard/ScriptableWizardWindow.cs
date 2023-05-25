@@ -84,7 +84,14 @@ namespace Pancake.ScriptableEditor
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
-        private void OnPlayModeStateChanged(PlayModeStateChange state) { }
+        private void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (scriptableBase == null) return;
+            if (state == PlayModeStateChange.EnteredPlayMode) scriptableBase.repaintRequest += OnRepaintRequested;
+            else if (state == PlayModeStateChange.EnteredEditMode) scriptableBase.repaintRequest -= OnRepaintRequested;
+        }
+
+        private void OnRepaintRequested() { Repaint(); }
 
         private void LoadAssets()
         {
@@ -264,9 +271,12 @@ namespace Pancake.ScriptableEditor
             //Draw Selected Scriptable
             if (_editor == null || scriptableBase != previousScriptableBase)
             {
-                _editor = UnityEditor.Editor.CreateEditor(scriptableBase);
+                previousScriptableBase.repaintRequest -= OnRepaintRequested;
+                UnityEditor.Editor.CreateCachedEditor(scriptableBase, null, ref _editor);
                 previousScriptableBase = scriptableBase;
+                scriptableBase.repaintRequest += OnRepaintRequested;
             }
+
             _editor.DrawHeader();
             _editor.OnInspectorGUI();
             Uniform.DrawLine();

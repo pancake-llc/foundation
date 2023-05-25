@@ -38,7 +38,7 @@ namespace Pancake
                 if (!Data.HasKey(App.FIRST_INSTALL_TIMESTAMP_KEY)) Data.Save(App.FIRST_INSTALL_TIMESTAMP_KEY, DateTime.Now);
 
                 App.IsAppInitialized = true;
-                Debug.Log("<color=#52D5F2>Runtime has been initialized!</color>");
+                Debug.Log("<color=#f75369>Runtime has been initialized!</color>");
 
 #if UNITY_IOS
                 SkAdNetworkBinding.SkAdNetworkRegisterAppForNetworkAttribution();

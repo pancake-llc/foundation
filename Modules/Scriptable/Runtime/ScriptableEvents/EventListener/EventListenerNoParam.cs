@@ -8,26 +8,26 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_event_listener")]
     public class EventListenerNoParam : EventListenerBase
     {
-        [SerializeField] private EventResponse[] _eventResponses = null;
+        [SerializeField] private EventResponse[] eventResponses;
 
         private Dictionary<ScriptableEventNoParam, UnityEvent> _dictionary = new Dictionary<ScriptableEventNoParam, UnityEvent>();
 
         protected override void ToggleRegistration(bool toggle)
         {
-            for (var i = 0; i < _eventResponses.Length; i++)
+            for (var i = 0; i < eventResponses.Length; i++)
             {
                 if (toggle)
                 {
-                    _eventResponses[i].ScriptableEvent.RegisterListener(this);
+                    eventResponses[i].ScriptableEvent.RegisterListener(this);
 
-                    if (!_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
-                        _dictionary.Add(_eventResponses[i].ScriptableEvent, _eventResponses[i].Response);
+                    if (!_dictionary.ContainsKey(eventResponses[i].ScriptableEvent))
+                        _dictionary.Add(eventResponses[i].ScriptableEvent, eventResponses[i].Response);
                 }
                 else
                 {
-                    _eventResponses[i].ScriptableEvent.UnregisterListener(this);
-                    if (_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
-                        _dictionary.Remove(_eventResponses[i].ScriptableEvent);
+                    eventResponses[i].ScriptableEvent.UnregisterListener(this);
+                    if (_dictionary.ContainsKey(eventResponses[i].ScriptableEvent))
+                        _dictionary.Remove(eventResponses[i].ScriptableEvent);
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace Pancake.Scriptable
         public override bool ContainsCallToMethod(string methodName)
         {
             var containsMethod = false;
-            foreach (var eventResponse in _eventResponses)
+            foreach (var eventResponse in eventResponses)
             {
                 var registeredListenerCount = eventResponse.Response.GetPersistentEventCount();
 

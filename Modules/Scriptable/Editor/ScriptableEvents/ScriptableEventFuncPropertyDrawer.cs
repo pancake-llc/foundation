@@ -40,7 +40,7 @@ namespace Pancake.ScriptableEditor
             {
                 var method = property.objectReferenceValue.GetType().BaseType.GetMethod("Raise", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
                 var asset = new SerializedObject(property.objectReferenceValue);
-                var valueProp = asset.FindProperty("_debugValue");
+                var valueProp = asset.FindProperty("debugValue");
                 method.Invoke(targetObject, new[] {GetDebugValue(valueProp)});
             }
 
@@ -50,7 +50,7 @@ namespace Pancake.ScriptableEditor
         private object GetDebugValue(SerializedProperty property)
         {
             var targetType = property.serializedObject.targetObject.GetType();
-            var targetField = targetType.GetField("_debugValue", BindingFlags.Instance | BindingFlags.NonPublic);
+            var targetField = targetType.GetField("debugValue", BindingFlags.Instance | BindingFlags.NonPublic);
             return targetField.GetValue(property.serializedObject.targetObject);
         }
     }

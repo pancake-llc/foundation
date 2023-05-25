@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Pancake.Apex;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,25 +15,28 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_variable")]
     public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IDrawObjectsInInspector
     {
-        [Tooltip("The value of the variable, this is changed at runtime.")] [SerializeField]
-        protected T _value;
-
-        [Tooltip("The initial value of this variable. When reset is called, it is set to this value")] [SerializeField]
-        private T _initialValue;
+        [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeField]
+        protected T value;
 
         [Tooltip("Log in the console whenever this variable is changed, loaded or saved.")] [SerializeField]
-        private bool _debugLogEnabled = false;
+        private bool debugLogEnabled;
 
         [Tooltip("If true, saves the value to Player Prefs and loads it onEnable.")] [SerializeField]
-        private bool _saved = false;
+        private bool saved;
+
+        [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")] [SerializeField] [ShowIf("saved", true)]
+        private T defaultValue;
 
         [Tooltip("Reset to initial value." + " Scene Loaded : when the scene is loaded." + " Application Start : Once, when the application starts.")] [SerializeField]
-        private ResetType _resetOn = ResetType.SceneLoaded;
+        private ResetType resetOn = ResetType.SceneLoaded;
 
         private readonly List<Object> _listenersObjects = new List<Object>();
 
         /// <summary> Event raised when the variable value changes. </summary>
         private Action<T> _onValueChanged;
+
+        /// <summary> This caches the value when play mode starts. </summary>
+        private T _initialValue;
 
         /// <summary>
         /// Event raised when the variable value changes.
@@ -44,33 +48,20 @@ namespace Pancake.Scriptable
                 _onValueChanged += value;
 
                 var listener = value.Target as Object;
-                if (listener != null && !_listenersObjects.Contains(listener))
-                    _listenersObjects.Add(listener);
+                if (listener != null && !_listenersObjects.Contains(listener)) _listenersObjects.Add(listener);
             }
             remove
             {
                 _onValueChanged -= value;
 
                 var listener = value.Target as Object;
-                if (_listenersObjects.Contains(listener))
-                    _listenersObjects.Remove(listener);
+                if (_listenersObjects.Contains(listener)) _listenersObjects.Remove(listener);
             }
         }
 
         public T PreviousValue { get; private set; }
 
-        /// <summary> The initial value of the variable to which it will be reset. </summary>
-        public T InitialValue
-        {
-            get => _initialValue;
-            set
-            {
-                _initialValue = value;
-#if UNITY_EDITOR
-                SetDirtyInPlayMode();
-#endif
-            }
-        }
+        public T DefaultValue { get => defaultValue; private set => defaultValue = value; }
 
         /// <summary>
         /// Modify this to change the value of the variable.
@@ -78,41 +69,31 @@ namespace Pancake.Scriptable
         /// </summary>
         public virtual T Value
         {
-            get => _value;
+            get => value;
             set
             {
-                if (Equals(_value, value))
-                    return;
-                _value = value;
+                if (Equals(this.value, value)) return;
+                this.value = value;
                 ValueChanged();
             }
         }
 
         private void ValueChanged()
         {
-            _onValueChanged?.Invoke(_value);
+            _onValueChanged?.Invoke(value);
 
-            if (_debugLogEnabled)
-                Debug.Log(GetColorizedString());
-
-            if (_saved)
-                Save();
-
-            PreviousValue = _value;
-#if UNITY_EDITOR
-            SetDirtyInPlayMode();
-#endif
-        }
-
-        private void SetDirtyInPlayMode()
-        {
-#if UNITY_EDITOR
-            //When the SV is changed by code, make sure it is marked dirty to be saved and picked up by Version Control.
-            if (Application.isPlaying)
+            if (debugLogEnabled)
             {
-                EditorUtility.SetDirty(this);
-                repaintRequest?.Invoke();
+                string log = GetColorizedString();
+                log += saved ? " <color=#f75369>[Saved]</color>" : "";
+                Debug.Log(log);
             }
+
+            if (saved) Save();
+
+            PreviousValue = value;
+#if UNITY_EDITOR
+            SetDirtyAndRepaint();
 #endif
         }
 
@@ -124,31 +105,51 @@ namespace Pancake.Scriptable
 
         private void OnEnable()
         {
-            if (_resetOn == ResetType.SceneLoaded)
-                SceneManager.sceneLoaded += OnSceneLoaded;
+            Init();
+            SceneManager.sceneLoaded += OnSceneLoaded;
 
-            ResetToInitialValue();
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+#endif
         }
 
-        private void OnDisable()
-        {
-            if (_resetOn == ResetType.SceneLoaded)
-                SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
+        private void OnDisable() { SceneManager.sceneLoaded -= OnSceneLoaded; }
 
         protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            if (resetOn != ResetType.SceneLoaded) return;
+
             if (mode == LoadSceneMode.Single)
-                ResetToInitialValue();
+            {
+                if (saved) Load();
+                else ResetToInitialValue();
+            }
         }
 
 #if UNITY_EDITOR
+        private void SetDirtyAndRepaint()
+        {
+            //When the SV is changed by code, make sure it is marked dirty to be saved and picked up by Version Control.
+            // if (!Application.isPlaying)
+            //     return;
+            EditorUtility.SetDirty(this);
+            repaintRequest?.Invoke();
+        }
+
+        public void OnPlayModeStateChanged(PlayModeStateChange playModeStateChange)
+        {
+            if (playModeStateChange == PlayModeStateChange.ExitingEditMode) Init();
+            else if (playModeStateChange == PlayModeStateChange.EnteredEditMode)
+            {
+                if (!saved) ResetToInitialValue();
+            }
+        }
+
         protected virtual void OnValidate()
         {
             //In non fast play mode, this get called before OnEnable(). Therefore a saved variable can get saved before loading. 
             //This check prevents the latter.
-            if (Equals(_value, PreviousValue))
-                return;
+            if (Equals(value, PreviousValue)) return;
             ValueChanged();
         }
 #endif
@@ -157,22 +158,26 @@ namespace Pancake.Scriptable
         {
             _listenersObjects.Clear();
             Value = default;
-            InitialValue = default;
+            _initialValue = default;
             PreviousValue = default;
-            _saved = false;
-            _resetOn = ResetType.SceneLoaded;
-            _debugLogEnabled = false;
+            saved = false;
+            resetOn = ResetType.SceneLoaded;
+            debugLogEnabled = false;
+        }
+
+        public void Init()
+        {
+            _initialValue = value;
+            PreviousValue = value;
+            if (saved) Load();
+            _listenersObjects.Clear();
         }
 
         /// <summary> Reset to initial value or loads and clears the list</summary>
         public void ResetToInitialValue()
         {
-            _listenersObjects.Clear();
-
-            if (_saved)
-                Load();
-            else
-                SetToInitialValue();
+            Value = _initialValue;
+            PreviousValue = _initialValue;
         }
 
         public virtual void Save()
@@ -180,35 +185,28 @@ namespace Pancake.Scriptable
 #if UNITY_EDITOR
             Data.SaveAll();
 #endif
-            if (_debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Saved]</color>");
         }
 
         public virtual void Load()
         {
-            PreviousValue = _value;
+            PreviousValue = value;
 
-            if (_debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
-        }
-
-        public void SetToInitialValue()
-        {
-            Value = _initialValue;
-            PreviousValue = _initialValue;
+            if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
         }
 
         public override string ToString()
         {
             var sb = new StringBuilder(name);
             sb.Append(" : ");
-            sb.Append(_value);
+            sb.Append(value);
             return sb.ToString();
         }
 
-        private string GetColorizedString() { return $"<color=#f75369>[Variable]</color> {ToString()}"; }
+        private string GetColorizedString() => $"<color=#f75369>[Variable]</color> {ToString()}";
 
-        public List<Object> GetAllObjects() { return _listenersObjects; }
+        public List<Object> GetAllObjects() => _listenersObjects;
 
-        public static implicit operator T(ScriptableVariable<T> variable) { return variable.Value; }
+        public static implicit operator T(ScriptableVariable<T> variable) => variable.Value;
     }
 
     public enum ResetType

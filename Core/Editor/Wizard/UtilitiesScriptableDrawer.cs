@@ -24,7 +24,7 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(ScriptableEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(ScriptableEditorSetting).TextColor("#52D5F2")} was created ad {path}/{nameof(ScriptableEditorSetting)}.asset");
+                    Debug.Log($"{nameof(ScriptableEditorSetting).TextColor("#f75369")} was created ad {path}/{nameof(ScriptableEditorSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

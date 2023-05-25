@@ -21,7 +21,7 @@ namespace Pancake.ScriptableEditor
 
         protected override void DrawShortcut(Rect position, SerializedProperty property, Object targetObject)
         {
-            var value = _serializedObject.FindProperty("_list");
+            var value = _serializedObject.FindProperty("list");
             var count = value.arraySize;
             EditorGUI.LabelField(position, "Count: " + count);
         }

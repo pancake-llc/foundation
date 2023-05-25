@@ -21,7 +21,7 @@ namespace Pancake.ScriptableEditor
             GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Raise"))
             {
-                var property = serializedObject.FindProperty("_debugValue");
+                var property = serializedObject.FindProperty("debugValue");
                 _methodInfo.Invoke(target, new[] {GetDebugValue(property)});
             }
 
@@ -52,7 +52,7 @@ namespace Pancake.ScriptableEditor
         private object GetDebugValue(SerializedProperty property)
         {
             var targetType = property.serializedObject.targetObject.GetType();
-            var targetField = targetType.GetField("_debugValue", BindingFlags.Instance | BindingFlags.NonPublic);
+            var targetField = targetType.GetField("debugValue", BindingFlags.Instance | BindingFlags.NonPublic);
             return targetField.GetValue(property.serializedObject.targetObject);
         }
     }

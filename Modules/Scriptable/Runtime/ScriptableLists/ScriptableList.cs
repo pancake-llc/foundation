@@ -12,19 +12,17 @@ namespace Pancake.Scriptable
     {
         [Tooltip("Clear the list when:" + " Scene Loaded : when a scene is loaded." +
                  " Application Start : Once, when the application starts. Modifications persists between scenes")]
-        [SerializeField]
-        private ResetType _resetOn = ResetType.SceneLoaded;
+        [SerializeField] private ResetType resetOn = ResetType.SceneLoaded;
+        [SerializeField] protected List<T> list = new List<T>();
 
-        [SerializeField] protected List<T> _list = new List<T>();
-
-        public int Count => _list.Count;
-        public bool IsEmpty => !_list.Any();
+        public int Count => list.Count;
+        public bool IsEmpty => !list.Any();
         public override Type GetElementType => typeof(T);
 
         //feel free to uncomment this property if you need to access the list for more functionalities.
-        //public List<T> List => _list; 
+        //public List<T> List => list; 
 
-        public T this[int index] { get => _list[index]; set => _list[index] = value; }
+        public T this[int index] { get => list[index]; set => list[index] = value; }
 
         /// <summary> Event raised when an item is added or removed from the list. </summary>
         public event Action OnItemCountChanged;
@@ -51,10 +49,9 @@ namespace Pancake.Scriptable
         /// <param name="item"></param>
         public void Add(T item)
         {
-            if (_list.Contains(item))
-                return;
+            if (list.Contains(item)) return;
 
-            _list.Add(item);
+            list.Add(item);
             OnItemCountChanged?.Invoke();
             OnItemAdded?.Invoke(item);
 #if UNITY_EDITOR
@@ -70,8 +67,8 @@ namespace Pancake.Scriptable
         public void AddRange(IEnumerable<T> items)
         {
             var itemList = items.ToList();
-            foreach (var item in itemList.Where(item => !_list.Contains(item)))
-                _list.Add(item);
+            foreach (var item in itemList.Where(item => !list.Contains(item)))
+                list.Add(item);
 
             OnItemCountChanged?.Invoke();
             OnItemsAdded?.Invoke(itemList);
@@ -87,10 +84,9 @@ namespace Pancake.Scriptable
         /// <param name="item"></param>
         public void Remove(T item)
         {
-            if (!_list.Contains(item))
-                return;
+            if (!list.Contains(item)) return;
 
-            _list.Remove(item);
+            list.Remove(item);
             OnItemCountChanged?.Invoke();
             OnItemRemoved?.Invoke(item);
 #if UNITY_EDITOR
@@ -106,8 +102,8 @@ namespace Pancake.Scriptable
         /// <param name="count"></param>
         public void RemoveRange(int index, int count)
         {
-            var items = _list.GetRange(index, count);
-            _list.RemoveRange(index, count);
+            var items = list.GetRange(index, count);
+            list.RemoveRange(index, count);
             OnItemCountChanged?.Invoke();
             OnItemsRemoved?.Invoke(items);
 #if UNITY_EDITOR
@@ -117,7 +113,7 @@ namespace Pancake.Scriptable
 
         private void Clear()
         {
-            _list.Clear();
+            list.Clear();
             OnCleared?.Invoke();
 #if UNITY_EDITOR
             repaintRequest?.Invoke();
@@ -134,38 +130,45 @@ namespace Pancake.Scriptable
         {
             Clear();
 
-            if (_resetOn == ResetType.SceneLoaded)
-                SceneManager.sceneLoaded += OnSceneLoaded;
+            if (resetOn == ResetType.SceneLoaded) SceneManager.sceneLoaded += OnSceneLoaded;
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+#endif
         }
 
         private void OnDisable()
         {
-            if (_resetOn == ResetType.SceneLoaded)
-                SceneManager.sceneLoaded -= OnSceneLoaded;
+            if (resetOn == ResetType.SceneLoaded) SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (mode == LoadSceneMode.Single)
-                Clear();
+            if (mode == LoadSceneMode.Single) Clear();
         }
 
         public override void Reset()
         {
-            _resetOn = ResetType.SceneLoaded;
+            resetOn = ResetType.SceneLoaded;
             Clear();
         }
+        
+#if UNITY_EDITOR
+        public void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange playModeStateChange)
+        {
+            if (playModeStateChange == UnityEditor.PlayModeStateChange.EnteredEditMode) Clear();
+        }
+#endif
 
         public void ResetToInitialValue() => Clear();
 
-        public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public List<Object> GetAllObjects()
         {
             var list = new List<Object>(Count);
-            list.AddRange(_list.OfType<Object>());
+            list.AddRange(this.list.OfType<Object>());
             return list;
         }
     }

@@ -4,6 +4,5 @@
     {
         void Save();
         void Load();
-        void SetToInitialValue();
     }
 }

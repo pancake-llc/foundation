@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
@@ -11,7 +12,7 @@ namespace Pancake.Scriptable
     public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector
     {
         [SerializeField] private bool _debugLogEnabled = false;
-        [SerializeField] protected T _debugValue = default(T);
+        [SerializeField] protected T debugValue = default(T);
 
         private readonly List<EventListenerGeneric<T>> _eventListeners = new List<EventListenerGeneric<T>>();
         private readonly List<Object> _listenersObjects = new List<Object>();
@@ -84,7 +85,7 @@ namespace Pancake.Scriptable
             foreach (var del in delegates)
             {
                 var sb = new StringBuilder();
-                sb.Append("<color=#52D5F2>[Event] </color>");
+                sb.Append("<color=#f75369>[Event] </color>");
                 sb.Append(name);
                 sb.Append(" => ");
                 sb.Append(del.GetMethodInfo().Name);
@@ -97,7 +98,7 @@ namespace Pancake.Scriptable
         public override void Reset()
         {
             _debugLogEnabled = false;
-            _debugValue = default;
+            debugValue = default;
         }
     }
 }

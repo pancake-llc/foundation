@@ -27,7 +27,7 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(IOS14AdSupportSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(IOS14AdSupportSetting).TextColor("#52D5F2")} was created ad {path}/{nameof(IOS14AdSupportSetting)}.asset");
+                    Debug.Log($"{nameof(IOS14AdSupportSetting).TextColor("#f75369")} was created ad {path}/{nameof(IOS14AdSupportSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

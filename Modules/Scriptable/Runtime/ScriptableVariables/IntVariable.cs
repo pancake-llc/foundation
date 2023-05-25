@@ -7,13 +7,15 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_variable")]
     public class IntVariable : ScriptableVariable<int>
     {
-        [SerializeField] private bool _isClamped = false;
-        public bool IsClamped => _isClamped;
+        [Tooltip("Clamps the value of this variable to a minimum and maximum.")] [SerializeField]
+        private bool isClamped;
 
-        [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf("_isClamped", true)]
-        private Vector2Int _minMax = new Vector2Int(int.MinValue, int.MaxValue);
+        public bool IsClamped => isClamped;
 
-        public Vector2Int MinMax { get => _minMax; set => _minMax = value; }
+        [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf(nameof(isClamped), true)]
+        private Vector2Int minMax = new Vector2Int(int.MinValue, int.MaxValue);
+
+        public Vector2Int MinMax { get => minMax; set => minMax = value; }
 
         public override void Save()
         {
@@ -23,7 +25,7 @@ namespace Pancake.Scriptable
 
         public override void Load()
         {
-            Value = Data.Load(Guid, InitialValue);
+            Value = Data.Load(Guid, DefaultValue);
             base.Load();
         }
 
@@ -31,10 +33,10 @@ namespace Pancake.Scriptable
 
         public override int Value
         {
-            get => _value;
+            get => value;
             set
             {
-                var clampedValue = IsClamped ? Mathf.Clamp(value, _minMax.x, _minMax.y) : value;
+                var clampedValue = IsClamped ? Mathf.Clamp(value, minMax.x, minMax.y) : value;
                 base.Value = clampedValue;
             }
         }
@@ -44,9 +46,9 @@ namespace Pancake.Scriptable
         {
             if (IsClamped)
             {
-                var clampedValue = Mathf.Clamp(_value, _minMax.x, _minMax.y);
-                if (_value < clampedValue || _value > clampedValue)
-                    _value = clampedValue;
+                var clampedValue = Mathf.Clamp(value, minMax.x, minMax.y);
+                if (value < clampedValue || value > clampedValue)
+                    value = clampedValue;
             }
 
             base.OnValidate();

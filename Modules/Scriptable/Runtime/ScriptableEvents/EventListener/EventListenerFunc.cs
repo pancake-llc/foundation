@@ -31,7 +31,7 @@ namespace Pancake.Scriptable
                 if (toggle)
                 {
                     response.ScriptableEvent.RegisterListener(this);
-                    if (!_dictionary.ContainsKey(response.ScriptableEvent)) _dictionary.Add(response.ScriptableEvent, response.Response);
+                    _dictionary.TryAdd(response.ScriptableEvent, response.Response);
                 }
                 else
                 {
@@ -53,8 +53,8 @@ namespace Pancake.Scriptable
                     if (eventResponse.Response.GetPersistentMethodName(i) == methodName)
                     {
                         var sb = new StringBuilder();
-                        sb.Append($"<color=#52D5F2>{methodName}()</color>");
-                        sb.Append(" is called by: <color=#52D5F2>[Event] ");
+                        sb.Append($"<color=#f75369>{methodName}()</color>");
+                        sb.Append(" is called by: <color=#f75369>[Event] ");
                         sb.Append(eventResponse.ScriptableEvent.name);
                         sb.Append("</color>");
                         UnityEngine.Debug.Log(sb.ToString(), gameObject);
@@ -75,7 +75,7 @@ namespace Pancake.Scriptable
             for (var i = 0; i < registeredListenerCount; i++)
             {
                 var sb = new StringBuilder();
-                sb.Append($"<color=#52D5F2>[Event] </color>");
+                sb.Append("<color=#f75369>[Event] </color>");
                 sb.Append(eventRaised.name);
                 sb.Append(" => ");
                 sb.Append(listener.GetPersistentTarget(i).name);

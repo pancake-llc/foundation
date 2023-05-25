@@ -23,7 +23,7 @@ namespace Pancake.ScriptableEditor
             if (isMonoBehaviourOrGameObject)
             {
                 Uniform.DrawOnlyField(serializedObject, "m_Script", true);
-                Uniform.DrawOnlyField(serializedObject, "_resetOn", false);
+                Uniform.DrawOnlyField(serializedObject, "resetOn", false);
             }
             else
             {
@@ -71,9 +71,12 @@ namespace Pancake.ScriptableEditor
         private void OnPlayModeStateChanged(PlayModeStateChange obj)
         {
             if (obj == PlayModeStateChange.EnteredPlayMode)
+            {
+                if (_scriptableBase == null) _scriptableBase = (ScriptableBase) target;
                 _scriptableBase.repaintRequest += OnRepaintRequested;
-            else if (obj == PlayModeStateChange.ExitingPlayMode)
-                _scriptableBase.repaintRequest -= OnRepaintRequested;
+            }
+
+            else if (obj == PlayModeStateChange.EnteredEditMode) _scriptableBase.repaintRequest -= OnRepaintRequested;
         }
 
         private void OnRepaintRequested() => Repaint();

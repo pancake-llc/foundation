@@ -15,8 +15,7 @@ namespace Pancake.Scriptable
         {
             _dictionary[scriptableEventRaised].Invoke(param);
 
-            if (debug)
-                Debug(scriptableEventRaised);
+            if (debug) Debug(scriptableEventRaised);
         }
 
         protected override void ToggleRegistration(bool toggle)
@@ -26,14 +25,12 @@ namespace Pancake.Scriptable
                 if (toggle)
                 {
                     t.ScriptableEvent.RegisterListener(this);
-                    if (!_dictionary.ContainsKey(t.ScriptableEvent))
-                        _dictionary.Add(t.ScriptableEvent, t.Response);
+                    _dictionary.TryAdd(t.ScriptableEvent, t.Response);
                 }
                 else
                 {
                     t.ScriptableEvent.UnregisterListener(this);
-                    if (_dictionary.ContainsKey(t.ScriptableEvent))
-                        _dictionary.Remove(t.ScriptableEvent);
+                    if (_dictionary.ContainsKey(t.ScriptableEvent)) _dictionary.Remove(t.ScriptableEvent);
                 }
             }
         }
@@ -46,7 +43,7 @@ namespace Pancake.Scriptable
             for (var i = 0; i < registeredListenerCount; i++)
             {
                 var sb = new StringBuilder();
-                sb.Append($"<color=#52D5F2>[Event] </color>");
+                sb.Append("<color=#f75369>[Event] </color>");
                 sb.Append(eventRaised.name);
                 sb.Append(" => ");
                 sb.Append(listener.GetPersistentTarget(i).name);
@@ -69,8 +66,8 @@ namespace Pancake.Scriptable
                     if (eventResponse.Response.GetPersistentMethodName(i) == methodName)
                     {
                         var sb = new StringBuilder();
-                        sb.Append($"<color=#52D5F2>{methodName}()</color>");
-                        sb.Append(" is called by: <color=#52D5F2>[Event] ");
+                        sb.Append($"<color=#f75369>{methodName}()</color>");
+                        sb.Append(" is called by: <color=#f75369>[Event] ");
                         sb.Append(eventResponse.ScriptableEvent.name);
                         sb.Append("</color>");
                         UnityEngine.Debug.Log(sb.ToString(), gameObject);

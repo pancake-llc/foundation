@@ -11,9 +11,8 @@ namespace Pancake.Scriptable
             UNTIL_DISABLE
         }
 
-        [SerializeField] protected Binding _binding = Binding.UNTIL_DESTROY;
-
-        [SerializeField] protected bool _disableAfterSubscribing = false;
+        [SerializeField] protected Binding binding = Binding.UNTIL_DESTROY;
+        [SerializeField] protected bool disableAfterSubscribing = false;
 
         protected abstract void ToggleRegistration(bool toggle);
 
@@ -21,28 +20,23 @@ namespace Pancake.Scriptable
 
         private void Awake()
         {
-            if (_binding == Binding.UNTIL_DESTROY)
-                ToggleRegistration(true);
-
-            gameObject.SetActive(!_disableAfterSubscribing);
+            if (binding == Binding.UNTIL_DESTROY) ToggleRegistration(true);
+            gameObject.SetActive(!disableAfterSubscribing);
         }
 
         private void OnEnable()
         {
-            if (_binding == Binding.UNTIL_DISABLE)
-                ToggleRegistration(true);
+            if (binding == Binding.UNTIL_DISABLE) ToggleRegistration(true);
         }
 
         private void OnDisable()
         {
-            if (_binding == Binding.UNTIL_DISABLE)
-                ToggleRegistration(false);
+            if (binding == Binding.UNTIL_DISABLE) ToggleRegistration(false);
         }
 
         private void OnDestroy()
         {
-            if (_binding == Binding.UNTIL_DESTROY)
-                ToggleRegistration(false);
+            if (binding == Binding.UNTIL_DESTROY) ToggleRegistration(false);
         }
     }
 }

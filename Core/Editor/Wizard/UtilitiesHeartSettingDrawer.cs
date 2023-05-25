@@ -23,7 +23,7 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(HeartSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(HeartSettings).TextColor("#52D5F2")} was created ad {path}/{nameof(HeartSettings)}.asset");
+                    Debug.Log($"{nameof(HeartSettings).TextColor("#f75369")} was created ad {path}/{nameof(HeartSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

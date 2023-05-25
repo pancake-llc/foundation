@@ -30,7 +30,7 @@ namespace Pancake.ScriptableEditor
 
         protected override void DrawShortcut(Rect position, SerializedProperty property, Object targetObject)
         {
-            var value = _serializedObject.FindProperty("_value");
+            var value = _serializedObject.FindProperty("value");
             EditorGUI.PropertyField(position, value, GUIContent.none);
         }
     }

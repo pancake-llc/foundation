@@ -76,7 +76,7 @@ namespace Pancake.ScriptableEditor
                 var cacheBgColor = GUI.backgroundColor;
                 GUI.backgroundColor = Uniform.FieryRose;
                 GUILayout.BeginVertical(GUI.skin.box);
-                if (_editor == null) _editor = UnityEditor.Editor.CreateEditor(targetObject);
+                if (_editor == null) UnityEditor.Editor.CreateCachedEditor(targetObject, null, ref _editor);
                 _editor.OnInspectorGUI();
                 GUI.backgroundColor = cacheBgColor;
                 GUILayout.EndVertical();
