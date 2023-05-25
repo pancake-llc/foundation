@@ -8,11 +8,9 @@ using UnityEngine;
 namespace PancakeEditor
 {
     public class Wizard : ScriptableWindowBase
-
     {
-    [SerializeField] private UtilitiesScriptableDrawer scriptableDrawer;
 
-    private enum WizardType
+        private enum WizardType
     {
         All,
         Monetize,
@@ -34,7 +32,8 @@ namespace PancakeEditor
         NeedleConsole,
         SelectiveProfiling,
         Scriptable,
-        IOS14AdvertisingSupport
+        IOS14AdvertisingSupport,
+        SceneFlow
     }
 
     private enum WizardMonetizeType
@@ -58,7 +57,8 @@ namespace PancakeEditor
         NeedleConsole = WizardAllType.NeedleConsole,
         SelectiveProfiling = WizardAllType.SelectiveProfiling,
         Scriptable = WizardAllType.Scriptable,
-        HeartConfig = WizardAllType.HeartSetting
+        HeartConfig = WizardAllType.HeartSetting,
+        SceneFlow = WizardAllType.SceneFlow
     }
 
     private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -95,7 +95,6 @@ namespace PancakeEditor
 
         SelectTab((int) _currentType, true);
         isInitialized = true;
-        scriptableDrawer = new UtilitiesScriptableDrawer();
         SessionState.SetBool("advertising_flag", false);
         buildFetchSettingFlag = false;
     }
@@ -202,7 +201,10 @@ namespace PancakeEditor
                 TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
                 break;
             case WizardAllType.Scriptable when _currentType is WizardType.Utilities or WizardType.All:
-                scriptableDrawer.OnInspectorGUI();
+                UtilitiesScriptableDrawer.OnInspectorGUI();
+                break;
+            case WizardAllType.SceneFlow when _currentType is WizardType.Utilities or WizardType.All:
+                UtilitiesSceneFlowDrawer.OnInspectorGUI();
                 break;
         }
     }
@@ -270,6 +272,7 @@ namespace PancakeEditor
             case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
             case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
             case WizardAllType.Scriptable: return EditorResources.ScriptableSetting;
+            case WizardAllType.SceneFlow: return EditorResources.ScriptableSetting;
             default:
                 return null;
         }

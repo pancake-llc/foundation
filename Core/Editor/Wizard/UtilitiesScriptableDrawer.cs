@@ -7,14 +7,11 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    [System.Serializable]
-    public class UtilitiesScriptableDrawer
+    public static class UtilitiesScriptableDrawer
     {
-        [SerializeField] private ScriptableEditorSetting scriptableSetting;
-
-        public void OnInspectorGUI()
+        public static void OnInspectorGUI()
         {
-            scriptableSetting = Resources.Load<ScriptableEditorSetting>(nameof(ScriptableEditorSetting));
+            var scriptableSetting = Resources.Load<ScriptableEditorSetting>(nameof(ScriptableEditorSetting));
             if (scriptableSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
