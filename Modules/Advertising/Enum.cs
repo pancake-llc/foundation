@@ -2,8 +2,8 @@ namespace Pancake.Monetization
 {
     public enum EBannerPosition
     {
-        Top = 0,
-        Bottom = 1,
+        Top = 1,
+        Bottom = 0,
         TopLeft = 2,
         TopRight = 3,
         BottomLeft = 4,

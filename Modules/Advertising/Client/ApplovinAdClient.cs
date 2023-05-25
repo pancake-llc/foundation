@@ -1,7 +1,7 @@
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
 using Pancake.Tracking;
-#endif
 using UnityEngine;
+#endif
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
@@ -75,10 +75,10 @@ namespace Pancake.Monetization
 #endif
         }
 
-        private void ShowAppOpen()
+        internal void ShowAppOpen()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (statusAppOpenFirtIgnore) adSettings.ApplovinAppOpen.Show();
+            if (statusAppOpenFirstIgnore) adSettings.ApplovinAppOpen.Show();
             statusAppOpenFirstIgnore = true;
 #endif
         }

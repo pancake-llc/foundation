@@ -45,7 +45,6 @@ namespace Pancake.Monetization
 
             while (true)
             {
-                Debug.Log("AUTO LOAD");
                 AutoLoadInterstitialAd();
                 AutoLoadRewardedAd();
                 AutoLoadRewardedInterstitialAd();
@@ -95,7 +94,7 @@ namespace Pancake.Monetization
 #if PANCAKE_APPLOVIN
         private void OnApplicationPause(bool pauseStatus)
         {
-            // if(!pauseStatus) ShowAppOpenAd();
+            if (!pauseStatus) (GetClient(adSettings.CurrentNetwork) as ApplovinAdClient)?.ShowAppOpen();
         }
 #endif
     }

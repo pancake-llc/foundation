@@ -111,7 +111,10 @@ namespace Pancake.Monetization
 
         private void OnAppStateChanged(GoogleMobileAds.Common.AppState state)
         {
-            if (state == GoogleMobileAds.Common.AppState.Foreground) ShowAppOpen();
+            if (state == GoogleMobileAds.Common.AppState.Foreground)
+            {
+                if (adSettings.CurrentNetwork == EAdNetwork.Admob) ShowAppOpen();
+            }
         }
 #endif
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
-
 namespace Pancake.Monetization
 {
     [Serializable]
@@ -36,7 +35,7 @@ namespace Pancake.Monetization
             ShowImpl();
             return this;
         }
-        
+
         protected override void ResetChainCallback()
         {
             base.ResetChainCallback();
@@ -49,6 +48,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            if (string.IsNullOrEmpty(Id)) return;
             if (!_registerCallback)
             {
                 MaxSdkCallbacks.Rewarded.OnAdDisplayedEvent += OnAdDisplayed;
@@ -61,7 +61,7 @@ namespace Pancake.Monetization
                 _registerCallback = true;
             }
 
-            if (!string.IsNullOrEmpty(Id)) MaxSdk.LoadRewardedAd(Id);
+            MaxSdk.LoadRewardedAd(Id);
 #endif
         }
 

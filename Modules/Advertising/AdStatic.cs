@@ -91,16 +91,16 @@ namespace Pancake.Monetization
             switch (unit)
             {
                 case AdmobRewardVariable reward:
-                    reward.completedCallback = onSkipped;
+                    reward.skippedCallback = onSkipped;
                     return unit;
                 case AdmobRewardInterVariable rewardInter:
-                    rewardInter.completedCallback = onSkipped;
+                    rewardInter.skippedCallback = onSkipped;
                     return unit;
                 case ApplovinRewardVariable applovinReward:
-                    applovinReward.completedCallback = onSkipped;
+                    applovinReward.skippedCallback = onSkipped;
                     return unit;
                 case ApplovinRewardInterVariable applovinRewardInter:
-                    applovinRewardInter.completedCallback = onSkipped;
+                    applovinRewardInter.skippedCallback = onSkipped;
                     return unit;
             }
 

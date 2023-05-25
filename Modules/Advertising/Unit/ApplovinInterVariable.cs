@@ -14,6 +14,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
             if (!_registerCallback)
             {
                 MaxSdkCallbacks.Interstitial.OnAdLoadedEvent += OnAdLoaded;
