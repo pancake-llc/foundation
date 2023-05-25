@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Pancake.Apex;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -24,7 +23,7 @@ namespace Pancake.Scriptable
         [Tooltip("If true, saves the value to Player Prefs and loads it onEnable.")] [SerializeField]
         private bool saved;
 
-        [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")] [SerializeField] [ShowIf("saved", true)]
+        [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")] [SerializeField] [ShowIf(nameof(saved))]
         private T defaultValue;
 
         [Tooltip("Reset to initial value." + " Scene Loaded : when the scene is loaded." + " Application Start : Once, when the application starts.")] [SerializeField]

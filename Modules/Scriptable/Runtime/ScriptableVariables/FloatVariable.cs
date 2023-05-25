@@ -1,5 +1,4 @@
-﻿using Pancake.Apex;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake.Scriptable
 {
@@ -13,9 +12,9 @@ namespace Pancake.Scriptable
         public bool IsClamped => isClamped;
 
         [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf(nameof(isClamped), true)]
-        private Vector2 _minMax = new Vector2(float.MinValue, float.MaxValue);
+        private Vector2 minMax = new Vector2(float.MinValue, float.MaxValue);
 
-        public Vector2 MinMax { get => _minMax; set => _minMax = value; }
+        public Vector2 MinMax { get => minMax; set => minMax = value; }
 
         public override void Save()
         {
@@ -36,7 +35,7 @@ namespace Pancake.Scriptable
             get => value;
             set
             {
-                float clampedValue = isClamped ? Mathf.Clamp(value, _minMax.x, _minMax.y) : value;
+                float clampedValue = isClamped ? Mathf.Clamp(value, minMax.x, minMax.y) : value;
                 base.Value = clampedValue;
             }
         }
@@ -46,7 +45,7 @@ namespace Pancake.Scriptable
         {
             if (isClamped)
             {
-                float clampedValue = Mathf.Clamp(value, _minMax.x, _minMax.y);
+                float clampedValue = Mathf.Clamp(value, minMax.x, minMax.y);
                 if (value < clampedValue || value > clampedValue) value = clampedValue;
             }
 
