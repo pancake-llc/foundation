@@ -10,6 +10,7 @@ namespace Pancake.Monetization
     {
         [SerializeField] private AdSettings adSettings;
         [SerializeField] private ScriptableEventString changeNetworkEvent;
+        [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
 
         private IEnumerator _autoLoadAdCoroutine;
         private float _lastTimeLoadInterstitialAdTimestamp = DEFAULT_TIMESTAMP;
@@ -24,11 +25,14 @@ namespace Pancake.Monetization
             if (adSettings.ApplovinClient != null) adSettings.ApplovinClient.Init();
 
             if (changeNetworkEvent != null) changeNetworkEvent.OnRaised += OnChangeNetworkCallback;
+            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.OnRaised += OnChangePreventDisplayOpenAd;
 
             if (_autoLoadAdCoroutine != null) StopCoroutine(_autoLoadAdCoroutine);
             _autoLoadAdCoroutine = IeAutoLoadAll();
             StartCoroutine(_autoLoadAdCoroutine);
         }
+
+        private void OnChangePreventDisplayOpenAd(bool state) { AdStatic.isShowingAd = state; }
 
         private void OnChangeNetworkCallback(string value)
         {
@@ -90,7 +94,7 @@ namespace Pancake.Monetization
                 _ => adSettings.ApplovinClient,
             };
         }
-
+        
 #if PANCAKE_APPLOVIN
         private void OnApplicationPause(bool pauseStatus)
         {

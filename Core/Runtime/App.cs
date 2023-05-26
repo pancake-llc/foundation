@@ -1,35 +1,27 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Pancake
 {
     public struct App
     {
-        private static event Action FixedUpdateInternal;
-        private static event Action WaitForFixedUpdateInternal;
-        private static event Action UpdateInternal;
-        private static event Action LateUpdateInternal;
-        private static event Action WaitForEndOfFrameInternal;
+        private static GlobalComponent globalComponent;
+        private static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
 
-        private static readonly List<Action> ToMainThreads = new();
-        private static volatile bool isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Init()
+        {
+            var app = new GameObject("App") {hideFlags = HideFlags.HideInHierarchy};
+            Init(app.AddComponent<GlobalComponent>());
+            UnityEngine.Object.DontDestroyOnLoad(app);
+        }
 
-        private static event Action<bool> OnGamePause;
-        private static event Action<bool> OnGameFocus;
-        private static event Action OnGameQuit;
-
-        private static readonly List<ITickProcess> TickProcesses = new List<ITickProcess>(1024);
-        private static readonly List<IFixedTickProcess> FixedTickProcesses = new List<IFixedTickProcess>(512);
-        private static readonly List<ILateTickProcess> LateTickProcesses = new List<ILateTickProcess>(256);
-
-        public static readonly DateTime UnixEpoch = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
-        internal const string FIRST_INSTALL_TIMESTAMP_KEY = "first_install_timestamp";
-
-        public static bool IsAppInitialized { get; internal set; }
-
-        public static int FixedFrameCount { get; private set; }
+        private static void Init(GlobalComponent globalComponent)
+        {
+            App.globalComponent = globalComponent;
+            Data.Init();
+        }
 
         /// <summary>
         /// Gets the installation timestamp of this app in local timezone.
@@ -38,7 +30,12 @@ namespace Pancake
         /// provided that the initialization is done soon after app launch.
         /// </summary>
         /// <returns>The installation timestamp.</returns>
-        public static DateTime GetAppInstallTimestamp => Data.Load(FIRST_INSTALL_TIMESTAMP_KEY, UnixEpoch);
+        public static DateTime GetAppFirstOpenTimestamp => Data.Load(Invariant.FIRST_OPEN_TIMESTAMP_KEY, UnixEpoch);
+
+        internal static void SetAppFirstOpenTimestamp()
+        {
+            if (!Data.HasKey(Invariant.FIRST_OPEN_TIMESTAMP_KEY)) Data.Save(Invariant.FIRST_OPEN_TIMESTAMP_KEY, DateTime.Now);
+        }
 
         public static float DeltaTime(TimeMode mode) => mode == TimeMode.Normal ? Time.deltaTime : Time.unscaledDeltaTime;
 
@@ -47,19 +44,19 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    FixedUpdateInternal += action;
+                    globalComponent.FixedUpdateInternal += action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    WaitForFixedUpdateInternal += action;
+                    globalComponent.WaitForFixedUpdateInternal += action;
                     return;
                 case UpdateMode.Update:
-                    UpdateInternal += action;
+                    globalComponent.UpdateInternal += action;
                     return;
                 case UpdateMode.LateUpdate:
-                    LateUpdateInternal += action;
+                    globalComponent.LateUpdateInternal += action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
-                    WaitForEndOfFrameInternal += action;
+                    globalComponent.WaitForEndOfFrameInternal += action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -71,81 +68,81 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    FixedUpdateInternal -= action;
+                    globalComponent.FixedUpdateInternal -= action;
                     return;
                 case UpdateMode.WaitForFixedUpdate:
-                    WaitForFixedUpdateInternal -= action;
+                    globalComponent.WaitForFixedUpdateInternal -= action;
                     return;
                 case UpdateMode.Update:
-                    UpdateInternal -= action;
+                    globalComponent.UpdateInternal -= action;
                     return;
                 case UpdateMode.LateUpdate:
-                    LateUpdateInternal -= action;
+                    globalComponent.LateUpdateInternal -= action;
                     return;
                 case UpdateMode.WaitForEndOfFrame:
-                    WaitForEndOfFrameInternal -= action;
+                    globalComponent.WaitForEndOfFrameInternal -= action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
         }
 
-        public static void AddTick(ITickProcess tick) { TickProcesses.Add(tick); }
+        public static void AddTick(ITickProcess tick) { globalComponent.tickProcesses.Add(tick); }
 
-        public static void AddFixedTick(IFixedTickProcess tick) { FixedTickProcesses.Add(tick); }
+        public static void AddFixedTick(IFixedTickProcess tick) { globalComponent.fixedTickProcesses.Add(tick); }
 
-        public static void AddLateTick(ILateTickProcess tick) { LateTickProcesses.Add(tick); }
+        public static void AddLateTick(ILateTickProcess tick) { globalComponent.lateTickProcesses.Add(tick); }
 
-        public static void RemoveTick(ITickProcess tick) { TickProcesses.Remove(tick); }
+        public static void RemoveTick(ITickProcess tick) { globalComponent.tickProcesses.Remove(tick); }
 
-        public static void RemoveFixedTick(IFixedTickProcess tick) { FixedTickProcesses.Remove(tick); }
+        public static void RemoveFixedTick(IFixedTickProcess tick) { globalComponent.fixedTickProcesses.Remove(tick); }
 
-        public static void RemoveLateTick(ILateTickProcess tick) { LateTickProcesses.Remove(tick); }
+        public static void RemoveLateTick(ILateTickProcess tick) { globalComponent.lateTickProcesses.Remove(tick); }
 
         public static void AddPauseCallback(Action<bool> callback)
         {
-            OnGamePause -= callback;
-            OnGamePause += callback;
+            globalComponent.OnGamePause -= callback;
+            globalComponent.OnGamePause += callback;
         }
 
-        public static void RemovePauseCallback(Action<bool> callback) { OnGamePause -= callback; }
+        public static void RemovePauseCallback(Action<bool> callback) { globalComponent.OnGamePause -= callback; }
 
         public static void AddFocusCallback(Action<bool> callback)
         {
-            OnGameFocus -= callback;
-            OnGameFocus += callback;
+            globalComponent.OnGameFocus -= callback;
+            globalComponent.OnGameFocus += callback;
         }
 
-        public static void RemoveFocusCallback(Action<bool> callback) { OnGameFocus -= callback; }
+        public static void RemoveFocusCallback(Action<bool> callback) { globalComponent.OnGameFocus -= callback; }
 
         public static void AddQuitCallback(Action callback)
         {
-            OnGameQuit -= callback;
-            OnGameQuit += callback;
+            globalComponent.OnGameQuit -= callback;
+            globalComponent.OnGameQuit += callback;
         }
 
-        public static void RemoveQuitCallback(Action callback) { OnGameQuit -= callback; }
+        public static void RemoveQuitCallback(Action callback) { globalComponent.OnGameQuit -= callback; }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Coroutine RunCoroutine(IEnumerator routine) => GlobalComponent.RunCoroutineImpl(routine);
+        public static Coroutine RunCoroutine(IEnumerator routine) => globalComponent.RunCoroutineImpl(routine);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static void EndCoroutine(IEnumerator routine) => GlobalComponent.EndCoroutineImpl(routine);
+        public static void EndCoroutine(IEnumerator routine) => globalComponent.EndCoroutineImpl(routine);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Action ToMainThread(Action action) => GlobalComponent.ToMainThreadImpl(action);
+        public static Action ToMainThread(Action action) => globalComponent.ToMainThreadImpl(action);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Action<T> ToMainThread<T>(Action<T> action) => GlobalComponent.ToMainThreadImpl(action);
+        public static Action<T> ToMainThread<T>(Action<T> action) => globalComponent.ToMainThreadImpl(action);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Action<T1, T2> ToMainThread<T1, T2>(Action<T1, T2> action) => GlobalComponent.ToMainThreadImpl(action);
+        public static Action<T1, T2> ToMainThread<T1, T2>(Action<T1, T2> action) => globalComponent.ToMainThreadImpl(action);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Action<T1, T2, T3> ToMainThread<T1, T2, T3>(Action<T1, T2, T3> action) => GlobalComponent.ToMainThreadImpl(action);
+        public static Action<T1, T2, T3> ToMainThread<T1, T2, T3>(Action<T1, T2, T3> action) => globalComponent.ToMainThreadImpl(action);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static void RunOnMainThread(Action action) => GlobalComponent.RunOnMainThreadImpl(action);
+        public static void RunOnMainThread(Action action) => globalComponent.RunOnMainThreadImpl(action);
 
         /// <summary>
         /// Enables or disables Unity debug log.
@@ -159,12 +156,6 @@ namespace Pancake
             Debug.logger.logEnabled = isEnabled;
 #endif
         }
-
-        /// <summary>
-        /// <inheritdoc cref="GlobalComponent.AttachImpl"/>
-        /// </summary>
-        /// <param name="prefab"></param>
-        public static void Attach(AutoInitialize prefab) { GlobalComponent.AttachImpl(prefab); }
 
         /// <summary>
         /// Delay call
@@ -192,7 +183,7 @@ namespace Pancake
                 isLooped,
                 useRealTime,
                 target);
-            GlobalComponent.RegisterDelayHandle(timer);
+            globalComponent.RegisterDelayHandle(timer);
             return timer;
         }
 
@@ -202,300 +193,10 @@ namespace Pancake
 
         public static void ResumeDelay(DelayHandle delayHandle) { delayHandle?.Resume(); }
 
-        public static void CancelAllDelay() { GlobalComponent.CancelAllDelayHandle(); }
+        public static void CancelAllDelay() { globalComponent.CancelAllDelayHandle(); }
 
-        public static void PauseAllDelay() { GlobalComponent.PauseAllDelayHandle(); }
+        public static void PauseAllDelay() { globalComponent.PauseAllDelayHandle(); }
 
-        public static void ResumeAllDelay() { GlobalComponent.ResumeAllDelayHandle(); }
-
-        [DisallowMultipleComponent]
-        internal class GlobalComponent : MonoBehaviour
-        {
-            private static GlobalComponent global;
-
-            private static bool IsInitialized => global != null;
-
-            private List<Action> _localToMainThreads = new();
-
-            #region delay handle
-
-            private List<DelayHandle> _timers = new List<DelayHandle>();
-
-            // buffer adding timers so we don't edit a collection during iteration
-            private List<DelayHandle> _timersToAdd = new List<DelayHandle>();
-
-            public static void RegisterDelayHandle(DelayHandle delayHandle)
-            {
-                if (!IsInitialized) return;
-                global._timersToAdd.Add(delayHandle);
-            }
-
-            public static void CancelAllDelayHandle()
-            {
-                if (!IsInitialized) return;
-                foreach (var timer in global._timers)
-                {
-                    timer.Cancel();
-                }
-
-                global._timers = new List<DelayHandle>();
-                global._timersToAdd = new List<DelayHandle>();
-            }
-
-            public static void PauseAllDelayHandle()
-            {
-                if (!IsInitialized) return;
-                foreach (var timer in global._timers)
-                {
-                    timer.Pause();
-                }
-            }
-
-            public static void ResumeAllDelayHandle()
-            {
-                if (!IsInitialized) return;
-                foreach (var timer in global._timers)
-                {
-                    timer.Resume();
-                }
-            }
-
-            private void UpdateAllDelayHandle()
-            {
-                if (_timersToAdd.Count > 0)
-                {
-                    _timers.AddRange(_timersToAdd);
-                    _timersToAdd.Clear();
-                }
-
-                foreach (var timer in _timers)
-                {
-                    timer.Update();
-                }
-
-                _timers.RemoveAll(t => t.IsDone);
-            }
-
-            #endregion
-            
-            private void Awake() { global = this; }
-
-            private void Start()
-            {
-                StartCoroutine(WaitForFixedUpdate());
-                StartCoroutine(WaitForEndOfFrame());
-
-                IEnumerator WaitForFixedUpdate()
-                {
-                    var wait = new WaitForFixedUpdate();
-                    while (true)
-                    {
-                        yield return wait;
-                        FixedFrameCount += 1;
-                        WaitForFixedUpdateInternal?.Invoke();
-                    }
-                    // ReSharper disable once IteratorNeverReturns
-                }
-
-                IEnumerator WaitForEndOfFrame()
-                {
-                    var wait = new WaitForEndOfFrame();
-                    while (true)
-                    {
-                        yield return wait;
-                        WaitForEndOfFrameInternal?.Invoke();
-                    }
-                    // ReSharper disable once IteratorNeverReturns
-                }
-            }
-
-            private void Update()
-            {
-                for (var i = 0; i < TickProcesses.Count; i++)
-                {
-                    TickProcesses[i]?.OnTick();
-                }
-
-                UpdateInternal?.Invoke();
-                UpdateAllDelayHandle();
-
-                if (isToMainThreadQueueEmpty) return;
-                _localToMainThreads.Clear();
-                lock (ToMainThreads)
-                {
-                    _localToMainThreads.AddRange(ToMainThreads);
-                    ToMainThreads.Clear();
-                    isToMainThreadQueueEmpty = true;
-                }
-
-                for (int i = 0; i < _localToMainThreads.Count; i++)
-                {
-                    _localToMainThreads[i].Invoke();
-                }
-            }
-
-            private void FixedUpdate()
-            {
-                for (int i = 0; i < FixedTickProcesses.Count; i++)
-                {
-                    FixedTickProcesses[i]?.OnFixedTick();
-                }
-
-                FixedUpdateInternal?.Invoke();
-            }
-
-            private void LateUpdate()
-            {
-                for (int i = 0; i < LateTickProcesses.Count; i++)
-                {
-                    LateTickProcesses[i]?.OnLateTick();
-                }
-
-                LateUpdateInternal?.Invoke();
-            }
-
-            /// <summary>
-            /// Called when the gamme loses or gains focus. 
-            /// </summary>
-            /// <param name="hasFocus"><c>true</c> if the gameobject has focus, else <c>false</c>.</param>
-            /// <remarks>
-            /// On Windows Store Apps and Windows Phone 8.1 there's no application quit event,
-            /// consider using OnApplicationFocus event when hasFocus equals false.
-            /// </remarks>
-            private void OnApplicationFocus(bool hasFocus) { OnGameFocus?.Invoke(hasFocus); }
-
-            /// <summary>
-            /// Called when the application pauses.
-            /// </summary>
-            /// <param name="pauseStatus"><c>true</c> if the application is paused, else <c>false</c>.</param>
-            private void OnApplicationPause(bool pauseStatus) { OnGamePause?.Invoke(pauseStatus); }
-
-            /// <summary>
-            /// Called before the application quits.
-            /// </summary>
-            /// <remarks>
-            /// iOS applications are usually suspended and do not quit.
-            /// On Windows Store Apps and Windows Phone 8.1 there's no application quit event,
-            /// consider using OnApplicationFocus event when focusStatus equals false.
-            /// On WebGL is not possible to implement OnApplicationQuit due to nature of the
-            /// browser tabs closing.
-            /// </remarks>
-            private void OnApplicationQuit() { OnGameQuit?.Invoke(); }
-
-            private void OnDisable()
-            {
-                if (global == this) global = null;
-            }
-
-            #region internal effective
-
-            /// <summary>
-            /// Starts a coroutine from non-MonoBehavior objects.
-            /// </summary>
-            /// <param name="routine">Routine.</param>
-            internal static Coroutine RunCoroutineImpl(IEnumerator routine)
-            {
-                if (routine != null) return global.StartCoroutine(routine);
-                return null;
-            }
-
-            /// <summary>
-            /// Stops a coroutine from non-MonoBehavior objects.
-            /// </summary>
-            /// <param name="routine">Routine.</param>
-            internal static void EndCoroutineImpl(IEnumerator routine)
-            {
-                if (routine != null) global.StopCoroutine(routine);
-            }
-
-            /// <summary>
-            /// Schedules the specifies action to be run on the main thread (game thread).
-            /// The action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
-            /// </summary>
-            /// <param name="action">Action.</param>
-            internal static void RunOnMainThreadImpl(Action action)
-            {
-                if (action == null) throw new ArgumentNullException(nameof(action));
-
-                if (!IsInitialized) return;
-
-                lock (ToMainThreads)
-                {
-                    ToMainThreads.Add(action);
-                    isToMainThreadQueueEmpty = false;
-                }
-            }
-
-            /// <summary>
-            /// Converts the specified action to one that runs on the main thread.
-            /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
-            /// </summary>
-            /// <returns>The main thread.</returns>
-            /// <param name="action">Act.</param>
-            internal static Action ToMainThreadImpl(Action action)
-            {
-                if (action == null) return delegate { };
-                return () => RunOnMainThread(action);
-            }
-
-            /// <summary>
-            /// Converts the specified action to one that runs on the main thread.
-            /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
-            /// </summary>
-            /// <returns>The main thread.</returns>
-            /// <param name="action">Act.</param>
-            /// <typeparam name="T">The 1st type parameter.</typeparam>
-            internal static Action<T> ToMainThreadImpl<T>(Action<T> action)
-            {
-                if (action == null) return delegate { };
-                return (arg) => RunOnMainThread(() => action(arg));
-            }
-
-            /// <summary>
-            /// Converts the specified action to one that runs on the main thread.
-            /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
-            /// </summary>
-            /// <returns>The main thread.</returns>
-            /// <param name="action">Act.</param>
-            /// <typeparam name="T1">The 1st type parameter.</typeparam>
-            /// <typeparam name="T2">The 2nd type parameter.</typeparam>
-            internal static Action<T1, T2> ToMainThreadImpl<T1, T2>(Action<T1, T2> action)
-            {
-                if (action == null) return delegate { };
-                return (arg1, arg2) => RunOnMainThread(() => action(arg1, arg2));
-            }
-
-            /// <summary>
-            /// Converts the specified action to one that runs on the main thread.
-            /// The converted action will be invoked upon the next Unity Update event.
-            /// Only works if initilization has done (<see cref="App.IsAppInitialized"/>).
-            /// </summary>
-            /// <returns>The main thread.</returns>
-            /// <param name="action">Act.</param>
-            /// <typeparam name="T1">The 1st type parameter.</typeparam>
-            /// <typeparam name="T2">The 2nd type parameter.</typeparam>
-            /// <typeparam name="T3">The 3rd type parameter.</typeparam>
-            internal static Action<T1, T2, T3> ToMainThreadImpl<T1, T2, T3>(Action<T1, T2, T3> action)
-            {
-                if (action == null) return delegate { };
-                return (arg1, arg2, arg3) => RunOnMainThread(() => action(arg1, arg2, arg3));
-            }
-
-            /// <summary>
-            /// add <paramref name="prefab"/> as a children of runtime
-            /// </summary>
-            /// <param name="prefab"></param>
-            internal static void AttachImpl(AutoInitialize prefab)
-            {
-                var obj = Instantiate(prefab, global.transform, false);
-                obj.Init();
-            }
-
-            #endregion
-        }
+        public static void ResumeAllDelay() { globalComponent.ResumeAllDelayHandle(); }
     }
 }

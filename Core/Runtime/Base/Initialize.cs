@@ -1,6 +1,6 @@
 namespace Pancake
 {
-    public abstract class AutoInitialize : GameComponent, IInitialize
+    public abstract class Initialize : GameComponent
     {
         public abstract void Init();
     }

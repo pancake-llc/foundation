@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Pancake.Apex;
+using Pancake.Scriptable;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Pancake.IAP
         [SerializeField] private IAPSettings iapSettings;
         [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
         [SerializeField] private ScriptableEventIAPFuncProduct productOnwershipCheckEvent;
+        [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
 #if UNITY_IOS
         [SerializeField] private ScriptableEventIAPNoParam restoreEvent;
 #endif
@@ -42,6 +44,7 @@ namespace Pancake.IAP
         private void PruchaseProduct(IAPDataVariable product)
         {
             // call when IAPDataVariable raise event
+            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(true);
             PurchaseProductInternal(product);
         }
 
@@ -133,6 +136,7 @@ namespace Pancake.IAP
 
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
+            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(false);
             string id = product.definition.id;
             foreach (var p in iapSettings.Products)
             {
@@ -144,6 +148,7 @@ namespace Pancake.IAP
 
         private void PurchaseVerified(PurchaseEventArgs e)
         {
+            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(false);
             string id = e.purchasedProduct.definition.id;
             foreach (var product in iapSettings.Products)
             {
