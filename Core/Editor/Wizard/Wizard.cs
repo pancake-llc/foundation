@@ -32,7 +32,8 @@ namespace PancakeEditor
         NeedleConsole,
         SelectiveProfiling,
         Scriptable,
-        IOS14AdvertisingSupport
+        IOS14AdvertisingSupport,
+        ParticleEffectForUGUI
     }
 
     private enum WizardMonetizeType
@@ -57,6 +58,7 @@ namespace PancakeEditor
         SelectiveProfiling = WizardAllType.SelectiveProfiling,
         Scriptable = WizardAllType.Scriptable,
         HeartConfig = WizardAllType.HeartSetting,
+        ParticleEffectForUGUI = WizardAllType.ParticleEffectForUGUI
     }
 
     private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -199,7 +201,10 @@ namespace PancakeEditor
                 TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
                 break;
             case WizardAllType.Scriptable when _currentType is WizardType.Utilities or WizardType.All:
-                UtilitiesScriptableDrawer.OnInspectorGUI();
+                UtilitiesScriptableDrawer.OnInspectorGUI();   
+                break;
+            case WizardAllType.ParticleEffectForUGUI when _currentType is WizardType.Utilities or WizardType.All:
+                UtilitiesParticleEffectForUGUIDrawer.OnInspectorGUI();
                 break;
         }
     }
@@ -267,6 +272,7 @@ namespace PancakeEditor
             case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
             case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
             case WizardAllType.Scriptable: return EditorResources.ScriptableSetting;
+            case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
             default:
                 return null;
         }

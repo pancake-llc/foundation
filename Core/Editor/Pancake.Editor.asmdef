@@ -9,6 +9,7 @@
         "GUID:10507a3c16a6d88428b6e2a636fb7438",
         "GUID:f7dabdcbede30aa4d84803a163c2fa1b",
         "GUID:d54e067e22b30d84d974d345601e49b6",
+        "GUID:71a2e5fd62742b447a45a06bf18f9a7d",
         "GUID:87eaf3fd1840b5c42a5f00c0a45ccaa1",
         "GUID:5a5bdc0387f898e429d96457c503426a"
     ],
@@ -81,6 +82,11 @@
             "name": "com.unity.ads.ios-support",
             "expression": "1.2.0",
             "define": "PANCAKE_ATT"
+        },
+        {
+            "name": "com.coffee.ui-particle",
+            "expression": "4.0.0",
+            "define": "PANCAKE_PARTICLE_EFFECT_UGUI"
         }
     ],
     "noEngineReferences": false
