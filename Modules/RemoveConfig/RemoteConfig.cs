@@ -67,7 +67,7 @@ namespace Pancake.Tracking
                 {
                     for (int i = 0; i < keys.Length; i++)
                     {
-                        if (string.IsNullOrEmpty(keys[i]))
+                        if (!string.IsNullOrEmpty(keys[i]))
                         {
                             string result = FirebaseRemoteConfig.DefaultInstance.GetValue(keys[i]).StringValue;
                             values[i].Value = result;
