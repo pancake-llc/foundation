@@ -2,6 +2,7 @@
     "name": "Pancake.UGUI",
     "rootNamespace": "",
     "references": [
+        "GUID:341d04dbc3e6ced4f903de04a0918a48",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
         "GUID:adac8d59ad7e8504f82d387cded797a7",
         "GUID:10507a3c16a6d88428b6e2a636fb7438",
