@@ -31,8 +31,8 @@ namespace Pancake.UI
             public EButtonMotion motion = EButtonMotion.Normal;
             public float durationDown = 0.1f;
             public float durationUp = 0.1f;
-            public UIEase easeDown;
-            public UIEase easeUp;
+            public UIEase easeDown = UIEase.Smooth;
+            public UIEase easeUp = UIEase.Smooth;
         }
 
         #region Property

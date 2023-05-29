@@ -64,11 +64,4 @@ namespace Pancake.UI
         /// </summary>
         Late = 3,
     }
-
-    public enum EMotionAffect
-    {
-        Scale = 0,
-        Position = 1,
-        PositionAndScale = 2,
-    }
 }
