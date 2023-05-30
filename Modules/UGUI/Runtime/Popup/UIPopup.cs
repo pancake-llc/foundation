@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Pancake.Apex;
 using Pancake.Tween;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,6 +10,8 @@ using UnityEngine.UI;
 
 namespace Pancake.UI
 {
+    [HideMonoScript]
+    [EditorIcon("script_mono")]
     public abstract class UIPopup : GameComponent
     {
         [Serializable]

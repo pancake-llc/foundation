@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Pancake.Apex;
 using Pancake.Scriptable;
@@ -5,32 +6,36 @@ using UnityEngine;
 
 namespace Pancake.UI
 {
+    [EditorIcon("script_popup")]
+    [HideMonoScript]
     public class Popup : GameComponent
     {
-        [SerializeField] private ScriptableEventGameObject eventDisplayPopup;
-        
-        private readonly Stack<UIPopup> _stacks = new Stack<UIPopup>();
-        private int _sortingOrder;
+        [SerializeField] private PopupShowEvent showPopupEvent;
+        [SerializeField] private ScriptableEventNoParam closePopupEvent;
 
+        private readonly Stack<UIPopup> _stacks = new Stack<UIPopup>();
+        private Dictionary<string, UIPopup> _container = new Dictionary<string, UIPopup>();
+
+        private void Start()
+        {
+            showPopupEvent.OnRaised += Show;
+            closePopupEvent.OnRaised += Close;
+        }
 
         private void Close()
         {
-            if (_stacks.Count == 0) 
+            if (_stacks.Count == 0)
             {
                 Debug.LogWarning("[Popup] stack holder popup is empty, you can not close");
                 return;
             }
-            
+
             _stacks.Pop().Close();
-            var order = 0;
             if (_stacks.Count >= 1)
             {
                 var top = _stacks.Peek();
                 top.Raise();
-                if (_stacks.Count > 1) order = top.SortingOrder - 10;
             }
-
-            _sortingOrder = order;
         }
 
         private void CloseAll()
@@ -40,15 +45,52 @@ namespace Pancake.UI
             {
                 _stacks.Pop().Close();
             }
-
-            _sortingOrder = 0;
         }
 
-
-        private void Show(GameObject prefab)
+        private void Show(UIPopup prefab, string type, Transform parent, Action<UIPopup> callback)
         {
-            
+            _container.TryGetValue(type, out var existInstance);
+            if (existInstance == null)
+            {
+                var instance = Instantiate(prefab, parent);
+                _container.TryAdd(type, instance);
+                Show(instance, callback);
+            }
+            else
+            {
+                Show(existInstance, callback);
+            }
+        }
+
+        private void Show(UIPopup instance, Action<UIPopup> callback)
+        {
+            var lastOrder = 0;
+            if (_stacks.Count > 0)
+            {
+                var top = _stacks.Peek();
+                if (top.Equals(instance))
+                {
+                    Debug.LogWarning("[Popup] you trying show popup is already displayed!");
+                    return;
+                }
+
+                top.Collapse();
+                lastOrder = top.SortingOrder;
+            }
+
+            instance.UpdateSortingOrder(lastOrder + 10);
+            _stacks.Push(instance);
+            callback?.Invoke(instance); // Initialize if necessary before show
+            instance.Show();
+        }
+
+        private void Release(string type)
+        {
+            _container.TryGetValue(type, out var instance);
+            if (instance == null) return;
+
+            Destroy(instance.gameObject);
+            _container.Remove(type);
         }
     }
-
 }
