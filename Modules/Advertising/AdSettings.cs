@@ -52,11 +52,11 @@ namespace Pancake.Monetization
         public List<string> AdmobDevicesTest => admobDevicesTest;
         public bool AdmobEnableTestMode => admobEnableTestMode;
         public AdmobClient AdmobClient => admobClient;
-        public AdmobBannerVariable AdmobBanner => admobBanner;
-        public AdmobInterVariable AdmobInter => admobInter;
-        public AdmobRewardVariable AdmobReward => admobReward;
-        public AdmobRewardInterVariable AdmobRewardInter => admobRewardInter;
-        public AdmobAppOpenVariable AdmobAppOpen => admobAppOpen;
+        public AdUnitVariable AdmobBanner => admobBanner;
+        public AdUnitVariable AdmobInter => admobInter;
+        public AdUnitVariable AdmobReward => admobReward;
+        public AdUnitVariable AdmobRewardInter => admobRewardInter;
+        public AdUnitVariable AdmobAppOpen => admobAppOpen;
 
 
         [Header("[applovin]")] [SerializeField, TextArea, Order(14)] private string sdkKey;
@@ -71,11 +71,11 @@ namespace Pancake.Monetization
 
         public string SDKKey => sdkKey;
         public ApplovinAdClient ApplovinClient => applovinClient;
-        public ApplovinBannerVariable ApplovinBanner => applovinBanner;
-        public ApplovinInterVariable ApplovinInter => applovinInter;
-        public ApplovinRewardVariable ApplovinReward => applovinReward;
-        public ApplovinRewardInterVariable ApplovinRewardInter => applovinRewardInter;
-        public ApplovinAppOpenVariable ApplovinAppOpen => applovinAppOpen;
+        public AdUnitVariable ApplovinBanner => applovinBanner;
+        public AdUnitVariable ApplovinInter => applovinInter;
+        public AdUnitVariable ApplovinReward => applovinReward;
+        public AdUnitVariable ApplovinRewardInter => applovinRewardInter;
+        public AdUnitVariable ApplovinAppOpen => applovinAppOpen;
         public bool ApplovinEnableAgeRestrictedUser => applovinEnableAgeRestrictedUser;
 
         public float AdCheckingInterval => adCheckingInterval;
