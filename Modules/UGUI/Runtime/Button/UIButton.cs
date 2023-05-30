@@ -47,7 +47,7 @@ namespace Pancake.UI
         [SerializeField] private ButtonClickedEvent onLongClick = new();
         [SerializeField] private ButtonClickedEvent onPointerUp = new();
         [SerializeField] private ButtonHoldEvent onHold = new();
-        [SerializeField] private bool isMotion;
+        [SerializeField] private bool isMotion = true;
         [SerializeField] private bool ignoreTimeScale;
         [SerializeField] private bool isMotionUnableInteract;
         [SerializeField] private bool isAffectToSelf = true;
