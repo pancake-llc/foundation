@@ -12,8 +12,8 @@ namespace Pancake.Tracking
     public class RemoteConfig : GameComponent
     {
         [SerializeField] private BoolVariable remoteFetchCompleted;
-        [SerializeField, Array, HorizontalGroup("dict")] private string[] keys;
-        [SerializeField, Array, HorizontalGroup("dict")] private StringVariable[] values;
+        [SerializeField, Array] private string[] keys;
+        [SerializeField, Array] private StringVariable[] values;
 
         private void Start()
         {
