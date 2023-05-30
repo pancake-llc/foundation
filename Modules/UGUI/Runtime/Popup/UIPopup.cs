@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Pancake.Apex;
+using Pancake.Scriptable;
 using Pancake.Tween;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,38 +20,92 @@ namespace Pancake.UI
         {
             public EPopupMotion motion = EPopupMotion.Scale;
             public float duration = 0.3f;
-            public Vector2 scale;
-            public Vector2 fromPosition;
-            public Vector2 toPosition;
+            [ShowIf("ShowScaleProperty")] public Vector2 scale;
+            [ShowIf("ShowPotionProperty")] public Vector2 fromPosition;
+            [ShowIf("ShowPotionProperty")] public Vector2 toPosition;
             public UIEase ease = UIEase.Smooth;
+
+#if UNITY_EDITOR
+            private bool ShowScaleProperty() => motion != EPopupMotion.Position;
+            private bool ShowPotionProperty() => motion != EPopupMotion.Scale;
+#endif
         }
-        
+
+        [SerializeField] protected ScriptableEventNoParam closePopupEvent;
         [SerializeField] protected Canvas canvas;
         [SerializeField] protected CanvasGroup canvasGroup;
+        [SerializeField] protected RectTransform background;
         [SerializeField] protected RectTransform container;
-        [SerializeField] protected UnityEvent onBeforeShow;
-        [SerializeField] protected UnityEvent onAfterShow;
-        [SerializeField] protected UnityEvent onBeforeClose;
-        [SerializeField] protected UnityEvent onAfterClose;
 
-        [SerializeField] protected bool closeByClickContainer;
-        [SerializeField] protected bool closeByClickBackground;
-        [SerializeField] protected bool closeByBackButton;
-        [SerializeField] private List<Button> closeButtons = new List<Button>();
+#if UNITY_EDITOR
+        [SerializeField, Foldout("Close Button", Style = "Group"), OnValueChanged("OnCloseByClickContainerChanged")]
+        protected bool closeByClickContainer;
 
-        [SerializeField] protected MotionData motionShowData = new MotionData() {motion = EPopupMotion.Scale, scale = Vector2.one};
-        [SerializeField] protected MotionData motionCloseData = new MotionData() {motion = EPopupMotion.Scale, scale = Vector2.zero};
+        [SerializeField, Foldout("Close Button", Style = "Group"), OnValueChanged("OnCloseByClickBackgroundChanged")]
+        protected bool closeByClickBackground;
+#endif
+        [SerializeField, Foldout("Close Button", Style = "Group")] protected bool closeByBackButton;
 
+        [SerializeField, Array, Foldout("Close Button", Style = "Group")]
+        private List<Button> closeButtons = new List<Button>();
+
+        [SerializeField, InlineEditor, Foldout("Motion Show", Style = "Group")]
+        protected MotionData motionShowData = new MotionData() {motion = EPopupMotion.Scale, scale = Vector2.one, ease = UIEase.OutBack};
+
+        [SerializeField, InlineEditor, Foldout("Motion Close", Style = "Group")]
+        protected MotionData motionCloseData = new MotionData() {motion = EPopupMotion.Scale, scale = Vector2.zero};
+
+        [SerializeField, Foldout("Event", Style = "Group")] protected UnityEvent onBeforeShow;
+        [SerializeField, Foldout("Event", Style = "Group")] protected UnityEvent onAfterShow;
+        [SerializeField, Foldout("Event", Style = "Group")] protected UnityEvent onBeforeClose;
+        [SerializeField, Foldout("Event", Style = "Group")] protected UnityEvent onAfterClose;
 
         public bool BackButtonPressed { get; private set; }
         public bool Active { get; protected set; }
-
         public int SortingOrder => canvas != null ? canvas.sortingOrder : 0;
 
         private CancellationTokenSource _tokenCheckPressButton;
         private bool _canActuallyClose;
         private Vector2 _startScale;
         private Vector3 _defaultScale;
+
+#if UNITY_EDITOR
+        private void OnCloseByClickBackgroundChanged()
+        {
+            background.TryGetComponent<Button>(out var btn);
+
+            if (closeByClickBackground)
+            {
+                if (btn == null) btn = background.gameObject.AddComponent<Button>();
+                btn.transition = Selectable.Transition.None;
+                if (!closeButtons.Contains(btn)) closeButtons.Add(btn);
+            }
+            else
+            {
+                if (btn == null) return;
+                DestroyImmediate(btn);
+                closeButtons?.Remove(btn);
+            }
+        }
+
+        private void OnCloseByClickContainerChanged()
+        {
+            container.TryGetComponent<Button>(out var btn);
+
+            if (closeByClickContainer)
+            {
+                if (btn == null) btn = container.gameObject.AddComponent<Button>();
+                btn.transition = Selectable.Transition.None;
+                if (!closeButtons.Contains(btn)) closeButtons.Add(btn);
+            }
+            else
+            {
+                if (btn == null) return;
+                DestroyImmediate(btn);
+                closeButtons?.Remove(btn);
+            }
+        }
+#endif
 
         private void Awake() { _defaultScale = container.localScale; }
 
@@ -88,10 +143,7 @@ namespace Pancake.UI
                 finally
                 {
                     _tokenCheckPressButton?.Dispose();
-                    if (Application.isPlaying)
-                    {
-                        //
-                    }
+                    if (Application.isPlaying) closePopupEvent.Raise();
                 }
             }
 
@@ -210,8 +262,11 @@ namespace Pancake.UI
 
         private void OnApplicationQuit()
         {
-            _tokenCheckPressButton?.Cancel();
-            _tokenCheckPressButton?.Dispose();
+            if (_tokenCheckPressButton != null)
+            {
+                _tokenCheckPressButton.Cancel();
+                _tokenCheckPressButton.Dispose();
+            }
         }
     }
 }

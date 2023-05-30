@@ -87,6 +87,11 @@
             "name": "com.coffee.ui-particle",
             "expression": "4.0.0",
             "define": "PANCAKE_PARTICLE_EFFECT_UGUI"
+        },
+        {
+            "name": "com.coffee.ui-effect",
+            "expression": "3.2.0",
+            "define": "PANCAKE_UI_EFFECT"
         }
     ],
     "noEngineReferences": false

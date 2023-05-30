@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Pancake.Apex;
+using Pancake.Linq;
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace Pancake.UI
     [HideMonoScript]
     public class Popup : GameComponent
     {
+        [SerializeField, Array] private List<UIPopup> popups = new List<UIPopup>();
         [SerializeField] private PopupShowEvent showPopupEvent;
         [SerializeField] private ScriptableEventNoParam closePopupEvent;
 
@@ -47,13 +49,14 @@ namespace Pancake.UI
             }
         }
 
-        private void Show(UIPopup prefab, string type, Transform parent, Action<UIPopup> callback)
+        private void Show(string name, Transform parent, Action<UIPopup> callback)
         {
-            _container.TryGetValue(type, out var existInstance);
+            _container.TryGetValue(name, out var existInstance);
             if (existInstance == null)
             {
+                var prefab = popups.Filter(_ => _.name == name).FirstOrDefault();
                 var instance = Instantiate(prefab, parent);
-                _container.TryAdd(type, instance);
+                _container.TryAdd(name, instance);
                 Show(instance, callback);
             }
             else

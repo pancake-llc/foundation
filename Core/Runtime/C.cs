@@ -220,5 +220,19 @@ namespace Pancake
                 useRealTime,
                 behaviour);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void GotoStore()
+        {
+            string url = Application.platform switch
+            {
+                RuntimePlatform.IPhonePlayer => $"https://apps.apple.com/us/app/{HeartSettings.AppstoreAppId}",
+                _ => "market://details?id=" + Application.identifier
+            };
+
+            Application.OpenURL(url);
+        }
     }
 }

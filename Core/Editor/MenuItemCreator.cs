@@ -115,11 +115,11 @@ namespace PancakeEditor
             img.color = new Color(0f, 0f, 0f, 0.78f);
 
             var container = CreateEmptyRectTransformObject(popup.transform, "container");
-            container.gameObject.AddComponent<Image>().GetComponent<RectTransform>().sizeDelta = new Vector2(800, 500);
+            container.gameObject.AddComponent<Image>().GetComponent<RectTransform>().sizeDelta = new Vector2(710, 730);
 
             var button = CreateObjectWithComponent<UIButton>(container.transform, "button_close");
             button.gameObject.layer = LayerMask.NameToLayer("UI");
-            button.sizeDelta = new Vector2(80, 80);
+            button.sizeDelta = new Vector2(125, 125);
             button.anchorMax = Vector2.one;
             button.anchorMin = Vector2.one;
             button.anchoredPosition = Vector2.zero;

@@ -24,12 +24,9 @@ namespace Pancake.UI
                 {
                     while (true)
                     {
-                        if (token.IsCancellationRequested)
-                        {
-                            break;
-                        }
-
+                        if (token.IsCancellationRequested) break;
                         if (selected) return buttonSelected;
+
                         await Task.Yield();
                     }
 
