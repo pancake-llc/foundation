@@ -130,6 +130,8 @@ namespace Pancake.IAP
         {
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
             _controller?.InitiatePurchase(product.id);
+#elif UNITY_EDITOR
+            InternalPurchaseDone(product.id);
 #endif
             return product;
         }
@@ -149,7 +151,11 @@ namespace Pancake.IAP
         private void PurchaseVerified(PurchaseEventArgs e)
         {
             if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(false);
-            string id = e.purchasedProduct.definition.id;
+            InternalPurchaseDone(e.purchasedProduct.definition.id);
+        }
+
+        private void InternalPurchaseDone(string id)
+        {
             foreach (var product in iapSettings.Products)
             {
                 if (!product.id.Equals(id)) continue;
