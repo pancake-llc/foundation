@@ -1,0 +1,17 @@
+{
+    "name": "Pancake.Component",
+    "rootNamespace": "",
+    "references": [
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
+        "GUID:b0a110e2f808b4d4d82f5694f91b251a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

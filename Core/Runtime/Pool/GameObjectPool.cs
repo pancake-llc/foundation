@@ -35,12 +35,18 @@ namespace Pancake
         /// Parents the pool root transform to <paramref name="t"/>.
         /// </summary>
         /// <param name="t">The Transform to which this pool should become a child.</param>
+        /// <param name="resetPosition"></param>
         /// <remarks>NOTE: Setting the parent to an object marked DontDestroyOnLoad will effectively make this pool DontDestroyOnLoad.<br/>
         /// This can only be circumvented by manually destroying the object or its parent or by setting the parent to an object not marked DontDestroyOnLoad.</remarks>
-        public void SetParent(Transform t)
+        public void SetParent(Transform t, bool resetPosition = false)
         {
             _parent = t;
             Root.SetParent(_parent);
+            if (resetPosition)
+            {
+                Root.transform.localPosition = Vector3.zero;
+                Root.transform.localScale = Vector3.one;
+            }
         }
 
         public override GameObject Request()
