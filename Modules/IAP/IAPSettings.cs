@@ -108,6 +108,9 @@ namespace Pancake.IAP
             }
 
             Selection.activeObject = this;
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             EditorApplication.delayCall += () => EditorGUIUtility.PingObject(this);
         }
 
