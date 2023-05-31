@@ -21,12 +21,15 @@ namespace Pancake.Component
 
         private void SpawnCoinFx(Vector2 screenPos)
         {
-            var ps = coinFxPool.Request().GetComponent<ParticleSystem>();
+            var coinFx = coinFxPool.Request();
+            var ps = coinFx.GetComponent<ParticleSystem>();
             if (ps == null) return;
             ps.gameObject.SetActive(true);
             var transformCache = ps.transform;
             transformCache.position = new Vector3(screenPos.x, screenPos.y);
-            transformCache.localPosition = new Vector3(transformCache.localPosition.x, transformCache.localPosition.y);
+            var localPos = transformCache.localPosition;
+            localPos = new Vector3(localPos.x, localPos.y);
+            transformCache.localPosition = localPos;
             transformCache.localScale = new Vector3(coinFxScale, coinFxScale, coinFxScale);
             ParticleSystem.ExternalForcesModule externalForcesModule = ps.externalForces;
             externalForcesModule.enabled = true;
@@ -34,6 +37,8 @@ namespace Pancake.Component
             coinForceField.gameObject.SetActive(true);
             externalForcesModule.AddInfluence(coinForceField);
             ps.Play();
+            var main = ps.main;
+            App.Delay(main.duration / main.simulationSpeed, () => coinFxPool.Return(coinFx));
         }
     }
 }
