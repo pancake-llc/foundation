@@ -6,11 +6,6 @@ namespace PancakeEditor
 {
     public static partial class Editor
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assembly"></param>
-        /// <returns></returns>
         private static bool IsSystem(Assembly assembly)
         {
             var assemblyFullName = assembly.FullName;
@@ -26,12 +21,7 @@ namespace PancakeEditor
 
             return false;
         }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
+
         public static List<Type> GetTypes(Predicate<Type> filter = null)
         {
             var result = new List<Type>();
@@ -66,7 +56,7 @@ namespace PancakeEditor
 
             return result;
         }
-        
+
         /// <summary>
         /// retrurn all sub type without abstract type
         /// </summary>
@@ -89,7 +79,7 @@ namespace PancakeEditor
             bool SubclassFilter(Type type) => type.IsClass && type.IsSubclassOf(targetType);
             return filter == null ? GetTypes(SubclassFilter) : GetTypes(type => SubclassFilter(type) && filter(type));
         }
-        
+
         /// <summary>
         /// Iterate through all the members of the current Type and all base types. 
         /// </summary>
@@ -102,9 +92,23 @@ namespace PancakeEditor
                 {
                     yield return memberInfo;
                 }
+
                 type = type.BaseType;
+            } while (type != null);
+        }
+
+        public static bool TryFindTypeByFullName(string name, out Type type)
+        {
+            type = Type.GetType(name);
+            if (type != null) return true;
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                type = assembly.GetType(name);
+                if (type != null) return true;
             }
-            while (type != null);
+
+            return false;
         }
     }
 }
