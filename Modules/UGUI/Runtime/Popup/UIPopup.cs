@@ -109,6 +109,8 @@ namespace Pancake.UI
 
         private void Awake() { _defaultScale = container.localScale; }
 
+        public virtual void Init(){}
+
         protected override void Tick()
         {
             if (Input.GetKeyDown(KeyCode.Escape)) BackButtonPressed = true;
