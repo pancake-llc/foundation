@@ -3,6 +3,7 @@ using Pancake.Apex;
 using Pancake.ExLib;
 #if UNITY_EDITOR
 using UnityEditor;
+using System.IO;
 #endif
 using UnityEngine;
 
@@ -105,8 +106,8 @@ namespace Pancake.Monetization
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "googlemobileads-unity.aar"));
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "googlemobileads-unity.aar.meta"));
 
-            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPluginAndroidlib"));
-            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPluginAndroidlib.meta"));
+            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPlugin.androidlib"));
+            FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/Android", "GoogleMobileAdsPlugin.androidlib.meta"));
 
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/iOS", "GADUAdNetworkExtras.h"));
             FileUtil.DeleteFileOrDirectory(System.IO.Path.Combine("Assets/Plugins/iOS", "GADUAdNetworkExtras.h.meta"));
@@ -125,7 +126,10 @@ namespace Pancake.Monetization
             Target = ColorTarget.Background)]
         [HorizontalGroup("admob-uninstall")]
         [Order(2)]
-        private void OpenGoogleAdmobSetting() { UnityEditor.EditorApplication.ExecuteMenuItem("Assets/Google Mobile Ads/Settings..."); }
+        private void OpenGoogleAdmobSetting()
+        {
+            UnityEditor.EditorApplication.ExecuteMenuItem("Assets/Google Mobile Ads/Settings...");
+        }
 #else
         [SerializeMethod]
         [Color(0.31f,
@@ -138,9 +142,75 @@ namespace Pancake.Monetization
         private void Install_AdmobSdk()
         {
             DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob sdk");
+            const string path = "Assets/Plugins/Android/GoogleMobileAdsPlugin.androidlib";
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            string manifest = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                              "\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" package=\"com.google.unity.ads\" android:versionName=\"1.0\" android:versionCode=\"1\">" +
+                              "\n<application><uses-library android:required=\"false\" android:name=\"org.apache.http.legacy\"/></application>" + "\n</manifest>";
+
+            string manifestMeta = @"fileFormatVersion: 2
+guid: e869b36b657604102a7166a39ee7d9c9
+labels:
+- gvh
+- gvh_version-8.3.0
+- gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/AndroidManifest.xml
+timeCreated: 1427838353
+licenseType: Free
+TextScriptImporter:
+  userData:
+  assetBundleName:
+  assetBundleVariant:
+";
+
+            if (!File.Exists(path + "/AndroidManifest.xml"))
+            {
+                var writer = new StreamWriter(path + "/AndroidManifest.xml", false);
+                writer.Write(manifest);
+                writer.Close();
+            }
+            
+            if (!File.Exists(path + "/AndroidManifest.xml.meta"))
+            {
+                var writer = new StreamWriter(path + "/AndroidManifest.xml.meta", false);
+                writer.Write(manifest);
+                writer.Close();
+            }
+
+            string properties = "target=android-31" + "\nandroid.library=true";
+            string propertiesMeta = @"fileFormatVersion: 2
+guid: 1d06ef613dfec4baa88b56aeef69cd9c
+labels:
+- gvh
+- gvh_version-8.3.0
+- gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/project.properties
+timeCreated: 1427838343
+licenseType: Free
+DefaultImporter:
+  userData:
+  assetBundleName:
+  assetBundleVariant:
+";
+            if (!File.Exists(path + "/project.properties"))
+            {
+                var writer = new StreamWriter(path + "/project.properties", false);
+                writer.Write(properties);
+                writer.Close();
+            }
+            
+            if (!File.Exists(path + "/project.properties.meta"))
+            {
+                var writer = new StreamWriter(path + "/project.properties.meta", false);
+                writer.Write(propertiesMeta);
+                writer.Close();
+            }
+
+            AssetDatabase.ImportAsset(path + "/AndroidManifest.xml");
+            AssetDatabase.ImportAsset(path + "/AndroidManifest.xml.meta");
+            AssetDatabase.ImportAsset(path + "/project.properties");
+            AssetDatabase.ImportAsset(path + "/project.properties.meta");
             AssetDatabase.ImportPackage(GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/admob.unitypackage"), false);
         }
-        
+
         [SerializeMethod]
         [Color(1f,
             0.72f,
@@ -203,7 +273,7 @@ namespace Pancake.Monetization
             DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing <color=#FF77C6>applovin</color> sdk");
             AssetDatabase.ImportPackage(GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/applovin.unitypackage"), false);
         }
-        
+
         [SerializeMethod]
         [Color(1f,
             0.72f,
@@ -229,14 +299,14 @@ namespace Pancake.Monetization
             var normalPath = $"Assets/heart/{fullRelativePath}";
             return !System.IO.File.Exists(System.IO.Path.GetFullPath(upmPath)) ? normalPath : upmPath;
         }
-        
+
         [UnityEngine.ContextMenu("Copy Admob Test AppId")]
         protected void FillDefaultTestId()
         {
             "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
             DebugEditor.Toast("[Admob] Copy AppId Test Id Success!");
         }
-        
+
 #endif
     }
 }
