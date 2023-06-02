@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
@@ -32,6 +33,14 @@ namespace Pancake.Monetization
 #else
             return false;
 #endif
+        }
+        
+        public override AdUnitVariable Show()
+        {
+            ResetChainCallback();
+            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || AdStatic.IsRemoveAd || !IsReady()) return this;
+            ShowImpl();
+            return this;
         }
 
         protected override void ShowImpl()

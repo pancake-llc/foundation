@@ -45,6 +45,7 @@ namespace Pancake.Monetization
 
         public override AdUnitVariable Show()
         {
+            ResetChainCallback();
             if (!UnityEngine.Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady()) return this;
             ShowImpl();
             return this;

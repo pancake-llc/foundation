@@ -36,6 +36,14 @@ namespace Pancake.Monetization
 #endif
         }
 
+        public override AdUnitVariable Show()
+        {
+            ResetChainCallback();
+            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || AdStatic.IsRemoveAd || !IsReady()) return this;
+            ShowImpl();
+            return this;
+        }
+
         protected override void ShowImpl()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -101,7 +109,7 @@ namespace Pancake.Monetization
 
         private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref faildedToLoadCallback); }
 #endif
-        
+
 #if UNITY_EDITOR
         [UnityEngine.ContextMenu("Copy Default Test Id")]
         protected void FillDefaultTestId()
