@@ -6,11 +6,12 @@ using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using UnityEngine.Purchasing.Extension;
 
 namespace Pancake.IAP
 {
     [HideMonoScript]
-    public class IAPManager : GameComponent, IStoreListener
+    public class IAPManager : GameComponent, IDetailedStoreListener
     {
         [SerializeField] private IAPSettings iapSettings;
         [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
@@ -136,10 +137,11 @@ namespace Pancake.IAP
             return product;
         }
 
-        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { InternalPurchaseFailded(product.definition.id); }
+
+        private void InternalPurchaseFailded(string id)
         {
             if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(false);
-            string id = product.definition.id;
             foreach (var p in iapSettings.Products)
             {
                 if (!p.id.Equals(id)) continue;
@@ -177,6 +179,8 @@ namespace Pancake.IAP
             }
 #endif
         }
+
+        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription) { InternalPurchaseFailded(product.definition.id); }
 
         private void RequestProductData(ConfigurationBuilder builder)
         {
