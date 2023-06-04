@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Pancake.ExLibEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
@@ -8,7 +9,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_NOTIFICATION
-            Uniform.DrawInstalled("1.0.1");
+            Uniform.DrawInstalled("2.2.0");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(40f)))
             {
@@ -22,7 +23,7 @@ namespace PancakeEditor
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Notification", "Are you sure you want to uninstall notification package ?", "Yes", "No");
                 if (confirmDelete)
                 {
-                    RegistryManager.Remove("com.pancake.notification");
+                    RegistryManager.Remove("com.unity.mobile.notifications");
                     RegistryManager.Resolve();
                 }
             }
@@ -32,7 +33,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(40f)))
             {
-                RegistryManager.Add("com.pancake.notification", "https://github.com/pancake-llc/notification.git#1.0.1");
+                RegistryManager.Add("com.unity.mobile.notifications", "2.2.0");
                 RegistryManager.Resolve();
             }
 

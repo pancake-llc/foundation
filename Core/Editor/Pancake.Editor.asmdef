@@ -94,6 +94,11 @@
             "name": "com.coffee.ui-effect",
             "expression": "3.2.0",
             "define": "PANCAKE_UI_EFFECT"
+        },
+        {
+            "name": "com.unity.mobile.notifications",
+            "expression": "2.1.0",
+            "define": "PANCAKE_NOTIFICATION"
         }
     ],
     "noEngineReferences": false
