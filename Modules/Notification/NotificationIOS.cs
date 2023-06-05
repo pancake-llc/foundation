@@ -1,0 +1,84 @@
+﻿#if UNITY_IOS
+
+using System;
+using System.Collections.Generic;
+using Pancake.Threading.Tasks;
+using Unity.Notifications.iOS;
+using UnityEngine;
+
+namespace Pancake.Notification
+{
+    internal static class NotificationIOS
+    {
+        private static Dictionary<string, bool> channelRegistered = new Dictionary<string, bool>();
+
+        internal static async UniTask RequestAuthorization()
+        {
+            var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge | AuthorizationOption.Sound;
+            using (var req = new AuthorizationRequest(authorizationOption, true))
+            {
+                while (!req.IsFinished)
+                {
+                    await UniTask.Yield();
+                }
+            }
+        }
+
+        private static async UniTask RegisterNotificationChannel(string identifier, string title, string subtitle, string body, iOSNotificationTrigger trigger)
+        {
+            await RequestAuthorization();
+
+            if (new iOSNotificationSettings().AuthorizationStatus != AuthorizationStatus.Authorized)
+            {
+                Debug.LogError("IOSNotification non authorized for schedule notification");
+            }
+
+            var unregistered = !channelRegistered.ContainsKey(identifier) || !channelRegistered[identifier];
+            if (unregistered)
+            {
+                var notification = new iOSNotification()
+                {
+                    Identifier = identifier,
+                    Title = title,
+                    Body = body,
+                    Subtitle = subtitle,
+                    ShowInForeground = true,
+                    ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Badge | PresentationOption.Sound),
+                    CategoryIdentifier = "category_a",
+                    ThreadIdentifier = "thread1",
+                    Trigger = trigger,
+                };
+
+                try
+                {
+                    iOSNotificationCenter.ScheduleNotification(notification);
+                    channelRegistered[identifier] = true;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+            }
+        }
+
+        internal static void Schedule(string identifier, string title, string subtitle, string text, DateTime fireTime, bool repeat)
+        {
+            var interval = DateTime.Now - fireTime;
+            if (interval <= TimeSpan.Zero) interval = TimeSpan.FromSeconds(1);
+
+            var timeTrigger = new iOSNotificationTimeIntervalTrigger {TimeInterval = interval, Repeats = repeat};
+
+            RegisterNotificationChannel(identifier,
+                    title,
+                    subtitle,
+                    text,
+                    timeTrigger)
+                .Forget();
+        }
+
+        internal static void CancelAllScheduled() { iOSNotificationCenter.RemoveAllScheduledNotifications(); }
+        internal static void ClearBadgeCounter() { iOSNotificationCenter.ApplicationBadge = 0; }
+    }
+}
+
+#endif

@@ -11,6 +11,12 @@ namespace PancakeEditor
 #if PANCAKE_NOTIFICATION
             Uniform.DrawInstalled("2.2.0");
             GUILayout.FlexibleSpace();
+            
+            if (GUILayout.Button("Open Mobile Unity Notification Setting", GUILayout.MaxHeight(40f)))
+            {
+                UnityEditor.SettingsService.OpenProjectSettings("Project/Mobile Notifications");
+            }
+            
             if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(40f)))
             {
                 Application.OpenURL("https://github.com/pancake-llc/notification/wiki");
