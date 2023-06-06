@@ -37,7 +37,8 @@ namespace Pancake.Notification
             string channelDescription = "Newsletter Announcement",
             string smallIcon = null,
             bool bigPicture = false,
-            string namePicture = "", bool repeat = false)
+            string namePicture = "",
+            bool repeat = false)
         {
             Schedule(identifier,
                 title,
@@ -48,7 +49,8 @@ namespace Pancake.Notification
                 channelDescription,
                 smallIcon,
                 bigPicture,
-                namePicture, repeat);
+                namePicture,
+                repeat);
         }
 
         private static void Schedule(
@@ -72,7 +74,7 @@ namespace Pancake.Notification
             Unity.Notifications.Android.BigPictureStyle? bigPictureStyle = null;
             if (bigPicture)
             {
-                bigPictureStyle = new Unity.Notifications.Android.BigPictureStyle() {Picture = namePicture, ContentTitle = "Picture"};
+                bigPictureStyle = new Unity.Notifications.Android.BigPictureStyle() {Picture = namePicture, ContentTitle = title, ContentDescription = text};
             }
 
             NotificationAndroid.Schedule(identifier,
@@ -83,7 +85,8 @@ namespace Pancake.Notification
                 channelName,
                 channelDescription,
                 smallIcon,
-                bigPictureStyle, repeat);
+                bigPictureStyle,
+                repeat);
 #elif UNITY_IOS
 			NotificationIOS.Schedule(identifier, title, "", text, fireTime, repeat);
 #endif

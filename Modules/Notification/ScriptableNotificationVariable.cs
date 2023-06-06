@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using Pancake.Apex;
-using Pancake.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Pancake.Notification
 {
@@ -31,69 +27,40 @@ namespace Pancake.Notification
         [SerializeField, Guid] private string identifier;
         [SerializeField] private int minute;
         [SerializeField] private bool repeat;
-        [SerializeField] private bool bigPicture;
+        [SerializeField] internal bool bigPicture;
 
-        [ShowIf(nameof(bigPicture)), Message("File bigpicture muest be place in folder StreamingAsset"), Label("  Name Picture")] [SerializeField]
-        private string namePicture;
+        [ShowIf(nameof(bigPicture)), Message("File bigpicture must be place in folder StreamingAsset and contains file extension ex .jpg", Height = 40), Label("  Name Picture")] [SerializeField]
+        internal string namePicture;
 
         [Array, SerializeField] private NotificationData[] datas;
 
-        public async void Send()
+
+        public void Send()
         {
+            if (!Application.isMobilePlatform) return;
             var data = datas.PickRandom();
-            if (!state)
-            {
-                PrepareImages();
-                await UniTask.WaitUntil(() => state);
-                namePicture = picturePath;
-                Debug.Log("PICTURE PATH:" + picturePath);
-            }
+            string pathPicture = Path.Combine(Application.persistentDataPath, namePicture);
             NotificationConsole.Send(identifier,
                 data.title,
                 data.message,
                 bigPicture: bigPicture,
-                namePicture: namePicture);
+                namePicture: pathPicture);
         }
 
-        public async void Schedule()
+        public void Schedule()
         {
+            if (!Application.isMobilePlatform) return;
             var data = datas.PickRandom();
-            if (!state)
-            {
-                PrepareImages();
-                await UniTask.WaitUntil(() => state);
-                namePicture = picturePath;
-            }
+
+            string pathPicture = Path.Combine(Application.persistentDataPath, namePicture);
 
             NotificationConsole.Schedule(identifier,
                 data.title,
                 data.message,
                 TimeSpan.FromMinutes(minute),
                 bigPicture: bigPicture,
-                namePicture: namePicture,
+                namePicture: pathPicture,
                 repeat: repeat);
-        }
-
-
-        string picturePath;
-        private bool state;
-
-        void PrepareImages()
-        {
-            string filename = "channel_manual_picture.jpg";
-            picturePath = Path.Combine(Application.persistentDataPath, filename);
-            App.RunCoroutine(PrepareImage(Application.persistentDataPath, filename));
-        }
-
-        IEnumerator PrepareImage(string destDir, string filename)
-        {
-            string path = Path.Combine(destDir, filename);
-            if (File.Exists(path))
-                yield break;
-            using var uwr = UnityWebRequest.Get(Path.Combine(Application.streamingAssetsPath, filename));
-            yield return uwr.SendWebRequest();
-            File.WriteAllBytes(path, uwr.downloadHandler.data);
-            state = true;
         }
     }
 }
