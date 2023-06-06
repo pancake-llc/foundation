@@ -61,9 +61,9 @@ namespace Pancake.Notification
             }
         }
 
-        internal static void Schedule(string identifier, string title, string subtitle, string text, DateTime fireTime, bool repeat)
+        internal static void Schedule(string identifier, string title, string subtitle, string text, TimeSpan fireTime, bool repeat)
         {
-            var interval = DateTime.Now - fireTime;
+            var interval = fireTime;
             if (interval <= TimeSpan.Zero) interval = TimeSpan.FromSeconds(1);
 
             var timeTrigger = new iOSNotificationTimeIntervalTrigger {TimeInterval = interval, Repeats = repeat};

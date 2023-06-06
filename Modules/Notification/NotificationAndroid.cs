@@ -27,7 +27,7 @@ namespace Pancake.Notification
             string identifier,
             string title,
             string text,
-            DateTime fireTime,
+            TimeSpan timeOffset,
             string largeIcon = null,
             string channelName = "Nova",
             string channelDescription = "Newsletter Announcement",
@@ -40,14 +40,14 @@ namespace Pancake.Notification
             {
                 Title = title,
                 Text = text,
-                FireTime = fireTime,
+                FireTime = DateTime.Now + timeOffset,
                 Group = identifier,
                 GroupSummary = true,
                 ShouldAutoCancel = true,
                 BigPicture = bigPictureStyle,
             };
 
-            if (repeat) notification.RepeatInterval = TimeSpan.FromTicks(DateTime.Now.Ticks);
+            if (repeat) notification.RepeatInterval = timeOffset;
 
             if (largeIcon != null) notification.LargeIcon = largeIcon;
             if (smallIcon != null) notification.SmallIcon = smallIcon;
