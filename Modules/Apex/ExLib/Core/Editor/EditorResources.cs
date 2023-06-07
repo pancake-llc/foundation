@@ -27,6 +27,8 @@ namespace Pancake.ExLibEditor
         public static Texture2D ScriptableTween => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_tween.png", RELATIVE_PATH);
         public static Texture2D ScriptableNotification => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_notification.png", RELATIVE_PATH);
         public static Texture2D ScriptableSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_setting.png", RELATIVE_PATH);
+        public static Texture2D ScriptableEditorSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_editor_setting.png", RELATIVE_PATH);
+        public static Texture2D ScriptableBuild => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_build.png", RELATIVE_PATH);
         public static Texture2D ScriptableStar => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_star.png", RELATIVE_PATH);
         public static Texture2D ScriptableConsole => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_console.png", RELATIVE_PATH);
         public static Texture2D ScriptableProfiler => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_profiler.png", RELATIVE_PATH);
