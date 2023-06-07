@@ -10,8 +10,10 @@ namespace Pancake.Monetization
         public EBannerSize size;
         public EBannerPosition position;
 
+#pragma warning disable 0414
         private bool _isBannerDestroyed = true;
         private bool _registerCallback;
+#pragma warning restore 0414
 
         public override void Load()
         {

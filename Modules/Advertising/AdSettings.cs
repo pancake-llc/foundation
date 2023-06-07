@@ -172,7 +172,7 @@ TextScriptImporter:
             if (!File.Exists(path + "/AndroidManifest.xml.meta"))
             {
                 var writer = new StreamWriter(path + "/AndroidManifest.xml.meta", false);
-                writer.Write(manifest);
+                writer.Write(manifestMeta);
                 writer.Close();
             }
 
