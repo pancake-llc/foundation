@@ -152,7 +152,7 @@ namespace Pancake.Tween
             if (JobHandleUpdateList.Length > 0)
             {
                 // complete all update jobs of TweenActionValues
-                JobHandle.CompleteAll(JobHandleUpdateList);
+                JobHandle.CompleteAll(JobHandleUpdateList.AsArray());
                 JobHandleUpdateList.Clear();
             }
 

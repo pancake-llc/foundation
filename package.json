@@ -19,7 +19,7 @@
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.burst": "1.8.4",
-    "com.unity.collections": "1.4.0",
+    "com.unity.collections": "2.1.4",
     "com.unity.textmeshpro": "3.0.6"
   },
   "repository": {

@@ -730,7 +730,7 @@ namespace Pancake.Tween
 
                 _jobInputArray = new NativeArray<float3>(len, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
 
-                _jobInputArray.CopyFrom(_paramList);
+                _jobInputArray.CopyFrom(_paramList.AsArray());
 
                 if (_extraParamList.Length == 0)
                 {
@@ -743,7 +743,7 @@ namespace Pancake.Tween
                 {
                     _jobExtraPramArray = new NativeArray<float>(_extraParamList.Length, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
 
-                    _jobExtraPramArray.CopyFrom(_extraParamList);
+                    _jobExtraPramArray.CopyFrom(_extraParamList.AsArray());
 
                     _jobHandle = new TweenActionValue.UpdateJobWithExtraParams()
                     {
