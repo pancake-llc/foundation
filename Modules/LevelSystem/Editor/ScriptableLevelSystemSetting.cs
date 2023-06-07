@@ -12,8 +12,8 @@ namespace Pancake.LevelSystemEditor
         public List<string> blacklistPaths = new List<string>();
 
         [NonSerialized] internal Vector2 _pickObjectScrollPosition;
-        [NonSerialized] private Vector2 _whiteScrollPosition;
-        [NonSerialized] internal Vector2 _blackScrollPosition;
+        [NonSerialized] public Vector2 whiteScrollPosition;
+        [NonSerialized] public Vector2 blackScrollPosition;
         [NonSerialized] internal PickObject _currentPickObject;
         [NonSerialized] private List<PickObject> _pickObjects;
         [NonSerialized] internal SerializedObject _pathFolderSerializedObject;
@@ -28,8 +28,5 @@ namespace Pancake.LevelSystemEditor
 
 
         public static List<PickObject> PickObjects => Instance._pickObjects ?? (Instance._pickObjects = new List<PickObject>());
-
-        public static Vector2 WhiteScrollPosition { get => Instance._whiteScrollPosition; set => Instance._whiteScrollPosition = value; }
-        public static Vector2 BlackScrollPosition { get => Instance._blackScrollPosition; set => Instance._blackScrollPosition = value; }
     }
 }

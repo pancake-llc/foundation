@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace PancakeEditor
 {
-    internal class PreviewGenerator
+    public class PreviewGenerator
     {
         public static readonly PreviewGenerator Default = new PreviewGenerator();
 
