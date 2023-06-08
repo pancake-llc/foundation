@@ -11,8 +11,7 @@ namespace Pancake.ScriptableEditor
 
         protected override void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
         {
-            if (_serializedObject == null || _serializedObject.targetObject != targetObject)
-                _serializedObject = new SerializedObject(targetObject);
+            if (_serializedObject == null || _serializedObject.targetObject != targetObject) _serializedObject = new SerializedObject(targetObject);
 
             _serializedObject.UpdateIfRequiredOrScript();
             base.DrawUnExpanded(position, property, label, targetObject);
@@ -22,8 +21,11 @@ namespace Pancake.ScriptableEditor
         protected override void DrawShortcut(Rect position, SerializedProperty property, Object targetObject)
         {
             var value = _serializedObject.FindProperty("list");
-            var count = value.arraySize;
-            EditorGUI.LabelField(position, "Count: " + count);
+            if (value != null)
+            {
+                int count = value.arraySize;
+                EditorGUI.LabelField(position, "Count: " + count);
+            }
         }
     }
 }
