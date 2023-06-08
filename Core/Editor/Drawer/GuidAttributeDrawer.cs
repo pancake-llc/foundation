@@ -6,7 +6,7 @@ using UnityEngine;
 namespace PancakeEditor
 {
     [CustomPropertyDrawer(typeof(GuidAttribute))]
-    public class GuildAttributeDrawer : PropertyDrawer
+    public class GuidAttributeDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -14,11 +14,7 @@ namespace PancakeEditor
             EditorGUI.BeginDisabledGroup(true);
             if (property.propertyType == SerializedPropertyType.String)
             {
-                if (string.IsNullOrEmpty(property.stringValue))
-                {
-                    Recreate(property);
-                }
-
+                if (string.IsNullOrEmpty(property.stringValue)) Recreate(property);
                 EditorGUI.PropertyField(position, property, label);
             }
             else
@@ -42,7 +38,7 @@ namespace PancakeEditor
         private void Recreate(SerializedProperty property)
         {
             if (property.propertyType != SerializedPropertyType.String) return;
-            property.stringValue = Guid.NewGuid().ToString();
+            property.stringValue = Guid.NewGuid().ToString("N")[..15]; // slower than Guid.NewGuid().ToString() but shorter
             property.serializedObject.ApplyModifiedProperties();
         }
 
