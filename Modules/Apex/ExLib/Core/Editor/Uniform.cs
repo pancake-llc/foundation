@@ -360,6 +360,65 @@ namespace Pancake.ExLibEditor
         }
 
         /// <summary>
+        /// Draw group selection with header
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="sectionName"></param>
+        /// <param name="drawer"></param>
+        /// <param name="actionRightClick"></param>
+        /// <param name="defaultFoldout"></param>
+        /// <param name="isShowContent"></param>
+        public static float DrawGroupFoldoutWithRightClick(
+            string key,
+            string sectionName,
+            System.Action drawer,
+            System.Action actionRightClick,
+            bool defaultFoldout = true,
+            bool isShowContent = true)
+        {
+            bool foldout = GetFoldoutState(key, defaultFoldout);
+
+            var rect = EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout && isShowContent ? 30 : 0));
+
+            if (!isShowContent)
+            {
+                EditorGUILayout.LabelField(sectionName);
+            }
+            else
+            {
+                EditorGUILayout.BeginHorizontal();
+
+                // Header label (and button).
+                if (GUILayout.Button($"    {sectionName}", FoldoutButton))
+                {
+                    if (Event.current.button == 1)
+                    {
+                        actionRightClick?.Invoke();
+                        return rect.height;
+                    }
+
+                    SetFoldoutState(key, !foldout);
+                }
+
+                // The expand/collapse icon.
+                var buttonRect = GUILayoutUtility.GetLastRect();
+                var iconRect = new Rect(buttonRect.x, buttonRect.y, 10, buttonRect.height);
+                GUI.Label(iconRect, foldout ? IconContent("d_IN_foldout_act_on") : IconContent("d_IN_foldout"), FoldoutIcon);
+
+                EditorGUILayout.EndHorizontal();
+
+                // Draw the section content.
+                if (foldout) GUILayout.Space(5);
+                if (foldout && drawer != null) drawer();
+            }
+
+            float height = rect.height;
+            EditorGUILayout.EndVertical();
+            height += 4;
+            return height;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="fieldTitle"></param>
@@ -416,13 +475,13 @@ namespace Pancake.ExLibEditor
 
         #region foldout state
 
-        internal static bool GetFoldoutState(string key, bool defaultFoldout = true)
+        public static bool GetFoldoutState(string key, bool defaultFoldout = true)
         {
             if (!FoldoutSettings.ContainsKey(key)) FoldoutSettings.Add(key, defaultFoldout);
             return FoldoutSettings[key];
         }
 
-        internal static void SetFoldoutState(string key, bool state)
+        public static void SetFoldoutState(string key, bool state)
         {
             if (!FoldoutSettings.ContainsKey(key))
             {

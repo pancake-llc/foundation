@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Pancake.ExLibEditor;
-using PancakeEditor;
 using UnityEditor;
-#if UNITY_2021_1_OR_NEWER
 using UnityEditor.SceneManagement;
-#else
-using UnityEditor.Experimental.SceneManagement;
-#endif
 using UnityEngine;
 
 namespace Pancake.LevelSystemEditor
 {
-    internal class LevelEditor : EditorWindow
+    public class LevelEditor : EditorWindow
     {
         private class PickObject
         {
@@ -190,181 +185,205 @@ namespace Pancake.LevelSystemEditor
 
         private void OnGUI()
         {
+            GUILayout.Space(8);
             if (TryClose()) return;
             if (CheckEscape()) return;
             SceneView.RepaintAll();
             InternalDrawDropArea();
+            GUILayout.Space(4);
             InternalDrawSetting();
+            GUILayout.Space(4);
             InternalDrawPickupArea();
         }
 
         private void InternalDrawDropArea()
         {
-            Uniform.DrawGroupFoldout("level_editor_drop_area", "Drop Are", DrawDropArea);
+            Uniform.DrawGroupFoldout("level_editor_drop_area", "Drop Area", DrawDropArea);
 
             void DrawDropArea()
             {
+                GUILayout.Space(2);
                 float width = 0;
                 var @event = Event.current;
-                Uniform.Horizontal(() =>
+
+                #region horizontal
+
+                EditorGUILayout.BeginHorizontal();
+                var whiteArea = GUILayoutUtility.GetRect(0.0f, 50f, GUILayout.ExpandWidth(true));
+                var blackArea = GUILayoutUtility.GetRect(0.0f, 50f, GUILayout.ExpandWidth(true));
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (whiteArea.width == 1f) width = position.width / 2;
+                else width = whiteArea.width;
+                GUI.backgroundColor = new Color(0f, 0.83f, 1f);
+                GUI.Box(whiteArea, "[WHITE LIST]", new GUIStyle(EditorStyles.helpBox) {alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Italic});
+                GUI.backgroundColor = Color.white;
+                GUI.backgroundColor = new Color(1f, 0.13f, 0f);
+                GUI.Box(blackArea, "[BLACK LIST]", new GUIStyle(EditorStyles.helpBox) {alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Italic});
+                GUI.backgroundColor = Color.white;
+                switch (@event.type)
                 {
-                    var whiteArea = GUILayoutUtility.GetRect(0.0f, 50f, GUILayout.ExpandWidth(true));
-                    var blackArea = GUILayoutUtility.GetRect(0.0f, 50f, GUILayout.ExpandWidth(true));
-                    // ReSharper disable once CompareOfFloatsByEqualityOperator
-                    if (whiteArea.width == 1f) width = position.width / 2;
-                    else width = whiteArea.width;
-                    GUI.backgroundColor = new Color(0f, 0.83f, 1f);
-                    GUI.Box(whiteArea, "[WHITE LIST]", new GUIStyle(EditorStyles.helpBox) {alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Italic});
-                    GUI.backgroundColor = Color.white;
-                    GUI.backgroundColor = new Color(1f, 0.13f, 0f);
-                    GUI.Box(blackArea, "[BLACK LIST]", new GUIStyle(EditorStyles.helpBox) {alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Italic});
-                    GUI.backgroundColor = Color.white;
-                    switch (@event.type)
+                    case EventType.DragUpdated:
+                    case EventType.DragPerform:
+                        if (whiteArea.Contains(@event.mousePosition))
+                        {
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                            if (@event.type == EventType.DragPerform)
+                            {
+                                DragAndDrop.AcceptDrag();
+                                foreach (string path in DragAndDrop.paths)
+                                {
+                                    if (File.Exists(path))
+                                    {
+                                        var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                                        if (r.GetType() != typeof(GameObject)) continue;
+                                    }
+
+                                    ValidateWhitelist(path, ref ScriptableLevelSystemSetting.Instance.blacklistPaths);
+                                    AddToWhitelist(path);
+                                }
+
+                                ReduceScopeDirectory(ref ScriptableLevelSystemSetting.Instance.whitelistPaths);
+                                RefreshAll();
+                            }
+                        }
+                        else if (blackArea.Contains(@event.mousePosition))
+                        {
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                            if (@event.type == EventType.DragPerform)
+                            {
+                                DragAndDrop.AcceptDrag();
+                                foreach (string path in DragAndDrop.paths)
+                                {
+                                    if (File.Exists(path))
+                                    {
+                                        var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                                        if (r.GetType() != typeof(GameObject)) continue;
+                                    }
+
+                                    ValidateBlacklist(path, ref ScriptableLevelSystemSetting.Instance.whitelistPaths);
+                                    AddToBlacklist(path);
+                                }
+
+                                ReduceScopeDirectory(ref ScriptableLevelSystemSetting.Instance.blacklistPaths);
+                                RefreshAll();
+                            }
+                        }
+
+                        break;
+                    case EventType.MouseDown when @event.button == 1:
+                        var menu = new GenericMenu();
+                        if (whiteArea.Contains(@event.mousePosition))
+                        {
+                            menu.AddItem(new GUIContent("Clear All [WHITE LIST]"),
+                                false,
+                                () =>
+                                {
+                                    ScriptableLevelSystemSetting.Instance.whitelistPaths.Clear();
+                                    RefreshAll();
+                                });
+                        }
+                        else if (blackArea.Contains(@event.mousePosition))
+                        {
+                            menu.AddItem(new GUIContent("Clear All [BLACK LIST]"),
+                                false,
+                                () =>
+                                {
+                                    ScriptableLevelSystemSetting.Instance.blacklistPaths.Clear();
+                                    RefreshAll();
+                                });
+                        }
+
+                        menu.ShowAsContext();
+                        break;
+                }
+
+                EditorGUILayout.EndHorizontal();
+
+                #endregion
+
+
+                #region horizontal
+
+                EditorGUILayout.BeginHorizontal();
+
+                #region vertical scope
+
+                using (var scope = new EditorGUILayout.VerticalScope(GUILayout.Width(width - 10)))
+                {
+                    if (ScriptableLevelSystemSetting.Instance.whitelistPaths.Count == 0)
                     {
-                        case EventType.DragUpdated:
-                        case EventType.DragPerform:
-                            if (whiteArea.Contains(@event.mousePosition))
-                            {
-                                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                                if (@event.type == EventType.DragPerform)
-                                {
-                                    DragAndDrop.AcceptDrag();
-                                    foreach (string path in DragAndDrop.paths)
-                                    {
-                                        if (File.Exists(path))
-                                        {
-                                            var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                                            if (r.GetType() != typeof(GameObject)) continue;
-                                        }
-
-                                        ValidateWhitelist(path, ref levelEditorSettings.Settings.blacklistPaths);
-                                        AddToWhitelist(path);
-                                    }
-
-                                    InEditor.ReduceScopeDirectory(ref levelEditorSettings.Settings.whitelistPaths);
-                                    levelEditorSettings.SaveSetting();
-                                    RefreshAll();
-                                }
-                            }
-                            else if (blackArea.Contains(@event.mousePosition))
-                            {
-                                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                                if (@event.type == EventType.DragPerform)
-                                {
-                                    DragAndDrop.AcceptDrag();
-                                    foreach (string path in DragAndDrop.paths)
-                                    {
-                                        if (File.Exists(path))
-                                        {
-                                            var r = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-                                            if (r.GetType() != typeof(GameObject)) continue;
-                                        }
-
-                                        ValidateBlacklist(path, ref levelEditorSettings.Settings.whitelistPaths);
-                                        AddToBlacklist(path);
-                                    }
-
-                                    InEditor.ReduceScopeDirectory(ref levelEditorSettings.Settings.blacklistPaths);
-                                    levelEditorSettings.SaveSetting();
-                                    RefreshAll();
-                                }
-                            }
-
-                            break;
-                        case EventType.MouseDown when @event.button == 1:
-                            var menu = new GenericMenu();
-                            if (whiteArea.Contains(@event.mousePosition))
-                            {
-                                menu.AddItem(new GUIContent("Clear All [WHITE LIST]"),
-                                    false,
-                                    () =>
-                                    {
-                                        levelEditorSettings.Settings.whitelistPaths.Clear();
-                                        levelEditorSettings.SaveSetting();
-                                        RefreshAll();
-                                    });
-                            }
-                            else if (blackArea.Contains(@event.mousePosition))
-                            {
-                                menu.AddItem(new GUIContent("Clear All [BLACK LIST]"),
-                                    false,
-                                    () =>
-                                    {
-                                        levelEditorSettings.Settings.blacklistPaths.Clear();
-                                        levelEditorSettings.SaveSetting();
-                                        RefreshAll();
-                                    });
-                            }
-
-                            menu.ShowAsContext();
-                            break;
+                        EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
                     }
-                });
+                    else
+                    {
+                        GUILayout.Space(2);
+                        _whiteScrollPosition = GUILayout.BeginScrollView(_whiteScrollPosition, false, false, GUILayout.Height(250));
+                        foreach (string t in ScriptableLevelSystemSetting.Instance.whitelistPaths.ToList())
+                        {
+                            DrawRow(t, width, _ => ScriptableLevelSystemSetting.Instance.whitelistPaths.Remove(_));
+                        }
 
-                Uniform.Horizontal(() =>
+                        GUILayout.EndScrollView();
+                    }
+                }
+
+                #endregion
+
+
+                GUILayout.Space(4);
+
+                #region vertical scope
+
+                using (var scope = new EditorGUILayout.VerticalScope(GUILayout.Width(width - 15)))
                 {
-                    Uniform.VerticalScope(() =>
+                    if (ScriptableLevelSystemSetting.Instance.blacklistPaths.Count == 0)
+                    {
+                        EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
+                    }
+                    else
+                    {
+                        GUILayout.Space(2);
+                        _blackScrollPosition = GUILayout.BeginScrollView(_blackScrollPosition, false, false, GUILayout.Height(250));
+                        foreach (string t in ScriptableLevelSystemSetting.Instance.blacklistPaths.ToList())
                         {
-                            if (levelEditorSettings.Settings.whitelistPaths.Count == 0)
-                            {
-                                EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
-                            }
-                            else
-                            {
-                                Uniform.SpaceHalfLine();
-                                _whiteScrollPosition = GUILayout.BeginScrollView(_whiteScrollPosition, false, false, GUILayout.Height(250));
-                                foreach (string t in levelEditorSettings.Settings.whitelistPaths.ToList())
-                                {
-                                    DrawRow(t, width, _ => levelEditorSettings.Settings.whitelistPaths.Remove(_));
-                                }
+                            DrawRow(t, width, _ => ScriptableLevelSystemSetting.Instance.blacklistPaths.Remove(_));
+                        }
 
-                                GUILayout.EndScrollView();
-                            }
-                        },
-                        GUILayout.Width(width - 10));
-                    Uniform.SpaceOneLine();
-                    Uniform.VerticalScope(() =>
-                        {
-                            if (levelEditorSettings.Settings.blacklistPaths.Count == 0)
-                            {
-                                EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
-                            }
-                            else
-                            {
-                                Uniform.SpaceHalfLine();
-                                _blackScrollPosition = GUILayout.BeginScrollView(_blackScrollPosition, false, false, GUILayout.Height(250));
-                                foreach (string t in levelEditorSettings.Settings.blacklistPaths.ToList())
-                                {
-                                    DrawRow(t, width, _ => levelEditorSettings.Settings.blacklistPaths.Remove(_));
-                                }
+                        GUILayout.EndScrollView();
+                    }
+                }
 
-                                GUILayout.EndScrollView();
-                            }
-                        },
-                        GUILayout.Width(width - 15));
-                });
+                #endregion
+
+
+                EditorGUILayout.EndHorizontal();
+
+                #endregion
             }
 
             void DrawRow(string content, float width, Action<string> action)
             {
-                Uniform.Horizontal(() =>
+                #region horizontal
+
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(new GUIContent(content), GUILayout.Width(width - 100));
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(Uniform.IconContent("d_scenevis_visible_hover", "Ping Selection")))
                 {
-                    EditorGUILayout.LabelField(new GUIContent(content), GUILayout.Width(width - 100));
-                    GUILayout.FlexibleSpace();
-                    Uniform.Button(Uniform.IconContent("d_scenevis_visible_hover", "Ping Selection"),
-                        () =>
-                        {
-                            var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(content);
-                            Selection.activeObject = obj;
-                            EditorGUIUtility.PingObject(obj);
-                        });
-                    Uniform.Button(Uniform.IconContent("Toolbar Minus", "Remove"),
-                        () =>
-                        {
-                            action?.Invoke(content);
-                            RefreshAll();
-                        });
-                });
+                    var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(content);
+                    Selection.activeObject = obj;
+                    EditorGUIUtility.PingObject(obj);
+                }
+
+                if (GUILayout.Button(Uniform.IconContent("Toolbar Minus", "Remove")))
+                {
+                    action?.Invoke(content);
+                    RefreshAll();
+                }
+
+                EditorGUILayout.EndHorizontal();
+
+                #endregion
             }
         }
 
@@ -380,7 +399,7 @@ namespace Pancake.LevelSystemEditor
         {
             foreach (string t in whiteList.ToList())
             {
-                if (path.Equals(t) || InEditor.IsChildOfPath(t, path)) whiteList.Remove(t);
+                if (path.Equals(t) || IsChildOfPath(t, path)) whiteList.Remove(t);
             }
         }
 
@@ -389,7 +408,7 @@ namespace Pancake.LevelSystemEditor
             var check = false;
             foreach (string whitePath in ScriptableLevelSystemSetting.Instance.whitelistPaths)
             {
-                if (InEditor.IsChildOfPath(path, whitePath)) check = true;
+                if (IsChildOfPath(path, whitePath)) check = true;
             }
 
             if (!check) ScriptableLevelSystemSetting.Instance.whitelistPaths.Add(path);
@@ -401,11 +420,71 @@ namespace Pancake.LevelSystemEditor
             var check = false;
             foreach (string blackPath in ScriptableLevelSystemSetting.Instance.blacklistPaths)
             {
-                if (InEditor.IsChildOfPath(path, blackPath)) check = true;
+                if (IsChildOfPath(path, blackPath)) check = true;
             }
 
             if (!check) ScriptableLevelSystemSetting.Instance.blacklistPaths.Add(path);
             ScriptableLevelSystemSetting.Instance.blacklistPaths = ScriptableLevelSystemSetting.Instance.blacklistPaths.Distinct().ToList(); //unique
+        }
+
+        // return true if child is childrent of parent
+        private bool IsChildOfPath(string child, string parent)
+        {
+            if (child.Equals(parent)) return false;
+            var allParent = new List<DirectoryInfo>();
+            GetAllParentDirectories(new DirectoryInfo(child), ref allParent);
+
+            foreach (var p in allParent)
+            {
+                bool check = EqualPath(p, parent);
+                if (check) return true;
+            }
+
+            return false;
+        }
+
+        private void GetAllParentDirectories(DirectoryInfo directoryToScan, ref List<DirectoryInfo> directories)
+        {
+            while (true)
+            {
+                if (directoryToScan == null || directoryToScan.Name == directoryToScan.Root.Name || !directoryToScan.FullName.Contains("Assets")) return;
+
+                directories.Add(directoryToScan);
+                directoryToScan = directoryToScan.Parent;
+            }
+        }
+
+        private bool EqualPath(FileSystemInfo info, string str)
+        {
+            string relativePath = info.FullName;
+            if (relativePath.StartsWith(Application.dataPath.Replace('/', '\\'))) relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
+            relativePath = relativePath.Replace('\\', '/');
+            return str.Equals(relativePath);
+        }
+
+        private void ReduceScopeDirectory(ref List<string> source)
+        {
+            var arr = new string[source.Count];
+            source.CopyTo(arr);
+            var valueRemove = new List<string>();
+            var unique = arr.Distinct().ToList();
+            foreach (string u in unique)
+            {
+                var check = false;
+                foreach (string k in unique)
+                {
+                    if (IsChildOfPath(u, k)) check = true;
+                }
+
+                if (check) valueRemove.Add(u);
+            }
+
+            foreach (string i in valueRemove)
+            {
+                unique.Remove(i);
+            }
+
+            source = unique;
         }
 
         private void InternalDrawSetting()
@@ -466,26 +545,32 @@ namespace Pancake.LevelSystemEditor
                 if (tex)
                 {
                     string pickObjectName = _currentPickObject?.pickedObject.name;
-                    Uniform.Horizontal(() =>
+
+                    #region horizontal
+
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Space(position.width / 2 - 50);
+                    if (_editorInpsectorPreview == null || _previousObjectInpectorPreview != _currentPickObject?.pickedObject)
                     {
-                        GUILayout.Space(position.width / 2 - 50);
-                        if (_editorInpsectorPreview == null || _previousObjectInpectorPreview != _currentPickObject?.pickedObject)
-                        {
-                            _editorInpsectorPreview = UnityEditor.Editor.CreateEditor(_currentPickObject?.pickedObject);
-                        }
+                        _editorInpsectorPreview = UnityEditor.Editor.CreateEditor(_currentPickObject?.pickedObject);
+                    }
 
-                        var rect = GUILayoutUtility.GetLastRect();
-                        _editorInpsectorPreview.DrawPreview(new Rect(new Vector2(position.width / 2 - 50, rect.position.y), new Vector2(100, 100)));
-                        _previousObjectInpectorPreview = _currentPickObject?.pickedObject;
-                        GUI.color = new Color(1, 1, 1, 0f);
-                        if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80)))
-                        {
-                        }
+                    var rect = GUILayoutUtility.GetLastRect();
+                    _editorInpsectorPreview.DrawPreview(new Rect(new Vector2(position.width / 2 - 50, rect.position.y), new Vector2(100, 100)));
+                    _previousObjectInpectorPreview = _currentPickObject?.pickedObject;
+                    GUI.color = new Color(1, 1, 1, 0f);
+                    if (GUILayout.Button(tex, GUILayout.Height(80), GUILayout.Width(80)))
+                    {
+                    }
 
-                        GUI.color = Color.white;
-                    });
+                    GUI.color = Color.white;
+                    EditorGUILayout.EndHorizontal();
+
+                    #endregion
+
+
                     EditorGUILayout.LabelField($"Selected: <color=#80D2FF>{pickObjectName}</color>\nPress Icon Again Or Escape Key To Deselect",
-                        Uniform.HtmlText,
+                        new GUIStyle(EditorStyles.label) {richText = true},
                         GUILayout.Height(40));
                     height -= 128;
                     EditorGUILayout.HelpBox("Shift + Click To Add", MessageType.Info);
@@ -498,7 +583,7 @@ namespace Pancake.LevelSystemEditor
                 height -= 100;
                 if (Uniform.GetFoldoutState("level_editor_drop_area"))
                 {
-                    if (levelEditorSettings.Settings.blacklistPaths.Count == 0 && levelEditorSettings.Settings.whitelistPaths.Count == 0)
+                    if (ScriptableLevelSystemSetting.Instance.blacklistPaths.Count == 0 && ScriptableLevelSystemSetting.Instance.whitelistPaths.Count == 0)
                     {
                         height -= 94;
                     }
@@ -512,7 +597,7 @@ namespace Pancake.LevelSystemEditor
                     height -= 33;
                 }
 
-                if (Uniform.GetFoldoutState("LEVEL_EDITOR_CONFIG"))
+                if (Uniform.GetFoldoutState("level_editor_config"))
                 {
                     switch (_optionsSpawn[_selectedSpawn].ToLower())
                     {
@@ -548,7 +633,7 @@ namespace Pancake.LevelSystemEditor
                 foreach (var splitGroupObject in resultSplitGroupObjects)
                 {
                     string nameGroup = splitGroupObject[0].group.ToUpper();
-                    Uniform.DrawGroupFoldout($"LEVEL_EDITOR_PICKUP_AREA_CHILD_{nameGroup}", nameGroup, () => DrawInGroup(splitGroupObject));
+                    Uniform.DrawGroupFoldout($"level_editor_pickup_area_child_{nameGroup}", nameGroup, () => DrawInGroup(splitGroupObject));
                 }
 
                 GUILayout.EndScrollView();
@@ -569,7 +654,7 @@ namespace Pancake.LevelSystemEditor
                 while (counter >= 0 && counter < pickObjectsInGroup.Count)
                 {
                     EditorGUILayout.BeginHorizontal();
-                    Uniform.SpaceTwoLine();
+                    GUILayout.Space(8);
                     for (var x = 0; x < count; x++)
                     {
                         var pickObj = pickObjectsInGroup[counter];
@@ -584,32 +669,31 @@ namespace Pancake.LevelSystemEditor
                             GUI.color = Color.white;
                         }
 
-                        Uniform.Button("",
-                            () =>
+                        if (GUILayout.Button(new GUIContent(""), GUILayout.Width(size), GUILayout.Height(size)))
+                        {
+                            if (Event.current.button == 1)
                             {
-                                if (Event.current.button == 1)
-                                {
-                                    ShowMenuRightClickItem(pickObj);
-                                    return;
-                                }
-
+                                ShowMenuRightClickItem(pickObj);
+                            }
+                            else
+                            {
                                 _currentPickObject = _currentPickObject == pickObj ? null : pickObj;
-                            },
-                            null,
-                            GUILayout.Width(size),
-                            GUILayout.Height(size));
+                            }
+                        }
+
+                        Rect Grown(Rect r, Vector2 half) { return new Rect(r.position - half, r.size + half * 2); }
 
                         GUI.color = Color.white;
                         var rect = GUILayoutUtility.GetLastRect();
-                        if (tex) GUI.DrawTexture(rect.Grown(-10), tex, ScaleMode.ScaleToFit);
+                        if (tex) GUI.DrawTexture(Grown(rect, Vector2.one * -10), tex, ScaleMode.ScaleToFit);
                         if (go)
                         {
-                            EditorGUI.LabelField(rect.Grown(new Vector2(0, 15)), go.name, new GUIStyle(EditorStyles.miniLabel) {alignment = TextAnchor.LowerCenter,});
+                            EditorGUI.LabelField(Grown(rect, new Vector2(0, 15)), go.name, new GUIStyle(EditorStyles.miniLabel) {alignment = TextAnchor.LowerCenter,});
                         }
 
                         counter++;
                         if (counter >= pickObjectsInGroup.Count) break;
-                        Uniform.SpaceTwoLine();
+                        GUILayout.Space(4);
                     }
 
                     GUILayout.FlexibleSpace();
@@ -648,11 +732,10 @@ namespace Pancake.LevelSystemEditor
             void IgnorePath(PickObject pickObj)
             {
                 var path = AssetDatabase.GetAssetPath(pickObj.pickedObject);
-                ValidateBlacklist(path, ref levelEditorSettings.Settings.whitelistPaths);
+                ValidateBlacklist(path, ref ScriptableLevelSystemSetting.Instance.whitelistPaths);
                 AddToBlacklist(path);
 
-                InEditor.ReduceScopeDirectory(ref levelEditorSettings.Settings.blacklistPaths);
-                levelEditorSettings.SaveSetting();
+                ReduceScopeDirectory(ref ScriptableLevelSystemSetting.Instance.blacklistPaths);
                 RefreshAll();
             }
         }
@@ -678,21 +761,21 @@ namespace Pancake.LevelSystemEditor
             Vector3 normal;
             if (sceneView.in2DMode)
             {
-                bool state = InEditor.Get2DMouseScenePosition(out var mousePosition2d);
+                bool state = EditorExtend.Get2DMouseScenePosition(out var mousePosition2d);
                 mousePosition = mousePosition2d;
                 if (!state) return;
-                InEditor.FakeRenderSprite(_currentPickObject.pickedObject, mousePosition, Vector3.one, Quaternion.identity);
+                EditorExtend.FakeRenderSprite(_currentPickObject.pickedObject, mousePosition, Vector3.one, Quaternion.identity);
                 SceneView.RepaintAll();
 
                 if (e.type == EventType.MouseDown && e.button == 0)
                 {
                     AddPickObject(_currentPickObject, mousePosition);
-                    InEditor.SkipEvent();
+                    EditorExtend.SkipEvent();
                 }
             }
             else
             {
-                var pos = sceneView.GetInnerGuiPosition();
+                var pos = EditorExtend.GetInnerGuiPosition(sceneView);
                 RaycastHit? raycastHit;
                 if (pos.Contains(e.mousePosition))
                 {
@@ -780,7 +863,7 @@ namespace Pancake.LevelSystemEditor
                     if (e.type == EventType.MouseDown && e.button == 0 && _previewPickupObject)
                     {
                         AddPickObject(_currentPickObject, _previewPickupObject.transform.position);
-                        InEditor.SkipEvent();
+                        EditorExtend.SkipEvent();
                     }
                 }
             }
@@ -884,7 +967,7 @@ namespace Pancake.LevelSystemEditor
         {
             if (pickObject?.pickedObject)
             {
-                var inst = pickObject.pickedObject.Instantiate(GetParent());
+                var inst = UnityEngine.Object.Instantiate(pickObject.pickedObject, GetParent());
                 inst.transform.position = worldPos;
                 Undo.RegisterCreatedObjectUndo(inst.gameObject, "Create pick obj");
                 Selection.activeObject = inst;

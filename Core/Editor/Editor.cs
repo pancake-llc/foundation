@@ -148,49 +148,5 @@ namespace PancakeEditor
 
             return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##} {1}", len, sizes[order]);
         }
-
-
-        /// <summary>
-        /// Get bound of gameobject via collider or renderer
-        /// </summary>
-        /// <param name="go"></param>
-        /// <param name="includeInactive"></param>
-        /// <param name="getBounds"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static Bounds GetBounds<T>(this GameObject go, bool includeInactive = true, System.Func<T, Bounds> getBounds = null) where T : Component
-        {
-            if (getBounds == null)
-                getBounds = (t) => (t as Collider)?.bounds ?? (t as Collider2D)?.bounds ?? (t as Renderer)?.bounds ?? default;
-            var comps = go.GetComponentsInChildren<T>(includeInactive).Where(_ => !(_.gameObject.GetComponent<ParticleSystem>())).ToArray();
-
-            Bounds bound = default;
-            bool found = false;
-
-            foreach (var comp in comps)
-            {
-                if (comp)
-                {
-                    if (!includeInactive)
-                    {
-                        if (!(comp as Collider)?.enabled ?? false) continue;
-                        if (!(comp as Collider2D)?.enabled ?? false) continue;
-                        if (!(comp as Renderer)?.enabled ?? false) continue;
-                        if (!(comp as MonoBehaviour)?.enabled ?? false) continue;
-                    }
-
-                    if (!found || bound.size == Vector3.zero)
-                    {
-                        bound = getBounds(comp);
-                        found = true;
-                    }
-                    else bound.Encapsulate(getBounds(comp));
-                }
-            }
-
-            return bound;
-        }
-        
-
     }
 }

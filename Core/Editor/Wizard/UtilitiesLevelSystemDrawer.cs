@@ -32,6 +32,16 @@ namespace PancakeEditor
             }
             else
             {
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Open Level Editor", GUILayout.MaxHeight(25f)))
+                {
+                    var window = EditorWindow.GetWindow<Pancake.LevelSystemEditor.LevelEditor>("Level Editor", true, Editor.InspectorWindow);
+                    if (window)
+                    {
+                        window.minSize = new Vector2(275, 0);
+                        window.Show(true);
+                    }
+                }
             }
         }
     }
