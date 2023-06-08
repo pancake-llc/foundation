@@ -11,20 +11,20 @@ namespace PancakeEditor
     {
         public static void OnInspectorGUI(Rect position)
         {
-            var scriptableSetting = Resources.Load<ScriptableLevelSystemSetting>(nameof(ScriptableLevelSystemSetting));
+            var scriptableSetting = Resources.Load<LevelSystemEditorSetting>(nameof(LevelSystemEditorSetting));
             if (scriptableSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
                 if (GUILayout.Button("Create Scriptable Level System Setting", GUILayout.Height(40)))
                 {
-                    var setting = ScriptableObject.CreateInstance<ScriptableLevelSystemSetting>();
+                    var setting = ScriptableObject.CreateInstance<LevelSystemEditorSetting>();
                     const string path = "Assets/_Root/Editor/Resources";
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(ScriptableLevelSystemSetting)}.asset");
+                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(LevelSystemEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(ScriptableLevelSystemSetting).TextColor("#f75369")} was created ad {path}/{nameof(ScriptableLevelSystemSetting)}.asset");
+                    Debug.Log($"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {path}/{nameof(LevelSystemEditorSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

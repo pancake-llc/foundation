@@ -135,27 +135,27 @@ namespace Pancake.LevelSystemEditor
             _pickObjects = new List<PickObject>();
             var blacklistAssets = new List<GameObject>();
             var whitelistAssets = new List<GameObject>();
-            if (!ScriptableLevelSystemSetting.Instance.blacklistPaths.IsNullOrEmpty())
+            if (!LevelSystemEditorSetting.Instance.blacklistPaths.IsNullOrEmpty())
             {
-                blacklistAssets = AssetDatabase.FindAssets("t:GameObject", ScriptableLevelSystemSetting.Instance.blacklistPaths.ToArray())
+                blacklistAssets = AssetDatabase.FindAssets("t:GameObject", LevelSystemEditorSetting.Instance.blacklistPaths.ToArray())
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
                     .ToList();
 
-                foreach (string blacklistPath in ScriptableLevelSystemSetting.Instance.blacklistPaths)
+                foreach (string blacklistPath in LevelSystemEditorSetting.Instance.blacklistPaths)
                 {
                     if (File.Exists(blacklistPath)) blacklistAssets.Add(AssetDatabase.LoadAssetAtPath<GameObject>(blacklistPath));
                 }
             }
 
-            if (!ScriptableLevelSystemSetting.Instance.whitelistPaths.IsNullOrEmpty())
+            if (!LevelSystemEditorSetting.Instance.whitelistPaths.IsNullOrEmpty())
             {
-                whitelistAssets = AssetDatabase.FindAssets("t:GameObject", ScriptableLevelSystemSetting.Instance.whitelistPaths.ToArray())
+                whitelistAssets = AssetDatabase.FindAssets("t:GameObject", LevelSystemEditorSetting.Instance.whitelistPaths.ToArray())
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
                     .ToList();
 
-                foreach (string whitelistPath in ScriptableLevelSystemSetting.Instance.whitelistPaths)
+                foreach (string whitelistPath in LevelSystemEditorSetting.Instance.whitelistPaths)
                 {
                     if (File.Exists(whitelistPath)) whitelistAssets.Add(AssetDatabase.LoadAssetAtPath<GameObject>(whitelistPath));
                 }
@@ -238,11 +238,11 @@ namespace Pancake.LevelSystemEditor
                                         if (r.GetType() != typeof(GameObject)) continue;
                                     }
 
-                                    ValidateWhitelist(path, ref ScriptableLevelSystemSetting.Instance.blacklistPaths);
+                                    ValidateWhitelist(path, ref LevelSystemEditorSetting.Instance.blacklistPaths);
                                     AddToWhitelist(path);
                                 }
 
-                                ReduceScopeDirectory(ref ScriptableLevelSystemSetting.Instance.whitelistPaths);
+                                ReduceScopeDirectory(ref LevelSystemEditorSetting.Instance.whitelistPaths);
                                 RefreshAll();
                             }
                         }
@@ -260,11 +260,11 @@ namespace Pancake.LevelSystemEditor
                                         if (r.GetType() != typeof(GameObject)) continue;
                                     }
 
-                                    ValidateBlacklist(path, ref ScriptableLevelSystemSetting.Instance.whitelistPaths);
+                                    ValidateBlacklist(path, ref LevelSystemEditorSetting.Instance.whitelistPaths);
                                     AddToBlacklist(path);
                                 }
 
-                                ReduceScopeDirectory(ref ScriptableLevelSystemSetting.Instance.blacklistPaths);
+                                ReduceScopeDirectory(ref LevelSystemEditorSetting.Instance.blacklistPaths);
                                 RefreshAll();
                             }
                         }
@@ -278,7 +278,7 @@ namespace Pancake.LevelSystemEditor
                                 false,
                                 () =>
                                 {
-                                    ScriptableLevelSystemSetting.Instance.whitelistPaths.Clear();
+                                    LevelSystemEditorSetting.Instance.whitelistPaths.Clear();
                                     RefreshAll();
                                 });
                         }
@@ -288,7 +288,7 @@ namespace Pancake.LevelSystemEditor
                                 false,
                                 () =>
                                 {
-                                    ScriptableLevelSystemSetting.Instance.blacklistPaths.Clear();
+                                    LevelSystemEditorSetting.Instance.blacklistPaths.Clear();
                                     RefreshAll();
                                 });
                         }
@@ -310,7 +310,7 @@ namespace Pancake.LevelSystemEditor
 
                 using (var scope = new EditorGUILayout.VerticalScope(GUILayout.Width(width - 10)))
                 {
-                    if (ScriptableLevelSystemSetting.Instance.whitelistPaths.Count == 0)
+                    if (LevelSystemEditorSetting.Instance.whitelistPaths.Count == 0)
                     {
                         EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
                     }
@@ -318,9 +318,9 @@ namespace Pancake.LevelSystemEditor
                     {
                         GUILayout.Space(2);
                         _whiteScrollPosition = GUILayout.BeginScrollView(_whiteScrollPosition, false, false, GUILayout.Height(250));
-                        foreach (string t in ScriptableLevelSystemSetting.Instance.whitelistPaths.ToList())
+                        foreach (string t in LevelSystemEditorSetting.Instance.whitelistPaths.ToList())
                         {
-                            DrawRow(t, width, _ => ScriptableLevelSystemSetting.Instance.whitelistPaths.Remove(_));
+                            DrawRow(t, width, _ => LevelSystemEditorSetting.Instance.whitelistPaths.Remove(_));
                         }
 
                         GUILayout.EndScrollView();
@@ -336,7 +336,7 @@ namespace Pancake.LevelSystemEditor
 
                 using (var scope = new EditorGUILayout.VerticalScope(GUILayout.Width(width - 15)))
                 {
-                    if (ScriptableLevelSystemSetting.Instance.blacklistPaths.Count == 0)
+                    if (LevelSystemEditorSetting.Instance.blacklistPaths.Count == 0)
                     {
                         EditorGUILayout.LabelField(new GUIContent(""), GUILayout.Width(width - 50), GUILayout.Height(0));
                     }
@@ -344,9 +344,9 @@ namespace Pancake.LevelSystemEditor
                     {
                         GUILayout.Space(2);
                         _blackScrollPosition = GUILayout.BeginScrollView(_blackScrollPosition, false, false, GUILayout.Height(250));
-                        foreach (string t in ScriptableLevelSystemSetting.Instance.blacklistPaths.ToList())
+                        foreach (string t in LevelSystemEditorSetting.Instance.blacklistPaths.ToList())
                         {
-                            DrawRow(t, width, _ => ScriptableLevelSystemSetting.Instance.blacklistPaths.Remove(_));
+                            DrawRow(t, width, _ => LevelSystemEditorSetting.Instance.blacklistPaths.Remove(_));
                         }
 
                         GUILayout.EndScrollView();
@@ -406,25 +406,25 @@ namespace Pancake.LevelSystemEditor
         private void AddToWhitelist(string path)
         {
             var check = false;
-            foreach (string whitePath in ScriptableLevelSystemSetting.Instance.whitelistPaths)
+            foreach (string whitePath in LevelSystemEditorSetting.Instance.whitelistPaths)
             {
                 if (IsChildOfPath(path, whitePath)) check = true;
             }
 
-            if (!check) ScriptableLevelSystemSetting.Instance.whitelistPaths.Add(path);
-            ScriptableLevelSystemSetting.Instance.whitelistPaths = ScriptableLevelSystemSetting.Instance.whitelistPaths.Distinct().ToList(); //unique
+            if (!check) LevelSystemEditorSetting.Instance.whitelistPaths.Add(path);
+            LevelSystemEditorSetting.Instance.whitelistPaths = LevelSystemEditorSetting.Instance.whitelistPaths.Distinct().ToList(); //unique
         }
 
         private void AddToBlacklist(string path)
         {
             var check = false;
-            foreach (string blackPath in ScriptableLevelSystemSetting.Instance.blacklistPaths)
+            foreach (string blackPath in LevelSystemEditorSetting.Instance.blacklistPaths)
             {
                 if (IsChildOfPath(path, blackPath)) check = true;
             }
 
-            if (!check) ScriptableLevelSystemSetting.Instance.blacklistPaths.Add(path);
-            ScriptableLevelSystemSetting.Instance.blacklistPaths = ScriptableLevelSystemSetting.Instance.blacklistPaths.Distinct().ToList(); //unique
+            if (!check) LevelSystemEditorSetting.Instance.blacklistPaths.Add(path);
+            LevelSystemEditorSetting.Instance.blacklistPaths = LevelSystemEditorSetting.Instance.blacklistPaths.Distinct().ToList(); //unique
         }
 
         // return true if child is childrent of parent
@@ -583,7 +583,7 @@ namespace Pancake.LevelSystemEditor
                 height -= 100;
                 if (Uniform.GetFoldoutState("level_editor_drop_area"))
                 {
-                    if (ScriptableLevelSystemSetting.Instance.blacklistPaths.Count == 0 && ScriptableLevelSystemSetting.Instance.whitelistPaths.Count == 0)
+                    if (LevelSystemEditorSetting.Instance.blacklistPaths.Count == 0 && LevelSystemEditorSetting.Instance.whitelistPaths.Count == 0)
                     {
                         height -= 94;
                     }
@@ -732,10 +732,10 @@ namespace Pancake.LevelSystemEditor
             void IgnorePath(PickObject pickObj)
             {
                 var path = AssetDatabase.GetAssetPath(pickObj.pickedObject);
-                ValidateBlacklist(path, ref ScriptableLevelSystemSetting.Instance.whitelistPaths);
+                ValidateBlacklist(path, ref LevelSystemEditorSetting.Instance.whitelistPaths);
                 AddToBlacklist(path);
 
-                ReduceScopeDirectory(ref ScriptableLevelSystemSetting.Instance.blacklistPaths);
+                ReduceScopeDirectory(ref LevelSystemEditorSetting.Instance.blacklistPaths);
                 RefreshAll();
             }
         }
