@@ -1,6 +1,8 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Pancake.Apex;
 using Pancake.LevelSystem;
 using Pancake.Linq;
 using UnityEditor;
@@ -8,15 +10,15 @@ using UnityEngine;
 
 namespace Pancake.LevelSystemEditor
 {
-    [ExecuteInEditMode]
     public sealed class LevelBuilder : GameComponent
     {
-        [SerializeField] private LevelSystemSetting setting;
-        [SerializeField] private LevelExtraInfo[] levelExtraInfos;
+        [SerializeField, NotNull] private LevelSystemSetting setting;
         [SerializeField] private int currentLevel;
+        [SerializeField, Array] private LevelExtraInfo[] levelExtraInfos;
 
         private string _currentLevelJson;
 
+        public int CurrentLevel => currentLevel;
 
         /// <summary>
         /// Delete all object from the root
@@ -69,10 +71,89 @@ namespace Pancake.LevelSystemEditor
             else _currentLevelJson = JsonConvert.SerializeObject(levelNode);
         }
 
+        /// <summary>
+        /// Save to file
+        /// </summary>
         private void Save()
         {
-            
+            if (!LevelHelper.IsValid(setting))
+            {
+                EditorUtility.DisplayDialog("Warning",
+                    "Please check the setting file. You have to specify not null prefabs with a valid ID. The prefabs count must be greater than 0",
+                    "Ok");
+                return;
+            }
+
+            SaveJson(currentLevel);
         }
+
+        /// <summary>
+        /// Delete level from json file
+        /// </summary>
+        /// <param name="level"></param>
+        public void DeleteLevel(int level)
+        {
+            LevelReader.DeleteLevel(setting, level);
+            if (currentLevel == level) ClearLevel();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="noCheckEdit"></param>
+        /// <returns></returns>
+        public LevelNode OpenLevel(int level, bool noCheckEdit = true)
+        {
+            if (!noCheckEdit) // check if there are pending changes in the current level
+            {
+                var levelNode = CreateLevelNode();
+                string str = JsonConvert.SerializeObject(levelNode);
+                if (!string.IsNullOrEmpty(_currentLevelJson) && _currentLevelJson != str)
+                {
+                    if (!EditorUtility.DisplayDialog("Confirm Open", "The changes in the current level will be lost. Continue?", "Open Level", "Cancel"))
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            if (!LevelHelper.IsValid(setting))
+            {
+                EditorUtility.DisplayDialog("Warning",
+                    "Please check the config file. You have to specify not null prefabs with a valid ID. The prefabs count must be greater than 0",
+                    "Ok");
+                return null;
+            }
+
+            var l = LevelReader.Read(setting, level);
+            if (l == null) return null;
+
+            currentLevel = level;
+            _currentLevelJson = JsonConvert.SerializeObject(l);
+            ClearLevel();
+            var notSpawnedGos = new List<LevelGameObject>();
+            foreach (var o in l.objects)
+            {
+                AddGameObject(o, notSpawnedGos);
+            }
+
+            if (notSpawnedGos.Count > 0)
+            {
+                string msg = "Attention: Some objects were not instantiated because they were not in the config prefab list.\nObjects in error: " +
+                             string.Join(", ", notSpawnedGos.Map(x => x.id).Distinct());
+                EditorUtility.DisplayDialog("Warning", msg, "Ok");
+            }
+
+            if (l.extraInfos is {Length: > 0}) levelExtraInfos = (LevelExtraInfo[]) l.extraInfos.Clone();
+            return l;
+        }
+
+        /// <summary>
+        /// how many levels are already built in the files?
+        /// </summary>
+        /// <returns></returns>
+        public int GetLevelCount() { return setting != null ? LevelReader.GetLevelCount(setting) : 0; }
 
         private LevelNode CreateLevelNode(bool warningMessage = false)
         {
@@ -158,7 +239,6 @@ namespace Pancake.LevelSystemEditor
             return levelGameObject;
         }
 
-
         // check if an object makes part of a prefab
         private bool IsObjectInPrefab(GameObject prefab, Transform obj)
         {
@@ -174,3 +254,4 @@ namespace Pancake.LevelSystemEditor
         }
     }
 }
+#endif
