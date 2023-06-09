@@ -1,11 +1,16 @@
-﻿using Pancake.ExLibEditor;
+﻿using System.Diagnostics;
+using Pancake.ExLibEditor;
 using UnityEditor;
+using UnityEditor.Android;
 using UnityEngine;
 
 namespace PancakeEditor
 {
     public static class TrackingFirebaseDrawer
     {
+        private static string bundleId;
+        private static bool customBundleId;
+
         public static void OnInspectorGUI()
         {
 #if PANCAKE_FIREBASE_ANALYTIC
@@ -80,6 +85,52 @@ namespace PancakeEditor
 
             GUI.enabled = true;
 #endif
+
+            GUILayout.Space(16);
+
+            if (customBundleId)
+            {
+                GUI.enabled = true;
+            }
+            else
+            {
+                bundleId = Application.identifier;
+                GUI.enabled = false;
+            }
+
+            bundleId = EditorGUILayout.TextField("Bundle Id: ", bundleId);
+            GUI.enabled = true;
+            customBundleId = EditorGUILayout.Toggle("Custom Bundle: ", customBundleId);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Run Debug View"))
+            {
+                SetDebugView(bundleId);
+            }
+
+            if (GUILayout.Button("Set None"))
+            {
+                SetDebugView(".none.");
+            }
+
+            GUILayout.EndHorizontal();
+
+            void SetDebugView(string package)
+            {
+                var fileName = $"{AndroidExternalToolsSettings.sdkRootPath}/platform-tools/adb";
+                var arguments = $"shell setprop debug.firebase.analytics.app {package}";
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName               = fileName,
+                    UseShellExecute        = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow         = true,
+                    Arguments              = arguments,
+                };
+
+                var process = Process.Start(startInfo);
+                process!.WaitForExit();
+                UnityEngine.Debug.Log( $"{fileName} {arguments}" );
+            }
 
 #if PANCAKE_FIREBASE_ANALYTIC || PANCAKE_FIREBASE_REMOTECONFIG || PANCAKE_FIREBASE_MESSAGING || PANCAKE_FIREBASE_CRASHLYTIC
             GUILayout.FlexibleSpace();
