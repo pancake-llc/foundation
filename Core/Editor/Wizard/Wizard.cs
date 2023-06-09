@@ -26,6 +26,7 @@ namespace PancakeEditor
             Adjust,
             HeartSetting,
             Scriptable,
+            LevelSystem,
             Tween,
             Notification,
             InAppReview,
@@ -34,7 +35,6 @@ namespace PancakeEditor
             IOS14AdvertisingSupport,
             ParticleEffectForUGUI,
             UIEffect,
-            LevelSystem
         }
 
         private enum WizardMonetizeType
