@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Pancake.LevelSystemEditor
 {
     [EditorIcon("scriptable_editor_setting")]
+    [Serializable]
     public class LevelSystemEditorSetting : ScriptableSettings<LevelSystemEditorSetting>
     {
         public List<string> whitelistPaths = new List<string>();

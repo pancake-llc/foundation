@@ -43,7 +43,7 @@ namespace Pancake.LevelSystem
         public static int GetLevelCount(LevelSystemSetting setting)
         {
             var count = 0;
-            for (var i = 0; i < 10000; i++)
+            for (var i = 1; i < 10000; i++)
             {
                 string path = Path.Combine(FOLDER_NAME, string.Concat(setting.FileName, "_", i.ToString()));
                 var json = Resources.Load<TextAsset>(path);

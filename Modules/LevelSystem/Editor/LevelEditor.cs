@@ -198,7 +198,7 @@ namespace Pancake.LevelSystemEditor
 
         private void InternalDrawDropArea()
         {
-            Uniform.DrawGroupFoldout("level_editor_drop_area", "Drop Area", DrawDropArea);
+            Uniform.DrawGroupFoldout("level_editor_drop_area", "Drop Area", DrawDropArea, false);
 
             void DrawDropArea()
             {
@@ -279,6 +279,7 @@ namespace Pancake.LevelSystemEditor
                                 () =>
                                 {
                                     LevelSystemEditorSetting.Instance.whitelistPaths.Clear();
+                                    SaveLevelSystemSetting();
                                     RefreshAll();
                                 });
                         }
@@ -289,6 +290,7 @@ namespace Pancake.LevelSystemEditor
                                 () =>
                                 {
                                     LevelSystemEditorSetting.Instance.blacklistPaths.Clear();
+                                    SaveLevelSystemSetting();
                                     RefreshAll();
                                 });
                         }
@@ -320,7 +322,13 @@ namespace Pancake.LevelSystemEditor
                         _whiteScrollPosition = GUILayout.BeginScrollView(_whiteScrollPosition, false, false, GUILayout.Height(250));
                         foreach (string t in LevelSystemEditorSetting.Instance.whitelistPaths.ToList())
                         {
-                            DrawRow(t, width, _ => LevelSystemEditorSetting.Instance.whitelistPaths.Remove(_));
+                            DrawRow(t,
+                                width,
+                                _ =>
+                                {
+                                    LevelSystemEditorSetting.Instance.whitelistPaths.Remove(_);
+                                    SaveLevelSystemSetting();
+                                });
                         }
 
                         GUILayout.EndScrollView();
@@ -346,7 +354,11 @@ namespace Pancake.LevelSystemEditor
                         _blackScrollPosition = GUILayout.BeginScrollView(_blackScrollPosition, false, false, GUILayout.Height(250));
                         foreach (string t in LevelSystemEditorSetting.Instance.blacklistPaths.ToList())
                         {
-                            DrawRow(t, width, _ => LevelSystemEditorSetting.Instance.blacklistPaths.Remove(_));
+                            DrawRow(t, width, _ =>
+                            {
+                                LevelSystemEditorSetting.Instance.blacklistPaths.Remove(_);
+                                SaveLevelSystemSetting();
+                            });
                         }
 
                         GUILayout.EndScrollView();
@@ -413,6 +425,7 @@ namespace Pancake.LevelSystemEditor
 
             if (!check) LevelSystemEditorSetting.Instance.whitelistPaths.Add(path);
             LevelSystemEditorSetting.Instance.whitelistPaths = LevelSystemEditorSetting.Instance.whitelistPaths.Distinct().ToList(); //unique
+            SaveLevelSystemSetting();
         }
 
         private void AddToBlacklist(string path)
@@ -425,6 +438,7 @@ namespace Pancake.LevelSystemEditor
 
             if (!check) LevelSystemEditorSetting.Instance.blacklistPaths.Add(path);
             LevelSystemEditorSetting.Instance.blacklistPaths = LevelSystemEditorSetting.Instance.blacklistPaths.Distinct().ToList(); //unique
+            SaveLevelSystemSetting();
         }
 
         // return true if child is childrent of parent
@@ -734,10 +748,15 @@ namespace Pancake.LevelSystemEditor
                 var path = AssetDatabase.GetAssetPath(pickObj.pickedObject);
                 ValidateBlacklist(path, ref LevelSystemEditorSetting.Instance.whitelistPaths);
                 AddToBlacklist(path);
-
                 ReduceScopeDirectory(ref LevelSystemEditorSetting.Instance.blacklistPaths);
                 RefreshAll();
             }
+        }
+
+        private void SaveLevelSystemSetting()
+        {
+            EditorUtility.SetDirty(LevelSystemEditorSetting.Instance);
+            AssetDatabase.SaveAssets();
         }
 
         private void OnSceneGUI(SceneView sceneView)
@@ -803,7 +822,7 @@ namespace Pancake.LevelSystemEditor
 
                     if (!_previewPickupObject)
                     {
-                        _previewPickupObject = Instantiate(_currentPickObject?.pickedObject);
+                        _previewPickupObject = (GameObject) PrefabUtility.InstantiatePrefab(_currentPickObject?.pickedObject);
                         StageUtility.PlaceGameObjectInCurrentStage(_previewPickupObject);
                         _previewPickupObject.hideFlags = HideFlags.HideAndDontSave;
                         _previewPickupObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -967,7 +986,7 @@ namespace Pancake.LevelSystemEditor
         {
             if (pickObject?.pickedObject)
             {
-                var inst = UnityEngine.Object.Instantiate(pickObject.pickedObject, GetParent());
+                var inst = (GameObject) PrefabUtility.InstantiatePrefab(pickObject.pickedObject, GetParent());
                 inst.transform.position = worldPos;
                 Undo.RegisterCreatedObjectUndo(inst.gameObject, "Create pick obj");
                 Selection.activeObject = inst;

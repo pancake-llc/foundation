@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Pancake.Apex;
 using Pancake.LevelSystem;
 using Pancake.Linq;
 using UnityEditor;
@@ -10,20 +9,21 @@ using UnityEngine;
 
 namespace Pancake.LevelSystemEditor
 {
+    [EditorIcon("scriptable_build")]
     public sealed class LevelBuilder : GameComponent
     {
-        [SerializeField, NotNull] private LevelSystemSetting setting;
-        [SerializeField] private int currentLevel;
-        [SerializeField, Array] private LevelExtraInfo[] levelExtraInfos;
+        [SerializeField] private LevelSystemSetting setting;
+        [SerializeField] private int currentLevel = 1;
+        [SerializeField] private LevelExtraInfo[] levelExtraInfos;
 
         private string _currentLevelJson;
 
-        public int CurrentLevel => currentLevel;
+        public int CurrentLevel { get => currentLevel; set => currentLevel = value; }
 
         /// <summary>
         /// Delete all object from the root
         /// </summary>
-        private void ClearLevel()
+        public void ClearLevel()
         {
             transform.RemoveAllChildren();
             levelExtraInfos = Array.Empty<LevelExtraInfo>();
@@ -67,19 +67,19 @@ namespace Pancake.LevelSystemEditor
 
             levelNode.level = level;
             string r = LevelReader.Write(setting, levelNode, level);
-            if (string.IsNullOrEmpty(r)) EditorUtility.DisplayDialog("Warning", r, "Ok");
+            if (!string.IsNullOrEmpty(r)) EditorUtility.DisplayDialog("Warning", r, "Ok");
             else _currentLevelJson = JsonConvert.SerializeObject(levelNode);
         }
 
         /// <summary>
         /// Save to file
         /// </summary>
-        private void Save()
+        public void Save()
         {
             if (!LevelHelper.IsValid(setting))
             {
                 EditorUtility.DisplayDialog("Warning",
-                    "Please check the setting file. You have to specify not null prefabs with a valid ID. The prefabs count must be greater than 0",
+                    "Please check the setting file.\nYou have to specify not null prefabs with a valid ID or units is empty",
                     "Ok");
                 return;
             }
@@ -153,7 +153,10 @@ namespace Pancake.LevelSystemEditor
         /// how many levels are already built in the files?
         /// </summary>
         /// <returns></returns>
-        public int GetLevelCount() { return setting != null ? LevelReader.GetLevelCount(setting) : 0; }
+        public int GetLevelCount()
+        {
+            return setting != null ? LevelReader.GetLevelCount(setting) : 0;
+        }
 
         private LevelNode CreateLevelNode(bool warningMessage = false)
         {

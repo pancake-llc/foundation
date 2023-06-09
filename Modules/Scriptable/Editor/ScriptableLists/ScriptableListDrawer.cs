@@ -72,11 +72,18 @@ namespace Pancake.ScriptableEditor
         {
             if (obj == PlayModeStateChange.EnteredPlayMode)
             {
-                if (_scriptableBase == null) _scriptableBase = (ScriptableBase) target;
+                if (_scriptableBase == null)
+                {
+                    if (target == null) return;
+                    _scriptableBase = (ScriptableBase) target;
+                }
                 _scriptableBase.repaintRequest += OnRepaintRequested;
             }
 
-            else if (obj == PlayModeStateChange.EnteredEditMode) _scriptableBase.repaintRequest -= OnRepaintRequested;
+            else if (obj == PlayModeStateChange.EnteredEditMode)
+            {
+                if (_scriptableBase != null) _scriptableBase.repaintRequest -= OnRepaintRequested;
+            }
         }
 
         private void OnRepaintRequested() => Repaint();

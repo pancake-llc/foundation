@@ -1,11 +1,14 @@
 ﻿using System;
+using Pancake.Apex;
 using UnityEngine;
 
 namespace Pancake.LevelSystem
 {
+    [HideMonoScript]
+    [EditorIcon("script_mono")]
     public class LevelExtraInfoComponent : GameComponent
     {
-        [SerializeField] private LevelExtraInfo[] extraInfos;
+        [SerializeField, Array] private LevelExtraInfo[] extraInfos;
 
         public void Init(LevelExtraInfo[] infos)
         {

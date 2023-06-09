@@ -17,7 +17,7 @@ namespace Pancake.LevelSystem
     [CreateAssetMenu(fileName = "level_system_setting.asset", menuName = "Pancake/Misc/Level System Setting")]
     public class LevelSystemSetting : ScriptableObject
     {
-        [SerializeField] private string fileName = "levels";
+        [SerializeField] private string fileName = "level_container";
         [Message("Please right click on Id field and do recreate id when adding element to units array")]
         [SerializeField, Range(1, 100)] private int levelPerFile = 30;
         [SerializeField, Array] private LevelUnit[] units;

@@ -29,7 +29,7 @@ namespace Pancake.LevelSystem
         /// <summary>
         /// child
         /// </summary>
-        [NonSerialized]public LevelGameObject[] c;
+        public LevelGameObject[] c;
 
         /// <summary>
         /// extra info
