@@ -55,6 +55,7 @@ namespace Pancake.ApexEditor
         #endregion
 
         #region [IEntityVisibility Implementation]
+
         /// <summary>
         /// Container visibility state.
         /// </summary>
@@ -67,10 +68,12 @@ namespace Pancake.ApexEditor
                     return true;
                 }
             }
+
             return false;
         }
+
         #endregion
-        
+
         #region [Static Methods]
 
         public static void DrawEntities(Rect position, in List<VisualEntity> entities)

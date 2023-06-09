@@ -79,6 +79,7 @@ namespace Pancake.ApexEditor
         #endregion
 
         #region [IEntityVisibility Implementation]
+
         /// <summary>
         /// Container visibility state.
         /// </summary>
@@ -91,10 +92,12 @@ namespace Pancake.ApexEditor
                     return true;
                 }
             }
+
             return false;
         }
+
         #endregion
-        
+
         #region [Getter / Setter]
 
         public List<VisualEntity> GetEntities() { return entities; }

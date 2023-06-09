@@ -97,10 +97,7 @@ namespace Pancake.ApexEditor
                 {
                     do
                     {
-                        SerializedField serializedField = new SerializedField(serializedObject, iterator.propertyPath)
-                        {
-                            Repaint = Repaint
-                        };
+                        SerializedField serializedField = new SerializedField(serializedObject, iterator.propertyPath) {Repaint = Repaint};
 
                         const string MONO_SCRIPT_NAME = "m_Script";
                         if (iterator.name == MONO_SCRIPT_NAME)
@@ -114,8 +111,7 @@ namespace Pancake.ApexEditor
 
                         serializedField.SetOrder(count++);
                         visualElements.Add(serializedField);
-                    }
-                    while (iterator.NextVisible(false));
+                    } while (iterator.NextVisible(false));
                 }
             }
 
@@ -129,51 +125,45 @@ namespace Pancake.ApexEditor
                     {
                         try
                         {
-                            MethodButton button = new Button(serializedObject, methodInfo.Name)
-                            {
-                                Repaint = Repaint
-                            };
+                            MethodButton button = new Button(serializedObject, methodInfo.Name) {Repaint = Repaint};
 
                             button.SetOrder(count++);
                             visualElements.Add(button);
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogError($"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                            Debug.LogError(
+                                $"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
                         }
                     }
                     else if (methodButtonAttribute is RepeatButtonAttribute)
                     {
                         try
                         {
-                            MethodButton button = new RepeatButton(serializedObject, methodInfo.Name)
-                            {
-                                Repaint = Repaint
-                            };
+                            MethodButton button = new RepeatButton(serializedObject, methodInfo.Name) {Repaint = Repaint};
 
                             button.SetOrder(count++);
                             visualElements.Add(button);
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogError($"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                            Debug.LogError(
+                                $"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
                         }
                     }
                     else if (methodButtonAttribute is ToggleButtonAttribute)
                     {
                         try
                         {
-                            MethodButton button = new ToggleButton(serializedObject, methodInfo.Name)
-                            {
-                                Repaint = Repaint
-                            };
+                            MethodButton button = new ToggleButton(serializedObject, methodInfo.Name) {Repaint = Repaint};
 
                             button.SetOrder(count++);
                             visualElements.Add(button);
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogError($"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                            Debug.LogError(
+                                $"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
                         }
                     }
                 }
@@ -185,10 +175,7 @@ namespace Pancake.ApexEditor
                 SerializePropertyAttribute attribute = propertyInfo.GetCustomAttribute<SerializePropertyAttribute>();
                 if (attribute != null)
                 {
-                    SerializedCsProperty serializedCsProperty = new SerializedCsProperty(serializedObject, propertyInfo.Name)
-                    {
-                        Repaint = Repaint
-                    };
+                    SerializedCsProperty serializedCsProperty = new SerializedCsProperty(serializedObject, propertyInfo.Name) {Repaint = Repaint};
 
                     serializedCsProperty.SetOrder(count++);
                     visualElements.Add(serializedCsProperty);

@@ -112,6 +112,7 @@ namespace Pancake.ApexEditor
         #endregion
 
         #region [IEntityVisibility Implementation]
+
         /// <summary>
         /// Container visibility state.
         /// </summary>
@@ -128,10 +129,12 @@ namespace Pancake.ApexEditor
                     }
                 }
             }
+
             return false;
         }
+
         #endregion
-        
+
         #region [ITabContainer Implementation]
 
         /// <summary>

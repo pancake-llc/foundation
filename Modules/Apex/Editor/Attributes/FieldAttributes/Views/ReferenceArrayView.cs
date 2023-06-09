@@ -63,6 +63,7 @@ namespace Pancake.ApexEditor
                     {
                         field.SetLabel((GUIContent) getElementLabel.Invoke(target, new object[2] {index, serializedField}));
                     }
+
                     // else
                     // {
                     //     object objValue = field.GetManagedReference();
