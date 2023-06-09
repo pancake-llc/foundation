@@ -3,6 +3,7 @@ using Pancake;
 using Pancake.ExLibEditor;
 using Pancake.LevelSystemEditor;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace PancakeEditor
@@ -32,8 +33,7 @@ namespace PancakeEditor
             }
             else
             {
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Open Level Editor", GUILayout.MaxHeight(25f)))
+                if (GUILayout.Button("Open Level Editor", GUILayout.MaxHeight(40)))
                 {
                     var window = EditorWindow.GetWindow<LevelEditor>("Level Editor", true);
                     if (window)

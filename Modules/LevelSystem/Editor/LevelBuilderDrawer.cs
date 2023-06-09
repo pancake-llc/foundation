@@ -49,7 +49,6 @@ namespace Pancake.LevelSystemEditor
         {
             void OpenLevel(int level)
             {
-                if (_settingProperty.objectReferenceValue == null) return;
                 GetLevelCount();
                 _builder.CurrentLevel = level;
                 _builder.ClearLevel();
@@ -61,6 +60,12 @@ namespace Pancake.LevelSystemEditor
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.PropertyField(_settingProperty, GUILayout.Height(30));
+            if (_settingProperty.objectReferenceValue == null)
+            {
+                GUILayout.EndHorizontal();
+                return;
+            }
+
             GUILayout.Space(4);
             if (GUILayout.Button(Uniform.IconContent("d_Refresh@2x", "Refresh"), GUILayout.Width(30), GUILayout.Height(30)))
             {
