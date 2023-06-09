@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ShowChildrenOnlyAttribute))]
-    sealed class ShowChildrenOnlyView : FieldView, ITypeValidationCallback
+    public sealed class ShowChildrenOnlyView : FieldView, ITypeValidationCallback
     {
         /// <summary>
         /// Called for drawing element view GUI.

@@ -3,7 +3,7 @@
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(IndentAttribute))]
-    sealed class IndentManipulator : MemberManipulator
+    public sealed class IndentManipulator : MemberManipulator
     {
         private IndentAttribute attribute;
         private int previousLevel;

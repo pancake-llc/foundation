@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(TitleAttribute))]
-    sealed class TitleDecorator : FieldDecorator
+    public sealed class TitleDecorator : FieldDecorator
     {
         private const float LINE_HEIGHT = 1;
         private static Color LineColor;

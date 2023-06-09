@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(NotEmptyAttribute))]
-    sealed class NotEmptyDecorator : FieldDecorator, ITypeValidationCallback
+    public sealed class NotEmptyDecorator : FieldDecorator, ITypeValidationCallback
     {
         private NotEmptyAttribute attribute;
         private SerializedProperty serializedProperty;

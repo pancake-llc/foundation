@@ -3,6 +3,7 @@ using Pancake.ExLib.Reflection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -35,6 +36,7 @@ namespace Pancake.ApexEditor
         private SerializedObject serializedObject;
         private GUIContent label;
         private List<MemberManipulator> manipulators;
+        private bool isGUIChanged;
 
         // Stored callback properties.
         private MethodCaller<object, object> onGUIChanged;
@@ -58,11 +60,6 @@ namespace Pancake.ApexEditor
             type = info.type;
             memberInfo = info.memberInfo;
             declaringObject = info.declaringObject;
-
-            if (declaringObject == null)
-            {
-                Debug.Log(memberPath);
-            }
 
             label = new GUIContent(memberInfo?.Name ?? memberPath);
 
@@ -129,6 +126,7 @@ namespace Pancake.ApexEditor
         /// <param name="position">Rectangle position.</param>
         public sealed override void OnGUI(Rect position)
         {
+            ResetToggles();
             ExecuteAllManipulatorsBeforeCallback();
             EditorGUI.BeginChangeCheck();
             ApexGUI.IndentedRect(ref position);
@@ -136,6 +134,7 @@ namespace Pancake.ApexEditor
             if (EditorGUI.EndChangeCheck())
             {
                 onGUIChanged.SafeInvoke(GetDeclaringObject());
+                isGUIChanged = true;
             }
 
             ExecuteAllManipulatorsAfterCallback();
@@ -260,8 +259,7 @@ namespace Pancake.ApexEditor
         {
             if (memberInfo != null)
             {
-                T attribute = (T) Attribute.GetCustomAttribute(memberInfo, typeof(T));
-                return attribute;
+                return memberInfo.GetCustomAttribute<T>();
             }
 
             return null;
@@ -274,12 +272,14 @@ namespace Pancake.ApexEditor
         {
             if (memberInfo != null)
             {
-                T[] attributes = (T[]) Attribute.GetCustomAttributes(memberInfo, typeof(T));
+                T[] attributes = memberInfo.GetCustomAttributes<T>().ToArray();
                 return attributes;
             }
 
             return new T[0];
         }
+
+        protected virtual void ResetToggles() { isGUIChanged = false; }
 
         /// <summary>
         /// Execute all before gui callback which attached to this element.
@@ -442,6 +442,7 @@ namespace Pancake.ApexEditor
         public GUIContent GetLabel() { return label; }
 
         public void SetLabel(GUIContent value) { label = value; }
+        public bool IsGUIChanged() { return isGUIChanged; }
 
         #endregion
     }

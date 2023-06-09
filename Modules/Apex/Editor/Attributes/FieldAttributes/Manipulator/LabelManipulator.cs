@@ -3,7 +3,7 @@
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(LabelAttribute))]
-    sealed class LabelManipulator : MemberManipulator
+    public sealed class LabelManipulator : MemberManipulator
     {
         /// <summary>
         /// Called once when initializing member manipulator.

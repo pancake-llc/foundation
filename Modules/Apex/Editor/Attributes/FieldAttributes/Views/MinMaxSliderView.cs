@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(MinMaxSliderAttribute))]
-    sealed class MinMaxSliderView : FieldView, ITypeValidationCallback
+    public sealed class MinMaxSliderView : FieldView, ITypeValidationCallback
     {
         private const float WIDTH = 5;
 

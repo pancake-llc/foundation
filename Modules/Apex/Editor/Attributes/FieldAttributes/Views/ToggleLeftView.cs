@@ -5,7 +5,7 @@ using Pancake.Apex;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ToggleLeftAttribute))]
-    sealed class ToggleLeftView : FieldView
+    public sealed class ToggleLeftView : FieldView
     {
         /// <summary>
         /// Called for drawing element view GUI.

@@ -7,17 +7,13 @@ namespace Pancake.ApexEditor
     [DecoratorTarget(typeof(HorizontalLineAttribute))]
     sealed class HorizontalLineDecorator : FieldDecorator
     {
-        private HorizontalLineAttribute _attribute;
+        private HorizontalLineAttribute attribute;
+        private Color color;
 
-        /// <summary>
-        /// Called when element decorator becomes initialized.
-        /// </summary>
-        /// <param name="element">Serialized element reference with current decorator attribute.</param>
-        /// <param name="decoratorAttribute">Reference of serialized property decorator attribute.</param>
-        /// <param name="label">Display label of serialized property.</param>
-        public override void Initialize(SerializedField element, DecoratorAttribute decoratorAttribute, GUIContent label)
+        public override void Initialize(SerializedField serializedField, DecoratorAttribute decoratorAttribute, GUIContent label)
         {
-            _attribute = decoratorAttribute as HorizontalLineAttribute;
+            attribute = (HorizontalLineAttribute)decoratorAttribute;
+            color = new Color(attribute.r, attribute.g, attribute.b, attribute.a);
         }
 
         /// <summary>
@@ -26,9 +22,10 @@ namespace Pancake.ApexEditor
         /// <param name="position">Calculated position for drawing decorator.</param>
         public override void OnGUI(Rect position)
         {
-            float lineHeight = _attribute.Style == LineStyle.Thin ? 1f : 2f;
-            var rect = new Rect(position.x, position.y + 5f, position.width, position.height) {height = lineHeight, xMin = 0, xMax = EditorGUIUtility.currentViewWidth};
-            EditorGUI.DrawRect(rect, new Color(_attribute.R, _attribute.G, _attribute.B, _attribute.A));
+            position.y += (attribute.Space / 2);
+
+            position.height = attribute.height;
+            EditorGUI.DrawRect(position, color);
         }
 
         /// <summary>
@@ -36,6 +33,9 @@ namespace Pancake.ApexEditor
         /// Calculate only the size of the current decorator, not the entire property.
         /// The decorator height will be added to the total size of the property with other decorator.
         /// </summary>
-        public override float GetHeight() { return _attribute.Style == LineStyle.Thin ? 4f : 5f; }
+        public override float GetHeight()
+        {
+            return attribute.height + attribute.Space;
+        }
     }
 }

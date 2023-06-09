@@ -8,7 +8,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(RectangleSpaceAttribute))]
-    sealed class RectangleSpaceDecorator : FieldDecorator
+    public sealed class RectangleSpaceDecorator : FieldDecorator
     {
         private RectangleSpaceAttribute attribute;
 

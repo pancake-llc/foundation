@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(ReadOnlyAttribute))]
-    sealed class ReadonlyManipulator : MemberManipulator
+    public sealed class ReadonlyManipulator : MemberManipulator
     {
         /// <summary>
         /// Called before rendering member GUI.

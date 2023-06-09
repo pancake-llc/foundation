@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
@@ -61,6 +62,7 @@ namespace Pancake.ApexEditor
         private bool toggleOnLabelClick;
         private bool childrenLoaded;
         private bool defaultEditor;
+        private bool isValueChanged;
 
         // Stored callback properties.
         private object lastValue;
@@ -115,7 +117,7 @@ namespace Pancake.ApexEditor
                     hasPropertyDrawer = UnityPropertyDrawers.Contains(GetMemberType());
                 }
 
-                AddView(GetAttribute<ViewAttribute>());
+                AddViews(GetAttributes<ViewAttribute>());
                 AddValidators(GetAttributes<ValidatorAttribute>());
                 if (!IsArrayElement())
                 {
@@ -137,8 +139,8 @@ namespace Pancake.ApexEditor
         /// <param name="position">Rectangle position to draw serialized field GUI.</param>
         protected override void OnMemberGUI(Rect position)
         {
+            ResetToggles();
             MonitorSerializedProperty();
-            ExecuteAllValidators();
             DrawAllTopDecorators(ref position);
 
             if (position.height > 0)
@@ -159,6 +161,8 @@ namespace Pancake.ApexEditor
             }
 
             InvokeCallbacks();
+
+            ExecuteAllValidators();
         }
 
         /// <summary>
@@ -464,68 +468,105 @@ namespace Pancake.ApexEditor
         /// </summary>
         public void ApplyChildren()
         {
-            switch (serializedProperty.propertyType)
+            if (serializedProperty.hasVisibleChildren)
             {
-                default:
-                    children = ChildrenNone;
-                    break;
-                case SerializedPropertyType.Generic:
-                case SerializedPropertyType.ManagedReference:
-                    HideChildrenAttribute hideChildrenAttribute = GetAttribute<HideChildrenAttribute>();
+                HideChildrenAttribute hideChildrenAttribute = GetAttribute<HideChildrenAttribute>();
 
-                    int count = 0;
-                    children = new List<SerializedMember>();
-                    foreach (SerializedProperty child in serializedProperty.GetVisibleChildren())
+                int count = 0;
+                children = new List<SerializedMember>();
+                foreach (SerializedProperty child in serializedProperty.GetVisibleChildren())
+                {
+                    try
                     {
-                        try
+                        SerializedField field = new SerializedField(GetSerializedObject(), child.propertyPath);
+                        field.UpdateParent = ApplyChildren;
+
+                        string relativePath = child.propertyPath.Substring(serializedProperty.propertyPath.Length + 1);
+                        if (hideChildrenAttribute != null && hideChildrenAttribute.names.Any(n => n == relativePath))
                         {
-                            SerializedField field = new SerializedField(GetSerializedObject(), child.propertyPath);
-                            field.UpdateParent = ApplyChildren;
-
-                            string relativePath = child.propertyPath.Substring(serializedProperty.propertyPath.Length + 1);
-                            if (hideChildrenAttribute != null && hideChildrenAttribute.names.Any(n => n == relativePath))
-                            {
-                                field.VisibilityCallback += () => false;
-                            }
-
-                            field.SetOrder(count++);
-                            children.Add(field);
+                            field.VisibilityCallback += () => false;
                         }
-                        catch
+
+                        field.SetOrder(count++);
+                        children.Add(field);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError(
+                            $"Failed to create a child of serialized field on the path: {child.propertyPath} (Field has been ignored)\nException: <i>{ex.Message}</i>");
+                    }
+                }
+
+                // Collect all buttons with [SerializeMethod] attribute.
+                FieldInfo fieldInfo = GetMemberInfo() as FieldInfo;
+                object value = fieldInfo.GetValue(GetDeclaringObject());
+                if (value != null)
+                {
+                    foreach (MethodInfo methodInfo in value.GetType().AllMethods())
+                    {
+                        MethodButtonAttribute methodButtonAttribute = methodInfo.GetCustomAttribute<MethodButtonAttribute>();
+                        if (methodButtonAttribute != null)
                         {
-                            Debug.LogError($"Failed to create a child of serialized field on the path: {child.propertyPath} (Field has been ignored)");
+                            if (methodButtonAttribute is ButtonAttribute)
+                            {
+                                try
+                                {
+                                    MethodButton button = new Button(GetSerializedObject(), $"{serializedProperty.propertyPath}.{methodInfo.Name}") {Repaint = Repaint};
+
+                                    button.SetOrder(count++);
+                                    children.Add(button);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogError(
+                                        $"Failed to create a method button <b>{methodInfo.Name}</b> of the {GetSerializedObject().targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                                }
+                            }
+                            else if (methodButtonAttribute is RepeatButtonAttribute)
+                            {
+                                try
+                                {
+                                    MethodButton button =
+                                        new RepeatButton(GetSerializedObject(), $"{serializedProperty.propertyPath}.{methodInfo.Name}") {Repaint = Repaint};
+
+                                    button.SetOrder(count++);
+                                    children.Add(button);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogError(
+                                        $"Failed to create a method button <b>{methodInfo.Name}</b> of the {GetSerializedObject().targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                                }
+                            }
+                            else if (methodButtonAttribute is ToggleButtonAttribute)
+                            {
+                                try
+                                {
+                                    MethodButton button =
+                                        new ToggleButton(GetSerializedObject(), $"{serializedProperty.propertyPath}.{methodInfo.Name}") {Repaint = Repaint};
+
+                                    button.SetOrder(count++);
+                                    children.Add(button);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogError(
+                                        $"Failed to create a method button <b>{methodInfo.Name}</b> of the {GetSerializedObject().targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                                }
+                            }
                         }
                     }
+                }
 
-                    // Collect all buttons with [SerializeMethod] attribute.
-                    TypeInfo typeInfo = GetMemberType().GetTypeInfo();
-                    foreach (MethodInfo methodInfo in typeInfo.DeclaredMethods)
-                    {
-                        SerializeMethodAttribute attribute = methodInfo.GetCustomAttribute<SerializeMethodAttribute>();
-                        if (attribute != null)
-                        {
-                            try
-                            {
-                                SerializedMethod serializedMethod =
-                                    new SerializedMethod(GetSerializedObject(), $"{serializedProperty.propertyPath}.{methodInfo.Name}") {Repaint = Repaint};
+                children.TrimExcess();
+                children.Sort();
 
-                                serializedMethod.SetOrder(count++);
-                                children.Add(serializedMethod);
-                            }
-                            catch
-                            {
-                                Debug.LogError(
-                                    $"Failed to create a method of serialized field on the path: {serializedProperty.propertyPath}.{methodInfo.Name} (Method has been ignored)");
-                            }
-                        }
-                    }
-
-                    children.TrimExcess();
-                    children.Sort();
-
-                    childrenLoaded = true;
-                    GUI.changed = true;
-                    break;
+                childrenLoaded = true;
+                GUI.changed = true;
+            }
+            else
+            {
+                children = ChildrenNone;
             }
         }
 
@@ -567,6 +608,7 @@ namespace Pancake.ApexEditor
         /// <param name="attribute">View attribute.</param>
         public void AddView(ViewAttribute attribute)
         {
+            view = ViewNone;
             if (attribute != null)
             {
                 if (FieldHelper.Views.TryGetValue(attribute.GetType(), out FieldView view))
@@ -581,9 +623,32 @@ namespace Pancake.ApexEditor
                     this.view = view;
                 }
             }
-            else
+        }
+
+        /// <summary>
+        /// Add view attributes to element and array children.
+        /// </summary>
+        /// <param name="attributes">View attribute.</param>
+        public void AddViews(ViewAttribute[] attributes)
+        {
+            view = ViewNone;
+            if (attributes.Length > 0)
             {
-                view = ViewNone;
+                for (int i = 0; i < attributes.Length; i++)
+                {
+                    ViewAttribute attribute = attributes[i];
+                    if (FieldHelper.Views.TryGetValue(attribute.GetType(), out FieldView view))
+                    {
+                        view = Activator.CreateInstance(view.GetType()) as FieldView;
+                        if (view is ITypeValidationCallback verification && !verification.IsValidProperty(serializedProperty))
+                        {
+                            continue;
+                        }
+
+                        view.Initialize(this, attribute, GetLabel());
+                        this.view = view;
+                    }
+                }
             }
         }
 
@@ -1029,7 +1094,45 @@ namespace Pancake.ApexEditor
                 }
                 else
                 {
-                    SetLabel(new GUIContent(serializedProperty.displayName, serializedProperty.tooltip));
+                    if (serializedProperty.propertyType == SerializedPropertyType.ManagedReference && serializedProperty.managedReferenceValue != null)
+                    {
+                        Type type = serializedProperty.managedReferenceValue.GetType();
+                        SearchContent attribute = type.GetCustomAttribute<SearchContent>();
+                        if (attribute != null)
+                        {
+                            GUIContent content = new GUIContent(attribute.name, attribute.Tooltip);
+                            if (SearchContentUtility.TryLoadContentImage(attribute.Image, out Texture2D icon))
+                            {
+                                content.image = icon;
+                            }
+
+                            SetLabel(content);
+                        }
+                        else
+                        {
+                            string typeName = type.Name;
+
+                            StringBuilder outputBuilder = new StringBuilder();
+                            outputBuilder.Append(char.ToUpper(typeName[0]));
+
+                            for (int i = 1; i < type.Name.Length; i++)
+                            {
+                                char symbol = typeName[i];
+                                if (char.IsUpper(symbol) && (i + 1) < type.Name.Length && !char.IsUpper(typeName[i + 1]))
+                                {
+                                    outputBuilder.Append(' ');
+                                }
+
+                                outputBuilder.Append(symbol);
+                            }
+
+                            SetLabel(new GUIContent(outputBuilder.ToString(), serializedProperty.tooltip));
+                        }
+                    }
+                    else
+                    {
+                        SetLabel(new GUIContent(serializedProperty.displayName, serializedProperty.tooltip));
+                    }
                 }
             }
             else
@@ -1075,6 +1178,23 @@ namespace Pancake.ApexEditor
         /// </summary>
         private void RegisterCallbacks()
         {
+            FieldInfo fieldInfo = GetMemberInfo() as FieldInfo;
+            if (fieldInfo == null)
+            {
+                return;
+            }
+
+            if (fieldInfo.FieldType.IsArray)
+            {
+                valueArrayGetter = fieldInfo.DelegateForGet<object, object[]>();
+                lastValue = valueArrayGetter.Invoke(GetDeclaringObject());
+            }
+            else
+            {
+                valueGetter = fieldInfo.DelegateForGet();
+                lastValue = valueGetter.Invoke(GetDeclaringObject());
+            }
+
             OnValueChangedAttribute valueAttribute = GetAttribute<OnValueChangedAttribute>();
             if (valueAttribute != null)
             {
@@ -1087,18 +1207,6 @@ namespace Pancake.ApexEditor
                         if (parameters.Length == 0 || (parameters.Length == 1 && parameters[0].ParameterType == typeof(SerializedProperty)))
                         {
                             onValueChanged = methodInfo.DelegateForCall();
-                            FieldInfo fieldInfo = GetMemberInfo() as FieldInfo;
-                            if (fieldInfo.FieldType.IsArray)
-                            {
-                                valueArrayGetter = fieldInfo.DelegateForGet<object, object[]>();
-                                lastValue = valueArrayGetter.Invoke(GetDeclaringObject());
-                            }
-                            else
-                            {
-                                valueGetter = fieldInfo.DelegateForGet();
-                                lastValue = valueGetter.Invoke(GetDeclaringObject());
-                            }
-
                             break;
                         }
                     }
@@ -1111,19 +1219,19 @@ namespace Pancake.ApexEditor
         /// </summary>
         private void InvokeCallbacks()
         {
-            if (onValueChanged != null)
+            object value = null;
+            if (valueGetter != null)
             {
-                object value = null;
-                if (valueGetter != null)
-                {
-                    value = valueGetter.Invoke(GetDeclaringObject());
-                }
-                else if (valueArrayGetter != null)
-                {
-                    value = valueArrayGetter.Invoke(GetDeclaringObject());
-                }
+                value = valueGetter.Invoke(GetDeclaringObject());
+            }
+            else if (valueArrayGetter != null)
+            {
+                value = valueArrayGetter.Invoke(GetDeclaringObject());
+            }
 
-                if ((value != null && !value.Equals(lastValue)) || (value != null && lastValue == null) || (value == null && lastValue != null))
+            if ((value != null && !value.Equals(lastValue)) || (value != null && lastValue == null) || (value == null && lastValue != null))
+            {
+                if (onValueChanged != null)
                 {
                     int parameterCount = onValueChanged.Method.GetParameters().Length;
                     if (parameterCount == 0)
@@ -1134,9 +1242,10 @@ namespace Pancake.ApexEditor
                     {
                         onValueChanged.Invoke(GetDeclaringObject(), new object[1] {serializedProperty});
                     }
-
-                    lastValue = value;
                 }
+
+                isValueChanged = true;
+                lastValue = value;
             }
         }
 
@@ -1176,6 +1285,12 @@ namespace Pancake.ApexEditor
 
                 lastArrayLength = serializedProperty.arraySize;
             }
+        }
+
+        protected override void ResetToggles()
+        {
+            base.ResetToggles();
+            isValueChanged = false;
         }
 
         /// <summary>
@@ -1422,21 +1537,21 @@ namespace Pancake.ApexEditor
         {
             if (!IsGenericArray())
             {
-                throw new UnityException("An attempt to get an array element from a field that is not an array!");
+                throw new IndexOutOfRangeException($"An attempt to get an array element from a <b>{serializedProperty.name}</b> that is not an array!");
             }
 
             if (index >= serializedProperty.arraySize || index < 0)
             {
-                throw new UnityException("Array index out of range!");
+                throw new IndexOutOfRangeException($"Array (<b>{serializedProperty.propertyPath}</b>) index({index}) out of range!");
             }
 
-            if (index + 1 >= children.Count)
+            if (children.Count - 1 != serializedProperty.arraySize)
             {
-                SerializedProperty element = serializedProperty.GetArrayElementAtIndex(index);
-                return new SerializedField(GetSerializedObject(), element.propertyPath);
+                ApplyChildren();
+                lastArrayLength = serializedProperty.arraySize;
             }
 
-            return children[++index] as SerializedField;
+            return GetChild(++index) as SerializedField;
         }
 
         public bool IsExpanded() { return serializedProperty.isExpanded; }
@@ -1466,9 +1581,76 @@ namespace Pancake.ApexEditor
 
         #region [Getter / Setter]
 
-        public SerializedMember GetChild(int index) { return children[index]; }
+        public SerializedMember GetChild(int index)
+        {
+            if (!serializedProperty.hasVisibleChildren)
+            {
+                throw new IndexOutOfRangeException($"The <b>{serializedProperty.name}</b> has no visible children.");
+            }
+
+            if (children.Count == 0 && serializedProperty.hasVisibleChildren)
+            {
+                ApplyChildren();
+            }
+
+            if (index >= children.Count)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            return children[index];
+        }
+
+        public T GetChild<T>(int index) where T : SerializedMember { return GetChild(index) as T; }
+
+        public SerializedMember FindRelative(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException($"The path cannot be null or empty!");
+            }
+
+            if (!serializedProperty.hasVisibleChildren)
+            {
+                throw new Exception($"The <b>{serializedProperty.name}</b> has no visible children.");
+            }
+
+            if (children.Count == 0 && serializedProperty.hasVisibleChildren)
+            {
+                ApplyChildren();
+            }
+
+            string[] paths = path.Split('.');
+            string name = paths[0];
+            for (int i = 0; i < children.Count; i++)
+            {
+                SerializedMember member = children[i];
+                if (member.GetMemberInfo().Name == name)
+                {
+                    if (paths.Length > 1)
+                    {
+                        if (member is SerializedField field)
+                        {
+                            return field.FindRelative(string.Join('.', paths.Skip(1)));
+                        }
+                        else
+                        {
+                            throw new Exception("Member not found!");
+                        }
+                    }
+
+                    return member;
+                }
+            }
+
+            throw new Exception("Member not found!");
+        }
+
+        public T FindRelative<T>(string path) where T : SerializedMember { return FindRelative(path) as T; }
+
 
         public int GetChildrenCount() { return children.Count; }
+        public bool IsValueChanged() { return isValueChanged; }
 
         #endregion
     }

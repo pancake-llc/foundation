@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [InlineDecoratorTarget(typeof(PrefixAttribute))]
-    sealed class PrefixInlineDecorator : FieldInlineDecorator, ITypeValidationCallback
+    public sealed class PrefixInlineDecorator : FieldInlineDecorator, ITypeValidationCallback
     {
         public const float LabelSpace = 1.0f;
 

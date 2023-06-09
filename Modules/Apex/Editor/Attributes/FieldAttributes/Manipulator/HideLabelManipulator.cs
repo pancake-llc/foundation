@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(HideLabelAttribute))]
-    sealed class HideLabelManipulator : MemberManipulator
+    public sealed class HideLabelManipulator : MemberManipulator
     {
         /// <summary>
         /// Called once when initializing member manipulator.

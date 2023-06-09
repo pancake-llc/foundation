@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(AssetSelecterAttribute))]
-    sealed class AssetSelecterView : FieldView
+    public sealed class AssetSelecterView : FieldView
     {
         private static Texture Icon;
         private static GUIStyle IconStyle;

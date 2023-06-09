@@ -9,7 +9,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(CustomViewAttribute))]
-    sealed class CustomView : FieldView
+    public sealed class CustomView : FieldView
     {
         private object target;
         private MethodCaller<object, object> onInitialization;

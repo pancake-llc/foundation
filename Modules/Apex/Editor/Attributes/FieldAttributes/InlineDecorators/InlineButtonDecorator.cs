@@ -8,7 +8,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [InlineDecoratorTarget(typeof(InlineButtonAttribute))]
-    sealed class InlineButtonDecorator : FieldInlineDecorator
+    public sealed class InlineButtonDecorator : FieldInlineDecorator
     {
         private InlineButtonAttribute attribute;
         private GUIContent content;
@@ -111,12 +111,24 @@ namespace Pancake.ApexEditor
             string styleName = attribute.Style;
             if (!string.IsNullOrEmpty(styleName))
             {
+                GUIStyle customStyle = null;
                 if (styleName[0] == '@')
                 {
-                    return new GUIStyle(styleName.Remove(0, 1));
+                    customStyle = new GUIStyle(styleName.Remove(0, 1));
+                }
+                else
+                {
+                    customStyle = ApexCallbackUtility.GetCallbackResult<GUIStyle>(target, styleName);
                 }
 
-                return ApexCallbackUtility.GetCallbackResult<GUIStyle>(target, styleName);
+                if (customStyle != null)
+                {
+                    style = customStyle;
+                }
+                else
+                {
+                    Debug.LogWarning($"Style not found (used default Button style).");
+                }
             }
 
             return style;

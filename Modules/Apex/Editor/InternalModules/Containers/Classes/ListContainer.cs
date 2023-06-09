@@ -78,6 +78,23 @@ namespace Pancake.ApexEditor
 
         #endregion
 
+        #region [IEntityVisibility Implementation]
+        /// <summary>
+        /// Container visibility state.
+        /// </summary>
+        public override bool IsVisible()
+        {
+            for (int i = 0; i < entities.Count; i++)
+            {
+                if (entities[i].IsVisible())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
+        
         #region [Getter / Setter]
 
         public List<VisualEntity> GetEntities() { return entities; }

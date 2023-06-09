@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(SceneObjectOnlyAttribute))]
-    sealed class SceneObjectOnlyManipulator : MemberManipulator, ITypeValidationCallback
+    public sealed class SceneObjectOnlyManipulator : MemberManipulator, ITypeValidationCallback
     {
         /// <summary>
         /// Called before rendering member GUI.

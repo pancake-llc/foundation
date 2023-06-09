@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(SceneSelecterAttribute))]
-    sealed class SceneSelecterView : FieldView, ITypeValidationCallback
+    public sealed class SceneSelecterView : FieldView, ITypeValidationCallback
     {
         /// <summary>
         /// Called for drawing element view GUI.

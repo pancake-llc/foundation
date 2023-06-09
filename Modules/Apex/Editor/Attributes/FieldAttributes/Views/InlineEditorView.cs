@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(InlineEditorAttribute))]
-    sealed class InlineEditorView : FieldView, ITypeValidationCallback
+    public sealed class InlineEditorView : FieldView, ITypeValidationCallback
     {
         /// <summary>
         /// Called once when initializing FieldView.
@@ -21,7 +21,12 @@ namespace Pancake.ApexEditor
         /// <param name="position">Position of the Serialized field.</param>
         /// <param name="serializedField">Serialized field with ViewAttribute.</param>
         /// <param name="label">Label of Serialized field.</param>
-        public override void OnGUI(Rect position, SerializedField serializedField, GUIContent label) { serializedField.DrawChildren(position); }
+        public override void OnGUI(Rect position, SerializedField serializedField, GUIContent label)
+        {
+            if (ApexGUI.IndentLevel > 0) ApexGUI.IndentLevel--;
+            serializedField.DrawChildren(position);
+            if (ApexGUI.IndentLevel > 0) ApexGUI.IndentLevel++;
+        }
 
         /// <summary>
         /// Get height which needed to draw property.

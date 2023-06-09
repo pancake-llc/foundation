@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.ApexEditor
 {
-    internal abstract class ExplorerPathView : FieldView, ITypeValidationCallback
+    public abstract class ExplorerPathView : FieldView, ITypeValidationCallback
     {
         private static Texture FolderIcon;
         private static GUIStyle IconStyle;

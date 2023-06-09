@@ -8,54 +8,75 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(FieldButtonAttribute))]
-    sealed class FieldButtonDecorator : FieldDecorator
+    public sealed class FieldButtonDecorator : FieldDecorator
     {
-        private FieldButtonAttribute attribute;
-        private GUIContent content;
-        private GUIStyle style;
         private float width;
+        private GUIStyle style;
+        private GUIContent content;
+        private FieldButtonAttribute attribute;
 
-        // Stored callbacks.
+        // Stored callback properties.
         private object target;
+        private SerializedProperty property;
         private MethodCaller<object, object> onClick;
 
         /// <summary>
-        /// Called when element decorator becomes initialized.
+        /// Called once when initializing element inline decorator.
         /// </summary>
-        /// <param name="serializedField">Serialized field reference with current decorator attribute.</param>
-        /// <param name="decoratorAttribute">Reference of serialized field decorator attribute.</param>
-        /// <param name="label">Display label of serialized property.</param>
+        /// <param name="serializedField">serialized field with InlineDecoratorAttribute.</param>
+        /// <param name="decoratorAttribute">InlineDecoratorAttribute of serialized field.</param>
+        /// <param name="label">Label of serialized field.</param>
         public override void Initialize(SerializedField serializedField, DecoratorAttribute decoratorAttribute, GUIContent label)
         {
+            attribute = (FieldButtonAttribute) decoratorAttribute;
+            property = serializedField.GetSerializedProperty();
             target = serializedField.GetDeclaringObject();
-            attribute = decoratorAttribute as FieldButtonAttribute;
             FindCallback();
             SetButtonLabel();
         }
 
         /// <summary>
-        /// Called for rendering and handling GUI events.
+        /// Called for rendering and handling inline decorator GUI.
         /// </summary>
+        /// <param name="position">Calculated position for drawing inline decorator.</param>
         public override void OnGUI(Rect position)
         {
+            width = position.width;
+
             if (style == null)
             {
                 style = FindStyle();
             }
 
-            width = position.width;
             if (GUI.Button(position, content, style))
             {
-                onClick.SafeInvoke(target, null);
-                Debug.Assert(onClick != null,
-                    $"<b>Apex Message:</b> Action with name {attribute.name} is not fonded. The method must be of type void and must have no parameters.");
+                if (onClick != null)
+                {
+                    ParameterInfo[] parameters = onClick.Method.GetParameters();
+                    if (parameters.Length == 0)
+                    {
+                        onClick.Invoke(target, null);
+                    }
+                    else if (parameters.Length == 1)
+                    {
+                        onClick.Invoke(target, new object[1] {property});
+                    }
+                    else if (parameters.Length == 2)
+                    {
+                        onClick.Invoke(target, new object[2] {position, property});
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"<b>Apex Message:</b> Action with name {attribute.name} is not fonded. The method must be of type void and must have no parameters.");
+                }
             }
         }
 
         /// <summary>
-        /// Get the height of the decorator, which required to display it.
-        /// Calculate only the size of the current decorator, not the entire property.
-        /// The decorator height will be added to the total size of the property with other decorator.
+        /// Get the width of the inline decorator, which required to display it.
+        /// Calculate only the size of the current inline decorator, not the entire property.
+        /// The inline decorator width will be added to the total size of the property with other painters.
         /// </summary>
         public override float GetHeight()
         {
@@ -64,14 +85,16 @@ namespace Pancake.ApexEditor
                 style = FindStyle();
             }
 
-            return attribute.Height != 0 ? attribute.Height : style.CalcHeight(content, width);
+            return attribute.Height == 0 ? style.CalcHeight(content, width) : attribute.Height;
         }
 
         private void FindCallback()
         {
             foreach (MethodInfo methodInfo in target.GetType().AllMethods())
             {
-                if (methodInfo.IsValidCallback(attribute.name, typeof(void), null))
+                if (methodInfo.IsValidCallback(attribute.name, typeof(void), null) ||
+                    methodInfo.IsValidCallback(attribute.name, typeof(void), typeof(SerializedProperty)) ||
+                    methodInfo.IsValidCallback(attribute.name, typeof(void), typeof(Rect), typeof(SerializedProperty)))
                 {
                     onClick = methodInfo.DelegateForCall();
                     break;
@@ -85,12 +108,24 @@ namespace Pancake.ApexEditor
             string styleName = attribute.Style;
             if (!string.IsNullOrEmpty(styleName))
             {
+                GUIStyle customStyle = null;
                 if (styleName[0] == '@')
                 {
-                    return new GUIStyle(styleName.Remove(0, 1));
+                    customStyle = new GUIStyle(styleName.Remove(0, 1));
+                }
+                else
+                {
+                    customStyle = ApexCallbackUtility.GetCallbackResult<GUIStyle>(target, styleName);
                 }
 
-                return ApexCallbackUtility.GetCallbackResult<GUIStyle>(target, styleName);
+                if (customStyle != null)
+                {
+                    style = customStyle;
+                }
+                else
+                {
+                    Debug.LogWarning("Style not found (used default Button style).");
+                }
             }
 
             return style;

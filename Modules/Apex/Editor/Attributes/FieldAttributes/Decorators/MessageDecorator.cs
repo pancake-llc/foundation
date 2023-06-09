@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(MessageAttribute))]
-    sealed class MessageDecorator : FieldDecorator
+    public sealed class MessageDecorator : FieldDecorator
     {
         private static readonly Color InfoColor = new Color(1.0f, 1.0f, 1.0f, 0.1f);
         private static readonly Color WarningColor = new Color(1.0f, 0.7f, 0.3f, 0.1f);

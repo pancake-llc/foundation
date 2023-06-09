@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(DropdownReferenceAttribute))]
-    sealed class DropdownReferenceView : FieldView, ITypeValidationCallback
+    public sealed class DropdownReferenceView : FieldView, ITypeValidationCallback
     {
         private const float HEADER_HEIGHT = 22;
         private static GUIContent ButtonContent;

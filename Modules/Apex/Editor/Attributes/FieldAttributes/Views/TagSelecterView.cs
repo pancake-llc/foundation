@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(TagSelecterAttribute))]
-    sealed class TagSelecterView : FieldView
+    public sealed class TagSelecterView : FieldView
     {
         /// <summary>
         /// Called for drawing element view GUI.

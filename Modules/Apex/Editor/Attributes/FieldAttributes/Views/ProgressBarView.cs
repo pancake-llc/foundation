@@ -9,7 +9,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ProgressBarAttribute))]
-    sealed class ProgressBarView : FieldView, ITypeValidationCallback
+    public sealed class ProgressBarView : FieldView, ITypeValidationCallback
     {
         private ProgressBarAttribute attribute;
 

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(HelpBoxAttribute))]
-    sealed class HelpBoxDecorator : FieldDecorator
+    public sealed class HelpBoxDecorator : FieldDecorator
     {
         private HelpBoxAttribute attribute;
 

@@ -13,7 +13,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ValueDropdownAttribute))]
-    sealed class ValueDropdownView : FieldView
+    public sealed class ValueDropdownView : FieldView
     {
         private readonly static object[] EmptyValues = new object[0];
 

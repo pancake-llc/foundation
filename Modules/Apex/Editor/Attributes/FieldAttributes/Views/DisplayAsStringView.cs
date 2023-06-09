@@ -7,7 +7,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(DisplayAsStringAttribute))]
-    sealed class DisplayAsStringView : FieldView
+    public sealed class DisplayAsStringView : FieldView
     {
         private DisplayAsStringAttribute attribute;
         private GUIStyle style;

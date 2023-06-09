@@ -2,7 +2,7 @@
 
 namespace Pancake.Apex
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class MinValueAttribute : ValidatorAttribute
     {
         public readonly float value;

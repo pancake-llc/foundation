@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [InlineDecoratorTarget(typeof(SuffixAttribute))]
-    sealed class SuffixInlineDecorator : FieldInlineDecorator
+    public sealed class SuffixInlineDecorator : FieldInlineDecorator
     {
         private SuffixAttribute attribute;
         private GUIStyle style;

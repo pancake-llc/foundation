@@ -166,7 +166,7 @@ namespace Pancake.ApexEditor
                         GUI.color = Color.red;
                     }
 
-                    position.x -= 4;
+                    position.x -= 5;
                     position.y -= 3;
                     position.width += HEADER_HEIGHT + 4;
                     if ((i + 1) % 2 == 0)
@@ -186,7 +186,7 @@ namespace Pancake.ApexEditor
                             false);
                     }
 
-                    position.x += 4;
+                    position.x += 5;
                     position.y += 3;
                     position.width -= HEADER_HEIGHT + 4;
 
@@ -206,7 +206,7 @@ namespace Pancake.ApexEditor
                 value.OnGUI(position);
                 position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
 
-                Rect removeButtonPosition = new Rect(position.xMax + 4, yMin, HEADER_HEIGHT, lineHeight);
+                Rect removeButtonPosition = new Rect(position.xMax + 5, yMin, HEADER_HEIGHT, lineHeight);
                 if (GUI.Button(removeButtonPosition, RemoveButtonContent, ApexStyles.BoxCenteredButton))
                 {
                     keys.RemoveArrayElement(i);

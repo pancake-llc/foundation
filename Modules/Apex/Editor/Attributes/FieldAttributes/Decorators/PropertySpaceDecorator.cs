@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(PropertySpaceAttribute))]
-    sealed class PropertySpaceDecorator : FieldDecorator
+    public sealed class PropertySpaceDecorator : FieldDecorator
     {
         private PropertySpaceAttribute attribute;
 

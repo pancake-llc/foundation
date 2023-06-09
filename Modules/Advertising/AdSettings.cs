@@ -87,7 +87,7 @@ namespace Pancake.Monetization
 #if UNITY_EDITOR
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-        [SerializeMethod]
+        [Button]
         [Color(1,
             0.16f,
             0.16f,
@@ -118,7 +118,7 @@ namespace Pancake.Monetization
             AssetDatabase.Refresh();
         }
 
-        [SerializeMethod]
+        [Button]
         [Color(1f,
             0.72f,
             0.42f,
@@ -260,7 +260,7 @@ DefaultImporter:
         [Order(12)]
         private void OpenApplovinManager() { UnityEditor.EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager"); }
 #else
-        [SerializeMethod]
+        [Button]
         [Color(0.31f,
             0.98f,
             0.48f,
@@ -274,7 +274,7 @@ DefaultImporter:
             AssetDatabase.ImportPackage(GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/applovin.unitypackage"), false);
         }
 
-        [SerializeMethod]
+        [Button]
         [Color(1f,
             0.72f,
             0.42f,

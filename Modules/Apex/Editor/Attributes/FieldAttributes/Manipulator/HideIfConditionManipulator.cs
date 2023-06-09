@@ -3,7 +3,7 @@
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(HideIfAttribute))]
-    sealed class HideIfConditionManipulator : ConditionManipulator
+    public sealed class HideIfConditionManipulator : ConditionManipulator
     {
         /// <summary>
         /// Called once when initializing member manipulator.

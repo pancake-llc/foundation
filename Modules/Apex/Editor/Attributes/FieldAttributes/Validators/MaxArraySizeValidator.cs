@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ValidatorTarget(typeof(MaxArraySizeAttribute))]
-    sealed class MaxArraySizeValidator : FieldValidator, ITypeValidationCallback
+    public sealed class MaxArraySizeValidator : FieldValidator, ITypeValidationCallback
     {
         private int size;
 

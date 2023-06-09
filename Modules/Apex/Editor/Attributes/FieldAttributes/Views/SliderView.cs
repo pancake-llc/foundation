@@ -6,7 +6,7 @@ using System;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(SliderAttribute))]
-    sealed class SliderView : FieldView, ITypeValidationCallback
+    public sealed class SliderView : FieldView, ITypeValidationCallback
     {
         private SliderAttribute attribute;
         private SerializedProperty minProperty;

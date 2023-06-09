@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(LabelWidthAttribute))]
-    sealed class LabelWidthManipulator : MemberManipulator
+    public sealed class LabelWidthManipulator : MemberManipulator
     {
         private LabelWidthAttribute attribute;
         private float width;

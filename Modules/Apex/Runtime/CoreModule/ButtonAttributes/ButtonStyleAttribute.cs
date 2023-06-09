@@ -3,10 +3,10 @@
 namespace Pancake.Apex
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public sealed class GUIStyleAttribute : ApexAttribute
+    public sealed class ButtonStyleAttribute : ApexAttribute
     {
         public readonly string name;
 
-        public GUIStyleAttribute(string member) { this.name = member; }
+        public ButtonStyleAttribute(string name) { this.name = name; }
     }
 }

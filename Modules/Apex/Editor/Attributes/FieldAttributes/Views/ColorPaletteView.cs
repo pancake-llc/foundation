@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ColorPaletteAttribute))]
-    sealed class ColorPaletteView : FieldView
+    public sealed class ColorPaletteView : FieldView
     {
         private readonly static Color[] EmptyPalette = new Color[0];
 

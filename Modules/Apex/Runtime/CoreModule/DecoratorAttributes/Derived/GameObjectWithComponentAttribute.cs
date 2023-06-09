@@ -10,9 +10,7 @@ namespace Pancake.Apex
         public GameObjectWithComponentAttribute(Type type)
         {
             this.type = type;
-            const string DEFAULT_MESSAGE = "{name} required {type} component!";
-            Format = DEFAULT_MESSAGE;
-            Height = 30;
+            Format = "{name} required {type} component!";
             Style = MessageStyle.Error;
         }
 
@@ -23,11 +21,6 @@ namespace Pancake.Apex
         /// Arguments: {name}, {type}
         /// </summary>
         public string Format { get; set; }
-
-        /// <summary>
-        /// Height of help box message.
-        /// </summary>
-        public float Height { get; set; }
 
         /// <summary>
         /// Help box message style.

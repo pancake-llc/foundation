@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(EnumToggleButtonsAttribute))]
-    sealed class EnumToggleButtonsView : FieldView, ITypeValidationCallback
+    public sealed class EnumToggleButtonsView : FieldView, ITypeValidationCallback
     {
         private float width;
         private bool isFlags;

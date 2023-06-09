@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(FolderPathAttribute))]
-    sealed class FolderPathView : ExplorerPathView
+    public sealed class FolderPathView : ExplorerPathView
     {
         private FolderPathAttribute attribute;
 

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(IntervalAttribute))]
-    sealed class IntervalView : FieldView, ITypeValidationCallback
+    public sealed class IntervalView : FieldView, ITypeValidationCallback
     {
         private const float BUTTON_WIDTH = 15;
         private const float SPACE_WIDTH = 5;

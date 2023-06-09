@@ -10,7 +10,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ReferenceArrayAttribute))]
-    sealed class ReferenceArrayView : FieldView, ITypeValidationCallback
+    public sealed class ReferenceArrayView : FieldView, ITypeValidationCallback
     {
         private ReferenceArrayAttribute attribute;
         private ReorderableArray reorderableArray;
@@ -63,15 +63,14 @@ namespace Pancake.ApexEditor
                     {
                         field.SetLabel((GUIContent) getElementLabel.Invoke(target, new object[2] {index, serializedField}));
                     }
-                    else
-                    {
-                        object objValue = field.GetManagedReference();
-                        if (objValue != null)
-                        {
-                            field.GetLabel().text = objValue.GetType().Name;
-                        }
-                    }
-
+                    // else
+                    // {
+                    //     object objValue = field.GetManagedReference();
+                    //     if (objValue != null)
+                    //     {
+                    //         field.GetLabel().text = objValue.GetType().Name;
+                    //     }
+                    // }
                     field.OnGUI(rect);
                 };
             }
@@ -172,10 +171,10 @@ namespace Pancake.ApexEditor
             element.managedReferenceValue = Activator.CreateInstance(type);
             element.serializedObject.ApplyModifiedProperties();
 
-            if (serializedField.IsExpanded())
-            {
-                serializedField.ApplyChildren();
-            }
+            // if (serializedField.IsExpanded())
+            // {
+            //     serializedField.ApplyChildren();
+            // }
         }
 
         private void FindCallbacks(object target, ReferenceArrayAttribute attribute)

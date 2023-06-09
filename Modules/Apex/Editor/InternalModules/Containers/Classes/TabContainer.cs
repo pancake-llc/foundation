@@ -111,6 +111,27 @@ namespace Pancake.ApexEditor
 
         #endregion
 
+        #region [IEntityVisibility Implementation]
+        /// <summary>
+        /// Container visibility state.
+        /// </summary>
+        public override bool IsVisible()
+        {
+            for (int i = 0; i < tabs.Count; i++)
+            {
+                Tab tab = tabs[i];
+                for (int j = 0; j < tab.entities.Count; j++)
+                {
+                    if (tab.entities[j].IsVisible())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        #endregion
+        
         #region [ITabContainer Implementation]
 
         /// <summary>

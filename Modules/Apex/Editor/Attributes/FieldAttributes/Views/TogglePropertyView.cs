@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(TogglePropertyAttribute))]
-    sealed class TogglePropertyView : FieldView
+    public sealed class TogglePropertyView : FieldView
     {
         private TogglePropertyAttribute attribute;
         private SerializedField boolValue;

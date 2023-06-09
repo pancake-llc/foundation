@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(HideInEditorModeAttribute))]
-    sealed class HideInEditorModeManipulator : MemberManipulator
+    public sealed class HideInEditorModeManipulator : MemberManipulator
     {
         /// <summary>
         /// Called once when initializing member manipulator.

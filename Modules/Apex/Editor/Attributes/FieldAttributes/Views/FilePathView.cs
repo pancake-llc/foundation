@@ -6,7 +6,7 @@ using FilePathAttribute = Pancake.Apex.FilePathAttribute;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(FilePathAttribute))]
-    sealed class FilePathView : ExplorerPathView
+    public sealed class FilePathView : ExplorerPathView
     {
         private FilePathAttribute attribute;
 

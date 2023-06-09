@@ -3,6 +3,7 @@ using System.IO;
 
 namespace Pancake.Apex
 {
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class AssetSelecterAttribute : ViewAttribute
     {
         public AssetSelecterAttribute()

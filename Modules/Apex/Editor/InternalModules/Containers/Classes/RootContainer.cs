@@ -110,9 +110,10 @@ namespace Pancake.ApexEditor
                             serializedField.SetOrder(order++);
                             visualEntities.Add(serializedField);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            Debug.LogError($"Failed to create a serialized field on the path: {iterator.propertyPath} (Field has been ignored)");
+                            Debug.LogError(
+                                $"Failed to create a serialized field on the path: {iterator.propertyPath} (Field has been ignored)\nException: <i>{ex.Message}</i>");
                         }
                     } while (iterator.NextVisible(false));
                 }
@@ -131,20 +132,53 @@ namespace Pancake.ApexEditor
             Type type = serializedObject.targetObject.GetType();
             foreach (MethodInfo methodInfo in type.AllMethods())
             {
-                SerializeMethodAttribute attribute = methodInfo.GetCustomAttribute<SerializeMethodAttribute>();
-                if (attribute != null)
+                MethodButtonAttribute methodButtonAttribute = methodInfo.GetCustomAttribute<MethodButtonAttribute>();
+                if (methodButtonAttribute != null)
                 {
-                    try
+                    if (methodButtonAttribute is ButtonAttribute)
                     {
-                        SerializedMethod serializedMethod = new SerializedMethod(serializedObject, methodInfo.Name) {Repaint = repaint};
+                        try
+                        {
+                            MethodButton button = new Button(serializedObject, methodInfo.Name) {Repaint = repaint};
 
-                        serializedMethod.SetOrder(order++);
-                        visualEntities.Add(serializedMethod);
+                            button.SetOrder(order++);
+                            visualEntities.Add(button);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogError(
+                                $"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                        }
                     }
-                    catch
+                    else if (methodButtonAttribute is RepeatButtonAttribute)
                     {
-                        Debug.LogError(
-                            $"Failed to create a serialized method {methodInfo.Name} of the {serializedObject.targetObject.GetType().Name} object. (Method has been ignored)");
+                        try
+                        {
+                            MethodButton button = new RepeatButton(serializedObject, methodInfo.Name) {Repaint = repaint};
+
+                            button.SetOrder(order++);
+                            visualEntities.Add(button);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogError(
+                                $"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                        }
+                    }
+                    else if (methodButtonAttribute is ToggleButtonAttribute)
+                    {
+                        try
+                        {
+                            MethodButton button = new ToggleButton(serializedObject, methodInfo.Name) {Repaint = repaint};
+
+                            button.SetOrder(order++);
+                            visualEntities.Add(button);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogError(
+                                $"Failed to create a method button <b>{methodInfo.Name}</b> of the {serializedObject.targetObject.GetType().Name} object. (Button has been ignored)\n<b><color=red>Exception: {ex.Message}</color></b>\n\nStacktrace:");
+                        }
                     }
                 }
             }

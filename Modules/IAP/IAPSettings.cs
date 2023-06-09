@@ -46,7 +46,7 @@ namespace Pancake.IAP
         private string m_AppleError;
         [Space(20)] [SerializeField, TextArea] private string googlePlayStorePublicKey;
 
-        [SerializeMethod]
+        [Button]
         [HorizontalGroup("button")]
         private void ValidateObfuscator()
         {
@@ -83,7 +83,7 @@ namespace Pancake.IAP
             return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
         }
 
-        [SerializeMethod]
+        [Button]
         [HorizontalGroup("button")]
         private void GenerateProduct()
         {

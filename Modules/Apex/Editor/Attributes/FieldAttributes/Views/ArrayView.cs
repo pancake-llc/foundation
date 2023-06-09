@@ -9,7 +9,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ArrayAttribute))]
-    sealed class ArrayView : FieldView, ITypeValidationCallback
+    public sealed class ArrayView : FieldView, ITypeValidationCallback
     {
         private ReorderableArray reorderableArray;
 

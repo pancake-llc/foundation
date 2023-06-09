@@ -11,7 +11,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(SearchableEnumAttribute))]
-    sealed class SearchableEnumView : FieldView, ITypeValidationCallback
+    public sealed class SearchableEnumView : FieldView, ITypeValidationCallback
     {
         private SearchableEnumAttribute attribute;
 

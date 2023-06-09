@@ -10,7 +10,7 @@ using Vexe.Runtime.Extensions;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(ReorderableListAttribute))]
-    sealed class ReorderableListView : FieldView, ITypeValidationCallback
+    public sealed class ReorderableListView : FieldView, ITypeValidationCallback
     {
         private ReorderableList reorderableList;
         private ReorderableListAttribute attribute;

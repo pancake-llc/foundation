@@ -54,6 +54,23 @@ namespace Pancake.ApexEditor
 
         #endregion
 
+        #region [IEntityVisibility Implementation]
+        /// <summary>
+        /// Container visibility state.
+        /// </summary>
+        public override bool IsVisible()
+        {
+            foreach (VisualEntity entity in Entities)
+            {
+                if (entity.IsVisible())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
+        
         #region [Static Methods]
 
         public static void DrawEntities(Rect position, in List<VisualEntity> entities)
@@ -81,7 +98,11 @@ namespace Pancake.ApexEditor
             float height = 0;
             for (int i = 0; i < entities.Count; i++)
             {
-                height += entities[i].GetHeight() + ApexGUIUtility.VerticalSpacing;
+                VisualEntity entity = entities[i];
+                if (entity.IsVisible())
+                {
+                    height += entities[i].GetHeight() + ApexGUIUtility.VerticalSpacing;
+                }
             }
 
             return height - ApexGUIUtility.VerticalSpacing;

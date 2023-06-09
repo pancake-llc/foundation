@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ManipulatorTarget(typeof(ColorAttribute))]
-    sealed class ColorManipulator : MemberManipulator
+    public sealed class ColorManipulator : MemberManipulator
     {
         private ColorAttribute attribute;
         private Color color;

@@ -1,14 +1,16 @@
 ﻿using Pancake.Apex;
+using System;
 using UnityEditor;
 using UnityEngine;
 
 namespace Pancake.ApexEditor
 {
     [ValidatorTarget(typeof(MinValueAttribute))]
-    class MinValueValidator : FieldValidator, ITypeValidationCallback
+    public sealed class MinValueValidator : FieldValidator, ITypeValidationCallback
     {
         private MinValueAttribute attribute;
-        private SerializedProperty value;
+        private SerializedProperty property;
+        private SerializedProperty minProperty;
 
         /// <summary>
         /// Called once when initializing validator.
@@ -19,7 +21,22 @@ namespace Pancake.ApexEditor
         public override void Initialize(SerializedField serializedField, ValidatorAttribute validatorAttribute, GUIContent label)
         {
             attribute = validatorAttribute as MinValueAttribute;
-            value = serializedField.GetSerializedObject().FindProperty(attribute.property);
+
+            property = serializedField.GetSerializedProperty();
+
+            string relativePath = string.Empty;
+            string[] paths = property.propertyPath.Split('.');
+            if (paths.Length > 0)
+            {
+                Array.Resize<string>(ref paths, paths.Length - 1);
+                relativePath = string.Join('.', paths);
+            }
+
+            if (!string.IsNullOrEmpty(attribute.property))
+            {
+                string path = relativePath == string.Empty ? attribute.property : $"{relativePath}.{attribute.property}";
+                minProperty = serializedField.GetSerializedObject().FindProperty(path);
+            }
         }
 
         /// <summary>
@@ -28,20 +45,174 @@ namespace Pancake.ApexEditor
         /// <param name="serializedField">Serialized field with validator attribute.</param>
         public override void Validate(SerializedField serializedField)
         {
-            switch (serializedField.GetSerializedProperty().propertyType)
+            switch (property.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    if (value != null)
-                        serializedField.GetSerializedProperty().intValue = Mathf.Max(serializedField.GetSerializedProperty().intValue, value.intValue);
+                    if (minProperty != null)
+                        property.intValue = Mathf.Max(property.intValue, minProperty.intValue);
                     else
-                        serializedField.GetSerializedProperty().intValue =
-                            Mathf.Max(serializedField.GetSerializedProperty().intValue, System.Convert.ToInt32(attribute.value));
+                        property.intValue = Mathf.Max(property.intValue, System.Convert.ToInt32(attribute.value));
                     break;
                 case SerializedPropertyType.Float:
-                    if (value != null)
-                        serializedField.GetSerializedProperty().floatValue = Mathf.Max(serializedField.GetSerializedProperty().floatValue, value.floatValue);
+                    if (minProperty != null)
+                        property.floatValue = Mathf.Max(property.floatValue, minProperty.floatValue);
                     else
-                        serializedField.GetSerializedProperty().floatValue = Mathf.Max(serializedField.GetSerializedProperty().floatValue, attribute.value);
+                        property.floatValue = Mathf.Max(property.floatValue, attribute.value);
+                    break;
+                case SerializedPropertyType.Vector2:
+                    if (minProperty != null)
+                    {
+                        Vector2 vector = property.vector2Value;
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.x = Mathf.Max(vector.x, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.x = Mathf.Max(vector.x, minProperty.floatValue);
+                        }
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.y = Mathf.Max(vector.y, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.y = Mathf.Max(vector.y, minProperty.floatValue);
+                        }
+
+                        property.vector2Value = vector;
+                    }
+                    else
+                    {
+                        Vector2 vector = property.vector2Value;
+                        vector.x = Mathf.Max(vector.x, attribute.value);
+                        vector.y = Mathf.Max(vector.y, attribute.value);
+                        property.vector2Value = vector;
+                    }
+
+                    break;
+                case SerializedPropertyType.Vector2Int:
+                    if (minProperty != null)
+                    {
+                        Vector2Int vector = property.vector2IntValue;
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.x = Mathf.Max(vector.x, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.x = Mathf.Max(vector.x, System.Convert.ToInt32(minProperty.floatValue));
+                        }
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.y = Mathf.Max(vector.y, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.y = Mathf.Max(vector.y, System.Convert.ToInt32(minProperty.floatValue));
+                        }
+
+                        property.vector2IntValue = vector;
+                    }
+                    else
+                    {
+                        Vector2Int vector = property.vector2IntValue;
+                        vector.x = Mathf.Max(vector.x, System.Convert.ToInt32(attribute.value));
+                        vector.y = Mathf.Max(vector.y, System.Convert.ToInt32(attribute.value));
+                        property.vector2IntValue = vector;
+                    }
+
+                    break;
+
+                case SerializedPropertyType.Vector3:
+                    if (minProperty != null)
+                    {
+                        Vector3 vector = property.vector3Value;
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.x = Mathf.Max(vector.x, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.x = Mathf.Max(vector.x, minProperty.floatValue);
+                        }
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.y = Mathf.Max(vector.y, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.y = Mathf.Max(vector.y, minProperty.floatValue);
+                        }
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.z = Mathf.Max(vector.z, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.z = Mathf.Max(vector.z, minProperty.floatValue);
+                        }
+
+                        property.vector3Value = vector;
+                    }
+                    else
+                    {
+                        Vector3 vector = property.vector3Value;
+                        vector.x = Mathf.Max(vector.x, attribute.value);
+                        vector.y = Mathf.Max(vector.y, attribute.value);
+                        vector.z = Mathf.Max(vector.z, attribute.value);
+                        property.vector3Value = vector;
+                    }
+
+                    break;
+                case SerializedPropertyType.Vector3Int:
+                    if (minProperty != null)
+                    {
+                        Vector3Int vector = property.vector3IntValue;
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.x = Mathf.Max(vector.x, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.x = Mathf.Max(vector.x, System.Convert.ToInt32(minProperty.floatValue));
+                        }
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.y = Mathf.Max(vector.y, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.y = Mathf.Max(vector.y, System.Convert.ToInt32(minProperty.floatValue));
+                        }
+
+                        if (property.propertyType == SerializedPropertyType.Integer)
+                        {
+                            vector.z = Mathf.Max(vector.z, minProperty.intValue);
+                        }
+                        else if (property.propertyType == SerializedPropertyType.Float)
+                        {
+                            vector.z = Mathf.Max(vector.z, System.Convert.ToInt32(minProperty.floatValue));
+                        }
+
+                        property.vector3IntValue = vector;
+                    }
+                    else
+                    {
+                        Vector3Int vector = property.vector3IntValue;
+                        vector.x = Mathf.Max(vector.x, System.Convert.ToInt32(attribute.value));
+                        vector.y = Mathf.Max(vector.y, System.Convert.ToInt32(attribute.value));
+                        vector.z = Mathf.Max(vector.z, System.Convert.ToInt32(attribute.value));
+                        property.vector3IntValue = vector;
+                    }
+
                     break;
             }
         }
@@ -54,7 +225,9 @@ namespace Pancake.ApexEditor
         /// <param name="label">Display label of serialized property.</param>
         public bool IsValidProperty(SerializedProperty property)
         {
-            return property.propertyType == SerializedPropertyType.Integer || property.propertyType == SerializedPropertyType.Float;
+            return property.propertyType == SerializedPropertyType.Integer || property.propertyType == SerializedPropertyType.Float ||
+                   property.propertyType == SerializedPropertyType.Vector2 || property.propertyType == SerializedPropertyType.Vector2Int ||
+                   property.propertyType == SerializedPropertyType.Vector3 || property.propertyType == SerializedPropertyType.Vector3Int;
         }
     }
 }

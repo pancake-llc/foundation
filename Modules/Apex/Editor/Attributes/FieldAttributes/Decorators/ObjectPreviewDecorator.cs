@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [DecoratorTarget(typeof(ObjectPreviewAttribute))]
-    sealed class ObjectPreviewDecorator : FieldDecorator, ITypeValidationCallback
+    public sealed class ObjectPreviewDecorator : FieldDecorator, ITypeValidationCallback
     {
         private ObjectPreviewAttribute attribute;
         private SerializedProperty serializedProperty;

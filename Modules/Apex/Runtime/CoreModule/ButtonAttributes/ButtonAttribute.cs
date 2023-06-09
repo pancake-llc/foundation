@@ -3,7 +3,7 @@
 namespace Pancake.Apex
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public sealed class SerializeMethodAttribute : ApexAttribute
+    public sealed class ButtonAttribute : MethodButtonAttribute
     {
     }
 }
