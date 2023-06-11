@@ -192,7 +192,7 @@ namespace Pancake
         /// Starts a coroutine from non-MonoBehavior objects.
         /// </summary>
         /// <param name="routine">Routine.</param>
-        internal Coroutine RunCoroutineImpl(IEnumerator routine)
+        internal Coroutine StartCoroutineImpl(IEnumerator routine)
         {
             if (routine != null) return StartCoroutine(routine);
             return null;
@@ -202,7 +202,7 @@ namespace Pancake
         /// Stops a coroutine from non-MonoBehavior objects.
         /// </summary>
         /// <param name="routine">Routine.</param>
-        internal void EndCoroutineImpl(IEnumerator routine)
+        internal void StopCoroutineImpl(IEnumerator routine)
         {
             if (routine != null) StopCoroutine(routine);
         }

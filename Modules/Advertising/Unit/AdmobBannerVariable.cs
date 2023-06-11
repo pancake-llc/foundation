@@ -104,9 +104,9 @@ namespace Pancake.Monetization
         private void OnAdFailedToLoad(LoadAdError error)
         {
             C.CallActionClean(ref faildedToLoadCallback);
-            if (_reload != null) App.EndCoroutine(_reload);
+            if (_reload != null) App.StopCoroutine(_reload);
             _reload = DelayBannerReload();
-            App.RunCoroutine(_reload);
+            App.StartCoroutine(_reload);
         }
 
         private void OnAdClosed() { C.CallActionClean(ref closedCallback); }

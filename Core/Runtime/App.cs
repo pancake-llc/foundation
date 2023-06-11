@@ -124,10 +124,10 @@ namespace Pancake
         public static void RemoveQuitCallback(Action callback) { globalComponent.OnGameQuit -= callback; }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Coroutine RunCoroutine(IEnumerator routine) => globalComponent.RunCoroutineImpl(routine);
+        public static Coroutine StartCoroutine(IEnumerator routine) => globalComponent.StartCoroutineImpl(routine);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static void EndCoroutine(IEnumerator routine) => globalComponent.EndCoroutineImpl(routine);
+        public static void StopCoroutine(IEnumerator routine) => globalComponent.StopCoroutineImpl(routine);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static Action ToMainThread(Action action) => globalComponent.ToMainThreadImpl(action);

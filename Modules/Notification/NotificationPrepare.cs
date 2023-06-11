@@ -26,7 +26,7 @@ namespace Pancake.Notification
 
             foreach (string s in strs)
             {
-                App.RunCoroutine(PrepareImage(Application.persistentDataPath, s));
+                App.StartCoroutine(PrepareImage(Application.persistentDataPath, s));
             }
         }
 
