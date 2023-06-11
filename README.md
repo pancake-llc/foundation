@@ -1,7 +1,6 @@
 # What
 
-- The heart of the world tree
-- Version 2.0.0 still under development
+- The heart of the world tree contains base modules
 
 # Environment
 
