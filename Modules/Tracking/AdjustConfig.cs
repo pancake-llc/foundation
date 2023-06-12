@@ -50,8 +50,10 @@ namespace Pancake.Tracking
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(_appToken);
+#if PANCAKE_ADJUST
             EditorGUILayout.PropertyField(_environment);
             EditorGUILayout.PropertyField(_logLevel);
+#endif
             EditorUtility.SetDirty(target);
             serializedObject.ApplyModifiedProperties();
         }
