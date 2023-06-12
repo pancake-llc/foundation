@@ -1,8 +1,9 @@
 #if PANCAKE_ADJUST
 using com.adjust.sdk;
 #endif
-using System;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Pancake.Tracking
@@ -26,7 +27,8 @@ namespace Pancake.Tracking
     }
 
 
-    [UnityEditor.CustomEditor(typeof(AdjustConfig))]
+#if UNITY_EDITOR
+    [CustomEditor(typeof(AdjustConfig))]
     public class AdjustConfigEditor : UnityEditor.Editor
     {
         private SerializedProperty _appToken;
@@ -54,4 +56,5 @@ namespace Pancake.Tracking
             serializedObject.ApplyModifiedProperties();
         }
     }
+#endif
 }
