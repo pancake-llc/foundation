@@ -83,7 +83,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Unity Purchasing", GUILayout.MaxHeight(40f)))
             {
-                RegistryManager.Add("com.unity.purchasing", "4.7.0");
+                RegistryManager.Add("com.unity.purchasing", "4.8.0");
                 RegistryManager.Resolve();
             }
 

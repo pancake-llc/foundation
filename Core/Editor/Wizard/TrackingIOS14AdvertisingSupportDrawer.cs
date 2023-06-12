@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Pancake;
+using Pancake.ExLibEditor;
 using Pancake.Tracking;
 using UnityEditor;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace PancakeEditor
     {
         public static void OnInspectorGUI()
         {
-#if UNITY_IOS && PANCAKE_ATT
+#if PANCAKE_ATT
             Uniform.DrawInstalled("1.2.0");
             EditorGUILayout.Space();
 
