@@ -115,7 +115,7 @@ namespace Pancake.ApexEditor
                 }
             }
 
-            // Collect all buttons with [SerializeMethod] attribute.
+            // Collect all buttons with [Button] attribute.
             foreach (MethodInfo methodInfo in GetType().AllMethods())
             {
                 MethodButtonAttribute methodButtonAttribute = methodInfo.GetCustomAttribute<MethodButtonAttribute>();

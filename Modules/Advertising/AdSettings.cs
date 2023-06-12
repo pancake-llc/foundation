@@ -131,7 +131,7 @@ namespace Pancake.Monetization
             UnityEditor.EditorApplication.ExecuteMenuItem("Assets/Google Mobile Ads/Settings...");
         }
 #else
-        [SerializeMethod]
+        [Button]
         [Color(0.31f,
             0.98f,
             0.48f,
@@ -211,7 +211,7 @@ DefaultImporter:
             AssetDatabase.ImportPackage(GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/admob.unitypackage"), false);
         }
 
-        [SerializeMethod]
+        [Button]
         [Color(1f,
             0.72f,
             0.42f,
@@ -231,7 +231,7 @@ DefaultImporter:
 #endif
 
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-        [SerializeMethod]
+        [Button]
         [Color(1,
             0.16f,
             0.16f,
@@ -250,7 +250,7 @@ DefaultImporter:
             AssetDatabase.Refresh();
         }
 
-        [SerializeMethod]
+        [Button]
         [Color(1f,
             0.72f,
             0.42f,

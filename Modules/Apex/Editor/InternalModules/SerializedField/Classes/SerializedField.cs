@@ -497,7 +497,7 @@ namespace Pancake.ApexEditor
                     }
                 }
 
-                // Collect all buttons with [SerializeMethod] attribute.
+                // Collect all buttons with [Button] attribute.
                 FieldInfo fieldInfo = GetMemberInfo() as FieldInfo;
                 object value = fieldInfo.GetValue(GetDeclaringObject());
                 if (value != null)
