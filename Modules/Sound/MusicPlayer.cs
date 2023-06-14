@@ -6,8 +6,7 @@ namespace Pancake.Sound
     [EditorIcon("script_mono")]
     public sealed class MusicPlayer : GameComponent
     {
-        [Header("Music definition")]
-        [SerializeField] private Audio music;
+        [Header("Music definition")] [SerializeField] private Audio music;
         [SerializeField] private bool playOnEnable;
 
         [Header("Configuration")] [SerializeField] private AudioPlayEvent playMusicEvent;
@@ -22,12 +21,7 @@ namespace Pancake.Sound
             if (playOnEnable) StartCoroutine(IePlayDelayed());
         }
 
-        protected override void OnDisabled()
-        {
-            base.OnDisabled();
-            if (_audioHandle == AudioHandle.invalid) return;
-            if (!stopMusicEvent.Raise(_audioHandle)) _audioHandle = AudioHandle.invalid;
-        }
+        private void OnDestroy() { stopMusicEvent.Raise(_audioHandle); }
 
         private IEnumerator IePlayDelayed()
         {
