@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -418,5 +419,19 @@ namespace Pancake.ExLibEditor
 
             return new Bounds() {min = new Vector3(minX, minY, minZ), max = new Vector3(maxX, maxY, maxZ)};
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string ToCamelCase(this string source) { return new CamelCaseNamingStrategy().GetPropertyName(source, false); }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string ToSnackCase(this string source) { return new SnakeCaseNamingStrategy().GetPropertyName(source, false); }
     }
 }
