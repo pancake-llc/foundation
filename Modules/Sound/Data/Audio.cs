@@ -1,4 +1,5 @@
 using System;
+using Pancake.Apex;
 
 namespace Pancake.Sound
 {
@@ -6,11 +7,11 @@ namespace Pancake.Sound
 
     [Searchable]
     [EditorIcon("scriptable_audio")]
-    [CreateAssetMenu(fileName = "Audio", menuName = "Pancake/Sound/Audio Signal")]
+    [CreateAssetMenu(fileName = "Audio", menuName = "Pancake/Sound/Audio")]
     public class Audio : ScriptableObject
     {
         public bool loop;
-        [SerializeField] private AudioGroup[] groups;
+        [SerializeField, Array] private AudioGroup[] groups;
 
         public AudioClip[] GetClips()
         {
@@ -41,7 +42,7 @@ namespace Pancake.Sound
         }
 
         public SequenceMode sequenceMode = SequenceMode.RandomNoImmediateRepeat;
-        public AudioClip[] clips;
+        [Array] public AudioClip[] clips;
 
         private int _nextClipToPlay = -1;
         private int _lastClipPlayed = -1;
