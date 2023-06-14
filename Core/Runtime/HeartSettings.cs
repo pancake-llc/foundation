@@ -17,12 +17,15 @@ namespace Pancake
         [Indent, Label("Message"), TextArea(3, 6), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
         private string privacyMessage;
 
+        [Header("IOS")]
         [SerializeField] private string appstoreAppId;
+        [SerializeField, Range(0, 63)] private int skAdConversionValue = 63;
 
         public static bool EnablePrivacyFirstOpen => Instance.enablePrivacyFirstOpen;
         public static string PrivacyUrl => Instance.privacyUrl;
         public static string PrivacyTitle => Instance.privacyTitle;
         public static string PrivacyMessage => Instance.privacyMessage;
         public static string AppstoreAppId => Instance.appstoreAppId;
+        public static int SkAdConversionValue => Instance.skAdConversionValue;
     }
 }
