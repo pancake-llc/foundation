@@ -1,38 +1,45 @@
-using Pancake.Scriptable;
+using System.Collections;
 using UnityEngine;
 
 namespace Pancake.Sound
 {
-    public class MusicPlayer : GameComponent
+    [EditorIcon("script_mono")]
+    public sealed class MusicPlayer : GameComponent
     {
-        [SerializeField] private ScriptableEventNoParam onSceneReady;
-        [SerializeField] private AudioPlayEvent playMusicEvent;
-        [SerializeField] private Audio bgmMusic;
+        [Header("Music definition")]
+        [SerializeField] private Audio music;
+        [SerializeField] private bool playOnEnable;
+
+        [Header("Configuration")] [SerializeField] private AudioPlayEvent playMusicEvent;
+        [SerializeField] private AudioHandleEvent stopMusicEvent;
         [SerializeField] private AudioConfig audioConfig;
 
-        [Header("Pause Menu Music")] [SerializeField] private Audio pauseMusic;
-        [SerializeField] private ScriptableEventBool onPauseOpened;
+        private AudioHandle _audioHandle = AudioHandle.invalid;
 
         protected override void OnEnabled()
         {
             base.OnEnabled();
-            onPauseOpened.OnRaised += PlayPauseMusic;
-            onSceneReady.OnRaised += PlayMusic;
+            if (playOnEnable) StartCoroutine(IePlayDelayed());
         }
 
         protected override void OnDisabled()
         {
             base.OnDisabled();
-            onPauseOpened.OnRaised -= PlayPauseMusic;
-            onSceneReady.OnRaised -= PlayMusic;
+            if (_audioHandle == AudioHandle.invalid) return;
+            if (!stopMusicEvent.Raise(_audioHandle)) _audioHandle = AudioHandle.invalid;
         }
 
-        private void PlayMusic() { playMusicEvent.Raise(bgmMusic, audioConfig, Vector3.zero); }
-
-        private void PlayPauseMusic(bool open)
+        private IEnumerator IePlayDelayed()
         {
-            if (open) playMusicEvent.Raise(pauseMusic, audioConfig, Vector3.zero);
-            else PlayMusic();
+            //The wait allows the AudioManager to be ready for play requests
+            yield return new WaitForSeconds(0.5f);
+
+            //This additional check prevents the AudioCue from playing if the object is disabled or the scene unloaded
+            //This prevents playing a looping AudioCue which then would be never stopped
+            if (playOnEnable) PlayMusic();
         }
+
+
+        private void PlayMusic() { _audioHandle = playMusicEvent.Raise(music, audioConfig, Vector3.zero); }
     }
 }
