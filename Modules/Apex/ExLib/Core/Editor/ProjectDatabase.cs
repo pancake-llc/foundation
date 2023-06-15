@@ -122,7 +122,7 @@ namespace Pancake.ExLibEditor
         /// In use directly in folder Assets => return normal path under folder, (only should use for development, recomment use upm instead)
         /// <param name="fullRelativePath">path to convert, it will include file name and file extension</param>
         /// </summary>
-        private static string GetPathInCurrentEnvironent(string fullRelativePath)
+        public static string GetPathInCurrentEnvironent(string fullRelativePath)
         {
             var upmPath = $"Packages/com.pancake.heart/{fullRelativePath}";
             var normalPath = $"Assets/heart/{fullRelativePath}";

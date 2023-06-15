@@ -71,14 +71,25 @@ namespace PancakeEditor
                 }
                 else
                 {
-                    GUI.enabled = false;
-                    EditorGUILayout.ObjectField(adSetting[0], typeof(AdSettings), false);
-                    GUI.enabled = true;
-                    GUILayout.Space(10);
-                    if (GUILayout.Button("Edit", GUILayout.MaxHeight(40f))) adSetting[0].SelectAndPing();
+                    var editor = UnityEditor.Editor.CreateEditor(adSetting[0]);
+                    editor.OnInspectorGUI();
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Space(20);
+
+                    EditorGUILayout.BeginHorizontal();
+                    GUI.backgroundColor = Uniform.Green;
+                    if (GUILayout.Button("Ping", GUILayout.Height(24))) adSetting[0].SelectAndPing();
+
                     GUI.backgroundColor = Uniform.Red;
-                    if (GUILayout.Button("Delete Setting", GUILayout.MaxHeight(30f))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(adSetting[0]));
+                    if (GUILayout.Button("Delete AdSettings", GUILayout.Height(24)))
+                    {
+                        bool confirmDelete = EditorUtility.DisplayDialog("Delete AdSettings", "Are you sure you want to delete ad settings?", "Yes", "No");
+                        if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(adSetting[0]));
+                    }
+
                     GUI.backgroundColor = Color.white;
+
+                    EditorGUILayout.EndHorizontal();
                 }
             }
 
