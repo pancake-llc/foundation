@@ -14,9 +14,9 @@ namespace Pancake.UI
         private readonly List<EventListenerShowPopup> _eventListeners = new List<EventListenerShowPopup>();
         private readonly List<Object> _listenerObjects = new List<Object>();
 
-        private Action<string, Transform, Action<UIPopup>> _onRaised;
+        private Action<string, Transform> _onRaised;
 
-        public event Action<string, Transform, Action<UIPopup>> OnRaised
+        public event Action<string, Transform> OnRaised
         {
             add
             {
@@ -32,7 +32,7 @@ namespace Pancake.UI
             }
         }
 
-        public void Raise(string name, Transform parent, Action<UIPopup> callback)
+        public void Raise(string name, Transform parent)
         {
             if (!Application.isPlaying) return;
             
@@ -41,7 +41,7 @@ namespace Pancake.UI
                 _eventListeners[i].OnEventRaised(this);
             }
 
-            _onRaised?.Invoke(name, parent, callback);
+            _onRaised?.Invoke(name, parent);
         }
 
         public void RegisterListener(EventListenerShowPopup listener)
