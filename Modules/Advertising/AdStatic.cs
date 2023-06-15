@@ -35,15 +35,15 @@ namespace Pancake.Monetization
             return unit;
         }
 
-        public static AdUnitVariable OnFaildedToLoad(this AdUnitVariable unit, Action onFailedToLoad)
+        public static AdUnitVariable OnFailedToLoad(this AdUnitVariable unit, Action onFailedToLoad)
         {
-            unit.faildedToLoadCallback = onFailedToLoad;
+            unit.failedToLoadCallback = onFailedToLoad;
             return unit;
         }
 
-        public static AdUnitVariable OnFaildedToDisplay(this AdUnitVariable unit, Action onFailedToDisplay)
+        public static AdUnitVariable OnFailedToDisplay(this AdUnitVariable unit, Action onFailedToDisplay)
         {
-            unit.faildedToDisplayCallback = onFailedToDisplay;
+            unit.failedToDisplayCallback = onFailedToDisplay;
             return unit;
         }
 

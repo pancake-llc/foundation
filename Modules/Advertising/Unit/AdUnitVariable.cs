@@ -17,9 +17,9 @@ namespace Pancake.Monetization
 #endif
 
         [NonSerialized] internal Action loadedCallback;
-        [NonSerialized] internal Action faildedToLoadCallback;
+        [NonSerialized] internal Action failedToLoadCallback;
         [NonSerialized] internal Action displayedCallback;
-        [NonSerialized] internal Action faildedToDisplayCallback;
+        [NonSerialized] internal Action failedToDisplayCallback;
         [NonSerialized] internal Action closedCallback;
         [NonSerialized] public Action<double, string, string, string, string> paidedCallback; // units are dollars
 
@@ -52,8 +52,8 @@ namespace Pancake.Monetization
         protected virtual void ResetChainCallback()
         {
             loadedCallback = null;
-            faildedToDisplayCallback = null;
-            faildedToLoadCallback = null;
+            failedToDisplayCallback = null;
+            failedToLoadCallback = null;
             closedCallback = null;
         }
 

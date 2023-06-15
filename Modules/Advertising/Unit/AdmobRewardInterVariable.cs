@@ -86,7 +86,7 @@ namespace Pancake.Monetization
             OnAdLoaded();
         }
 
-        private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref faildedToLoadCallback); }
+        private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref failedToLoadCallback); }
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
@@ -96,7 +96,7 @@ namespace Pancake.Monetization
             "RewardedInterstitialAd",
             EAdNetwork.Admob.ToString()); }
 
-        private void OnAdFailedToShow(AdError error) { C.CallActionClean(ref faildedToDisplayCallback); }
+        private void OnAdFailedToShow(AdError error) { C.CallActionClean(ref failedToDisplayCallback); }
 
         private void OnAdOpening()
         {

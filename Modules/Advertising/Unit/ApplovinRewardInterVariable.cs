@@ -79,11 +79,11 @@ namespace Pancake.Monetization
 
         private void OnAdReceivedReward(string unit, MaxSdkBase.Reward reward, MaxSdkBase.AdInfo info) { IsEarnRewarded = true; }
 
-        private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo error) { C.CallActionClean(ref faildedToLoadCallback); }
+        private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo error) { C.CallActionClean(ref failedToLoadCallback); }
 
         private void OnAdLoaded(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref loadedCallback); }
 
-        private void OnAdDisplayFailed(string unit, MaxSdkBase.ErrorInfo error, MaxSdkBase.AdInfo info) { C.CallActionClean(ref faildedToDisplayCallback); }
+        private void OnAdDisplayFailed(string unit, MaxSdkBase.ErrorInfo error, MaxSdkBase.AdInfo info) { C.CallActionClean(ref failedToDisplayCallback); }
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {

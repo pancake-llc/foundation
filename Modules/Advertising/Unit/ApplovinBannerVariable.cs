@@ -85,7 +85,7 @@ namespace Pancake.Monetization
 
         private void OnAdCollapsed(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref closedCallback); }
 
-        private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo info) { C.CallActionClean(ref faildedToLoadCallback); }
+        private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo info) { C.CallActionClean(ref failedToLoadCallback); }
 
         private void OnAdExpanded(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref displayedCallback); }
 

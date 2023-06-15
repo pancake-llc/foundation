@@ -89,7 +89,7 @@ namespace Pancake.Monetization
             C.CallActionClean(ref displayedCallback);
         }
 
-        private void OnAdFailedToShow(AdError error) { C.CallActionClean(ref faildedToDisplayCallback); }
+        private void OnAdFailedToShow(AdError error) { C.CallActionClean(ref failedToDisplayCallback); }
 
         private void OnAdClosed()
         {
@@ -109,7 +109,7 @@ namespace Pancake.Monetization
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
-        private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref faildedToLoadCallback); }
+        private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref failedToLoadCallback); }
 #endif
         
 #if UNITY_EDITOR

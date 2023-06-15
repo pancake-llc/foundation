@@ -16,12 +16,12 @@ namespace Pancake.IAP
         [ReadOnly] public ProductType productType;
 
         [Space] [SerializeField] private IAPPurchaseSuccess onPurchaseSuccess;
-        [SerializeField] private IAPPurchaseFaild onPurchaseFaild;
+        [SerializeField] private IAPPurchaseFailed onPurchaseFailed;
 
         internal IAPPurchaseSuccess OnPurchaseSuccess => onPurchaseSuccess;
-        internal IAPPurchaseFaild OnPurchaseFaild => onPurchaseFaild;
+        internal IAPPurchaseFailed OnPurchaseFailed => onPurchaseFailed;
 
         [NonSerialized] public Action purchaseSuccessCallback;
-        [NonSerialized] public Action purchaseFaildCallback;
+        [NonSerialized] public Action purchaseFailedCallback;
     }
 }

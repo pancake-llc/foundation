@@ -137,16 +137,16 @@ namespace Pancake.IAP
             return product;
         }
 
-        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { InternalPurchaseFailded(product.definition.id); }
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) { InternalPurchaseFailed(product.definition.id); }
 
-        private void InternalPurchaseFailded(string id)
+        private void InternalPurchaseFailed(string id)
         {
             if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(false);
             foreach (var p in iapSettings.Products)
             {
                 if (!p.id.Equals(id)) continue;
-                p.OnPurchaseFaild.Raise();
-                C.CallActionClean(ref p.purchaseFaildCallback);
+                p.OnPurchaseFailed.Raise();
+                C.CallActionClean(ref p.purchaseFailedCallback);
             }
         }
 
@@ -180,7 +180,7 @@ namespace Pancake.IAP
 #endif
         }
 
-        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription) { InternalPurchaseFailded(product.definition.id); }
+        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription) { InternalPurchaseFailed(product.definition.id); }
 
         private void RequestProductData(ConfigurationBuilder builder)
         {

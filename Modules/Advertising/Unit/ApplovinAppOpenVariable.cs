@@ -60,9 +60,9 @@ namespace Pancake.Monetization
                 EAdNetwork.Applovin.ToString());
         }
 
-        private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo info) { C.CallActionClean(ref faildedToLoadCallback); }
+        private void OnAdLoadFailed(string unit, MaxSdkBase.ErrorInfo info) { C.CallActionClean(ref failedToLoadCallback); }
 
-        private void OnAdDisplayFailed(string unit, MaxSdkBase.ErrorInfo errorInfo, MaxSdkBase.AdInfo info) { C.CallActionClean(ref faildedToDisplayCallback); }
+        private void OnAdDisplayFailed(string unit, MaxSdkBase.ErrorInfo errorInfo, MaxSdkBase.AdInfo info) { C.CallActionClean(ref failedToDisplayCallback); }
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
