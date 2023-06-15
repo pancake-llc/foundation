@@ -1,5 +1,6 @@
 using System;
 using Pancake.ExLibEditor;
+using Pancake.Sound;
 using UnityEditor;
 using UnityEngine;
 using Pancake.UI;
@@ -28,6 +29,8 @@ namespace PancakeEditor
         private SerializedProperty _doubleClickInterval;
         private SerializedProperty _ignoreTimeScale;
         private SerializedProperty _affectObject;
+        private SerializedProperty _enabledSound;
+        private SerializedProperty _audioStructure;
         private SerializedProperty _motion;
         private SerializedProperty _scale;
         private SerializedProperty _durationDown;
@@ -57,6 +60,8 @@ namespace PancakeEditor
             _ignoreTimeScale = serializedObject.FindProperty("ignoreTimeScale");
             _isAffectToSelf = serializedObject.FindProperty("isAffectToSelf");
             _affectObject = serializedObject.FindProperty("affectObject");
+            _enabledSound = serializedObject.FindProperty("enabledSound");
+            _audioStructure = serializedObject.FindProperty("audioStructure");
             _isMotion = serializedObject.FindProperty("isMotion");
             _motion = serializedObject.FindProperty("motionData").FindPropertyRelative("motion");
             _scale = serializedObject.FindProperty("motionData").FindPropertyRelative("scale");
@@ -79,10 +84,7 @@ namespace PancakeEditor
             DrawInspector();
         }
 
-        protected virtual void DrawInspector()
-        {
-            Uniform.DrawGroupFoldout("uibutton_setting", "Settings", () => Draw());
-        }
+        protected virtual void DrawInspector() { Uniform.DrawGroupFoldout("uibutton_setting", "Settings", () => Draw()); }
 
         protected void Draw(Action callback = null)
         {
@@ -151,6 +153,14 @@ namespace PancakeEditor
             _isAffectToSelf.boolValue = GUILayout.Toggle(_isAffectToSelf.boolValue, "");
             if (!_isAffectToSelf.boolValue)
                 _affectObject.objectReferenceValue = EditorGUILayout.ObjectField("", _affectObject.objectReferenceValue, typeof(Transform), true) as Transform;
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("Is Play Sound", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+            _enabledSound.boolValue = GUILayout.Toggle(_enabledSound.boolValue, "");
+            if (_enabledSound.boolValue)
+                _audioStructure.objectReferenceValue =
+                    EditorGUILayout.ObjectField("", _audioStructure.objectReferenceValue, typeof(AudioStructure), true) as AudioStructure;
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();

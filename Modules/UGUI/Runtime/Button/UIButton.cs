@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Pancake.Sound;
 using Pancake.Threading.Tasks;
 using Pancake.Tween;
 using UnityEngine;
@@ -52,6 +53,8 @@ namespace Pancake.UI
         [SerializeField] private bool isMotionUnableInteract;
         [SerializeField] private bool isAffectToSelf = true;
         [SerializeField] private Transform affectObject;
+        [SerializeField] private bool enabledSound;
+        [SerializeField] private AudioStructure audioStructure;
         [SerializeField] private MotionData motionData = new MotionData {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new MotionData {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
@@ -110,6 +113,12 @@ namespace Pancake.UI
         {
             base.Awake();
             DefaultScale = AffectObject.localScale;
+            onClick.AddListener(PlaySound);
+        }
+
+        private void PlaySound()
+        {
+            if (enabledSound) audioStructure.Play();
         }
 
 #if UNITY_EDITOR
@@ -331,6 +340,7 @@ namespace Pancake.UI
         private void ExecuteDoubleClick()
         {
             if (!IsActive() || !IsInteractable() || !IsDetectDoubleClick) return;
+            PlaySound();
             onDoubleClick.Invoke();
         }
 
@@ -367,6 +377,7 @@ namespace Pancake.UI
         private void ExecuteLongClick()
         {
             if (!IsActive() || !IsInteractable() || !IsDetectLongCLick) return;
+            PlaySound();
             onLongClick.Invoke();
         }
 
@@ -525,7 +536,7 @@ namespace Pancake.UI
                 case EButtonMotion.Normal:
                     _isCompletePhaseDown = false;
                     _tweenDown = AffectObject.ActionScale(_endValue, motionData.durationDown)
-                        .SetEase((Ease)motionData.easeDown)
+                        .SetEase((Ease) motionData.easeDown)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseDown);
@@ -534,12 +545,12 @@ namespace Pancake.UI
                     _isCompletePhaseUp = false;
                     _isCompletePhaseDown = false;
                     _tweenDown = AffectObject.ActionScale(_endValue, motionData.durationDown)
-                        .SetEase((Ease)motionData.easeDown)
+                        .SetEase((Ease) motionData.easeDown)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseDown);
                     _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.durationUp)
-                        .SetEase((Ease)motionData.easeUp)
+                        .SetEase((Ease) motionData.easeUp)
                         .OnComplete(() => _isCompletePhaseUp = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseUp);
