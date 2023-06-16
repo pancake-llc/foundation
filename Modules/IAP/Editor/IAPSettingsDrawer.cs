@@ -1,117 +1,139 @@
+﻿using System;
 using System.Collections.Generic;
-using Pancake.Apex;
-using UnityEngine;
-using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
+using Pancake.ExLibEditor;
+using Pancake.IAP;
+using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
 using UnityEngine.Purchasing;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-// ReSharper disable InconsistentNaming
-namespace Pancake.IAP
+namespace Pancake.IAPEditor
 {
-    [HideMonoScript]
-    [EditorIcon("scriptable_iap")]
-    public class IAPSettings : ScriptableObject
+    [CustomEditor(typeof(IAPSettings))]
+    public class IAPSettingsDrawer : Editor
     {
-        [Serializable]
-        private class IAPData
+        private SerializedProperty _skusDataProperty;
+        private SerializedProperty _productsProperty;
+        private SerializedProperty _googlePlayStoreKeyProperty;
+        private ReorderableList _reorderableList;
+
+        private void OnEnable()
         {
-            public bool isTest;
-            public string id;
-            public ProductType productType;
+            _skusDataProperty = serializedObject.FindProperty("skusData");
+            _productsProperty = serializedObject.FindProperty("products");
+            _googlePlayStoreKeyProperty = serializedObject.FindProperty("googlePlayStoreKey");
+            _reorderableList = new ReorderableList(serializedObject,
+                _skusDataProperty,
+                true,
+                true,
+                true,
+                true) {drawElementCallback = DrawElementCallback, drawHeaderCallback = DrawHeaderCallback, onSelectCallback = OnSelectCallback};
+            _reorderableList.elementHeightCallback += ElementHeightCallback;
         }
 
-        [Message(
-            "Product id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time",
-            Height = 100)]
-        [Space]
-        [SerializeField, Array]
-        private List<IAPData> skusData = new List<IAPData>();
-
-        [Space] [SerializeField, Array, ReadOnly] private List<IAPDataVariable> products = new List<IAPDataVariable>();
-
-        public List<IAPDataVariable> Products => products;
-
-
-#if UNITY_EDITOR
-        /// <summary>
-        /// IAP 4.5.2
-        /// </summary>
-        private string m_GoogleError;
-
-        private string m_AppleError;
-        [Space(20)] [SerializeField, TextArea] private string googlePlayStorePublicKey;
-
-        [Button]
-        [HorizontalGroup("button")]
-        private void ValidateObfuscator()
+        private void OnSelectCallback(ReorderableList list)
         {
-            ObfuscateSecrets(true);
-
-            string pathAsmdef = GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdef.txt");
-            string pathAsmdefMeta = GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdefMeta.txt");
-            var asmdef = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdef, typeof(TextAsset));
-            var meta = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdefMeta, typeof(TextAsset));
-
-            string path = Path.Combine(TangleFileConsts.k_OutputPath, "Pancake.Purchasing.Generated.asmdef");
-            string pathMeta = Path.Combine(TangleFileConsts.k_OutputPath, "Pancake.Purchasing.Generated.asmdef.meta");
-            if (!File.Exists(path))
-            {
-                var writer = new StreamWriter(path, false);
-                writer.Write(asmdef.text);
-                writer.Close();
-            }
-
-            if (!File.Exists(pathMeta))
-            {
-                var writer = new StreamWriter(pathMeta, false);
-                writer.Write(meta.text);
-                writer.Close();
-            }
-
-            AssetDatabase.ImportAsset(path);
+            
         }
 
-        private static string GetPathInCurrentEnvironent(string fullRelativePath)
+        private float ElementHeightCallback(int index) { return EditorGUI.GetPropertyHeight(_skusDataProperty.GetArrayElementAtIndex(index)); }
+
+        private void DrawHeaderCallback(Rect rect) { EditorGUI.LabelField(rect, "Skus"); }
+
+        private void DrawElementCallback(Rect rect, int index, bool isactive, bool isfocused)
         {
-            var upmPath = $"Packages/com.pancake.heart/{fullRelativePath}";
-            var normalPath = $"Assets/heart/{fullRelativePath}";
-            return !File.Exists(Path.GetFullPath(upmPath)) ? normalPath : upmPath;
+            EditorGUI.PropertyField(rect, _skusDataProperty.GetArrayElementAtIndex(index), true);
         }
 
-        [Button]
-        [HorizontalGroup("button")]
-        private void GenerateProduct()
+        public override void OnInspectorGUI()
         {
-            var skus = skusData;
-            const string p = "Assets/_Root/Storages/Generated/IAP";
-            if (!Directory.Exists(p)) Directory.CreateDirectory(p);
-            products.Clear();
-            for (int i = 0; i < skus.Count; i++)
+            serializedObject.Update();
+
+            GUI.backgroundColor = Uniform.FieryRose;
+            EditorGUILayout.HelpBox(
+                "\nProduct id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time\n",
+                MessageType.Info);
+            GUI.backgroundColor = Color.white;
+
+            _reorderableList.DoLayoutList();
+
+            GUI.enabled = false;
+            EditorGUILayout.PropertyField(_productsProperty, new GUIContent("Product"));
+            GUI.enabled = true;
+            GUILayout.Space(20);
+            if (GUILayout.Button("Generate Product From Sku", GUILayout.Height(24)))
             {
-                string itemName = skus[i].id.Split('.').Last();
-                AssetDatabase.DeleteAsset($"{p}/scriptable_iap_{itemName.ToLower()}.asset"); // delete previous product same name
-                var scriptable = CreateInstance<IAPDataVariable>();
-                products.Add(scriptable);
-                scriptable.id = skus[i].id;
-                scriptable.isTest = skus[i].isTest;
-                scriptable.productType = skus[i].productType;
-                AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
+                const string p = "Assets/_Root/Storages/Generated/IAP";
+                if (!Directory.Exists(p)) Directory.CreateDirectory(p);
+                _productsProperty.ClearArray();
+                for (int i = 0; i < _skusDataProperty.arraySize; i++)
+                {
+                    var iapData = _skusDataProperty.GetArrayElementAtIndex(i);
+                    string id = iapData.FindPropertyRelative("id").stringValue;
+                    bool isTest = iapData.FindPropertyRelative("isTest").boolValue;
+                    var productType = (ProductType) iapData.FindPropertyRelative("productType").intValue;
+                    string itemName = id.Split('.').Last();
+                    AssetDatabase.DeleteAsset($"{p}/scriptable_iap_{itemName.ToLower()}.asset"); // delete previous product same name
+                    var scriptable = CreateInstance<IAPDataVariable>();
+                    _productsProperty.InsertArrayElementAtIndex(_productsProperty.arraySize);
+                    _productsProperty.GetArrayElementAtIndex(_productsProperty.arraySize - 1).objectReferenceValue = scriptable;
+                    scriptable.id = id;
+                    scriptable.isTest = isTest;
+                    scriptable.productType = productType;
+                    AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+
+                    Selection.activeObject = scriptable; // trick to repaint scriptable
+                }
+
+                Selection.activeObject = this;
+                EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-
-                Selection.activeObject = scriptable; // trick to repaint scriptable
+                EditorApplication.delayCall += () => EditorGUIUtility.PingObject(this);
             }
 
-            Selection.activeObject = this;
-            EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            EditorApplication.delayCall += () => EditorGUIUtility.PingObject(this);
+            GUILayout.Space(20);
+            EditorGUILayout.PropertyField(_googlePlayStoreKeyProperty, new GUIContent("Google Play Store Key"));
+
+            // v4.5.2
+            if (GUILayout.Button("Obfuscator Key"))
+            {
+                var googleError = "";
+                var appleError = "";
+                ObfuscationGenerator.ObfuscateSecrets(includeGoogle: true,
+                    appleError: ref googleError,
+                    googleError: ref appleError,
+                    googlePlayPublicKey: _googlePlayStoreKeyProperty.stringValue);
+
+                string pathAsmdef = ProjectDatabase.GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdef.txt");
+                string pathAsmdefMeta = ProjectDatabase.GetPathInCurrentEnvironent($"Modules/Apex/ExLib/Core/Editor/Misc/Templates/PurchasingGeneratedAsmdefMeta.txt");
+                var asmdef = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdef, typeof(TextAsset));
+                var meta = (TextAsset) AssetDatabase.LoadAssetAtPath(pathAsmdefMeta, typeof(TextAsset));
+
+                string path = Path.Combine(TangleFileConsts.k_OutputPath, "Pancake.Purchasing.Generated.asmdef");
+                string pathMeta = Path.Combine(TangleFileConsts.k_OutputPath, "Pancake.Purchasing.Generated.asmdef.meta");
+                if (!File.Exists(path))
+                {
+                    var writer = new StreamWriter(path, false);
+                    writer.Write(asmdef.text);
+                    writer.Close();
+                }
+
+                if (!File.Exists(pathMeta))
+                {
+                    var writer = new StreamWriter(pathMeta, false);
+                    writer.Write(meta.text);
+                    writer.Close();
+                }
+
+                AssetDatabase.ImportAsset(path);
+            }
+
+            serializedObject.ApplyModifiedProperties();
         }
 
         private class ObfuscationGenerator
@@ -398,14 +420,5 @@ namespace Pancake.IAP
                 return res.Select(x => (byte) (x ^ key)).ToArray();
             }
         }
-
-        private void ObfuscateSecrets(bool includeGoogle)
-        {
-            ObfuscationGenerator.ObfuscateSecrets(includeGoogle: includeGoogle,
-                appleError: ref m_AppleError,
-                googleError: ref m_GoogleError,
-                googlePlayPublicKey: googlePlayStorePublicKey);
-        }
-#endif
     }
 }
