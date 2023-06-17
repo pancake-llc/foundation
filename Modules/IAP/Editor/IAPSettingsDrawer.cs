@@ -19,20 +19,6 @@ namespace Pancake.IAPEditor
         private SerializedProperty _googlePlayStoreKeyProperty;
         private ReorderableList _reorderableList;
 
-        private void OnEnable()
-        {
-            _skusDataProperty = serializedObject.FindProperty("skusData");
-            _productsProperty = serializedObject.FindProperty("products");
-            _googlePlayStoreKeyProperty = serializedObject.FindProperty("googlePlayStoreKey");
-            _reorderableList = new ReorderableList(serializedObject,
-                _skusDataProperty,
-                false,
-                true,
-                true,
-                false) {drawElementCallback = DrawElementCallback, drawHeaderCallback = DrawHeaderCallback};
-            _reorderableList.elementHeightCallback += ElementHeightCallback;
-        }
-
         private float ElementHeightCallback(int index) { return EditorGUI.GetPropertyHeight(_skusDataProperty.GetArrayElementAtIndex(index)); }
 
         private void DrawHeaderCallback(Rect rect) { EditorGUI.LabelField(rect, "Skus"); }
@@ -54,7 +40,16 @@ namespace Pancake.IAPEditor
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
+            _skusDataProperty = serializedObject.FindProperty("skusData");
+            _productsProperty = serializedObject.FindProperty("products");
+            _googlePlayStoreKeyProperty = serializedObject.FindProperty("googlePlayStoreKey");
+            _reorderableList = new ReorderableList(serializedObject,
+                _skusDataProperty,
+                false,
+                true,
+                true,
+                false) {drawElementCallback = DrawElementCallback, drawHeaderCallback = DrawHeaderCallback};
+            _reorderableList.elementHeightCallback += ElementHeightCallback;
             GUI.backgroundColor = Uniform.FieryRose;
             EditorGUILayout.HelpBox(
                 "\nProduct id should look like : com.appname.itemid\n Ex: com.eldenring.doublesoul\n\nConsumable         : purchase multiple time\nNon Consumable : purchase once time\n",
@@ -91,6 +86,7 @@ namespace Pancake.IAPEditor
 
                     Selection.activeObject = scriptable; // trick to repaint scriptable
                 }
+
                 serializedObject.ApplyModifiedProperties();
                 Selection.activeObject = this;
                 EditorUtility.SetDirty(target);

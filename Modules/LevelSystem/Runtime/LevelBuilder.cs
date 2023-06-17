@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Pancake.LevelSystemEditor
 {
-    [EditorIcon("scriptable_build")]
+    [EditorIcon("script_mono")]
     public sealed class LevelBuilder : GameComponent
     {
         [SerializeField] private LevelSystemSetting setting;

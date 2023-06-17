@@ -208,7 +208,9 @@ namespace Pancake.ApexEditor
 
                 if (inspectedType != null && (inspectedType == typeof(UnityEngine.Object) || string.IsNullOrEmpty(inspectedType.Namespace) ||
                                               (!string.IsNullOrEmpty(inspectedType.Namespace) &&
-                                               !inspectedType.Namespace.StartsWith("RenownedGames", StringComparison.Ordinal) &&
+                                               !inspectedType.Namespace.StartsWith("Pancake", StringComparison.Ordinal) &&
+                                               !inspectedType.Namespace.StartsWith("TMPro", StringComparison.Ordinal) &&
+                                               !inspectedType.Namespace.StartsWith("Coffee", StringComparison.Ordinal) &&
                                                !inspectedType.Namespace.StartsWith("UnityEditor", StringComparison.Ordinal) &&
                                                !inspectedType.Namespace.StartsWith("UnityEngine", StringComparison.Ordinal))))
                 {
