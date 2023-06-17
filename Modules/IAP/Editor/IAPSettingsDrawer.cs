@@ -26,16 +26,11 @@ namespace Pancake.IAPEditor
             _googlePlayStoreKeyProperty = serializedObject.FindProperty("googlePlayStoreKey");
             _reorderableList = new ReorderableList(serializedObject,
                 _skusDataProperty,
+                false,
                 true,
                 true,
-                true,
-                true) {drawElementCallback = DrawElementCallback, drawHeaderCallback = DrawHeaderCallback, onSelectCallback = OnSelectCallback};
+                false) {drawElementCallback = DrawElementCallback, drawHeaderCallback = DrawHeaderCallback};
             _reorderableList.elementHeightCallback += ElementHeightCallback;
-        }
-
-        private void OnSelectCallback(ReorderableList list)
-        {
-            
         }
 
         private float ElementHeightCallback(int index) { return EditorGUI.GetPropertyHeight(_skusDataProperty.GetArrayElementAtIndex(index)); }
@@ -44,7 +39,16 @@ namespace Pancake.IAPEditor
 
         private void DrawElementCallback(Rect rect, int index, bool isactive, bool isfocused)
         {
-            EditorGUI.PropertyField(rect, _skusDataProperty.GetArrayElementAtIndex(index), true);
+            if (index > _skusDataProperty.arraySize - 1) return;
+            var element = _skusDataProperty.GetArrayElementAtIndex(index);
+            if (GUI.Button(new Rect(rect.x + rect.width - 20, rect.y, 20, EditorGUIUtility.singleLineHeight), "X"))
+            {
+                _reorderableList.serializedProperty.DeleteArrayElementAtIndex(index);
+                serializedObject.ApplyModifiedProperties();
+                return;
+            }
+
+            EditorGUI.PropertyField(rect, element, new GUIContent(element.FindPropertyRelative("id").stringValue.Split('.').Last().ToCamelCase()), true);
         }
 
         public override void OnInspectorGUI()
@@ -67,7 +71,7 @@ namespace Pancake.IAPEditor
             {
                 const string p = "Assets/_Root/Storages/Generated/IAP";
                 if (!Directory.Exists(p)) Directory.CreateDirectory(p);
-                _productsProperty.ClearArray();
+                (target as IAPSettings)?.Products.Clear();
                 for (int i = 0; i < _skusDataProperty.arraySize; i++)
                 {
                     var iapData = _skusDataProperty.GetArrayElementAtIndex(i);
@@ -77,8 +81,7 @@ namespace Pancake.IAPEditor
                     string itemName = id.Split('.').Last();
                     AssetDatabase.DeleteAsset($"{p}/scriptable_iap_{itemName.ToLower()}.asset"); // delete previous product same name
                     var scriptable = CreateInstance<IAPDataVariable>();
-                    _productsProperty.InsertArrayElementAtIndex(_productsProperty.arraySize);
-                    _productsProperty.GetArrayElementAtIndex(_productsProperty.arraySize - 1).objectReferenceValue = scriptable;
+                    (target as IAPSettings)?.Products.Add(scriptable);
                     scriptable.id = id;
                     scriptable.isTest = isTest;
                     scriptable.productType = productType;
@@ -88,9 +91,9 @@ namespace Pancake.IAPEditor
 
                     Selection.activeObject = scriptable; // trick to repaint scriptable
                 }
-
+                serializedObject.ApplyModifiedProperties();
                 Selection.activeObject = this;
-                EditorUtility.SetDirty(this);
+                EditorUtility.SetDirty(target);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
                 EditorApplication.delayCall += () => EditorGUIUtility.PingObject(this);
