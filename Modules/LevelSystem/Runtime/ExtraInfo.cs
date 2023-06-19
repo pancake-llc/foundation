@@ -3,7 +3,7 @@
 namespace Pancake.LevelSystem
 {
     [Serializable]
-    public class LevelExtraInfo
+    public class ExtraInfo
     {
         public string id;
         public string value;

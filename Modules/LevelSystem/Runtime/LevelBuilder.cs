@@ -14,7 +14,7 @@ namespace Pancake.LevelSystemEditor
     {
         [SerializeField] private LevelSystemSetting setting;
         [SerializeField] private int currentLevel = 1;
-        [SerializeField] private LevelExtraInfo[] levelExtraInfos;
+        [SerializeField] private ExtraInfo[] levelExtraInfos;
 
         private string _currentLevelJson;
 
@@ -26,7 +26,7 @@ namespace Pancake.LevelSystemEditor
         public void ClearLevel()
         {
             transform.RemoveAllChildren();
-            levelExtraInfos = Array.Empty<LevelExtraInfo>();
+            levelExtraInfos = Array.Empty<ExtraInfo>();
         }
 
         private void AddGameObject(LevelGameObject go, List<LevelGameObject> notSpawnedGos, Transform parent = null)
@@ -47,7 +47,7 @@ namespace Pancake.LevelSystemEditor
 
             if (go.ex is {Length: > 0})
             {
-                var extraComponent = newObject.AddComponent<LevelExtraInfoComponent>();
+                var extraComponent = newObject.AddComponent<ExtraInfoComponent>();
                 extraComponent.Init(go.ex);
             }
 
@@ -145,7 +145,7 @@ namespace Pancake.LevelSystemEditor
                 EditorUtility.DisplayDialog("Warning", msg, "Ok");
             }
 
-            if (l.extraInfos is {Length: > 0}) levelExtraInfos = (LevelExtraInfo[]) l.extraInfos.Clone();
+            if (l.extraInfos is {Length: > 0}) levelExtraInfos = (ExtraInfo[]) l.extraInfos.Clone();
             return l;
         }
 
@@ -172,7 +172,7 @@ namespace Pancake.LevelSystemEditor
 
             var levelNode = new LevelNode {level = currentLevel, objects = childrenDatas.ToArray()};
 
-            if (!levelExtraInfos.IsNullOrEmpty()) levelNode.extraInfos = (LevelExtraInfo[]) levelExtraInfos.Clone();
+            if (!levelExtraInfos.IsNullOrEmpty()) levelNode.extraInfos = (ExtraInfo[]) levelExtraInfos.Clone();
 
             if (missingObjects.Count > 0 && warningMessage)
             {
@@ -222,7 +222,7 @@ namespace Pancake.LevelSystemEditor
             }
 
             var levelGameObject = new LevelGameObject {pos = t.localPosition, rot = t.localRotation, sc = t.localScale, id = unit.id};
-            t.TryGetComponent(out LevelExtraInfoComponent levelExtraComponent);
+            t.TryGetComponent(out ExtraInfoComponent levelExtraComponent);
             if (levelExtraComponent != null)
             {
                 var extraInfo = levelExtraComponent.GetAllExtraInfos();

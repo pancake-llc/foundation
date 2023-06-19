@@ -6,20 +6,20 @@ namespace Pancake.LevelSystem
 {
     [HideMonoScript]
     [EditorIcon("script_mono")]
-    public class LevelExtraInfoComponent : GameComponent
+    public class ExtraInfoComponent : GameComponent
     {
-        [SerializeField, Array] private LevelExtraInfo[] extraInfos;
+        [SerializeField, Array] private ExtraInfo[] extraInfos;
 
-        public void Init(LevelExtraInfo[] infos)
+        public void Init(ExtraInfo[] infos)
         {
-            extraInfos = new LevelExtraInfo[infos.Length];
+            extraInfos = new ExtraInfo[infos.Length];
             infos.CopyTo(extraInfos, 0);
         }
 
-        public LevelExtraInfo[] GetAllExtraInfos()
+        public ExtraInfo[] GetAllExtraInfos()
         {
-            if (extraInfos == null) return Array.Empty<LevelExtraInfo>();
-            var copy = new LevelExtraInfo[extraInfos.Length];
+            if (extraInfos == null) return Array.Empty<ExtraInfo>();
+            var copy = new ExtraInfo[extraInfos.Length];
             extraInfos.CopyTo(copy, 0);
             return copy;
         }
@@ -29,7 +29,7 @@ namespace Pancake.LevelSystem
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public LevelExtraInfo GetExtraInfo(string id)
+        public ExtraInfo GetExtraInfo(string id)
         {
             if (extraInfos == null) return null;
 

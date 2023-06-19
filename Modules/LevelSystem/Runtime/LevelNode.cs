@@ -7,6 +7,6 @@ namespace Pancake.LevelSystem
     {
         public int level;
         public LevelGameObject[] objects;
-        public LevelExtraInfo[] extraInfos;
+        public ExtraInfo[] extraInfos;
     }
 }

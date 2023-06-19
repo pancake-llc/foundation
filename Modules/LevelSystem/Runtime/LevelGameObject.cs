@@ -34,6 +34,6 @@ namespace Pancake.LevelSystem
         /// <summary>
         /// extra info
         /// </summary>
-        public LevelExtraInfo[] ex;
+        public ExtraInfo[] ex;
     }
 }

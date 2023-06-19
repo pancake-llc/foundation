@@ -15,7 +15,7 @@ namespace Pancake.LevelSystem
         [SerializeField] private ScriptableLevelListCallback levelListCallback;
 
         private LevelNode _currentLevelNode;
-        private LevelExtraInfoComponent _extraInfoComponent;
+        private ExtraInfoComponent _extraInfoComponent;
 
         public bool IsLoaded { get; private set; }
         public List<Transform> LoadedObjects { get; private set; } = new List<Transform>();
@@ -59,8 +59,8 @@ namespace Pancake.LevelSystem
 
             if (level.extraInfos is {Length: > 0})
             {
-                _extraInfoComponent = GetComponent<LevelExtraInfoComponent>();
-                if (_extraInfoComponent == null) _extraInfoComponent = gameObject.AddComponent<LevelExtraInfoComponent>();
+                _extraInfoComponent = GetComponent<ExtraInfoComponent>();
+                if (_extraInfoComponent == null) _extraInfoComponent = gameObject.AddComponent<ExtraInfoComponent>();
                 _extraInfoComponent.Init(level.extraInfos);
             }
 
@@ -93,7 +93,7 @@ namespace Pancake.LevelSystem
 
             if (go.ex is {Length: > 0}) // if extra info is specified, add the LevelExtraInfo controller to manage it
             {
-                var levelEx = newObject.AddComponent<LevelExtraInfoComponent>();
+                var levelEx = newObject.AddComponent<ExtraInfoComponent>();
                 levelEx.Init(go.ex);
             }
 
