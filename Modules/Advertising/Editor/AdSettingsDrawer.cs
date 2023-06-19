@@ -201,6 +201,7 @@ DefaultImporter:
                 }
             }
 
+            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 #endif
             EditorGUILayout.PropertyField(_admobEnableTestModeProperty, new GUIContent("Test Mode"));
@@ -264,7 +265,8 @@ DefaultImporter:
                     AssetDatabase.Refresh();
                 }
             }
-
+            
+            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 
 #endif

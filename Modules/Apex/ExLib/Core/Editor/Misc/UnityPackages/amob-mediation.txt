@@ -1,14 +1,14 @@
 #Included
 -AdColonyUnityAdapter-2.6.2
 -AppLovinUnityAdapter-6.7.0
--ChartboostUnityAdapter-4.1.1
+-ChartboostUnityAdapter-4.2.0
 -DTExchangeUnityAdapter-3.1.5
 -InMobiUnityAdapter-4.3.0
 -IronSourceUnityAdapter-2.3.0
 -MetaAudienceNetworkUnityAdapter-3.10.0
--PangleUnityAdapter-2.1.0
+-PangleUnityAdapter-2.2.0
 -UnityAdsUnityAdapter-3.7.0
+-MintegralUnityAdapter-1.2.0
 
 #Missing
 -Vungle
--Mintegral
