@@ -370,7 +370,6 @@ namespace Pancake.Threading.Tasks
 
         public static AssetBundleRequestAwaiter GetAwaiter(this AssetBundleRequest asyncOperation)
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             return new AssetBundleRequestAwaiter(asyncOperation);
         }
 
@@ -381,7 +380,6 @@ namespace Pancake.Threading.Tasks
 
         public static UniTask<UnityEngine.Object> ToUniTask(this AssetBundleRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityEngine.Object>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.asset);
             return new UniTask<UnityEngine.Object>(AssetBundleRequestConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
@@ -425,7 +423,6 @@ namespace Pancake.Threading.Tasks
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
                 continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
@@ -550,7 +547,6 @@ namespace Pancake.Threading.Tasks
 
         public static AssetBundleCreateRequestAwaiter GetAwaiter(this AssetBundleCreateRequest asyncOperation)
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             return new AssetBundleCreateRequestAwaiter(asyncOperation);
         }
 
@@ -561,7 +557,6 @@ namespace Pancake.Threading.Tasks
 
         public static UniTask<AssetBundle> ToUniTask(this AssetBundleCreateRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<AssetBundle>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.assetBundle);
             return new UniTask<AssetBundle>(AssetBundleCreateRequestConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
@@ -605,7 +600,6 @@ namespace Pancake.Threading.Tasks
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
                 continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
@@ -730,7 +724,6 @@ namespace Pancake.Threading.Tasks
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             return new UnityWebRequestAsyncOperationAwaiter(asyncOperation);
         }
 
@@ -741,7 +734,6 @@ namespace Pancake.Threading.Tasks
 
         public static UniTask<UnityWebRequest> ToUniTask(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityWebRequest>(cancellationToken);
             if (asyncOperation.isDone)
             {
@@ -800,7 +792,6 @@ namespace Pancake.Threading.Tasks
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
                 continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }

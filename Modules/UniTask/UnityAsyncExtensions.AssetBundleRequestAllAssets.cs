@@ -15,7 +15,6 @@ namespace Pancake.Threading.Tasks
     {
         public static AssetBundleRequestAllAssetsAwaiter AwaitForAllAssets(this AssetBundleRequest asyncOperation)
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             return new AssetBundleRequestAllAssetsAwaiter(asyncOperation);
         }
 
@@ -26,7 +25,6 @@ namespace Pancake.Threading.Tasks
 
         public static UniTask<UnityEngine.Object[]> AwaitForAllAssets(this AssetBundleRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Error.ThrowArgumentNullException(asyncOperation, nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityEngine.Object[]>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.allAssets);
             return new UniTask<UnityEngine.Object[]>(AssetBundleRequestAllAssetsConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
@@ -75,7 +73,6 @@ namespace Pancake.Threading.Tasks
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
                 continuationAction = PooledDelegate<AsyncOperation>.Create(continuation);
                 asyncOperation.completed += continuationAction;
             }
