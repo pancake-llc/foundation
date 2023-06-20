@@ -21,10 +21,7 @@ namespace Pancake.Threading.Tasks.Internal
         int waitingListCount = 0;
         Action[] waitingList = new Action[InitialSize];
 
-        public ContinuationQueue(PlayerLoopTiming timing)
-        {
-            this.timing = timing;
-        }
+        public ContinuationQueue(PlayerLoopTiming timing) { this.timing = timing; }
 
         public void Enqueue(Action continuation)
         {
@@ -39,12 +36,13 @@ namespace Pancake.Threading.Tasks.Internal
                     if (waitingList.Length == waitingListCount)
                     {
                         var newLength = waitingListCount * 2;
-                        if ((uint)newLength > MaxArrayLength) newLength = MaxArrayLength;
+                        if ((uint) newLength > MaxArrayLength) newLength = MaxArrayLength;
 
                         var newArray = new Action[newLength];
                         Array.Copy(waitingList, newArray, waitingListCount);
                         waitingList = newArray;
                     }
+
                     waitingList[waitingListCount] = continuation;
                     waitingListCount++;
                 }
@@ -54,12 +52,13 @@ namespace Pancake.Threading.Tasks.Internal
                     if (actionList.Length == actionListCount)
                     {
                         var newLength = actionListCount * 2;
-                        if ((uint)newLength > MaxArrayLength) newLength = MaxArrayLength;
+                        if ((uint) newLength > MaxArrayLength) newLength = MaxArrayLength;
 
                         var newArray = new Action[newLength];
                         Array.Copy(actionList, newArray, actionListCount);
                         actionList = newArray;
                     }
+
                     actionList[actionListCount] = continuation;
                     actionListCount++;
                 }
@@ -186,7 +185,6 @@ namespace Pancake.Threading.Tasks.Internal
 
             for (int i = 0; i < actionListCount; i++)
             {
-
                 var action = actionList[i];
                 actionList[i] = null;
                 try
@@ -222,4 +220,3 @@ namespace Pancake.Threading.Tasks.Internal
         }
     }
 }
-

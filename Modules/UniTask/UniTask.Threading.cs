@@ -47,38 +47,35 @@ namespace Pancake.Threading.Tasks
         /// <summary>
         /// Queue the action to PlayerLoop.
         /// </summary>
-        public static void Post(Action action, PlayerLoopTiming timing = PlayerLoopTiming.Update)
-        {
-            PlayerLoopHelper.AddContinuation(timing, action);
-        }
+        public static void Post(Action action, PlayerLoopTiming timing = PlayerLoopTiming.Update) { PlayerLoopHelper.AddContinuation(timing, action); }
 
 #endif
 
-        public static SwitchToThreadPoolAwaitable SwitchToThreadPool()
-        {
-            return new SwitchToThreadPoolAwaitable();
-        }
+        public static SwitchToThreadPoolAwaitable SwitchToThreadPool() { return new SwitchToThreadPoolAwaitable(); }
 
         /// <summary>
         /// Note: use SwitchToThreadPool is recommended.
         /// </summary>
-        public static SwitchToTaskPoolAwaitable SwitchToTaskPool()
-        {
-            return new SwitchToTaskPoolAwaitable();
-        }
+        public static SwitchToTaskPoolAwaitable SwitchToTaskPool() { return new SwitchToTaskPoolAwaitable(); }
 
-        public static SwitchToSynchronizationContextAwaitable SwitchToSynchronizationContext(SynchronizationContext synchronizationContext, CancellationToken cancellationToken = default)
+        public static SwitchToSynchronizationContextAwaitable SwitchToSynchronizationContext(
+            SynchronizationContext synchronizationContext,
+            CancellationToken cancellationToken = default)
         {
             if (synchronizationContext == null) throw new ArgumentNullException(nameof(synchronizationContext));
             return new SwitchToSynchronizationContextAwaitable(synchronizationContext, cancellationToken);
         }
 
-        public static ReturnToSynchronizationContext ReturnToSynchronizationContext(SynchronizationContext synchronizationContext, CancellationToken cancellationToken = default)
+        public static ReturnToSynchronizationContext ReturnToSynchronizationContext(
+            SynchronizationContext synchronizationContext,
+            CancellationToken cancellationToken = default)
         {
             return new ReturnToSynchronizationContext(synchronizationContext, false, cancellationToken);
         }
 
-        public static ReturnToSynchronizationContext ReturnToCurrentSynchronizationContext(bool dontPostWhenSameContext = true, CancellationToken cancellationToken = default)
+        public static ReturnToSynchronizationContext ReturnToCurrentSynchronizationContext(
+            bool dontPostWhenSameContext = true,
+            CancellationToken cancellationToken = default)
         {
             return new ReturnToSynchronizationContext(SynchronizationContext.Current, dontPostWhenSameContext, cancellationToken);
         }
@@ -128,15 +125,9 @@ namespace Pancake.Threading.Tasks
 
             public void GetResult() { cancellationToken.ThrowIfCancellationRequested(); }
 
-            public void OnCompleted(Action continuation)
-            {
-                PlayerLoopHelper.AddContinuation(playerLoopTiming, continuation);
-            }
+            public void OnCompleted(Action continuation) { PlayerLoopHelper.AddContinuation(playerLoopTiming, continuation); }
 
-            public void UnsafeOnCompleted(Action continuation)
-            {
-                PlayerLoopHelper.AddContinuation(playerLoopTiming, continuation);
-            }
+            public void UnsafeOnCompleted(Action continuation) { PlayerLoopHelper.AddContinuation(playerLoopTiming, continuation); }
         }
     }
 
@@ -173,15 +164,9 @@ namespace Pancake.Threading.Tasks
 
             public void GetResult() { cancellationToken.ThrowIfCancellationRequested(); }
 
-            public void OnCompleted(Action continuation)
-            {
-                PlayerLoopHelper.AddContinuation(timing, continuation);
-            }
+            public void OnCompleted(Action continuation) { PlayerLoopHelper.AddContinuation(timing, continuation); }
 
-            public void UnsafeOnCompleted(Action continuation)
-            {
-                PlayerLoopHelper.AddContinuation(timing, continuation);
-            }
+            public void UnsafeOnCompleted(Action continuation) { PlayerLoopHelper.AddContinuation(timing, continuation); }
         }
     }
 
@@ -198,10 +183,7 @@ namespace Pancake.Threading.Tasks
             public bool IsCompleted => false;
             public void GetResult() { }
 
-            public void OnCompleted(Action continuation)
-            {
-                ThreadPool.QueueUserWorkItem(switchToCallback, continuation);
-            }
+            public void OnCompleted(Action continuation) { ThreadPool.QueueUserWorkItem(switchToCallback, continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
@@ -214,13 +196,12 @@ namespace Pancake.Threading.Tasks
 
             static void Callback(object state)
             {
-                var continuation = (Action)state;
+                var continuation = (Action) state;
                 continuation();
             }
         }
 
 #if NETCOREAPP3_1
-
         sealed class ThreadPoolWorkItem : IThreadPoolWorkItem, ITaskPoolNode<ThreadPoolWorkItem>
         {
             static TaskPool<ThreadPoolWorkItem> pool;
@@ -275,17 +256,25 @@ namespace Pancake.Threading.Tasks
 
             public void OnCompleted(Action continuation)
             {
-                Task.Factory.StartNew(switchToCallback, continuation, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+                Task.Factory.StartNew(switchToCallback,
+                    continuation,
+                    CancellationToken.None,
+                    TaskCreationOptions.DenyChildAttach,
+                    TaskScheduler.Default);
             }
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Task.Factory.StartNew(switchToCallback, continuation, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+                Task.Factory.StartNew(switchToCallback,
+                    continuation,
+                    CancellationToken.None,
+                    TaskCreationOptions.DenyChildAttach,
+                    TaskScheduler.Default);
             }
 
             static void Callback(object state)
             {
-                var continuation = (Action)state;
+                var continuation = (Action) state;
                 continuation();
             }
         }
@@ -319,19 +308,13 @@ namespace Pancake.Threading.Tasks
             public bool IsCompleted => false;
             public void GetResult() { cancellationToken.ThrowIfCancellationRequested(); }
 
-            public void OnCompleted(Action continuation)
-            {
-                synchronizationContext.Post(switchToCallback, continuation);
-            }
+            public void OnCompleted(Action continuation) { synchronizationContext.Post(switchToCallback, continuation); }
 
-            public void UnsafeOnCompleted(Action continuation)
-            {
-                synchronizationContext.Post(switchToCallback, continuation);
-            }
+            public void UnsafeOnCompleted(Action continuation) { synchronizationContext.Post(switchToCallback, continuation); }
 
             static void Callback(object state)
             {
-                var continuation = (Action)state;
+                var continuation = (Action) state;
                 continuation();
             }
         }
@@ -350,10 +333,7 @@ namespace Pancake.Threading.Tasks
             this.cancellationToken = cancellationToken;
         }
 
-        public Awaiter DisposeAsync()
-        {
-            return new Awaiter(syncContext, dontPostWhenSameContext, cancellationToken);
-        }
+        public Awaiter DisposeAsync() { return new Awaiter(syncContext, dontPostWhenSameContext, cancellationToken); }
 
         public struct Awaiter : ICriticalNotifyCompletion
         {
@@ -392,19 +372,13 @@ namespace Pancake.Threading.Tasks
 
             public void GetResult() { cancellationToken.ThrowIfCancellationRequested(); }
 
-            public void OnCompleted(Action continuation)
-            {
-                synchronizationContext.Post(switchToCallback, continuation);
-            }
+            public void OnCompleted(Action continuation) { synchronizationContext.Post(switchToCallback, continuation); }
 
-            public void UnsafeOnCompleted(Action continuation)
-            {
-                synchronizationContext.Post(switchToCallback, continuation);
-            }
+            public void UnsafeOnCompleted(Action continuation) { synchronizationContext.Post(switchToCallback, continuation); }
 
             static void Callback(object state)
             {
-                var continuation = (Action)state;
+                var continuation = (Action) state;
                 continuation();
             }
         }

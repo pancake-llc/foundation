@@ -7,15 +7,9 @@ namespace Pancake.Threading.Tasks.Triggers
 {
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncDestroyTrigger>(gameObject);
-        }
+        public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncDestroyTrigger>(gameObject); }
 
-        public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncDestroyTrigger();
-        }
+        public static AsyncDestroyTrigger GetAsyncDestroyTrigger(this Component component) { return component.gameObject.GetAsyncDestroyTrigger(); }
     }
 
     [DisallowMultipleComponent]
@@ -43,10 +37,7 @@ namespace Pancake.Threading.Tasks.Triggers
             }
         }
 
-        void Awake()
-        {
-            awakeCalled = true;
-        }
+        void Awake() { awakeCalled = true; }
 
         void OnDestroy()
         {
@@ -64,10 +55,11 @@ namespace Pancake.Threading.Tasks.Triggers
 
             // OnDestroy = Called Cancel.
             CancellationToken.RegisterWithoutCaptureExecutionContext(state =>
-            {
-                var tcs2 = (UniTaskCompletionSource)state;
-                tcs2.TrySetResult();
-            }, tcs);
+                {
+                    var tcs2 = (UniTaskCompletionSource) state;
+                    tcs2.TrySetResult();
+                },
+                tcs);
 
             return tcs.Task;
         }
@@ -76,10 +68,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             readonly AsyncDestroyTrigger trigger;
 
-            public AwakeMonitor(AsyncDestroyTrigger trigger)
-            {
-                this.trigger = trigger;
-            }
+            public AwakeMonitor(AsyncDestroyTrigger trigger) { this.trigger = trigger; }
 
             public bool MoveNext()
             {
@@ -89,9 +78,9 @@ namespace Pancake.Threading.Tasks.Triggers
                     trigger.OnDestroy();
                     return false;
                 }
+
                 return true;
             }
         }
     }
 }
-

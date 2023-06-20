@@ -6,15 +6,9 @@ namespace Pancake.Threading.Tasks.Triggers
 {
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncStartTrigger GetAsyncStartTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncStartTrigger>(gameObject);
-        }
+        public static AsyncStartTrigger GetAsyncStartTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncStartTrigger>(gameObject); }
 
-        public static AsyncStartTrigger GetAsyncStartTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncStartTrigger();
-        }
+        public static AsyncStartTrigger GetAsyncStartTrigger(this Component component) { return component.gameObject.GetAsyncStartTrigger(); }
     }
 
     [DisallowMultipleComponent]
@@ -32,7 +26,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             if (called) return UniTask.CompletedTask;
 
-            return ((IAsyncOneShotTrigger)new AsyncTriggerHandler<AsyncUnit>(this, true)).OneShotAsync();
+            return ((IAsyncOneShotTrigger) new AsyncTriggerHandler<AsyncUnit>(this, true)).OneShotAsync();
         }
     }
 }

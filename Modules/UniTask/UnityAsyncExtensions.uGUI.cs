@@ -337,15 +337,9 @@ namespace Pancake.Threading.Tasks
             innerEvent.AddListener(invokeDelegate);
         }
 
-        void InvokeCore(string item1, int item2, int item3)
-        {
-            innerEvent.Invoke(item1, item2, item3);
-        }
+        void InvokeCore(string item1, int item2, int item3) { innerEvent.Invoke(item1, item2, item3); }
 
-        public void Dispose()
-        {
-            innerEvent.RemoveListener(invokeDelegate);
-        }
+        public void Dispose() { innerEvent.RemoveListener(invokeDelegate); }
     }
 
     public class AsyncUnityEventHandler : IUniTaskSource, IDisposable, IAsyncClickEventHandler
@@ -392,17 +386,15 @@ namespace Pancake.Threading.Tasks
             {
                 core.TrySetCanceled(this.cancellationToken);
             }
+
             return new UniTask(this, core.Version);
         }
 
-        void Invoke()
-        {
-            core.TrySetResult(AsyncUnit.Default);
-        }
+        void Invoke() { core.TrySetResult(AsyncUnit.Default); }
 
         static void CancellationCallback(object state)
         {
-            var self = (AsyncUnityEventHandler)state;
+            var self = (AsyncUnityEventHandler) state;
             self.Dispose();
         }
 
@@ -417,14 +409,12 @@ namespace Pancake.Threading.Tasks
                 {
                     unityEvent.RemoveListener(action);
                 }
+
                 core.TrySetCanceled(cancellationToken);
             }
         }
 
-        UniTask IAsyncClickEventHandler.OnClickAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask IAsyncClickEventHandler.OnClickAsync() { return OnInvokeAsync(); }
 
         void IUniTaskSource.GetResult(short token)
         {
@@ -441,24 +431,22 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        UniTaskStatus IUniTaskSource.GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
+        UniTaskStatus IUniTaskSource.GetStatus(short token) { return core.GetStatus(token); }
 
-        UniTaskStatus IUniTaskSource.UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
+        UniTaskStatus IUniTaskSource.UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
+        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
     }
 
-    public class AsyncUnityEventHandler<T> : IUniTaskSource<T>, IDisposable, IAsyncValueChangedEventHandler<T>, IAsyncEndEditEventHandler<T>
-        , IAsyncEndTextSelectionEventHandler<T>, IAsyncTextSelectionEventHandler<T>, IAsyncDeselectEventHandler<T>, IAsyncSelectEventHandler<T>, IAsyncSubmitEventHandler<T>
+    public class AsyncUnityEventHandler<T> : IUniTaskSource<T>,
+        IDisposable,
+        IAsyncValueChangedEventHandler<T>,
+        IAsyncEndEditEventHandler<T>,
+        IAsyncEndTextSelectionEventHandler<T>,
+        IAsyncTextSelectionEventHandler<T>,
+        IAsyncDeselectEventHandler<T>,
+        IAsyncSelectEventHandler<T>,
+        IAsyncSubmitEventHandler<T>
     {
         static Action<object> cancellationCallback = CancellationCallback;
 
@@ -502,17 +490,15 @@ namespace Pancake.Threading.Tasks
             {
                 core.TrySetCanceled(this.cancellationToken);
             }
+
             return new UniTask<T>(this, core.Version);
         }
 
-        void Invoke(T result)
-        {
-            core.TrySetResult(result);
-        }
+        void Invoke(T result) { core.TrySetResult(result); }
 
         static void CancellationCallback(object state)
         {
-            var self = (AsyncUnityEventHandler<T>)state;
+            var self = (AsyncUnityEventHandler<T>) state;
             self.Dispose();
         }
 
@@ -538,40 +524,19 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        UniTask<T> IAsyncValueChangedEventHandler<T>.OnValueChangedAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask<T> IAsyncValueChangedEventHandler<T>.OnValueChangedAsync() { return OnInvokeAsync(); }
 
-        UniTask<T> IAsyncEndEditEventHandler<T>.OnEndEditAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask<T> IAsyncEndEditEventHandler<T>.OnEndEditAsync() { return OnInvokeAsync(); }
 
-        UniTask<T> IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask<T> IAsyncEndTextSelectionEventHandler<T>.OnEndTextSelectionAsync() { return OnInvokeAsync(); }
 
-        UniTask<T> IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask<T> IAsyncTextSelectionEventHandler<T>.OnTextSelectionAsync() { return OnInvokeAsync(); }
 
-        UniTask<T> IAsyncDeselectEventHandler<T>.OnDeselectAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask<T> IAsyncDeselectEventHandler<T>.OnDeselectAsync() { return OnInvokeAsync(); }
 
-        UniTask<T> IAsyncSelectEventHandler<T>.OnSelectAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask<T> IAsyncSelectEventHandler<T>.OnSelectAsync() { return OnInvokeAsync(); }
 
-        UniTask<T> IAsyncSubmitEventHandler<T>.OnSubmitAsync()
-        {
-            return OnInvokeAsync();
-        }
+        UniTask<T> IAsyncSubmitEventHandler<T>.OnSubmitAsync() { return OnInvokeAsync(); }
 
         T IUniTaskSource<T>.GetResult(short token)
         {
@@ -588,25 +553,13 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        void IUniTaskSource.GetResult(short token)
-        {
-            ((IUniTaskSource<T>)this).GetResult(token);
-        }
+        void IUniTaskSource.GetResult(short token) { ((IUniTaskSource<T>) this).GetResult(token); }
 
-        UniTaskStatus IUniTaskSource.GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
+        UniTaskStatus IUniTaskSource.GetStatus(short token) { return core.GetStatus(token); }
 
-        UniTaskStatus IUniTaskSource.UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
+        UniTaskStatus IUniTaskSource.UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
+        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
     }
 
     public class UnityEventHandlerAsyncEnumerable : IUniTaskAsyncEnumerable<AsyncUnit>
@@ -671,6 +624,7 @@ namespace Pancake.Threading.Tasks
                     {
                         registration1 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel1, this);
                     }
+
                     if (cancellationToken2.CanBeCanceled)
                     {
                         registration2 = cancellationToken2.RegisterWithoutCaptureExecutionContext(cancel2, this);
@@ -680,14 +634,11 @@ namespace Pancake.Threading.Tasks
                 return new UniTask<bool>(this, completionSource.Version);
             }
 
-            void Invoke()
-            {
-                completionSource.TrySetResult(true);
-            }
+            void Invoke() { completionSource.TrySetResult(true); }
 
             static void OnCanceled1(object state)
             {
-                var self = (UnityEventHandlerAsyncEnumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator) state;
                 try
                 {
                     self.completionSource.TrySetCanceled(self.cancellationToken1);
@@ -700,7 +651,7 @@ namespace Pancake.Threading.Tasks
 
             static void OnCanceled2(object state)
             {
-                var self = (UnityEventHandlerAsyncEnumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator) state;
                 try
                 {
                     self.completionSource.TrySetCanceled(self.cancellationToken2);
@@ -791,6 +742,7 @@ namespace Pancake.Threading.Tasks
                     {
                         registration1 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel1, this);
                     }
+
                     if (cancellationToken2.CanBeCanceled)
                     {
                         registration2 = cancellationToken1.RegisterWithoutCaptureExecutionContext(cancel2, this);
@@ -808,7 +760,7 @@ namespace Pancake.Threading.Tasks
 
             static void OnCanceled1(object state)
             {
-                var self = (UnityEventHandlerAsyncEnumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator) state;
                 try
                 {
                     self.completionSource.TrySetCanceled(self.cancellationToken1);
@@ -821,7 +773,7 @@ namespace Pancake.Threading.Tasks
 
             static void OnCanceled2(object state)
             {
-                var self = (UnityEventHandlerAsyncEnumerator)state;
+                var self = (UnityEventHandlerAsyncEnumerator) state;
                 try
                 {
                     self.completionSource.TrySetCanceled(self.cancellationToken2);
@@ -844,6 +796,7 @@ namespace Pancake.Threading.Tasks
                     {
                         disp.Dispose();
                     }
+
                     unityEvent.RemoveListener(unityAction);
 
                     completionSource.TrySetCanceled();

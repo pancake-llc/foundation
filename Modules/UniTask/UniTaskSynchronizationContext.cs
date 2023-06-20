@@ -20,10 +20,7 @@ namespace Pancake.Threading.Tasks
 
         static int opCount;
 
-        public override void Send(SendOrPostCallback d, object state)
-        {
-            d(state);
-        }
+        public override void Send(SendOrPostCallback d, object state) { d(state); }
 
         public override void Post(SendOrPostCallback d, object state)
         {
@@ -38,12 +35,13 @@ namespace Pancake.Threading.Tasks
                     if (waitingList.Length == waitingListCount)
                     {
                         var newLength = waitingListCount * 2;
-                        if ((uint)newLength > MaxArrayLength) newLength = MaxArrayLength;
+                        if ((uint) newLength > MaxArrayLength) newLength = MaxArrayLength;
 
                         var newArray = new Callback[newLength];
                         Array.Copy(waitingList, newArray, waitingListCount);
                         waitingList = newArray;
                     }
+
                     waitingList[waitingListCount] = new Callback(d, state);
                     waitingListCount++;
                 }
@@ -53,12 +51,13 @@ namespace Pancake.Threading.Tasks
                     if (actionList.Length == actionListCount)
                     {
                         var newLength = actionListCount * 2;
-                        if ((uint)newLength > MaxArrayLength) newLength = MaxArrayLength;
+                        if ((uint) newLength > MaxArrayLength) newLength = MaxArrayLength;
 
                         var newArray = new Callback[newLength];
                         Array.Copy(actionList, newArray, actionListCount);
                         actionList = newArray;
                     }
+
                     actionList[actionListCount] = new Callback(d, state);
                     actionListCount++;
                 }
@@ -69,20 +68,11 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        public override void OperationStarted()
-        {
-            Interlocked.Increment(ref opCount);
-        }
+        public override void OperationStarted() { Interlocked.Increment(ref opCount); }
 
-        public override void OperationCompleted()
-        {
-            Interlocked.Decrement(ref opCount);
-        }
+        public override void OperationCompleted() { Interlocked.Decrement(ref opCount); }
 
-        public override SynchronizationContext CreateCopy()
-        {
-            return this;
-        }
+        public override SynchronizationContext CreateCopy() { return this; }
 
         // delegate entrypoint.
         internal static void Run()

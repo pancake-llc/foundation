@@ -6,30 +6,15 @@ namespace Pancake.Threading.Tasks
     {
         protected UniTaskCompletionSourceCore<bool> completionSource;
 
-        public bool GetResult(short token)
-        {
-            return completionSource.GetResult(token);
-        }
+        public bool GetResult(short token) { return completionSource.GetResult(token); }
 
-        public UniTaskStatus GetStatus(short token)
-        {
-            return completionSource.GetStatus(token);
-        }
+        public UniTaskStatus GetStatus(short token) { return completionSource.GetStatus(token); }
 
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            completionSource.OnCompleted(continuation, state, token);
-        }
+        public void OnCompleted(Action<object> continuation, object state, short token) { completionSource.OnCompleted(continuation, state, token); }
 
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return completionSource.UnsafeGetStatus();
-        }
+        public UniTaskStatus UnsafeGetStatus() { return completionSource.UnsafeGetStatus(); }
 
-        void IUniTaskSource.GetResult(short token)
-        {
-            completionSource.GetResult(token);
-        }
+        void IUniTaskSource.GetResult(short token) { completionSource.GetResult(token); }
 
         protected bool TryGetResult<T>(UniTask<T>.Awaiter awaiter, out T result)
         {

@@ -132,12 +132,20 @@ namespace Pancake.Threading.Tasks
             BindToCore(source, selectable, selectable.GetCancellationTokenOnDestroy(), rebindOnError).Forget();
         }
 
-        public static void BindTo(this IUniTaskAsyncEnumerable<bool> source, UnityEngine.UI.Selectable selectable, CancellationToken cancellationToken, bool rebindOnError = true)
+        public static void BindTo(
+            this IUniTaskAsyncEnumerable<bool> source,
+            UnityEngine.UI.Selectable selectable,
+            CancellationToken cancellationToken,
+            bool rebindOnError = true)
         {
             BindToCore(source, selectable, cancellationToken, rebindOnError).Forget();
         }
 
-        static async UniTaskVoid BindToCore(IUniTaskAsyncEnumerable<bool> source, UnityEngine.UI.Selectable selectable, CancellationToken cancellationToken, bool rebindOnError)
+        static async UniTaskVoid BindToCore(
+            IUniTaskAsyncEnumerable<bool> source,
+            UnityEngine.UI.Selectable selectable,
+            CancellationToken cancellationToken,
+            bool rebindOnError)
         {
             var repeat = false;
             BIND_AGAIN:
@@ -185,18 +193,41 @@ namespace Pancake.Threading.Tasks
 
         // <T> -> Action
 
-        public static void BindTo<TSource, TObject>(this IUniTaskAsyncEnumerable<TSource> source, TObject monoBehaviour, Action<TObject, TSource> bindAction, bool rebindOnError = true)
-            where TObject : MonoBehaviour
+        public static void BindTo<TSource, TObject>(
+            this IUniTaskAsyncEnumerable<TSource> source,
+            TObject monoBehaviour,
+            Action<TObject, TSource> bindAction,
+            bool rebindOnError = true) where TObject : MonoBehaviour
         {
-            BindToCore(source, monoBehaviour, bindAction, monoBehaviour.GetCancellationTokenOnDestroy(), rebindOnError).Forget();
+            BindToCore(source,
+                    monoBehaviour,
+                    bindAction,
+                    monoBehaviour.GetCancellationTokenOnDestroy(),
+                    rebindOnError)
+                .Forget();
         }
 
-        public static void BindTo<TSource, TObject>(this IUniTaskAsyncEnumerable<TSource> source, TObject bindTarget, Action<TObject, TSource> bindAction, CancellationToken cancellationToken, bool rebindOnError = true)
+        public static void BindTo<TSource, TObject>(
+            this IUniTaskAsyncEnumerable<TSource> source,
+            TObject bindTarget,
+            Action<TObject, TSource> bindAction,
+            CancellationToken cancellationToken,
+            bool rebindOnError = true)
         {
-            BindToCore(source, bindTarget, bindAction, cancellationToken, rebindOnError).Forget();
+            BindToCore(source,
+                    bindTarget,
+                    bindAction,
+                    cancellationToken,
+                    rebindOnError)
+                .Forget();
         }
 
-        static async UniTaskVoid BindToCore<TSource, TObject>(IUniTaskAsyncEnumerable<TSource> source, TObject bindTarget, Action<TObject, TSource> bindAction, CancellationToken cancellationToken, bool rebindOnError)
+        static async UniTaskVoid BindToCore<TSource, TObject>(
+            IUniTaskAsyncEnumerable<TSource> source,
+            TObject bindTarget,
+            Action<TObject, TSource> bindAction,
+            CancellationToken cancellationToken,
+            bool rebindOnError)
         {
             var repeat = false;
             BIND_AGAIN:

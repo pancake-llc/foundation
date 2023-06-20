@@ -27,10 +27,7 @@ namespace Pancake.Threading.Tasks
 
         public T Value
         {
-            get
-            {
-                return latestValue;
-            }
+            get { return latestValue; }
             set
             {
                 this.latestValue = value;
@@ -44,25 +41,13 @@ namespace Pancake.Threading.Tasks
             this.triggerEvent = default;
         }
 
-        public IUniTaskAsyncEnumerable<T> WithoutCurrent()
-        {
-            return new WithoutCurrentEnumerable(this);
-        }
+        public IUniTaskAsyncEnumerable<T> WithoutCurrent() { return new WithoutCurrentEnumerable(this); }
 
-        public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return new Enumerator(this, cancellationToken, true);
-        }
+        public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken) { return new Enumerator(this, cancellationToken, true); }
 
-        public void Dispose()
-        {
-            triggerEvent.SetCompleted();
-        }
+        public void Dispose() { triggerEvent.SetCompleted(); }
 
-        public static implicit operator T(AsyncReactiveProperty<T> value)
-        {
-            return value.Value;
-        }
+        public static implicit operator T(AsyncReactiveProperty<T> value) { return value.Value; }
 
         public override string ToString()
         {
@@ -77,10 +62,7 @@ namespace Pancake.Threading.Tasks
 
         static bool isValueType;
 
-        static AsyncReactiveProperty()
-        {
-            isValueType = typeof(T).IsValueType;
-        }
+        static AsyncReactiveProperty() { isValueType = typeof(T).IsValueType; }
 
         sealed class WaitAsyncSource : IUniTaskSource<T>, ITriggerHandler<T>, ITaskPoolNode<WaitAsyncSource>
         {
@@ -90,19 +72,14 @@ namespace Pancake.Threading.Tasks
             WaitAsyncSource nextNode;
             ref WaitAsyncSource ITaskPoolNode<WaitAsyncSource>.NextNode => ref nextNode;
 
-            static WaitAsyncSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(WaitAsyncSource), () => pool.Size);
-            }
+            static WaitAsyncSource() { TaskPool.RegisterSizeGetter(typeof(WaitAsyncSource), () => pool.Size); }
 
             AsyncReactiveProperty<T> parent;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
             UniTaskCompletionSourceCore<T> core;
 
-            WaitAsyncSource()
-            {
-            }
+            WaitAsyncSource() { }
 
             public static IUniTaskSource<T> Create(AsyncReactiveProperty<T> parent, CancellationToken cancellationToken, out short token)
             {
@@ -146,7 +123,7 @@ namespace Pancake.Threading.Tasks
 
             static void CancellationCallback(object state)
             {
-                var self = (WaitAsyncSource)state;
+                var self = (WaitAsyncSource) state;
                 self.OnCanceled(self.cancellationToken);
             }
 
@@ -164,35 +141,20 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
             // ITriggerHandler
 
             ITriggerHandler<T> ITriggerHandler<T>.Prev { get; set; }
             ITriggerHandler<T> ITriggerHandler<T>.Next { get; set; }
 
-            public void OnCanceled(CancellationToken cancellationToken)
-            {
-                core.TrySetCanceled(cancellationToken);
-            }
+            public void OnCanceled(CancellationToken cancellationToken) { core.TrySetCanceled(cancellationToken); }
 
             public void OnCompleted()
             {
@@ -200,25 +162,16 @@ namespace Pancake.Threading.Tasks
                 core.TrySetCanceled(CancellationToken.None);
             }
 
-            public void OnError(Exception ex)
-            {
-                core.TrySetException(ex);
-            }
+            public void OnError(Exception ex) { core.TrySetException(ex); }
 
-            public void OnNext(T value)
-            {
-                core.TrySetResult(value);
-            }
+            public void OnNext(T value) { core.TrySetResult(value); }
         }
 
         sealed class WithoutCurrentEnumerable : IUniTaskAsyncEnumerable<T>
         {
             readonly AsyncReactiveProperty<T> parent;
 
-            public WithoutCurrentEnumerable(AsyncReactiveProperty<T> parent)
-            {
-                this.parent = parent;
-            }
+            public WithoutCurrentEnumerable(AsyncReactiveProperty<T> parent) { this.parent = parent; }
 
             public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
             {
@@ -280,6 +233,7 @@ namespace Pancake.Threading.Tasks
                     completionSource.TrySetCanceled(cancellationToken);
                     parent.triggerEvent.Remove(this);
                 }
+
                 return default;
             }
 
@@ -289,24 +243,15 @@ namespace Pancake.Threading.Tasks
                 completionSource.TrySetResult(true);
             }
 
-            public void OnCanceled(CancellationToken cancellationToken)
-            {
-                DisposeAsync().Forget();
-            }
+            public void OnCanceled(CancellationToken cancellationToken) { DisposeAsync().Forget(); }
 
-            public void OnCompleted()
-            {
-                completionSource.TrySetResult(false);
-            }
+            public void OnCompleted() { completionSource.TrySetResult(false); }
 
-            public void OnError(Exception ex)
-            {
-                completionSource.TrySetException(ex);
-            }
+            public void OnError(Exception ex) { completionSource.TrySetException(ex); }
 
             static void CancellationCallback(object state)
             {
-                var self = (Enumerator)state;
+                var self = (Enumerator) state;
                 self.DisposeAsync().Forget();
             }
         }
@@ -319,13 +264,7 @@ namespace Pancake.Threading.Tasks
         T latestValue;
         IUniTaskAsyncEnumerator<T> enumerator;
 
-        public T Value
-        {
-            get
-            {
-                return latestValue;
-            }
-        }
+        public T Value { get { return latestValue; } }
 
         public ReadOnlyAsyncReactiveProperty(T initialValue, IUniTaskAsyncEnumerable<T> source, CancellationToken cancellationToken)
         {
@@ -357,15 +296,9 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        public IUniTaskAsyncEnumerable<T> WithoutCurrent()
-        {
-            return new WithoutCurrentEnumerable(this);
-        }
+        public IUniTaskAsyncEnumerable<T> WithoutCurrent() { return new WithoutCurrentEnumerable(this); }
 
-        public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken)
-        {
-            return new Enumerator(this, cancellationToken, true);
-        }
+        public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken) { return new Enumerator(this, cancellationToken, true); }
 
         public void Dispose()
         {
@@ -377,10 +310,7 @@ namespace Pancake.Threading.Tasks
             triggerEvent.SetCompleted();
         }
 
-        public static implicit operator T(ReadOnlyAsyncReactiveProperty<T> value)
-        {
-            return value.Value;
-        }
+        public static implicit operator T(ReadOnlyAsyncReactiveProperty<T> value) { return value.Value; }
 
         public override string ToString()
         {
@@ -395,10 +325,7 @@ namespace Pancake.Threading.Tasks
 
         static bool isValueType;
 
-        static ReadOnlyAsyncReactiveProperty()
-        {
-            isValueType = typeof(T).IsValueType;
-        }
+        static ReadOnlyAsyncReactiveProperty() { isValueType = typeof(T).IsValueType; }
 
         sealed class WaitAsyncSource : IUniTaskSource<T>, ITriggerHandler<T>, ITaskPoolNode<WaitAsyncSource>
         {
@@ -408,19 +335,14 @@ namespace Pancake.Threading.Tasks
             WaitAsyncSource nextNode;
             ref WaitAsyncSource ITaskPoolNode<WaitAsyncSource>.NextNode => ref nextNode;
 
-            static WaitAsyncSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(WaitAsyncSource), () => pool.Size);
-            }
+            static WaitAsyncSource() { TaskPool.RegisterSizeGetter(typeof(WaitAsyncSource), () => pool.Size); }
 
             ReadOnlyAsyncReactiveProperty<T> parent;
             CancellationToken cancellationToken;
             CancellationTokenRegistration cancellationTokenRegistration;
             UniTaskCompletionSourceCore<T> core;
 
-            WaitAsyncSource()
-            {
-            }
+            WaitAsyncSource() { }
 
             public static IUniTaskSource<T> Create(ReadOnlyAsyncReactiveProperty<T> parent, CancellationToken cancellationToken, out short token)
             {
@@ -464,7 +386,7 @@ namespace Pancake.Threading.Tasks
 
             static void CancellationCallback(object state)
             {
-                var self = (WaitAsyncSource)state;
+                var self = (WaitAsyncSource) state;
                 self.OnCanceled(self.cancellationToken);
             }
 
@@ -482,35 +404,20 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
             // ITriggerHandler
 
             ITriggerHandler<T> ITriggerHandler<T>.Prev { get; set; }
             ITriggerHandler<T> ITriggerHandler<T>.Next { get; set; }
 
-            public void OnCanceled(CancellationToken cancellationToken)
-            {
-                core.TrySetCanceled(cancellationToken);
-            }
+            public void OnCanceled(CancellationToken cancellationToken) { core.TrySetCanceled(cancellationToken); }
 
             public void OnCompleted()
             {
@@ -518,25 +425,16 @@ namespace Pancake.Threading.Tasks
                 core.TrySetCanceled(CancellationToken.None);
             }
 
-            public void OnError(Exception ex)
-            {
-                core.TrySetException(ex);
-            }
+            public void OnError(Exception ex) { core.TrySetException(ex); }
 
-            public void OnNext(T value)
-            {
-                core.TrySetResult(value);
-            }
+            public void OnNext(T value) { core.TrySetResult(value); }
         }
 
         sealed class WithoutCurrentEnumerable : IUniTaskAsyncEnumerable<T>
         {
             readonly ReadOnlyAsyncReactiveProperty<T> parent;
 
-            public WithoutCurrentEnumerable(ReadOnlyAsyncReactiveProperty<T> parent)
-            {
-                this.parent = parent;
-            }
+            public WithoutCurrentEnumerable(ReadOnlyAsyncReactiveProperty<T> parent) { this.parent = parent; }
 
             public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
             {
@@ -597,6 +495,7 @@ namespace Pancake.Threading.Tasks
                     completionSource.TrySetCanceled(cancellationToken);
                     parent.triggerEvent.Remove(this);
                 }
+
                 return default;
             }
 
@@ -606,24 +505,15 @@ namespace Pancake.Threading.Tasks
                 completionSource.TrySetResult(true);
             }
 
-            public void OnCanceled(CancellationToken cancellationToken)
-            {
-                DisposeAsync().Forget();
-            }
+            public void OnCanceled(CancellationToken cancellationToken) { DisposeAsync().Forget(); }
 
-            public void OnCompleted()
-            {
-                completionSource.TrySetResult(false);
-            }
+            public void OnCompleted() { completionSource.TrySetResult(false); }
 
-            public void OnError(Exception ex)
-            {
-                completionSource.TrySetException(ex);
-            }
+            public void OnError(Exception ex) { completionSource.TrySetException(ex); }
 
             static void CancellationCallback(object state)
             {
-                var self = (Enumerator)state;
+                var self = (Enumerator) state;
                 self.DisposeAsync().Forget();
             }
         }
@@ -636,7 +526,10 @@ namespace Pancake.Threading.Tasks
             return new ReadOnlyAsyncReactiveProperty<T>(source, cancellationToken);
         }
 
-        public static ReadOnlyAsyncReactiveProperty<T> ToReadOnlyAsyncReactiveProperty<T>(this IUniTaskAsyncEnumerable<T> source, T initialValue, CancellationToken cancellationToken)
+        public static ReadOnlyAsyncReactiveProperty<T> ToReadOnlyAsyncReactiveProperty<T>(
+            this IUniTaskAsyncEnumerable<T> source,
+            T initialValue,
+            CancellationToken cancellationToken)
         {
             return new ReadOnlyAsyncReactiveProperty<T>(initialValue, source, cancellationToken);
         }

@@ -28,10 +28,7 @@ namespace Pancake.Threading.Tasks
         }
 
         /// <summary>Return value is winArgumentIndex</summary>
-        public static UniTask<int> WhenAny(params UniTask[] tasks)
-        {
-            return new UniTask<int>(new WhenAnyPromise(tasks, tasks.Length), 0);
-        }
+        public static UniTask<int> WhenAny(params UniTask[] tasks) { return new UniTask<int>(new WhenAnyPromise(tasks, tasks.Length), 0); }
 
         /// <summary>Return value is winArgumentIndex</summary>
         public static UniTask<int> WhenAny(IEnumerable<UniTask> tasks)
@@ -70,12 +67,13 @@ namespace Pancake.Threading.Tasks
                     else
                     {
                         awaiter.SourceOnCompleted(state =>
-                        {
-                            using (var t = (StateTuple<WhenAnyLRPromise<T>, UniTask<T>.Awaiter>)state)
                             {
-                                TryLeftInvokeContinuation(t.Item1, t.Item2);
-                            }
-                        }, StateTuple.Create(this, awaiter));
+                                using (var t = (StateTuple<WhenAnyLRPromise<T>, UniTask<T>.Awaiter>) state)
+                                {
+                                    TryLeftInvokeContinuation(t.Item1, t.Item2);
+                                }
+                            },
+                            StateTuple.Create(this, awaiter));
                     }
                 }
                 RIGHT:
@@ -98,12 +96,13 @@ namespace Pancake.Threading.Tasks
                     else
                     {
                         awaiter.SourceOnCompleted(state =>
-                        {
-                            using (var t = (StateTuple<WhenAnyLRPromise<T>, UniTask.Awaiter>)state)
                             {
-                                TryRightInvokeContinuation(t.Item1, t.Item2);
-                            }
-                        }, StateTuple.Create(this, awaiter));
+                                using (var t = (StateTuple<WhenAnyLRPromise<T>, UniTask.Awaiter>) state)
+                                {
+                                    TryRightInvokeContinuation(t.Item1, t.Item2);
+                                }
+                            },
+                            StateTuple.Create(this, awaiter));
                     }
                 }
             }
@@ -152,25 +151,13 @@ namespace Pancake.Threading.Tasks
                 return core.GetResult(token);
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
         }
 
 
@@ -208,12 +195,13 @@ namespace Pancake.Threading.Tasks
                     else
                     {
                         awaiter.SourceOnCompleted(state =>
-                        {
-                            using (var t = (StateTuple<WhenAnyPromise<T>, UniTask<T>.Awaiter, int>)state)
                             {
-                                TryInvokeContinuation(t.Item1, t.Item2, t.Item3);
-                            }
-                        }, StateTuple.Create(this, awaiter, i));
+                                using (var t = (StateTuple<WhenAnyPromise<T>, UniTask<T>.Awaiter, int>) state)
+                                {
+                                    TryInvokeContinuation(t.Item1, t.Item2, t.Item3);
+                                }
+                            },
+                            StateTuple.Create(this, awaiter, i));
                     }
                 }
             }
@@ -244,25 +232,13 @@ namespace Pancake.Threading.Tasks
                 return core.GetResult(token);
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
         }
 
         sealed class WhenAnyPromise : IUniTaskSource<int>
@@ -299,12 +275,13 @@ namespace Pancake.Threading.Tasks
                     else
                     {
                         awaiter.SourceOnCompleted(state =>
-                        {
-                            using (var t = (StateTuple<WhenAnyPromise, UniTask.Awaiter, int>)state)
                             {
-                                TryInvokeContinuation(t.Item1, t.Item2, t.Item3);
-                            }
-                        }, StateTuple.Create(this, awaiter, i));
+                                using (var t = (StateTuple<WhenAnyPromise, UniTask.Awaiter, int>) state)
+                                {
+                                    TryInvokeContinuation(t.Item1, t.Item2, t.Item3);
+                                }
+                            },
+                            StateTuple.Create(this, awaiter, i));
                     }
                 }
             }
@@ -334,26 +311,13 @@ namespace Pancake.Threading.Tasks
                 return core.GetResult(token);
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
         }
     }
 }
-

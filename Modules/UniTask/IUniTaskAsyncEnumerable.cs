@@ -25,7 +25,11 @@ namespace Pancake.Threading.Tasks
     {
         IUniTaskOrderedAsyncEnumerable<TElement> CreateOrderedEnumerable<TKey>(Func<TElement, TKey> keySelector, IComparer<TKey> comparer, bool descending);
         IUniTaskOrderedAsyncEnumerable<TElement> CreateOrderedEnumerable<TKey>(Func<TElement, UniTask<TKey>> keySelector, IComparer<TKey> comparer, bool descending);
-        IUniTaskOrderedAsyncEnumerable<TElement> CreateOrderedEnumerable<TKey>(Func<TElement, CancellationToken, UniTask<TKey>> keySelector, IComparer<TKey> comparer, bool descending);
+
+        IUniTaskOrderedAsyncEnumerable<TElement> CreateOrderedEnumerable<TKey>(
+            Func<TElement, CancellationToken, UniTask<TKey>> keySelector,
+            IComparer<TKey> comparer,
+            bool descending);
     }
 
     public interface IConnectableUniTaskAsyncEnumerable<out T> : IUniTaskAsyncEnumerable<T>
@@ -59,33 +63,21 @@ namespace Pancake.Threading.Tasks
             this.cancellationToken = cancellationToken;
         }
 
-        public Enumerator GetAsyncEnumerator()
-        {
-            return new Enumerator(enumerable.GetAsyncEnumerator(cancellationToken));
-        }
+        public Enumerator GetAsyncEnumerator() { return new Enumerator(enumerable.GetAsyncEnumerator(cancellationToken)); }
 
         [StructLayout(LayoutKind.Auto)]
         public readonly struct Enumerator
         {
             private readonly IUniTaskAsyncEnumerator<T> enumerator;
 
-            internal Enumerator(IUniTaskAsyncEnumerator<T> enumerator)
-            {
-                this.enumerator = enumerator;
-            }
+            internal Enumerator(IUniTaskAsyncEnumerator<T> enumerator) { this.enumerator = enumerator; }
 
             public T Current => enumerator.Current;
 
-            public UniTask<bool> MoveNextAsync()
-            {
-                return enumerator.MoveNextAsync();
-            }
+            public UniTask<bool> MoveNextAsync() { return enumerator.MoveNextAsync(); }
 
 
-            public UniTask DisposeAsync()
-            {
-                return enumerator.DisposeAsync();
-            }
+            public UniTask DisposeAsync() { return enumerator.DisposeAsync(); }
         }
     }
 }

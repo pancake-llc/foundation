@@ -1,5 +1,4 @@
-﻿
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Diagnostics;
@@ -17,20 +16,13 @@ namespace Pancake.Threading.Tasks.CompilerServices
         // 1. Static Create method.
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AsyncUniTaskVoidMethodBuilder Create()
-        {
-            return default;
-        }
+        public static AsyncUniTaskVoidMethodBuilder Create() { return default; }
 
         // 2. TaskLike Task property(void)
         public UniTaskVoid Task
         {
-            [DebuggerHidden]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return default;
-            }
+            [DebuggerHidden] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return default; }
         }
 
         // 3. SetException
@@ -75,8 +67,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : INotifyCompletion
-            where TStateMachine : IAsyncStateMachine
+            where TAwaiter : INotifyCompletion where TStateMachine : IAsyncStateMachine
         {
             if (runner == null)
             {
@@ -91,8 +82,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         [SecuritySafeCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : ICriticalNotifyCompletion
-            where TStateMachine : IAsyncStateMachine
+            where TAwaiter : ICriticalNotifyCompletion where TStateMachine : IAsyncStateMachine
         {
             if (runner == null)
             {
@@ -104,11 +94,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
 
         // 7. Start
         [DebuggerHidden]
-        public void Start<TStateMachine>(ref TStateMachine stateMachine)
-            where TStateMachine : IAsyncStateMachine
-        {
-            stateMachine.MoveNext();
-        }
+        public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine { stateMachine.MoveNext(); }
 
         // 8. SetStateMachine
         [DebuggerHidden]
@@ -128,10 +114,10 @@ namespace Pancake.Threading.Tasks.CompilerServices
                 {
                     debuggingId = new object();
                 }
+
                 return debuggingId;
             }
         }
 #endif
     }
 }
-

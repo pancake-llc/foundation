@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace Pancake.Threading.Tasks.Internal
@@ -17,7 +16,6 @@ namespace Pancake.Threading.Tasks.Internal
         bool running = false;
         IPlayerLoopItem[] loopItems = new IPlayerLoopItem[InitialSize];
         MinimumQueue<IPlayerLoopItem> waitQueue = new MinimumQueue<IPlayerLoopItem>(InitialSize);
-
 
 
         public PlayerLoopRunner(PlayerLoopTiming timing)
@@ -44,6 +42,7 @@ namespace Pancake.Threading.Tasks.Internal
                 {
                     Array.Resize(ref loopItems, checked(tail * 2));
                 }
+
                 loopItems[tail++] = item;
             }
         }
@@ -188,7 +187,9 @@ namespace Pancake.Threading.Tasks.Internal
                             {
                                 unhandledExceptionCallback(ex);
                             }
-                            catch { }
+                            catch
+                            {
+                            }
                         }
                     }
 
@@ -223,7 +224,10 @@ namespace Pancake.Threading.Tasks.Internal
                                 {
                                     unhandledExceptionCallback(ex);
                                 }
-                                catch { }
+                                catch
+                                {
+                                }
+
                                 continue; // next j
                             }
                         }
@@ -250,6 +254,7 @@ namespace Pancake.Threading.Tasks.Internal
                         {
                             Array.Resize(ref loopItems, checked(tail * 2));
                         }
+
                         loopItems[tail++] = waitQueue.Dequeue();
                     }
                 }
@@ -257,4 +262,3 @@ namespace Pancake.Threading.Tasks.Internal
         }
     }
 }
-

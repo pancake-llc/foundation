@@ -9,12 +9,18 @@ namespace Pancake.Threading.Tasks
 {
     public partial struct UniTask
     {
-        public static UniTask WaitUntil(Func<bool> predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask WaitUntil(
+            Func<bool> predicate,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             return new UniTask(WaitUntilPromise.Create(predicate, timing, cancellationToken, out var token), token);
         }
 
-        public static UniTask WaitWhile(Func<bool> predicate, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask WaitWhile(
+            Func<bool> predicate,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             return new UniTask(WaitWhilePromise.Create(predicate, timing, cancellationToken, out var token), token);
         }
@@ -24,15 +30,30 @@ namespace Pancake.Threading.Tasks
             return new UniTask(WaitUntilCanceledPromise.Create(cancellationToken, timing, out var token), token);
         }
 
-        public static UniTask<U> WaitUntilValueChanged<T, U>(T target, Func<T, U> monitorFunction, PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update, IEqualityComparer<U> equalityComparer = null, CancellationToken cancellationToken = default(CancellationToken))
-          where T : class
+        public static UniTask<U> WaitUntilValueChanged<T, U>(
+            T target,
+            Func<T, U> monitorFunction,
+            PlayerLoopTiming monitorTiming = PlayerLoopTiming.Update,
+            IEqualityComparer<U> equalityComparer = null,
+            CancellationToken cancellationToken = default(CancellationToken)) where T : class
         {
             var unityObject = target as UnityEngine.Object;
             var isUnityObject = target is UnityEngine.Object; // don't use (unityObject == null)
 
             return new UniTask<U>(isUnityObject
-                ? WaitUntilValueChangedUnityObjectPromise<T, U>.Create(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken, out var token)
-                : WaitUntilValueChangedStandardObjectPromise<T, U>.Create(target, monitorFunction, equalityComparer, monitorTiming, cancellationToken, out token), token);
+                    ? WaitUntilValueChangedUnityObjectPromise<T, U>.Create(target,
+                        monitorFunction,
+                        equalityComparer,
+                        monitorTiming,
+                        cancellationToken,
+                        out var token)
+                    : WaitUntilValueChangedStandardObjectPromise<T, U>.Create(target,
+                        monitorFunction,
+                        equalityComparer,
+                        monitorTiming,
+                        cancellationToken,
+                        out token),
+                token);
         }
 
         sealed class WaitUntilPromise : IUniTaskSource, IPlayerLoopItem, ITaskPoolNode<WaitUntilPromise>
@@ -41,19 +62,14 @@ namespace Pancake.Threading.Tasks
             WaitUntilPromise nextNode;
             public ref WaitUntilPromise NextNode => ref nextNode;
 
-            static WaitUntilPromise()
-            {
-                TaskPool.RegisterSizeGetter(typeof(WaitUntilPromise), () => pool.Size);
-            }
+            static WaitUntilPromise() { TaskPool.RegisterSizeGetter(typeof(WaitUntilPromise), () => pool.Size); }
 
             Func<bool> predicate;
             CancellationToken cancellationToken;
 
             UniTaskCompletionSourceCore<object> core;
 
-            WaitUntilPromise()
-            {
-            }
+            WaitUntilPromise() { }
 
             public static IUniTaskSource Create(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
             {
@@ -90,20 +106,11 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -146,19 +153,14 @@ namespace Pancake.Threading.Tasks
             WaitWhilePromise nextNode;
             public ref WaitWhilePromise NextNode => ref nextNode;
 
-            static WaitWhilePromise()
-            {
-                TaskPool.RegisterSizeGetter(typeof(WaitWhilePromise), () => pool.Size);
-            }
+            static WaitWhilePromise() { TaskPool.RegisterSizeGetter(typeof(WaitWhilePromise), () => pool.Size); }
 
             Func<bool> predicate;
             CancellationToken cancellationToken;
 
             UniTaskCompletionSourceCore<object> core;
 
-            WaitWhilePromise()
-            {
-            }
+            WaitWhilePromise() { }
 
             public static IUniTaskSource Create(Func<bool> predicate, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
             {
@@ -195,20 +197,11 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -251,18 +244,13 @@ namespace Pancake.Threading.Tasks
             WaitUntilCanceledPromise nextNode;
             public ref WaitUntilCanceledPromise NextNode => ref nextNode;
 
-            static WaitUntilCanceledPromise()
-            {
-                TaskPool.RegisterSizeGetter(typeof(WaitUntilCanceledPromise), () => pool.Size);
-            }
+            static WaitUntilCanceledPromise() { TaskPool.RegisterSizeGetter(typeof(WaitUntilCanceledPromise), () => pool.Size); }
 
             CancellationToken cancellationToken;
 
             UniTaskCompletionSourceCore<object> core;
 
-            WaitUntilCanceledPromise()
-            {
-            }
+            WaitUntilCanceledPromise() { }
 
             public static IUniTaskSource Create(CancellationToken cancellationToken, PlayerLoopTiming timing, out short token)
             {
@@ -298,20 +286,11 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -340,10 +319,7 @@ namespace Pancake.Threading.Tasks
             WaitUntilValueChangedUnityObjectPromise<T, U> nextNode;
             public ref WaitUntilValueChangedUnityObjectPromise<T, U> NextNode => ref nextNode;
 
-            static WaitUntilValueChangedUnityObjectPromise()
-            {
-                TaskPool.RegisterSizeGetter(typeof(WaitUntilValueChangedUnityObjectPromise<T, U>), () => pool.Size);
-            }
+            static WaitUntilValueChangedUnityObjectPromise() { TaskPool.RegisterSizeGetter(typeof(WaitUntilValueChangedUnityObjectPromise<T, U>), () => pool.Size); }
 
             T target;
             UnityEngine.Object targetAsUnityObject;
@@ -354,11 +330,15 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<U> core;
 
-            WaitUntilValueChangedUnityObjectPromise()
-            {
-            }
+            WaitUntilValueChangedUnityObjectPromise() { }
 
-            public static IUniTaskSource<U> Create(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<U> Create(
+                T target,
+                Func<T, U> monitorFunction,
+                IEqualityComparer<U> equalityComparer,
+                PlayerLoopTiming timing,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -397,25 +377,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -457,8 +425,9 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        sealed class WaitUntilValueChangedStandardObjectPromise<T, U> : IUniTaskSource<U>, IPlayerLoopItem, ITaskPoolNode<WaitUntilValueChangedStandardObjectPromise<T, U>>
-            where T : class
+        sealed class WaitUntilValueChangedStandardObjectPromise<T, U> : IUniTaskSource<U>,
+            IPlayerLoopItem,
+            ITaskPoolNode<WaitUntilValueChangedStandardObjectPromise<T, U>> where T : class
         {
             static TaskPool<WaitUntilValueChangedStandardObjectPromise<T, U>> pool;
             WaitUntilValueChangedStandardObjectPromise<T, U> nextNode;
@@ -477,11 +446,15 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<U> core;
 
-            WaitUntilValueChangedStandardObjectPromise()
-            {
-            }
+            WaitUntilValueChangedStandardObjectPromise() { }
 
-            public static IUniTaskSource<U> Create(T target, Func<T, U> monitorFunction, IEqualityComparer<U> equalityComparer, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<U> Create(
+                T target,
+                Func<T, U> monitorFunction,
+                IEqualityComparer<U> equalityComparer,
+                PlayerLoopTiming timing,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -519,25 +492,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {

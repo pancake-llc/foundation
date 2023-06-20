@@ -23,7 +23,11 @@ namespace Pancake.Threading.Tasks.Internal
         {
             var newSize = array.Length * 2;
             var newArray = new T[(index < newSize) ? newSize : (index * 2)];
-            Array.Copy(array, 0, newArray, 0, array.Length);
+            Array.Copy(array,
+                0,
+                newArray,
+                0,
+                array.Length);
 
             array = newArray;
         }
@@ -70,4 +74,3 @@ namespace Pancake.Threading.Tasks.Internal
         }
     }
 }
-

@@ -12,10 +12,9 @@ namespace Pancake.Threading.Tasks
 {
     public static class EnumeratorAsyncExtensions
     {
-        public static UniTask.Awaiter GetAwaiter<T>(this T enumerator)
-            where T : IEnumerator
+        public static UniTask.Awaiter GetAwaiter<T>(this T enumerator) where T : IEnumerator
         {
-            var e = (IEnumerator)enumerator;
+            var e = (IEnumerator) enumerator;
             if (e == null) throw new ArgumentNullException(nameof(enumerator));
             return new UniTask(EnumeratorPromise.Create(e, PlayerLoopTiming.Update, CancellationToken.None, out var token), token).GetAwaiter();
         }
@@ -26,7 +25,10 @@ namespace Pancake.Threading.Tasks
             return new UniTask(EnumeratorPromise.Create(enumerator, PlayerLoopTiming.Update, cancellationToken, out var token), token);
         }
 
-        public static UniTask ToUniTask(this IEnumerator enumerator, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask ToUniTask(
+            this IEnumerator enumerator,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (enumerator == null) throw new ArgumentNullException(nameof(enumerator));
             return new UniTask(EnumeratorPromise.Create(enumerator, timing, cancellationToken, out var token), token);
@@ -51,10 +53,7 @@ namespace Pancake.Threading.Tasks
             EnumeratorPromise nextNode;
             public ref EnumeratorPromise NextNode => ref nextNode;
 
-            static EnumeratorPromise()
-            {
-                TaskPool.RegisterSizeGetter(typeof(EnumeratorPromise), () => pool.Size);
-            }
+            static EnumeratorPromise() { TaskPool.RegisterSizeGetter(typeof(EnumeratorPromise), () => pool.Size); }
 
             IEnumerator innerEnumerator;
             CancellationToken cancellationToken;
@@ -64,9 +63,7 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<object> core;
 
-            EnumeratorPromise()
-            {
-            }
+            EnumeratorPromise() { }
 
             public static IUniTaskSource Create(IEnumerator innerEnumerator, PlayerLoopTiming timing, CancellationToken cancellationToken, out short token)
             {
@@ -79,6 +76,7 @@ namespace Pancake.Threading.Tasks
                 {
                     result = new EnumeratorPromise();
                 }
+
                 TaskTracker.TrackActiveTask(result, 3);
 
                 result.innerEnumerator = ConsumeEnumerator(innerEnumerator);
@@ -94,7 +92,7 @@ namespace Pancake.Threading.Tasks
                 {
                     PlayerLoopHelper.AddAction(timing, result);
                 }
-                
+
                 return result;
             }
 
@@ -114,20 +112,11 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -223,6 +212,7 @@ namespace Pancake.Threading.Tasks
                                 innerCoroutine = UnwrapWaitForSeconds(wfs);
                                 break;
                         }
+
                         if (innerCoroutine != null)
                         {
                             while (innerCoroutine.MoveNext())
@@ -252,16 +242,18 @@ namespace Pancake.Threading.Tasks
 
                     WARN:
                     // WaitForEndOfFrame, WaitForFixedUpdate, others.
-                    UnityEngine.Debug.LogWarning($"yield {current.GetType().Name} is not supported on await IEnumerator or IEnumerator.ToUniTask(), please use ToUniTask(MonoBehaviour coroutineRunner) instead.");
+                    UnityEngine.Debug.LogWarning(
+                        $"yield {current.GetType().Name} is not supported on await IEnumerator or IEnumerator.ToUniTask(), please use ToUniTask(MonoBehaviour coroutineRunner) instead.");
                     yield return null;
                 }
             }
 
-            static readonly FieldInfo waitForSeconds_Seconds = typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
+            static readonly FieldInfo waitForSeconds_Seconds =
+                typeof(WaitForSeconds).GetField("m_Seconds", BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
 
             static IEnumerator UnwrapWaitForSeconds(WaitForSeconds waitForSeconds)
             {
-                var second = (float)waitForSeconds_Seconds.GetValue(waitForSeconds);
+                var second = (float) waitForSeconds_Seconds.GetValue(waitForSeconds);
                 var elapsed = 0.0f;
                 while (true)
                 {
@@ -272,7 +264,9 @@ namespace Pancake.Threading.Tasks
                     {
                         break;
                     }
-                };
+                }
+
+                ;
             }
 
             static IEnumerator UnwrapWaitAsyncOperation(AsyncOperation asyncOperation)

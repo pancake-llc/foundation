@@ -24,25 +24,25 @@ namespace Pancake.Threading.Tasks.Internal
 
         static readonly Dictionary<Type, string> builtInTypeNames = new Dictionary<Type, string>
         {
-            { typeof(void), "void" },
-            { typeof(bool), "bool" },
-            { typeof(byte), "byte" },
-            { typeof(char), "char" },
-            { typeof(decimal), "decimal" },
-            { typeof(double), "double" },
-            { typeof(float), "float" },
-            { typeof(int), "int" },
-            { typeof(long), "long" },
-            { typeof(object), "object" },
-            { typeof(sbyte), "sbyte" },
-            { typeof(short), "short" },
-            { typeof(string), "string" },
-            { typeof(uint), "uint" },
-            { typeof(ulong), "ulong" },
-            { typeof(ushort), "ushort" },
-            { typeof(Task), "Task" },
-            { typeof(UniTask), "UniTask" },
-            { typeof(UniTaskVoid), "UniTaskVoid" }
+            {typeof(void), "void"},
+            {typeof(bool), "bool"},
+            {typeof(byte), "byte"},
+            {typeof(char), "char"},
+            {typeof(decimal), "decimal"},
+            {typeof(double), "double"},
+            {typeof(float), "float"},
+            {typeof(int), "int"},
+            {typeof(long), "long"},
+            {typeof(object), "object"},
+            {typeof(sbyte), "sbyte"},
+            {typeof(short), "short"},
+            {typeof(string), "string"},
+            {typeof(uint), "uint"},
+            {typeof(ulong), "ulong"},
+            {typeof(ushort), "ushort"},
+            {typeof(Task), "Task"},
+            {typeof(UniTask), "UniTask"},
+            {typeof(UniTaskVoid), "UniTaskVoid"}
         };
 
         public static string CleanupAsyncStackTrace(this StackTrace stackTrace)
@@ -76,6 +76,7 @@ namespace Pancake.Threading.Tasks.Internal
                 {
                     sb.Append(".");
                 }
+
                 sb.Append(mb.Name);
                 if (mb.IsGenericMethod)
                 {
@@ -84,6 +85,7 @@ namespace Pancake.Threading.Tasks.Internal
                     {
                         sb.Append(BeautifyType(item, true));
                     }
+
                     sb.Append(">");
                 }
 
@@ -119,6 +121,7 @@ namespace Pancake.Threading.Tasks.Internal
 
                 sb.AppendLine();
             }
+
             return sb.ToString();
         }
 
@@ -176,13 +179,20 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 return builtin;
             }
+
             if (t.IsGenericParameter) return t.Name;
             if (t.IsArray) return BeautifyType(t.GetElementType(), shortName) + "[]";
             if (t.FullName?.StartsWith("System.ValueTuple") ?? false)
             {
                 return "(" + string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true))) + ")";
             }
-            if (!t.IsGenericType) return shortName ? t.Name : t.FullName.Replace("Pancake.Threading.Tasks.Triggers.", "").Replace("Cysharp.Threading.Tasks.Internal.", "").Replace("Cysharp.Threading.Tasks.", "") ?? t.Name;
+
+            if (!t.IsGenericType)
+                return shortName
+                    ? t.Name
+                    : t.FullName.Replace("Pancake.Threading.Tasks.Triggers.", "")
+                        .Replace("Cysharp.Threading.Tasks.Internal.", "")
+                        .Replace("Cysharp.Threading.Tasks.", "") ?? t.Name;
 
             var innerFormat = string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true)));
 
@@ -192,7 +202,10 @@ namespace Pancake.Threading.Tasks.Internal
                 genericType = "Task";
             }
 
-            return typeBeautifyRegex.Replace(genericType, "").Replace("Pancake.Threading.Tasks.Triggers.", "").Replace("Cysharp.Threading.Tasks.Internal.", "").Replace("Cysharp.Threading.Tasks.", "") + "<" + innerFormat + ">";
+            return typeBeautifyRegex.Replace(genericType, "")
+                .Replace("Pancake.Threading.Tasks.Triggers.", "")
+                .Replace("Cysharp.Threading.Tasks.Internal.", "")
+                .Replace("Cysharp.Threading.Tasks.", "") + "<" + innerFormat + ">";
         }
 
         static bool IgnoreLine(MethodBase methodInfo)
@@ -246,4 +259,3 @@ namespace Pancake.Threading.Tasks.Internal
         }
     }
 }
-

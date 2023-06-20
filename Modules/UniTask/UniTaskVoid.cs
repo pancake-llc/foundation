@@ -11,9 +11,6 @@ namespace Pancake.Threading.Tasks
     [AsyncMethodBuilder(typeof(AsyncUniTaskVoidMethodBuilder))]
     public readonly struct UniTaskVoid
     {
-        public void Forget()
-        {
-        }
+        public void Forget() { }
     }
 }
-

@@ -25,8 +25,7 @@ namespace Pancake.Threading.Tasks.Internal
 
         public int Count
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return size; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return size; }
         }
 
         public T Peek()
@@ -64,11 +63,12 @@ namespace Pancake.Threading.Tasks.Internal
 
         void Grow()
         {
-            int newcapacity = (int)((long)array.Length * (long)GrowFactor / 100);
+            int newcapacity = (int) ((long) array.Length * (long) GrowFactor / 100);
             if (newcapacity < array.Length + MinimumGrow)
             {
                 newcapacity = array.Length + MinimumGrow;
             }
+
             SetCapacity(newcapacity);
         }
 
@@ -79,12 +79,24 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 if (head < tail)
                 {
-                    Array.Copy(array, head, newarray, 0, size);
+                    Array.Copy(array,
+                        head,
+                        newarray,
+                        0,
+                        size);
                 }
                 else
                 {
-                    Array.Copy(array, head, newarray, 0, array.Length - head);
-                    Array.Copy(array, 0, newarray, array.Length - head, tail);
+                    Array.Copy(array,
+                        head,
+                        newarray,
+                        0,
+                        array.Length - head);
+                    Array.Copy(array,
+                        0,
+                        newarray,
+                        array.Length - head,
+                        tail);
                 }
             }
 
@@ -101,12 +113,10 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 tmp = 0;
             }
+
             index = tmp;
         }
 
-        void ThrowForEmptyQueue()
-        {
-            throw new InvalidOperationException("EmptyQueue");
-        }
+        void ThrowForEmptyQueue() { throw new InvalidOperationException("EmptyQueue"); }
     }
 }

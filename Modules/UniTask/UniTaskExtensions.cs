@@ -19,24 +19,26 @@ namespace Pancake.Threading.Tasks
             var promise = new UniTaskCompletionSource<T>();
 
             task.ContinueWith((x, state) =>
-            {
-                var p = (UniTaskCompletionSource<T>)state;
-
-                switch (x.Status)
                 {
-                    case TaskStatus.Canceled:
-                        p.TrySetCanceled();
-                        break;
-                    case TaskStatus.Faulted:
-                        p.TrySetException(x.Exception);
-                        break;
-                    case TaskStatus.RanToCompletion:
-                        p.TrySetResult(x.Result);
-                        break;
-                    default:
-                        throw new NotSupportedException();
-                }
-            }, promise, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
+                    var p = (UniTaskCompletionSource<T>) state;
+
+                    switch (x.Status)
+                    {
+                        case TaskStatus.Canceled:
+                            p.TrySetCanceled();
+                            break;
+                        case TaskStatus.Faulted:
+                            p.TrySetException(x.Exception);
+                            break;
+                        case TaskStatus.RanToCompletion:
+                            p.TrySetResult(x.Result);
+                            break;
+                        default:
+                            throw new NotSupportedException();
+                    }
+                },
+                promise,
+                useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
 
             return promise.Task;
         }
@@ -49,24 +51,26 @@ namespace Pancake.Threading.Tasks
             var promise = new UniTaskCompletionSource();
 
             task.ContinueWith((x, state) =>
-            {
-                var p = (UniTaskCompletionSource)state;
-
-                switch (x.Status)
                 {
-                    case TaskStatus.Canceled:
-                        p.TrySetCanceled();
-                        break;
-                    case TaskStatus.Faulted:
-                        p.TrySetException(x.Exception);
-                        break;
-                    case TaskStatus.RanToCompletion:
-                        p.TrySetResult();
-                        break;
-                    default:
-                        throw new NotSupportedException();
-                }
-            }, promise, useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
+                    var p = (UniTaskCompletionSource) state;
+
+                    switch (x.Status)
+                    {
+                        case TaskStatus.Canceled:
+                            p.TrySetCanceled();
+                            break;
+                        case TaskStatus.Faulted:
+                            p.TrySetException(x.Exception);
+                            break;
+                        case TaskStatus.RanToCompletion:
+                            p.TrySetResult();
+                            break;
+                        default:
+                            throw new NotSupportedException();
+                    }
+                },
+                promise,
+                useCurrentSynchronizationContext ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Current);
 
             return promise.Task;
         }
@@ -101,21 +105,22 @@ namespace Pancake.Threading.Tasks
                 var tcs = new TaskCompletionSource<T>();
 
                 awaiter.SourceOnCompleted(state =>
-                {
-                    using (var tuple = (StateTuple<TaskCompletionSource<T>, UniTask<T>.Awaiter>)state)
                     {
-                        var (inTcs, inAwaiter) = tuple;
-                        try
+                        using (var tuple = (StateTuple<TaskCompletionSource<T>, UniTask<T>.Awaiter>) state)
                         {
-                            var result = inAwaiter.GetResult();
-                            inTcs.SetResult(result);
+                            var (inTcs, inAwaiter) = tuple;
+                            try
+                            {
+                                var result = inAwaiter.GetResult();
+                                inTcs.SetResult(result);
+                            }
+                            catch (Exception ex)
+                            {
+                                inTcs.SetException(ex);
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            inTcs.SetException(ex);
-                        }
-                    }
-                }, StateTuple.Create(tcs, awaiter));
+                    },
+                    StateTuple.Create(tcs, awaiter));
 
                 return tcs.Task;
             }
@@ -155,21 +160,22 @@ namespace Pancake.Threading.Tasks
                 var tcs = new TaskCompletionSource<object>();
 
                 awaiter.SourceOnCompleted(state =>
-                {
-                    using (var tuple = (StateTuple<TaskCompletionSource<object>, UniTask.Awaiter>)state)
                     {
-                        var (inTcs, inAwaiter) = tuple;
-                        try
+                        using (var tuple = (StateTuple<TaskCompletionSource<object>, UniTask.Awaiter>) state)
                         {
-                            inAwaiter.GetResult();
-                            inTcs.SetResult(null);
+                            var (inTcs, inAwaiter) = tuple;
+                            try
+                            {
+                                inAwaiter.GetResult();
+                                inTcs.SetResult(null);
+                            }
+                            catch (Exception ex)
+                            {
+                                inTcs.SetException(ex);
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            inTcs.SetException(ex);
-                        }
-                    }
-                }, StateTuple.Create(tcs, awaiter));
+                    },
+                    StateTuple.Create(tcs, awaiter));
 
                 return tcs.Task;
             }
@@ -179,15 +185,9 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        public static AsyncLazy ToAsyncLazy(this UniTask task)
-        {
-            return new AsyncLazy(task);
-        }
+        public static AsyncLazy ToAsyncLazy(this UniTask task) { return new AsyncLazy(task); }
 
-        public static AsyncLazy<T> ToAsyncLazy<T>(this UniTask<T> task)
-        {
-            return new AsyncLazy<T>(task);
-        }
+        public static AsyncLazy<T> ToAsyncLazy<T>(this UniTask<T> task) { return new AsyncLazy<T>(task); }
 
         /// <summary>
         /// Ignore task result when cancel raised first.
@@ -269,29 +269,17 @@ namespace Pancake.Threading.Tasks
 
             static void CancellationCallback(object state)
             {
-                var self = (AttachExternalCancellationSource)state;
+                var self = (AttachExternalCancellationSource) state;
                 self.core.TrySetCanceled(self.cancellationToken);
             }
 
-            public void GetResult(short token)
-            {
-                core.GetResult(token);
-            }
+            public void GetResult(short token) { core.GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
         }
 
         sealed class AttachExternalCancellationSource<T> : IUniTaskSource<T>
@@ -327,34 +315,19 @@ namespace Pancake.Threading.Tasks
 
             static void CancellationCallback(object state)
             {
-                var self = (AttachExternalCancellationSource<T>)state;
+                var self = (AttachExternalCancellationSource<T>) state;
                 self.core.TrySetCanceled(self.cancellationToken);
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                core.GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { core.GetResult(token); }
 
-            public T GetResult(short token)
-            {
-                return core.GetResult(token);
-            }
+            public T GetResult(short token) { return core.GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
         }
 
 #if UNITY_2018_3_OR_NEWER
@@ -364,12 +337,14 @@ namespace Pancake.Threading.Tasks
             return new ToCoroutineEnumerator<T>(task, resultHandler, exceptionHandler);
         }
 
-        public static IEnumerator ToCoroutine(this UniTask task, Action<Exception> exceptionHandler = null)
-        {
-            return new ToCoroutineEnumerator(task, exceptionHandler);
-        }
+        public static IEnumerator ToCoroutine(this UniTask task, Action<Exception> exceptionHandler = null) { return new ToCoroutineEnumerator(task, exceptionHandler); }
 
-        public static async UniTask Timeout(this UniTask task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask Timeout(
+            this UniTask task,
+            TimeSpan timeout,
+            DelayType delayType = DelayType.DeltaTime,
+            PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update,
+            CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
             var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
@@ -410,7 +385,12 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        public static async UniTask<T> Timeout<T>(this UniTask<T> task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask<T> Timeout<T>(
+            this UniTask<T> task,
+            TimeSpan timeout,
+            DelayType delayType = DelayType.DeltaTime,
+            PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update,
+            CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
             var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
@@ -456,7 +436,12 @@ namespace Pancake.Threading.Tasks
         /// <summary>
         /// Timeout with suppress OperationCanceledException. Returns (bool, IsCacneled).
         /// </summary>
-        public static async UniTask<bool> TimeoutWithoutException(this UniTask task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask<bool> TimeoutWithoutException(
+            this UniTask task,
+            TimeSpan timeout,
+            DelayType delayType = DelayType.DeltaTime,
+            PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update,
+            CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
             var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
@@ -502,7 +487,12 @@ namespace Pancake.Threading.Tasks
         /// <summary>
         /// Timeout with suppress OperationCanceledException. Returns (bool IsTimeout, T Result).
         /// </summary>
-        public static async UniTask<(bool IsTimeout, T Result)> TimeoutWithoutException<T>(this UniTask<T> task, TimeSpan timeout, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update, CancellationTokenSource taskCancellationTokenSource = null)
+        public static async UniTask<(bool IsTimeout, T Result)> TimeoutWithoutException<T>(
+            this UniTask<T> task,
+            TimeSpan timeout,
+            DelayType delayType = DelayType.DeltaTime,
+            PlayerLoopTiming timeoutCheckTiming = PlayerLoopTiming.Update,
+            CancellationTokenSource taskCancellationTokenSource = null)
         {
             var delayCancellationTokenSource = new CancellationTokenSource();
             var timeoutTask = UniTask.Delay(timeout, delayType, timeoutCheckTiming, delayCancellationTokenSource.Token).SuppressCancellationThrow();
@@ -564,19 +554,20 @@ namespace Pancake.Threading.Tasks
             else
             {
                 awaiter.SourceOnCompleted(state =>
-                {
-                    using (var t = (StateTuple<UniTask.Awaiter>)state)
                     {
-                        try
+                        using (var t = (StateTuple<UniTask.Awaiter>) state)
                         {
-                            t.Item1.GetResult();
+                            try
+                            {
+                                t.Item1.GetResult();
+                            }
+                            catch (Exception ex)
+                            {
+                                UniTaskScheduler.PublishUnobservedTaskException(ex);
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            UniTaskScheduler.PublishUnobservedTaskException(ex);
-                        }
-                    }
-                }, StateTuple.Create(awaiter));
+                    },
+                    StateTuple.Create(awaiter));
             }
         }
 
@@ -608,6 +599,7 @@ namespace Pancake.Threading.Tasks
                         await UniTask.SwitchToMainThread();
 #endif
                     }
+
                     exceptionHandler(ex);
                 }
                 catch (Exception ex2)
@@ -634,19 +626,20 @@ namespace Pancake.Threading.Tasks
             else
             {
                 awaiter.SourceOnCompleted(state =>
-                {
-                    using (var t = (StateTuple<UniTask<T>.Awaiter>)state)
                     {
-                        try
+                        using (var t = (StateTuple<UniTask<T>.Awaiter>) state)
                         {
-                            t.Item1.GetResult();
+                            try
+                            {
+                                t.Item1.GetResult();
+                            }
+                            catch (Exception ex)
+                            {
+                                UniTaskScheduler.PublishUnobservedTaskException(ex);
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            UniTaskScheduler.PublishUnobservedTaskException(ex);
-                        }
-                    }
-                }, StateTuple.Create(awaiter));
+                    },
+                    StateTuple.Create(awaiter));
             }
         }
 
@@ -678,6 +671,7 @@ namespace Pancake.Threading.Tasks
                         await UniTask.SwitchToMainThread();
 #endif
                     }
+
                     exceptionHandler(ex);
                 }
                 catch (Exception ex2)
@@ -687,20 +681,11 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        public static async UniTask ContinueWith<T>(this UniTask<T> task, Action<T> continuationFunction)
-        {
-            continuationFunction(await task);
-        }
+        public static async UniTask ContinueWith<T>(this UniTask<T> task, Action<T> continuationFunction) { continuationFunction(await task); }
 
-        public static async UniTask ContinueWith<T>(this UniTask<T> task, Func<T, UniTask> continuationFunction)
-        {
-            await continuationFunction(await task);
-        }
+        public static async UniTask ContinueWith<T>(this UniTask<T> task, Func<T, UniTask> continuationFunction) { await continuationFunction(await task); }
 
-        public static async UniTask<TR> ContinueWith<T, TR>(this UniTask<T> task, Func<T, TR> continuationFunction)
-        {
-            return continuationFunction(await task);
-        }
+        public static async UniTask<TR> ContinueWith<T, TR>(this UniTask<T> task, Func<T, TR> continuationFunction) { return continuationFunction(await task); }
 
         public static async UniTask<TR> ContinueWith<T, TR>(this UniTask<T> task, Func<T, UniTask<TR>> continuationFunction)
         {
@@ -731,55 +716,31 @@ namespace Pancake.Threading.Tasks
             return await continuationFunction();
         }
 
-        public static async UniTask<T> Unwrap<T>(this UniTask<UniTask<T>> task)
-        {
-            return await await task;
-        }
+        public static async UniTask<T> Unwrap<T>(this UniTask<UniTask<T>> task) { return await await task; }
 
-        public static async UniTask Unwrap(this UniTask<UniTask> task)
-        {
-            await await task;
-        }
+        public static async UniTask Unwrap(this UniTask<UniTask> task) { await await task; }
 
-        public static async UniTask<T> Unwrap<T>(this Task<UniTask<T>> task)
-        {
-            return await await task;
-        }
+        public static async UniTask<T> Unwrap<T>(this Task<UniTask<T>> task) { return await await task; }
 
         public static async UniTask<T> Unwrap<T>(this Task<UniTask<T>> task, bool continueOnCapturedContext)
         {
             return await await task.ConfigureAwait(continueOnCapturedContext);
         }
 
-        public static async UniTask Unwrap(this Task<UniTask> task)
-        {
-            await await task;
-        }
+        public static async UniTask Unwrap(this Task<UniTask> task) { await await task; }
 
-        public static async UniTask Unwrap(this Task<UniTask> task, bool continueOnCapturedContext)
-        {
-            await await task.ConfigureAwait(continueOnCapturedContext);
-        }
+        public static async UniTask Unwrap(this Task<UniTask> task, bool continueOnCapturedContext) { await await task.ConfigureAwait(continueOnCapturedContext); }
 
-        public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task)
-        {
-            return await await task;
-        }
+        public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task) { return await await task; }
 
         public static async UniTask<T> Unwrap<T>(this UniTask<Task<T>> task, bool continueOnCapturedContext)
         {
             return await (await task).ConfigureAwait(continueOnCapturedContext);
         }
 
-        public static async UniTask Unwrap(this UniTask<Task> task)
-        {
-            await await task;
-        }
+        public static async UniTask Unwrap(this UniTask<Task> task) { await await task; }
 
-        public static async UniTask Unwrap(this UniTask<Task> task, bool continueOnCapturedContext)
-        {
-            await (await task).ConfigureAwait(continueOnCapturedContext);
-        }
+        public static async UniTask Unwrap(this UniTask<Task> task, bool continueOnCapturedContext) { await (await task).ConfigureAwait(continueOnCapturedContext); }
 
 #if UNITY_2018_3_OR_NEWER
 
@@ -840,9 +801,7 @@ namespace Pancake.Threading.Tasks
                 return !completed;
             }
 
-            void IEnumerator.Reset()
-            {
-            }
+            void IEnumerator.Reset() { }
         }
 
         sealed class ToCoroutineEnumerator<T> : IEnumerator
@@ -910,12 +869,9 @@ namespace Pancake.Threading.Tasks
                 return !completed;
             }
 
-            void IEnumerator.Reset()
-            {
-            }
+            void IEnumerator.Reset() { }
         }
 
 #endif
     }
 }
-

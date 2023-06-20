@@ -107,7 +107,7 @@ namespace Pancake.Threading.Tasks
 
         static void SetCompletionSource(object state)
         {
-            var self = (AsyncLazy)state;
+            var self = (AsyncLazy) state;
             try
             {
                 self.awaiter.GetResult();
@@ -226,7 +226,7 @@ namespace Pancake.Threading.Tasks
 
         static void SetCompletionSource(object state)
         {
-            var self = (AsyncLazy<T>)state;
+            var self = (AsyncLazy<T>) state;
             try
             {
                 var result = self.awaiter.GetResult();

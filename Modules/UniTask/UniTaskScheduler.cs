@@ -28,14 +28,11 @@ namespace Pancake.Threading.Tasks
         /// Dispatch exception event to Unity MainThread. Default is true.
         /// </summary>
         public static bool DispatchUnityMainThread = true;
-        
+
         // cache delegate.
         static readonly SendOrPostCallback handleExceptionInvoke = InvokeUnobservedTaskException;
 
-        static void InvokeUnobservedTaskException(object state)
-        {
-            UnobservedTaskException((Exception)state);
-        }
+        static void InvokeUnobservedTaskException(object state) { UnobservedTaskException((Exception) state); }
 #endif
 
         internal static void PublishUnobservedTaskException(Exception ex)
@@ -72,6 +69,7 @@ namespace Pancake.Threading.Tasks
                     {
                         msg = "UnobservedTaskException: " + ex.ToString();
                     }
+
                     switch (UnobservedExceptionWriteLogType)
                     {
                         case UnityEngine.LogType.Error:
@@ -100,4 +98,3 @@ namespace Pancake.Threading.Tasks
         }
     }
 }
-

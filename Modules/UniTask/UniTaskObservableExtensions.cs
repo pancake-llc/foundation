@@ -15,8 +15,8 @@ namespace Pancake.Threading.Tasks
             var disposable = new SingleAssignmentDisposable();
 
             var observer = useFirstValue
-                ? (IObserver<T>)new FirstValueToUniTaskObserver<T>(promise, disposable, cancellationToken)
-                : (IObserver<T>)new ToUniTaskObserver<T>(promise, disposable, cancellationToken);
+                ? (IObserver<T>) new FirstValueToUniTaskObserver<T>(promise, disposable, cancellationToken)
+                : (IObserver<T>) new ToUniTaskObserver<T>(promise, disposable, cancellationToken);
 
             try
             {
@@ -131,7 +131,7 @@ namespace Pancake.Threading.Tasks
 
             static void OnCanceled(object state)
             {
-                var self = (ToUniTaskObserver<T>)state;
+                var self = (ToUniTaskObserver<T>) state;
                 self.disposable.Dispose();
                 self.promise.TrySetCanceled(self.cancellationToken);
             }
@@ -201,7 +201,7 @@ namespace Pancake.Threading.Tasks
 
             static void OnCanceled(object state)
             {
-                var self = (FirstValueToUniTaskObserver<T>)state;
+                var self = (FirstValueToUniTaskObserver<T>) state;
                 self.disposable.Dispose();
                 self.promise.TrySetCanceled(self.cancellationToken);
             }
@@ -254,10 +254,7 @@ namespace Pancake.Threading.Tasks
         {
             readonly T value;
 
-            public ReturnObservable(T value)
-            {
-                this.value = value;
-            }
+            public ReturnObservable(T value) { this.value = value; }
 
             public IDisposable Subscribe(IObserver<T> observer)
             {
@@ -271,10 +268,7 @@ namespace Pancake.Threading.Tasks
         {
             readonly Exception value;
 
-            public ThrowObservable(Exception value)
-            {
-                this.value = value;
-            }
+            public ThrowObservable(Exception value) { this.value = value; }
 
             public IDisposable Subscribe(IObserver<T> observer)
             {
@@ -293,14 +287,9 @@ namespace Pancake.Threading.Tasks.Internal
     {
         public static EmptyDisposable Instance = new EmptyDisposable();
 
-        EmptyDisposable()
-        {
+        EmptyDisposable() { }
 
-        }
-
-        public void Dispose()
-        {
-        }
+        public void Dispose() { }
     }
 
     internal sealed class SingleAssignmentDisposable : IDisposable
@@ -309,14 +298,20 @@ namespace Pancake.Threading.Tasks.Internal
         IDisposable current;
         bool disposed;
 
-        public bool IsDisposed { get { lock (gate) { return disposed; } } }
-
-        public IDisposable Disposable
+        public bool IsDisposed
         {
             get
             {
-                return current;
+                lock (gate)
+                {
+                    return disposed;
+                }
             }
+        }
+
+        public IDisposable Disposable
+        {
+            get { return current; }
             set
             {
                 var old = default(IDisposable);
@@ -383,13 +378,7 @@ namespace Pancake.Threading.Tasks.Internal
             }
         }
 
-        public bool HasObservers
-        {
-            get
-            {
-                return !(outObserver is EmptyObserver<T>) && !isStopped && !isDisposed;
-            }
-        }
+        public bool HasObservers { get { return !(outObserver is EmptyObserver<T>) && !isStopped && !isDisposed; } }
 
         public bool IsCompleted { get { return isStopped; } }
 
@@ -479,7 +468,7 @@ namespace Pancake.Threading.Tasks.Internal
                         }
                         else
                         {
-                            outObserver = new ListObserver<T>(new ImmutableList<IObserver<T>>(new[] { current, observer }));
+                            outObserver = new ListObserver<T>(new ImmutableList<IObserver<T>>(new[] {current, observer}));
                         }
                     }
 
@@ -523,7 +512,7 @@ namespace Pancake.Threading.Tasks.Internal
         {
             if (isDisposed) throw new ObjectDisposedException("");
         }
-        
+
         class Subscription : IDisposable
         {
             readonly object gate = new object();
@@ -567,10 +556,7 @@ namespace Pancake.Threading.Tasks.Internal
     {
         private readonly ImmutableList<IObserver<T>> _observers;
 
-        public ListObserver(ImmutableList<IObserver<T>> observers)
-        {
-            _observers = observers;
-        }
+        public ListObserver(ImmutableList<IObserver<T>> observers) { _observers = observers; }
 
         public void OnCompleted()
         {
@@ -599,10 +585,7 @@ namespace Pancake.Threading.Tasks.Internal
             }
         }
 
-        internal IObserver<T> Add(IObserver<T> observer)
-        {
-            return new ListObserver<T>(_observers.Add(observer));
-        }
+        internal IObserver<T> Add(IObserver<T> observer) { return new ListObserver<T>(_observers.Add(observer)); }
 
         internal IObserver<T> Remove(IObserver<T> observer)
         {
@@ -625,70 +608,39 @@ namespace Pancake.Threading.Tasks.Internal
     {
         public static readonly EmptyObserver<T> Instance = new EmptyObserver<T>();
 
-        EmptyObserver()
-        {
+        EmptyObserver() { }
 
-        }
+        public void OnCompleted() { }
 
-        public void OnCompleted()
-        {
-        }
+        public void OnError(Exception error) { }
 
-        public void OnError(Exception error)
-        {
-        }
-
-        public void OnNext(T value)
-        {
-        }
+        public void OnNext(T value) { }
     }
 
     internal class ThrowObserver<T> : IObserver<T>
     {
         public static readonly ThrowObserver<T> Instance = new ThrowObserver<T>();
 
-        ThrowObserver()
-        {
+        ThrowObserver() { }
 
-        }
+        public void OnCompleted() { }
 
-        public void OnCompleted()
-        {
-        }
+        public void OnError(Exception error) { ExceptionDispatchInfo.Capture(error).Throw(); }
 
-        public void OnError(Exception error)
-        {
-            ExceptionDispatchInfo.Capture(error).Throw();
-        }
-
-        public void OnNext(T value)
-        {
-        }
+        public void OnNext(T value) { }
     }
 
     internal class DisposedObserver<T> : IObserver<T>
     {
         public static readonly DisposedObserver<T> Instance = new DisposedObserver<T>();
 
-        DisposedObserver()
-        {
+        DisposedObserver() { }
 
-        }
+        public void OnCompleted() { throw new ObjectDisposedException(""); }
 
-        public void OnCompleted()
-        {
-            throw new ObjectDisposedException("");
-        }
+        public void OnError(Exception error) { throw new ObjectDisposedException(""); }
 
-        public void OnError(Exception error)
-        {
-            throw new ObjectDisposedException("");
-        }
-
-        public void OnNext(T value)
-        {
-            throw new ObjectDisposedException("");
-        }
+        public void OnNext(T value) { throw new ObjectDisposedException(""); }
     }
 
     internal class ImmutableList<T>
@@ -697,20 +649,11 @@ namespace Pancake.Threading.Tasks.Internal
 
         T[] data;
 
-        public T[] Data
-        {
-            get { return data; }
-        }
+        public T[] Data { get { return data; } }
 
-        ImmutableList()
-        {
-            data = new T[0];
-        }
+        ImmutableList() { data = new T[0]; }
 
-        public ImmutableList(T[] data)
-        {
-            this.data = data;
-        }
+        public ImmutableList(T[] data) { this.data = data; }
 
         public ImmutableList<T> Add(T value)
         {
@@ -730,8 +673,16 @@ namespace Pancake.Threading.Tasks.Internal
 
             var newData = new T[length - 1];
 
-            Array.Copy(data, 0, newData, 0, i);
-            Array.Copy(data, i + 1, newData, i, length - i - 1);
+            Array.Copy(data,
+                0,
+                newData,
+                0,
+                i);
+            Array.Copy(data,
+                i + 1,
+                newData,
+                i,
+                length - i - 1);
 
             return new ImmutableList<T>(newData);
         }
@@ -743,8 +694,8 @@ namespace Pancake.Threading.Tasks.Internal
                 // ImmutableList only use for IObserver(no worry for boxed)
                 if (object.Equals(data[i], value)) return i;
             }
+
             return -1;
         }
     }
 }
-

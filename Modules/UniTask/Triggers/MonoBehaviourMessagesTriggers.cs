@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace Pancake.Threading.Tasks.Triggers
 {
-#region FixedUpdate
+    #region FixedUpdate
 
     public interface IAsyncFixedUpdateHandler
     {
@@ -20,54 +20,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncFixedUpdateHandler.FixedUpdateAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncFixedUpdateTrigger GetAsyncFixedUpdateTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncFixedUpdateTrigger>(gameObject);
-        }
-        
-        public static AsyncFixedUpdateTrigger GetAsyncFixedUpdateTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncFixedUpdateTrigger();
-        }
+        public static AsyncFixedUpdateTrigger GetAsyncFixedUpdateTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncFixedUpdateTrigger>(gameObject); }
+
+        public static AsyncFixedUpdateTrigger GetAsyncFixedUpdateTrigger(this Component component) { return component.gameObject.GetAsyncFixedUpdateTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncFixedUpdateTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void FixedUpdate()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void FixedUpdate() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncFixedUpdateHandler GetFixedUpdateAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncFixedUpdateHandler GetFixedUpdateAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncFixedUpdateHandler GetFixedUpdateAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask FixedUpdateAsync()
-        {
-            return ((IAsyncFixedUpdateHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).FixedUpdateAsync();
-        }
+        public UniTask FixedUpdateAsync() { return ((IAsyncFixedUpdateHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).FixedUpdateAsync(); }
 
         public UniTask FixedUpdateAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncFixedUpdateHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).FixedUpdateAsync();
+            return ((IAsyncFixedUpdateHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).FixedUpdateAsync();
         }
     }
-#endregion
 
-#region LateUpdate
+    #endregion
+
+    #region LateUpdate
 
     public interface IAsyncLateUpdateHandler
     {
@@ -79,54 +65,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncLateUpdateHandler.LateUpdateAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncLateUpdateTrigger GetAsyncLateUpdateTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncLateUpdateTrigger>(gameObject);
-        }
-        
-        public static AsyncLateUpdateTrigger GetAsyncLateUpdateTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncLateUpdateTrigger();
-        }
+        public static AsyncLateUpdateTrigger GetAsyncLateUpdateTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncLateUpdateTrigger>(gameObject); }
+
+        public static AsyncLateUpdateTrigger GetAsyncLateUpdateTrigger(this Component component) { return component.gameObject.GetAsyncLateUpdateTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncLateUpdateTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void LateUpdate()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void LateUpdate() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncLateUpdateHandler GetLateUpdateAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncLateUpdateHandler GetLateUpdateAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncLateUpdateHandler GetLateUpdateAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask LateUpdateAsync()
-        {
-            return ((IAsyncLateUpdateHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).LateUpdateAsync();
-        }
+        public UniTask LateUpdateAsync() { return ((IAsyncLateUpdateHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).LateUpdateAsync(); }
 
         public UniTask LateUpdateAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncLateUpdateHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).LateUpdateAsync();
+            return ((IAsyncLateUpdateHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).LateUpdateAsync();
         }
     }
-#endregion
 
-#region AnimatorIK
+    #endregion
+
+    #region AnimatorIK
 
     public interface IAsyncOnAnimatorIKHandler
     {
@@ -138,54 +110,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<int> IAsyncOnAnimatorIKHandler.OnAnimatorIKAsync()
         {
             core.Reset();
-            return new UniTask<int>((IUniTaskSource<int>)(object)this, core.Version);
+            return new UniTask<int>((IUniTaskSource<int>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncAnimatorIKTrigger GetAsyncAnimatorIKTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncAnimatorIKTrigger>(gameObject);
-        }
-        
-        public static AsyncAnimatorIKTrigger GetAsyncAnimatorIKTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncAnimatorIKTrigger();
-        }
+        public static AsyncAnimatorIKTrigger GetAsyncAnimatorIKTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncAnimatorIKTrigger>(gameObject); }
+
+        public static AsyncAnimatorIKTrigger GetAsyncAnimatorIKTrigger(this Component component) { return component.gameObject.GetAsyncAnimatorIKTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncAnimatorIKTrigger : AsyncTriggerBase<int>
     {
-        void OnAnimatorIK(int layerIndex)
-        {
-            RaiseEvent((layerIndex));
-        }
+        void OnAnimatorIK(int layerIndex) { RaiseEvent((layerIndex)); }
 
-        public IAsyncOnAnimatorIKHandler GetOnAnimatorIKAsyncHandler()
-        {
-            return new AsyncTriggerHandler<int>(this, false);
-        }
+        public IAsyncOnAnimatorIKHandler GetOnAnimatorIKAsyncHandler() { return new AsyncTriggerHandler<int>(this, false); }
 
         public IAsyncOnAnimatorIKHandler GetOnAnimatorIKAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<int>(this, cancellationToken, false);
         }
 
-        public UniTask<int> OnAnimatorIKAsync()
-        {
-            return ((IAsyncOnAnimatorIKHandler)new AsyncTriggerHandler<int>(this, true)).OnAnimatorIKAsync();
-        }
+        public UniTask<int> OnAnimatorIKAsync() { return ((IAsyncOnAnimatorIKHandler) new AsyncTriggerHandler<int>(this, true)).OnAnimatorIKAsync(); }
 
         public UniTask<int> OnAnimatorIKAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnAnimatorIKHandler)new AsyncTriggerHandler<int>(this, cancellationToken, true)).OnAnimatorIKAsync();
+            return ((IAsyncOnAnimatorIKHandler) new AsyncTriggerHandler<int>(this, cancellationToken, true)).OnAnimatorIKAsync();
         }
     }
-#endregion
 
-#region AnimatorMove
+    #endregion
+
+    #region AnimatorMove
 
     public interface IAsyncOnAnimatorMoveHandler
     {
@@ -197,54 +155,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnAnimatorMoveHandler.OnAnimatorMoveAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncAnimatorMoveTrigger GetAsyncAnimatorMoveTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncAnimatorMoveTrigger>(gameObject);
-        }
-        
-        public static AsyncAnimatorMoveTrigger GetAsyncAnimatorMoveTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncAnimatorMoveTrigger();
-        }
+        public static AsyncAnimatorMoveTrigger GetAsyncAnimatorMoveTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncAnimatorMoveTrigger>(gameObject); }
+
+        public static AsyncAnimatorMoveTrigger GetAsyncAnimatorMoveTrigger(this Component component) { return component.gameObject.GetAsyncAnimatorMoveTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncAnimatorMoveTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnAnimatorMove()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnAnimatorMove() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnAnimatorMoveHandler GetOnAnimatorMoveAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnAnimatorMoveHandler GetOnAnimatorMoveAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnAnimatorMoveHandler GetOnAnimatorMoveAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnAnimatorMoveAsync()
-        {
-            return ((IAsyncOnAnimatorMoveHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnAnimatorMoveAsync();
-        }
+        public UniTask OnAnimatorMoveAsync() { return ((IAsyncOnAnimatorMoveHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnAnimatorMoveAsync(); }
 
         public UniTask OnAnimatorMoveAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnAnimatorMoveHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnAnimatorMoveAsync();
+            return ((IAsyncOnAnimatorMoveHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnAnimatorMoveAsync();
         }
     }
-#endregion
 
-#region ApplicationFocus
+    #endregion
+
+    #region ApplicationFocus
 
     public interface IAsyncOnApplicationFocusHandler
     {
@@ -256,7 +200,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<bool> IAsyncOnApplicationFocusHandler.OnApplicationFocusAsync()
         {
             core.Reset();
-            return new UniTask<bool>((IUniTaskSource<bool>)(object)this, core.Version);
+            return new UniTask<bool>((IUniTaskSource<bool>) (object) this, core.Version);
         }
     }
 
@@ -266,7 +210,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncApplicationFocusTrigger>(gameObject);
         }
-        
+
         public static AsyncApplicationFocusTrigger GetAsyncApplicationFocusTrigger(this Component component)
         {
             return component.gameObject.GetAsyncApplicationFocusTrigger();
@@ -276,34 +220,26 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncApplicationFocusTrigger : AsyncTriggerBase<bool>
     {
-        void OnApplicationFocus(bool hasFocus)
-        {
-            RaiseEvent((hasFocus));
-        }
+        void OnApplicationFocus(bool hasFocus) { RaiseEvent((hasFocus)); }
 
-        public IAsyncOnApplicationFocusHandler GetOnApplicationFocusAsyncHandler()
-        {
-            return new AsyncTriggerHandler<bool>(this, false);
-        }
+        public IAsyncOnApplicationFocusHandler GetOnApplicationFocusAsyncHandler() { return new AsyncTriggerHandler<bool>(this, false); }
 
         public IAsyncOnApplicationFocusHandler GetOnApplicationFocusAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<bool>(this, cancellationToken, false);
         }
 
-        public UniTask<bool> OnApplicationFocusAsync()
-        {
-            return ((IAsyncOnApplicationFocusHandler)new AsyncTriggerHandler<bool>(this, true)).OnApplicationFocusAsync();
-        }
+        public UniTask<bool> OnApplicationFocusAsync() { return ((IAsyncOnApplicationFocusHandler) new AsyncTriggerHandler<bool>(this, true)).OnApplicationFocusAsync(); }
 
         public UniTask<bool> OnApplicationFocusAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnApplicationFocusHandler)new AsyncTriggerHandler<bool>(this, cancellationToken, true)).OnApplicationFocusAsync();
+            return ((IAsyncOnApplicationFocusHandler) new AsyncTriggerHandler<bool>(this, cancellationToken, true)).OnApplicationFocusAsync();
         }
     }
-#endregion
 
-#region ApplicationPause
+    #endregion
+
+    #region ApplicationPause
 
     public interface IAsyncOnApplicationPauseHandler
     {
@@ -315,7 +251,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<bool> IAsyncOnApplicationPauseHandler.OnApplicationPauseAsync()
         {
             core.Reset();
-            return new UniTask<bool>((IUniTaskSource<bool>)(object)this, core.Version);
+            return new UniTask<bool>((IUniTaskSource<bool>) (object) this, core.Version);
         }
     }
 
@@ -325,7 +261,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncApplicationPauseTrigger>(gameObject);
         }
-        
+
         public static AsyncApplicationPauseTrigger GetAsyncApplicationPauseTrigger(this Component component)
         {
             return component.gameObject.GetAsyncApplicationPauseTrigger();
@@ -335,34 +271,26 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncApplicationPauseTrigger : AsyncTriggerBase<bool>
     {
-        void OnApplicationPause(bool pauseStatus)
-        {
-            RaiseEvent((pauseStatus));
-        }
+        void OnApplicationPause(bool pauseStatus) { RaiseEvent((pauseStatus)); }
 
-        public IAsyncOnApplicationPauseHandler GetOnApplicationPauseAsyncHandler()
-        {
-            return new AsyncTriggerHandler<bool>(this, false);
-        }
+        public IAsyncOnApplicationPauseHandler GetOnApplicationPauseAsyncHandler() { return new AsyncTriggerHandler<bool>(this, false); }
 
         public IAsyncOnApplicationPauseHandler GetOnApplicationPauseAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<bool>(this, cancellationToken, false);
         }
 
-        public UniTask<bool> OnApplicationPauseAsync()
-        {
-            return ((IAsyncOnApplicationPauseHandler)new AsyncTriggerHandler<bool>(this, true)).OnApplicationPauseAsync();
-        }
+        public UniTask<bool> OnApplicationPauseAsync() { return ((IAsyncOnApplicationPauseHandler) new AsyncTriggerHandler<bool>(this, true)).OnApplicationPauseAsync(); }
 
         public UniTask<bool> OnApplicationPauseAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnApplicationPauseHandler)new AsyncTriggerHandler<bool>(this, cancellationToken, true)).OnApplicationPauseAsync();
+            return ((IAsyncOnApplicationPauseHandler) new AsyncTriggerHandler<bool>(this, cancellationToken, true)).OnApplicationPauseAsync();
         }
     }
-#endregion
 
-#region ApplicationQuit
+    #endregion
+
+    #region ApplicationQuit
 
     public interface IAsyncOnApplicationQuitHandler
     {
@@ -374,7 +302,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnApplicationQuitHandler.OnApplicationQuitAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -384,7 +312,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncApplicationQuitTrigger>(gameObject);
         }
-        
+
         public static AsyncApplicationQuitTrigger GetAsyncApplicationQuitTrigger(this Component component)
         {
             return component.gameObject.GetAsyncApplicationQuitTrigger();
@@ -394,34 +322,26 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncApplicationQuitTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnApplicationQuit()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnApplicationQuit() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnApplicationQuitHandler GetOnApplicationQuitAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnApplicationQuitHandler GetOnApplicationQuitAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnApplicationQuitHandler GetOnApplicationQuitAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnApplicationQuitAsync()
-        {
-            return ((IAsyncOnApplicationQuitHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnApplicationQuitAsync();
-        }
+        public UniTask OnApplicationQuitAsync() { return ((IAsyncOnApplicationQuitHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnApplicationQuitAsync(); }
 
         public UniTask OnApplicationQuitAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnApplicationQuitHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnApplicationQuitAsync();
+            return ((IAsyncOnApplicationQuitHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnApplicationQuitAsync();
         }
     }
-#endregion
 
-#region AudioFilterRead
+    #endregion
+
+    #region AudioFilterRead
 
     public interface IAsyncOnAudioFilterReadHandler
     {
@@ -433,7 +353,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<(float[] data, int channels)> IAsyncOnAudioFilterReadHandler.OnAudioFilterReadAsync()
         {
             core.Reset();
-            return new UniTask<(float[] data, int channels)>((IUniTaskSource<(float[] data, int channels)>)(object)this, core.Version);
+            return new UniTask<(float[] data, int channels)>((IUniTaskSource<(float[] data, int channels)>) (object) this, core.Version);
         }
     }
 
@@ -443,7 +363,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncAudioFilterReadTrigger>(gameObject);
         }
-        
+
         public static AsyncAudioFilterReadTrigger GetAsyncAudioFilterReadTrigger(this Component component)
         {
             return component.gameObject.GetAsyncAudioFilterReadTrigger();
@@ -453,15 +373,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncAudioFilterReadTrigger : AsyncTriggerBase<(float[] data, int channels)>
     {
-        void OnAudioFilterRead(float[] data, int channels)
-        {
-            RaiseEvent((data, channels));
-        }
+        void OnAudioFilterRead(float[] data, int channels) { RaiseEvent((data, channels)); }
 
-        public IAsyncOnAudioFilterReadHandler GetOnAudioFilterReadAsyncHandler()
-        {
-            return new AsyncTriggerHandler<(float[] data, int channels)>(this, false);
-        }
+        public IAsyncOnAudioFilterReadHandler GetOnAudioFilterReadAsyncHandler() { return new AsyncTriggerHandler<(float[] data, int channels)>(this, false); }
 
         public IAsyncOnAudioFilterReadHandler GetOnAudioFilterReadAsyncHandler(CancellationToken cancellationToken)
         {
@@ -470,17 +384,18 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<(float[] data, int channels)> OnAudioFilterReadAsync()
         {
-            return ((IAsyncOnAudioFilterReadHandler)new AsyncTriggerHandler<(float[] data, int channels)>(this, true)).OnAudioFilterReadAsync();
+            return ((IAsyncOnAudioFilterReadHandler) new AsyncTriggerHandler<(float[] data, int channels)>(this, true)).OnAudioFilterReadAsync();
         }
 
         public UniTask<(float[] data, int channels)> OnAudioFilterReadAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnAudioFilterReadHandler)new AsyncTriggerHandler<(float[] data, int channels)>(this, cancellationToken, true)).OnAudioFilterReadAsync();
+            return ((IAsyncOnAudioFilterReadHandler) new AsyncTriggerHandler<(float[] data, int channels)>(this, cancellationToken, true)).OnAudioFilterReadAsync();
         }
     }
-#endregion
 
-#region BecameInvisible
+    #endregion
+
+    #region BecameInvisible
 
     public interface IAsyncOnBecameInvisibleHandler
     {
@@ -492,7 +407,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnBecameInvisibleHandler.OnBecameInvisibleAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -502,7 +417,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncBecameInvisibleTrigger>(gameObject);
         }
-        
+
         public static AsyncBecameInvisibleTrigger GetAsyncBecameInvisibleTrigger(this Component component)
         {
             return component.gameObject.GetAsyncBecameInvisibleTrigger();
@@ -512,34 +427,26 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncBecameInvisibleTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnBecameInvisible()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnBecameInvisible() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnBecameInvisibleHandler GetOnBecameInvisibleAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnBecameInvisibleHandler GetOnBecameInvisibleAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnBecameInvisibleHandler GetOnBecameInvisibleAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnBecameInvisibleAsync()
-        {
-            return ((IAsyncOnBecameInvisibleHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnBecameInvisibleAsync();
-        }
+        public UniTask OnBecameInvisibleAsync() { return ((IAsyncOnBecameInvisibleHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnBecameInvisibleAsync(); }
 
         public UniTask OnBecameInvisibleAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnBecameInvisibleHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnBecameInvisibleAsync();
+            return ((IAsyncOnBecameInvisibleHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnBecameInvisibleAsync();
         }
     }
-#endregion
 
-#region BecameVisible
+    #endregion
+
+    #region BecameVisible
 
     public interface IAsyncOnBecameVisibleHandler
     {
@@ -551,7 +458,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnBecameVisibleHandler.OnBecameVisibleAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -561,44 +468,33 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncBecameVisibleTrigger>(gameObject);
         }
-        
-        public static AsyncBecameVisibleTrigger GetAsyncBecameVisibleTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncBecameVisibleTrigger();
-        }
+
+        public static AsyncBecameVisibleTrigger GetAsyncBecameVisibleTrigger(this Component component) { return component.gameObject.GetAsyncBecameVisibleTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncBecameVisibleTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnBecameVisible()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnBecameVisible() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnBecameVisibleHandler GetOnBecameVisibleAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnBecameVisibleHandler GetOnBecameVisibleAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnBecameVisibleHandler GetOnBecameVisibleAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnBecameVisibleAsync()
-        {
-            return ((IAsyncOnBecameVisibleHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnBecameVisibleAsync();
-        }
+        public UniTask OnBecameVisibleAsync() { return ((IAsyncOnBecameVisibleHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnBecameVisibleAsync(); }
 
         public UniTask OnBecameVisibleAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnBecameVisibleHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnBecameVisibleAsync();
+            return ((IAsyncOnBecameVisibleHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnBecameVisibleAsync();
         }
     }
-#endregion
 
-#region BeforeTransformParentChanged
+    #endregion
+
+    #region BeforeTransformParentChanged
 
     public interface IAsyncOnBeforeTransformParentChangedHandler
     {
@@ -610,7 +506,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnBeforeTransformParentChangedHandler.OnBeforeTransformParentChangedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -620,7 +516,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncBeforeTransformParentChangedTrigger>(gameObject);
         }
-        
+
         public static AsyncBeforeTransformParentChangedTrigger GetAsyncBeforeTransformParentChangedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncBeforeTransformParentChangedTrigger();
@@ -630,15 +526,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncBeforeTransformParentChangedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnBeforeTransformParentChanged()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnBeforeTransformParentChanged() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnBeforeTransformParentChangedHandler GetOnBeforeTransformParentChangedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnBeforeTransformParentChangedHandler GetOnBeforeTransformParentChangedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnBeforeTransformParentChangedHandler GetOnBeforeTransformParentChangedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -647,17 +537,19 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnBeforeTransformParentChangedAsync()
         {
-            return ((IAsyncOnBeforeTransformParentChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnBeforeTransformParentChangedAsync();
+            return ((IAsyncOnBeforeTransformParentChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnBeforeTransformParentChangedAsync();
         }
 
         public UniTask OnBeforeTransformParentChangedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnBeforeTransformParentChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnBeforeTransformParentChangedAsync();
+            return ((IAsyncOnBeforeTransformParentChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true))
+                .OnBeforeTransformParentChangedAsync();
         }
     }
-#endregion
 
-#region OnCanvasGroupChanged
+    #endregion
+
+    #region OnCanvasGroupChanged
 
     public interface IAsyncOnCanvasGroupChangedHandler
     {
@@ -669,7 +561,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnCanvasGroupChangedHandler.OnCanvasGroupChangedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -679,7 +571,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncOnCanvasGroupChangedTrigger>(gameObject);
         }
-        
+
         public static AsyncOnCanvasGroupChangedTrigger GetAsyncOnCanvasGroupChangedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncOnCanvasGroupChangedTrigger();
@@ -689,15 +581,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncOnCanvasGroupChangedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnCanvasGroupChanged()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnCanvasGroupChanged() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnCanvasGroupChangedHandler GetOnCanvasGroupChangedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnCanvasGroupChangedHandler GetOnCanvasGroupChangedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnCanvasGroupChangedHandler GetOnCanvasGroupChangedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -706,17 +592,19 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnCanvasGroupChangedAsync()
         {
-            return ((IAsyncOnCanvasGroupChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnCanvasGroupChangedAsync();
+            return ((IAsyncOnCanvasGroupChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnCanvasGroupChangedAsync();
         }
 
         public UniTask OnCanvasGroupChangedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCanvasGroupChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnCanvasGroupChangedAsync();
+            return ((IAsyncOnCanvasGroupChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnCanvasGroupChangedAsync();
         }
     }
-#endregion
 
-#region CollisionEnter
+    #endregion
+
+    #region CollisionEnter
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnCollisionEnterHandler
@@ -729,7 +617,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collision> IAsyncOnCollisionEnterHandler.OnCollisionEnterAsync()
         {
             core.Reset();
-            return new UniTask<Collision>((IUniTaskSource<Collision>)(object)this, core.Version);
+            return new UniTask<Collision>((IUniTaskSource<Collision>) (object) this, core.Version);
         }
     }
 
@@ -739,25 +627,16 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncCollisionEnterTrigger>(gameObject);
         }
-        
-        public static AsyncCollisionEnterTrigger GetAsyncCollisionEnterTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncCollisionEnterTrigger();
-        }
+
+        public static AsyncCollisionEnterTrigger GetAsyncCollisionEnterTrigger(this Component component) { return component.gameObject.GetAsyncCollisionEnterTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncCollisionEnterTrigger : AsyncTriggerBase<Collision>
     {
-        void OnCollisionEnter(Collision coll)
-        {
-            RaiseEvent((coll));
-        }
+        void OnCollisionEnter(Collision coll) { RaiseEvent((coll)); }
 
-        public IAsyncOnCollisionEnterHandler GetOnCollisionEnterAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collision>(this, false);
-        }
+        public IAsyncOnCollisionEnterHandler GetOnCollisionEnterAsyncHandler() { return new AsyncTriggerHandler<Collision>(this, false); }
 
         public IAsyncOnCollisionEnterHandler GetOnCollisionEnterAsyncHandler(CancellationToken cancellationToken)
         {
@@ -766,18 +645,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collision> OnCollisionEnterAsync()
         {
-            return ((IAsyncOnCollisionEnterHandler)new AsyncTriggerHandler<Collision>(this, true)).OnCollisionEnterAsync();
+            return ((IAsyncOnCollisionEnterHandler) new AsyncTriggerHandler<Collision>(this, true)).OnCollisionEnterAsync();
         }
 
         public UniTask<Collision> OnCollisionEnterAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCollisionEnterHandler)new AsyncTriggerHandler<Collision>(this, cancellationToken, true)).OnCollisionEnterAsync();
+            return ((IAsyncOnCollisionEnterHandler) new AsyncTriggerHandler<Collision>(this, cancellationToken, true)).OnCollisionEnterAsync();
         }
     }
 #endif
-#endregion
 
-#region CollisionEnter2D
+    #endregion
+
+    #region CollisionEnter2D
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnCollisionEnter2DHandler
@@ -790,7 +671,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collision2D> IAsyncOnCollisionEnter2DHandler.OnCollisionEnter2DAsync()
         {
             core.Reset();
-            return new UniTask<Collision2D>((IUniTaskSource<Collision2D>)(object)this, core.Version);
+            return new UniTask<Collision2D>((IUniTaskSource<Collision2D>) (object) this, core.Version);
         }
     }
 
@@ -800,7 +681,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncCollisionEnter2DTrigger>(gameObject);
         }
-        
+
         public static AsyncCollisionEnter2DTrigger GetAsyncCollisionEnter2DTrigger(this Component component)
         {
             return component.gameObject.GetAsyncCollisionEnter2DTrigger();
@@ -810,15 +691,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncCollisionEnter2DTrigger : AsyncTriggerBase<Collision2D>
     {
-        void OnCollisionEnter2D(Collision2D coll)
-        {
-            RaiseEvent((coll));
-        }
+        void OnCollisionEnter2D(Collision2D coll) { RaiseEvent((coll)); }
 
-        public IAsyncOnCollisionEnter2DHandler GetOnCollisionEnter2DAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collision2D>(this, false);
-        }
+        public IAsyncOnCollisionEnter2DHandler GetOnCollisionEnter2DAsyncHandler() { return new AsyncTriggerHandler<Collision2D>(this, false); }
 
         public IAsyncOnCollisionEnter2DHandler GetOnCollisionEnter2DAsyncHandler(CancellationToken cancellationToken)
         {
@@ -827,18 +702,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collision2D> OnCollisionEnter2DAsync()
         {
-            return ((IAsyncOnCollisionEnter2DHandler)new AsyncTriggerHandler<Collision2D>(this, true)).OnCollisionEnter2DAsync();
+            return ((IAsyncOnCollisionEnter2DHandler) new AsyncTriggerHandler<Collision2D>(this, true)).OnCollisionEnter2DAsync();
         }
 
         public UniTask<Collision2D> OnCollisionEnter2DAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCollisionEnter2DHandler)new AsyncTriggerHandler<Collision2D>(this, cancellationToken, true)).OnCollisionEnter2DAsync();
+            return ((IAsyncOnCollisionEnter2DHandler) new AsyncTriggerHandler<Collision2D>(this, cancellationToken, true)).OnCollisionEnter2DAsync();
         }
     }
 #endif
-#endregion
 
-#region CollisionExit
+    #endregion
+
+    #region CollisionExit
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnCollisionExitHandler
@@ -851,7 +728,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collision> IAsyncOnCollisionExitHandler.OnCollisionExitAsync()
         {
             core.Reset();
-            return new UniTask<Collision>((IUniTaskSource<Collision>)(object)this, core.Version);
+            return new UniTask<Collision>((IUniTaskSource<Collision>) (object) this, core.Version);
         }
     }
 
@@ -861,25 +738,16 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncCollisionExitTrigger>(gameObject);
         }
-        
-        public static AsyncCollisionExitTrigger GetAsyncCollisionExitTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncCollisionExitTrigger();
-        }
+
+        public static AsyncCollisionExitTrigger GetAsyncCollisionExitTrigger(this Component component) { return component.gameObject.GetAsyncCollisionExitTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncCollisionExitTrigger : AsyncTriggerBase<Collision>
     {
-        void OnCollisionExit(Collision coll)
-        {
-            RaiseEvent((coll));
-        }
+        void OnCollisionExit(Collision coll) { RaiseEvent((coll)); }
 
-        public IAsyncOnCollisionExitHandler GetOnCollisionExitAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collision>(this, false);
-        }
+        public IAsyncOnCollisionExitHandler GetOnCollisionExitAsyncHandler() { return new AsyncTriggerHandler<Collision>(this, false); }
 
         public IAsyncOnCollisionExitHandler GetOnCollisionExitAsyncHandler(CancellationToken cancellationToken)
         {
@@ -888,18 +756,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collision> OnCollisionExitAsync()
         {
-            return ((IAsyncOnCollisionExitHandler)new AsyncTriggerHandler<Collision>(this, true)).OnCollisionExitAsync();
+            return ((IAsyncOnCollisionExitHandler) new AsyncTriggerHandler<Collision>(this, true)).OnCollisionExitAsync();
         }
 
         public UniTask<Collision> OnCollisionExitAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCollisionExitHandler)new AsyncTriggerHandler<Collision>(this, cancellationToken, true)).OnCollisionExitAsync();
+            return ((IAsyncOnCollisionExitHandler) new AsyncTriggerHandler<Collision>(this, cancellationToken, true)).OnCollisionExitAsync();
         }
     }
 #endif
-#endregion
 
-#region CollisionExit2D
+    #endregion
+
+    #region CollisionExit2D
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnCollisionExit2DHandler
@@ -912,7 +782,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collision2D> IAsyncOnCollisionExit2DHandler.OnCollisionExit2DAsync()
         {
             core.Reset();
-            return new UniTask<Collision2D>((IUniTaskSource<Collision2D>)(object)this, core.Version);
+            return new UniTask<Collision2D>((IUniTaskSource<Collision2D>) (object) this, core.Version);
         }
     }
 
@@ -922,7 +792,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncCollisionExit2DTrigger>(gameObject);
         }
-        
+
         public static AsyncCollisionExit2DTrigger GetAsyncCollisionExit2DTrigger(this Component component)
         {
             return component.gameObject.GetAsyncCollisionExit2DTrigger();
@@ -932,15 +802,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncCollisionExit2DTrigger : AsyncTriggerBase<Collision2D>
     {
-        void OnCollisionExit2D(Collision2D coll)
-        {
-            RaiseEvent((coll));
-        }
+        void OnCollisionExit2D(Collision2D coll) { RaiseEvent((coll)); }
 
-        public IAsyncOnCollisionExit2DHandler GetOnCollisionExit2DAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collision2D>(this, false);
-        }
+        public IAsyncOnCollisionExit2DHandler GetOnCollisionExit2DAsyncHandler() { return new AsyncTriggerHandler<Collision2D>(this, false); }
 
         public IAsyncOnCollisionExit2DHandler GetOnCollisionExit2DAsyncHandler(CancellationToken cancellationToken)
         {
@@ -949,18 +813,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collision2D> OnCollisionExit2DAsync()
         {
-            return ((IAsyncOnCollisionExit2DHandler)new AsyncTriggerHandler<Collision2D>(this, true)).OnCollisionExit2DAsync();
+            return ((IAsyncOnCollisionExit2DHandler) new AsyncTriggerHandler<Collision2D>(this, true)).OnCollisionExit2DAsync();
         }
 
         public UniTask<Collision2D> OnCollisionExit2DAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCollisionExit2DHandler)new AsyncTriggerHandler<Collision2D>(this, cancellationToken, true)).OnCollisionExit2DAsync();
+            return ((IAsyncOnCollisionExit2DHandler) new AsyncTriggerHandler<Collision2D>(this, cancellationToken, true)).OnCollisionExit2DAsync();
         }
     }
 #endif
-#endregion
 
-#region CollisionStay
+    #endregion
+
+    #region CollisionStay
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnCollisionStayHandler
@@ -973,7 +839,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collision> IAsyncOnCollisionStayHandler.OnCollisionStayAsync()
         {
             core.Reset();
-            return new UniTask<Collision>((IUniTaskSource<Collision>)(object)this, core.Version);
+            return new UniTask<Collision>((IUniTaskSource<Collision>) (object) this, core.Version);
         }
     }
 
@@ -983,25 +849,16 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncCollisionStayTrigger>(gameObject);
         }
-        
-        public static AsyncCollisionStayTrigger GetAsyncCollisionStayTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncCollisionStayTrigger();
-        }
+
+        public static AsyncCollisionStayTrigger GetAsyncCollisionStayTrigger(this Component component) { return component.gameObject.GetAsyncCollisionStayTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncCollisionStayTrigger : AsyncTriggerBase<Collision>
     {
-        void OnCollisionStay(Collision coll)
-        {
-            RaiseEvent((coll));
-        }
+        void OnCollisionStay(Collision coll) { RaiseEvent((coll)); }
 
-        public IAsyncOnCollisionStayHandler GetOnCollisionStayAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collision>(this, false);
-        }
+        public IAsyncOnCollisionStayHandler GetOnCollisionStayAsyncHandler() { return new AsyncTriggerHandler<Collision>(this, false); }
 
         public IAsyncOnCollisionStayHandler GetOnCollisionStayAsyncHandler(CancellationToken cancellationToken)
         {
@@ -1010,18 +867,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collision> OnCollisionStayAsync()
         {
-            return ((IAsyncOnCollisionStayHandler)new AsyncTriggerHandler<Collision>(this, true)).OnCollisionStayAsync();
+            return ((IAsyncOnCollisionStayHandler) new AsyncTriggerHandler<Collision>(this, true)).OnCollisionStayAsync();
         }
 
         public UniTask<Collision> OnCollisionStayAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCollisionStayHandler)new AsyncTriggerHandler<Collision>(this, cancellationToken, true)).OnCollisionStayAsync();
+            return ((IAsyncOnCollisionStayHandler) new AsyncTriggerHandler<Collision>(this, cancellationToken, true)).OnCollisionStayAsync();
         }
     }
 #endif
-#endregion
 
-#region CollisionStay2D
+    #endregion
+
+    #region CollisionStay2D
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnCollisionStay2DHandler
@@ -1034,7 +893,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collision2D> IAsyncOnCollisionStay2DHandler.OnCollisionStay2DAsync()
         {
             core.Reset();
-            return new UniTask<Collision2D>((IUniTaskSource<Collision2D>)(object)this, core.Version);
+            return new UniTask<Collision2D>((IUniTaskSource<Collision2D>) (object) this, core.Version);
         }
     }
 
@@ -1044,7 +903,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncCollisionStay2DTrigger>(gameObject);
         }
-        
+
         public static AsyncCollisionStay2DTrigger GetAsyncCollisionStay2DTrigger(this Component component)
         {
             return component.gameObject.GetAsyncCollisionStay2DTrigger();
@@ -1054,15 +913,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncCollisionStay2DTrigger : AsyncTriggerBase<Collision2D>
     {
-        void OnCollisionStay2D(Collision2D coll)
-        {
-            RaiseEvent((coll));
-        }
+        void OnCollisionStay2D(Collision2D coll) { RaiseEvent((coll)); }
 
-        public IAsyncOnCollisionStay2DHandler GetOnCollisionStay2DAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collision2D>(this, false);
-        }
+        public IAsyncOnCollisionStay2DHandler GetOnCollisionStay2DAsyncHandler() { return new AsyncTriggerHandler<Collision2D>(this, false); }
 
         public IAsyncOnCollisionStay2DHandler GetOnCollisionStay2DAsyncHandler(CancellationToken cancellationToken)
         {
@@ -1071,18 +924,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collision2D> OnCollisionStay2DAsync()
         {
-            return ((IAsyncOnCollisionStay2DHandler)new AsyncTriggerHandler<Collision2D>(this, true)).OnCollisionStay2DAsync();
+            return ((IAsyncOnCollisionStay2DHandler) new AsyncTriggerHandler<Collision2D>(this, true)).OnCollisionStay2DAsync();
         }
 
         public UniTask<Collision2D> OnCollisionStay2DAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCollisionStay2DHandler)new AsyncTriggerHandler<Collision2D>(this, cancellationToken, true)).OnCollisionStay2DAsync();
+            return ((IAsyncOnCollisionStay2DHandler) new AsyncTriggerHandler<Collision2D>(this, cancellationToken, true)).OnCollisionStay2DAsync();
         }
     }
 #endif
-#endregion
 
-#region ControllerColliderHit
+    #endregion
+
+    #region ControllerColliderHit
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnControllerColliderHitHandler
@@ -1095,7 +950,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<ControllerColliderHit> IAsyncOnControllerColliderHitHandler.OnControllerColliderHitAsync()
         {
             core.Reset();
-            return new UniTask<ControllerColliderHit>((IUniTaskSource<ControllerColliderHit>)(object)this, core.Version);
+            return new UniTask<ControllerColliderHit>((IUniTaskSource<ControllerColliderHit>) (object) this, core.Version);
         }
     }
 
@@ -1105,7 +960,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncControllerColliderHitTrigger>(gameObject);
         }
-        
+
         public static AsyncControllerColliderHitTrigger GetAsyncControllerColliderHitTrigger(this Component component)
         {
             return component.gameObject.GetAsyncControllerColliderHitTrigger();
@@ -1115,15 +970,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncControllerColliderHitTrigger : AsyncTriggerBase<ControllerColliderHit>
     {
-        void OnControllerColliderHit(ControllerColliderHit hit)
-        {
-            RaiseEvent((hit));
-        }
+        void OnControllerColliderHit(ControllerColliderHit hit) { RaiseEvent((hit)); }
 
-        public IAsyncOnControllerColliderHitHandler GetOnControllerColliderHitAsyncHandler()
-        {
-            return new AsyncTriggerHandler<ControllerColliderHit>(this, false);
-        }
+        public IAsyncOnControllerColliderHitHandler GetOnControllerColliderHitAsyncHandler() { return new AsyncTriggerHandler<ControllerColliderHit>(this, false); }
 
         public IAsyncOnControllerColliderHitHandler GetOnControllerColliderHitAsyncHandler(CancellationToken cancellationToken)
         {
@@ -1132,18 +981,19 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<ControllerColliderHit> OnControllerColliderHitAsync()
         {
-            return ((IAsyncOnControllerColliderHitHandler)new AsyncTriggerHandler<ControllerColliderHit>(this, true)).OnControllerColliderHitAsync();
+            return ((IAsyncOnControllerColliderHitHandler) new AsyncTriggerHandler<ControllerColliderHit>(this, true)).OnControllerColliderHitAsync();
         }
 
         public UniTask<ControllerColliderHit> OnControllerColliderHitAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnControllerColliderHitHandler)new AsyncTriggerHandler<ControllerColliderHit>(this, cancellationToken, true)).OnControllerColliderHitAsync();
+            return ((IAsyncOnControllerColliderHitHandler) new AsyncTriggerHandler<ControllerColliderHit>(this, cancellationToken, true)).OnControllerColliderHitAsync();
         }
     }
 #endif
-#endregion
 
-#region Disable
+    #endregion
+
+    #region Disable
 
     public interface IAsyncOnDisableHandler
     {
@@ -1155,54 +1005,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnDisableHandler.OnDisableAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncDisableTrigger GetAsyncDisableTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncDisableTrigger>(gameObject);
-        }
-        
-        public static AsyncDisableTrigger GetAsyncDisableTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncDisableTrigger();
-        }
+        public static AsyncDisableTrigger GetAsyncDisableTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncDisableTrigger>(gameObject); }
+
+        public static AsyncDisableTrigger GetAsyncDisableTrigger(this Component component) { return component.gameObject.GetAsyncDisableTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncDisableTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnDisable()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnDisable() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnDisableHandler GetOnDisableAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnDisableHandler GetOnDisableAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnDisableHandler GetOnDisableAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnDisableAsync()
-        {
-            return ((IAsyncOnDisableHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnDisableAsync();
-        }
+        public UniTask OnDisableAsync() { return ((IAsyncOnDisableHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnDisableAsync(); }
 
         public UniTask OnDisableAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnDisableHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnDisableAsync();
+            return ((IAsyncOnDisableHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnDisableAsync();
         }
     }
-#endregion
 
-#region DrawGizmos
+    #endregion
+
+    #region DrawGizmos
 
     public interface IAsyncOnDrawGizmosHandler
     {
@@ -1214,54 +1050,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnDrawGizmosHandler.OnDrawGizmosAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncDrawGizmosTrigger GetAsyncDrawGizmosTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncDrawGizmosTrigger>(gameObject);
-        }
-        
-        public static AsyncDrawGizmosTrigger GetAsyncDrawGizmosTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncDrawGizmosTrigger();
-        }
+        public static AsyncDrawGizmosTrigger GetAsyncDrawGizmosTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncDrawGizmosTrigger>(gameObject); }
+
+        public static AsyncDrawGizmosTrigger GetAsyncDrawGizmosTrigger(this Component component) { return component.gameObject.GetAsyncDrawGizmosTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncDrawGizmosTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnDrawGizmos()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnDrawGizmos() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnDrawGizmosHandler GetOnDrawGizmosAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnDrawGizmosHandler GetOnDrawGizmosAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnDrawGizmosHandler GetOnDrawGizmosAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnDrawGizmosAsync()
-        {
-            return ((IAsyncOnDrawGizmosHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnDrawGizmosAsync();
-        }
+        public UniTask OnDrawGizmosAsync() { return ((IAsyncOnDrawGizmosHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnDrawGizmosAsync(); }
 
         public UniTask OnDrawGizmosAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnDrawGizmosHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnDrawGizmosAsync();
+            return ((IAsyncOnDrawGizmosHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnDrawGizmosAsync();
         }
     }
-#endregion
 
-#region DrawGizmosSelected
+    #endregion
+
+    #region DrawGizmosSelected
 
     public interface IAsyncOnDrawGizmosSelectedHandler
     {
@@ -1273,7 +1095,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnDrawGizmosSelectedHandler.OnDrawGizmosSelectedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -1283,7 +1105,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncDrawGizmosSelectedTrigger>(gameObject);
         }
-        
+
         public static AsyncDrawGizmosSelectedTrigger GetAsyncDrawGizmosSelectedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncDrawGizmosSelectedTrigger();
@@ -1293,15 +1115,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncDrawGizmosSelectedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnDrawGizmosSelected()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnDrawGizmosSelected() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnDrawGizmosSelectedHandler GetOnDrawGizmosSelectedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnDrawGizmosSelectedHandler GetOnDrawGizmosSelectedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnDrawGizmosSelectedHandler GetOnDrawGizmosSelectedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -1310,17 +1126,18 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnDrawGizmosSelectedAsync()
         {
-            return ((IAsyncOnDrawGizmosSelectedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnDrawGizmosSelectedAsync();
+            return ((IAsyncOnDrawGizmosSelectedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnDrawGizmosSelectedAsync();
         }
 
         public UniTask OnDrawGizmosSelectedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnDrawGizmosSelectedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnDrawGizmosSelectedAsync();
+            return ((IAsyncOnDrawGizmosSelectedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnDrawGizmosSelectedAsync();
         }
     }
-#endregion
 
-#region Enable
+    #endregion
+
+    #region Enable
 
     public interface IAsyncOnEnableHandler
     {
@@ -1332,54 +1149,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnEnableHandler.OnEnableAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncEnableTrigger GetAsyncEnableTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncEnableTrigger>(gameObject);
-        }
-        
-        public static AsyncEnableTrigger GetAsyncEnableTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncEnableTrigger();
-        }
+        public static AsyncEnableTrigger GetAsyncEnableTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncEnableTrigger>(gameObject); }
+
+        public static AsyncEnableTrigger GetAsyncEnableTrigger(this Component component) { return component.gameObject.GetAsyncEnableTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncEnableTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnEnable()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnEnable() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnEnableHandler GetOnEnableAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnEnableHandler GetOnEnableAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnEnableHandler GetOnEnableAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnEnableAsync()
-        {
-            return ((IAsyncOnEnableHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnEnableAsync();
-        }
+        public UniTask OnEnableAsync() { return ((IAsyncOnEnableHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnEnableAsync(); }
 
         public UniTask OnEnableAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnEnableHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnEnableAsync();
+            return ((IAsyncOnEnableHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnEnableAsync();
         }
     }
-#endregion
 
-#region GUI
+    #endregion
+
+    #region GUI
 
     public interface IAsyncOnGUIHandler
     {
@@ -1391,54 +1194,38 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnGUIHandler.OnGUIAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncGUITrigger GetAsyncGUITrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncGUITrigger>(gameObject);
-        }
-        
-        public static AsyncGUITrigger GetAsyncGUITrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncGUITrigger();
-        }
+        public static AsyncGUITrigger GetAsyncGUITrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncGUITrigger>(gameObject); }
+
+        public static AsyncGUITrigger GetAsyncGUITrigger(this Component component) { return component.gameObject.GetAsyncGUITrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncGUITrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnGUI()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnGUI() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnGUIHandler GetOnGUIAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnGUIHandler GetOnGUIAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
-        public IAsyncOnGUIHandler GetOnGUIAsyncHandler(CancellationToken cancellationToken)
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
-        }
+        public IAsyncOnGUIHandler GetOnGUIAsyncHandler(CancellationToken cancellationToken) { return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false); }
 
-        public UniTask OnGUIAsync()
-        {
-            return ((IAsyncOnGUIHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnGUIAsync();
-        }
+        public UniTask OnGUIAsync() { return ((IAsyncOnGUIHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnGUIAsync(); }
 
         public UniTask OnGUIAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnGUIHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnGUIAsync();
+            return ((IAsyncOnGUIHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnGUIAsync();
         }
     }
-#endregion
 
-#region JointBreak
+    #endregion
+
+    #region JointBreak
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnJointBreakHandler
@@ -1451,55 +1238,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<float> IAsyncOnJointBreakHandler.OnJointBreakAsync()
         {
             core.Reset();
-            return new UniTask<float>((IUniTaskSource<float>)(object)this, core.Version);
+            return new UniTask<float>((IUniTaskSource<float>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncJointBreakTrigger GetAsyncJointBreakTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncJointBreakTrigger>(gameObject);
-        }
-        
-        public static AsyncJointBreakTrigger GetAsyncJointBreakTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncJointBreakTrigger();
-        }
+        public static AsyncJointBreakTrigger GetAsyncJointBreakTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncJointBreakTrigger>(gameObject); }
+
+        public static AsyncJointBreakTrigger GetAsyncJointBreakTrigger(this Component component) { return component.gameObject.GetAsyncJointBreakTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncJointBreakTrigger : AsyncTriggerBase<float>
     {
-        void OnJointBreak(float breakForce)
-        {
-            RaiseEvent((breakForce));
-        }
+        void OnJointBreak(float breakForce) { RaiseEvent((breakForce)); }
 
-        public IAsyncOnJointBreakHandler GetOnJointBreakAsyncHandler()
-        {
-            return new AsyncTriggerHandler<float>(this, false);
-        }
+        public IAsyncOnJointBreakHandler GetOnJointBreakAsyncHandler() { return new AsyncTriggerHandler<float>(this, false); }
 
         public IAsyncOnJointBreakHandler GetOnJointBreakAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<float>(this, cancellationToken, false);
         }
 
-        public UniTask<float> OnJointBreakAsync()
-        {
-            return ((IAsyncOnJointBreakHandler)new AsyncTriggerHandler<float>(this, true)).OnJointBreakAsync();
-        }
+        public UniTask<float> OnJointBreakAsync() { return ((IAsyncOnJointBreakHandler) new AsyncTriggerHandler<float>(this, true)).OnJointBreakAsync(); }
 
         public UniTask<float> OnJointBreakAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnJointBreakHandler)new AsyncTriggerHandler<float>(this, cancellationToken, true)).OnJointBreakAsync();
+            return ((IAsyncOnJointBreakHandler) new AsyncTriggerHandler<float>(this, cancellationToken, true)).OnJointBreakAsync();
         }
     }
 #endif
-#endregion
 
-#region JointBreak2D
+    #endregion
+
+    #region JointBreak2D
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnJointBreak2DHandler
@@ -1512,57 +1286,43 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Joint2D> IAsyncOnJointBreak2DHandler.OnJointBreak2DAsync()
         {
             core.Reset();
-            return new UniTask<Joint2D>((IUniTaskSource<Joint2D>)(object)this, core.Version);
+            return new UniTask<Joint2D>((IUniTaskSource<Joint2D>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncJointBreak2DTrigger GetAsyncJointBreak2DTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncJointBreak2DTrigger>(gameObject);
-        }
-        
-        public static AsyncJointBreak2DTrigger GetAsyncJointBreak2DTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncJointBreak2DTrigger();
-        }
+        public static AsyncJointBreak2DTrigger GetAsyncJointBreak2DTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncJointBreak2DTrigger>(gameObject); }
+
+        public static AsyncJointBreak2DTrigger GetAsyncJointBreak2DTrigger(this Component component) { return component.gameObject.GetAsyncJointBreak2DTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncJointBreak2DTrigger : AsyncTriggerBase<Joint2D>
     {
-        void OnJointBreak2D(Joint2D brokenJoint)
-        {
-            RaiseEvent((brokenJoint));
-        }
+        void OnJointBreak2D(Joint2D brokenJoint) { RaiseEvent((brokenJoint)); }
 
-        public IAsyncOnJointBreak2DHandler GetOnJointBreak2DAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Joint2D>(this, false);
-        }
+        public IAsyncOnJointBreak2DHandler GetOnJointBreak2DAsyncHandler() { return new AsyncTriggerHandler<Joint2D>(this, false); }
 
         public IAsyncOnJointBreak2DHandler GetOnJointBreak2DAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<Joint2D>(this, cancellationToken, false);
         }
 
-        public UniTask<Joint2D> OnJointBreak2DAsync()
-        {
-            return ((IAsyncOnJointBreak2DHandler)new AsyncTriggerHandler<Joint2D>(this, true)).OnJointBreak2DAsync();
-        }
+        public UniTask<Joint2D> OnJointBreak2DAsync() { return ((IAsyncOnJointBreak2DHandler) new AsyncTriggerHandler<Joint2D>(this, true)).OnJointBreak2DAsync(); }
 
         public UniTask<Joint2D> OnJointBreak2DAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnJointBreak2DHandler)new AsyncTriggerHandler<Joint2D>(this, cancellationToken, true)).OnJointBreak2DAsync();
+            return ((IAsyncOnJointBreak2DHandler) new AsyncTriggerHandler<Joint2D>(this, cancellationToken, true)).OnJointBreak2DAsync();
         }
     }
 #endif
-#endregion
 
-#region MouseDown
+    #endregion
+
+    #region MouseDown
+
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
-
     public interface IAsyncOnMouseDownHandler
     {
         UniTask OnMouseDownAsync();
@@ -1619,11 +1379,12 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region MouseDrag
+    #endregion
+
+    #region MouseDrag
+
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
-
     public interface IAsyncOnMouseDragHandler
     {
         UniTask OnMouseDragAsync();
@@ -1680,11 +1441,12 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region MouseEnter
+    #endregion
+
+    #region MouseEnter
+
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
-
     public interface IAsyncOnMouseEnterHandler
     {
         UniTask OnMouseEnterAsync();
@@ -1741,11 +1503,12 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region MouseExit
+    #endregion
+
+    #region MouseExit
+
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
-
     public interface IAsyncOnMouseExitHandler
     {
         UniTask OnMouseExitAsync();
@@ -1802,11 +1565,12 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region MouseOver
+    #endregion
+
+    #region MouseOver
+
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
-
     public interface IAsyncOnMouseOverHandler
     {
         UniTask OnMouseOverAsync();
@@ -1863,11 +1627,12 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region MouseUp
+    #endregion
+
+    #region MouseUp
+
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
-
     public interface IAsyncOnMouseUpHandler
     {
         UniTask OnMouseUpAsync();
@@ -1924,11 +1689,12 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region MouseUpAsButton
+    #endregion
+
+    #region MouseUpAsButton
+
 #if !(UNITY_IPHONE || UNITY_ANDROID || UNITY_METRO)
-
     public interface IAsyncOnMouseUpAsButtonHandler
     {
         UniTask OnMouseUpAsButtonAsync();
@@ -1985,9 +1751,10 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region ParticleCollision
+    #endregion
+
+    #region ParticleCollision
 
     public interface IAsyncOnParticleCollisionHandler
     {
@@ -1999,7 +1766,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<GameObject> IAsyncOnParticleCollisionHandler.OnParticleCollisionAsync()
         {
             core.Reset();
-            return new UniTask<GameObject>((IUniTaskSource<GameObject>)(object)this, core.Version);
+            return new UniTask<GameObject>((IUniTaskSource<GameObject>) (object) this, core.Version);
         }
     }
 
@@ -2009,7 +1776,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncParticleCollisionTrigger>(gameObject);
         }
-        
+
         public static AsyncParticleCollisionTrigger GetAsyncParticleCollisionTrigger(this Component component)
         {
             return component.gameObject.GetAsyncParticleCollisionTrigger();
@@ -2019,15 +1786,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncParticleCollisionTrigger : AsyncTriggerBase<GameObject>
     {
-        void OnParticleCollision(GameObject other)
-        {
-            RaiseEvent((other));
-        }
+        void OnParticleCollision(GameObject other) { RaiseEvent((other)); }
 
-        public IAsyncOnParticleCollisionHandler GetOnParticleCollisionAsyncHandler()
-        {
-            return new AsyncTriggerHandler<GameObject>(this, false);
-        }
+        public IAsyncOnParticleCollisionHandler GetOnParticleCollisionAsyncHandler() { return new AsyncTriggerHandler<GameObject>(this, false); }
 
         public IAsyncOnParticleCollisionHandler GetOnParticleCollisionAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2036,17 +1797,18 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<GameObject> OnParticleCollisionAsync()
         {
-            return ((IAsyncOnParticleCollisionHandler)new AsyncTriggerHandler<GameObject>(this, true)).OnParticleCollisionAsync();
+            return ((IAsyncOnParticleCollisionHandler) new AsyncTriggerHandler<GameObject>(this, true)).OnParticleCollisionAsync();
         }
 
         public UniTask<GameObject> OnParticleCollisionAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnParticleCollisionHandler)new AsyncTriggerHandler<GameObject>(this, cancellationToken, true)).OnParticleCollisionAsync();
+            return ((IAsyncOnParticleCollisionHandler) new AsyncTriggerHandler<GameObject>(this, cancellationToken, true)).OnParticleCollisionAsync();
         }
     }
-#endregion
 
-#region ParticleSystemStopped
+    #endregion
+
+    #region ParticleSystemStopped
 
     public interface IAsyncOnParticleSystemStoppedHandler
     {
@@ -2058,7 +1820,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnParticleSystemStoppedHandler.OnParticleSystemStoppedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -2068,7 +1830,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncParticleSystemStoppedTrigger>(gameObject);
         }
-        
+
         public static AsyncParticleSystemStoppedTrigger GetAsyncParticleSystemStoppedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncParticleSystemStoppedTrigger();
@@ -2078,15 +1840,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncParticleSystemStoppedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnParticleSystemStopped()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnParticleSystemStopped() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnParticleSystemStoppedHandler GetOnParticleSystemStoppedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnParticleSystemStoppedHandler GetOnParticleSystemStoppedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnParticleSystemStoppedHandler GetOnParticleSystemStoppedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2095,17 +1851,18 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnParticleSystemStoppedAsync()
         {
-            return ((IAsyncOnParticleSystemStoppedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnParticleSystemStoppedAsync();
+            return ((IAsyncOnParticleSystemStoppedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnParticleSystemStoppedAsync();
         }
 
         public UniTask OnParticleSystemStoppedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnParticleSystemStoppedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnParticleSystemStoppedAsync();
+            return ((IAsyncOnParticleSystemStoppedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnParticleSystemStoppedAsync();
         }
     }
-#endregion
 
-#region ParticleTrigger
+    #endregion
+
+    #region ParticleTrigger
 
     public interface IAsyncOnParticleTriggerHandler
     {
@@ -2117,7 +1874,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnParticleTriggerHandler.OnParticleTriggerAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -2127,7 +1884,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncParticleTriggerTrigger>(gameObject);
         }
-        
+
         public static AsyncParticleTriggerTrigger GetAsyncParticleTriggerTrigger(this Component component)
         {
             return component.gameObject.GetAsyncParticleTriggerTrigger();
@@ -2137,36 +1894,28 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncParticleTriggerTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnParticleTrigger()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnParticleTrigger() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnParticleTriggerHandler GetOnParticleTriggerAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnParticleTriggerHandler GetOnParticleTriggerAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnParticleTriggerHandler GetOnParticleTriggerAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnParticleTriggerAsync()
-        {
-            return ((IAsyncOnParticleTriggerHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnParticleTriggerAsync();
-        }
+        public UniTask OnParticleTriggerAsync() { return ((IAsyncOnParticleTriggerHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnParticleTriggerAsync(); }
 
         public UniTask OnParticleTriggerAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnParticleTriggerHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnParticleTriggerAsync();
+            return ((IAsyncOnParticleTriggerHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnParticleTriggerAsync();
         }
     }
-#endregion
 
-#region ParticleUpdateJobScheduled
+    #endregion
+
+    #region ParticleUpdateJobScheduled
+
 #if UNITY_2019_3_OR_NEWER && (!UNITY_2019_1_OR_NEWER || PANCAKE_PARTICLESYSTEM)
-
     public interface IAsyncOnParticleUpdateJobScheduledHandler
     {
         UniTask<UnityEngine.ParticleSystemJobs.ParticleSystemJobData> OnParticleUpdateJobScheduledAsync();
@@ -2223,9 +1972,10 @@ namespace Pancake.Threading.Tasks.Triggers
         }
     }
 #endif
-#endregion
 
-#region PostRender
+    #endregion
+
+    #region PostRender
 
     public interface IAsyncOnPostRenderHandler
     {
@@ -2237,54 +1987,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnPostRenderHandler.OnPostRenderAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPostRenderTrigger GetAsyncPostRenderTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPostRenderTrigger>(gameObject);
-        }
-        
-        public static AsyncPostRenderTrigger GetAsyncPostRenderTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPostRenderTrigger();
-        }
+        public static AsyncPostRenderTrigger GetAsyncPostRenderTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPostRenderTrigger>(gameObject); }
+
+        public static AsyncPostRenderTrigger GetAsyncPostRenderTrigger(this Component component) { return component.gameObject.GetAsyncPostRenderTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPostRenderTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnPostRender()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnPostRender() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnPostRenderHandler GetOnPostRenderAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnPostRenderHandler GetOnPostRenderAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnPostRenderHandler GetOnPostRenderAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnPostRenderAsync()
-        {
-            return ((IAsyncOnPostRenderHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnPostRenderAsync();
-        }
+        public UniTask OnPostRenderAsync() { return ((IAsyncOnPostRenderHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnPostRenderAsync(); }
 
         public UniTask OnPostRenderAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPostRenderHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnPostRenderAsync();
+            return ((IAsyncOnPostRenderHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnPostRenderAsync();
         }
     }
-#endregion
 
-#region PreCull
+    #endregion
+
+    #region PreCull
 
     public interface IAsyncOnPreCullHandler
     {
@@ -2296,54 +2032,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnPreCullHandler.OnPreCullAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPreCullTrigger GetAsyncPreCullTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPreCullTrigger>(gameObject);
-        }
-        
-        public static AsyncPreCullTrigger GetAsyncPreCullTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPreCullTrigger();
-        }
+        public static AsyncPreCullTrigger GetAsyncPreCullTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPreCullTrigger>(gameObject); }
+
+        public static AsyncPreCullTrigger GetAsyncPreCullTrigger(this Component component) { return component.gameObject.GetAsyncPreCullTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPreCullTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnPreCull()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnPreCull() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnPreCullHandler GetOnPreCullAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnPreCullHandler GetOnPreCullAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnPreCullHandler GetOnPreCullAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnPreCullAsync()
-        {
-            return ((IAsyncOnPreCullHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnPreCullAsync();
-        }
+        public UniTask OnPreCullAsync() { return ((IAsyncOnPreCullHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnPreCullAsync(); }
 
         public UniTask OnPreCullAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPreCullHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnPreCullAsync();
+            return ((IAsyncOnPreCullHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnPreCullAsync();
         }
     }
-#endregion
 
-#region PreRender
+    #endregion
+
+    #region PreRender
 
     public interface IAsyncOnPreRenderHandler
     {
@@ -2355,54 +2077,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnPreRenderHandler.OnPreRenderAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPreRenderTrigger GetAsyncPreRenderTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPreRenderTrigger>(gameObject);
-        }
-        
-        public static AsyncPreRenderTrigger GetAsyncPreRenderTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPreRenderTrigger();
-        }
+        public static AsyncPreRenderTrigger GetAsyncPreRenderTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPreRenderTrigger>(gameObject); }
+
+        public static AsyncPreRenderTrigger GetAsyncPreRenderTrigger(this Component component) { return component.gameObject.GetAsyncPreRenderTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPreRenderTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnPreRender()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnPreRender() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnPreRenderHandler GetOnPreRenderAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnPreRenderHandler GetOnPreRenderAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnPreRenderHandler GetOnPreRenderAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnPreRenderAsync()
-        {
-            return ((IAsyncOnPreRenderHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnPreRenderAsync();
-        }
+        public UniTask OnPreRenderAsync() { return ((IAsyncOnPreRenderHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnPreRenderAsync(); }
 
         public UniTask OnPreRenderAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPreRenderHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnPreRenderAsync();
+            return ((IAsyncOnPreRenderHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnPreRenderAsync();
         }
     }
-#endregion
 
-#region RectTransformDimensionsChange
+    #endregion
+
+    #region RectTransformDimensionsChange
 
     public interface IAsyncOnRectTransformDimensionsChangeHandler
     {
@@ -2414,7 +2122,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnRectTransformDimensionsChangeHandler.OnRectTransformDimensionsChangeAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -2424,7 +2132,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncRectTransformDimensionsChangeTrigger>(gameObject);
         }
-        
+
         public static AsyncRectTransformDimensionsChangeTrigger GetAsyncRectTransformDimensionsChangeTrigger(this Component component)
         {
             return component.gameObject.GetAsyncRectTransformDimensionsChangeTrigger();
@@ -2434,15 +2142,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncRectTransformDimensionsChangeTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnRectTransformDimensionsChange()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnRectTransformDimensionsChange() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnRectTransformDimensionsChangeHandler GetOnRectTransformDimensionsChangeAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnRectTransformDimensionsChangeHandler GetOnRectTransformDimensionsChangeAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnRectTransformDimensionsChangeHandler GetOnRectTransformDimensionsChangeAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2451,17 +2153,19 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnRectTransformDimensionsChangeAsync()
         {
-            return ((IAsyncOnRectTransformDimensionsChangeHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnRectTransformDimensionsChangeAsync();
+            return ((IAsyncOnRectTransformDimensionsChangeHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnRectTransformDimensionsChangeAsync();
         }
 
         public UniTask OnRectTransformDimensionsChangeAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnRectTransformDimensionsChangeHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnRectTransformDimensionsChangeAsync();
+            return ((IAsyncOnRectTransformDimensionsChangeHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true))
+                .OnRectTransformDimensionsChangeAsync();
         }
     }
-#endregion
 
-#region RectTransformRemoved
+    #endregion
+
+    #region RectTransformRemoved
 
     public interface IAsyncOnRectTransformRemovedHandler
     {
@@ -2473,7 +2177,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnRectTransformRemovedHandler.OnRectTransformRemovedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -2483,7 +2187,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncRectTransformRemovedTrigger>(gameObject);
         }
-        
+
         public static AsyncRectTransformRemovedTrigger GetAsyncRectTransformRemovedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncRectTransformRemovedTrigger();
@@ -2493,15 +2197,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncRectTransformRemovedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnRectTransformRemoved()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnRectTransformRemoved() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnRectTransformRemovedHandler GetOnRectTransformRemovedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnRectTransformRemovedHandler GetOnRectTransformRemovedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnRectTransformRemovedHandler GetOnRectTransformRemovedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2510,17 +2208,18 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnRectTransformRemovedAsync()
         {
-            return ((IAsyncOnRectTransformRemovedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnRectTransformRemovedAsync();
+            return ((IAsyncOnRectTransformRemovedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnRectTransformRemovedAsync();
         }
 
         public UniTask OnRectTransformRemovedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnRectTransformRemovedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnRectTransformRemovedAsync();
+            return ((IAsyncOnRectTransformRemovedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnRectTransformRemovedAsync();
         }
     }
-#endregion
 
-#region RenderImage
+    #endregion
+
+    #region RenderImage
 
     public interface IAsyncOnRenderImageHandler
     {
@@ -2532,30 +2231,22 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<(RenderTexture source, RenderTexture destination)> IAsyncOnRenderImageHandler.OnRenderImageAsync()
         {
             core.Reset();
-            return new UniTask<(RenderTexture source, RenderTexture destination)>((IUniTaskSource<(RenderTexture source, RenderTexture destination)>)(object)this, core.Version);
+            return new UniTask<(RenderTexture source, RenderTexture destination)>((IUniTaskSource<(RenderTexture source, RenderTexture destination)>) (object) this,
+                core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncRenderImageTrigger GetAsyncRenderImageTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncRenderImageTrigger>(gameObject);
-        }
-        
-        public static AsyncRenderImageTrigger GetAsyncRenderImageTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncRenderImageTrigger();
-        }
+        public static AsyncRenderImageTrigger GetAsyncRenderImageTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncRenderImageTrigger>(gameObject); }
+
+        public static AsyncRenderImageTrigger GetAsyncRenderImageTrigger(this Component component) { return component.gameObject.GetAsyncRenderImageTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncRenderImageTrigger : AsyncTriggerBase<(RenderTexture source, RenderTexture destination)>
     {
-        void OnRenderImage(RenderTexture source, RenderTexture destination)
-        {
-            RaiseEvent((source, destination));
-        }
+        void OnRenderImage(RenderTexture source, RenderTexture destination) { RaiseEvent((source, destination)); }
 
         public IAsyncOnRenderImageHandler GetOnRenderImageAsyncHandler()
         {
@@ -2569,17 +2260,19 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<(RenderTexture source, RenderTexture destination)> OnRenderImageAsync()
         {
-            return ((IAsyncOnRenderImageHandler)new AsyncTriggerHandler<(RenderTexture source, RenderTexture destination)>(this, true)).OnRenderImageAsync();
+            return ((IAsyncOnRenderImageHandler) new AsyncTriggerHandler<(RenderTexture source, RenderTexture destination)>(this, true)).OnRenderImageAsync();
         }
 
         public UniTask<(RenderTexture source, RenderTexture destination)> OnRenderImageAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnRenderImageHandler)new AsyncTriggerHandler<(RenderTexture source, RenderTexture destination)>(this, cancellationToken, true)).OnRenderImageAsync();
+            return ((IAsyncOnRenderImageHandler) new AsyncTriggerHandler<(RenderTexture source, RenderTexture destination)>(this, cancellationToken, true))
+                .OnRenderImageAsync();
         }
     }
-#endregion
 
-#region RenderObject
+    #endregion
+
+    #region RenderObject
 
     public interface IAsyncOnRenderObjectHandler
     {
@@ -2591,54 +2284,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnRenderObjectHandler.OnRenderObjectAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncRenderObjectTrigger GetAsyncRenderObjectTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncRenderObjectTrigger>(gameObject);
-        }
-        
-        public static AsyncRenderObjectTrigger GetAsyncRenderObjectTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncRenderObjectTrigger();
-        }
+        public static AsyncRenderObjectTrigger GetAsyncRenderObjectTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncRenderObjectTrigger>(gameObject); }
+
+        public static AsyncRenderObjectTrigger GetAsyncRenderObjectTrigger(this Component component) { return component.gameObject.GetAsyncRenderObjectTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncRenderObjectTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnRenderObject()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnRenderObject() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnRenderObjectHandler GetOnRenderObjectAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnRenderObjectHandler GetOnRenderObjectAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnRenderObjectHandler GetOnRenderObjectAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnRenderObjectAsync()
-        {
-            return ((IAsyncOnRenderObjectHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnRenderObjectAsync();
-        }
+        public UniTask OnRenderObjectAsync() { return ((IAsyncOnRenderObjectHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnRenderObjectAsync(); }
 
         public UniTask OnRenderObjectAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnRenderObjectHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnRenderObjectAsync();
+            return ((IAsyncOnRenderObjectHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnRenderObjectAsync();
         }
     }
-#endregion
 
-#region ServerInitialized
+    #endregion
+
+    #region ServerInitialized
 
     public interface IAsyncOnServerInitializedHandler
     {
@@ -2650,7 +2329,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnServerInitializedHandler.OnServerInitializedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -2660,7 +2339,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncServerInitializedTrigger>(gameObject);
         }
-        
+
         public static AsyncServerInitializedTrigger GetAsyncServerInitializedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncServerInitializedTrigger();
@@ -2670,15 +2349,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncServerInitializedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnServerInitialized()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnServerInitialized() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnServerInitializedHandler GetOnServerInitializedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnServerInitializedHandler GetOnServerInitializedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnServerInitializedHandler GetOnServerInitializedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2687,17 +2360,18 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnServerInitializedAsync()
         {
-            return ((IAsyncOnServerInitializedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnServerInitializedAsync();
+            return ((IAsyncOnServerInitializedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnServerInitializedAsync();
         }
 
         public UniTask OnServerInitializedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnServerInitializedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnServerInitializedAsync();
+            return ((IAsyncOnServerInitializedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnServerInitializedAsync();
         }
     }
-#endregion
 
-#region TransformChildrenChanged
+    #endregion
+
+    #region TransformChildrenChanged
 
     public interface IAsyncOnTransformChildrenChangedHandler
     {
@@ -2709,7 +2383,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnTransformChildrenChangedHandler.OnTransformChildrenChangedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -2719,7 +2393,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncTransformChildrenChangedTrigger>(gameObject);
         }
-        
+
         public static AsyncTransformChildrenChangedTrigger GetAsyncTransformChildrenChangedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncTransformChildrenChangedTrigger();
@@ -2729,15 +2403,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncTransformChildrenChangedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnTransformChildrenChanged()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnTransformChildrenChanged() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnTransformChildrenChangedHandler GetOnTransformChildrenChangedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnTransformChildrenChangedHandler GetOnTransformChildrenChangedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnTransformChildrenChangedHandler GetOnTransformChildrenChangedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2746,17 +2414,18 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnTransformChildrenChangedAsync()
         {
-            return ((IAsyncOnTransformChildrenChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnTransformChildrenChangedAsync();
+            return ((IAsyncOnTransformChildrenChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnTransformChildrenChangedAsync();
         }
 
         public UniTask OnTransformChildrenChangedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTransformChildrenChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnTransformChildrenChangedAsync();
+            return ((IAsyncOnTransformChildrenChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnTransformChildrenChangedAsync();
         }
     }
-#endregion
 
-#region TransformParentChanged
+    #endregion
+
+    #region TransformParentChanged
 
     public interface IAsyncOnTransformParentChangedHandler
     {
@@ -2768,7 +2437,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnTransformParentChangedHandler.OnTransformParentChangedAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -2778,7 +2447,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncTransformParentChangedTrigger>(gameObject);
         }
-        
+
         public static AsyncTransformParentChangedTrigger GetAsyncTransformParentChangedTrigger(this Component component)
         {
             return component.gameObject.GetAsyncTransformParentChangedTrigger();
@@ -2788,15 +2457,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncTransformParentChangedTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnTransformParentChanged()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnTransformParentChanged() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnTransformParentChangedHandler GetOnTransformParentChangedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnTransformParentChangedHandler GetOnTransformParentChangedAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnTransformParentChangedHandler GetOnTransformParentChangedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2805,17 +2468,19 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask OnTransformParentChangedAsync()
         {
-            return ((IAsyncOnTransformParentChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnTransformParentChangedAsync();
+            return ((IAsyncOnTransformParentChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnTransformParentChangedAsync();
         }
 
         public UniTask OnTransformParentChangedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTransformParentChangedHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnTransformParentChangedAsync();
+            return ((IAsyncOnTransformParentChangedHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnTransformParentChangedAsync();
         }
     }
-#endregion
 
-#region TriggerEnter
+    #endregion
+
+    #region TriggerEnter
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnTriggerEnterHandler
@@ -2828,55 +2493,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collider> IAsyncOnTriggerEnterHandler.OnTriggerEnterAsync()
         {
             core.Reset();
-            return new UniTask<Collider>((IUniTaskSource<Collider>)(object)this, core.Version);
+            return new UniTask<Collider>((IUniTaskSource<Collider>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncTriggerEnterTrigger GetAsyncTriggerEnterTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncTriggerEnterTrigger>(gameObject);
-        }
-        
-        public static AsyncTriggerEnterTrigger GetAsyncTriggerEnterTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncTriggerEnterTrigger();
-        }
+        public static AsyncTriggerEnterTrigger GetAsyncTriggerEnterTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncTriggerEnterTrigger>(gameObject); }
+
+        public static AsyncTriggerEnterTrigger GetAsyncTriggerEnterTrigger(this Component component) { return component.gameObject.GetAsyncTriggerEnterTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncTriggerEnterTrigger : AsyncTriggerBase<Collider>
     {
-        void OnTriggerEnter(Collider other)
-        {
-            RaiseEvent((other));
-        }
+        void OnTriggerEnter(Collider other) { RaiseEvent((other)); }
 
-        public IAsyncOnTriggerEnterHandler GetOnTriggerEnterAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collider>(this, false);
-        }
+        public IAsyncOnTriggerEnterHandler GetOnTriggerEnterAsyncHandler() { return new AsyncTriggerHandler<Collider>(this, false); }
 
         public IAsyncOnTriggerEnterHandler GetOnTriggerEnterAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<Collider>(this, cancellationToken, false);
         }
 
-        public UniTask<Collider> OnTriggerEnterAsync()
-        {
-            return ((IAsyncOnTriggerEnterHandler)new AsyncTriggerHandler<Collider>(this, true)).OnTriggerEnterAsync();
-        }
+        public UniTask<Collider> OnTriggerEnterAsync() { return ((IAsyncOnTriggerEnterHandler) new AsyncTriggerHandler<Collider>(this, true)).OnTriggerEnterAsync(); }
 
         public UniTask<Collider> OnTriggerEnterAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTriggerEnterHandler)new AsyncTriggerHandler<Collider>(this, cancellationToken, true)).OnTriggerEnterAsync();
+            return ((IAsyncOnTriggerEnterHandler) new AsyncTriggerHandler<Collider>(this, cancellationToken, true)).OnTriggerEnterAsync();
         }
     }
 #endif
-#endregion
 
-#region TriggerEnter2D
+    #endregion
+
+    #region TriggerEnter2D
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnTriggerEnter2DHandler
@@ -2889,7 +2541,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collider2D> IAsyncOnTriggerEnter2DHandler.OnTriggerEnter2DAsync()
         {
             core.Reset();
-            return new UniTask<Collider2D>((IUniTaskSource<Collider2D>)(object)this, core.Version);
+            return new UniTask<Collider2D>((IUniTaskSource<Collider2D>) (object) this, core.Version);
         }
     }
 
@@ -2899,25 +2551,16 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncTriggerEnter2DTrigger>(gameObject);
         }
-        
-        public static AsyncTriggerEnter2DTrigger GetAsyncTriggerEnter2DTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncTriggerEnter2DTrigger();
-        }
+
+        public static AsyncTriggerEnter2DTrigger GetAsyncTriggerEnter2DTrigger(this Component component) { return component.gameObject.GetAsyncTriggerEnter2DTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncTriggerEnter2DTrigger : AsyncTriggerBase<Collider2D>
     {
-        void OnTriggerEnter2D(Collider2D other)
-        {
-            RaiseEvent((other));
-        }
+        void OnTriggerEnter2D(Collider2D other) { RaiseEvent((other)); }
 
-        public IAsyncOnTriggerEnter2DHandler GetOnTriggerEnter2DAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collider2D>(this, false);
-        }
+        public IAsyncOnTriggerEnter2DHandler GetOnTriggerEnter2DAsyncHandler() { return new AsyncTriggerHandler<Collider2D>(this, false); }
 
         public IAsyncOnTriggerEnter2DHandler GetOnTriggerEnter2DAsyncHandler(CancellationToken cancellationToken)
         {
@@ -2926,18 +2569,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collider2D> OnTriggerEnter2DAsync()
         {
-            return ((IAsyncOnTriggerEnter2DHandler)new AsyncTriggerHandler<Collider2D>(this, true)).OnTriggerEnter2DAsync();
+            return ((IAsyncOnTriggerEnter2DHandler) new AsyncTriggerHandler<Collider2D>(this, true)).OnTriggerEnter2DAsync();
         }
 
         public UniTask<Collider2D> OnTriggerEnter2DAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTriggerEnter2DHandler)new AsyncTriggerHandler<Collider2D>(this, cancellationToken, true)).OnTriggerEnter2DAsync();
+            return ((IAsyncOnTriggerEnter2DHandler) new AsyncTriggerHandler<Collider2D>(this, cancellationToken, true)).OnTriggerEnter2DAsync();
         }
     }
 #endif
-#endregion
 
-#region TriggerExit
+    #endregion
+
+    #region TriggerExit
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnTriggerExitHandler
@@ -2950,55 +2595,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collider> IAsyncOnTriggerExitHandler.OnTriggerExitAsync()
         {
             core.Reset();
-            return new UniTask<Collider>((IUniTaskSource<Collider>)(object)this, core.Version);
+            return new UniTask<Collider>((IUniTaskSource<Collider>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncTriggerExitTrigger GetAsyncTriggerExitTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncTriggerExitTrigger>(gameObject);
-        }
-        
-        public static AsyncTriggerExitTrigger GetAsyncTriggerExitTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncTriggerExitTrigger();
-        }
+        public static AsyncTriggerExitTrigger GetAsyncTriggerExitTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncTriggerExitTrigger>(gameObject); }
+
+        public static AsyncTriggerExitTrigger GetAsyncTriggerExitTrigger(this Component component) { return component.gameObject.GetAsyncTriggerExitTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncTriggerExitTrigger : AsyncTriggerBase<Collider>
     {
-        void OnTriggerExit(Collider other)
-        {
-            RaiseEvent((other));
-        }
+        void OnTriggerExit(Collider other) { RaiseEvent((other)); }
 
-        public IAsyncOnTriggerExitHandler GetOnTriggerExitAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collider>(this, false);
-        }
+        public IAsyncOnTriggerExitHandler GetOnTriggerExitAsyncHandler() { return new AsyncTriggerHandler<Collider>(this, false); }
 
         public IAsyncOnTriggerExitHandler GetOnTriggerExitAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<Collider>(this, cancellationToken, false);
         }
 
-        public UniTask<Collider> OnTriggerExitAsync()
-        {
-            return ((IAsyncOnTriggerExitHandler)new AsyncTriggerHandler<Collider>(this, true)).OnTriggerExitAsync();
-        }
+        public UniTask<Collider> OnTriggerExitAsync() { return ((IAsyncOnTriggerExitHandler) new AsyncTriggerHandler<Collider>(this, true)).OnTriggerExitAsync(); }
 
         public UniTask<Collider> OnTriggerExitAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTriggerExitHandler)new AsyncTriggerHandler<Collider>(this, cancellationToken, true)).OnTriggerExitAsync();
+            return ((IAsyncOnTriggerExitHandler) new AsyncTriggerHandler<Collider>(this, cancellationToken, true)).OnTriggerExitAsync();
         }
     }
 #endif
-#endregion
 
-#region TriggerExit2D
+    #endregion
+
+    #region TriggerExit2D
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnTriggerExit2DHandler
@@ -3011,7 +2643,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collider2D> IAsyncOnTriggerExit2DHandler.OnTriggerExit2DAsync()
         {
             core.Reset();
-            return new UniTask<Collider2D>((IUniTaskSource<Collider2D>)(object)this, core.Version);
+            return new UniTask<Collider2D>((IUniTaskSource<Collider2D>) (object) this, core.Version);
         }
     }
 
@@ -3021,25 +2653,16 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncTriggerExit2DTrigger>(gameObject);
         }
-        
-        public static AsyncTriggerExit2DTrigger GetAsyncTriggerExit2DTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncTriggerExit2DTrigger();
-        }
+
+        public static AsyncTriggerExit2DTrigger GetAsyncTriggerExit2DTrigger(this Component component) { return component.gameObject.GetAsyncTriggerExit2DTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncTriggerExit2DTrigger : AsyncTriggerBase<Collider2D>
     {
-        void OnTriggerExit2D(Collider2D other)
-        {
-            RaiseEvent((other));
-        }
+        void OnTriggerExit2D(Collider2D other) { RaiseEvent((other)); }
 
-        public IAsyncOnTriggerExit2DHandler GetOnTriggerExit2DAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collider2D>(this, false);
-        }
+        public IAsyncOnTriggerExit2DHandler GetOnTriggerExit2DAsyncHandler() { return new AsyncTriggerHandler<Collider2D>(this, false); }
 
         public IAsyncOnTriggerExit2DHandler GetOnTriggerExit2DAsyncHandler(CancellationToken cancellationToken)
         {
@@ -3048,18 +2671,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collider2D> OnTriggerExit2DAsync()
         {
-            return ((IAsyncOnTriggerExit2DHandler)new AsyncTriggerHandler<Collider2D>(this, true)).OnTriggerExit2DAsync();
+            return ((IAsyncOnTriggerExit2DHandler) new AsyncTriggerHandler<Collider2D>(this, true)).OnTriggerExit2DAsync();
         }
 
         public UniTask<Collider2D> OnTriggerExit2DAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTriggerExit2DHandler)new AsyncTriggerHandler<Collider2D>(this, cancellationToken, true)).OnTriggerExit2DAsync();
+            return ((IAsyncOnTriggerExit2DHandler) new AsyncTriggerHandler<Collider2D>(this, cancellationToken, true)).OnTriggerExit2DAsync();
         }
     }
 #endif
-#endregion
 
-#region TriggerStay
+    #endregion
+
+    #region TriggerStay
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS
 
     public interface IAsyncOnTriggerStayHandler
@@ -3072,55 +2697,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collider> IAsyncOnTriggerStayHandler.OnTriggerStayAsync()
         {
             core.Reset();
-            return new UniTask<Collider>((IUniTaskSource<Collider>)(object)this, core.Version);
+            return new UniTask<Collider>((IUniTaskSource<Collider>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncTriggerStayTrigger GetAsyncTriggerStayTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncTriggerStayTrigger>(gameObject);
-        }
-        
-        public static AsyncTriggerStayTrigger GetAsyncTriggerStayTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncTriggerStayTrigger();
-        }
+        public static AsyncTriggerStayTrigger GetAsyncTriggerStayTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncTriggerStayTrigger>(gameObject); }
+
+        public static AsyncTriggerStayTrigger GetAsyncTriggerStayTrigger(this Component component) { return component.gameObject.GetAsyncTriggerStayTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncTriggerStayTrigger : AsyncTriggerBase<Collider>
     {
-        void OnTriggerStay(Collider other)
-        {
-            RaiseEvent((other));
-        }
+        void OnTriggerStay(Collider other) { RaiseEvent((other)); }
 
-        public IAsyncOnTriggerStayHandler GetOnTriggerStayAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collider>(this, false);
-        }
+        public IAsyncOnTriggerStayHandler GetOnTriggerStayAsyncHandler() { return new AsyncTriggerHandler<Collider>(this, false); }
 
         public IAsyncOnTriggerStayHandler GetOnTriggerStayAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<Collider>(this, cancellationToken, false);
         }
 
-        public UniTask<Collider> OnTriggerStayAsync()
-        {
-            return ((IAsyncOnTriggerStayHandler)new AsyncTriggerHandler<Collider>(this, true)).OnTriggerStayAsync();
-        }
+        public UniTask<Collider> OnTriggerStayAsync() { return ((IAsyncOnTriggerStayHandler) new AsyncTriggerHandler<Collider>(this, true)).OnTriggerStayAsync(); }
 
         public UniTask<Collider> OnTriggerStayAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTriggerStayHandler)new AsyncTriggerHandler<Collider>(this, cancellationToken, true)).OnTriggerStayAsync();
+            return ((IAsyncOnTriggerStayHandler) new AsyncTriggerHandler<Collider>(this, cancellationToken, true)).OnTriggerStayAsync();
         }
     }
 #endif
-#endregion
 
-#region TriggerStay2D
+    #endregion
+
+    #region TriggerStay2D
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_PHYSICS2D
 
     public interface IAsyncOnTriggerStay2DHandler
@@ -3133,7 +2745,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<Collider2D> IAsyncOnTriggerStay2DHandler.OnTriggerStay2DAsync()
         {
             core.Reset();
-            return new UniTask<Collider2D>((IUniTaskSource<Collider2D>)(object)this, core.Version);
+            return new UniTask<Collider2D>((IUniTaskSource<Collider2D>) (object) this, core.Version);
         }
     }
 
@@ -3143,25 +2755,16 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncTriggerStay2DTrigger>(gameObject);
         }
-        
-        public static AsyncTriggerStay2DTrigger GetAsyncTriggerStay2DTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncTriggerStay2DTrigger();
-        }
+
+        public static AsyncTriggerStay2DTrigger GetAsyncTriggerStay2DTrigger(this Component component) { return component.gameObject.GetAsyncTriggerStay2DTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncTriggerStay2DTrigger : AsyncTriggerBase<Collider2D>
     {
-        void OnTriggerStay2D(Collider2D other)
-        {
-            RaiseEvent((other));
-        }
+        void OnTriggerStay2D(Collider2D other) { RaiseEvent((other)); }
 
-        public IAsyncOnTriggerStay2DHandler GetOnTriggerStay2DAsyncHandler()
-        {
-            return new AsyncTriggerHandler<Collider2D>(this, false);
-        }
+        public IAsyncOnTriggerStay2DHandler GetOnTriggerStay2DAsyncHandler() { return new AsyncTriggerHandler<Collider2D>(this, false); }
 
         public IAsyncOnTriggerStay2DHandler GetOnTriggerStay2DAsyncHandler(CancellationToken cancellationToken)
         {
@@ -3170,18 +2773,19 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<Collider2D> OnTriggerStay2DAsync()
         {
-            return ((IAsyncOnTriggerStay2DHandler)new AsyncTriggerHandler<Collider2D>(this, true)).OnTriggerStay2DAsync();
+            return ((IAsyncOnTriggerStay2DHandler) new AsyncTriggerHandler<Collider2D>(this, true)).OnTriggerStay2DAsync();
         }
 
         public UniTask<Collider2D> OnTriggerStay2DAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnTriggerStay2DHandler)new AsyncTriggerHandler<Collider2D>(this, cancellationToken, true)).OnTriggerStay2DAsync();
+            return ((IAsyncOnTriggerStay2DHandler) new AsyncTriggerHandler<Collider2D>(this, cancellationToken, true)).OnTriggerStay2DAsync();
         }
     }
 #endif
-#endregion
 
-#region Validate
+    #endregion
+
+    #region Validate
 
     public interface IAsyncOnValidateHandler
     {
@@ -3193,54 +2797,40 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnValidateHandler.OnValidateAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncValidateTrigger GetAsyncValidateTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncValidateTrigger>(gameObject);
-        }
-        
-        public static AsyncValidateTrigger GetAsyncValidateTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncValidateTrigger();
-        }
+        public static AsyncValidateTrigger GetAsyncValidateTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncValidateTrigger>(gameObject); }
+
+        public static AsyncValidateTrigger GetAsyncValidateTrigger(this Component component) { return component.gameObject.GetAsyncValidateTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncValidateTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnValidate()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnValidate() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnValidateHandler GetOnValidateAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnValidateHandler GetOnValidateAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnValidateHandler GetOnValidateAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnValidateAsync()
-        {
-            return ((IAsyncOnValidateHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnValidateAsync();
-        }
+        public UniTask OnValidateAsync() { return ((IAsyncOnValidateHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnValidateAsync(); }
 
         public UniTask OnValidateAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnValidateHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnValidateAsync();
+            return ((IAsyncOnValidateHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnValidateAsync();
         }
     }
-#endregion
 
-#region WillRenderObject
+    #endregion
+
+    #region WillRenderObject
 
     public interface IAsyncOnWillRenderObjectHandler
     {
@@ -3252,7 +2842,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOnWillRenderObjectHandler.OnWillRenderObjectAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
@@ -3262,7 +2852,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncWillRenderObjectTrigger>(gameObject);
         }
-        
+
         public static AsyncWillRenderObjectTrigger GetAsyncWillRenderObjectTrigger(this Component component)
         {
             return component.gameObject.GetAsyncWillRenderObjectTrigger();
@@ -3272,34 +2862,26 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncWillRenderObjectTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void OnWillRenderObject()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void OnWillRenderObject() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncOnWillRenderObjectHandler GetOnWillRenderObjectAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncOnWillRenderObjectHandler GetOnWillRenderObjectAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncOnWillRenderObjectHandler GetOnWillRenderObjectAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask OnWillRenderObjectAsync()
-        {
-            return ((IAsyncOnWillRenderObjectHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).OnWillRenderObjectAsync();
-        }
+        public UniTask OnWillRenderObjectAsync() { return ((IAsyncOnWillRenderObjectHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).OnWillRenderObjectAsync(); }
 
         public UniTask OnWillRenderObjectAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnWillRenderObjectHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnWillRenderObjectAsync();
+            return ((IAsyncOnWillRenderObjectHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).OnWillRenderObjectAsync();
         }
     }
-#endregion
 
-#region Reset
+    #endregion
+
+    #region Reset
 
     public interface IAsyncResetHandler
     {
@@ -3311,54 +2893,37 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncResetHandler.ResetAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncResetTrigger GetAsyncResetTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncResetTrigger>(gameObject);
-        }
-        
-        public static AsyncResetTrigger GetAsyncResetTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncResetTrigger();
-        }
+        public static AsyncResetTrigger GetAsyncResetTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncResetTrigger>(gameObject); }
+
+        public static AsyncResetTrigger GetAsyncResetTrigger(this Component component) { return component.gameObject.GetAsyncResetTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncResetTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void Reset()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void Reset() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncResetHandler GetResetAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncResetHandler GetResetAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
-        public IAsyncResetHandler GetResetAsyncHandler(CancellationToken cancellationToken)
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
-        }
+        public IAsyncResetHandler GetResetAsyncHandler(CancellationToken cancellationToken) { return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false); }
 
-        public UniTask ResetAsync()
-        {
-            return ((IAsyncResetHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).ResetAsync();
-        }
+        public UniTask ResetAsync() { return ((IAsyncResetHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).ResetAsync(); }
 
         public UniTask ResetAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncResetHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).ResetAsync();
+            return ((IAsyncResetHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).ResetAsync();
         }
     }
-#endregion
 
-#region Update
+    #endregion
+
+    #region Update
 
     public interface IAsyncUpdateHandler
     {
@@ -3370,54 +2935,41 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncUpdateHandler.UpdateAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)(object)this, core.Version);
+            return new UniTask((IUniTaskSource) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncUpdateTrigger GetAsyncUpdateTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncUpdateTrigger>(gameObject);
-        }
-        
-        public static AsyncUpdateTrigger GetAsyncUpdateTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncUpdateTrigger();
-        }
+        public static AsyncUpdateTrigger GetAsyncUpdateTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncUpdateTrigger>(gameObject); }
+
+        public static AsyncUpdateTrigger GetAsyncUpdateTrigger(this Component component) { return component.gameObject.GetAsyncUpdateTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncUpdateTrigger : AsyncTriggerBase<AsyncUnit>
     {
-        void Update()
-        {
-            RaiseEvent(AsyncUnit.Default);
-        }
+        void Update() { RaiseEvent(AsyncUnit.Default); }
 
-        public IAsyncUpdateHandler GetUpdateAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AsyncUnit>(this, false);
-        }
+        public IAsyncUpdateHandler GetUpdateAsyncHandler() { return new AsyncTriggerHandler<AsyncUnit>(this, false); }
 
         public IAsyncUpdateHandler GetUpdateAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, false);
         }
 
-        public UniTask UpdateAsync()
-        {
-            return ((IAsyncUpdateHandler)new AsyncTriggerHandler<AsyncUnit>(this, true)).UpdateAsync();
-        }
+        public UniTask UpdateAsync() { return ((IAsyncUpdateHandler) new AsyncTriggerHandler<AsyncUnit>(this, true)).UpdateAsync(); }
 
         public UniTask UpdateAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncUpdateHandler)new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).UpdateAsync();
+            return ((IAsyncUpdateHandler) new AsyncTriggerHandler<AsyncUnit>(this, cancellationToken, true)).UpdateAsync();
         }
     }
-#endregion
 
-#region BeginDrag
+    #endregion
+
+    #region BeginDrag
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnBeginDragHandler
@@ -3430,35 +2982,23 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnBeginDragHandler.OnBeginDragAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncBeginDragTrigger GetAsyncBeginDragTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncBeginDragTrigger>(gameObject);
-        }
-        
-        public static AsyncBeginDragTrigger GetAsyncBeginDragTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncBeginDragTrigger();
-        }
+        public static AsyncBeginDragTrigger GetAsyncBeginDragTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncBeginDragTrigger>(gameObject); }
+
+        public static AsyncBeginDragTrigger GetAsyncBeginDragTrigger(this Component component) { return component.gameObject.GetAsyncBeginDragTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncBeginDragTrigger : AsyncTriggerBase<PointerEventData>, IBeginDragHandler
     {
-        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnBeginDragHandler GetOnBeginDragAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnBeginDragHandler GetOnBeginDragAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnBeginDragHandler GetOnBeginDragAsyncHandler(CancellationToken cancellationToken)
         {
@@ -3467,18 +3007,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<PointerEventData> OnBeginDragAsync()
         {
-            return ((IAsyncOnBeginDragHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnBeginDragAsync();
+            return ((IAsyncOnBeginDragHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnBeginDragAsync();
         }
 
         public UniTask<PointerEventData> OnBeginDragAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnBeginDragHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnBeginDragAsync();
+            return ((IAsyncOnBeginDragHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnBeginDragAsync();
         }
     }
 #endif
-#endregion
 
-#region Cancel
+    #endregion
+
+    #region Cancel
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnCancelHandler
@@ -3491,55 +3033,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<BaseEventData> IAsyncOnCancelHandler.OnCancelAsync()
         {
             core.Reset();
-            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>)(object)this, core.Version);
+            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncCancelTrigger GetAsyncCancelTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncCancelTrigger>(gameObject);
-        }
-        
-        public static AsyncCancelTrigger GetAsyncCancelTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncCancelTrigger();
-        }
+        public static AsyncCancelTrigger GetAsyncCancelTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncCancelTrigger>(gameObject); }
+
+        public static AsyncCancelTrigger GetAsyncCancelTrigger(this Component component) { return component.gameObject.GetAsyncCancelTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncCancelTrigger : AsyncTriggerBase<BaseEventData>, ICancelHandler
     {
-        void ICancelHandler.OnCancel(BaseEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void ICancelHandler.OnCancel(BaseEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnCancelHandler GetOnCancelAsyncHandler()
-        {
-            return new AsyncTriggerHandler<BaseEventData>(this, false);
-        }
+        public IAsyncOnCancelHandler GetOnCancelAsyncHandler() { return new AsyncTriggerHandler<BaseEventData>(this, false); }
 
         public IAsyncOnCancelHandler GetOnCancelAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<BaseEventData> OnCancelAsync()
-        {
-            return ((IAsyncOnCancelHandler)new AsyncTriggerHandler<BaseEventData>(this, true)).OnCancelAsync();
-        }
+        public UniTask<BaseEventData> OnCancelAsync() { return ((IAsyncOnCancelHandler) new AsyncTriggerHandler<BaseEventData>(this, true)).OnCancelAsync(); }
 
         public UniTask<BaseEventData> OnCancelAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnCancelHandler)new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnCancelAsync();
+            return ((IAsyncOnCancelHandler) new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnCancelAsync();
         }
     }
 #endif
-#endregion
 
-#region Deselect
+    #endregion
+
+    #region Deselect
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnDeselectHandler
@@ -3552,55 +3081,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<BaseEventData> IAsyncOnDeselectHandler.OnDeselectAsync()
         {
             core.Reset();
-            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>)(object)this, core.Version);
+            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncDeselectTrigger GetAsyncDeselectTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncDeselectTrigger>(gameObject);
-        }
-        
-        public static AsyncDeselectTrigger GetAsyncDeselectTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncDeselectTrigger();
-        }
+        public static AsyncDeselectTrigger GetAsyncDeselectTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncDeselectTrigger>(gameObject); }
+
+        public static AsyncDeselectTrigger GetAsyncDeselectTrigger(this Component component) { return component.gameObject.GetAsyncDeselectTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncDeselectTrigger : AsyncTriggerBase<BaseEventData>, IDeselectHandler
     {
-        void IDeselectHandler.OnDeselect(BaseEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IDeselectHandler.OnDeselect(BaseEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnDeselectHandler GetOnDeselectAsyncHandler()
-        {
-            return new AsyncTriggerHandler<BaseEventData>(this, false);
-        }
+        public IAsyncOnDeselectHandler GetOnDeselectAsyncHandler() { return new AsyncTriggerHandler<BaseEventData>(this, false); }
 
         public IAsyncOnDeselectHandler GetOnDeselectAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<BaseEventData> OnDeselectAsync()
-        {
-            return ((IAsyncOnDeselectHandler)new AsyncTriggerHandler<BaseEventData>(this, true)).OnDeselectAsync();
-        }
+        public UniTask<BaseEventData> OnDeselectAsync() { return ((IAsyncOnDeselectHandler) new AsyncTriggerHandler<BaseEventData>(this, true)).OnDeselectAsync(); }
 
         public UniTask<BaseEventData> OnDeselectAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnDeselectHandler)new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnDeselectAsync();
+            return ((IAsyncOnDeselectHandler) new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnDeselectAsync();
         }
     }
 #endif
-#endregion
 
-#region Drag
+    #endregion
+
+    #region Drag
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnDragHandler
@@ -3613,55 +3129,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnDragHandler.OnDragAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncDragTrigger GetAsyncDragTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncDragTrigger>(gameObject);
-        }
-        
-        public static AsyncDragTrigger GetAsyncDragTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncDragTrigger();
-        }
+        public static AsyncDragTrigger GetAsyncDragTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncDragTrigger>(gameObject); }
+
+        public static AsyncDragTrigger GetAsyncDragTrigger(this Component component) { return component.gameObject.GetAsyncDragTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncDragTrigger : AsyncTriggerBase<PointerEventData>, IDragHandler
     {
-        void IDragHandler.OnDrag(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IDragHandler.OnDrag(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnDragHandler GetOnDragAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnDragHandler GetOnDragAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnDragHandler GetOnDragAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<PointerEventData> OnDragAsync()
-        {
-            return ((IAsyncOnDragHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnDragAsync();
-        }
+        public UniTask<PointerEventData> OnDragAsync() { return ((IAsyncOnDragHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnDragAsync(); }
 
         public UniTask<PointerEventData> OnDragAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnDragHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnDragAsync();
+            return ((IAsyncOnDragHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnDragAsync();
         }
     }
 #endif
-#endregion
 
-#region Drop
+    #endregion
+
+    #region Drop
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnDropHandler
@@ -3674,55 +3177,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnDropHandler.OnDropAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncDropTrigger GetAsyncDropTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncDropTrigger>(gameObject);
-        }
-        
-        public static AsyncDropTrigger GetAsyncDropTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncDropTrigger();
-        }
+        public static AsyncDropTrigger GetAsyncDropTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncDropTrigger>(gameObject); }
+
+        public static AsyncDropTrigger GetAsyncDropTrigger(this Component component) { return component.gameObject.GetAsyncDropTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncDropTrigger : AsyncTriggerBase<PointerEventData>, IDropHandler
     {
-        void IDropHandler.OnDrop(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IDropHandler.OnDrop(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnDropHandler GetOnDropAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnDropHandler GetOnDropAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnDropHandler GetOnDropAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<PointerEventData> OnDropAsync()
-        {
-            return ((IAsyncOnDropHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnDropAsync();
-        }
+        public UniTask<PointerEventData> OnDropAsync() { return ((IAsyncOnDropHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnDropAsync(); }
 
         public UniTask<PointerEventData> OnDropAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnDropHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnDropAsync();
+            return ((IAsyncOnDropHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnDropAsync();
         }
     }
 #endif
-#endregion
 
-#region EndDrag
+    #endregion
+
+    #region EndDrag
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnEndDragHandler
@@ -3735,55 +3225,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnEndDragHandler.OnEndDragAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncEndDragTrigger GetAsyncEndDragTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncEndDragTrigger>(gameObject);
-        }
-        
-        public static AsyncEndDragTrigger GetAsyncEndDragTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncEndDragTrigger();
-        }
+        public static AsyncEndDragTrigger GetAsyncEndDragTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncEndDragTrigger>(gameObject); }
+
+        public static AsyncEndDragTrigger GetAsyncEndDragTrigger(this Component component) { return component.gameObject.GetAsyncEndDragTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncEndDragTrigger : AsyncTriggerBase<PointerEventData>, IEndDragHandler
     {
-        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnEndDragHandler GetOnEndDragAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnEndDragHandler GetOnEndDragAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnEndDragHandler GetOnEndDragAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<PointerEventData> OnEndDragAsync()
-        {
-            return ((IAsyncOnEndDragHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnEndDragAsync();
-        }
+        public UniTask<PointerEventData> OnEndDragAsync() { return ((IAsyncOnEndDragHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnEndDragAsync(); }
 
         public UniTask<PointerEventData> OnEndDragAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnEndDragHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnEndDragAsync();
+            return ((IAsyncOnEndDragHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnEndDragAsync();
         }
     }
 #endif
-#endregion
 
-#region InitializePotentialDrag
+    #endregion
+
+    #region InitializePotentialDrag
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnInitializePotentialDragHandler
@@ -3796,7 +3273,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnInitializePotentialDragHandler.OnInitializePotentialDragAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
@@ -3806,7 +3283,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncInitializePotentialDragTrigger>(gameObject);
         }
-        
+
         public static AsyncInitializePotentialDragTrigger GetAsyncInitializePotentialDragTrigger(this Component component)
         {
             return component.gameObject.GetAsyncInitializePotentialDragTrigger();
@@ -3816,15 +3293,9 @@ namespace Pancake.Threading.Tasks.Triggers
     [DisallowMultipleComponent]
     public sealed class AsyncInitializePotentialDragTrigger : AsyncTriggerBase<PointerEventData>, IInitializePotentialDragHandler
     {
-        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnInitializePotentialDragHandler GetOnInitializePotentialDragAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnInitializePotentialDragHandler GetOnInitializePotentialDragAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnInitializePotentialDragHandler GetOnInitializePotentialDragAsyncHandler(CancellationToken cancellationToken)
         {
@@ -3833,18 +3304,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<PointerEventData> OnInitializePotentialDragAsync()
         {
-            return ((IAsyncOnInitializePotentialDragHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnInitializePotentialDragAsync();
+            return ((IAsyncOnInitializePotentialDragHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnInitializePotentialDragAsync();
         }
 
         public UniTask<PointerEventData> OnInitializePotentialDragAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnInitializePotentialDragHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnInitializePotentialDragAsync();
+            return ((IAsyncOnInitializePotentialDragHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnInitializePotentialDragAsync();
         }
     }
 #endif
-#endregion
 
-#region Move
+    #endregion
+
+    #region Move
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnMoveHandler
@@ -3857,55 +3330,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<AxisEventData> IAsyncOnMoveHandler.OnMoveAsync()
         {
             core.Reset();
-            return new UniTask<AxisEventData>((IUniTaskSource<AxisEventData>)(object)this, core.Version);
+            return new UniTask<AxisEventData>((IUniTaskSource<AxisEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncMoveTrigger GetAsyncMoveTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncMoveTrigger>(gameObject);
-        }
-        
-        public static AsyncMoveTrigger GetAsyncMoveTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncMoveTrigger();
-        }
+        public static AsyncMoveTrigger GetAsyncMoveTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncMoveTrigger>(gameObject); }
+
+        public static AsyncMoveTrigger GetAsyncMoveTrigger(this Component component) { return component.gameObject.GetAsyncMoveTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncMoveTrigger : AsyncTriggerBase<AxisEventData>, IMoveHandler
     {
-        void IMoveHandler.OnMove(AxisEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IMoveHandler.OnMove(AxisEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnMoveHandler GetOnMoveAsyncHandler()
-        {
-            return new AsyncTriggerHandler<AxisEventData>(this, false);
-        }
+        public IAsyncOnMoveHandler GetOnMoveAsyncHandler() { return new AsyncTriggerHandler<AxisEventData>(this, false); }
 
         public IAsyncOnMoveHandler GetOnMoveAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<AxisEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<AxisEventData> OnMoveAsync()
-        {
-            return ((IAsyncOnMoveHandler)new AsyncTriggerHandler<AxisEventData>(this, true)).OnMoveAsync();
-        }
+        public UniTask<AxisEventData> OnMoveAsync() { return ((IAsyncOnMoveHandler) new AsyncTriggerHandler<AxisEventData>(this, true)).OnMoveAsync(); }
 
         public UniTask<AxisEventData> OnMoveAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnMoveHandler)new AsyncTriggerHandler<AxisEventData>(this, cancellationToken, true)).OnMoveAsync();
+            return ((IAsyncOnMoveHandler) new AsyncTriggerHandler<AxisEventData>(this, cancellationToken, true)).OnMoveAsync();
         }
     }
 #endif
-#endregion
 
-#region PointerClick
+    #endregion
+
+    #region PointerClick
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerClickHandler
@@ -3918,35 +3378,23 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnPointerClickHandler.OnPointerClickAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPointerClickTrigger GetAsyncPointerClickTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPointerClickTrigger>(gameObject);
-        }
-        
-        public static AsyncPointerClickTrigger GetAsyncPointerClickTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPointerClickTrigger();
-        }
+        public static AsyncPointerClickTrigger GetAsyncPointerClickTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPointerClickTrigger>(gameObject); }
+
+        public static AsyncPointerClickTrigger GetAsyncPointerClickTrigger(this Component component) { return component.gameObject.GetAsyncPointerClickTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPointerClickTrigger : AsyncTriggerBase<PointerEventData>, IPointerClickHandler
     {
-        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnPointerClickHandler GetOnPointerClickAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnPointerClickHandler GetOnPointerClickAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnPointerClickHandler GetOnPointerClickAsyncHandler(CancellationToken cancellationToken)
         {
@@ -3955,18 +3403,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<PointerEventData> OnPointerClickAsync()
         {
-            return ((IAsyncOnPointerClickHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerClickAsync();
+            return ((IAsyncOnPointerClickHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerClickAsync();
         }
 
         public UniTask<PointerEventData> OnPointerClickAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPointerClickHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerClickAsync();
+            return ((IAsyncOnPointerClickHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerClickAsync();
         }
     }
 #endif
-#endregion
 
-#region PointerDown
+    #endregion
+
+    #region PointerDown
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerDownHandler
@@ -3979,35 +3429,23 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnPointerDownHandler.OnPointerDownAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPointerDownTrigger GetAsyncPointerDownTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPointerDownTrigger>(gameObject);
-        }
-        
-        public static AsyncPointerDownTrigger GetAsyncPointerDownTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPointerDownTrigger();
-        }
+        public static AsyncPointerDownTrigger GetAsyncPointerDownTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPointerDownTrigger>(gameObject); }
+
+        public static AsyncPointerDownTrigger GetAsyncPointerDownTrigger(this Component component) { return component.gameObject.GetAsyncPointerDownTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPointerDownTrigger : AsyncTriggerBase<PointerEventData>, IPointerDownHandler
     {
-        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnPointerDownHandler GetOnPointerDownAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnPointerDownHandler GetOnPointerDownAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnPointerDownHandler GetOnPointerDownAsyncHandler(CancellationToken cancellationToken)
         {
@@ -4016,18 +3454,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<PointerEventData> OnPointerDownAsync()
         {
-            return ((IAsyncOnPointerDownHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerDownAsync();
+            return ((IAsyncOnPointerDownHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerDownAsync();
         }
 
         public UniTask<PointerEventData> OnPointerDownAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPointerDownHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerDownAsync();
+            return ((IAsyncOnPointerDownHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerDownAsync();
         }
     }
 #endif
-#endregion
 
-#region PointerEnter
+    #endregion
+
+    #region PointerEnter
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerEnterHandler
@@ -4040,35 +3480,23 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnPointerEnterHandler.OnPointerEnterAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPointerEnterTrigger GetAsyncPointerEnterTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPointerEnterTrigger>(gameObject);
-        }
-        
-        public static AsyncPointerEnterTrigger GetAsyncPointerEnterTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPointerEnterTrigger();
-        }
+        public static AsyncPointerEnterTrigger GetAsyncPointerEnterTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPointerEnterTrigger>(gameObject); }
+
+        public static AsyncPointerEnterTrigger GetAsyncPointerEnterTrigger(this Component component) { return component.gameObject.GetAsyncPointerEnterTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPointerEnterTrigger : AsyncTriggerBase<PointerEventData>, IPointerEnterHandler
     {
-        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnPointerEnterHandler GetOnPointerEnterAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnPointerEnterHandler GetOnPointerEnterAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnPointerEnterHandler GetOnPointerEnterAsyncHandler(CancellationToken cancellationToken)
         {
@@ -4077,18 +3505,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<PointerEventData> OnPointerEnterAsync()
         {
-            return ((IAsyncOnPointerEnterHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerEnterAsync();
+            return ((IAsyncOnPointerEnterHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerEnterAsync();
         }
 
         public UniTask<PointerEventData> OnPointerEnterAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPointerEnterHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerEnterAsync();
+            return ((IAsyncOnPointerEnterHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerEnterAsync();
         }
     }
 #endif
-#endregion
 
-#region PointerExit
+    #endregion
+
+    #region PointerExit
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerExitHandler
@@ -4101,35 +3531,23 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnPointerExitHandler.OnPointerExitAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPointerExitTrigger GetAsyncPointerExitTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPointerExitTrigger>(gameObject);
-        }
-        
-        public static AsyncPointerExitTrigger GetAsyncPointerExitTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPointerExitTrigger();
-        }
+        public static AsyncPointerExitTrigger GetAsyncPointerExitTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPointerExitTrigger>(gameObject); }
+
+        public static AsyncPointerExitTrigger GetAsyncPointerExitTrigger(this Component component) { return component.gameObject.GetAsyncPointerExitTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPointerExitTrigger : AsyncTriggerBase<PointerEventData>, IPointerExitHandler
     {
-        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnPointerExitHandler GetOnPointerExitAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnPointerExitHandler GetOnPointerExitAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnPointerExitHandler GetOnPointerExitAsyncHandler(CancellationToken cancellationToken)
         {
@@ -4138,18 +3556,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<PointerEventData> OnPointerExitAsync()
         {
-            return ((IAsyncOnPointerExitHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerExitAsync();
+            return ((IAsyncOnPointerExitHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerExitAsync();
         }
 
         public UniTask<PointerEventData> OnPointerExitAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPointerExitHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerExitAsync();
+            return ((IAsyncOnPointerExitHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerExitAsync();
         }
     }
 #endif
-#endregion
 
-#region PointerUp
+    #endregion
+
+    #region PointerUp
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnPointerUpHandler
@@ -4162,35 +3582,23 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnPointerUpHandler.OnPointerUpAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncPointerUpTrigger GetAsyncPointerUpTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncPointerUpTrigger>(gameObject);
-        }
-        
-        public static AsyncPointerUpTrigger GetAsyncPointerUpTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncPointerUpTrigger();
-        }
+        public static AsyncPointerUpTrigger GetAsyncPointerUpTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncPointerUpTrigger>(gameObject); }
+
+        public static AsyncPointerUpTrigger GetAsyncPointerUpTrigger(this Component component) { return component.gameObject.GetAsyncPointerUpTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncPointerUpTrigger : AsyncTriggerBase<PointerEventData>, IPointerUpHandler
     {
-        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IPointerUpHandler.OnPointerUp(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnPointerUpHandler GetOnPointerUpAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnPointerUpHandler GetOnPointerUpAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnPointerUpHandler GetOnPointerUpAsyncHandler(CancellationToken cancellationToken)
         {
@@ -4199,18 +3607,20 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<PointerEventData> OnPointerUpAsync()
         {
-            return ((IAsyncOnPointerUpHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerUpAsync();
+            return ((IAsyncOnPointerUpHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnPointerUpAsync();
         }
 
         public UniTask<PointerEventData> OnPointerUpAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnPointerUpHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerUpAsync();
+            return ((IAsyncOnPointerUpHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnPointerUpAsync();
         }
     }
 #endif
-#endregion
 
-#region Scroll
+    #endregion
+
+    #region Scroll
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnScrollHandler
@@ -4223,55 +3633,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<PointerEventData> IAsyncOnScrollHandler.OnScrollAsync()
         {
             core.Reset();
-            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>)(object)this, core.Version);
+            return new UniTask<PointerEventData>((IUniTaskSource<PointerEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncScrollTrigger GetAsyncScrollTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncScrollTrigger>(gameObject);
-        }
-        
-        public static AsyncScrollTrigger GetAsyncScrollTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncScrollTrigger();
-        }
+        public static AsyncScrollTrigger GetAsyncScrollTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncScrollTrigger>(gameObject); }
+
+        public static AsyncScrollTrigger GetAsyncScrollTrigger(this Component component) { return component.gameObject.GetAsyncScrollTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncScrollTrigger : AsyncTriggerBase<PointerEventData>, IScrollHandler
     {
-        void IScrollHandler.OnScroll(PointerEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IScrollHandler.OnScroll(PointerEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnScrollHandler GetOnScrollAsyncHandler()
-        {
-            return new AsyncTriggerHandler<PointerEventData>(this, false);
-        }
+        public IAsyncOnScrollHandler GetOnScrollAsyncHandler() { return new AsyncTriggerHandler<PointerEventData>(this, false); }
 
         public IAsyncOnScrollHandler GetOnScrollAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<PointerEventData> OnScrollAsync()
-        {
-            return ((IAsyncOnScrollHandler)new AsyncTriggerHandler<PointerEventData>(this, true)).OnScrollAsync();
-        }
+        public UniTask<PointerEventData> OnScrollAsync() { return ((IAsyncOnScrollHandler) new AsyncTriggerHandler<PointerEventData>(this, true)).OnScrollAsync(); }
 
         public UniTask<PointerEventData> OnScrollAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnScrollHandler)new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnScrollAsync();
+            return ((IAsyncOnScrollHandler) new AsyncTriggerHandler<PointerEventData>(this, cancellationToken, true)).OnScrollAsync();
         }
     }
 #endif
-#endregion
 
-#region Select
+    #endregion
+
+    #region Select
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnSelectHandler
@@ -4284,55 +3681,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<BaseEventData> IAsyncOnSelectHandler.OnSelectAsync()
         {
             core.Reset();
-            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>)(object)this, core.Version);
+            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncSelectTrigger GetAsyncSelectTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncSelectTrigger>(gameObject);
-        }
-        
-        public static AsyncSelectTrigger GetAsyncSelectTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncSelectTrigger();
-        }
+        public static AsyncSelectTrigger GetAsyncSelectTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncSelectTrigger>(gameObject); }
+
+        public static AsyncSelectTrigger GetAsyncSelectTrigger(this Component component) { return component.gameObject.GetAsyncSelectTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncSelectTrigger : AsyncTriggerBase<BaseEventData>, ISelectHandler
     {
-        void ISelectHandler.OnSelect(BaseEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void ISelectHandler.OnSelect(BaseEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnSelectHandler GetOnSelectAsyncHandler()
-        {
-            return new AsyncTriggerHandler<BaseEventData>(this, false);
-        }
+        public IAsyncOnSelectHandler GetOnSelectAsyncHandler() { return new AsyncTriggerHandler<BaseEventData>(this, false); }
 
         public IAsyncOnSelectHandler GetOnSelectAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<BaseEventData> OnSelectAsync()
-        {
-            return ((IAsyncOnSelectHandler)new AsyncTriggerHandler<BaseEventData>(this, true)).OnSelectAsync();
-        }
+        public UniTask<BaseEventData> OnSelectAsync() { return ((IAsyncOnSelectHandler) new AsyncTriggerHandler<BaseEventData>(this, true)).OnSelectAsync(); }
 
         public UniTask<BaseEventData> OnSelectAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnSelectHandler)new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnSelectAsync();
+            return ((IAsyncOnSelectHandler) new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnSelectAsync();
         }
     }
 #endif
-#endregion
 
-#region Submit
+    #endregion
+
+    #region Submit
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnSubmitHandler
@@ -4345,55 +3729,42 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<BaseEventData> IAsyncOnSubmitHandler.OnSubmitAsync()
         {
             core.Reset();
-            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>)(object)this, core.Version);
+            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>) (object) this, core.Version);
         }
     }
 
     public static partial class AsyncTriggerExtensions
     {
-        public static AsyncSubmitTrigger GetAsyncSubmitTrigger(this GameObject gameObject)
-        {
-            return GetOrAddComponent<AsyncSubmitTrigger>(gameObject);
-        }
-        
-        public static AsyncSubmitTrigger GetAsyncSubmitTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncSubmitTrigger();
-        }
+        public static AsyncSubmitTrigger GetAsyncSubmitTrigger(this GameObject gameObject) { return GetOrAddComponent<AsyncSubmitTrigger>(gameObject); }
+
+        public static AsyncSubmitTrigger GetAsyncSubmitTrigger(this Component component) { return component.gameObject.GetAsyncSubmitTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncSubmitTrigger : AsyncTriggerBase<BaseEventData>, ISubmitHandler
     {
-        void ISubmitHandler.OnSubmit(BaseEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void ISubmitHandler.OnSubmit(BaseEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnSubmitHandler GetOnSubmitAsyncHandler()
-        {
-            return new AsyncTriggerHandler<BaseEventData>(this, false);
-        }
+        public IAsyncOnSubmitHandler GetOnSubmitAsyncHandler() { return new AsyncTriggerHandler<BaseEventData>(this, false); }
 
         public IAsyncOnSubmitHandler GetOnSubmitAsyncHandler(CancellationToken cancellationToken)
         {
             return new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, false);
         }
 
-        public UniTask<BaseEventData> OnSubmitAsync()
-        {
-            return ((IAsyncOnSubmitHandler)new AsyncTriggerHandler<BaseEventData>(this, true)).OnSubmitAsync();
-        }
+        public UniTask<BaseEventData> OnSubmitAsync() { return ((IAsyncOnSubmitHandler) new AsyncTriggerHandler<BaseEventData>(this, true)).OnSubmitAsync(); }
 
         public UniTask<BaseEventData> OnSubmitAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnSubmitHandler)new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnSubmitAsync();
+            return ((IAsyncOnSubmitHandler) new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnSubmitAsync();
         }
     }
 #endif
-#endregion
 
-#region UpdateSelected
+    #endregion
+
+    #region UpdateSelected
+
 #if !UNITY_2019_1_OR_NEWER || PANCAKE_UGUI
 
     public interface IAsyncOnUpdateSelectedHandler
@@ -4406,7 +3777,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask<BaseEventData> IAsyncOnUpdateSelectedHandler.OnUpdateSelectedAsync()
         {
             core.Reset();
-            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>)(object)this, core.Version);
+            return new UniTask<BaseEventData>((IUniTaskSource<BaseEventData>) (object) this, core.Version);
         }
     }
 
@@ -4416,25 +3787,16 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             return GetOrAddComponent<AsyncUpdateSelectedTrigger>(gameObject);
         }
-        
-        public static AsyncUpdateSelectedTrigger GetAsyncUpdateSelectedTrigger(this Component component)
-        {
-            return component.gameObject.GetAsyncUpdateSelectedTrigger();
-        }
+
+        public static AsyncUpdateSelectedTrigger GetAsyncUpdateSelectedTrigger(this Component component) { return component.gameObject.GetAsyncUpdateSelectedTrigger(); }
     }
 
     [DisallowMultipleComponent]
     public sealed class AsyncUpdateSelectedTrigger : AsyncTriggerBase<BaseEventData>, IUpdateSelectedHandler
     {
-        void IUpdateSelectedHandler.OnUpdateSelected(BaseEventData eventData)
-        {
-            RaiseEvent((eventData));
-        }
+        void IUpdateSelectedHandler.OnUpdateSelected(BaseEventData eventData) { RaiseEvent((eventData)); }
 
-        public IAsyncOnUpdateSelectedHandler GetOnUpdateSelectedAsyncHandler()
-        {
-            return new AsyncTriggerHandler<BaseEventData>(this, false);
-        }
+        public IAsyncOnUpdateSelectedHandler GetOnUpdateSelectedAsyncHandler() { return new AsyncTriggerHandler<BaseEventData>(this, false); }
 
         public IAsyncOnUpdateSelectedHandler GetOnUpdateSelectedAsyncHandler(CancellationToken cancellationToken)
         {
@@ -4443,15 +3805,15 @@ namespace Pancake.Threading.Tasks.Triggers
 
         public UniTask<BaseEventData> OnUpdateSelectedAsync()
         {
-            return ((IAsyncOnUpdateSelectedHandler)new AsyncTriggerHandler<BaseEventData>(this, true)).OnUpdateSelectedAsync();
+            return ((IAsyncOnUpdateSelectedHandler) new AsyncTriggerHandler<BaseEventData>(this, true)).OnUpdateSelectedAsync();
         }
 
         public UniTask<BaseEventData> OnUpdateSelectedAsync(CancellationToken cancellationToken)
         {
-            return ((IAsyncOnUpdateSelectedHandler)new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnUpdateSelectedAsync();
+            return ((IAsyncOnUpdateSelectedHandler) new AsyncTriggerHandler<BaseEventData>(this, cancellationToken, true)).OnUpdateSelectedAsync();
         }
     }
 #endif
-#endregion
 
+    #endregion
 }

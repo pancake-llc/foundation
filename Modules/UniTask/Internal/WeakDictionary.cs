@@ -7,8 +7,7 @@ using System.Threading;
 namespace Pancake.Threading.Tasks.Internal
 {
     // Add, Remove, Enumerate with sweep. All operations are thread safe(in spinlock).
-    internal class WeakDictionary<TKey, TValue>
-        where TKey : class
+    internal class WeakDictionary<TKey, TValue> where TKey : class
     {
         Entry[] buckets;
         int size;
@@ -120,12 +119,7 @@ namespace Pancake.Threading.Tasks.Internal
             TRY_ADD_AGAIN:
             if (targetBuckets[hashIndex] == null)
             {
-                targetBuckets[hashIndex] = new Entry
-                {
-                    Key = new WeakReference<TKey>(newKey, false),
-                    Value = value,
-                    Hash = h
-                };
+                targetBuckets[hashIndex] = new Entry {Key = new WeakReference<TKey>(newKey, false), Value = value, Hash = h};
 
                 return true;
             }
@@ -155,12 +149,7 @@ namespace Pancake.Threading.Tasks.Internal
                     else
                     {
                         // found last
-                        entry.Next = new Entry
-                        {
-                            Key = new WeakReference<TKey>(newKey, false),
-                            Value = value,
-                            Hash = h
-                        };
+                        entry.Next = new Entry {Key = new WeakReference<TKey>(newKey, false), Value = value, Hash = h};
                         entry.Next.Prev = entry;
                     }
                 }
@@ -209,15 +198,18 @@ namespace Pancake.Threading.Tasks.Internal
                 {
                     buckets[hashIndex] = entry.Next;
                 }
+
                 if (entry.Prev != null)
                 {
                     entry.Prev.Next = entry.Next;
                 }
+
                 if (entry.Next != null)
                 {
                     entry.Next.Prev = entry.Prev;
                 }
             }
+
             size--;
         }
 
@@ -279,7 +271,7 @@ namespace Pancake.Threading.Tasks.Internal
 
         static int CalculateCapacity(int collectionSize, float loadFactor)
         {
-            var size = (int)(((float)collectionSize) / loadFactor);
+            var size = (int) (((float) collectionSize) / loadFactor);
 
             size--;
             size |= size >> 1;
@@ -293,6 +285,7 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 size = 8;
             }
+
             return size;
         }
 
@@ -326,9 +319,9 @@ namespace Pancake.Threading.Tasks.Internal
                     count++;
                     n = n.Next;
                 }
+
                 return count;
             }
         }
     }
 }
-

@@ -16,10 +16,7 @@ namespace Pancake.Threading.Tasks
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void Continuation(object state)
-        {
-            ((Action)state).Invoke();
-        }
+        static void Continuation(object state) { ((Action) state).Invoke(); }
     }
 
     /// <summary>
@@ -42,8 +39,7 @@ namespace Pancake.Threading.Tasks
 
         public UniTaskStatus Status
         {
-            [DebuggerHidden]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DebuggerHidden] [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if (source == null) return UniTaskStatus.Succeeded;
@@ -53,10 +49,7 @@ namespace Pancake.Threading.Tasks
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Awaiter GetAwaiter()
-        {
-            return new Awaiter(this);
-        }
+        public Awaiter GetAwaiter() { return new Awaiter(this); }
 
         /// <summary>
         /// returns (bool IsCanceled) instead of throws OperationCanceledException.
@@ -70,7 +63,6 @@ namespace Pancake.Threading.Tasks
         }
 
 #if !UNITY_2018_3_OR_NEWER
-
         public static implicit operator System.Threading.Tasks.ValueTask(in UniTask self)
         {
             if (self.source == null)
@@ -118,7 +110,7 @@ namespace Pancake.Threading.Tasks
                 this.source.GetResult(this.token);
                 return CompletedTasks.AsyncUnit;
             }
-            else if(this.source is IUniTaskSource<AsyncUnit> asyncUnitSource)
+            else if (this.source is IUniTaskSource<AsyncUnit> asyncUnitSource)
             {
                 return new UniTask<AsyncUnit>(asyncUnitSource, this.token);
             }
@@ -130,10 +122,7 @@ namespace Pancake.Threading.Tasks
         {
             readonly IUniTaskSource source;
 
-            public AsyncUnitSource(IUniTaskSource source)
-            {
-                this.source = source;
-            }
+            public AsyncUnitSource(IUniTaskSource source) { this.source = source; }
 
             public AsyncUnit GetResult(short token)
             {
@@ -141,35 +130,20 @@ namespace Pancake.Threading.Tasks
                 return AsyncUnit.Default;
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return source.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return source.GetStatus(token); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                source.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { source.OnCompleted(continuation, state, token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return source.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return source.UnsafeGetStatus(); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
         }
 
         sealed class IsCanceledSource : IUniTaskSource<bool>
         {
             readonly IUniTaskSource source;
 
-            public IsCanceledSource(IUniTaskSource source)
-            {
-                this.source = source;
-            }
+            public IsCanceledSource(IUniTaskSource source) { this.source = source; }
 
             public bool GetResult(short token)
             {
@@ -182,25 +156,13 @@ namespace Pancake.Threading.Tasks
                 return false;
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return source.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return source.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return source.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return source.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                source.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { source.OnCompleted(continuation, state, token); }
         }
 
         sealed class MemoizeSource : IUniTaskSource
@@ -209,10 +171,7 @@ namespace Pancake.Threading.Tasks
             ExceptionDispatchInfo exception;
             UniTaskStatus status;
 
-            public MemoizeSource(IUniTaskSource source)
-            {
-                this.source = source;
-            }
+            public MemoizeSource(IUniTaskSource source) { this.source = source; }
 
             public void GetResult(short token)
             {
@@ -241,6 +200,7 @@ namespace Pancake.Threading.Tasks
                         {
                             status = UniTaskStatus.Faulted;
                         }
+
                         throw;
                     }
                     finally
@@ -289,19 +249,12 @@ namespace Pancake.Threading.Tasks
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public Awaiter(in UniTask task)
-            {
-                this.task = task;
-            }
+            public Awaiter(in UniTask task) { this.task = task; }
 
             public bool IsCompleted
             {
-                [DebuggerHidden]
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    return task.Status.IsCompleted();
-                }
+                [DebuggerHidden] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get { return task.Status.IsCompleted(); }
             }
 
             [DebuggerHidden]
@@ -390,20 +343,13 @@ namespace Pancake.Threading.Tasks
 
         public UniTaskStatus Status
         {
-            [DebuggerHidden]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return (source == null) ? UniTaskStatus.Succeeded : source.GetStatus(token);
-            }
+            [DebuggerHidden] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return (source == null) ? UniTaskStatus.Succeeded : source.GetStatus(token); }
         }
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Awaiter GetAwaiter()
-        {
-            return new Awaiter(this);
-        }
+        public Awaiter GetAwaiter() { return new Awaiter(this); }
 
         /// <summary>
         /// Memoizing inner IValueTaskSource. The result UniTask can await multiple.
@@ -435,13 +381,9 @@ namespace Pancake.Threading.Tasks
             return new UniTask(this.source, this.token);
         }
 
-        public static implicit operator UniTask(UniTask<T> self)
-        {
-            return self.AsUniTask();
-        }
+        public static implicit operator UniTask(UniTask<T> self) { return self.AsUniTask(); }
 
 #if !UNITY_2018_3_OR_NEWER
-
         public static implicit operator System.Threading.Tasks.ValueTask<T>(in UniTask<T> self)
         {
             if (self.source == null)
@@ -471,11 +413,7 @@ namespace Pancake.Threading.Tasks
             return new UniTask<(bool, T)>(new IsCanceledSource(source), token);
         }
 
-        public override string ToString()
-        {
-            return (this.source == null) ? result?.ToString()
-                 : "(" + this.source.UnsafeGetStatus() + ")";
-        }
+        public override string ToString() { return (this.source == null) ? result?.ToString() : "(" + this.source.UnsafeGetStatus() + ")"; }
 
         sealed class IsCanceledSource : IUniTaskSource<(bool, T)>
         {
@@ -483,10 +421,7 @@ namespace Pancake.Threading.Tasks
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public IsCanceledSource(IUniTaskSource<T> source)
-            {
-                this.source = source;
-            }
+            public IsCanceledSource(IUniTaskSource<T> source) { this.source = source; }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -503,31 +438,19 @@ namespace Pancake.Threading.Tasks
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public UniTaskStatus GetStatus(short token)
-            {
-                return source.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return source.GetStatus(token); }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return source.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return source.UnsafeGetStatus(); }
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                source.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { source.OnCompleted(continuation, state, token); }
         }
 
         sealed class MemoizeSource : IUniTaskSource<T>
@@ -537,10 +460,7 @@ namespace Pancake.Threading.Tasks
             ExceptionDispatchInfo exception;
             UniTaskStatus status;
 
-            public MemoizeSource(IUniTaskSource<T> source)
-            {
-                this.source = source;
-            }
+            public MemoizeSource(IUniTaskSource<T> source) { this.source = source; }
 
             public T GetResult(short token)
             {
@@ -550,6 +470,7 @@ namespace Pancake.Threading.Tasks
                     {
                         exception.Throw();
                     }
+
                     return result;
                 }
                 else
@@ -571,6 +492,7 @@ namespace Pancake.Threading.Tasks
                         {
                             status = UniTaskStatus.Faulted;
                         }
+
                         throw;
                     }
                     finally
@@ -580,10 +502,7 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
             public UniTaskStatus GetStatus(short token)
             {
@@ -624,19 +543,12 @@ namespace Pancake.Threading.Tasks
 
             [DebuggerHidden]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public Awaiter(in UniTask<T> task)
-            {
-                this.task = task;
-            }
+            public Awaiter(in UniTask<T> task) { this.task = task; }
 
             public bool IsCompleted
             {
-                [DebuggerHidden]
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get
-                {
-                    return task.Status.IsCompleted();
-                }
+                [DebuggerHidden] [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get { return task.Status.IsCompleted(); }
             }
 
             [DebuggerHidden]
@@ -704,4 +616,3 @@ namespace Pancake.Threading.Tasks
         }
     }
 }
-

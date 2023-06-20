@@ -24,7 +24,11 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 var newSize = array.Length * 2;
                 var newArray = pool.Rent((index < newSize) ? newSize : (index * 2));
-                Array.Copy(array, 0, newArray, 0, array.Length);
+                Array.Copy(array,
+                    0,
+                    newArray,
+                    0,
+                    array.Length);
 
                 pool.Return(array, clearArray: !RuntimeHelpersAbstraction.IsWellKnownNoReferenceContainsType<T>());
 
@@ -91,10 +95,7 @@ namespace Pancake.Threading.Tasks.Internal
                 this.pool = pool;
             }
 
-            public void Dispose()
-            {
-                DisposeManually(!RuntimeHelpersAbstraction.IsWellKnownNoReferenceContainsType<T>());
-            }
+            public void Dispose() { DisposeManually(!RuntimeHelpersAbstraction.IsWellKnownNoReferenceContainsType<T>()); }
 
             public void DisposeManually(bool clearArray)
             {
@@ -112,4 +113,3 @@ namespace Pancake.Threading.Tasks.Internal
         }
     }
 }
-

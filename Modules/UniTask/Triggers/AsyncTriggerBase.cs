@@ -13,10 +13,7 @@ namespace Pancake.Threading.Tasks.Triggers
         internal protected bool calledAwake;
         internal protected bool calledDestroy;
 
-        void Awake()
-        {
-            calledAwake = true;
-        }
+        void Awake() { calledAwake = true; }
 
         void OnDestroy()
         {
@@ -46,10 +43,7 @@ namespace Pancake.Threading.Tasks.Triggers
             triggerEvent.Remove(handler);
         }
 
-        protected void RaiseEvent(T value)
-        {
-            triggerEvent.SetResult(value);
-        }
+        protected void RaiseEvent(T value) { triggerEvent.SetResult(value); }
 
         public IUniTaskAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
@@ -72,10 +66,7 @@ namespace Pancake.Threading.Tasks.Triggers
                 this.cancellationToken = cancellationToken;
             }
 
-            public void OnCanceled(CancellationToken cancellationToken = default)
-            {
-                completionSource.TrySetCanceled(cancellationToken);
-            }
+            public void OnCanceled(CancellationToken cancellationToken = default) { completionSource.TrySetCanceled(cancellationToken); }
 
             public void OnNext(T value)
             {
@@ -83,19 +74,13 @@ namespace Pancake.Threading.Tasks.Triggers
                 completionSource.TrySetResult(true);
             }
 
-            public void OnCompleted()
-            {
-                completionSource.TrySetResult(false);
-            }
+            public void OnCompleted() { completionSource.TrySetResult(false); }
 
-            public void OnError(Exception ex)
-            {
-                completionSource.TrySetException(ex);
-            }
+            public void OnError(Exception ex) { completionSource.TrySetException(ex); }
 
             static void CancellationCallback(object state)
             {
-                var self = (AsyncTriggerEnumerator)state;
+                var self = (AsyncTriggerEnumerator) state;
                 self.DisposeAsync().Forget(); // sync
 
                 self.completionSource.TrySetCanceled(self.cancellationToken);
@@ -143,10 +128,7 @@ namespace Pancake.Threading.Tasks.Triggers
         {
             readonly AsyncTriggerBase<T> trigger;
 
-            public AwakeMonitor(AsyncTriggerBase<T> trigger)
-            {
-                this.trigger = trigger;
-            }
+            public AwakeMonitor(AsyncTriggerBase<T> trigger) { this.trigger = trigger; }
 
             public bool MoveNext()
             {
@@ -156,6 +138,7 @@ namespace Pancake.Threading.Tasks.Triggers
                     trigger.OnDestroy();
                     return false;
                 }
+
                 return true;
             }
         }
@@ -171,7 +154,7 @@ namespace Pancake.Threading.Tasks.Triggers
         UniTask IAsyncOneShotTrigger.OneShotAsync()
         {
             core.Reset();
-            return new UniTask((IUniTaskSource)this, core.Version);
+            return new UniTask((IUniTaskSource) this, core.Version);
         }
     }
 
@@ -235,7 +218,7 @@ namespace Pancake.Threading.Tasks.Triggers
 
         static void CancellationCallback(object state)
         {
-            var self = (AsyncTriggerHandler<T>)state;
+            var self = (AsyncTriggerHandler<T>) state;
             self.Dispose();
 
             self.core.TrySetCanceled(self.cancellationToken);
@@ -267,44 +250,20 @@ namespace Pancake.Threading.Tasks.Triggers
             }
         }
 
-        void ITriggerHandler<T>.OnNext(T value)
-        {
-            core.TrySetResult(value);
-        }
+        void ITriggerHandler<T>.OnNext(T value) { core.TrySetResult(value); }
 
-        void ITriggerHandler<T>.OnCanceled(CancellationToken cancellationToken)
-        {
-            core.TrySetCanceled(cancellationToken);
-        }
+        void ITriggerHandler<T>.OnCanceled(CancellationToken cancellationToken) { core.TrySetCanceled(cancellationToken); }
 
-        void ITriggerHandler<T>.OnCompleted()
-        {
-            core.TrySetCanceled(CancellationToken.None);
-        }
+        void ITriggerHandler<T>.OnCompleted() { core.TrySetCanceled(CancellationToken.None); }
 
-        void ITriggerHandler<T>.OnError(Exception ex)
-        {
-            core.TrySetException(ex);
-        }
+        void ITriggerHandler<T>.OnError(Exception ex) { core.TrySetException(ex); }
 
-        void IUniTaskSource.GetResult(short token)
-        {
-            ((IUniTaskSource<T>)this).GetResult(token);
-        }
+        void IUniTaskSource.GetResult(short token) { ((IUniTaskSource<T>) this).GetResult(token); }
 
-        UniTaskStatus IUniTaskSource.GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
+        UniTaskStatus IUniTaskSource.GetStatus(short token) { return core.GetStatus(token); }
 
-        UniTaskStatus IUniTaskSource.UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
+        UniTaskStatus IUniTaskSource.UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
+        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
     }
 }

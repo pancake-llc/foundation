@@ -13,19 +13,20 @@ namespace Pancake.Threading.Tasks
 {
     public static class AddressablesAsyncExtensions
     {
-#region AsyncOperationHandle
+        #region AsyncOperationHandle
 
-        public static UniTask.Awaiter GetAwaiter(this AsyncOperationHandle handle)
-        {
-            return ToUniTask(handle).GetAwaiter();
-        }
+        public static UniTask.Awaiter GetAwaiter(this AsyncOperationHandle handle) { return ToUniTask(handle).GetAwaiter(); }
 
         public static UniTask WithCancellation(this AsyncOperationHandle handle, CancellationToken cancellationToken)
         {
             return ToUniTask(handle, cancellationToken: cancellationToken);
         }
 
-        public static UniTask ToUniTask(this AsyncOperationHandle handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask ToUniTask(
+            this AsyncOperationHandle handle,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled(cancellationToken);
 
@@ -41,10 +42,16 @@ namespace Pancake.Threading.Tasks
                 {
                     return UniTask.FromException(handle.OperationException);
                 }
+
                 return UniTask.CompletedTask;
             }
 
-            return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle, timing, progress, cancellationToken, out var token), token);
+            return new UniTask(AsyncOperationHandleConfiguredSource.Create(handle,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         public struct AsyncOperationHandleAwaiter : ICriticalNotifyCompletion
@@ -79,14 +86,10 @@ namespace Pancake.Threading.Tasks
                 handle = default;
             }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
-                Error.ThrowWhenContinuationIsAlreadyRegistered(continuationAction);
                 continuationAction = PooledDelegate<AsyncOperationHandle>.Create(continuation);
                 handle.Completed += continuationAction;
             }
@@ -98,10 +101,7 @@ namespace Pancake.Threading.Tasks
             AsyncOperationHandleConfiguredSource nextNode;
             public ref AsyncOperationHandleConfiguredSource NextNode => ref nextNode;
 
-            static AsyncOperationHandleConfiguredSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource), () => pool.Size);
-            }
+            static AsyncOperationHandleConfiguredSource() { TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource), () => pool.Size); }
 
             readonly Action<AsyncOperationHandle> continuationAction;
             AsyncOperationHandle handle;
@@ -111,12 +111,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
-            AsyncOperationHandleConfiguredSource()
-            {
-                continuationAction = Continuation;
-            }
+            AsyncOperationHandleConfiguredSource() { continuationAction = Continuation; }
 
-            public static IUniTaskSource Create(AsyncOperationHandle handle, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource Create(
+                AsyncOperationHandle handle,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -169,25 +171,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public void GetResult(short token)
-            {
-                core.GetResult(token);
-            }
+            public void GetResult(short token) { core.GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -223,21 +213,22 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-#endregion
+        #endregion
 
-#region AsyncOperationHandle_T
+        #region AsyncOperationHandle_T
 
-        public static UniTask<T>.Awaiter GetAwaiter<T>(this AsyncOperationHandle<T> handle)
-        {
-            return ToUniTask(handle).GetAwaiter();
-        }
+        public static UniTask<T>.Awaiter GetAwaiter<T>(this AsyncOperationHandle<T> handle) { return ToUniTask(handle).GetAwaiter(); }
 
         public static UniTask<T> WithCancellation<T>(this AsyncOperationHandle<T> handle, CancellationToken cancellationToken)
         {
             return ToUniTask(handle, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<T> ToUniTask<T>(this AsyncOperationHandle<T> handle, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<T> ToUniTask<T>(
+            this AsyncOperationHandle<T> handle,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<T>(cancellationToken);
 
@@ -252,10 +243,16 @@ namespace Pancake.Threading.Tasks
                 {
                     return UniTask.FromException<T>(handle.OperationException);
                 }
+
                 return UniTask.FromResult(handle.Result);
             }
 
-            return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle, timing, progress, cancellationToken, out var token), token);
+            return new UniTask<T>(AsyncOperationHandleConfiguredSource<T>.Create(handle,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         sealed class AsyncOperationHandleConfiguredSource<T> : IUniTaskSource<T>, IPlayerLoopItem, ITaskPoolNode<AsyncOperationHandleConfiguredSource<T>>
@@ -264,10 +261,7 @@ namespace Pancake.Threading.Tasks
             AsyncOperationHandleConfiguredSource<T> nextNode;
             public ref AsyncOperationHandleConfiguredSource<T> NextNode => ref nextNode;
 
-            static AsyncOperationHandleConfiguredSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource<T>), () => pool.Size);
-            }
+            static AsyncOperationHandleConfiguredSource() { TaskPool.RegisterSizeGetter(typeof(AsyncOperationHandleConfiguredSource<T>), () => pool.Size); }
 
             readonly Action<AsyncOperationHandle<T>> continuationAction;
             AsyncOperationHandle<T> handle;
@@ -277,12 +271,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<T> core;
 
-            AsyncOperationHandleConfiguredSource()
-            {
-                continuationAction = Continuation;
-            }
+            AsyncOperationHandleConfiguredSource() { continuationAction = Continuation; }
 
-            public static IUniTaskSource<T> Create(AsyncOperationHandle<T> handle, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<T> Create(
+                AsyncOperationHandle<T> handle,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -335,30 +331,15 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public T GetResult(short token)
-            {
-                return core.GetResult(token);
-            }
+            public T GetResult(short token) { return core.GetResult(token); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -394,7 +375,7 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-#endregion
+        #endregion
     }
 }
 

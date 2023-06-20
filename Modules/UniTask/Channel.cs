@@ -6,10 +6,7 @@ namespace Pancake.Threading.Tasks
 {
     public static class Channel
     {
-        public static Channel<T> CreateSingleConsumerUnbounded<T>()
-        {
-            return new SingleConsumerUnboundedChannel<T>();
-        }
+        public static Channel<T> CreateSingleConsumerUnbounded<T>() { return new SingleConsumerUnboundedChannel<T>(); }
     }
 
     public abstract class Channel<TWrite, TRead>
@@ -74,17 +71,25 @@ namespace Pancake.Threading.Tasks
 
     public partial class ChannelClosedException : InvalidOperationException
     {
-        public ChannelClosedException() :
-            base("Channel is already closed.")
-        { }
+        public ChannelClosedException()
+            : base("Channel is already closed.")
+        {
+        }
 
-        public ChannelClosedException(string message) : base(message) { }
+        public ChannelClosedException(string message)
+            : base(message)
+        {
+        }
 
-        public ChannelClosedException(Exception innerException) :
-            base("Channel is already closed", innerException)
-        { }
+        public ChannelClosedException(Exception innerException)
+            : base("Channel is already closed", innerException)
+        {
+        }
 
-        public ChannelClosedException(string message, Exception innerException) : base(message, innerException) { }
+        public ChannelClosedException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
     }
 
     internal class SingleConsumerUnboundedChannel<T> : Channel<T>
@@ -109,10 +114,7 @@ namespace Pancake.Threading.Tasks
         {
             readonly SingleConsumerUnboundedChannel<T> parent;
 
-            public SingleConsumerUnboundedChannelWriter(SingleConsumerUnboundedChannel<T> parent)
-            {
-                this.parent = parent;
-            }
+            public SingleConsumerUnboundedChannelWriter(SingleConsumerUnboundedChannel<T> parent) { this.parent = parent; }
 
             public override bool TryWrite(T item)
             {
@@ -299,10 +301,7 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public void SingalContinuation()
-            {
-                core.TrySetResult(true);
-            }
+            public void SingalContinuation() { core.TrySetResult(true); }
 
             public void SingalCancellation(CancellationToken cancellationToken)
             {
@@ -329,34 +328,19 @@ namespace Pancake.Threading.Tasks
                 return new ReadAllAsyncEnumerable(this, cancellationToken);
             }
 
-            bool IUniTaskSource<bool>.GetResult(short token)
-            {
-                return core.GetResult(token);
-            }
+            bool IUniTaskSource<bool>.GetResult(short token) { return core.GetResult(token); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                core.GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { core.GetResult(token); }
 
-            UniTaskStatus IUniTaskSource.GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            UniTaskStatus IUniTaskSource.GetStatus(short token) { return core.GetStatus(token); }
 
-            void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            UniTaskStatus IUniTaskSource.UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            UniTaskStatus IUniTaskSource.UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
             static void CancellationCallback(object state)
             {
-                var self = (SingleConsumerUnboundedChannelReader)state;
+                var self = (SingleConsumerUnboundedChannelReader) state;
                 self.SingalCancellation(self.cancellationToken);
             }
 
@@ -395,7 +379,7 @@ namespace Pancake.Threading.Tasks
 
                     if (this.cancellationToken1.CanBeCanceled)
                     {
-                        this.cancellationTokenRegistration1 =  this.cancellationToken1.RegisterWithoutCaptureExecutionContext(CancellationCallback1Delegate, this);
+                        this.cancellationTokenRegistration1 = this.cancellationToken1.RegisterWithoutCaptureExecutionContext(CancellationCallback1Delegate, this);
                     }
 
                     if (this.cancellationToken2.CanBeCanceled)
@@ -415,6 +399,7 @@ namespace Pancake.Threading.Tasks
                         {
                             return current;
                         }
+
                         parent.TryRead(out current);
                         return current;
                     }
@@ -435,13 +420,13 @@ namespace Pancake.Threading.Tasks
 
                 static void CancellationCallback1(object state)
                 {
-                    var self = (ReadAllAsyncEnumerable)state;
+                    var self = (ReadAllAsyncEnumerable) state;
                     self.parent.SingalCancellation(self.cancellationToken1);
                 }
 
                 static void CancellationCallback2(object state)
                 {
-                    var self = (ReadAllAsyncEnumerable)state;
+                    var self = (ReadAllAsyncEnumerable) state;
                     self.parent.SingalCancellation(self.cancellationToken2);
                 }
             }

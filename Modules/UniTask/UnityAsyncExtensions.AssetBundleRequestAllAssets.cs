@@ -23,11 +23,20 @@ namespace Pancake.Threading.Tasks
             return AwaitForAllAssets(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<UnityEngine.Object[]> AwaitForAllAssets(this AssetBundleRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<UnityEngine.Object[]> AwaitForAllAssets(
+            this AssetBundleRequest asyncOperation,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityEngine.Object[]>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.allAssets);
-            return new UniTask<UnityEngine.Object[]>(AssetBundleRequestAllAssetsConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask<UnityEngine.Object[]>(AssetBundleRequestAllAssetsConfiguredSource.Create(asyncOperation,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         public struct AssetBundleRequestAllAssetsAwaiter : ICriticalNotifyCompletion
@@ -41,10 +50,7 @@ namespace Pancake.Threading.Tasks
                 this.continuationAction = null;
             }
 
-            public AssetBundleRequestAllAssetsAwaiter GetAwaiter()
-            {
-                return this;
-            }
+            public AssetBundleRequestAllAssetsAwaiter GetAwaiter() { return this; }
 
             public bool IsCompleted => asyncOperation.isDone;
 
@@ -66,10 +72,7 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
@@ -78,16 +81,15 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        sealed class AssetBundleRequestAllAssetsConfiguredSource : IUniTaskSource<UnityEngine.Object[]>, IPlayerLoopItem, ITaskPoolNode<AssetBundleRequestAllAssetsConfiguredSource>
+        sealed class AssetBundleRequestAllAssetsConfiguredSource : IUniTaskSource<UnityEngine.Object[]>,
+            IPlayerLoopItem,
+            ITaskPoolNode<AssetBundleRequestAllAssetsConfiguredSource>
         {
             static TaskPool<AssetBundleRequestAllAssetsConfiguredSource> pool;
             AssetBundleRequestAllAssetsConfiguredSource nextNode;
             public ref AssetBundleRequestAllAssetsConfiguredSource NextNode => ref nextNode;
 
-            static AssetBundleRequestAllAssetsConfiguredSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(AssetBundleRequestAllAssetsConfiguredSource), () => pool.Size);
-            }
+            static AssetBundleRequestAllAssetsConfiguredSource() { TaskPool.RegisterSizeGetter(typeof(AssetBundleRequestAllAssetsConfiguredSource), () => pool.Size); }
 
             AssetBundleRequest asyncOperation;
             IProgress<float> progress;
@@ -95,12 +97,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<UnityEngine.Object[]> core;
 
-            AssetBundleRequestAllAssetsConfiguredSource()
-            {
+            AssetBundleRequestAllAssetsConfiguredSource() { }
 
-            }
-
-            public static IUniTaskSource<UnityEngine.Object[]> Create(AssetBundleRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<UnityEngine.Object[]> Create(
+                AssetBundleRequest asyncOperation,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -136,25 +140,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {

@@ -6,35 +6,20 @@ namespace Pancake.Threading.Tasks.Internal
 {
     internal static class StateTuple
     {
-        public static StateTuple<T1> Create<T1>(T1 item1)
-        {
-            return StatePool<T1>.Create(item1);
-        }
+        public static StateTuple<T1> Create<T1>(T1 item1) { return StatePool<T1>.Create(item1); }
 
-        public static StateTuple<T1, T2> Create<T1, T2>(T1 item1, T2 item2)
-        {
-            return StatePool<T1, T2>.Create(item1, item2);
-        }
+        public static StateTuple<T1, T2> Create<T1, T2>(T1 item1, T2 item2) { return StatePool<T1, T2>.Create(item1, item2); }
 
-        public static StateTuple<T1, T2, T3> Create<T1, T2, T3>(T1 item1, T2 item2, T3 item3)
-        {
-            return StatePool<T1, T2, T3>.Create(item1, item2, item3);
-        }
+        public static StateTuple<T1, T2, T3> Create<T1, T2, T3>(T1 item1, T2 item2, T3 item3) { return StatePool<T1, T2, T3>.Create(item1, item2, item3); }
     }
 
     internal class StateTuple<T1> : IDisposable
     {
         public T1 Item1;
 
-        public void Deconstruct(out T1 item1)
-        {
-            item1 = this.Item1;
-        }
+        public void Deconstruct(out T1 item1) { item1 = this.Item1; }
 
-        public void Dispose()
-        {
-            StatePool<T1>.Return(this);
-        }
+        public void Dispose() { StatePool<T1>.Return(this); }
     }
 
     internal static class StatePool<T1>
@@ -50,7 +35,7 @@ namespace Pancake.Threading.Tasks.Internal
                 return value;
             }
 
-            return new StateTuple<T1> { Item1 = item1 };
+            return new StateTuple<T1> {Item1 = item1};
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -72,10 +57,7 @@ namespace Pancake.Threading.Tasks.Internal
             item2 = this.Item2;
         }
 
-        public void Dispose()
-        {
-            StatePool<T1, T2>.Return(this);
-        }
+        public void Dispose() { StatePool<T1, T2>.Return(this); }
     }
 
     internal static class StatePool<T1, T2>
@@ -92,7 +74,7 @@ namespace Pancake.Threading.Tasks.Internal
                 return value;
             }
 
-            return new StateTuple<T1, T2> { Item1 = item1, Item2 = item2 };
+            return new StateTuple<T1, T2> {Item1 = item1, Item2 = item2};
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -117,10 +99,7 @@ namespace Pancake.Threading.Tasks.Internal
             item3 = this.Item3;
         }
 
-        public void Dispose()
-        {
-            StatePool<T1, T2, T3>.Return(this);
-        }
+        public void Dispose() { StatePool<T1, T2, T3>.Return(this); }
     }
 
     internal static class StatePool<T1, T2, T3>
@@ -138,7 +117,7 @@ namespace Pancake.Threading.Tasks.Internal
                 return value;
             }
 
-            return new StateTuple<T1, T2, T3> { Item1 = item1, Item2 = item2, Item3 = item3 };
+            return new StateTuple<T1, T2, T3> {Item1 = item1, Item2 = item2, Item3 = item3};
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

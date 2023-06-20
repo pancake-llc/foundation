@@ -9,10 +9,13 @@ namespace Pancake.Threading.Tasks
     {
         /// <summary>The operation has not yet completed.</summary>
         Pending = 0,
+
         /// <summary>The operation completed successfully.</summary>
         Succeeded = 1,
+
         /// <summary>The operation completed with an error.</summary>
         Faulted = 2,
+
         /// <summary>The operation completed due to cancellation.</summary>
         Canceled = 3
     }
@@ -60,7 +63,6 @@ namespace Pancake.Threading.Tasks
         new T GetResult(short token);
 
 #if !UNITY_2018_3_OR_NEWER && !NETSTANDARD2_0
-
         new public UniTaskStatus GetStatus(short token)
         {
             return ((IUniTaskSource)this).GetStatus(token);
@@ -94,31 +96,18 @@ namespace Pancake.Threading.Tasks
     {
         /// <summary>status != Pending.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCompleted(this UniTaskStatus status)
-        {
-            return status != UniTaskStatus.Pending;
-        }
+        public static bool IsCompleted(this UniTaskStatus status) { return status != UniTaskStatus.Pending; }
 
         /// <summary>status == Succeeded.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCompletedSuccessfully(this UniTaskStatus status)
-        {
-            return status == UniTaskStatus.Succeeded;
-        }
+        public static bool IsCompletedSuccessfully(this UniTaskStatus status) { return status == UniTaskStatus.Succeeded; }
 
         /// <summary>status == Canceled.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCanceled(this UniTaskStatus status)
-        {
-            return status == UniTaskStatus.Canceled;
-        }
+        public static bool IsCanceled(this UniTaskStatus status) { return status == UniTaskStatus.Canceled; }
 
         /// <summary>status == Faulted.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFaulted(this UniTaskStatus status)
-        {
-            return status == UniTaskStatus.Faulted;
-        }
+        public static bool IsFaulted(this UniTaskStatus status) { return status == UniTaskStatus.Faulted; }
     }
 }
-

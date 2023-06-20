@@ -29,29 +29,18 @@ namespace Pancake.Threading.Tasks
         {
             public static readonly IProgress<T> Instance = new NullProgress<T>();
 
-            NullProgress()
-            {
+            NullProgress() { }
 
-            }
-
-            public void Report(T value)
-            {
-            }
+            public void Report(T value) { }
         }
 
         sealed class AnonymousProgress<T> : IProgress<T>
         {
             readonly Action<T> action;
 
-            public AnonymousProgress(Action<T> action)
-            {
-                this.action = action;
-            }
+            public AnonymousProgress(Action<T> action) { this.action = action; }
 
-            public void Report(T value)
-            {
-                action(value);
-            }
+            public void Report(T value) { action(value); }
         }
 
         sealed class OnlyValueChangedProgress<T> : IProgress<T>

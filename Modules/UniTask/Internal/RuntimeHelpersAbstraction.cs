@@ -10,10 +10,7 @@ namespace Pancake.Threading.Tasks.Internal
     internal static class RuntimeHelpersAbstraction
     {
         // If we can use RuntimeHelpers.IsReferenceOrContainsReferences(.NET Core 2.0), use it.
-        public static bool IsWellKnownNoReferenceContainsType<T>()
-        {
-            return WellKnownNoReferenceContainsType<T>.IsWellKnownType;
-        }
+        public static bool IsWellKnownNoReferenceContainsType<T>() { return WellKnownNoReferenceContainsType<T>.IsWellKnownType; }
 
         static bool WellKnownNoReferenceContainsTypeInitialize(Type t)
         {
@@ -54,11 +51,7 @@ namespace Pancake.Threading.Tasks.Internal
         {
             public static readonly bool IsWellKnownType;
 
-            static WellKnownNoReferenceContainsType()
-            {
-                IsWellKnownType = WellKnownNoReferenceContainsTypeInitialize(typeof(T));
-            }
+            static WellKnownNoReferenceContainsType() { IsWellKnownType = WellKnownNoReferenceContainsTypeInitialize(typeof(T)); }
         }
     }
 }
-

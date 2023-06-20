@@ -36,10 +36,7 @@ namespace Pancake.Threading.Tasks
             return cts.Token;
         }
 
-        public static CancellationToken ToCancellationToken<T>(this UniTask<T> task)
-        {
-            return ToCancellationToken(task.AsUniTask());
-        }
+        public static CancellationToken ToCancellationToken<T>(this UniTask<T> task) { return ToCancellationToken(task.AsUniTask()); }
 
         public static CancellationToken ToCancellationToken<T>(this UniTask<T> task, CancellationToken linkToken)
         {
@@ -56,6 +53,7 @@ namespace Pancake.Threading.Tasks
             {
                 UniTaskScheduler.PublishUnobservedTaskException(ex);
             }
+
             cts.Cancel();
             cts.Dispose();
         }
@@ -73,14 +71,11 @@ namespace Pancake.Threading.Tasks
 
         static void Callback(object state)
         {
-            var promise = (UniTaskCompletionSource)state;
+            var promise = (UniTaskCompletionSource) state;
             promise.TrySetResult();
         }
 
-        public static CancellationTokenAwaitable WaitUntilCanceled(this CancellationToken cancellationToken)
-        {
-            return new CancellationTokenAwaitable(cancellationToken);
-        }
+        public static CancellationTokenAwaitable WaitUntilCanceled(this CancellationToken cancellationToken) { return new CancellationTokenAwaitable(cancellationToken); }
 
         public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(this CancellationToken cancellationToken, Action callback)
         {
@@ -104,7 +99,10 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(this CancellationToken cancellationToken, Action<object> callback, object state)
+        public static CancellationTokenRegistration RegisterWithoutCaptureExecutionContext(
+            this CancellationToken cancellationToken,
+            Action<object> callback,
+            object state)
         {
             var restoreFlow = false;
             if (!ExecutionContext.IsFlowSuppressed())
@@ -133,7 +131,7 @@ namespace Pancake.Threading.Tasks
 
         static void DisposeCallback(object state)
         {
-            var d = (IDisposable)state;
+            var d = (IDisposable) state;
             d.Dispose();
         }
     }
@@ -142,41 +140,23 @@ namespace Pancake.Threading.Tasks
     {
         CancellationToken cancellationToken;
 
-        public CancellationTokenAwaitable(CancellationToken cancellationToken)
-        {
-            this.cancellationToken = cancellationToken;
-        }
+        public CancellationTokenAwaitable(CancellationToken cancellationToken) { this.cancellationToken = cancellationToken; }
 
-        public Awaiter GetAwaiter()
-        {
-            return new Awaiter(cancellationToken);
-        }
+        public Awaiter GetAwaiter() { return new Awaiter(cancellationToken); }
 
         public struct Awaiter : ICriticalNotifyCompletion
         {
             CancellationToken cancellationToken;
 
-            public Awaiter(CancellationToken cancellationToken)
-            {
-                this.cancellationToken = cancellationToken;
-            }
+            public Awaiter(CancellationToken cancellationToken) { this.cancellationToken = cancellationToken; }
 
             public bool IsCompleted => !cancellationToken.CanBeCanceled || cancellationToken.IsCancellationRequested;
 
-            public void GetResult()
-            {
-            }
+            public void GetResult() { }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
-            public void UnsafeOnCompleted(Action continuation)
-            {
-                cancellationToken.RegisterWithoutCaptureExecutionContext(continuation);
-            }
+            public void UnsafeOnCompleted(Action continuation) { cancellationToken.RegisterWithoutCaptureExecutionContext(continuation); }
         }
     }
 }
-

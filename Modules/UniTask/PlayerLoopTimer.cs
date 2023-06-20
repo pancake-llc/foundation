@@ -28,7 +28,14 @@ namespace Pancake.Threading.Tasks
             this.state = state;
         }
 
-        public static PlayerLoopTimer Create(TimeSpan interval, bool periodic, DelayType delayType, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action<object> timerCallback, object state)
+        public static PlayerLoopTimer Create(
+            TimeSpan interval,
+            bool periodic,
+            DelayType delayType,
+            PlayerLoopTiming playerLoopTiming,
+            CancellationToken cancellationToken,
+            Action<object> timerCallback,
+            object state)
         {
 #if UNITY_EDITOR
             // force use Realtime.
@@ -41,18 +48,46 @@ namespace Pancake.Threading.Tasks
             switch (delayType)
             {
                 case DelayType.UnscaledDeltaTime:
-                    return new IgnoreTimeScalePlayerLoopTimer(interval, periodic, playerLoopTiming, cancellationToken, timerCallback, state);
+                    return new IgnoreTimeScalePlayerLoopTimer(interval,
+                        periodic,
+                        playerLoopTiming,
+                        cancellationToken,
+                        timerCallback,
+                        state);
                 case DelayType.Realtime:
-                    return new RealtimePlayerLoopTimer(interval, periodic, playerLoopTiming, cancellationToken, timerCallback, state);
+                    return new RealtimePlayerLoopTimer(interval,
+                        periodic,
+                        playerLoopTiming,
+                        cancellationToken,
+                        timerCallback,
+                        state);
                 case DelayType.DeltaTime:
                 default:
-                    return new DeltaTimePlayerLoopTimer(interval, periodic, playerLoopTiming, cancellationToken, timerCallback, state);
+                    return new DeltaTimePlayerLoopTimer(interval,
+                        periodic,
+                        playerLoopTiming,
+                        cancellationToken,
+                        timerCallback,
+                        state);
             }
         }
 
-        public static PlayerLoopTimer StartNew(TimeSpan interval, bool periodic, DelayType delayType, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action<object> timerCallback, object state)
+        public static PlayerLoopTimer StartNew(
+            TimeSpan interval,
+            bool periodic,
+            DelayType delayType,
+            PlayerLoopTiming playerLoopTiming,
+            CancellationToken cancellationToken,
+            Action<object> timerCallback,
+            object state)
         {
-            var timer = Create(interval, periodic, delayType, playerLoopTiming, cancellationToken, timerCallback, state);
+            var timer = Create(interval,
+                periodic,
+                delayType,
+                playerLoopTiming,
+                cancellationToken,
+                timerCallback,
+                state);
             timer.Restart();
             return timer;
         }
@@ -70,6 +105,7 @@ namespace Pancake.Threading.Tasks
                 isRunning = true;
                 PlayerLoopHelper.AddAction(playerLoopTiming, this);
             }
+
             tryStop = false;
         }
 
@@ -86,23 +122,18 @@ namespace Pancake.Threading.Tasks
                 isRunning = true;
                 PlayerLoopHelper.AddAction(playerLoopTiming, this);
             }
+
             tryStop = false;
         }
 
         /// <summary>
         /// Stop timer.
         /// </summary>
-        public void Stop()
-        {
-            tryStop = true;
-        }
+        public void Stop() { tryStop = true; }
 
         protected abstract void ResetCore(TimeSpan? newInterval);
 
-        public void Dispose()
-        {
-            isDisposed = true;
-        }
+        public void Dispose() { isDisposed = true; }
 
         bool IPlayerLoopItem.MoveNext()
         {
@@ -111,11 +142,13 @@ namespace Pancake.Threading.Tasks
                 isRunning = false;
                 return false;
             }
+
             if (tryStop)
             {
                 isRunning = false;
                 return false;
             }
+
             if (cancellationToken.IsCancellationRequested)
             {
                 isRunning = false;
@@ -150,8 +183,18 @@ namespace Pancake.Threading.Tasks
         float elapsed;
         float interval;
 
-        public DeltaTimePlayerLoopTimer(TimeSpan interval, bool periodic, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action<object> timerCallback, object state)
-            : base(periodic, playerLoopTiming, cancellationToken, timerCallback, state)
+        public DeltaTimePlayerLoopTimer(
+            TimeSpan interval,
+            bool periodic,
+            PlayerLoopTiming playerLoopTiming,
+            CancellationToken cancellationToken,
+            Action<object> timerCallback,
+            object state)
+            : base(periodic,
+                playerLoopTiming,
+                cancellationToken,
+                timerCallback,
+                state)
         {
             ResetCore(interval);
         }
@@ -181,7 +224,7 @@ namespace Pancake.Threading.Tasks
             this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
             if (interval != null)
             {
-                this.interval = (float)interval.Value.TotalSeconds;
+                this.interval = (float) interval.Value.TotalSeconds;
             }
         }
     }
@@ -192,8 +235,18 @@ namespace Pancake.Threading.Tasks
         float elapsed;
         float interval;
 
-        public IgnoreTimeScalePlayerLoopTimer(TimeSpan interval, bool periodic, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action<object> timerCallback, object state)
-            : base(periodic, playerLoopTiming, cancellationToken, timerCallback, state)
+        public IgnoreTimeScalePlayerLoopTimer(
+            TimeSpan interval,
+            bool periodic,
+            PlayerLoopTiming playerLoopTiming,
+            CancellationToken cancellationToken,
+            Action<object> timerCallback,
+            object state)
+            : base(periodic,
+                playerLoopTiming,
+                cancellationToken,
+                timerCallback,
+                state)
         {
             ResetCore(interval);
         }
@@ -223,7 +276,7 @@ namespace Pancake.Threading.Tasks
             this.initialFrame = PlayerLoopHelper.IsMainThread ? Time.frameCount : -1;
             if (interval != null)
             {
-                this.interval = (float)interval.Value.TotalSeconds;
+                this.interval = (float) interval.Value.TotalSeconds;
             }
         }
     }
@@ -233,8 +286,18 @@ namespace Pancake.Threading.Tasks
         ValueStopwatch stopwatch;
         long intervalTicks;
 
-        public RealtimePlayerLoopTimer(TimeSpan interval, bool periodic, PlayerLoopTiming playerLoopTiming, CancellationToken cancellationToken, Action<object> timerCallback, object state)
-            : base(periodic, playerLoopTiming, cancellationToken, timerCallback, state)
+        public RealtimePlayerLoopTimer(
+            TimeSpan interval,
+            bool periodic,
+            PlayerLoopTiming playerLoopTiming,
+            CancellationToken cancellationToken,
+            Action<object> timerCallback,
+            object state)
+            : base(periodic,
+                playerLoopTiming,
+                cancellationToken,
+                timerCallback,
+                state)
         {
             ResetCore(interval);
         }
@@ -259,4 +322,3 @@ namespace Pancake.Threading.Tasks
         }
     }
 }
-

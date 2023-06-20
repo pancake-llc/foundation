@@ -44,10 +44,7 @@ namespace Pancake.Threading.Tasks
         ExceptionDispatchInfo exception;
         bool calledGet = false;
 
-        public ExceptionHolder(ExceptionDispatchInfo exception)
-        {
-            this.exception = exception;
-        }
+        public ExceptionHolder(ExceptionDispatchInfo exception) { this.exception = exception; }
 
         public ExceptionDispatchInfo GetException()
         {
@@ -56,6 +53,7 @@ namespace Pancake.Threading.Tasks
                 calledGet = true;
                 GC.SuppressFinalize(this);
             }
+
             return exception;
         }
 
@@ -90,6 +88,7 @@ namespace Pancake.Threading.Tasks
             {
                 version += 1; // incr version.
             }
+
             completedCount = 0;
             result = default;
             error = null;
@@ -119,10 +118,7 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        internal void MarkHandled()
-        {
-            hasUnhandledError = false;
-        }
+        internal void MarkHandled() { hasUnhandledError = false; }
 
         /// <summary>Completes with a successful result.</summary>
         /// <param name="result">The result.</param>
@@ -192,8 +188,7 @@ namespace Pancake.Threading.Tasks
         }
 
         /// <summary>Gets the operation version.</summary>
-        [DebuggerHidden]
-        public short Version => version;
+        [DebuggerHidden] public short Version => version;
 
         /// <summary>Gets the status of the operation.</summary>
         /// <param name="token">Opaque value that was provided to the <see cref="UniTask"/>'s constructor.</param>
@@ -202,10 +197,9 @@ namespace Pancake.Threading.Tasks
         public UniTaskStatus GetStatus(short token)
         {
             ValidateToken(token);
-            return (continuation == null || (completedCount == 0)) ? UniTaskStatus.Pending
-                 : (error == null) ? UniTaskStatus.Succeeded
-                 : (error is OperationCanceledException) ? UniTaskStatus.Canceled
-                 : UniTaskStatus.Faulted;
+            return (continuation == null || (completedCount == 0)) ? UniTaskStatus.Pending :
+                (error == null) ? UniTaskStatus.Succeeded :
+                (error is OperationCanceledException) ? UniTaskStatus.Canceled : UniTaskStatus.Faulted;
         }
 
         /// <summary>Gets the status of the operation without token validation.</summary>
@@ -213,10 +207,9 @@ namespace Pancake.Threading.Tasks
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public UniTaskStatus UnsafeGetStatus()
         {
-            return (continuation == null || (completedCount == 0)) ? UniTaskStatus.Pending
-                 : (error == null) ? UniTaskStatus.Succeeded
-                 : (error is OperationCanceledException) ? UniTaskStatus.Canceled
-                 : UniTaskStatus.Faulted;
+            return (continuation == null || (completedCount == 0)) ? UniTaskStatus.Pending :
+                (error == null) ? UniTaskStatus.Succeeded :
+                (error is OperationCanceledException) ? UniTaskStatus.Canceled : UniTaskStatus.Faulted;
         }
 
         /// <summary>Gets the result of the operation.</summary>
@@ -262,6 +255,7 @@ namespace Pancake.Threading.Tasks
             {
                 throw new ArgumentNullException(nameof(continuation));
             }
+
             ValidateToken(token);
 
             /* no use ValueTaskSourceOnCOmpletedFlags, always no capture ExecutionContext and SynchronizationContext. */
@@ -322,16 +316,11 @@ namespace Pancake.Threading.Tasks
         AutoResetUniTaskCompletionSource nextNode;
         public ref AutoResetUniTaskCompletionSource NextNode => ref nextNode;
 
-        static AutoResetUniTaskCompletionSource()
-        {
-            TaskPool.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource), () => pool.Size);
-        }
+        static AutoResetUniTaskCompletionSource() { TaskPool.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource), () => pool.Size); }
 
         UniTaskCompletionSourceCore<AsyncUnit> core;
 
-        AutoResetUniTaskCompletionSource()
-        {
-        }
+        AutoResetUniTaskCompletionSource() { }
 
         [DebuggerHidden]
         public static AutoResetUniTaskCompletionSource Create()
@@ -340,6 +329,7 @@ namespace Pancake.Threading.Tasks
             {
                 result = new AutoResetUniTaskCompletionSource();
             }
+
             TaskTracker.TrackActiveTask(result, 2);
             return result;
         }
@@ -373,30 +363,17 @@ namespace Pancake.Threading.Tasks
 
         public UniTask Task
         {
-            [DebuggerHidden]
-            get
-            {
-                return new UniTask(this, core.Version);
-            }
+            [DebuggerHidden] get { return new UniTask(this, core.Version); }
         }
 
         [DebuggerHidden]
-        public bool TrySetResult()
-        {
-            return core.TrySetResult(AsyncUnit.Default);
-        }
+        public bool TrySetResult() { return core.TrySetResult(AsyncUnit.Default); }
 
         [DebuggerHidden]
-        public bool TrySetCanceled(CancellationToken cancellationToken = default)
-        {
-            return core.TrySetCanceled(cancellationToken);
-        }
+        public bool TrySetCanceled(CancellationToken cancellationToken = default) { return core.TrySetCanceled(cancellationToken); }
 
         [DebuggerHidden]
-        public bool TrySetException(Exception exception)
-        {
-            return core.TrySetException(exception);
-        }
+        public bool TrySetException(Exception exception) { return core.TrySetException(exception); }
 
         [DebuggerHidden]
         public void GetResult(short token)
@@ -409,26 +386,16 @@ namespace Pancake.Threading.Tasks
             {
                 TryReturn();
             }
-
         }
 
         [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
+        public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
         [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
+        public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
         [DebuggerHidden]
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
+        public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
         [DebuggerHidden]
         bool TryReturn()
@@ -445,16 +412,11 @@ namespace Pancake.Threading.Tasks
         AutoResetUniTaskCompletionSource<T> nextNode;
         public ref AutoResetUniTaskCompletionSource<T> NextNode => ref nextNode;
 
-        static AutoResetUniTaskCompletionSource()
-        {
-            TaskPool.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource<T>), () => pool.Size);
-        }
+        static AutoResetUniTaskCompletionSource() { TaskPool.RegisterSizeGetter(typeof(AutoResetUniTaskCompletionSource<T>), () => pool.Size); }
 
         UniTaskCompletionSourceCore<T> core;
 
-        AutoResetUniTaskCompletionSource()
-        {
-        }
+        AutoResetUniTaskCompletionSource() { }
 
         [DebuggerHidden]
         public static AutoResetUniTaskCompletionSource<T> Create()
@@ -463,6 +425,7 @@ namespace Pancake.Threading.Tasks
             {
                 result = new AutoResetUniTaskCompletionSource<T>();
             }
+
             TaskTracker.TrackActiveTask(result, 2);
             return result;
         }
@@ -496,30 +459,17 @@ namespace Pancake.Threading.Tasks
 
         public UniTask<T> Task
         {
-            [DebuggerHidden]
-            get
-            {
-                return new UniTask<T>(this, core.Version);
-            }
+            [DebuggerHidden] get { return new UniTask<T>(this, core.Version); }
         }
 
         [DebuggerHidden]
-        public bool TrySetResult(T result)
-        {
-            return core.TrySetResult(result);
-        }
+        public bool TrySetResult(T result) { return core.TrySetResult(result); }
 
         [DebuggerHidden]
-        public bool TrySetCanceled(CancellationToken cancellationToken = default)
-        {
-            return core.TrySetCanceled(cancellationToken);
-        }
+        public bool TrySetCanceled(CancellationToken cancellationToken = default) { return core.TrySetCanceled(cancellationToken); }
 
         [DebuggerHidden]
-        public bool TrySetException(Exception exception)
-        {
-            return core.TrySetException(exception);
-        }
+        public bool TrySetException(Exception exception) { return core.TrySetException(exception); }
 
         [DebuggerHidden]
         public T GetResult(short token)
@@ -535,28 +485,16 @@ namespace Pancake.Threading.Tasks
         }
 
         [DebuggerHidden]
-        void IUniTaskSource.GetResult(short token)
-        {
-            GetResult(token);
-        }
+        void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
         [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
+        public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
         [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
+        public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
         [DebuggerHidden]
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
+        public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
         [DebuggerHidden]
         bool TryReturn()
@@ -579,10 +517,7 @@ namespace Pancake.Threading.Tasks
         int intStatus; // UniTaskStatus
         bool handled = false;
 
-        public UniTaskCompletionSource()
-        {
-            TaskTracker.TrackActiveTask(this, 2);
-        }
+        public UniTaskCompletionSource() { TaskTracker.TrackActiveTask(this, 2); }
 
         [DebuggerHidden]
         internal void MarkHandled()
@@ -596,18 +531,11 @@ namespace Pancake.Threading.Tasks
 
         public UniTask Task
         {
-            [DebuggerHidden]
-            get
-            {
-                return new UniTask(this, 0);
-            }
+            [DebuggerHidden] get { return new UniTask(this, 0); }
         }
 
         [DebuggerHidden]
-        public bool TrySetResult()
-        {
-            return TrySignalCompletion(UniTaskStatus.Succeeded);
-        }
+        public bool TrySetResult() { return TrySignalCompletion(UniTaskStatus.Succeeded); }
 
         [DebuggerHidden]
         public bool TrySetCanceled(CancellationToken cancellationToken = default)
@@ -637,7 +565,7 @@ namespace Pancake.Threading.Tasks
         {
             MarkHandled();
 
-            var status = (UniTaskStatus)intStatus;
+            var status = (UniTaskStatus) intStatus;
             switch (status)
             {
                 case UniTaskStatus.Succeeded:
@@ -654,16 +582,10 @@ namespace Pancake.Threading.Tasks
         }
 
         [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return (UniTaskStatus)intStatus;
-        }
+        public UniTaskStatus GetStatus(short token) { return (UniTaskStatus) intStatus; }
 
         [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return (UniTaskStatus)intStatus;
-        }
+        public UniTaskStatus UnsafeGetStatus() { return (UniTaskStatus) intStatus; }
 
         [DebuggerHidden]
         public void OnCompleted(Action<object> continuation, object state, short token)
@@ -676,7 +598,7 @@ namespace Pancake.Threading.Tasks
             var lockGate = Thread.VolatileRead(ref gate);
             lock (lockGate) // wait TrySignalCompletion, after status is not pending.
             {
-                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending)
+                if ((UniTaskStatus) intStatus != UniTaskStatus.Pending)
                 {
                     continuation(state);
                     return;
@@ -693,6 +615,7 @@ namespace Pancake.Threading.Tasks
                     {
                         secondaryContinuationList = new List<(Action<object>, object)>();
                     }
+
                     secondaryContinuationList.Add((continuation, state));
                 }
             }
@@ -701,7 +624,7 @@ namespace Pancake.Threading.Tasks
         [DebuggerHidden]
         bool TrySignalCompletion(UniTaskStatus status)
         {
-            if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
+            if (Interlocked.CompareExchange(ref intStatus, (int) status, (int) UniTaskStatus.Pending) == (int) UniTaskStatus.Pending)
             {
                 if (gate == null)
                 {
@@ -742,8 +665,10 @@ namespace Pancake.Threading.Tasks
                     singleState = null;
                     secondaryContinuationList = null;
                 }
+
                 return true;
             }
+
             return false;
         }
     }
@@ -761,10 +686,7 @@ namespace Pancake.Threading.Tasks
         int intStatus; // UniTaskStatus
         bool handled = false;
 
-        public UniTaskCompletionSource()
-        {
-            TaskTracker.TrackActiveTask(this, 2);
-        }
+        public UniTaskCompletionSource() { TaskTracker.TrackActiveTask(this, 2); }
 
         [DebuggerHidden]
         internal void MarkHandled()
@@ -778,11 +700,7 @@ namespace Pancake.Threading.Tasks
 
         public UniTask<T> Task
         {
-            [DebuggerHidden]
-            get
-            {
-                return new UniTask<T>(this, 0);
-            }
+            [DebuggerHidden] get { return new UniTask<T>(this, 0); }
         }
 
         [DebuggerHidden]
@@ -822,7 +740,7 @@ namespace Pancake.Threading.Tasks
         {
             MarkHandled();
 
-            var status = (UniTaskStatus)intStatus;
+            var status = (UniTaskStatus) intStatus;
             switch (status)
             {
                 case UniTaskStatus.Succeeded:
@@ -839,22 +757,13 @@ namespace Pancake.Threading.Tasks
         }
 
         [DebuggerHidden]
-        void IUniTaskSource.GetResult(short token)
-        {
-            GetResult(token);
-        }
+        void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
         [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return (UniTaskStatus)intStatus;
-        }
+        public UniTaskStatus GetStatus(short token) { return (UniTaskStatus) intStatus; }
 
         [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return (UniTaskStatus)intStatus;
-        }
+        public UniTaskStatus UnsafeGetStatus() { return (UniTaskStatus) intStatus; }
 
         [DebuggerHidden]
         public void OnCompleted(Action<object> continuation, object state, short token)
@@ -867,7 +776,7 @@ namespace Pancake.Threading.Tasks
             var lockGate = Thread.VolatileRead(ref gate);
             lock (lockGate) // wait TrySignalCompletion, after status is not pending.
             {
-                if ((UniTaskStatus)intStatus != UniTaskStatus.Pending)
+                if ((UniTaskStatus) intStatus != UniTaskStatus.Pending)
                 {
                     continuation(state);
                     return;
@@ -884,6 +793,7 @@ namespace Pancake.Threading.Tasks
                     {
                         secondaryContinuationList = new List<(Action<object>, object)>();
                     }
+
                     secondaryContinuationList.Add((continuation, state));
                 }
             }
@@ -892,7 +802,7 @@ namespace Pancake.Threading.Tasks
         [DebuggerHidden]
         bool TrySignalCompletion(UniTaskStatus status)
         {
-            if (Interlocked.CompareExchange(ref intStatus, (int)status, (int)UniTaskStatus.Pending) == (int)UniTaskStatus.Pending)
+            if (Interlocked.CompareExchange(ref intStatus, (int) status, (int) UniTaskStatus.Pending) == (int) UniTaskStatus.Pending)
             {
                 if (gate == null)
                 {
@@ -933,8 +843,10 @@ namespace Pancake.Threading.Tasks
                     singleState = null;
                     secondaryContinuationList = null;
                 }
+
                 return true;
             }
+
             return false;
         }
     }

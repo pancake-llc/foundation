@@ -30,12 +30,21 @@ namespace Pancake.Threading.Tasks
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static UniTask ToUniTask(this AsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask ToUniTask(
+            this AsyncOperation asyncOperation,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (asyncOperation == null) throw new ArgumentNullException(nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled(cancellationToken);
             if (asyncOperation.isDone) return UniTask.CompletedTask;
-            return new UniTask(AsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask(AsyncOperationConfiguredSource.Create(asyncOperation,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         public struct AsyncOperationAwaiter : ICriticalNotifyCompletion
@@ -65,10 +74,7 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
@@ -84,10 +90,7 @@ namespace Pancake.Threading.Tasks
             AsyncOperationConfiguredSource nextNode;
             public ref AsyncOperationConfiguredSource NextNode => ref nextNode;
 
-            static AsyncOperationConfiguredSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(AsyncOperationConfiguredSource), () => pool.Size);
-            }
+            static AsyncOperationConfiguredSource() { TaskPool.RegisterSizeGetter(typeof(AsyncOperationConfiguredSource), () => pool.Size); }
 
             AsyncOperation asyncOperation;
             IProgress<float> progress;
@@ -95,12 +98,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<AsyncUnit> core;
 
-            AsyncOperationConfiguredSource()
-            {
+            AsyncOperationConfiguredSource() { }
 
-            }
-
-            public static IUniTaskSource Create(AsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource Create(
+                AsyncOperation asyncOperation,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -137,20 +142,11 @@ namespace Pancake.Threading.Tasks
             }
 
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -200,12 +196,21 @@ namespace Pancake.Threading.Tasks
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<UnityEngine.Object> ToUniTask(this ResourceRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<UnityEngine.Object> ToUniTask(
+            this ResourceRequest asyncOperation,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (asyncOperation == null)throw new ArgumentNullException(nameof(asyncOperation));
+            if (asyncOperation == null) throw new ArgumentNullException(nameof(asyncOperation));
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityEngine.Object>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.asset);
-            return new UniTask<UnityEngine.Object>(ResourceRequestConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask<UnityEngine.Object>(ResourceRequestConfiguredSource.Create(asyncOperation,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         public struct ResourceRequestAwaiter : ICriticalNotifyCompletion
@@ -239,10 +244,7 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
@@ -258,10 +260,7 @@ namespace Pancake.Threading.Tasks
             ResourceRequestConfiguredSource nextNode;
             public ref ResourceRequestConfiguredSource NextNode => ref nextNode;
 
-            static ResourceRequestConfiguredSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(ResourceRequestConfiguredSource), () => pool.Size);
-            }
+            static ResourceRequestConfiguredSource() { TaskPool.RegisterSizeGetter(typeof(ResourceRequestConfiguredSource), () => pool.Size); }
 
             ResourceRequest asyncOperation;
             IProgress<float> progress;
@@ -269,12 +268,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<UnityEngine.Object> core;
 
-            ResourceRequestConfiguredSource()
-            {
+            ResourceRequestConfiguredSource() { }
 
-            }
-
-            public static IUniTaskSource<UnityEngine.Object> Create(ResourceRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<UnityEngine.Object> Create(
+                ResourceRequest asyncOperation,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -310,25 +311,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -366,23 +355,30 @@ namespace Pancake.Threading.Tasks
         #endregion
 
 #if PANCAKE_ASSETBUNDLE
+
         #region AssetBundleRequest
 
-        public static AssetBundleRequestAwaiter GetAwaiter(this AssetBundleRequest asyncOperation)
-        {
-            return new AssetBundleRequestAwaiter(asyncOperation);
-        }
+        public static AssetBundleRequestAwaiter GetAwaiter(this AssetBundleRequest asyncOperation) { return new AssetBundleRequestAwaiter(asyncOperation); }
 
         public static UniTask<UnityEngine.Object> WithCancellation(this AssetBundleRequest asyncOperation, CancellationToken cancellationToken)
         {
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<UnityEngine.Object> ToUniTask(this AssetBundleRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<UnityEngine.Object> ToUniTask(
+            this AssetBundleRequest asyncOperation,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityEngine.Object>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.asset);
-            return new UniTask<UnityEngine.Object>(AssetBundleRequestConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask<UnityEngine.Object>(AssetBundleRequestConfiguredSource.Create(asyncOperation,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         public struct AssetBundleRequestAwaiter : ICriticalNotifyCompletion
@@ -416,10 +412,7 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
@@ -434,10 +427,7 @@ namespace Pancake.Threading.Tasks
             AssetBundleRequestConfiguredSource nextNode;
             public ref AssetBundleRequestConfiguredSource NextNode => ref nextNode;
 
-            static AssetBundleRequestConfiguredSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(AssetBundleRequestConfiguredSource), () => pool.Size);
-            }
+            static AssetBundleRequestConfiguredSource() { TaskPool.RegisterSizeGetter(typeof(AssetBundleRequestConfiguredSource), () => pool.Size); }
 
             AssetBundleRequest asyncOperation;
             IProgress<float> progress;
@@ -445,12 +435,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<UnityEngine.Object> core;
 
-            AssetBundleRequestConfiguredSource()
-            {
+            AssetBundleRequestConfiguredSource() { }
 
-            }
-
-            public static IUniTaskSource<UnityEngine.Object> Create(AssetBundleRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<UnityEngine.Object> Create(
+                AssetBundleRequest asyncOperation,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -486,25 +478,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -540,9 +520,11 @@ namespace Pancake.Threading.Tasks
         }
 
         #endregion
+
 #endif
 
 #if PANCAKE_ASSETBUNDLE
+
         #region AssetBundleCreateRequest
 
         public static AssetBundleCreateRequestAwaiter GetAwaiter(this AssetBundleCreateRequest asyncOperation)
@@ -555,11 +537,20 @@ namespace Pancake.Threading.Tasks
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<AssetBundle> ToUniTask(this AssetBundleCreateRequest asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<AssetBundle> ToUniTask(
+            this AssetBundleCreateRequest asyncOperation,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<AssetBundle>(cancellationToken);
             if (asyncOperation.isDone) return UniTask.FromResult(asyncOperation.assetBundle);
-            return new UniTask<AssetBundle>(AssetBundleCreateRequestConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+            return new UniTask<AssetBundle>(AssetBundleCreateRequestConfiguredSource.Create(asyncOperation,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         public struct AssetBundleCreateRequestAwaiter : ICriticalNotifyCompletion
@@ -593,10 +584,7 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
@@ -611,10 +599,7 @@ namespace Pancake.Threading.Tasks
             AssetBundleCreateRequestConfiguredSource nextNode;
             public ref AssetBundleCreateRequestConfiguredSource NextNode => ref nextNode;
 
-            static AssetBundleCreateRequestConfiguredSource()
-            {
-                TaskPool.RegisterSizeGetter(typeof(AssetBundleCreateRequestConfiguredSource), () => pool.Size);
-            }
+            static AssetBundleCreateRequestConfiguredSource() { TaskPool.RegisterSizeGetter(typeof(AssetBundleCreateRequestConfiguredSource), () => pool.Size); }
 
             AssetBundleCreateRequest asyncOperation;
             IProgress<float> progress;
@@ -622,12 +607,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<AssetBundle> core;
 
-            AssetBundleCreateRequestConfiguredSource()
-            {
+            AssetBundleCreateRequestConfiguredSource() { }
 
-            }
-
-            public static IUniTaskSource<AssetBundle> Create(AssetBundleCreateRequest asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<AssetBundle> Create(
+                AssetBundleCreateRequest asyncOperation,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -663,25 +650,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -717,9 +692,11 @@ namespace Pancake.Threading.Tasks
         }
 
         #endregion
+
 #endif
 
 #if ENABLE_UNITYWEBREQUEST && (!UNITY_2019_1_OR_NEWER || PANCAKE_WEBREQUEST)
+
         #region UnityWebRequestAsyncOperation
 
         public static UnityWebRequestAsyncOperationAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOperation)
@@ -732,7 +709,11 @@ namespace Pancake.Threading.Tasks
             return ToUniTask(asyncOperation, cancellationToken: cancellationToken);
         }
 
-        public static UniTask<UnityWebRequest> ToUniTask(this UnityWebRequestAsyncOperation asyncOperation, IProgress<float> progress = null, PlayerLoopTiming timing = PlayerLoopTiming.Update, CancellationToken cancellationToken = default(CancellationToken))
+        public static UniTask<UnityWebRequest> ToUniTask(
+            this UnityWebRequestAsyncOperation asyncOperation,
+            IProgress<float> progress = null,
+            PlayerLoopTiming timing = PlayerLoopTiming.Update,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested) return UniTask.FromCanceled<UnityWebRequest>(cancellationToken);
             if (asyncOperation.isDone)
@@ -741,9 +722,16 @@ namespace Pancake.Threading.Tasks
                 {
                     return UniTask.FromException<UnityWebRequest>(new UnityWebRequestException(asyncOperation.webRequest));
                 }
+
                 return UniTask.FromResult(asyncOperation.webRequest);
             }
-            return new UniTask<UnityWebRequest>(UnityWebRequestAsyncOperationConfiguredSource.Create(asyncOperation, timing, progress, cancellationToken, out var token), token);
+
+            return new UniTask<UnityWebRequest>(UnityWebRequestAsyncOperationConfiguredSource.Create(asyncOperation,
+                    timing,
+                    progress,
+                    cancellationToken,
+                    out var token),
+                token);
         }
 
         public struct UnityWebRequestAsyncOperationAwaiter : ICriticalNotifyCompletion
@@ -771,6 +759,7 @@ namespace Pancake.Threading.Tasks
                     {
                         throw new UnityWebRequestException(result);
                     }
+
                     return result;
                 }
                 else
@@ -781,14 +770,12 @@ namespace Pancake.Threading.Tasks
                     {
                         throw new UnityWebRequestException(result);
                     }
+
                     return result;
                 }
             }
 
-            public void OnCompleted(Action continuation)
-            {
-                UnsafeOnCompleted(continuation);
-            }
+            public void OnCompleted(Action continuation) { UnsafeOnCompleted(continuation); }
 
             public void UnsafeOnCompleted(Action continuation)
             {
@@ -797,7 +784,9 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        sealed class UnityWebRequestAsyncOperationConfiguredSource : IUniTaskSource<UnityWebRequest>, IPlayerLoopItem, ITaskPoolNode<UnityWebRequestAsyncOperationConfiguredSource>
+        sealed class UnityWebRequestAsyncOperationConfiguredSource : IUniTaskSource<UnityWebRequest>,
+            IPlayerLoopItem,
+            ITaskPoolNode<UnityWebRequestAsyncOperationConfiguredSource>
         {
             static TaskPool<UnityWebRequestAsyncOperationConfiguredSource> pool;
             UnityWebRequestAsyncOperationConfiguredSource nextNode;
@@ -814,12 +803,14 @@ namespace Pancake.Threading.Tasks
 
             UniTaskCompletionSourceCore<UnityWebRequest> core;
 
-            UnityWebRequestAsyncOperationConfiguredSource()
-            {
+            UnityWebRequestAsyncOperationConfiguredSource() { }
 
-            }
-
-            public static IUniTaskSource<UnityWebRequest> Create(UnityWebRequestAsyncOperation asyncOperation, PlayerLoopTiming timing, IProgress<float> progress, CancellationToken cancellationToken, out short token)
+            public static IUniTaskSource<UnityWebRequest> Create(
+                UnityWebRequestAsyncOperation asyncOperation,
+                PlayerLoopTiming timing,
+                IProgress<float> progress,
+                CancellationToken cancellationToken,
+                out short token)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -855,25 +846,13 @@ namespace Pancake.Threading.Tasks
                 }
             }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
             public bool MoveNext()
             {
@@ -899,6 +878,7 @@ namespace Pancake.Threading.Tasks
                     {
                         core.TrySetResult(asyncOperation.webRequest);
                     }
+
                     return false;
                 }
 
@@ -917,7 +897,7 @@ namespace Pancake.Threading.Tasks
         }
 
         #endregion
-#endif
 
+#endif
     }
 }

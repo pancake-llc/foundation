@@ -10,19 +10,13 @@ namespace Pancake.Threading.Tasks
 {
     public partial struct UniTask
     {
-        static readonly UniTask CanceledUniTask = new Func<UniTask>(() =>
-        {
-            return new UniTask(new CanceledResultSource(CancellationToken.None), 0);
-        })();
+        static readonly UniTask CanceledUniTask = new Func<UniTask>(() => { return new UniTask(new CanceledResultSource(CancellationToken.None), 0); })();
 
         static class CanceledUniTaskCache<T>
         {
             public static readonly UniTask<T> Task;
 
-            static CanceledUniTaskCache()
-            {
-                Task = new UniTask<T>(new CanceledResultSource<T>(CancellationToken.None), 0);
-            }
+            static CanceledUniTaskCache() { Task = new UniTask<T>(new CanceledResultSource<T>(CancellationToken.None), 0); }
         }
 
         public static readonly UniTask CompletedTask = new UniTask();
@@ -47,10 +41,7 @@ namespace Pancake.Threading.Tasks
             return new UniTask<T>(new ExceptionResultSource<T>(ex), 0);
         }
 
-        public static UniTask<T> FromResult<T>(T value)
-        {
-            return new UniTask<T>(value);
-        }
+        public static UniTask<T> FromResult<T>(T value) { return new UniTask<T>(value); }
 
         public static UniTask FromCanceled(CancellationToken cancellationToken = default)
         {
@@ -76,58 +67,34 @@ namespace Pancake.Threading.Tasks
             }
         }
 
-        public static UniTask Create(Func<UniTask> factory)
-        {
-            return factory();
-        }
+        public static UniTask Create(Func<UniTask> factory) { return factory(); }
 
-        public static UniTask<T> Create<T>(Func<UniTask<T>> factory)
-        {
-            return factory();
-        }
+        public static UniTask<T> Create<T>(Func<UniTask<T>> factory) { return factory(); }
 
-        public static AsyncLazy Lazy(Func<UniTask> factory)
-        {
-            return new AsyncLazy(factory);
-        }
+        public static AsyncLazy Lazy(Func<UniTask> factory) { return new AsyncLazy(factory); }
 
-        public static AsyncLazy<T> Lazy<T>(Func<UniTask<T>> factory)
-        {
-            return new AsyncLazy<T>(factory);
-        }
+        public static AsyncLazy<T> Lazy<T>(Func<UniTask<T>> factory) { return new AsyncLazy<T>(factory); }
 
         /// <summary>
         /// helper of fire and forget void action.
         /// </summary>
-        public static void Void(Func<UniTaskVoid> asyncAction)
-        {
-            asyncAction().Forget();
-        }
+        public static void Void(Func<UniTaskVoid> asyncAction) { asyncAction().Forget(); }
 
         /// <summary>
         /// helper of fire and forget void action.
         /// </summary>
-        public static void Void(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken)
-        {
-            asyncAction(cancellationToken).Forget();
-        }
+        public static void Void(Func<CancellationToken, UniTaskVoid> asyncAction, CancellationToken cancellationToken) { asyncAction(cancellationToken).Forget(); }
 
         /// <summary>
         /// helper of fire and forget void action.
         /// </summary>
-        public static void Void<T>(Func<T, UniTaskVoid> asyncAction, T state)
-        {
-            asyncAction(state).Forget();
-        }
+        public static void Void<T>(Func<T, UniTaskVoid> asyncAction, T state) { asyncAction(state).Forget(); }
 
         /// <summary>
         /// helper of create add UniTaskVoid to delegate.
         /// For example: FooAction = UniTask.Action(async () => { /* */ })
         /// </summary>
-        public static Action Action(Func<UniTaskVoid> asyncAction)
-        {
-            return () => asyncAction().Forget();
-        }
+        public static Action Action(Func<UniTaskVoid> asyncAction) { return () => asyncAction().Forget(); }
 
         /// <summary>
         /// helper of create add UniTaskVoid to delegate.
@@ -143,10 +110,7 @@ namespace Pancake.Threading.Tasks
         /// Create async void(UniTaskVoid) UnityAction.
         /// For exampe: onClick.AddListener(UniTask.UnityAction(async () => { /* */ } ))
         /// </summary>
-        public static UnityEngine.Events.UnityAction UnityAction(Func<UniTaskVoid> asyncAction)
-        {
-            return () => asyncAction().Forget();
-        }
+        public static UnityEngine.Events.UnityAction UnityAction(Func<UniTaskVoid> asyncAction) { return () => asyncAction().Forget(); }
 
         /// <summary>
         /// Create async void(UniTaskVoid) UnityAction.
@@ -162,44 +126,29 @@ namespace Pancake.Threading.Tasks
         /// <summary>
         /// Defer the task creation just before call await.
         /// </summary>
-        public static UniTask Defer(Func<UniTask> factory)
-        {
-            return new UniTask(new DeferPromise(factory), 0);
-        }
+        public static UniTask Defer(Func<UniTask> factory) { return new UniTask(new DeferPromise(factory), 0); }
 
         /// <summary>
         /// Defer the task creation just before call await.
         /// </summary>
-        public static UniTask<T> Defer<T>(Func<UniTask<T>> factory)
-        {
-            return new UniTask<T>(new DeferPromise<T>(factory), 0);
-        }
+        public static UniTask<T> Defer<T>(Func<UniTask<T>> factory) { return new UniTask<T>(new DeferPromise<T>(factory), 0); }
 
         /// <summary>
         /// Never complete.
         /// </summary>
-        public static UniTask Never(CancellationToken cancellationToken)
-        {
-            return new UniTask<AsyncUnit>(new NeverPromise<AsyncUnit>(cancellationToken), 0);
-        }
+        public static UniTask Never(CancellationToken cancellationToken) { return new UniTask<AsyncUnit>(new NeverPromise<AsyncUnit>(cancellationToken), 0); }
 
         /// <summary>
         /// Never complete.
         /// </summary>
-        public static UniTask<T> Never<T>(CancellationToken cancellationToken)
-        {
-            return new UniTask<T>(new NeverPromise<T>(cancellationToken), 0);
-        }
+        public static UniTask<T> Never<T>(CancellationToken cancellationToken) { return new UniTask<T>(new NeverPromise<T>(cancellationToken), 0); }
 
         sealed class ExceptionResultSource : IUniTaskSource
         {
             readonly ExceptionDispatchInfo exception;
             bool calledGet;
 
-            public ExceptionResultSource(Exception exception)
-            {
-                this.exception = ExceptionDispatchInfo.Capture(exception);
-            }
+            public ExceptionResultSource(Exception exception) { this.exception = ExceptionDispatchInfo.Capture(exception); }
 
             public void GetResult(short token)
             {
@@ -208,23 +157,15 @@ namespace Pancake.Threading.Tasks
                     calledGet = true;
                     GC.SuppressFinalize(this);
                 }
+
                 exception.Throw();
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return UniTaskStatus.Faulted;
-            }
+            public UniTaskStatus GetStatus(short token) { return UniTaskStatus.Faulted; }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return UniTaskStatus.Faulted;
-            }
+            public UniTaskStatus UnsafeGetStatus() { return UniTaskStatus.Faulted; }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                continuation(state);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { continuation(state); }
 
             ~ExceptionResultSource()
             {
@@ -240,10 +181,7 @@ namespace Pancake.Threading.Tasks
             readonly ExceptionDispatchInfo exception;
             bool calledGet;
 
-            public ExceptionResultSource(Exception exception)
-            {
-                this.exception = ExceptionDispatchInfo.Capture(exception);
-            }
+            public ExceptionResultSource(Exception exception) { this.exception = ExceptionDispatchInfo.Capture(exception); }
 
             public T GetResult(short token)
             {
@@ -252,6 +190,7 @@ namespace Pancake.Threading.Tasks
                     calledGet = true;
                     GC.SuppressFinalize(this);
                 }
+
                 exception.Throw();
                 return default;
             }
@@ -263,23 +202,15 @@ namespace Pancake.Threading.Tasks
                     calledGet = true;
                     GC.SuppressFinalize(this);
                 }
+
                 exception.Throw();
             }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return UniTaskStatus.Faulted;
-            }
+            public UniTaskStatus GetStatus(short token) { return UniTaskStatus.Faulted; }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return UniTaskStatus.Faulted;
-            }
+            public UniTaskStatus UnsafeGetStatus() { return UniTaskStatus.Faulted; }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                continuation(state);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { continuation(state); }
 
             ~ExceptionResultSource()
             {
@@ -294,65 +225,32 @@ namespace Pancake.Threading.Tasks
         {
             readonly CancellationToken cancellationToken;
 
-            public CanceledResultSource(CancellationToken cancellationToken)
-            {
-                this.cancellationToken = cancellationToken;
-            }
+            public CanceledResultSource(CancellationToken cancellationToken) { this.cancellationToken = cancellationToken; }
 
-            public void GetResult(short token)
-            {
-                throw new OperationCanceledException(cancellationToken);
-            }
+            public void GetResult(short token) { throw new OperationCanceledException(cancellationToken); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return UniTaskStatus.Canceled;
-            }
+            public UniTaskStatus GetStatus(short token) { return UniTaskStatus.Canceled; }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return UniTaskStatus.Canceled;
-            }
+            public UniTaskStatus UnsafeGetStatus() { return UniTaskStatus.Canceled; }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                continuation(state);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { continuation(state); }
         }
 
         sealed class CanceledResultSource<T> : IUniTaskSource<T>
         {
             readonly CancellationToken cancellationToken;
 
-            public CanceledResultSource(CancellationToken cancellationToken)
-            {
-                this.cancellationToken = cancellationToken;
-            }
+            public CanceledResultSource(CancellationToken cancellationToken) { this.cancellationToken = cancellationToken; }
 
-            public T GetResult(short token)
-            {
-                throw new OperationCanceledException(cancellationToken);
-            }
+            public T GetResult(short token) { throw new OperationCanceledException(cancellationToken); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                throw new OperationCanceledException(cancellationToken);
-            }
+            void IUniTaskSource.GetResult(short token) { throw new OperationCanceledException(cancellationToken); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return UniTaskStatus.Canceled;
-            }
+            public UniTaskStatus GetStatus(short token) { return UniTaskStatus.Canceled; }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return UniTaskStatus.Canceled;
-            }
+            public UniTaskStatus UnsafeGetStatus() { return UniTaskStatus.Canceled; }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                continuation(state);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { continuation(state); }
         }
 
         sealed class DeferPromise : IUniTaskSource
@@ -361,15 +259,9 @@ namespace Pancake.Threading.Tasks
             UniTask task;
             UniTask.Awaiter awaiter;
 
-            public DeferPromise(Func<UniTask> factory)
-            {
-                this.factory = factory;
-            }
+            public DeferPromise(Func<UniTask> factory) { this.factory = factory; }
 
-            public void GetResult(short token)
-            {
-                awaiter.GetResult();
-            }
+            public void GetResult(short token) { awaiter.GetResult(); }
 
             public UniTaskStatus GetStatus(short token)
             {
@@ -383,15 +275,9 @@ namespace Pancake.Threading.Tasks
                 return task.Status;
             }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                awaiter.SourceOnCompleted(continuation, state);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { awaiter.SourceOnCompleted(continuation, state); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return task.Status;
-            }
+            public UniTaskStatus UnsafeGetStatus() { return task.Status; }
         }
 
         sealed class DeferPromise<T> : IUniTaskSource<T>
@@ -400,20 +286,11 @@ namespace Pancake.Threading.Tasks
             UniTask<T> task;
             UniTask<T>.Awaiter awaiter;
 
-            public DeferPromise(Func<UniTask<T>> factory)
-            {
-                this.factory = factory;
-            }
+            public DeferPromise(Func<UniTask<T>> factory) { this.factory = factory; }
 
-            public T GetResult(short token)
-            {
-                return awaiter.GetResult();
-            }
+            public T GetResult(short token) { return awaiter.GetResult(); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                awaiter.GetResult();
-            }
+            void IUniTaskSource.GetResult(short token) { awaiter.GetResult(); }
 
             public UniTaskStatus GetStatus(short token)
             {
@@ -427,15 +304,9 @@ namespace Pancake.Threading.Tasks
                 return task.Status;
             }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                awaiter.SourceOnCompleted(continuation, state);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { awaiter.SourceOnCompleted(continuation, state); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return task.Status;
-            }
+            public UniTaskStatus UnsafeGetStatus() { return task.Status; }
         }
 
         sealed class NeverPromise<T> : IUniTaskSource<T>
@@ -456,34 +327,19 @@ namespace Pancake.Threading.Tasks
 
             static void CancellationCallback(object state)
             {
-                var self = (NeverPromise<T>)state;
+                var self = (NeverPromise<T>) state;
                 self.core.TrySetCanceled(self.cancellationToken);
             }
 
-            public T GetResult(short token)
-            {
-                return core.GetResult(token);
-            }
+            public T GetResult(short token) { return core.GetResult(token); }
 
-            public UniTaskStatus GetStatus(short token)
-            {
-                return core.GetStatus(token);
-            }
+            public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
-            public UniTaskStatus UnsafeGetStatus()
-            {
-                return core.UnsafeGetStatus();
-            }
+            public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
-            public void OnCompleted(Action<object> continuation, object state, short token)
-            {
-                core.OnCompleted(continuation, state, token);
-            }
+            public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
 
-            void IUniTaskSource.GetResult(short token)
-            {
-                core.GetResult(token);
-            }
+            void IUniTaskSource.GetResult(short token) { core.GetResult(token); }
         }
     }
 

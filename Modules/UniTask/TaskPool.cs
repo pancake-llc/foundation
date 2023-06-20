@@ -30,15 +30,14 @@ namespace Pancake.Threading.Tasks
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             MaxPoolSize = int.MaxValue;
         }
 
-        public static void SetMaxPoolSize(int maxPoolSize)
-        {
-            MaxPoolSize = maxPoolSize;
-        }
+        public static void SetMaxPoolSize(int maxPoolSize) { MaxPoolSize = maxPoolSize; }
 
         public static IEnumerable<(Type, int)> GetCacheSizeInfo()
         {
@@ -67,8 +66,7 @@ namespace Pancake.Threading.Tasks
 
     // mutable struct, don't mark readonly.
     [StructLayout(LayoutKind.Auto)]
-    public struct TaskPool<T>
-        where T : class, ITaskPoolNode<T>
+    public struct TaskPool<T> where T : class, ITaskPoolNode<T>
     {
         int gate;
         int size;
@@ -95,6 +93,7 @@ namespace Pancake.Threading.Tasks
 
                 Volatile.Write(ref gate, 0);
             }
+
             result = default;
             return false;
         }
@@ -117,6 +116,7 @@ namespace Pancake.Threading.Tasks
                     Volatile.Write(ref gate, 0);
                 }
             }
+
             return false;
         }
     }

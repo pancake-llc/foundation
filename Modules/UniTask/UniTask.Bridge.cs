@@ -9,10 +9,6 @@ namespace Pancake.Threading.Tasks
 
     public partial struct UniTask
     {
-        public static IEnumerator ToCoroutine(Func<UniTask> taskFactory)
-        {
-            return taskFactory().ToCoroutine();
-        }
+        public static IEnumerator ToCoroutine(Func<UniTask> taskFactory) { return taskFactory().ToCoroutine(); }
     }
 }
-

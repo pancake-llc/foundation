@@ -1,5 +1,4 @@
-﻿
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
 using System.Diagnostics;
@@ -18,16 +17,12 @@ namespace Pancake.Threading.Tasks.CompilerServices
         // 1. Static Create method.
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AsyncUniTaskMethodBuilder Create()
-        {
-            return default;
-        }
+        public static AsyncUniTaskMethodBuilder Create() { return default; }
 
         // 2. TaskLike Task property.
         public UniTask Task
         {
-            [DebuggerHidden]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DebuggerHidden] [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if (runnerPromise != null)
@@ -75,8 +70,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : INotifyCompletion
-            where TStateMachine : IAsyncStateMachine
+            where TAwaiter : INotifyCompletion where TStateMachine : IAsyncStateMachine
         {
             if (runnerPromise == null)
             {
@@ -91,8 +85,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         [SecuritySafeCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : ICriticalNotifyCompletion
-            where TStateMachine : IAsyncStateMachine
+            where TAwaiter : ICriticalNotifyCompletion where TStateMachine : IAsyncStateMachine
         {
             if (runnerPromise == null)
             {
@@ -105,11 +98,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         // 7. Start
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Start<TStateMachine>(ref TStateMachine stateMachine)
-            where TStateMachine : IAsyncStateMachine
-        {
-            stateMachine.MoveNext();
-        }
+        public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine { stateMachine.MoveNext(); }
 
         // 8. SetStateMachine
         [DebuggerHidden]
@@ -129,6 +118,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
                 {
                     debuggingId = new object();
                 }
+
                 return debuggingId;
             }
         }
@@ -145,16 +135,12 @@ namespace Pancake.Threading.Tasks.CompilerServices
         // 1. Static Create method.
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AsyncUniTaskMethodBuilder<T> Create()
-        {
-            return default;
-        }
+        public static AsyncUniTaskMethodBuilder<T> Create() { return default; }
 
         // 2. TaskLike Task property.
         public UniTask<T> Task
         {
-            [DebuggerHidden]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DebuggerHidden] [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if (runnerPromise != null)
@@ -206,8 +192,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : INotifyCompletion
-            where TStateMachine : IAsyncStateMachine
+            where TAwaiter : INotifyCompletion where TStateMachine : IAsyncStateMachine
         {
             if (runnerPromise == null)
             {
@@ -222,8 +207,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         [SecuritySafeCritical]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
-            where TAwaiter : ICriticalNotifyCompletion
-            where TStateMachine : IAsyncStateMachine
+            where TAwaiter : ICriticalNotifyCompletion where TStateMachine : IAsyncStateMachine
         {
             if (runnerPromise == null)
             {
@@ -236,11 +220,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         // 7. Start
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Start<TStateMachine>(ref TStateMachine stateMachine)
-            where TStateMachine : IAsyncStateMachine
-        {
-            stateMachine.MoveNext();
-        }
+        public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine { stateMachine.MoveNext(); }
 
         // 8. SetStateMachine
         [DebuggerHidden]
@@ -260,10 +240,10 @@ namespace Pancake.Threading.Tasks.CompilerServices
                 {
                     debuggingId = new object();
                 }
+
                 return debuggingId;
             }
         }
 #endif
-
     }
 }

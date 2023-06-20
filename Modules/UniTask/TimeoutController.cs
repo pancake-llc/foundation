@@ -17,7 +17,7 @@ namespace Pancake.Threading.Tasks
 
         static void CancelCancellationTokenSourceState(object state)
         {
-            var cts = (CancellationTokenSource)state;
+            var cts = (CancellationTokenSource) state;
             cts.Cancel();
         }
 
@@ -39,7 +39,10 @@ namespace Pancake.Threading.Tasks
             this.delayTiming = delayTiming;
         }
 
-        public TimeoutController(CancellationTokenSource linkCancellationTokenSource, DelayType delayType = DelayType.DeltaTime, PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
+        public TimeoutController(
+            CancellationTokenSource linkCancellationTokenSource,
+            DelayType delayType = DelayType.DeltaTime,
+            PlayerLoopTiming delayTiming = PlayerLoopTiming.Update)
         {
             this.timeoutSource = new CancellationTokenSource();
             this.originalLinkCancellationTokenSource = linkCancellationTokenSource;
@@ -48,10 +51,7 @@ namespace Pancake.Threading.Tasks
             this.delayTiming = delayTiming;
         }
 
-        public CancellationToken Timeout(int millisecondsTimeout)
-        {
-            return Timeout(TimeSpan.FromMilliseconds(millisecondsTimeout));
-        }
+        public CancellationToken Timeout(int millisecondsTimeout) { return Timeout(TimeSpan.FromMilliseconds(millisecondsTimeout)); }
 
         public CancellationToken Timeout(TimeSpan timeout)
         {
@@ -82,7 +82,13 @@ namespace Pancake.Threading.Tasks
             {
                 // Timer complete => timeoutSource.Cancel() -> linkedSource will be canceled.
                 // (linked)token is canceled => stop timer
-                timer = PlayerLoopTimer.StartNew(timeout, false, delayType, delayTiming, token, CancelCancellationTokenSourceStateDelegate, timeoutSource);
+                timer = PlayerLoopTimer.StartNew(timeout,
+                    false,
+                    delayType,
+                    delayTiming,
+                    token,
+                    CancelCancellationTokenSourceStateDelegate,
+                    timeoutSource);
             }
             else
             {
@@ -92,15 +98,9 @@ namespace Pancake.Threading.Tasks
             return token;
         }
 
-        public bool IsTimeout()
-        {
-            return timeoutSource.IsCancellationRequested;
-        }
+        public bool IsTimeout() { return timeoutSource.IsCancellationRequested; }
 
-        public void Reset()
-        {
-            timer?.Stop();
-        }
+        public void Reset() { timer?.Stop(); }
 
         public void Dispose()
         {

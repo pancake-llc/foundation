@@ -24,6 +24,7 @@ namespace Pancake.Threading.Tasks
         public static class EditorEnableState
         {
             static bool enableAutoReload;
+
             public static bool EnableAutoReload
             {
                 get { return enableAutoReload; }
@@ -35,6 +36,7 @@ namespace Pancake.Threading.Tasks
             }
 
             static bool enableTracking;
+
             public static bool EnableTracking
             {
                 get { return enableTracking; }
@@ -46,6 +48,7 @@ namespace Pancake.Threading.Tasks
             }
 
             static bool enableStackTrace;
+
             public static bool EnableStackTrace
             {
                 get { return enableStackTrace; }
@@ -60,9 +63,11 @@ namespace Pancake.Threading.Tasks
 #endif
 
 
-        static List<KeyValuePair<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>> listPool = new List<KeyValuePair<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>>();
+        static List<KeyValuePair<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>> listPool =
+            new List<KeyValuePair<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>>();
 
-        static readonly WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)> tracking = new WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>();
+        static readonly WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)> tracking =
+            new WeakDictionary<IUniTaskSource, (string formattedType, int trackingId, DateTime addTime, string stackTrace)>();
 
         [Conditional("UNITY_EDITOR")]
         public static void TrackActiveTask(IUniTaskSource task, int skipFrame)
@@ -83,6 +88,7 @@ namespace Pancake.Threading.Tasks
             {
                 typeName = task.GetType().Name;
             }
+
             tracking.TryAdd(task, (typeName, Interlocked.Increment(ref trackingId), DateTime.UtcNow, stackTrace));
 #endif
         }
@@ -116,7 +122,11 @@ namespace Pancake.Threading.Tasks
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        action(listPool[i].Value.trackingId, listPool[i].Value.formattedType, listPool[i].Key.UnsafeGetStatus(), listPool[i].Value.addTime, listPool[i].Value.stackTrace);
+                        action(listPool[i].Value.trackingId,
+                            listPool[i].Value.formattedType,
+                            listPool[i].Key.UnsafeGetStatus(),
+                            listPool[i].Value.addTime,
+                            listPool[i].Value.stackTrace);
                         listPool[i] = default;
                     }
                 }
@@ -148,6 +158,7 @@ namespace Pancake.Threading.Tasks
                 {
                     sb.Append(type.Name);
                 }
+
                 sb.Append("<");
                 var first = true;
                 foreach (var item in type.GetGenericArguments())
@@ -156,9 +167,11 @@ namespace Pancake.Threading.Tasks
                     {
                         sb.Append(", ");
                     }
+
                     first = false;
                     TypeBeautify(item, sb);
                 }
+
                 sb.Append(">");
             }
             else
@@ -175,4 +188,3 @@ namespace Pancake.Threading.Tasks
         //}
     }
 }
-

@@ -43,9 +43,10 @@ namespace Pancake.Threading.Tasks.CompilerServices
         // Get AsyncStateMachine internal state to check IL2CPP bug
         public static int GetState(IAsyncStateMachine stateMachine)
         {
-            var info = stateMachine.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            var info = stateMachine.GetType()
+                .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .First(x => x.Name.EndsWith("__state"));
-            return (int)info.GetValue(stateMachine);
+            return (int) info.GetValue(stateMachine);
         }
     }
 
@@ -76,16 +77,14 @@ namespace Pancake.Threading.Tasks.CompilerServices
             {
                 result = new AsyncUniTaskVoid<TStateMachine>();
             }
+
             TaskTracker.TrackActiveTask(result, 3);
 
             runnerFieldRef = result; // set runner before copied.
             result.stateMachine = stateMachine; // copy struct StateMachine(in release build).
         }
 
-        static AsyncUniTaskVoid()
-        {
-            TaskPool.RegisterSizeGetter(typeof(AsyncUniTaskVoid<TStateMachine>), () => pool.Size);
-        }
+        static AsyncUniTaskVoid() { TaskPool.RegisterSizeGetter(typeof(AsyncUniTaskVoid<TStateMachine>), () => pool.Size); }
 
         AsyncUniTaskVoid<TStateMachine> nextNode;
         public ref AsyncUniTaskVoid<TStateMachine> NextNode => ref nextNode;
@@ -99,30 +98,17 @@ namespace Pancake.Threading.Tasks.CompilerServices
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void Run()
-        {
-            stateMachine.MoveNext();
-        }
+        void Run() { stateMachine.MoveNext(); }
 
         // dummy interface implementation for TaskTracker.
 
-        UniTaskStatus IUniTaskSource.GetStatus(short token)
-        {
-            return UniTaskStatus.Pending;
-        }
+        UniTaskStatus IUniTaskSource.GetStatus(short token) { return UniTaskStatus.Pending; }
 
-        UniTaskStatus IUniTaskSource.UnsafeGetStatus()
-        {
-            return UniTaskStatus.Pending;
-        }
+        UniTaskStatus IUniTaskSource.UnsafeGetStatus() { return UniTaskStatus.Pending; }
 
-        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token)
-        {
-        }
+        void IUniTaskSource.OnCompleted(Action<object> continuation, object state, short token) { }
 
-        void IUniTaskSource.GetResult(short token)
-        {
-        }
+        void IUniTaskSource.GetResult(short token) { }
     }
 
     internal sealed class AsyncUniTask<TStateMachine> : IStateMachineRunnerPromise, IUniTaskSource, ITaskPoolNode<AsyncUniTask<TStateMachine>>
@@ -131,7 +117,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         static TaskPool<AsyncUniTask<TStateMachine>> pool;
 
 #if ENABLE_IL2CPP
-        readonly Action returnDelegate;  
+        readonly Action returnDelegate;
 #endif
         public Action MoveNext { get; }
 
@@ -152,6 +138,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
             {
                 result = new AsyncUniTask<TStateMachine>();
             }
+
             TaskTracker.TrackActiveTask(result, 3);
 
             runnerPromiseFieldRef = result; // set runner before copied.
@@ -161,10 +148,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         AsyncUniTask<TStateMachine> nextNode;
         public ref AsyncUniTask<TStateMachine> NextNode => ref nextNode;
 
-        static AsyncUniTask()
-        {
-            TaskPool.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine>), () => pool.Size);
-        }
+        static AsyncUniTask() { TaskPool.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine>), () => pool.Size); }
 
         void Return()
         {
@@ -184,31 +168,18 @@ namespace Pancake.Threading.Tasks.CompilerServices
 
         [DebuggerHidden]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void Run()
-        {
-            stateMachine.MoveNext();
-        }
+        void Run() { stateMachine.MoveNext(); }
 
         public UniTask Task
         {
-            [DebuggerHidden]
-            get
-            {
-                return new UniTask(this, core.Version);
-            }
+            [DebuggerHidden] get { return new UniTask(this, core.Version); }
         }
 
         [DebuggerHidden]
-        public void SetResult()
-        {
-            core.TrySetResult(AsyncUnit.Default);
-        }
+        public void SetResult() { core.TrySetResult(AsyncUnit.Default); }
 
         [DebuggerHidden]
-        public void SetException(Exception exception)
-        {
-            core.TrySetException(exception);
-        }
+        public void SetException(Exception exception) { core.TrySetException(exception); }
 
         [DebuggerHidden]
         public void GetResult(short token)
@@ -229,22 +200,13 @@ namespace Pancake.Threading.Tasks.CompilerServices
         }
 
         [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
+        public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
         [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
+        public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
         [DebuggerHidden]
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
+        public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
     }
 
     internal sealed class AsyncUniTask<TStateMachine, T> : IStateMachineRunnerPromise<T>, IUniTaskSource<T>, ITaskPoolNode<AsyncUniTask<TStateMachine, T>>
@@ -253,7 +215,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         static TaskPool<AsyncUniTask<TStateMachine, T>> pool;
 
 #if ENABLE_IL2CPP
-        readonly Action returnDelegate;  
+        readonly Action returnDelegate;
 #endif
 
         public Action MoveNext { get; }
@@ -275,6 +237,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
             {
                 result = new AsyncUniTask<TStateMachine, T>();
             }
+
             TaskTracker.TrackActiveTask(result, 3);
 
             runnerPromiseFieldRef = result; // set runner before copied.
@@ -284,10 +247,7 @@ namespace Pancake.Threading.Tasks.CompilerServices
         AsyncUniTask<TStateMachine, T> nextNode;
         public ref AsyncUniTask<TStateMachine, T> NextNode => ref nextNode;
 
-        static AsyncUniTask()
-        {
-            TaskPool.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine, T>), () => pool.Size);
-        }
+        static AsyncUniTask() { TaskPool.RegisterSizeGetter(typeof(AsyncUniTask<TStateMachine, T>), () => pool.Size); }
 
         void Return()
         {
@@ -315,24 +275,14 @@ namespace Pancake.Threading.Tasks.CompilerServices
 
         public UniTask<T> Task
         {
-            [DebuggerHidden]
-            get
-            {
-                return new UniTask<T>(this, core.Version);
-            }
+            [DebuggerHidden] get { return new UniTask<T>(this, core.Version); }
         }
 
         [DebuggerHidden]
-        public void SetResult(T result)
-        {
-            core.TrySetResult(result);
-        }
+        public void SetResult(T result) { core.TrySetResult(result); }
 
         [DebuggerHidden]
-        public void SetException(Exception exception)
-        {
-            core.TrySetException(exception);
-        }
+        public void SetException(Exception exception) { core.TrySetException(exception); }
 
         [DebuggerHidden]
         public T GetResult(short token)
@@ -353,28 +303,15 @@ namespace Pancake.Threading.Tasks.CompilerServices
         }
 
         [DebuggerHidden]
-        void IUniTaskSource.GetResult(short token)
-        {
-            GetResult(token);
-        }
+        void IUniTaskSource.GetResult(short token) { GetResult(token); }
 
         [DebuggerHidden]
-        public UniTaskStatus GetStatus(short token)
-        {
-            return core.GetStatus(token);
-        }
+        public UniTaskStatus GetStatus(short token) { return core.GetStatus(token); }
 
         [DebuggerHidden]
-        public UniTaskStatus UnsafeGetStatus()
-        {
-            return core.UnsafeGetStatus();
-        }
+        public UniTaskStatus UnsafeGetStatus() { return core.UnsafeGetStatus(); }
 
         [DebuggerHidden]
-        public void OnCompleted(Action<object> continuation, object state, short token)
-        {
-            core.OnCompleted(continuation, state, token);
-        }
+        public void OnCompleted(Action<object> continuation, object state, short token) { core.OnCompleted(continuation, state, token); }
     }
 }
-
