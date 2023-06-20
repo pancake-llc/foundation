@@ -6,6 +6,7 @@ namespace Pancake
 {
     public class MoveComponent : GameComponent
     {
+        [SerializeField] private bool manual;
         [SerializeField] private float duration;
         [SerializeField] private bool useTransform;
 
@@ -31,6 +32,13 @@ namespace Pancake
         protected override void OnEnabled()
         {
             base.OnEnabled();
+            if (manual) return;
+            Move();
+        }
+
+        public void Move()
+        {
+            _tween?.Stop();
             var loopCount = 0;
             if (loop) loopCount = -1;
             var pos = value;
