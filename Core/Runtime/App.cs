@@ -21,6 +21,7 @@ namespace Pancake
         {
             App.globalComponent = globalComponent;
             Data.Init();
+            SetAppFirstOpenTimestamp();
         }
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace Pancake
         /// <returns>The installation timestamp.</returns>
         public static DateTime GetAppFirstOpenTimestamp => Data.Load(Invariant.FIRST_OPEN_TIMESTAMP_KEY, UnixEpoch);
 
-        internal static void SetAppFirstOpenTimestamp()
+        private static void SetAppFirstOpenTimestamp()
         {
             if (!Data.HasKey(Invariant.FIRST_OPEN_TIMESTAMP_KEY)) Data.Save(Invariant.FIRST_OPEN_TIMESTAMP_KEY, DateTime.Now);
         }
