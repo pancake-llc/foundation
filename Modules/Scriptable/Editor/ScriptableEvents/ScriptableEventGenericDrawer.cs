@@ -11,12 +11,21 @@ namespace Pancake.ScriptableEditor
     public class ScriptableEventGenericDrawer : UnityEditor.Editor
     {
         private MethodInfo _methodInfo;
+        private ScriptableEventBase _scriptableEventBase;
 
         private void OnEnable() { _methodInfo = target.GetType().BaseType.GetMethod("Raise", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public); }
 
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
+
+            if (_scriptableEventBase == null) _scriptableEventBase = target as ScriptableEventBase;
+            var genericType = _scriptableEventBase.GetGenericType;
+            if (!EditorExtend.IsSerializable(genericType))
+            {
+                EditorExtend.DrawSerializationError(genericType);
+                return;
+            }
 
             GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Raise"))

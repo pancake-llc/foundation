@@ -81,20 +81,16 @@ namespace Pancake.Scriptable
             switch (type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null)
-                        boolVariable.OnValueChanged += (value) => Refresh();
+                    if (boolVariable != null) boolVariable.OnValueChanged += OnBoolVariableOnOnValueChanged;
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null)
-                        intVariable.OnValueChanged += (value) => Refresh();
+                    if (intVariable != null) intVariable.OnValueChanged += OnIntVariableOnOnValueChanged;
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null)
-                        floatVariable.OnValueChanged += (value) => Refresh();
+                    if (floatVariable != null) floatVariable.OnValueChanged += OnFloatVariableOnOnValueChanged;
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null)
-                        stringVariable.OnValueChanged += (value) => Refresh();
+                    if (stringVariable != null) stringVariable.OnValueChanged += OnStringVariableOnOnValueChanged;
                     break;
             }
         }
@@ -104,22 +100,26 @@ namespace Pancake.Scriptable
             switch (type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null)
-                        boolVariable.OnValueChanged -= (value) => Refresh();
+                    if (boolVariable != null) boolVariable.OnValueChanged -= OnBoolVariableOnOnValueChanged;
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null)
-                        intVariable.OnValueChanged -= (value) => Refresh();
+                    if (intVariable != null) intVariable.OnValueChanged -= OnIntVariableOnOnValueChanged;
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null)
-                        floatVariable.OnValueChanged -= (value) => Refresh();
+                    if (floatVariable != null) floatVariable.OnValueChanged -= OnFloatVariableOnOnValueChanged;
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null)
-                        stringVariable.OnValueChanged -= (value) => Refresh();
+                    if (stringVariable != null) stringVariable.OnValueChanged -= OnStringVariableOnOnValueChanged;
                     break;
             }
         }
+
+        private void OnStringVariableOnOnValueChanged(string _) { Refresh(); }
+
+        private void OnFloatVariableOnOnValueChanged(float _) { Refresh(); }
+
+        private void OnIntVariableOnOnValueChanged(int _) { Refresh(); }
+
+        private void OnBoolVariableOnOnValueChanged(bool _) { Refresh(); }
     }
 }

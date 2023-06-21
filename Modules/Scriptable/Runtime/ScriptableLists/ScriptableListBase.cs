@@ -3,6 +3,6 @@
     [System.Serializable]
     public abstract class ScriptableListBase : ScriptableBase
     {
-        public virtual System.Type GetElementType { get; }
+        public virtual System.Type GetGenericType { get; }
     }
 }

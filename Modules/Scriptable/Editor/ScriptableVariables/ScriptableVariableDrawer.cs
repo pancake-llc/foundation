@@ -10,11 +10,17 @@ namespace Pancake.ScriptableEditor
     public class ScriptableVariableDrawer : UnityEditor.Editor
     {
         private ScriptableBase _scriptableBase = null;
+        private ScriptableVariableBase _scriptableVariable = null;
         private static bool repaintFlag;
 
         public override void OnInspectorGUI()
         {
             serializedObject.UpdateIfRequiredOrScript();
+
+            //Check for Serializable
+            if (_scriptableVariable == null) _scriptableVariable = target as ScriptableVariableBase;
+            var genericType = _scriptableVariable.GetGenericType;
+            if (!EditorExtend.IsSerializable(genericType)) EditorExtend.DrawSerializationError(genericType);
 
             if (ScriptableEditorSetting.DrawMode == EVariableDrawMode.Minimal) DrawMinimal();
             else DrawDefault();

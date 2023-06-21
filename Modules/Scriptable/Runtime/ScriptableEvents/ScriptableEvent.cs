@@ -39,6 +39,8 @@ namespace Pancake.Scriptable
             }
         }
 
+        public override Type GetGenericType => typeof(T);
+
         /// <summary> Raise the event </summary>
         public void Raise(T param)
         {

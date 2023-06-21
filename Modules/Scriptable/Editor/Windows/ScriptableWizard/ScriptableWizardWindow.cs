@@ -271,7 +271,7 @@ namespace Pancake.ScriptableEditor
             //Draw Selected Scriptable
             if (_editor == null || scriptableBase != previousScriptableBase)
             {
-                previousScriptableBase.repaintRequest -= OnRepaintRequested;
+                if (previousScriptableBase != null) previousScriptableBase.repaintRequest -= OnRepaintRequested;
                 UnityEditor.Editor.CreateCachedEditor(scriptableBase, null, ref _editor);
                 previousScriptableBase = scriptableBase;
                 scriptableBase.repaintRequest += OnRepaintRequested;

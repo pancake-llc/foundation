@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Serialization;
 using UnityEditor;
@@ -433,5 +434,27 @@ namespace Pancake.ExLibEditor
         /// <param name="source"></param>
         /// <returns></returns>
         public static string ToSnackCase(this string source) { return new SnakeCaseNamingStrategy().GetPropertyName(source, false); }
+
+        public static bool IsSerializable(Type type)
+        {
+            var isSerializable = false;
+            isSerializable |= type.IsSerializable;
+            isSerializable |= type.Namespace == "UnityEngine";
+            isSerializable |= type.IsSubclassOf(typeof(MonoBehaviour));
+            return isSerializable;
+        }
+
+        public static void DrawSerializationError(Type type, Rect position = default)
+        {
+            if (position == default)
+            {
+                EditorGUILayout.HelpBox($"{type} is not marked as Serializable," + "\n Add [System.Serializable] attribute.", MessageType.Error);
+            }
+            else
+            {
+                var icon = EditorGUIUtility.IconContent("Error").image;
+                GUI.DrawTexture(position, icon, ScaleMode.ScaleToFit);
+            }
+        }
     }
 }

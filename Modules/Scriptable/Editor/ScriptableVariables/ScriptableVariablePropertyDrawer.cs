@@ -1,4 +1,5 @@
-﻿using Pancake.Scriptable;
+﻿using Pancake.ExLibEditor;
+using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace Pancake.ScriptableEditor
     public class ScriptableVariablePropertyDrawer : ScriptableBasePropertyDrawer
     {
         private SerializedObject _serializedObject;
+        private ScriptableVariableBase _scriptableVariable;
 
         protected override string GetFieldName()
         {
@@ -30,6 +32,15 @@ namespace Pancake.ScriptableEditor
 
         protected override void DrawShortcut(Rect position, SerializedProperty property, Object targetObject)
         {
+            if (_scriptableVariable == null) _scriptableVariable = _serializedObject.targetObject as ScriptableVariableBase;
+
+            var genericType = _scriptableVariable.GetGenericType;
+            if (!EditorExtend.IsSerializable(genericType))
+            {
+                EditorExtend.DrawSerializationError(genericType,position);
+                return;
+            }
+            
             var value = _serializedObject.FindProperty("value");
             EditorGUI.PropertyField(position, value, GUIContent.none);
         }

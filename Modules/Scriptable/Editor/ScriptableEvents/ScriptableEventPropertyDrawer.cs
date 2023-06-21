@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Pancake.ExLibEditor;
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace Pancake.ScriptableEditor
     [CustomPropertyDrawer(typeof(ScriptableEvent<>), true)]
     public class ScriptableEventPropertyDrawer : ScriptableBasePropertyDrawer
     {
+        private SerializedObject _serializedObject;
+        private ScriptableEventBase _scriptableEventBase;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
@@ -35,6 +39,18 @@ namespace Pancake.ScriptableEditor
 
         protected override void DrawShortcut(Rect position, SerializedProperty property, Object targetObject)
         {
+            if (_serializedObject == null || _serializedObject.targetObject != targetObject) _serializedObject = new SerializedObject(targetObject);
+            _serializedObject.UpdateIfRequiredOrScript();
+
+            if (_scriptableEventBase == null) _scriptableEventBase = _serializedObject.targetObject as ScriptableEventBase;
+            var genericType = _scriptableEventBase.GetGenericType;
+
+            if (!EditorExtend.IsSerializable(genericType))
+            {
+                EditorExtend.DrawSerializationError(genericType, position);
+                return;
+            }
+
             GUI.enabled = EditorApplication.isPlaying;
             if (GUI.Button(position, "Raise"))
             {

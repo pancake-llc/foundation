@@ -17,7 +17,7 @@ namespace Pancake.Scriptable
 
         public int Count => list.Count;
         public bool IsEmpty => !list.Any();
-        public override Type GetElementType => typeof(T);
+        public override Type GetGenericType => typeof(T);
 
         //feel free to uncomment this property if you need to access the list for more functionalities.
         //public List<T> List => list; 

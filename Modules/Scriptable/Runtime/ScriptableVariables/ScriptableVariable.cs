@@ -61,6 +61,8 @@ namespace Pancake.Scriptable
         public T PreviousValue { get; private set; }
 
         public T DefaultValue { get => defaultValue; private set => defaultValue = value; }
+        
+        public override Type GetGenericType  => typeof(T);
 
         /// <summary>
         /// Modify this to change the value of the variable.

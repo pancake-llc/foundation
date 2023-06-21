@@ -9,17 +9,17 @@ namespace Pancake.ScriptableEditor
     [CustomEditor(typeof(ScriptableListBase), true)]
     public class ScriptableListDrawer : UnityEditor.Editor
     {
-        private ScriptableListBase _targetScriptableList;
+        private ScriptableListBase _scriptableListBase;
         private ScriptableBase _scriptableBase;
         private static bool repaintFlag;
 
         public override void OnInspectorGUI()
         {
-            if (_targetScriptableList == null)
-                _targetScriptableList = target as ScriptableListBase;
+            if (_scriptableListBase == null)
+                _scriptableListBase = target as ScriptableListBase;
 
-            var isMonoBehaviourOrGameObject = _targetScriptableList.GetElementType.IsSubclassOf(typeof(MonoBehaviour)) ||
-                                              _targetScriptableList.GetElementType == typeof(GameObject);
+            var isMonoBehaviourOrGameObject = _scriptableListBase.GetGenericType.IsSubclassOf(typeof(MonoBehaviour)) ||
+                                              _scriptableListBase.GetGenericType == typeof(GameObject);
             if (isMonoBehaviourOrGameObject)
             {
                 Uniform.DrawOnlyField(serializedObject, "m_Script", true);
@@ -29,18 +29,24 @@ namespace Pancake.ScriptableEditor
             {
                 //we still want to display the native list for non MonoBehaviors (like SO for examples)
                 DrawDefaultInspector();
+
+                //Check for Serializable
+                var genericType = _scriptableListBase.GetGenericType;
+                if (!EditorExtend.IsSerializable(genericType))
+                {
+                    EditorExtend.DrawSerializationError(genericType);
+                    return;
+                }
             }
 
-            if (!EditorApplication.isPlaying)
-                return;
+            if (!EditorApplication.isPlaying) return;
 
             var container = (IDrawObjectsInInspector) target;
             var gameObjects = container.GetAllObjects();
 
             Uniform.DrawLine();
 
-            if (gameObjects.Count > 0)
-                DisplayAll(gameObjects);
+            if (gameObjects.Count > 0) DisplayAll(gameObjects);
         }
 
         private void DisplayAll(List<Object> objects)
@@ -77,6 +83,7 @@ namespace Pancake.ScriptableEditor
                     if (target == null) return;
                     _scriptableBase = (ScriptableBase) target;
                 }
+
                 _scriptableBase.repaintRequest += OnRepaintRequested;
             }
 
