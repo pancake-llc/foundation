@@ -69,11 +69,6 @@ namespace Pancake
                     default:
                         CheckNetworkAndroid(onCompleted);
                         break;
-                    case RuntimePlatform.WindowsEditor:
-                    case RuntimePlatform.WindowsPlayer:
-                    case RuntimePlatform.XboxOne:
-                        CheckNetworkWidow(onCompleted);
-                        break;
                     case RuntimePlatform.IPhonePlayer:
                     case RuntimePlatform.OSXEditor:
                     case RuntimePlatform.OSXPlayer:
@@ -91,13 +86,6 @@ namespace Pancake
             {
                 if (checkNetworkRoutine != null) App.StopCoroutine(checkNetworkRoutine);
                 checkNetworkRoutine = Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted);
-                App.StartCoroutine(checkNetworkRoutine);
-            }
-
-            private static void CheckNetworkWidow(Action<ENetworkStatus> onCompleted)
-            {
-                if (checkNetworkRoutine != null) App.StopCoroutine(checkNetworkRoutine);
-                checkNetworkRoutine = Check_ResponseContain("http://www.msftncsi.com/ncsi.txt", "Microsoft NCSI", onCompleted);
                 App.StartCoroutine(checkNetworkRoutine);
             }
 
