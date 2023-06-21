@@ -6,7 +6,7 @@ namespace Pancake
     public static partial class C
     {
         /// <summary>
-        /// Makes a copy of the vector with a changed alpha value.
+        /// Makes a copy of the color with a changed alpha value.
         /// </summary>
         /// <param name="color">The Color to copy.</param>
         /// <param name="a">The new a component.</param>
