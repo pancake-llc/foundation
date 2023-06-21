@@ -8,6 +8,21 @@ namespace Pancake.ScriptableEditor
     [CanEditMultipleObjects]
     internal class ObjectEditor : UnityEditor.Editor
     {
-        public override void OnInspectorGUI() { DrawDefaultInspector(); }
+        public override void OnInspectorGUI()
+        {
+            var targetType = serializedObject.targetObject.GetType();
+            var customType = typeof(CustomEditor);
+            object[] customEditors = targetType.GetCustomAttributes(customType, true);
+
+            if (customEditors.Length == 0)
+            {
+                DrawDefaultInspector();
+            }
+            else
+            {
+                // Custom editor exists, handle it accordingly
+                base.OnInspectorGUI();
+            }
+        }
     }
 }
