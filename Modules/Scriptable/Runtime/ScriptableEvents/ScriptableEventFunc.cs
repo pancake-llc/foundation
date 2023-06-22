@@ -18,6 +18,8 @@ namespace Pancake.Scriptable
         private readonly List<Object> _listenerObjects = new List<Object>();
         private Func<T, TResult> _onRaised;
 
+        public override Type GetGenericType => typeof(T);
+        
         public event Func<T, TResult> OnRaised
         {
             add
