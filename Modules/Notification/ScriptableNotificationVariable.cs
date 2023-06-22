@@ -25,7 +25,7 @@ namespace Pancake.Notification
         }
 
         [SerializeField, Guid] private string identifier;
-        [SerializeField] private int minute;
+        public int minute;
         [SerializeField] private bool repeat;
         [SerializeField] internal bool bigPicture;
 
