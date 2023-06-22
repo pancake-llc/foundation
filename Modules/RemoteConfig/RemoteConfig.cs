@@ -12,8 +12,7 @@ namespace Pancake.Tracking
     public class RemoteConfig : GameComponent
     {
         [SerializeField] private BoolVariable remoteFetchCompleted;
-        [SerializeField, Array] private string[] keys;
-        [SerializeField, Array] private StringVariable[] values;
+        [SerializeField, Array] private ScritpableStringPairVariable[] remoteFields;
 
         private void Start()
         {
@@ -65,12 +64,12 @@ namespace Pancake.Tracking
             remoteConfig.ActivateAsync()
                 .ContinueWithOnMainThread(task =>
                 {
-                    for (int i = 0; i < keys.Length; i++)
+                    for (int i = 0; i < remoteFields.Length; i++)
                     {
-                        if (!string.IsNullOrEmpty(keys[i]))
+                        if (!string.IsNullOrEmpty(remoteFields[i].Value.Key))
                         {
-                            string result = FirebaseRemoteConfig.DefaultInstance.GetValue(keys[i]).StringValue;
-                            values[i].Value = result;
+                            string result = FirebaseRemoteConfig.DefaultInstance.GetValue(remoteFields[i].Value.Key).StringValue;
+                            remoteFields[i].Value.value = result;
                         }
                     }
                 });
