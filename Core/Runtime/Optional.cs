@@ -39,7 +39,11 @@ namespace Pancake
 
         public static bool operator !=(Optional<T> lhs, Optional<T> rhs) { return !(lhs == rhs); }
 
-        public override bool Equals(object obj) { return Value.Equals(obj); }
+        public override bool Equals(object obj)
+        {
+            if (Value is null) return obj is null;
+            return Value.Equals(obj);
+        }
 
         public override int GetHashCode() { return Value.GetHashCode(); }
 
