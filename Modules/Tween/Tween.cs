@@ -557,7 +557,7 @@ namespace Pancake.Tween
         /// Sets the [isRelative] of Add or Append TweenActions, default false.
         /// Only sets the TweenAction whose [isRelative] is false.
         /// </summary>
-        public Tween SetDefaultRelative(bool isRelative)
+        public Tween SetRelative(bool isRelative)
         {
             AssertStateIsSetup("SetDefaultRelative");
             _defaultIsRelative = isRelative;

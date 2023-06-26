@@ -29,7 +29,9 @@ namespace Pancake.Notification
         [SerializeField] private bool repeat;
         [SerializeField] internal bool bigPicture;
 
-        [ShowIf(nameof(bigPicture)), Message("File bigpicture must be place in folder StreamingAsset and contains file extension ex .jpg", Height = 40), Label("  Name Picture")] [SerializeField]
+        [ShowIf(nameof(bigPicture)), Message("File bigpicture must be place in folder StreamingAsset", Height = 24),
+         Message("Name Picture must contains file extension ex .jpg", Height = 24), Label("  Name Picture")]
+        [SerializeField]
         internal string namePicture;
 
         [Array, SerializeField] private NotificationData[] datas;
