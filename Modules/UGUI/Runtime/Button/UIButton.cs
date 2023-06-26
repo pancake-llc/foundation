@@ -30,10 +30,8 @@ namespace Pancake.UI
         {
             public Vector2 scale;
             public EButtonMotion motion = EButtonMotion.Normal;
-            public float durationDown = 0.1f;
-            public float durationUp = 0.1f;
-            public UIEase easeDown = UIEase.Smooth;
-            public UIEase easeUp = UIEase.Smooth;
+            public float duration = 0.1f;
+            public UIEase ease = UIEase.Smooth;
         }
 
         #region Property
@@ -495,8 +493,8 @@ namespace Pancake.UI
                     break;
                 case EButtonMotion.Normal:
                     _isCompletePhaseUp = false;
-                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.durationUp)
-                        .SetEase((Ease) motionData.easeUp)
+                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration)
+                        .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseUp = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseUp);
@@ -507,13 +505,13 @@ namespace Pancake.UI
                     _isCompletePhaseUp = false;
                     _isCompletePhaseDown = false;
                     _endValue = new Vector3(DefaultScale.x * motionData.scale.x, DefaultScale.y * motionData.scale.y);
-                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.durationDown)
-                        .SetEase((Ease) motionData.easeDown)
+                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.duration)
+                        .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseDown);
-                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.durationUp)
-                        .SetEase((Ease) motionData.easeUp)
+                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration)
+                        .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseUp = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseUp);
@@ -535,8 +533,8 @@ namespace Pancake.UI
                     break;
                 case EButtonMotion.Normal:
                     _isCompletePhaseDown = false;
-                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.durationDown)
-                        .SetEase((Ease) motionData.easeDown)
+                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.duration)
+                        .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseDown);
@@ -544,13 +542,13 @@ namespace Pancake.UI
                 case EButtonMotion.Uniform:
                     _isCompletePhaseUp = false;
                     _isCompletePhaseDown = false;
-                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.durationDown)
-                        .SetEase((Ease) motionData.easeDown)
+                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.duration)
+                        .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseDown);
-                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.durationUp)
-                        .SetEase((Ease) motionData.easeUp)
+                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration)
+                        .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseUp = true)
                         .Play();
                     await UniTask.WaitUntil(() => _isCompletePhaseUp);

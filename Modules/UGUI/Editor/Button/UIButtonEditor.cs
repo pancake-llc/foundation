@@ -33,16 +33,12 @@ namespace PancakeEditor
         private SerializedProperty _audioStructure;
         private SerializedProperty _motion;
         private SerializedProperty _scale;
-        private SerializedProperty _durationDown;
-        private SerializedProperty _durationUp;
-        private SerializedProperty _easeUp;
-        private SerializedProperty _easeDown;
+        private SerializedProperty _duration;
+        private SerializedProperty _ease;
         private SerializedProperty _motionUnableInteract;
         private SerializedProperty _scaleUnableInteract;
-        private SerializedProperty _durationDownUnableInteract;
-        private SerializedProperty _durationUpUnableInteract;
-        private SerializedProperty _easeUpInteract;
-        private SerializedProperty _easeDownInteract;
+        private SerializedProperty _durationUnableInteract;
+        private SerializedProperty _easeInteract;
 
         protected override void OnEnable()
         {
@@ -65,17 +61,13 @@ namespace PancakeEditor
             _isMotion = serializedObject.FindProperty("isMotion");
             _motion = serializedObject.FindProperty("motionData").FindPropertyRelative("motion");
             _scale = serializedObject.FindProperty("motionData").FindPropertyRelative("scale");
-            _durationDown = serializedObject.FindProperty("motionData").FindPropertyRelative("durationDown");
-            _durationUp = serializedObject.FindProperty("motionData").FindPropertyRelative("durationUp");
+            _duration = serializedObject.FindProperty("motionData").FindPropertyRelative("duration");
             _motionUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("motion");
             _scaleUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("scale");
-            _durationDownUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("durationDown");
-            _durationUpUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("durationUp");
+            _durationUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("duration");
             _isMotionUnableInteract = serializedObject.FindProperty("isMotionUnableInteract");
-            _easeUp = serializedObject.FindProperty("motionData").FindPropertyRelative("easeUp");
-            _easeDown = serializedObject.FindProperty("motionData").FindPropertyRelative("easeDown");
-            _easeUpInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("easeUp");
-            _easeDownInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("easeDown");
+            _ease = serializedObject.FindProperty("motionData").FindPropertyRelative("ease");
+            _easeInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("ease");
         }
 
         public override void OnInspectorGUI()
@@ -188,24 +180,15 @@ namespace PancakeEditor
                     case EButtonMotion.Uniform:
                     case EButtonMotion.Late:
                         EditorGUILayout.BeginHorizontal();
-                        GUILayout.Label("  Duration(Down)", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                        _durationDown.floatValue = EditorGUILayout.Slider(_durationDown.floatValue, 0.01f, 5f);
-                        EditorGUILayout.EndHorizontal();
-
-                        EditorGUILayout.BeginHorizontal();
-                        GUILayout.Label("  Duration(Up)", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                        _durationUp.floatValue = EditorGUILayout.Slider(_durationUp.floatValue, 0.01f, 5f);
+                        GUILayout.Label("  Duration", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                        _duration.floatValue = EditorGUILayout.Slider(_duration.floatValue, 0.01f, 5f);
                         EditorGUILayout.EndHorizontal();
                         break;
                 }
 
                 EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(new GUIContent("  Ease Down"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                EditorGUILayout.PropertyField(_easeDown, new GUIContent(""));
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(new GUIContent("  Ease Up"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                EditorGUILayout.PropertyField(_easeUp, new GUIContent(""));
+                GUILayout.Label(new GUIContent("  Ease"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                EditorGUILayout.PropertyField(_ease, new GUIContent(""));
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.Space();
@@ -233,24 +216,15 @@ namespace PancakeEditor
                         case EButtonMotion.Uniform:
                         case EButtonMotion.Late:
                             EditorGUILayout.BeginHorizontal();
-                            GUILayout.Label("  Duration(Down)", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                            _durationDownUnableInteract.floatValue = EditorGUILayout.Slider(_durationDownUnableInteract.floatValue, 0.01f, 5f);
-                            EditorGUILayout.EndHorizontal();
-
-                            EditorGUILayout.BeginHorizontal();
-                            GUILayout.Label("  Duration(Up)", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                            _durationUpUnableInteract.floatValue = EditorGUILayout.Slider(_durationUpUnableInteract.floatValue, 0.01f, 5f);
+                            GUILayout.Label("  Duration", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                            _durationUnableInteract.floatValue = EditorGUILayout.Slider(_durationUnableInteract.floatValue, 0.01f, 5f);
                             EditorGUILayout.EndHorizontal();
                             break;
                     }
 
                     EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label(new GUIContent("  Ease Down"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                    EditorGUILayout.PropertyField(_easeDownInteract, new GUIContent(""));
-                    EditorGUILayout.EndHorizontal();
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label(new GUIContent("  Ease Up"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                    EditorGUILayout.PropertyField(_easeUpInteract, new GUIContent(""));
+                    GUILayout.Label(new GUIContent("  Ease"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    EditorGUILayout.PropertyField(_easeInteract, new GUIContent(""));
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.Space();
