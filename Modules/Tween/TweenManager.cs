@@ -170,7 +170,8 @@ namespace Pancake.Tween
 
 #if !ENABLE_BURST_AOT
             the ENABLE_BURST_AOT is not enabled when this line error
-            add it by [Project Settting] -> [Script Compilation] -> [Script Define Symbols]
+            add it by [Edit] -> [Project Settting] -> [Player] ->
+                      [Other Settings] -> [Script Compilation] -> [Script Define Symbols]
 #endif
         }
 

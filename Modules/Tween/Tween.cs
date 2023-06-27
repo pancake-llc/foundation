@@ -41,6 +41,12 @@ namespace Pancake.Tween
         /// Callback when the Tween (Play or Rewind) starts.
         /// </summary>
         private Action _onStart;
+        
+        /// <summary>
+        /// Callback when the Tween (Play or Rewind) updates.
+        /// The float param is the Tween time ranging between [0.0, 1.0].
+        /// </summary>
+        private Action<float> _onUpdate;
 
         /// <summary>
         /// Callback when the Tween (Play or Rewind) completes.
@@ -73,7 +79,7 @@ namespace Pancake.Tween
         private float _curTimeline;
 
         /// <summary>
-        /// The current time in duration, set by TweenManager.
+        /// The current time in duration, which is updated every frame.
         /// </summary>
         private float _curTime;
 
@@ -502,6 +508,19 @@ namespace Pancake.Tween
             return this;
         }
 
+        
+        /// <summary>
+        /// Sets the [OnUpdate] callback which is called when the Tween updates (Play or Rewind).
+        /// The float param is the Tween time ranging between [0.0, 1.0].
+        /// </summary>
+        public Tween OnUpdate(Action<float> onUpdate)
+        {
+            AssertStateIsNotRecycled("OnUpdate");
+            _onUpdate += onUpdate;
+
+            return this;
+        }
+        
 
         /// <summary>
         /// Sets the [OnComplete] callback which is called when the Tween completes (Play or Rewind).
@@ -546,7 +565,7 @@ namespace Pancake.Tween
         /// </summary>
         public Tween SetEase(Ease ease)
         {
-            AssertStateIsSetup("SetDefaultEase");
+            AssertStateIsSetup("SetEase");
             _defaultEase = ease;
 
             return this;
@@ -559,7 +578,7 @@ namespace Pancake.Tween
         /// </summary>
         public Tween SetRelative(bool isRelative)
         {
-            AssertStateIsSetup("SetDefaultRelative");
+            AssertStateIsSetup("SetRelative");
             _defaultIsRelative = isRelative;
 
             return this;
@@ -1235,15 +1254,6 @@ namespace Pancake.Tween
                 case State.Playing:
                     if (_waitIndex < _startSortedActions.Length && _curTimeline <= _curTime)
                     {
-                        // remove complete play actions
-                        for (var j = _actionUpdateList.Count - 1; j > -1; --j)
-                        {
-                            if (_actionUpdateList[j].CheckPlayCompleted(_curTime))
-                            {
-                                _actionUpdateList.RemoveAtSwapBack(j);
-                            }
-                        }
-
                         // add waiting action 
                         _actionUpdateList.Add(_startSortedActions[_waitIndex].InitPlay());
 
@@ -1272,35 +1282,29 @@ namespace Pancake.Tween
                     // update all play actions
                     for (var j = _actionUpdateList.Count - 1; j > -1; --j)
                     {
-                        if (_actionUpdateList[j].Play(_curTime) == false)
+                        if (_actionUpdateList[j].UpdatePlay(_curTime) == false)
                         {
                             _actionUpdateList.RemoveAtSwapBack(j);
 
                             // check whether the Tween is completed
-                            // TweenAction OnComplete may add new action
+                            // the TweenAction OnComplete may add new action
                             // so the Tween may still has action when j == 0
                             if (j == 0 && _curTime >= Duration)
                             {
+                                _onUpdate?.Invoke(1.0f);
                                 goto Completed;
                             }
                         }
                     }
 
+                    // including time 0.0f
+                    _onUpdate?.Invoke(_curTime / Duration);
                     _curTime += deltaSeconds;
                     return true;
 
                 case State.Rewinding:
                     if (_waitIndex > -1 && _curTimeline >= _curTime)
                     {
-                        // remove complete rewind actions
-                        for (var j = _actionUpdateList.Count - 1; j > -1; --j)
-                        {
-                            if (_actionUpdateList[j].CheckRewindCompleted(_curTime))
-                            {
-                                _actionUpdateList.RemoveAtSwapBack(j);
-                            }
-                        }
-
                         // add waiting action 
                         _actionUpdateList.Add(_endSortedActions[_waitIndex].InitRewind());
 
@@ -1329,20 +1333,23 @@ namespace Pancake.Tween
                     // update all rewind actions
                     for (var j = _actionUpdateList.Count - 1; j > -1; --j)
                     {
-                        if (_actionUpdateList[j].Rewind(_curTime) == false)
+                        if (_actionUpdateList[j].UpdateRewind(_curTime) == false)
                         {
                             _actionUpdateList.RemoveAtSwapBack(j);
 
                             // check whether the Tween is completed
-                            // TweenAction OnComplete may add new action
+                            // the TweenAction OnComplete may add new action
                             // so the Tween may still has action when j == 0
                             if (j == 0 && _curTime <= 0.0f)
                             {
+                                _onUpdate?.Invoke(0.0f);
                                 goto Completed;
                             }
                         }
                     }
-
+                    
+                    // including time 1.0f
+                    _onUpdate?.Invoke(_curTime / Duration);
                     _curTime -= deltaSeconds;
                     return true;
 
@@ -1715,6 +1722,7 @@ namespace Pancake.Tween
             _queueTime = 0.0f;
             _concurrentTime = 0.0f;
             _onStart = null;
+            _onUpdate = null;
             _onComplete = null;
             _onStop = null;
             _onRecycle = null;

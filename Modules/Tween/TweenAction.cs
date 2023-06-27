@@ -59,12 +59,18 @@ namespace Pancake.Tween
         private bool _isInitValues;
 
         /// <summary>
-        /// Callback when TweenAction starts (Play or Rewind).
+        /// Callback when the TweenAction starts (Play or Rewind).
         /// </summary>
         private Action _onStart;
 
         /// <summary>
-        /// Callback When TweenAction completes (Play or Rewind).
+        /// Callback when the TweenAction updates.
+        /// The float param is the TweenAction time ranging between [0.0, 1.0].
+        /// </summary>
+        private Action<float> _onUpdate;
+
+        /// <summary>
+        /// Callback When the TweenAction completes (Play or Rewind).
         /// </summary>
         private Action _onComplete;
 
@@ -269,6 +275,18 @@ namespace Pancake.Tween
             return this;
         }
 
+        /// <summary>
+        /// Sets the [OnUpdate] callback which is called when the TweenAction updates (Play or Rewind).
+        /// The float param is the TweenAction time ranging between [0.0, 1.0].
+        /// </summary>
+        public TweenAction OnUpdate(Action<float> onUpdate)
+        {
+            AssertCanBeAttached("OnUpdate");
+            _onUpdate += onUpdate;
+
+            return this;
+        }
+        
 
         /// <summary>
         /// Sets the [OnComplete] callback which is called when the TweenAction completes (Play or Rewind).
@@ -438,28 +456,7 @@ namespace Pancake.Tween
             return this;
         }
 
-
-        /// <summary>
-        /// Plays the TweenAction.
-        /// If return false then the play is completed.
-        /// </summary>
-        internal bool Play(float tweenCurTime)
-        {
-            var curTime = tweenCurTime - TimelineStart;
-
-            if (curTime < Duration)
-            {
-                UpdateValues(curTime);
-                return true;
-            }
-            else
-            {
-                CompletePlay();
-                return false;
-            }
-        }
-
-
+        
         /// <summary>
         /// Inits the Play.
         /// </summary>
@@ -469,7 +466,29 @@ namespace Pancake.Tween
             _onStart?.Invoke();
             return this;
         }
+        
 
+        /// <summary>
+        /// Updates the TweenAction play.
+        /// If return false then the play is completed.
+        /// </summary>
+        internal bool UpdatePlay(float tweenCurTime)
+        {
+            var curTime = tweenCurTime - TimelineStart;
+
+            if (curTime < Duration)
+            {
+                UpdateValues(curTime);
+                _onUpdate?.Invoke(curTime / Duration);
+                return true;
+            }
+
+            // including time 1.0f
+            _onUpdate?.Invoke(1.0f);
+            CompletePlay();
+            return false;
+        }
+        
 
         /// <summary>
         /// Completes the Play — set the toValue to targetValue of TweenActionValues.
@@ -510,29 +529,8 @@ namespace Pancake.Tween
 
             return false;
         }
-
-
-        /// <summary>
-        /// Rewinds the TweenAction.
-        /// If return false then the rewind is completed.
-        /// </summary>
-        internal bool Rewind(float tweenCurTime)
-        {
-            var curTime = tweenCurTime - TimelineStart;
-
-            if (curTime > 0.0f)
-            {
-                UpdateValues(curTime);
-                return true;
-            }
-            else
-            {
-                CompleteRewind();
-                return false;
-            }
-        }
-
-
+        
+        
         /// <summary>
         /// Inits the Rewind.
         /// </summary>
@@ -543,6 +541,28 @@ namespace Pancake.Tween
             _onStart?.Invoke();
             return this;
         }
+
+
+        /// <summary>
+        /// Updates the TweenAction rewind.
+        /// If return false then the rewind is completed.
+        /// </summary>
+        internal bool UpdateRewind(float tweenCurTime)
+        {
+            var curTime = tweenCurTime - TimelineStart;
+
+            if (curTime > 0.0f)
+            {
+                UpdateValues(curTime);
+                _onUpdate?.Invoke(curTime / Duration);
+                return true;
+            }
+
+            _onUpdate?.Invoke(0.0f);
+            CompleteRewind();
+            return false;
+        }
+        
 
 
         /// <summary>
@@ -566,21 +586,6 @@ namespace Pancake.Tween
             _onComplete?.Invoke();
 
             return this;
-        }
-
-
-        /// <summary>
-        /// Checks whether the Reinwd is completed.
-        /// </summary>
-        internal bool CheckRewindCompleted(float tweenCurTime)
-        {
-            if (tweenCurTime - TimelineStart <= 0.0f)
-            {
-                CompleteRewind();
-                return true;
-            }
-
-            return false;
         }
 
 
@@ -634,6 +639,7 @@ namespace Pancake.Tween
 
             Tween = null;
             _onStart = null;
+            _onUpdate = null;
             _onComplete = null;
             _onGetTargetValues = null;
             _onSetTargetValues = null;
