@@ -28,7 +28,7 @@ namespace Pancake.Monetization
             MaxSdk.ShowRewardedInterstitialAd(Id);
 #endif
         }
-        
+
         protected override void ResetChainCallback()
         {
             base.ResetChainCallback();

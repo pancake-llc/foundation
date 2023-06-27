@@ -25,7 +25,7 @@ namespace Pancake.IAP
 #if UNITY_EDITOR
         [SerializeField, TextArea] private string googlePlayStoreKey;
 #endif
-        
+
         public List<IAPDataVariable> Products => products;
     }
 }

@@ -41,7 +41,7 @@ namespace Pancake.Tween
         /// Callback when the Tween (Play or Rewind) starts.
         /// </summary>
         private Action _onStart;
-        
+
         /// <summary>
         /// Callback when the Tween (Play or Rewind) updates.
         /// The float param is the Tween time ranging between [0.0, 1.0].
@@ -508,7 +508,7 @@ namespace Pancake.Tween
             return this;
         }
 
-        
+
         /// <summary>
         /// Sets the [OnUpdate] callback which is called when the Tween updates (Play or Rewind).
         /// The float param is the Tween time ranging between [0.0, 1.0].
@@ -520,7 +520,7 @@ namespace Pancake.Tween
 
             return this;
         }
-        
+
 
         /// <summary>
         /// Sets the [OnComplete] callback which is called when the Tween completes (Play or Rewind).
@@ -1347,7 +1347,7 @@ namespace Pancake.Tween
                             }
                         }
                     }
-                    
+
                     // including time 1.0f
                     _onUpdate?.Invoke(_curTime / Duration);
                     _curTime -= deltaSeconds;
@@ -1477,10 +1477,7 @@ namespace Pancake.Tween
         /// <summary>
         /// Asserts the Tween state is not Recycled.
         /// </summary>
-        internal void AssertStateIsNotRecycled(string tag)
-        {
-            Debug.Assert(_curState != State.Recycled, $"Tween {tag}, the state [{_curState}] cannot be [Recycled]!");
-        }
+        internal void AssertStateIsNotRecycled(string tag) { Debug.Assert(_curState != State.Recycled, $"Tween {tag}, the state [{_curState}] cannot be [Recycled]!"); }
 
 
         /// <summary>
@@ -1497,8 +1494,7 @@ namespace Pancake.Tween
         /// </summary>
         internal void AssertStateCanRun(string tag)
         {
-            Debug.Assert(_curState != State.Recycled && _curState != State.Stopping,
-                $"Tween {tag}, the state [{_curState}] cannot be [Recycled] or [Stopping]!");
+            Debug.Assert(_curState != State.Recycled && _curState != State.Stopping, $"Tween {tag}, the state [{_curState}] cannot be [Recycled] or [Stopping]!");
         }
 
 

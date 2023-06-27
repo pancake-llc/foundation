@@ -39,7 +39,6 @@ namespace Pancake.UI
                     return data[i];
                 }
             }
-
             set { data[i] = value; }
         }
 
@@ -65,10 +64,7 @@ namespace Pancake.UI
         /// Instead of releasing the memory to garbage collection,
         /// the list size is set back to zero
         /// </summary>
-        public void Clear()
-        {
-            Count = 0;
-        }
+        public void Clear() { Count = 0; }
 
         /// <summary>
         /// Returns the first element of the list
@@ -109,10 +105,7 @@ namespace Pancake.UI
         /// memory if necessary
         /// </summary>
         /// <param name="item"></param>
-        public void AddStart(T item)
-        {
-            Insert(item, 0);
-        }
+        public void AddStart(T item) { Insert(item, 0); }
 
         /// <summary>
         /// Inserts a new element to the array at the index specified, creating more
@@ -137,10 +130,7 @@ namespace Pancake.UI
         /// Removes an item from the start of the data
         /// </summary>
         /// <returns></returns>
-        public T RemoveStart()
-        {
-            return RemoveAt(0);
-        }
+        public T RemoveStart() { return RemoveAt(0); }
 
         /// <summary>
         /// Removes an item from the index of the data

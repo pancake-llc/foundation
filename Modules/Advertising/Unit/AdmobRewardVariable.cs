@@ -50,7 +50,7 @@ namespace Pancake.Monetization
             ShowImpl();
             return this;
         }
-        
+
         protected override void ResetChainCallback()
         {
             base.ResetChainCallback();

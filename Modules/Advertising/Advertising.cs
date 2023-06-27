@@ -94,7 +94,7 @@ namespace Pancake.Monetization
                 _ => adSettings.ApplovinClient,
             };
         }
-        
+
 #if PANCAKE_APPLOVIN
         private void OnApplicationPause(bool pauseStatus)
         {

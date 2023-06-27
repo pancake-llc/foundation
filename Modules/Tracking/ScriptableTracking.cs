@@ -5,7 +5,7 @@ namespace Pancake.Tracking
     public abstract class ScriptableTracking : ScriptableObject, ITracking
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
-        
+
         public abstract void Track();
     }
 }

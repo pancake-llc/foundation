@@ -32,7 +32,7 @@ namespace Pancake.Sound
             //This prevents playing a looping AudioCue which then would be never stopped
             if (playOnEnable) PlayMusic();
         }
-        
+
         private void PlayMusic() { _audioHandle = playMusicEvent.Raise(music, audioConfig, Vector3.zero); }
     }
 }

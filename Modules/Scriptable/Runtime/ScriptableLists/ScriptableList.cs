@@ -12,7 +12,9 @@ namespace Pancake.Scriptable
     {
         [Tooltip("Clear the list when:" + " Scene Loaded : when a scene is loaded." +
                  " Application Start : Once, when the application starts. Modifications persists between scenes")]
-        [SerializeField] private ResetType resetOn = ResetType.SceneLoaded;
+        [SerializeField]
+        private ResetType resetOn = ResetType.SceneLoaded;
+
         [SerializeField] protected List<T> list = new List<T>();
 
         public int Count => list.Count;
@@ -26,19 +28,19 @@ namespace Pancake.Scriptable
 
         /// <summary> Event raised when an item is added or removed from the list. </summary>
         public event Action OnItemCountChanged;
-        
+
         /// <summary> Event raised  when an item is added to the list. </summary>
         public event Action<T> OnItemAdded;
-        
+
         /// <summary> Event raised  when an item is removed from the list. </summary>
         public event Action<T> OnItemRemoved;
-        
+
         /// <summary> Event raised  when multiple item are added to the list. </summary>
         public event Action<IEnumerable<T>> OnItemsAdded;
-        
+
         /// <summary> Event raised  when multiple items are removed from the list. </summary>
         public event Action<IEnumerable<T>> OnItemsRemoved;
-        
+
         /// <summary> Event raised  when the list is cleared. </summary>
         public event Action OnCleared;
 
@@ -151,7 +153,7 @@ namespace Pancake.Scriptable
             resetOn = ResetType.SceneLoaded;
             Clear();
         }
-        
+
 #if UNITY_EDITOR
         public void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange playModeStateChange)
         {

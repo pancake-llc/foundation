@@ -34,7 +34,7 @@ namespace Pancake.IAP
                     _listenersObjects.Remove(listener);
             }
         }
-        
+
         public void Raise()
         {
             if (!Application.isPlaying) return;
@@ -44,7 +44,7 @@ namespace Pancake.IAP
 
             _onRaised?.Invoke();
         }
-        
+
         public void RegisterListener(EventListenerIAPNoParam listener)
         {
             if (!_eventListeners.Contains(listener)) _eventListeners.Add(listener);
@@ -54,7 +54,7 @@ namespace Pancake.IAP
         {
             if (_eventListeners.Contains(listener)) _eventListeners.Remove(listener);
         }
-        
+
         public List<Object> GetAllObjects()
         {
             var allObjects = new List<Object>(_eventListeners);

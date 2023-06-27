@@ -246,7 +246,7 @@ DefaultImporter:
             GUI.backgroundColor = Uniform.Orange;
             EditorGUILayout.HelpBox("Applovin plugin not found", MessageType.Warning);
             GUI.backgroundColor = Color.white;
-            
+
             EditorGUILayout.BeginHorizontal();
             GUI.backgroundColor = Uniform.Green;
             if (GUILayout.Button("Install AppLovin SDK (1)", GUILayout.Height(24)))
@@ -265,7 +265,7 @@ DefaultImporter:
                     AssetDatabase.Refresh();
                 }
             }
-            
+
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 

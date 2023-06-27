@@ -9,13 +9,13 @@ namespace Pancake.Monetization
         BottomLeft = 4,
         BottomRight = 5,
     }
-    
+
     public enum EBannerSize
     {
-        Banner = 0,             // 320x50
-        Adaptive = 5         // full width
+        Banner = 0, // 320x50
+        Adaptive = 5 // full width
     }
-    
+
     public enum EAdNetwork
     {
         Applovin = 0,

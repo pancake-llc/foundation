@@ -286,7 +286,7 @@ namespace Pancake.Tween
 
             return this;
         }
-        
+
 
         /// <summary>
         /// Sets the [OnComplete] callback which is called when the TweenAction completes (Play or Rewind).
@@ -456,7 +456,7 @@ namespace Pancake.Tween
             return this;
         }
 
-        
+
         /// <summary>
         /// Inits the Play.
         /// </summary>
@@ -466,7 +466,7 @@ namespace Pancake.Tween
             _onStart?.Invoke();
             return this;
         }
-        
+
 
         /// <summary>
         /// Updates the TweenAction play.
@@ -488,7 +488,7 @@ namespace Pancake.Tween
             CompletePlay();
             return false;
         }
-        
+
 
         /// <summary>
         /// Completes the Play — set the toValue to targetValue of TweenActionValues.
@@ -529,8 +529,8 @@ namespace Pancake.Tween
 
             return false;
         }
-        
-        
+
+
         /// <summary>
         /// Inits the Rewind.
         /// </summary>
@@ -562,7 +562,6 @@ namespace Pancake.Tween
             CompleteRewind();
             return false;
         }
-        
 
 
         /// <summary>
@@ -740,10 +739,8 @@ namespace Pancake.Tween
 
                 if (_extraParamList.Length == 0)
                 {
-                    _jobHandle = new TweenActionValue.UpdateJob()
-                    {
-                        outputArray = _jobOutputArray, inputArray = _jobInputArray, times = new float2(curTime, Duration),
-                    }.Schedule(len, 1);
+                    _jobHandle = new TweenActionValue.UpdateJob() {outputArray = _jobOutputArray, inputArray = _jobInputArray, times = new float2(curTime, Duration),}
+                        .Schedule(len, 1);
                 }
                 else
                 {
@@ -753,10 +750,7 @@ namespace Pancake.Tween
 
                     _jobHandle = new TweenActionValue.UpdateJobWithExtraParams()
                     {
-                        outputArray = _jobOutputArray,
-                        inputArray = _jobInputArray,
-                        extraParamArray = _jobExtraPramArray,
-                        times = new float2(curTime, Duration),
+                        outputArray = _jobOutputArray, inputArray = _jobInputArray, extraParamArray = _jobExtraPramArray, times = new float2(curTime, Duration),
                     }.Schedule(len, 1);
                 }
 

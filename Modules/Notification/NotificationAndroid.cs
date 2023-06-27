@@ -32,7 +32,8 @@ namespace Pancake.Notification
             string channelName = "Nova",
             string channelDescription = "Newsletter Announcement",
             string smallIcon = "icon_0",
-            BigPictureStyle? bigPictureStyle = null, bool repeat = false)
+            BigPictureStyle? bigPictureStyle = null,
+            bool repeat = false)
         {
             RegisterNotificationChannel(identifier, channelName, channelDescription);
 

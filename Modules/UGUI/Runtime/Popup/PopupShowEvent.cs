@@ -35,7 +35,7 @@ namespace Pancake.UI
         public void Raise(string name, Transform parent)
         {
             if (!Application.isPlaying) return;
-            
+
             for (int i = _eventListeners.Count - 1; i >= 0; i--)
             {
                 _eventListeners[i].OnEventRaised(this);

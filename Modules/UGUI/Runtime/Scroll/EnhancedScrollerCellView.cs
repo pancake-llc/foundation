@@ -20,20 +20,17 @@ namespace Pancake.UI
         /// The cell index of the cell view
         /// This will differ from the dataIndex if the list is looping
         /// </summary>
-        [NonSerialized]
-        public int cellIndex;
+        [NonSerialized] public int cellIndex;
 
         /// <summary>
         /// The data index of the cell view
         /// </summary>
-        [NonSerialized]
-        public int dataIndex;
+        [NonSerialized] public int dataIndex;
 
         /// <summary>
         /// Whether the cell is active or recycled
         /// </summary>
-        [NonSerialized]
-        public bool active;
+        [NonSerialized] public bool active;
 
         /// <summary>
         /// This method is called by the scroller when the RefreshActiveCellViews is called on the scroller

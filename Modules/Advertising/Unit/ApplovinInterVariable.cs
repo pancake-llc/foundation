@@ -45,7 +45,7 @@ namespace Pancake.Monetization
             MaxSdk.ShowInterstitial(Id);
 #endif
         }
-        
+
         protected override void ResetChainCallback()
         {
             base.ResetChainCallback();

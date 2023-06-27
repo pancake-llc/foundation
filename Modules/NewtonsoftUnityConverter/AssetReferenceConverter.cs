@@ -1,6 +1,7 @@
 ﻿#if PANCAKE_ADDRESSABLES
 using System;
 using UnityEngine.AddressableAssets;
+
 namespace Newtonsoft.Json.UnityConverters
 {
     public class AssetReferenceConverter : JsonConverter
@@ -22,26 +23,28 @@ namespace Newtonsoft.Json.UnityConverters
                 if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(AssetReferenceT<>))
                 {
                     return Activator.CreateInstance(objectType, stringValue);
-                } else
+                }
+                else
                 {
                     return new AssetReference(stringValue);
                 }
             }
             else
             {
-                throw reader.CreateSerializationException($"Expected string when reading UnityEngine.Addressables.AssetReference type, got '{reader.TokenType}' <{reader.Value}>.");
+                throw reader.CreateSerializationException(
+                    $"Expected string when reading UnityEngine.Addressables.AssetReference type, got '{reader.TokenType}' <{reader.Value}>.");
             }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value is null || string.IsNullOrEmpty(((AssetReference)value).AssetGUID))
+            if (value is null || string.IsNullOrEmpty(((AssetReference) value).AssetGUID))
             {
                 writer.WriteNull();
             }
             else
             {
-                writer.WriteValue(((AssetReference)value).AssetGUID);
+                writer.WriteValue(((AssetReference) value).AssetGUID);
             }
         }
     }

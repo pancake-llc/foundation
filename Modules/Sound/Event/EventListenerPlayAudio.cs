@@ -44,7 +44,7 @@ namespace Pancake.Sound
 
             if (debug) Debug(eventRaised);
         }
-        
+
         private void Debug(AudioPlayEvent eventRaised)
         {
             var listener = _dictionary[eventRaised];

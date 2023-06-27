@@ -7,6 +7,5 @@ namespace Pancake.Scriptable
     [System.Serializable]
     public class ScritpableStringPairVariable : ScriptableVariable<StringPair>
     {
-        
     }
 }

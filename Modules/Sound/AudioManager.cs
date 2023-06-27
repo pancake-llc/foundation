@@ -153,15 +153,12 @@ namespace Pancake.Sound
 
             return isFound;
         }
-        
+
         /// <summary>
         /// Only used by the timeline to stop the gameplay music during cutscenes.
         /// Called by the SignalReceiver present on this same GameObject.
         /// </summary>
-        public void TimelineInterruptsMusic()
-        {
-            StopMusic(AudioHandle.invalid);
-        }
+        public void TimelineInterruptsMusic() { StopMusic(AudioHandle.invalid); }
 
         private AudioHandle PlayMusic(Audio audio, AudioConfig setting, Vector3 position)
         {
@@ -233,12 +230,13 @@ namespace Pancake.Sound
             sfxVolume = newVolume;
             SetGroupVolume("SFXVolume", sfxVolume);
         }
+
         public void SetGroupVolume(string parameterName, float normalizedVolume)
         {
             bool volumeSet = audioMixer.SetFloat(parameterName, NormalizedToMixerValue(normalizedVolume));
             if (!volumeSet) Debug.LogError("The AudioMixer parameter was not found");
         }
-        
+
         public float GetGroupVolume(string parameterName)
         {
             if (audioMixer.GetFloat(parameterName, out float rawVolume))
@@ -249,14 +247,14 @@ namespace Pancake.Sound
             Debug.LogError("The AudioMixer parameter was not found");
             return 0f;
         }
-        
+
         private float NormalizedToMixerValue(float normalizedValue)
         {
             // We're assuming the range [0 to 1] becomes [-80dB to 0dB]
             // This doesn't allow values over 0dB
             return (normalizedValue - 1f) * 80f;
         }
-        
+
         // Both MixerValueNormalized and NormalizedToMixerValue functions are used for easier transformations
         /// when using UI sliders normalized format
         private float MixerValueToNormalized(float mixerValue)

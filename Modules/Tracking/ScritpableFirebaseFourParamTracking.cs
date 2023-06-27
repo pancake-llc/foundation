@@ -1,5 +1,3 @@
-
-
 namespace Pancake.Tracking
 {
     using UnityEngine;

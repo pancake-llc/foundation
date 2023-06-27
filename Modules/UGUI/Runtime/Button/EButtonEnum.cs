@@ -32,7 +32,7 @@ namespace Pancake.UI
         /// the downside is that there is a delay when executing the single click (the delay is the double click register interval)
         /// </summary>
         Delayed = 4,
-        
+
         /// <summary>
         /// (single click or hold)
         /// Execute button onClick event as normal

@@ -20,10 +20,9 @@ namespace Newtonsoft.Json.UnityConverters
             {
                 Converters = new JsonConverter[]
                 {
-                    new BoundsConverter(), new BoundsIntConverter(), new RectConverter(), new RectIntConverter(), new RectOffsetConverter(),
-                    new Color32Converter(), new ColorConverter(), new Vector2Converter(), new Vector2IntConverter(), new Vector3Converter(),
-                    new Vector3IntConverter(), new Vector4Converter(), new QuaternionConverter(), new NativeArrayConverter(), new LayerMaskConverter(),
-                    new RangeIntConverter(),
+                    new BoundsConverter(), new BoundsIntConverter(), new RectConverter(), new RectIntConverter(), new RectOffsetConverter(), new Color32Converter(),
+                    new ColorConverter(), new Vector2Converter(), new Vector2IntConverter(), new Vector3Converter(), new Vector3IntConverter(), new Vector4Converter(),
+                    new QuaternionConverter(), new NativeArrayConverter(), new LayerMaskConverter(), new RangeIntConverter(),
 #if PANCAKE_ADDRESSABLES
                     new AssetReferenceConverter(),
 #endif

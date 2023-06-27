@@ -42,7 +42,7 @@ namespace Pancake.Monetization
             _rewardedInterstitialAd.Show(UserEarnedRewardCallback);
 #endif
         }
-        
+
         protected override void ResetChainCallback()
         {
             base.ResetChainCallback();
@@ -90,11 +90,14 @@ namespace Pancake.Monetization
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
-        private void OnAdPaided(AdValue value) { paidedCallback?.Invoke(value.Value / 1000000f,
-            "Admob",
-            Id, 
-            "RewardedInterstitialAd",
-            EAdNetwork.Admob.ToString()); }
+        private void OnAdPaided(AdValue value)
+        {
+            paidedCallback?.Invoke(value.Value / 1000000f,
+                "Admob",
+                Id,
+                "RewardedInterstitialAd",
+                EAdNetwork.Admob.ToString());
+        }
 
         private void OnAdFailedToShow(AdError error) { C.CallActionClean(ref failedToDisplayCallback); }
 
@@ -121,7 +124,7 @@ namespace Pancake.Monetization
 
         private void UserEarnedRewardCallback(Reward reward) { IsEarnRewarded = true; }
 #endif
-        
+
 #if UNITY_EDITOR
         [UnityEngine.ContextMenu("Copy Default Test Id")]
         protected void FillDefaultTestId()

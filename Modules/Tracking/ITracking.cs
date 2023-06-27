@@ -4,5 +4,4 @@ namespace Pancake.Tracking
     {
         void Track();
     }
-
 }

@@ -122,33 +122,31 @@ namespace Pancake.UI
         /// <summary>
         /// Whether the scroller should loop the cell views
         /// </summary>
-        [SerializeField]
-        private bool loop;
+        [SerializeField] private bool loop;
 
-		/// <summary>
+        /// <summary>
         /// Whether the scroller should process loop jumping while being dragged.
-		/// Note: if this is turned off while using a small list size, you may
-		/// see elements missing while dragging near the edges of the list. Turning
-		/// this value off can sometimes help with Unity adding a lot of velocity
-		/// while dragging near the end of a list that loops. If this value is turned
-		/// off, you can mitigate the large inertial velocity by setting the maxVelocity
-		/// value to a non-zero amount (see maxVelocity).
+        /// Note: if this is turned off while using a small list size, you may
+        /// see elements missing while dragging near the edges of the list. Turning
+        /// this value off can sometimes help with Unity adding a lot of velocity
+        /// while dragging near the end of a list that loops. If this value is turned
+        /// off, you can mitigate the large inertial velocity by setting the maxVelocity
+        /// value to a non-zero amount (see maxVelocity).
         /// </summary>
-		public bool loopWhileDragging = true;
+        public bool loopWhileDragging = true;
 
-		/// <summary>
+        /// <summary>
         /// The maximum speed the scroller can go. This can be useful to eliminate
-		/// aggressive scrolling by the user. It can also be used to mitigate the
-		/// large inertial velocity that Unity adds in the ScrollRect when dragging
-		/// and looping near the edge of the list (See loopWhileDragging).
+        /// aggressive scrolling by the user. It can also be used to mitigate the
+        /// large inertial velocity that Unity adds in the ScrollRect when dragging
+        /// and looping near the edge of the list (See loopWhileDragging).
         /// </summary>
-		public float maxVelocity;
+        public float maxVelocity;
 
         /// <summary>
         /// Whether the scollbar should be shown
         /// </summary>
-        [SerializeField]
-        private ScrollbarVisibilityEnum scrollbarVisibility;
+        [SerializeField] private ScrollbarVisibilityEnum scrollbarVisibility;
 
         /// <summary>
         /// Whether snapping is turned on
@@ -221,7 +219,7 @@ namespace Pancake.UI
         /// While true keeps snapping while the scroller is dragged.
         /// While false, this will disable snapping until the dragging stops.
         /// </summary>
-		public bool snapWhileDragging;
+        public bool snapWhileDragging;
 
         /// <summary>
         /// Will cause a snap to occur (if snapping is true) when the scroller stops
@@ -246,17 +244,8 @@ namespace Pancake.UI
         /// are not displayed yet. Good for tweening and loading external resources.
         /// </summary>
         private float _lookAheadBefore;
-        public float lookAheadBefore
-        {
-            get
-            {
-                return _lookAheadBefore;
-            }
-            set
-            {
-                _lookAheadBefore = Mathf.Abs(value);
-            }
-        }
+
+        public float lookAheadBefore { get { return _lookAheadBefore; } set { _lookAheadBefore = Mathf.Abs(value); } }
 
         /// <summary>
         /// The amount of space to look ahead after the last visible cell.
@@ -264,17 +253,8 @@ namespace Pancake.UI
         /// are not displayed yet. Good for tweening and loading external resources.
         /// </summary>
         private float _lookAheadAfter;
-        public float lookAheadAfter
-        {
-            get
-            {
-                return _lookAheadAfter;
-            }
-            set
-            {
-                _lookAheadAfter = Mathf.Abs(value);
-            }
-        }
+
+        public float lookAheadAfter { get { return _lookAheadAfter; } set { _lookAheadAfter = Mathf.Abs(value); } }
 
         /// <summary>
         /// This delegate is called when a cell view is hidden or shown
@@ -320,38 +300,43 @@ namespace Pancake.UI
         /// The Delegate is what the scroller will call when it needs to know information about
         /// the underlying data or views. This allows a true MVC process.
         /// </summary>
-        public IEnhancedScrollerDelegate Delegate { get { return _delegate; } set { _delegate = value; _reloadData = true; } }
+        public IEnhancedScrollerDelegate Delegate
+        {
+            get { return _delegate; }
+            set
+            {
+                _delegate = value;
+                _reloadData = true;
+            }
+        }
 
         /// <summary>
         /// The absolute position in pixels from the start of the scroller
         /// </summary>
         public float ScrollPosition
         {
-            get
-            {
-                return _scrollPosition;
-            }
+            get { return _scrollPosition; }
             set
             {
-				if (loop)
-				{
-					// if we are looping, we need to make sure the new position isn't past the jump trigger.
-					// if it is we need to reset back to the jump position on the other side of the area.
+                if (loop)
+                {
+                    // if we are looping, we need to make sure the new position isn't past the jump trigger.
+                    // if it is we need to reset back to the jump position on the other side of the area.
 
-					//if (value > _loopLastJumpTrigger)
-					//{
-					//	value = _loopFirstScrollPosition + (value - _loopLastJumpTrigger);
-					//}
-					//else if (value < _loopFirstJumpTrigger)
-					//{
-					//	value = _loopLastScrollPosition - (_loopFirstJumpTrigger - value);
-					//}
-				}
-				else
-				{
+                    //if (value > _loopLastJumpTrigger)
+                    //{
+                    //	value = _loopFirstScrollPosition + (value - _loopLastJumpTrigger);
+                    //}
+                    //else if (value < _loopFirstJumpTrigger)
+                    //{
+                    //	value = _loopLastScrollPosition - (_loopFirstJumpTrigger - value);
+                    //}
+                }
+                else
+                {
                     // make sure the position is in the bounds of the current set of views
-                    value = Mathf.Clamp(value, 0, ScrollSize); 
-				}
+                    value = Mathf.Clamp(value, 0, ScrollSize);
+                }
 
                 // only if the value has changed
                 if (_scrollPosition != value)
@@ -410,10 +395,7 @@ namespace Pancake.UI
         /// </summary>
         public bool Loop
         {
-            get
-            {
-                return loop;
-            }
+            get { return loop; }
             set
             {
                 // only if the value has changed
@@ -451,10 +433,7 @@ namespace Pancake.UI
         /// </summary>
         public ScrollbarVisibilityEnum ScrollbarVisibility
         {
-            get
-            {
-                return scrollbarVisibility;
-            }
+            get { return scrollbarVisibility; }
             set
             {
                 scrollbarVisibility = value;
@@ -502,17 +481,7 @@ namespace Pancake.UI
         /// <summary>
         /// This is the velocity of the scroller.
         /// </summary>
-        public Vector2 Velocity
-        {
-            get
-            {
-                return _scrollRect.velocity;
-            }
-            set
-            {
-                _scrollRect.velocity = value;
-            }
-        }
+        public Vector2 Velocity { get { return _scrollRect.velocity; } set { _scrollRect.velocity = value; } }
 
         /// <summary>
         /// The linear velocity is the velocity on one axis.
@@ -542,84 +511,42 @@ namespace Pancake.UI
         /// <summary>
         /// Whether the scroller is scrolling or not
         /// </summary>
-        public bool IsScrolling
-        {
-            get; private set;
-        }
+        public bool IsScrolling { get; private set; }
 
         /// <summary>
         /// Whether the scroller is tweening or not
         /// </summary>
-        public bool IsTweening
-        {
-            get; private set;
-        }
+        public bool IsTweening { get; private set; }
 
         /// <summary>
         /// This is the first cell view index showing in the scroller's visible area
         /// </summary>
-        public int StartCellViewIndex
-        {
-            get
-            {
-                return _activeCellViewsStartIndex;
-            }
-        }
+        public int StartCellViewIndex { get { return _activeCellViewsStartIndex; } }
 
         /// <summary>
         /// This is the last cell view index showing in the scroller's visible area
         /// </summary>
-        public int EndCellViewIndex
-        {
-            get
-            {
-                return _activeCellViewsEndIndex;
-            }
-        }
+        public int EndCellViewIndex { get { return _activeCellViewsEndIndex; } }
 
         /// <summary>
         /// This is the first data index showing in the scroller's visible area
         /// </summary>
-        public int StartDataIndex
-        {
-            get
-            {
-                return _activeCellViewsStartIndex % NumberOfCells;
-            }
-        }
+        public int StartDataIndex { get { return _activeCellViewsStartIndex % NumberOfCells; } }
 
         /// <summary>
         /// This is the last data index showing in the scroller's visible area
         /// </summary>
-        public int EndDataIndex
-        {
-            get
-            {
-                return _activeCellViewsEndIndex % NumberOfCells;
-            }
-        }
+        public int EndDataIndex { get { return _activeCellViewsEndIndex % NumberOfCells; } }
 
         /// <summary>
         /// This is the number of cells in the scroller
         /// </summary>
-        public int NumberOfCells
-        {
-            get
-            {
-                return (_delegate != null ? _delegate.GetNumberOfCells(this) : 0);
-            }
-        }
+        public int NumberOfCells { get { return (_delegate != null ? _delegate.GetNumberOfCells(this) : 0); } }
 
         /// <summary>
         /// This is a convenience link to the scroller's scroll rect
         /// </summary>
-        public ScrollRect ScrollRect
-        {
-            get
-            {
-                return _scrollRect;
-            }
-        }
+        public ScrollRect ScrollRect { get { return _scrollRect; } }
 
         /// <summary>
         /// The size of the visible portion of the scroller
@@ -638,35 +565,17 @@ namespace Pancake.UI
         /// <summary>
         /// The first padder before the visible cells
         /// </summary>
-        public LayoutElement FirstPadder
-        {
-            get
-            {
-                return _firstPadder;
-            }
-        }
+        public LayoutElement FirstPadder { get { return _firstPadder; } }
 
         /// <summary>
         /// The last padder after the visible cells
         /// </summary>
-        public LayoutElement LastPadder
-        {
-            get
-            {
-                return _lastPadder;
-            }
-        }
+        public LayoutElement LastPadder { get { return _lastPadder; } }
 
         /// <summary>
         /// Access to the scroll rect container
         /// </summary>
-        public RectTransform Container
-        {
-            get
-            {
-                return _container;
-            }
-        }
+        public RectTransform Container { get { return _container; } }
 
         /// <summary>
         /// Create a cell view, or recycle one if it already exists
@@ -782,6 +691,7 @@ namespace Pancake.UI
             {
                 DestroyImmediate(_activeCellViews[i].gameObject);
             }
+
             _activeCellViews.Clear();
         }
 
@@ -796,6 +706,7 @@ namespace Pancake.UI
             {
                 DestroyImmediate(_recycledCellViews[i].gameObject);
             }
+
             _recycledCellViews.Clear();
         }
 
@@ -804,10 +715,7 @@ namespace Pancake.UI
         /// you don't have to keep track of the state of the looping
         /// in your own scripts.
         /// </summary>
-        public void ToggleLoop()
-        {
-            Loop = !loop;
-        }
+        public void ToggleLoop() { Loop = !loop; }
 
         /// <summary>
         /// Toggle whether the loop jump calculation is used. Loop jumps
@@ -818,10 +726,7 @@ namespace Pancake.UI
         /// borders of the cell groups where the jump occurs.
         /// </summary>
         /// <param name="ignore"></param>
-        public void IgnoreLoopJump(bool ignore)
-        {
-            _ignoreLoopJump = ignore;
-        }
+        public void IgnoreLoopJump(bool ignore) { _ignoreLoopJump = ignore; }
 
         /// <summary>
         /// Sets the scroll position and refresh the active cells.
@@ -857,7 +762,8 @@ namespace Pancake.UI
         /// <param name="tweenType">What easing to use for the jump</param>
         /// <param name="tweenTime">How long to interpolate to the jump point</param>
         /// <param name="jumpComplete">This delegate is fired when the jump completes</param>
-        public void JumpToDataIndex(int dataIndex,
+        public void JumpToDataIndex(
+            int dataIndex,
             float scrollerOffset = 0,
             float cellOffset = 0,
             bool useSpacing = true,
@@ -865,8 +771,7 @@ namespace Pancake.UI
             float tweenTime = 0f,
             Action jumpComplete = null,
             LoopJumpDirectionEnum loopJumpDirection = LoopJumpDirectionEnum.Closest,
-            bool forceCalculateRange = false
-            )
+            bool forceCalculateRange = false)
         {
             var cellOffsetPosition = 0f;
 
@@ -905,14 +810,14 @@ namespace Pancake.UI
                 // if looping, then we need to determine the closest jump position.
                 // we do that by checking all three sets of data locations, and returning the closest one
 
-				var numberOfCells = NumberOfCells;
+                var numberOfCells = NumberOfCells;
 
                 // get the scroll positions for each data set.
                 // Note: we are calculating the position based on the cell view index, not the data index here
 
-				var set1CellViewIndex = _loopFirstCellIndex - (numberOfCells - dataIndex);
-				var set2CellViewIndex = _loopFirstCellIndex + dataIndex;
-				var set3CellViewIndex = _loopFirstCellIndex + numberOfCells + dataIndex;
+                var set1CellViewIndex = _loopFirstCellIndex - (numberOfCells - dataIndex);
+                var set2CellViewIndex = _loopFirstCellIndex + dataIndex;
+                var set3CellViewIndex = _loopFirstCellIndex + numberOfCells + dataIndex;
 
                 var set1Position = GetScrollPositionForCellViewIndex(set1CellViewIndex, CellViewPositionEnum.Before) + offset;
                 var set2Position = GetScrollPositionForCellViewIndex(set2CellViewIndex, CellViewPositionEnum.Before) + offset;
@@ -923,32 +828,32 @@ namespace Pancake.UI
                 var set2Diff = (Mathf.Abs(_scrollPosition - set2Position));
                 var set3Diff = (Mathf.Abs(_scrollPosition - set3Position));
 
-				var setOffset = -(scrollerOffset * ScrollRectSize);
+                var setOffset = -(scrollerOffset * ScrollRectSize);
 
-				var currentSet = 0;
-				var currentCellViewIndex = 0;
-				var nextCellViewIndex = 0;
+                var currentSet = 0;
+                var currentCellViewIndex = 0;
+                var nextCellViewIndex = 0;
 
-				if (loopJumpDirection == LoopJumpDirectionEnum.Up || loopJumpDirection == LoopJumpDirectionEnum.Down)
-				{
-					currentCellViewIndex = GetCellViewIndexAtPosition(_scrollPosition - setOffset + 0.0001f);
+                if (loopJumpDirection == LoopJumpDirectionEnum.Up || loopJumpDirection == LoopJumpDirectionEnum.Down)
+                {
+                    currentCellViewIndex = GetCellViewIndexAtPosition(_scrollPosition - setOffset + 0.0001f);
 
-					if (currentCellViewIndex < numberOfCells)
-					{
-						currentSet = 1;
-						nextCellViewIndex = dataIndex;
-					}
-					else if (currentCellViewIndex >= numberOfCells && currentCellViewIndex < (numberOfCells * 2))
-					{
-						currentSet = 2;
-						nextCellViewIndex = dataIndex + numberOfCells;
-					}
-					else
-					{
-						currentSet = 3;
-						nextCellViewIndex = dataIndex + (numberOfCells * 2);
-					}
-				}
+                    if (currentCellViewIndex < numberOfCells)
+                    {
+                        currentSet = 1;
+                        nextCellViewIndex = dataIndex;
+                    }
+                    else if (currentCellViewIndex >= numberOfCells && currentCellViewIndex < (numberOfCells * 2))
+                    {
+                        currentSet = 2;
+                        nextCellViewIndex = dataIndex + numberOfCells;
+                    }
+                    else
+                    {
+                        currentSet = 3;
+                        nextCellViewIndex = dataIndex + (numberOfCells * 2);
+                    }
+                }
 
                 switch (loopJumpDirection)
                 {
@@ -982,54 +887,53 @@ namespace Pancake.UI
 
                     case LoopJumpDirectionEnum.Up:
 
-						if (nextCellViewIndex < currentCellViewIndex)
-						{
-							newScrollPosition = (currentSet == 1 ? set1Position : (currentSet == 2 ? set2Position : set3Position));
-						}
-						else
-						{
-							if (currentSet == 1 && (currentCellViewIndex == dataIndex))
-							{
-								newScrollPosition = set1Position - _singleLoopGroupSize;
-							}
-							else
-							{
-								newScrollPosition = (currentSet == 1 ? set3Position : (currentSet == 2 ? set1Position : set2Position));
-							}
-						}
+                        if (nextCellViewIndex < currentCellViewIndex)
+                        {
+                            newScrollPosition = (currentSet == 1 ? set1Position : (currentSet == 2 ? set2Position : set3Position));
+                        }
+                        else
+                        {
+                            if (currentSet == 1 && (currentCellViewIndex == dataIndex))
+                            {
+                                newScrollPosition = set1Position - _singleLoopGroupSize;
+                            }
+                            else
+                            {
+                                newScrollPosition = (currentSet == 1 ? set3Position : (currentSet == 2 ? set1Position : set2Position));
+                            }
+                        }
 
                         break;
 
                     case LoopJumpDirectionEnum.Down:
 
-						if (nextCellViewIndex > currentCellViewIndex)
-						{
-							newScrollPosition = (currentSet == 1 ? set1Position : (currentSet == 2 ? set2Position : set3Position));
-						}
-						else
-						{
-							if (currentSet == 3 && (currentCellViewIndex == nextCellViewIndex))
-							{
-								newScrollPosition = set3Position + _singleLoopGroupSize;
-							}
-							else
-							{
-								newScrollPosition = (currentSet == 1 ? set2Position : (currentSet == 2 ? set3Position : set1Position));
-							}
-						}
+                        if (nextCellViewIndex > currentCellViewIndex)
+                        {
+                            newScrollPosition = (currentSet == 1 ? set1Position : (currentSet == 2 ? set2Position : set3Position));
+                        }
+                        else
+                        {
+                            if (currentSet == 3 && (currentCellViewIndex == nextCellViewIndex))
+                            {
+                                newScrollPosition = set3Position + _singleLoopGroupSize;
+                            }
+                            else
+                            {
+                                newScrollPosition = (currentSet == 1 ? set2Position : (currentSet == 2 ? set3Position : set1Position));
+                            }
+                        }
 
-						break;
-
+                        break;
                 }
 
-				if (useSpacing)
-				{
-					newScrollPosition -= spacing;
-				}
+                if (useSpacing)
+                {
+                    newScrollPosition -= spacing;
+                }
             }
             else
             {
-				// not looping, so just get the scroll position from the dataIndex
+                // not looping, so just get the scroll position from the dataIndex
                 newScrollPosition = GetScrollPositionForDataIndex(dataIndex, CellViewPositionEnum.Before) + offset;
 
                 // clamp the scroll position to a valid location
@@ -1044,7 +948,12 @@ namespace Pancake.UI
             }
 
             // start tweening
-            StartCoroutine(TweenPosition(tweenType, tweenTime, ScrollPosition, newScrollPosition, jumpComplete, forceCalculateRange));
+            StartCoroutine(TweenPosition(tweenType,
+                tweenTime,
+                ScrollPosition,
+                newScrollPosition,
+                jumpComplete,
+                forceCalculateRange));
         }
 
         /// <summary>
@@ -1075,7 +984,13 @@ namespace Pancake.UI
             _snapDataIndex = _snapCellViewIndex % NumberOfCells;
 
             // jump the snapped cell to the jump offset location and center it on the cell offset
-            JumpToDataIndex(_snapDataIndex, snapJumpToOffset, snapCellCenterOffset, snapUseCellSpacing, snapTweenType, snapTweenTime, SnapJumpComplete);
+            JumpToDataIndex(_snapDataIndex,
+                snapJumpToOffset,
+                snapCellCenterOffset,
+                snapUseCellSpacing,
+                snapTweenType,
+                snapTweenTime,
+                SnapJumpComplete);
         }
 
         /// <summary>
@@ -1372,20 +1287,20 @@ namespace Pancake.UI
         /// </summary>
         private ScrollbarVisibilityEnum _lastScrollbarVisibility;
 
-		/// <summary>
-		/// The number of cells in one third of the allocated scroller space
+        /// <summary>
+        /// The number of cells in one third of the allocated scroller space
         /// </summary>
-		private float _singleLoopGroupSize;
+        private float _singleLoopGroupSize;
 
-		/// <summary>
-		/// The snap value to store before the user begins dragging
+        /// <summary>
+        /// The snap value to store before the user begins dragging
         /// </summary>
-		private bool _snapBeforeDrag;
+        private bool _snapBeforeDrag;
 
-		/// <summary>
-		/// The loop value to store before the user begins dragging.
+        /// <summary>
+        /// The loop value to store before the user begins dragging.
         /// </summary>
-		private bool _loopBeforeDrag;
+        private bool _loopBeforeDrag;
 
         /// <summary>
         /// Flag to ignore the jump loop that gives the illusion
@@ -1443,7 +1358,7 @@ namespace Pancake.UI
                 // make some more size entries to fill it up
                 if (offset < ScrollRectSize)
                 {
-                    int additionalRounds = Mathf.CeilToInt((float)Mathf.CeilToInt(ScrollRectSize / offset) / 2.0f) * 2;
+                    int additionalRounds = Mathf.CeilToInt((float) Mathf.CeilToInt(ScrollRectSize / offset) / 2.0f) * 2;
                     _DuplicateCellViewSizes(additionalRounds, cellCount);
                     _loopFirstCellIndex = cellCount * (1 + (additionalRounds / 2));
                 }
@@ -1519,13 +1434,13 @@ namespace Pancake.UI
         private float _AddCellViewSizes()
         {
             var offset = 0f;
-			_singleLoopGroupSize = 0;
+            _singleLoopGroupSize = 0;
             // add a size for each row in our data based on how many the delegate tells us to create
             for (var i = 0; i < NumberOfCells; i++)
             {
                 // add the size of this cell based on what the delegate tells us to use. Also add spacing if this cell isn't the first one
                 _cellViewSizeArray.Add(_delegate.GetCellViewSize(this, i) + (i == 0 ? 0 : _layoutGroup.spacing));
-				_singleLoopGroupSize += _cellViewSizeArray[_cellViewSizeArray.Count - 1];
+                _singleLoopGroupSize += _cellViewSizeArray[_cellViewSizeArray.Count - 1];
                 offset += _cellViewSizeArray[_cellViewSizeArray.Count - 1];
             }
 
@@ -1831,7 +1746,8 @@ namespace Pancake.UI
 
             // get the positions of the scroller
             var startPosition = _scrollPosition - lookAheadBefore;
-            var endPosition = _scrollPosition + (scrollDirection == ScrollDirectionEnum.Vertical ? _scrollRectTransform.rect.height : _scrollRectTransform.rect.width) + lookAheadAfter;
+            var endPosition = _scrollPosition + (scrollDirection == ScrollDirectionEnum.Vertical ? _scrollRectTransform.rect.height : _scrollRectTransform.rect.width) +
+                              lookAheadAfter;
 
             // calculate each index based on the positions
             startIndex = GetCellViewIndexAtPosition(startPosition);
@@ -1903,6 +1819,7 @@ namespace Pancake.UI
                 _container.anchorMax = new Vector2(0, 1f);
                 _container.pivot = new Vector2(0, 0.5f);
             }
+
             _container.localPosition = Vector3.zero;
             _container.localRotation = Quaternion.identity;
             _container.localScale = Vector3.one;
@@ -1957,29 +1874,29 @@ namespace Pancake.UI
             _initialized = true;
         }
 
-		/// <summary>
+        /// <summary>
         /// This event is fired when the user begins dragging on the scroller.
-		/// We can disable looping or snapping while dragging if desired.
-		/// <param name="data">The event data for the drag</param>
+        /// We can disable looping or snapping while dragging if desired.
+        /// <param name="data">The event data for the drag</param>
         /// </summary>
-		public void OnBeginDrag(PointerEventData data)
-		{
+        public void OnBeginDrag(PointerEventData data)
+        {
             _dragFingerCount++;
             if (_dragFingerCount > 1) return;
 
-			// capture the snapping and set it to false if desired
-			_snapBeforeDrag = snapping;
-			if (!snapWhileDragging)
-			{
-				snapping = false;
-			}
+            // capture the snapping and set it to false if desired
+            _snapBeforeDrag = snapping;
+            if (!snapWhileDragging)
+            {
+                snapping = false;
+            }
 
-			// capture the looping and set it to false if desired
-			_loopBeforeDrag = loop;
-			if (!loopWhileDragging)
-			{
-				loop = false;
-			}
+            // capture the looping and set it to false if desired
+            _loopBeforeDrag = loop;
+            if (!loopWhileDragging)
+            {
+                loop = false;
+            }
 
             if (IsTweening && interruptTweeningOnDrag)
             {
@@ -1992,10 +1909,7 @@ namespace Pancake.UI
         /// We use it to capture the drag position that will later be used in the OnEndDrag method.
         /// </summary>
         /// <param name="data">The event data for the drag</param>
-        public void OnDrag(PointerEventData data)
-        {
-            _dragPreviousPos = data.position;
-        }
+        public void OnDrag(PointerEventData data) { _dragPreviousPos = data.position; }
 
         /// <summary>
         /// This event is fired when the user ends dragging on the scroller.
@@ -2003,13 +1917,13 @@ namespace Pancake.UI
         /// <param name="data">The event data for the drag</param>
         /// </summary>
         public void OnEndDrag(PointerEventData data)
-		{
+        {
             _dragFingerCount--;
             if (_dragFingerCount < 0) _dragFingerCount = 0;
 
-			// reset the snapping and looping to what it was before the drag
-			snapping = _snapBeforeDrag;
-			loop = _loopBeforeDrag;
+            // reset the snapping and looping to what it was before the drag
+            snapping = _snapBeforeDrag;
+            loop = _loopBeforeDrag;
 
             if (forceSnapOnEndDrag && snapping && _dragPreviousPos == data.position)
             {
@@ -2033,11 +1947,7 @@ namespace Pancake.UI
 
             // if the scroll rect size has changed and looping is on,
             // or the loop setting has changed, then we need to resize
-            if (
-                    (loop && _lastScrollRectSize != ScrollRectSize)
-                    ||
-                    (loop != _lastLoop)
-                )
+            if ((loop && _lastScrollRectSize != ScrollRectSize) || (loop != _lastLoop))
             {
                 _Resize(true);
                 _lastScrollRectSize = ScrollRectSize;
@@ -2078,23 +1988,23 @@ namespace Pancake.UI
             }
         }
 
-		/// <summary>
+        /// <summary>
         /// Fired at the end of the frame.
         /// </summary>
         void LateUpdate()
         {
-			// if maxVelocity is not zero, we can set the speed cap based on the scroll direction
-			if (maxVelocity > 0)
-			{
-				if (scrollDirection == ScrollDirectionEnum.Horizontal)
-				{
-					Velocity = new Vector2(Mathf.Clamp(Mathf.Abs(Velocity.x), 0, maxVelocity) * Mathf.Sign(Velocity.x), Velocity.y);
-				}
-				else
-				{
-					Velocity = new Vector2(Velocity.x, Mathf.Clamp(Mathf.Abs(Velocity.y), 0, maxVelocity) * Mathf.Sign(Velocity.y));
-				}
-			}
+            // if maxVelocity is not zero, we can set the speed cap based on the scroll direction
+            if (maxVelocity > 0)
+            {
+                if (scrollDirection == ScrollDirectionEnum.Horizontal)
+                {
+                    Velocity = new Vector2(Mathf.Clamp(Mathf.Abs(Velocity.x), 0, maxVelocity) * Mathf.Sign(Velocity.x), Velocity.y);
+                }
+                else
+                {
+                    Velocity = new Vector2(Velocity.x, Mathf.Clamp(Mathf.Abs(Velocity.y), 0, maxVelocity) * Mathf.Sign(Velocity.y));
+                }
+            }
         }
 
         void OnEnable()
@@ -2143,7 +2053,6 @@ namespace Pancake.UI
             }
 
             _RefreshActive();
-
         }
 
         /// <summary>
@@ -2257,38 +2166,102 @@ namespace Pancake.UI
 
                         switch (tweenType)
                         {
-                            case TweenType.linear: newPosition = linear(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.spring: newPosition = spring(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInQuad: newPosition = easeInQuad(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutQuad: newPosition = easeOutQuad(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutQuad: newPosition = easeInOutQuad(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInCubic: newPosition = easeInCubic(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutCubic: newPosition = easeOutCubic(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutCubic: newPosition = easeInOutCubic(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInQuart: newPosition = easeInQuart(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutQuart: newPosition = easeOutQuart(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutQuart: newPosition = easeInOutQuart(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInQuint: newPosition = easeInQuint(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutQuint: newPosition = easeOutQuint(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutQuint: newPosition = easeInOutQuint(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInSine: newPosition = easeInSine(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutSine: newPosition = easeOutSine(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutSine: newPosition = easeInOutSine(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInExpo: newPosition = easeInExpo(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutExpo: newPosition = easeOutExpo(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutExpo: newPosition = easeInOutExpo(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInCirc: newPosition = easeInCirc(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutCirc: newPosition = easeOutCirc(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutCirc: newPosition = easeInOutCirc(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInBounce: newPosition = easeInBounce(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutBounce: newPosition = easeOutBounce(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutBounce: newPosition = easeInOutBounce(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInBack: newPosition = easeInBack(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutBack: newPosition = easeOutBack(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutBack: newPosition = easeInOutBack(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInElastic: newPosition = easeInElastic(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeOutElastic: newPosition = easeOutElastic(start, end, (_tweenTimeLeft / time)); break;
-                            case TweenType.easeInOutElastic: newPosition = easeInOutElastic(start, end, (_tweenTimeLeft / time)); break;
+                            case TweenType.linear:
+                                newPosition = linear(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.spring:
+                                newPosition = spring(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInQuad:
+                                newPosition = easeInQuad(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutQuad:
+                                newPosition = easeOutQuad(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutQuad:
+                                newPosition = easeInOutQuad(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInCubic:
+                                newPosition = easeInCubic(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutCubic:
+                                newPosition = easeOutCubic(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutCubic:
+                                newPosition = easeInOutCubic(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInQuart:
+                                newPosition = easeInQuart(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutQuart:
+                                newPosition = easeOutQuart(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutQuart:
+                                newPosition = easeInOutQuart(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInQuint:
+                                newPosition = easeInQuint(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutQuint:
+                                newPosition = easeOutQuint(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutQuint:
+                                newPosition = easeInOutQuint(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInSine:
+                                newPosition = easeInSine(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutSine:
+                                newPosition = easeOutSine(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutSine:
+                                newPosition = easeInOutSine(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInExpo:
+                                newPosition = easeInExpo(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutExpo:
+                                newPosition = easeOutExpo(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutExpo:
+                                newPosition = easeInOutExpo(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInCirc:
+                                newPosition = easeInCirc(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutCirc:
+                                newPosition = easeOutCirc(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutCirc:
+                                newPosition = easeInOutCirc(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInBounce:
+                                newPosition = easeInBounce(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutBounce:
+                                newPosition = easeOutBounce(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutBounce:
+                                newPosition = easeInOutBounce(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInBack:
+                                newPosition = easeInBack(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutBack:
+                                newPosition = easeOutBack(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutBack:
+                                newPosition = easeInOutBack(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInElastic:
+                                newPosition = easeInElastic(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeOutElastic:
+                                newPosition = easeOutElastic(start, end, (_tweenTimeLeft / time));
+                                break;
+                            case TweenType.easeInOutElastic:
+                                newPosition = easeInOutElastic(start, end, (_tweenTimeLeft / time));
+                                break;
                         }
 
                         // set the scroll position to the tweened position
@@ -2337,10 +2310,7 @@ namespace Pancake.UI
         }
 
 
-        private float linear(float start, float end, float val)
-        {
-            return Mathf.Lerp(start, end, val);
-        }
+        private float linear(float start, float end, float val) { return Mathf.Lerp(start, end, val); }
 
         private static float spring(float start, float end, float val)
         {
@@ -2563,6 +2533,7 @@ namespace Pancake.UI
                 s *= (1.525f);
                 return end / 2 * (val * val * (((s) + 1) * val - s)) + start;
             }
+
             val -= 2;
             s *= (1.525f);
             return end / 2 * ((val) * val * (((s) + 1) * val + s) + 2) + start;
@@ -2590,6 +2561,7 @@ namespace Pancake.UI
             {
                 s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
             }
+
             val = val - 1;
             return -(a * Mathf.Pow(2, 10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p)) + start;
         }
@@ -2650,6 +2622,7 @@ namespace Pancake.UI
                 val = val - 1;
                 return -0.5f * (a * Mathf.Pow(2, 10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p)) + start;
             }
+
             val = val - 1;
             return a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
         }

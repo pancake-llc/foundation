@@ -1,5 +1,3 @@
-
-
 namespace Pancake.Tracking
 {
     using UnityEngine;
@@ -11,8 +9,7 @@ namespace Pancake.Tracking
     public class ScriptableFirebaseTwoParamTracking : ScriptableTracking
     {
         [Space] [SerializeField] private string eventName;
-        [Space, Header("Params")]
-        [SerializeField] private string paramName1;
+        [Space, Header("Params")] [SerializeField] private string paramName1;
         [SerializeField] private string paramName2;
 
         public override void Track() { throw new System.NotImplementedException(); }

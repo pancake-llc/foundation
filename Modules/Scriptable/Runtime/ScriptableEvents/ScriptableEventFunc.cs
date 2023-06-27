@@ -19,7 +19,7 @@ namespace Pancake.Scriptable
         private Func<T, TResult> _onRaised;
 
         public override Type GetGenericType => typeof(T);
-        
+
         public event Func<T, TResult> OnRaised
         {
             add

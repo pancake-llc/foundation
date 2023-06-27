@@ -13,7 +13,7 @@ namespace Pancake.Scriptable
             public virtual ScriptableEventFunc<TV, TR> ScriptableEvent { get; }
             public virtual UnityEvent<TV> Response { get; }
         }
-        
+
         protected virtual EventResponse<T, TRsult>[] EventResponses { get; }
 
         private readonly Dictionary<ScriptableEventFunc<T, TRsult>, UnityEvent<T>> _dictionary = new Dictionary<ScriptableEventFunc<T, TRsult>, UnityEvent<T>>();
@@ -86,5 +86,4 @@ namespace Pancake.Scriptable
             }
         }
     }
-
 }

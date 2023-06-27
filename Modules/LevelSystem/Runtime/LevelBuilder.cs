@@ -78,9 +78,7 @@ namespace Pancake.LevelSystemEditor
         {
             if (!LevelHelper.IsValid(setting))
             {
-                EditorUtility.DisplayDialog("Warning",
-                    "Please check the setting file.\nYou have to specify not null prefabs with a valid ID or units is empty",
-                    "Ok");
+                EditorUtility.DisplayDialog("Warning", "Please check the setting file.\nYou have to specify not null prefabs with a valid ID or units is empty", "Ok");
                 return;
             }
 
@@ -153,10 +151,7 @@ namespace Pancake.LevelSystemEditor
         /// how many levels are already built in the files?
         /// </summary>
         /// <returns></returns>
-        public int GetLevelCount()
-        {
-            return setting != null ? LevelReader.GetLevelCount(setting) : 0;
-        }
+        public int GetLevelCount() { return setting != null ? LevelReader.GetLevelCount(setting) : 0; }
 
         private LevelNode CreateLevelNode(bool warningMessage = false)
         {

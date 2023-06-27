@@ -11,7 +11,9 @@ namespace Pancake.Sound
     [EditorIcon("script_mono")]
     public sealed class AudioComponent : GameComponent
     {
-        [Header("Sound definition")] [SerializeField, Label("Audio")] private Audio au;
+        [Header("Sound definition")] [SerializeField, Label("Audio")]
+        private Audio au;
+
         [SerializeField] private bool playOnStart;
 
         [Header("Configuration")] [SerializeField] private AudioPlayEvent audioPlayChannel;

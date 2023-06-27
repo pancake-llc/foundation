@@ -68,7 +68,7 @@ namespace Pancake.LevelSystem
             {
                 levelListCallback.Remove(action);
                 action();
-            }            
+            }
 
             IsLoaded = true;
             levelListCallback.isLevelLoaded = IsLoaded;

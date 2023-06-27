@@ -34,7 +34,7 @@ namespace Pancake.Monetization
             return false;
 #endif
         }
-        
+
         public override AdUnitVariable Show()
         {
             ResetChainCallback();
@@ -111,7 +111,7 @@ namespace Pancake.Monetization
 
         private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref failedToLoadCallback); }
 #endif
-        
+
 #if UNITY_EDITOR
         [UnityEngine.ContextMenu("Copy Default Test Id")]
         protected void FillDefaultTestId()

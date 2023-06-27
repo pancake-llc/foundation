@@ -18,8 +18,10 @@ namespace Pancake.LevelSystem
     public class LevelSystemSetting : ScriptableObject
     {
         [SerializeField] private string fileName = "level_container";
-        [Message("Please right click on Id field and do recreate id when adding element to units array")]
-        [SerializeField, Range(1, 100)] private int levelPerFile = 30;
+
+        [Message("Please right click on Id field and do recreate id when adding element to units array")] [SerializeField, Range(1, 100)]
+        private int levelPerFile = 30;
+
         [SerializeField, Array] private LevelUnit[] units;
 
         public string FileName => fileName;

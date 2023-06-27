@@ -15,7 +15,7 @@ namespace Pancake.Linq
         {
             long max = ((long) start) + count - 1;
             if (count < 0 || max > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(count));
-            
+
             int[] result = new int[count];
             for (int i = 0; i < result.Length; i++)
             {

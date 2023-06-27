@@ -15,7 +15,7 @@ namespace Pancake.Sound
         }
 
         public AudioHandle Get(Audio audio) { return new AudioHandle(_nextUniqueKey++, audio); }
-        
+
         public bool Get(AudioHandle key, out SoundEmitter[] emitter)
         {
             int index = _keys.FindIndex(x => x == key);

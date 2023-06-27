@@ -19,14 +19,13 @@ namespace Pancake.ScriptableEditor
             return fieldName;
         }
 
-        protected override void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label,
-            Object targetObject)
+        protected override void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
         {
             if (_serializedObject == null || _serializedObject.targetObject != targetObject)
                 _serializedObject = new SerializedObject(targetObject);
 
             _serializedObject.UpdateIfRequiredOrScript();
-            base.DrawUnExpanded(position,property,label,targetObject);
+            base.DrawUnExpanded(position, property, label, targetObject);
             _serializedObject.ApplyModifiedProperties();
         }
 
@@ -37,10 +36,10 @@ namespace Pancake.ScriptableEditor
             var genericType = _scriptableVariable.GetGenericType;
             if (!EditorExtend.IsSerializable(genericType))
             {
-                EditorExtend.DrawSerializationError(genericType,position);
+                EditorExtend.DrawSerializationError(genericType, position);
                 return;
             }
-            
+
             var value = _serializedObject.FindProperty("value");
             EditorGUI.PropertyField(position, value, GUIContent.none);
         }

@@ -56,7 +56,7 @@ namespace Pancake.Linq
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (projection == null) throw new ArgumentNullException(nameof(projection));
-            if (equalityComparer== null) throw new ArgumentNullException(nameof(equalityComparer));
+            if (equalityComparer == null) throw new ArgumentNullException(nameof(equalityComparer));
 
             return DistinctIterator(source, projection, equalityComparer);
         }

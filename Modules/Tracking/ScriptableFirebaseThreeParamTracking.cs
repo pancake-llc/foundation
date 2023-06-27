@@ -11,8 +11,7 @@ namespace Pancake.Tracking
     public class ScriptableFirebaseThreeParamTracking : ScriptableTracking
     {
         [Space] [SerializeField] private string eventName;
-        [Space, Header("Params")]
-        [SerializeField] private string paramName1;
+        [Space, Header("Params")] [SerializeField] private string paramName1;
         [SerializeField] private string paramName2;
         [SerializeField] private string paramName3;
 

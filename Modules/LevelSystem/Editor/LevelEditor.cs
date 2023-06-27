@@ -354,11 +354,13 @@ namespace Pancake.LevelSystemEditor
                         _blackScrollPosition = GUILayout.BeginScrollView(_blackScrollPosition, false, false, GUILayout.Height(250));
                         foreach (string t in LevelSystemEditorSetting.Instance.blacklistPaths.ToList())
                         {
-                            DrawRow(t, width, _ =>
-                            {
-                                LevelSystemEditorSetting.Instance.blacklistPaths.Remove(_);
-                                SaveLevelSystemSetting();
-                            });
+                            DrawRow(t,
+                                width,
+                                _ =>
+                                {
+                                    LevelSystemEditorSetting.Instance.blacklistPaths.Remove(_);
+                                    SaveLevelSystemSetting();
+                                });
                         }
 
                         GUILayout.EndScrollView();
