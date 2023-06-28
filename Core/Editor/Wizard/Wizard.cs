@@ -12,8 +12,9 @@ namespace PancakeEditor
         private enum WizardType
         {
             All,
-            Monetize,
-            Tracking,
+            Money,
+            Track,
+            Setting,
             Utilities
         }
 
@@ -35,6 +36,7 @@ namespace PancakeEditor
             IOS14AdvertisingSupport,
             ParticleEffectForUGUI,
             UIEffect,
+            BTag,
         }
 
         private enum WizardMonetizeType
@@ -57,11 +59,16 @@ namespace PancakeEditor
             InAppReview = WizardAllType.InAppReview,
             NeedleConsole = WizardAllType.NeedleConsole,
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
-            Scriptable = WizardAllType.Scriptable,
-            HeartConfig = WizardAllType.HeartSetting,
             ParticleEffectForUGUI = WizardAllType.ParticleEffectForUGUI,
             UIEffect = WizardAllType.UIEffect,
-            LevelSystem = WizardAllType.LevelSystem
+        }
+
+        private enum WizardSettingType
+        {
+            HeartConfig = WizardAllType.HeartSetting,
+            Scriptable = WizardAllType.Scriptable,
+            LevelSystem = WizardAllType.LevelSystem,
+            BTag = WizardAllType.BTag
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -70,15 +77,11 @@ namespace PancakeEditor
         private WizardType _currentType = WizardType.All;
         private WizardAllType _selectedItemType = WizardAllType.None;
 
-        private readonly Color[] _colors = {Color.gray, Color.blue, Color.green, Color.yellow};
+        private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
         private const float TAB_WIDTH = 65f;
-        private const float BUTTON_HEIGHT = 40f;
 
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
-
-        public static bool buildFetchSettingFlag;
-
 
         [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show()
@@ -99,7 +102,6 @@ namespace PancakeEditor
             SelectTab((int) _currentType, true);
             isInitialized = true;
             SessionState.SetBool("advertising_flag", false);
-            buildFetchSettingFlag = false;
         }
 
         protected override void OnGUI()
@@ -170,16 +172,16 @@ namespace PancakeEditor
         {
             switch (_selectedItemType)
             {
-                case WizardAllType.Advertisement when _currentType is WizardType.Monetize or WizardType.All:
+                case WizardAllType.Advertisement when _currentType is WizardType.Money or WizardType.All:
                     MonetizeAdvertisingDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.InAppPurchase when _currentType is WizardType.Monetize or WizardType.All:
+                case WizardAllType.InAppPurchase when _currentType is WizardType.Money or WizardType.All:
                     MonetizeIAPDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Firebase when _currentType is WizardType.Tracking or WizardType.All:
+                case WizardAllType.Firebase when _currentType is WizardType.Track or WizardType.All:
                     TrackingFirebaseDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Adjust when _currentType is WizardType.Tracking or WizardType.All:
+                case WizardAllType.Adjust when _currentType is WizardType.Track or WizardType.All:
                     TrackingAdjustDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Tween when _currentType is WizardType.Utilities or WizardType.All:
@@ -197,13 +199,13 @@ namespace PancakeEditor
                 case WizardAllType.SelectiveProfiling when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesSelectiveProfilingDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.HeartSetting when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.HeartSetting when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesHeartSettingDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Tracking or WizardType.All:
+                case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Track or WizardType.All:
                     TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Scriptable when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.Scriptable when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesScriptableDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.ParticleEffectForUGUI when _currentType is WizardType.Utilities or WizardType.All:
@@ -212,8 +214,11 @@ namespace PancakeEditor
                 case WizardAllType.UIEffect when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesUIEffectDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.LevelSystem when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesLevelSystemDrawer.OnInspectorGUI(position);
+                    break;
+                case WizardAllType.BTag when _currentType is WizardType.Setting or WizardType.All:
+                    UtilitiesBTagDrawer.OnInspectorGUI();
                     break;
             }
         }
@@ -247,11 +252,14 @@ namespace PancakeEditor
                     _items.AddRange(System.Enum.GetValues(typeof(WizardAllType)).Cast<int>());
                     _items.Remove(-1); // remove None
                     break;
-                case WizardType.Monetize:
+                case WizardType.Money:
                     _items.AddRange(System.Enum.GetValues(typeof(WizardMonetizeType)).Cast<int>());
                     break;
-                case WizardType.Tracking:
+                case WizardType.Track:
                     _items.AddRange(System.Enum.GetValues(typeof(WizardTrackingType)).Cast<int>());
+                    break;
+                case WizardType.Setting:
+                    _items.AddRange(System.Enum.GetValues(typeof(WizardSettingType)).Cast<int>());
                     break;
                 case WizardType.Utilities:
                     _items.AddRange(System.Enum.GetValues(typeof(WizardUtilitiesType)).Cast<int>());
@@ -284,6 +292,7 @@ namespace PancakeEditor
                 case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
                 case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
+                case WizardAllType.BTag: return EditorResources.ScriptableEditorSetting;
                 default:
                     return null;
             }

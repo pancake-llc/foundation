@@ -7,9 +7,6 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.Reflection;
-#if ODIN_INSPECTOR
-using Sirenix.OdinInspector.Editor;
-#endif
 
 #endif
 
@@ -118,37 +115,6 @@ namespace Pancake.Sensor
                 return enm.Current;
             }
         }
-
-#if ODIN_INSPECTOR
-        /* An alternative implementation for Odin Inspector. The Unity drawer above has some
-         * issues when using Odin.
-         */
-        public class ObservableOdinDrawer<T> : OdinValueDrawer<T> where T : Observable {
-
-            protected override void DrawPropertyLayout(GUIContent label) {
-                var obs = ValueEntry.SmartValue;
-
-                obs.OnBeginGui();
-
-                var val = ValueEntry.Property.FindChild(
-                    delegate (InspectorProperty obj) { return obj.Name == obs.ValuePropName; },
-                    false);
-
-                EditorGUI.BeginChangeCheck();
-
-                if (val != null) {
-                    val.Draw(label);
-                } else {
-                    CallNextDrawer(label);
-                }
-
-                if (EditorGUI.EndChangeCheck()) {
-                    ValueEntry.Property.Tree.ApplyChanges();
-                    obs.OnValidate();
-                }
-            }
-        }
-#endif
 #endif
     }
 }
