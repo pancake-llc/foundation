@@ -1,11 +1,11 @@
-﻿using Pancake.BTag;
+﻿using Pancake.Tag;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.BTagEditor
+namespace Pancake.TagEditor
 {
-    [CustomPropertyDrawer(typeof(BTag.BTag.TagQueryWithTarget), true)]
-    public class TagQueryWithTargetDrawer : BTagPropertyDrawerBase<BTagGroupBase, TagQuery>
+    [CustomPropertyDrawer(typeof(TagStatic.TagQueryWithTarget), true)]
+    public class TagQueryWithTargetDrawer : TagPropertyDrawerBase<TagGroupBase, TagQuery>
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent lbl)
         {
@@ -18,7 +18,7 @@ namespace Pancake.BTagEditor
             position.width = actionWidth - 5f;
 
             var actionProp = property.FindPropertyRelative("target");
-            actionProp.enumValueIndex = (int) (BTag.BTag.Search) EditorGUI.EnumPopup(position, (BTag.BTag.Search) actionProp.enumValueIndex);
+            actionProp.enumValueIndex = (int) (TagStatic.Search) EditorGUI.EnumPopup(position, (TagStatic.Search) actionProp.enumValueIndex);
 
             EditorGUI.EndProperty();
         }

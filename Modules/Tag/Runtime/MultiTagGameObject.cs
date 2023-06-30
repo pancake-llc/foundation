@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace Pancake.BTag
+namespace Pancake.Tag
 {
     [EditorIcon("tag_icon")]
     public class MultiTagGameObject : MonoBehaviour, ITaggedGameObject
@@ -20,13 +20,13 @@ namespace Pancake.BTag
             RegisterTags();
         }
 
-        bool initialized = false;
+        private bool initialized = false;
 
-        void Awake()
+        private void Awake()
         {
             if (!initialized)
             {
-                BTag.AwakeComplete = false;
+                TagStatic.AwakeComplete = false;
                 Init();
             }
         }
@@ -36,7 +36,7 @@ namespace Pancake.BTag
             if (!initialized) RegisterTags();
         }
 
-        void RegisterTags()
+        private void RegisterTags()
         {
             if (tags == null) return;
             initialized = Application.isPlaying;
@@ -45,7 +45,7 @@ namespace Pancake.BTag
                 var tag = tags[t];
                 // If the tag is set to default / empty then don't tag this GameObject
                 if (tag == null || tag.IsDefault) continue;
-                BTag.Register(gameObject, tag);
+                TagStatic.Register(gameObject, tag);
             }
         }
 
@@ -55,25 +55,25 @@ namespace Pancake.BTag
             for (int t = 0; t < tags.Length; ++t)
             {
                 if (tags[t] == null || tags[t].IsDefault) continue;
-                BTag.Unregister(gameObject, tags[t]);
+                TagStatic.Unregister(gameObject, tags[t]);
             }
         }
 
-        void Start()
+        private void Start()
         {
-            BTag.AwakeComplete = true;
+            TagStatic.AwakeComplete = true;
             if (tags == null) return;
             for (int t = 0; t < tags.Length; ++t)
             {
-                triggerOnStart = TagGameObjectMasterUpdate.AddIfListening(this, tags[t]?.OnGameObjectStart);
+                triggerOnStart = TagGameObjectComponent.AddIfListening(this, tags[t]?.OnGameObjectStart);
                 if (triggerOnStart) break;
             }
 
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Start);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Start);
         }
 
         // Invoke in LateUpdate, giving user scripts an opportunity to Awake/Enable
-        bool triggerOnStart = false;
+        private bool triggerOnStart = false;
 
         internal void TriggerOnStart()
         {
@@ -86,18 +86,18 @@ namespace Pancake.BTag
         }
 
         // Invoke in LateUpdate, giving user scripts an opportunity to Awake/Enable
-        bool triggerOnEnable = false;
+        private bool triggerOnEnable = false;
 
-        void OnEnable()
+        private void OnEnable()
         {
             if (tags == null) return;
             for (int t = 0; t < tags.Length; ++t)
             {
-                triggerOnEnable = TagGameObjectMasterUpdate.AddIfListening(this, tags[t]?.OnGameObjectEnabled);
+                triggerOnEnable = TagGameObjectComponent.AddIfListening(this, tags[t]?.OnGameObjectEnabled);
                 if (triggerOnEnable) break;
             }
 
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Enabled);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Enabled);
         }
 
         internal void TriggerOnEnable()
@@ -116,7 +116,7 @@ namespace Pancake.BTag
             if (triggerOnStart) TriggerOnStart();
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             if (tags == null) return;
             for (int t = 0; t < tags.Length; ++t)
@@ -124,23 +124,23 @@ namespace Pancake.BTag
                 tags[t].OnGameObjectDisabled?.Invoke(gameObject);
             }
 
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Disabled);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Disabled);
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Destroyed);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Destroyed);
             if (tags != null)
             {
                 for (int t = 0; t < tags.Length; ++t)
                 {
                     if (tags[t] == null || tags[t].IsDefault) continue;
                     tags[t].OnGameObjectDestroyed?.Invoke(gameObject);
-                    BTag.Unregister(gameObject, tags[t]);
+                    TagStatic.Unregister(gameObject, tags[t]);
                 }
             }
 
-            TagGameObjectMasterUpdate.RemoveIfListening(this);
+            TagGameObjectComponent.RemoveIfListening(this);
         }
     }
 }

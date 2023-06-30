@@ -3,11 +3,11 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.BTag
+namespace Pancake.Tag
 {
-    [CreateAssetMenu(fileName = "Tag", menuName = "Pancake/BTag/Tag")]
+    [CreateAssetMenu(fileName = "Tag", menuName = "Pancake/Scriptable Tag/Tag")]
     [EditorIcon("scriptable_tag")]
-    public class Tag : ScriptableBTag
+    public class Tag : ScriptableTag
     {
         public Action<GameObject> OnGameObjectStart;
         public Action<GameObject> OnGameObjectEnabled;
@@ -36,6 +36,6 @@ namespace Pancake.BTag
             OnGameObjectDestroyed = null;
         }
 
-        public static implicit operator Tag(string tagName) => BTag.ByName(tagName);
+        public static implicit operator Tag(string tagName) => TagStatic.ByName(tagName);
     }
 }

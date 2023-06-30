@@ -1,11 +1,11 @@
-﻿using Pancake.BTag;
+﻿using Pancake.Tag;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.BTagEditor
+namespace Pancake.TagEditor
 {
     [CustomPropertyDrawer(typeof(TagQuery), true)]
-    public class TagQueryDrawer : BTagPropertyDrawerBase<BTagGroupBase, TagQuery>
+    public class TagQueryDrawer : TagPropertyDrawerBase<TagGroupBase, TagQuery>
     {
         public TagQueryDrawer() { defaultLabel = "- None -"; }
 

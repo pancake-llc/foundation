@@ -1,13 +1,13 @@
-﻿using Pancake.BTag;
+﻿using Pancake.Tag;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Pancake.BTagEditor
+namespace Pancake.TagEditor
 {
     [CustomEditor(typeof(TagGameObject), true)]
     [CanEditMultipleObjects]
-    public class BTagGameObjectEditor : Editor
+    public class TagGameObjectEditor : Editor
     {
         public override VisualElement CreateInspectorGUI()
         {

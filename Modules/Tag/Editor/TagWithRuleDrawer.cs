@@ -1,11 +1,11 @@
-﻿using Pancake.BTag;
+﻿using Pancake.Tag;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.BTagEditor
+namespace Pancake.TagEditor
 {
-    [CustomPropertyDrawer(typeof(BTag.BTag.TagWithRule), true)]
-    public class TagWithRuleDrawer : BTagPropertyDrawerBase
+    [CustomPropertyDrawer(typeof(TagStatic.TagWithRule), true)]
+    public class TagWithRuleDrawer : TagPropertyDrawerBase
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent lbl)
         {

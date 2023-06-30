@@ -1,0 +1,16 @@
+{
+    "name": "Pancake.Tag",
+    "rootNamespace": "",
+    "references": [
+        "GUID:adac8d59ad7e8504f82d387cded797a7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

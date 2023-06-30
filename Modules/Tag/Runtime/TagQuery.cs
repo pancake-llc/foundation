@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-namespace Pancake.BTag
+namespace Pancake.Tag
 {
-    [CreateAssetMenu(fileName = "TagQuery", menuName = "Pancake/BTag/Tag Query")]
-    public class TagQuery : ScriptableBTag
+    [CreateAssetMenu(fileName = "TagQuery", menuName = "Pancake/Tag/Tag Query")]
+    public class TagQuery : ScriptableTag
     {
-        public BTag.TagWithRule[] matchingTags;
-        public BTag.TagQueryWithTarget[] subQueries;
+        public TagStatic.TagWithRule[] matchingTags;
+        public TagStatic.TagQueryWithTarget[] subQueries;
     }
 }

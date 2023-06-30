@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Template name="TagMenuItemUI" src="TagMenuItemUI.uxml"/>
+    <ui:VisualElement style="display: none;">
+        <Style src="TagMenuItemUI.uss"/>
+        <ui:Foldout text="Foldout" class="ct-main">
+            <ui:Instance template="TagMenuItemUI" name="TagMenuItemUI"/>
+            <ui:Foldout text="Foldout">
+                <ui:Instance template="TagMenuItemUI" name="TagMenuItemUI"/>
+                <ui:Instance template="TagMenuItemUI" name="TagMenuItemUI"/>
+            </ui:Foldout>
+            <ui:Instance template="TagMenuItemUI" name="TagMenuItemUI"/>
+        </ui:Foldout>
+    </ui:VisualElement>
+    <uie:ToolbarSearchField focusable="True" style="width: auto; margin-right: 4px;">
+        <Style src="TagMenuItemUI.uss"/>
+    </uie:ToolbarSearchField>
+    <ui:ScrollView mode="Vertical" show-vertical-scroller="true" style="padding-right: 3px; padding-left: 1px; min-height: 180px;">
+        <Style src="TagMenuItemUI.uss"/>
+    </ui:ScrollView>
+</ui:UXML>

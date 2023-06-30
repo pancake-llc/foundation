@@ -1,9 +1,6 @@
-﻿using UnityEngine;
-
-namespace Pancake.BTag
+﻿namespace Pancake.Tag
 {
-    [CreateAssetMenu(fileName = "TagGroup", menuName = "Pancake/BTag/Tag Group")]
-    public class TagGroup : BTagGroup<Tag>
+    public class TagGroup : TagGroup<ScriptableTag>
     {
     }
 }

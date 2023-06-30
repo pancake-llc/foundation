@@ -1,11 +1,11 @@
-﻿using Pancake.BTag;
+﻿using Pancake.Tag;
 using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Pancake.BTagEditor
+namespace Pancake.TagEditor
 {
     //[CustomEditor(typeof(TagQuery), true)]
     public class TagQueryEditor : Editor
@@ -41,8 +41,8 @@ namespace Pancake.BTagEditor
             }
 
 
-            queryUI = ProjectDatabase.FindAssetWithPath<VisualTreeAsset>("BTagQueryUI.uxml", BTagEditorUtils.RELATIVE_PATH);
-            queryTagUI = ProjectDatabase.FindAssetWithPath<VisualTreeAsset>("BTagQueryTagUI.uxml", BTagEditorUtils.RELATIVE_PATH);
+            queryUI = ProjectDatabase.FindAssetWithPath<VisualTreeAsset>("TagQueryUI.uxml", TagEditorUtils.RELATIVE_PATH);
+            queryTagUI = ProjectDatabase.FindAssetWithPath<VisualTreeAsset>("TagQueryTagUI.uxml", TagEditorUtils.RELATIVE_PATH);
             var uxmlInstance = queryUI.CloneTree();
             uxmlInstance.style.flexGrow = 1f;
             root.Add(uxmlInstance);
@@ -313,7 +313,7 @@ namespace Pancake.BTagEditor
         {
             serializedObject.Update();
             Undo.RegisterCompleteObjectUndo(target, "Add Tag");
-            var defaultTag = BTagPropertyDrawerBase<BTagGroupBase, Tag>.FindDefault();
+            var defaultTag = TagPropertyDrawerBase<TagGroupBase, Tag.Tag>.FindDefault();
 
             var numEntries = serializedObject.FindProperty("matchingTags").arraySize;
             serializedObject.FindProperty("matchingTags").arraySize = numEntries + 1;

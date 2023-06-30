@@ -4,7 +4,7 @@ using System.Linq;
 using System;
 using UnityEditor;
 
-namespace Pancake.BTag
+namespace Pancake.Tag
 {
     [EditorIcon("tag_icon")]
     public class TagGameObject : MonoBehaviour, ITaggedGameObject
@@ -17,24 +17,24 @@ namespace Pancake.BTag
         public void SetTag(Tag newTag)
         {
             if (newTag == tag) return;
-            if (tag != null && !tag.IsDefault) BTag.Unregister(gameObject, tag);
+            if (tag != null && !tag.IsDefault) TagStatic.Unregister(gameObject, tag);
             tag = newTag;
-            if (tag != null && !tag.IsDefault) BTag.Register(gameObject, tag);
+            if (tag != null && !tag.IsDefault) TagStatic.Register(gameObject, tag);
             initialized = Application.isPlaying;
         }
 
         public string TagLabel() => (tag == null ? "None" : tag.name);
 
 
-        bool initialized = false;
+        private bool initialized = false;
 
-        void Awake()
+        private void Awake()
         {
-            TagGameObjectMasterUpdate.Init();
+            TagGameObjectComponent.Init();
             //SetTag could have been called before awake
             if (!initialized)
             {
-                BTag.AwakeComplete = false;
+                TagStatic.AwakeComplete = false;
                 Init();
             }
         }
@@ -46,18 +46,18 @@ namespace Pancake.BTag
             initialized = Application.isPlaying;
             // If the tag is set to default / empty then don't tag this GameObject
             if (tag == null || tag.IsDefault) return;
-            BTag.Register(gameObject, tag);
+            TagStatic.Register(gameObject, tag);
         }
 
-        void Start()
+        private void Start()
         {
-            BTag.AwakeComplete = true;
-            triggerOnStart = TagGameObjectMasterUpdate.AddIfListening(this, tag?.OnGameObjectStart);
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Start);
+            TagStatic.AwakeComplete = true;
+            triggerOnStart = TagGameObjectComponent.AddIfListening(this, tag?.OnGameObjectStart);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Start);
         }
 
         // Invoke in LateUpdate, giving user scripts an opportunity to Awake/Enable
-        bool triggerOnStart = false;
+        private bool triggerOnStart = false;
 
         internal void TriggerOnStart()
         {
@@ -66,12 +66,12 @@ namespace Pancake.BTag
         }
 
         // Invoke in LateUpdate, giving user scripts an opportunity to Awake/Enable
-        bool triggerOnEnable = false;
+        private bool triggerOnEnable = false;
 
-        void OnEnable()
+        private void OnEnable()
         {
-            triggerOnEnable = TagGameObjectMasterUpdate.AddIfListening(this, tag?.OnGameObjectEnabled);
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Enabled);
+            triggerOnEnable = TagGameObjectComponent.AddIfListening(this, tag?.OnGameObjectEnabled);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Enabled);
         }
 
         internal void TriggerOnEnable()
@@ -86,23 +86,23 @@ namespace Pancake.BTag
             if (triggerOnStart) TriggerOnStart();
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             if (tag != null) tag.OnGameObjectDisabled?.Invoke(gameObject);
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Disabled);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Disabled);
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
-            if (BTag.HasGlobalListeners) BTag.CheckGlobalQueries(transform, BTag.GOEventType.Destroyed);
+            if (TagStatic.HasGlobalListeners) TagStatic.CheckGlobalQueries(transform, TagStatic.GOEventType.Destroyed);
             if (tag != null)
             {
                 tag.OnGameObjectDestroyed?.Invoke(gameObject);
                 // When this GameObject is destroyed, remove its reference from the lookup list
-                BTag.Unregister(gameObject, tag);
+                TagStatic.Unregister(gameObject, tag);
             }
 
-            TagGameObjectMasterUpdate.RemoveIfListening(this);
+            TagGameObjectComponent.RemoveIfListening(this);
         }
     }
 }
