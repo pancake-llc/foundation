@@ -36,7 +36,6 @@ namespace PancakeEditor
             IOS14AdvertisingSupport,
             ParticleEffectForUGUI,
             UIEffect,
-            Tag,
         }
 
         private enum WizardMonetizeType
@@ -68,7 +67,6 @@ namespace PancakeEditor
             HeartConfig = WizardAllType.HeartSetting,
             Scriptable = WizardAllType.Scriptable,
             LevelSystem = WizardAllType.LevelSystem,
-            Tag = WizardAllType.Tag
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -217,9 +215,6 @@ namespace PancakeEditor
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesLevelSystemDrawer.OnInspectorGUI(position);
                     break;
-                case WizardAllType.Tag when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesTagDrawer.OnInspectorGUI();
-                    break;
             }
         }
 
@@ -292,7 +287,6 @@ namespace PancakeEditor
                 case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
                 case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
-                case WizardAllType.Tag: return EditorResources.ScriptableEditorSetting;
                 default:
                     return null;
             }
