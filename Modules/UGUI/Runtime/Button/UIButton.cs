@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Threading;
 using Pancake.Sound;
 using Pancake.Threading.Tasks;
 using Pancake.Tween;
@@ -37,7 +38,7 @@ namespace Pancake.UI
         #region Property
 
         [SerializeField] private EButtonClickType clickType = EButtonClickType.OnlySingleClick;
-        [SerializeField] private bool allowMultipleClick = true; // if true, button can spam clicked and it not get disabled
+        [SerializeField] private bool allowMultipleClick; // if true, button can spam clicked and it not get disabled
         [SerializeField] private float timeDisableButton = DOUBLE_CLICK_TIME_INTERVAL; // time disable button when not multiple click
         [Range(0.05f, 1f)] [SerializeField] private float doubleClickInterval = DOUBLE_CLICK_TIME_INTERVAL; // time detected double click
         [Range(0.1f, 10f)] [SerializeField] private float longClickInterval = LONG_CLICK_TIME_INTERVAL; // time detected long click
@@ -72,6 +73,7 @@ namespace Pancake.UI
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
         private Tween.Tween _tweenUp;
         private Tween.Tween _tweenDown;
+        private CancellationTokenSource _tokenSource;
 
         #endregion
 
@@ -110,6 +112,7 @@ namespace Pancake.UI
         protected override void Awake()
         {
             base.Awake();
+            _tokenSource = new CancellationTokenSource();
             DefaultScale = AffectObject.localScale;
             onClick.AddListener(PlaySound);
         }
@@ -153,6 +156,7 @@ namespace Pancake.UI
             base.OnDestroy();
             if (_tweenUp != null && _tweenUp.IsRunning()) _tweenUp.Stop();
             if (_tweenDown != null && _tweenDown.IsRunning()) _tweenDown.Stop();
+            _tokenSource?.Cancel();
         }
 
         #region Overrides of Button
@@ -493,11 +497,19 @@ namespace Pancake.UI
                     break;
                 case EButtonMotion.Normal:
                     _isCompletePhaseUp = false;
+                    try
+                    {
+                        await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+
                     _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration)
                         .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseUp = true)
                         .Play();
-                    await UniTask.WaitUntil(() => _isCompletePhaseUp);
                     break;
                 case EButtonMotion.Uniform:
                     break;
@@ -509,12 +521,20 @@ namespace Pancake.UI
                         .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
-                    await UniTask.WaitUntil(() => _isCompletePhaseDown);
+                    try
+                    {
+                        await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+
                     _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration)
                         .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseUp = true)
                         .Play();
-                    await UniTask.WaitUntil(() => _isCompletePhaseUp);
+
                     break;
             }
         }
@@ -537,7 +557,6 @@ namespace Pancake.UI
                         .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
-                    await UniTask.WaitUntil(() => _isCompletePhaseDown);
                     break;
                 case EButtonMotion.Uniform:
                     _isCompletePhaseUp = false;
@@ -546,12 +565,19 @@ namespace Pancake.UI
                         .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseDown = true)
                         .Play();
-                    await UniTask.WaitUntil(() => _isCompletePhaseDown);
+                    try
+                    {
+                        await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+
                     _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration)
                         .SetEase((Ease) motionData.ease)
                         .OnComplete(() => _isCompletePhaseUp = true)
                         .Play();
-                    await UniTask.WaitUntil(() => _isCompletePhaseUp);
                     break;
                 case EButtonMotion.Late:
                     break;
