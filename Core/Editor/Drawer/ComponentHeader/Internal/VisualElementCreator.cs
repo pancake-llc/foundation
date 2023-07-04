@@ -33,14 +33,14 @@ namespace PancakeEditor.ComponentHeader
         {
             ComponentUtility.CopyComponent(component);
             Debug.Log($"Copied! '{component.GetType().Name}'");
-            DebugEditor.Toast("Copied!");
+            TooltipWindow.Show("Copied!");
         }
 
         private static void PasteComponentValues(Component component)
         {
             ComponentUtility.PasteComponentValues(component);
             Debug.Log($"Pasted! '{component.GetType().Name}'");
-            DebugEditor.Toast("Pasted!");
+            TooltipWindow.Show("Pasted!");
         }
 
         private sealed class ImageCreator
