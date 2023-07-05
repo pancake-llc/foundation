@@ -7,7 +7,7 @@ namespace Pancake.Sound
     //TODO: Check which settings we really need at this level
     [Searchable]
     [EditorIcon("scriptable_sfx")]
-    [CreateAssetMenu(fileName = "AudioConfig", menuName = "Pancake/Sound/AudioConfig")]
+    [CreateAssetMenu(fileName = "AudioConfig", menuName = "Pancake/Sound/Audio Config")]
     public class AudioConfig : ScriptableObject
     {
         private enum PriorityLevel

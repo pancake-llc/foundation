@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_bool.asset", menuName = "Pancake/Scriptable/ScriptableVariables/bool")]
+    [CreateAssetMenu(fileName = "scriptable_variable_bool.asset", menuName = "Pancake/Scriptable/Variables/bool")]
     [System.Serializable]
     [EditorIcon("scriptable_variable")]
     public class BoolVariable : ScriptableVariable<bool>

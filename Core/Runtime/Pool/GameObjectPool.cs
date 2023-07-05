@@ -7,7 +7,7 @@ namespace Pancake
     /// </summary>
     [Searchable]
     [EditorIcon("script_pool")]
-    [CreateAssetMenu(fileName = "GameOjectPool", menuName = "Pancake/Misc/GameObject Pool")]
+    [CreateAssetMenu(fileName = "GameOjectPool", menuName = "Pancake/Misc/Game Object Pool")]
     public class GameObjectPool : ScriptablePool<GameObject>
     {
         [SerializeField] private GameObjectFactory factory;

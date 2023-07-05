@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_vector2.asset", menuName = "Pancake/Scriptable/ScriptableVariables/vector2")]
+    [CreateAssetMenu(fileName = "scriptable_variable_vector2.asset", menuName = "Pancake/Scriptable/Variables/vector2")]
     [EditorIcon("scriptable_variable")]
     public class Vector2Variable : ScriptableVariable<Vector2>
     {

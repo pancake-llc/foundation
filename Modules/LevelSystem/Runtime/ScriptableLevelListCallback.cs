@@ -5,7 +5,7 @@ namespace Pancake.LevelSystem
 {
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "scriptable_level_list_callback.asset", menuName = "Pancake/Scriptable/ScriptableLists/Level Callback")]
+    [CreateAssetMenu(fileName = "scriptable_level_list_callback.asset", menuName = "Pancake/Scriptable/Lists/level callback")]
     [EditorIcon("scriptable_list")]
     public class ScriptableLevelListCallback : ScriptableList<Action>
     {

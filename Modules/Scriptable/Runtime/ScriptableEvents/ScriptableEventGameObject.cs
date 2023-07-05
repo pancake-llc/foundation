@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_event_gameObject.asset", menuName = "Pancake/Scriptable/ScriptableEvents/GameObject")]
+    [CreateAssetMenu(fileName = "scriptable_event_gameobject.asset", menuName = "Pancake/Scriptable/Events/gameobject")]
     [EditorIcon("scriptable_event")]
     public class ScriptableEventGameObject : ScriptableEvent<GameObject>
     {

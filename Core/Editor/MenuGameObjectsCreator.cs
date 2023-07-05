@@ -92,8 +92,6 @@ namespace PancakeEditor
             foreach (var type in TypeCache.GetTypesWithAttribute<CreateAssetMenuAttribute>().Where(t => t.GetCustomAttribute<SearchableAttribute>(true) != null))
             {
                 string name = type.GetCustomAttribute<CreateAssetMenuAttribute>().menuName;
-                int i = name.LastIndexOf('/');
-                name = (i == -1) ? name : name.Substring(0, i + 1) + type.Name;
                 typeTree.Insert(name, type, 1);
             }
 
@@ -105,7 +103,7 @@ namespace PancakeEditor
             var dropdown =
                 new SearchTypeDropdown(new AdvancedDropdownState(),
                     typeTree,
-                    (s) => { EditorApplication.ExecuteMenuItem("Assets/Create/" + s.GetCustomAttribute<CreateAssetMenuAttribute>().menuName); })
+                    s => { EditorApplication.ExecuteMenuItem("Assets/Create/" + s.GetCustomAttribute<CreateAssetMenuAttribute>().menuName); })
                 {
                     MinimumSize = new Vector2(projectBrowser.position.width - 20, projectBrowser.position.height - 80)
                 };

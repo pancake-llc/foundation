@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_color.asset", menuName = "Pancake/Scriptable/ScriptableVariables/color")]
+    [CreateAssetMenu(fileName = "scriptable_variable_color.asset", menuName = "Pancake/Scriptable/Variables/color")]
     [EditorIcon("scriptable_variable")]
     public class ColorVariable : ScriptableVariable<Color>
     {

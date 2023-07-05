@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_float.asset", menuName = "Pancake/Scriptable/ScriptableVariables/float")]
+    [CreateAssetMenu(fileName = "scriptable_variable_float.asset", menuName = "Pancake/Scriptable/Variables/float")]
     [EditorIcon("scriptable_variable")]
     public class FloatVariable : ScriptableVariable<float>
     {

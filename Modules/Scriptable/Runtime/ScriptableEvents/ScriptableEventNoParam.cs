@@ -7,16 +7,16 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_event_noParam.asset", menuName = "Pancake/Scriptable/ScriptableEvents/No Parameters")]
+    [CreateAssetMenu(fileName = "scriptable_event_noparam.asset", menuName = "Pancake/Scriptable/Events/no param")]
     [EditorIcon("scriptable_event")]
     public class ScriptableEventNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [SerializeField] private bool _debugLogEnabled = false;
+        [SerializeField] private bool debugLogEnabled;
 
         private readonly List<EventListenerNoParam> _eventListeners = new List<EventListenerNoParam>();
         private readonly List<Object> _listenersObjects = new List<Object>();
 
-        private Action _onRaised = null;
+        private Action _onRaised;
 
         public event Action OnRaised
         {
@@ -44,14 +44,14 @@ namespace Pancake.Scriptable
                 return;
 
             for (var i = _eventListeners.Count - 1; i >= 0; i--)
-                _eventListeners[i].OnEventRaised(this, _debugLogEnabled);
+                _eventListeners[i].OnEventRaised(this, debugLogEnabled);
 
             _onRaised?.Invoke();
 
 #if UNITY_EDITOR
             //As this uses reflection, I only allow it to be called in Editor.
             //If you want to display debug in builds, delete the #if UNITY_EDITOR
-            if (_debugLogEnabled)
+            if (debugLogEnabled)
                 Debug();
 #endif
         }
@@ -91,6 +91,6 @@ namespace Pancake.Scriptable
             }
         }
 
-        public override void Reset() { _debugLogEnabled = false; }
+        public override void Reset() { debugLogEnabled = false; }
     }
 }

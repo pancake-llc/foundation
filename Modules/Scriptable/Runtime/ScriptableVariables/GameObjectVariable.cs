@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_gameObject.asset", menuName = "Pancake/Scriptable/ScriptableVariables/gameObject")]
+    [CreateAssetMenu(fileName = "scriptable_variable_gameobject.asset", menuName = "Pancake/Scriptable/Variables/gameobject")]
     [EditorIcon("scriptable_variable")]
     public class GameObjectVariable : ScriptableVariable<GameObject>
     {

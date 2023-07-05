@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [CreateAssetMenu(fileName = "scriptable_variable_int.asset", menuName = "Pancake/Scriptable/ScriptableVariables/int")]
+    [CreateAssetMenu(fileName = "scriptable_variable_int.asset", menuName = "Pancake/Scriptable/Variables/int")]
     [EditorIcon("scriptable_variable")]
     public class IntVariable : ScriptableVariable<int>
     {

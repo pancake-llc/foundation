@@ -8,7 +8,7 @@ namespace Pancake.UI
 {
     [Searchable]
     [EditorIcon("scriptable_event")]
-    [CreateAssetMenu(fileName = "popup_display_chanel.asset", menuName = "Pancake/UI/PopupShowEvent")]
+    [CreateAssetMenu(fileName = "popup_display_chanel.asset", menuName = "Pancake/Misc/Popup Show Event")]
     public class PopupShowEvent : ScriptableEventBase, IDrawObjectsInInspector
     {
         private readonly List<EventListenerShowPopup> _eventListeners = new List<EventListenerShowPopup>();
