@@ -6,12 +6,15 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.IAP
 {
+    [Serializable]
     [EditorIcon("scriptable_event")]
     [CreateAssetMenu(fileName = "iap_noparam_chanel.asset", menuName = "Pancake/IAP/No Parameters Event")]
     public class ScriptableEventIAPNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {
         private readonly List<EventListenerIAPNoParam> _eventListeners = new List<EventListenerIAPNoParam>();
         private readonly List<Object> _listenersObjects = new List<Object>();
+
+        public override Type GetGenericType => typeof(ScriptableEventIAPNoParam);
 
         private Action _onRaised = null;
 
