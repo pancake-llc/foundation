@@ -1,4 +1,4 @@
-﻿#if PANCAKE_ADDRESSABLES
+﻿#if PANCAKE_ADDRESSABLE
 using System;
 using UnityEngine.AddressableAssets;
 
