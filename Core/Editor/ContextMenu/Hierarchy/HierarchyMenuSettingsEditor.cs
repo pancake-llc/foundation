@@ -34,14 +34,24 @@ namespace PancakeEditor.ContextMenu
             {
                 Undo.RecordObject(target, "Reset");
                 var settings = target as HierarchyMenuSettings;
-                settings.Reset();
+                if (settings != null)
+                {
+                    settings.Reset();
+                    EditorUtility.SetDirty(settings);
+                    AssetDatabase.SaveAssetIfDirty(settings);
+                }
             }
 
             if (GUILayout.Button("Reset To Default"))
             {
                 Undo.RecordObject(target, "Reset To Default");
                 var settings = target as HierarchyMenuSettings;
-                if (settings != null) settings.ResetToDefault();
+                if (settings != null)
+                {
+                    settings.ResetToDefault();
+                    EditorUtility.SetDirty(settings);
+                    AssetDatabase.SaveAssetIfDirty(settings);
+                }
             }
 
             serializedObject.ApplyModifiedProperties();
