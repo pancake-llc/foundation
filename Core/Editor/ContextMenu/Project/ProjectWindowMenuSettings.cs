@@ -9,7 +9,7 @@ namespace PancakeEditor.ContextMenu
 	[CreateAssetMenu( fileName = "ProjectWindowMenuSettings", menuName = "ContextMenu/ProjectWindowMenuSettings", order = 9001 )]
 	internal sealed class ProjectWindowMenuSettings : ScriptableObject
 	{
-		[SerializeField] private Data[] lists = null;
+		[SerializeField] private Data[] lists;
 
 		public IList<Data> List => lists;
 
@@ -185,7 +185,6 @@ namespace PancakeEditor.ContextMenu
 		{
 			[SerializeField] private string name         = string.Empty;
 			[SerializeField] private string menuItemPath = string.Empty;
-			[SerializeField] private string shortcut = string.Empty;
 
 			public string Name         => name;
 			public string MenuItemPath => menuItemPath;

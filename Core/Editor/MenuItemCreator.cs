@@ -25,7 +25,7 @@ namespace PancakeEditor
             uiButton.IsMotion = true;
         }
 
-        [MenuItem("GameObject/Pancake/UIButton (TMP)", false, 1000)]
+        [MenuItem("GameObject/Pancake/UIButton - TMP", false, 1000)]
         private static void CreateUIButtonTMP()
         {
             var button = CreateObject<UIButtonTMP>("Button");
