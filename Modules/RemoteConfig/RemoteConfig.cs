@@ -12,7 +12,7 @@ namespace Pancake.Tracking
     public class RemoteConfig : GameComponent
     {
         [SerializeField] private BoolVariable remoteFetchCompleted;
-        [SerializeField, Array] private ScritpableStringPairVariable[] remoteFields;
+        [SerializeField, Array] private StringPairVariable[] remoteFields;
 
         private void Start()
         {
