@@ -43,7 +43,7 @@ namespace Pancake.ScriptableEditor
             if (GUI.Button(rect, guiContent))
             {
                 string newName = GetFieldName().ToSnackCase();
-                property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType, newName, ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED);
+                property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED);
             }
 
             EditorGUI.EndProperty();

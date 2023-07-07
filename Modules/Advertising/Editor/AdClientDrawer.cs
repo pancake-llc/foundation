@@ -45,7 +45,7 @@ namespace Pancake.MonetizationEditor
             if (GUI.Button(rect, guiContent))
             {
                 string newName = fieldInfo.Name.ToSnackCase();
-                property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType, newName, ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED);
+                property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED);
                 var serializedObject = new SerializedObject(property.objectReferenceValue);
                 serializedObject.UpdateIfRequiredOrScript();
                 var prop = serializedObject.FindProperty("adSettings");
