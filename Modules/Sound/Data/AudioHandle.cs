@@ -1,5 +1,6 @@
 namespace Pancake.Sound
 {
+    [System.Serializable]
     public struct AudioHandle
     {
         public static AudioHandle invalid = new AudioHandle(-1, null);
