@@ -131,7 +131,7 @@ namespace Pancake.MonetizationEditor
 guid: e869b36b657604102a7166a39ee7d9c9
 labels:
 - gvh
-- gvh_version-8.3.0
+- gvh_version-8.4.0
 - gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/AndroidManifest.xml
 timeCreated: 1427838353
 licenseType: Free
@@ -160,7 +160,7 @@ TextScriptImporter:
 guid: 1d06ef613dfec4baa88b56aeef69cd9c
 labels:
 - gvh
-- gvh_version-8.3.0
+- gvh_version-8.4.0
 - gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/project.properties
 timeCreated: 1427838343
 licenseType: Free
