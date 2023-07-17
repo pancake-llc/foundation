@@ -75,5 +75,30 @@ namespace Pancake.Tag
 
             return false;
         }
+        
+        /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="go"></param>
+        /// <param name="tag"></param>
+        public static void RemoveTag(this GameObject go, string tag)
+        {
+            var tags = Tag.GetTagsForGameObject(go);
+            if (tags == null) return; 
+            
+            tags.RemoveTag(tag);
+        }
+
+        /// <summary>
+        /// Add tag for gameobject
+        /// </summary>
+        /// <param name="go"></param>
+        /// <param name="tag"></param>
+        public static void AddTag(this GameObject go, StringConstant tag)
+        {
+            var tags = Tag.GetTagsForGameObject(go); 
+            if (tags == null) return; 
+            tags.AddTag(tag);
+        }
     }
 }
