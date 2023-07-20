@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Pancake.ExLibEditor
@@ -23,6 +24,14 @@ namespace Pancake.ExLibEditor
             if (source == null) return false;
             var r = PrefabUtility.GetOutermostPrefabInstanceRoot(gameObject);
             return r == gameObject;
+        }
+
+        public static bool IsInPrefabMode() { return PrefabStageUtility.GetCurrentPrefabStage() != null; }
+
+        public static GameObject GetPrefabRoot()
+        {
+            var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            return prefabStage != null ? prefabStage.prefabContentsRoot : null;
         }
     }
 }

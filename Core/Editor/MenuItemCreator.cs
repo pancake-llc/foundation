@@ -1,3 +1,4 @@
+using Pancake.ExLibEditor;
 using Pancake.UI;
 using UnityEditor;
 using UnityEngine;
@@ -69,9 +70,15 @@ namespace PancakeEditor
                 }
             }
         }
-        
+
         private static RectTransform CreateUIPopupObject()
         {
+            var prefabRoot = PrefabDatabase.GetPrefabRoot();
+            if (prefabRoot != null)
+            {
+                return CreateUniPopup(Selection.activeTransform == null ? prefabRoot.transform : Selection.activeTransform);
+            }
+            
             // find canvas in scene
             var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
             if (allCanvases.Length > 0)
@@ -125,7 +132,7 @@ namespace PancakeEditor
             button.anchoredPosition = Vector2.zero;
             return popup;
         }
-        
+
         private static RectTransform CreateEmptyRectTransformObject(Transform parent, string name)
         {
             var obj = new GameObject(name);
@@ -166,6 +173,14 @@ namespace PancakeEditor
 
         private static RectTransform CreateObject<T>(string name) where T : Component
         {
+            // detect in prefab mode first
+
+            var prefabRoot = PrefabDatabase.GetPrefabRoot();
+            if (prefabRoot != null)
+            {
+                return CreateObjectWithComponent<T>(Selection.activeTransform == null ? prefabRoot.transform : Selection.activeTransform, name);
+            }
+
             // find canvas in scene
             var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
             if (allCanvases.Length > 0)
