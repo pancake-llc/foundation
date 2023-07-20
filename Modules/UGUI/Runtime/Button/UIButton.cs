@@ -59,7 +59,7 @@ namespace Pancake.UI
 
         private CoroutineHandle _routineLongClick;
         private CoroutineHandle _routineHold;
-        private CoroutineHandle _routineMultiple;
+        private IEnumerator _routineMultiple;
         private bool _clickedOnce; // marked as true after one click. (only check for double click)
         private bool _longClickDone; // marks as true after long click or hold up
         private bool _holdDone;
@@ -140,8 +140,9 @@ namespace Pancake.UI
         protected override void OnDisable()
         {
             base.OnDisable();
-            this.KillCoroutine(_routineMultiple);
+            if (_routineMultiple != null) App.StopCoroutine(_routineMultiple);
             this.KillCoroutine(_routineLongClick);
+            this.KillCoroutine(_routineHold);
             interactable = true;
             _clickedOnce = false;
             _longClickDone = false;
@@ -290,7 +291,8 @@ namespace Pancake.UI
             {
                 if (!interactable) yield break;
 
-                _routineMultiple = this.RunCoroutine(IeDisableButton(timeDisableButton));
+                _routineMultiple = IeDisableButton(timeDisableButton);
+                App.StartCoroutine(_routineMultiple);
                 yield break;
             }
 
