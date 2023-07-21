@@ -17,12 +17,12 @@ namespace Pancake.ScriptableEditor
             EditorGUI.BeginProperty(position, label, property);
 
             var targetObject = property.objectReferenceValue;
-            if (fieldInfo.FieldType.IsArray || fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
-            {
-                // ignore draw when inside list or array
-                EditorGUI.PropertyField(position, property, label);
-                return;
-            }
+            // if (fieldInfo.FieldType.IsArray || fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+            // {
+            //     // ignore draw when inside list or array
+            //     EditorGUI.PropertyField(position, property, label);
+            //     return;
+            // }
 
             if (targetObject == null)
             {
@@ -39,11 +39,15 @@ namespace Pancake.ScriptableEditor
         {
             //Draw property and a create button
             var rect = DrawPropertyField(position, property, label);
-            var guiContent = new GUIContent("Create", "Creates the SO at default script generate path");
+            var guiContent = new GUIContent("Create", "Creates the SO at default storage generate path");
             if (GUI.Button(rect, guiContent))
             {
                 string newName = GetFieldName().ToSnackCase();
-                property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED);
+                var typeCreate = fieldInfo.FieldType;
+
+                var elementType = fieldInfo.FieldType.GetCorrectElementType();
+                if (elementType != null) typeCreate = elementType;
+                property.objectReferenceValue = EditorCreator.CreateScriptableAt(typeCreate, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED);
             }
 
             EditorGUI.EndProperty();

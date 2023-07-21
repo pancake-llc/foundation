@@ -456,5 +456,27 @@ namespace Pancake.ExLibEditor
                 GUI.DrawTexture(position, icon, ScaleMode.ScaleToFit);
             }
         }
+        
+        /// <summary>
+        /// check if given type is array or list
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsCollectionType(this Type type) { return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>); }
+
+        public static Type GetCorrectElementType(this Type type)
+        {
+            if (type.IsArray)
+            {
+                return type.GetElementType();
+            }
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                return type.GetGenericArguments()[0];
+            }
+
+            return null;
+        }
     }
 }
