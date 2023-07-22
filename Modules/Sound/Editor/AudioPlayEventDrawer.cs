@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-namespace PancakeEditor
+namespace Pancake.SoundEditor
 {
     [CustomEditor(typeof(AudioPlayEvent))]
     public class AudioPlayEventDrawer : UnityEditor.Editor

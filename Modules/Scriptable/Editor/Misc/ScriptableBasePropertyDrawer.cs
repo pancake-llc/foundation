@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Reflection;
+using Pancake.Apex;
 using Pancake.ExLibEditor;
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ScriptableEditor
 {
@@ -17,20 +19,14 @@ namespace Pancake.ScriptableEditor
             EditorGUI.BeginProperty(position, label, property);
 
             var targetObject = property.objectReferenceValue;
-            // if (fieldInfo.FieldType.IsArray || fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
-            // {
-            //     // ignore draw when inside list or array
-            //     EditorGUI.PropertyField(position, property, label);
-            //     return;
-            // }
-
             if (targetObject == null)
             {
                 DrawIfNull(position, property, label);
                 return;
             }
-
-            DrawIfNotNull(position, property, label, targetObject);
+            
+            bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
+            DrawIfNotNull(position, property, label, targetObject, isNeedIndent);
 
             EditorGUI.EndProperty();
         }
@@ -64,12 +60,14 @@ namespace Pancake.ScriptableEditor
             return rectPosition;
         }
 
-        protected void DrawIfNotNull(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
+        protected void DrawIfNotNull(Rect position, SerializedProperty property, GUIContent label, Object targetObject, bool isNeedIndent)
         {
             var rect = position;
             var labelRect = position;
             labelRect.width = position.width * 0.4f; //only expands on the first half on the window when clicked
 
+            if (isNeedIndent) labelRect.position += new Vector2(10, 0);
+            if (isNeedIndent) label.text = $"   {label.text.Trim()}";
             property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, new GUIContent(""), true);
             if (property.isExpanded)
             {

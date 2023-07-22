@@ -1,8 +1,12 @@
-﻿using Pancake.ScriptableEditor;
+﻿using System.Reflection;
+using Pancake.Apex;
+using Pancake.ExLibEditor;
+using Pancake.ScriptableEditor;
+using Pancake.Sound;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.Sound
+namespace Pancake.SoundEditor
 {
     [CustomPropertyDrawer(typeof(AudioPlayEvent), true)]
     public class AudioPlayEventPropertyDrawer : ScriptableBasePropertyDrawer
@@ -10,7 +14,7 @@ namespace Pancake.Sound
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
-
+            
             var targetObject = property.objectReferenceValue;
             if (targetObject == null)
             {
@@ -18,7 +22,8 @@ namespace Pancake.Sound
                 return;
             }
 
-            DrawIfNotNull(position, property, label, property.objectReferenceValue);
+            bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
+            DrawIfNotNull(position, property, label, property.objectReferenceValue, isNeedIndent);
 
             EditorGUI.EndProperty();
         }

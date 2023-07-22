@@ -34,7 +34,7 @@ namespace Pancake.ExTag
 
         private ReadOnlyList<StringConstant> _readOnlyTags;
 
-        [SerializeField] private List<StringConstant> tags = new List<StringConstant>();
+        [SerializeField, Array] private List<StringConstant> tags = new List<StringConstant>();
 
         private SortedList<string, StringConstant> _sortedTags = new SortedList<string, StringConstant>();
 
@@ -75,20 +75,6 @@ namespace Pancake.ExTag
         }
 
         #endregion
-
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            OnAfterDeserialize(); // removes double values and nulls
-            tags = _sortedTags.Values.ToList();
-
-            // this null value is just for easier editing and could also be archived with an custom inspector
-            if (!EditorApplication.isPlaying)
-            {
-                tags.Add(null);
-            }
-        }
-#endif
 
         #region Lifecycles
 

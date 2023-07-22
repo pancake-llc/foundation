@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Pancake.Apex;
 using Pancake.ExLibEditor;
 using Pancake.Scriptable;
 using UnityEditor;
@@ -31,8 +32,9 @@ namespace Pancake.ScriptableEditor
                 EditorGUI.EndProperty();
                 return;
             }
-
-            DrawIfNotNull(position, property, label, property.objectReferenceValue);
+            
+            bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
+            DrawIfNotNull(position, property, label, property.objectReferenceValue, isNeedIndent);
 
             EditorGUI.EndProperty();
         }

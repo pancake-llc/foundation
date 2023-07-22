@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
@@ -11,7 +10,7 @@ namespace Pancake.Scriptable
     [Serializable]
     public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [SerializeField] private bool _debugLogEnabled = false;
+        [SerializeField] private bool debugLogEnabled = false;
         [SerializeField] protected T debugValue = default(T);
 
         private readonly List<EventListenerGeneric<T>> _eventListeners = new List<EventListenerGeneric<T>>();
@@ -48,14 +47,14 @@ namespace Pancake.Scriptable
                 return;
 
             for (var i = _eventListeners.Count - 1; i >= 0; i--)
-                _eventListeners[i].OnEventRaised(this, param, _debugLogEnabled);
+                _eventListeners[i].OnEventRaised(this, param, debugLogEnabled);
 
             _onRaised?.Invoke(param);
 
 #if UNITY_EDITOR
             //As this uses reflection, I only allow it to be called in Editor.
             //If you want to display debug in builds, delete the #if UNITY_EDITOR
-            if (_debugLogEnabled)
+            if (debugLogEnabled)
                 Debug();
 #endif
         }
@@ -99,7 +98,7 @@ namespace Pancake.Scriptable
 
         public override void Reset()
         {
-            _debugLogEnabled = false;
+            debugLogEnabled = false;
             debugValue = default;
         }
     }
