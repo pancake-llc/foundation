@@ -1678,5 +1678,13 @@ namespace Pancake
 
             return result;
         }
+        
+        public static T AddOrGetComponent<T>(this Component source) where T : Component
+        {
+            if (source == null) return null;
+            source.TryGetComponent<T>(out var component);
+            if (component == null) component = source.gameObject.AddComponent<T>();
+            return component;
+        }
     }
 }

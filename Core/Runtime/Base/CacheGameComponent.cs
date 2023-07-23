@@ -7,7 +7,7 @@
     public abstract class CacheGameComponent<T> : GameComponent
     {
         public UnityEngine.Transform CachedTransform { get; private set; }
-        protected T component;
+        public T component;
 
         protected virtual void Awake()
         {
