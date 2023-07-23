@@ -33,5 +33,27 @@ namespace Pancake
             }
 #endif
         }
+
+        [Conditional("UNITY_EDITOR")]
+        public static void DrawCircle(Vector3 position, float radius, int segments, Color color, float duration = 0)
+        {
+            var angle = 0f;
+            var lastPoint = Vector3.zero;
+            var thisPoint = Vector3.zero;
+
+            for (var i = 0; i < segments + 1; i++)
+            {
+                thisPoint.x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
+                thisPoint.y = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
+
+                if (i > 0)
+                {
+                    Debug.DrawLine(lastPoint + position, thisPoint + position, color, duration);
+                }
+
+                lastPoint = thisPoint;
+                angle += 360f / segments;
+            }
+        }
     }
 }

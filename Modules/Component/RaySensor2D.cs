@@ -4,24 +4,16 @@ using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
 
-namespace Pancake.Sensors
+namespace Pancake.Component
 {
-    [EditorIcon("sensor2d")]
-    public class RaySensor2D : GameComponent
+    [HideMonoScript]
+    public class RaySensor2D : Sensor
     {
-        [Message("Raycast after raycastRate frame\nraycastRate = 1 => Raycast after every frame\nraycastRate = 2 => Raycast every 2 frames", Height = 42)]
-        [SerializeField, Range(1, 8)]
-        private int raycastRate = 1;
-
         [Message("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate", Height = 30)] [SerializeField]
         private int sensorNumber = 2;
 
         [Space(8)] [SerializeField] private LayerMask layer;
         [SerializeField] private RaycastType raycastType;
-        [SerializeField] private RaycastMode raycastMode;
-
-        [SerializeField, ShowIf(nameof(raycastMode), RaycastMode.Vison), Indent] [OnValueChanged(nameof(OnOffsetChanged))]
-        private float distance = 1f;
 
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
         [SerializeField] private bool detectOnStart = true;
@@ -40,7 +32,6 @@ namespace Pancake.Sensors
 
         private bool _isPlaying;
         private int _frames;
-        private Vector2 _offset;
 
         [Flags]
         private enum RaycastType
@@ -51,12 +42,6 @@ namespace Pancake.Sensors
             IntersectionBottom = 1 << 3,
         };
 
-        private enum RaycastMode
-        {
-            Transform,
-            Vison
-        }
-
         private void Awake()
         {
             Init();
@@ -65,7 +50,6 @@ namespace Pancake.Sensors
 
         private void Init()
         {
-            _offset = new Vector2(distance, 0);
             _sensors = new Vector2[sensorNumber];
             _lastPositions = new Vector2[sensorNumber];
 
@@ -78,7 +62,7 @@ namespace Pancake.Sensors
             }
         }
 
-        public void Pulse()
+        public override void Pulse()
         {
             // Reset _lastPositions
             for (var i = 0; i < _lastPositions.Length; ++i) _lastPositions[i] = source.TransformPoint(_sensors[i]);
@@ -86,7 +70,7 @@ namespace Pancake.Sensors
             _isPlaying = true;
         }
 
-        public void Stop() { _isPlaying = false; }
+        public override void Stop() { _isPlaying = false; }
 
         protected override void FixedTick()
         {
@@ -95,11 +79,10 @@ namespace Pancake.Sensors
             _frames++;
             if (_frames % raycastRate != 0) return;
             _frames = 0;
-            if (raycastMode == RaycastMode.Transform) ProcedureTransform();
-            else ProcedureTransform(_offset);
+            ProcedureTransform();
         }
 
-        private void ProcedureTransform(Vector2 offset = default)
+        private void ProcedureTransform()
         {
             for (int i = 0; i < _sensors.Length; i++)
             {
@@ -115,7 +98,7 @@ namespace Pancake.Sensors
                 if (raycastType.HasFlag(RaycastType.IntersectionBottom) && i < sensorNumber - 1)
                     Raycast(_lastPositions[i], source.TransformPoint(_sensors[i + 1]), RaycastType.IntersectionBottom);
 
-                _lastPositions[i] = currentPosition + offset;
+                _lastPositions[i] = currentPosition;
             }
 
             if (raycastType.HasFlag(RaycastType.Vertical)) Raycast(_lastPositions[0], _lastPositions[sensorNumber - 1], RaycastType.Vertical);
@@ -166,11 +149,6 @@ namespace Pancake.Sensors
                 Debug.DrawRay(hit.point + new Vector2(-0.2f, 0), Vector2.right * 0.4f, Color.red, 0.6f);
             }
 #endif
-        }
-
-        private void OnOffsetChanged()
-        {
-            if (Application.isPlaying) _offset = new Vector2(distance, 0);
         }
 
 #if UNITY_EDITOR
