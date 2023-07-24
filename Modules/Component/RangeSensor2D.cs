@@ -99,12 +99,12 @@ namespace Pancake.Component
             {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawWireSphere(center.position, 0.1f);
-            }
-
-            if (showGizmos)
-            {
-                Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
-                Gizmos.DrawWireSphere(center.position, range);
+                
+                if (showGizmos)
+                {
+                    Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
+                    Gizmos.DrawWireSphere(center.position, range);
+                }
             }
         }
 #endif
