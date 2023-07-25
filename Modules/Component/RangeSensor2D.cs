@@ -68,10 +68,7 @@ namespace Pancake.Component
             }
 
 #if UNITY_EDITOR
-            if (showGizmos)
-            {
-                DebugEditor.DrawCircle(transform.position, range, 32, hitDetected ? Color.red : Color.cyan, 0.4f);
-            }
+            if (showGizmos) DebugEditor.DrawCircle(center, range, 32, hitDetected ? Color.red : Color.cyan, 0.4f);
 #endif
         }
         
