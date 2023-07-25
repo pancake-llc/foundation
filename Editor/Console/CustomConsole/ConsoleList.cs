@@ -540,7 +540,7 @@ namespace Pancake.Console
 			try
 			{
 #if UNITY_CONSOLE_STACKTRACE_TWO_PARAMETERS
-#if UNITY_2022_2_OR_NEWER
+#if UNITY_2021_3_24_OR_NEWER
 				// mode doesn't matter when shouldStripCallstack is false
 				var stackWithHyperlinks = ConsoleWindow.StacktraceWithHyperlinks(message, 0, false, ConsoleWindow.Mode.Log);
 #else
