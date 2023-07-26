@@ -6,8 +6,7 @@ using UnityEngine;
 
 namespace Pancake.Component
 {
-    [HideMonoScript]
-    public class RaySensor2D : Sensor
+    public class RaySensor : Sensor
     {
         [Message("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate", Height = 30)] [SerializeField]
         private int sensorNumber = 2;
@@ -25,20 +24,22 @@ namespace Pancake.Component
         [SerializeField, NotNull] private Transform source;
         [SerializeField] private ScriptableEventGameObject detectedEvent;
 
-        private Vector2[] _sensors;
-        private RaycastHit2D[] _hits;
-        private HashSet<Collider2D> _hitObjects = new HashSet<Collider2D>();
+        private Vector3[] _sensors;
+        private RaycastHit[] _hits;
+        private HashSet<Collider> _hitObjects = new HashSet<Collider>();
 
         private int _frames;
-        private Vector2 _left;
-        private Vector2 _right;
+        private Vector3 _left;
+        private Vector3 _right;
 
         private enum RayDirection
         {
             Left,
             Right,
             Top,
-            Bottom
+            Bottom,
+            Forward,
+            Back
         }
 
         private void Awake()
@@ -55,11 +56,13 @@ namespace Pancake.Component
             {
                 case RayDirection.Left:
                 case RayDirection.Right:
-                    _left = startConvert + Vector3.up * radius;
-                    _right = startConvert + Vector3.down * radius;
+                    _left = startConvert + Vector3.down * radius;
+                    _right = startConvert + Vector3.up * radius;
                     break;
                 case RayDirection.Top:
                 case RayDirection.Bottom:
+                case RayDirection.Forward:
+                case RayDirection.Back:
                     _left = startConvert + Vector3.left * radius;
                     _right = startConvert + Vector3.right * radius;
                     break;
@@ -70,14 +73,14 @@ namespace Pancake.Component
 
         private void Init()
         {
-            _sensors = new Vector2[sensorNumber];
+            _sensors = new Vector3[sensorNumber];
             CalculateRadius();
 
             float d = 1f / (sensorNumber - 1);
             var lerpValue = 0f;
             for (var i = 0; i < sensorNumber; i++)
             {
-                _sensors[i] = Vector2.Lerp(_left, _right, lerpValue);
+                _sensors[i] = Vector3.Lerp(_left, _right, lerpValue);
                 lerpValue += d;
             }
         }
@@ -97,28 +100,30 @@ namespace Pancake.Component
             _frames = 0;
             Procedure();
         }
-
+        
         private void Procedure()
         {
             foreach (var point in _sensors)
             {
-                Vector2 currentPoint = source.TransformPoint(point);
+                var currentPoint = source.TransformPoint(point);
                 var endPosition = direction switch
                 {
-                    RayDirection.Left => currentPoint + Vector2.left * range,
-                    RayDirection.Right => currentPoint + Vector2.right * range,
-                    RayDirection.Top => currentPoint + Vector2.up * range,
-                    RayDirection.Bottom => currentPoint + Vector2.down * range,
+                    RayDirection.Left => currentPoint + Vector3.left * range,
+                    RayDirection.Right => currentPoint + Vector3.right * range,
+                    RayDirection.Top => currentPoint + Vector3.up * range,
+                    RayDirection.Bottom => currentPoint + Vector3.down * range,
+                    RayDirection.Forward => currentPoint + Vector3.forward * range,
+                    RayDirection.Back => currentPoint + Vector3.back * range,
                     _ => currentPoint
                 };
                 Raycast(currentPoint, endPosition);
             }
         }
-
-        private void Raycast(Vector2 from, Vector2 to)
+        
+        private void Raycast(Vector3 from, Vector3 to)
         {
-            bool hitDetected = false;
-            _hits = Physics2D.LinecastAll(from, to, layer);
+            var hitDetected = false;
+            _hits = Physics.RaycastAll(from, (to - from).normalized, (from - to).magnitude, layer);
             foreach (var hit in _hits)
             {
                 if (hit.collider != null && hit.collider.transform != source)
@@ -133,7 +138,7 @@ namespace Pancake.Component
 #endif
         }
 
-        private void HandleHit(RaycastHit2D hit)
+        private void HandleHit(RaycastHit hit)
         {
             if (_hitObjects.Contains(hit.collider)) return;
 
@@ -144,12 +149,12 @@ namespace Pancake.Component
 #if UNITY_EDITOR
             if (showGizmos)
             {
-                Debug.DrawRay(hit.point + new Vector2(0, 0.2f), Vector2.down * 0.4f, Color.red, 0.6f);
-                Debug.DrawRay(hit.point + new Vector2(-0.2f, 0), Vector2.right * 0.4f, Color.red, 0.6f);
+                Debug.DrawRay(hit.point, Vector2.down * 0.4f, Color.red, 0.6f);
+                Debug.DrawRay(hit.point, Vector2.right * 0.4f, Color.red, 0.6f);
             }
 #endif
         }
-
+        
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -187,6 +192,14 @@ namespace Pancake.Component
                     case RayDirection.Bottom:
                         Gizmos.DrawWireSphere(sourceStart + Vector3.down * range, 0.1f);
                         break;
+                    case RayDirection.Forward:
+                        Gizmos.DrawWireSphere(sourceStart + Vector3.forward * range, 0.1f);
+                        break;
+                    case RayDirection.Back:
+                        Gizmos.DrawWireSphere(sourceStart + Vector3.back * range, 0.1f);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }

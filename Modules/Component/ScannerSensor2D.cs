@@ -12,8 +12,7 @@ namespace Pancake.Component
         [Message("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate", Height = 30)] [SerializeField]
         private int sensorNumber = 2;
 
-        [Space(8)] [SerializeField] private LayerMask layer;
-        [SerializeField] private RaycastType raycastType;
+        [Space(8)] [SerializeField] private RaycastType raycastType;
 
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
         [SerializeField] private bool detectOnStart = true;
@@ -30,7 +29,6 @@ namespace Pancake.Component
         private RaycastHit2D[] _hits;
         private HashSet<Collider2D> _hitObjects = new HashSet<Collider2D>();
 
-        private bool _isPlaying;
         private int _frames;
 
         [Flags]
@@ -62,19 +60,18 @@ namespace Pancake.Component
             }
         }
 
-        public override void Pulse()
+        protected override void Pulse()
         {
             // Reset _lastPositions
             for (var i = 0; i < _lastPositions.Length; ++i) _lastPositions[i] = source.TransformPoint(_sensors[i]);
             _hitObjects.Clear();
-            _isPlaying = true;
+            isPlaying = true;
         }
 
-        public override void Stop() { _isPlaying = false; }
 
         protected override void FixedTick()
         {
-            if (!_isPlaying) return;
+            if (!isPlaying) return;
 
             _frames++;
             if (_frames % raycastRate != 0) return;
