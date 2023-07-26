@@ -9,12 +9,13 @@ using Pancake.Monetization;
 #endif
 using UnityEngine;
 using UnityEngine.Purchasing;
+using UnityEngine.Purchasing.Extension;
 using UnityEngine.Purchasing.Security;
 
 namespace Pancake.IAP
 {
     [AddComponentMenu("")]
-    public class IAPManager : MonoBehaviour, IStoreListener
+    public class IAPManager : MonoBehaviour, IDetailedStoreListener
     {
         public static event Action<string> OnPurchaseSucceedEvent;
         public static event Action<string> OnPurchaseFailedEvent;
@@ -76,7 +77,9 @@ namespace Pancake.IAP
 
         public static void ForceInit(List<IAPData> skuItems) { Instance.InitImpl(skuItems); }
 
-        public void OnInitializeFailed(InitializationFailureReason error)
+        public void OnInitializeFailed(InitializationFailureReason error) { OnInternalInitializeFailed(error); }
+
+        private static void OnInternalInitializeFailed(InitializationFailureReason error)
         {
             switch (error)
             {
@@ -92,6 +95,11 @@ namespace Pancake.IAP
                 default:
                     throw new ArgumentOutOfRangeException(nameof(error), error, null);
             }
+        }
+
+        public void OnInitializeFailed(InitializationFailureReason error, string message)
+        {
+            OnInternalInitializeFailed(error);
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
@@ -156,15 +164,7 @@ namespace Pancake.IAP
 
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
-#if PANCAKE_ADS
-            Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
-#endif
-            
-            OnPurchaseFailedEvent?.Invoke(failureReason.ToString());
-            foreach (var e in FaildDict)
-            {
-                if (e.Key.Equals(product.definition.id)) e.Value?.Invoke();
-            }
+            InternalPurchaseFailed(product.definition.id, failureReason.ToString());
         }
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
@@ -179,6 +179,24 @@ namespace Pancake.IAP
                 if (product != null && string.IsNullOrEmpty(product.transactionID)) _controller.ConfirmPendingPurchase(product);
             }
 #endif
+        }
+
+        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
+        {
+            InternalPurchaseFailed(product.definition.id, failureDescription.message);
+        }
+        
+        private void InternalPurchaseFailed(string id, string message = null)
+        {
+#if PANCAKE_ADS
+            Timer.Register(0.1f, () => Runtime.RunOnMainThread(() => R.isShowingAd = false));
+#endif
+            
+            OnPurchaseFailedEvent?.Invoke(message);
+            foreach (var e in FaildDict)
+            {
+                if (e.Key.Equals(id)) e.Value?.Invoke();
+            }
         }
 
         public bool IsPurchased(string sku)
