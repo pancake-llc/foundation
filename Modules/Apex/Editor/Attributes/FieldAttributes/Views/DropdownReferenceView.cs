@@ -68,6 +68,8 @@ namespace Pancake.ApexEditor
                 position.height = contentHeight;
                 GUI.Box(position, GUIContent.none, ApexStyles.BoxEntryBkg);
                 position.y += 3;
+                
+                ApexGUI.RemoveIndentFromRect(ref position);
                 using (new BoxScope(ref position, false))
                 {
                     ApexGUI.IndentLevel++;

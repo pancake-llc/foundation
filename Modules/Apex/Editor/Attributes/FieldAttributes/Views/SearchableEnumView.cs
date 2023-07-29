@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Pancake.ApexEditor
 {
     [ViewTarget(typeof(SearchableEnumAttribute))]
-    public sealed class SearchableEnumView : BaseEnumView
+    public class SearchableEnumView : BaseEnumView
     {
         private float height;
         private bool useToggleIcons;
@@ -21,7 +21,7 @@ namespace Pancake.ApexEditor
         public override void Initialize(SerializedField field, ViewAttribute viewAttribute, GUIContent label)
         {
             base.Initialize(field, viewAttribute, label);
-            SearchableEnumAttribute attribute = (SearchableEnumAttribute)viewAttribute;
+            SearchableEnumAttribute attribute = (SearchableEnumAttribute) viewAttribute;
             height = attribute.Height;
             useToggleIcons = FlagMode() && attribute.ToggleIcons;
         }
@@ -69,6 +69,7 @@ namespace Pancake.ApexEditor
 
                     searchWindow.AddEntry(menuItem.content, menuItem.bit, SetEnumFunction);
                 }
+
                 searchWindow.Open(position, 0, height);
             }
         }

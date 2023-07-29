@@ -14,16 +14,16 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
-    [CanEditMultipleObjects]
     [CustomEditor(typeof(Object), true)]
+    [CanEditMultipleObjects]
     public class AEditor : Editor
     {
         private RootContainer rootContainer;
 
         // Stored search properties.
-        private List<VisualEntity> searchEntities;
-        private SearchField searchField;
         private string searchText;
+        private SearchField searchField;
+        private List<VisualEntity> searchEntities;
 
         // Stored component flags.
         private bool keepEnable;
