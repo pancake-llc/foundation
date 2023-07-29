@@ -13,9 +13,8 @@ namespace Pancake.ApexEditor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            EditorGUI.BeginChangeCheck();
             base.OnInspectorGUI();
-            if (EditorGUI.EndChangeCheck())
+            if (GetRootContainer() != null && GetRootContainer().HasObjectChanged())
             {
                 changed = true;
             }

@@ -9,10 +9,11 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
-    public abstract class SerializedMember : VisualEntity, ISerializedMember, IMemberInfo, IMemberDeclaringObject, IMemberType, IMemberLabel
+    public abstract class SerializedMember : VisualEntity, ISerializedMember, IMemberInfo, IMemberDeclaringObject, IMemberType, IMemberLabel, IGUIChangedCallback
     {
         public struct Info
         {
@@ -134,6 +135,7 @@ namespace Pancake.ApexEditor
             if (EditorGUI.EndChangeCheck())
             {
                 onGUIChanged.SafeInvoke(GetDeclaringObject());
+                OnGUIChanged?.Invoke();
                 isGUIChanged = true;
             }
 
@@ -316,11 +318,12 @@ namespace Pancake.ApexEditor
         /// </summary>
         private void RegisterCallbacks()
         {
-            Type type = GetDeclaringObject().GetType();
             OnGUIChangedAttribute attribute = GetAttribute<OnGUIChangedAttribute>();
             if (attribute != null)
             {
-                foreach (MethodInfo methodInfo in type.AllMethods())
+                var t = GetDeclaringObject().GetType();
+                var limitDescendant = GetDeclaringObject() is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+                foreach (MethodInfo methodInfo in t.AllMethods(limitDescendant))
                 {
                     if (methodInfo.Name == attribute.name && methodInfo.GetParameters().Length == 0)
                     {
@@ -330,23 +333,32 @@ namespace Pancake.ApexEditor
                 }
             }
         }
+        
+        #region [IGUIChangedCallback Implementation]
+        /// <summary>
+        /// Called when GUI has been changed.
+        /// </summary>
+        public event Action OnGUIChanged;
+        #endregion
 
         #region [Static Methods]
 
         public static Info GetInfo(SerializedObject serializedObject, string memberPath)
         {
-            Type type = serializedObject.targetObject.GetType();
+            var target = serializedObject.targetObject;
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
             MemberInfo memberInfo = null;
-            object declaringObject = serializedObject.targetObject;
+            object declaringObject = target;
 
             string[] pathSplit = memberPath.Split('.');
             Queue<string> paths = new Queue<string>(pathSplit);
-            RecursiveSearch(ref paths, ref type, ref memberInfo, ref declaringObject);
+            RecursiveSearch(ref paths, ref type, ref limitDescendant, ref memberInfo, ref declaringObject);
 
             return new Info(type, memberInfo, declaringObject);
         }
 
-        private static void RecursiveSearch(ref Queue<string> paths, ref Type type, ref MemberInfo memberInfo, ref object declaringObject)
+        private static void RecursiveSearch(ref Queue<string> paths, ref Type type, ref Type limitDescendant, ref MemberInfo memberInfo, ref object declaringObject)
         {
             string memberName = paths.Dequeue();
             if (memberName.Contains("data["))
@@ -380,7 +392,7 @@ namespace Pancake.ApexEditor
                             if (element != null && paths.Count > 0)
                             {
                                 declaringObject = element;
-                                RecursiveSearch(ref paths, ref type, ref memberInfo, ref declaringObject);
+                                RecursiveSearch(ref paths, ref type, ref limitDescendant, ref memberInfo, ref declaringObject);
                                 break;
                             }
                         }
@@ -392,7 +404,7 @@ namespace Pancake.ApexEditor
 
 
             MemberInfo member = null;
-            foreach (MemberInfo item in type.AllMembers())
+            foreach (MemberInfo item in type.AllMembers(limitDescendant))
             {
                 if (item.Name == memberName)
                 {
@@ -422,7 +434,7 @@ namespace Pancake.ApexEditor
 
             if (paths.Count > 0)
             {
-                RecursiveSearch(ref paths, ref type, ref memberInfo, ref declaringObject);
+                RecursiveSearch(ref paths, ref type, ref limitDescendant, ref memberInfo, ref declaringObject);
             }
         }
 

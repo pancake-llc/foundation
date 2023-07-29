@@ -5,6 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
@@ -61,8 +62,10 @@ namespace Pancake.ApexEditor
         /// <param name="serializedField">Serialized field with ViewAttribute.</param>
         private void FindCallbacks(object target, CustomViewAttribute attribute)
         {
-            Type type = target.GetType();
-            foreach (MethodInfo methodInfo in type.AllMethods())
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            
+            foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 if (onInitialization != null && onGUI != null && getHeight != null)
                 {

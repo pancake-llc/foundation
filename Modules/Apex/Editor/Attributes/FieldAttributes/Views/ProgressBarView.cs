@@ -5,6 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
@@ -87,9 +88,11 @@ namespace Pancake.ApexEditor
 
         private void FindCallback(string name)
         {
-            Type type = target.GetType();
-            Type stringType = typeof(string);
-            foreach (MemberInfo memberInfo in type.AllMembers())
+            var stringType = typeof(string);
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            
+            foreach (MemberInfo memberInfo in type.AllMembers(limitDescendant))
             {
                 if (memberInfo.Name == name)
                 {

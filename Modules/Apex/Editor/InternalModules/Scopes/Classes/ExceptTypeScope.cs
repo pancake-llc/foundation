@@ -10,7 +10,7 @@ namespace Pancake.ApexEditor
         {
             for (int i = 0; i < types.Length; i++)
             {
-                ApexUtility.exceptTypes.Add(types[i]);
+                ApexUtility.ExceptTypes.Add(types[i]);
             }
         }
 
@@ -18,7 +18,7 @@ namespace Pancake.ApexEditor
         {
             for (int i = 0; i < types.Length; i++)
             {
-                ApexUtility.exceptTypes.Remove(types[i]);
+                ApexUtility.ExceptTypes.Remove(types[i]);
             }
         }
     }

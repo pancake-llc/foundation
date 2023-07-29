@@ -6,6 +6,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
@@ -50,6 +51,7 @@ namespace Pancake.ApexEditor
                         field.SetLabel((GUIContent) getElementLabel.Invoke(target, new object[2] {index, serializedField}));
                     }
 
+                    ApexGUI.RemoveIndentFromRect(ref rect);
                     onElementGUI.Invoke(target, new object[3] {rect, field.GetSerializedProperty(), field.GetLabel()});
                 };
             }
@@ -72,6 +74,8 @@ namespace Pancake.ApexEditor
                     //         field.GetLabel().text = objValue.GetType().Name;
                     //     }
                     // }
+                    
+                    ApexGUI.RemoveIndentFromRect(ref rect);
                     field.OnGUI(rect);
                 };
             }
@@ -180,8 +184,10 @@ namespace Pancake.ApexEditor
 
         private void FindCallbacks(object target, ReferenceArrayAttribute attribute)
         {
-            Type type = target.GetType();
-            foreach (MethodInfo methodInfo in type.AllMethods())
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            
+            foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 if (onElementGUI != null && getElementHeight != null && getElementLabel != null && validateSubtype != null)
                 {

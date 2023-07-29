@@ -7,12 +7,15 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
     public sealed class RootContainer : ListContainer, IRootContainer
     {
         private SerializedObject serializedObject;
+        private bool objectChanged;
+        private bool guiChanged;
 
         internal RootContainer(string name, SerializedObject serializedObject, UnityAction repaint)
             : base(name)
@@ -28,10 +31,12 @@ namespace Pancake.ApexEditor
             entities.TrimExcess();
             entities.Sort();
 
+            RegisterFieldCallbacks(ref entities);
             LayoutBoxGroups(ref entities, in Repaint);
             LayoutTabGroups(ref entities, in Repaint);
             LayoutFoldout(ref entities, in Repaint);
             LayoutHorizontalGroup(ref entities, in Repaint);
+            RegisterGUICallbacks(entities);
         }
 
         #region [VisualEntity Implementation]
@@ -61,6 +66,9 @@ namespace Pancake.ApexEditor
 
         public void DoLayout()
         {
+            objectChanged = false;
+            guiChanged = false;
+
             for (int i = 0; i < entities.Count; i++)
             {
                 entities[i].DrawLayout();
@@ -73,6 +81,52 @@ namespace Pancake.ApexEditor
         }
 
         #endregion
+
+        /// <summary>
+        /// Register serialized field OnValueChanged events to notify that target object has been changed.
+        /// </summary>
+        /// <param name="entities"></param>
+        private void RegisterFieldCallbacks(ref List<VisualEntity> entities)
+        {
+            for (int i = 0; i < entities.Count; i++)
+            {
+                VisualEntity entity = entities[i];
+                if (entity is SerializedField field)
+                {
+                    field.OnValueChanged += OnValueChangedEvent;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Register serialized field OnValueChanged events to notify that target object has been changed.
+        /// </summary>
+        /// <param name="entities"></param>
+        private void RegisterGUICallbacks(IEnumerable<VisualEntity> entities)
+        {
+            foreach (VisualEntity entity in entities)
+            {
+                if (entity is Container container)
+                {
+                    RegisterGUICallbacks(container.Entities);
+                }
+
+                if (entity is IGUIChangedCallback callback)
+                {
+                    callback.OnGUIChanged += OnGUIChangedEvent;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serialized field OnValueChanged event to notify that target object has been changed.
+        /// </summary>
+        private void OnValueChangedEvent(object value) { objectChanged = true; }
+
+        /// <summary>
+        /// Serialized member OnGUIChanged event to notify that target object GUI has been changed.
+        /// </summary>
+        private void OnGUIChangedEvent() { guiChanged = true; }
 
         #region [Static Methods]
 
@@ -129,8 +183,10 @@ namespace Pancake.ApexEditor
         /// <param name="repaint">Repaint unity action delegate passed by reference.</param>
         internal static void FindMethods(in SerializedObject serializedObject, ref List<VisualEntity> visualEntities, ref int order, in UnityAction repaint)
         {
-            Type type = serializedObject.targetObject.GetType();
-            foreach (MethodInfo methodInfo in type.AllMethods())
+            var target = serializedObject.targetObject;
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 MethodButtonAttribute methodButtonAttribute = methodInfo.GetCustomAttribute<MethodButtonAttribute>();
                 if (methodButtonAttribute != null)
@@ -193,8 +249,11 @@ namespace Pancake.ApexEditor
         /// <param name="repaint">Repaint unity action delegate passed by reference.</param>
         internal static void FindProperties(in SerializedObject serializedObject, ref List<VisualEntity> visualEntities, ref int order, in UnityAction repaint)
         {
-            Type type = serializedObject.targetObject.GetType();
-            foreach (PropertyInfo propertyInfo in type.AllProperties())
+            var target = serializedObject.targetObject;
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+
+            foreach (PropertyInfo propertyInfo in type.AllProperties(limitDescendant))
             {
                 SerializePropertyAttribute attribute = propertyInfo.GetCustomAttribute<SerializePropertyAttribute>();
                 if (attribute != null)
@@ -599,6 +658,16 @@ namespace Pancake.ApexEditor
         #region [Getter / Setter]
 
         public SerializedObject GetSerializedObject() { return serializedObject; }
+
+        /// <summary>
+        /// Check that target object has been changed.
+        /// </summary>
+        public bool HasObjectChanged() { return objectChanged; }
+
+        /// <summary>
+        /// Check that target object GUI has been changed.
+        /// </summary>
+        public bool HasGUIChanged() { return guiChanged; }
 
         #endregion
     }

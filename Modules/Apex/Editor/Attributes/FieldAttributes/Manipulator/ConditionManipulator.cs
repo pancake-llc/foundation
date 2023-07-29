@@ -3,6 +3,8 @@ using System;
 using Pancake.ExLib.Reflection;
 using System.Reflection;
 using Vexe.Runtime.Extensions;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
@@ -31,8 +33,9 @@ namespace Pancake.ApexEditor
         {
             expression = () => false;
 
-            Type type = target.GetType();
-            foreach (MemberInfo memberInfo in type.AllMembers())
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            foreach (MemberInfo memberInfo in type.AllMembers(limitDescendant))
             {
                 if (memberInfo.Name == name)
                 {

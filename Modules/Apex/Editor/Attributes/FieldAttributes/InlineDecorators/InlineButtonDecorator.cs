@@ -93,7 +93,9 @@ namespace Pancake.ApexEditor
 
         private void FindCallback()
         {
-            foreach (MethodInfo methodInfo in target.GetType().AllMethods())
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 if (methodInfo.IsValidCallback(attribute.name, typeof(void), null) ||
                     methodInfo.IsValidCallback(attribute.name, typeof(void), typeof(SerializedProperty)) ||

@@ -251,24 +251,24 @@ namespace Pancake.ApexEditor
             }
         }
 
-        [UnityEditor.Callbacks.DidReloadScripts]
-        private static void OnReloadScripts()
-        {
-            const string GUID = "Apex On Startup Validation";
-            if (!SessionState.GetBool(GUID, false))
-            {
-                ApexSettings settings = ApexSettings.instance;
-                if (settings.ValidateOnStartup())
-                {
-                    if (!HasOpenInstances<ApexValidatorWindow>())
-                    {
-                        Validate();
-                    }
-                }
-
-                SessionState.SetBool(GUID, true);
-            }
-        }
+        // [UnityEditor.Callbacks.DidReloadScripts]
+        // private static void OnReloadScripts()
+        // {
+        //     const string GUID = "Apex On Startup Validation";
+        //     if (!SessionState.GetBool(GUID, false))
+        //     {
+        //         ApexSettings settings = ApexSettings.instance;
+        //         if (settings.ValidateOnStartup())
+        //         {
+        //             if (!HasOpenInstances<ApexValidatorWindow>())
+        //             {
+        //                 Validate();
+        //             }
+        //         }
+        //
+        //         SessionState.SetBool(GUID, true);
+        //     }
+        // }
 
         private static void FixEntry(Entry entry)
         {

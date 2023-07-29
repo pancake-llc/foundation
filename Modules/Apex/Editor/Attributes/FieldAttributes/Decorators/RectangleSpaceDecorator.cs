@@ -28,7 +28,9 @@ namespace Pancake.ApexEditor
             attribute = decoratorAttribute as RectangleSpaceAttribute;
 
             target = serializedField.GetDeclaringObject();
-            foreach (MethodInfo methodInfo in target.GetType().AllMethods())
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 if (onGUI != null && (string.IsNullOrEmpty(attribute.GetHeightCallback) || getHeight != null))
                 {

@@ -82,6 +82,7 @@ namespace Pancake.ApexEditor
             if (settings != null)
             {
                 editor.OnInspectorGUI();
+                Repaint();
             }
 
             GUILayout.EndVertical();

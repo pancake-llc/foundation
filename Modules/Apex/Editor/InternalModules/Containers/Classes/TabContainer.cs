@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Pancake.ApexEditor
 {
-    public sealed class TabContainer : Container, ITabContainer
+    public sealed class TabContainer : Container, ITabContainer, IGUIChangedCallback
     {
         public struct Tab
         {
@@ -52,6 +53,7 @@ namespace Pancake.ApexEditor
                 if (GUI.Button(position, tabs[i].name, ApexStyles.BoxCenteredButton))
                 {
                     tabIndex = i;
+                    OnGUIChanged?.Invoke();
                 }
 
                 position.x = position.xMax;
@@ -86,6 +88,15 @@ namespace Pancake.ApexEditor
 
             return headerHeight + (ApexGUIUtility.VerticalSpacing * 2) * ApexGUIUtility.BoxBounds + GetEntitiesHeight(in tab.entities);
         }
+
+        #endregion
+
+        #region [IGUIChangedCallback Implementation]
+
+        /// <summary>
+        /// Called when GUI has been changed.
+        /// </summary>
+        public event Action OnGUIChanged;
 
         #endregion
 

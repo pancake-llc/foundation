@@ -2,6 +2,7 @@
 using System.Reflection;
 using Pancake.ExLib.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
@@ -12,9 +13,11 @@ namespace Pancake.ApexEditor
     {
         public static T GetCallbackResult<T>(object target, string name)
         {
-            Type type = target.GetType();
-            Type returnType = typeof(T);
-            foreach (MemberInfo memberInfo in type.AllMembers())
+            var returnType = typeof(T);
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            
+            foreach (MemberInfo memberInfo in type.AllMembers(limitDescendant))
             {
                 if (memberInfo.Name == name)
                 {

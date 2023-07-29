@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Pancake.ApexEditor
 {
-    public class FoldoutContainer : ListContainer, IFoldoutContainer
+    public class FoldoutContainer : ListContainer, IFoldoutContainer, IGUIChangedCallback
     {
         private string style;
         private float headerHeight;
@@ -100,7 +100,7 @@ namespace Pancake.ApexEditor
             float totalHeight = Mathf.Max(0, position.height - EditorGUIUtility.singleLineHeight);
 
             position.height = EditorGUIUtility.singleLineHeight;
-            isExpanded = ApexGUI.Foldout(position, isExpanded, GetName());
+            IsExpanded(ApexGUI.Foldout(position, isExpanded, GetName()));
             if (isExpanded && totalHeight > 0)
             {
                 position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
@@ -145,7 +145,7 @@ namespace Pancake.ApexEditor
             {
                 if (isHover)
                 {
-                    isExpanded = !isExpanded;
+                    IsExpanded(!isExpanded);
                 }
             }
             else if (current.type == EventType.Repaint)
@@ -203,7 +203,7 @@ namespace Pancake.ApexEditor
             position.height = 22;
             if (GUI.Button(position, GUIContent.none, ApexStyles.BoxButton))
             {
-                isExpanded = !isExpanded;
+                IsExpanded(!isExpanded);
             }
 
             Event current = Event.current;
@@ -266,7 +266,7 @@ namespace Pancake.ApexEditor
             position.height = headerHeight;
             if (GUI.Button(position, GUIContent.none, ApexStyles.BoxButton))
             {
-                isExpanded = !isExpanded;
+                IsExpanded(!isExpanded);
             }
 
             Event current = Event.current;
@@ -319,17 +319,21 @@ namespace Pancake.ApexEditor
 
         #endregion
 
-        #region [Override Callback Events]
+        #region [IGUIChangedCallback Implementation]
 
-        public Action<Rect> onMenuButtonClick;
+        /// <summary>
+        /// Called when GUI has been changed.
+        /// </summary>
+        public event Action OnGUIChanged;
 
-        public Action<Rect> onChildrenGUI;
+        #endregion
 
-        public Func<float> getChildrenHeight;
+        #region [Event Callback Functions]
 
-        public GUIStyle menuButtonStyle { get; set; }
-
-        public GUIContent menuIconContent { get; set; }
+        /// <summary>
+        /// Called when foldout expanded changed.
+        /// </summary>
+        public event Action<bool> OnExpanded;
 
         #endregion
 
@@ -339,7 +343,12 @@ namespace Pancake.ApexEditor
 
         public void SetStyle(string value) { style = value; }
 
-        public void IsExpanded(bool value) { isExpanded = value; }
+        public void IsExpanded(bool value)
+        {
+            isExpanded = value;
+            OnExpanded?.Invoke(value);
+            OnGUIChanged?.Invoke();
+        }
 
         #endregion
     }

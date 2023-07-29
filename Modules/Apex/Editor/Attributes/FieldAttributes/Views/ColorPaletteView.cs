@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
@@ -28,8 +29,10 @@ namespace Pancake.ApexEditor
             ColorPaletteAttribute attribute = viewAttribute as ColorPaletteAttribute;
 
             target = serializedField.GetDeclaringObject();
-            Type type = target.GetType();
-            foreach (MemberInfo memberInfo in type.AllMembers())
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            
+            foreach (MemberInfo memberInfo in type.AllMembers(limitDescendant))
             {
                 if (memberInfo.Name == attribute.member)
                 {

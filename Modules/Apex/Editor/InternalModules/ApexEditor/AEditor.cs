@@ -7,7 +7,9 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using Vexe.Runtime.Extensions;
+using System;
+using System.Collections;
+using UnityEditor.Callbacks;
 using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
@@ -29,31 +31,56 @@ namespace Pancake.ApexEditor
         private bool searchableEditor;
 
         // Stored editor callbacks.
-        private MethodCaller<object, object> onInspectorGUI;
+        private bool valueDealyCallRegistered;
+        private bool guiDealyCallRegistered;
+        private List<Action> onInspectorGUICalls;
+        private List<Action> onInspectorDisposeCalls;
+        private List<Action> onObjectChangedCalls;
+        private List<Action> onObjectChangedDelayCalls;
+        private List<Action> onObjectGUIChangedCalls;
+        private List<Action> onObjectGUIChangedDelayCalls;
 
         /// <summary>
         /// Called when the editor becomes enabled and active.
         /// </summary>
         protected virtual void OnEnable()
         {
-            try
+            if (serializedObject == null || serializedObject.targetObject == null)
             {
-                if (serializedObject.targetObject != null)
+                return;
+            }
+
+            if (!ApexUtility.Enabled && !keepEnable)
+            {
+                defaultEditor = true;
+                return;
+            }
+
+            Type type = target.GetType();
+            if (type.BaseType == null || type.BaseType == typeof(Component) || type.BaseType == typeof(Behaviour))
+            {
+                defaultEditor = true;
+            }
+            else
+            {
+                try
                 {
                     rootContainer = new RootContainer("Apex Inspector Container", serializedObject, Repaint);
 
                     searchEntities = new List<VisualEntity>();
                     searchField = new SearchField();
                     searchText = string.Empty;
+
                     RegisterCallbacks();
 
                     searchableEditor = target.GetType().GetCustomAttribute<SearchableEditorAttribute>() != null;
                     defaultEditor = target.GetType().GetCustomAttribute<UseDefaultEditor>() != null || ApexUtility.IsExceptType(target.GetType());
                 }
-            }
-            catch (Exception)
-            {
-                //
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Exception when creating root container in {type.Name} editor!\nMessage: {ex.Message}");
+                    defaultEditor = true;
+                }
             }
         }
 
@@ -62,77 +89,234 @@ namespace Pancake.ApexEditor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            if (rootContainer != null)
+            if (serializedObject != null && serializedObject.targetObject != null)
             {
-                if (keepEnable || (!defaultEditor && ApexUtility.Enabled))
+                if (defaultEditor)
+                {
+                    base.OnInspectorGUI();
+                }
+                else
                 {
                     if (searchableEditor)
                     {
-                        SearchField();
+                        DrawSearchField();
                     }
 
                     ApexGUI.IndentLevel = 0;
                     if (!searchableEditor || searchEntities.Count == 0)
                     {
                         HandleMouseMove();
+
                         rootContainer.DoLayout();
+
+                        if (rootContainer.HasObjectChanged())
+                        {
+                            SafeInvokeObjectChanged();
+                        }
+
+                        if (rootContainer.HasGUIChanged())
+                        {
+                            SafeInvokeObjectGUIChanged();
+                        }
                     }
                     else
                     {
-                        OnSearchableEntities();
+                        OnSearchGUI();
                     }
-                }
-                else
-                {
-                    base.OnInspectorGUI();
-                }
 
-                onInspectorGUI.SafeInvoke(target, null);
+                    SafeInvokeInspectorGUI();
+                }
             }
             else
             {
-                GUI.enabled = true;
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.HelpBox(
-                    "Perhaps the script responsible for this component has been deleted from the project. Restore the script or delete this component.",
-                    MessageType.Error);
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Delete", GUILayout.ExpandHeight(true)))
+                OnMissingScriptGUI();
+            }
+        }
+
+        /// <summary>
+        /// Implement this method to draw GUI when target object is missing.
+        /// </summary>
+        protected virtual void OnMissingScriptGUI()
+        {
+            GUI.enabled = true;
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.HelpBox("Perhaps the script responsible for this component has been deleted from the project. Restore the script or delete this component.",
+                MessageType.Error);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Delete", GUILayout.ExpandHeight(true)))
+            {
+                if (AssetDatabase.IsSubAsset(target))
+                {
+                    string assetPath = AssetDatabase.GetAssetPath(target);
+                    AssetDatabase.RemoveObjectFromAsset(target);
+                    DestroyImmediate(target);
+                    AssetDatabase.ImportAsset(assetPath);
+                }
+                else
                 {
                     DestroyImmediate(target);
                 }
-
-                GUILayout.EndHorizontal();
-                GUI.enabled = false;
             }
+
+            GUILayout.EndHorizontal();
+            GUI.enabled = false;
         }
 
         /// <summary>
         /// Called when the editor becomes disabled.
         /// </summary>
-        protected virtual void OnDisable()
+        protected virtual void OnDisable() { SafeInvokeInspectorDispose(); }
+
+        /// <summary>
+        /// Safe invoke all [OnObjectChanged] methods of target object.
+        /// </summary>
+        public void SafeInvokeObjectChanged()
         {
-            try
+            if (onObjectChangedCalls != null)
             {
-                if (serializedObject.targetObject != null)
+                for (int i = 0; i < onObjectChangedCalls.Count; i++)
                 {
-                    Type type = target.GetType();
-                    foreach (MethodInfo methodInfo in type.AllMethods())
+                    onObjectChangedCalls[i].Invoke();
+                }
+            }
+
+            if (!valueDealyCallRegistered && onObjectChangedDelayCalls != null)
+            {
+                EditorApplication.delayCall += OnObjectChangedDelayCall;
+                valueDealyCallRegistered = true;
+            }
+        }
+
+        /// <summary>
+        /// Safe invoke all [OnObjectGUIChanged] methods of target object.
+        /// </summary>
+        public void SafeInvokeObjectGUIChanged()
+        {
+            if (onObjectGUIChangedCalls != null)
+            {
+                for (int i = 0; i < onObjectGUIChangedCalls.Count; i++)
+                {
+                    onObjectGUIChangedCalls[i].Invoke();
+                }
+            }
+
+            if (!guiDealyCallRegistered && onObjectGUIChangedDelayCalls != null)
+            {
+                EditorApplication.delayCall += OnObjectGUIChangedDelayCall;
+                guiDealyCallRegistered = true;
+            }
+        }
+
+        /// <summary>
+        /// Safe invoke all [OnInspectorGUI] methods of target object.
+        /// </summary>
+        private void SafeInvokeInspectorGUI()
+        {
+            if (onInspectorGUICalls != null)
+            {
+                for (int i = 0; i < onInspectorGUICalls.Count; i++)
+                {
+                    onInspectorGUICalls[i].Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Safe invoke all [OnInspectorDispose] methods of target object.
+        /// </summary>
+        private void SafeInvokeInspectorDispose()
+        {
+            if (serializedObject.targetObject != null && onInspectorDisposeCalls != null)
+            {
+                for (int i = 0; i < onInspectorDisposeCalls.Count; i++)
+                {
+                    onInspectorDisposeCalls[i].Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Find and register all callbacks.
+        /// </summary>
+        private void RegisterCallbacks()
+        {
+            Type type = target.GetType();
+            Type limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+
+            foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
+            {
+                EditorMethodAttribute attribute = methodInfo.GetCustomAttribute<EditorMethodAttribute>();
+                if (attribute != null && methodInfo.ReturnType == typeof(void) && methodInfo.GetParameters().Length == 0)
+                {
+                    if (attribute is OnInspectorInitializeAttribute)
                     {
-                        OnInspectorDisposeAttribute attribute = methodInfo.GetCustomAttribute<OnInspectorDisposeAttribute>();
-                        if (attribute != null)
+                        methodInfo.Invoke(target, null);
+                    }
+                    else if (attribute is OnRootContainerCreatedAttribute)
+                    {
+                        methodInfo.Invoke(target, new object[1] {rootContainer});
+                    }
+                    else if (attribute is OnInspectorGUIAttribute)
+                    {
+                        if (onInspectorGUICalls == null)
                         {
-                            if (methodInfo.ReturnType == typeof(void) && methodInfo.GetParameters().Length == 0)
+                            onInspectorGUICalls = new List<Action>(1);
+                        }
+
+                        onInspectorGUICalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                    }
+                    else if (attribute is OnInspectorDisposeAttribute)
+                    {
+                        if (onInspectorDisposeCalls == null)
+                        {
+                            onInspectorDisposeCalls = new List<Action>(1);
+                        }
+
+                        onInspectorDisposeCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                    }
+                    else if (attribute is OnObjectChangedAttribute objectChangedAttribute)
+                    {
+                        if (objectChangedAttribute.DelayCall)
+                        {
+                            if (onObjectChangedDelayCalls == null)
                             {
-                                methodInfo.Invoke(target, null);
+                                onObjectChangedDelayCalls = new List<Action>(1);
                             }
+
+                            onObjectChangedDelayCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                        }
+                        else
+                        {
+                            if (onObjectChangedCalls == null)
+                            {
+                                onObjectChangedCalls = new List<Action>(1);
+                            }
+
+                            onObjectChangedCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                        }
+                    }
+                    else if (attribute is OnObjectGUIChangedAttribute objectGUIChangedAttribute)
+                    {
+                        if (objectGUIChangedAttribute.DelayCall)
+                        {
+                            if (onObjectGUIChangedDelayCalls == null)
+                            {
+                                onObjectGUIChangedDelayCalls = new List<Action>(1);
+                            }
+
+                            onObjectGUIChangedDelayCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                        }
+                        else
+                        {
+                            if (onObjectGUIChangedCalls == null)
+                            {
+                                onObjectGUIChangedCalls = new List<Action>(1);
+                            }
+
+                            onObjectGUIChangedCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                //
             }
         }
 
@@ -155,7 +339,7 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Show all entities whose names match the text entered in the search field.
         /// </summary>
-        private void OnSearchableEntities()
+        private void OnSearchGUI()
         {
             for (int i = 0; i < searchEntities.Count; i++)
             {
@@ -171,7 +355,7 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Show search field.
         /// </summary>
-        private void SearchField()
+        private void DrawSearchField()
         {
             Rect position = GUILayoutUtility.GetRect(0, EditorGUIUtility.singleLineHeight);
 
@@ -223,35 +407,35 @@ namespace Pancake.ApexEditor
             }
         }
 
+        #region [Event Actions]
+
         /// <summary>
-        /// Find all inspector callbacks.
+        /// Editor application delayCall event for calling OnObjectChanged methods with delayCall parameter.
         /// </summary>
-        private void RegisterCallbacks()
+        private void OnObjectChangedDelayCall()
         {
-            System.Type type = target.GetType();
-
-            foreach (MethodInfo methodInfo in type.AllMethods())
+            for (int i = 0; i < onObjectChangedDelayCalls.Count; i++)
             {
-                EditorMethodAttribute attribute = methodInfo.GetCustomAttribute<EditorMethodAttribute>();
-                if (attribute != null)
-                {
-                    if (attribute is OnInspectorInitializeAttribute)
-                    {
-                        methodInfo.Invoke(target, null);
-                    }
-                    else if (onInspectorGUI == null && attribute is OnInspectorGUIAttribute && methodInfo.ReturnType == typeof(void) &&
-                             methodInfo.GetParameters().Length == 0)
-                    {
-                        onInspectorGUI = methodInfo.DelegateForCall();
-                    }
-
-                    if (attribute is OnRootContainerCreatedAttribute)
-                    {
-                        methodInfo.Invoke(target, new object[1] {rootContainer});
-                    }
-                }
+                onObjectChangedDelayCalls[i].Invoke();
             }
+
+            valueDealyCallRegistered = false;
         }
+
+        /// <summary>
+        /// Editor application delayCall event for calling OnObjectGUIChanged methods with delayCall parameter.
+        /// </summary>
+        private void OnObjectGUIChangedDelayCall()
+        {
+            for (int i = 0; i < onObjectGUIChangedDelayCalls.Count; i++)
+            {
+                onObjectGUIChangedDelayCalls[i].Invoke();
+            }
+
+            guiDealyCallRegistered = false;
+        }
+
+        #endregion
 
         #region [Static Members]
 
@@ -293,14 +477,227 @@ namespace Pancake.ApexEditor
         /// </summary>
         private static EditorWindow InspectorWindow;
 
+        /// <summary>
+        /// Overrides the internal library of the Unity editor to make the Apex editor uniform for all editors, regardless of the user editors.
+        /// </summary>
+        [DidReloadScripts]
+        private static void OverrideUnityEditor()
+        {
+            if (ApexUtility.Enabled && ApexUtility.Master)
+            {
+                Assembly assembly = Assembly.GetAssembly(typeof(CustomEditor));
+                if (assembly != null)
+                {
+                    Type type = assembly.GetType("UnityEditor.CustomEditorAttributes");
+                    if (type != null)
+                    {
+#if UNITY_2023_1_OR_NEWER
+                        FieldInfo fieldInfo = type.GetField("k_Instance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                        if (fieldInfo != null)
+                        {
+                            object instance = fieldInfo.GetValue(null);
+                            PropertyInfo instanceValueProperty = instance.GetType().GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
+                            if (instanceValueProperty != null)
+                            {
+                                object instanceValue = instanceValueProperty.GetValue(instance);
+                                FieldInfo cacheField = type.GetField("m_Cache", BindingFlags.NonPublic | BindingFlags.Instance);
+                                if (cacheField != null)
+                                {
+                                    object cache = cacheField.GetValue(instanceValue);
+
+                                    Type cacheType = cache.GetType();
+                                    FieldInfo editorCacheField = cacheType.GetField("m_CustomEditorCache", BindingFlags.NonPublic | BindingFlags.Instance);
+                                    if (editorCacheField != null)
+                                    {
+                                        List<object> invalidKeys = new List<object>();
+
+                                        IDictionary dictionary = editorCacheField.GetValue(cache) as IDictionary;
+                                        foreach (DictionaryEntry entry in dictionary)
+                                        {
+                                            Type keyType = (Type)entry.Key;
+                                            if (IsExtraType(keyType))
+                                            {
+                                                invalidKeys.Add(entry.Key);
+                                            }
+                                            else if (keyType == typeof(Object))
+                                            {
+                                                Type editorStorageType = entry.Value.GetType();
+                                                FieldInfo editorsField = editorStorageType.GetField("customEditors", BindingFlags.Public | BindingFlags.Instance);
+                                                if (editorsField != null)
+                                                {
+                                                    List<int> invalidItems = new List<int>();
+                                                    IList list = editorsField.GetValue(entry.Value) as IList;
+
+                                                    int count = 0;
+                                                    foreach (object item in list)
+                                                    {
+                                                        if (item != null)
+                                                        {
+                                                            Type itemType = item.GetType();
+                                                            FieldInfo itemField = itemType.GetField("inspectorType", BindingFlags.Public | BindingFlags.Instance);
+                                                            if (itemField != null)
+                                                            {
+                                                                Type inspectorType = (Type)itemField.GetValue(item);
+                                                                if (inspectorType != typeof(AEditor))
+                                                                {
+                                                                    invalidItems.Add(count);
+                                                                }
+                                                            }
+                                                        }
+                                                        count++;
+                                                    }
+
+                                                    for (int i = 0; i < invalidItems.Count; i++)
+                                                    {
+                                                        list.RemoveAt(invalidItems[i]);
+                                                    }
+                                                }
+
+                                                FieldInfo editorsMultiField =
+ editorStorageType.GetField("customEditorsMultiEdition", BindingFlags.Public | BindingFlags.Instance);
+                                                if (editorsMultiField != null)
+                                                {
+                                                    List<int> invalidItems = new List<int>();
+                                                    IList list = editorsMultiField.GetValue(entry.Value) as IList;
+
+                                                    int count = 0;
+                                                    foreach (object item in list)
+                                                    {
+                                                        if (item != null)
+                                                        {
+                                                            Type itemType = item.GetType();
+                                                            FieldInfo itemField = itemType.GetField("inspectorType", BindingFlags.Public | BindingFlags.Instance);
+                                                            if (itemField != null)
+                                                            {
+                                                                Type inspectorType = (Type)itemField.GetValue(item);
+                                                                if (inspectorType != typeof(AEditor))
+                                                                {
+                                                                    invalidItems.Add(count);
+                                                                }
+                                                            }
+                                                        }
+                                                        count++;
+                                                    }
+
+                                                    for (int i = 0; i < invalidItems.Count; i++)
+                                                    {
+                                                        list.RemoveAt(invalidItems[i]);
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+                                        for (int i = 0; i < invalidKeys.Count; i++)
+                                        {
+                                            dictionary.Remove(invalidKeys[i]);
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+#else
+                        FieldInfo fieldInfo = type.GetField("kSCustomEditors", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                        if (fieldInfo != null)
+                        {
+                            List<object> invalidKeys = new List<object>();
+                            IDictionary dictionary = (IDictionary) fieldInfo.GetValue(null);
+                            foreach (DictionaryEntry entry in dictionary)
+                            {
+                                Type keyType = (Type) entry.Key;
+                                if (IsExtraType(keyType))
+                                {
+                                    invalidKeys.Add(entry.Key);
+                                }
+                                else if (keyType == typeof(Object))
+                                {
+                                    int count = 0;
+                                    List<int> invalidItems = new List<int>();
+                                    IList list = (IList) entry.Value;
+                                    foreach (object item in list)
+                                    {
+                                        if (item != null)
+                                        {
+                                            Type itemType = item.GetType();
+                                            FieldInfo itemField = itemType.GetField("m_InspectorType", BindingFlags.Public | BindingFlags.Instance);
+                                            if (itemField != null)
+                                            {
+                                                Type inspectedType = (Type) itemField.GetValue(item);
+                                                if (inspectedType != typeof(AEditor))
+                                                {
+                                                    invalidItems.Add(count);
+                                                }
+                                            }
+                                        }
+
+                                        count++;
+                                    }
+
+                                    for (int i = 0; i < invalidItems.Count; i++)
+                                    {
+                                        list.RemoveAt(invalidItems[i]);
+                                    }
+                                }
+                            }
+
+                            for (int i = 0; i < invalidKeys.Count; i++)
+                            {
+                                dictionary.Remove(invalidKeys[i]);
+                            }
+                        }
+                    }
+#endif
+                }
+
+                bool IsExtraType(Type keyType)
+                {
+                    return keyType == typeof(MonoBehaviour) || keyType == typeof(Behaviour) || keyType == typeof(Component) || keyType == typeof(ScriptableObject);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Overrides the internal library of the Unity editor to make the Apex editor uniform for all editors, regardless of the user editors.
+        /// </summary>
+        [InitializeOnLoadMethod]
+        private static void LaunchOverrideUnityEditor()
+        {
+            const string guid = "ApexInternal.UnityEditorLaunched";
+            if (!SessionState.GetBool(guid, false))
+            {
+                EditorApplication.delayCall += OverrideUnityEditor;
+                SessionState.SetBool(guid, true);
+            }
+        }
+
         #endregion
 
         #region [Getter / Setter]
 
         /// <summary>
+        /// Root container of apex editor.
+        /// </summary>
+        /// <returns></returns>
+        public RootContainer GetRootContainer() { return rootContainer; }
+
+        /// <summary>
         /// Set true to enable Apex editor regardless of Apex settings.
         /// </summary>
-        public void KeepEnable(bool value) { keepEnable = value; }
+        public void KeepEnable(bool value)
+        {
+            keepEnable = value;
+            OnEnable();
+        }
+
+        public bool IsDefaultEditor() { return defaultEditor; }
+
+        public void IsDefaultEditor(bool value) { defaultEditor = value; }
+
+        public bool IsSearchableEditor() { return searchableEditor; }
+
+        public void IsSearchableEditor(bool value) { searchableEditor = value; }
 
         #endregion
     }

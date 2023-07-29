@@ -42,9 +42,9 @@ namespace Pancake.ExLib.Reflection
         }
 
         /// <summary>
-        /// Iterate through all the members of the current Type and all base types. 
+        /// Iterate through all the members of the current type and until limit type (not including).
         /// </summary>
-        public static IEnumerable<MemberInfo> AllMembers(this Type type)
+        public static IEnumerable<MemberInfo> AllMembers(this Type type, Type limitDescendant)
         {
             do
             {
@@ -53,15 +53,15 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return memberInfo;
                 }
-
                 type = type.BaseType;
-            } while (type != null);
+            }
+            while (type != null && type != limitDescendant);
         }
 
         /// <summary>
-        /// Iterate through all the fields of the current Type and all base types. 
+        /// Iterate through all the fields of the current type and until limit type (not including).
         /// </summary>
-        public static IEnumerable<FieldInfo> AllFields(this Type type)
+        public static IEnumerable<FieldInfo> AllFields(this Type type, Type limitDescendant)
         {
             do
             {
@@ -70,15 +70,15 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return fieldInfo;
                 }
-
                 type = type.BaseType;
-            } while (type != null);
+            }
+            while (type != null && type != limitDescendant);
         }
 
         /// <summary>
-        /// Iterate through all the methods of the current Type and all base types. 
+        /// Iterate through all the methods of the current type and until limit type (not including).
         /// </summary>
-        public static IEnumerable<MethodInfo> AllMethods(this Type type)
+        public static IEnumerable<MethodInfo> AllMethods(this Type type, Type limitDescendant)
         {
             do
             {
@@ -87,15 +87,15 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return methodInfo;
                 }
-
                 type = type.BaseType;
-            } while (type != null);
+            }
+            while (type != null && type != limitDescendant);
         }
 
         /// <summary>
-        /// Iterate through all the properties of the current Type and all base types. 
+        /// Iterate through all the properties of the current type and until limit type (not including).
         /// </summary>
-        public static IEnumerable<PropertyInfo> AllProperties(this Type type)
+        public static IEnumerable<PropertyInfo> AllProperties(this Type type, Type limitDescendant)
         {
             do
             {
@@ -104,9 +104,41 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return propertyInfo;
                 }
-
                 type = type.BaseType;
-            } while (type != null);
+            }
+            while (type != null && type != limitDescendant);
+        }
+        
+        /// <summary>
+        /// Iterate through all the members of the current type and all base types.
+        /// </summary>
+        public static IEnumerable<MemberInfo> AllMembers(this Type type)
+        {
+            return type.AllMembers(null);
+        }
+
+        /// <summary>
+        /// Iterate through all the fields of the current type and all base types.
+        /// </summary>
+        public static IEnumerable<FieldInfo> AllFields(this Type type)
+        {
+            return type.AllFields(null);
+        }
+
+        /// <summary>
+        /// Iterate through all the methods of the current type and all base types.
+        /// </summary>
+        public static IEnumerable<MethodInfo> AllMethods(this Type type)
+        {
+            return type.AllMethods(null);
+        }
+
+        /// <summary>
+        /// Iterate through all the properties of the current type and all base types.
+        /// </summary>
+        public static IEnumerable<PropertyInfo> AllProperties(this Type type)
+        {
+            return type.AllProperties(null);
         }
 
         /// <summary>

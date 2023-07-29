@@ -502,7 +502,9 @@ namespace Pancake.ApexEditor
                 object value = fieldInfo.GetValue(GetDeclaringObject());
                 if (value != null)
                 {
-                    foreach (MethodInfo methodInfo in value.GetType().AllMethods())
+                    var type = value.GetType();
+                    var limitDescendant = value is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+                    foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
                     {
                         MethodButtonAttribute methodButtonAttribute = methodInfo.GetCustomAttribute<MethodButtonAttribute>();
                         if (methodButtonAttribute != null)
@@ -1100,7 +1102,7 @@ namespace Pancake.ApexEditor
                         SearchContent attribute = type.GetCustomAttribute<SearchContent>();
                         if (attribute != null)
                         {
-                            GUIContent content = new GUIContent(attribute.name, attribute.Tooltip);
+                            GUIContent content = new GUIContent(System.IO.Path.GetFileName(attribute.name), attribute.Tooltip);
                             if (SearchContentUtility.TryLoadContentImage(attribute.Image, out Texture2D icon))
                             {
                                 content.image = icon;
@@ -1110,23 +1112,7 @@ namespace Pancake.ApexEditor
                         }
                         else
                         {
-                            string typeName = type.Name;
-
-                            StringBuilder outputBuilder = new StringBuilder();
-                            outputBuilder.Append(char.ToUpper(typeName[0]));
-
-                            for (int i = 1; i < type.Name.Length; i++)
-                            {
-                                char symbol = typeName[i];
-                                if (char.IsUpper(symbol) && (i + 1) < type.Name.Length && !char.IsUpper(typeName[i + 1]))
-                                {
-                                    outputBuilder.Append(' ');
-                                }
-
-                                outputBuilder.Append(symbol);
-                            }
-
-                            SetLabel(new GUIContent(outputBuilder.ToString(), serializedProperty.tooltip));
+                            SetLabel(new GUIContent(ObjectNames.NicifyVariableName(type.Name), serializedProperty.tooltip));
                         }
                     }
                     else
@@ -1245,6 +1231,7 @@ namespace Pancake.ApexEditor
                 }
 
                 isValueChanged = true;
+                OnValueChanged?.Invoke(value);
                 lastValue = value;
             }
         }
@@ -1437,11 +1424,17 @@ namespace Pancake.ApexEditor
 
         public string GetEnumDisplayValue(int valueIndex) { return serializedProperty.enumDisplayNames[valueIndex]; }
 
+        public string[] GetEnumDisplayValues() { return serializedProperty.enumDisplayNames; }
+
         public string GetEnumValue() { return serializedProperty.enumNames[serializedProperty.enumValueIndex]; }
 
         public string GetEnumValue(int valueIndex) { return serializedProperty.enumNames[valueIndex]; }
 
+        public string[] GetEnumValues() { return serializedProperty.enumNames; }
+
         public int GetEnumValueCount() { return serializedProperty.enumDisplayNames.Length; }
+
+        public int GetEnumValueIndex() { return serializedProperty.enumValueIndex; }
 
         public Quaternion GetQuaternion() { return serializedProperty.quaternionValue; }
 
@@ -1572,11 +1565,15 @@ namespace Pancake.ApexEditor
         #endregion
 
         #region [Event Callback Functions]
+        /// <summary>
+        /// Request to update parent of serialized field.
+        /// </summary>
+        private Action UpdateParent;
 
-        private delegate void UpdateParentDelegate();
-
-        private UpdateParentDelegate UpdateParent;
-
+        /// <summary>
+        /// Called when value changed.
+        /// </summary>
+        public event Action<object> OnValueChanged;
         #endregion
 
         #region [Getter / Setter]

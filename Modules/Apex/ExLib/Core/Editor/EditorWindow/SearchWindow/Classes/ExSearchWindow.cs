@@ -7,6 +7,14 @@ namespace Pancake.ExLibEditor.Windows
 {
     public class ExSearchWindow : ScriptableObject, ISearchWindowProvider, IExSearchWindow, IExSearchWindowEntry
     {
+        [Flags]
+        public enum SortType
+        {
+            None = 0,
+            Directory = 1,
+            Alphabet = 2
+        }
+        
         private struct Entry
         {
             public readonly GUIContent content;
@@ -22,6 +30,7 @@ namespace Pancake.ExLibEditor.Windows
         }
 
         private string title = string.Empty;
+        private SortType sortType = SortType.Directory | SortType.Alphabet;
         private List<Entry> entries = new List<Entry>();
 
         /// <summary>
@@ -31,7 +40,10 @@ namespace Pancake.ExLibEditor.Windows
         /// <returns>Returns the list of SearchTreeEntry objects displayed in the search window.</returns>
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
-            entries.Sort(SortEntriesByGroup);
+            if(sortType != SortType.None) 
+            {
+                entries.Sort(SortEntriesByGroup);
+            }
 
             List<SearchTreeEntry> treeEntries = new List<SearchTreeEntry>() {new SearchTreeGroupEntry(new GUIContent(title), 0)};
 
@@ -169,19 +181,25 @@ namespace Pancake.ExLibEditor.Windows
 
             for (int i = 0; i < minLength; i++)
             {
-                if (minLength - 1 == i)
+                if((sortType & SortType.Directory) != 0)
                 {
-                    int compareDepth = rhsLength.CompareTo(lhsLength);
-                    if (compareDepth != 0)
+                    if (minLength - 1 == i)
                     {
-                        return compareDepth;
+                        int compareDepth = rhsLength.CompareTo(lhsLength);
+                        if (compareDepth != 0)
+                        {
+                            return compareDepth;
+                        }
                     }
                 }
 
-                int compareText = lhsPaths[i].CompareTo(rhsPaths[i]);
-                if (compareText != 0)
+                if((sortType & SortType.Alphabet) != 0)
                 {
-                    return compareText;
+                    int compareText = lhsPaths[i].CompareTo(rhsPaths[i]);
+                    if (compareText != 0)
+                    {
+                        return compareText;
+                    }
                 }
             }
 
@@ -219,7 +237,16 @@ namespace Pancake.ExLibEditor.Windows
         public string GetTitle() { return title; }
 
         public void SetTitle(string value) { title = value; }
+        
+        public SortType GetSortType()
+        {
+            return sortType;
+        }
 
+        public void SetSortType(SortType value)
+        {
+            sortType = value;
+        }
         #endregion
     }
 }

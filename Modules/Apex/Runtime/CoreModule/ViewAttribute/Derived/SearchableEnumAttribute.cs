@@ -3,32 +3,24 @@
 namespace Pancake.Apex
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public sealed class SearchableEnumAttribute : ViewAttribute
+    public sealed class SearchableEnumAttribute : BaseEnumAttribute
     {
-        public SearchableEnumAttribute()
+        public SearchableEnumAttribute() : base()
         {
             Height = 200.0f;
-            OnSelect = string.Empty;
-            HideValues = null;
+            ToggleIcons = false;
         }
 
         #region [Parameters]
-
         /// <summary>
         /// Search menu max height.
         /// </summary>
         public float Height { get; set; }
 
         /// <summary>
-        /// Hide specific enum values.
+        /// Use the built-in icons to mark the selected flags, when using flagged enum, keep in mind that icons from [SearchContent] attributes will be ignored.
         /// </summary>
-        public string[] HideValues { get; set; }
-
-        /// <summary>
-        /// Called when item has been selected.
-        /// </summary>
-        public string OnSelect { get; set; }
-
+        public bool ToggleIcons { get; set; }
         #endregion
     }
 }

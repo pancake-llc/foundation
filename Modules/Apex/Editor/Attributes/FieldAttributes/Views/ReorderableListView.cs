@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
@@ -157,8 +158,10 @@ namespace Pancake.ApexEditor
 
         private void FindCallbacks(object target, ReorderableListAttribute attribute)
         {
-            Type type = target.GetType();
-            foreach (MethodInfo methodInfo in type.AllMethods())
+            var type = target.GetType();
+            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
+            
+            foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 if (onHeaderGUI != null && onElementGUI != null && onNoneElementGUI != null && getElementHeight != null && onAddElement != null &&
                     onAddDropdownElement != null && onRemoveElement != null && getElementLabel != null)

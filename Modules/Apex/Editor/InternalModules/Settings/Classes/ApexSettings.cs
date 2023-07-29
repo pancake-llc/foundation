@@ -10,9 +10,9 @@ namespace Pancake.ApexEditor
     {
         [SerializeField] private bool enabled = true;
 
-        [SerializeField] private bool animate = true;
+        [SerializeField] private bool master = true;
 
-        [SerializeField] private bool validateOnStartup = false;
+        [SerializeField] private bool animate = true;
 
         [SerializeField] [Array(OnElementGUI = nameof(OnExceptTypeGUI), GetElementHeight = nameof(GetExceptTypeHeight))]
         private ExceptType[] exceptTypes;
@@ -22,8 +22,8 @@ namespace Pancake.ApexEditor
         /// </summary>
         public void Save()
         {
-            Save(true);
             ApplySettings();
+            Save(true);
         }
 
         /// <summary>
@@ -32,18 +32,19 @@ namespace Pancake.ApexEditor
         private void ApplySettings()
         {
             ApexUtility.Enabled = enabled;
+            ApexUtility.Master = master;
             ApexGUIUtility.Animate = animate;
 
-            ApexUtility.exceptTypes.Clear();
-            ApexUtility.exceptTypes.Add(new ExceptType("UnityEventBase", true));
-            ApexUtility.exceptTypes.Add(new ExceptType("Optional`1", true));
+            ApexUtility.ExceptTypes.Clear();
+            ApexUtility.ExceptTypes.Add(new ExceptType("UnityEventBase", true));
+            ApexUtility.ExceptTypes.Add(new ExceptType("Optional`1", true));
 
             if (exceptTypes != null)
             {
                 for (int i = 0; i < exceptTypes.Length; i++)
                 {
                     ExceptType exceptType = exceptTypes[i];
-                    if (!ApexUtility.exceptTypes.Add(exceptType))
+                    if (!ApexUtility.ExceptTypes.Add(exceptType))
                     {
                         Debug.LogWarning(
                             $"<b>Message:</b> An attempt to add two identical types for an exception. Remove duplicate types: <color=red>{exceptType.GetName()}</color>");
@@ -83,12 +84,13 @@ namespace Pancake.ApexEditor
         public static void ResetSettings(ApexSettings settings)
         {
             settings.enabled = true;
+            settings.master = true;
             settings.animate = true;
             settings.exceptTypes = null;
         }
 
         /// <summary>
-        /// Apply settings to internal classes at editor launch.
+        /// Apply settings when Unity loads.
         /// </summary>
         [InitializeOnLoadMethod]
         private static void LoadSettings() { instance.ApplySettings(); }
@@ -100,14 +102,20 @@ namespace Pancake.ApexEditor
         public bool Enabled() { return enabled; }
 
         public void Enabled(bool value) { enabled = value; }
+        
+        public bool Master()
+        {
+            return master;
+        }
+
+        public void Master(bool value)
+        {
+            master = value;
+        }
 
         public bool Animate() { return animate; }
 
         public void Animate(bool value) { animate = value; }
-
-        public bool ValidateOnStartup() { return validateOnStartup; }
-
-        public void ValidateOnStartup(bool value) { validateOnStartup = value; }
 
         public ExceptType[] GetExceptTypes() { return exceptTypes; }
 
