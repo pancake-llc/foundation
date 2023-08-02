@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+#if PANCAKE_REMOTE_CONFIG
 using Firebase;
 using Firebase.Extensions;
 using Firebase.RemoteConfig;
+#endif
 using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
@@ -14,6 +16,7 @@ namespace Pancake.Tracking
         [SerializeField] private BoolVariable remoteFetchCompleted;
         [SerializeField, Array] private StringPairVariable[] remoteFields;
 
+#if PANCAKE_REMOTE_CONFIG
         private void Start()
         {
             remoteFetchCompleted.Value = false;
@@ -76,5 +79,6 @@ namespace Pancake.Tracking
 
             remoteFetchCompleted.Value = true;
         }
+#endif
     }
 }
