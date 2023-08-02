@@ -36,6 +36,7 @@ namespace PancakeEditor
             IOS14AdvertisingSupport,
             ParticleEffectForUGUI,
             UIEffect,
+            Spine,
         }
 
         private enum WizardMonetizeType
@@ -60,6 +61,7 @@ namespace PancakeEditor
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
             ParticleEffectForUGUI = WizardAllType.ParticleEffectForUGUI,
             UIEffect = WizardAllType.UIEffect,
+            Spine = WizardAllType.Spine
         }
 
         private enum WizardSettingType
@@ -215,6 +217,9 @@ namespace PancakeEditor
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesLevelSystemDrawer.OnInspectorGUI(position);
                     break;
+                case WizardAllType.Spine when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesSpineDrawer.OnInspectorGUI(Repaint);
+                    break;
             }
         }
 
@@ -287,6 +292,7 @@ namespace PancakeEditor
                 case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
                 case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
+                case WizardAllType.Spine: return EditorResources.ScriptableEditorSetting;
                 default:
                     return null;
             }

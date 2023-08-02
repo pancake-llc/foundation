@@ -1,0 +1,22 @@
+{
+    "name": "Pancake.Spine.Editor",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "PANCAKE_SPINE"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.esotericsoftware.spine.spine-unity",
+            "expression": "",
+            "define": "PANCAKE_SPINE"
+        }
+    ],
+    "noEngineReferences": false
+}
