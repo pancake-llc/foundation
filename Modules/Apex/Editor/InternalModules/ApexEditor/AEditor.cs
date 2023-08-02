@@ -7,7 +7,6 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using System;
 using System.Collections;
 using UnityEditor.Callbacks;
 using Object = UnityEngine.Object;
