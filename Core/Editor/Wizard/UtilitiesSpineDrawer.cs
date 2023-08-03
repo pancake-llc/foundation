@@ -1,4 +1,7 @@
 ﻿using System;
+using UnityEngine;
+using UnityEditor;
+#if PANCAKE_SPINE
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -7,10 +10,9 @@ using Pancake.ExLibEditor;
 using Spine;
 using Spine.Unity;
 using Spine.Unity.Editor;
-using UnityEditor;
-using UnityEngine;
 using Animation = Spine.Animation;
 using Event = UnityEngine.Event;
+#endif
 
 namespace PancakeEditor
 {
@@ -18,8 +20,9 @@ namespace PancakeEditor
     {
         public static void OnInspectorGUI(Action repaint, Rect position)
         {
-            onRepaint = repaint;
 #if PANCAKE_SPINE
+            onRepaint = repaint;
+
             Uniform.DrawInstalled("4.1");
 
             var selectionSkeletonAnimation = (Selection.activeObject as GameObject)?.GetComponent<SkeletonAnimation>();
@@ -449,7 +452,7 @@ namespace PancakeEditor
             currentSkeleton.SetSkin(skeletonGraphic.initialSkinName);
             currentAnimState = skeletonGraphic.AnimationState;
         }
-        
+
 #endif
     }
 }

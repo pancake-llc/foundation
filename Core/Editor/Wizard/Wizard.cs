@@ -108,7 +108,9 @@ namespace PancakeEditor
 
         private void OnDisable()
         {
+#if PANCAKE_SPINE
             UtilitiesSpineDrawer.Clear();
+#endif
         }
 
         protected override void OnGUI()
