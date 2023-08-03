@@ -26,6 +26,8 @@ namespace Pancake.Editor
         private Field _enableRequestTimesApi;
         private Field _infoRequestParams;
 
+        private bool _needForceSaveSharedSettings;
+
         private void Init()
         {
             _titleId = new Field(serializedObject.FindProperty("titleId"), new GUIContent("Title Id", "Title id of project"));
@@ -40,12 +42,6 @@ namespace Pancake.Editor
             _enableRequestTimesApi = new Field(serializedObject.FindProperty("enableRequestTimesApi"), new GUIContent("Request Times API", "Enable request time api"));
             _infoRequestParams = new Field(serializedObject.FindProperty("infoRequestParams"), new GUIContent("Info Request Param"));
         }
-
-        // private void OnDisable()
-        // {
-        //     EditorUtility.SetDirty(ServiceSettings.SharedSettings);
-        //     AssetDatabase.SaveAssets();
-        // }
 
         public override void OnInspectorGUI()
         {
@@ -62,14 +58,16 @@ namespace Pancake.Editor
             }
 
             EditorGUI.BeginDisabledGroup(EditorApplication.isCompiling);
-
+            
             Uniform.DrawGroupFoldout("PLAYFAB_SETTING",
                 "SETTING",
                 () =>
                 {
+                    EditorGUI.BeginChangeCheck();
                     EditorGUILayout.PropertyField(_titleId.property, _titleId.content);
                     EditorGUILayout.PropertyField(_secretKey.property, _secretKey.content);
                     EditorGUILayout.PropertyField(_requestType.property, _requestType.content);
+                    _needForceSaveSharedSettings = EditorGUI.EndChangeCheck();
 
                     ServiceSettings.SharedSettings.TitleId = ServiceSettings.TitleId;
 #if ENABLE_PLAYFABSERVER_API || ENABLE_PLAYFABADMIN_API || UNITY_EDITOR
@@ -109,6 +107,12 @@ namespace Pancake.Editor
                 });
 
             EditorGUI.EndDisabledGroup();
+            if (_needForceSaveSharedSettings)
+            {
+                _needForceSaveSharedSettings = false;
+                EditorUtility.SetDirty(ServiceSettings.SharedSettings);
+                AssetDatabase.SaveAssets();
+            }
             serializedObject.ApplyModifiedProperties();
         }
     }

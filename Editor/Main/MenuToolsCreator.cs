@@ -64,14 +64,18 @@ namespace Pancake.Editor
             var shareSetting = ServiceSettings.LoadPlayFabSharedSettings();
             if (shareSetting == null)
             {
+                ServiceSettings.sharedSettings = null;
                 var _ = ServiceSettings.SharedSettings;
             }
 
             var setting = ServiceSettings.LoadSettings();
             if (setting == null)
             {
+                ServiceSettings.instance = null;
                 var _ = ServiceSettings.Instance;
             }
+            
+            ServiceSettingWindow.ShowWindow();
         }
 #endif
 

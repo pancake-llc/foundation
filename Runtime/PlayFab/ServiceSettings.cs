@@ -13,8 +13,8 @@ namespace Pancake.GameService
     {
         public static int delayFetchRank = 180;
         public const string INTERNAL_CONFIG_KEY = "__internal_config";
-        private static ServiceSettings instance;
-        private static PlayFabSharedSettings sharedSettings;
+        internal static ServiceSettings instance;
+        internal static PlayFabSharedSettings sharedSettings;
 
         public static ServiceSettings Instance
         {
