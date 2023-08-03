@@ -1,43 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Pancake;
 using Pancake.ExLibEditor;
 using Spine;
 using Spine.Unity;
+using Spine.Unity.Editor;
 using UnityEditor;
 using UnityEngine;
 using Animation = Spine.Animation;
+using Event = UnityEngine.Event;
 
 namespace PancakeEditor
 {
     public static class UtilitiesSpineDrawer
     {
-        public static void OnInspectorGUI(Action repaint)
+        public static void OnInspectorGUI(Action repaint, Rect position)
         {
             onRepaint = repaint;
 #if PANCAKE_SPINE
             Uniform.DrawInstalled("4.1");
-            
+
             var selectionSkeletonAnimation = (Selection.activeObject as GameObject)?.GetComponent<SkeletonAnimation>();
             var selectionSkeletonGraphic = (Selection.activeObject as GameObject)?.GetComponent<SkeletonGraphic>();
 
             if (selectionSkeletonAnimation == null && selectionSkeletonGraphic == null)
             {
-                EditorGUILayout.LabelField("Please select GameObject has Skeleton Animation or Skeleton Graphic to continue!");
+                EditorGUILayout.HelpBox("Please select GameObject has Skeleton Animation or Skeleton Graphic to continue!", MessageType.Warning);
                 return;
             }
-            
+
             autoRun = EditorGUILayout.Toggle("Auto Run", autoRun, GUILayout.ExpandWidth(false));
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Selected skeleton : ", GUILayout.Width(140));
+            EditorGUILayout.LabelField("Selected skeleton", GUILayout.Width(140));
             GUI.enabled = false;
             skeletonAnimation = null;
             skeletonGraphic = null;
-            
+
             if (selectionSkeletonAnimation != null)
-                skeletonAnimation = (EditorGUILayout.ObjectField(Selection.activeObject, typeof(SkeletonAnimation), true) as GameObject)?.GetComponent<SkeletonAnimation>();
-            if (skeletonAnimation == null)
             {
-                if (selectionSkeletonGraphic != null) skeletonGraphic = (EditorGUILayout.ObjectField(Selection.activeObject, typeof(SkeletonGraphic), true) as GameObject)?.GetComponent<SkeletonGraphic>();
+                skeletonAnimation = selectionSkeletonAnimation;
+                EditorGUILayout.ObjectField(Selection.activeObject, typeof(SkeletonAnimation), true);
+            }
+
+            if (selectionSkeletonAnimation == null && selectionSkeletonGraphic != null)
+            {
+                skeletonGraphic = selectionSkeletonGraphic;
+                EditorGUILayout.ObjectField(Selection.activeObject, typeof(SkeletonGraphic), true);
             }
 
             GUI.enabled = true;
@@ -58,27 +68,23 @@ namespace PancakeEditor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField($"Frame : {(int) (playTime * 30)}", GUILayout.Width(140), GUILayout.ExpandWidth(false));
+            if (currentAnim != null) playTime = EditorGUILayout.Slider(playTime, 0, currentAnim.Duration);
+            else EditorGUILayout.Slider(playTime, 0, 0);
             EditorGUILayout.EndHorizontal();
-            
+
             EditorGUILayout.BeginVertical();
             if (autoRun)
             {
-                EditorGUILayout.LabelField("Speed");
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Speed", GUILayout.Width(140));
                 timeScale = EditorGUILayout.Slider(timeScale, 0, 2f);
-                currentAnimState.TimeScale = timeScale;
+                EditorGUILayout.EndHorizontal();
+                if (currentAnimState != null) currentAnimState.TimeScale = timeScale;
             }
 
-            if (currentAnim != null) playTime = EditorGUILayout.Slider(playTime, 0, currentAnim.Duration);
-            else EditorGUILayout.Slider(playTime, 0, 0);
             EditorGUILayout.EndVertical();
 
-            EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.EndHorizontal();
-
-
-            EditorGUILayout.EndVertical();
-            Draw();
+            Draw(position);
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.Space();
@@ -108,7 +114,8 @@ namespace PancakeEditor
 #endif
         }
 
-        private static Spine.Animation currentAnim;
+#if PANCAKE_SPINE
+        private static Animation currentAnim;
         private static Spine.AnimationState currentAnimState;
         private static Skeleton currentSkeleton;
         private static SkeletonDataAsset currentDataAsset;
@@ -120,29 +127,224 @@ namespace PancakeEditor
         private static bool isNeedReload;
         private static Animation[] animations;
         private static Skin[] skins;
-        public static bool autoRun;
+        private static bool autoRun;
         private static float animationLastTime;
         private static float playTime;
-        private static float timeScale;
+        private static float timeScale = 1f;
         private static Action onRepaint;
+        private static string searchAnimation = string.Empty;
+        private static string searchAnimationPrevious = string.Empty;
+        private static string searchSkin = string.Empty;
+        private static string searchSkinPrevious = string.Empty;
+        private static bool open;
 
-        private static void Draw()
+
+        public static void Clear()
+        {
+            EditorApplication.update -= HandleEditorUpdate;
+            Selection.selectionChanged -= SelectionChanged;
+        }
+
+        private static void Draw(Rect position)
         {
             EditorApplication.update -= HandleEditorUpdate;
             EditorApplication.update += HandleEditorUpdate;
             Selection.selectionChanged -= SelectionChanged;
             Selection.selectionChanged += SelectionChanged;
 
+            if (!SessionState.GetBool("spine_flag", false))
+            {
+                SessionState.SetBool("spine_flag", true);
+                SelectionChanged();
+            }
+
             if (Application.isPlaying) return;
 
             if (currentSkeleton != null)
             {
-                //DrawRightSide();
-                //DrawLeftSide();
+                EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
+                EditorGUILayout.BeginHorizontal();
+                DrawLeftSide(position);
+                DrawRightSide();
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.EndVertical();
+
+                if (isNeedReload)
+                {
+                    isNeedReload = false;
+                    if (skeletonAnimation != null)
+                    {
+                        skeletonAnimation.ClearState();
+                        if (currentAnim != null) skeletonAnimation.AnimationName = currentAnim.Name;
+
+                        skeletonAnimation.initialSkinName = skeletonAnimation.skeleton.Data.Skins.Items[0].Name;
+                        skeletonAnimation.LateUpdate();
+                        skeletonAnimation.Initialize(true);
+                        currentAnimState = skeletonAnimation.state;
+                        currentAnimState.TimeScale = timeScale;
+                        skeletonAnimation.gameObject.SetActive(false);
+                        skeletonAnimation.gameObject.SetActive(true);
+                        ChangeSkin();
+                    }
+                    else if (skeletonGraphic != null)
+                    {
+                        skeletonGraphic.Clear();
+                        if (currentAnim != null) skeletonGraphic.startingAnimation = currentAnim.Name;
+                        skeletonGraphic.AnimationState.SetAnimation(0, currentAnim.Name, false);
+                        skeletonGraphic.LateUpdate();
+                        skeletonGraphic.Initialize(true);
+                        currentAnimState.TimeScale = timeScale;
+                        skeletonGraphic.gameObject.SetActive(false);
+                        skeletonGraphic.gameObject.SetActive(true);
+                        currentAnimState = skeletonGraphic.AnimationState;
+                        ChangeSkin();
+                    }
+
+                    onRepaint?.Invoke();
+                }
             }
         }
 
-        private static void SelectionChanged() { }
+        private static void DrawLeftSide(Rect position)
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(300));
+            searchAnimation = EditorGUILayout.TextField(searchAnimation, EditorStyles.toolbarSearchField);
+            animScrollPos = EditorGUILayout.BeginScrollView(animScrollPos);
+            int count = 0;
+            if (searchAnimation != searchAnimationPrevious)
+            {
+                searchAnimationPrevious = searchAnimation;
+                animations = currentSkeleton.Data.Animations.Items.Where(_ => _.Name.ToLower().Contains(searchAnimation.ToLower())).ToArray();
+            }
+
+            foreach (var a in animations)
+            {
+                if (a == currentAnim)
+                    GUILayout.BeginHorizontal(new GUIStyle {normal = new GUIStyleState {background = EditorCreator.CreateTexture(new Color(0.36f, 0.36f, 0.36f))}});
+                else GUILayout.BeginHorizontal();
+
+                EditorGUILayout.LabelField(new GUIContent(SpineEditorUtilities.Icons.animation), GUILayout.Width(18));
+                EditorGUILayout.LabelField(a.Name,
+                    new GUIStyle {normal = new GUIStyleState {textColor = Color.white}, alignment = TextAnchor.MiddleLeft, margin = new RectOffset(5, 0, 0, 0)},
+                    GUILayout.Height(24), GUILayout.Width(150));
+                EditorGUILayout.LabelField(a.Duration.ToString(CultureInfo.InvariantCulture),
+                    new GUIStyle
+                    {
+                        normal = new GUIStyleState {textColor = new Color(0.48f, 0.48f, 0.48f)},
+                        alignment = TextAnchor.MiddleRight,
+                        margin = new RectOffset(5, 5, 0, 0)
+                    },
+                    GUILayout.Height(24), GUILayout.ExpandWidth(true), GUILayout.Width(100));
+
+                GUILayout.EndHorizontal();
+                var lastRect = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.MouseDown && lastRect.Contains(Event.current.mousePosition))
+                {
+                    currentAnim = a;
+                    isNeedReload = true;
+                    if (Event.current.control)
+                    {
+                        EditorGUIUtility.systemCopyBuffer = a.Name;
+                    }
+                }
+
+                onRepaint?.Invoke();
+                count++;
+            }
+
+            EditorGUILayout.EndScrollView();
+            GUILayout.EndVertical();
+        }
+
+        private static void DrawRightSide()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            searchSkin = EditorGUILayout.TextField(searchSkin, EditorStyles.toolbarSearchField);
+            skinScrollPos = EditorGUILayout.BeginScrollView(skinScrollPos);
+            int count = 0;
+            if (searchSkin != searchSkinPrevious)
+            {
+                searchSkinPrevious = searchSkin;
+                skins = currentSkeleton.Data.Skins.Items.Where(_ => _.Name.ToLower().Contains(searchSkin.ToLower())).ToArray();
+            }
+
+            foreach (var s in skins)
+            {
+                if (currentSkins.Contains(s))
+                {
+                    EditorGUILayout.BeginHorizontal(new GUIStyle {normal = new GUIStyleState {background = EditorCreator.CreateTexture(new Color(0.36f, 0.36f, 0.36f))}});
+                }
+                else
+                {
+                    EditorGUILayout.BeginHorizontal();
+                }
+
+                EditorGUILayout.LabelField(new GUIContent(SpineEditorUtilities.Icons.skin), GUILayout.ExpandWidth(false), GUILayout.Width(32));
+                EditorGUILayout.LabelField($"{s.Name}",
+                    new GUIStyle {normal = new GUIStyleState {textColor = Color.white}, alignment = TextAnchor.MiddleLeft, margin = new RectOffset(5, 0, 0, 0)},
+                    GUILayout.Height(24));
+
+                EditorGUILayout.EndHorizontal();
+                var lastRect = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.MouseDown && lastRect.Contains(Event.current.mousePosition))
+                {
+                    if (!currentSkins.Contains(s))
+                    {
+                        currentSkins.Add(s);
+                    }
+                    else
+                    {
+                        currentSkins.Remove(s);
+                    }
+
+                    ChangeSkin();
+                    if (Event.current.control)
+                    {
+                        EditorGUIUtility.systemCopyBuffer = s.Name;
+                    }
+
+                    onRepaint?.Invoke();
+                }
+
+                count++;
+            }
+
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.EndVertical();
+        }
+
+        private static void SelectionChanged()
+        {
+            UpdateSkeleton();
+            UpdateGraphic();
+            onRepaint?.Invoke();
+        }
+
+        private static void ChangeSkin()
+        {
+            if (currentSkins.Count <= 0) return;
+
+            var skinTemp = new Skin("temp");
+            foreach (var skin in currentSkins)
+            {
+                skinTemp.AddSkin(skin);
+            }
+
+            if (skeletonAnimation != null)
+            {
+                skeletonAnimation.initialSkinName = "temp";
+                skeletonAnimation.skeleton.SetSkin(skinTemp);
+                skeletonAnimation.skeleton.SetSlotsToSetupPose();
+                skeletonAnimation.LateUpdate();
+                skeletonAnimation.AnimationState.Apply(skeletonAnimation.skeleton);
+            }
+            else if (skeletonGraphic != null)
+            {
+                skeletonGraphic.Skeleton.SetSkin(skinTemp);
+                skeletonGraphic.Skeleton.SetSlotsToSetupPose();
+                skeletonGraphic.LateUpdate();
+            }
+        }
 
         private static void HandleEditorUpdate()
         {
@@ -214,6 +416,9 @@ namespace PancakeEditor
 
         private static void UpdateSkeleton()
         {
+            skeletonAnimation = (Selection.activeObject as GameObject)?.GetComponent<SkeletonAnimation>();
+            if (skeletonAnimation == null) return;
+
             currentSkins.Clear();
             currentSkeleton = skeletonAnimation.Skeleton;
             UpdateListView();
@@ -232,6 +437,9 @@ namespace PancakeEditor
 
         private static void UpdateGraphic()
         {
+            skeletonGraphic = (Selection.activeObject as GameObject)?.GetComponent<SkeletonGraphic>();
+            if (skeletonGraphic == null) return;
+
             currentSkins.Clear();
             currentSkeleton = skeletonGraphic.Skeleton;
             UpdateListView();
@@ -241,5 +449,7 @@ namespace PancakeEditor
             currentSkeleton.SetSkin(skeletonGraphic.initialSkinName);
             currentAnimState = skeletonGraphic.AnimationState;
         }
+        
+#endif
     }
 }

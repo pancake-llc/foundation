@@ -3,14 +3,13 @@ using Pancake;
 using Pancake.ExLibEditor;
 using Pancake.LevelSystemEditor;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace PancakeEditor
 {
     public static class UtilitiesLevelSystemDrawer
     {
-        public static void OnInspectorGUI(Rect position)
+        public static void OnInspectorGUI()
         {
             var scriptableSetting = Resources.Load<LevelSystemEditorSetting>(nameof(LevelSystemEditorSetting));
             if (scriptableSetting == null)

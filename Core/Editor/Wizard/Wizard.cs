@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Pancake.ExLibEditor;
@@ -89,6 +90,7 @@ namespace PancakeEditor
             var window = GetWindow<Wizard>("Wizard");
             window.autoRepaintOnSceneChange = true;
             window.Show(true);
+            SessionState.SetBool("spine_flag", false);
         }
 
         protected override void OnEnable()
@@ -102,6 +104,11 @@ namespace PancakeEditor
             SelectTab((int) _currentType, true);
             isInitialized = true;
             SessionState.SetBool("advertising_flag", false);
+        }
+
+        private void OnDisable()
+        {
+            UtilitiesSpineDrawer.Clear();
         }
 
         protected override void OnGUI()
@@ -215,10 +222,10 @@ namespace PancakeEditor
                     UtilitiesUIEffectDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesLevelSystemDrawer.OnInspectorGUI(position);
+                    UtilitiesLevelSystemDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Spine when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesSpineDrawer.OnInspectorGUI(Repaint);
+                    UtilitiesSpineDrawer.OnInspectorGUI(Repaint, position);
                     break;
             }
         }
