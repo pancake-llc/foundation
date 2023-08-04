@@ -1,16 +1,18 @@
 {
-    "name": "Pancake.Spine.Editor",
+    "name": "Pancake.Spine",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:72d1fea872bd7a449bf3818f2b0a6708",
+        "GUID:68765d262e2128e4ab49c983f3411946",
+        "GUID:adac8d59ad7e8504f82d387cded797a7"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "PANCAKE_SPINE"
-    ],
+    "defineConstraints": [],
     "versionDefines": [
         {
             "name": "com.esotericsoftware.spine.spine-unity",

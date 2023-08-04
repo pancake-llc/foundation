@@ -140,6 +140,7 @@ namespace PancakeEditor
         private static string searchSkin = string.Empty;
         private static string searchSkinPrevious = string.Empty;
         private static bool open;
+        private static bool mixSkin;
 
 
         public static void Clear()
@@ -262,7 +263,11 @@ namespace PancakeEditor
         private static void DrawRightSide()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.BeginHorizontal();
             searchSkin = EditorGUILayout.TextField(searchSkin, EditorStyles.toolbarSearchField);
+            EditorGUILayout.LabelField("Mix", GUILayout.Width(24));
+            mixSkin = EditorGUILayout.Toggle("", mixSkin, GUILayout.Width(16));
+            EditorGUILayout.EndHorizontal();
             skinScrollPos = EditorGUILayout.BeginScrollView(skinScrollPos);
             int count = 0;
             if (searchSkin != searchSkinPrevious)
@@ -291,13 +296,21 @@ namespace PancakeEditor
                 var lastRect = GUILayoutUtility.GetLastRect();
                 if (Event.current.type == EventType.MouseDown && lastRect.Contains(Event.current.mousePosition))
                 {
-                    if (!currentSkins.Contains(s))
+                    if (mixSkin)
                     {
-                        currentSkins.Add(s);
+                        if (!currentSkins.Contains(s))
+                        {
+                            currentSkins.Add(s);
+                        }
+                        else
+                        {
+                            currentSkins.Remove(s);
+                        }
                     }
                     else
                     {
-                        currentSkins.Remove(s);
+                        currentSkins.Clear();
+                        currentSkins.Add(s);
                     }
 
                     ChangeSkin();
