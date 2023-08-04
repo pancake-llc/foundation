@@ -41,7 +41,10 @@
         "GoogleMobileAds.Common.dll",
         "GoogleMobileAds.Core.dll",
         "Firebase.Analytics.dll",
-        "Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll",
+        "Facebook.Unity.Android.dll",
+        "Facebook.Unity.dll",
+        "Facebook.Unity.Settings.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
