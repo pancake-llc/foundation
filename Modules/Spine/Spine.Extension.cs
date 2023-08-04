@@ -96,7 +96,17 @@ namespace Pancake.Spine
             return skeleton;
         }
 
-        public static SkeletonAnimation ChangeAttachment(this SkeletonAnimation skeleton, string slotName, string attachmentName) { return skeleton; }
+        public static SkeletonAnimation ChangeAttachment(this SkeletonAnimation skeleton, string slotName, string attachmentName)
+        {
+            var slotIndex = skeleton.skeleton.Data.FindSlot(slotName).Index;
+            var attachment = skeleton.skeleton.GetAttachment(slotIndex, attachmentName);
+            var skin = new Skin("temp");
+            skin.SetAttachment(slotIndex, slotName, attachment);
+            skeleton.skeleton.SetSkin(skin);
+            skeleton.skeleton.SetSlotsToSetupPose();
+            skeleton.LateUpdate();
+            return skeleton;
+        }
 
         public static SkeletonGraphic ChangeAttachment(this SkeletonGraphic skeleton, string slotName, string attachmentName) { return skeleton; }
 
