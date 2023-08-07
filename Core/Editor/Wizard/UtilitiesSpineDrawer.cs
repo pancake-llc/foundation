@@ -21,6 +21,25 @@ namespace PancakeEditor
         public static void OnInspectorGUI(Action repaint, Rect position)
         {
 #if PANCAKE_SPINE
+            void DrawButtonUninstall()
+            {
+                GUILayout.FlexibleSpace();
+                EditorGUILayout.Space();
+                GUI.backgroundColor = Uniform.Red;
+                if (GUILayout.Button("Uninstall Spine", GUILayout.MaxHeight(25f)))
+                {
+                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Spine", "Are you sure you want to uninstall spine package ?", "Yes", "No");
+                    if (confirmDelete)
+                    {
+                        RegistryManager.Remove("com.esotericsoftware.spine.spine-csharp");
+                        RegistryManager.Remove("com.esotericsoftware.spine.spine-unity");
+                        RegistryManager.Resolve();
+                    }
+                }
+
+                GUI.backgroundColor = Color.white;
+            }
+            
             onRepaint = repaint;
 
             Uniform.DrawInstalled("4.1");
@@ -31,6 +50,7 @@ namespace PancakeEditor
             if (selectionSkeletonAnimation == null && selectionSkeletonGraphic == null)
             {
                 EditorGUILayout.HelpBox("Please select GameObject has Skeleton Animation or Skeleton Graphic to continue!", MessageType.Warning);
+                DrawButtonUninstall();
                 return;
             }
 
@@ -89,21 +109,7 @@ namespace PancakeEditor
 
             Draw(position);
 
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.Space();
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall Spine", GUILayout.MaxHeight(25f)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Spine", "Are you sure you want to uninstall spine package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.esotericsoftware.spine.spine-csharp");
-                    RegistryManager.Remove("com.esotericsoftware.spine.spine-unity");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
+            DrawButtonUninstall();
 #else
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Spine 4.1", GUILayout.MaxHeight((40f))))
