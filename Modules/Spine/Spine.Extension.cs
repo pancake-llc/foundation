@@ -108,11 +108,21 @@ namespace Pancake.Spine
             return skeleton;
         }
 
-        public static SkeletonGraphic ChangeAttachment(this SkeletonGraphic skeleton, string slotName, string attachmentName) { return skeleton; }
+        public static SkeletonGraphic ChangeAttachment(this SkeletonGraphic skeleton, string slotName, string attachmentName)
+        {
+            var slotIndex = skeleton.Skeleton.Data.FindSlot(slotName).Index;
+            var attachment = skeleton.Skeleton.GetAttachment(slotIndex, attachmentName);
+            var skin = new Skin("temp");
+            skin.SetAttachment(slotIndex, slotName, attachment);
+            skeleton.Skeleton.SetSkin(skin);
+            skeleton.Skeleton.SetSlotsToSetupPose();
+            skeleton.LateUpdate();
+            return skeleton;
+        }
 
-        public static SkeletonAnimation MixSkin(this SkeletonAnimation skeleton, params string[] skinNames) { return skeleton; }
+        //public static SkeletonAnimation MixSkin(this SkeletonAnimation skeleton, params string[] skinNames) { return skeleton; }
 
-        public static SkeletonGraphic MixSkin(this SkeletonGraphic skeleton, params string[] skinNames) { return skeleton; }
+        //public static SkeletonGraphic MixSkin(this SkeletonGraphic skeleton, params string[] skinNames) { return skeleton; }
     }
 }
 #endif
