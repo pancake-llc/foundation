@@ -14,7 +14,7 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_variable")]
     public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IDrawObjectsInInspector
     {
-        [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeField]
+        [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeReference]
         protected T value;
 
         [Tooltip("Log in the console whenever this variable is changed, loaded or saved.")] [SerializeField]
@@ -130,9 +130,6 @@ namespace Pancake.Scriptable
 #if UNITY_EDITOR
         private void SetDirtyAndRepaint()
         {
-            //When the SV is changed by code, make sure it is marked dirty to be saved and picked up by Version Control.
-            // if (!Application.isPlaying)
-            //     return;
             EditorUtility.SetDirty(this);
             repaintRequest?.Invoke();
         }

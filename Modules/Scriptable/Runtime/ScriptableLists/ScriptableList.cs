@@ -15,10 +15,10 @@ namespace Pancake.Scriptable
         [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
 
-        [SerializeField] protected List<T> list = new List<T>();
+        [SerializeReference] protected List<T> list = new List<T>();
 
         public int Count => list.Count;
-        public bool IsEmpty => !list.Any();
+        public bool IsEmpty => list.Count == 0;
         public override Type GetGenericType => typeof(T);
 
         //feel free to uncomment this property if you need to access the list for more functionalities.
