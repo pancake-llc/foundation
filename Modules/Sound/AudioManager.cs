@@ -250,17 +250,17 @@ namespace Pancake.Sound
 
         private float NormalizedToMixerValue(float normalizedValue)
         {
-            // We're assuming the range [0 to 1] becomes [-80dB to 0dB]
+            // We're assuming the range [0 to 1] becomes [0dB to 20dB]
             // This doesn't allow values over 0dB
-            return (normalizedValue - 1f) * 80f;
+            return Math.Remap(0, 20, 0, 1, normalizedValue);
         }
 
         // Both MixerValueNormalized and NormalizedToMixerValue functions are used for easier transformations
         /// when using UI sliders normalized format
         private float MixerValueToNormalized(float mixerValue)
         {
-            // We're assuming the range [-80dB to 0dB] becomes [0 to 1]
-            return 1f + mixerValue / 80f;
+            // We're assuming the range [0dB to 20dB] becomes [0 to 1]
+            return Math.Remap(0, 1, 0, 20, mixerValue);
         }
     }
 }
