@@ -43,7 +43,7 @@ namespace Pancake.Sound
         public bool ignoreListenerVolume;
         public bool ignoreListenerPause;
 
-        public ScriptableEventFunc<float, float> volumeEvent;
+        public FloatVariable volumeOfChannel;
 
         public void ApplyTo(AudioSource audioSource)
         {
@@ -52,7 +52,7 @@ namespace Pancake.Sound
             audioSource.bypassListenerEffects = bypassListenerEffects;
             audioSource.bypassReverbZones = bypassReverbZones;
             audioSource.priority = Priority;
-            audioSource.volume = volumeEvent.Raise(volume);
+            audioSource.volume = (volumeOfChannel.Value * volume).Clamp01();
             audioSource.pitch = pitch;
             audioSource.panStereo = panStereo;
             audioSource.spatialBlend = spatialBlend;

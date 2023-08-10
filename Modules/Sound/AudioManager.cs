@@ -24,21 +24,8 @@ namespace Pancake.Sound
         [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to stop Music")] [SerializeField]
         private AudioHandleEvent musicStopChannel;
 
-        [Space] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to change SFXs volume")] [SerializeField]
-        private ScriptableEventFloat sfxVolumeEventChanel;
-
-        [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to change Music volume")] [SerializeField]
-        private ScriptableEventFloat musicVolumeEventChanel;
-
-        [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to change Master volume")] [SerializeField]
-        private ScriptableEventFloat masterVolumeEventChanel;
-
-        public ScriptableEventFunc<float, float> musicVolumeEvent;
-        public ScriptableEventFunc<float, float> sfxVolumeEvent;
-
-        [Header("Audio Control")] [Range(0f, 1f)] [SerializeField] private float masterVolume = 1f;
-        [Range(0f, 1f)] [SerializeField] private float musicVolume = 1f;
-        [Range(0f, 1f)] [SerializeField] private float sfxVolume = 1f;
+        [Header("Audio Control")] [SerializeField] private FloatVariable musicVolume;
+        [SerializeField] private FloatVariable sfxVolume;
 
         private SoundEmitterVault _soundEmitterVault;
         private SoundEmitter _musicSoundEmitter;
@@ -61,18 +48,7 @@ namespace Pancake.Sound
 
             musicPlayChannel.OnRaised += PlayMusic;
             musicStopChannel.OnRaised += StopMusic;
-
-            masterVolumeEventChanel.OnRaised += ChangeMasterVolume;
-            musicVolumeEventChanel.OnRaised += ChangeMusicVolume;
-            sfxVolumeEventChanel.OnRaised += ChangeSfxVolume;
-
-            sfxVolumeEvent.OnRaised += GetSfxVolume;
-            musicVolumeEvent.OnRaised += GetMusicVolume;
         }
-
-        private float GetSfxVolume(float arg) { return (sfxVolume * masterVolume * arg).Clamp01(); }
-
-        private float GetMusicVolume(float arg) { return (musicVolume * masterVolume * arg).Clamp01(); }
 
         protected override void OnDisabled()
         {
@@ -83,13 +59,6 @@ namespace Pancake.Sound
 
             musicPlayChannel.OnRaised -= PlayMusic;
             musicStopChannel.OnRaised -= StopMusic;
-
-            masterVolumeEventChanel.OnRaised -= ChangeMasterVolume;
-            musicVolumeEventChanel.OnRaised -= ChangeMusicVolume;
-            sfxVolumeEventChanel.OnRaised -= ChangeSfxVolume;
-
-            sfxVolumeEvent.OnRaised -= GetSfxVolume;
-            musicVolumeEvent.OnRaised -= GetMusicVolume;
         }
 
         /// <summary>
@@ -209,11 +178,5 @@ namespace Pancake.Sound
             soundEmitter.OnCompleted -= StopMusicEmitter;
             pool.Return(soundEmitter);
         }
-
-        private void ChangeMasterVolume(float newVolume) { masterVolume = newVolume; }
-
-        private void ChangeMusicVolume(float newVolume) { musicVolume = newVolume; }
-
-        private void ChangeSfxVolume(float newVolume) { sfxVolume = newVolume; }
     }
 }
