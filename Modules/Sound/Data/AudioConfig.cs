@@ -1,4 +1,4 @@
-using UnityEngine.Audio;
+using Pancake.Scriptable;
 
 namespace Pancake.Sound
 {
@@ -18,8 +18,6 @@ namespace Pancake.Sound
             Low = 194,
             VeryLow = 256,
         }
-
-        public AudioMixerGroup output;
 
         [SerializeField] private PriorityLevel priorityLevel = PriorityLevel.Standard;
 
@@ -45,15 +43,16 @@ namespace Pancake.Sound
         public bool ignoreListenerVolume;
         public bool ignoreListenerPause;
 
+        public ScriptableEventFunc<float, float> volumeEvent;
+
         public void ApplyTo(AudioSource audioSource)
         {
-            audioSource.outputAudioMixerGroup = output;
             audioSource.mute = mute;
             audioSource.bypassEffects = bypassEffects;
             audioSource.bypassListenerEffects = bypassListenerEffects;
             audioSource.bypassReverbZones = bypassReverbZones;
             audioSource.priority = Priority;
-            audioSource.volume = volume;
+            audioSource.volume = volumeEvent.Raise(volume);
             audioSource.pitch = pitch;
             audioSource.panStereo = panStereo;
             audioSource.spatialBlend = spatialBlend;

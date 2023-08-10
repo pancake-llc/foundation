@@ -1,6 +1,5 @@
 using Pancake.Scriptable;
 using UnityEngine;
-using UnityEngine.Audio;
 
 namespace Pancake.Sound
 {
@@ -34,8 +33,10 @@ namespace Pancake.Sound
         [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to change Master volume")] [SerializeField]
         private ScriptableEventFloat masterVolumeEventChanel;
 
-        [Header("Audio Control")] [SerializeField] private AudioMixer audioMixer;
-        [Range(0f, 1f)] [SerializeField] private float masterVolume = 1f;
+        public ScriptableEventFunc<float, float> musicVolumeEvent;
+        public ScriptableEventFunc<float, float> sfxVolumeEvent;
+
+        [Header("Audio Control")] [Range(0f, 1f)] [SerializeField] private float masterVolume = 1f;
         [Range(0f, 1f)] [SerializeField] private float musicVolume = 1f;
         [Range(0f, 1f)] [SerializeField] private float sfxVolume = 1f;
 
@@ -64,7 +65,14 @@ namespace Pancake.Sound
             masterVolumeEventChanel.OnRaised += ChangeMasterVolume;
             musicVolumeEventChanel.OnRaised += ChangeMusicVolume;
             sfxVolumeEventChanel.OnRaised += ChangeSfxVolume;
+
+            sfxVolumeEvent.OnRaised += GetSfxVolume;
+            musicVolumeEvent.OnRaised += GetMusicVolume;
         }
+
+        private float GetSfxVolume(float arg) { return (sfxVolume * masterVolume * arg).Clamp01(); }
+
+        private float GetMusicVolume(float arg) { return (musicVolume * masterVolume * arg).Clamp01(); }
 
         protected override void OnDisabled()
         {
@@ -79,20 +87,9 @@ namespace Pancake.Sound
             masterVolumeEventChanel.OnRaised -= ChangeMasterVolume;
             musicVolumeEventChanel.OnRaised -= ChangeMusicVolume;
             sfxVolumeEventChanel.OnRaised -= ChangeSfxVolume;
-        }
 
-        /// <summary>
-        /// This is only used in the Editor, to debug volumes.
-        /// It is called when any of the variables is changed, and will directly change the value of the volumes on the AudioMixer.
-        /// </summary>
-        private void OnValidate()
-        {
-            if (Application.isPlaying)
-            {
-                SetGroupVolume("MasterVolume", masterVolume);
-                SetGroupVolume("MusicVolume", musicVolume);
-                SetGroupVolume("SFXVolume", sfxVolume);
-            }
+            sfxVolumeEvent.OnRaised -= GetSfxVolume;
+            musicVolumeEvent.OnRaised -= GetMusicVolume;
         }
 
         /// <summary>
@@ -213,54 +210,10 @@ namespace Pancake.Sound
             pool.Return(soundEmitter);
         }
 
-        private void ChangeMasterVolume(float newVolume)
-        {
-            masterVolume = newVolume;
-            SetGroupVolume("MasterVolume", masterVolume);
-        }
+        private void ChangeMasterVolume(float newVolume) { masterVolume = newVolume; }
 
-        private void ChangeMusicVolume(float newVolume)
-        {
-            musicVolume = newVolume;
-            SetGroupVolume("MusicVolume", musicVolume);
-        }
+        private void ChangeMusicVolume(float newVolume) { musicVolume = newVolume; }
 
-        private void ChangeSfxVolume(float newVolume)
-        {
-            sfxVolume = newVolume;
-            SetGroupVolume("SFXVolume", sfxVolume);
-        }
-
-        public void SetGroupVolume(string parameterName, float normalizedVolume)
-        {
-            bool volumeSet = audioMixer.SetFloat(parameterName, NormalizedToMixerValue(normalizedVolume));
-            if (!volumeSet) Debug.LogError("The AudioMixer parameter was not found");
-        }
-
-        public float GetGroupVolume(string parameterName)
-        {
-            if (audioMixer.GetFloat(parameterName, out float rawVolume))
-            {
-                return MixerValueToNormalized(rawVolume);
-            }
-
-            Debug.LogError("The AudioMixer parameter was not found");
-            return 0f;
-        }
-
-        private float NormalizedToMixerValue(float normalizedValue)
-        {
-            // We're assuming the range [0 to 1] becomes [0dB to 20dB]
-            // This doesn't allow values over 0dB
-            return Math.Remap(0, 20, 0, 1, normalizedValue);
-        }
-
-        // Both MixerValueNormalized and NormalizedToMixerValue functions are used for easier transformations
-        /// when using UI sliders normalized format
-        private float MixerValueToNormalized(float mixerValue)
-        {
-            // We're assuming the range [0dB to 20dB] becomes [0 to 1]
-            return Math.Remap(0, 1, 0, 20, mixerValue);
-        }
+        private void ChangeSfxVolume(float newVolume) { sfxVolume = newVolume; }
     }
 }
