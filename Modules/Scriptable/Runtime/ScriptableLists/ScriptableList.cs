@@ -169,9 +169,9 @@ namespace Pancake.Scriptable
 
         public List<Object> GetAllObjects()
         {
-            var list = new List<Object>(Count);
-            list.AddRange(this.list.OfType<Object>());
-            return list;
+            var _ = new List<Object>(Count);
+            _.AddRange(list.OfType<Object>());
+            return _;
         }
     }
 }
