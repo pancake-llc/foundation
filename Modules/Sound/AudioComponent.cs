@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Pancake.Apex;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Pancake.Sound
 {
@@ -16,10 +17,13 @@ namespace Pancake.Sound
 
         [SerializeField] private bool playOnStart;
 
-        [Header("Configuration")] [SerializeField] private AudioPlayEvent audioPlayChannel;
-        [SerializeField] private AudioHandleEvent audioStopChannel;
-        [SerializeField] private AudioHandleEvent audioFinishChannel;
-        [SerializeField] private AudioConfig audioConfig;
+        [FormerlySerializedAs("audioPlayChannel")] [Header("Configuration")] [SerializeField]
+        private ScriptableEventAudio playAudioEvent;
+
+        [SerializeField] private ScriptableEventAudioHandle stopAudioEvent;
+        [SerializeField] private ScriptableEventAudioHandle pauseAudioEvent;
+        [SerializeField] private ScriptableEventAudioHandle resumeAudioEvent;
+        [SerializeField] private ScriptableEventAudioHandle audioFinishChannel;
 
         private AudioHandle _audioHandle = AudioHandle.invalid;
 
@@ -31,7 +35,7 @@ namespace Pancake.Sound
         protected override void OnDisabled()
         {
             playOnStart = false;
-            StopAudio();
+            Stop();
             base.OnDisabled();
         }
 
@@ -42,21 +46,33 @@ namespace Pancake.Sound
 
             //This additional check prevents the AudioCue from playing if the object is disabled or the scene unloaded
             //This prevents playing a looping AudioCue which then would be never stopped
-            if (playOnStart) PlayAudio();
+            if (playOnStart) Play();
         }
 
-        public void PlayAudio() { _audioHandle = audioPlayChannel.Raise(au, audioConfig, transform.position); }
+        public void Play() { _audioHandle = playAudioEvent.Raise(au); }
 
-        public void StopAudio()
+        public void Stop()
         {
-            if (_audioHandle == AudioHandle.invalid) return;
-            if (!audioStopChannel.Raise(_audioHandle)) _audioHandle = AudioHandle.invalid;
+            stopAudioEvent.Raise(_audioHandle);
+            _audioHandle = AudioHandle.invalid;
+        }
+
+        public void Pause()
+        {
+            pauseAudioEvent.Raise(_audioHandle);
+            _audioHandle = AudioHandle.invalid;
+        }
+
+        public void Resume()
+        {
+            resumeAudioEvent.Raise(_audioHandle);
+            _audioHandle = AudioHandle.invalid;
         }
 
         public void FinishAudio()
         {
-            if (_audioHandle == AudioHandle.invalid) return;
-            if (!audioFinishChannel.Raise(_audioHandle)) _audioHandle = AudioHandle.invalid;
+            audioFinishChannel.Raise(_audioHandle);
+            _audioHandle = AudioHandle.invalid;
         }
     }
 }

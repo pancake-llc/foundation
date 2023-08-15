@@ -1,16 +1,16 @@
 using System;
 using Pancake.Apex;
+using UnityEngine;
 
 namespace Pancake.Sound
 {
-    using UnityEngine;
-
     [Searchable]
     [EditorIcon("scriptable_audio")]
     [CreateAssetMenu(fileName = "Audio", menuName = "Pancake/Sound/Audio")]
     public class Audio : ScriptableObject
     {
         public bool loop;
+        [Range(0f, 1f)] public float volume = 1f;
         [SerializeField, Array] private AudioGroup[] groups;
 
         public AudioClip[] GetClips()
@@ -25,8 +25,7 @@ namespace Pancake.Sound
             return result;
         }
     }
-
-
+    
     /// <summary>
     /// Represents a group of AudioClips that can be treated as one
     /// and provides automatic randomisation or sequencing based on the <c>SequenceMode</c> value.
@@ -59,7 +58,7 @@ namespace Pancake.Sound
             if (_nextClipToPlay == -1)
             {
                 // Index needs to be initialised: 0 if Sequential, random if otherwise
-                _nextClipToPlay = (sequenceMode == SequenceMode.Sequential) ? 0 : UnityEngine.Random.Range(0, clips.Length);
+                _nextClipToPlay = sequenceMode == SequenceMode.Sequential ? 0 : UnityEngine.Random.Range(0, clips.Length);
             }
             else
             {

@@ -30,6 +30,8 @@ namespace Pancake.Sound
             return true;
         }
 
+        internal List<SoundEmitter[]> GetAll() => _emitters;
+
         public void Add(AudioHandle key, SoundEmitter[] emitter)
         {
             _keys.Add(key);
@@ -52,10 +54,7 @@ namespace Pancake.Sound
 
         private bool RemoveAt(int index)
         {
-            if (index < 0)
-            {
-                return false;
-            }
+            if (index < 0) return false;
 
             _keys.RemoveAt(index);
             _emitters.RemoveAt(index);

@@ -30,7 +30,8 @@ namespace PancakeEditor
         private SerializedProperty _ignoreTimeScale;
         private SerializedProperty _affectObject;
         private SerializedProperty _enabledSound;
-        private SerializedProperty _audioStructure;
+        private SerializedProperty _audioClick;
+        private SerializedProperty _audioPlayEvent;
         private SerializedProperty _motion;
         private SerializedProperty _scale;
         private SerializedProperty _duration;
@@ -57,7 +58,8 @@ namespace PancakeEditor
             _isAffectToSelf = serializedObject.FindProperty("isAffectToSelf");
             _affectObject = serializedObject.FindProperty("affectObject");
             _enabledSound = serializedObject.FindProperty("enabledSound");
-            _audioStructure = serializedObject.FindProperty("audioStructure");
+            _audioClick = serializedObject.FindProperty("audioClick");
+            _audioPlayEvent = serializedObject.FindProperty("audioPlayEvent");
             _isMotion = serializedObject.FindProperty("isMotion");
             _motion = serializedObject.FindProperty("motionData").FindPropertyRelative("motion");
             _scale = serializedObject.FindProperty("motionData").FindPropertyRelative("scale");
@@ -150,10 +152,24 @@ namespace PancakeEditor
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Is Play Sound", GUILayout.Width(DEFAULT_LABEL_WIDTH));
             _enabledSound.boolValue = GUILayout.Toggle(_enabledSound.boolValue, "");
-            if (_enabledSound.boolValue)
-                _audioStructure.objectReferenceValue =
-                    EditorGUILayout.ObjectField("", _audioStructure.objectReferenceValue, typeof(AudioStructure), true) as AudioStructure;
             EditorGUILayout.EndHorizontal();
+            
+           
+            if (_enabledSound.boolValue)
+            {
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label("   Audio", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                _audioClick.objectReferenceValue =
+                    EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
+                EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label("   Channel", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                _audioPlayEvent.objectReferenceValue =
+                    EditorGUILayout.ObjectField("", _audioPlayEvent.objectReferenceValue, typeof(ScriptableEventAudio), false) as ScriptableEventAudio;
+                EditorGUILayout.EndHorizontal();
+            }
+
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();

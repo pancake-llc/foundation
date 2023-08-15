@@ -8,13 +8,13 @@ using UnityEngine;
 
 namespace Pancake.SoundEditor
 {
-    [CustomPropertyDrawer(typeof(AudioPlayEvent), true)]
-    public class AudioPlayEventPropertyDrawer : ScriptableBasePropertyDrawer
+    [CustomPropertyDrawer(typeof(ScriptableEventAudio), true)]
+    public class ScriptableEventAudioPropertyDrawer : ScriptableBasePropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
-            
+
             var targetObject = property.objectReferenceValue;
             if (targetObject == null)
             {
@@ -23,7 +23,11 @@ namespace Pancake.SoundEditor
             }
 
             bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
-            DrawIfNotNull(position, property, label, property.objectReferenceValue, isNeedIndent);
+            DrawIfNotNull(position,
+                property,
+                label,
+                property.objectReferenceValue,
+                isNeedIndent);
 
             EditorGUI.EndProperty();
         }

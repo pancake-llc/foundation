@@ -13,7 +13,7 @@ namespace Pancake.Sound
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag(tagDetect)) component.PlayAudio();
+            if (other.CompareTag(tagDetect)) component.Play();
         }
     }
 }

@@ -1,0 +1,30 @@
+using Pancake.Scriptable;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace Pancake.Sound
+{
+    [EditorIcon("scriptable_event_listener")]
+    public class EventListenerAudio : EventListenerFunc<Audio, AudioHandle>
+    {
+        [SerializeField] private EventResponse[] eventResponses;
+
+        protected override EventResponse<Audio, AudioHandle>[] EventResponses => eventResponses;
+
+        [System.Serializable]
+        public class EventResponse : EventResponse<Audio, AudioHandle>
+        {
+            [SerializeField] private ScriptableEventAudio audioEvent;
+            [SerializeField] private AudioFinishUnityEvent response;
+
+            public override ScriptableEventFunc<Audio, AudioHandle> ScriptableEvent => audioEvent;
+            public override UnityEvent<Audio> Response => response;
+        }
+
+
+        [System.Serializable]
+        public class AudioFinishUnityEvent : UnityEvent<Audio>
+        {
+        }
+    }
+}

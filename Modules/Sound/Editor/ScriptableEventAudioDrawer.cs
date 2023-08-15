@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace Pancake.SoundEditor
 {
-    [CustomEditor(typeof(AudioPlayEvent))]
-    public class AudioPlayEventDrawer : UnityEditor.Editor
+    [CustomEditor(typeof(ScriptableEventAudio))]
+    public class ScriptableEventAudioDrawer : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Pancake.Tween;
+﻿using Pancake.Tween;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,6 +8,9 @@ namespace Pancake.Sound
     public class SoundEmitter : CacheGameComponent<AudioSource>
     {
         public event UnityAction<SoundEmitter> OnCompleted;
+        public event UnityAction<SoundEmitter> OnPaused;
+        public event UnityAction<SoundEmitter> OnResumed;
+        public event UnityAction<SoundEmitter> OnStopped;
 
         protected override void Awake()
         {
@@ -17,56 +19,44 @@ namespace Pancake.Sound
         }
 
         /// <summary>
-        /// Instructs the AudioSource to play a single clip, with optional looping, in a position in 3D space.
+        /// Instructs the AudioSource to play a single clip, with optional looping
         /// </summary>
         /// <param name="clip"></param>
-        /// <param name="config"></param>
         /// <param name="loop"></param>
-        /// <param name="position"></param>
-        public void PlayAudioClip(AudioClip clip, AudioConfig config, bool loop, Vector3 position = default)
+        /// <param name="volume"></param>
+        internal void PlayAudioClip(AudioClip clip, bool loop, float volume)
         {
             component.clip = clip;
-            config.ApplyTo(component);
-            component.transform.position = position;
             component.loop = loop;
+            component.volume = volume;
             component.time = 0f; //Reset in case this AudioSource is being reused for a short SFX after being used for a long music track
             component.Play();
-            if (!loop)
-            {
-                StartCoroutine(IeFinishPlaying(clip.length));
-            }
+            if (!loop) this.AttachDelay(clip.length, OnCompletedInvoke);
         }
 
-        private IEnumerator IeFinishPlaying(float length)
-        {
-            yield return new WaitForSeconds(length);
-            NotifyBeingDone();
-        }
-
-        private void NotifyBeingDone()
+        private void OnCompletedInvoke()
         {
             OnCompleted?.Invoke(this); // The AudioManager will pick this up
         }
 
-        public void FadeMusicIn(AudioClip clip, AudioConfig config, float duration, float startTime = 0f)
+        internal void FadeMusicIn(AudioClip clip, float duration, float volume, float startTime = 0f)
         {
-            PlayAudioClip(clip, config, true);
+            PlayAudioClip(clip, true, 0);
 
-            component.volume = 0f;
             //Start the clip at the same time the previous one left, if length allows
             //TODO: find a better way to sync fading songs
             if (startTime <= component.clip.length) component.time = startTime;
 
-            component.ActionVolumeTo(config.volume, duration).Play();
+            component.ActionVolumeTo(volume, duration).Play();
         }
 
-        public float FadeMusicOut(float duration)
+        internal float FadeMusicOut(float duration)
         {
             component.ActionVolumeOut(duration).Play();
             return component.time;
         }
 
-        private void OnFadeOutCompleted() { NotifyBeingDone(); }
+        internal void OnFadeOutCompleted() { OnCompletedInvoke(); }
 
         public AudioClip GetClip() => component.clip;
         public bool IsPlaying() => component.isPlaying;
@@ -75,23 +65,34 @@ namespace Pancake.Sound
         /// <summary>
         /// Used when the game is unpaused, to pick up SFX from where they left.
         /// </summary>
-        public void Resume() { component.Play(); }
+        internal void Resume()
+        {
+            OnResumed?.Invoke(this);
+            component.UnPause();
+        }
 
         /// <summary>
         /// Used when the game is paused.
         /// </summary>
-        public void Pause() { component.Pause(); }
-
-        public void Stop() { component.Stop(); }
-
-        public void Finish()
+        internal void Pause()
         {
-            if (component.loop)
-            {
-                component.loop = false;
-                float remainingTime = component.clip.length - component.time;
-                StartCoroutine(IeFinishPlaying(remainingTime));
-            }
+            OnPaused?.Invoke(this);
+            component.Pause();
+        }
+
+        internal void Stop()
+        {
+            OnStopped?.Invoke(this);
+            component.Stop();
+        }
+
+        internal void Finish()
+        {
+            if (!component.loop) return;
+
+            component.loop = false;
+            float remainingTime = component.clip.length - component.time;
+            this.AttachDelay(remainingTime, OnFadeOutCompleted);
         }
     }
 }

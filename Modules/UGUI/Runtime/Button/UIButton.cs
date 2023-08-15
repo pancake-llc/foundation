@@ -53,7 +53,8 @@ namespace Pancake.UI
         [SerializeField] private bool isAffectToSelf = true;
         [SerializeField] private Transform affectObject;
         [SerializeField] private bool enabledSound;
-        [SerializeField] private AudioStructure audioStructure;
+        [SerializeField] private Audio audioClick;
+        [SerializeField] private ScriptableEventAudio audioPlayEvent;
         [SerializeField] private MotionData motionData = new MotionData {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new MotionData {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
@@ -118,7 +119,7 @@ namespace Pancake.UI
 
         private void PlaySound()
         {
-            if (enabledSound) audioStructure.Play();
+            if (enabledSound) audioPlayEvent.Raise(audioClick);
         }
 
 #if UNITY_EDITOR

@@ -18,5 +18,14 @@ namespace Pancake.Sound
         public override int GetHashCode() { return value.GetHashCode() ^ audio.GetHashCode(); }
         public static bool operator ==(AudioHandle a, AudioHandle b) { return a.value == b.value && a.audio == b.audio; }
         public static bool operator !=(AudioHandle a, AudioHandle b) { return !(a == b); }
+
+
+        public void Pause() { }
+
+        public void Resume() { }
+
+        public void Stop() { }
+
+        public void Finish() { }
     }
 }

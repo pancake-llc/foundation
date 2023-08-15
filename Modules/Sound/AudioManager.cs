@@ -10,31 +10,31 @@ namespace Pancake.Sound
         [SerializeField] private int initialSize = 10;
 
         [Header("Listening Channel")] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to play SFXs")] [SerializeField]
-        private AudioPlayEvent sfxPlayChannel;
+        private ScriptableEventAudio eventPlaySfx;
 
-        [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to stop SFXs")] [SerializeField]
-        private AudioHandleEvent sfxStopChannel;
+        [SerializeField] private ScriptableEventAudioHandle eventStopSfx;
+        [SerializeField] private ScriptableEventAudioHandle eventPauseSfx;
+        [SerializeField] private ScriptableEventAudioHandle eventResumeSfx;
+        [SerializeField] private ScriptableEventAudioHandle eventFinishSfx;
+        [SerializeField] private ScriptableEventNoParam eventStopAllSfx;
 
-        [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to finish SFXs")] [SerializeField]
-        private AudioHandleEvent sfxFinishChannel;
 
         [Space] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to play Music")] [SerializeField]
-        private AudioPlayEvent musicPlayChannel;
+        private ScriptableEventAudio eventPlayMusic;
 
-        [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to stop Music")] [SerializeField]
-        private AudioHandleEvent musicStopChannel;
+        [SerializeField] private ScriptableEventAudioHandle eventStopMusic;
+        [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
+        [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
 
         [Header("Audio Control")] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
 
-        private SoundEmitterVault _soundEmitterVault;
-        private SoundEmitter _musicSoundEmitter;
+        private SoundEmitterVault _sfx;
+        private SoundEmitter _music;
 
         private void Awake()
         {
-            //TODO: Get the initial volume levels from the settings
-            _soundEmitterVault = new SoundEmitterVault();
-
+            _sfx = new SoundEmitterVault();
             pool.Prewarm(initialSize);
             pool.SetParent(transform);
         }
@@ -42,67 +42,104 @@ namespace Pancake.Sound
         protected override void OnEnabled()
         {
             base.OnEnabled();
-            sfxPlayChannel.OnRaised += PlayAudio;
-            sfxStopChannel.OnRaised += StopAudio;
-            sfxFinishChannel.OnRaised += FinishAudio;
-
-            musicPlayChannel.OnRaised += PlayMusic;
-            musicStopChannel.OnRaised += StopMusic;
+            eventPlaySfx.OnRaised += PlaySfx;
+            eventStopSfx.OnRaised += StopSfx;
+            eventPauseSfx.OnRaised += PauseSfx;
+            eventResumeSfx.OnRaised += ResumeSfx;
+            eventFinishSfx.OnRaised += FinishSfx;
+            eventStopAllSfx.OnRaised += StopAllSfx;
+            eventPlayMusic.OnRaised += PlayMusic;
+            eventStopMusic.OnRaised += StopMusic;
+            eventPauseMusic.OnRaised += PauseMusic;
+            eventResumeMusic.OnRaised += ResumeMusic;
         }
 
         protected override void OnDisabled()
         {
             base.OnDisabled();
-            sfxPlayChannel.OnRaised -= PlayAudio;
-            sfxStopChannel.OnRaised -= StopAudio;
-            sfxFinishChannel.OnRaised -= FinishAudio;
-
-            musicPlayChannel.OnRaised -= PlayMusic;
-            musicStopChannel.OnRaised -= StopMusic;
+            eventPlaySfx.OnRaised -= PlaySfx;
+            eventStopSfx.OnRaised -= StopSfx;
+            eventPauseSfx.OnRaised -= PauseSfx;
+            eventResumeSfx.OnRaised -= ResumeSfx;
+            eventFinishSfx.OnRaised -= FinishSfx;
+            eventStopAllSfx.OnRaised -= StopAllSfx;
+            eventPlayMusic.OnRaised -= PlayMusic;
+            eventStopMusic.OnRaised -= StopMusic;
+            eventPauseMusic.OnRaised -= PauseMusic;
+            eventResumeMusic.OnRaised -= ResumeMusic;
         }
 
         /// <summary>
         /// Plays an AudioCue by requesting the appropriate number of SoundEmitters from the pool.
         /// </summary>
-        public AudioHandle PlayAudio(Audio audio, AudioConfig settings, Vector3 position = default)
+        private AudioHandle PlaySfx(Audio audio)
         {
             var clipsToPlay = audio.GetClips();
-            var soundEmitterArray = new SoundEmitter[clipsToPlay.Length];
+            var soundEmitters = new SoundEmitter[clipsToPlay.Length];
 
             int nOfClips = clipsToPlay.Length;
             for (int i = 0; i < nOfClips; i++)
             {
-                soundEmitterArray[i] = pool.Request();
-                if (soundEmitterArray[i] != null)
+                soundEmitters[i] = pool.Request();
+                if (soundEmitters[i] != null)
                 {
-                    soundEmitterArray[i].PlayAudioClip(clipsToPlay[i], settings, audio.loop, position);
-                    if (!audio.loop) soundEmitterArray[i].OnCompleted += OnSoundEmitterFinishedPlaying;
+                    soundEmitters[i].PlayAudioClip(clipsToPlay[i], audio.loop, audio.volume * sfxVolume.Value);
+                    if (!audio.loop) soundEmitters[i].OnCompleted += OnSoundEmitterFinishedPlaying;
                 }
             }
 
-            return _soundEmitterVault.Add(audio, soundEmitterArray);
+            return _sfx.Add(audio, soundEmitters);
         }
 
-        public bool StopAudio(AudioHandle handle)
+        private void StopSfx(AudioHandle handle)
         {
-            bool isFound = _soundEmitterVault.Get(handle, out SoundEmitter[] soundEmitters);
+            bool isFound = _sfx.Get(handle, out var soundEmitters);
 
             if (isFound)
             {
-                for (int i = 0; i < soundEmitters.Length; i++)
+                foreach (var s in soundEmitters)
                 {
-                    StopAndCleanEmitter(soundEmitters[i]);
+                    StopAndCleanEmitter(s);
                 }
 
-                _soundEmitterVault.Remove(handle);
+                _sfx.Remove(handle);
             }
-
-            return isFound;
         }
 
-        public bool FinishAudio(AudioHandle handle)
+        private void PauseSfx(AudioHandle handle)
         {
-            bool isFound = _soundEmitterVault.Get(handle, out SoundEmitter[] soundEmitters);
+            _sfx.Get(handle, out var soundEmitters);
+
+            foreach (var s in soundEmitters)
+            {
+                s.Pause();
+            }
+        }
+
+        private void ResumeSfx(AudioHandle handle)
+        {
+            _sfx.Get(handle, out var soundEmitters);
+
+            foreach (var s in soundEmitters)
+            {
+                s.Resume();
+            }
+        }
+
+        private void StopAllSfx()
+        {
+            foreach (var s in _sfx.GetAll())
+            {
+                foreach (var soundEmitter in s)
+                {
+                    soundEmitter.Stop();
+                }
+            }
+        }
+
+        public void FinishSfx(AudioHandle handle)
+        {
+            bool isFound = _sfx.Get(handle, out SoundEmitter[] soundEmitters);
 
             if (isFound)
             {
@@ -116,9 +153,8 @@ namespace Pancake.Sound
             {
                 Debug.LogWarning("Finishing an Audio was requested, but the Audio was not found.");
             }
-
-            return isFound;
         }
+
 
         /// <summary>
         /// Only used by the timeline to stop the gameplay music during cutscenes.
@@ -126,37 +162,41 @@ namespace Pancake.Sound
         /// </summary>
         public void TimelineInterruptsMusic() { StopMusic(AudioHandle.invalid); }
 
-        private AudioHandle PlayMusic(Audio audio, AudioConfig setting, Vector3 position)
+        private AudioHandle PlayMusic(Audio audio)
         {
             const float fadeDuration = 2f;
             var startTime = 0f;
 
-            if (_musicSoundEmitter != null && _musicSoundEmitter.IsPlaying())
+            if (_music != null && _music.IsPlaying())
             {
                 AudioClip songToPlay = audio.GetClips()[0];
-                if (_musicSoundEmitter.GetClip() == songToPlay) return AudioHandle.invalid;
+                if (_music.GetClip() == songToPlay) return AudioHandle.invalid;
 
                 //Music is already playing, need to fade it out
-                startTime = _musicSoundEmitter.FadeMusicOut(fadeDuration);
+                startTime = _music.FadeMusicOut(fadeDuration);
             }
 
-            _musicSoundEmitter = pool.Request();
-            _musicSoundEmitter.FadeMusicIn(audio.GetClips()[0], setting, 1f, startTime);
-            _musicSoundEmitter.OnCompleted += StopMusicEmitter;
+            _music = pool.Request();
+            _music.FadeMusicIn(audio.GetClips()[0], 0.2f, 1f, startTime);
+            _music.OnCompleted += StopMusicEmitter;
 
             return AudioHandle.invalid;
             //No need to return a valid key for music
         }
 
-        private bool StopMusic(AudioHandle handle)
+        private void StopMusic(AudioHandle handle)
         {
-            if (_musicSoundEmitter != null && _musicSoundEmitter.IsPlaying())
-            {
-                _musicSoundEmitter.Stop();
-                return true;
-            }
+            if (_music != null && _music.IsPlaying()) _music.Stop();
+        }
 
-            return false;
+        private void PauseMusic(AudioHandle handle)
+        {
+            if (_music != null && _music.IsPlaying()) _music.Pause();
+        }
+
+        private void ResumeMusic(AudioHandle handle)
+        {
+            if (_music != null && !_music.IsPlaying()) _music.Resume();
         }
 
         private void OnSoundEmitterFinishedPlaying(SoundEmitter soundEmitter) { StopAndCleanEmitter(soundEmitter); }
