@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using Pancake.ExLib;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +11,35 @@ namespace PancakeEditor
 
         [MenuItem("Tools/Pancake/Finder %#K")]
         private static void OpenFinder() { FinderWindow.ShowWindow(); }
+
+        [MenuItem("Tools/Pancake/DOTween Adapter", validate = false)]
+        private static void ToggleDotweenAdapter()
+        {
+            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
+                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            toggle = !toggle;
+            if (toggle)
+            {
+                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PRIME_TWEEN_DOTWEEN_ADAPTER");
+            }
+            else
+            {
+                ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PRIME_TWEEN_DOTWEEN_ADAPTER");
+            }
+
+            AssetDatabase.Refresh();
+            string text = toggle ? " <color=#f75369>Enabled" : "<color=#FF2828>Disabled";
+            Debug.Log($"DOTween Adapter {text}</color>");
+        }
+
+        [MenuItem("Tools/Pancake/DOTween Adapter", validate = true)]
+        private static bool ValidateToggleDotweenAdapter()
+        {
+            bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
+                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            Menu.SetChecked("Tools/Pancake/DOTween Adapter", toggle);
+            return true;
+        }
 
         [MenuItem("Tools/Fast Play Mode", validate = false)]
         private static void ToggleFastPlayMode()
