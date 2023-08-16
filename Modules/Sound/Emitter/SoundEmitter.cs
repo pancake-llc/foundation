@@ -1,4 +1,4 @@
-﻿using Pancake.Tween;
+﻿using PrimeTween;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -47,12 +47,13 @@ namespace Pancake.Sound
             //TODO: find a better way to sync fading songs
             if (startTime <= component.clip.length) component.time = startTime;
 
-            component.ActionVolumeTo(volume, duration).Play();
+            Tween.AudioVolume(component, volume, duration);
         }
 
         internal float FadeMusicOut(float duration)
         {
-            component.ActionVolumeOut(duration).Play();
+            Tween.AudioVolume(component, 0, duration);
+
             return component.time;
         }
 

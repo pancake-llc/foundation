@@ -3,7 +3,7 @@ using System.Collections;
 using System.Threading;
 using Pancake.Sound;
 using Pancake.Threading.Tasks;
-using Pancake.Tween;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -32,7 +32,7 @@ namespace Pancake.UI
             public Vector2 scale;
             public EButtonMotion motion = EButtonMotion.Normal;
             public float duration = 0.1f;
-            public UIEase ease = UIEase.Smooth;
+            public Ease ease = Ease.Default;
         }
 
         #region Property
@@ -71,8 +71,8 @@ namespace Pancake.UI
         private Vector2 _endValue;
         private bool _isCompletePhaseDown;
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
-        private Tween.Tween _tweenUp;
-        private Tween.Tween _tweenDown;
+        private Tween _tweenUp;
+        private Tween _tweenDown;
         private CancellationTokenSource _tokenSource;
 
         #endregion
@@ -155,8 +155,8 @@ namespace Pancake.UI
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            if (_tweenUp != null && _tweenUp.IsRunning()) _tweenUp.Stop();
-            if (_tweenDown != null && _tweenDown.IsRunning()) _tweenDown.Stop();
+            if (_tweenUp.IsAlive) _tweenUp.Stop();
+            if (_tweenDown.IsAlive) _tweenDown.Stop();
             _tokenSource?.Cancel();
         }
 
@@ -507,17 +507,15 @@ namespace Pancake.UI
                         break;
                     }
 
-                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration).SetEase((Ease) motionData.ease).Play();
+                    _tweenUp = Tween.LocalScale(AffectObject, DefaultScale, motionData.duration, motionData.ease);
                     break;
                 case EButtonMotion.Uniform:
                     break;
                 case EButtonMotion.Late:
                     _isCompletePhaseDown = false;
                     _endValue = new Vector3(DefaultScale.x * motionData.scale.x, DefaultScale.y * motionData.scale.y);
-                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.duration)
-                        .SetEase((Ease) motionData.ease)
-                        .OnComplete(() => _isCompletePhaseDown = true)
-                        .Play();
+                    _tweenDown = Tween.LocalScale(AffectObject, _endValue, motionData.duration, motionData.ease).OnComplete(() => _isCompletePhaseDown = true);
+
                     try
                     {
                         await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
@@ -527,7 +525,7 @@ namespace Pancake.UI
                         break;
                     }
 
-                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration).SetEase((Ease) motionData.ease).Play();
+                    _tweenUp = Tween.LocalScale(AffectObject, DefaultScale, motionData.duration, motionData.ease);
 
                     break;
             }
@@ -547,17 +545,11 @@ namespace Pancake.UI
                     break;
                 case EButtonMotion.Normal:
                     _isCompletePhaseDown = false;
-                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.duration)
-                        .SetEase((Ease) motionData.ease)
-                        .OnComplete(() => _isCompletePhaseDown = true)
-                        .Play();
+                    _tweenDown = Tween.LocalScale(AffectObject, _endValue, motionData.duration, motionData.ease).OnComplete(() => _isCompletePhaseDown = true);
                     break;
                 case EButtonMotion.Uniform:
                     _isCompletePhaseDown = false;
-                    _tweenDown = AffectObject.ActionScale(_endValue, motionData.duration)
-                        .SetEase((Ease) motionData.ease)
-                        .OnComplete(() => _isCompletePhaseDown = true)
-                        .Play();
+                    _tweenDown = Tween.LocalScale(AffectObject, _endValue, motionData.duration, motionData.ease).OnComplete(() => _isCompletePhaseDown = true);
                     try
                     {
                         await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
@@ -567,7 +559,7 @@ namespace Pancake.UI
                         break;
                     }
 
-                    _tweenUp = AffectObject.ActionScale(DefaultScale, motionData.duration).SetEase((Ease) motionData.ease).Play();
+                    _tweenUp = Tween.LocalScale(AffectObject, DefaultScale, motionData.duration, motionData.ease);
                     break;
                 case EButtonMotion.Late:
                     break;

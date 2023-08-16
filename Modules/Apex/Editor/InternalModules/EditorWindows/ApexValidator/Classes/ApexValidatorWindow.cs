@@ -189,8 +189,17 @@ namespace Pancake.ApexEditor
                 {
                     continue;
                 }
+                
+                CustomEditor customEditor;
+                try
+                {
+                    customEditor = type.GetCustomAttribute<CustomEditor>();
+                }
+                catch (AmbiguousMatchException)
+                {
+                    continue;
+                }
 
-                CustomEditor customEditor = type.GetCustomAttribute<CustomEditor>();
                 Type inspectedType = null;
                 bool editorForChildClasses = false;
                 foreach (FieldInfo fieldInfo in customEditor.GetType().AllFields())

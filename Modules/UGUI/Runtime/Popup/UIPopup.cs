@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Pancake.Apex;
 using Pancake.Scriptable;
-using Pancake.Tween;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -23,7 +23,7 @@ namespace Pancake.UI
             [ShowIf("ShowScaleProperty")] public Vector2 scale;
             [ShowIf("ShowPotionProperty")] public Vector2 fromPosition;
             [ShowIf("ShowPotionProperty")] public Vector2 toPosition;
-            public UIEase ease = UIEase.Smooth;
+            public Ease ease = Ease.Default;
 
 #if UNITY_EDITOR
             private bool ShowScaleProperty() => motion != EPopupMotion.Position;
@@ -50,7 +50,7 @@ namespace Pancake.UI
         private List<Button> closeButtons = new List<Button>();
 
         [SerializeField, InlineEditor, Foldout("Motion Show", Style = "Group")]
-        protected MotionData motionShowData = new MotionData() {motion = EPopupMotion.Scale, scale = Vector2.one, ease = UIEase.OutBack};
+        protected MotionData motionShowData = new MotionData() {motion = EPopupMotion.Scale, scale = Vector2.one, ease = Ease.OutBack};
 
         [SerializeField, InlineEditor, Foldout("Motion Close", Style = "Group")]
         protected MotionData motionCloseData = new MotionData() {motion = EPopupMotion.Scale, scale = Vector2.zero};
@@ -208,29 +208,21 @@ namespace Pancake.UI
                 case EPopupMotion.Scale:
                     container.pivot = new Vector2(0.5f, 0.5f);
                     container.localScale = _startScale;
-                    container.ActionScaleXY(motionShowData.scale, motionShowData.duration)
-                        .SetEase((Ease) motionShowData.ease)
-                        .OnComplete(() => canvasGroup.blocksRaycasts = true)
-                        .Play();
+                    Tween.LocalScale(container, motionShowData.scale, motionShowData.duration, motionShowData.ease).OnComplete(() => canvasGroup.blocksRaycasts = true);
                     break;
                 case EPopupMotion.Position:
                     container.localScale = _defaultScale;
                     container.localPosition = motionShowData.fromPosition;
-                    container.ActionLocalMoveXY(motionShowData.toPosition, motionShowData.duration)
-                        .SetEase((Ease) motionShowData.ease)
-                        .OnComplete(() => canvasGroup.blocksRaycasts = true)
-                        .Play();
+                    Tween.LocalPosition(container, motionShowData.toPosition, motionShowData.duration, motionShowData.ease)
+                        .OnComplete(() => canvasGroup.blocksRaycasts = true);
                     break;
                 case EPopupMotion.PositionAndScale:
                     container.pivot = new Vector2(0.5f, 0.5f);
                     container.localScale = _startScale;
                     container.localPosition = motionShowData.fromPosition;
-                    container.ActionScaleXY(motionShowData.scale, motionShowData.duration).SetEase((Ease) motionShowData.ease).Play();
-
-                    container.ActionLocalMoveXY(motionShowData.toPosition, motionShowData.duration)
-                        .SetEase((Ease) motionShowData.ease)
-                        .OnComplete(() => canvasGroup.blocksRaycasts = true)
-                        .Play();
+                    Tween.LocalScale(container, motionShowData.scale, motionShowData.duration, motionShowData.ease);
+                    Tween.LocalPosition(container, motionShowData.toPosition, motionShowData.duration, motionShowData.ease)
+                        .OnComplete(() => canvasGroup.blocksRaycasts = true);
                     break;
             }
         }
@@ -249,15 +241,15 @@ namespace Pancake.UI
             {
                 case EPopupMotion.Scale:
                     container.pivot = new Vector2(0.5f, 0.5f);
-                    container.ActionScaleXY(motionCloseData.scale, motionCloseData.duration).SetEase((Ease) motionCloseData.ease).OnComplete(End).Play();
+                    Tween.LocalScale(container, motionCloseData.scale, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
                     break;
                 case EPopupMotion.Position:
-                    container.ActionLocalMoveXY(motionCloseData.toPosition, motionCloseData.duration).SetEase((Ease) motionCloseData.ease).OnComplete(End).Play();
+                    Tween.LocalScale(container, motionCloseData.toPosition, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
                     break;
                 case EPopupMotion.PositionAndScale:
                     container.pivot = new Vector2(0.5f, 0.5f);
-                    container.ActionScaleXY(motionCloseData.scale, motionCloseData.duration).SetEase((Ease) motionCloseData.ease).Play();
-                    container.ActionLocalMoveXY(motionCloseData.toPosition, motionCloseData.duration).SetEase((Ease) motionCloseData.ease).OnComplete(End).Play();
+                    Tween.LocalScale(container, motionCloseData.scale, motionCloseData.duration, motionCloseData.ease);
+                    Tween.LocalScale(container, motionCloseData.toPosition, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
                     break;
             }
         }

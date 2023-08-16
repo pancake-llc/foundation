@@ -1,4 +1,4 @@
-using Pancake.Tween;
+using PrimeTween;
 using UnityEngine;
 
 namespace Pancake.Component
@@ -10,20 +10,20 @@ namespace Pancake.Component
         [SerializeField] private bool loop;
         [SerializeField] private Ease ease;
 
-        private Tween.Tween _tween;
+        private Tween _tween;
 
         protected override void OnEnabled()
         {
             base.OnEnabled();
             var loopCount = 0;
             if (loop) loopCount = -1;
-            _tween = Tween.Tween.Create(false).SetLoop(loopCount, true).Add(transform.ActionScale(value, duration).SetEase(ease)).Play();
+            _tween = Tween.LocalScale(transform, value, duration, ease, loopCount);
         }
 
         protected override void OnDisabled()
         {
             base.OnDisabled();
-            _tween?.Stop();
+            _tween.Stop();
         }
     }
 }

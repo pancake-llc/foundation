@@ -29,7 +29,6 @@ namespace PancakeEditor
             HeartSetting,
             Scriptable,
             LevelSystem,
-            Tween,
             Notification,
             InAppReview,
             NeedleConsole,
@@ -56,7 +55,6 @@ namespace PancakeEditor
         private enum WizardUtilitiesType
         {
             Notification = WizardAllType.Notification,
-            Tween = WizardAllType.Tween,
             InAppReview = WizardAllType.InAppReview,
             NeedleConsole = WizardAllType.NeedleConsole,
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
@@ -193,9 +191,6 @@ namespace PancakeEditor
                 case WizardAllType.Adjust when _currentType is WizardType.Track or WizardType.All:
                     TrackingAdjustDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Tween when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesTweenDrawer.OnInspectorGUI();
-                    break;
                 case WizardAllType.Notification when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesNotificationDrawer.OnInspectorGUI();
                     break;
@@ -290,7 +285,6 @@ namespace PancakeEditor
                 case WizardAllType.InAppPurchase: return EditorResources.ScriptableIap;
                 case WizardAllType.Firebase: return EditorResources.ScriptableFirebase;
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
-                case WizardAllType.Tween: return EditorResources.ScriptableTween;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 case WizardAllType.InAppReview: return EditorResources.ScriptableStar;
                 case WizardAllType.NeedleConsole: return EditorResources.ScriptableConsole;
