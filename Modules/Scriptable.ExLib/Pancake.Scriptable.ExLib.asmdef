@@ -1,0 +1,16 @@
+{
+    "name": "Pancake.Scriptable.ExLib",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b0a110e2f808b4d4d82f5694f91b251a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
