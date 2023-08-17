@@ -197,7 +197,7 @@ namespace Pancake
         /// Attach a DelayHandle on to the behaviour. If the behaviour is destroyed before the DelayHandle is completed,
         /// e.g. through a scene change, the DelayHandle callback will not execute.
         /// </summary>
-        /// <param name="behaviour">The behaviour to attach this DelayHandle to.</param>
+        /// <param name="target">The behaviour to attach this DelayHandle to.</param>
         /// <param name="duration">The duration to wait before the DelayHandle fires.</param>
         /// <param name="onComplete">The action to run when the DelayHandle elapses.</param>
         /// <param name="onUpdate">A function to call each tick of the DelayHandle. Takes the number of seconds elapsed since
@@ -205,20 +205,21 @@ namespace Pancake
         /// <param name="isLooped">Whether the DelayHandle should restart after executing.</param>
         /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow-mo or pausing) or
         /// game-time(affected by time scale changes).</param>
-        public static DelayHandle AttachDelay(
-            this MonoBehaviour behaviour,
+        public static DelayHandle Delay(
+            this MonoBehaviour target,
             float duration,
             Action onComplete,
             Action<float> onUpdate = null,
             bool isLooped = false,
             bool useRealTime = false)
         {
-            return App.Delay(duration,
+            return App.Delay(
+                target,
+                duration,
                 onComplete,
                 onUpdate,
                 isLooped,
-                useRealTime,
-                behaviour);
+                useRealTime);
         }
 
         /// <summary>

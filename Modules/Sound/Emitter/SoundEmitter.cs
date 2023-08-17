@@ -31,7 +31,7 @@ namespace Pancake.Sound
             component.volume = volume;
             component.time = 0f; //Reset in case this AudioSource is being reused for a short SFX after being used for a long music track
             component.Play();
-            if (!loop) this.AttachDelay(clip.length, OnCompletedInvoke);
+            if (!loop) this.Delay(clip.length, OnCompletedInvoke);
         }
 
         private void OnCompletedInvoke()
@@ -93,7 +93,7 @@ namespace Pancake.Sound
 
             component.loop = false;
             float remainingTime = component.clip.length - component.time;
-            this.AttachDelay(remainingTime, OnFadeOutCompleted);
+            this.Delay(remainingTime, OnFadeOutCompleted);
         }
     }
 }

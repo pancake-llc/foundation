@@ -146,12 +146,12 @@ namespace Pancake
 
         internal DelayHandle(float duration, Action onComplete, Action<float> onUpdate, bool isLooped, bool usesRealTime, MonoBehaviour autoDestroyOwner)
         {
-            this.Duration = duration;
+            Duration = duration;
             _onComplete = onComplete;
             _onUpdate = onUpdate;
 
-            this.IsLooped = isLooped;
-            this.UsesRealTime = usesRealTime;
+            IsLooped = isLooped;
+            UsesRealTime = usesRealTime;
 
             _autoDestroyOwner = autoDestroyOwner;
             _hasAutoDestroyOwner = autoDestroyOwner != null;
@@ -168,10 +168,7 @@ namespace Pancake
 
         internal void Update()
         {
-            if (IsDone)
-            {
-                return;
-            }
+            if (IsDone) return;
 
             if (IsPaused)
             {
@@ -181,27 +178,14 @@ namespace Pancake
             }
 
             _lastUpdateTime = GetWorldTime();
-
-            if (_onUpdate != null)
-            {
-                _onUpdate(GetTimeElapsed());
-            }
+            _onUpdate?.Invoke(GetTimeElapsed());
 
             if (GetWorldTime() >= GetFireTime())
             {
-                if (_onComplete != null)
-                {
-                    _onComplete();
-                }
+                _onComplete?.Invoke();
 
-                if (IsLooped)
-                {
-                    _startTime = GetWorldTime();
-                }
-                else
-                {
-                    IsCompleted = true;
-                }
+                if (IsLooped) _startTime = GetWorldTime();
+                else IsCompleted = true;
             }
         }
     }
