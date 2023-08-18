@@ -37,6 +37,21 @@ namespace Pancake.Sound
             _sfx = new SoundEmitterVault();
             pool.Prewarm(initialSize);
             pool.SetParent(transform);
+            sfxVolume.OnValueChanged += OnSfxVolumeChanged;
+            musicVolume.OnValueChanged += OnMusicVolumeChanged;
+        }
+
+        private void OnMusicVolumeChanged(float volume) { _music.component.volume = volume; }
+
+        private void OnSfxVolumeChanged(float volume)
+        {
+            foreach (var s in _sfx.GetAll())
+            {
+                foreach (var soundEmitter in s)
+                {
+                    soundEmitter.component.volume = volume;
+                }
+            }
         }
 
         protected override void OnEnabled()
@@ -94,22 +109,19 @@ namespace Pancake.Sound
         private void StopSfx(AudioHandle handle)
         {
             bool isFound = _sfx.Get(handle, out var soundEmitters);
-
-            if (isFound)
+            if (!isFound) return;
+            foreach (var s in soundEmitters)
             {
-                foreach (var s in soundEmitters)
-                {
-                    StopAndCleanEmitter(s);
-                }
-
-                _sfx.Remove(handle);
+                StopAndCleanEmitter(s);
             }
+
+            _sfx.Remove(handle);
         }
 
         private void PauseSfx(AudioHandle handle)
         {
-            _sfx.Get(handle, out var soundEmitters);
-
+            bool isFound = _sfx.Get(handle, out var soundEmitters);
+            if (!isFound) return;
             foreach (var s in soundEmitters)
             {
                 s.Pause();
@@ -118,8 +130,8 @@ namespace Pancake.Sound
 
         private void ResumeSfx(AudioHandle handle)
         {
-            _sfx.Get(handle, out var soundEmitters);
-
+            bool isFound = _sfx.Get(handle, out var soundEmitters);
+            if (!isFound) return;
             foreach (var s in soundEmitters)
             {
                 s.Resume();
