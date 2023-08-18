@@ -23,7 +23,6 @@ namespace Pancake.Sound
         [SerializeField] private ScriptableEventAudioHandle stopAudioEvent;
         [SerializeField] private ScriptableEventAudioHandle pauseAudioEvent;
         [SerializeField] private ScriptableEventAudioHandle resumeAudioEvent;
-        [SerializeField] private ScriptableEventAudioHandle audioFinishChannel;
 
         private AudioHandle _audioHandle = AudioHandle.invalid;
 
@@ -66,12 +65,6 @@ namespace Pancake.Sound
         public void Resume()
         {
             resumeAudioEvent.Raise(_audioHandle);
-            _audioHandle = AudioHandle.invalid;
-        }
-
-        public void FinishAudio()
-        {
-            audioFinishChannel.Raise(_audioHandle);
             _audioHandle = AudioHandle.invalid;
         }
     }
