@@ -1350,7 +1350,7 @@ namespace PrimeTween {
 
         public static Tween Custom(float startValue, float endValue, float duration, [NotNull] Action<float> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom(float startValue, float endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<float> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+        public static Tween Custom(float startValue, float endValue, float duration, [NotNull] Action<float> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom(float startValue, float endValue, TweenSettings settings, [NotNull] Action<float> onValueChange) => Custom(new TweenSettings<float>(startValue, endValue, settings), onValueChange);
         public static Tween Custom(TweenSettings<float> settings, [NotNull] Action<float> onValueChange) {
@@ -1358,8 +1358,7 @@ namespace PrimeTween {
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Float;
@@ -1374,29 +1373,42 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         public static Tween Custom<T>([NotNull] T target, float startValue, float endValue, float duration, [NotNull] Action<T, float> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, float startValue, float endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<T, float> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+            => Custom_internal(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, float startValue, float endValue, float duration, [NotNull] Action<T, float> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
+            => Custom_internal(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom<T>([NotNull] T target, float startValue, float endValue, TweenSettings settings, [NotNull] Action<T, float> onValueChange) where T : class 
-            => Custom(target, new TweenSettings<float>(startValue, endValue, settings), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, TweenSettings<float> settings, [NotNull] Action<T, float> onValueChange) where T : class {
+            => Custom_internal(target, new TweenSettings<float>(startValue, endValue, settings), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, TweenSettings<float> settings, [NotNull] Action<T, float> onValueChange) where T : class 
+            => Custom_internal(target, settings, onValueChange);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween CustomAdditive<T>([NotNull] T target, float deltaValue, TweenSettings settings, [NotNull] Action<T, float> onDeltaChange) where T : class 
+            => Custom_internal(target, new TweenSettings<float>(default, deltaValue, settings), onDeltaChange, true);
+        #endif
+        static Tween Custom_internal<T>([NotNull] T target, TweenSettings<float> settings, [NotNull] Action<T, float> onValueChange, bool isAdditive = false) where T : class {
             Assert.IsNotNull(onValueChange);
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Float;
             tween.customOnValueChange = onValueChange;
+            tween.isAdditive = isAdditive;
             tween.Setup(target, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<T, float>;
                 var _target = _tween.target as T;
-                var val = _tween.FloatVal;
+                float val;
+                if (_tween.isAdditive) {
+                    var newVal = _tween.FloatVal;
+                    val = newVal.calcDelta(_tween.prevVal);
+                    _tween.prevVal.FloatVal = newVal;
+                } else {
+                    val = _tween.FloatVal;
+                }
                 try {
                     _onValueChange(_target, val);
                 } catch (Exception e) {
@@ -1404,31 +1416,29 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animate([NotNull] object target, ref TweenSettings<float> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Float;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animateWithIntParam([NotNull] object target, int intParam, ref TweenSettings<float> settings, [NotNull] Action<ReusableTween> setter, [NotNull] Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.intParam = intParam;
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Float;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
 
         public static Tween Custom(UnityEngine.Color startValue, UnityEngine.Color endValue, float duration, [NotNull] Action<UnityEngine.Color> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Color>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom(UnityEngine.Color startValue, UnityEngine.Color endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<UnityEngine.Color> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+        public static Tween Custom(UnityEngine.Color startValue, UnityEngine.Color endValue, float duration, [NotNull] Action<UnityEngine.Color> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Color>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom(UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings, [NotNull] Action<UnityEngine.Color> onValueChange) => Custom(new TweenSettings<UnityEngine.Color>(startValue, endValue, settings), onValueChange);
         public static Tween Custom(TweenSettings<UnityEngine.Color> settings, [NotNull] Action<UnityEngine.Color> onValueChange) {
@@ -1436,8 +1446,7 @@ namespace PrimeTween {
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Color;
@@ -1452,29 +1461,42 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Color startValue, UnityEngine.Color endValue, float duration, [NotNull] Action<T, UnityEngine.Color> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, UnityEngine.Color startValue, UnityEngine.Color endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<T, UnityEngine.Color> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+            => Custom_internal(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, UnityEngine.Color startValue, UnityEngine.Color endValue, float duration, [NotNull] Action<T, UnityEngine.Color> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Color> onValueChange) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Color> settings, [NotNull] Action<T, UnityEngine.Color> onValueChange) where T : class {
+            => Custom_internal(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Color> settings, [NotNull] Action<T, UnityEngine.Color> onValueChange) where T : class 
+            => Custom_internal(target, settings, onValueChange);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween CustomAdditive<T>([NotNull] T target, UnityEngine.Color deltaValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Color> onDeltaChange) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Color>(default, deltaValue, settings), onDeltaChange, true);
+        #endif
+        static Tween Custom_internal<T>([NotNull] T target, TweenSettings<UnityEngine.Color> settings, [NotNull] Action<T, UnityEngine.Color> onValueChange, bool isAdditive = false) where T : class {
             Assert.IsNotNull(onValueChange);
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Color;
             tween.customOnValueChange = onValueChange;
+            tween.isAdditive = isAdditive;
             tween.Setup(target, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<T, UnityEngine.Color>;
                 var _target = _tween.target as T;
-                var val = _tween.ColorVal;
+                UnityEngine.Color val;
+                if (_tween.isAdditive) {
+                    var newVal = _tween.ColorVal;
+                    val = newVal.calcDelta(_tween.prevVal);
+                    _tween.prevVal.ColorVal = newVal;
+                } else {
+                    val = _tween.ColorVal;
+                }
                 try {
                     _onValueChange(_target, val);
                 } catch (Exception e) {
@@ -1482,31 +1504,29 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animate([NotNull] object target, ref TweenSettings<UnityEngine.Color> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Color;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animateWithIntParam([NotNull] object target, int intParam, ref TweenSettings<UnityEngine.Color> settings, [NotNull] Action<ReusableTween> setter, [NotNull] Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.intParam = intParam;
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Color;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
 
         public static Tween Custom(UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] Action<UnityEngine.Vector2> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom(UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<UnityEngine.Vector2> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+        public static Tween Custom(UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] Action<UnityEngine.Vector2> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom(UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings, [NotNull] Action<UnityEngine.Vector2> onValueChange) => Custom(new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings), onValueChange);
         public static Tween Custom(TweenSettings<UnityEngine.Vector2> settings, [NotNull] Action<UnityEngine.Vector2> onValueChange) {
@@ -1514,8 +1534,7 @@ namespace PrimeTween {
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector2;
@@ -1530,29 +1549,42 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] Action<T, UnityEngine.Vector2> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<T, UnityEngine.Vector2> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] Action<T, UnityEngine.Vector2> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Vector2> onValueChange) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Vector2> settings, [NotNull] Action<T, UnityEngine.Vector2> onValueChange) where T : class {
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Vector2> settings, [NotNull] Action<T, UnityEngine.Vector2> onValueChange) where T : class 
+            => Custom_internal(target, settings, onValueChange);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween CustomAdditive<T>([NotNull] T target, UnityEngine.Vector2 deltaValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Vector2> onDeltaChange) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector2>(default, deltaValue, settings), onDeltaChange, true);
+        #endif
+        static Tween Custom_internal<T>([NotNull] T target, TweenSettings<UnityEngine.Vector2> settings, [NotNull] Action<T, UnityEngine.Vector2> onValueChange, bool isAdditive = false) where T : class {
             Assert.IsNotNull(onValueChange);
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector2;
             tween.customOnValueChange = onValueChange;
+            tween.isAdditive = isAdditive;
             tween.Setup(target, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<T, UnityEngine.Vector2>;
                 var _target = _tween.target as T;
-                var val = _tween.Vector2Val;
+                UnityEngine.Vector2 val;
+                if (_tween.isAdditive) {
+                    var newVal = _tween.Vector2Val;
+                    val = newVal.calcDelta(_tween.prevVal);
+                    _tween.prevVal.Vector2Val = newVal;
+                } else {
+                    val = _tween.Vector2Val;
+                }
                 try {
                     _onValueChange(_target, val);
                 } catch (Exception e) {
@@ -1560,31 +1592,29 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animate([NotNull] object target, ref TweenSettings<UnityEngine.Vector2> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector2;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animateWithIntParam([NotNull] object target, int intParam, ref TweenSettings<UnityEngine.Vector2> settings, [NotNull] Action<ReusableTween> setter, [NotNull] Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.intParam = intParam;
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector2;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
 
         public static Tween Custom(UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] Action<UnityEngine.Vector3> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom(UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<UnityEngine.Vector3> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+        public static Tween Custom(UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] Action<UnityEngine.Vector3> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom(UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings, [NotNull] Action<UnityEngine.Vector3> onValueChange) => Custom(new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings), onValueChange);
         public static Tween Custom(TweenSettings<UnityEngine.Vector3> settings, [NotNull] Action<UnityEngine.Vector3> onValueChange) {
@@ -1592,8 +1622,7 @@ namespace PrimeTween {
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector3;
@@ -1608,29 +1637,42 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] Action<T, UnityEngine.Vector3> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<T, UnityEngine.Vector3> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] Action<T, UnityEngine.Vector3> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Vector3> onValueChange) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Vector3> settings, [NotNull] Action<T, UnityEngine.Vector3> onValueChange) where T : class {
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Vector3> settings, [NotNull] Action<T, UnityEngine.Vector3> onValueChange) where T : class 
+            => Custom_internal(target, settings, onValueChange);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween CustomAdditive<T>([NotNull] T target, UnityEngine.Vector3 deltaValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Vector3> onDeltaChange) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector3>(default, deltaValue, settings), onDeltaChange, true);
+        #endif
+        static Tween Custom_internal<T>([NotNull] T target, TweenSettings<UnityEngine.Vector3> settings, [NotNull] Action<T, UnityEngine.Vector3> onValueChange, bool isAdditive = false) where T : class {
             Assert.IsNotNull(onValueChange);
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector3;
             tween.customOnValueChange = onValueChange;
+            tween.isAdditive = isAdditive;
             tween.Setup(target, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<T, UnityEngine.Vector3>;
                 var _target = _tween.target as T;
-                var val = _tween.Vector3Val;
+                UnityEngine.Vector3 val;
+                if (_tween.isAdditive) {
+                    var newVal = _tween.Vector3Val;
+                    val = newVal.calcDelta(_tween.prevVal);
+                    _tween.prevVal.Vector3Val = newVal;
+                } else {
+                    val = _tween.Vector3Val;
+                }
                 try {
                     _onValueChange(_target, val);
                 } catch (Exception e) {
@@ -1638,31 +1680,29 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animate([NotNull] object target, ref TweenSettings<UnityEngine.Vector3> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector3;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animateWithIntParam([NotNull] object target, int intParam, ref TweenSettings<UnityEngine.Vector3> settings, [NotNull] Action<ReusableTween> setter, [NotNull] Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.intParam = intParam;
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector3;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
 
         public static Tween Custom(UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, float duration, [NotNull] Action<UnityEngine.Vector4> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Vector4>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom(UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<UnityEngine.Vector4> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+        public static Tween Custom(UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, float duration, [NotNull] Action<UnityEngine.Vector4> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Vector4>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom(UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, TweenSettings settings, [NotNull] Action<UnityEngine.Vector4> onValueChange) => Custom(new TweenSettings<UnityEngine.Vector4>(startValue, endValue, settings), onValueChange);
         public static Tween Custom(TweenSettings<UnityEngine.Vector4> settings, [NotNull] Action<UnityEngine.Vector4> onValueChange) {
@@ -1670,8 +1710,7 @@ namespace PrimeTween {
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector4;
@@ -1686,29 +1725,42 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, float duration, [NotNull] Action<T, UnityEngine.Vector4> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector4>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<T, UnityEngine.Vector4> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector4>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector4>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, float duration, [NotNull] Action<T, UnityEngine.Vector4> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector4>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Vector4 startValue, UnityEngine.Vector4 endValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Vector4> onValueChange) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Vector4>(startValue, endValue, settings), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Vector4> settings, [NotNull] Action<T, UnityEngine.Vector4> onValueChange) where T : class {
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector4>(startValue, endValue, settings), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Vector4> settings, [NotNull] Action<T, UnityEngine.Vector4> onValueChange) where T : class 
+            => Custom_internal(target, settings, onValueChange);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween CustomAdditive<T>([NotNull] T target, UnityEngine.Vector4 deltaValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Vector4> onDeltaChange) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Vector4>(default, deltaValue, settings), onDeltaChange, true);
+        #endif
+        static Tween Custom_internal<T>([NotNull] T target, TweenSettings<UnityEngine.Vector4> settings, [NotNull] Action<T, UnityEngine.Vector4> onValueChange, bool isAdditive = false) where T : class {
             Assert.IsNotNull(onValueChange);
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector4;
             tween.customOnValueChange = onValueChange;
+            tween.isAdditive = isAdditive;
             tween.Setup(target, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<T, UnityEngine.Vector4>;
                 var _target = _tween.target as T;
-                var val = _tween.Vector4Val;
+                UnityEngine.Vector4 val;
+                if (_tween.isAdditive) {
+                    var newVal = _tween.Vector4Val;
+                    val = newVal.calcDelta(_tween.prevVal);
+                    _tween.prevVal.Vector4Val = newVal;
+                } else {
+                    val = _tween.Vector4Val;
+                }
                 try {
                     _onValueChange(_target, val);
                 } catch (Exception e) {
@@ -1716,31 +1768,29 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animate([NotNull] object target, ref TweenSettings<UnityEngine.Vector4> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector4;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animateWithIntParam([NotNull] object target, int intParam, ref TweenSettings<UnityEngine.Vector4> settings, [NotNull] Action<ReusableTween> setter, [NotNull] Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.intParam = intParam;
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector4;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
 
         public static Tween Custom(UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, [NotNull] Action<UnityEngine.Quaternion> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom(UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<UnityEngine.Quaternion> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+        public static Tween Custom(UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, [NotNull] Action<UnityEngine.Quaternion> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom(UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, TweenSettings settings, [NotNull] Action<UnityEngine.Quaternion> onValueChange) => Custom(new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, settings), onValueChange);
         public static Tween Custom(TweenSettings<UnityEngine.Quaternion> settings, [NotNull] Action<UnityEngine.Quaternion> onValueChange) {
@@ -1748,8 +1798,7 @@ namespace PrimeTween {
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Quaternion;
@@ -1764,29 +1813,42 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, [NotNull] Action<T, UnityEngine.Quaternion> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<T, UnityEngine.Quaternion> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+            => Custom_internal(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, [NotNull] Action<T, UnityEngine.Quaternion> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Quaternion> onValueChange) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, settings), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Quaternion> settings, [NotNull] Action<T, UnityEngine.Quaternion> onValueChange) where T : class {
+            => Custom_internal(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, settings), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Quaternion> settings, [NotNull] Action<T, UnityEngine.Quaternion> onValueChange) where T : class 
+            => Custom_internal(target, settings, onValueChange);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween CustomAdditive<T>([NotNull] T target, UnityEngine.Quaternion deltaValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Quaternion> onDeltaChange) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Quaternion>(default, deltaValue, settings), onDeltaChange, true);
+        #endif
+        static Tween Custom_internal<T>([NotNull] T target, TweenSettings<UnityEngine.Quaternion> settings, [NotNull] Action<T, UnityEngine.Quaternion> onValueChange, bool isAdditive = false) where T : class {
             Assert.IsNotNull(onValueChange);
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Quaternion;
             tween.customOnValueChange = onValueChange;
+            tween.isAdditive = isAdditive;
             tween.Setup(target, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<T, UnityEngine.Quaternion>;
                 var _target = _tween.target as T;
-                var val = _tween.QuaternionVal;
+                UnityEngine.Quaternion val;
+                if (_tween.isAdditive) {
+                    var newVal = _tween.QuaternionVal;
+                    val = newVal.calcDelta(_tween.prevVal);
+                    _tween.prevVal.QuaternionVal = newVal;
+                } else {
+                    val = _tween.QuaternionVal;
+                }
                 try {
                     _onValueChange(_target, val);
                 } catch (Exception e) {
@@ -1794,31 +1856,29 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animate([NotNull] object target, ref TweenSettings<UnityEngine.Quaternion> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Quaternion;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animateWithIntParam([NotNull] object target, int intParam, ref TweenSettings<UnityEngine.Quaternion> settings, [NotNull] Action<ReusableTween> setter, [NotNull] Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.intParam = intParam;
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Quaternion;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
 
         public static Tween Custom(UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, [NotNull] Action<UnityEngine.Rect> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom(UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<UnityEngine.Rect> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+        public static Tween Custom(UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, [NotNull] Action<UnityEngine.Rect> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom(UnityEngine.Rect startValue, UnityEngine.Rect endValue, TweenSettings settings, [NotNull] Action<UnityEngine.Rect> onValueChange) => Custom(new TweenSettings<UnityEngine.Rect>(startValue, endValue, settings), onValueChange);
         public static Tween Custom(TweenSettings<UnityEngine.Rect> settings, [NotNull] Action<UnityEngine.Rect> onValueChange) {
@@ -1826,8 +1886,7 @@ namespace PrimeTween {
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Rect;
@@ -1842,29 +1901,42 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, [NotNull] Action<T, UnityEngine.Rect> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, [NotNull] Action<T, UnityEngine.Rect> onValueChange, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+            => Custom_internal(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, [NotNull] Action<T, UnityEngine.Rect> onValueChange, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);
         public static Tween Custom<T>([NotNull] T target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Rect> onValueChange) where T : class 
-            => Custom(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, settings), onValueChange);
-        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Rect> settings, [NotNull] Action<T, UnityEngine.Rect> onValueChange) where T : class {
+            => Custom_internal(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, settings), onValueChange);
+        public static Tween Custom<T>([NotNull] T target, TweenSettings<UnityEngine.Rect> settings, [NotNull] Action<T, UnityEngine.Rect> onValueChange) where T : class 
+            => Custom_internal(target, settings, onValueChange);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween CustomAdditive<T>([NotNull] T target, UnityEngine.Rect deltaValue, TweenSettings settings, [NotNull] Action<T, UnityEngine.Rect> onDeltaChange) where T : class 
+            => Custom_internal(target, new TweenSettings<UnityEngine.Rect>(default, deltaValue, settings), onDeltaChange, true);
+        #endif
+        static Tween Custom_internal<T>([NotNull] T target, TweenSettings<UnityEngine.Rect> settings, [NotNull] Action<T, UnityEngine.Rect> onValueChange, bool isAdditive = false) where T : class {
             Assert.IsNotNull(onValueChange);
             if (settings.startFromCurrent) {
                 UnityEngine.Debug.LogWarning(Constants.customTweensDontSupportStartFromCurrentWarning);
             }
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Rect;
             tween.customOnValueChange = onValueChange;
+            tween.isAdditive = isAdditive;
             tween.Setup(target, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<T, UnityEngine.Rect>;
                 var _target = _tween.target as T;
-                var val = _tween.RectVal;
+                UnityEngine.Rect val;
+                if (_tween.isAdditive) {
+                    var newVal = _tween.RectVal;
+                    val = newVal.calcDelta(_tween.prevVal);
+                    _tween.prevVal.RectVal = newVal;
+                } else {
+                    val = _tween.RectVal;
+                }
                 try {
                     _onValueChange(_target, val);
                 } catch (Exception e) {
@@ -1872,26 +1944,24 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animate([NotNull] object target, ref TweenSettings<UnityEngine.Rect> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Rect;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
         static Tween animateWithIntParam([NotNull] object target, int intParam, ref TweenSettings<UnityEngine.Rect> settings, [NotNull] Action<ReusableTween> setter, [NotNull] Func<ReusableTween, ValueContainer> getter) {
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.intParam = intParam;
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Rect;
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
     }
 }

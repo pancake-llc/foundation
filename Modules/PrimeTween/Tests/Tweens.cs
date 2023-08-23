@@ -16,6 +16,33 @@ using Random = UnityEngine.Random;
 using SuppressMessage = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
 public partial class Tests {
+    [UnityTest]
+    public IEnumerator QuaternionDefaultValue() {
+        {
+            var q = Quaternion.Euler(0, 0, 45);
+            var def = new Quaternion();
+            Assert.AreEqual(Quaternion.identity.normalized, def.normalized);
+            Assert.AreNotEqual(Quaternion.Angle(Quaternion.identity, q), Quaternion.Angle(def, q));
+            Assert.AreEqual(Quaternion.Angle(Quaternion.identity, q), Quaternion.Angle(def.normalized, q));
+        }
+        {
+            Tween t = default;
+            var def = new Quaternion();
+            int numCallback = 0;
+            t = Tween.Custom(def, def, 0.01f, delegate {
+                numCallback++;
+                var startVal = t.tween.startValue.QuaternionVal;
+                var endVal = t.tween.endValue.QuaternionVal;
+                // Debug.Log($"{startVal}, {endVal}");
+                Assert.AreNotEqual(def, startVal);
+                Assert.AreNotEqual(def, endVal);
+                t.Stop();
+            });
+            yield return t.ToYieldInstruction();
+            Assert.AreEqual(1, numCallback);
+        }
+    }
+    
     /// This test can fail if Game window is set to 'Play Unfocused'
     [UnityTest]
     public IEnumerator StartValueIsAppliedOnFirstFrame() {
@@ -317,7 +344,7 @@ public partial class Tests {
         int numCompleted = 0;
         var t = Tween.Custom(this, 0f, 1f, 0.05f, (_, val) => curVal = val, cycles: 1, cycleMode: CycleMode.Yoyo)
             .OnComplete(() => numCompleted++);
-        var s = t.Chain(Tween.Delay(0.05f));
+        var s = t.Chain(Tween.Delay(Time.deltaTime * 5));
         await t;
         Assert.IsFalse(t.IsAlive);
         Assert.AreEqual(1, t.tween.cyclesDone);
@@ -370,7 +397,7 @@ public partial class Tests {
         yield return null;
         var tweens = PrimeTweenManager.Instance.tweens;
         Assert.AreEqual(0, tweens.Count);
-        var t = Tween.Delay(0.05f);
+        var t = Tween.Delay(Time.deltaTime * 5);
         var e = t.ToYieldInstruction();
         Assert.IsTrue(e.MoveNext());
         yield return e.Current;
@@ -895,7 +922,7 @@ public partial class Tests {
         var iniPos = Vector3.one;
         shakeTransform.position = iniPos;
         Assert.AreEqual(iniPos, shakeTransform.position);
-        var t = Tween.ShakeCustom(shakeTransform, shakeSettings, iniPos, (target, val) => target.localPosition = val);
+        var t = Tween.ShakeCustom(shakeTransform, iniPos, shakeSettings, (target, val) => target.localPosition = val);
         yield return null;
         Assert.AreNotEqual(iniPos, shakeTransform.position);
         t.Complete();
@@ -1684,17 +1711,17 @@ public partial class Tests {
     [UnityTest]
     public IEnumerator ImplicitConversionToIterator() {
         {
-            var t2 = Tween.Delay(0.05f);
+            var t2 = Tween.Delay(0.0001f);
             var frameStart = Time.frameCount;
             yield return t2;
-            Assert.IsTrue(Time.frameCount - frameStart > 1);
+            Assert.AreEqual(1, Time.frameCount - frameStart);
             Assert.IsFalse(t2.IsAlive);
         }
         {
-            var s = Sequence.Create(Tween.Delay(0.05f));
+            var s = Sequence.Create(Tween.Delay(0.0001f));
             var frameStart = Time.frameCount;
             yield return s;
-            Assert.IsTrue(Time.frameCount - frameStart > 1);
+            Assert.AreEqual(1, Time.frameCount - frameStart);
             Assert.IsFalse(s.IsAlive);
         }
     }

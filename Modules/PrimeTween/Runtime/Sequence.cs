@@ -79,8 +79,7 @@ namespace PrimeTween {
         public float progressTotal => sharedProps.progressTotal;
 
         public static Sequence Create() {
-            var delay = PrimeTweenManager.createEmpty();
-            return new Sequence(delay);
+            return new Sequence(PrimeTweenManager.createEmpty());
         }
 
         public static Sequence Create(Tween firstTween) {
@@ -88,6 +87,13 @@ namespace PrimeTween {
         }
 
         Sequence(Tween firstTween) {
+            #if UNITY_EDITOR
+            if (Constants.noInstance) {
+                first = default;
+                id = 0;
+                return;
+            }
+            #endif
             var instance = PrimeTweenManager.Instance;
             instance.lastSequenceId++;
             id = instance.lastSequenceId;
@@ -128,7 +134,7 @@ namespace PrimeTween {
             return result.IsCreated ? result : (Tween?)null;
         }
 
-        /// <summary>Schedules <see cref="tween"/> after all tweens in this Sequence.</summary>
+        /// <summary>Schedules <see cref="tween"/> after all tweens/sequences in this Sequence.</summary>
         public Sequence Chain(Tween tween) {
             Assert.IsTrue(IsCreated, Constants.defaultSequenceCtorError);
             if (warnIfNotAlive()) {

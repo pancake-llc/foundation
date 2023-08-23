@@ -27,6 +27,8 @@ namespace PrimeTween {
         [SerializeField] internal ValueContainer startValue;
         [SerializeField] internal ValueContainer endValue;
         ValueContainer diff;
+        internal bool isAdditive;
+        internal ValueContainer prevVal;
         [SerializeField] internal TweenSettings settings;
         [SerializeField] internal int cyclesDone;
 
@@ -200,7 +202,7 @@ namespace PrimeTween {
             onCompleteCallback = _onComplete;
             onComplete = tween => {
                 var callback = tween.onCompleteCallback as Action;
-                Assert.IsNotNull(callback);
+                OptionalAssert.IsNotNull(callback);
                 try {
                     callback();
                 } catch (Exception e) {
@@ -216,7 +218,7 @@ namespace PrimeTween {
             onCompleteCallback = _onComplete;
             onComplete = tween => {
                 var callback = tween.onCompleteCallback as Action<T>;
-                Assert.IsNotNull(callback);
+                OptionalAssert.IsNotNull(callback);
                 var _onCompleteTarget = tween.onCompleteTarget as T;
                 try {
                     callback(_onCompleteTarget);
@@ -229,13 +231,18 @@ namespace PrimeTween {
         void validateOnCompleteAssignment() {
             const string msg = "Tween already has an onComplete callback. Adding more callbacks is not allowed.\n" +
                                "Workaround: add tween to Sequence and use ChainCallback().\n";
-            Assert.IsNull(onCompleteTarget, msg);
-            Assert.IsNull(onCompleteCallback, msg);
+            OptionalAssert.IsNull(onCompleteTarget, msg);
+            OptionalAssert.IsNull(onCompleteCallback, msg);
             Assert.IsNull(onComplete, msg);
         }
 
         /// _getter is null for custom tweens
         internal void Setup([CanBeNull] object _target, ref TweenSettings _settings, [NotNull] Action<ReusableTween> _onValueChange, [CanBeNull] Func<ReusableTween, ValueContainer> _getter, bool _startFromCurrent) {
+            #if UNITY_EDITOR
+            if (Constants.noInstance) {
+                return;
+            }
+            #endif
             Assert.IsTrue(_settings.cycles >= -1);
             Assert.IsNotNull(_onValueChange);
             Assert.IsNull(getter);
@@ -296,10 +303,10 @@ namespace PrimeTween {
         }
 
         void ReportOnComplete() {
-            Assert.IsTrue(isInterpolationCompleted);
-            Assert.IsFalse(startFromCurrent);
-            Assert.AreEqual(settings.cycles, cyclesDone);
-            Assert.IsFalse(isAlive);
+            OptionalAssert.IsTrue(isInterpolationCompleted);
+            OptionalAssert.IsFalse(startFromCurrent);
+            OptionalAssert.AreEqual(settings.cycles, cyclesDone);
+            OptionalAssert.IsFalse(isAlive);
             onComplete?.Invoke(this);
         }
 
@@ -445,6 +452,8 @@ namespace PrimeTween {
             Assert.IsFalse(startFromCurrent);
             Assert.AreNotEqual(PropType.None, propType);
             if (propType == PropType.Quaternion) {
+                startValue.QuaternionVal.Normalize();
+                endValue.QuaternionVal.Normalize();
                 diff.QuaternionVal = Quaternion.Inverse(startValue.QuaternionVal) * endValue.QuaternionVal;
             } else {
                 diff.x = endValue.x - startValue.x;
@@ -504,7 +513,7 @@ namespace PrimeTween {
 
         internal void kill() {
             // Debug.Log($"{Time.frameCount} kill {GetDescription()}");
-            Assert.IsTrue(isAlive);
+            OptionalAssert.IsTrue(isAlive);
             isAlive = false;
         }
 

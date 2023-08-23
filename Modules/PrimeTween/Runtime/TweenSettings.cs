@@ -162,12 +162,12 @@ namespace PrimeTween {
     public enum CycleMode {
         [Tooltip("Restarts the tween from the beginning.")]
         Restart,
-        [Tooltip("Swaps the 'startValue' and 'endValue' (easing is normal on backward cycle).")]
+        [Tooltip("Swaps the 'startValue' and 'endValue' (easing is normal on the backward cycle).")]
         Yoyo,
         [Tooltip("At the end of a cycle increments 'startValue' and 'endValue' (startValue = endValue, endValue += endValue - startValue).\n\n" +
-                 "For example, if tween moves position.x from 0 to 1, then after the first cycle, the tween will move the position.x from 1 to 2 and so on.")]
+                 "For example, if tween moves position.x from 0 to 1, then after the first cycle, the tween will move the position.x from 1 to 2, and so on.")]
         Incremental,
-        [Tooltip("Rewinds the tween as if time was reversed (easing is reversed on backward cycle).")]
+        [Tooltip("Rewinds the tween as if time was reversed (easing is reversed on the backward cycle).")]
         Rewind
     }
 }

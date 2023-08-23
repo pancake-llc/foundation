@@ -24,5 +24,10 @@ namespace PrimeTween {
         internal static void IsNotNull<T>(T value) where T : class {
             Assert.IsNotNull(value);
         }
+        
+        [Conditional(PRIME_TWEEN_SAFETY_CHECKS)]
+        internal static void IsNull<T>(T value, string msg) where T : class {
+            Assert.IsNull(value, msg);
+        }
     }
 }

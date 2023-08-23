@@ -3,6 +3,18 @@ using UnityEngine;
 
 namespace PrimeTween {
     internal static class Extensions {
+        internal static float calcDelta(this float val, ValueContainer prevVal) => val - prevVal.FloatVal;
+        internal static Color calcDelta(this Color val, ValueContainer prevVal) => val - prevVal.ColorVal;
+        internal static Vector2 calcDelta(this Vector2 val, ValueContainer prevVal) => val - prevVal.Vector2Val;
+        internal static Vector3 calcDelta(this Vector3 val, ValueContainer prevVal) => val - prevVal.Vector3Val;
+        internal static Vector4 calcDelta(this Vector4 val, ValueContainer prevVal) => val - prevVal.Vector4Val;
+        internal static Quaternion calcDelta(this Quaternion val, ValueContainer prevVal) => Quaternion.Inverse(prevVal.QuaternionVal) * val;
+        internal static Rect calcDelta(this Rect val, ValueContainer prevVal) => new Rect(
+            val.x - prevVal.x,
+            val.y - prevVal.y,
+            val.width - prevVal.z,
+            val.height - prevVal.w);
+
         internal static Color WithAlpha(this Color c, float alpha) {
             c.a = alpha;
             return c;

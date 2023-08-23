@@ -6,7 +6,14 @@ namespace PrimeTween {
     /// Global PrimeTween configuration.
     [PublicAPI]
     public static class PrimeTweenConfig {
-        static PrimeTweenManager Instance => PrimeTweenManager.Instance;
+        static PrimeTweenManager Instance {
+            get {
+                #if UNITY_EDITOR
+                Assert.IsFalse(Constants.isEditMode, Constants.editModeWarning);
+                #endif
+                return PrimeTweenManager.Instance;
+            }
+        }
 
         /// <summary>
         /// If <see cref="PrimeTweenManager"/> instance is already created, <see cref="SetTweensCapacity"/> will allocate garbage,
@@ -24,10 +31,11 @@ namespace PrimeTween {
         /// </example>
         public static void SetTweensCapacity(int capacity) {
             Assert.IsTrue(capacity >= 0);
-            if (Instance == null) {
+            var instance = Instance;
+            if (instance == null) {
                 PrimeTweenManager.customInitialCapacity = capacity;
             } else {
-                Instance.SetTweensCapacity(capacity);
+                instance.SetTweensCapacity(capacity);
             }
         }
 

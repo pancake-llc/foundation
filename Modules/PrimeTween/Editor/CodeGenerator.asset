@@ -579,7 +579,7 @@ MonoBehaviour:
     dependency: 0
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
-  - name: Rotation_UnityEngine.Transform
+  - name: Rotation
     methodName: Rotation
     targetType: UnityEngine.Transform
     propertyType: 6
@@ -590,7 +590,7 @@ MonoBehaviour:
     dependency: 0
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
-  - name: LocalRotation_UnityEngine.Transform
+  - name: LocalRotation
     methodName: LocalRotation
     targetType: UnityEngine.Transform
     propertyType: 6

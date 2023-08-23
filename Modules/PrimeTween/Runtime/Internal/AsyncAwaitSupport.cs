@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -7,11 +8,13 @@ using UnityEngine.Assertions;
 
 namespace PrimeTween {
     public partial struct Tween {
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public TweenAwaiter GetAwaiter() {
             return new TweenAwaiter(this);
         }
         
-        [Obsolete("This struct is needed for async/await support, please don't use it directly. Marked as obsolete to exclude from IDE suggestions.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("This struct is needed for async/await support, you should not use it directly.")]
         public readonly struct TweenAwaiter : INotifyCompletion {
             readonly Tween tween;
 
@@ -43,6 +46,7 @@ namespace PrimeTween {
     }
 
     public partial struct Sequence {
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public Tween.TweenAwaiter GetAwaiter() {
             return new Tween.TweenAwaiter(GetLongestOrDefault());
         }

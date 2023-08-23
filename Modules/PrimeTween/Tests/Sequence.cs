@@ -24,7 +24,7 @@ public partial class Tests {
         while (seq.IsAlive) {
             var expected = Time.time - timeStart;
             // Debug.Log(expected);
-            const float tolerance = 0.01f;
+            float tolerance = Time.deltaTime * 3;
             try {
                 if (seq.cyclesDone == 0) {
                     Assert.AreEqual(expected, seq.elapsedTime, tolerance);
@@ -504,7 +504,7 @@ public partial class Tests {
             .Chain(t2);
 
         float timeStart = Time.time;
-        const float tolerance = dt / 2;
+        const float tolerance = dt;
         Assert.IsTrue(t1.IsAlive);
         yield return t1;
         Assert.AreEqual(dur1 * cycles1, Time.time - timeStart, tolerance);

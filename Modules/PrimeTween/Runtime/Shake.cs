@@ -69,8 +69,7 @@ namespace PrimeTween {
         static Tween shake(TweenType tweenType, PropType propType, [NotNull] Transform target, ShakeSettings settings, [NotNull] Action<ReusableTween, Vector3> onValueChange, [NotNull] Func<ReusableTween, ValueContainer> getter) {
             Assert.IsNotNull(onValueChange);
             Assert.IsNotNull(getter);
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.propType = propType;
             prepareShakeData(settings, tween);
             tween.tweenType = tweenType;
@@ -82,7 +81,7 @@ namespace PrimeTween {
                 var shakeVal = getShakeVal(state);
                 _onValueChange(state, shakeVal);
             }, getter, true);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
 
         internal static ValueContainer? tryGetStartValueFromOtherShake([NotNull] ReusableTween newTween) {
@@ -103,10 +102,9 @@ namespace PrimeTween {
             return null;
         }
 
-        public static Tween ShakeCustom<T>([NotNull] T target, ShakeSettings settings, Vector3 startValue, [NotNull] Action<T, Vector3> onValueChange) where T : class {
+        public static Tween ShakeCustom<T>([NotNull] T target, Vector3 startValue, ShakeSettings settings, [NotNull] Action<T, Vector3> onValueChange) where T : class {
             Assert.IsNotNull(onValueChange);
-            var instance = PrimeTweenManager.Instance;
-            var tween = instance.fetchTween();
+            var tween = PrimeTweenManager.fetchTween();
             tween.propType = PropType.Vector3;
             tween.tweenType = TweenType.ShakeCustom;
             tween.startValue.CopyFrom(ref startValue);
@@ -126,9 +124,9 @@ namespace PrimeTween {
                     _tween.EmergencyStop();
                 }
             }, null, false);
-            return instance.Animate(tween);
+            return PrimeTweenManager.Animate(tween);
         }
-        public static Tween PunchCustom<T>([NotNull] T target, ShakeSettings settings, Vector3 startValue, [NotNull] Action<T, Vector3> onValueChange) where T : class => ShakeCustom(target, settings.WithPunch(), startValue, onValueChange);
+        public static Tween PunchCustom<T>([NotNull] T target, Vector3 startValue, ShakeSettings settings, [NotNull] Action<T, Vector3> onValueChange) where T : class => ShakeCustom(target, startValue, settings.WithPunch(), onValueChange);
 
         static void prepareShakeData(ShakeSettings settings, [NotNull] ReusableTween tween) {
             Assert.IsTrue(settings.frequency >= 0);

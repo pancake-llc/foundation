@@ -36,5 +36,31 @@ namespace PrimeTween {
                                                 "For example, if you're animating a window, the 'endValue' can represent the opened position of the window.";
         internal const string setTweensCapacityMethod = "'" + nameof(PrimeTweenConfig) + "." + nameof(PrimeTweenConfig.SetTweensCapacity) + "(int capacity)'";
         internal const string maxAliveTweens = "Max alive tweens";
+
+        #if UNITY_EDITOR
+        internal const string editModeWarning = "Please don't call PrimeTween's API in Edit mode (while the scene is not playing).";
+
+        internal static bool warnNoInstance {
+            get {
+                if (noInstance) {
+                    UnityEngine.Debug.LogWarning(editModeWarning);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        internal static bool noInstance => PrimeTweenManager.Instance == null;
+
+        internal static bool isEditMode {
+            get {
+                try {
+                    return !UnityEditor.EditorApplication.isPlaying;
+                } catch {
+                    return true;
+                }
+            }
+        }
+        #endif
     }
 }

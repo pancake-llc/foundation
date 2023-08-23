@@ -78,7 +78,13 @@ namespace PrimeTween {
                 return;
             }
             Assert.IsNull(Instance);
-            var foundInScene = FindObjectOfType<PrimeTweenManager>();
+            var foundInScene = 
+                #if UNITY_2023_1_OR_NEWER
+                FindAnyObjectByType
+                #else
+                FindObjectOfType
+                #endif
+                <PrimeTweenManager>();
             Assert.IsNotNull(foundInScene);
             #if PRIME_TWEEN_INSPECTOR_DEBUGGING
             Debug.LogError("PRIME_TWEEN_INSPECTOR_DEBUGGING doesn't work with 'Recompile And Continue Playing' because Tween.id is serializable but Tween.tween is not.");
@@ -195,6 +201,11 @@ namespace PrimeTween {
         }
 
         internal static Tween createEmpty() {
+            #if UNITY_EDITOR
+            if (Constants.warnNoInstance) {
+                return default;
+            }
+            #endif
             var result = delayWithoutDurationCheck(null, 0, false);
             Assert.IsTrue(result.HasValue);
             return result.Value;
@@ -202,7 +213,7 @@ namespace PrimeTween {
 
         // Returns null if target is a destroyed UnityEngine.Object
         internal static Tween? delayWithoutDurationCheck([CanBeNull] object target, float duration, bool useUnscaledTime) {
-            var tween = Instance.fetchTween();
+            var tween = fetchTween();
             tween.propType = PropType.Float;
             tween.tweenType = TweenType.Delay;
             var settings = new TweenSettings {
@@ -211,13 +222,23 @@ namespace PrimeTween {
                 useUnscaledTime = useUnscaledTime
             };
             tween.Setup(target, ref settings, _ => {}, null, false);
-            var result = Instance.addTween(tween);
+            var result = addTween(tween);
             // ReSharper disable once RedundantCast
             return result.IsCreated ? result : (Tween?)null;
         }
 
         [NotNull]
-        internal ReusableTween fetchTween() {
+        internal static ReusableTween fetchTween() {
+            #if UNITY_EDITOR
+            if (Constants.warnNoInstance) {
+                return new ReusableTween();
+            }
+            #endif
+            return Instance.fetchTween_internal();
+        }
+
+        [NotNull]
+        ReusableTween fetchTween_internal() {
             if (pool.Count == 0) {
                 pool.Add(new ReusableTween());
             }
@@ -229,18 +250,37 @@ namespace PrimeTween {
             return result;
         }
 
-        internal Tween Animate([NotNull] ReusableTween tween) {
+        internal static Tween Animate([NotNull] ReusableTween tween) {
+            #if UNITY_EDITOR
+            if (Constants.noInstance) {
+                return default;
+            }
+            #endif
             checkDuration(tween.target, tween.settings.duration);
             return addTween(tween);
         }
 
         internal static void checkDuration<T>([CanBeNull] T target, float duration) where T : class {
+            #if UNITY_EDITOR
+            if (Constants.noInstance) {
+                return;
+            }
+            #endif
             if (duration < 0 || (duration == 0 && Instance.warnZeroDuration)) {
                 Debug.LogWarning($"Tween duration ({duration}) <= 0. {Constants.buildWarningCanBeDisabledMessage(nameof(warnZeroDuration))}", target as UnityEngine.Object);
             }
         }
 
-        Tween addTween([NotNull] ReusableTween tween) {
+        static Tween addTween([NotNull] ReusableTween tween) {
+            #if UNITY_EDITOR
+            if (Constants.noInstance) {
+                return default;
+            }
+            #endif
+            return Instance.addTween_internal(tween);
+        }
+
+        Tween addTween_internal([NotNull] ReusableTween tween) {
             Assert.IsNotNull(tween);
             Assert.IsTrue(tween.id > 0);
             if (!(tween.unityTarget is null) && tween.unityTarget == null) {
@@ -271,10 +311,19 @@ namespace PrimeTween {
         }
 
         /// <param name="onTarget">If specified, processes only tweens with such target. If null, processes all running tweens.</param>
-        /// <param name="minExpected">If specified, asserts that the number of processed tweens is greater than or equal to <see cref="minExpected"/>.</param>
+        /// <param name="numMinExpected">If specified, asserts that the number of processed tweens is greater than or equal to <see cref="numMinExpected"/>.</param>
         /// <param name="numMaxExpected">If specified, asserts that the number of processed tweens is less than or equal to <see cref="numMaxExpected"/>.</param>
         /// <returns>The number of processed tweens.</returns>
-        internal int processAll([CanBeNull] object onTarget, [NotNull] Predicate<ReusableTween> predicate, int? minExpected, int? numMaxExpected) {
+        internal static int processAll([CanBeNull] object onTarget, [NotNull] Predicate<ReusableTween> predicate, int? numMinExpected, int? numMaxExpected) {
+            #if UNITY_EDITOR
+            if (Constants.warnNoInstance) {
+                return default;
+            }
+            #endif
+            return Instance.processAll_internal(onTarget, predicate, numMinExpected, numMaxExpected);
+        }
+        
+        int processAll_internal([CanBeNull] object onTarget, [NotNull] Predicate<ReusableTween> predicate, int? minExpected, int? numMaxExpected) {
             int numProcessed = 0;
             foreach (var tween in tweens) {
                 if (tween == null) {
