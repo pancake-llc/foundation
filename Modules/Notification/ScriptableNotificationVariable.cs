@@ -33,6 +33,11 @@ namespace Pancake.Notification
          Message("Name Picture must contains file extension ex .jpg", Height = 24), Label("  Name Picture")]
         [SerializeField]
         internal string namePicture;
+        
+        [SerializeField] internal bool overrideIcon;
+        [SerializeField, ShowIf(nameof(overrideIcon)), Label("  Small Icon")] internal string smallIcon = "icon_0";
+        [SerializeField, ShowIf(nameof(overrideIcon)), Label("  Large Icon")] internal string largeIcon = "icon_1";
+
 
         [Array, SerializeField] private NotificationData[] datas;
 
@@ -45,6 +50,8 @@ namespace Pancake.Notification
             NotificationConsole.Send(identifier,
                 data.title,
                 data.message,
+                smallIcon: smallIcon,
+                largeIcon: largeIcon,
                 bigPicture: bigPicture,
                 namePicture: pathPicture);
         }
@@ -60,6 +67,8 @@ namespace Pancake.Notification
                 data.title,
                 data.message,
                 TimeSpan.FromMinutes(minute),
+                smallIcon: smallIcon,
+                largeIcon: largeIcon,
                 bigPicture: bigPicture,
                 namePicture: pathPicture,
                 repeat: repeat);
