@@ -13,6 +13,9 @@ using PlayFab.Json;
 #if ENABLE_PLAYFABADMIN_API
 using PlayFab.ServerModels;
 #endif
+#if FACEBOOK
+using Facebook.Unity;
+#endif
 using UnityEngine;
 using GetLeaderboardRequest = PlayFab.ClientModels.GetLeaderboardRequest;
 using GetLeaderboardResult = PlayFab.ClientModels.GetLeaderboardResult;
