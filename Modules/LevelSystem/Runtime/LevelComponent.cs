@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Pancake.Apex;
 using Pancake.Linq;
+using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.LevelSystem
@@ -9,9 +11,8 @@ namespace Pancake.LevelSystem
     [EditorIcon("script_mono")]
     public class LevelComponent : GameComponent
     {
-        [SerializeField] private bool loadLevelOnStartup = true;
-        [SerializeField] private int currentLevel;
         [SerializeField] private LevelSystemSetting setting;
+        [SerializeField] private ScriptableEventInt loadLevelEvent;
         [SerializeField] private ScriptableLevelListCallback levelListCallback;
 
         private LevelNode _currentLevelNode;
@@ -20,10 +21,7 @@ namespace Pancake.LevelSystem
         public bool IsLoaded { get; private set; }
         public List<Transform> LoadedObjects { get; private set; } = new List<Transform>();
 
-        private void Awake()
-        {
-            if (loadLevelOnStartup && currentLevel > 0) LoadLevel(currentLevel);
-        }
+        private void Awake() { loadLevelEvent.OnRaised += LoadLevel; }
 
         private void LoadLevel(int levelNumber)
         {
@@ -106,5 +104,7 @@ namespace Pancake.LevelSystem
                 }
             }
         }
+
+        private void OnDestroy() { loadLevelEvent.OnRaised -= LoadLevel; }
     }
 }
