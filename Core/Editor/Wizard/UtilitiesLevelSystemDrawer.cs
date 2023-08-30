@@ -16,13 +16,15 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Scriptable Level System Setting", GUILayout.Height(40)))
+                if (GUILayout.Button("Install Level System", GUILayout.Height(40)))
                 {
                     var setting = ScriptableObject.CreateInstance<LevelSystemEditorSetting>();
                     const string path = "Assets/_Root/Editor/Resources";
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(LevelSystemEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
+                    RegistryManager.Add("com.unity.addressables", "1.21.17");
+                    RegistryManager.Resolve();
                     AssetDatabase.Refresh();
                     Debug.Log($"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {path}/{nameof(LevelSystemEditorSetting)}.asset");
                 }
