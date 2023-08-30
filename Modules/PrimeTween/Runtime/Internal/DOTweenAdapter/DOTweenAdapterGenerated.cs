@@ -153,6 +153,10 @@ namespace PrimeTween {
 
 
         #endif
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static Tween DOTimeScale([NotNull] this PrimeTween.Tween target, Single endValue, float duration) => Tween.TweenTimeScale(target, endValue, duration, defaultDotweenEase);
+
+        #endif
     }
 }
 #endif

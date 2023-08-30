@@ -4,7 +4,6 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     public partial struct Tween {
@@ -228,43 +227,35 @@ namespace PrimeTween {
         public static Tween Rotation([NotNull] Transform target, TweenSettings<Vector3> eulerAnglesSettings) => Rotation(target, toQuaternion(eulerAnglesSettings));
         public static Tween LocalRotation([NotNull] Transform target, TweenSettings<Vector3> localEulerAnglesSettings) => LocalRotation(target, toQuaternion(localEulerAnglesSettings));
         static TweenSettings<Quaternion> toQuaternion(TweenSettings<Vector3> s) => new TweenSettings<Quaternion>(Quaternion.Euler(s.startValue), Quaternion.Euler(s.endValue), s.settings) { startFromCurrent = s.startFromCurrent };
-
         
         #if PRIME_TWEEN_EXPERIMENTAL
-        public static Tween RotationAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween RotationAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, [NotNull] AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween RotationAdditive([NotNull] Transform target, Vector3 deltaValue, TweenSettings settings) 
-            => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.rotation *= Quaternion.Euler(delta));
+        
+        //GenericPropertyJSON:{"name":"data","type":-1,"children":[{"name":"name","type":3,"val":"GlobalTimeScale"},{"name":"methodName","type":3,"val":"GlobalTimeScale"},{"name":"targetType","type":3,"val":""},{"name":"propertyType","type":7,"val":"Enum:Float"},{"name":"propertyName","type":3,"val":""},{"name":"propertyGetter","type":3,"val":""},{"name":"propertySetter","type":3,"val":""},{"name":"dotweenMethodName","type":3,"val":""},{"name":"dependency","type":7,"val":"Enum:PRIME_TWEEN_EXPERIMENTAL"},{"name":"placeInGlobalScope","type":1,"val":false},{"name":"generateOnlyOverloads","type":1,"val":true}]}
+        public static Tween GlobalTimeScale(Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0) 
+            => GlobalTimeScale(new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, true)));
+        public static Tween GlobalTimeScale(Single endValue, float duration, [NotNull] AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0) 
+            => GlobalTimeScale(new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, true)));
+        // public static Tween GlobalTimeScale(Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0) 
+        //     => GlobalTimeScale(new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, true)));
+        // public static Tween GlobalTimeScale(Single startValue, Single endValue, float duration, [NotNull] AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0) 
+        //     => GlobalTimeScale(new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, true)));
+        public static Tween GlobalTimeScale(Single endValue, TweenSettings settings) => GlobalTimeScale(new TweenSettings<float>(endValue, settings));
+        // public static Tween GlobalTimeScale(Single startValue, Single endValue, TweenSettings settings) => GlobalTimeScale(new TweenSettings<float>(startValue, endValue, settings));
+        /*public */static Tween GlobalTimeScale(TweenSettings<float> settings) {
+            if (!settings.settings.useUnscaledTime) {
+                Debug.LogWarning("Setting " + nameof(TweenSettings.useUnscaledTime) + " to true to animate Time.timeScale correctly.");
+                var copy = settings.settings;
+                copy.useUnscaledTime = true;
+                settings.settings = copy;
+            }
+            return animate(null, ref settings, val => Time.timeScale = val.FloatVal, _ => Time.timeScale.ToContainer());
+        }
 
-        public static Tween LocalRotationAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalRotationAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, [NotNull] AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalRotationAdditive([NotNull] Transform target, Vector3 deltaValue, TweenSettings settings) 
-            => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.localRotation *= Quaternion.Euler(delta));
-
-        public static Tween PositionAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween PositionAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, [NotNull] AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween PositionAdditive([NotNull] Transform target, Vector3 deltaValue, TweenSettings settings) 
-            => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.position += delta);
-
-        public static Tween LocalPositionAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalPositionAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, [NotNull] AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalPositionAdditive([NotNull] Transform target, Vector3 deltaValue, TweenSettings settings) 
-            => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.localPosition += delta);
-
-        public static Tween LocalScaleAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalScaleAdditive([NotNull] Transform target, Vector3 deltaValue, float duration, [NotNull] AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => RotationAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalScaleAdditive([NotNull] Transform target, Vector3 deltaValue, TweenSettings settings) 
-            => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.localScale += delta);
-        #endif // PRIME_TWEEN_EXPERIMENTAL
+        public static Tween TweenTimeScale(Tween tween, TweenSettings<float> settings) {
+            tween.validateIsAlive();
+            return animate(tween.tween, ref settings, t 
+                => (t.target as ReusableTween).timeScale = t.FloatVal, t => (t.target as ReusableTween).timeScale.ToContainer());
+        }
+        #endif
     }
 }

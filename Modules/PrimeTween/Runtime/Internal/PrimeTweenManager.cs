@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Debug = UnityEngine.Debug;
 
 namespace PrimeTween {
@@ -181,7 +180,8 @@ namespace PrimeTween {
             for (int i = processedCount; i < cachedCount; i++) {
                 var tween = tweens[i];
                 // ReSharper disable once PossibleNullReferenceException
-                if (tween.isAlive && !tween.startFromCurrent && !tween.waitFor.IsAlive && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed()) {
+                if (tween.isAlive && !tween.startFromCurrent && !tween.waitFor.IsAlive && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed()
+                    && !tween.isAdditive) {
                     Assert.AreEqual(0, tween.elapsedTime);
                     tween.ReportOnValueChange(0);
                 }
@@ -266,7 +266,7 @@ namespace PrimeTween {
                 return;
             }
             #endif
-            if (duration < 0 || (duration == 0 && Instance.warnZeroDuration)) {
+            if (Instance.warnZeroDuration && duration <= 0) {
                 Debug.LogWarning($"Tween duration ({duration}) <= 0. {Constants.buildWarningCanBeDisabledMessage(nameof(warnZeroDuration))}", target as UnityEngine.Object);
             }
         }

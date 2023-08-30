@@ -1,7 +1,6 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     [Serializable]
@@ -57,8 +56,10 @@ namespace PrimeTween {
         bool stoppedEmergently;
         internal bool isInterpolationCompleted;
         internal readonly TweenCoroutineEnumerator coroutineEnumerator = new TweenCoroutineEnumerator();
+        internal float timeScale = 1;
 
         internal bool updateAndCheckIfRunning(float dt) {
+            dt *= timeScale;
             const bool isRunning = true;
             const bool shouldRemove = !isRunning;
             if (!isAlive) {
@@ -95,10 +96,10 @@ namespace PrimeTween {
                 } else {
                     var duration = settings.duration;
                     var _elapsedTimeInterpolating = elapsedTime - settings.startDelay;
-                    OptionalAssert.IsTrue(duration > 0 && _elapsedTimeInterpolating >= 0 && _elapsedTimeInterpolating <= duration);
+                    Assert.IsTrue(duration > 0 && _elapsedTimeInterpolating >= 0 && _elapsedTimeInterpolating <= duration);
                     interpolationFactor = _elapsedTimeInterpolating / duration;
                 }
-                OptionalAssert.IsTrue(interpolationFactor <= 1);
+                Assert.IsTrue(interpolationFactor <= 1);
                 // ReportOnValueChange() calls onValueChange(), and onValueChange() can execute any code, including Tween.StopAll() or Tween.Stop().
                 // So we have to check if a tween wasn't killed after the calling ReportOnValueChange()
                 if (!ReportOnValueChange(interpolationFactor) || !isAlive) {
@@ -194,6 +195,7 @@ namespace PrimeTween {
             waitFor = default;
             coroutineEnumerator.resetEnumerator();
             tweenType = TweenType.None;
+            timeScale = 1;
         }
 
         internal void OnComplete([NotNull] Action _onComplete) {
@@ -202,7 +204,7 @@ namespace PrimeTween {
             onCompleteCallback = _onComplete;
             onComplete = tween => {
                 var callback = tween.onCompleteCallback as Action;
-                OptionalAssert.IsNotNull(callback);
+                Assert.IsNotNull(callback);
                 try {
                     callback();
                 } catch (Exception e) {
@@ -211,15 +213,23 @@ namespace PrimeTween {
             };
         }
 
-        internal void OnComplete<T>(T _target, [NotNull] Action<T> _onComplete) where T : class {
+        internal void OnComplete<T>([NotNull] T _target, [NotNull] Action<T> _onComplete) where T : class {
+            if (isDestroyedUnityObject(_target)) {
+                Debug.LogError(Constants.onCompleteTargetDestroyed);
+                return;
+            }
             Assert.IsNotNull(_onComplete);
             validateOnCompleteAssignment();
             onCompleteTarget = _target;
             onCompleteCallback = _onComplete;
             onComplete = tween => {
                 var callback = tween.onCompleteCallback as Action<T>;
-                OptionalAssert.IsNotNull(callback);
+                Assert.IsNotNull(callback);
                 var _onCompleteTarget = tween.onCompleteTarget as T;
+                if (isDestroyedUnityObject(_onCompleteTarget)) {
+                    tween.warnOnCompleteIgnored(LogType.Warning, true);
+                    return;
+                }
                 try {
                     callback(_onCompleteTarget);
                 } catch (Exception e) {
@@ -228,11 +238,13 @@ namespace PrimeTween {
             };
         }
 
+        static bool isDestroyedUnityObject<T>(T obj) where T: class => obj is UnityEngine.Object unityObject && unityObject == null;
+
         void validateOnCompleteAssignment() {
             const string msg = "Tween already has an onComplete callback. Adding more callbacks is not allowed.\n" +
                                "Workaround: add tween to Sequence and use ChainCallback().\n";
-            OptionalAssert.IsNull(onCompleteTarget, msg);
-            OptionalAssert.IsNull(onCompleteCallback, msg);
+            Assert.IsNull(onCompleteTarget, msg);
+            Assert.IsNull(onCompleteCallback, msg);
             Assert.IsNull(onComplete, msg);
         }
 
@@ -274,6 +286,11 @@ namespace PrimeTween {
             if (!_startFromCurrent) {
                 cacheDiff();
             }
+            if (propType == PropType.Quaternion) {
+                prevVal.QuaternionVal = Quaternion.identity;
+            } else {
+                prevVal.Reset();
+            }
         }
 
         internal void setUnityTarget(object _target) {
@@ -303,10 +320,10 @@ namespace PrimeTween {
         }
 
         void ReportOnComplete() {
-            OptionalAssert.IsTrue(isInterpolationCompleted);
-            OptionalAssert.IsFalse(startFromCurrent);
-            OptionalAssert.AreEqual(settings.cycles, cyclesDone);
-            OptionalAssert.IsFalse(isAlive);
+            Assert.IsTrue(isInterpolationCompleted);
+            Assert.IsFalse(startFromCurrent);
+            Assert.AreEqual(settings.cycles, cyclesDone);
+            Assert.IsFalse(isAlive);
             onComplete?.Invoke(this);
         }
 
@@ -454,7 +471,6 @@ namespace PrimeTween {
             if (propType == PropType.Quaternion) {
                 startValue.QuaternionVal.Normalize();
                 endValue.QuaternionVal.Normalize();
-                diff.QuaternionVal = Quaternion.Inverse(startValue.QuaternionVal) * endValue.QuaternionVal;
             } else {
                 diff.x = endValue.x - startValue.x;
                 diff.y = endValue.y - startValue.y;
@@ -513,13 +529,13 @@ namespace PrimeTween {
 
         internal void kill() {
             // Debug.Log($"{Time.frameCount} kill {GetDescription()}");
-            OptionalAssert.IsTrue(isAlive);
+            Assert.IsTrue(isAlive);
             isAlive = false;
         }
 
         internal void revive() {
             // Debug.Log($"{Time.frameCount} revive {GetDescription()}");
-            OptionalAssert.IsFalse(isAlive);
+            Assert.IsFalse(isAlive);
             isAlive = true;
         }
 

@@ -6,13 +6,48 @@ using JetBrains.Annotations;
 using PrimeTween;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
+using Assert = UnityEngine.Assertions.Assert;
 
 internal class CodeGenerator : ScriptableObject {
     [SerializeField] MonoScript methodsScript;
     [SerializeField] MonoScript dotweenMethodsScript;
     [SerializeField] MethodGenerationData[] methodsData;
+    [SerializeField] AdditiveMethodsGenerator additiveMethodsGenerator;
 
+    [Serializable]
+    class AdditiveMethodsGenerator {
+        [SerializeField] AdditiveMethodsGeneratorData[] additiveMethods; 
+        
+        [Serializable]
+        class AdditiveMethodsGeneratorData {
+            [SerializeField] internal string methodName;
+            [SerializeField] internal PropType propertyType;
+            [SerializeField] internal string setter;
+        }
+
+        [NotNull]
+        internal string Generate() {
+            // todo rotation by euler angles is non-cumulative. That is, spinning in one direction, then in the opposite may not restore the initial orientation 
+            string result = @"
+#if PRIME_TWEEN_EXPERIMENTAL";
+            foreach (var data in additiveMethods) {
+                const string template = @"        
+        public static Tween PositionAdditive([NotNull] UnityEngine.Transform target, Single deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
+        public static Tween PositionAdditive([NotNull] UnityEngine.Transform target, Single deltaValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
+        public static Tween PositionAdditive([NotNull] UnityEngine.Transform target, Single deltaValue, TweenSettings settings) 
+            => CustomAdditive(target, deltaValue, settings, (_target, delta) => additiveTweenSetter());
+";
+                result += template.Replace("Single", data.propertyType.ToFullTypeName())
+                    .Replace("PositionAdditive", data.methodName)
+                    .Replace("additiveTweenSetter()", data.setter);
+            }
+            result += "#endif";
+            return result;
+        }
+    }
+    
     [ContextMenu(nameof(generateAll))]
     internal void generateAll() {
         generateInternalMethods();
@@ -112,13 +147,13 @@ namespace PrimeTween {
 // ReSharper disable UnusedMethodReturnValue.Global
 using System;
 using JetBrains.Annotations;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     public partial struct Tween {";
 
         text += generateWithDefines(generate);
         text = addCustomAnimationMethods(text);
+        text += additiveMethodsGenerator.Generate();
         text += @"
     }
 }";
@@ -165,27 +200,30 @@ namespace PrimeTween {
 
     [NotNull]
     static string generate([NotNull] MethodGenerationData data) {
-        var targetType = data.targetType;
-        var types = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .Select(_ => _.GetType(targetType))
-            .Where(_ => _ != null)
-            .Where(_ => _.FullName == targetType)
-            .Distinct()
-            .ToArray();
-        switch (types.Length) {
-            case 0:
-                throw new Exception($"target type ({targetType}) not found in any of the assemblies.\n" +
-                                    "Please specify the full name of the type. For example, instead of 'Transform', use 'UnityEngine.Transform'.\n" +
-                                    "Or install the target package in Package Manager.\n");
-            case 1:
-                break;
-            default:
-                throw new Exception($"More than one type found that match {targetType}. Found:\n"
-                                    + string.Join("\n", types.Select(_ => $"{_.AssemblyQualifiedName}\n{_.Assembly.GetName().FullName}")));
+        Type getTargetType() {
+            var targetType = data.targetType;
+            var types = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Select(_ => _.GetType(targetType))
+                .Where(_ => _ != null)
+                .Where(_ => _.FullName == targetType)
+                .Distinct()
+                .ToArray();
+            switch (types.Length) {
+                case 0:
+                    throw new Exception($"target type ({targetType}) not found in any of the assemblies.\n" +
+                                        "Please specify the full name of the type. For example, instead of 'Transform', use 'UnityEngine.Transform'.\n" +
+                                        "Or install the target package in Package Manager.\n");
+                case 1:
+                    break;
+                default:
+                    throw new Exception($"More than one type found that match {targetType}. Found:\n"
+                                        + string.Join("\n", types.Select(_ => $"{_.AssemblyQualifiedName}\n{_.Assembly.GetName().FullName}")));
+            }
+            var type = types.Single();
+            Assert.IsNotNull(type, $"targetType ({targetType}) wasn't found in any assembly.");
+            return type;
         }
-        var type = types.Single();
-        Assert.IsNotNull(type, $"targetType ({targetType}) wasn't found in any assembly.");
 
         var methodName = data.methodName;
         Assert.IsTrue(System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(methodName), $"Method name is invalid: {methodName}.");
@@ -209,6 +247,8 @@ namespace PrimeTween {
             replaced = replaced.Replace(templatePropName, propertyName);
 
             void checkFieldOrProp() {
+                var type = getTargetType();
+                Assert.IsNotNull(type);
                 const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
                 var prop = type.GetProperty(propertyName, flags);
                 Type expectedPropType;
@@ -348,7 +388,7 @@ namespace PrimeTween {
             }, null, false);
             return PrimeTweenManager.Animate(tween);
         }
-        static Tween animate([NotNull] object target, ref TweenSettings<float> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
+        static Tween animate(object target, ref TweenSettings<float> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
             var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
@@ -392,8 +432,13 @@ namespace PrimeTween {
             methodName = prefix + methodName;
         }
         var targetType = data.targetType;
+        if (string.IsNullOrEmpty(targetType)) {
+            str = str.Replace("[NotNull] UnityEngine.Camera target, ", "")
+                .Replace("METHOD_NAME(target, ", "METHOD_NAME(");
+        } else {
+            str = str.Replace("UnityEngine.Camera", targetType);
+        }
         str = str.Replace("METHOD_NAME",  methodName);
-        str = str.Replace("UnityEngine.Camera", targetType);
         if (data.propertyType != PropType.Float) {
             str = str.Replace("Single", data.propertyType.ToFullTypeName());
             str = str.Replace("_tween.FloatVal", $"_tween.{data.propertyType.ToString()}Val");

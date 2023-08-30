@@ -1,7 +1,6 @@
 using PrimeTween;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 [CustomEditor(typeof(PrimeTweenManager))]
 internal class PrimeTweenManagerInspector : Editor {

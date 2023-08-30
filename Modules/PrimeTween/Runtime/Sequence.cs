@@ -7,7 +7,6 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     /// <summary>An ordered group of tweens and callbacks. Tweens in a sequence can run in parallel to one another with <see cref="Group"/> and sequentially with <see cref="Chain"/>.<br/>
@@ -171,6 +170,7 @@ namespace PrimeTween {
             return Chain(delay);
         }
 
+        // todo rename to Chain()?
         /// <summary>Schedules delay after all previously added tweens.</summary>
         public Sequence ChainDelay(float _duration, bool useUnscaledTime = false) {
             return Chain(Tween.Delay(_duration, null, useUnscaledTime));
@@ -375,13 +375,13 @@ namespace PrimeTween {
         }
 
         void restart_internal() {
-            OptionalAssert.IsTrue(IsAlive);
+            Assert.IsTrue(IsAlive);
             var buffer = PrimeTweenManager.Instance.buffer;
-            OptionalAssert.AreEqual(0, buffer.Count);
+            Assert.AreEqual(0, buffer.Count);
             first.tween.elapsedTime = 0;
             foreach (var current in getEnumerator()) {
                 var tween = current.tween;
-                OptionalAssert.IsFalse(tween.isAlive);
+                Assert.IsFalse(tween.isAlive);
                 tween.revive();
                 first.tween.addAliveTweensInSequence(1, current.id);
                 tween.rewindIncrementalTween();
@@ -398,7 +398,7 @@ namespace PrimeTween {
                 Assert.IsTrue(child.IsAlive);
                 first.tween.addAliveTweensInSequence(1, child.first.id);
             }
-            OptionalAssert.IsTrue(IsAlive);
+            Assert.IsTrue(IsAlive);
         }
 
         /// <summary>Sets the number of remaining cycles.

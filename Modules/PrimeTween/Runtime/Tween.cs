@@ -4,7 +4,6 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     /// <summary>The main API of the PrimeTween library.<br/><br/>
@@ -49,11 +48,12 @@ namespace PrimeTween {
             this.tween = tween;
         }
 
+        // todo rename to small letter? and IsPaused too
         /// A tween is 'alive' when it has been created and is not stopped or completed yet. Paused tween is also considered 'alive'.
         public bool IsAlive => id != 0 && tween.id == id && tween.isAlive;
 
         /// Elapsed time of the current cycle.
-        public float elapsedTime => IsAlive ? tween.elapsedTimeInCurrentCycle : 0;
+        public float elapsedTime => IsAlive ? tween.elapsedTimeInCurrentCycle : 0; // todo call validateIsAlive()?
         /// The total number of cycles. Returns -1 to indicate infinite number cycles.
         public int cyclesTotal => IsAlive ? tween.settings.cycles : 0;
         public int cyclesDone => IsAlive ? tween.cyclesDone : 0;
@@ -85,15 +85,9 @@ namespace PrimeTween {
         public float progressTotal => sharedProps.progressTotal;
 
         /// <summary>The current percentage of change between 'startValue' and 'endValue' values in 0..1 range.</summary>
-        public float interpolationFactor {
-            get {
-                if (!IsAlive) {
-                    return 0;
-                }
-                return tween.easedInterpolationFactor;
-            }
-        }
+        public float interpolationFactor => !IsAlive ? 0 : tween.easedInterpolationFactor;
 
+        /// todo rename to small letter?
         public bool IsPaused {
             get => IsAlive && tween.isPaused;
             set {
@@ -207,5 +201,28 @@ namespace PrimeTween {
         public Sequence Chain(Tween _tween) => Sequence.Create(this).Chain(_tween);
         public Sequence Group(Sequence sequence) => Sequence.Create(this).Group(sequence);
         public Sequence Chain(Sequence sequence) => Sequence.Create(this).Chain(sequence);
+        
+        #if PRIME_TWEEN_EXPERIMENTAL
+        /// <summary> Custom tween's timeScale. To smoothly animate tween's timeScale over time, use <see cref="Tween.TweenTimeScale"/> method.</summary>
+        public float timeScale {
+            get {
+                validateIsAlive();
+                return tween.timeScale;
+            }
+            set {
+                validateIsAlive();
+                if (value < 0) {
+                    throw new InvalidOperationException("Timescale should be >= 0.");
+                }
+                tween.timeScale = value;
+            }
+        }
+
+        void validateIsAlive() {
+            if (!IsAlive) {
+                throw new InvalidOperationException(Constants.tweenIsDeadMessage);
+            }
+        }
+        #endif
     }
 }

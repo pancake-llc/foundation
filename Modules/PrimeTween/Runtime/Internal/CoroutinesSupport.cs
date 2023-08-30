@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Linq;
 using JetBrains.Annotations;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     public partial struct Tween : IEnumerator {
+        // todo add docs
         [NotNull]
         public IEnumerator ToYieldInstruction() {
             if (!IsAlive) {
@@ -32,6 +32,7 @@ namespace PrimeTween {
     }
 
     public partial struct Sequence : IEnumerator {
+        // todo add docs
         [NotNull]
         public IEnumerator ToYieldInstruction() => GetLongestOrDefault().ToYieldInstruction();
 

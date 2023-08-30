@@ -11,7 +11,6 @@
 // ReSharper disable CompareOfFloatsByEqualityOperator
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     [PublicAPI]
@@ -224,7 +223,7 @@ namespace PrimeTween {
         public static float Evaluate(float t, Ease ease, [CanBeNull] AnimationCurve customEase = null) {
             switch (ease) {
                 case Ease.Custom:
-                    OptionalAssert.IsNotNull(customEase);
+                    Assert.IsNotNull(customEase);
                     return customEase.Evaluate(t);
                 case Ease.Linear:
                     return t;

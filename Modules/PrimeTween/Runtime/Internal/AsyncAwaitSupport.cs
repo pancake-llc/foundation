@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 #pragma warning disable CS0618
 
 namespace PrimeTween {
@@ -37,6 +36,7 @@ namespace PrimeTween {
                     waitFor(tween).OnComplete(continuation);
                 } catch (Exception e) {
                     Debug.LogException(e);
+                    throw;
                 }
             }
 

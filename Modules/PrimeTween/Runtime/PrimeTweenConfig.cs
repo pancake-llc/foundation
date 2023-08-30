@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     /// Global PrimeTween configuration.

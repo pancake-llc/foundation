@@ -3,6 +3,7 @@ using NUnit.Framework;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Assert = NUnit.Framework.Assert;
 using AssertionException = UnityEngine.Assertions.AssertionException;
 
 public class EditModeTests {
@@ -30,6 +31,9 @@ public class EditModeTests {
             Tween.ShakeCustom(go, Vector3.zero, new ShakeSettings(Vector3.one, 1), delegate {});
             expectError();
             Sequence.Create();
+            expectError();
+            Tween.GlobalTimeScale(0.5f, 0.1f);
+            
             Sequence.Create(default);
             TweenSettings.ValidateCustomCurveKeyframes(AnimationCurve.Linear(0, 0, 1, 1));
             Assert.Throws<AssertionException>(() => PrimeTweenConfig.SetTweensCapacity(10));

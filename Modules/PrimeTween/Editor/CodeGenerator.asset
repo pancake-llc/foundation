@@ -845,3 +845,37 @@ MonoBehaviour:
     dependency: 2
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
+  - name: TweenTImeScale
+    methodName: TweenTimeScale
+    targetType: PrimeTween.Tween
+    propertyType: 1
+    propertyName: 
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: DOTimeScale
+    dependency: 8
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 1
+  additiveMethodsGenerator:
+    additiveMethods:
+    - methodName: PositionAdditive
+      propertyType: 4
+      setter: _target.position += delta
+    - methodName: LocalPositionAdditive
+      propertyType: 4
+      setter: _target.localPosition += delta
+    - methodName: LocalScaleAdditive
+      propertyType: 4
+      setter: _target.localScale += delta
+    - methodName: RotationAdditive
+      propertyType: 4
+      setter: _target.rotation *= UnityEngine.Quaternion.Euler(delta)
+    - methodName: LocalRotationAdditive
+      propertyType: 4
+      setter: _target.localRotation *= UnityEngine.Quaternion.Euler(delta)
+    - methodName: RotationAdditive
+      propertyType: 6
+      setter: _target.rotation *= delta
+    - methodName: LocalRotationAdditive
+      propertyType: 6
+      setter: _target.localRotation *= delta

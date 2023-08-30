@@ -97,7 +97,7 @@ namespace PrimeTween {
             }, null, false);
             return PrimeTweenManager.Animate(tween);
         }
-        static Tween animate([NotNull] object target, ref TweenSettings<float> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
+        static Tween animate(object target, ref TweenSettings<float> settings, [NotNull] Action<ReusableTween> setter, Func<ReusableTween, ValueContainer> getter) {
             var tween = PrimeTweenManager.fetchTween();
             tween.startValue.CopyFrom(ref settings.startValue);
             tween.endValue.CopyFrom(ref settings.endValue);
@@ -114,5 +114,14 @@ namespace PrimeTween {
             tween.Setup(target, ref settings.settings, setter, getter, settings.startFromCurrent);
             return PrimeTweenManager.Animate(tween);
         }
+        
+        public static Tween PositionAdditive([NotNull] UnityEngine.Transform target, Single deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
+        public static Tween PositionAdditive([NotNull] UnityEngine.Transform target, Single deltaValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
+        public static Tween PositionAdditive([NotNull] UnityEngine.Transform target, Single deltaValue, TweenSettings settings) 
+            => CustomAdditive(target, deltaValue, settings, (_target, delta) => additiveTweenSetter());
+        
+        static void additiveTweenSetter() {}
     }
 }*/

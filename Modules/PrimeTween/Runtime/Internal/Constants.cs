@@ -4,6 +4,7 @@ using T = PrimeTween.TweenSettings<float>;
 namespace PrimeTween {
     internal static class Constants {
         internal const string onCompleteCallbackIgnored = "Tween's onComplete callback was ignored.";
+        internal const string onCompleteTargetDestroyed = "OnComplete target has been destroyed.";
         internal const string targetDestroyed = "Tween's target has been destroyed.";
         internal const string durationInvalidError = "Tween's duration is invalid.";
 
@@ -13,7 +14,7 @@ namespace PrimeTween {
             return $"To disable this warning, disable the '{nameof(PrimeTweenConfig)}.{settingName}' setting.";
         }
 
-        internal const string tweenIsDeadMessage = "Tween is no longer alive.";
+        internal const string tweenIsDeadMessage = "Tween is no longer alive. Please check that tween.IsAlive before calling this API.";
         internal const string sequenceIsDeadMessage = "Sequence is no longer alive.";
         internal const string unscaledTimeTooltip = "The tween will use real time, ignoring Time.timeScale.";
         internal const string cyclesTooltip = "Setting cycles to -1 will repeat the tween indefinitely.";
