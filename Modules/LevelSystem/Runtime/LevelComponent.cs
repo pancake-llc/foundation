@@ -1,110 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using Pancake.Apex;
-using Pancake.Linq;
-using Pancake.Scriptable;
+﻿using Pancake.Apex;
 using UnityEngine;
 
 namespace Pancake.LevelSystem
 {
-    [HideMonoScript]
-    [EditorIcon("script_mono")]
     public class LevelComponent : GameComponent
     {
-        [SerializeField] private LevelSystemSetting setting;
-        [SerializeField] private ScriptableEventInt loadLevelEvent;
-        [SerializeField] private ScriptableLevelListCallback levelListCallback;
+        [SerializeField, ReadOnly] private int originLevelIndex;
+        [SerializeField, ReadOnly] private int currentLevelIndex;
 
-        private LevelNode _currentLevelNode;
-        private ExtraInfoComponent _extraInfoComponent;
+        public virtual void OnSpawned() { }
 
-        public bool IsLoaded { get; private set; }
-        public List<Transform> LoadedObjects { get; private set; } = new List<Transform>();
+        public virtual void OnDespawned() { }
 
-        private void Awake() { loadLevelEvent.OnRaised += LoadLevel; }
+#if UNITY_EDITOR
 
-        private void LoadLevel(int levelNumber)
-        {
-            IsLoaded = false;
-            levelListCallback.isLevelLoaded = IsLoaded;
-            var level = LevelReader.Read(setting, levelNumber);
-            if (level == null)
-            {
-                Debug.LogError($"Level System: Error! Level {levelNumber} not found");
-                return;
-            }
-
-            if (!LevelHelper.IsValid(setting))
-            {
-                Debug.LogError(
-                    "Level System: Error! Please check the setting file. You have to specify not null prefabs with a valid ID. The prefabs count must be greater than 0");
-                return;
-            }
-
-            _currentLevelNode = level;
-            var notSpawnedGos = new List<LevelGameObject>();
-            foreach (var o in level.objects)
-            {
-                AddGameObject(o, notSpawnedGos);
-            }
-
-            if (notSpawnedGos.Count > 0)
-            {
-                string msg = "Level System: Error! Some objects were not instantiated because they were not in the config prefab list.Objects in error: " +
-                             string.Join(", ", notSpawnedGos.Map(x => x.id).Distinct());
-                Debug.LogError(msg);
-            }
-
-            if (level.extraInfos is {Length: > 0})
-            {
-                _extraInfoComponent = GetComponent<ExtraInfoComponent>();
-                if (_extraInfoComponent == null) _extraInfoComponent = gameObject.AddComponent<ExtraInfoComponent>();
-                _extraInfoComponent.Init(level.extraInfos);
-            }
-
-            foreach (var action in levelListCallback)
-            {
-                levelListCallback.Remove(action);
-                action();
-            }
-
-            IsLoaded = true;
-            levelListCallback.isLevelLoaded = IsLoaded;
-        }
-
-        private void AddGameObject(LevelGameObject go, List<LevelGameObject> notSpawnedGos, Transform parent = null)
-        {
-            if (parent == null) parent = transform;
-            var prefab = setting.Units.FirstOrDefault(_ => _.id == go.id);
-            if (prefab == null)
-            {
-                notSpawnedGos.Add(go);
-                return;
-            }
-
-            var newObject = Instantiate(prefab.prefab, parent);
-            newObject.transform.localPosition = go.pos;
-            newObject.transform.localRotation = go.rot;
-            newObject.transform.localScale = go.sc;
-
-            LoadedObjects.Add(newObject.transform);
-
-            if (go.ex is {Length: > 0}) // if extra info is specified, add the LevelExtraInfo controller to manage it
-            {
-                var levelEx = newObject.AddComponent<ExtraInfoComponent>();
-                levelEx.Init(go.ex);
-            }
-
-            // instantiate children
-            if (go.c is {Length: > 0})
-            {
-                foreach (var child in go.c)
-                {
-                    AddGameObject(child, notSpawnedGos, newObject.transform);
-                }
-            }
-        }
-
-        private void OnDestroy() { loadLevelEvent.OnRaised -= LoadLevel; }
+        [Button]
+        private void PlayThisLevel() { }
+#endif
     }
 }
