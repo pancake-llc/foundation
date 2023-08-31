@@ -4,7 +4,9 @@ using Pancake.Linq;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
 using UnityEngine;
+#if PANCAKE_ADDRESSABLE
 using UnityEngine.AddressableAssets;
+#endif
 
 namespace Pancake.LevelSystem
 {
@@ -45,8 +47,12 @@ namespace Pancake.LevelSystem
             }
 
             CheckCacheLevel(currentLevelIndex.Value);
+#if PANCAKE_ADDRESSABLE
+            eventGetLevel.OnRaised += GetLevel;
+#endif
         }
 
+#if PANCAKE_ADDRESSABLE
         private async UniTask<LevelComponent> GetLevel(int currentLevelIndex)
         {
             int indexInSegment = currentLevelIndex % _segmentLength;
@@ -82,6 +88,7 @@ namespace Pancake.LevelSystem
             var obj = await Addressables.LoadAssetAsync<GameObject>(string.Format(setting.Schema, index + 1));
             return obj.GetComponent<LevelComponent>();
         }
+#endif
 
         private void CheckCacheLevel(int currentLevelIndex)
         {
