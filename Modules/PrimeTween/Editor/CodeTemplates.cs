@@ -21,10 +21,10 @@ namespace PrimeTween {
         
         public static Tween METHOD_NAME([NotNull] UnityEngine.Camera target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.FloatVal;
                 _target.orthographicSize = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).orthographicSize.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).orthographicSize.ToContainer());
         }
 
         public static Tween Custom_TEMPLATE(Single startValue, Single endValue, float duration, [NotNull] Action<Single> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 

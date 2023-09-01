@@ -5,6 +5,7 @@
 #define ENABLE_SERIALIZATION
 #endif
 using System;
+using System.ComponentModel;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace PrimeTween {
     /// <example><code>
     /// Sequence.Create()
     ///     .Group(Tween.PositionX(transform, endValue: 10f, duration: 1.5f))
-    ///     .Group(Tween.LocalScale(transform, endValue: 2f, duration: 0.5f)) // position and localScale tweens will run in parallel because they are 'grouped'
+    ///     .Group(Tween.Scale(transform, endValue: 2f, duration: 0.5f)) // position and localScale tweens will run in parallel because they are 'grouped'
     ///     .Chain(Tween.Rotation(transform, endValue: new Vector3(0f, 0f, 45f), duration: 1f)) // rotation tween is 'chained' so it will start when both previous tweens are finished (after 1.5 seconds) 
     ///     .ChainCallback(() =&gt; Debug.Log("Sequence completed"));
     /// </code></example>
@@ -39,12 +40,12 @@ namespace PrimeTween {
         internal bool IsCreated => id != 0;
 
         /// Sequence is 'alive' when any of its tweens is 'alive'.
-        public bool IsAlive => IsCreated && first.tween.sequence.id == id;
+        public bool isAlive => IsCreated && first.tween.sequence.id == id;
 
         /// Elapsed time of the current cycle.
         public float elapsedTime {
             get {
-                if (!IsAlive) {
+                if (!validateIsAlive()) {
                     return 0;
                 }
                 var t = first.tween;
@@ -53,12 +54,12 @@ namespace PrimeTween {
         }
 
         /// The total number of cycles. Returns -1 to indicate infinite number cycles.
-        public int cyclesTotal => IsAlive ? first.tween.sequenceCycles : 0;
-        public int cyclesDone => IsAlive ? first.tween.sequenceCyclesDone : 0;
+        public int cyclesTotal => validateIsAlive() ? first.tween.sequenceCycles : 0;
+        public int cyclesDone => validateIsAlive() ? first.tween.sequenceCyclesDone : 0;
         /// The duration of one cycle.
         public float duration {
             get {
-                if (!IsAlive) {
+                if (!validateIsAlive()) {
                     return 0;
                 }
                 getLongest(out var result);
@@ -67,7 +68,7 @@ namespace PrimeTween {
             }
         }
 
-        SharedProps sharedProps => new SharedProps(IsAlive, elapsedTime, cyclesTotal, cyclesDone, duration);
+        SharedProps sharedProps => isAlive ? new SharedProps(true, elapsedTime, cyclesTotal, cyclesDone, duration) : new SharedProps();
         /// Elapsed time of all cycles.
         public float elapsedTimeTotal => sharedProps.elapsedTimeTotal;
         /// <summary>The duration of all cycles. If cycles == -1, returns <see cref="float.PositiveInfinity"/>.</summary>
@@ -76,6 +77,8 @@ namespace PrimeTween {
         public float progress => sharedProps.progress;
         /// Normalized progress of all cycles expressed in 0..1 range.
         public float progressTotal => sharedProps.progressTotal;
+        
+        bool validateIsAlive() => Constants.validateIsAlive(isAlive);
 
         public static Sequence Create() {
             return new Sequence(PrimeTweenManager.createEmpty());
@@ -102,7 +105,7 @@ namespace PrimeTween {
             setSequence(firstTween);
             firstTween.tween.addAliveTweensInSequence(1, firstTween.id);
             firstTween.tween.sequenceCycles = 1;
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
         }
         
         /// <summary>Groups <paramref name="tween"/> with the 'last' tween/sequence in this Sequence.
@@ -112,10 +115,10 @@ namespace PrimeTween {
         public Sequence Group(Tween tween) {
             requireFinite(tween);
             Assert.IsTrue(IsCreated, Constants.defaultSequenceCtorError);
-            if (warnIfNotAlive()) {
+            if (!validateIsAlive()) {
                 return this;
             }
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             validate(tween);
 
             var waitDep = getWaitDep();
@@ -136,14 +139,14 @@ namespace PrimeTween {
         /// <summary>Schedules <see cref="tween"/> after all tweens/sequences in this Sequence.</summary>
         public Sequence Chain(Tween tween) {
             Assert.IsTrue(IsCreated, Constants.defaultSequenceCtorError);
-            if (warnIfNotAlive()) {
+            if (!validateIsAlive()) {
                 return this;
             }
             return chain(tween, getLongest());
         }
 
         Sequence chain(Tween other, Tween after) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             validate(other);
             Assert.IsTrue(after.IsCreated);
             getLastInSelf().tween.setNextInSequence(other);
@@ -170,22 +173,22 @@ namespace PrimeTween {
             return Chain(delay);
         }
 
-        // todo rename to Chain()?
+        // todo forbid setting useUnscaledTime on individual tweens in a sequence?
         /// <summary>Schedules delay after all previously added tweens.</summary>
         public Sequence ChainDelay(float _duration, bool useUnscaledTime = false) {
             return Chain(Tween.Delay(_duration, null, useUnscaledTime));
         }
         
-        internal Tween GetLongestOrDefault() => IsAlive ? getLongest() : default;
+        internal Tween GetLongestOrDefault() => isAlive ? getLongest() : default;
 
         Tween getLongest() => getLongest(out _);
 
         Tween getLongest(out float durationWithWaitDeps) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             Tween result = default;
             float maxDuration = -1;
             foreach (var current in getEnumerator(true)) {
-                Assert.AreNotEqual(-1, current.cyclesTotal);
+                Assert.AreNotEqual(-1, current.tween.settings.cycles);
                 var _duration = current.tween.calcDurationWithWaitDependencies();
                 if (_duration > maxDuration) {
                     maxDuration = _duration;
@@ -199,7 +202,7 @@ namespace PrimeTween {
         }
 
         Tween getLastInSelf() {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             Tween result = default;
             foreach (var current in getEnumerator()) {
                 result = current;
@@ -210,7 +213,7 @@ namespace PrimeTween {
         }
 
         internal void onTweenKilled(int tweenId) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             first.tween.addAliveTweensInSequence(-1, tweenId);
             Assert.IsTrue(first.tween.aliveTweensInSequence >= 0);
             if (first.tween.aliveTweensInSequence > 0) {
@@ -240,14 +243,14 @@ namespace PrimeTween {
 
         void setSequence(Tween handle) {
             Assert.IsTrue(IsCreated);
-            Assert.IsTrue(handle.IsAlive); 
+            Assert.IsTrue(handle.isAlive); 
             var tween = handle.tween;
             Assert.IsFalse(tween.sequence.IsCreated);
             tween.sequence = this;
-            var sequenceIsPaused = IsPaused;
-            if (tween.isPaused != sequenceIsPaused) {
-                Debug.LogWarning($"{nameof(Tween)}.{nameof(Tween.IsPaused)} changed to '{sequenceIsPaused}' after adding to {nameof(Sequence)}.");
-                tween.isPaused = sequenceIsPaused;
+            var sequenceIsPaused = isPaused;
+            if (tween._isPaused != sequenceIsPaused) {
+                Debug.LogWarning($"{nameof(Tween)}.{nameof(Tween.isPaused)} changed to '{sequenceIsPaused}' after adding to {nameof(Sequence)}.");
+                tween._isPaused = sequenceIsPaused;
             }
         }
 
@@ -260,21 +263,21 @@ namespace PrimeTween {
         }
 
         static void requireIsAlive(Tween other) {
-            Assert.IsTrue(other.IsAlive, "It's not allowed to add 'dead' tweens to a sequence.");
+            Assert.IsTrue(other.isAlive, "It's not allowed to add 'dead' tweens to a sequence.");
         }
 
         /// Stops all tweens in the Sequence, ignoring callbacks. 
         public void Stop() {
-            if (IsAlive) {
+            if (isAlive) {
                 tryRemoveFromSequenceHierarchy();
                 releaseTweens(t => t.kill());
-                Assert.IsFalse(IsAlive);
+                Assert.IsFalse(isAlive);
             }
         }
 
         /// Completes the current sequence cycle: completes all 'alive' tweens in the Sequence and invokes all remaining callbacks in the current cycle.
         public void Complete() {
-            if (IsAlive) {
+            if (isAlive) {
                 tryRemoveFromSequenceHierarchy();
                 releaseTweens(t => {
                     if (t.warnIfTargetDestroyed()) {
@@ -283,7 +286,7 @@ namespace PrimeTween {
                         t.ForceComplete();
                     }
                 });
-                Assert.IsFalse(IsAlive);
+                Assert.IsFalse(isAlive);
             }
         }
 
@@ -313,7 +316,7 @@ namespace PrimeTween {
         }
 
         internal void emergencyStop() {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             releaseTweens(t => {
                 t.warnOnCompleteIgnored(LogType.Warning, false);
                 t.kill();
@@ -321,19 +324,19 @@ namespace PrimeTween {
         }
 
         void releaseTweens([CanBeNull] Action<ReusableTween> killAction) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             var cur = this;
             while (cur.IsCreated) {
-                Assert.IsTrue(cur.IsAlive);
+                Assert.IsTrue(cur.isAlive);
                 var child = cur.childSequence;
                 cur.releaseTweens_internal(killAction);
                 cur = child;
             }
-            Assert.IsFalse(IsAlive); // not IsCreated because this may be a local variable in the user's codebase
+            Assert.IsFalse(isAlive); // not IsCreated because this may be a local variable in the user's codebase
         }
 
         void releaseTweens_internal([CanBeNull] Action<ReusableTween> killAction) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             first.tween.aliveTweensInSequence = 0; // set to 0 here because this method may be called from the OnComplete(). When this happens, ReusableTween is cleared, and onTweenKilled() is never called, leaving aliveTweensInSequence == 1 
             var copy = this; // calling tween.sequence = default will overwrite the sequence on the callsite, so we should copy the initial struct to use the copy in Assert
             var enumerator = getEnumerator();
@@ -344,14 +347,14 @@ namespace PrimeTween {
             while (current.IsCreated) {
                 var tween = current.tween;
                 Assert.AreEqual(copy, tween.sequence);
-                if (tween.isAlive) {
+                if (tween._isAlive) {
                     killAction?.Invoke(tween);
                 }
-                Assert.IsFalse(current.IsAlive);
+                Assert.IsFalse(current.isAlive);
                 current = enumerator.MoveNext() ? enumerator.Current : default; // move next before releasing a tween because MoveNext() relies on the nextInSequence
                 releaseTween(tween);
             }
-            Assert.IsFalse(IsAlive); // not IsCreated because this may be a local variable in the releaseTweens() method
+            Assert.IsFalse(isAlive); // not IsCreated because this may be a local variable in the releaseTweens() method
         }
 
         static void releaseTween([NotNull] ReusableTween tween) {
@@ -375,13 +378,13 @@ namespace PrimeTween {
         }
 
         void restart_internal() {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             var buffer = PrimeTweenManager.Instance.buffer;
             Assert.AreEqual(0, buffer.Count);
             first.tween.elapsedTime = 0;
             foreach (var current in getEnumerator()) {
                 var tween = current.tween;
-                Assert.IsFalse(tween.isAlive);
+                Assert.IsFalse(tween._isAlive);
                 tween.revive();
                 first.tween.addAliveTweensInSequence(1, current.id);
                 tween.rewindIncrementalTween();
@@ -395,10 +398,10 @@ namespace PrimeTween {
             buffer.Clear();
             var child = childSequence;
             if (child.IsCreated) {
-                Assert.IsTrue(child.IsAlive);
+                Assert.IsTrue(child.isAlive);
                 first.tween.addAliveTweensInSequence(1, child.first.id);
             }
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
         }
 
         /// <summary>Sets the number of remaining cycles.
@@ -407,10 +410,10 @@ namespace PrimeTween {
         public Sequence SetCycles(int cycles) {
             Assert.IsTrue(IsCreated, Constants.defaultSequenceCtorError);
             Assert.IsTrue(cycles >= -1);
-            if (warnIfNotAlive()) {
+            if (!validateIsAlive()) {
                 return this;
             }
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             if (cycles == -1) {
                 first.tween.sequenceCycles = -1;
             } else {
@@ -420,29 +423,21 @@ namespace PrimeTween {
             return this;
         }
 
-        public bool IsPaused {
-            get => IsAlive && first.tween.isPaused;
+        public bool isPaused {
+            get => validateIsAlive() && first.tween._isPaused;
             set {
-                if (warnIfNotAlive()) {
+                if (!validateIsAlive()) {
                     return;
                 }
                 Assert.IsFalse(parentSequence.IsCreated, Constants.setPauseOnTweenInsideSequenceError);
-                if (IsPaused == value) {
+                if (isPaused == value) {
                     return;
                 }
                 foreach (var tween in getEnumerator(true)) {
-                    tween.tween.isPaused = value;
+                    tween.tween._isPaused = value;
                 }
-                Assert.AreEqual(value, IsPaused);
+                Assert.AreEqual(value, isPaused);
             }
-        }
-
-        bool warnIfNotAlive() {
-            if (!IsAlive) {
-                Debug.LogError(Constants.sequenceIsDeadMessage);
-                return true;
-            }
-            return false;
         }
 
         public override bool Equals(object obj) {
@@ -466,7 +461,7 @@ namespace PrimeTween {
             readonly bool includeChildrenSequences;
 
             internal SequenceEnumerator(Sequence s, bool includeChildrenSequences) {
-                Assert.IsTrue(s.IsAlive);
+                Assert.IsTrue(s.isAlive);
                 sequence = s;
                 current = default;
                 isStarted = false;
@@ -478,7 +473,7 @@ namespace PrimeTween {
                 readonly
                 #endif
                 SequenceEnumerator GetEnumerator() {
-                Assert.IsTrue(sequence.IsAlive);
+                Assert.IsTrue(sequence.isAlive);
                 return this;
             }
 
@@ -489,7 +484,7 @@ namespace PrimeTween {
                 Tween Current {
                 get {
                     #if SAFETY_CHECKS
-                    // Assert.IsTrue(sequence.IsAlive); // sequence can be already dead because we're currently inside the ReleaseTweens() with more than two tweens. Assertion fail is reproducible with SequenceCompleteWhenMoreThanTwo() test
+                    // Assert.IsTrue(sequence.isAlive); // sequence can be already dead because we're currently inside the ReleaseTweens() with more than two tweens. Assertion fail is reproducible with SequenceCompleteWhenMoreThanTwo() test
                     Assert.IsTrue(current.IsCreated);
                     Assert.IsNotNull(current.tween);
                     Assert.AreEqual(current.id, current.tween.id);
@@ -512,7 +507,7 @@ namespace PrimeTween {
                 if (!current.IsCreated && includeChildrenSequences) {
                     var childSequence = sequence.childSequence;
                     if (childSequence.IsCreated) {
-                        Assert.IsTrue(childSequence.IsAlive);
+                        Assert.IsTrue(childSequence.isAlive);
                         sequence = childSequence;
                         Assert.IsTrue(sequence.first.IsCreated);
                         current = sequence.first;
@@ -525,14 +520,14 @@ namespace PrimeTween {
 
         ref Sequence parentSequence {
             get {
-                Assert.IsTrue(IsAlive);
+                Assert.IsTrue(isAlive);
                 return ref first.tween.parentSequence;
             }
         }
 
         internal ref Sequence childSequence {
             get {
-                Assert.IsTrue(IsAlive);
+                Assert.IsTrue(isAlive);
                 return ref first.tween.childSequence;
             }
         }
@@ -542,14 +537,14 @@ namespace PrimeTween {
         
         Sequence nestSequence(Sequence other, bool isChainOp) {
             Assert.IsTrue(IsCreated, Constants.defaultSequenceCtorError);
-            if (warnIfNotAlive()) {
+            if (!validateIsAlive()) {
                 return this;
             }
-            Assert.IsTrue(other.IsAlive);
+            Assert.IsTrue(other.isAlive);
             Assert.IsFalse(other.parentSequence.IsCreated, "Sequence can be nested in other sequence only once.");
             var lastChildOrSelf = getLastChildSequenceOrSelf();
             other.parentSequence = lastChildOrSelf;
-            other.setWaitDepAndPausedState(isChainOp ? getLongest() : getWaitDep(), IsPaused);
+            other.setWaitDepAndPausedState(isChainOp ? getLongest() : getWaitDep(), isPaused);
             Assert.IsFalse(lastChildOrSelf.childSequence.IsCreated);
             lastChildOrSelf.childSequence = other;
             lastChildOrSelf.first.tween.addAliveTweensInSequence(1, other.first.id);
@@ -561,7 +556,7 @@ namespace PrimeTween {
             Assert.IsFalse(first.tween.waitFor.IsCreated);
             foreach (var t in getEnumerator(true)) {
                 var tween = t.tween;
-                tween.isPaused = isPaused;
+                tween._isPaused = isPaused;
                 if (waitDep.HasValue && !tween.waitFor.IsCreated) {
                     tween.setWaitFor(waitDep.Value);
                 }

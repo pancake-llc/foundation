@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using UnityEngine;
 using T = PrimeTween.TweenSettings<float>;
 
 namespace PrimeTween {
@@ -8,14 +9,19 @@ namespace PrimeTween {
         internal const string targetDestroyed = "Tween's target has been destroyed.";
         internal const string durationInvalidError = "Tween's duration is invalid.";
 
-        internal const string setPauseOnTweenInsideSequenceError = "Setting Tween/Sequence.IsPaused inside other sequence is not allowed because all tweens in a sequence should have the same IsPaused. Consider using Sequence.IsPaused instead.";
+        internal const string setPauseOnTweenInsideSequenceError = "Setting Tween/Sequence.isPaused inside other sequence is not allowed because all tweens in a sequence should have the same isPaused. Consider using Sequence.isPaused instead.";
         [NotNull]
         internal static string buildWarningCanBeDisabledMessage(string settingName) {
             return $"To disable this warning, disable the '{nameof(PrimeTweenConfig)}.{settingName}' setting.";
         }
 
-        internal const string tweenIsDeadMessage = "Tween is no longer alive. Please check that tween.IsAlive before calling this API.";
-        internal const string sequenceIsDeadMessage = "Sequence is no longer alive.";
+        internal const string isDeadMessage = "Tween/Sequence is not alive. Please check the 'isAlive' property before calling this API.";
+        internal static bool validateIsAlive(bool _isAlive) {
+            if (!_isAlive) {
+                Debug.LogError(isDeadMessage);
+            }
+            return _isAlive;
+        }
         internal const string unscaledTimeTooltip = "The tween will use real time, ignoring Time.timeScale.";
         internal const string cyclesTooltip = "Setting cycles to -1 will repeat the tween indefinitely.";
         internal const string defaultSequenceCtorError = "please use Sequence." + nameof(Sequence.Create) + "() or Sequence." + nameof(Sequence.Create) + "(Tween firstTween) instead of parameterless constructor.\n" +
@@ -37,7 +43,7 @@ namespace PrimeTween {
                                                 "For example, if you're animating a window, the 'endValue' can represent the opened position of the window.";
         internal const string setTweensCapacityMethod = "'" + nameof(PrimeTweenConfig) + "." + nameof(PrimeTweenConfig.SetTweensCapacity) + "(int capacity)'";
         internal const string maxAliveTweens = "Max alive tweens";
-
+        
         #if UNITY_EDITOR
         internal const string editModeWarning = "Please don't call PrimeTween's API in Edit mode (while the scene is not playing).";
 
@@ -62,6 +68,6 @@ namespace PrimeTween {
                 }
             }
         }
-        #endif
+        #endif // UNITY_EDITOR
     }
 }

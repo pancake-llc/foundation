@@ -63,5 +63,33 @@ namespace PrimeTween {
             target.verticalNormalizedPosition = vector2.y;
         }
         #endif
+        
+        #if UI_ELEMENTS_MODULE_INSTALLED
+        internal static Vector2 GetTopLeft(this UnityEngine.UIElements.VisualElement e) {
+            var resolvedStyle = e.resolvedStyle;
+            return new Vector2(resolvedStyle.left, resolvedStyle.top);
+        }
+        internal static void SetTopLeft(this UnityEngine.UIElements.VisualElement e, Vector2 c) {
+            var style = e.style;
+            style.left = c.x;
+            style.top = c.y;
+        } 
+        internal static Rect GetResolvedStyleRect(this UnityEngine.UIElements.VisualElement e) {
+            var resolvedStyle = e.resolvedStyle;
+            return new Rect(
+                resolvedStyle.left,
+                resolvedStyle.top,
+                resolvedStyle.width,
+                resolvedStyle.height
+            );
+        }
+        internal static void SetStyleRect(this UnityEngine.UIElements.VisualElement e, Rect c) {
+            var style = e.style;
+            style.left = c.x;
+            style.top = c.y;
+            style.width = c.width;
+            style.height = c.height;
+        }
+        #endif
     }
 }

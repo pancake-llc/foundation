@@ -5,9 +5,9 @@ using UnityEngine;
 namespace PrimeTween {
     /// <summary>
     /// ShakeSettings contains all properties needed for a shake or punch (frequency, strength per axis, duration, etc.). Can be serialized and tweaked from the Inspector.<br/>
-    /// Shake methods are: Tween.ShakeLocalPosition(), Tween.ShakeLocalRotation(), Tween.ShakeLocalScale(), and Tween.ShakeCustom().<br/><br/>
+    /// Shake methods are: Tween.ShakeLocalPosition(), Tween.ShakeLocalRotation(), Tween.ShakeScale(), and Tween.ShakeCustom().<br/><br/>
     /// Punch is a special case of a shake that a has a punch 'direction'. The punched value will oscillate back and forth in the direction of a punch.<br/> 
-    /// Punch methods are: Tween.PunchLocalPosition(), Tween.PunchLocalRotation(), Tween.PunchLocalScale(), and Tween.PunchCustom().<br/>
+    /// Punch methods are: Tween.PunchLocalPosition(), Tween.PunchLocalRotation(), Tween.PunchScale(), and Tween.PunchCustom().<br/>
     /// </summary>
     [Serializable]
     public struct ShakeSettings {

@@ -208,7 +208,7 @@ namespace Pancake.UI
                 case EPopupMotion.Scale:
                     container.pivot = new Vector2(0.5f, 0.5f);
                     container.localScale = _startScale;
-                    Tween.LocalScale(container, motionShowData.scale, motionShowData.duration, motionShowData.ease).OnComplete(() => canvasGroup.blocksRaycasts = true);
+                    Tween.Scale(container, motionShowData.scale, motionShowData.duration, motionShowData.ease).OnComplete(() => canvasGroup.blocksRaycasts = true);
                     break;
                 case EPopupMotion.Position:
                     container.localScale = _defaultScale;
@@ -220,7 +220,7 @@ namespace Pancake.UI
                     container.pivot = new Vector2(0.5f, 0.5f);
                     container.localScale = _startScale;
                     container.localPosition = motionShowData.fromPosition;
-                    Tween.LocalScale(container, motionShowData.scale, motionShowData.duration, motionShowData.ease);
+                    Tween.Scale(container, motionShowData.scale, motionShowData.duration, motionShowData.ease);
                     Tween.LocalPosition(container, motionShowData.toPosition, motionShowData.duration, motionShowData.ease)
                         .OnComplete(() => canvasGroup.blocksRaycasts = true);
                     break;
@@ -241,15 +241,15 @@ namespace Pancake.UI
             {
                 case EPopupMotion.Scale:
                     container.pivot = new Vector2(0.5f, 0.5f);
-                    Tween.LocalScale(container, motionCloseData.scale, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
+                    Tween.Scale(container, motionCloseData.scale, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
                     break;
                 case EPopupMotion.Position:
-                    Tween.LocalScale(container, motionCloseData.toPosition, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
+                    Tween.Scale(container, motionCloseData.toPosition, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
                     break;
                 case EPopupMotion.PositionAndScale:
                     container.pivot = new Vector2(0.5f, 0.5f);
-                    Tween.LocalScale(container, motionCloseData.scale, motionCloseData.duration, motionCloseData.ease);
-                    Tween.LocalScale(container, motionCloseData.toPosition, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
+                    Tween.Scale(container, motionCloseData.scale, motionCloseData.duration, motionCloseData.ease);
+                    Tween.Scale(container, motionCloseData.toPosition, motionCloseData.duration, motionCloseData.ease).OnComplete(End);
                     break;
             }
         }

@@ -103,6 +103,7 @@ namespace PrimeTween {
                 return nameof(Rigidbody);
             case Dependency.None:
             case Dependency.PRIME_TWEEN_EXPERIMENTAL:
+            case Dependency.UI_ELEMENTS_MODULE_INSTALLED:
                 return null;
         }
         return dep.ToString();
@@ -115,6 +116,7 @@ namespace PrimeTween {
             case Dependency.PHYSICS_MODULE_INSTALLED:
             case Dependency.PHYSICS2D_MODULE_INSTALLED:
             case Dependency.PRIME_TWEEN_EXPERIMENTAL:
+            case Dependency.UI_ELEMENTS_MODULE_INSTALLED:
                 return true;
         }
         return false;
@@ -132,10 +134,10 @@ namespace PrimeTween {
         public static Tween METHOD_NAME([NotNull] UnityEngine.Camera target, Single startValue, Single endValue, TweenSettings settings) => METHOD_NAME(target, new TweenSettings<float>(startValue, endValue, settings));";
     const string fullTemplate = @"        public static Tween METHOD_NAME([NotNull] UnityEngine.Camera target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.FloatVal;
                 _target.orthographicSize = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).orthographicSize.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).orthographicSize.ToContainer());
         }";
 
     void generateMethods() {
@@ -179,7 +181,7 @@ namespace PrimeTween {
         var dependency = group.Key;
         if (dependency != Dependency.None) {
             if (shouldWrapInDefine(dependency)) {
-                if (dependency == Dependency.PRIME_TWEEN_EXPERIMENTAL) {
+                if (dependency == Dependency.PRIME_TWEEN_EXPERIMENTAL || dependency == Dependency.UI_ELEMENTS_MODULE_INSTALLED) {
                     result += $"\n        #if {dependency}";
                 } else {
                     result += $"\n        #if !UNITY_2019_1_OR_NEWER || {dependency}";
@@ -475,7 +477,8 @@ enum Dependency {
     Camera,
     Material,
     Light,
-    PRIME_TWEEN_EXPERIMENTAL
+    PRIME_TWEEN_EXPERIMENTAL,
+    UI_ELEMENTS_MODULE_INSTALLED
 }
 
 static class Ext {

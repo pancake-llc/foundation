@@ -32,7 +32,7 @@ namespace PrimeTween {
             }, numMinExpected, numMaxExpected);
         }
  
-        /// <summary>Sets 'IsPaused' on all tweens. If onTarget is provided, sets 'IsPaused' only on this target.</summary>
+        /// <summary>Sets 'isPaused' on all tweens. If onTarget is provided, sets 'isPaused' only on this target.</summary>
         /// <seealso cref="PrimeTweenManager.processAll"/>
         public static int SetPausedAll(bool isPaused, [CanBeNull] object onTarget = null, int? numMinExpected = null, int? numMaxExpected = null) {
             if (isPaused) {
@@ -84,7 +84,7 @@ namespace PrimeTween {
         }
 
         internal static Tween waitFor(Tween other) {
-            Assert.IsTrue(other.IsAlive);
+            Assert.IsTrue(other.isAlive);
             var result = PrimeTweenManager.createEmpty();
             result.tween.setWaitFor(other);
             return result;
@@ -220,9 +220,9 @@ namespace PrimeTween {
         }
         
         // Called from TweenGenerated.cs
-        public static Tween LocalScale([NotNull] Transform target, TweenSettings<float> uniformScaleSettings) {
+        public static Tween Scale([NotNull] Transform target, TweenSettings<float> uniformScaleSettings) {
             var remapped = new TweenSettings<Vector3>(uniformScaleSettings.startValue * Vector3.one, uniformScaleSettings.endValue * Vector3.one, uniformScaleSettings.settings) { startFromCurrent = uniformScaleSettings.startFromCurrent };
-            return LocalScale(target, remapped);
+            return Scale(target, remapped);
         }
         public static Tween Rotation([NotNull] Transform target, TweenSettings<Vector3> eulerAnglesSettings) => Rotation(target, toQuaternion(eulerAnglesSettings));
         public static Tween LocalRotation([NotNull] Transform target, TweenSettings<Vector3> localEulerAnglesSettings) => LocalRotation(target, toQuaternion(localEulerAnglesSettings));
@@ -252,7 +252,9 @@ namespace PrimeTween {
         }
 
         public static Tween TweenTimeScale(Tween tween, TweenSettings<float> settings) {
-            tween.validateIsAlive();
+            if (!tween.tryManipulate()) {
+                return default;
+            }
             return animate(tween.tween, ref settings, t 
                 => (t.target as ReusableTween).timeScale = t.FloatVal, t => (t.target as ReusableTween).timeScale.ToContainer());
         }

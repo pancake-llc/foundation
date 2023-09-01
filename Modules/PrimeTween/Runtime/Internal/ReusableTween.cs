@@ -15,8 +15,8 @@ namespace PrimeTween {
         [CanBeNull] internal object target;
         bool targetIsUnityObject;
         [SerializeField, CanBeNull] internal UnityEngine.Object unityTarget; 
-        [SerializeField] internal bool isPaused;
-        internal bool isAlive;
+        [SerializeField] internal bool _isPaused;
+        internal bool _isAlive;
         [SerializeField] internal float elapsedTime;
         internal float elapsedTimeInCurrentCycle => elapsedTime;
         internal float easedInterpolationFactor;
@@ -62,16 +62,16 @@ namespace PrimeTween {
             dt *= timeScale;
             const bool isRunning = true;
             const bool shouldRemove = !isRunning;
-            if (!isAlive) {
-                if (sequence.IsCreated && sequence.first.id == id && !isPaused) {
+            if (!_isAlive) {
+                if (sequence.IsCreated && sequence.first.id == id && !_isPaused) {
                     elapsedTime += dt; // update elapsedTime after death because Sequence relies on elapsedTime when calculates Sequence.elapsedTime and Sequence.elapsedTimeTotal
                 }
                 return shouldRemove;
             }
-            if (waitFor.IsAlive) {
+            if (waitFor.isAlive) {
                 return isRunning;
             }
-            if (isPaused) {
+            if (_isPaused) {
                 return isRunning;
             }
             elapsedTime += dt;
@@ -102,7 +102,7 @@ namespace PrimeTween {
                 Assert.IsTrue(interpolationFactor <= 1);
                 // ReportOnValueChange() calls onValueChange(), and onValueChange() can execute any code, including Tween.StopAll() or Tween.Stop().
                 // So we have to check if a tween wasn't killed after the calling ReportOnValueChange()
-                if (!ReportOnValueChange(interpolationFactor) || !isAlive) {
+                if (!ReportOnValueChange(interpolationFactor) || !_isAlive) {
                     return shouldRemove;
                 }
             }
@@ -170,7 +170,7 @@ namespace PrimeTween {
             Assert.AreEqual(0, aliveTweensInSequence);
             Assert.AreEqual(0, sequenceCycles);
             Assert.AreEqual(0, sequenceCyclesDone);
-            Assert.IsFalse(isAlive);
+            Assert.IsFalse(_isAlive);
             Assert.IsFalse(sequence.IsCreated);
             Assert.IsFalse(nextInSequence.IsCreated);
             Assert.IsFalse(IsInSequence());
@@ -271,7 +271,7 @@ namespace PrimeTween {
             setUnityTarget(_target);
             elapsedTime = 0f;
             easedInterpolationFactor = 0f;
-            isPaused = false;
+            _isPaused = false;
             revive();
 
             cyclesDone = 0;
@@ -323,7 +323,7 @@ namespace PrimeTween {
             Assert.IsTrue(isInterpolationCompleted);
             Assert.IsFalse(startFromCurrent);
             Assert.AreEqual(settings.cycles, cyclesDone);
-            Assert.IsFalse(isAlive);
+            Assert.IsFalse(_isAlive);
             onComplete?.Invoke(this);
         }
 
@@ -499,7 +499,7 @@ namespace PrimeTween {
             isInterpolationCompleted = true;
             cyclesDone = settings.cycles;
             ReportOnComplete();
-            Assert.IsTrue(sequence.IsCreated || !isAlive);
+            Assert.IsTrue(sequence.IsCreated || !_isAlive);
         }
 
         internal void warnOnCompleteIgnored(LogType logType, bool isTargetDestroyed) {
@@ -517,26 +517,26 @@ namespace PrimeTween {
         internal void EmergencyStop() {
             if (sequence.IsCreated) {
                 sequence.emergencyStop();
-                Assert.IsFalse(isAlive);
-            } else if (isAlive) {
+                Assert.IsFalse(_isAlive);
+            } else if (_isAlive) {
                 // EmergencyStop() can be called after ForceComplete() and a caught exception in Tween.Custom()
                 kill();
             }
             stoppedEmergently = true;
-            Assert.IsFalse(isAlive);
-            Assert.IsFalse(sequence.IsAlive);
+            Assert.IsFalse(_isAlive);
+            Assert.IsFalse(sequence.isAlive);
         }
 
         internal void kill() {
             // Debug.Log($"{Time.frameCount} kill {GetDescription()}");
-            Assert.IsTrue(isAlive);
-            isAlive = false;
+            Assert.IsTrue(_isAlive);
+            _isAlive = false;
         }
 
         internal void revive() {
             // Debug.Log($"{Time.frameCount} revive {GetDescription()}");
-            Assert.IsFalse(isAlive);
-            isAlive = true;
+            Assert.IsFalse(_isAlive);
+            _isAlive = true;
         }
 
         internal bool IsInSequence() {
@@ -549,7 +549,7 @@ namespace PrimeTween {
                 nextInSequence = default;
                 return;
             }
-            Assert.IsTrue(sequence.IsAlive);
+            Assert.IsTrue(sequence.isAlive);
             Assert.IsFalse(nextInSequence.IsCreated);
             nextInSequence = tween.Value;
             sequence.first.tween.addAliveTweensInSequence(1, tween.Value.id);
@@ -567,10 +567,10 @@ namespace PrimeTween {
                 Debug.LogError(Constants.setPauseOnTweenInsideSequenceError);
                 return false;
             }
-            if (isPaused == _isPaused) {
+            if (this._isPaused == _isPaused) {
                 return false;
             }
-            isPaused = _isPaused;
+            this._isPaused = _isPaused;
             return true;
         }
 

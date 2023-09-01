@@ -21,10 +21,10 @@ namespace PrimeTween {
         public static Tween LightRange([NotNull] UnityEngine.Light target, Single startValue, Single endValue, TweenSettings settings) => LightRange(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween LightRange([NotNull] UnityEngine.Light target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Light;
+                var _target = _tween.target as UnityEngine.Light;
                 var val = _tween.FloatVal;
                 _target.range = val;
-            }, t => (t.unityTarget as UnityEngine.Light).range.ToContainer());
+            }, t => (t.target as UnityEngine.Light).range.ToContainer());
         }
 
         public static Tween LightShadowStrength([NotNull] UnityEngine.Light target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -39,10 +39,10 @@ namespace PrimeTween {
         public static Tween LightShadowStrength([NotNull] UnityEngine.Light target, Single startValue, Single endValue, TweenSettings settings) => LightShadowStrength(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween LightShadowStrength([NotNull] UnityEngine.Light target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Light;
+                var _target = _tween.target as UnityEngine.Light;
                 var val = _tween.FloatVal;
                 _target.shadowStrength = val;
-            }, t => (t.unityTarget as UnityEngine.Light).shadowStrength.ToContainer());
+            }, t => (t.target as UnityEngine.Light).shadowStrength.ToContainer());
         }
 
         public static Tween LightIntensity([NotNull] UnityEngine.Light target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -57,10 +57,10 @@ namespace PrimeTween {
         public static Tween LightIntensity([NotNull] UnityEngine.Light target, Single startValue, Single endValue, TweenSettings settings) => LightIntensity(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween LightIntensity([NotNull] UnityEngine.Light target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Light;
+                var _target = _tween.target as UnityEngine.Light;
                 var val = _tween.FloatVal;
                 _target.intensity = val;
-            }, t => (t.unityTarget as UnityEngine.Light).intensity.ToContainer());
+            }, t => (t.target as UnityEngine.Light).intensity.ToContainer());
         }
 
         public static Tween LightColor([NotNull] UnityEngine.Light target, UnityEngine.Color endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -75,10 +75,10 @@ namespace PrimeTween {
         public static Tween LightColor([NotNull] UnityEngine.Light target, UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings) => LightColor(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings));
         public static Tween LightColor([NotNull] UnityEngine.Light target, TweenSettings<UnityEngine.Color> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Light;
+                var _target = _tween.target as UnityEngine.Light;
                 var val = _tween.ColorVal;
                 _target.color = val;
-            }, t => (t.unityTarget as UnityEngine.Light).color.ToContainer());
+            }, t => (t.target as UnityEngine.Light).color.ToContainer());
         }
 
         public static Tween CameraOrthographicSize([NotNull] UnityEngine.Camera target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -93,10 +93,10 @@ namespace PrimeTween {
         public static Tween CameraOrthographicSize([NotNull] UnityEngine.Camera target, Single startValue, Single endValue, TweenSettings settings) => CameraOrthographicSize(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween CameraOrthographicSize([NotNull] UnityEngine.Camera target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.FloatVal;
                 _target.orthographicSize = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).orthographicSize.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).orthographicSize.ToContainer());
         }
 
         public static Tween CameraBackgroundColor([NotNull] UnityEngine.Camera target, UnityEngine.Color endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -111,10 +111,10 @@ namespace PrimeTween {
         public static Tween CameraBackgroundColor([NotNull] UnityEngine.Camera target, UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings) => CameraBackgroundColor(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings));
         public static Tween CameraBackgroundColor([NotNull] UnityEngine.Camera target, TweenSettings<UnityEngine.Color> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.ColorVal;
                 _target.backgroundColor = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).backgroundColor.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).backgroundColor.ToContainer());
         }
 
         public static Tween CameraAspect([NotNull] UnityEngine.Camera target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -129,10 +129,10 @@ namespace PrimeTween {
         public static Tween CameraAspect([NotNull] UnityEngine.Camera target, Single startValue, Single endValue, TweenSettings settings) => CameraAspect(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween CameraAspect([NotNull] UnityEngine.Camera target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.FloatVal;
                 _target.aspect = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).aspect.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).aspect.ToContainer());
         }
 
         public static Tween CameraFarClipPlane([NotNull] UnityEngine.Camera target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -147,10 +147,10 @@ namespace PrimeTween {
         public static Tween CameraFarClipPlane([NotNull] UnityEngine.Camera target, Single startValue, Single endValue, TweenSettings settings) => CameraFarClipPlane(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween CameraFarClipPlane([NotNull] UnityEngine.Camera target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.FloatVal;
                 _target.farClipPlane = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).farClipPlane.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).farClipPlane.ToContainer());
         }
 
         public static Tween CameraFieldOfView([NotNull] UnityEngine.Camera target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -165,10 +165,10 @@ namespace PrimeTween {
         public static Tween CameraFieldOfView([NotNull] UnityEngine.Camera target, Single startValue, Single endValue, TweenSettings settings) => CameraFieldOfView(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween CameraFieldOfView([NotNull] UnityEngine.Camera target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.FloatVal;
                 _target.fieldOfView = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).fieldOfView.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).fieldOfView.ToContainer());
         }
 
         public static Tween CameraNearClipPlane([NotNull] UnityEngine.Camera target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -183,10 +183,10 @@ namespace PrimeTween {
         public static Tween CameraNearClipPlane([NotNull] UnityEngine.Camera target, Single startValue, Single endValue, TweenSettings settings) => CameraNearClipPlane(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween CameraNearClipPlane([NotNull] UnityEngine.Camera target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.FloatVal;
                 _target.nearClipPlane = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).nearClipPlane.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).nearClipPlane.ToContainer());
         }
 
         public static Tween CameraPixelRect([NotNull] UnityEngine.Camera target, UnityEngine.Rect endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -201,10 +201,10 @@ namespace PrimeTween {
         public static Tween CameraPixelRect([NotNull] UnityEngine.Camera target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, TweenSettings settings) => CameraPixelRect(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, settings));
         public static Tween CameraPixelRect([NotNull] UnityEngine.Camera target, TweenSettings<UnityEngine.Rect> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.RectVal;
                 _target.pixelRect = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).pixelRect.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).pixelRect.ToContainer());
         }
 
         public static Tween CameraRect([NotNull] UnityEngine.Camera target, UnityEngine.Rect endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -219,10 +219,10 @@ namespace PrimeTween {
         public static Tween CameraRect([NotNull] UnityEngine.Camera target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, TweenSettings settings) => CameraRect(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, settings));
         public static Tween CameraRect([NotNull] UnityEngine.Camera target, TweenSettings<UnityEngine.Rect> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Camera;
+                var _target = _tween.target as UnityEngine.Camera;
                 var val = _tween.RectVal;
                 _target.rect = val;
-            }, t => (t.unityTarget as UnityEngine.Camera).rect.ToContainer());
+            }, t => (t.target as UnityEngine.Camera).rect.ToContainer());
         }
 
         public static Tween LocalRotation([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -236,16 +236,16 @@ namespace PrimeTween {
         public static Tween LocalRotation([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, TweenSettings settings) => LocalRotation(target, new TweenSettings<UnityEngine.Vector3>(endValue, settings));
         public static Tween LocalRotation([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => LocalRotation(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
 
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => LocalScale(target, new TweenSettings<float>(endValue, settings));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => LocalScale(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => Scale(target, new TweenSettings<float>(endValue, settings));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => Scale(target, new TweenSettings<float>(startValue, endValue, settings));
 
         public static Tween Rotation([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Rotation(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
@@ -270,10 +270,10 @@ namespace PrimeTween {
         public static Tween Position([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => Position(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
         public static Tween Position([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Vector3> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.Vector3Val;
                 _target.position = val;
-            }, t => (t.unityTarget as UnityEngine.Transform).position.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).position.ToContainer());
         }
 
         public static Tween PositionX([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -288,10 +288,10 @@ namespace PrimeTween {
         public static Tween PositionX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => PositionX(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween PositionX([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.position = _target.position.WithComponent(0, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).position.x.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).position.x.ToContainer());
         }
 
         public static Tween PositionY([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -306,10 +306,10 @@ namespace PrimeTween {
         public static Tween PositionY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => PositionY(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween PositionY([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.position = _target.position.WithComponent(1, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).position.y.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).position.y.ToContainer());
         }
 
         public static Tween PositionZ([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -324,10 +324,10 @@ namespace PrimeTween {
         public static Tween PositionZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => PositionZ(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween PositionZ([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.position = _target.position.WithComponent(2, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).position.z.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).position.z.ToContainer());
         }
 
         public static Tween LocalPosition([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -342,10 +342,10 @@ namespace PrimeTween {
         public static Tween LocalPosition([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => LocalPosition(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
         public static Tween LocalPosition([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Vector3> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.Vector3Val;
                 _target.localPosition = val;
-            }, t => (t.unityTarget as UnityEngine.Transform).localPosition.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localPosition.ToContainer());
         }
 
         public static Tween LocalPositionX([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -360,10 +360,10 @@ namespace PrimeTween {
         public static Tween LocalPositionX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => LocalPositionX(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween LocalPositionX([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.localPosition = _target.localPosition.WithComponent(0, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).localPosition.x.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localPosition.x.ToContainer());
         }
 
         public static Tween LocalPositionY([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -378,10 +378,10 @@ namespace PrimeTween {
         public static Tween LocalPositionY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => LocalPositionY(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween LocalPositionY([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.localPosition = _target.localPosition.WithComponent(1, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).localPosition.y.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localPosition.y.ToContainer());
         }
 
         public static Tween LocalPositionZ([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -396,10 +396,10 @@ namespace PrimeTween {
         public static Tween LocalPositionZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => LocalPositionZ(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween LocalPositionZ([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.localPosition = _target.localPosition.WithComponent(2, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).localPosition.z.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localPosition.z.ToContainer());
         }
 
         public static Tween Rotation([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -414,10 +414,10 @@ namespace PrimeTween {
         public static Tween Rotation([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, TweenSettings settings) => Rotation(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, settings));
         public static Tween Rotation([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Quaternion> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.QuaternionVal;
                 _target.rotation = val;
-            }, t => (t.unityTarget as UnityEngine.Transform).rotation.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).rotation.ToContainer());
         }
 
         public static Tween LocalRotation([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -432,82 +432,82 @@ namespace PrimeTween {
         public static Tween LocalRotation([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, TweenSettings settings) => LocalRotation(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, settings));
         public static Tween LocalRotation([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Quaternion> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.QuaternionVal;
                 _target.localRotation = val;
-            }, t => (t.unityTarget as UnityEngine.Transform).localRotation.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localRotation.ToContainer());
         }
 
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, TweenSettings settings) => LocalScale(target, new TweenSettings<UnityEngine.Vector3>(endValue, settings));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => LocalScale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
-        public static Tween LocalScale([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Vector3> settings) {
+        public static Tween Scale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, TweenSettings settings) => Scale(target, new TweenSettings<UnityEngine.Vector3>(endValue, settings));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => Scale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
+        public static Tween Scale([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Vector3> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.Vector3Val;
                 _target.localScale = val;
-            }, t => (t.unityTarget as UnityEngine.Transform).localScale.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localScale.ToContainer());
         }
 
-        public static Tween LocalScaleX([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleX([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleX([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => LocalScaleX(target, new TweenSettings<float>(endValue, settings));
-        public static Tween LocalScaleX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => LocalScaleX(target, new TweenSettings<float>(startValue, endValue, settings));
-        public static Tween LocalScaleX([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
+        public static Tween ScaleX([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleX([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleX([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => ScaleX(target, new TweenSettings<float>(endValue, settings));
+        public static Tween ScaleX([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => ScaleX(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween ScaleX([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.localScale = _target.localScale.WithComponent(0, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).localScale.x.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localScale.x.ToContainer());
         }
 
-        public static Tween LocalScaleY([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleY([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleY([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => LocalScaleY(target, new TweenSettings<float>(endValue, settings));
-        public static Tween LocalScaleY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => LocalScaleY(target, new TweenSettings<float>(startValue, endValue, settings));
-        public static Tween LocalScaleY([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
+        public static Tween ScaleY([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleY([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleY([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => ScaleY(target, new TweenSettings<float>(endValue, settings));
+        public static Tween ScaleY([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => ScaleY(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween ScaleY([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.localScale = _target.localScale.WithComponent(1, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).localScale.y.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localScale.y.ToContainer());
         }
 
-        public static Tween LocalScaleZ([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleZ(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleZ([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleZ(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleZ(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleZ(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween LocalScaleZ([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => LocalScaleZ(target, new TweenSettings<float>(endValue, settings));
-        public static Tween LocalScaleZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => LocalScaleZ(target, new TweenSettings<float>(startValue, endValue, settings));
-        public static Tween LocalScaleZ([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
+        public static Tween ScaleZ([NotNull] UnityEngine.Transform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleZ(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleZ([NotNull] UnityEngine.Transform target, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleZ(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleZ(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleZ(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween ScaleZ([NotNull] UnityEngine.Transform target, Single endValue, TweenSettings settings) => ScaleZ(target, new TweenSettings<float>(endValue, settings));
+        public static Tween ScaleZ([NotNull] UnityEngine.Transform target, Single startValue, Single endValue, TweenSettings settings) => ScaleZ(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween ScaleZ([NotNull] UnityEngine.Transform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Transform;
+                var _target = _tween.target as UnityEngine.Transform;
                 var val = _tween.FloatVal;
                 _target.localScale = _target.localScale.WithComponent(2, val);
-            }, t => (t.unityTarget as UnityEngine.Transform).localScale.z.ToContainer());
+            }, t => (t.target as UnityEngine.Transform).localScale.z.ToContainer());
         }
 
         public static Tween Color([NotNull] UnityEngine.SpriteRenderer target, UnityEngine.Color endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -522,10 +522,10 @@ namespace PrimeTween {
         public static Tween Color([NotNull] UnityEngine.SpriteRenderer target, UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings) => Color(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings));
         public static Tween Color([NotNull] UnityEngine.SpriteRenderer target, TweenSettings<UnityEngine.Color> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.SpriteRenderer;
+                var _target = _tween.target as UnityEngine.SpriteRenderer;
                 var val = _tween.ColorVal;
                 _target.color = val;
-            }, t => (t.unityTarget as UnityEngine.SpriteRenderer).color.ToContainer());
+            }, t => (t.target as UnityEngine.SpriteRenderer).color.ToContainer());
         }
 
         public static Tween Alpha([NotNull] UnityEngine.SpriteRenderer target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -540,10 +540,10 @@ namespace PrimeTween {
         public static Tween Alpha([NotNull] UnityEngine.SpriteRenderer target, Single startValue, Single endValue, TweenSettings settings) => Alpha(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween Alpha([NotNull] UnityEngine.SpriteRenderer target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.SpriteRenderer;
+                var _target = _tween.target as UnityEngine.SpriteRenderer;
                 var val = _tween.FloatVal;
                 _target.color = _target.color.WithAlpha(val);
-            }, t => (t.unityTarget as UnityEngine.SpriteRenderer).color.a.ToContainer());
+            }, t => (t.target as UnityEngine.SpriteRenderer).color.a.ToContainer());
         }
 
         #if !UNITY_2019_1_OR_NEWER || UNITY_UGUI_INSTALLED
@@ -559,10 +559,10 @@ namespace PrimeTween {
         public static Tween UISliderValue([NotNull] UnityEngine.UI.Slider target, Single startValue, Single endValue, TweenSettings settings) => UISliderValue(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UISliderValue([NotNull] UnityEngine.UI.Slider target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.Slider;
+                var _target = _tween.target as UnityEngine.UI.Slider;
                 var val = _tween.FloatVal;
                 _target.value = val;
-            }, t => (t.unityTarget as UnityEngine.UI.Slider).value.ToContainer());
+            }, t => (t.target as UnityEngine.UI.Slider).value.ToContainer());
         }
 
         public static Tween UINormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -577,10 +577,10 @@ namespace PrimeTween {
         public static Tween UINormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UINormalizedPosition(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UINormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.ScrollRect;
+                var _target = _tween.target as UnityEngine.UI.ScrollRect;
                 var val = _tween.Vector2Val;
                 _target.SetNormalizedPosition(val);
-            }, t => (t.unityTarget as UnityEngine.UI.ScrollRect).GetNormalizedPosition().ToContainer());
+            }, t => (t.target as UnityEngine.UI.ScrollRect).GetNormalizedPosition().ToContainer());
         }
 
         public static Tween UIHorizontalNormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -595,10 +595,10 @@ namespace PrimeTween {
         public static Tween UIHorizontalNormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, Single startValue, Single endValue, TweenSettings settings) => UIHorizontalNormalizedPosition(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIHorizontalNormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.ScrollRect;
+                var _target = _tween.target as UnityEngine.UI.ScrollRect;
                 var val = _tween.FloatVal;
                 _target.horizontalNormalizedPosition = val;
-            }, t => (t.unityTarget as UnityEngine.UI.ScrollRect).horizontalNormalizedPosition.ToContainer());
+            }, t => (t.target as UnityEngine.UI.ScrollRect).horizontalNormalizedPosition.ToContainer());
         }
 
         public static Tween UIVerticalNormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -613,10 +613,10 @@ namespace PrimeTween {
         public static Tween UIVerticalNormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, Single startValue, Single endValue, TweenSettings settings) => UIVerticalNormalizedPosition(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIVerticalNormalizedPosition([NotNull] UnityEngine.UI.ScrollRect target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.ScrollRect;
+                var _target = _tween.target as UnityEngine.UI.ScrollRect;
                 var val = _tween.FloatVal;
                 _target.verticalNormalizedPosition = val;
-            }, t => (t.unityTarget as UnityEngine.UI.ScrollRect).verticalNormalizedPosition.ToContainer());
+            }, t => (t.target as UnityEngine.UI.ScrollRect).verticalNormalizedPosition.ToContainer());
         }
 
         public static Tween UIPivotX([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -631,10 +631,10 @@ namespace PrimeTween {
         public static Tween UIPivotX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIPivotX(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIPivotX([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.FloatVal;
                 _target.pivot = _target.pivot.WithComponent(0, val);
-            }, t => (t.unityTarget as UnityEngine.RectTransform).pivot[0].ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).pivot[0].ToContainer());
         }
 
         public static Tween UIPivotY([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -649,10 +649,10 @@ namespace PrimeTween {
         public static Tween UIPivotY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIPivotY(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIPivotY([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.FloatVal;
                 _target.pivot = _target.pivot.WithComponent(1, val);
-            }, t => (t.unityTarget as UnityEngine.RectTransform).pivot[1].ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).pivot[1].ToContainer());
         }
 
         public static Tween UIPivot([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -667,10 +667,10 @@ namespace PrimeTween {
         public static Tween UIPivot([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIPivot(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIPivot([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.Vector2Val;
                 _target.pivot = val;
-            }, t => (t.unityTarget as UnityEngine.RectTransform).pivot.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).pivot.ToContainer());
         }
 
         public static Tween UIAnchorMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -685,10 +685,10 @@ namespace PrimeTween {
         public static Tween UIAnchorMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIAnchorMax(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIAnchorMax([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.Vector2Val;
                 _target.anchorMax = val;
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchorMax.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchorMax.ToContainer());
         }
 
         public static Tween UIAnchorMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -703,10 +703,10 @@ namespace PrimeTween {
         public static Tween UIAnchorMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIAnchorMin(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIAnchorMin([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.Vector2Val;
                 _target.anchorMin = val;
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchorMin.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchorMin.ToContainer());
         }
 
         public static Tween UIAnchoredPosition3D([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -721,10 +721,10 @@ namespace PrimeTween {
         public static Tween UIAnchoredPosition3D([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => UIAnchoredPosition3D(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
         public static Tween UIAnchoredPosition3D([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector3> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.Vector3Val;
                 _target.anchoredPosition3D = val;
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchoredPosition3D.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchoredPosition3D.ToContainer());
         }
 
         public static Tween UIAnchoredPosition3DX([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -739,10 +739,10 @@ namespace PrimeTween {
         public static Tween UIAnchoredPosition3DX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIAnchoredPosition3DX(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIAnchoredPosition3DX([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.FloatVal;
                 _target.anchoredPosition3D = _target.anchoredPosition3D.WithComponent(0, val);
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchoredPosition3D[0].ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchoredPosition3D[0].ToContainer());
         }
 
         public static Tween UIAnchoredPosition3DY([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -757,10 +757,10 @@ namespace PrimeTween {
         public static Tween UIAnchoredPosition3DY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIAnchoredPosition3DY(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIAnchoredPosition3DY([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.FloatVal;
                 _target.anchoredPosition3D = _target.anchoredPosition3D.WithComponent(1, val);
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchoredPosition3D[1].ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchoredPosition3D[1].ToContainer());
         }
 
         public static Tween UIAnchoredPosition3DZ([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -775,10 +775,10 @@ namespace PrimeTween {
         public static Tween UIAnchoredPosition3DZ([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIAnchoredPosition3DZ(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIAnchoredPosition3DZ([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.FloatVal;
                 _target.anchoredPosition3D = _target.anchoredPosition3D.WithComponent(2, val);
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchoredPosition3D[2].ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchoredPosition3D[2].ToContainer());
         }
 
         public static Tween UIEffectDistance([NotNull] UnityEngine.UI.Shadow target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -793,10 +793,10 @@ namespace PrimeTween {
         public static Tween UIEffectDistance([NotNull] UnityEngine.UI.Shadow target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIEffectDistance(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIEffectDistance([NotNull] UnityEngine.UI.Shadow target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.Shadow;
+                var _target = _tween.target as UnityEngine.UI.Shadow;
                 var val = _tween.Vector2Val;
                 _target.effectDistance = val;
-            }, t => (t.unityTarget as UnityEngine.UI.Shadow).effectDistance.ToContainer());
+            }, t => (t.target as UnityEngine.UI.Shadow).effectDistance.ToContainer());
         }
 
         public static Tween Alpha([NotNull] UnityEngine.UI.Shadow target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -811,10 +811,10 @@ namespace PrimeTween {
         public static Tween Alpha([NotNull] UnityEngine.UI.Shadow target, Single startValue, Single endValue, TweenSettings settings) => Alpha(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween Alpha([NotNull] UnityEngine.UI.Shadow target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.Shadow;
+                var _target = _tween.target as UnityEngine.UI.Shadow;
                 var val = _tween.FloatVal;
                 _target.effectColor = _target.effectColor.WithAlpha(val);
-            }, t => (t.unityTarget as UnityEngine.UI.Shadow).effectColor.a.ToContainer());
+            }, t => (t.target as UnityEngine.UI.Shadow).effectColor.a.ToContainer());
         }
 
         public static Tween Color([NotNull] UnityEngine.UI.Shadow target, UnityEngine.Color endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -829,10 +829,10 @@ namespace PrimeTween {
         public static Tween Color([NotNull] UnityEngine.UI.Shadow target, UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings) => Color(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings));
         public static Tween Color([NotNull] UnityEngine.UI.Shadow target, TweenSettings<UnityEngine.Color> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.Shadow;
+                var _target = _tween.target as UnityEngine.UI.Shadow;
                 var val = _tween.ColorVal;
                 _target.effectColor = val;
-            }, t => (t.unityTarget as UnityEngine.UI.Shadow).effectColor.ToContainer());
+            }, t => (t.target as UnityEngine.UI.Shadow).effectColor.ToContainer());
         }
 
         public static Tween UIPreferredSize([NotNull] UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -847,10 +847,10 @@ namespace PrimeTween {
         public static Tween UIPreferredSize([NotNull] UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIPreferredSize(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIPreferredSize([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.Vector2Val;
                 _target.SetPreferredSize(val);
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).GetPreferredSize().ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).GetPreferredSize().ToContainer());
         }
 
         public static Tween UIPreferredWidth([NotNull] UnityEngine.UI.LayoutElement target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -865,10 +865,10 @@ namespace PrimeTween {
         public static Tween UIPreferredWidth([NotNull] UnityEngine.UI.LayoutElement target, Single startValue, Single endValue, TweenSettings settings) => UIPreferredWidth(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIPreferredWidth([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.FloatVal;
                 _target.preferredWidth = val;
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).preferredWidth.ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).preferredWidth.ToContainer());
         }
 
         public static Tween UIPreferredHeight([NotNull] UnityEngine.UI.LayoutElement target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -883,10 +883,10 @@ namespace PrimeTween {
         public static Tween UIPreferredHeight([NotNull] UnityEngine.UI.LayoutElement target, Single startValue, Single endValue, TweenSettings settings) => UIPreferredHeight(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIPreferredHeight([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.FloatVal;
                 _target.preferredHeight = val;
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).preferredHeight.ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).preferredHeight.ToContainer());
         }
 
         public static Tween UIFlexibleSize([NotNull] UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -901,10 +901,10 @@ namespace PrimeTween {
         public static Tween UIFlexibleSize([NotNull] UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIFlexibleSize(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIFlexibleSize([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.Vector2Val;
                 _target.SetFlexibleSize(val);
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).GetFlexibleSize().ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).GetFlexibleSize().ToContainer());
         }
 
         public static Tween UIFlexibleWidth([NotNull] UnityEngine.UI.LayoutElement target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -919,10 +919,10 @@ namespace PrimeTween {
         public static Tween UIFlexibleWidth([NotNull] UnityEngine.UI.LayoutElement target, Single startValue, Single endValue, TweenSettings settings) => UIFlexibleWidth(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIFlexibleWidth([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.FloatVal;
                 _target.flexibleWidth = val;
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).flexibleWidth.ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).flexibleWidth.ToContainer());
         }
 
         public static Tween UIFlexibleHeight([NotNull] UnityEngine.UI.LayoutElement target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -937,10 +937,10 @@ namespace PrimeTween {
         public static Tween UIFlexibleHeight([NotNull] UnityEngine.UI.LayoutElement target, Single startValue, Single endValue, TweenSettings settings) => UIFlexibleHeight(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIFlexibleHeight([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.FloatVal;
                 _target.flexibleHeight = val;
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).flexibleHeight.ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).flexibleHeight.ToContainer());
         }
 
         public static Tween UIMinSize([NotNull] UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -955,10 +955,10 @@ namespace PrimeTween {
         public static Tween UIMinSize([NotNull] UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIMinSize(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIMinSize([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.Vector2Val;
                 _target.SetMinSize(val);
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).GetMinSize().ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).GetMinSize().ToContainer());
         }
 
         public static Tween UIMinWidth([NotNull] UnityEngine.UI.LayoutElement target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -973,10 +973,10 @@ namespace PrimeTween {
         public static Tween UIMinWidth([NotNull] UnityEngine.UI.LayoutElement target, Single startValue, Single endValue, TweenSettings settings) => UIMinWidth(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIMinWidth([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.FloatVal;
                 _target.minWidth = val;
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).minWidth.ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).minWidth.ToContainer());
         }
 
         public static Tween UIMinHeight([NotNull] UnityEngine.UI.LayoutElement target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -991,10 +991,10 @@ namespace PrimeTween {
         public static Tween UIMinHeight([NotNull] UnityEngine.UI.LayoutElement target, Single startValue, Single endValue, TweenSettings settings) => UIMinHeight(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIMinHeight([NotNull] UnityEngine.UI.LayoutElement target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.LayoutElement;
+                var _target = _tween.target as UnityEngine.UI.LayoutElement;
                 var val = _tween.FloatVal;
                 _target.minHeight = val;
-            }, t => (t.unityTarget as UnityEngine.UI.LayoutElement).minHeight.ToContainer());
+            }, t => (t.target as UnityEngine.UI.LayoutElement).minHeight.ToContainer());
         }
 
         public static Tween Color([NotNull] UnityEngine.UI.Graphic target, UnityEngine.Color endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1009,10 +1009,10 @@ namespace PrimeTween {
         public static Tween Color([NotNull] UnityEngine.UI.Graphic target, UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings) => Color(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings));
         public static Tween Color([NotNull] UnityEngine.UI.Graphic target, TweenSettings<UnityEngine.Color> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.Graphic;
+                var _target = _tween.target as UnityEngine.UI.Graphic;
                 var val = _tween.ColorVal;
                 _target.color = val;
-            }, t => (t.unityTarget as UnityEngine.UI.Graphic).color.ToContainer());
+            }, t => (t.target as UnityEngine.UI.Graphic).color.ToContainer());
         }
 
         public static Tween UIAnchoredPosition([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1027,10 +1027,10 @@ namespace PrimeTween {
         public static Tween UIAnchoredPosition([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIAnchoredPosition(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UIAnchoredPosition([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.Vector2Val;
                 _target.anchoredPosition = val;
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchoredPosition.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchoredPosition.ToContainer());
         }
 
         public static Tween UIAnchoredPositionX([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1045,10 +1045,10 @@ namespace PrimeTween {
         public static Tween UIAnchoredPositionX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIAnchoredPositionX(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIAnchoredPositionX([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.FloatVal;
                 _target.anchoredPosition = _target.anchoredPosition.WithComponent(0, val);
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchoredPosition.x.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchoredPosition.x.ToContainer());
         }
 
         public static Tween UIAnchoredPositionY([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1063,10 +1063,10 @@ namespace PrimeTween {
         public static Tween UIAnchoredPositionY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIAnchoredPositionY(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIAnchoredPositionY([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.FloatVal;
                 _target.anchoredPosition = _target.anchoredPosition.WithComponent(1, val);
-            }, t => (t.unityTarget as UnityEngine.RectTransform).anchoredPosition.y.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).anchoredPosition.y.ToContainer());
         }
 
         public static Tween UISizeDelta([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1081,10 +1081,10 @@ namespace PrimeTween {
         public static Tween UISizeDelta([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UISizeDelta(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween UISizeDelta([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.RectTransform;
+                var _target = _tween.target as UnityEngine.RectTransform;
                 var val = _tween.Vector2Val;
                 _target.sizeDelta = val;
-            }, t => (t.unityTarget as UnityEngine.RectTransform).sizeDelta.ToContainer());
+            }, t => (t.target as UnityEngine.RectTransform).sizeDelta.ToContainer());
         }
 
         public static Tween Alpha([NotNull] UnityEngine.CanvasGroup target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1099,10 +1099,10 @@ namespace PrimeTween {
         public static Tween Alpha([NotNull] UnityEngine.CanvasGroup target, Single startValue, Single endValue, TweenSettings settings) => Alpha(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween Alpha([NotNull] UnityEngine.CanvasGroup target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.CanvasGroup;
+                var _target = _tween.target as UnityEngine.CanvasGroup;
                 var val = _tween.FloatVal;
                 _target.alpha = val;
-            }, t => (t.unityTarget as UnityEngine.CanvasGroup).alpha.ToContainer());
+            }, t => (t.target as UnityEngine.CanvasGroup).alpha.ToContainer());
         }
 
         public static Tween Alpha([NotNull] UnityEngine.UI.Graphic target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1117,10 +1117,10 @@ namespace PrimeTween {
         public static Tween Alpha([NotNull] UnityEngine.UI.Graphic target, Single startValue, Single endValue, TweenSettings settings) => Alpha(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween Alpha([NotNull] UnityEngine.UI.Graphic target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.Graphic;
+                var _target = _tween.target as UnityEngine.UI.Graphic;
                 var val = _tween.FloatVal;
                 _target.color = _target.color.WithAlpha(val);
-            }, t => (t.unityTarget as UnityEngine.UI.Graphic).color.a.ToContainer());
+            }, t => (t.target as UnityEngine.UI.Graphic).color.a.ToContainer());
         }
 
         public static Tween UIFillAmount([NotNull] UnityEngine.UI.Image target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1135,10 +1135,10 @@ namespace PrimeTween {
         public static Tween UIFillAmount([NotNull] UnityEngine.UI.Image target, Single startValue, Single endValue, TweenSettings settings) => UIFillAmount(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween UIFillAmount([NotNull] UnityEngine.UI.Image target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.UI.Image;
+                var _target = _tween.target as UnityEngine.UI.Image;
                 var val = _tween.FloatVal;
                 _target.fillAmount = val;
-            }, t => (t.unityTarget as UnityEngine.UI.Image).fillAmount.ToContainer());
+            }, t => (t.target as UnityEngine.UI.Image).fillAmount.ToContainer());
         }
 
         #endif
@@ -1155,10 +1155,10 @@ namespace PrimeTween {
         public static Tween RigidbodyMovePosition([NotNull] UnityEngine.Rigidbody target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => RigidbodyMovePosition(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
         public static Tween RigidbodyMovePosition([NotNull] UnityEngine.Rigidbody target, TweenSettings<UnityEngine.Vector3> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Rigidbody;
+                var _target = _tween.target as UnityEngine.Rigidbody;
                 var val = _tween.Vector3Val;
                 _target.MovePosition(val);
-            }, t => (t.unityTarget as UnityEngine.Rigidbody).position.ToContainer());
+            }, t => (t.target as UnityEngine.Rigidbody).position.ToContainer());
         }
 
         public static Tween RigidbodyMoveRotation([NotNull] UnityEngine.Rigidbody target, UnityEngine.Quaternion endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1173,10 +1173,10 @@ namespace PrimeTween {
         public static Tween RigidbodyMoveRotation([NotNull] UnityEngine.Rigidbody target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, TweenSettings settings) => RigidbodyMoveRotation(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, settings));
         public static Tween RigidbodyMoveRotation([NotNull] UnityEngine.Rigidbody target, TweenSettings<UnityEngine.Quaternion> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Rigidbody;
+                var _target = _tween.target as UnityEngine.Rigidbody;
                 var val = _tween.QuaternionVal;
                 _target.MoveRotation(val);
-            }, t => (t.unityTarget as UnityEngine.Rigidbody).rotation.ToContainer());
+            }, t => (t.target as UnityEngine.Rigidbody).rotation.ToContainer());
         }
 
         #endif
@@ -1193,10 +1193,10 @@ namespace PrimeTween {
         public static Tween RigidbodyMovePosition([NotNull] UnityEngine.Rigidbody2D target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => RigidbodyMovePosition(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween RigidbodyMovePosition([NotNull] UnityEngine.Rigidbody2D target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Rigidbody2D;
+                var _target = _tween.target as UnityEngine.Rigidbody2D;
                 var val = _tween.Vector2Val;
                 _target.MovePosition(val);
-            }, t => (t.unityTarget as UnityEngine.Rigidbody2D).position.ToContainer());
+            }, t => (t.target as UnityEngine.Rigidbody2D).position.ToContainer());
         }
 
         public static Tween RigidbodyMoveRotation([NotNull] UnityEngine.Rigidbody2D target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1211,10 +1211,10 @@ namespace PrimeTween {
         public static Tween RigidbodyMoveRotation([NotNull] UnityEngine.Rigidbody2D target, Single startValue, Single endValue, TweenSettings settings) => RigidbodyMoveRotation(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween RigidbodyMoveRotation([NotNull] UnityEngine.Rigidbody2D target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Rigidbody2D;
+                var _target = _tween.target as UnityEngine.Rigidbody2D;
                 var val = _tween.FloatVal;
                 _target.MoveRotation(val);
-            }, t => (t.unityTarget as UnityEngine.Rigidbody2D).rotation.ToContainer());
+            }, t => (t.target as UnityEngine.Rigidbody2D).rotation.ToContainer());
         }
 
         #endif
@@ -1230,10 +1230,10 @@ namespace PrimeTween {
         public static Tween MaterialColor([NotNull] UnityEngine.Material target, UnityEngine.Color startValue, UnityEngine.Color endValue, TweenSettings settings) => MaterialColor(target, new TweenSettings<UnityEngine.Color>(startValue, endValue, settings));
         public static Tween MaterialColor([NotNull] UnityEngine.Material target, TweenSettings<UnityEngine.Color> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Material;
+                var _target = _tween.target as UnityEngine.Material;
                 var val = _tween.ColorVal;
                 _target.color = val;
-            }, t => (t.unityTarget as UnityEngine.Material).color.ToContainer());
+            }, t => (t.target as UnityEngine.Material).color.ToContainer());
         }
 
         public static Tween MaterialAlpha([NotNull] UnityEngine.Material target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1248,10 +1248,10 @@ namespace PrimeTween {
         public static Tween MaterialAlpha([NotNull] UnityEngine.Material target, Single startValue, Single endValue, TweenSettings settings) => MaterialAlpha(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween MaterialAlpha([NotNull] UnityEngine.Material target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Material;
+                var _target = _tween.target as UnityEngine.Material;
                 var val = _tween.FloatVal;
                 _target.color = _target.color.WithAlpha(val);
-            }, t => (t.unityTarget as UnityEngine.Material).color.a.ToContainer());
+            }, t => (t.target as UnityEngine.Material).color.a.ToContainer());
         }
 
         public static Tween MaterialMainTextureOffset([NotNull] UnityEngine.Material target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1266,10 +1266,10 @@ namespace PrimeTween {
         public static Tween MaterialMainTextureOffset([NotNull] UnityEngine.Material target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => MaterialMainTextureOffset(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween MaterialMainTextureOffset([NotNull] UnityEngine.Material target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Material;
+                var _target = _tween.target as UnityEngine.Material;
                 var val = _tween.Vector2Val;
                 _target.mainTextureOffset = val;
-            }, t => (t.unityTarget as UnityEngine.Material).mainTextureOffset.ToContainer());
+            }, t => (t.target as UnityEngine.Material).mainTextureOffset.ToContainer());
         }
 
         public static Tween MaterialMainTextureScale([NotNull] UnityEngine.Material target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1284,10 +1284,10 @@ namespace PrimeTween {
         public static Tween MaterialMainTextureScale([NotNull] UnityEngine.Material target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => MaterialMainTextureScale(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
         public static Tween MaterialMainTextureScale([NotNull] UnityEngine.Material target, TweenSettings<UnityEngine.Vector2> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.Material;
+                var _target = _tween.target as UnityEngine.Material;
                 var val = _tween.Vector2Val;
                 _target.mainTextureScale = val;
-            }, t => (t.unityTarget as UnityEngine.Material).mainTextureScale.ToContainer());
+            }, t => (t.target as UnityEngine.Material).mainTextureScale.ToContainer());
         }
 
         #if !UNITY_2019_1_OR_NEWER || AUDIO_MODULE_INSTALLED
@@ -1303,10 +1303,10 @@ namespace PrimeTween {
         public static Tween AudioVolume([NotNull] UnityEngine.AudioSource target, Single startValue, Single endValue, TweenSettings settings) => AudioVolume(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween AudioVolume([NotNull] UnityEngine.AudioSource target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.AudioSource;
+                var _target = _tween.target as UnityEngine.AudioSource;
                 var val = _tween.FloatVal;
                 _target.volume = val;
-            }, t => (t.unityTarget as UnityEngine.AudioSource).volume.ToContainer());
+            }, t => (t.target as UnityEngine.AudioSource).volume.ToContainer());
         }
 
         public static Tween AudioPitch([NotNull] UnityEngine.AudioSource target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1321,10 +1321,10 @@ namespace PrimeTween {
         public static Tween AudioPitch([NotNull] UnityEngine.AudioSource target, Single startValue, Single endValue, TweenSettings settings) => AudioPitch(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween AudioPitch([NotNull] UnityEngine.AudioSource target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.AudioSource;
+                var _target = _tween.target as UnityEngine.AudioSource;
                 var val = _tween.FloatVal;
                 _target.pitch = val;
-            }, t => (t.unityTarget as UnityEngine.AudioSource).pitch.ToContainer());
+            }, t => (t.target as UnityEngine.AudioSource).pitch.ToContainer());
         }
 
         public static Tween AudioPanStereo([NotNull] UnityEngine.AudioSource target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
@@ -1339,10 +1339,10 @@ namespace PrimeTween {
         public static Tween AudioPanStereo([NotNull] UnityEngine.AudioSource target, Single startValue, Single endValue, TweenSettings settings) => AudioPanStereo(target, new TweenSettings<float>(startValue, endValue, settings));
         public static Tween AudioPanStereo([NotNull] UnityEngine.AudioSource target, TweenSettings<float> settings) {
             return animate(target, ref settings, _tween => {
-                var _target = _tween.unityTarget as UnityEngine.AudioSource;
+                var _target = _tween.target as UnityEngine.AudioSource;
                 var val = _tween.FloatVal;
                 _target.panStereo = val;
-            }, t => (t.unityTarget as UnityEngine.AudioSource).panStereo.ToContainer());
+            }, t => (t.target as UnityEngine.AudioSource).panStereo.ToContainer());
         }
 
         #endif
@@ -1357,6 +1357,116 @@ namespace PrimeTween {
             => TweenTimeScale(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
         public static Tween TweenTimeScale([NotNull] PrimeTween.Tween target, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(endValue, settings));
         public static Tween TweenTimeScale([NotNull] PrimeTween.Tween target, Single startValue, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(startValue, endValue, settings));
+
+        #endif
+        #if UI_ELEMENTS_MODULE_INSTALLED
+        public static Tween VisualElementLayout([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Rect endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementLayout(target, new TweenSettings<UnityEngine.Rect>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementLayout([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Rect endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementLayout(target, new TweenSettings<UnityEngine.Rect>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementLayout([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementLayout(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementLayout([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementLayout(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementLayout([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Rect endValue, TweenSettings settings) => VisualElementLayout(target, new TweenSettings<UnityEngine.Rect>(endValue, settings));
+        public static Tween VisualElementLayout([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Rect startValue, UnityEngine.Rect endValue, TweenSettings settings) => VisualElementLayout(target, new TweenSettings<UnityEngine.Rect>(startValue, endValue, settings));
+        public static Tween VisualElementLayout([NotNull] UnityEngine.UIElements.VisualElement target, TweenSettings<UnityEngine.Rect> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.UIElements.VisualElement;
+                var val = _tween.RectVal;
+                _target.SetStyleRect(val);
+            }, t => (t.target as UnityEngine.UIElements.VisualElement).GetResolvedStyleRect().ToContainer());
+        }
+
+        public static Tween Position([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Position(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Position([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Position(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Position([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Position(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Position([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Position(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Position([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 endValue, TweenSettings settings) => Position(target, new TweenSettings<UnityEngine.Vector3>(endValue, settings));
+        public static Tween Position([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => Position(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
+        public static Tween Position([NotNull] UnityEngine.UIElements.ITransform target, TweenSettings<UnityEngine.Vector3> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.UIElements.ITransform;
+                var val = _tween.Vector3Val;
+                _target.position = val;
+            }, t => (t.target as UnityEngine.UIElements.ITransform).position.ToContainer());
+        }
+
+        public static Tween Rotation([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Quaternion endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Rotation(target, new TweenSettings<UnityEngine.Quaternion>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Rotation([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Quaternion endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Rotation(target, new TweenSettings<UnityEngine.Quaternion>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Rotation([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Rotation(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Rotation([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Rotation(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Rotation([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Quaternion endValue, TweenSettings settings) => Rotation(target, new TweenSettings<UnityEngine.Quaternion>(endValue, settings));
+        public static Tween Rotation([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, TweenSettings settings) => Rotation(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, settings));
+        public static Tween Rotation([NotNull] UnityEngine.UIElements.ITransform target, TweenSettings<UnityEngine.Quaternion> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.UIElements.ITransform;
+                var val = _tween.QuaternionVal;
+                _target.rotation = val;
+            }, t => (t.target as UnityEngine.UIElements.ITransform).rotation.ToContainer());
+        }
+
+        public static Tween Scale([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => Scale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween Scale([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 endValue, TweenSettings settings) => Scale(target, new TweenSettings<UnityEngine.Vector3>(endValue, settings));
+        public static Tween Scale([NotNull] UnityEngine.UIElements.ITransform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, TweenSettings settings) => Scale(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, settings));
+        public static Tween Scale([NotNull] UnityEngine.UIElements.ITransform target, TweenSettings<UnityEngine.Vector3> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.UIElements.ITransform;
+                var val = _tween.Vector3Val;
+                _target.scale = val;
+            }, t => (t.target as UnityEngine.UIElements.ITransform).scale.ToContainer());
+        }
+
+        public static Tween VisualElementSize([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementSize(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementSize([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementSize(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementSize([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementSize(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementSize([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementSize(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementSize([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 endValue, TweenSettings settings) => VisualElementSize(target, new TweenSettings<UnityEngine.Vector2>(endValue, settings));
+        public static Tween VisualElementSize([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => VisualElementSize(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
+        public static Tween VisualElementSize([NotNull] UnityEngine.UIElements.VisualElement target, TweenSettings<UnityEngine.Vector2> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.UIElements.VisualElement;
+                var val = _tween.Vector2Val;
+                _target.style.width = val.x; _target.style.height = val.y;
+            }, t => (t.target as UnityEngine.UIElements.VisualElement).layout.size.ToContainer());
+        }
+
+        public static Tween VisualElementTopLeft([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementTopLeft(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementTopLeft([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementTopLeft(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementTopLeft([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementTopLeft(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementTopLeft([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => VisualElementTopLeft(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween VisualElementTopLeft([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 endValue, TweenSettings settings) => VisualElementTopLeft(target, new TweenSettings<UnityEngine.Vector2>(endValue, settings));
+        public static Tween VisualElementTopLeft([NotNull] UnityEngine.UIElements.VisualElement target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => VisualElementTopLeft(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
+        public static Tween VisualElementTopLeft([NotNull] UnityEngine.UIElements.VisualElement target, TweenSettings<UnityEngine.Vector2> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.UIElements.VisualElement;
+                var val = _tween.Vector2Val;
+                _target.SetTopLeft(val);
+            }, t => (t.target as UnityEngine.UIElements.VisualElement).GetTopLeft().ToContainer());
+        }
 
         #endif
 
@@ -1990,11 +2100,11 @@ namespace PrimeTween {
         public static Tween LocalPositionAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, TweenSettings settings) 
             => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.localPosition += delta);
         
-        public static Tween LocalScaleAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalScaleAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => LocalScaleAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
-        public static Tween LocalScaleAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, TweenSettings settings) 
+        public static Tween ScaleAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
+        public static Tween ScaleAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, float duration, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => ScaleAdditive(target, deltaValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime));
+        public static Tween ScaleAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, TweenSettings settings) 
             => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.localScale += delta);
         
         public static Tween RotationAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 deltaValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 

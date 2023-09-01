@@ -17,7 +17,7 @@ namespace Pancake.Component
             base.OnEnabled();
             var loopCount = 0;
             if (loop) loopCount = -1;
-            _tween = Tween.LocalScale(transform, value, duration, ease, loopCount);
+            _tween = Tween.Scale(transform, value, duration, ease, loopCount);
         }
 
         protected override void OnDisabled()

@@ -2,6 +2,7 @@
 #define ENABLE_SERIALIZATION
 #endif
 using System;
+using System.ComponentModel;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -9,13 +10,13 @@ namespace PrimeTween {
     /// <summary>The main API of the PrimeTween library.<br/><br/>
     /// Use static Tween methods to start animations (tweens).<br/>
     /// Use the returned Tween struct to control the running tween and access its properties.<br/><br/>
-    /// Tweens are non-reusable. That is, when a tween completes (or is stopped manually), it becomes 'dead' (<see cref="IsAlive"/> == false) and can no longer be used to control the tween or access its properties.<br/>
+    /// Tweens are non-reusable. That is, when a tween completes (or is stopped manually), it becomes 'dead' (<see cref="isAlive"/> == false) and can no longer be used to control the tween or access its properties.<br/>
     /// To restart the animation from the beginning (or play in the opposite direction), simply start a new Tween. Starting tweens is very fast and doesn't allocate garbage,
     /// so you can start hundreds of tweens per seconds with no performance overhead.</summary>
     /// <example><code>
     /// var tween = Tween.LocalPositionX(transform, endValue: 1.5f, duration: 1f);
     /// // Let the tween run for some time...
-    /// if (tween.IsAlive) {
+    /// if (tween.isAlive) {
     ///     Debug.Log($"Animation is still running, elapsed time: {tween.elapsedTime}.");
     /// } else {
     ///     Debug.Log("Animation is already completed.");
@@ -39,7 +40,7 @@ namespace PrimeTween {
             
         internal readonly ReusableTween tween;
         
-        /// This should not be part of public API. When tween IsCreated and !IsAlive, it's not guaranteed to be IsCompleted, it can also be stopped.
+        /// This should not be part of public API. When tween IsCreated and !isAlive, it's not guaranteed to be IsCompleted, it can also be stopped.
         internal bool IsCreated => id != 0;
 
         internal Tween([NotNull] ReusableTween tween) {
@@ -48,19 +49,17 @@ namespace PrimeTween {
             this.tween = tween;
         }
 
-        // todo rename to small letter? and IsPaused too
         /// A tween is 'alive' when it has been created and is not stopped or completed yet. Paused tween is also considered 'alive'.
-        public bool IsAlive => id != 0 && tween.id == id && tween.isAlive;
-
+        public bool isAlive => id != 0 && tween.id == id && tween._isAlive;
         /// Elapsed time of the current cycle.
-        public float elapsedTime => IsAlive ? tween.elapsedTimeInCurrentCycle : 0; // todo call validateIsAlive()?
+        public float elapsedTime => validateIsAlive() ? tween.elapsedTimeInCurrentCycle : 0;
         /// The total number of cycles. Returns -1 to indicate infinite number cycles.
-        public int cyclesTotal => IsAlive ? tween.settings.cycles : 0;
-        public int cyclesDone => IsAlive ? tween.cyclesDone : 0;
+        public int cyclesTotal => validateIsAlive() ? tween.settings.cycles : 0;
+        public int cyclesDone => validateIsAlive() ? tween.cyclesDone : 0;
         /// The duration of one cycle.
         public float duration {
             get {
-                if (!IsAlive) {
+                if (!validateIsAlive()) {
                     return 0;
                 }
                 var result = tween.totalDuration;
@@ -71,10 +70,10 @@ namespace PrimeTween {
 
         [NotNull]
         public override string ToString() {
-            return IsAlive ? tween.GetDescription() : $"DEAD / id {id}";
+            return isAlive ? tween.GetDescription() : $"DEAD / id {id}";
         }
 
-        SharedProps sharedProps => new SharedProps(IsAlive, elapsedTime, cyclesTotal, cyclesDone, duration);
+        SharedProps sharedProps => isAlive ? new SharedProps(true, elapsedTime, cyclesTotal, cyclesDone, duration) : new SharedProps();
         /// Elapsed time of all cycles.
         public float elapsedTimeTotal => sharedProps.elapsedTimeTotal;
         /// <summary>The duration of all cycles. If cycles == -1, returns <see cref="float.PositiveInfinity"/>.</summary>
@@ -85,11 +84,10 @@ namespace PrimeTween {
         public float progressTotal => sharedProps.progressTotal;
 
         /// <summary>The current percentage of change between 'startValue' and 'endValue' values in 0..1 range.</summary>
-        public float interpolationFactor => !IsAlive ? 0 : tween.easedInterpolationFactor;
+        public float interpolationFactor => validateIsAlive() ? tween.easedInterpolationFactor : 0;
 
-        /// todo rename to small letter?
-        public bool IsPaused {
-            get => IsAlive && tween.isPaused;
+        public bool isPaused {
+            get => validateIsAlive() && tween._isPaused;
             set {
                 if (tryManipulate()) {
                     tween.trySetPause(value);
@@ -99,7 +97,7 @@ namespace PrimeTween {
 
         /// Interrupts the tween, ignoring onComplete callback. 
         public void Stop() {
-            if (IsAlive) {
+            if (isAlive) {
                 tween.kill();
                 tween.updateSequenceAfterKill();
             }
@@ -108,25 +106,19 @@ namespace PrimeTween {
         /// Sets the tween to the endValue and calls onComplete.
         public void Complete() {
             // don't warn that tween is dead because dead tween means that it's already 'completed'
-            if (IsAlive && tween.tryManipulate()) { 
+            if (isAlive && tween.tryManipulate()) { 
                 tween.ForceComplete();
                 tween.updateSequenceAfterKill();
             }
         }
 
-        bool tryManipulate() {
-            if (IsAlive) {
-                return tween.tryManipulate();
-            }
-            Debug.LogError(Constants.tweenIsDeadMessage);
-            return false;
-        }
+        bool tryManipulate() => validateIsAlive() && tween.tryManipulate();
 
         /// <summary>Stops the tween when it reaches 'startValue' or 'endValue' for the next time.<br/>
         /// For example, if you have an infinite tween (cycles == -1) with CycleMode.Yoyo/Rewind, and you wish to stop it when it reaches the 'endValue' (odd cycle), then set <see cref="stopAtEndValue"/> to true.
         /// To stop the animation at the 'startValue' (even cycle), set <see cref="stopAtEndValue"/> to false.</summary>
         public void SetCycles(bool stopAtEndValue) {
-            if (IsAlive && (tween.settings.cycleMode == CycleMode.Restart || tween.settings.cycleMode == CycleMode.Incremental)) {
+            if (isAlive && (tween.settings.cycleMode == CycleMode.Restart || tween.settings.cycleMode == CycleMode.Incremental)) {
                 Debug.LogWarning(nameof(SetCycles) + "(bool " + nameof(stopAtEndValue) + ") is meant to be used with CycleMode.Yoyo or Rewind. Please consider using the overload that accepts int instead.");
             }
             SetCycles(tween.cyclesDone % 2 == 0 == stopAtEndValue ? 1 : 2);
@@ -175,8 +167,7 @@ namespace PrimeTween {
         }
 
         bool canAddOnComplete() {
-            if (!IsAlive) {
-                Debug.LogError(Constants.tweenIsDeadMessage);
+            if (!validateIsAlive()) {
                 return false;
             }
             if (tween.warnIfTargetDestroyed()) {
@@ -202,25 +193,20 @@ namespace PrimeTween {
         public Sequence Group(Sequence sequence) => Sequence.Create(this).Group(sequence);
         public Sequence Chain(Sequence sequence) => Sequence.Create(this).Chain(sequence);
         
+        bool validateIsAlive() => Constants.validateIsAlive(isAlive);
+
         #if PRIME_TWEEN_EXPERIMENTAL
         /// <summary> Custom tween's timeScale. To smoothly animate tween's timeScale over time, use <see cref="Tween.TweenTimeScale"/> method.</summary>
         public float timeScale {
-            get {
-                validateIsAlive();
-                return tween.timeScale;
-            }
+            get => validateIsAlive() ? tween.timeScale : 1;
             set {
-                validateIsAlive();
+                if (!tryManipulate()) {
+                    return;
+                }
                 if (value < 0) {
                     throw new InvalidOperationException("Timescale should be >= 0.");
                 }
                 tween.timeScale = value;
-            }
-        }
-
-        void validateIsAlive() {
-            if (!IsAlive) {
-                throw new InvalidOperationException(Constants.tweenIsDeadMessage);
             }
         }
         #endif

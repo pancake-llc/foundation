@@ -180,7 +180,7 @@ namespace PrimeTween {
             for (int i = processedCount; i < cachedCount; i++) {
                 var tween = tweens[i];
                 // ReSharper disable once PossibleNullReferenceException
-                if (tween.isAlive && !tween.startFromCurrent && !tween.waitFor.IsAlive && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed()
+                if (tween._isAlive && !tween.startFromCurrent && !tween.waitFor.isAlive && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed()
                     && !tween.isAdditive) {
                     Assert.AreEqual(0, tween.elapsedTime);
                     tween.ReportOnValueChange(0);
@@ -332,7 +332,7 @@ namespace PrimeTween {
                 if (onTarget != null && tween.target != onTarget) {
                     continue;
                 }
-                if (tween.isAlive && predicate(tween)) {
+                if (tween._isAlive && predicate(tween)) {
                     numProcessed++;
                 }
             }
@@ -399,7 +399,7 @@ namespace PrimeTween {
         Delay,
         ShakeLocalPosition,
         ShakeLocalRotation,
-        ShakeLocalScale,
+        ShakeScale,
         ShakeCustom
     }
 }

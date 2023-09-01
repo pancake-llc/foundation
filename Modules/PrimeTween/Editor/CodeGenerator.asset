@@ -148,7 +148,7 @@ MonoBehaviour:
     placeInGlobalScope: 1
     generateOnlyOverloads: 1
   - name: Scale_Uniform
-    methodName: LocalScale
+    methodName: Scale
     targetType: UnityEngine.Transform
     propertyType: 1
     propertyName: 
@@ -602,7 +602,7 @@ MonoBehaviour:
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
   - name: Scale
-    methodName: LocalScale
+    methodName: Scale
     targetType: UnityEngine.Transform
     propertyType: 4
     propertyName: localScale
@@ -613,7 +613,7 @@ MonoBehaviour:
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
   - name: ScaleX
-    methodName: LocalScaleX
+    methodName: ScaleX
     targetType: UnityEngine.Transform
     propertyType: 1
     propertyName: 
@@ -624,7 +624,7 @@ MonoBehaviour:
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
   - name: ScaleY
-    methodName: LocalScaleY
+    methodName: ScaleY
     targetType: UnityEngine.Transform
     propertyType: 1
     propertyName: 
@@ -635,7 +635,7 @@ MonoBehaviour:
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
   - name: ScaleZ
-    methodName: LocalScaleZ
+    methodName: ScaleZ
     targetType: UnityEngine.Transform
     propertyType: 1
     propertyName: 
@@ -856,6 +856,72 @@ MonoBehaviour:
     dependency: 8
     placeInGlobalScope: 0
     generateOnlyOverloads: 1
+  - name: VisualElement_Layout
+    methodName: VisualElementLayout
+    targetType: UnityEngine.UIElements.VisualElement
+    propertyType: 7
+    propertyName: 
+    propertyGetter: GetResolvedStyleRect()
+    propertySetter: SetStyleRect(val)
+    dotweenMethodName: 
+    dependency: 9
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: VisualElement_Position
+    methodName: Position
+    targetType: UnityEngine.UIElements.ITransform
+    propertyType: 4
+    propertyName: position
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: 
+    dependency: 9
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: VisualElement_Rotation
+    methodName: Rotation
+    targetType: UnityEngine.UIElements.ITransform
+    propertyType: 6
+    propertyName: rotation
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: 
+    dependency: 9
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: VisualElement_Scale
+    methodName: Scale
+    targetType: UnityEngine.UIElements.ITransform
+    propertyType: 4
+    propertyName: scale
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: 
+    dependency: 9
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: VisualElement_Size
+    methodName: VisualElementSize
+    targetType: UnityEngine.UIElements.VisualElement
+    propertyType: 3
+    propertyName: 
+    propertyGetter: layout.size
+    propertySetter: style.width = val.x; _target.style.height = val.y
+    dotweenMethodName: 
+    dependency: 9
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: VisualElement_TopLeft
+    methodName: VisualElementTopLeft
+    targetType: UnityEngine.UIElements.VisualElement
+    propertyType: 3
+    propertyName: 
+    propertyGetter: GetTopLeft()
+    propertySetter: SetTopLeft(val)
+    dotweenMethodName: 
+    dependency: 9
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
   additiveMethodsGenerator:
     additiveMethods:
     - methodName: PositionAdditive
@@ -864,7 +930,7 @@ MonoBehaviour:
     - methodName: LocalPositionAdditive
       propertyType: 4
       setter: _target.localPosition += delta
-    - methodName: LocalScaleAdditive
+    - methodName: ScaleAdditive
       propertyType: 4
       setter: _target.localScale += delta
     - methodName: RotationAdditive

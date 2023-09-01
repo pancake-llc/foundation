@@ -29,6 +29,11 @@
             "name": "com.unity.modules.physics2d",
             "expression": "1.0.0",
             "define": "PHYSICS2D_MODULE_INSTALLED"
+        },
+        {
+            "name": "com.unity.modules.uielements",
+            "expression": "1.0.0",
+            "define": "UI_ELEMENTS_MODULE_INSTALLED"
         }
     ],
     "noEngineReferences": false

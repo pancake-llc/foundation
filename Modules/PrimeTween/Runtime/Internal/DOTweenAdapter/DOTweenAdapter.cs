@@ -68,11 +68,11 @@ namespace PrimeTween {
                 settings.enableFalloff = true;
                 settings.frequency = remapFrequency(settings.frequency);
             }
-            return Tween.ShakeLocalScale(target.transform, settings);
+            return Tween.ShakeScale(target.transform, settings);
         }
         public static Tween DOPunchScale([NotNull] this Component target, Vector3 punch, float duration, int vibrato = 10, float elasticity = 1) {
             var shakeSettings = new ShakeSettings(punch, duration, remapFrequency(vibrato), asymmetryFactor: 1 - elasticity);
-            return Tween.PunchLocalScale(target.transform, shakeSettings);
+            return Tween.PunchScale(target.transform, shakeSettings);
         }
         
         public static Tween DORotate([NotNull] this Transform target, Vector3 endValue, float duration) {
@@ -84,7 +84,7 @@ namespace PrimeTween {
         }
 
         public static Tween DOScale([NotNull] this Transform target, Single endValue, float duration) {
-            return Tween.LocalScale(target, endValue, duration, defaultDotweenEase);
+            return Tween.Scale(target, endValue, duration, defaultDotweenEase);
         }
 
         public static int DOKill([NotNull] this Component target, bool complete = false) => doKill_internal(target, complete);
@@ -138,7 +138,7 @@ namespace PrimeTween {
             if (!IsCreated) {
                 Group(PrimeTweenManager.createEmpty());
             }
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             return SetCycles(loops);
         }
 
@@ -212,7 +212,7 @@ namespace PrimeTween {
         }
 
         public Sequence PrependInterval(float interval) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             var maybeDelay = PrimeTweenManager.delayWithoutDurationCheck(null, interval, false);
             Assert.IsTrue(maybeDelay.HasValue);
             var delay = maybeDelay.Value;
@@ -242,7 +242,7 @@ namespace PrimeTween {
         }
 
         public Sequence SetUpdate(bool isIndependentUpdate) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             foreach (var t in getEnumerator(true)) {
                 t.tween.settings.useUnscaledTime = isIndependentUpdate;
             }
@@ -256,7 +256,7 @@ namespace PrimeTween {
     
     public partial struct Tween {
         public Tween SetEase(Ease ease, float? overshoot = null) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             if (overshoot.HasValue) {
                 Debug.LogWarning("Custom overshoot is not supported. Consider using custom ease curve instead.");
             }
@@ -265,14 +265,14 @@ namespace PrimeTween {
         }
 
         public Tween SetDelay(float delay) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             tween.settings.startDelay = delay;
             tween.recalculateTotalDuration();
             return this;
         }
 
         public Tween SetRelative(bool isRelative = true) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             if (isRelative) {
                 if (tween.settings.startDelay != 0) {
                     Debug.LogWarning("SetRelative() immediately adds the dest and doesn't wait for startDelay.");
@@ -296,7 +296,7 @@ namespace PrimeTween {
         }
 
         public Tween SetLoops(int loops, LoopType loopType = LoopType.Restart) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             SetCycles(loops);
             tween.settings.cycleMode = toCycleMode(loopType);
             return this;
@@ -324,17 +324,17 @@ namespace PrimeTween {
             }
         }
 
-        public bool IsActive() => IsAlive;
-        public bool active => IsAlive;
-        public bool IsPlaying() => IsAlive && !IsPaused;
+        public bool IsActive() => isAlive;
+        public bool active => isAlive;
+        public bool IsPlaying() => isAlive && !isPaused;
 
         public Tween Pause() {
-            IsPaused = true;
+            isPaused = true;
             return this;
         }
 
         public Tween Play() {
-            IsPaused = false;
+            isPaused = false;
             return this;
         }
 
@@ -342,12 +342,12 @@ namespace PrimeTween {
         public float Duration(bool includeLoops = true) => includeLoops ? durationTotal : duration;
         public int Loops() => cyclesTotal;
         public int CompletedLoops() => cyclesDone;
-        public float ElapsedDelay() => IsAlive ? Mathf.Clamp(elapsedTime, 0f, tween.settings.startDelay) : 0;
+        public float ElapsedDelay() => isAlive ? Mathf.Clamp(elapsedTime, 0f, tween.settings.startDelay) : 0;
         public float ElapsedPercentage(bool includeLoops = true) => includeLoops ? progressTotal : progress;
-        public void TogglePause() => IsPaused = !IsPaused;
+        public void TogglePause() => isPaused = !isPaused;
 
         public Tween SetEase(AnimationCurve customCurve) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             SetEase(Ease.Custom);
             tween.settings.customEase = customCurve;
             return this;
@@ -355,7 +355,7 @@ namespace PrimeTween {
 
         public Tween SetTarget([NotNull] object target) {
             Assert.IsNotNull(target);
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             tween.target = target;
             tween.setUnityTarget(target);
             return this;
@@ -366,13 +366,13 @@ namespace PrimeTween {
         public Tween AsyncWaitForCompletion() => this;
 
         public Tween SetUpdate(bool isIndependentUpdate) {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             tween.settings.useUnscaledTime = isIndependentUpdate;
             return this;
         }
         
         public Tween From() {
-            Assert.IsTrue(IsAlive);
+            Assert.IsTrue(isAlive);
             var getter = tween.getter;
             if (getter != null) {
                 tween.startFromCurrent = false;

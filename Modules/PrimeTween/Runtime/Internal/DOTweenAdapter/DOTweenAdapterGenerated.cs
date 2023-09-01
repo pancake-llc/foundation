@@ -52,13 +52,13 @@ namespace PrimeTween {
 
         public static Tween DOLocalRotateQuaternion([NotNull] this UnityEngine.Transform target, UnityEngine.Quaternion endValue, float duration) => Tween.LocalRotation(target, endValue, duration, defaultDotweenEase);
 
-        public static Tween DOScale([NotNull] this UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration) => Tween.LocalScale(target, endValue, duration, defaultDotweenEase);
+        public static Tween DOScale([NotNull] this UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration) => Tween.Scale(target, endValue, duration, defaultDotweenEase);
 
-        public static Tween DOScaleX([NotNull] this UnityEngine.Transform target, Single endValue, float duration) => Tween.LocalScaleX(target, endValue, duration, defaultDotweenEase);
+        public static Tween DOScaleX([NotNull] this UnityEngine.Transform target, Single endValue, float duration) => Tween.ScaleX(target, endValue, duration, defaultDotweenEase);
 
-        public static Tween DOScaleY([NotNull] this UnityEngine.Transform target, Single endValue, float duration) => Tween.LocalScaleY(target, endValue, duration, defaultDotweenEase);
+        public static Tween DOScaleY([NotNull] this UnityEngine.Transform target, Single endValue, float duration) => Tween.ScaleY(target, endValue, duration, defaultDotweenEase);
 
-        public static Tween DOScaleZ([NotNull] this UnityEngine.Transform target, Single endValue, float duration) => Tween.LocalScaleZ(target, endValue, duration, defaultDotweenEase);
+        public static Tween DOScaleZ([NotNull] this UnityEngine.Transform target, Single endValue, float duration) => Tween.ScaleZ(target, endValue, duration, defaultDotweenEase);
 
         public static Tween DOColor([NotNull] this UnityEngine.SpriteRenderer target, UnityEngine.Color endValue, float duration) => Tween.Color(target, endValue, duration, defaultDotweenEase);
 
@@ -155,6 +155,14 @@ namespace PrimeTween {
         #endif
         #if PRIME_TWEEN_EXPERIMENTAL
         public static Tween DOTimeScale([NotNull] this PrimeTween.Tween target, Single endValue, float duration) => Tween.TweenTimeScale(target, endValue, duration, defaultDotweenEase);
+
+        #endif
+        #if UI_ELEMENTS_MODULE_INSTALLED
+
+
+
+
+
 
         #endif
     }

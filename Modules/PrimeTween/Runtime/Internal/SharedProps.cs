@@ -2,25 +2,26 @@ using UnityEngine;
 
 namespace PrimeTween {
     internal readonly struct SharedProps {
-        readonly bool IsAlive;
+        readonly bool isAlive;
         readonly float elapsedTime;
         readonly int cyclesTotal;
         readonly int cyclesDone;
         readonly float duration;
+        bool validateIsAlive() => Constants.validateIsAlive(isAlive);
 
-        internal SharedProps(bool IsAlive, float elapsedTime, int cyclesTotal, int cyclesDone, float duration) {
-            this.IsAlive = IsAlive;
+        internal SharedProps(bool isAlive, float elapsedTime, int cyclesTotal, int cyclesDone, float duration) {
+            this.isAlive = isAlive;
             this.elapsedTime = elapsedTime;
             this.cyclesTotal = cyclesTotal;
             this.cyclesDone = cyclesDone;
             this.duration = duration;
         }
 
-        internal float elapsedTimeTotal => IsAlive ? elapsedTime + cyclesDone * duration : 0;
+        internal float elapsedTimeTotal => validateIsAlive() ? elapsedTime + cyclesDone * duration : 0;
 
         internal float durationTotal {
             get {
-                if (!IsAlive) {
+                if (!validateIsAlive()) {
                     return 0;
                 }
                 if (cyclesTotal == -1) {
@@ -33,7 +34,7 @@ namespace PrimeTween {
 
         internal float progress {
             get {
-                if (!IsAlive) {
+                if (!validateIsAlive()) {
                     return 0;
                 }
                 if (duration == 0) {
@@ -45,7 +46,7 @@ namespace PrimeTween {
 
         internal float progressTotal {
             get {
-                if (!IsAlive) {
+                if (!validateIsAlive()) {
                     return 0;
                 }
                 if (cyclesTotal == -1) {
