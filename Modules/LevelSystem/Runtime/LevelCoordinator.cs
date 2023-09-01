@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Pancake.Apex;
 using Pancake.Linq;
 using Pancake.Scriptable;
@@ -35,10 +36,11 @@ namespace Pancake.LevelSystem
             _totalLevel = 0;
             _typeMappingOfSegment.Clear();
 
+            _totalLevel = levelSettings.Filter(s => s).Distinct(s => s.LevelType.Value).Sum(s => s.TotalLevel);
+            
             foreach (var levelSetting in levelSettings)
             {
                 _segmentLength += levelSetting.NumberInSegment;
-                _totalLevel += levelSetting.TotalLevel;
                 // flat map
                 for (var i = 0; i < levelSetting.NumberInSegment; i++)
                 {
