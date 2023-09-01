@@ -2,22 +2,26 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
+    using UnityEngine;
+
     [Serializable]
     [EditorIcon("scriptable_event")]
-    public abstract class ScriptableEventFunc<TResult> : ScriptableEventBase, IDrawObjectsInInspector
+    // ReSharper disable once InconsistentNaming
+    public abstract class ScriptableEventFuncT_TResult<T, TResult> : ScriptableEventBase, IDrawObjectsInInspector
     {
         [SerializeField] private bool debugLogEnabled;
+        [SerializeField] protected T debugValue = default;
 
-        private readonly List<EventListenerFunc<TResult>> _eventListeners = new List<EventListenerFunc<TResult>>();
+        private readonly List<EventListenerFuncT_TResult<T, TResult>> _eventListeners = new List<EventListenerFuncT_TResult<T, TResult>>();
         private readonly List<Object> _listenerObjects = new List<Object>();
-        private Func<TResult> _onRaised;
+        private Func<T, TResult> _onRaised;
 
-        public event Func<TResult> OnRaised
+        public override Type GetGenericType => typeof(T);
+
+        public event Func<T, TResult> OnRaised
         {
             add
             {
@@ -34,17 +38,17 @@ namespace Pancake.Scriptable
             }
         }
 
-        public TResult Raise()
+        public TResult Raise(T param)
         {
             TResult result = default;
             if (!Application.isPlaying) return result;
 
             for (int i = _eventListeners.Count - 1; i >= 0; i--)
             {
-                _eventListeners[i].OnEventRaised(this, debugLogEnabled);
+                _eventListeners[i].OnEventRaised(this, param, debugLogEnabled);
             }
 
-            if (_onRaised != null) result = _onRaised.Invoke();
+            if (_onRaised != null) result = _onRaised.Invoke(param);
 
             // As this uses reflection, I only allow it to be called in Editor. So you need remember turnoff debug when build
             if (debugLogEnabled) Debug();
@@ -52,12 +56,12 @@ namespace Pancake.Scriptable
             return result;
         }
 
-        public void RegisterListener(EventListenerFunc<TResult> listener)
+        public void RegisterListener(EventListenerFuncT_TResult<T, TResult> listener)
         {
             if (!_eventListeners.Contains(listener)) _eventListeners.Add(listener);
         }
 
-        public void UnregisterListener(EventListenerFunc<TResult> listener)
+        public void UnregisterListener(EventListenerFuncT_TResult<T, TResult> listener)
         {
             if (_eventListeners.Contains(listener)) _eventListeners.Remove(listener);
         }
@@ -68,7 +72,7 @@ namespace Pancake.Scriptable
             allObjects.AddRange(_listenerObjects);
             return allObjects;
         }
-        
+
         private void Debug()
         {
             var delegates = _onRaised.GetInvocationList();

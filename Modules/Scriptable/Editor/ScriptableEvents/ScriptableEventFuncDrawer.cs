@@ -7,11 +7,10 @@ using UnityEngine;
 
 namespace Pancake.ScriptableEditor
 {
-    [CustomEditor(typeof(ScriptableEventBase), true)]
-    public class ScriptableEventGenericDrawer : UnityEditor.Editor
+    [CustomEditor(typeof(ScriptableEventFunc<>), true)]
+    public class ScriptableEventFuncDrawer : UnityEditor.Editor
     {
         private MethodInfo _methodInfo;
-        private ScriptableEventBase _scriptableEventBase;
 
         private void OnEnable() { _methodInfo = target.GetType().BaseType.GetMethod("Raise", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public); }
 
@@ -19,19 +18,10 @@ namespace Pancake.ScriptableEditor
         {
             DrawDefaultInspector();
 
-            if (_scriptableEventBase == null) _scriptableEventBase = target as ScriptableEventBase;
-            var genericType = _scriptableEventBase.GetGenericType;
-            if (!EditorExtend.IsSerializable(genericType))
-            {
-                EditorExtend.DrawSerializationError(genericType);
-                return;
-            }
-
             GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Raise"))
             {
-                var property = serializedObject.FindProperty("debugValue");
-                _methodInfo.Invoke(target, new[] {GetDebugValue(property)});
+                _methodInfo.Invoke(target, null);
             }
 
             GUI.enabled = true;
@@ -55,13 +45,6 @@ namespace Pancake.ScriptableEditor
             foreach (var obj in objects)
                 Uniform.DrawSelectableObject(obj, new[] {obj.name, "Select"});
             GUILayout.EndVertical();
-        }
-
-        private object GetDebugValue(SerializedProperty property)
-        {
-            var targetType = property.serializedObject.targetObject.GetType();
-            var targetField = targetType.GetField("debugValue", BindingFlags.Instance | BindingFlags.NonPublic);
-            return targetField.GetValue(property.serializedObject.targetObject);
         }
     }
 }

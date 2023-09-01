@@ -6,7 +6,7 @@ namespace Pancake.IAP
 
     [EditorIcon("scriptable_event")]
     [CreateAssetMenu(fileName = "iap_func_product_chanel.asset", menuName = "Pancake/IAP/Func Product Event")]
-    public class ScriptableEventIAPFuncProduct : ScriptableEventFunc<IAPDataVariable, bool>
+    public class ScriptableEventIAPFuncProduct : ScriptableEventFuncT_TResult<IAPDataVariable, bool>
     {
     }
 }

@@ -5,20 +5,23 @@ using UnityEngine.Events;
 namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_event_listener")]
-    public abstract class EventListenerFunc<TResult> : EventListenerBase
+    // ReSharper disable once InconsistentNaming
+    public abstract class EventListenerFuncT_TResult<T, TResult> : EventListenerBase
     {
         [System.Serializable]
-        public class EventResponse<TR>
+        public class EventResponse<TV, TR>
         {
-            public virtual ScriptableEventFunc<TR> ScriptableEvent { get; }
-            public virtual UnityEvent Response { get; }
+            public virtual ScriptableEventFuncT_TResult<TV, TR> ScriptableEvent { get; }
+            public virtual UnityEvent<TV> Response { get; }
         }
-        protected virtual EventResponse<TResult>[] EventResponses { get; }
-        private readonly Dictionary<ScriptableEventFunc<TResult>, UnityEvent> _dictionary = new Dictionary<ScriptableEventFunc<TResult>, UnityEvent>();
 
-        public void OnEventRaised(ScriptableEventFunc<TResult> scriptableEvent, bool debug = false)
+        protected virtual EventResponse<T, TResult>[] EventResponses { get; }
+
+        private readonly Dictionary<ScriptableEventFuncT_TResult<T, TResult>, UnityEvent<T>> _dictionary = new Dictionary<ScriptableEventFuncT_TResult<T, TResult>, UnityEvent<T>>();
+
+        public void OnEventRaised(ScriptableEventFuncT_TResult<T, TResult> scriptableEvent, T param, bool debug = false)
         {
-            _dictionary[scriptableEvent]?.Invoke();
+            _dictionary[scriptableEvent]?.Invoke(param);
             if (debug) Debug(scriptableEvent);
         }
 
@@ -64,8 +67,8 @@ namespace Pancake.Scriptable
 
             return containsMethod;
         }
-        
-        private void Debug(ScriptableEventFunc<TResult> eventRaised)
+
+        private void Debug(ScriptableEventFuncT_TResult<T, TResult> eventRaised)
         {
             var listener = _dictionary[eventRaised];
             var registeredListenerCount = listener.GetPersistentEventCount();
