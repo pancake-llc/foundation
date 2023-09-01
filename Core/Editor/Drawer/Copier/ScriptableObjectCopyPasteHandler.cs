@@ -16,18 +16,12 @@ namespace PancakeEditor
 
         #region Copy Methods
 
-        [MenuItem("Assets/Copy ScriptableObject", true), MenuItem("CONTEXT/ScriptableObject/Copy", true)]
+        [MenuItem("CONTEXT/ScriptableObject/Copy", true)]
         public static bool ValidateCopy()
         {
             return Selection.activeObject is ScriptableObject && Selection.objects.Length == 1;
         }
-
-        [MenuItem("Assets/Copy ScriptableObject")]
-        public static void Copy()
-        {
-            copiedObject = Selection.activeObject;
-        }
-
+        
         [MenuItem("CONTEXT/ScriptableObject/Copy")]
         private static void Copy(MenuCommand command) => Copy(command.context);
 
@@ -41,8 +35,7 @@ namespace PancakeEditor
 
         #region Paste Methods
 
-        [MenuItem("Assets/Paste ScriptableObject", true)]
-        public static bool ValidatePaste()
+        private static bool ValidatePaste()
         {
             if (copiedObject == null) return false;
 
@@ -60,15 +53,8 @@ namespace PancakeEditor
         [MenuItem("CONTEXT/ScriptableObject/Paste", true)]
         private static bool ValidatePaste(MenuCommand command) => ValidatePaste();
 
-
-        [MenuItem("Assets/Paste ScriptableObject")]
-        public static void Paste()
-        {
-            ScriptableObjectCopyPasteWindow.OpenWindow(copiedObject as ScriptableObject);
-        }
-
         [MenuItem("CONTEXT/ScriptableObject/Paste")]
-        private static void Paste(MenuCommand command) => Paste();
+        private static void Paste(MenuCommand command) => ScriptableObjectCopyPasteWindow.OpenWindow(copiedObject as ScriptableObject);
 
         [UnityEngine.ContextMenu("Paste")]
         public static void Paste(Object unityObject)

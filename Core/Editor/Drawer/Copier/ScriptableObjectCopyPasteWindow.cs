@@ -32,12 +32,6 @@ namespace PancakeEditor
             instance.Show();
         }
 
-        [MenuItem("Tools/ScriptableObject Field Copier")]
-        public static void OpenWindow()
-        {
-            OpenWindow(Selection.activeObject is ScriptableObject ? Selection.activeObject : null);
-        }
-
         private void OnEnable()
         {
             ListFields();
