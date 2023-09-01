@@ -15,7 +15,9 @@ namespace Pancake.LevelSystem
     {
         [SerializeField] private string id = "normal";
         [SerializeField] private IntVariable currentLevelIndex;
-        [SerializeField] private ScriptableEventLevel eventGetLevel;
+        [SerializeField] private ScriptableEventLoadLevel eventLoadLevel;
+        [SerializeField] private ScriptableEventGetLevelCached eventGetNextLevelLoaded;
+        [SerializeField] private ScriptableEventGetLevelCached eventGetPreviousLevelLoaded;
         [SerializeField] private ELoopType loopType = ELoopType.Shuffle;
         [HorizontalLine(Space = 10)] [SerializeField, Array] private LevelSetting[] levelSettings;
 
@@ -37,7 +39,6 @@ namespace Pancake.LevelSystem
             _typeMappingOfSegment.Clear();
 
             _totalLevel = levelSettings.Filter(s => s).Distinct(s => s.LevelType.Value).Sum(s => s.TotalLevel);
-            
             foreach (var levelSetting in levelSettings)
             {
                 _segmentLength += levelSetting.NumberInSegment;
@@ -50,12 +51,14 @@ namespace Pancake.LevelSystem
 
             CheckCacheLevel(currentLevelIndex.Value);
 #if PANCAKE_ADDRESSABLE
-            eventGetLevel.OnRaised += GetLevel;
+            eventLoadLevel.OnRaised += LoadLevel;
+            eventGetNextLevelLoaded.OnRaised += GetNextLevel;
+            eventGetPreviousLevelLoaded.OnRaised += GetPreviousLevel;
 #endif
         }
 
 #if PANCAKE_ADDRESSABLE
-        private async UniTask<LevelComponent> GetLevel(int currentLevelIndex)
+        private async UniTask<LevelComponent> LoadLevel(int currentLevelIndex)
         {
             int indexInSegment = currentLevelIndex % _segmentLength;
             int indexSegment = currentLevelIndex / _segmentLength;
@@ -83,13 +86,21 @@ namespace Pancake.LevelSystem
                     }
 
                     var result = await Addressables.LoadAssetAsync<GameObject>(string.Format(setting.Schema, setting.CacheLevels[index] + 1));
-                    return result.GetComponent<LevelComponent>();
+                    if (nextLevelLoaded != null) previousLevelLoaded = nextLevelLoaded;
+                    nextLevelLoaded = result.GetComponent<LevelComponent>();
+                    return nextLevelLoaded;
                 }
             }
 
             var obj = await Addressables.LoadAssetAsync<GameObject>(string.Format(setting.Schema, index + 1));
-            return obj.GetComponent<LevelComponent>();
+            if (nextLevelLoaded != null) previousLevelLoaded = nextLevelLoaded;
+            nextLevelLoaded = obj.GetComponent<LevelComponent>();
+            return nextLevelLoaded;
         }
+        
+        private LevelComponent GetNextLevel() => nextLevelLoaded;
+        
+        private LevelComponent GetPreviousLevel() => previousLevelLoaded;
 #endif
 
         private void CheckCacheLevel(int currentLevelIndex)
