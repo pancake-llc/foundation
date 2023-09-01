@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using Pancake.ExLib;
+using RedBlueGames.MulliganRenamer;
 using UnityEditor;
 using UnityEngine;
 
@@ -56,6 +57,9 @@ namespace PancakeEditor
             Menu.SetChecked("Tools/Fast Play Mode", EditorSettings.enterPlayModeOptionsEnabled);
             return true;
         }
+
+        [MenuItem("Tools/Pancake/Mulligan Renamer", false)]
+        private static void MulliganRenamer() { EditorWindow.GetWindow<MulliganRenamerWindow>(false, "Mulligan Renamer", true); }
 
         #endregion
 
