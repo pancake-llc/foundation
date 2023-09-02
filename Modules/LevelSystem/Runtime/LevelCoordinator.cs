@@ -88,6 +88,7 @@ namespace Pancake.LevelSystem
                     var result = await Addressables.LoadAssetAsync<GameObject>(string.Format(setting.Schema, setting.CacheLevels[index] + 1));
                     if (nextLevelLoaded != null) previousLevelLoaded = nextLevelLoaded;
                     nextLevelLoaded = result.GetComponent<LevelComponent>();
+                    nextLevelLoaded.Init(setting.CacheLevels[index] + 1, currentLevelIndex); // write into prefab
                     return nextLevelLoaded;
                 }
             }
@@ -95,6 +96,7 @@ namespace Pancake.LevelSystem
             var obj = await Addressables.LoadAssetAsync<GameObject>(string.Format(setting.Schema, index + 1));
             if (nextLevelLoaded != null) previousLevelLoaded = nextLevelLoaded;
             nextLevelLoaded = obj.GetComponent<LevelComponent>();
+            nextLevelLoaded.Init(index + 1, currentLevelIndex); // write into prefab
             return nextLevelLoaded;
         }
         
