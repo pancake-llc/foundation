@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Pancake.Scriptable;
+﻿using Pancake.Scriptable;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Pancake.LevelSystem
 {
