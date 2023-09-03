@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Pancake.LevelSystem
 {
     [HideMonoScript]
-    public class LevelComponent : GameComponent
+    public abstract class LevelComponent : GameComponent
     {
         [SerializeField, HideInEditorMode, ReadOnly] protected int originLevelIndex;
         [SerializeField, HideInEditorMode, ReadOnly] protected int currentLevelIndex;
@@ -25,13 +25,10 @@ namespace Pancake.LevelSystem
             this.currentLevelIndex = currentLevelIndex;
         }
 
-        protected virtual void OnSkipLevel() { }
-
-        protected virtual void OnReplayLevel() { }
-
-        protected virtual void OnLoseLevel() { }
-
-        protected virtual void OnWinLevel() { }
+        protected abstract void OnSkipLevel();
+        protected abstract void OnReplayLevel();
+        protected abstract void OnLoseLevel();
+        protected abstract void OnWinLevel();
 
         protected virtual void OnSpawned()
         {
@@ -57,7 +54,17 @@ namespace Pancake.LevelSystem
 #if UNITY_EDITOR
 
         [Button]
-        private void PlayThisLevel() { }
+        private void PlayThisLevel()
+        {
+            LevelDebug.IsTest = true;
+            LevelDebug.PathLevelPrefab =  UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.Selection.activeGameObject);
+            if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            {
+                string path = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(0);
+                UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Single);
+                UnityEditor.EditorApplication.isPlaying = true;
+            }
+        }
 #endif
     }
 }

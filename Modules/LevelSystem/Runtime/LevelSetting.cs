@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
@@ -7,6 +6,7 @@ using UnityEngine;
 namespace Pancake.LevelSystem
 {
     [Searchable]
+    [HideMonoScript]
     [EditorIcon("scriptable_setting")]
     [CreateAssetMenu(fileName = "level_setting.asset", menuName = "Pancake/Misc/Level System/Setting")]
     public class LevelSetting : ScriptableObject
