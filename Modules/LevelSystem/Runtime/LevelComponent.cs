@@ -1,9 +1,5 @@
-﻿using System;
-using Pancake.Apex;
+﻿using Pancake.Apex;
 using Pancake.Scriptable;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 using UnityEngine;
 
 namespace Pancake.LevelSystem
