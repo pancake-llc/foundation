@@ -8,7 +8,7 @@ namespace Pancake.Monetization
     /// </summary>
     [Searchable]
     
-    [CreateAssetMenu(fileName = "ad_inter_unit_wrapper.asset", menuName = "Pancake/Misc/Advertising/Inter Variable Wrapper")]
+    [CreateAssetMenu(fileName = "ad_inter_unit_wrapper.asset", menuName = "Pancake/Misc/Advertising/Inter Variable Wrapper", order = 2)]
     [EditorIcon("scriptable_bind")]
     public class InterVariable : ScriptableObject
     {

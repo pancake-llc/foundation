@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     /// Wrapper class
     /// </summary>
     [Searchable]
-    [CreateAssetMenu(fileName = "ad_appopen_unit_wrapper.asset", menuName = "Pancake/Misc/Advertising/App Open Variable Wrapper")]
+    [CreateAssetMenu(fileName = "ad_appopen_unit_wrapper.asset", menuName = "Pancake/Misc/Advertising/App Open Variable Wrapper", order = 0)]
     [EditorIcon("scriptable_bind")]
     public class AppOpenVariable : ScriptableObject
     {
