@@ -33,7 +33,7 @@ namespace PrimeTween {
                     // waitFor serves two purposes:
                     // 1. Work around the limitation of one onComplete callback by wrapping the tween inside a new tween with waitFor dependency.
                     // 2. If tween is stopped manually, onComplete callback will not be executed.
-                    waitFor(tween).OnComplete(continuation);
+                    waitFor(tween).tween.OnComplete(continuation, true);
                 } catch (Exception e) {
                     Debug.LogException(e);
                     throw;

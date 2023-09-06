@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PrimeTween {
     /// Global PrimeTween configuration.
     [PublicAPI]
-    public static class PrimeTweenConfig {
+    public static partial class PrimeTweenConfig {
         static PrimeTweenManager Instance {
             get {
                 #if UNITY_EDITOR
@@ -49,10 +49,6 @@ namespace PrimeTween {
         
         public static bool warnTweenOnDisabledTarget {
             set => Instance.warnTweenOnDisabledTarget = value;
-        }
-        
-        public static bool warnDestroyedTweenHasOnComplete {
-            set => Instance.warnDestroyedTweenHasOnComplete = value;
         }
         
         public static bool warnZeroDuration {

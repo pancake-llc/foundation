@@ -156,20 +156,20 @@ namespace PrimeTween {
         }
 
         /// <summary>Schedules <see cref="callback"/> after all previously added tweens.</summary>
-        public Sequence ChainCallback([NotNull] Action callback) {
-            var delay = PrimeTweenManager.createEmpty()
-                .OnComplete(callback);
+        public Sequence ChainCallback([NotNull] Action callback, bool warnIfTargetDestroyed = true) {
+            var delay = PrimeTweenManager.createEmpty();
+            delay.tween.OnComplete(callback, warnIfTargetDestroyed);
             return Chain(delay);
         }
 
         /// <summary>Schedules <see cref="callback"/> after all previously added tweens. Passing 'target' allows to write a non-allocating callback.</summary>
-        public Sequence ChainCallback<T>([NotNull] T target, [NotNull] Action<T> callback) where T: class {
+        public Sequence ChainCallback<T>([NotNull] T target, [NotNull] Action<T> callback, bool warnIfTargetDestroyed = true) where T: class {
             var maybeDelay = PrimeTweenManager.delayWithoutDurationCheck(target, 0, false);
             if (!maybeDelay.HasValue) {
                 return this;
             }
             var delay = maybeDelay.Value;
-            delay.OnComplete(target, callback);
+            delay.tween.OnComplete(target, callback, warnIfTargetDestroyed);
             return Chain(delay);
         }
 
@@ -275,7 +275,7 @@ namespace PrimeTween {
             }
         }
 
-        /// Completes the current sequence cycle: completes all 'alive' tweens in the Sequence and invokes all remaining callbacks in the current cycle.
+        /// Immediately completes the current sequence cycle: completes all 'alive' tweens in the Sequence and invokes all remaining callbacks. Remaining sequence cycles are ignored.
         public void Complete() {
             if (isAlive) {
                 tryRemoveFromSequenceHierarchy();
@@ -318,7 +318,7 @@ namespace PrimeTween {
         internal void emergencyStop() {
             Assert.IsTrue(isAlive);
             releaseTweens(t => {
-                t.warnOnCompleteIgnored(LogType.Warning, false);
+                t.warnOnCompleteIgnored(false);
                 t.kill();
             });
         }

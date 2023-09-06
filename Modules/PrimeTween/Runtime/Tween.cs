@@ -103,7 +103,7 @@ namespace PrimeTween {
             }
         }
 
-        /// Sets the tween to the endValue and calls onComplete.
+        /// Immediately sets the tween to the endValue and calls onComplete.
         public void Complete() {
             // don't warn that tween is dead because dead tween means that it's already 'completed'
             if (isAlive && tween.tryManipulate()) { 
@@ -145,23 +145,25 @@ namespace PrimeTween {
         }
 
         /// <summary>Adds completion callback. Please consider using <see cref="OnComplete{T}"/> to prevent a possible capture of variable into a closure.</summary>
-        public Tween OnComplete([NotNull] Action onComplete) {
+        /// <param name="warnIfTargetDestroyed">Set to 'false' to disable the error about target's destruction. Please note that the the <see cref="onComplete"/> callback will be silently ignored in the case of target's destruction. More info: https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
+        public Tween OnComplete([NotNull] Action onComplete, bool warnIfTargetDestroyed = true) {
             if (canAddOnComplete()) {
-                tween.OnComplete(onComplete);
+                tween.OnComplete(onComplete, warnIfTargetDestroyed);
             }
             return this;
         }
 
         /// <summary>Adds completion callback.</summary>
+        /// <param name="warnIfTargetDestroyed">Set to 'false' to disable the error about target's destruction. Please note that the the <see cref="onComplete"/> callback will be silently ignored in the case of target's destruction. More info: https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
         /// <example>The example shows how to destroy the object after the completion of a tween.
         /// Please note: we're using the '_transform' variable from the onComplete callback to prevent garbage allocation. Using the 'transform' variable directly will capture it into a closure and generate garbage.
         /// <code>
         /// Tween.PositionX(transform, endValue: 1.5f, duration: 1f)
         ///     .OnComplete(transform, _transform =&gt; Destroy(_transform.gameObject));
         /// </code></example>
-        public Tween OnComplete<T>([NotNull] T target, [NotNull] Action<T> onComplete) where T : class {
+        public Tween OnComplete<T>([NotNull] T target, [NotNull] Action<T> onComplete, bool warnIfTargetDestroyed = true) where T : class {
             if (canAddOnComplete()) {
-                tween.OnComplete(target, onComplete);
+                tween.OnComplete(target, onComplete, warnIfTargetDestroyed);
             }
             return this;
         }

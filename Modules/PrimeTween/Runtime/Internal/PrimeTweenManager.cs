@@ -37,7 +37,6 @@ namespace PrimeTween {
         internal Ease defaultEase = Ease.OutQuad;
         internal const Ease defaultShakeEase = Ease.OutSine;
         internal bool warnTweenOnDisabledTarget = true;
-        internal bool warnDestroyedTweenHasOnComplete = true;
         internal bool warnZeroDuration = true;
         internal bool warnStructBoxingAllocationInCoroutine = true;
         internal bool validateCustomCurves = true;

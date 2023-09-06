@@ -57,6 +57,7 @@ namespace PrimeTween {
         internal bool isInterpolationCompleted;
         internal readonly TweenCoroutineEnumerator coroutineEnumerator = new TweenCoroutineEnumerator();
         internal float timeScale = 1;
+        bool warnIgnoredOnCompleteIfTargetDestroyed = true;
 
         internal bool updateAndCheckIfRunning(float dt) {
             dt *= timeScale;
@@ -80,7 +81,7 @@ namespace PrimeTween {
                 return isRunning;
             }
             if (isUnityTargetDestroyed()) {
-                warnOnCompleteIgnored(LogType.Warning, true);
+                warnOnCompleteIgnored(true);
                 // No need to warn that target was destroyed during animation, this is normal.
                 // 'target' is the tween's 'owner' so tweens should be tied to the target's lifetime.
                 EmergencyStop();
@@ -196,11 +197,13 @@ namespace PrimeTween {
             coroutineEnumerator.resetEnumerator();
             tweenType = TweenType.None;
             timeScale = 1;
+            warnIgnoredOnCompleteIfTargetDestroyed = true;
         }
 
-        internal void OnComplete([NotNull] Action _onComplete) {
+        internal void OnComplete([NotNull] Action _onComplete, bool warnIfTargetDestroyed) {
             Assert.IsNotNull(_onComplete);
             validateOnCompleteAssignment();
+            warnIgnoredOnCompleteIfTargetDestroyed = warnIfTargetDestroyed;
             onCompleteCallback = _onComplete;
             onComplete = tween => {
                 var callback = tween.onCompleteCallback as Action;
@@ -213,13 +216,14 @@ namespace PrimeTween {
             };
         }
 
-        internal void OnComplete<T>([NotNull] T _target, [NotNull] Action<T> _onComplete) where T : class {
+        internal void OnComplete<T>([NotNull] T _target, [NotNull] Action<T> _onComplete, bool warnIfTargetDestroyed) where T : class {
             if (isDestroyedUnityObject(_target)) {
-                Debug.LogError(Constants.onCompleteTargetDestroyed);
+                Debug.LogError(Constants.isDeadMessage);
                 return;
             }
             Assert.IsNotNull(_onComplete);
             validateOnCompleteAssignment();
+            warnIgnoredOnCompleteIfTargetDestroyed = warnIfTargetDestroyed;
             onCompleteTarget = _target;
             onCompleteCallback = _onComplete;
             onComplete = tween => {
@@ -227,7 +231,7 @@ namespace PrimeTween {
                 Assert.IsNotNull(callback);
                 var _onCompleteTarget = tween.onCompleteTarget as T;
                 if (isDestroyedUnityObject(_onCompleteTarget)) {
-                    tween.warnOnCompleteIgnored(LogType.Warning, true);
+                    tween.warnOnCompleteIgnored(true);
                     return;
                 }
                 try {
@@ -242,7 +246,7 @@ namespace PrimeTween {
 
         void validateOnCompleteAssignment() {
             const string msg = "Tween already has an onComplete callback. Adding more callbacks is not allowed.\n" +
-                               "Workaround: add tween to Sequence and use ChainCallback().\n";
+                               "Workaround: wrap a tween in a Sequence by calling Sequence.Create(tween) and use multiple ChainCallback().\n";
             Assert.IsNull(onCompleteTarget, msg);
             Assert.IsNull(onCompleteCallback, msg);
             Assert.IsNull(onComplete, msg);
@@ -313,7 +317,7 @@ namespace PrimeTween {
             easedInterpolationFactor = calcEasedT(_interpolationFactor);
             onValueChange(this);
             if (stoppedEmergently) {
-                warnOnCompleteIgnored(LogType.Error, false);
+                warnOnCompleteIgnored(false);
                 return false;
             }
             return true;
@@ -338,7 +342,7 @@ namespace PrimeTween {
         internal bool warnIfTargetDestroyed() {
             if (isUnityTargetDestroyed()) {
                 Debug.LogWarning($"{Constants.targetDestroyed} Tween: {GetDescription()}");
-                warnOnCompleteIgnored(LogType.Warning, true);
+                warnOnCompleteIgnored(true);
                 return true;
             }
             return false;
@@ -502,15 +506,15 @@ namespace PrimeTween {
             Assert.IsTrue(sequence.IsCreated || !_isAlive);
         }
 
-        internal void warnOnCompleteIgnored(LogType logType, bool isTargetDestroyed) {
-            if (HasOnComplete && PrimeTweenManager.Instance.warnDestroyedTweenHasOnComplete) {
+        internal void warnOnCompleteIgnored(bool isTargetDestroyed) {
+            if (HasOnComplete && warnIgnoredOnCompleteIfTargetDestroyed) {
                 onComplete = null;
                 var msg = $"{Constants.onCompleteCallbackIgnored} Tween: {GetDescription()}.\n";
                 if (isTargetDestroyed) {
-                    msg += $"To prevent this warning, please {nameof(Tween.Stop)}/{nameof(Tween.Complete)}() the tween/sequence manually before destroying the target.\n" +
-                           $"{Constants.buildWarningCanBeDisabledMessage(nameof(PrimeTweenManager.warnDestroyedTweenHasOnComplete))}\n";
+                    msg += "\nIf you use tween.OnComplete(), Tween.Delay(), or sequence.ChainDelay() only for cosmetic purposes, you can turn off this error by passing 'warnIfTargetDestroyed: false' to the method.\n" +
+                           "More info: https://github.com/KyryloKuzyk/PrimeTween/discussions/4\n";
                 }
-                Debug.unityLogger.Log(logType, (object)msg, unityTarget);
+                Debug.LogError(msg, unityTarget);
             }
         }
 

@@ -4,8 +4,7 @@ using T = PrimeTween.TweenSettings<float>;
 
 namespace PrimeTween {
     internal static class Constants {
-        internal const string onCompleteCallbackIgnored = "Tween's onComplete callback was ignored.";
-        internal const string onCompleteTargetDestroyed = "OnComplete target has been destroyed.";
+        internal const string onCompleteCallbackIgnored = "Tween's " + nameof(Tween.OnComplete) + " callback was ignored.";
         internal const string targetDestroyed = "Tween's target has been destroyed.";
         internal const string durationInvalidError = "Tween's duration is invalid.";
 
@@ -50,7 +49,7 @@ namespace PrimeTween {
         internal static bool warnNoInstance {
             get {
                 if (noInstance) {
-                    UnityEngine.Debug.LogWarning(editModeWarning);
+                    Debug.LogWarning(editModeWarning);
                     return true;
                 }
                 return false;
