@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_IAP
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Purchasing;
+
 
 namespace Pancake.IAPEditor
 {
@@ -62,6 +64,7 @@ namespace Pancake.IAPEditor
             EditorGUILayout.PropertyField(_productsProperty, new GUIContent("Product"));
             GUI.enabled = true;
             GUILayout.Space(20);
+
             if (GUILayout.Button("Generate Product From Sku", GUILayout.Height(24)))
             {
                 const string p = "Assets/_Root/Storages/Generated/IAP";
@@ -421,3 +424,4 @@ namespace Pancake.IAPEditor
         }
     }
 }
+#endif

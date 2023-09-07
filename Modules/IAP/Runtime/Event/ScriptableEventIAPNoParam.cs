@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PANCAKE_IAP
+using System;
 using System.Collections.Generic;
 using Pancake.Scriptable;
 using UnityEngine;
@@ -66,3 +67,4 @@ namespace Pancake.IAP
         }
     }
 }
+#endif

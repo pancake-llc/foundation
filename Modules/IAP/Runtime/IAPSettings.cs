@@ -1,7 +1,9 @@
+#if PANCAKE_IAP
 using System.Collections.Generic;
 using Pancake.Apex;
 using UnityEngine;
 using System;
+
 using UnityEngine.Purchasing;
 
 
@@ -29,3 +31,4 @@ namespace Pancake.IAP
         public List<IAPDataVariable> Products => products;
     }
 }
+#endif

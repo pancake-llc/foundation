@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#if PANCAKE_IAP
+using System;
+using System.Collections.Generic;
 using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.Events;
@@ -49,7 +51,7 @@ namespace Pancake.IAP
                         debugText += " is called by the event: <color=#f75369>";
                         debugText += eventResponse.ScriptableEvent.name;
                         debugText += "</color>";
-                        UnityEngine.Debug.Log(debugText, gameObject);
+                        Debug.Log(debugText, gameObject);
                         containsMethod = true;
                         break;
                     }
@@ -60,7 +62,7 @@ namespace Pancake.IAP
         }
 
 
-        [System.Serializable]
+        [Serializable]
         public struct EventResponse
         {
             public ScriptableEventIAPNoParam ScriptableEvent;
@@ -68,3 +70,4 @@ namespace Pancake.IAP
         }
     }
 }
+#endif

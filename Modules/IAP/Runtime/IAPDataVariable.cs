@@ -1,3 +1,4 @@
+#if PANCAKE_IAP
 using System;
 using Pancake.Apex;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace Pancake.IAP
 {
     [EditorIcon("scriptable_variable")]
     [CreateAssetMenu(fileName = "scriptable_variable_IAPData.asset", menuName = "Pancake/IAP/Scriptable IAPData")]
-    [System.Serializable]
+    [Serializable]
     [HideMonoScript]
     public class IAPDataVariable : ScriptableObject
     {
@@ -25,3 +26,4 @@ namespace Pancake.IAP
         [NonSerialized] public Action purchaseFailedCallback;
     }
 }
+#endif

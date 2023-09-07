@@ -1,3 +1,5 @@
+#if PANCAKE_IAP
+using System;
 using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,7 +14,7 @@ namespace Pancake.IAP
         [SerializeField] private EventResponse[] eventResponses;
         protected override EventResponse<IAPDataVariable>[] EventResponses => eventResponses;
 
-        [System.Serializable]
+        [Serializable]
         public class EventResponse : EventResponse<IAPDataVariable>
         {
             [SerializeField] private ScriptableEventIAPProduct scriptableEvent = null;
@@ -22,9 +24,10 @@ namespace Pancake.IAP
             public override UnityEvent<IAPDataVariable> Response => response;
         }
 
-        [System.Serializable]
+        [Serializable]
         public class IAPProductUnityEvent : UnityEvent<IAPDataVariable>
         {
         }
     }
 }
+#endif

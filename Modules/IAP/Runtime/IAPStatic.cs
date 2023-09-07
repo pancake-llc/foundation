@@ -1,3 +1,4 @@
+#if PANCAKE_IAP
 using System;
 using Pancake.Scriptable;
 
@@ -50,3 +51,4 @@ namespace Pancake.IAP
         public static void RestorePurchase(this ScriptableEventIAPNoParam @event) { @event.Raise(); }
     }
 }
+#endif

@@ -14,13 +14,11 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "PANCAKE_IAP"
-    ],
+    "defineConstraints": [],
     "versionDefines": [
         {
             "name": "com.unity.purchasing",
-            "expression": "4.5.2",
+            "expression": "4.8.0",
             "define": "PANCAKE_IAP"
         }
     ],

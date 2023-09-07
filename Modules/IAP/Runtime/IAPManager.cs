@@ -1,3 +1,4 @@
+#if PANCAKE_IAP
 using System;
 using System.Collections.Generic;
 using Pancake.Apex;
@@ -218,3 +219,4 @@ namespace Pancake.IAP
 #endif
     }
 }
+#endif
