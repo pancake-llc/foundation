@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Pancake.ExLibEditor;
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ScriptableEditor
 {
@@ -73,8 +75,17 @@ namespace Pancake.ScriptableEditor
             GUILayout.BeginVertical(title, "window");
             foreach (var obj in objects)
             {
-                var text = $"{obj.name}  ({obj.GetType().Name})";
-                Uniform.DrawSelectableObject(obj, new[] {text, "Select"});
+                try
+                {
+                    if (obj == null) continue;
+
+                    var text = $"{obj.name}  ({obj.GetType().Name})";
+                    Uniform.DrawSelectableObject(obj, new[] {text, "Select"});
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
 
             GUILayout.EndVertical();
