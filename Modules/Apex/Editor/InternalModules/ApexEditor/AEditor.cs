@@ -44,7 +44,14 @@ namespace Pancake.ApexEditor
         /// </summary>
         protected virtual void OnEnable()
         {
-            if (serializedObject == null || serializedObject.targetObject == null)
+            try
+            {
+                if (serializedObject.targetObject == null)
+                {
+                    return;
+                }
+            }
+            catch (Exception)
             {
                 return;
             }
@@ -88,7 +95,7 @@ namespace Pancake.ApexEditor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            if (serializedObject != null && serializedObject.targetObject != null)
+            if (serializedObject.targetObject != null)
             {
                 if (defaultEditor)
                 {
@@ -225,12 +232,19 @@ namespace Pancake.ApexEditor
         /// </summary>
         private void SafeInvokeInspectorDispose()
         {
-            if (serializedObject.targetObject != null && onInspectorDisposeCalls != null)
+            try
             {
-                for (int i = 0; i < onInspectorDisposeCalls.Count; i++)
+                if (serializedObject.targetObject != null && onInspectorDisposeCalls != null)
                 {
-                    onInspectorDisposeCalls[i].Invoke();
+                    for (int i = 0; i < onInspectorDisposeCalls.Count; i++)
+                    {
+                        onInspectorDisposeCalls[i].Invoke();
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                // ignored
             }
         }
 
