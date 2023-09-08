@@ -141,6 +141,9 @@ namespace Pancake.Scriptable
         private void OnDisable()
         {
             if (resetOn == ResetType.SceneLoaded) SceneManager.sceneLoaded -= OnSceneLoaded;
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+#endif
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

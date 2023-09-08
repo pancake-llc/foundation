@@ -20,4 +20,10 @@ namespace Pancake
         WaitForFixedUpdate = 3,
         WaitForEndOfFrame = 4
     }
+
+    public enum ResetType
+    {
+        SceneLoaded,
+        ApplicationStarts,
+    }
 }

@@ -1,5 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Pancake
 {
@@ -11,6 +15,9 @@ namespace Pancake
     public abstract class ScriptablePool<T> : ScriptableObject, IPool<T>
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
+
+        [Tooltip("Reset flag IsPrewarmed." + " Scene Loaded : when the scene is loaded." + " Application Start : Once, when the application starts.")] [SerializeField]
+        private ResetType resetOn = ResetType.SceneLoaded;
 
         /// <summary>
         /// The factory which will be used to create <typeparamref name="T"/> on demand.
@@ -83,10 +90,42 @@ namespace Pancake
 
         protected virtual T Create() { return Factory.Create(); }
 
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+#endif
+        }
+
+#if UNITY_EDITOR
+        private void OnPlayModeStateChanged(PlayModeStateChange stateChange)
+        {
+            switch (stateChange)
+            {
+                case PlayModeStateChange.ExitingEditMode:
+                case PlayModeStateChange.EnteredEditMode:
+                    IsPrewarmed = false;
+                    break;
+            }
+        }
+#endif
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (resetOn != ResetType.SceneLoaded) return;
+
+            if (mode == LoadSceneMode.Single) IsPrewarmed = false;
+        }
+
         public virtual void OnDisable()
         {
             container.Clear();
             IsPrewarmed = false;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+#endif
         }
     }
 }

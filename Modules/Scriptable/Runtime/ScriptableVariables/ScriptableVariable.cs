@@ -114,7 +114,13 @@ namespace Pancake.Scriptable
 #endif
         }
 
-        private void OnDisable() { SceneManager.sceneLoaded -= OnSceneLoaded; }
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+#endif
+        }
 
         protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
@@ -205,12 +211,6 @@ namespace Pancake.Scriptable
         public List<Object> GetAllObjects() => _listenersObjects;
 
         public static implicit operator T(ScriptableVariable<T> variable) => variable.Value;
-    }
-
-    public enum ResetType
-    {
-        SceneLoaded,
-        ApplicationStarts,
     }
 
     public enum CustomVariableType
