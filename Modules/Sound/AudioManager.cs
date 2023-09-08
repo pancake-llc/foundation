@@ -41,7 +41,10 @@ namespace Pancake.Sound
             musicVolume.OnValueChanged += OnMusicVolumeChanged;
         }
 
-        private void OnMusicVolumeChanged(float volume) { _music.component.volume = volume; }
+        private void OnMusicVolumeChanged(float volume)
+        {
+            if (_music != null) _music.component.volume = volume;
+        }
 
         private void OnSfxVolumeChanged(float volume)
         {
