@@ -189,7 +189,7 @@ namespace Pancake.Sound
             }
 
             _music = pool.Request();
-            _music.FadeMusicIn(audio.GetClips()[0], 0.2f, 1f, startTime);
+            _music.FadeMusicIn(audio.GetClips()[0], 0.2f, audio.volume * musicVolume.Value, startTime);
             _music.OnCompleted += StopMusicEmitter;
 
             return AudioHandle.invalid;
