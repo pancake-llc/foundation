@@ -19,7 +19,7 @@ namespace PancakeEditor
             
             if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(40f)))
             {
-                Application.OpenURL("https://github.com/pancake-llc/notification/wiki");
+                Application.OpenURL("https://github.com/pancake-llc/heart/wiki/notification");
             }
 
             EditorGUILayout.Space();
