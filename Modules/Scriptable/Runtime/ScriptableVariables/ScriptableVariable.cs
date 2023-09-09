@@ -14,7 +14,7 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_variable")]
     public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IDrawObjectsInInspector
     {
-        [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeReference]
+        [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeField]
         protected T value;
 
         [Tooltip("Log in the console whenever this variable is changed, loaded or saved.")] [SerializeField]
@@ -106,12 +106,12 @@ namespace Pancake.Scriptable
 
         private void OnEnable()
         {
-            Init();
-            SceneManager.sceneLoaded += OnSceneLoaded;
-
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+#else
+            Init();
 #endif
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void OnDisable()
@@ -177,7 +177,7 @@ namespace Pancake.Scriptable
             _listenersObjects.Clear();
         }
 
-        /// <summary> Reset to initial value or loads and clears the list</summary>
+        /// <summary> Reset to initial value</summary>
         public void ResetToInitialValue()
         {
             Value = _initialValue;

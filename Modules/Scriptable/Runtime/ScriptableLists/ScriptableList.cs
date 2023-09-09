@@ -15,7 +15,7 @@ namespace Pancake.Scriptable
         [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
 
-        [SerializeReference] protected List<T> list = new List<T>();
+        [SerializeField] protected List<T> list = new List<T>();
 
         public int Count => list.Count;
         public bool IsEmpty => list.Count == 0;
