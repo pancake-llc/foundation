@@ -27,7 +27,6 @@ internal class CodeGenerator : ScriptableObject {
 
         [NotNull]
         internal string Generate() {
-            // todo rotation by euler angles is non-cumulative. That is, spinning in one direction, then in the opposite may not restore the initial orientation 
             string result = @"
 #if PRIME_TWEEN_EXPERIMENTAL";
             foreach (var data in additiveMethods) {

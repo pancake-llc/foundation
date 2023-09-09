@@ -160,7 +160,7 @@ namespace PrimeTween {
         /// Internal because this API is hard to understand, but needed for adapter.</summary>
         internal Sequence ChainLast(Tween other) {
             Assert.IsTrue(IsCreated, Constants.defaultSequenceCtorError);
-            if (warnIfNotAlive()) {
+            if (!validateIsAlive()) {
                 return this;
             }
             return chain(other, getLastInSelf());

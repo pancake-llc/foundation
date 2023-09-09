@@ -5,7 +5,6 @@
 #define ENABLE_SERIALIZATION
 #endif
 using System;
-using System.ComponentModel;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -156,6 +155,7 @@ namespace PrimeTween {
         }
 
         /// <summary>Schedules <see cref="callback"/> after all previously added tweens.</summary>
+        /// <param name="warnIfTargetDestroyed">https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
         public Sequence ChainCallback([NotNull] Action callback, bool warnIfTargetDestroyed = true) {
             var delay = PrimeTweenManager.createEmpty();
             delay.tween.OnComplete(callback, warnIfTargetDestroyed);
@@ -163,6 +163,7 @@ namespace PrimeTween {
         }
 
         /// <summary>Schedules <see cref="callback"/> after all previously added tweens. Passing 'target' allows to write a non-allocating callback.</summary>
+        /// <param name="warnIfTargetDestroyed">https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
         public Sequence ChainCallback<T>([NotNull] T target, [NotNull] Action<T> callback, bool warnIfTargetDestroyed = true) where T: class {
             var maybeDelay = PrimeTweenManager.delayWithoutDurationCheck(target, 0, false);
             if (!maybeDelay.HasValue) {
@@ -173,7 +174,6 @@ namespace PrimeTween {
             return Chain(delay);
         }
 
-        // todo forbid setting useUnscaledTime on individual tweens in a sequence?
         /// <summary>Schedules delay after all previously added tweens.</summary>
         public Sequence ChainDelay(float _duration, bool useUnscaledTime = false) {
             return Chain(Tween.Delay(_duration, null, useUnscaledTime));

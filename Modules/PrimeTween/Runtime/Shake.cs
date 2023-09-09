@@ -135,9 +135,8 @@ namespace PrimeTween {
             if (settings.strength == Vector3.zero) {
                 Debug.LogWarning("Shake's strength is (0, 0, 0).");
             }
-            tween.shakeStrengthPerAxis = settings.strength;
-            tween.shakeFrequency = settings.frequency;
-            tween.shakeData.Setup(settings, tween);
+            tween.endValue.Reset(); // not used
+            tween.shakeData.Setup(settings);
         }
         
         static Vector3 getShakeVal([NotNull] ReusableTween tween) {
@@ -145,7 +144,7 @@ namespace PrimeTween {
             float calcFadeInOutFactor() {
                 var elapsedTime = tween.easedInterpolationFactor * tween.settings.duration;
                 Assert.IsTrue(elapsedTime >= 0f);
-                var oneShakeDuration = 1f / tween.shakeFrequency;
+                var oneShakeDuration = 1f / tween.shakeData.frequency;
                 var duration = tween.settings.duration;
                 var fadeoutStartTime = duration - oneShakeDuration;
                 if (elapsedTime > fadeoutStartTime) {
@@ -168,11 +167,15 @@ namespace PrimeTween {
             bool isPunch;
             const int disabledFalloff = -42;
             internal bool isAlive;
+            internal Vector3 strengthPerAxis;
+            internal float frequency;
 
-            internal void Setup(ShakeSettings settings, [NotNull] ReusableTween tween) {
+            internal void Setup(ShakeSettings settings) {
                 isAlive = true;
                 isPunch = settings.isPunch;
                 symmetryFactor = Mathf.Clamp01(1 - settings.asymmetry);
+                strengthPerAxis = settings.strength;
+                frequency = settings.frequency;
                 {
                     if (settings.enableFalloff) {
                         var _falloffEase = settings.falloffEase;
@@ -203,18 +206,18 @@ namespace PrimeTween {
                     }
                     easeBetweenShakes = _easeBetweenShakes;
                 }
-                onCycleComplete(tween);
+                onCycleComplete();
             }
 
             /// The initial velocity should twice as big because the first shake starts from zero (twice as short as total range).
             const float initialVelocityFactor = 2f;
             
-            internal void onCycleComplete([NotNull] ReusableTween tween) {
+            internal void onCycleComplete() {
                 if (!isAlive) {
                     return;
                 }
                 resetAfterCycle();
-                var strengthByAxis = tween.shakeStrengthPerAxis;
+                var strengthByAxis = strengthPerAxis;
                 if (isPunch) {
                     velocity = initialVelocityFactor;
                     to = strengthByAxis;
@@ -253,11 +256,11 @@ namespace PrimeTween {
                 var strengthOverTime = calcStrengthOverTime(interpolationFactor);
                 // handpicked formula that describes the relationship between strength and frequency
                 var frequencyFactor = Mathf.Clamp01(strengthOverTime * 3f);
-                t += tween.shakeFrequency * Mathf.Abs(velocity) * dt * frequencyFactor;
+                t += frequency * Mathf.Abs(velocity) * dt * frequencyFactor;
                 if (t >= 1f) {
                     t = 0f;
                     velocity = -Mathf.Sign(velocity);
-                    var strengthByAxis = tween.shakeStrengthPerAxis;
+                    var strengthByAxis = strengthPerAxis;
                     var mainAxisIndex = getMainAxisIndex(strengthByAxis);
                     for (int i = 0; i < 3; i++) {
                         from[i] = to[i];

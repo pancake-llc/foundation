@@ -41,6 +41,7 @@ namespace PrimeTween {
         internal bool warnStructBoxingAllocationInCoroutine = true;
         internal bool validateCustomCurves = true;
         int processedCount;
+        int updateDepth;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void beforeSceneLoad() {
@@ -119,7 +120,11 @@ namespace PrimeTween {
         ///     all tweens created in previous frames will already be updated before user's script Update() (if user's script execution order is greater than -2000). 
         /// 4. PrimeTweenManager.Update() completes the tween on frame N+(duration*targetFrameRate) given that targetFrameRate is stable.
         /// </summary>
-        void Update() {
+        internal void Update() {
+            if (updateDepth != 0) {
+                throw new Exception("Please don't call Tween.StopAll/CompleteAll() from the OnComplete() callback of from a custom animation");
+            }
+            updateDepth++;
             var deltaTime = Time.deltaTime;
             var unscaledDeltaTime = Time.unscaledDeltaTime;
             // onComplete and onValueChange can create new tweens. Cache count to process only those tweens that were present when the update started
@@ -154,6 +159,7 @@ namespace PrimeTween {
             Assert.IsTrue(tweens.Skip(oldCount - numRemoved).Take(numRemoved).All(_ => _ == null));
             Assert.IsTrue(tweens.Skip(oldCount).All(_ => _ != null));
             #endif
+            updateDepth--;
             if (numRemoved == 0) {
                 return;
             }
@@ -175,6 +181,7 @@ namespace PrimeTween {
         }
 
         void LateUpdate() {
+            updateDepth++;
             var cachedCount = tweens.Count;
             for (int i = processedCount; i < cachedCount; i++) {
                 var tween = tweens[i];
@@ -185,6 +192,7 @@ namespace PrimeTween {
                     tween.ReportOnValueChange(0);
                 }
             }
+            updateDepth--;
         }
 
         void releaseTweenToPool([NotNull] ReusableTween tween) {

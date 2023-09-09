@@ -134,7 +134,7 @@ namespace PrimeTween {
             if (settings.cycleMode == CycleMode.Incremental) {
                 increment();
             }
-            shakeData.onCycleComplete(this);
+            shakeData.onCycleComplete();
             isInterpolationCompleted = false;
         }
 
@@ -200,6 +200,7 @@ namespace PrimeTween {
             warnIgnoredOnCompleteIfTargetDestroyed = true;
         }
 
+        /// <param name="warnIfTargetDestroyed">https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
         internal void OnComplete([NotNull] Action _onComplete, bool warnIfTargetDestroyed) {
             Assert.IsNotNull(_onComplete);
             validateOnCompleteAssignment();
@@ -576,16 +577,6 @@ namespace PrimeTween {
             }
             this._isPaused = _isPaused;
             return true;
-        }
-
-        internal Vector3 shakeStrengthPerAxis {
-            get => endValue.Vector3Val;
-            set => endValue.Vector3Val = value;
-        }
-        
-        internal float shakeFrequency {
-            get => endValue.w;
-            set => endValue.w = value;
         }
 
         // ReSharper disable once UnusedParameter.Global

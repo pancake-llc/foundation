@@ -11,18 +11,20 @@ namespace PrimeTween {
         /// This method stops tweens, but doesn't stop sequences directly. That is, if a stopped tween was in a sequence, the sequence will only be stopped if it has no more running tweens.</summary>
         /// <seealso cref="PrimeTweenManager.processAll"/>
         public static int StopAll([CanBeNull] object onTarget = null, int? numMinExpected = null, int? numMaxExpected = null) {
-            return PrimeTweenManager.processAll(onTarget, tween => {
+            var result = PrimeTweenManager.processAll(onTarget, tween => {
                 tween.kill();
                 tween.updateSequenceAfterKill();
                 return true;
             }, numMinExpected, numMaxExpected);
+            forceUpdateManagerIfTargetIsNull(onTarget);
+            return result;
         }
 
         /// <summary>Completes all tweens. If onTarget is provided, completes only tweens on this target.<br/>
         /// This method completes tweens, but doesn't complete sequences directly. That is, if a completed tween was in a sequence, the sequence will only be completed if it has no more running tweens.</summary>
         /// <seealso cref="PrimeTweenManager.processAll"/>
         public static int CompleteAll([CanBeNull] object onTarget = null, int? numMinExpected = null, int? numMaxExpected = null) {
-            return PrimeTweenManager.processAll(onTarget, tween => {
+            var result = PrimeTweenManager.processAll(onTarget, tween => {
                 if (tween.tryManipulate()) {
                     tween.ForceComplete();
                     tween.updateSequenceAfterKill();
@@ -30,8 +32,20 @@ namespace PrimeTween {
                 }
                 return false;
             }, numMinExpected, numMaxExpected);
+            forceUpdateManagerIfTargetIsNull(onTarget);
+            return result;
         }
- 
+
+        static void forceUpdateManagerIfTargetIsNull([CanBeNull] object onTarget) {
+            if (onTarget == null) {
+                var manager = PrimeTweenManager.Instance;
+                if (manager != null) {
+                    manager.Update();
+                    Assert.AreEqual(0, manager.tweens.Count);
+                }
+            }
+        }
+
         /// <summary>Sets 'isPaused' on all tweens. If onTarget is provided, sets 'isPaused' only on this target.</summary>
         /// <seealso cref="PrimeTweenManager.processAll"/>
         public static int SetPausedAll(bool isPaused, [CanBeNull] object onTarget = null, int? numMinExpected = null, int? numMaxExpected = null) {
@@ -48,9 +62,11 @@ namespace PrimeTween {
         /// <summary>Please note: delay may outlive the caller (the calling UnityEngine.Object may already be destroyed).
         /// When using this overload, it's user's responsibility to ensure that <see cref="onComplete"/> is safe to execute once the delay is finished.
         /// It's preferable to use the <see cref="Delay{T}"/> overload because it checks if the UnityEngine.Object target is still alive before calling the <see cref="onComplete"/>.</summary>
+        /// <param name="warnIfTargetDestroyed">https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
         public static Tween Delay(float duration, [CanBeNull] Action onComplete = null, bool useUnscaledTime = false, bool warnIfTargetDestroyed = true) {
             return delay(null, duration, onComplete, useUnscaledTime, warnIfTargetDestroyed);
         }
+        /// <param name="warnIfTargetDestroyed">https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
         public static Tween Delay([NotNull] object target, float duration, [CanBeNull] Action onComplete = null, bool useUnscaledTime = false, bool warnIfTargetDestroyed = true) {
             Assert.IsNotNull(target);
             return delay(target, duration, onComplete, useUnscaledTime, warnIfTargetDestroyed);
@@ -74,6 +90,7 @@ namespace PrimeTween {
         /// });
         /// </code>
         /// </example>
+        /// <param name="warnIfTargetDestroyed">https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
         public static Tween Delay<T>([NotNull] T target, float duration, [NotNull] Action<T> onComplete, bool useUnscaledTime = false, bool warnIfTargetDestroyed = true) where T : class {
             var maybeDelay = delay_internal(target, duration, useUnscaledTime);
             if (!maybeDelay.HasValue) {
@@ -265,9 +282,11 @@ namespace PrimeTween {
                 => (t.target as ReusableTween).timeScale = t.FloatVal, t => (t.target as ReusableTween).timeScale.ToContainer());
         }
 
+        /// <summary>Similar to position animation with Ease.OutBounce, but gives the ability to customize the bounce behaviour by specifying the exact bounce amplitude, number of bounces, and bounce stiffness.</summary>
         public static Sequence PositionOutBounce([NotNull] Transform target, Vector3 endValue, float duration, float bounceAmplitude, int numBounces = 2, float stiffness = 0.5f, bool useUnscaledTime = false)
             => CustomOutBounce(target, (t, s) => Position(t, s), endValue, duration, bounceAmplitude, numBounces, stiffness, t => t.position, useUnscaledTime);
 
+        /// <summary>Similar to position animation with Ease.OutBounce, but gives the ability to customize the bounce behaviour by specifying the exact bounce amplitude, number of bounces, and bounce stiffness.</summary>
         public static Sequence LocalPositionOutBounce([NotNull] Transform target, Vector3 endValue, float duration, float bounceAmplitude, int numBounces = 2, float stiffness = 0.5f, bool useUnscaledTime = false)
             => CustomOutBounce(target, (t, s) => LocalPosition(t, s), endValue, duration, bounceAmplitude, numBounces, stiffness, t => t.localPosition, useUnscaledTime);
 
