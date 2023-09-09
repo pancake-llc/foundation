@@ -10,6 +10,9 @@ namespace Pancake.ScriptableEditor
     {
         public override void OnInspectorGUI()
         {
+            //when using AddComponent, the target object is null before the domains reloads.
+            if (serializedObject.targetObject == null) return;
+            
             var targetType = serializedObject.targetObject.GetType();
             var customType = typeof(CustomEditor);
             object[] customEditors = targetType.GetCustomAttributes(customType, true);
