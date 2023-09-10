@@ -12,7 +12,7 @@ using UnityEngine.UI;
 namespace Pancake.UI
 {
     [HideMonoScript]
-    [EditorIcon("script_mono")]
+    [EditorIcon("default")]
     public abstract class UIPopup : GameComponent
     {
         [Serializable]

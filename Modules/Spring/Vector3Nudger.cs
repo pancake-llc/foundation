@@ -2,7 +2,6 @@
 
 namespace Pancake.Spring
 {
-    [EditorIcon("script_nudge")]
     public class Vector3Nudger : GameComponent
     {
         public BaseSpringComponent nudgeable;

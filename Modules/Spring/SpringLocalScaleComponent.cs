@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.Spring
 {
-    [EditorIcon("script_local_spring")]
+    [EditorIcon("script_spring")]
     public class SpringLocalScaleComponent : BaseSpringComponent, ISpringTo<Vector3>, INudgeable<Vector3>
     {
         private SpringVector3 _spring;

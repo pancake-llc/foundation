@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 namespace Pancake.Notification
 {
     [HideMonoScript]
-    [EditorIcon("scriptable_noti")]
+    [EditorIcon("script_noti")]
     public class NotificationPrepare : GameComponent
     {
 #if UNITY_ANDROID

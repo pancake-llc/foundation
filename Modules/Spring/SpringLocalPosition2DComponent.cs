@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.Spring
 {
-    [EditorIcon("script_local_spring")]
+    [EditorIcon("script_spring")]
     public class SpringLocalPosition2DComponent : BaseSpringComponent, ISpringTo<Vector2>, INudgeable<Vector2>
     {
         private SpringVector2 _spring;

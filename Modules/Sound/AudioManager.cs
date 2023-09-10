@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.Sound
 {
-    [EditorIcon("script_mono")]
+    [EditorIcon("default")]
     public sealed class AudioManager : GameComponent
     {
         [Header("Sound Emitter Pool")] [SerializeField] private SoundEmitterPool pool;

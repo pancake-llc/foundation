@@ -286,11 +286,11 @@ namespace PancakeEditor
                 case WizardAllType.Firebase: return EditorResources.ScriptableFirebase;
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
-                case WizardAllType.InAppReview: return EditorResources.ScriptableStar;
-                case WizardAllType.NeedleConsole: return EditorResources.ScriptableConsole;
-                case WizardAllType.SelectiveProfiling: return EditorResources.ScriptableProfiler;
+                case WizardAllType.InAppReview:
+                case WizardAllType.NeedleConsole: 
+                case WizardAllType.SelectiveProfiling: 
+                case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
-                case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableIOS14AdSupport;
                 case WizardAllType.Scriptable: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
                 case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;

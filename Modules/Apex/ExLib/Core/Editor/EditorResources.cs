@@ -24,17 +24,11 @@ namespace Pancake.ExLibEditor
         public static Texture2D ScriptableIap => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_iap.png", RELATIVE_PATH);
         public static Texture2D ScriptableFirebase => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_firebase.png", RELATIVE_PATH);
         public static Texture2D ScriptableAdjust => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_adjust.png", RELATIVE_PATH);
-        public static Texture2D ScriptableTween => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_tween.png", RELATIVE_PATH);
         public static Texture2D ScriptableNotification => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_notification.png", RELATIVE_PATH);
         public static Texture2D ScriptableSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_setting.png", RELATIVE_PATH);
         public static Texture2D ScriptableEditorSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_editor_setting.png", RELATIVE_PATH);
-        public static Texture2D ScriptableBuild => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_build.png", RELATIVE_PATH);
-        public static Texture2D ScriptableStar => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_star.png", RELATIVE_PATH);
-        public static Texture2D ScriptableConsole => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_console.png", RELATIVE_PATH);
-        public static Texture2D ScriptableProfiler => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_profiler.png", RELATIVE_PATH);
-        public static Texture2D ScriptableIOS14AdSupport => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_ios14.png", RELATIVE_PATH);
+        public static Texture2D ScriptableInterface => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_interface.png", RELATIVE_PATH);
         public static Texture2D ScriptableFactory => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_factory.png", RELATIVE_PATH);
-        public static Texture2D ScriptableOdin => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_odin.png", RELATIVE_PATH);
 
         public static Texture2D ReorderableArrayEntryActive(string theme) =>
             ProjectDatabase.FindAssetWithPath<Texture2D>("EntryActiveTexture.png", $"{RELATIVE_REORDERABLE_ARRAY_PATH}/{theme}");

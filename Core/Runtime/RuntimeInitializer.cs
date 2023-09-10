@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake
 {
     [HideMonoScript]
-    [EditorIcon("script_mono")]
+    [EditorIcon("default")]
     public class RuntimeInitializer : GameComponent
     {
         [SerializeField, Array] private Initialize[] initializes;
