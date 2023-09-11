@@ -32,7 +32,7 @@ namespace Pancake.LevelSystem
 
         private int NgNumber { get => Data.Load($"level_{id}_ng_number", 1); set => Data.Save($"level_{id}_ng_number", value); }
 
-        private void Start()
+        private void Awake()
         {
             _segmentLength = 0;
             _totalLevel = 0;
