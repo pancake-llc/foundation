@@ -13,20 +13,21 @@ namespace Pancake.Component
         [SerializeField] private GameObjectPool coinFxPool;
         [SerializeField] private float coinFxScale = 1f;
         [SerializeField] private ParticleSystemForceField coinForceField;
-
-        [SerializeField] private Canvas canvas;
+        [Space]
+        [SerializeField] private bool useCanvasMaster;
+        [SerializeField, HideIf(nameof(useCanvasMaster))] private Canvas canvas;
+        [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
 
         protected override void OnEnabled()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
-            coinFxPool.SetParent(canvas.transform, true);
+            var parent = canvas.transform;
+            if (useCanvasMaster) parent = getCanvasMasterEvent.Raise().transform;
+            coinFxPool.SetParent(parent, true);
         }
 
-        protected override void OnDisabled()
-        {
-            spawnEvent.OnRaised -= SpawnCoinFx;
-        }
+        protected override void OnDisabled() { spawnEvent.OnRaised -= SpawnCoinFx; }
 
         private void SpawnCoinFx(Vector2 screenPos)
         {
