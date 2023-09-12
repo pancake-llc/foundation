@@ -22,8 +22,7 @@ namespace Pancake.Component
         protected override void OnEnabled()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
-            var parent = canvas.transform;
-            if (useCanvasMaster) parent = getCanvasMasterEvent.Raise().transform;
+            var parent = useCanvasMaster ? getCanvasMasterEvent.Raise().transform : canvas.transform;
             coinFxPool.SetParent(parent, true);
         }
 
