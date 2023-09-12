@@ -9,7 +9,7 @@ namespace Pancake.Sound
     /// Simple implementation of a MonoBehaviour that is able to request a sound being played by the <c>AudioManager</c>.
     /// It fires an event on an <c>AudioEventScriptable</c> which acts as a channel, that the <c>AudioManager</c> will pick up and play.
     /// </summary>
-    [EditorIcon("default")]
+    [EditorIcon("csharp")]
     public sealed class AudioComponent : GameComponent
     {
         [Header("Sound definition")] [SerializeField, Label("Audio")]
