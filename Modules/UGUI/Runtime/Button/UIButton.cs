@@ -140,7 +140,18 @@ namespace Pancake.UI
         protected override void OnDisable()
         {
             base.OnDisable();
-            if (_routineMultiple != null) App.StopCoroutine(_routineMultiple);
+            if (_routineMultiple != null)
+            {
+                // avoid App maybe destroy before this component
+                try
+                {
+                    App.StopCoroutine(_routineMultiple);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
             this.KillCoroutine(_routineLongClick);
             this.KillCoroutine(_routineHold);
             interactable = true;
