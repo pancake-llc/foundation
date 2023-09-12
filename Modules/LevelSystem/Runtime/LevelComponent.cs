@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Pancake.LevelSystem
 {
     [HideMonoScript]
+    [EditorIcon("csharp")]
     public abstract class LevelComponent : GameComponent
     {
         [SerializeField, HideInEditorMode, ReadOnly] protected int originLevelIndex;

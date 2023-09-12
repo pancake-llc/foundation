@@ -1,9 +1,12 @@
 using System;
+using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Component
 {
+    [HideMonoScript]
+    [EditorIcon("csharp")]
     public class VfxMagnetComponent : GameComponent
     {
         [SerializeField] private ScriptableEventVector2 spawnEvent;
