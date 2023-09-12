@@ -6,7 +6,7 @@ using UnityEngine.Events;
 namespace Pancake.Sound
 {
     [HideMonoScript]
-    [EditorIcon("sound")]
+    [EditorIcon("script_sound")]
     [RequireComponent(typeof(AudioSource))]
     public class SoundEmitter : CacheGameComponent<AudioSource>
     {

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Pancake.ExTag
 {
-    [EditorIcon("enum")]
+    [EditorIcon("script_enum")]
     [HideMonoScript]
     public class Tag : GameComponent, ISerializationCallbackReceiver
     {
