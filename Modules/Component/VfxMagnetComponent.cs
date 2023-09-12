@@ -16,10 +16,16 @@ namespace Pancake.Component
 
         [SerializeField] private Canvas canvas;
 
-        private void Start()
+
+        protected override void OnEnabled()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
             coinFxPool.SetParent(canvas.transform, true);
+        }
+
+        protected override void OnDisabled()
+        {
+            spawnEvent.OnRaised -= SpawnCoinFx;
         }
 
         private void SpawnCoinFx(Vector2 screenPos)
