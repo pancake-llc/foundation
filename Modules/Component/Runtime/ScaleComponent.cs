@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Pancake.Component
 {
+    [EditorIcon("csharp")]
     public class ScaleComponent : GameComponent
     {
         [SerializeField] private float duration;

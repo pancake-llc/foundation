@@ -9,7 +9,7 @@ namespace Pancake.Component
     [EditorIcon("csharp")]
     public class VfxMagnetComponent : GameComponent
     {
-        [SerializeField] private ScriptableEventVector2 spawnEvent;
+        [SerializeField] private ScriptableEventVfxMagnet spawnEvent;
         [SerializeField] private GameObjectPool coinFxPool;
         [SerializeField] private float coinFxScale = 1f;
         [SerializeField] private ParticleSystemForceField coinForceField;
@@ -41,11 +41,13 @@ namespace Pancake.Component
 
         protected override void OnDisabled() { spawnEvent.OnRaised -= SpawnCoinFx; }
 
-        private void SpawnCoinFx(Vector2 screenPos)
+        private void SpawnCoinFx(Vector2 screenPos, int value)
         {
             var coinFx = coinFxPool.Request();
-            var ps = coinFx.GetComponent<VfxParticleCollision>().PS;
-            if (ps == null) return;
+            var vfxParticleCollision = coinFx.GetComponent<VfxParticleCollision>();
+            if (vfxParticleCollision == null) return;
+            vfxParticleCollision.Init(value);
+            var ps = vfxParticleCollision.PS;
             listVfxMagnetInstance.Add(coinFx);
             ps.gameObject.SetActive(true);
             var transformCache = ps.transform;

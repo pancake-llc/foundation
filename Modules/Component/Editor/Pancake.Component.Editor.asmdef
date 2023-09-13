@@ -1,0 +1,22 @@
+{
+    "name": "Pancake.Component.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2615d51e385ff24419861f23345b3002",
+        "GUID:87eaf3fd1840b5c42a5f00c0a45ccaa1",
+        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
+        "GUID:5a5bdc0387f898e429d96457c503426a",
+        "GUID:341d04dbc3e6ced4f903de04a0918a48"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
