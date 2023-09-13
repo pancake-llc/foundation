@@ -201,7 +201,11 @@ namespace Pancake.Sound
 
         private void StopMusic(AudioHandle handle)
         {
-            if (_music != null && _music.IsPlaying()) _music.Stop();
+            if (_music != null)
+            {
+                if ( _music.IsPlaying()) _music.Stop();
+                pool.Return(_music);
+            }
         }
 
         private void PauseMusic(AudioHandle handle)
