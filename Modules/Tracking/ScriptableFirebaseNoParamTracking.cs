@@ -12,8 +12,10 @@ namespace Pancake.Tracking
 
         public override void Track()
         {
+            Debug.Log("Application.isMobilePlatform: "+ Application.isMobilePlatform);
+            Debug.Log("Tracking");
 #if PANCAKE_FIREBASE_ANALYTIC
-            if (Application.isEditor) return;
+            if (!Application.isMobilePlatform) return;
             Firebase.Analytics.FirebaseAnalytics.LogEvent(eventName);
 #endif
         }

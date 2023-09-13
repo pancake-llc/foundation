@@ -15,8 +15,8 @@ namespace Pancake.Tracking
 
         public override void Track()
         {
-            if (Application.isEditor) return;
 #if PANCAKE_ADJUST
+            if (!Application.isMobilePlatform) return;
             Adjust.trackEvent(new AdjustEvent(eventToken));
 #endif
         }

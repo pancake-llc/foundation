@@ -47,7 +47,7 @@ namespace Pancake.UI
         private void FindChildText()
         {
             if (label != null) return;
-            label = GetComponentsInChildren<TextMeshProUGUI>(true).FirstOrDefault(_ => _.gameObject != gameObject);
+            label = GetComponentsInChildren<TextMeshProUGUI>(true).FirstOrDefault(text => text.gameObject != gameObject);
             if (label != null) return;
             CreateChildTextTMP();
         }

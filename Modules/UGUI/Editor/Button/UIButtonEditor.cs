@@ -1,6 +1,7 @@
 using System;
 using Pancake.ExLibEditor;
 using Pancake.Sound;
+using Pancake.Tracking;
 using UnityEditor;
 using UnityEngine;
 using Pancake.UI;
@@ -32,6 +33,8 @@ namespace PancakeEditor
         private SerializedProperty _enabledSound;
         private SerializedProperty _audioClick;
         private SerializedProperty _audioPlayEvent;
+        private SerializedProperty _enabledTracking;
+        private SerializedProperty _trackingEvent;
         private SerializedProperty _motion;
         private SerializedProperty _scale;
         private SerializedProperty _duration;
@@ -60,6 +63,8 @@ namespace PancakeEditor
             _enabledSound = serializedObject.FindProperty("enabledSound");
             _audioClick = serializedObject.FindProperty("audioClick");
             _audioPlayEvent = serializedObject.FindProperty("audioPlayEvent");
+            _enabledTracking = serializedObject.FindProperty("enabledTracking");
+            _trackingEvent = serializedObject.FindProperty("trackingEvent");
             _isMotion = serializedObject.FindProperty("isMotion");
             _motion = serializedObject.FindProperty("motionData").FindPropertyRelative("motion");
             _scale = serializedObject.FindProperty("motionData").FindPropertyRelative("scale");
@@ -153,16 +158,15 @@ namespace PancakeEditor
             GUILayout.Label("Is Play Sound", GUILayout.Width(DEFAULT_LABEL_WIDTH));
             _enabledSound.boolValue = GUILayout.Toggle(_enabledSound.boolValue, "");
             EditorGUILayout.EndHorizontal();
-            
-           
+
+
             if (_enabledSound.boolValue)
             {
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("   Audio", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                _audioClick.objectReferenceValue =
-                    EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
+                _audioClick.objectReferenceValue = EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
                 EditorGUILayout.EndHorizontal();
-                
+
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("   Channel", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _audioPlayEvent.objectReferenceValue =
@@ -170,6 +174,26 @@ namespace PancakeEditor
                 EditorGUILayout.EndHorizontal();
             }
 
+            switch ((EButtonClickType) _clickType.enumValueIndex)
+            {
+                case EButtonClickType.OnlySingleClick:
+                case EButtonClickType.Instant:
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label("Enable Tracking", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                    _enabledTracking.boolValue = GUILayout.Toggle(_enabledTracking.boolValue, "");
+                    EditorGUILayout.EndHorizontal();
+
+                    if (_enabledTracking.boolValue)
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        GUILayout.Label("   Event", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                        _trackingEvent.objectReferenceValue =
+                            EditorGUILayout.ObjectField("", _trackingEvent.objectReferenceValue, typeof(ScriptableTracking), false) as ScriptableTracking;
+                        EditorGUILayout.EndHorizontal();
+                    }
+
+                    break;
+            }
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();

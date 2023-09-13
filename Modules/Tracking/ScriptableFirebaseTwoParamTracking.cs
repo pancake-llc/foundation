@@ -17,7 +17,7 @@ namespace Pancake.Tracking
         public void Track(string param1Value, string param2Value)
         {
 #if PANCAKE_FIREBASE_ANALYTIC
-            if (Application.isEditor) return;
+            if (!Application.isMobilePlatform) return;
             Firebase.Analytics.Parameter[] parameters = {new(paramName1, param1Value), new(paramName2, param2Value)};
             Firebase.Analytics.FirebaseAnalytics.LogEvent(eventName, parameters);
 #endif

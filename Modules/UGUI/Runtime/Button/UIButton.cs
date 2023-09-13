@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading;
 using Pancake.Sound;
 using Pancake.Threading.Tasks;
+using Pancake.Tracking;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -55,6 +56,8 @@ namespace Pancake.UI
         [SerializeField] private bool enabledSound;
         [SerializeField] private Audio audioClick;
         [SerializeField] private ScriptableEventAudio audioPlayEvent;
+        [SerializeField] private bool enabledTracking;
+        [SerializeField] private ScriptableTracking trackingEvent;
         [SerializeField] private MotionData motionData = new MotionData {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new MotionData {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
@@ -288,6 +291,7 @@ namespace Pancake.UI
                 return;
             }
 
+            if ((clickType == EButtonClickType.OnlySingleClick || clickType == EButtonClickType.Instant) && enabledTracking) trackingEvent.Track();
             StartCoroutine(IeExecute(eventData));
         }
 
@@ -298,6 +302,7 @@ namespace Pancake.UI
         private IEnumerator IeExecute(PointerEventData eventData)
         {
             if (IsDetectSingleClick) base.OnPointerClick(eventData);
+            
             if (!allowMultipleClick && clickType == EButtonClickType.OnlySingleClick)
             {
                 if (!interactable) yield break;
