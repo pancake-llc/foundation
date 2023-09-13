@@ -13,8 +13,7 @@ namespace Pancake.Component
         [SerializeField] private GameObjectPool coinFxPool;
         [SerializeField] private float coinFxScale = 1f;
         [SerializeField] private ParticleSystemForceField coinForceField;
-        [Space]
-        [SerializeField] private bool useCanvasMaster;
+        [Space] [SerializeField] private bool useCanvasMaster;
         [SerializeField, HideIf(nameof(useCanvasMaster))] private Canvas canvas;
         [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
@@ -22,8 +21,21 @@ namespace Pancake.Component
         protected override void OnEnabled()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
-            var parent = useCanvasMaster ? getCanvasMasterEvent.Raise().transform : canvas.transform;
-            coinFxPool.SetParent(parent, true);
+
+            // trycatch only in editor to avoid case startup from any scene
+#if UNITY_EDITOR
+            try
+            {
+#endif
+                var parent = useCanvasMaster ? getCanvasMasterEvent.Raise().transform : canvas.transform;
+                coinFxPool.SetParent(parent, true);
+#if UNITY_EDITOR
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+#endif
         }
 
         protected override void OnDisabled() { spawnEvent.OnRaised -= SpawnCoinFx; }
