@@ -1,6 +1,7 @@
 using System;
 using Pancake.Apex;
 using Pancake.Scriptable;
+using Pancake.Sound;
 using UnityEngine;
 
 namespace Pancake.Component
@@ -10,13 +11,16 @@ namespace Pancake.Component
     public class VfxMagnetComponent : GameComponent
     {
         [SerializeField] private ScriptableEventVfxMagnet spawnEvent;
+        [SerializeField] private ScriptableListGameObject listVfxMagnetInstance;
         [SerializeField] private GameObjectPool coinFxPool;
         [SerializeField] private float coinFxScale = 1f;
         [SerializeField] private ParticleSystemForceField coinForceField;
+        [SerializeField] private bool isPlaySound;
+        [SerializeField, ShowIf(nameof(isPlaySound))] private Audio audioSpawn;
+        [SerializeField, ShowIf(nameof(isPlaySound))] private ScriptableEventAudio audioPlayEvent;
         [Space] [SerializeField] private bool useCanvasMaster;
         [SerializeField, HideIf(nameof(useCanvasMaster))] private Canvas canvas;
         [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
-        [SerializeField] private ScriptableListGameObject listVfxMagnetInstance;
 
 
         protected override void OnEnabled()
@@ -63,11 +67,14 @@ namespace Pancake.Component
             externalForcesModule.AddInfluence(coinForceField);
             ps.Play();
             var main = ps.main;
-            App.Delay(main.duration / main.simulationSpeed, () =>
-            {
-                listVfxMagnetInstance.Remove(coinFx);
-                coinFxPool.Return(coinFx);
-            });
+            if (isPlaySound) audioPlayEvent.Raise(audioSpawn);
+            
+            App.Delay(main.duration / main.simulationSpeed,
+                () =>
+                {
+                    listVfxMagnetInstance.Remove(coinFx);
+                    coinFxPool.Return(coinFx);
+                });
         }
     }
 }
