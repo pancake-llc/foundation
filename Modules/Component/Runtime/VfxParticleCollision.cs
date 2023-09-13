@@ -1,4 +1,6 @@
+using Pancake.Apex;
 using Pancake.Scriptable;
+using Pancake.Sound;
 using UnityEngine;
 
 namespace Pancake.Component
@@ -11,6 +13,9 @@ namespace Pancake.Component
         [field: SerializeField] public ParticleSystem PS { get; private set; }
         [SerializeField] private int numberParticle;
         [SerializeField] private bool ignoreFirstTimeDisabled = true;
+        [SerializeField] private bool enabledSound;
+        [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioCollision;
+        [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio audioPlayEvent;
 
         private int _targetValue;
         private int _segmentValue;
@@ -22,7 +27,11 @@ namespace Pancake.Component
             _segmentValue = value / numberParticle;
         }
 
-        private void OnParticleCollision(GameObject particle) { updateCoinWithValueEvent.Raise(_segmentValue); }
+        private void OnParticleCollision(GameObject particle)
+        {
+            updateCoinWithValueEvent.Raise(_segmentValue);
+            if (enabledSound) audioPlayEvent.Raise(audioCollision);
+        }
 
         protected override void OnDisabled()
         {
