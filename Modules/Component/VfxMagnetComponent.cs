@@ -16,6 +16,7 @@ namespace Pancake.Component
         [Space] [SerializeField] private bool useCanvasMaster;
         [SerializeField, HideIf(nameof(useCanvasMaster))] private Canvas canvas;
         [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
+        [SerializeField] private ScriptableListGameObject listVfxMagnetInstance;
 
 
         protected override void OnEnabled()
@@ -43,8 +44,9 @@ namespace Pancake.Component
         private void SpawnCoinFx(Vector2 screenPos)
         {
             var coinFx = coinFxPool.Request();
-            var ps = coinFx.GetComponent<ParticleSystem>();
+            var ps = coinFx.GetComponent<VfxParticleCollision>().PS;
             if (ps == null) return;
+            listVfxMagnetInstance.Add(coinFx);
             ps.gameObject.SetActive(true);
             var transformCache = ps.transform;
             transformCache.position = new Vector3(screenPos.x, screenPos.y);
@@ -59,7 +61,11 @@ namespace Pancake.Component
             externalForcesModule.AddInfluence(coinForceField);
             ps.Play();
             var main = ps.main;
-            App.Delay(main.duration / main.simulationSpeed, () => coinFxPool.Return(coinFx));
+            App.Delay(main.duration / main.simulationSpeed, () =>
+            {
+                listVfxMagnetInstance.Remove(coinFx);
+                coinFxPool.Return(coinFx);
+            });
         }
     }
 }
