@@ -3,10 +3,9 @@ namespace Pancake.Tracking
     using UnityEngine;
 
     [Searchable]
-    //[HideMonoScript]
-    [CreateAssetMenu(fileName = "firebase_tracking_name", menuName = "Pancake/Tracking/Firebase One Param")]
+    [CreateAssetMenu(fileName = "firebase_tracking_name", menuName = "Pancake/Tracking/Firebase One Param", order = 4)]
     [EditorIcon("scriptable_firebase")]
-    public class ScriptableFirebaseOneParamTracking : ScriptableTracking
+    public class ScriptableTrackingFirebaseOneParam : ScriptableTracking
     {
         [Space] [SerializeField] private string eventName;
         [Space, Header("Params")] [SerializeField] private string paramName;

@@ -6,10 +6,9 @@ using UnityEngine;
 namespace Pancake.Tracking
 {
     [Searchable]
-    //[HideMonoScript]
-    [CreateAssetMenu(fileName = "adjust_tracking_name", menuName = "Pancake/Tracking/Adjust")]
+    [CreateAssetMenu(fileName = "adjust_tracking_name", menuName = "Pancake/Tracking/Adjust No Param", order = 2)]
     [EditorIcon("scriptable_adjust")]
-    public class ScriptableAdjustTracking : ScriptableTracking
+    public class ScriptableTrackingAdjustNoParam : ScriptableTracking
     {
         [Space] [SerializeField] private string eventToken;
 

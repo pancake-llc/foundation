@@ -188,7 +188,7 @@ namespace PancakeEditor
                         EditorGUILayout.BeginHorizontal();
                         GUILayout.Label("   Event", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                         _trackingEvent.objectReferenceValue =
-                            EditorGUILayout.ObjectField("", _trackingEvent.objectReferenceValue, typeof(ScriptableTracking), false) as ScriptableTracking;
+                            EditorGUILayout.ObjectField("", _trackingEvent.objectReferenceValue, typeof(ScriptableTrackingNoParam), false) as ScriptableTrackingNoParam;
                         EditorGUILayout.EndHorizontal();
                     }
 

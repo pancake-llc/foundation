@@ -57,7 +57,7 @@ namespace Pancake.UI
         [SerializeField] private Audio audioClick;
         [SerializeField] private ScriptableEventAudio audioPlayEvent;
         [SerializeField] private bool enabledTracking;
-        [SerializeField] private ScriptableTracking trackingEvent;
+        [SerializeField] private ScriptableTrackingNoParam trackingEvent;
         [SerializeField] private MotionData motionData = new MotionData {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new MotionData {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
