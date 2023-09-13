@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace PrimeTween {
     internal static class Extensions {
+        internal static float CalcDistance(Vector3 v1, Vector3 v2) => Vector3.Distance(v1, v2);
+        internal static float CalcDistance(Quaternion q1, Quaternion q2) => Quaternion.Angle(q1, q2);
+        
         internal static float calcDelta(this float val, ValueContainer prevVal) => val - prevVal.FloatVal;
         internal static Color calcDelta(this Color val, ValueContainer prevVal) => val - prevVal.ColorVal;
         internal static Vector2 calcDelta(this Vector2 val, ValueContainer prevVal) => val - prevVal.Vector2Val;

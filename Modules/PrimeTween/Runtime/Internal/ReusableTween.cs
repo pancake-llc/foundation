@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -88,14 +89,14 @@ namespace PrimeTween {
                 return shouldRemove;
             }
             var halfDt = dt * 0.5f;
-            if (!isInterpolationCompleted) {
-                var startDelayAndDuration = settings.startDelay + settings.duration;
+            if (!isInterpolationCompleted && tweenType != TweenType.Delay) {
+                var duration = settings.duration;
+                var startDelayAndDuration = settings.startDelay + duration;
                 isInterpolationCompleted = elapsedTime >= startDelayAndDuration - halfDt;
                 float interpolationFactor;
                 if (isInterpolationCompleted) {
                     interpolationFactor = 1;
                 } else {
-                    var duration = settings.duration;
                     var _elapsedTimeInterpolating = elapsedTime - settings.startDelay;
                     Assert.IsTrue(duration > 0 && _elapsedTimeInterpolating >= 0 && _elapsedTimeInterpolating <= duration);
                     interpolationFactor = _elapsedTimeInterpolating / duration;
@@ -304,12 +305,18 @@ namespace PrimeTween {
             targetIsUnityObject = unityObject != null;
         }
 
-        /// Tween.Custom and Tween.ShakeCustom try-catch the <see cref="onValueChange"/> and calls <see cref="ReusableTween.EmergencyStop"/> if an exception occurs.
-        /// <see cref="ReusableTween.EmergencyStop"/> sets <see cref="stoppedEmergently"/> to true.
-        internal bool ReportOnValueChange(float _interpolationFactor) {
+        internal bool ReportOnValueChangeIfAnimation(float _interpolationFactor) {
             if (tweenType == TweenType.Delay) {
                 return true;
             }
+            Assert.IsFalse(isUnityTargetDestroyed());
+            return ReportOnValueChange(_interpolationFactor);
+        }
+
+        /// Tween.Custom and Tween.ShakeCustom try-catch the <see cref="onValueChange"/> and calls <see cref="ReusableTween.EmergencyStop"/> if an exception occurs.
+        /// <see cref="ReusableTween.EmergencyStop"/> sets <see cref="stoppedEmergently"/> to true.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        bool ReportOnValueChange(float _interpolationFactor) {
             if (startFromCurrent) {
                 startFromCurrent = false;
                 startValue = Tween.tryGetStartValueFromOtherShake(this) ?? getter(this);
@@ -317,15 +324,11 @@ namespace PrimeTween {
             }
             easedInterpolationFactor = calcEasedT(_interpolationFactor);
             onValueChange(this);
-            if (stoppedEmergently) {
-                warnOnCompleteIgnored(false);
-                return false;
-            }
-            return true;
+            return !stoppedEmergently;
         }
 
         void ReportOnComplete() {
-            Assert.IsTrue(isInterpolationCompleted);
+            Assert.IsTrue(tweenType == TweenType.Delay || isInterpolationCompleted);
             Assert.IsFalse(startFromCurrent);
             Assert.AreEqual(settings.cycles, cyclesDone);
             Assert.IsFalse(_isAlive);
@@ -349,6 +352,7 @@ namespace PrimeTween {
             return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal bool isUnityTargetDestroyed() {
             return targetIsUnityObject && unityTarget == null;
         }
@@ -361,9 +365,10 @@ namespace PrimeTween {
             if (target != null) {
                 result += $"{(unityTarget != null ? unityTarget.name : target.GetType().Name)} / ";
             }
-            if (tweenType == TweenType.Delay && settings.duration == 0) {
+            var duration = settings.duration;
+            if (tweenType == TweenType.Delay && duration == 0) {
             } else {
-                result += $"{(tweenType != TweenType.None ? tweenType.ToString() : propType.ToString())} / duration {settings.duration:0.##} / ";
+                result += $"{(tweenType != TweenType.None ? tweenType.ToString() : propType.ToString())} / duration {duration:0.##} / ";
             }
             result += $"id {id}";
             if (sequence.IsCreated) {
@@ -400,8 +405,13 @@ namespace PrimeTween {
             }
         }
 
-        internal float FloatVal => startValue.x + diff.x * easedInterpolationFactor;
+        internal float FloatVal {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => startValue.x + diff.x * easedInterpolationFactor;
+        }
+
         internal Vector2 Vector2Val {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Vector2(
@@ -409,7 +419,9 @@ namespace PrimeTween {
                     startValue.y + diff.y * easedT);
             }
         }
+        
         internal Vector3 Vector3Val {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Vector3(
@@ -418,7 +430,9 @@ namespace PrimeTween {
                     startValue.z + diff.z * easedT);
             }
         }
+
         internal Vector4 Vector4Val {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Vector4(
@@ -429,6 +443,7 @@ namespace PrimeTween {
             }
         }
         internal Color ColorVal {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Color(
@@ -439,6 +454,7 @@ namespace PrimeTween {
             }
         }
         internal Rect RectVal {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Rect(
@@ -448,7 +464,10 @@ namespace PrimeTween {
                     startValue.w + diff.w * easedT);
             }
         }
-        internal Quaternion QuaternionVal => Quaternion.SlerpUnclamped(startValue.QuaternionVal, endValue.QuaternionVal, easedInterpolationFactor);
+        internal Quaternion QuaternionVal {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Quaternion.SlerpUnclamped(startValue.QuaternionVal, endValue.QuaternionVal, easedInterpolationFactor);
+        }
 
         float calcEasedT(float t) {
             var ease = settings.ease;
@@ -497,7 +516,7 @@ namespace PrimeTween {
             }
             
             cyclesDone = settings.cycles - 1; // simulate the last cycle so calcEasedT() calculates the correct value depending on cycleMode
-            if (!ReportOnValueChange(1)) {
+            if (!ReportOnValueChangeIfAnimation(1)) {
                 return;
             }
             
@@ -528,6 +547,7 @@ namespace PrimeTween {
                 kill();
             }
             stoppedEmergently = true;
+            warnOnCompleteIgnored(false);
             Assert.IsFalse(_isAlive);
             Assert.IsFalse(sequence.isAlive);
         }

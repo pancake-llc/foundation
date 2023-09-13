@@ -13,6 +13,7 @@ internal class CodeGenerator : ScriptableObject {
     [SerializeField] MonoScript dotweenMethodsScript;
     [SerializeField] MethodGenerationData[] methodsData;
     [SerializeField] AdditiveMethodsGenerator additiveMethodsGenerator;
+    [SerializeField] SpeedBasedMethodsGenerator speedBasedMethodsGenerator;
 
     [Serializable]
     class AdditiveMethodsGenerator {
@@ -155,6 +156,7 @@ namespace PrimeTween {
         text += generateWithDefines(generate);
         text = addCustomAnimationMethods(text);
         text += additiveMethodsGenerator.Generate();
+        text += speedBasedMethodsGenerator.Generate();
         text += @"
     }
 }";
@@ -446,6 +448,60 @@ namespace PrimeTween {
             str = str.Replace("TweenSettings<float>", $"TweenSettings<{data.propertyType.ToFullTypeName()}>");
         }
         return str;
+    }
+
+    [Serializable]
+    internal class SpeedBasedMethodsGenerator {
+        [SerializeField] Data[] data;
+        
+        [Serializable]
+        class Data {
+            [SerializeField] internal string methodName;
+            [SerializeField] internal PropType propType;
+            [SerializeField] internal string propName;
+            [SerializeField] internal string speedParamName;
+        }
+
+        [NotNull]
+        internal string Generate() {
+            string result = "";
+            foreach (var d in data) {
+                const string template = @"
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float averageSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float averageSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float averageSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float averageSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Vector3> settings) {
+            var speed = settings.settings.duration;
+            if (speed <= 0) {
+                UnityEngine.Debug.LogError($""Invalid speed provided to the Tween.{nameof(PositionAtSpeed)}() method: {speed}."");
+                return default;
+            }
+            if (settings.startFromCurrent) {
+                settings.startFromCurrent = false;
+                settings.startValue = target.position;
+            }
+            settings.settings.duration = Extensions.CalcDistance(settings.startValue, settings.endValue) / speed;
+            var result = Tween.Position(target, settings);
+            if (!result.isAlive) {
+                return default;
+            }
+            return result;
+        }
+";
+                result += template.Replace("PositionAtSpeed", $"{d.methodName}AtSpeed")
+                    .Replace("UnityEngine.Vector3", d.propType.ToFullTypeName())
+                    .Replace("Tween.Position", $"{d.methodName}")
+                    .Replace("target.position", $"target.{d.propName}")
+                    .Replace("averageSpeed", $"{d.speedParamName}")
+                    ;
+            }
+            return result;
+        }
     }
 }
 

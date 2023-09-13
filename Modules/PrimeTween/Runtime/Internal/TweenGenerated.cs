@@ -2135,5 +2135,109 @@ namespace PrimeTween {
         public static Tween LocalRotationAdditive([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion deltaValue, TweenSettings settings) 
             => CustomAdditive(target, deltaValue, settings, (_target, delta) => _target.localRotation *= delta);
 #endif
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float averageSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float averageSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float averageSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float averageSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => PositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        static Tween PositionAtSpeed([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Vector3> settings) {
+            var speed = settings.settings.duration;
+            if (speed <= 0) {
+                UnityEngine.Debug.LogError($"Invalid speed provided to the Tween.{nameof(PositionAtSpeed)}() method: {speed}.");
+                return default;
+            }
+            if (settings.startFromCurrent) {
+                settings.startFromCurrent = false;
+                settings.startValue = target.position;
+            }
+            settings.settings.duration = Extensions.CalcDistance(settings.startValue, settings.endValue) / speed;
+            var result = Position(target, settings);
+            if (!result.isAlive) {
+                return default;
+            }
+            return result;
+        }
+
+        public static Tween LocalPositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float averageSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalPositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween LocalPositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 endValue, float averageSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalPositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween LocalPositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float averageSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalPositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween LocalPositionAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Vector3 startValue, UnityEngine.Vector3 endValue, float averageSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalPositionAtSpeed(target, new TweenSettings<UnityEngine.Vector3>(startValue, endValue, new TweenSettings(averageSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        static Tween LocalPositionAtSpeed([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Vector3> settings) {
+            var speed = settings.settings.duration;
+            if (speed <= 0) {
+                UnityEngine.Debug.LogError($"Invalid speed provided to the Tween.{nameof(LocalPositionAtSpeed)}() method: {speed}.");
+                return default;
+            }
+            if (settings.startFromCurrent) {
+                settings.startFromCurrent = false;
+                settings.startValue = target.localPosition;
+            }
+            settings.settings.duration = Extensions.CalcDistance(settings.startValue, settings.endValue) / speed;
+            var result = LocalPosition(target, settings);
+            if (!result.isAlive) {
+                return default;
+            }
+            return result;
+        }
+
+        public static Tween RotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion endValue, float averageAngularSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => RotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween RotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion endValue, float averageAngularSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => RotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween RotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float averageAngularSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => RotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween RotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float averageAngularSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => RotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        static Tween RotationAtSpeed([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Quaternion> settings) {
+            var speed = settings.settings.duration;
+            if (speed <= 0) {
+                UnityEngine.Debug.LogError($"Invalid speed provided to the Tween.{nameof(RotationAtSpeed)}() method: {speed}.");
+                return default;
+            }
+            if (settings.startFromCurrent) {
+                settings.startFromCurrent = false;
+                settings.startValue = target.rotation;
+            }
+            settings.settings.duration = Extensions.CalcDistance(settings.startValue, settings.endValue) / speed;
+            var result = Rotation(target, settings);
+            if (!result.isAlive) {
+                return default;
+            }
+            return result;
+        }
+
+        public static Tween LocalRotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion endValue, float averageAngularSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalRotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween LocalRotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion endValue, float averageAngularSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalRotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween LocalRotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float averageAngularSpeed, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalRotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween LocalRotationAtSpeed([NotNull] UnityEngine.Transform target, UnityEngine.Quaternion startValue, UnityEngine.Quaternion endValue, float averageAngularSpeed, [NotNull] UnityEngine.AnimationCurve ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => LocalRotationAtSpeed(target, new TweenSettings<UnityEngine.Quaternion>(startValue, endValue, new TweenSettings(averageAngularSpeed, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        static Tween LocalRotationAtSpeed([NotNull] UnityEngine.Transform target, TweenSettings<UnityEngine.Quaternion> settings) {
+            var speed = settings.settings.duration;
+            if (speed <= 0) {
+                UnityEngine.Debug.LogError($"Invalid speed provided to the Tween.{nameof(LocalRotationAtSpeed)}() method: {speed}.");
+                return default;
+            }
+            if (settings.startFromCurrent) {
+                settings.startFromCurrent = false;
+                settings.startValue = target.localRotation;
+            }
+            settings.settings.duration = Extensions.CalcDistance(settings.startValue, settings.endValue) / speed;
+            var result = LocalRotation(target, settings);
+            if (!result.isAlive) {
+                return default;
+            }
+            return result;
+        }
+
     }
 }

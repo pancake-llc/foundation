@@ -393,7 +393,7 @@ namespace PrimeTween {
                 buffer.Add(tween);
             }
             for (int i = buffer.Count - 1; i >= 0; i--) {
-                buffer[i].ReportOnValueChange(0);
+                buffer[i].ReportOnValueChangeIfAnimation(0);
             }
             buffer.Clear();
             var child = childSequence;

@@ -7,6 +7,20 @@ using UnityEngine;
 
 namespace PrimeTween {
     public partial struct Tween {
+        /// <summary>Returns the number of running tweens.</summary>
+        /// <param name="onTarget">If specified, returns the number of running tweens on the target. Please note: if target is specified, this method call is O(n) complexity where n is the total number of running tweens.</param>
+        public static int GetTweensCount([CanBeNull] object onTarget = null) {
+            if (onTarget == null) {
+                #if UNITY_EDITOR
+                if (Constants.warnNoInstance) {
+                    return default;
+                }
+                #endif
+                return PrimeTweenManager.Instance.tweens.Count;
+            }
+            return PrimeTweenManager.processAll(onTarget, _ => true, null, null);
+        }
+
         /// <summary>Stops all tweens. If onTarget is provided, stops only tweens on this target.<br/>
         /// This method stops tweens, but doesn't stop sequences directly. That is, if a stopped tween was in a sequence, the sequence will only be stopped if it has no more running tweens.</summary>
         /// <seealso cref="PrimeTweenManager.processAll"/>
@@ -55,7 +69,7 @@ namespace PrimeTween {
                 }, numMinExpected, numMaxExpected);
             }
             return PrimeTweenManager.processAll(onTarget, tween => {
-                return tween.tryManipulate() && tween.trySetPause(false);
+                return tween.trySetPause(false);
             }, numMinExpected, numMaxExpected);
         }
 

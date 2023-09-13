@@ -21,6 +21,8 @@ namespace PrimeTween {
         const int defaultInitialCapacity = 200;
 
         /// Item can be null if the list is accessed from the <see cref="ReusableTween.updateAndCheckIfRunning"/> via onValueChange() or onComplete()
+        /// Changing list to array gives about 8% performance improvement and is possible to do in the future
+        ///     The current implementation is simpler and PrimeTweenManagerInspector can draw tweens with no additional code
         #if UNITY_2021_3_OR_NEWER
         [ItemCanBeNull]
         #endif
@@ -39,6 +41,7 @@ namespace PrimeTween {
         internal bool warnTweenOnDisabledTarget = true;
         internal bool warnZeroDuration = true;
         internal bool warnStructBoxingAllocationInCoroutine = true;
+        internal bool warnBenchmarkWithAsserts = true;
         internal bool validateCustomCurves = true;
         int processedCount;
         int updateDepth;
@@ -186,10 +189,9 @@ namespace PrimeTween {
             for (int i = processedCount; i < cachedCount; i++) {
                 var tween = tweens[i];
                 // ReSharper disable once PossibleNullReferenceException
-                if (tween._isAlive && !tween.startFromCurrent && !tween.waitFor.isAlive && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed()
-                    && !tween.isAdditive) {
+                if (tween._isAlive && !tween.startFromCurrent && !tween.waitFor.isAlive && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed() && !tween.isAdditive) {
                     Assert.AreEqual(0, tween.elapsedTime);
-                    tween.ReportOnValueChange(0);
+                    tween.ReportOnValueChangeIfAnimation(0);
                 }
             }
             updateDepth--;
@@ -305,8 +307,18 @@ namespace PrimeTween {
             }
             // Debug.Log($"add tween {tween.id}, {tween.GetDescription()}", tween.unityTarget);
             tweens.Add(tween);
-            #if UNITY_ASSERTIONS
+            #if UNITY_ASSERTIONS && !PRIME_TWEEN_DISABLE_ASSERTIONS
             maxSimultaneousTweensCount = Math.Max(maxSimultaneousTweensCount, tweens.Count);
+            if (warnBenchmarkWithAsserts && maxSimultaneousTweensCount > 50000) {
+                warnBenchmarkWithAsserts = false;
+                var msg = "PrimeTween detected more than 50000 concurrent tweens. If you're running benchmarks, please add the PRIME_TWEEN_DISABLE_ASSERTIONS to the 'ProjectSettings/Player/Script Compilation' to disable assertions. This will ensure PrimeTween runs with the release performance.\n" +
+                          "Also disable optional convenience features: PrimeTweenConfig.warnZeroDuration and PrimeTweenConfig.warnTweenOnDisabledTarget.\n";
+                if (Application.isEditor) {
+                    msg += "Please also run the tests in real builds, not in the Editor, to measure the performance correctly.\n";
+                }
+                msg += $"{Constants.buildWarningCanBeDisabledMessage(nameof(PrimeTweenConfig.warnBenchmarkWithAsserts))}\n";
+                Debug.LogError(msg);
+            }
             var newCapacity = Math.Max(pool.Capacity, tweens.Capacity);
             if (currentPoolCapacity != newCapacity) {
                 Debug.LogWarning($"Tweens capacity has been increased from {currentPoolCapacity} to {newCapacity}. Please increase the capacity manually to prevent memory allocations at runtime by calling {Constants.setTweensCapacityMethod}.\n" +
@@ -343,7 +355,7 @@ namespace PrimeTween {
                     numProcessed++;
                 }
             }
-            #if UNITY_ASSERTIONS
+            #if UNITY_ASSERTIONS && !PRIME_TWEEN_DISABLE_ASSERTIONS
             if (minExpected.HasValue && numProcessed < minExpected) {
                 throw new Exception($"the number of processed tweens ({numProcessed}) is less than '{nameof(minExpected)}' ({minExpected.Value})");
             }

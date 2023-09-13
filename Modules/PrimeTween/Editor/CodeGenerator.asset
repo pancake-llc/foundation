@@ -945,3 +945,21 @@ MonoBehaviour:
     - methodName: LocalRotationAdditive
       propertyType: 6
       setter: _target.localRotation *= delta
+  speedBasedMethodsGenerator:
+    data:
+    - methodName: Position
+      propType: 4
+      propName: position
+      speedParamName: averageSpeed
+    - methodName: LocalPosition
+      propType: 4
+      propName: localPosition
+      speedParamName: averageSpeed
+    - methodName: Rotation
+      propType: 6
+      propName: rotation
+      speedParamName: averageAngularSpeed
+    - methodName: LocalRotation
+      propType: 6
+      propName: localRotation
+      speedParamName: averageAngularSpeed

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -87,13 +88,14 @@ namespace PrimeTween {
             endDelay = Mathf.Max(0, endDelay);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void validateFiniteDuration(float f) {
             Assert.IsFalse(float.IsNaN(f), Constants.durationInvalidError);
             Assert.IsFalse(float.IsInfinity(f), Constants.durationInvalidError);
         }
         
         internal static bool ValidateCustomCurve([NotNull] AnimationCurve curve) {
-            #if UNITY_ASSERTIONS
+            #if UNITY_ASSERTIONS && !PRIME_TWEEN_DISABLE_ASSERTIONS
             if (curve.length < 2) {
                 Debug.LogError("Custom animation curve should have at least 2 keyframes, please edit the curve in Inspector.");
                 return false;
@@ -105,7 +107,7 @@ namespace PrimeTween {
         }
 
         internal static bool ValidateCustomCurveKeyframes([NotNull] AnimationCurve curve) {
-            #if UNITY_ASSERTIONS
+            #if UNITY_ASSERTIONS && !PRIME_TWEEN_DISABLE_ASSERTIONS
             if (!ValidateCustomCurve(curve)) {
                 return false;
             }

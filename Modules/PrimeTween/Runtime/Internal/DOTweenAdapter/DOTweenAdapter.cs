@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace PrimeTween {
     public static partial class DOTweenAdapter {

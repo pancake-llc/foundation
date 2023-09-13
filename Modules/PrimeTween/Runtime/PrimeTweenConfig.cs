@@ -64,6 +64,10 @@ namespace PrimeTween {
             set => Instance.validateCustomCurves = value;
         }
 
+        public static bool warnBenchmarkWithAsserts {
+            set => Instance.warnBenchmarkWithAsserts = value;
+        }
+
         internal const bool defaultUseUnscaledTimeForShakes = false;
     }
 }
