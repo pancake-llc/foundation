@@ -182,7 +182,7 @@ namespace Pancake.Threading.Tasks.Internal
             {
                 return "(" + string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true))) + ")";
             }
-            if (!t.IsGenericType) return shortName ? t.Name : t.FullName.Replace("Pancake.Threading.Tasks.Triggers.", "").Replace("Cysharp.Threading.Tasks.Internal.", "").Replace("Pancake.Threading.Tasks.", "") ?? t.Name;
+            if (!t.IsGenericType) return shortName ? t.Name : t.FullName.Replace("Pancake.Threading.Tasks.Triggers.", "").Replace("Pancake.Threading.Tasks.Internal.", "").Replace("Pancake.Threading.Tasks.", "") ?? t.Name;
 
             var innerFormat = string.Join(", ", t.GetGenericArguments().Select(x => BeautifyType(x, true)));
 
