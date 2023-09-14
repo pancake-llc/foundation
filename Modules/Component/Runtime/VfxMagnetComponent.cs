@@ -13,6 +13,7 @@ namespace Pancake.Component
         [SerializeField] private ScriptableEventVfxMagnet spawnEvent;
         [SerializeField] private ScriptableListGameObject listVfxMagnetInstance;
         [SerializeField] private GameObjectPool coinFxPool;
+        [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [SerializeField] private float coinFxScale = 1f;
         [SerializeField] private ParticleSystemForceField coinForceField;
         [SerializeField] private bool isPlaySound;
@@ -26,6 +27,7 @@ namespace Pancake.Component
         protected override void OnEnabled()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
+            returnPoolEvent.OnRaised += ReturnVfxToPool;
 
             // trycatch only in editor to avoid case startup from any scene
 #if UNITY_EDITOR
@@ -41,6 +43,12 @@ namespace Pancake.Component
                 // ignored
             }
 #endif
+        }
+
+        private void ReturnVfxToPool(GameObject vfx)
+        {
+            listVfxMagnetInstance.Remove(vfx);
+            coinFxPool.Return(vfx);
         }
 
         protected override void OnDisabled() { spawnEvent.OnRaised -= SpawnCoinFx; }
@@ -67,15 +75,7 @@ namespace Pancake.Component
             externalForcesModule.AddInfluence(coinForceField);
             ps.Emit(1); // avoid zero particle count when start
             ps.Play();
-            var main = ps.main;
             if (isPlaySound) audioPlayEvent.Raise(audioSpawn);
-            
-            App.Delay(main.duration / main.simulationSpeed,
-                () =>
-                {
-                    listVfxMagnetInstance.Remove(coinFx);
-                    coinFxPool.Return(coinFx);
-                });
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using Pancake.Apex;
 using Pancake.Scriptable;
 using Pancake.Sound;
@@ -11,19 +10,19 @@ namespace Pancake.Component
         [SerializeField] private ScriptableEventInt updateCoinWithValueEvent;
         [SerializeField] private ScriptableEventNoParam updateCoinEvent;
         [SerializeField] private ScriptableListGameObject vfxMagnetCollection;
+        [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
         [SerializeField] private int numberParticle;
         [SerializeField] private bool enabledSound;
         [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioCollision;
         [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio audioPlayEvent;
 
-        private int _targetValue;
         private int _segmentValue;
         private bool _flag;
 
         public void Init(int value)
         {
-            _targetValue = value;
+            _flag = false;
             _segmentValue = value / numberParticle;
         }
 
@@ -36,10 +35,12 @@ namespace Pancake.Component
         protected override void Tick()
         {
             if (PS.particleCount > 0) return;
-            if (vfxMagnetCollection.Count == 0 && !_flag)
+
+            if (!_flag)
             {
                 _flag = true;
-                updateCoinEvent.Raise();
+                returnPoolEvent.Raise(gameObject);
+                if (vfxMagnetCollection.Count == 0) updateCoinEvent.Raise();
             }
         }
     }
