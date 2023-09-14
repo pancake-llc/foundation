@@ -65,6 +65,7 @@ namespace Pancake.Component
 
             coinForceField.gameObject.SetActive(true);
             externalForcesModule.AddInfluence(coinForceField);
+            ps.Emit(1); // avoid zero particle count when start
             ps.Play();
             var main = ps.main;
             if (isPlaySound) audioPlayEvent.Raise(audioSpawn);

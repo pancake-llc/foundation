@@ -1,3 +1,4 @@
+using System;
 using Pancake.Apex;
 using Pancake.Scriptable;
 using Pancake.Sound;
@@ -12,14 +13,13 @@ namespace Pancake.Component
         [SerializeField] private ScriptableListGameObject vfxMagnetCollection;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
         [SerializeField] private int numberParticle;
-        [SerializeField] private bool ignoreFirstTimeDisabled = true;
         [SerializeField] private bool enabledSound;
         [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioCollision;
         [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio audioPlayEvent;
 
         private int _targetValue;
         private int _segmentValue;
-        private bool _ignoreFirstTime = true;
+        private bool _flag;
 
         public void Init(int value)
         {
@@ -33,19 +33,14 @@ namespace Pancake.Component
             if (enabledSound) audioPlayEvent.Raise(audioCollision);
         }
 
-        protected override void OnDisabled()
+        protected override void Tick()
         {
-            base.OnDisabled();
-            if (ignoreFirstTimeDisabled)
+            if (PS.particleCount > 0) return;
+            if (vfxMagnetCollection.Count == 0 && !_flag)
             {
-                if (_ignoreFirstTime)
-                {
-                    _ignoreFirstTime = false;
-                    return;
-                }
+                _flag = true;
+                updateCoinEvent.Raise();
             }
-
-            if (vfxMagnetCollection.Count == 0) updateCoinEvent.Raise();
         }
     }
 }
