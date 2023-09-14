@@ -89,6 +89,9 @@ namespace Pancake.IAP
             for (int i = 0; i < skus.Count; i++)
             {
                 var itemName = skus[i].sku.Id.Split('.').Last();
+
+                str += $"\n\t\tpublic const string SKU_{itemName.ToUpper()} = \"{skus[i].sku.Id}\";";
+                
                 str += $"\n\t\tpublic static IAPData Purchase{CultureInfo.CurrentCulture.TextInfo.ToTitleCase(itemName)}()";
                 str += "\n\t\t{";
                 str += $"\n\t\t\treturn IAPManager.Purchase(IAPSettings.SkusData[{i}]);";
