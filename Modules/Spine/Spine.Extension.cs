@@ -61,7 +61,7 @@ namespace Pancake.Spine
             var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.AnimationName);
             if (animation == null) return skeleton;
 
-            App.Delay(animation.Duration, onComplete, target: target);
+            App.Delay(target, animation.Duration, onComplete);
 
             return skeleton;
         }
@@ -71,7 +71,7 @@ namespace Pancake.Spine
             var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.startingAnimation);
             if (animation == null) return skeleton;
 
-            App.Delay(animation.Duration, onComplete, target: target);
+            App.Delay(target, animation.Duration, onComplete);
 
             return skeleton;
         }
@@ -81,7 +81,7 @@ namespace Pancake.Spine
             var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.AnimationName);
             if (animation == null) return skeleton;
 
-            App.Delay(animation.Duration, null, onUpdate, target: target);
+            App.Delay(target, animation.Duration, null, onUpdate);
 
             return skeleton;
         }
@@ -91,7 +91,7 @@ namespace Pancake.Spine
             var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.startingAnimation);
             if (animation == null) return skeleton;
 
-            App.Delay(animation.Duration, null, onUpdate, target: target);
+            App.Delay(target, animation.Duration, null, onUpdate);
 
             return skeleton;
         }

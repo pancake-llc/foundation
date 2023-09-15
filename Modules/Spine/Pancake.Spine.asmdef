@@ -15,6 +15,11 @@
     "defineConstraints": [],
     "versionDefines": [
         {
+            "name": "com.esotericsoftware.spine.spine-csharp",
+            "expression": "",
+            "define": "PANCAKE_SPINE"
+        },
+        {
             "name": "com.esotericsoftware.spine.spine-unity",
             "expression": "",
             "define": "PANCAKE_SPINE"
