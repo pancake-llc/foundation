@@ -14,7 +14,7 @@ namespace Pancake.Spine
         [SerializeField] private SkeletonGraphic skeleton;
         [SerializeField] private bool loopLastestTrack;
         [SerializeField] private bool playOnAwake;
-        [SerializeField, ShowIf(nameof(playOnAwake)), Label("   Play Event")] private ScriptableEventNoParam playAnimationEvent;
+        [SerializeField, HideIf(nameof(playOnAwake)), Label("   Play Event")] private ScriptableEventNoParam playAnimationEvent;
         [SerializeField, Array] private TrackData[] datas;
 
         private IEnumerator _coroutine;
