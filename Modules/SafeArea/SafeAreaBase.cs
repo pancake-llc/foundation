@@ -1,4 +1,5 @@
-﻿using Pancake.Apex;
+﻿using System;
+using Pancake.Apex;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,7 +12,24 @@ namespace Pancake.SafeArea
     {
         private RectTransform _rectTransform;
 
-        protected RectTransform RectT => _rectTransform != null ? _rectTransform : _rectTransform = GetComponent<RectTransform>();
+        protected RectTransform RectT
+        {
+            get
+            {
+#if UNITY_EDITOR
+                try
+                {
+#endif
+                    return _rectTransform != null ? _rectTransform : _rectTransform = GetComponent<RectTransform>();
+#if UNITY_EDITOR
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+#endif
+            }
+        }
 
 
         protected void Reset()
