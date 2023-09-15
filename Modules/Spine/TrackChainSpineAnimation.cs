@@ -21,13 +21,11 @@ namespace Pancake.Spine
     public class TrackChainSpineAnimation : GameComponent
     {
         [SerializeField] private SkeletonAnimation skeleton;
-        [SerializeField] private bool playOnAwake;
         [SerializeField] private bool loopLastestTrack;
-
+        [SerializeField] private bool playOnAwake;
+        [SerializeField, ShowIf(nameof(playOnAwake)), Label("   Play Event")] private ScriptableEventNoParam playAnimationEvent;
         [SerializeField, Array] private TrackData[] datas;
-
-        [Header("EVENT")] [SerializeField] private ScriptableEventNoParam playAnimationEvent;
-
+        
         private IEnumerator _coroutine;
 
         private async void Awake()
@@ -39,7 +37,7 @@ namespace Pancake.Spine
 
         protected override void OnEnabled()
         {
-            if (playAnimationEvent != null) playAnimationEvent.OnRaised += Play;
+            if (!playOnAwake && playAnimationEvent != null) playAnimationEvent.OnRaised += Play;
         }
 
         protected override void OnDisabled()
@@ -61,7 +59,7 @@ namespace Pancake.Spine
 #endif
             }
 
-            if (playAnimationEvent != null) playAnimationEvent.OnRaised -= Play;
+            if (!playOnAwake && playAnimationEvent != null) playAnimationEvent.OnRaised -= Play;
         }
 
         private void Play()

@@ -12,12 +12,10 @@ namespace Pancake.Spine
     public class TrackChainSpineGraphic : GameComponent
     {
         [SerializeField] private SkeletonGraphic skeleton;
-        [SerializeField] private bool playOnAwake;
         [SerializeField] private bool loopLastestTrack;
-
+        [SerializeField] private bool playOnAwake;
+        [SerializeField, ShowIf(nameof(playOnAwake)), Label("   Play Event")] private ScriptableEventNoParam playAnimationEvent;
         [SerializeField, Array] private TrackData[] datas;
-
-        [Header("EVENT")] [SerializeField] private ScriptableEventNoParam playAnimationEvent;
 
         private IEnumerator _coroutine;
 
@@ -30,7 +28,7 @@ namespace Pancake.Spine
 
         protected override void OnEnabled()
         {
-            if (playAnimationEvent != null) playAnimationEvent.OnRaised += Play;
+            if (!playOnAwake && playAnimationEvent != null) playAnimationEvent.OnRaised += Play;
         }
 
         protected override void OnDisabled()
@@ -52,7 +50,7 @@ namespace Pancake.Spine
 #endif
             }
 
-            if (playAnimationEvent != null) playAnimationEvent.OnRaised -= Play;
+            if (!playOnAwake && playAnimationEvent != null) playAnimationEvent.OnRaised -= Play;
         }
 
         private void Play()
