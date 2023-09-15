@@ -43,7 +43,23 @@ namespace Pancake.Spine
 
         protected override void OnDisabled()
         {
-            if (_coroutine != null) App.StopCoroutine(_coroutine);
+            if (_coroutine != null)
+            {
+#if UNITY_EDITOR
+                // avoid case app be destroy soon than other component
+                try
+                {
+#endif
+                    App.StopCoroutine(_coroutine);
+#if UNITY_EDITOR
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+#endif
+            }
+
             if (playAnimationEvent != null) playAnimationEvent.OnRaised -= Play;
         }
 

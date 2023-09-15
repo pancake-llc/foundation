@@ -145,15 +145,19 @@ namespace Pancake.UI
             base.OnDisable();
             if (_routineMultiple != null)
             {
-                // avoid App maybe destroy before this component
+#if UNITY_EDITOR
+                // avoid case app be destroy soon than other component
                 try
                 {
+#endif
                     App.StopCoroutine(_routineMultiple);
+#if UNITY_EDITOR
                 }
                 catch (Exception)
                 {
                     // ignored
                 }
+#endif
             }
             this.KillCoroutine(_routineLongClick);
             this.KillCoroutine(_routineHold);
