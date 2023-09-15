@@ -1,12 +1,12 @@
 ﻿using Pancake;
-using Pancake.Apex;
 using Pancake.ApexEditor;
 using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
 {
-    public class PopupPickupDrawer : FieldView, ITypeValidationCallback
+    [ViewTarget(typeof(PopupPickupAttribute))]
+    public sealed class PopupPickupDrawer : FieldView, ITypeValidationCallback
     {
         private const string NAME_CLASS_INHERIT = "Pancake.UI.UIPopup";
 
