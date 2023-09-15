@@ -9,6 +9,20 @@ namespace Pancake.Spine
 {
     public static class Extension
     {
+        public static float Duration(this SkeletonAnimation skeleton, string animationName)
+        {
+            var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(animation => animation.Name.Equals(animationName));
+            if (animation == null) return 0;
+            return animation.Duration;
+        }
+
+        public static float Duration(this SkeletonGraphic skeleton, string animationName)
+        {
+            var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(animation => animation.Name.Equals(animationName));
+            if (animation == null) return 0;
+            return animation.Duration;
+        }
+
         public static SkeletonAnimation Play(this SkeletonAnimation skeleton, string animationName, bool loop = false)
         {
             skeleton.ClearState();
@@ -17,6 +31,12 @@ namespace Pancake.Spine
             skeleton.LateUpdate();
             skeleton.Initialize(true);
 
+            return skeleton;
+        }
+
+        public static SkeletonGraphic PlayOnly(this SkeletonGraphic skeleton, string animationName, bool loop = false)
+        {
+            skeleton.AnimationState.SetAnimation(0, animationName, loop);
             return skeleton;
         }
 
@@ -58,41 +78,25 @@ namespace Pancake.Spine
 
         public static SkeletonAnimation OnComplete(this SkeletonAnimation skeleton, Action onComplete, MonoBehaviour target = null)
         {
-            var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.AnimationName);
-            if (animation == null) return skeleton;
-
-            App.Delay(target, animation.Duration, onComplete);
-
+            App.Delay(target, skeleton.Duration(skeleton.AnimationName), onComplete);
             return skeleton;
         }
 
         public static SkeletonGraphic OnComplete(this SkeletonGraphic skeleton, Action onComplete, MonoBehaviour target = null)
         {
-            var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.startingAnimation);
-            if (animation == null) return skeleton;
-
-            App.Delay(target, animation.Duration, onComplete);
-
+            App.Delay(target, skeleton.Duration(skeleton.startingAnimation), onComplete);
             return skeleton;
         }
 
         public static SkeletonAnimation OnUpdate(this SkeletonAnimation skeleton, Action<float> onUpdate, MonoBehaviour target = null)
         {
-            var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.AnimationName);
-            if (animation == null) return skeleton;
-
-            App.Delay(target, animation.Duration, null, onUpdate);
-
+            App.Delay(target, skeleton.Duration(skeleton.AnimationName), null, onUpdate);
             return skeleton;
         }
 
         public static SkeletonGraphic OnUpdate(this SkeletonGraphic skeleton, Action<float> onUpdate, MonoBehaviour target = null)
         {
-            var animation = skeleton.AnimationState.Data.SkeletonData.Animations.Items.FirstOrDefault(_ => _.Name == skeleton.startingAnimation);
-            if (animation == null) return skeleton;
-
-            App.Delay(target, animation.Duration, null, onUpdate);
-
+            App.Delay(target, skeleton.Duration(skeleton.startingAnimation), null, onUpdate);
             return skeleton;
         }
 
