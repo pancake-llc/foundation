@@ -51,7 +51,11 @@ namespace Pancake.Component
             coinFxPool.Return(vfx);
         }
 
-        protected override void OnDisabled() { spawnEvent.OnRaised -= SpawnCoinFx; }
+        protected override void OnDisabled()
+        {
+            spawnEvent.OnRaised -= SpawnCoinFx;
+            returnPoolEvent.OnRaised -= ReturnVfxToPool;
+        }
 
         private void SpawnCoinFx(Vector2 screenPos, int value)
         {
