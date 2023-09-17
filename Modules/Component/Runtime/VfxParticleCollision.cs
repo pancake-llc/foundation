@@ -39,6 +39,10 @@ namespace Pancake.Component
             if (!_flag)
             {
                 _flag = true;
+                // remove external force module
+                ParticleSystem.ExternalForcesModule externalForcesModule = PS.externalForces;
+                externalForcesModule.RemoveAllInfluences();
+                externalForcesModule.enabled = false;
                 returnPoolEvent.Raise(gameObject);
                 if (vfxMagnetCollection.Count == 0) updateCoinEvent.Raise();
             }
