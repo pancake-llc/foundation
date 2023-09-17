@@ -1,4 +1,3 @@
-using System.IO;
 using JetBrains.Annotations;
 using Pancake.ExLib;
 using RedBlueGames.MulliganRenamer;
@@ -18,7 +17,11 @@ namespace PancakeEditor
         private static void DeleteUserFinderSetting()
         {
             const string path = "UserSettings/FinderSetting.asset";
-            if (File.Exists(path)) File.Delete(path);
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+                AssetDatabase.Refresh();
+            }
         }
 
         [MenuItem("Tools/Pancake/DOTween Adapter", validate = false)]

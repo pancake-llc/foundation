@@ -13,19 +13,42 @@ namespace Pancake
         [SerializeField, ShowIf(nameof(useTransform)), Label("      Target")]
         private Transform target;
 
-        [SerializeField, ShowIf("ShowValue"), Label("     Value")] private Vector3 value;
+        [SerializeField, HideIf(nameof(useTransform)), Label("     Value")]
+        private Vector3 value;
 
         [SerializeField] private bool loop;
+        [SerializeField, ShowIf(nameof(loop)), Label("      Mode")] private CycleMode cycleMode = CycleMode.Restart;
         [SerializeField] private Ease ease;
 
         private Tween _tween;
 
 
 #if UNITY_EDITOR
-        private bool ShowValue() => !useTransform;
+        [Button, ShowIf(nameof(ShowButtonEdit))]
+        private void Edit()
+        {
+            UnityEditor.SessionState.SetVector3($"move_component{name}_key", transform.position);
+            UnityEditor.SessionState.SetBool($"move_component{name}_key", true);
+        }
 
-        [Button, ShowIf("ShowValue")]
-        private void RecordCurrentPositon() { value = transform.position; }
+        [Button, ShowIf(nameof(ShowButtonRecord))]
+        private void RecordPosition()
+        {
+            value = transform.position;
+            // ReSharper disable once Unity.InefficientPropertyAccess
+            transform.position = UnityEditor.SessionState.GetVector3($"move_component{name}_key", value);
+            UnityEditor.SessionState.SetBool($"move_component{name}_key", false);
+        }
+
+        private bool ShowButtonRecord()
+        {
+            return !useTransform && UnityEditor.SessionState.GetBool($"move_component{name}_key", false);
+        }
+        
+        private bool ShowButtonEdit()
+        {
+            return !useTransform && UnityEditor.SessionState.GetBool($"move_component{name}_key", false) == false;
+        }
 
 #endif
 
@@ -39,15 +62,16 @@ namespace Pancake
         public void Move()
         {
             _tween.Stop();
-            var loopCount = 0;
-            if (loop) loopCount = -1;
+            var cyles = 0;
+            if (loop) cyles = -1;
             var pos = value;
             if (useTransform) pos = target.position;
             _tween = Tween.LocalPosition(transform,
                 pos,
                 duration,
                 ease,
-                loopCount);
+                cyles,
+                cycleMode);
         }
 
         protected override void OnDisabled()
