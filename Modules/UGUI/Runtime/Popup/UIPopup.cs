@@ -257,19 +257,18 @@ namespace Pancake.UI
         /// <summary>
         /// Only use this method when you not add any button in list close button
         /// </summary>
-        protected void SelfClose()
-        {
-            _tokenCheckPressButton?.Cancel();
-            closePopupEvent.Raise();
-        }
-
-        private void OnApplicationQuit()
+        protected void CancelTokenCheckBackButton()
         {
             if (_tokenCheckPressButton != null)
             {
                 _tokenCheckPressButton.Cancel();
                 _tokenCheckPressButton.Dispose();
             }
+        }
+
+        private void OnApplicationQuit()
+        {
+            CancelTokenCheckBackButton();
         }
     }
 }
