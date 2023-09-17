@@ -24,6 +24,7 @@ namespace Pancake.Spine
         [SerializeField] private SkeletonAnimation skeleton;
         [SerializeField] private bool loopLastestTrack;
         [SerializeField] private StartupMode startupMode = StartupMode.OnEnabled;
+
         [SerializeField, ShowIf(nameof(startupMode), StartupMode.Manual), Label("   Play Event")]
         private ScriptableEventNoParam playAnimationEvent;
 
@@ -33,20 +34,12 @@ namespace Pancake.Spine
 
         private async void Awake()
         {
-            if (startupMode == StartupMode.Awake)
-            {
-                await UniTask.WaitUntil(() => skeleton != null && skeleton.skeletonDataAsset != null);
-                Play();
-            }
+            if (startupMode == StartupMode.Awake) Play();
         }
 
         private async void Start()
         {
-            if (startupMode == StartupMode.Start)
-            {
-                await UniTask.WaitUntil(() => skeleton != null && skeleton.skeletonDataAsset != null);
-                Play();
-            }
+            if (startupMode == StartupMode.Start) Play();
         }
 
         protected override void OnEnabled()
@@ -74,7 +67,7 @@ namespace Pancake.Spine
 #endif
             }
 
-            if (startupMode == StartupMode.OnEnabled) playAnimationEvent.OnRaised -= Play;
+            if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised -= Play;
         }
 
         private void Play()
