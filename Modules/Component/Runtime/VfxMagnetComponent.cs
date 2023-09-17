@@ -20,7 +20,7 @@ namespace Pancake.Component
         [SerializeField, ShowIf(nameof(isPlaySound))] private Audio audioSpawn;
         [SerializeField, ShowIf(nameof(isPlaySound))] private ScriptableEventAudio audioPlayEvent;
         [Space] [SerializeField] private bool useCanvasMaster;
-        [SerializeField, HideIf(nameof(useCanvasMaster))] private Canvas canvas;
+        [SerializeField, HideIf(nameof(useCanvasMaster))] private Transform canvas;
         [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
 
@@ -34,7 +34,7 @@ namespace Pancake.Component
             try
             {
 #endif
-                var parent = useCanvasMaster ? getCanvasMasterEvent.Raise().transform : canvas.transform;
+                var parent = useCanvasMaster ? getCanvasMasterEvent.Raise().transform : canvas;
                 coinFxPool.SetParent(parent, true);
 #if UNITY_EDITOR
             }
