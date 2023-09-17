@@ -1,3 +1,4 @@
+#if PANCAKE_SPINE
 using System;
 using System.Collections;
 using Pancake.Apex;
@@ -99,3 +100,4 @@ namespace Pancake.Spine
         }
     }
 }
+#endif
