@@ -26,4 +26,11 @@ namespace Pancake
         SceneLoaded,
         ApplicationStarts,
     }
+
+    public enum StartupMode
+    {
+        Awake,
+        Start,
+        OnEnabled
+    }
 }
