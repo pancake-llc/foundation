@@ -115,7 +115,11 @@ namespace Pancake
         {
             if (resetOn != ResetType.SceneLoaded) return;
 
-            if (mode == LoadSceneMode.Single) IsPrewarmed = false;
+            if (mode == LoadSceneMode.Single)
+            {
+                container.Clear();
+                IsPrewarmed = false;
+            }
         }
 
         public virtual void OnDisable()

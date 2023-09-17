@@ -44,8 +44,8 @@ namespace Pancake
             Root.SetParent(_parent);
             if (resetPosition)
             {
-                Root.transform.localPosition = Vector3.zero;
-                Root.transform.localScale = Vector3.one;
+                Root.localPosition = Vector3.zero;
+                Root.localScale = Vector3.one;
             }
         }
 
