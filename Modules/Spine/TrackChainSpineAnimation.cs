@@ -23,22 +23,36 @@ namespace Pancake.Spine
     {
         [SerializeField] private SkeletonAnimation skeleton;
         [SerializeField] private bool loopLastestTrack;
-        [SerializeField] private bool playOnAwake;
-        [SerializeField, HideIf(nameof(playOnAwake)), Label("   Play Event")] private ScriptableEventNoParam playAnimationEvent;
+        [SerializeField] private StartupMode startupMode = StartupMode.OnEnabled;
+        [SerializeField, HideIf(nameof(startupMode), StartupMode.Manual), Label("   Play Event")]
+        private ScriptableEventNoParam playAnimationEvent;
+
         [SerializeField, Array] private TrackData[] datas;
-        
+
         private IEnumerator _coroutine;
 
         private async void Awake()
         {
-            await UniTask.WaitUntil(() => skeleton != null && skeleton.skeletonDataAsset != null);
+            if (startupMode == StartupMode.Awake)
+            {
+                await UniTask.WaitUntil(() => skeleton != null && skeleton.skeletonDataAsset != null);
+                Play();
+            }
+        }
 
-            if (playOnAwake) Play();
+        private async void Start()
+        {
+            if (startupMode == StartupMode.Start)
+            {
+                await UniTask.WaitUntil(() => skeleton != null && skeleton.skeletonDataAsset != null);
+                Play();
+            }
         }
 
         protected override void OnEnabled()
         {
-            if (!playOnAwake && playAnimationEvent != null) playAnimationEvent.OnRaised += Play;
+            if (startupMode == StartupMode.OnEnabled) Play();
+            if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised += Play;
         }
 
         protected override void OnDisabled()
@@ -60,7 +74,7 @@ namespace Pancake.Spine
 #endif
             }
 
-            if (!playOnAwake && playAnimationEvent != null) playAnimationEvent.OnRaised -= Play;
+            if (startupMode == StartupMode.OnEnabled) playAnimationEvent.OnRaised -= Play;
         }
 
         private void Play()
@@ -68,7 +82,6 @@ namespace Pancake.Spine
             _coroutine = IePlay();
             App.StartCoroutine(_coroutine);
         }
-
 
         private IEnumerator IePlay()
         {

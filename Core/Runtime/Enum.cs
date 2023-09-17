@@ -29,6 +29,7 @@ namespace Pancake
 
     public enum StartupMode
     {
+        Manual,
         Awake,
         Start,
         OnEnabled
