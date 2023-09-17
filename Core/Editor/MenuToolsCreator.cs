@@ -21,6 +21,7 @@ namespace PancakeEditor
             {
                 System.IO.File.Delete(path);
                 AssetDatabase.Refresh();
+                Debug.Log("Success delete user settings of finder!");
             }
         }
 
