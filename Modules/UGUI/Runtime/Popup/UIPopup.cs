@@ -67,7 +67,7 @@ namespace Pancake.UI
         /// <summary>
         /// Optional ignore process check press back button
         /// </summary>
-        protected virtual bool EnableTrackBackButton { get; set; } = true;
+        protected virtual bool EnableTrackBackButton() => true;
 
         private CancellationTokenSource _tokenCheckPressButton;
         private bool _canActuallyClose;
@@ -127,7 +127,7 @@ namespace Pancake.UI
             ActivePopup();
             MotionShow();
 
-            if (EnableTrackBackButton)
+            if (EnableTrackBackButton())
             {
                 using (_tokenCheckPressButton = CancellationTokenSource.CreateLinkedTokenSource(token))
                 {
