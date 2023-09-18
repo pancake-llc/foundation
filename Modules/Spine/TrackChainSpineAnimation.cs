@@ -32,12 +32,12 @@ namespace Pancake.Spine
 
         private IEnumerator _coroutine;
 
-        private async void Awake()
+        private void Awake()
         {
             if (startupMode == StartupMode.Awake) Play();
         }
 
-        private async void Start()
+        private void Start()
         {
             if (startupMode == StartupMode.Start) Play();
         }

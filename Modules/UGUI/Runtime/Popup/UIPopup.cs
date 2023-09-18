@@ -64,6 +64,11 @@ namespace Pancake.UI
         public bool Active { get; protected set; }
         public int SortingOrder => canvas != null ? canvas.sortingOrder : 0;
 
+        /// <summary>
+        /// Optional ignore process check press back button
+        /// </summary>
+        protected virtual bool EnableTrackBackButton { get; set; } = true;
+
         private CancellationTokenSource _tokenCheckPressButton;
         private bool _canActuallyClose;
         private Vector2 _startScale;
@@ -122,30 +127,33 @@ namespace Pancake.UI
             ActivePopup();
             MotionShow();
 
-            using (_tokenCheckPressButton = CancellationTokenSource.CreateLinkedTokenSource(token))
+            if (EnableTrackBackButton)
             {
-                try
+                using (_tokenCheckPressButton = CancellationTokenSource.CreateLinkedTokenSource(token))
                 {
-                    var linkToken = _tokenCheckPressButton.Token;
-                    var task = PopupHelper.SelectButton(linkToken, closeButtons.ToArray());
-                    Task finishTask;
-                    if (closeByBackButton)
+                    try
                     {
-                        var pressTask = PopupHelper.WaitForPressBackButton(linkToken, this);
-                        finishTask = await Task.WhenAny(task, pressTask);
-                    }
-                    else
-                    {
-                        finishTask = await Task.WhenAny(task);
-                    }
+                        var linkToken = _tokenCheckPressButton.Token;
+                        var task = PopupHelper.SelectButton(linkToken, closeButtons.ToArray());
+                        Task finishTask;
+                        if (closeByBackButton)
+                        {
+                            var pressTask = PopupHelper.WaitForPressBackButton(linkToken, this);
+                            finishTask = await Task.WhenAny(task, pressTask);
+                        }
+                        else
+                        {
+                            finishTask = await Task.WhenAny(task);
+                        }
 
-                    await finishTask; // Propagate exception if the task finished because of exceptio
-                    if (_tokenCheckPressButton != null && !_tokenCheckPressButton.IsCancellationRequested) _tokenCheckPressButton.Cancel();
-                }
-                finally
-                {
-                    _tokenCheckPressButton?.Dispose();
-                    if (Application.isPlaying) closePopupEvent.Raise();
+                        await finishTask; // Propagate exception if the task finished because of exceptio
+                        if (_tokenCheckPressButton != null && !_tokenCheckPressButton.IsCancellationRequested) _tokenCheckPressButton.Cancel();
+                    }
+                    finally
+                    {
+                        _tokenCheckPressButton?.Dispose();
+                        if (Application.isPlaying) closePopupEvent.Raise();
+                    }
                 }
             }
 

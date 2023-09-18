@@ -28,7 +28,7 @@ namespace Pancake.Spine
             if (startupMode == StartupMode.Awake) Play();
         }
 
-        private async void Start()
+        private void Start()
         {
             if (startupMode == StartupMode.Start) Play();
         }
