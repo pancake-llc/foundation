@@ -64,6 +64,11 @@ namespace Pancake.UI
         public bool Active { get; protected set; }
         public int SortingOrder => canvas != null ? canvas.sortingOrder : 0;
 
+        internal UnityEvent OnBeforeShowInternal() => onBeforeShow;
+        internal UnityEvent OnAfterShowInternal() => onAfterShow;
+        internal UnityEvent OnBeforeCloseInternal() => onBeforeClose;
+        internal UnityEvent OnAfterCloseInternal() => onAfterClose;
+
         /// <summary>
         /// Optional ignore process check press back button
         /// </summary>
@@ -114,14 +119,14 @@ namespace Pancake.UI
 
         private void Awake() { _defaultScale = container.localScale; }
 
-        public virtual void Init() { }
+        internal virtual void Init() { }
 
         protected override void Tick()
         {
             if (Input.GetKeyDown(KeyCode.Escape)) BackButtonPressed = true;
         }
 
-        public virtual async void Show(CancellationToken token = default)
+        internal virtual async void Show(CancellationToken token = default)
         {
             OnBeforeShow();
             ActivePopup();
@@ -160,7 +165,7 @@ namespace Pancake.UI
             OnAfterShow();
         }
 
-        public virtual void Close()
+        internal virtual void Close()
         {
             OnBeforeClose();
             MotionClose();
@@ -177,9 +182,7 @@ namespace Pancake.UI
 
         public virtual void UpdateSortingOrder(int order) { canvas.sortingOrder = order; }
 
-        public virtual void Refresh() { }
-
-        public void ActivePopup()
+        private void ActivePopup()
         {
             Active = true;
             gameObject.SetActive(true);
@@ -187,15 +190,15 @@ namespace Pancake.UI
             _canActuallyClose = false;
         }
 
-        public void DeactivePopup()
+        private void DeactivePopup()
         {
             Active = false;
             gameObject.SetActive(false);
         }
 
-        public virtual void Raise() { canvasGroup.alpha = 1; }
+        internal virtual void Raise() { canvasGroup.alpha = 1; }
 
-        public virtual void Collapse() { canvasGroup.alpha = 0; }
+        internal virtual void Collapse() { canvasGroup.alpha = 0; }
 
         protected virtual void OnBeforeShow() { onBeforeShow?.Invoke(); }
         protected virtual void OnAfterShow() { onAfterShow?.Invoke(); }
@@ -262,21 +265,13 @@ namespace Pancake.UI
             }
         }
 
-        /// <summary>
-        /// Only use this method when you not add any button in list close button
-        /// </summary>
-        protected void CancelTokenCheckBackButton()
+        private void OnApplicationQuit()
         {
             if (_tokenCheckPressButton != null)
             {
                 _tokenCheckPressButton.Cancel();
                 _tokenCheckPressButton.Dispose();
             }
-        }
-
-        private void OnApplicationQuit()
-        {
-            CancelTokenCheckBackButton();
         }
     }
 }
