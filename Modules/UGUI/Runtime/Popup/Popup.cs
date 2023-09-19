@@ -49,7 +49,7 @@ namespace Pancake.UI
             }
         }
 
-        private UIPopup Show(string name, Transform parent)
+        private UIPopup Show(string name, Transform parent, bool callInit = true)
         {
             _container.TryGetValue(name, out var existInstance);
             if (existInstance == null)
@@ -57,13 +57,13 @@ namespace Pancake.UI
                 var prefab = popups.Filter(p => p.name == name).FirstOrDefault();
                 var instance = Instantiate(prefab, parent);
                 _container.TryAdd(name, instance);
-                return Show(instance);
+                return Show(instance, callInit);
             }
 
-            return Show(existInstance);
+            return Show(existInstance, callInit);
         }
 
-        private UIPopup Show(UIPopup instance)
+        private UIPopup Show(UIPopup instance, bool callInit)
         {
             var lastOrder = 0;
             if (_stacks.Count > 0)
@@ -81,7 +81,7 @@ namespace Pancake.UI
 
             instance.UpdateSortingOrder(lastOrder + 10);
             _stacks.Push(instance);
-            instance.Init(); // Initialize if necessary before show
+            if (callInit) instance.Init(); // Initialize if necessary before show
             instance.Show();
             return instance;
         }
