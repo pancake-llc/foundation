@@ -264,14 +264,30 @@ namespace Pancake.UI
                     break;
             }
         }
-
+        
+        /// <summary>
+        /// Only use this method when you not add any button in list close button
+        /// </summary>
+        protected void CancelToken()
+        {
+            try
+            {
+                if (_tokenCheckPressButton != null)
+                {
+                    _tokenCheckPressButton.Cancel();
+                    _tokenCheckPressButton.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+        
+        
         private void OnApplicationQuit()
         {
-            if (_tokenCheckPressButton != null)
-            {
-                _tokenCheckPressButton.Cancel();
-                _tokenCheckPressButton.Dispose();
-            }
+            CancelToken();
         }
     }
 }
