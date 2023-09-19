@@ -119,7 +119,7 @@ namespace Pancake.UI
 
         private void Awake() { _defaultScale = container.localScale; }
 
-        internal virtual void Init() { }
+        public virtual void Init() { }
 
         protected override void Tick()
         {
