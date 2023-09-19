@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Pancake.Scriptable;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -14,9 +15,9 @@ namespace Pancake.UI
         private readonly List<EventListenerShowPopup> _eventListeners = new List<EventListenerShowPopup>();
         private readonly List<Object> _listenerObjects = new List<Object>();
 
-        private Func<string, Transform, bool, UIPopup> _onRaised;
+        private Func<string, Transform, bool, CancellationToken, UIPopup> _onRaised;
 
-        public event Func<string, Transform, bool, UIPopup> OnRaised
+        public event Func<string, Transform, bool, CancellationToken, UIPopup> OnRaised
         {
             add
             {
@@ -32,7 +33,7 @@ namespace Pancake.UI
             }
         }
 
-        public UIPopup Raise(string name, Transform parent, bool callInit = true)
+        public UIPopup Raise(string name, Transform parent, bool callInit = true, CancellationToken token = default)
         {
             if (!Application.isPlaying) return null;
 
@@ -41,7 +42,7 @@ namespace Pancake.UI
                 _eventListeners[i].OnEventRaised(this);
             }
 
-            return _onRaised?.Invoke(name, parent, callInit);
+            return _onRaised?.Invoke(name, parent, callInit, token);
         }
 
         public void RegisterListener(EventListenerShowPopup listener)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Pancake.Apex;
 using Pancake.Linq;
 using Pancake.Scriptable;
@@ -49,7 +50,7 @@ namespace Pancake.UI
             }
         }
 
-        private UIPopup Show(string name, Transform parent, bool callInit = true)
+        private UIPopup Show(string name, Transform parent, bool callInit = true, CancellationToken token = default)
         {
             _container.TryGetValue(name, out var existInstance);
             if (existInstance == null)
@@ -57,13 +58,13 @@ namespace Pancake.UI
                 var prefab = popups.Filter(p => p.name == name).FirstOrDefault();
                 var instance = Instantiate(prefab, parent);
                 _container.TryAdd(name, instance);
-                return Show(instance, callInit);
+                return Show(instance, callInit, token);
             }
 
-            return Show(existInstance, callInit);
+            return Show(existInstance, callInit, token);
         }
 
-        private UIPopup Show(UIPopup instance, bool callInit)
+        private UIPopup Show(UIPopup instance, bool callInit, CancellationToken token)
         {
             var lastOrder = 0;
             if (_stacks.Count > 0)
@@ -82,7 +83,7 @@ namespace Pancake.UI
             instance.UpdateSortingOrder(lastOrder + 10);
             _stacks.Push(instance);
             if (callInit) instance.Init(); // Initialize if necessary before show
-            instance.Show();
+            instance.Show(token);
             return instance;
         }
 
