@@ -1,5 +1,6 @@
 ﻿using Pancake;
 using Pancake.ApexEditor;
+using Pancake.ExLib.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace PancakeEditor
 
             if (!string.IsNullOrEmpty(element.GetString()))
             {
-                if (Editor.TryFindTypeByFullName(NAME_CLASS_INHERIT, out var type))
+                if (TypeExtensions.TryFindTypeByFullName(NAME_CLASS_INHERIT, out var type))
                 {
                     var result = type.GetAllSubClass();
                     foreach (var type1 in result)
@@ -45,7 +46,7 @@ namespace PancakeEditor
                         element.GetSerializedObject().ApplyModifiedProperties();
                     });
 
-                if (Editor.TryFindTypeByFullName(NAME_CLASS_INHERIT, out var type))
+                if (TypeExtensions.TryFindTypeByFullName(NAME_CLASS_INHERIT, out var type))
                 {
                     var result = type.GetAllSubClass();
                     for (var i = 0; i < result.Count; i++)
