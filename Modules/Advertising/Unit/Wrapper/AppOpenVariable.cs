@@ -11,14 +11,14 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_bind")]
     public class AppOpenVariable : ScriptableObject
     {
-        [SerializeField] private StringPairVariable remoteConfigUsingAdmob;
+        [SerializeField] private StringVariable remoteConfigFlagUseAdmob;
         public AdUnitVariable admobAppOpen;
         public AdUnitVariable applovinAppOpen;
 
         public AdUnitVariable Context()
         {
-            bool.TryParse(remoteConfigUsingAdmob.Value.value, out bool usingAdmob);
-            return usingAdmob ? admobAppOpen : applovinAppOpen;
+            bool.TryParse(remoteConfigFlagUseAdmob.Value, out bool status);
+            return status ? admobAppOpen : applovinAppOpen;
         }
     }
 }

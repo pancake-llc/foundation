@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using Pancake.Apex;
 #if PANCAKE_REMOTE_CONFIG
 using Firebase;
 using Firebase.Extensions;
 using Firebase.RemoteConfig;
 #endif
-using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -13,13 +13,13 @@ namespace Pancake.Tracking
 {
     public class RemoteConfig : GameComponent
     {
-        [SerializeField] private BoolVariable remoteFetchCompleted;
-        [SerializeField, Array] private StringPairVariable[] remoteFields;
+        [SerializeField, Label("Status")] private BoolVariable remoteConfigIsFetchCompleted;
+        [SerializeField] private RemoteConfigData remoteData;
 
 #if PANCAKE_REMOTE_CONFIG
         private void Start()
         {
-            remoteFetchCompleted.Value = false;
+            remoteConfigIsFetchCompleted.Value = false;
             FirebaseApp.CheckDependenciesAsync()
                 .ContinueWith(task =>
                 {
@@ -67,17 +67,17 @@ namespace Pancake.Tracking
             remoteConfig.ActivateAsync()
                 .ContinueWithOnMainThread(task =>
                 {
-                    for (int i = 0; i < remoteFields.Length; i++)
+                    foreach (string key in remoteData.Keys)
                     {
-                        if (!string.IsNullOrEmpty(remoteFields[i].Value.Key))
+                        if (!string.IsNullOrEmpty(key))
                         {
-                            string result = FirebaseRemoteConfig.DefaultInstance.GetValue(remoteFields[i].Value.Key).StringValue;
-                            remoteFields[i].Value.value = result;
+                            string result = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
+                            remoteData[key].Value = result;
                         }
                     }
                 });
 
-            remoteFetchCompleted.Value = true;
+            remoteConfigIsFetchCompleted.Value = true;
         }
 #endif
     }
