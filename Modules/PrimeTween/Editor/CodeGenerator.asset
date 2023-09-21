@@ -845,7 +845,7 @@ MonoBehaviour:
     dependency: 2
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
-  - name: TweenTImeScale
+  - name: TweenTimeScale
     methodName: TweenTimeScale
     targetType: PrimeTween.Tween
     propertyType: 1
@@ -853,7 +853,18 @@ MonoBehaviour:
     propertyGetter: 
     propertySetter: 
     dotweenMethodName: DOTimeScale
-    dependency: 8
+    dependency: 0
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 1
+  - name: GlobalTimeScale
+    methodName: GlobalTimeScale
+    targetType: 
+    propertyType: 1
+    propertyName: 
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: 
+    dependency: 0
     placeInGlobalScope: 0
     generateOnlyOverloads: 1
   - name: VisualElement_Layout

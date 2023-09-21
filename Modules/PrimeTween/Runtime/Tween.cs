@@ -196,7 +196,6 @@ namespace PrimeTween {
         
         bool validateIsAlive() => Constants.validateIsAlive(isAlive);
 
-        #if PRIME_TWEEN_EXPERIMENTAL
         /// <summary> Custom tween's timeScale. To smoothly animate tween's timeScale over time, use <see cref="Tween.TweenTimeScale"/> method.</summary>
         public float timeScale {
             get => validateIsAlive() ? tween.timeScale : 1;
@@ -210,6 +209,12 @@ namespace PrimeTween {
                 tween.timeScale = value;
             }
         }
-        #endif
+        
+        public Tween OnUpdate<T>(T target, Action<T, Tween> onUpdate) where T : class {
+            if (validateIsAlive()) {
+                tween.SetOnUpdate(target, onUpdate);
+            }
+            return this;
+        }
     }
 }

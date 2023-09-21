@@ -275,7 +275,7 @@ namespace PrimeTween {
 
                 Vector3 result = default;
                 for (int i = 0; i < 3; i++) {
-                    result[i] = Mathf.Lerp(from[i], to[i], Easing.Evaluate(t, easeBetweenShakes)) * strengthOverTime;
+                    result[i] = Mathf.Lerp(from[i], to[i], StandardEasing.Evaluate(t, easeBetweenShakes)) * strengthOverTime;
                 }
                 return result;
             }
@@ -286,7 +286,7 @@ namespace PrimeTween {
                 }
                 var falloffEase = (Ease)falloffEaseInt;
                 if (falloffEase != Ease.Custom) {
-                    return 1 - Easing.Evaluate(interpolationFactor, falloffEase);
+                    return 1 - StandardEasing.Evaluate(interpolationFactor, falloffEase);
                 }
                 Assert.IsNotNull(customStrengthOverTime);
                 return customStrengthOverTime.Evaluate(interpolationFactor);

@@ -47,11 +47,11 @@ namespace PrimeTween {
             : this(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)) {
         }
 
-        public TweenSettings(T endValue, float duration, [NotNull] AnimationCurve customEase, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
+        public TweenSettings(T endValue, float duration, Easing customEase, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
             : this(endValue, new TweenSettings(duration, customEase, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)) {
         }
 
-        public TweenSettings(T startValue, T endValue, float duration, [NotNull] AnimationCurve customEase, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
+        public TweenSettings(T startValue, T endValue, float duration, Easing customEase, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
             : this(startValue, endValue, new TweenSettings(duration, customEase, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)) {
         }
 

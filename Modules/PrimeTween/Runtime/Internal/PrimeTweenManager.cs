@@ -255,6 +255,7 @@ namespace PrimeTween {
             var result = pool[lastIndex];
             pool.RemoveAt(lastIndex);
             lastId++;
+            Assert.AreEqual(-1, result.id);
             result.id = lastId;
             return result;
         }

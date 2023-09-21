@@ -9,7 +9,7 @@ namespace PrimeTween {
         #if UNITY_EDITOR
         [SerializeField, HideInInspector] internal string debugDescription;
         #endif
-        internal int id;
+        internal int id = -1;
         /// Holds a reference to tween's target. If the target is UnityEngine.Object, the tween will gracefully stop when the target is destroyed. That is, destroying object with running tweens is perfectly ok.
         /// Keep in mind: when animating plain C# objects (not derived from UnityEngine.Object), the plugin will hold a strong reference to the object for the entire tween duration.
         ///     If plain C# target holds a reference to UnityEngine.Object and animates its properties, then it's user's responsibility to ensure that UnityEngine.Object still exists.
@@ -82,10 +82,9 @@ namespace PrimeTween {
                 return isRunning;
             }
             if (isUnityTargetDestroyed()) {
-                warnOnCompleteIgnored(true);
                 // No need to warn that target was destroyed during animation, this is normal.
                 // 'target' is the tween's 'owner' so tweens should be tied to the target's lifetime.
-                EmergencyStop();
+                EmergencyStop(true);
                 return shouldRemove;
             }
             var halfDt = dt * 0.5f;
@@ -102,9 +101,16 @@ namespace PrimeTween {
                     interpolationFactor = _elapsedTimeInterpolating / duration;
                 }
                 Assert.IsTrue(interpolationFactor <= 1);
+                ReportOnValueChange(interpolationFactor);
                 // ReportOnValueChange() calls onValueChange(), and onValueChange() can execute any code, including Tween.StopAll() or Tween.Stop().
                 // So we have to check if a tween wasn't killed after the calling ReportOnValueChange()
-                if (!ReportOnValueChange(interpolationFactor) || !_isAlive) {
+                if (stoppedEmergently || !_isAlive) {
+                    return shouldRemove;
+                }
+            }
+            if (onUpdate != null) {
+                onUpdate(this);
+                if (stoppedEmergently || !_isAlive) {
                     return shouldRemove;
                 }
             }
@@ -181,6 +187,7 @@ namespace PrimeTween {
             #if UNITY_EDITOR
             debugDescription = null;
             #endif
+            id = -1;
             target = null;
             unityTarget = null;
             propType = PropType.None;
@@ -199,6 +206,7 @@ namespace PrimeTween {
             tweenType = TweenType.None;
             timeScale = 1;
             warnIgnoredOnCompleteIfTargetDestroyed = true;
+            clearOnUpdate();
         }
 
         /// <param name="warnIfTargetDestroyed">https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
@@ -220,7 +228,7 @@ namespace PrimeTween {
 
         internal void OnComplete<T>([NotNull] T _target, [NotNull] Action<T> _onComplete, bool warnIfTargetDestroyed) where T : class {
             if (isDestroyedUnityObject(_target)) {
-                Debug.LogError(Constants.isDeadMessage);
+                Debug.LogError(Constants.targetDestroyed);
                 return;
             }
             Assert.IsNotNull(_onComplete);
@@ -267,7 +275,7 @@ namespace PrimeTween {
             Assert.AreNotEqual(PropType.None, propType);
             if (_settings.ease == Ease.Default) {
                 _settings.ease = PrimeTweenManager.Instance.defaultEase;
-            } else if (_settings.ease == Ease.Custom) {
+            } else if (_settings.ease == Ease.Custom && _settings.parametricEaseType == ParametricEaseType.None) {
                 if (_settings.customEase == null || !TweenSettings.ValidateCustomCurveKeyframes(_settings.customEase)) {
                     Debug.LogError($"Ease type is Ease.Custom, but {nameof(TweenSettings.customEase)} is not configured correctly.");
                     _settings.ease = PrimeTweenManager.Instance.defaultEase;
@@ -305,18 +313,17 @@ namespace PrimeTween {
             targetIsUnityObject = unityObject != null;
         }
 
-        internal bool ReportOnValueChangeIfAnimation(float _interpolationFactor) {
-            if (tweenType == TweenType.Delay) {
-                return true;
+        internal void ReportOnValueChangeIfAnimation(float _interpolationFactor) {
+            if (tweenType != TweenType.Delay) {
+                Assert.IsFalse(isUnityTargetDestroyed());
+                ReportOnValueChange(_interpolationFactor);
             }
-            Assert.IsFalse(isUnityTargetDestroyed());
-            return ReportOnValueChange(_interpolationFactor);
         }
 
         /// Tween.Custom and Tween.ShakeCustom try-catch the <see cref="onValueChange"/> and calls <see cref="ReusableTween.EmergencyStop"/> if an exception occurs.
         /// <see cref="ReusableTween.EmergencyStop"/> sets <see cref="stoppedEmergently"/> to true.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        bool ReportOnValueChange(float _interpolationFactor) {
+        void ReportOnValueChange(float _interpolationFactor) {
             if (startFromCurrent) {
                 startFromCurrent = false;
                 startValue = Tween.tryGetStartValueFromOtherShake(this) ?? getter(this);
@@ -324,7 +331,6 @@ namespace PrimeTween {
             }
             easedInterpolationFactor = calcEasedT(_interpolationFactor);
             onValueChange(this);
-            return !stoppedEmergently;
         }
 
         void ReportOnComplete() {
@@ -337,7 +343,7 @@ namespace PrimeTween {
 
         internal bool tryManipulate() {
             if (warnIfTargetDestroyed()) {
-                EmergencyStop();
+                EmergencyStop(true);
                 return false;
             }
             return true;
@@ -345,7 +351,7 @@ namespace PrimeTween {
 
         internal bool warnIfTargetDestroyed() {
             if (isUnityTargetDestroyed()) {
-                Debug.LogWarning($"{Constants.targetDestroyed} Tween: {GetDescription()}");
+                Debug.LogError($"{Constants.targetDestroyed} Tween: {GetDescription()}");
                 warnOnCompleteIgnored(true);
                 return true;
             }
@@ -470,25 +476,34 @@ namespace PrimeTween {
         }
 
         float calcEasedT(float t) {
-            var ease = settings.ease;
-            var customEase = settings.customEase;
             var isForwardCycle = cyclesDone % 2 == 0;
             if (isForwardCycle) {
-                return Easing.Evaluate(t, ease, customEase);
+                return evaluate(t);
             }
             switch (settings.cycleMode) {
                 case CycleMode.Restart:
                 case CycleMode.Incremental:
-                    return Easing.Evaluate(t, ease, customEase);
+                    return evaluate(t);
                 case CycleMode.Yoyo:
-                    return 1 - Easing.Evaluate(t, ease, customEase);
+                    return 1 - evaluate(t);
                 case CycleMode.Rewind:
-                    return Easing.Evaluate(1 - t, ease, customEase);
+                    return evaluate(1 - t);
                 default:
                     throw new Exception();
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        float evaluate(float t) {
+            if (settings.ease == Ease.Custom) {
+                if (settings.parametricEaseType != ParametricEaseType.None) {
+                    return Easing.Evaluate(t, settings.parametricEaseType, settings.parametricEaseStrength, settings.parametricEasePeriod);
+                }
+                return settings.customEase.Evaluate(t);
+            }
+            return StandardEasing.Evaluate(t, settings.ease);
+        }
+        
         internal void cacheDiff() {
             Assert.IsFalse(startFromCurrent);
             Assert.AreNotEqual(PropType.None, propType);
@@ -516,7 +531,8 @@ namespace PrimeTween {
             }
             
             cyclesDone = settings.cycles - 1; // simulate the last cycle so calcEasedT() calculates the correct value depending on cycleMode
-            if (!ReportOnValueChangeIfAnimation(1)) {
+            ReportOnValueChangeIfAnimation(1);
+            if (stoppedEmergently) {
                 return;
             }
             
@@ -538,7 +554,7 @@ namespace PrimeTween {
             }
         }
 
-        internal void EmergencyStop() {
+        internal void EmergencyStop(bool isTargetDestroyed = false) {
             if (sequence.IsCreated) {
                 sequence.emergencyStop();
                 Assert.IsFalse(_isAlive);
@@ -547,7 +563,7 @@ namespace PrimeTween {
                 kill();
             }
             stoppedEmergently = true;
-            warnOnCompleteIgnored(false);
+            warnOnCompleteIgnored(isTargetDestroyed);
             Assert.IsFalse(_isAlive);
             Assert.IsFalse(sequence.isAlive);
         }
@@ -605,5 +621,40 @@ namespace PrimeTween {
         }
         
         internal int aliveTweensInSequence;
+        
+        [CanBeNull] object onUpdateTarget;
+        object onUpdateCallback;
+        Action<ReusableTween> onUpdate;
+        
+        internal void SetOnUpdate<T>(T _target, [NotNull] Action<T,Tween> _onUpdate) where T : class {
+            Assert.IsNull(onUpdate, "Only one OnUpdate() is allowed for one tween.");
+            Assert.IsNotNull(_onUpdate, nameof(_onUpdate) + " is null!");
+            onUpdateTarget = _target;
+            onUpdateCallback = _onUpdate;
+            onUpdate = reusableTween => reusableTween.invokeOnUpdate<T>();
+        }
+        
+        void invokeOnUpdate<T>() where T : class {
+            var callback = onUpdateCallback as Action<T, Tween>;
+            Assert.IsNotNull(callback);
+            var _onUpdateTarget = onUpdateTarget as T;
+            if (isDestroyedUnityObject(_onUpdateTarget)) {
+                Debug.LogError($"OnUpdate() will not be called again because OnUpdate()'s target has been destroyed, tween: {GetDescription()}", unityTarget);
+                clearOnUpdate();
+                return;
+            }
+            try {
+                callback(_onUpdateTarget, new Tween(this));
+            } catch (Exception e) {
+                Debug.LogError($"OnUpdate() will not be called again because it thrown exception, tween: {GetDescription()}, exception:\n{e}", unityTarget);
+                clearOnUpdate();
+            }
+        }
+        
+        void clearOnUpdate() {
+            onUpdateTarget = null;
+            onUpdateCallback = null;
+            onUpdate = null;
+        }
     }
 }

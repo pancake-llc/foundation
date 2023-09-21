@@ -35,30 +35,37 @@ namespace PrimeTween {
         public float endDelay;
         [Tooltip(Constants.unscaledTimeTooltip)]
         public bool useUnscaledTime;
+        [NonSerialized] internal ParametricEaseType parametricEaseType;
+        [NonSerialized] internal float parametricEaseStrength;
+        [NonSerialized] internal float parametricEasePeriod;
 
-        TweenSettings(float duration, Ease ease, [CanBeNull] AnimationCurve customEase = null, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) {
+        TweenSettings(float duration, Ease ease, Easing? customEasing, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) {
             this.duration = duration;
-            if (ease == Ease.Custom) {
-                if (customEase == null || !ValidateCustomCurveKeyframes(customEase)) {
+            var curve = customEasing?.curve;
+            if (ease == Ease.Custom && customEasing?.parametricEaseType == ParametricEaseType.None) {
+                if (curve == null || !ValidateCustomCurveKeyframes(curve)) {
                     Debug.LogError($"Ease is Ease.Custom, but {nameof(customEase)} is not configured correctly. Using Ease.Default instead.");
                     ease = Ease.Default;
                 }
             }
             this.ease = ease;
-            this.customEase = ease == Ease.Custom ? customEase : null;
+            customEase = ease == Ease.Custom ? curve : null;
             this.cycles = cycles;
             this.cycleMode = cycleMode;
             this.startDelay = startDelay;
             this.endDelay = endDelay;
             this.useUnscaledTime = useUnscaledTime;
+            parametricEaseType = customEasing?.parametricEaseType ?? ParametricEaseType.None;
+            parametricEaseStrength = customEasing?.parametricEaseStrength ?? float.NaN;
+            parametricEasePeriod = customEasing?.parametricEasePeriod ?? float.NaN;
         }
         
         public TweenSettings(float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
             : this(duration, ease, null, cycles, cycleMode, startDelay, endDelay, useUnscaledTime) {
         }
 
-        public TweenSettings(float duration, [NotNull] AnimationCurve customEase, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
-            : this(duration, Ease.Custom, customEase, cycles, cycleMode, startDelay, endDelay, useUnscaledTime) {
+        public TweenSettings(float duration, Easing easing, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
+            : this(duration, easing.ease, easing, cycles, cycleMode, startDelay, endDelay, useUnscaledTime) {
         }
   
         internal static void setCyclesTo1If0(ref int cycles) {
@@ -76,6 +83,9 @@ namespace PrimeTween {
             startDelay = other.startDelay;
             endDelay = other.endDelay;
             useUnscaledTime = other.useUnscaledTime;
+            parametricEaseType = other.parametricEaseType;
+            parametricEaseStrength = other.parametricEaseStrength;
+            parametricEasePeriod = other.parametricEasePeriod;
         }
 
         internal void SetValidValues() {

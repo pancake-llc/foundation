@@ -64,6 +64,9 @@ namespace PrimeTween {
 
         public static Tween DOFade([NotNull] this UnityEngine.SpriteRenderer target, Single endValue, float duration) => Tween.Alpha(target, endValue, duration, defaultDotweenEase);
 
+        public static Tween DOTimeScale([NotNull] this PrimeTween.Tween target, Single endValue, float duration) => Tween.TweenTimeScale(target, endValue, duration, defaultDotweenEase);
+
+
         #if !UNITY_2019_1_OR_NEWER || UNITY_UGUI_INSTALLED
         public static Tween DOValue([NotNull] this UnityEngine.UI.Slider target, Single endValue, float duration) => Tween.UISliderValue(target, endValue, duration, defaultDotweenEase);
 
@@ -151,10 +154,6 @@ namespace PrimeTween {
 
         public static Tween DOPitch([NotNull] this UnityEngine.AudioSource target, Single endValue, float duration) => Tween.AudioPitch(target, endValue, duration, defaultDotweenEase);
 
-
-        #endif
-        #if PRIME_TWEEN_EXPERIMENTAL
-        public static Tween DOTimeScale([NotNull] this PrimeTween.Tween target, Single endValue, float duration) => Tween.TweenTimeScale(target, endValue, duration, defaultDotweenEase);
 
         #endif
         #if UI_ELEMENTS_MODULE_INSTALLED
