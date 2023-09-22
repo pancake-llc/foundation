@@ -14,7 +14,7 @@ namespace PancakeEditor
 #endif
 
 #if PANCAKE_GOOGLE_EDM
-            Uniform.DrawInstalled("google edm 1.2.176");
+            Uniform.DrawInstalled("google edm 1.2.177");
             EditorGUILayout.Space();
 #endif
 
@@ -37,7 +37,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Google External Dependency Manager", GUILayout.MaxHeight(40f)))
             {
-                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.176");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.177");
                 RegistryManager.Resolve();
             }
 

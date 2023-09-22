@@ -11,7 +11,6 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public class AdmobAppOpenVariable : AdUnitVariable
     {
-        public ScreenOrientation orientation = ScreenOrientation.Portrait;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private AppOpenAd _appOpenAd;
 #endif
@@ -23,7 +22,7 @@ namespace Pancake.Monetization
             if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
 
             Destroy();
-            AppOpenAd.Load(Id, orientation, new AdRequest(), OnAdLoadCallback);
+            AppOpenAd.Load(Id, new AdRequest(), OnAdLoadCallback);
 #endif
         }
 
