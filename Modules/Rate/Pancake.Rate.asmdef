@@ -1,0 +1,26 @@
+{
+    "name": "Pancake.Rate",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4139e191aa32f459e9eb2e331225ad7e",
+        "GUID:b649415412a3d4e8a83df256b07478bb",
+        "GUID:b4318b6f3695442c4983c360248781db",
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
+        "GUID:b0a110e2f808b4d4d82f5694f91b251a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.google.play.review",
+            "expression": "1.6.0",
+            "define": "PANCAKE_REVIEW"
+        }
+    ],
+    "noEngineReferences": false
+}
