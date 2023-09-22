@@ -1,21 +1,23 @@
-#if PANCAKE_REVIEW
 namespace Pancake.Rate
 {
     using Scriptable;
     using System.Collections;
     using UnityEngine;
+
 #if UNITY_IOS
 using UnityEngine.iOS;
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID && PANCAKE_REVIEW
     using Google.Play.Review;
 #endif
 
     public class AppRatingComponent : GameComponent
     {
 #if UNITY_ANDROID
+#if PANCAKE_REVIEW
         private ReviewManager _reviewManager;
         private PlayReviewInfo _playReviewInfo;
         private Coroutine _coroutine;
+#endif
         [SerializeField] private ScriptableEventNoParam initReviewEvent;
 #endif
         [SerializeField] private ScriptableEventNoParam reviewEvent;
@@ -32,12 +34,17 @@ using UnityEngine.iOS;
         {
 #if UNITY_IOS
             Device.RequestStoreReview();
-#elif UNITY_ANDROID
+#elif UNITY_ANDROID && PANCAKE_REVIEW
             StartCoroutine(LaunchReview());
 #endif
         }
 
-        private void OnInitReview() { _coroutine = StartCoroutine(InitReview()); }
+        private void OnInitReview()
+        {
+#if PANCAKE_REVIEW
+            _coroutine = StartCoroutine(InitReview());
+#endif
+        }
 
         protected override void OnDisabled()
         {
@@ -47,7 +54,7 @@ using UnityEngine.iOS;
             reviewEvent.OnRaised -= OnReview;
         }
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && PANCAKE_REVIEW
         private IEnumerator InitReview(bool force = false)
         {
             if (_reviewManager == null) _reviewManager = new ReviewManager();
@@ -83,4 +90,3 @@ using UnityEngine.iOS;
 #endif
     }
 }
-#endif
