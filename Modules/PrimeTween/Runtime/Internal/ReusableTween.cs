@@ -26,7 +26,7 @@ namespace PrimeTween {
         internal TweenType tweenType;
         [SerializeField] internal ValueContainer startValue;
         [SerializeField] internal ValueContainer endValue;
-        ValueContainer diff;
+        internal ValueContainer diff;
         internal bool isAdditive;
         internal ValueContainer prevVal;
         [SerializeField] internal TweenSettings settings;
@@ -275,7 +275,7 @@ namespace PrimeTween {
             Assert.AreNotEqual(PropType.None, propType);
             if (_settings.ease == Ease.Default) {
                 _settings.ease = PrimeTweenManager.Instance.defaultEase;
-            } else if (_settings.ease == Ease.Custom && _settings.parametricEaseType == ParametricEaseType.None) {
+            } else if (_settings.ease == Ease.Custom && _settings.parametricEase == ParametricEase.None) {
                 if (_settings.customEase == null || !TweenSettings.ValidateCustomCurveKeyframes(_settings.customEase)) {
                     Debug.LogError($"Ease type is Ease.Custom, but {nameof(TweenSettings.customEase)} is not configured correctly.");
                     _settings.ease = PrimeTweenManager.Instance.defaultEase;
@@ -496,8 +496,8 @@ namespace PrimeTween {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         float evaluate(float t) {
             if (settings.ease == Ease.Custom) {
-                if (settings.parametricEaseType != ParametricEaseType.None) {
-                    return Easing.Evaluate(t, settings.parametricEaseType, settings.parametricEaseStrength, settings.parametricEasePeriod);
+                if (settings.parametricEase != ParametricEase.None) {
+                    return Easing.Evaluate(t, this);
                 }
                 return settings.customEase.Evaluate(t);
             }

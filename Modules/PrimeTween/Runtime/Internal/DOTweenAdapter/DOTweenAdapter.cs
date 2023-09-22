@@ -254,15 +254,30 @@ namespace PrimeTween {
     }
     
     public partial struct Tween {
-        public Tween SetEase(Ease ease, float? overshoot = null) {
+        public Tween SetEase(Ease ease, float? amplitude = null, float? period = null) {
             Assert.IsTrue(isAlive);
-            if (overshoot.HasValue) {
-                Debug.LogWarning("Custom overshoot is not supported. Consider using custom ease curve instead.");
-            }
-            tween.settings.ease = ease;
+            var parametricEasing = getParametricEasing(ease, amplitude, period);
+            tween.settings.SetEasing(parametricEasing);
             return this;
         }
 
+        static Easing getParametricEasing(Ease ease, float? maybeStrength, float? maybePeriod) {
+            #if PRIME_TWEEN_EXPERIMENTAL
+            var strength = maybeStrength ?? 1;
+            switch (ease) {
+                case Ease.OutBack:
+                    if (maybePeriod.HasValue) {
+                        Debug.LogWarning("Ease.OutBack doesn't support custom period.");
+                    }
+                    return Easing.Overshoot(strength);
+                case Ease.OutElastic:
+                    return Easing.Elastic(strength, maybePeriod ?? 0.3f);
+            }
+            #endif
+            Debug.LogWarning($"Custom amplitude/period is not supported for {ease} ease. Consider using custom ease curve instead.");
+            return Easing.Standard(ease);
+        }
+        
         public Tween SetDelay(float delay) {
             Assert.IsTrue(isAlive);
             tween.settings.startDelay = delay;
@@ -345,10 +360,10 @@ namespace PrimeTween {
         public float ElapsedPercentage(bool includeLoops = true) => includeLoops ? progressTotal : progress;
         public void TogglePause() => isPaused = !isPaused;
 
-        public Tween SetEase(AnimationCurve customCurve) {
+        public Tween SetEase([NotNull] AnimationCurve customCurve) {
             Assert.IsTrue(isAlive);
-            SetEase(Ease.Custom);
-            tween.settings.customEase = customCurve;
+            Assert.IsNotNull(customCurve);
+            tween.settings.SetEasing(Easing.Curve(customCurve));
             return this;
         }
 
@@ -367,6 +382,22 @@ namespace PrimeTween {
         public Tween SetUpdate(bool isIndependentUpdate) {
             Assert.IsTrue(isAlive);
             tween.settings.useUnscaledTime = isIndependentUpdate;
+            return this;
+        }
+
+        public Tween From(float fromValue) => setFrom(fromValue.ToContainer());
+        public Tween From(Color fromValue) => setFrom(fromValue.ToContainer());
+        public Tween From(Vector2 fromValue) => setFrom(fromValue.ToContainer());
+        public Tween From(Vector3 fromValue) => setFrom(fromValue.ToContainer());
+        public Tween From(Vector4 fromValue) => setFrom(fromValue.ToContainer());
+        public Tween From(Quaternion fromValue) => setFrom(fromValue.ToContainer());
+        public Tween From(Rect fromValue) => setFrom(fromValue.ToContainer());
+
+        Tween setFrom(ValueContainer fromValue) {
+            Assert.IsTrue(isAlive);
+            tween.startFromCurrent = false;
+            tween.startValue = fromValue;
+            tween.cacheDiff();
             return this;
         }
         
