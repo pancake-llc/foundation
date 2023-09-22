@@ -117,13 +117,19 @@ namespace Pancake.Component
 
         private void Raycast(Vector2 from, Vector2 to)
         {
-            bool hitDetected = false;
+#if UNITY_EDITOR
+#pragma warning disable 0219
+            var hitDetected = false;
+#pragma warning restore 0219
+#endif
             _hits = Physics2D.LinecastAll(from, to, layer);
             foreach (var hit in _hits)
             {
                 if (hit.collider != null && hit.collider.transform != source)
                 {
+#if UNITY_EDITOR
                     hitDetected = true;
+#endif
                     HandleHit(hit);
                 }
             }

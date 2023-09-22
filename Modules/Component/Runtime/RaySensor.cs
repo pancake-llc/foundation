@@ -90,7 +90,7 @@ namespace Pancake.Component
             _hitObjects.Clear();
             isPlaying = true;
         }
-        
+
         protected override void FixedTick()
         {
             if (!isPlaying) return;
@@ -100,7 +100,7 @@ namespace Pancake.Component
             _frames = 0;
             Procedure();
         }
-        
+
         private void Procedure()
         {
             foreach (var point in _sensors)
@@ -119,16 +119,22 @@ namespace Pancake.Component
                 Raycast(currentPoint, endPosition);
             }
         }
-        
+
         private void Raycast(Vector3 from, Vector3 to)
         {
+#if UNITY_EDITOR
+#pragma warning disable 0219
             var hitDetected = false;
+#pragma warning restore 0219
+#endif
             _hits = Physics.RaycastAll(from, (to - from).normalized, (from - to).magnitude, layer);
             foreach (var hit in _hits)
             {
                 if (hit.collider != null && hit.collider.transform != source)
                 {
+#if UNITY_EDITOR
                     hitDetected = true;
+#endif
                     HandleHit(hit);
                 }
             }
@@ -154,7 +160,7 @@ namespace Pancake.Component
             }
 #endif
         }
-        
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -173,7 +179,7 @@ namespace Pancake.Component
                 }
             }
 
-            if (start != null && source!= null)
+            if (start != null && source != null)
             {
                 Gizmos.color = Color.yellow;
                 var sourceStart = source.TransformPoint(start.localPosition);
