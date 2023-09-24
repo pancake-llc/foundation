@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -14,7 +13,6 @@ namespace PrimeTween {
         /// Keep in mind: when animating plain C# objects (not derived from UnityEngine.Object), the plugin will hold a strong reference to the object for the entire tween duration.
         ///     If plain C# target holds a reference to UnityEngine.Object and animates its properties, then it's user's responsibility to ensure that UnityEngine.Object still exists.
         [CanBeNull] internal object target;
-        bool targetIsUnityObject;
         [SerializeField, CanBeNull] internal UnityEngine.Object unityTarget; 
         [SerializeField] internal bool _isPaused;
         internal bool _isAlive;
@@ -27,16 +25,13 @@ namespace PrimeTween {
         [SerializeField] internal ValueContainer startValue;
         [SerializeField] internal ValueContainer endValue;
         internal ValueContainer diff;
-        internal bool isAdditive;
+        internal bool isAdditive; // todo is safe to replace with intParam?
         internal ValueContainer prevVal;
         [SerializeField] internal TweenSettings settings;
         [SerializeField] internal int cyclesDone;
 
         internal object customOnValueChange;
         internal int intParam;
-
-        internal Tween.ShakeData shakeData;
-        
         Action<ReusableTween> onValueChange;
         
         [CanBeNull] internal Action<ReusableTween> onComplete;
@@ -59,6 +54,7 @@ namespace PrimeTween {
         internal readonly TweenCoroutineEnumerator coroutineEnumerator = new TweenCoroutineEnumerator();
         internal float timeScale = 1;
         bool warnIgnoredOnCompleteIfTargetDestroyed = true;
+        internal Tween.ShakeData shakeData;
 
         internal bool updateAndCheckIfRunning(float dt) {
             dt *= timeScale;
@@ -252,7 +248,7 @@ namespace PrimeTween {
             };
         }
 
-        static bool isDestroyedUnityObject<T>(T obj) where T: class => obj is UnityEngine.Object unityObject && unityObject == null;
+        internal static bool isDestroyedUnityObject<T>(T obj) where T: class => obj is UnityEngine.Object unityObject && unityObject == null;
 
         void validateOnCompleteAssignment() {
             const string msg = "Tween already has an onComplete callback. Adding more callbacks is not allowed.\n" +
@@ -310,7 +306,6 @@ namespace PrimeTween {
         internal void setUnityTarget(object _target) {
             var unityObject = _target as UnityEngine.Object;
             unityTarget = unityObject;
-            targetIsUnityObject = unityObject != null;
         }
 
         internal void ReportOnValueChangeIfAnimation(float _interpolationFactor) {
@@ -322,7 +317,6 @@ namespace PrimeTween {
 
         /// Tween.Custom and Tween.ShakeCustom try-catch the <see cref="onValueChange"/> and calls <see cref="ReusableTween.EmergencyStop"/> if an exception occurs.
         /// <see cref="ReusableTween.EmergencyStop"/> sets <see cref="stoppedEmergently"/> to true.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void ReportOnValueChange(float _interpolationFactor) {
             if (startFromCurrent) {
                 startFromCurrent = false;
@@ -358,11 +352,8 @@ namespace PrimeTween {
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool isUnityTargetDestroyed() {
-            return targetIsUnityObject && unityTarget == null;
-        }
-        
+        internal bool isUnityTargetDestroyed() => isDestroyedUnityObject(unityTarget);
+
         internal bool HasOnComplete => onComplete != null;
 
         [NotNull]
@@ -411,13 +402,9 @@ namespace PrimeTween {
             }
         }
 
-        internal float FloatVal {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => startValue.x + diff.x * easedInterpolationFactor;
-        }
+        internal float FloatVal => startValue.x + diff.x * easedInterpolationFactor;
 
         internal Vector2 Vector2Val {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Vector2(
@@ -427,7 +414,6 @@ namespace PrimeTween {
         }
         
         internal Vector3 Vector3Val {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Vector3(
@@ -438,7 +424,6 @@ namespace PrimeTween {
         }
 
         internal Vector4 Vector4Val {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Vector4(
@@ -449,7 +434,6 @@ namespace PrimeTween {
             }
         }
         internal Color ColorVal {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Color(
@@ -460,7 +444,6 @@ namespace PrimeTween {
             }
         }
         internal Rect RectVal {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 var easedT = easedInterpolationFactor;
                 return new Rect(
@@ -470,10 +453,7 @@ namespace PrimeTween {
                     startValue.w + diff.w * easedT);
             }
         }
-        internal Quaternion QuaternionVal {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Quaternion.SlerpUnclamped(startValue.QuaternionVal, endValue.QuaternionVal, easedInterpolationFactor);
-        }
+        internal Quaternion QuaternionVal => Quaternion.SlerpUnclamped(startValue.QuaternionVal, endValue.QuaternionVal, easedInterpolationFactor);
 
         float calcEasedT(float t) {
             var isForwardCycle = cyclesDone % 2 == 0;
@@ -493,7 +473,6 @@ namespace PrimeTween {
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         float evaluate(float t) {
             if (settings.ease == Ease.Custom) {
                 if (settings.parametricEase != ParametricEase.None) {

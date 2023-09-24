@@ -45,6 +45,7 @@ namespace PrimeTween {
         internal bool validateCustomCurves = true;
         int processedCount;
         int updateDepth;
+        internal static readonly object dummyTarget = new object();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void beforeSceneLoad() {
@@ -215,7 +216,7 @@ namespace PrimeTween {
                 return default;
             }
             #endif
-            var result = delayWithoutDurationCheck(null, 0, false);
+            var result = delayWithoutDurationCheck(dummyTarget, 0, false);
             Assert.IsTrue(result.HasValue);
             return result.Value;
         }
@@ -261,11 +262,6 @@ namespace PrimeTween {
         }
 
         internal static Tween Animate([NotNull] ReusableTween tween) {
-            #if UNITY_EDITOR
-            if (Constants.noInstance) {
-                return default;
-            }
-            #endif
             checkDuration(tween.target, tween.settings.duration);
             return addTween(tween);
         }
@@ -293,10 +289,12 @@ namespace PrimeTween {
         Tween addTween_internal([NotNull] ReusableTween tween) {
             Assert.IsNotNull(tween);
             Assert.IsTrue(tween.id > 0);
-            if (!(tween.unityTarget is null) && tween.unityTarget == null) {
-                Debug.LogError($"Tween's UnityEngine.Object target is null: {tween.GetDescription()}. This error can mean that:\n" +
-                               "- The target reference is not populated in the Inspector.\n" +
-                               "- The target has been destroyed.\n");
+            if (tween.target == null || ReusableTween.isDestroyedUnityObject(tween.unityTarget)) {
+                Debug.LogError($"Tween's target is null: {tween.GetDescription()}. This error can mean that:\n" +
+                               "- The target reference is null.\n" +
+                               "- UnityEngine.Object target reference is not populated in the Inspector.\n" +
+                               "- UnityEngine.Object target has been destroyed.\n" +
+                               "Please ensure you're using a valid target.\n");
                 tween.kill();
                 releaseTweenToPool(tween);
                 return default;

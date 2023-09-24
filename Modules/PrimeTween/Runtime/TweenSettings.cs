@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -105,7 +104,6 @@ namespace PrimeTween {
             endDelay = Mathf.Max(0, endDelay);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void validateFiniteDuration(float f) {
             Assert.IsFalse(float.IsNaN(f), Constants.durationInvalidError);
             Assert.IsFalse(float.IsInfinity(f), Constants.durationInvalidError);

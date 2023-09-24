@@ -336,7 +336,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Float;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<Single>;
                 var val = _tween.FloatVal;
                 try {

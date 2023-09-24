@@ -156,22 +156,20 @@ namespace PrimeTween {
 
         [Serializable]
         internal struct ShakeData {
-            float elapsedTime;
             float t;
             float velocity;
-            Vector3 from, to;
+            Vector3 from, to; // todo replace with tween.endValue and tween.diff
             float symmetryFactor;
             int falloffEaseInt;
             AnimationCurve customStrengthOverTime;
             Ease easeBetweenShakes;
             bool isPunch;
             const int disabledFalloff = -42;
-            internal bool isAlive;
+            internal bool isAlive => !float.IsNaN(frequency);
             internal Vector3 strengthPerAxis;
             internal float frequency;
 
             internal void Setup(ShakeSettings settings) {
-                isAlive = true;
                 isPunch = settings.isPunch;
                 symmetryFactor = Mathf.Clamp01(1 - settings.asymmetry);
                 strengthPerAxis = settings.strength;
@@ -249,10 +247,7 @@ namespace PrimeTween {
                 Assert.IsTrue(velocity != 0f);
                 var interpolationFactor = tween.easedInterpolationFactor;
                 Assert.IsTrue(interpolationFactor <= 1);
-                var newElapsedTime = interpolationFactor * tween.settings.duration;
-                Assert.IsTrue(newElapsedTime >= 0f);
-                var dt = newElapsedTime - elapsedTime;
-                elapsedTime = newElapsedTime;
+                var dt = (tween.settings.useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime) * tween.timeScale;
                 var strengthOverTime = calcStrengthOverTime(interpolationFactor);
                 // handpicked formula that describes the relationship between strength and frequency
                 var frequencyFactor = Mathf.Clamp01(strengthOverTime * 3f);
@@ -314,11 +309,10 @@ namespace PrimeTween {
             internal void Reset() {
                 resetAfterCycle();
                 customStrengthOverTime = null;
-                isAlive = false;
+                frequency = float.NaN;
             }
 
             void resetAfterCycle() {
-                elapsedTime = 0f;
                 t = 0f;
                 from = Vector3.zero;
                 velocity = 0f;

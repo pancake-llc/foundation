@@ -66,7 +66,6 @@ namespace PrimeTween {
 
         public static Tween DOTimeScale([NotNull] this PrimeTween.Tween target, Single endValue, float duration) => Tween.TweenTimeScale(target, endValue, duration, defaultDotweenEase);
 
-
         #if !UNITY_2019_1_OR_NEWER || UNITY_UGUI_INSTALLED
         public static Tween DOValue([NotNull] this UnityEngine.UI.Slider target, Single endValue, float duration) => Tween.UISliderValue(target, endValue, duration, defaultDotweenEase);
 

@@ -10,7 +10,6 @@
 // ReSharper disable PossibleNullReferenceException
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -20,22 +19,16 @@ namespace PrimeTween {
         const float halfPi = Mathf.PI / 2f;
         const float twoPi = Mathf.PI * 2f;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InSine(float t) => 1 - Mathf.Cos(t * halfPi);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutSine(float t) => Mathf.Sin(t * halfPi);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutSine(float t) => -0.5f * (Mathf.Cos(Mathf.PI * t) - 1);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InQuad(float t) => t * t;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutQuad(float t) => -t * (t - 2);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutQuad(float t) {
             t *= 2f;
             if (t < 1) {
@@ -44,13 +37,10 @@ namespace PrimeTween {
             return -0.5f * (--t * (t - 2) - 1);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InCubic(float t) => t * t * t;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutCubic(float t) => (t -= 1) * t * t + 1;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutCubic(float t) {
             t *= 2f;
             if (t < 1) {
@@ -59,13 +49,10 @@ namespace PrimeTween {
             return 0.5f * ((t -= 2) * t * t + 2);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InQuart(float t) => t * t * t * t;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutQuart(float t) => -((t -= 1) * t * t * t - 1);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutQuart(float t) {
             t *= 2f;
             if (t < 1) {
@@ -74,13 +61,10 @@ namespace PrimeTween {
             return -0.5f * ((t -= 2) * t * t * t - 2);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InQuint(float t) => t * t * t * t * t;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutQuint(float t) => (t -= 1) * t * t * t * t + 1;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutQuint(float t) {
             t *= 2f;
             if (t < 1) {
@@ -89,10 +73,8 @@ namespace PrimeTween {
             return 0.5f * ((t -= 2) * t * t * t * t + 2);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InExpo(float x) => x == 0 ? 0 : Mathf.Pow(2, 10 * (x - 1));
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutExpo(float t) {
             if (t == 1) {
                 return 1;
@@ -100,7 +82,6 @@ namespace PrimeTween {
             return -Mathf.Pow(2, -10 * t) + 1;
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutExpo(float t) {
             if (t == 0) {
                 return 0;
@@ -115,13 +96,10 @@ namespace PrimeTween {
             return 0.5f * (-Mathf.Pow(2, -10 * --t) + 2);
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InCirc(float t) => -(Mathf.Sqrt(1 - t * t) - 1);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutCirc(float t) => Mathf.Sqrt(1 - (t -= 1) * t);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutCirc(float t) {
             t *= 2f;
             if (t < 1) {
@@ -131,13 +109,10 @@ namespace PrimeTween {
         }
 
         internal const float backEaseConst = 1.70158f;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InBack(float t) => t * t * ((backEaseConst + 1) * t - backEaseConst);
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutBack(float t) => (t -= 1) * t * ((backEaseConst + 1) * t + backEaseConst) + 1;
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutBack(float t) {
             t *= 2f;
             const float c1 = backEaseConst * 1.525f;
@@ -150,10 +125,8 @@ namespace PrimeTween {
         const float elasticEasePeriod = 0.3f;
         const float elasticEaseConst = 0.02999433f; // elasticEasePeriod / twoPi * Mathf.Asin(1 / c);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InElastic(float t) => 1 - OutElastic(1 - t);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutElastic(float t) {
             const float decayFactor = 1f;
             const float period = 0.3f;
@@ -162,7 +135,6 @@ namespace PrimeTween {
             return t > 0.9999f ? 1 : decay * Mathf.Sin((t - phase) * twoPi / period) + 1;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutElastic(float t) {
             if (t < 0.5f) {
                 return InElastic(t * 2) * 0.5f;
@@ -170,10 +142,8 @@ namespace PrimeTween {
             return 0.5f + OutElastic((t - 0.5f) * 2f) * 0.5f;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InBounce(float x) => 1 - OutBounce(1 - x);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float OutBounce(float x) {
             const float n1 = 7.5625f;
             const float d1 = 2.75f;
@@ -189,7 +159,6 @@ namespace PrimeTween {
             return n1 * (x -= 2.625f / d1) * x + 0.984375f;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InOutBounce(float x) {
             return x < 0.5
                 ? (1 - OutBounce(1 - 2 * x)) / 2

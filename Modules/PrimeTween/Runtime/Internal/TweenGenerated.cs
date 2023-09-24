@@ -557,17 +557,6 @@ namespace PrimeTween {
         public static Tween TweenTimeScale([NotNull] PrimeTween.Tween target, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(endValue, settings));
         public static Tween TweenTimeScale([NotNull] PrimeTween.Tween target, Single startValue, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(startValue, endValue, settings));
 
-        public static Tween GlobalTimeScale(Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => GlobalTimeScale(new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween GlobalTimeScale(Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => GlobalTimeScale(new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween GlobalTimeScale(Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => GlobalTimeScale(new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween GlobalTimeScale(Single startValue, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
-            => GlobalTimeScale(new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
-        public static Tween GlobalTimeScale(Single endValue, TweenSettings settings) => GlobalTimeScale(new TweenSettings<float>(endValue, settings));
-        public static Tween GlobalTimeScale(Single startValue, Single endValue, TweenSettings settings) => GlobalTimeScale(new TweenSettings<float>(startValue, endValue, settings));
-
         #if !UNITY_2019_1_OR_NEWER || UNITY_UGUI_INSTALLED
         public static Tween UISliderValue([NotNull] UnityEngine.UI.Slider target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => UISliderValue(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
@@ -1494,7 +1483,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Float;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<float>;
                 var val = _tween.FloatVal;
                 try {
@@ -1582,7 +1571,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Color;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<UnityEngine.Color>;
                 var val = _tween.ColorVal;
                 try {
@@ -1670,7 +1659,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector2;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<UnityEngine.Vector2>;
                 var val = _tween.Vector2Val;
                 try {
@@ -1758,7 +1747,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector3;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<UnityEngine.Vector3>;
                 var val = _tween.Vector3Val;
                 try {
@@ -1846,7 +1835,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Vector4;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<UnityEngine.Vector4>;
                 var val = _tween.Vector4Val;
                 try {
@@ -1934,7 +1923,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Quaternion;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<UnityEngine.Quaternion>;
                 var val = _tween.QuaternionVal;
                 try {
@@ -2022,7 +2011,7 @@ namespace PrimeTween {
             tween.endValue.CopyFrom(ref settings.endValue);
             tween.propType = PropType.Rect;
             tween.customOnValueChange = onValueChange;
-            tween.Setup(null, ref settings.settings, _tween => {
+            tween.Setup(PrimeTweenManager.dummyTarget, ref settings.settings, _tween => {
                 var _onValueChange = _tween.customOnValueChange as Action<UnityEngine.Rect>;
                 var val = _tween.RectVal;
                 try {

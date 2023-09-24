@@ -134,9 +134,6 @@ namespace PrimeTween {
         }
 
         public Sequence SetLoops(int loops) {
-            if (!IsCreated) {
-                Group(PrimeTweenManager.createEmpty());
-            }
             Assert.IsTrue(isAlive);
             return SetCycles(loops);
         }
@@ -212,7 +209,7 @@ namespace PrimeTween {
 
         public Sequence PrependInterval(float interval) {
             Assert.IsTrue(isAlive);
-            var maybeDelay = PrimeTweenManager.delayWithoutDurationCheck(null, interval, false);
+            var maybeDelay = PrimeTweenManager.delayWithoutDurationCheck(PrimeTweenManager.dummyTarget, interval, false);
             Assert.IsTrue(maybeDelay.HasValue);
             var delay = maybeDelay.Value;
             var result = Create(delay);
@@ -269,7 +266,7 @@ namespace PrimeTween {
                     if (maybePeriod.HasValue) {
                         Debug.LogWarning("Ease.OutBack doesn't support custom period.");
                     }
-                    return Easing.Overshoot(strength);
+                    return Easing.Overshoot(strength / StandardEasing.backEaseConst);
                 case Ease.OutElastic:
                     return Easing.Elastic(strength, maybePeriod ?? 0.3f);
             }
