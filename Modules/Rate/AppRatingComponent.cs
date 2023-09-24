@@ -24,7 +24,7 @@ using UnityEngine.iOS;
 
         protected override void OnEnabled()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID
             initReviewEvent.OnRaised += OnInitReview;
 #endif
             reviewEvent.OnRaised += OnReview;
@@ -33,24 +33,26 @@ using UnityEngine.iOS;
         private void OnReview()
         {
             if (!Application.isMobilePlatform) return;
-
-#if UNITY_IOS
-            Device.RequestStoreReview();
-#elif UNITY_ANDROID && PANCAKE_REVIEW
+            
+#if UNITY_ANDROID && PANCAKE_REVIEW
             StartCoroutine(LaunchReview());
+#elif UNITY_IOS
+            Device.RequestStoreReview();
 #endif
         }
 
         private void OnInitReview()
         {
-#if PANCAKE_REVIEW && !UNITY_EDITOR
+            if (!Application.isMobilePlatform) return;
+
+#if UNITY_ANDROID && PANCAKE_REVIEW
             _coroutine = StartCoroutine(InitReview());
 #endif
         }
 
         protected override void OnDisabled()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID
             initReviewEvent.OnRaised -= OnInitReview;
 #endif
             reviewEvent.OnRaised -= OnReview;
