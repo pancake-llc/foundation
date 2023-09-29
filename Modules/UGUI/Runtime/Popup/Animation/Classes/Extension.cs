@@ -30,12 +30,11 @@ namespace Pancake.UI
     {
         public static Vector3 ToPosition(this Alignment alignment, RectTransform rectTransform)
         {
-            Vector3 position;
             var rect = rectTransform.rect;
             float width = rect.width;
             float height = rect.height;
             float z = rectTransform.localPosition.z;
-            position = alignment switch
+            var position = alignment switch
             {
                 Alignment.Left => new Vector3(-width, 0, z),
                 Alignment.Right => new Vector3(width, 0, z),

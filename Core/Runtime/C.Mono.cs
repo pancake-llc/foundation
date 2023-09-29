@@ -1478,19 +1478,19 @@ namespace Pancake
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="owner"></param>
-        /// <param name="coroutine"></param>
-        /// <returns></returns>
-        public static CoroutineHandle RunCoroutine(this MonoBehaviour owner, IEnumerator coroutine) { return new CoroutineHandle(owner, coroutine); }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="owner"></param>
-        /// <param name="coroutine"></param>
-        public static void KillCoroutine(this MonoBehaviour owner, IEnumerator coroutine)
+        /// <param name="source"></param>
+        /// <param name="parent"></param>
+        public static void FillWithParent(this RectTransform source, RectTransform parent)
         {
-            if (coroutine != null) owner.StopCoroutine(coroutine);
+            source.SetParent(parent);
+            source.localPosition = Vector3.zero;
+            source.anchorMin = Vector2.zero;
+            source.anchorMax = Vector2.one;
+            source.offsetMin = Vector2.zero;
+            source.offsetMax = Vector2.zero;
+            source.pivot = new Vector2(0.5f, 0.5f);
+            source.rotation = Quaternion.identity;
+            source.localScale = Vector3.one;
         }
 
         /// <summary>
@@ -1679,11 +1679,15 @@ namespace Pancake
             return result;
         }
         
-        public static T AddOrGetComponent<T>(this Component source) where T : Component
+        public static T GetOrAddComponent<T>(this Component source) where T : Component
         {
-            if (source == null) return null;
-            source.TryGetComponent<T>(out var component);
-            if (component == null) component = source.gameObject.AddComponent<T>();
+            if (!source.TryGetComponent<T>(out var component)) component = source.gameObject.AddComponent<T>();
+            return component;
+        }
+        
+        public static T GetOrAddComponent<T>(this GameObject source) where T : Component
+        {
+            if (!source.TryGetComponent<T>(out var component)) component = source.AddComponent<T>();
             return component;
         }
     }

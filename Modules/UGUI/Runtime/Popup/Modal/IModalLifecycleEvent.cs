@@ -2,7 +2,7 @@
 
 namespace Pancake.UI
 {
-    public interface IModalLifeCycleEvent
+    public interface IModalLifecycleEvent
     {
         Task Initialize();
         Task WillPushEnter();

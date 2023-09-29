@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Pancake.Apex;
+using Pancake.Linq;
 using UnityEngine;
 
 namespace Pancake.UI
 {
     [Serializable]
-    public sealed class PageTransitionContainer
+    public class ModalTransitionContainer
     {
         [Serializable]
-        public sealed class TransitionAnimation
+        public class TransitionAnimation
         {
             [SerializeField] private string partnerIdRegex;
             [SerializeField] private AnimationAssetType type;
@@ -23,6 +23,7 @@ namespace Pancake.UI
             private UITransitionAsset uiTransitionAsset;
 
             private Regex _partnerIdRegexCache;
+
 
             public bool IsValid(string partnerId)
             {
@@ -49,24 +50,15 @@ namespace Pancake.UI
             }
         }
 
-        [SerializeField, Array] private List<TransitionAnimation> pushEnterAnimations = new List<TransitionAnimation>();
-        [SerializeField, Array] private List<TransitionAnimation> pushExitAnimations = new List<TransitionAnimation>();
-        [SerializeField, Array] private List<TransitionAnimation> popEnterAnimations = new List<TransitionAnimation>();
-        [SerializeField, Array] private List<TransitionAnimation> popExitAnimations = new List<TransitionAnimation>();
+        [SerializeField, Array] private List<TransitionAnimation> enterAnimations = new List<TransitionAnimation>();
+        [SerializeField, Array] private List<TransitionAnimation> exitAnimations = new List<TransitionAnimation>();
 
-        public ITransitionAnimation GetAnimation(bool push, bool enter, string partnerId)
+        public ITransitionAnimation GetAnimation(bool enter, string partnerId)
         {
-            var anims = GetAnimations(push, enter);
+            var anims = enter ? enterAnimations : exitAnimations;
             var anim = anims.FirstOrDefault(x => x.IsValid(partnerId));
             var result = anim?.GetAnimation();
             return result;
-        }
-
-        private IReadOnlyList<TransitionAnimation> GetAnimations(bool push, bool enter)
-        {
-            if (push) return enter ? pushEnterAnimations : pushExitAnimations;
-
-            return enter ? popEnterAnimations : popExitAnimations;
         }
     }
 }
