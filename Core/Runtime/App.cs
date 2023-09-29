@@ -125,10 +125,16 @@ namespace Pancake
         public static void RemoveQuitCallback(Action callback) { globalComponent.OnGameQuit -= callback; }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static Coroutine StartCoroutine(IEnumerator routine) => globalComponent.StartCoroutineImpl(routine);
+        public static AsyncProcessHandle StartCoroutine(IEnumerator routine) => globalComponent.StartCoroutineInternal(routine);
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public static void StopCoroutine(IEnumerator routine) => globalComponent.StopCoroutineImpl(routine);
+        public static void StopCoroutine(AsyncProcessHandle handle) => globalComponent.StopCoroutineInternal(handle);
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static void DisableThrowException() => globalComponent.ThrowException = false;
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static void EnableThrowException() => globalComponent.ThrowException = true;
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public static Action ToMainThread(Action action) => globalComponent.ToMainThreadImpl(action);
@@ -169,12 +175,7 @@ namespace Pancake
         /// <param name="useRealTime">Whether the DelayHandle uses real-time(not affected by slow-mo or pausing) or
         /// game-time(affected by time scale changes).</param>
         /// <returns></returns>
-        public static DelayHandle Delay(
-            float duration,
-            Action onComplete,
-            Action<float> onUpdate = null,
-            bool isLooped = false,
-            bool useRealTime = false)
+        public static DelayHandle Delay(float duration, Action onComplete, Action<float> onUpdate = null, bool isLooped = false, bool useRealTime = false)
         {
             var timer = new DelayHandle(duration,
                 onComplete,
@@ -185,8 +186,8 @@ namespace Pancake
             globalComponent.RegisterDelayHandle(timer);
             return timer;
         }
-        
-        
+
+
         /// <summary>
         /// Safe Delay call when it had target, progress delay will be cancel when target was destroyed
         /// </summary>

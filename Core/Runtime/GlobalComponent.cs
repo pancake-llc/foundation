@@ -84,6 +84,116 @@ namespace Pancake
 
         #endregion
 
+
+        #region coroutine
+
+        private readonly Dictionary<int, UnityEngine.Coroutine> _runningCoroutines = new Dictionary<int, Coroutine>();
+        private int _currentRoutineId;
+        internal bool ThrowException { get; set; } = true;
+
+        internal AsyncProcessHandle StartCoroutineInternal(IEnumerator routine)
+        {
+            if (routine == null) throw new ArgumentNullException(nameof(routine));
+
+            int id = _currentRoutineId++;
+            var handle = new AsyncProcessHandle(id);
+            var handleSetter = (IAsyncProcessHandleSetter) handle;
+
+            var coroutine = StartCoroutineInDeep(routine,
+                ThrowException,
+                OnCompleted,
+                OnError,
+                OnTerminate);
+            _runningCoroutines.Add(id, coroutine);
+            return handle;
+            
+            void OnCompleted(object result) => handleSetter.Complete(result);
+            void OnError(Exception e) => handleSetter.Error(e);
+            void OnTerminate() => _runningCoroutines.Remove(id);
+        }
+
+        internal void StopCoroutineInternal(AsyncProcessHandle handle)
+        {
+            var coroutine = _runningCoroutines[handle.Id];
+            StopCoroutine(coroutine);
+            _runningCoroutines.Remove(handle.Id);
+        }
+
+        /// <summary>
+        /// Start coroutine with handle
+        /// </summary>
+        /// <param name="routine"></param>
+        /// <param name="throwException"></param>
+        /// <param name="onComplete"></param>
+        /// <param name="onError"></param>
+        /// <param name="onTerminate"></param>
+        /// <returns></returns>
+        private Coroutine StartCoroutineInDeep(
+            IEnumerator routine,
+            bool throwException = true,
+            Action<object> onComplete = null,
+            Action<Exception> onError = null,
+            Action onTerminate = null)
+        {
+            return StartCoroutine(ProcessRoutine(routine,
+                throwException,
+                onComplete,
+                onError,
+                onTerminate));
+        }
+
+        /// <summary>
+        /// Process coroutine handle with complete, error and terminate
+        /// </summary>
+        /// <param name="routine"></param>
+        /// <param name="throwException"></param>
+        /// <param name="onComplete"></param>
+        /// <param name="onError"></param>
+        /// <param name="onTerminate"></param>
+        /// <returns></returns>
+        private IEnumerator ProcessRoutine(
+            IEnumerator routine,
+            bool throwException = true,
+            Action<object> onComplete = null,
+            Action<Exception> onError = null,
+            Action onTerminate = null)
+        {
+            object current = null;
+            while (true)
+            {
+                Exception ex = null;
+                try
+                {
+                    if (!routine.MoveNext()) break;
+
+                    current = routine.Current;
+                }
+                catch (Exception e)
+                {
+                    ex = e;
+                    onError?.Invoke(e);
+                    onTerminate?.Invoke();
+                    if (throwException) throw;
+                }
+
+                if (ex != null)
+                {
+                    yield return ex;
+                    yield break;
+                }
+
+                yield return current;
+            }
+
+            onComplete?.Invoke(current);
+            onTerminate?.Invoke();
+        }
+
+        #endregion
+
+
+        #region event function
+
         private void Start()
         {
             StartCoroutine(WaitForFixedUpdate());
@@ -186,26 +296,10 @@ namespace Pancake
         /// </remarks>
         private void OnApplicationQuit() { OnGameQuit?.Invoke(); }
 
+        #endregion
+
+
         #region internal effective
-
-        /// <summary>
-        /// Starts a coroutine from non-MonoBehavior objects.
-        /// </summary>
-        /// <param name="routine">Routine.</param>
-        internal Coroutine StartCoroutineImpl(IEnumerator routine)
-        {
-            if (routine != null) return StartCoroutine(routine);
-            return null;
-        }
-
-        /// <summary>
-        /// Stops a coroutine from non-MonoBehavior objects.
-        /// </summary>
-        /// <param name="routine">Routine.</param>
-        internal void StopCoroutineImpl(IEnumerator routine)
-        {
-            if (routine != null) StopCoroutine(routine);
-        }
 
         /// <summary>
         /// Schedules the specifies action to be run on the main thread (game thread).
