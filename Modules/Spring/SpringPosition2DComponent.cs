@@ -7,7 +7,7 @@ namespace Pancake.Spring
     public class SpringPosition2DComponent : BaseSpringComponent, ISpringTo<Vector2>, INudgeable<Vector2>
     {
         private SpringVector2 _spring;
-        private CoroutineHandle _handle;
+        private Coroutine _handle;
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
 
         private void Awake()
@@ -18,18 +18,18 @@ namespace Pancake.Spring
 
         public void SpringTo(Vector2 target)
         {
-            if (_handle is {IsDone: false}) StopCoroutine(_handle);
+            if (_handle != null) StopCoroutine(_handle);
             CheckInspectorChanges();
-            _handle = this.RunCoroutine(IeSpringToTarget(target));
+            _handle = StartCoroutine(IeSpringToTarget(target));
         }
 
         public void Nudge(Vector2 value)
         {
             CheckInspectorChanges();
-            if (Math.Approximately(_spring.CurrentVelocity.sqrMagnitude, 0))
+            if (_spring.CurrentVelocity.sqrMagnitude.Approximately(0))
             {
-                if (_handle is {IsDone: false}) StopCoroutine(_handle);
-                _handle = this.RunCoroutine(IeHandleNudge(value));
+                if (_handle != null) StopCoroutine(_handle);
+                _handle = StartCoroutine(IeHandleNudge(value));
             }
             else
             {
@@ -39,7 +39,7 @@ namespace Pancake.Spring
 
         private IEnumerator IeSpringToTarget(Vector2 target)
         {
-            if (Math.Approximately(_spring.CurrentVelocity.sqrMagnitude, 0))
+            if (_spring.CurrentVelocity.sqrMagnitude.Approximately(0))
             {
                 _spring.Reset();
                 _spring.StartValue = transform.position;
@@ -50,7 +50,7 @@ namespace Pancake.Spring
                 _spring.UpdateEndValue(target, _spring.CurrentVelocity);
             }
 
-            while (!Math.Approximately(Vector2.SqrMagnitude(new Vector2(transform.position.x, transform.position.y) - target), 0))
+            while (!Vector2.SqrMagnitude(new Vector2(transform.position.x, transform.position.y) - target).Approximately(0))
             {
                 transform.position = _spring.Evaluate(Time.deltaTime);
 

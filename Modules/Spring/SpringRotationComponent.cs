@@ -7,7 +7,7 @@ namespace Pancake.Spring
     public class SpringRotationComponent : BaseSpringComponent, ISpringTo<Vector3>, ISpringTo<Quaternion>, INudgeable<Vector3>, INudgeable<Quaternion>
     {
         private SpringVector3 _spring;
-        private CoroutineHandle _handle;
+        private Coroutine _handle;
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
 
         private void Awake()
@@ -20,19 +20,19 @@ namespace Pancake.Spring
 
         public void SpringTo(Quaternion target)
         {
-            if (_handle is {IsDone: false}) StopCoroutine(_handle);
+            if (_handle != null) StopCoroutine(_handle);
 
             CheckInspectorChanges();
-            _handle = this.RunCoroutine(IeSpringToTarget(target));
+            _handle = StartCoroutine(IeSpringToTarget(target));
         }
 
         public void Nudge(Vector3 value)
         {
             CheckInspectorChanges();
-            if (Math.Approximately(_spring.CurrentVelocity.sqrMagnitude, 0))
+            if (_spring.CurrentVelocity.sqrMagnitude.Approximately(0))
             {
-                if (_handle is {IsDone: false}) StopCoroutine(_handle);
-                _handle = this.RunCoroutine(IeHandleNudge(value));
+                if (_handle != null) StopCoroutine(_handle);
+                _handle = StartCoroutine(IeHandleNudge(value));
             }
             else
             {
@@ -44,7 +44,7 @@ namespace Pancake.Spring
 
         private IEnumerator IeSpringToTarget(Quaternion target)
         {
-            if (Math.Approximately(_spring.CurrentVelocity.sqrMagnitude, 0))
+            if (_spring.CurrentVelocity.sqrMagnitude.Approximately(0))
             {
                 _spring.Reset();
                 _spring.StartValue = transform.eulerAngles;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -58,7 +57,7 @@ namespace Pancake
     {
         public static class Network
         {
-            private static IEnumerator checkNetworkRoutine;
+            private static AsyncProcessHandle handle;
 
             public static void CheckConnection(Action<ENetworkStatus> onCompleted)
             {
@@ -79,23 +78,21 @@ namespace Pancake
 
             public static void StopCheckConnection()
             {
-                if (checkNetworkRoutine != null) App.StopCoroutine(checkNetworkRoutine);
+                if (handle != null) App.StopCoroutine(handle);
             }
 
             private static void CheckNetworkAndroid(Action<ENetworkStatus> onCompleted)
             {
-                if (checkNetworkRoutine != null) App.StopCoroutine(checkNetworkRoutine);
-                checkNetworkRoutine = Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted);
-                App.StartCoroutine(checkNetworkRoutine);
+                if (handle != null) App.StopCoroutine(handle);
+                handle = App.StartCoroutine(Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted));
             }
 
             private static void CheckNetworkiOS(Action<ENetworkStatus> onCompleted)
             {
-                if (checkNetworkRoutine != null) App.StopCoroutine(checkNetworkRoutine);
-                checkNetworkRoutine = Check_ResponseContain("https://captive.apple.com/hotspot-detect.html",
+                if (handle != null) App.StopCoroutine(handle);
+                handle = App.StartCoroutine(Check_ResponseContain("https://captive.apple.com/hotspot-detect.html",
                     "<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>",
-                    onCompleted);
-                App.StartCoroutine(checkNetworkRoutine);
+                    onCompleted));
             }
 
 

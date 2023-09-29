@@ -7,7 +7,7 @@ namespace Pancake.Spring
     public class SpringLocalScaleComponent : BaseSpringComponent, ISpringTo<Vector3>, INudgeable<Vector3>
     {
         private SpringVector3 _spring;
-        private CoroutineHandle _handle;
+        private Coroutine _handle;
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
 
         private void Awake()
@@ -18,9 +18,9 @@ namespace Pancake.Spring
 
         public void SpringTo(Vector3 target)
         {
-            if (_handle is {IsDone: false}) StopCoroutine(_handle);
+            if (_handle != null) StopCoroutine(_handle);
             CheckInspectorChanges();
-            _handle = this.RunCoroutine(IeSpringToTarget(target));
+            _handle = StartCoroutine(IeSpringToTarget(target));
         }
 
         public void Nudge(Vector3 value)
@@ -28,8 +28,8 @@ namespace Pancake.Spring
             CheckInspectorChanges();
             if (Mathf.Approximately(_spring.CurrentVelocity.sqrMagnitude, 0))
             {
-                if (_handle is {IsDone: false}) StopCoroutine(_handle);
-                _handle = this.RunCoroutine(IeHandleNudge(value));
+                if (_handle != null) StopCoroutine(_handle);
+                _handle = StartCoroutine(IeHandleNudge(value));
             }
             else
             {
@@ -58,7 +58,7 @@ namespace Pancake.Spring
 
         private IEnumerator IeSpringToTarget(Vector3 target)
         {
-            if (Math.Approximately(_spring.CurrentVelocity.sqrMagnitude, 0))
+            if (_spring.CurrentVelocity.sqrMagnitude.Approximately(0))
             {
                 _spring.Reset();
                 _spring.StartValue = transform.localScale;
@@ -69,7 +69,7 @@ namespace Pancake.Spring
                 _spring.UpdateEndValue(target, _spring.CurrentVelocity);
             }
 
-            while (!Math.Approximately(Vector3.SqrMagnitude(transform.localScale - target), 0))
+            while (!Vector3.SqrMagnitude(transform.localScale - target).Approximately(0))
             {
                 transform.localScale = _spring.Evaluate(Time.deltaTime);
 

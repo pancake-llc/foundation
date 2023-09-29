@@ -61,9 +61,9 @@ namespace Pancake.UI
         [SerializeField] private MotionData motionData = new MotionData {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new MotionData {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
-        private CoroutineHandle _routineLongClick;
-        private CoroutineHandle _routineHold;
-        private IEnumerator _routineMultiple;
+        private Coroutine _routineLongClick;
+        private Coroutine _routineHold;
+        private AsyncProcessHandle _handleMultipleClick;
         private bool _clickedOnce; // marked as true after one click. (only check for double click)
         private bool _longClickDone; // marks as true after long click or hold up
         private bool _holdDone;
@@ -143,14 +143,14 @@ namespace Pancake.UI
         protected override void OnDisable()
         {
             base.OnDisable();
-            if (_routineMultiple != null)
+            if (_handleMultipleClick != null)
             {
 #if UNITY_EDITOR
                 // avoid case app be destroy soon than other component
                 try
                 {
 #endif
-                    App.StopCoroutine(_routineMultiple);
+                    App.StopCoroutine(_handleMultipleClick);
 #if UNITY_EDITOR
                 }
                 catch (Exception)
@@ -159,8 +159,8 @@ namespace Pancake.UI
                 }
 #endif
             }
-            this.KillCoroutine(_routineLongClick);
-            this.KillCoroutine(_routineHold);
+            StopCoroutine(_routineLongClick);
+            StopCoroutine(_routineHold);
             interactable = true;
             _clickedOnce = false;
             _longClickDone = false;
@@ -310,9 +310,8 @@ namespace Pancake.UI
             if (!allowMultipleClick && clickType == EButtonClickType.OnlySingleClick)
             {
                 if (!interactable) yield break;
-
-                _routineMultiple = IeDisableButton(timeDisableButton);
-                App.StartCoroutine(_routineMultiple);
+                
+                _handleMultipleClick = App.StartCoroutine(IeDisableButton(timeDisableButton));
                 yield break;
             }
 
@@ -413,7 +412,7 @@ namespace Pancake.UI
             if (!IsDetectLongCLick) return;
             _longClickDone = false;
             _longClickTimer = 0;
-            this.KillCoroutine(_routineLongClick);
+            StopCoroutine(_routineLongClick);
         }
 
         /// <summary>
@@ -423,7 +422,7 @@ namespace Pancake.UI
         {
             if (_longClickDone || !IsDetectLongCLick) return;
             ResetLongClick();
-            _routineLongClick = this.RunCoroutine(IeExcuteLongClick());
+            _routineLongClick = StartCoroutine(IeExcuteLongClick());
         }
 
         /// <summary>
@@ -481,7 +480,7 @@ namespace Pancake.UI
             if (!IsDetectHold) return;
             _holdDone = false;
             _holdTimer = 0;
-            this.KillCoroutine(_routineHold);
+            StopCoroutine(_routineHold);
         }
 
         /// <summary>
@@ -491,7 +490,7 @@ namespace Pancake.UI
         {
             if (_holdDone || !IsDetectHold) return;
             ResetHold();
-            _routineHold = this.RunCoroutine(IeExcuteHold());
+            _routineHold = StartCoroutine(IeExcuteHold());
         }
 
         /// <summary>
