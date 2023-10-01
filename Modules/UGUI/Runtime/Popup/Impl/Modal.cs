@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 
 namespace Pancake.UI
 {
-    public abstract class Page<TRootView, TViewState> : Page where TRootView : AppView<TViewState> where TViewState : AppViewState
+    public abstract class Modal<TRootView, TViewState> : Modal where TRootView : AppView<TViewState> where TViewState : AppViewState
     {
         public TRootView root;
 
@@ -13,7 +13,11 @@ namespace Pancake.UI
 
         protected virtual ViewInitializationTiming RootInitializationTiming => ViewInitializationTiming.BeforeFirstEnter;
 
-        public void Setup(TViewState state) { _state = state; }
+        public void Setup(TViewState state)
+        {
+            Assert.IsNotNull(root);
+            _state = state;
+        }
 
         public override async Task Initialize()
         {

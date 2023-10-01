@@ -4,10 +4,9 @@ using UnityEngine.Assertions;
 
 namespace Pancake.UI
 {
-    public abstract class Page<TRootView, TViewState> : Page where TRootView : AppView<TViewState> where TViewState : AppViewState
+    public abstract class Sheet<TRootView, TViewState> : Sheet where TRootView : AppView<TViewState> where TViewState : AppViewState
     {
         public TRootView root;
-
         private bool _isInitialized;
         private TViewState _state;
 
@@ -28,11 +27,11 @@ namespace Pancake.UI
             }
         }
 
-        public override async Task WillPushEnter()
+        public override async Task WillEnter()
         {
             Assert.IsNotNull(root);
 
-            await base.WillPushEnter();
+            await base.WillEnter();
 
             if (RootInitializationTiming == ViewInitializationTiming.BeforeFirstEnter && !_isInitialized)
             {
