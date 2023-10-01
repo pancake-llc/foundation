@@ -44,15 +44,17 @@ namespace Pancake.AssetLoader
                 AssetName
             }
 
-            [field: SerializeField] public KeySourceType KeySource { get; set; }
+            [SerializeField] private KeySourceType keySource;
             [SerializeField] private string key;
-            [field: SerializeField] public Object Asset { get; set; }
+            [SerializeField] private Object asset;
 
             public string Key { get => GetKey(); set => key = value; }
+            public KeySourceType KeySource { get => keySource; set => keySource = value; }
+            public Object Asset { get => asset; set => asset = value; }
 
             private string GetKey()
             {
-                if (KeySource == KeySourceType.AssetName) return Asset == null ? "" : Asset.name;
+                if (keySource == KeySourceType.AssetName) return asset == null ? "" : asset.name;
                 return key;
             }
         }
