@@ -20,7 +20,7 @@ namespace Pancake.UI
             Action<(Modal enterModal, Modal exitModal)> onAfterPop = null)
         {
             var callbackReceiver = new AnonymousModalContainerCallbackReceiver(onBeforePush, onAfterPush, onBeforePop, onAfterPop);
-            //self.AddCallbackReceiver(callbackReceiver);
+            self.AddCallbackReceiver(callbackReceiver);
         }
 
         /// <summary>
@@ -44,34 +44,22 @@ namespace Pancake.UI
             callbackReceiver.OnBeforePush += x =>
             {
                 var (enterModal, exitModal) = x;
-                if (enterModal.Equals(modal))
-                {
-                    onBeforePush?.Invoke(exitModal);
-                }
+                if (enterModal.Equals(modal)) onBeforePush?.Invoke(exitModal);
             };
             callbackReceiver.OnAfterPush += x =>
             {
                 var (enterModal, exitModal) = x;
-                if (enterModal.Equals(modal))
-                {
-                    onAfterPush?.Invoke(exitModal);
-                }
+                if (enterModal.Equals(modal)) onAfterPush?.Invoke(exitModal);
             };
             callbackReceiver.OnBeforePop += x =>
             {
                 var (enterModal, exitModal) = x;
-                if (exitModal.Equals(modal))
-                {
-                    onBeforePop?.Invoke(enterModal);
-                }
+                if (exitModal.Equals(modal)) onBeforePop?.Invoke(enterModal);
             };
             callbackReceiver.OnAfterPop += x =>
             {
                 var (enterModal, exitModal) = x;
-                if (exitModal.Equals(modal))
-                {
-                    onAfterPop?.Invoke(enterModal);
-                }
+                if (exitModal.Equals(modal)) onAfterPop?.Invoke(enterModal);
             };
 
             var gameObj = self.gameObject;
@@ -80,9 +68,9 @@ namespace Pancake.UI
                 destroyedEventDispatcher = gameObj.AddComponent<MonoBehaviourDestroyedTracker>();
             }
 
-            //destroyedEventDispatcher.Callback += () => self.RemoveCallbackReceiver(callbackReceiver);
+            destroyedEventDispatcher.Callback += () => self.RemoveCallbackReceiver(callbackReceiver);
 
-            //self.AddCallbackReceiver(callbackReceiver);
+            self.AddCallbackReceiver(callbackReceiver);
         }
     }
 }

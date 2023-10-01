@@ -7,37 +7,50 @@ namespace Pancake.UI
     [EditorIcon("scriptable_setting")]
     public class DefaultPopupSetting : ScriptableSettings<DefaultPopupSetting>
     {
-        private const string DEFAULT_MODAL_BACKDROP_PREFAB_KEY = "default_modal_backdrop";
+        [SerializeField] private UITransitionAsset sheetEnterAnim;
+        [SerializeField] private UITransitionAsset sheetExitAnim;
 
-        [SerializeField] private UITransitionAsset sheetEnter;
-        [SerializeField] private UITransitionAsset sheetExit;
+        [SerializeField] private UITransitionAsset pagePushEnterAnim;
+        [SerializeField] private UITransitionAsset pagePushExitAnim;
+        [SerializeField] private UITransitionAsset pagePopEnterAnim;
+        [SerializeField] private UITransitionAsset pagePopExitAnim;
 
-        [SerializeField] private UITransitionAsset pagePushEnter;
-        [SerializeField] private UITransitionAsset pagePushExit;
-        [SerializeField] private UITransitionAsset pagePopEnter;
-        [SerializeField] private UITransitionAsset pagePopExit;
+        [SerializeField] private UITransitionAsset modalEnterAnim;
+        [SerializeField] private UITransitionAsset modalExitAnim;
 
-        [SerializeField] private UITransitionAsset modalEnter;
-        [SerializeField] private UITransitionAsset modalExit;
+        [SerializeField] private UITransitionAsset modalBackdropEnterAnim;
+        [SerializeField] private UITransitionAsset modalBackdropExitAnim;
 
-        [SerializeField] private UITransitionAsset modalBackdropEnter;
-        [SerializeField] private UITransitionAsset modalBackdropExit;
+        [SerializeField] private ModalBackdrop modalBackdropPrefab;
 
         [SerializeField] private AssetLoaderObject assetLoader;
         [SerializeField] private bool enableInteractionInTransition;
         [SerializeField] private bool controlInteractionAllContainer = true;
 
         private IAssetLoader _defaultAssetLoader;
+        private ModalBackdrop _defaultModalBackdrop;
 
         public static ITransitionAnimation GetDefaultPageTransition(bool push, bool enter)
         {
-            if (push) return enter ? Instance.pagePushEnter : Instance.pagePushExit;
-            return enter ? Instance.pagePopEnter : Instance.pagePopExit;
+            if (push) return enter ? Instance.pagePushEnterAnim : Instance.pagePushExitAnim;
+            return enter ? Instance.pagePopEnterAnim : Instance.pagePopExitAnim;
         }
 
-        public static ITransitionAnimation GetDefaultModalTransition(bool enter) { return enter ? Instance.modalEnter : Instance.modalExit; }
+        public static ITransitionAnimation GetDefaultModalTransition(bool enter) { return enter ? Instance.modalEnterAnim : Instance.modalExitAnim; }
 
-        public static ITransitionAnimation GetDefaultSheetTransition(bool enter) { return enter ? Instance.sheetEnter : Instance.sheetExit; }
+        public static ITransitionAnimation GetDefaultSheetTransition(bool enter) { return enter ? Instance.sheetEnterAnim : Instance.sheetExitAnim; }
+
+        public static ModalBackdrop ModalBackdropPrefab
+        {
+            get
+            {
+                if (ModalBackdropPrefab != null) return Instance.modalBackdropPrefab;
+
+                if (Instance._defaultModalBackdrop == null) Instance._defaultModalBackdrop = Resources.Load<ModalBackdrop>("DefaultModalBackdropPrefab");
+
+                return Instance._defaultModalBackdrop;
+            }
+        }
 
         public static IAssetLoader AssetLoader
         {
@@ -51,36 +64,49 @@ namespace Pancake.UI
         }
 
         public static ITransitionAnimation SheetEnter =>
-            Instance.sheetEnter != null ? Instantiate(Instance.sheetEnter) : SimpleUITransitionAsset.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
+            Instance.sheetEnterAnim != null ? Instantiate(Instance.sheetEnterAnim) : SimpleUITransitionAsset.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
 
         public static ITransitionAnimation SheetExit =>
-            Instance.sheetExit != null ? Instantiate(Instance.sheetExit) : SimpleUITransitionAsset.CreateInstance(afterAlpha: 0f, easeType: Ease.Linear);
+            Instance.sheetExitAnim != null ? Instantiate(Instance.sheetExitAnim) : SimpleUITransitionAsset.CreateInstance(afterAlpha: 0f, easeType: Ease.Linear);
 
         public static ITransitionAnimation PagePushEnter =>
-            Instance.pagePushEnter != null
-                ? Instantiate(Instance.pagePushEnter)
+            Instance.pagePushEnterAnim != null
+                ? Instantiate(Instance.pagePushEnterAnim)
                 : SimpleUITransitionAsset.CreateInstance(beforeAlignment: Alignment.Right, afterAlignment: Alignment.Center);
 
         public static ITransitionAnimation PagePushExit =>
-            Instance.pagePushExit != null
-                ? Instantiate(Instance.pagePushExit)
+            Instance.pagePushExitAnim != null
+                ? Instantiate(Instance.pagePushExitAnim)
                 : SimpleUITransitionAsset.CreateInstance(beforeAlignment: Alignment.Center, afterAlignment: Alignment.Left);
 
         public static ITransitionAnimation PagePopEnter =>
-            Instance.pagePopEnter != null
-                ? Instantiate(Instance.pagePopEnter)
+            Instance.pagePopEnterAnim != null
+                ? Instantiate(Instance.pagePopEnterAnim)
                 : SimpleUITransitionAsset.CreateInstance(beforeAlignment: Alignment.Left, afterAlignment: Alignment.Center);
 
         public static ITransitionAnimation PagePopExit =>
-            Instance.pagePopExit != null
-                ? Instantiate(Instance.pagePopExit)
+            Instance.pagePopExitAnim != null
+                ? Instantiate(Instance.pagePopExitAnim)
                 : SimpleUITransitionAsset.CreateInstance(beforeAlignment: Alignment.Center, afterAlignment: Alignment.Right);
 
         public static ITransitionAnimation ModalEnter =>
-            Instance.modalEnter != null ? Instantiate(Instance.modalEnter) : SimpleUITransitionAsset.CreateInstance(beforeScale: Vector3.one * 0.3f, beforeAlpha: 0f);
+            Instance.modalEnterAnim != null
+                ? Instantiate(Instance.modalEnterAnim)
+                : SimpleUITransitionAsset.CreateInstance(beforeScale: Vector3.one * 0.3f, beforeAlpha: 0f);
 
         public static ITransitionAnimation ModalExit =>
-            Instance.modalExit != null ? Instantiate(Instance.modalExit) : SimpleUITransitionAsset.CreateInstance(afterScale: Vector3.one * 0.3f, afterAlpha: 0f);
+            Instance.modalExitAnim != null ? Instantiate(Instance.modalExitAnim) : SimpleUITransitionAsset.CreateInstance(afterScale: Vector3.one * 0.3f, afterAlpha: 0f);
+
+        public static ITransitionAnimation ModalBackdropEnter =>
+            Instance.modalBackdropEnterAnim != null
+                ? Instantiate(Instance.modalBackdropEnterAnim)
+                : SimpleUITransitionAsset.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
+
+        public static ITransitionAnimation ModalBackdropExit =>
+            Instance.modalBackdropExitAnim != null
+                ? Instantiate(Instance.modalBackdropExitAnim)
+                : SimpleUITransitionAsset.CreateInstance(afterAlpha: 1f, easeType: Ease.Linear);
+
 
         public static bool EnableInteractionInTransition { get => Instance.enableInteractionInTransition; set => Instance.enableInteractionInTransition = value; }
 

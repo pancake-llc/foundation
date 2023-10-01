@@ -2,7 +2,7 @@
 
 namespace Pancake.UI
 {
-    public interface ISheetLifeCycleEvent
+    public interface ISheetLifecycleEvent
     {
         Task Initialize();
         Task WillEnter();
