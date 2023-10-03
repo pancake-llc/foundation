@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9918b09f5e3401db803cdfd6104b239, type: 3}
+  m_Name: ad_banner_unit_wrapper
+  m_EditorClassIdentifier: 
+  remoteConfigFlagUseAdmob: {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
+  admobBanner: {fileID: 11400000, guid: 8bd47f913ce7a4f45b15da551303f14c, type: 2}
+  applovinBanner: {fileID: 11400000, guid: 42ae7dda7d50fa14cb2fc07c97af44ed, type: 2}

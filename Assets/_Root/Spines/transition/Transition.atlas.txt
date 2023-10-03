@@ -1,0 +1,13 @@
+Transition.png
+size:1704,1704
+filter:Linear,Linear
+pma:true
+scale:0.68
+BG2
+bounds:2,20,1220,1681
+Back
+bounds:1224,848,853,477
+rotate:90
+loading_logo
+bounds:1224,268,578,203
+rotate:90

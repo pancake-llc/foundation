@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 316b69983cba47c09f06a794a9d983ce, type: 3}
+  m_Name: notification_channel_data
+  m_EditorClassIdentifier: 
+  identifier: 5a583df7-c2ac-447e-b40c-adfb9026126c
+  minute: 1440
+  repeat: 1
+  bigPicture: 0
+  namePicture: channel_manual_picture.jpg
+  overrideIcon: 0
+  smallIcon: icon_0
+  largeIcon: icon_1
+  datas:
+  - title: Darkness Fall
+    message: Heroes, let's join hands to protect the kingdom from the invading darkness
