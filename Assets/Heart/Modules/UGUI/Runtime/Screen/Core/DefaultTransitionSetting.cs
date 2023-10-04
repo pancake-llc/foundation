@@ -10,20 +10,19 @@ namespace Pancake.UI
         [SerializeField] private UITransitionAnimationSO sheetEnterAnim;
         [SerializeField] private UITransitionAnimationSO sheetExitAnim;
 
-        [SerializeField] private UITransitionAnimationSO pagePushEnterAnim;
+        [Space] [SerializeField] private UITransitionAnimationSO pagePushEnterAnim;
         [SerializeField] private UITransitionAnimationSO pagePushExitAnim;
         [SerializeField] private UITransitionAnimationSO pagePopEnterAnim;
         [SerializeField] private UITransitionAnimationSO pagePopExitAnim;
-
-        [SerializeField] private UITransitionAnimationSO popupEnterAnim;
+        
+        [Space] [SerializeField] private UITransitionAnimationSO popupEnterAnim;
         [SerializeField] private UITransitionAnimationSO popupExitAnim;
-
-        [SerializeField] private UITransitionAnimationSO popupBackdropEnterAnim;
+        
+        [Space] [SerializeField] private UITransitionAnimationSO popupBackdropEnterAnim;
         [SerializeField] private UITransitionAnimationSO popupBackdropExitAnim;
 
         [SerializeField] private PopupBackdrop popupBackdropPrefab;
-
-        [SerializeField] private AssetLoaderObject assetLoader;
+        [Space] [SerializeField] private AssetLoaderObject assetLoader;
         [SerializeField] private bool enableInteractionInTransition;
         [SerializeField] private bool controlInteractionAllContainer = true;
 

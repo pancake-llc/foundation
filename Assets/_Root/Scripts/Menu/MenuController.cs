@@ -12,7 +12,6 @@ namespace Pancake.SceneFlow
     [EditorIcon("script_controller")]
     public class MenuController : GameComponent
     {
-        [SerializeField] private Transform canvasUI;
         [SerializeField] private ScriptableEventGetGameObject canvasMaster;
         [SerializeField] private BoolVariable remoteConfigFetchCompleted;
         [SerializeField] private StringVariable remoteConfigNewVersion;
@@ -21,10 +20,10 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonTapToPlay;
         [SerializeField] private Button buttonShop;
 
-        //[Header("POPUP")] [SerializeField] private PopupShowEvent popupShowEvent;
-        // [SerializeField, PopupPickup] private string popupShop;
-        // [SerializeField, PopupPickup] private string popupSetting;
-        // [SerializeField, PopupPickup] private string popupUpdate;
+         [Header("POPUP")]
+         [SerializeField, PopupPickup] private string popupShop;
+         [SerializeField, PopupPickup] private string popupSetting;
+         [SerializeField, PopupPickup] private string popupUpdate;
 
         [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
         [SerializeField] private ScriptableEventString changeSceneEvent;
@@ -65,9 +64,19 @@ namespace Pancake.SceneFlow
         
         private void ShowPopupSetting()
         {
-            //buttonAudio.PlayAudio();
-            //popupShowEvent.Raise(popupSetting, canvasUI);
+            //Static.MainPopupContainer.Push<SettingPopup>(popupSetting, true);
         }
+        
+        // private IPopupPresenter OnModalPresenterCreated(IPopupPresenter presenter, Popup modal,
+        //     bool shouldInitialize = true)
+        // {
+        //     if (shouldInitialize)
+        //     {
+        //         presenter.InitPresenter();
+        //     }
+        //
+        //     return presenter;
+        // }
 
         protected override void OnDisabled()
         {

@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 4845d577559a9f74db960ec4086043b2
   m_SerializeEntries:
   - m_GUID: 0ed37c75613c9d94cb8891fcb92e67b4
-    m_Address: Assets/_Root/Scenes/launcher.unity
+    m_Address: launcher
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

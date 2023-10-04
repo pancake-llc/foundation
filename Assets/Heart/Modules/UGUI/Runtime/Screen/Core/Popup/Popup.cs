@@ -15,7 +15,7 @@ namespace Pancake.UI
         [SerializeField] private bool usePrefabNameAsId = true;
         [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
-        [SerializeField] private PopupTransitionContainer animationContainer = new PopupTransitionContainer();
+        [SerializeField, InlineEditor] private PopupTransitionContainer animationContainer = new PopupTransitionContainer();
 
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
@@ -32,8 +32,6 @@ namespace Pancake.UI
         }
 
         private readonly PriorityList<IPopupLifecycleEvent> _lifecycleEvents = new PriorityList<IPopupLifecycleEvent>();
-
-        public string Identifier { get => Id; set => Id = value; }
 
         public PopupTransitionContainer AnimationContainer => animationContainer;
 
@@ -129,13 +127,13 @@ namespace Pancake.UI
 
                 if (playAnimation)
                 {
-                    var anim = animationContainer.GetAnimation(true, partnerPopup.Identifier);
+                    var anim = animationContainer.GetAnimation(true, partnerPopup?.Id);
                     if (anim == null)
                         anim = DefaultTransitionSetting.GetDefaultPopupTransition(true);
 
                     if (anim.Duration > 0.0f)
                     {
-                        anim.SetPartner(partnerPopup.transform as RectTransform);
+                        anim.SetPartner(partnerPopup?.transform as RectTransform);
                         anim.Setup(_rectTransform);
                         yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
                     }

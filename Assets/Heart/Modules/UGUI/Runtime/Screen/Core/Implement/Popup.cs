@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Pancake.UI
@@ -15,6 +15,7 @@ namespace Pancake.UI
 
         public void Setup(TModel model)
         {
+            Debug.Log("B");
             Assert.IsNotNull(view);
             _model = model;
         }

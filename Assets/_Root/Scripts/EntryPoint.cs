@@ -5,7 +5,8 @@ namespace Pancake.SceneFlow
 {
     using Pancake;
 
-    public class StartPoint : GameComponent
+    [EditorIcon("scene_manager")]
+    public class EntryPoint : GameComponent
     {
         [SerializeField] private AssetReference launcher;
 

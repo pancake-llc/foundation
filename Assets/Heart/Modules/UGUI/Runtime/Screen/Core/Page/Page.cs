@@ -16,7 +16,7 @@ namespace Pancake.UI
         [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
         [SerializeField] private int order;
-        [SerializeField] private PageTransitionContainer animationContainer = new PageTransitionContainer();
+        [SerializeField, InlineEditor] private PageTransitionContainer animationContainer = new PageTransitionContainer();
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
         private RectTransform _rectTransform;
@@ -140,12 +140,12 @@ namespace Pancake.UI
             _canvasGroup.alpha = 1f;
             if (playAnimation)
             {
-                var anim = animationContainer.GetAnimation(push, true, partnerPage.Id);
+                var anim = animationContainer.GetAnimation(push, true, partnerPage?.Id);
                 if (anim == null) anim = DefaultTransitionSetting.GetDefaultPageTransition(push, true);
 
                 if (anim.Duration > 0f)
                 {
-                    anim.SetPartner(partnerPage.transform as RectTransform);
+                    anim.SetPartner(partnerPage?.transform as RectTransform);
                     anim.Setup(_rectTransform);
                     yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
                 }

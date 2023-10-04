@@ -1,6 +1,7 @@
 ﻿using Pancake;
 using Pancake.ApexEditor;
 using Pancake.ExLib.Reflection;
+using Pancake.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace PancakeEditor
     [ViewTarget(typeof(PopupPickupAttribute))]
     public sealed class PopupPickupDrawer : FieldView, ITypeValidationCallback
     {
-        private const string NAME_CLASS_INHERIT = "Pancake.UI.UIPopup";
+        private const string NAME_CLASS_INHERIT = "Pancake.UI.Popup";
 
         public override void OnGUI(Rect position, SerializedField element, GUIContent label)
         {
@@ -49,10 +50,10 @@ namespace PancakeEditor
                 if (TypeExtensions.TryFindTypeByFullName(NAME_CLASS_INHERIT, out var type))
                 {
                     var result = type.GetAllSubClass();
+                    result = result.Filter(t => !t.Name.Equals("Popup`2"));
                     for (var i = 0; i < result.Count; i++)
                     {
                         if (i == 0) menu.AddSeparator("");
-
                         int cachei = i;
                         menu.AddItem(new GUIContent($"{result[i].Name} ({i})"),
                             false,

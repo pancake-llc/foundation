@@ -2,6 +2,7 @@ namespace Pancake.SceneFlow
 {
     public static class Constant
     {
+        public const string INITIALIZATION_SCENE = "initialization";
         public const string LAUNCHER_SCENE = "launcher";
         public const string PERSISTENT_SCENE = "persistent";
         public const string MENU_SCENE = "menu";
@@ -12,5 +13,8 @@ namespace Pancake.SceneFlow
         public const string IAP_DOUBLE_COIN = "iap_double_coin";
         public const string IAP_UNLOCK_ALL_SKIN = "iap_unlock_all_skin";
         public const string IAP_VIP = "iap_vip";
+
+        public const string MAIN_PAGE_CONTAINER_ID = "MainPageContainer";
+        public const string MAIN_POPUP_CONTAINER_ID = "MainPopupContainer";
     }
 }

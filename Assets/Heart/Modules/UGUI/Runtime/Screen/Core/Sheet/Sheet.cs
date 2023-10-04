@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Pancake.Apex;
 using Pancake.ExLib;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Pancake.UI
 
         [SerializeField] private int order;
 
-        [SerializeField] private SheetTransitionContainer animationContainer = new SheetTransitionContainer();
+        [SerializeField, InlineEditor] private SheetTransitionContainer animationContainer = new SheetTransitionContainer();
 
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;

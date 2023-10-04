@@ -36,7 +36,7 @@ namespace PancakeEditor
             IOS14AdvertisingSupport,
             ParticleEffectForUGUI,
             UIEffect,
-            PopupSetting,
+            ScreenSetting,
             Spine,
         }
 
@@ -69,7 +69,7 @@ namespace PancakeEditor
             HeartConfig = WizardAllType.HeartSetting,
             Scriptable = WizardAllType.Scriptable,
             LevelSystem = WizardAllType.LevelSystem,
-            PopupSetting = WizardAllType.PopupSetting
+            ScreenSetting = WizardAllType.ScreenSetting
         }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
@@ -208,7 +208,7 @@ namespace PancakeEditor
                 case WizardAllType.HeartSetting when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesHeartSettingDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.PopupSetting when _currentType is WizardType.Setting or WizardType.All:
+                case WizardAllType.ScreenSetting when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesPopupSettingDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Track or WizardType.All:
@@ -296,7 +296,7 @@ namespace PancakeEditor
                 case WizardAllType.SelectiveProfiling: 
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
-                case WizardAllType.PopupSetting: return EditorResources.ScriptableSetting;
+                case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.Scriptable: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
                 case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;
