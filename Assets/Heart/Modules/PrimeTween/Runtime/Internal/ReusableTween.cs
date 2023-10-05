@@ -25,7 +25,7 @@ namespace PrimeTween {
         [SerializeField] internal ValueContainer startValue;
         [SerializeField] internal ValueContainer endValue;
         internal ValueContainer diff;
-        internal bool isAdditive; // todo is safe to replace with intParam?
+        internal bool isAdditive;
         internal ValueContainer prevVal;
         [SerializeField] internal TweenSettings settings;
         [SerializeField] internal int cyclesDone;
@@ -217,7 +217,7 @@ namespace PrimeTween {
                 try {
                     callback();
                 } catch (Exception e) {
-                    Debug.LogError($"Tween's onComplete callback raised exception, target: {tween.GetDescription()}, exception:\n{e}", tween.unityTarget);
+                    Debug.LogError($"Tween's onComplete callback raised exception, tween: {tween.GetDescription()}, exception:\n{e}", tween.unityTarget);
                 }
             };
         }

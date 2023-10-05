@@ -76,8 +76,8 @@ namespace PrimeTween {
         public float progress => sharedProps.progress;
         /// Normalized progress of all cycles expressed in 0..1 range.
         public float progressTotal => sharedProps.progressTotal;
-        
-        bool validateIsAlive() => Constants.validateIsAlive(isAlive);
+
+        internal bool validateIsAlive() => Constants.validateIsAlive(isAlive);
 
         public static Sequence Create() {
             return new Sequence(PrimeTweenManager.createEmpty());
@@ -249,8 +249,13 @@ namespace PrimeTween {
             tween.sequence = this;
             var sequenceIsPaused = isPaused;
             if (tween._isPaused != sequenceIsPaused) {
-                Debug.LogWarning($"{nameof(Tween)}.{nameof(Tween.isPaused)} changed to '{sequenceIsPaused}' after adding to {nameof(Sequence)}.");
+                Debug.LogError($"{nameof(Tween)}.{nameof(Tween.isPaused)} changed to '{sequenceIsPaused}' after adding to {nameof(Sequence)}. Please use sequence.isPaused to apply the paused state to all tweens in a sequence.");
                 tween._isPaused = sequenceIsPaused;
+            }
+            var sequenceTimeScale = timeScale;
+            if (tween.timeScale != sequenceTimeScale) {
+                Debug.LogError($"{nameof(Tween)}.{nameof(Tween.timeScale)} changed to '{sequenceTimeScale}' after adding to {nameof(Sequence)}. Please use sequence.timeScale to apply the timeScale to all tweens in a sequence.");
+                tween.timeScale = sequenceTimeScale;
             }
         }
 
@@ -571,6 +576,20 @@ namespace PrimeTween {
                     return cur;
                 }
                 cur = child;
+            }
+        }
+        
+        /// <summary>Custom timeScale. To smoothly animate timeScale over time, use <see cref="Tween.TweenTimeScale"/> method.</summary>
+        public float timeScale {
+            get => validateIsAlive() ? first.tween.timeScale : 1;
+            set {
+                if (!validateIsAlive()) {
+                    return;
+                }
+                TweenSettings.clampTimescale(ref value);
+                foreach (var tween in getEnumerator(true)) {
+                    tween.tween.timeScale = value;
+                }
             }
         }
     }

@@ -856,6 +856,17 @@ MonoBehaviour:
     dependency: 0
     placeInGlobalScope: 0
     generateOnlyOverloads: 1
+  - name: TweenTimeScale
+    methodName: TweenTimeScale
+    targetType: PrimeTween.Sequence
+    propertyType: 1
+    propertyName: 
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: DOTimeScale
+    dependency: 0
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 1
   - name: VisualElement_Layout
     methodName: VisualElementLayout
     targetType: UnityEngine.UIElements.VisualElement
@@ -920,6 +931,72 @@ MonoBehaviour:
     propertySetter: SetTopLeft(val)
     dotweenMethodName: 
     dependency: 9
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: OffsetMin
+    methodName: OffsetMin
+    targetType: UnityEngine.RectTransform
+    propertyType: 3
+    propertyName: offsetMin
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: 
+    dependency: 1
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: OffsetMinX
+    methodName: OffsetMinX
+    targetType: UnityEngine.RectTransform
+    propertyType: 1
+    propertyName: 
+    propertyGetter: offsetMin[0]
+    propertySetter: offsetMin = _target.offsetMin.WithComponent(0, val)
+    dotweenMethodName: 
+    dependency: 1
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: OffsetMinY
+    methodName: OffsetMinY
+    targetType: UnityEngine.RectTransform
+    propertyType: 1
+    propertyName: 
+    propertyGetter: offsetMin[1]
+    propertySetter: offsetMin = _target.offsetMin.WithComponent(1, val)
+    dotweenMethodName: 
+    dependency: 1
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: OffsetMax
+    methodName: OffsetMax
+    targetType: UnityEngine.RectTransform
+    propertyType: 3
+    propertyName: offsetMax
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: 
+    dependency: 1
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: OffsetMaxX
+    methodName: OffsetMaxX
+    targetType: UnityEngine.RectTransform
+    propertyType: 1
+    propertyName: 
+    propertyGetter: offsetMax[0]
+    propertySetter: offsetMax = _target.offsetMax.WithComponent(0, val)
+    dotweenMethodName: 
+    dependency: 1
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 0
+  - name: OffsetMaxY
+    methodName: OffsetMaxY
+    targetType: UnityEngine.RectTransform
+    propertyType: 1
+    propertyName: 
+    propertyGetter: offsetMax[1]
+    propertySetter: offsetMax = _target.offsetMax.WithComponent(1, val)
+    dotweenMethodName: 
+    dependency: 1
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
   additiveMethodsGenerator:

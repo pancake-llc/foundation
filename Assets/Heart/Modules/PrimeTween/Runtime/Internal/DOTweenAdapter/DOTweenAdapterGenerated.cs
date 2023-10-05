@@ -6,7 +6,6 @@ using System;
 namespace PrimeTween {
     [PublicAPI]
     public static partial class DOTweenAdapter {
-
         public static Tween DOShadowStrength([NotNull] this UnityEngine.Light target, Single endValue, float duration) => Tween.LightShadowStrength(target, endValue, duration, defaultDotweenEase);
 
         public static Tween DOIntensity([NotNull] this UnityEngine.Light target, Single endValue, float duration) => Tween.LightIntensity(target, endValue, duration, defaultDotweenEase);
@@ -28,9 +27,6 @@ namespace PrimeTween {
         public static Tween DOPixelRect([NotNull] this UnityEngine.Camera target, UnityEngine.Rect endValue, float duration) => Tween.CameraPixelRect(target, endValue, duration, defaultDotweenEase);
 
         public static Tween DORect([NotNull] this UnityEngine.Camera target, UnityEngine.Rect endValue, float duration) => Tween.CameraRect(target, endValue, duration, defaultDotweenEase);
-
-
-
 
         public static Tween DOMove([NotNull] this UnityEngine.Transform target, UnityEngine.Vector3 endValue, float duration) => Tween.Position(target, endValue, duration, defaultDotweenEase);
 
@@ -65,6 +61,8 @@ namespace PrimeTween {
         public static Tween DOFade([NotNull] this UnityEngine.SpriteRenderer target, Single endValue, float duration) => Tween.Alpha(target, endValue, duration, defaultDotweenEase);
 
         public static Tween DOTimeScale([NotNull] this PrimeTween.Tween target, Single endValue, float duration) => Tween.TweenTimeScale(target, endValue, duration, defaultDotweenEase);
+
+        public static Tween DOTimeScale([NotNull] this PrimeTween.Sequence target, Single endValue, float duration) => Tween.TweenTimeScale(target, endValue, duration, defaultDotweenEase);
 
         #if !UNITY_2019_1_OR_NEWER || UNITY_UGUI_INSTALLED
         public static Tween DOValue([NotNull] this UnityEngine.UI.Slider target, Single endValue, float duration) => Tween.UISliderValue(target, endValue, duration, defaultDotweenEase);
@@ -101,15 +99,9 @@ namespace PrimeTween {
 
         public static Tween DOPreferredSize([NotNull] this UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 endValue, float duration) => Tween.UIPreferredSize(target, endValue, duration, defaultDotweenEase);
 
-
-
         public static Tween DOFlexibleSize([NotNull] this UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 endValue, float duration) => Tween.UIFlexibleSize(target, endValue, duration, defaultDotweenEase);
 
-
-
         public static Tween DOMinSize([NotNull] this UnityEngine.UI.LayoutElement target, UnityEngine.Vector2 endValue, float duration) => Tween.UIMinSize(target, endValue, duration, defaultDotweenEase);
-
-
 
         public static Tween DOColor([NotNull] this UnityEngine.UI.Graphic target, UnityEngine.Color endValue, float duration) => Tween.Color(target, endValue, duration, defaultDotweenEase);
 
@@ -153,15 +145,8 @@ namespace PrimeTween {
 
         public static Tween DOPitch([NotNull] this UnityEngine.AudioSource target, Single endValue, float duration) => Tween.AudioPitch(target, endValue, duration, defaultDotweenEase);
 
-
         #endif
         #if UI_ELEMENTS_MODULE_INSTALLED
-
-
-
-
-
-
         #endif
     }
 }

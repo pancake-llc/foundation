@@ -196,15 +196,17 @@ namespace PrimeTween {
         
         bool validateIsAlive() => Constants.validateIsAlive(isAlive);
 
-        /// <summary> Custom tween's timeScale. To smoothly animate tween's timeScale over time, use <see cref="Tween.TweenTimeScale"/> method.</summary>
+        /// <summary>Custom timeScale. To smoothly animate timeScale over time, use <see cref="Tween.TweenTimeScale"/> method.</summary>
         public float timeScale {
             get => validateIsAlive() ? tween.timeScale : 1;
             set {
                 if (!tryManipulate()) {
                     return;
                 }
-                if (value < 0) {
-                    throw new InvalidOperationException("Timescale should be >= 0.");
+                TweenSettings.clampTimescale(ref value);
+                if (tween.IsInSequence()) {
+                    Debug.LogError("Setting timeScale is not allowed because this tween in a Sequence. Please use Sequence.timeScale instead.");
+                    return;
                 }
                 tween.timeScale = value;
             }

@@ -80,6 +80,13 @@ namespace PrimeTween {
             }
         }
 
+        internal static void clampTimescale(ref float value) {
+            if (value < 0) {
+                Debug.LogError($"timeScale should be >= 0, but was {value}");
+                value = 0;
+            }
+        }
+
         internal void CopyFrom(ref TweenSettings other) {
             duration = other.duration;
             ease = other.ease;
@@ -160,7 +167,7 @@ namespace PrimeTween {
     
     /// <summary>The easing curve of an animation. Different easing curves produce a different animation 'feeling'.<br/>
     /// Play around with different ease types to choose one that suites you the best.
-    /// Or provide a custom AnimationCurve as an ease function.</summary>
+    /// You can also provide a custom AnimationCurve as an ease function or parametrize eases with the Easing.Overshoot/Elastic/BounceExact(...) methods.</summary>
     public enum Ease { Custom = -1, Default = 0, Linear = 1, 
         InSine, OutSine, InOutSine, 
         InQuad, OutQuad, InOutQuad, 

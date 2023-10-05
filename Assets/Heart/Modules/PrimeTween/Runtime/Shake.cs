@@ -158,7 +158,7 @@ namespace PrimeTween {
         internal struct ShakeData {
             float t;
             float velocity;
-            Vector3 from, to; // todo replace with tween.endValue and tween.diff
+            Vector3 from, to;
             float symmetryFactor;
             int falloffEaseInt;
             AnimationCurve customStrengthOverTime;

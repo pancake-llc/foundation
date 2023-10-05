@@ -9,6 +9,9 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace PrimeTween {
     [AddComponentMenu("")]
@@ -72,7 +75,7 @@ namespace PrimeTween {
         void Awake() => Assert.IsNull(Instance, manualInstanceCreationIsNotAllowedMessage);
 
         #if UNITY_EDITOR
-        [UnityEditor.InitializeOnLoadMethod]
+        [InitializeOnLoadMethod]
         static void iniOnLoad() {
             if (!isHotReload) {
                 return;
@@ -108,6 +111,24 @@ namespace PrimeTween {
             Debug.LogError(manualInstanceCreationIsNotAllowedMessage);
             DestroyImmediate(this);
         }
+        
+        void OnEnable() => EditorApplication.pauseStateChanged += OnPauseStateChanged;
+        void OnDisable() => EditorApplication.pauseStateChanged -= OnPauseStateChanged;
+        void OnPauseStateChanged(PauseState state) => ignoreUnscaledDeltaTime = state == PauseState.Unpaused;
+        bool ignoreUnscaledDeltaTime;
+        float curUnscaledDeltaTime;
+        float getEditorUnscaledDeltaTime() {
+            if (ignoreUnscaledDeltaTime) {
+                ignoreUnscaledDeltaTime = false;
+                var timeScale = Time.timeScale;
+                if (timeScale != 0) {
+                    curUnscaledDeltaTime = Time.deltaTime / timeScale;
+                }
+            } else {
+                curUnscaledDeltaTime = Time.unscaledDeltaTime;
+            }
+            return curUnscaledDeltaTime;
+        }
         #endif
 
         void Start() => Assert.AreEqual(Instance, this, manualInstanceCreationIsNotAllowedMessage);
@@ -126,11 +147,16 @@ namespace PrimeTween {
         /// </summary>
         internal void Update() {
             if (updateDepth != 0) {
-                throw new Exception("Please don't call Tween.StopAll/CompleteAll() from the OnComplete() callback of from a custom animation");
+                throw new Exception("Please don't call Tween.StopAll/CompleteAll() from the OnComplete() callback or from Tween.Custom().");
             }
             updateDepth++;
             var deltaTime = Time.deltaTime;
-            var unscaledDeltaTime = Time.unscaledDeltaTime;
+            var unscaledDeltaTime =
+            #if UNITY_EDITOR
+            getEditorUnscaledDeltaTime();
+            #else
+            Time.unscaledDeltaTime;
+            #endif
             // onComplete and onValueChange can create new tweens. Cache count to process only those tweens that were present when the update started
             var oldCount = tweens.Count;
             var numRemoved = 0;
@@ -304,7 +330,7 @@ namespace PrimeTween {
                     Debug.LogWarning($"Tween is started on GameObject that is not active in hierarchy: {comp.name}. {Constants.buildWarningCanBeDisabledMessage(nameof(warnTweenOnDisabledTarget))}", comp);
                 }
             }
-            // Debug.Log($"add tween {tween.id}, {tween.GetDescription()}", tween.unityTarget);
+            // Debug.Log($"{Time.frameCount} add tween {tween.id}, {tween.GetDescription()}", tween.unityTarget);
             tweens.Add(tween);
             #if UNITY_ASSERTIONS && !PRIME_TWEEN_DISABLE_ASSERTIONS
             maxSimultaneousTweensCount = Math.Max(maxSimultaneousTweensCount, tweens.Count);

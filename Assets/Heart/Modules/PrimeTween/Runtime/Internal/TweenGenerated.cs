@@ -557,6 +557,17 @@ namespace PrimeTween {
         public static Tween TweenTimeScale([NotNull] PrimeTween.Tween target, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(endValue, settings));
         public static Tween TweenTimeScale([NotNull] PrimeTween.Tween target, Single startValue, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(startValue, endValue, settings));
 
+        public static Tween TweenTimeScale([NotNull] PrimeTween.Sequence target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TweenTimeScale(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TweenTimeScale([NotNull] PrimeTween.Sequence target, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TweenTimeScale(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TweenTimeScale([NotNull] PrimeTween.Sequence target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TweenTimeScale(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TweenTimeScale([NotNull] PrimeTween.Sequence target, Single startValue, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TweenTimeScale(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TweenTimeScale([NotNull] PrimeTween.Sequence target, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(endValue, settings));
+        public static Tween TweenTimeScale([NotNull] PrimeTween.Sequence target, Single startValue, Single endValue, TweenSettings settings) => TweenTimeScale(target, new TweenSettings<float>(startValue, endValue, settings));
+
         #if !UNITY_2019_1_OR_NEWER || UNITY_UGUI_INSTALLED
         public static Tween UISliderValue([NotNull] UnityEngine.UI.Slider target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => UISliderValue(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
@@ -1150,6 +1161,114 @@ namespace PrimeTween {
                 var val = _tween.FloatVal;
                 _target.fillAmount = val;
             }, t => (t.target as UnityEngine.UI.Image).fillAmount.ToContainer());
+        }
+
+        public static Tween UIOffsetMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMin(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMin(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMin(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMin(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, TweenSettings settings) => UIOffsetMin(target, new TweenSettings<UnityEngine.Vector2>(endValue, settings));
+        public static Tween UIOffsetMin([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIOffsetMin(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
+        public static Tween UIOffsetMin([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector2> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.RectTransform;
+                var val = _tween.Vector2Val;
+                _target.offsetMin = val;
+            }, t => (t.target as UnityEngine.RectTransform).offsetMin.ToContainer());
+        }
+
+        public static Tween UIOffsetMinX([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinX([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinX([NotNull] UnityEngine.RectTransform target, Single endValue, TweenSettings settings) => UIOffsetMinX(target, new TweenSettings<float>(endValue, settings));
+        public static Tween UIOffsetMinX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIOffsetMinX(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween UIOffsetMinX([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.RectTransform;
+                var val = _tween.FloatVal;
+                _target.offsetMin = _target.offsetMin.WithComponent(0, val);
+            }, t => (t.target as UnityEngine.RectTransform).offsetMin[0].ToContainer());
+        }
+
+        public static Tween UIOffsetMinY([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinY([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMinY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMinY([NotNull] UnityEngine.RectTransform target, Single endValue, TweenSettings settings) => UIOffsetMinY(target, new TweenSettings<float>(endValue, settings));
+        public static Tween UIOffsetMinY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIOffsetMinY(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween UIOffsetMinY([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.RectTransform;
+                var val = _tween.FloatVal;
+                _target.offsetMin = _target.offsetMin.WithComponent(1, val);
+            }, t => (t.target as UnityEngine.RectTransform).offsetMin[1].ToContainer());
+        }
+
+        public static Tween UIOffsetMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMax(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMax(target, new TweenSettings<UnityEngine.Vector2>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMax(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMax(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 endValue, TweenSettings settings) => UIOffsetMax(target, new TweenSettings<UnityEngine.Vector2>(endValue, settings));
+        public static Tween UIOffsetMax([NotNull] UnityEngine.RectTransform target, UnityEngine.Vector2 startValue, UnityEngine.Vector2 endValue, TweenSettings settings) => UIOffsetMax(target, new TweenSettings<UnityEngine.Vector2>(startValue, endValue, settings));
+        public static Tween UIOffsetMax([NotNull] UnityEngine.RectTransform target, TweenSettings<UnityEngine.Vector2> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.RectTransform;
+                var val = _tween.Vector2Val;
+                _target.offsetMax = val;
+            }, t => (t.target as UnityEngine.RectTransform).offsetMax.ToContainer());
+        }
+
+        public static Tween UIOffsetMaxX([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxX([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxX(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxX(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxX([NotNull] UnityEngine.RectTransform target, Single endValue, TweenSettings settings) => UIOffsetMaxX(target, new TweenSettings<float>(endValue, settings));
+        public static Tween UIOffsetMaxX([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIOffsetMaxX(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween UIOffsetMaxX([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.RectTransform;
+                var val = _tween.FloatVal;
+                _target.offsetMax = _target.offsetMax.WithComponent(0, val);
+            }, t => (t.target as UnityEngine.RectTransform).offsetMax[0].ToContainer());
+        }
+
+        public static Tween UIOffsetMaxY([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxY([NotNull] UnityEngine.RectTransform target, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxY(target, new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => UIOffsetMaxY(target, new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween UIOffsetMaxY([NotNull] UnityEngine.RectTransform target, Single endValue, TweenSettings settings) => UIOffsetMaxY(target, new TweenSettings<float>(endValue, settings));
+        public static Tween UIOffsetMaxY([NotNull] UnityEngine.RectTransform target, Single startValue, Single endValue, TweenSettings settings) => UIOffsetMaxY(target, new TweenSettings<float>(startValue, endValue, settings));
+        public static Tween UIOffsetMaxY([NotNull] UnityEngine.RectTransform target, TweenSettings<float> settings) {
+            return animate(target, ref settings, _tween => {
+                var _target = _tween.target as UnityEngine.RectTransform;
+                var val = _tween.FloatVal;
+                _target.offsetMax = _target.offsetMax.WithComponent(1, val);
+            }, t => (t.target as UnityEngine.RectTransform).offsetMax[1].ToContainer());
         }
 
         #endif

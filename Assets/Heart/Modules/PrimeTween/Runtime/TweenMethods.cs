@@ -284,6 +284,7 @@ namespace PrimeTween {
         }
 
         public static Tween TweenTimeScale(Tween tween, TweenSettings<float> settings) {
+            clampTimescale(ref settings);
             if (!tween.tryManipulate()) {
                 return default;
             }
@@ -300,8 +301,30 @@ namespace PrimeTween {
             return result;
         }
 
+        public static Tween TweenTimeScale(Sequence sequence, TweenSettings<float> settings) {
+            clampTimescale(ref settings);
+            if (!sequence.validateIsAlive()) {
+                return default;
+            }
+            var result = animate(sequence.first.tween, ref settings, t => {
+                var _sequence = (t.target as ReusableTween).sequence;
+                if (t.intParam != _sequence.id) {
+                    t.EmergencyStop();
+                    return;
+                }
+                _sequence.timeScale = t.FloatVal;
+            }, t => (t.target as ReusableTween).sequence.timeScale.ToContainer());
+            Assert.IsTrue(result.isAlive);
+            result.tween.intParam = sequence.id;
+            return result;
+        }
+
+        static void clampTimescale(ref TweenSettings<float> settings) {
+            TweenSettings.clampTimescale(ref settings.startValue);
+            TweenSettings.clampTimescale(ref settings.endValue);
+        }
+        
         #if PRIME_TWEEN_EXPERIMENTAL
-        // todo rename to PositionBounce or rewrite to new Easing.Bounce
         /// <summary>Similar to position animation with Ease.OutBounce, but gives the ability to customize the bounce behaviour by specifying the exact bounce amplitude, number of bounces, and bounce stiffness.</summary>
         public static Sequence PositionOutBounce([NotNull] Transform target, Vector3 endValue, float duration, float bounceAmplitude, int numBounces = 2, float stiffness = 0.5f, bool useUnscaledTime = false)
             => CustomOutBounce(target, (t, s) => Position(t, s), endValue, duration, bounceAmplitude, numBounces, stiffness, t => t.position, useUnscaledTime);

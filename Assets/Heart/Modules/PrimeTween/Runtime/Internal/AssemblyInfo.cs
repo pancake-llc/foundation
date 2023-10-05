@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("PrimeTween.Tests.Editor")]
 [assembly: InternalsVisibleTo("PrimeTween.Other")]
 [assembly: InternalsVisibleTo("PrimeTween.Debug")]
+[assembly: InternalsVisibleTo("Pancake.UGUI")]
