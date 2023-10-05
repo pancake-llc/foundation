@@ -44,8 +44,8 @@ namespace Pancake.ApexEditor
 
                 position.height = EditorGUIUtility.singleLineHeight;
                 GUI.Label(position, GetName(), titleStyle);
-                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
-                totalHeight -= position.height + ApexGUIUtility.VerticalSpacing;
+                position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
+                totalHeight -= position.height + EditorGUIUtility.standardVerticalSpacing;
             }
 
 

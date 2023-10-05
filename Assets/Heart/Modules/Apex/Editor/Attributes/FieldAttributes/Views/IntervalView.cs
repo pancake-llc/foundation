@@ -82,7 +82,7 @@ namespace Pancake.ApexEditor
                 vector.x = EditorGUI.FloatField(position, vector.x);
             }
 
-            position.x = position.xMax + ApexGUIUtility.VerticalSpacing;
+            position.x = position.xMax + EditorGUIUtility.standardVerticalSpacing;
             position.width = BUTTON_WIDTH;
             if (GUI.Button(position, vector.x == float.NegativeInfinity ? LockIcon : UnlockIcon, ButtonStyle))
             {
@@ -91,7 +91,7 @@ namespace Pancake.ApexEditor
 
             position.x = position.xMax + SPACE_WIDTH;
             position.y += (position.height / 2) - 1;
-            position.width = totalWidth - ((EditorGUIUtility.fieldWidth * 2) + (BUTTON_WIDTH * 2) + (SPACE_WIDTH * 2) + (ApexGUIUtility.VerticalSpacing * 2));
+            position.width = totalWidth - ((EditorGUIUtility.fieldWidth * 2) + (BUTTON_WIDTH * 2) + (SPACE_WIDTH * 2) + (EditorGUIUtility.standardVerticalSpacing * 2));
             position.height = 2;
             EditorGUI.DrawRect(position, LineColor);
             position.y = y;
@@ -104,7 +104,7 @@ namespace Pancake.ApexEditor
                 vector.y = vector.y == float.PositiveInfinity ? 1 : float.PositiveInfinity;
             }
 
-            position.x = position.xMax + ApexGUIUtility.VerticalSpacing;
+            position.x = position.xMax + EditorGUIUtility.standardVerticalSpacing;
             position.width = EditorGUIUtility.fieldWidth;
             if (vector.y == float.PositiveInfinity)
             {
@@ -139,7 +139,7 @@ namespace Pancake.ApexEditor
                 vector.x = EditorGUI.IntField(position, vector.x);
             }
 
-            position.x = position.xMax + ApexGUIUtility.VerticalSpacing;
+            position.x = position.xMax + EditorGUIUtility.standardVerticalSpacing;
             position.width = BUTTON_WIDTH;
             if (GUI.Button(position, vector.x == int.MinValue ? LockIcon : UnlockIcon, ButtonStyle))
             {
@@ -148,7 +148,7 @@ namespace Pancake.ApexEditor
 
             position.x = position.xMax + SPACE_WIDTH;
             position.y += (position.height / 2) - 1;
-            position.width = totalWidth - ((EditorGUIUtility.fieldWidth * 2) + (BUTTON_WIDTH * 2) + (SPACE_WIDTH * 2) + (ApexGUIUtility.VerticalSpacing * 2));
+            position.width = totalWidth - ((EditorGUIUtility.fieldWidth * 2) + (BUTTON_WIDTH * 2) + (SPACE_WIDTH * 2) + (EditorGUIUtility.standardVerticalSpacing * 2));
             position.height = 2;
             EditorGUI.DrawRect(position, LineColor);
             position.y = y;
@@ -161,7 +161,7 @@ namespace Pancake.ApexEditor
                 vector.y = vector.y == int.MaxValue ? 1 : int.MaxValue;
             }
 
-            position.x = position.xMax + ApexGUIUtility.VerticalSpacing;
+            position.x = position.xMax + EditorGUIUtility.standardVerticalSpacing;
             position.width = EditorGUIUtility.fieldWidth;
             if (vector.y == int.MaxValue)
             {

@@ -48,7 +48,7 @@ namespace Pancake.ApexEditor
         /// <param name="position">Position of the serialized element.</param>
         /// <param name="element">Serialized element with ViewAttribute.</param>
         /// <param name="label">Label of serialized element.</param>
-        public override void OnGUI(Rect position, SerializedField element, GUIContent label) { reorderableList.DoList(position); }
+        public override void OnGUI(Rect position, SerializedField element, GUIContent label) { reorderableList.DoList(EditorGUI.IndentedRect(position)); }
 
         /// <summary>
         /// Get height which needed to draw property.
@@ -121,13 +121,13 @@ namespace Pancake.ApexEditor
                     if (getElementHeight == null)
                     {
                         if (field.IsVisible())
-                            return serializedField.GetArrayElement(index).GetHeight() + ApexGUIUtility.VerticalSpacing;
+                            return serializedField.GetArrayElement(index).GetHeight() + EditorGUIUtility.standardVerticalSpacing;
                         else
                             return 0;
                     }
                     else
                     {
-                        return (float) getElementHeight.Invoke(target, new object[1] {field.GetSerializedProperty()}) + ApexGUIUtility.VerticalSpacing;
+                        return (float) getElementHeight.Invoke(target, new object[1] {field.GetSerializedProperty()}) + EditorGUIUtility.standardVerticalSpacing;
                     }
                 },
                 onAddCallback = (list) =>
@@ -160,7 +160,7 @@ namespace Pancake.ApexEditor
         {
             var type = target.GetType();
             var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
-            
+
             foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 if (onHeaderGUI != null && onElementGUI != null && onNoneElementGUI != null && getElementHeight != null && onAddElement != null &&

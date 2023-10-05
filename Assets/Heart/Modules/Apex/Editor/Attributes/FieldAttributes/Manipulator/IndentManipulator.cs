@@ -1,4 +1,5 @@
 ﻿using Pancake.Apex;
+using UnityEditor;
 
 namespace Pancake.ApexEditor
 {
@@ -20,16 +21,16 @@ namespace Pancake.ApexEditor
         /// </summary>
         public override void OnBeforeGUI()
         {
-            previousLevel = ApexGUI.IndentLevel;
+            previousLevel = EditorGUI.indentLevel;
             if (attribute.Additive)
-                ApexGUI.IndentLevel += attribute.level;
+                EditorGUI.indentLevel += attribute.level;
             else
-                ApexGUI.IndentLevel = attribute.level;
+                EditorGUI.indentLevel = attribute.level;
         }
 
         /// <summary>
         /// Called after rendering member GUI.
         /// </summary>
-        public override void OnAfterGUI() { ApexGUI.IndentLevel = previousLevel; }
+        public override void OnAfterGUI() { EditorGUI.indentLevel = previousLevel; }
     }
 }

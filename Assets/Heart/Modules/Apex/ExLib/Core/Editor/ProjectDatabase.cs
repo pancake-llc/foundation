@@ -82,8 +82,7 @@ namespace Pancake.ExLibEditor
             if (t == null) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t as T;
         }
-
-
+        
         /// <summary>
         /// Search for assets with type <typeparamref name="T"/> by specified <paramref name="nameAsset"/> and relative path <paramref name="relativePath"/>
         /// </summary>

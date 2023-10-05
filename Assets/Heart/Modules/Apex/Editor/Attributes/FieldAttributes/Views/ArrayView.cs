@@ -12,13 +12,15 @@ namespace Pancake.ApexEditor
     [ViewTarget(typeof(ArrayAttribute))]
     public sealed class ArrayView : FieldView, ITypeValidationCallback
     {
+        private SerializedField serializedField;
         private ReorderableArray reorderableArray;
 
-        // Stored callback properties.
-        private object target;
-        private MethodCaller<object, object> onElementGUI;
-        private MethodCaller<object, object> getElementHeight;
-        private MethodCaller<object, object> getElementLabel;
+        private Action<SerializedProperty> onReorder;
+        private Action<SerializedProperty, int> onAdd;
+        private Action<SerializedProperty, int> onRemove;
+        private Action<Rect, SerializedProperty, GUIContent> onGUI;
+        private Func<SerializedProperty, int, float> getHeight;
+        private Func<SerializedProperty, int, GUIContent> getLabel;
 
         /// <summary>
         /// Called once when initializing PropertyView.
@@ -28,9 +30,18 @@ namespace Pancake.ApexEditor
         /// <param name="label">Label of Serialized field.</param>
         public override void Initialize(SerializedField serializedField, ViewAttribute viewAttribute, GUIContent label)
         {
-            target = serializedField.GetDeclaringObject();
-            FindCallbacks(target, viewAttribute as ArrayAttribute);
-            CreateArray(serializedField);
+            FindCallbacks(serializedField, viewAttribute as ArrayAttribute);
+            OverrideElementsLabel(serializedField);
+
+            this.serializedField = serializedField;
+            reorderableArray = new ReorderableArray(serializedField, true)
+            {
+                onElementGUI = OnElementGUI,
+                getElementHeight = GetElementHeight,
+                onAddClick = OnAddElement,
+                onRemoveClick = OnRemoveElement,
+                onReorder = OnReorderList
+            };
         }
 
         /// <summary>
@@ -39,103 +50,155 @@ namespace Pancake.ApexEditor
         /// <param name="position">Position of the serialized serializedField.</param>
         /// <param name="serializedField">Serialized serializedField with ViewAttribute.</param>
         /// <param name="label">Label of serialized serializedField.</param>
-        public override void OnGUI(Rect position, SerializedField serializedField, GUIContent label) { reorderableArray.Draw(position); }
+        public override void OnGUI(Rect position, SerializedField serializedField, GUIContent label)
+        {
+            reorderableArray.Draw(EditorGUI.IndentedRect(position));
+        }
 
         /// <summary>
         /// Get height which needed to draw property.
         /// </summary>
         /// <param name="property">Serialized serializedField with ViewAttribute.</param>
         /// <param name="label">Label of serialized serializedField.</param>
-        public override float GetHeight(SerializedField serializedField, GUIContent label) { return reorderableArray.GetHeight(); }
+        public override float GetHeight(SerializedField serializedField, GUIContent label)
+        {
+            return reorderableArray.GetHeight();
+        }
 
         /// <summary>
         /// Return true if this property valid the using with this attribute.
         /// If return false, this property attribute will be ignored.
         /// </summary>
         /// <param name="property">Reference of serialized property.</param>
-        /// <param name="label">Display label of serialized property.</param>
-        public bool IsValidProperty(SerializedProperty property) { return property.isArray && property.propertyType == SerializedPropertyType.Generic; }
-
-        private void CreateArray(SerializedField serializedField)
+        public bool IsValidProperty(SerializedProperty property)
         {
-            reorderableArray = new ReorderableArray(serializedField, true);
+            return property.isArray
+                && property.propertyType == SerializedPropertyType.Generic;
+        }
 
-            if (onElementGUI != null)
+        /// <summary>
+        /// Called to draw element of array.
+        /// </summary>
+        private void OnElementGUI(Rect position, int index, bool isFocused, bool isActive)
+        {
+            SerializedField field = serializedField.GetArrayElement(index);
+            if (onGUI != null)
             {
-                reorderableArray.onElementGUICallback = (rect, index, isActive, isFocused) =>
-                {
-                    SerializedField field = serializedField.GetArrayElement(index);
-
-                    if (getElementLabel != null)
-                    {
-                        field.SetLabel((GUIContent) getElementLabel.Invoke(target, new object[2] {index, serializedField}));
-                    }
-
-                    ApexGUI.RemoveIndentFromRect(ref rect);
-                    onElementGUI.Invoke(target, new object[3] {rect, field.GetSerializedProperty(), field.GetLabel()});
-                };
+                onGUI.Invoke(position, field.GetSerializedProperty(), field.GetLabel());
             }
             else
             {
-                reorderableArray.onElementGUICallback = (rect, index, isActive, isFocused) =>
-                {
-                    SerializedField field = serializedField.GetArrayElement(index);
-
-                    if (getElementLabel != null)
-                    {
-                        field.SetLabel((GUIContent) getElementLabel.Invoke(target, new object[2] {index, serializedField}));
-                    }
-
-                    ApexGUI.RemoveIndentFromRect(ref rect);
-                    field.OnGUI(rect);
-                };
+                field.OnGUI(position);
             }
-
-            if (getElementHeight != null)
-            {
-                reorderableArray.getElementHeightCallback = (index) =>
-                {
-                    SerializedField field = serializedField.GetArrayElement(index);
-                    return (float) getElementHeight.Invoke(target, new object[1] {field.GetSerializedProperty()});
-                };
-            }
-
-            reorderableArray.onAddClickCallback = (rect) => { serializedField.IncreaseArraySize(); };
-
-            reorderableArray.onRemoveClickCallback = (rect, index) => { serializedField.RemoveArrayElement(index); };
         }
 
-        private void FindCallbacks(object target, ArrayAttribute attribute)
+        /// <summary>
+        /// Called to calculate height of array element.
+        /// </summary>
+        private float GetElementHeight(int index)
         {
-            var type = target.GetType();
-            var limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
-            
+            if(getHeight != null)
+            {
+                return getHeight.Invoke(serializedField.GetSerializedProperty(), index);
+            }
+            else
+            {
+                return serializedField.GetArrayElement(index).GetHeight();
+            }
+        }
+
+        /// <summary>
+        /// Called to add new element to array.
+        /// </summary>
+        private void OnAddElement(Rect position)
+        {
+            int index = serializedField.GetArrayLength();
+            serializedField.IncreaseArraySize();
+            OverrideElementsLabel(serializedField);
+            onAdd?.Invoke(serializedField.GetSerializedProperty(), index);
+        }
+
+        /// <summary>
+        /// Called to remove selected element from array.
+        /// </summary>
+        private void OnRemoveElement(Rect position, int index)
+        {
+            onRemove?.Invoke(serializedField.GetSerializedProperty(), index);
+            serializedField.RemoveArrayElement(index);
+            OverrideElementsLabel(serializedField);
+        }
+
+        /// <summary>
+        /// Called when list reordered.
+        /// </summary>
+        private void OnReorderList()
+        {
+            OverrideElementsLabel(serializedField);
+            onReorder?.Invoke(serializedField.GetSerializedProperty());
+        }
+
+        /// <summary>
+        /// Override elements label by label callback.
+        /// </summary>
+        /// <param name="serializedField">Serialzied field of array.</param>
+        private void OverrideElementsLabel(SerializedField serializedField)
+        {
+            if (getLabel != null)
+            {
+                SerializedProperty array = serializedField.GetSerializedProperty();
+                for (int i = 0; i < serializedField.GetArrayLength(); i++)
+                {
+                    SerializedField field = serializedField.GetArrayElement(i);
+                    field.SetLabel(getLabel.Invoke(array, i));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Find callbacks of array view.
+        /// </summary>
+        /// <param name="serializedField">Serialized field of array.</param>
+        /// <param name="attribute">Array view attribute.</param>
+        private void FindCallbacks(SerializedField serializedField, ArrayAttribute attribute)
+        {
+            object target = serializedField.GetDeclaringObject();
+            Type type = target.GetType();
+            Type limitDescendant = target is MonoBehaviour ? typeof(MonoBehaviour) : typeof(Object);
             foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
-                if (onElementGUI != null && getElementHeight != null && getElementLabel != null)
+                if(onGUI == null && methodInfo.IsValidCallback(attribute.OnGUI, typeof(void), typeof(Rect), typeof(SerializedProperty), typeof(GUIContent)))
                 {
-                    break;
-                }
-
-                if (onElementGUI == null && methodInfo.IsValidCallback(attribute.OnElementGUI,
-                        typeof(void),
-                        typeof(Rect),
-                        typeof(SerializedProperty),
-                        typeof(GUIContent)))
-                {
-                    onElementGUI = methodInfo.DelegateForCall();
+                    onGUI = (Action<Rect, SerializedProperty, GUIContent>)methodInfo.CreateDelegate(typeof(Action<Rect, SerializedProperty, GUIContent>), target);
                     continue;
                 }
 
-                if (getElementHeight == null && methodInfo.IsValidCallback(attribute.GetElementHeight, typeof(float), typeof(SerializedProperty)))
+                if (getHeight == null && methodInfo.IsValidCallback(attribute.GetHeight, typeof(float), typeof(SerializedProperty), typeof(int)))
                 {
-                    getElementHeight = methodInfo.DelegateForCall<object, object>();
+                    getHeight = (Func<SerializedProperty, int, float>)methodInfo.CreateDelegate(typeof(Func<SerializedProperty, int, float>), target);
                     continue;
                 }
 
-                if (getElementLabel == null && methodInfo.IsValidCallback(attribute.GetElementLabel, typeof(GUIContent), typeof(int), typeof(SerializedProperty)))
+                if (getLabel == null && methodInfo.IsValidCallback(attribute.GetLabel, typeof(GUIContent), typeof(SerializedProperty), typeof(int)))
                 {
-                    getElementLabel = methodInfo.DelegateForCall<object, object>();
+                    getLabel = (Func<SerializedProperty, int, GUIContent>)methodInfo.CreateDelegate(typeof(Func<SerializedProperty, int, GUIContent>), target);
+                    continue;
+                }
+
+                if (onAdd == null && methodInfo.IsValidCallback(attribute.OnAdd, typeof(void), typeof(SerializedProperty), typeof(int)))
+                {
+                    onAdd = (Action<SerializedProperty, int>)methodInfo.CreateDelegate(typeof(Action<SerializedProperty, int>), target);
+                    continue;
+                }
+
+                if (onRemove == null && methodInfo.IsValidCallback(attribute.OnRemove, typeof(void), typeof(SerializedProperty), typeof(int)))
+                {
+                    onRemove = (Action<SerializedProperty, int>)methodInfo.CreateDelegate(typeof(Action<SerializedProperty, int>), target);
+                    continue;
+                }
+
+                if (onReorder == null && methodInfo.IsValidCallback(attribute.OnReorder, typeof(void), typeof(SerializedProperty)))
+                {
+                    onReorder = (Action<SerializedProperty>)methodInfo.CreateDelegate(typeof(Action<SerializedProperty>), target);
                     continue;
                 }
             }

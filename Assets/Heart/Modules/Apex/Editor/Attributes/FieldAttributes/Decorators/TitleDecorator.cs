@@ -47,7 +47,7 @@ namespace Pancake.ApexEditor
             position.y += attribute.VerticalSpace;
             position.height = height;
             GUI.Label(position, content, style);
-            position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+            position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
             if (attribute.DrawSeparator)
             {
@@ -71,7 +71,7 @@ namespace Pancake.ApexEditor
             height = style.CalcHeight(content, width);
             if (attribute.DrawSeparator)
             {
-                return height + ApexGUIUtility.VerticalSpacing + LINE_HEIGHT + attribute.VerticalSpace;
+                return height + EditorGUIUtility.standardVerticalSpacing + LINE_HEIGHT + attribute.VerticalSpace;
             }
 
             return height + attribute.VerticalSpace;

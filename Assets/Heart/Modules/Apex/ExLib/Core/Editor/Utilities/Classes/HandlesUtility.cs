@@ -5,6 +5,8 @@ namespace Pancake.ExLibEditor
 {
     public static class HandlesUtility
     {
+        public static Color Color { get => Handles.color; set => Handles.color = value; }
+
         #region [Extension Methods]
 
         public static void DrawSegmentCap(Vector3 from, Vector3 to, float thickness = 1)

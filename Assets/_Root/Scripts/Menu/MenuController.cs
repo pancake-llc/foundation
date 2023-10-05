@@ -12,7 +12,6 @@ namespace Pancake.SceneFlow
     [EditorIcon("script_controller")]
     public class MenuController : GameComponent
     {
-        [SerializeField] private ScriptableEventGetGameObject canvasMaster;
         [SerializeField] private BoolVariable remoteConfigFetchCompleted;
         [SerializeField] private StringVariable remoteConfigNewVersion;
         [SerializeField] private BoolVariable dontShowUpdateAgain;

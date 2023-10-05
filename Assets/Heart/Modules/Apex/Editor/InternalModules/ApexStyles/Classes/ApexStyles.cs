@@ -87,7 +87,7 @@ namespace Pancake.ApexEditor
                     _BoxHeader.fontStyle = FontStyle.Bold;
                     _BoxHeader.alignment = TextAnchor.MiddleLeft;
                     _BoxHeader.border = new RectOffset(2, 2, 2, 2);
-                    _BoxHeader.padding = new RectOffset(10, 0, 0, 1);
+                    _BoxHeader.padding = new RectOffset(10, 0, 2, 2);
 
                     string theme = EditorGUIUtility.isProSkin ? "DarkTheme" : "LightTheme";
                     Color32 textColor = EditorGUIUtility.isProSkin ? new Color32(200, 200, 200, 255) : new Color32(3, 3, 3, 255);
@@ -115,7 +115,7 @@ namespace Pancake.ApexEditor
                     _BoxEntryBkg.fontStyle = FontStyle.Normal;
                     _BoxEntryBkg.alignment = TextAnchor.MiddleLeft;
                     _BoxEntryBkg.border = new RectOffset(2, 2, 2, 2);
-                    _BoxEntryBkg.padding = new RectOffset(10, 0, 0, 1);
+                    _BoxEntryBkg.padding = new RectOffset(10, 0, 2, 2);
 
                     string theme = EditorGUIUtility.isProSkin ? "DarkTheme" : "LightTheme";
                     Color32 textColor = EditorGUIUtility.isProSkin ? new Color32(200, 200, 200, 255) : new Color32(3, 3, 3, 255);
@@ -311,6 +311,7 @@ namespace Pancake.ApexEditor
                 if (_BoldFoldout == null)
                 {
                     _BoldFoldout = new GUIStyle(EditorStyles.foldout);
+                    _BoldFoldout.padding = new RectOffset(14, 0, 3, 3);
                     _BoldFoldout.fontStyle = FontStyle.Bold;
                 }
 

@@ -28,6 +28,7 @@ namespace Pancake.ApexEditor
         private bool keepEnable;
         private bool defaultEditor;
         private bool searchableEditor;
+        private bool experimental;
 
         // Stored editor callbacks.
         private bool valueDealyCallRegistered;
@@ -46,12 +47,9 @@ namespace Pancake.ApexEditor
         {
             try
             {
-                if (serializedObject.targetObject == null)
-                {
-                    return;
-                }
+                serializedObject.targetObject.GetType();
             }
-            catch (Exception)
+            catch
             {
                 return;
             }
@@ -79,8 +77,9 @@ namespace Pancake.ApexEditor
 
                     RegisterCallbacks();
 
-                    searchableEditor = target.GetType().GetCustomAttribute<SearchableEditorAttribute>() != null;
-                    defaultEditor = target.GetType().GetCustomAttribute<UseDefaultEditor>() != null || ApexUtility.IsExceptType(target.GetType());
+                    experimental = type.GetCustomAttribute<ExperimentalAttribute>() != null;
+                    searchableEditor = type.GetCustomAttribute<SearchableEditorAttribute>() != null;
+                    defaultEditor = type.GetCustomAttribute<UseDefaultEditor>() != null || ApexUtility.IsExceptType(type);
                 }
                 catch (Exception ex)
                 {
@@ -95,7 +94,7 @@ namespace Pancake.ApexEditor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            if (serializedObject.targetObject != null)
+            if (serializedObject != null && serializedObject.targetObject != null)
             {
                 if (defaultEditor)
                 {
@@ -108,7 +107,12 @@ namespace Pancake.ApexEditor
                         DrawSearchField();
                     }
 
-                    ApexGUI.IndentLevel = 0;
+                    if (experimental)
+                    {
+                        DrawExperimentalLine();
+                    }
+
+                    EditorGUI.indentLevel = 0;
                     if (!searchableEditor || searchEntities.Count == 0)
                     {
                         HandleMouseMove();
@@ -144,34 +148,54 @@ namespace Pancake.ApexEditor
         /// </summary>
         protected virtual void OnMissingScriptGUI()
         {
-            GUI.enabled = true;
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Perhaps the script responsible for this component has been deleted from the project. Restore the script or delete this component.",
-                MessageType.Error);
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Delete", GUILayout.ExpandHeight(true)))
+            GUILayout.BeginVertical();
             {
-                if (AssetDatabase.IsSubAsset(target))
+                GUI.enabled = true;
+                GUILayout.BeginHorizontal();
                 {
-                    string assetPath = AssetDatabase.GetAssetPath(target);
-                    AssetDatabase.RemoveObjectFromAsset(target);
-                    DestroyImmediate(target);
-                    AssetDatabase.ImportAsset(assetPath);
+                    EditorGUILayout.HelpBox(
+                        "Perhaps the script responsible for this component has been deleted from the project. Restore the script or delete this component.",
+                        MessageType.Error);
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Delete", GUILayout.ExpandHeight(true)))
+                    {
+                        if (AssetDatabase.IsSubAsset(target))
+                        {
+                            Object mainAsset = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GetAssetPath(target));
+                            AssetDatabase.RemoveObjectFromAsset(target);
+                            DestroyImmediate(target);
+                            EditorUtility.SetDirty(mainAsset);
+                            AssetDatabase.SaveAssetIfDirty(mainAsset);
+                        }
+                        else
+                        {
+                            DestroyImmediate(target);
+                        }
+                    }
                 }
-                else
-                {
-                    DestroyImmediate(target);
-                }
+                GUILayout.EndHorizontal();
+                GUILayout.FlexibleSpace();
+                GUI.enabled = false;
             }
-
-            GUILayout.EndHorizontal();
-            GUI.enabled = false;
+            GUILayout.EndVertical();
         }
 
         /// <summary>
         /// Called when the editor becomes disabled.
         /// </summary>
-        protected virtual void OnDisable() { SafeInvokeInspectorDispose(); }
+        protected virtual void OnDisable()
+        {
+            try
+            {
+                serializedObject.targetObject.GetType();
+            }
+            catch
+            {
+                return;
+            }
+
+            SafeInvokeInspectorDispose();
+        }
 
         /// <summary>
         /// Safe invoke all [OnObjectChanged] methods of target object.
@@ -232,19 +256,12 @@ namespace Pancake.ApexEditor
         /// </summary>
         private void SafeInvokeInspectorDispose()
         {
-            try
+            if (onInspectorDisposeCalls != null)
             {
-                if (serializedObject.targetObject != null && onInspectorDisposeCalls != null)
+                for (int i = 0; i < onInspectorDisposeCalls.Count; i++)
                 {
-                    for (int i = 0; i < onInspectorDisposeCalls.Count; i++)
-                    {
-                        onInspectorDisposeCalls[i].Invoke();
-                    }
+                    onInspectorDisposeCalls[i].Invoke();
                 }
-            }
-            catch (Exception)
-            {
-                // ignored
             }
         }
 
@@ -259,79 +276,87 @@ namespace Pancake.ApexEditor
             foreach (MethodInfo methodInfo in type.AllMethods(limitDescendant))
             {
                 EditorMethodAttribute attribute = methodInfo.GetCustomAttribute<EditorMethodAttribute>();
-                if (attribute != null && methodInfo.ReturnType == typeof(void) && methodInfo.GetParameters().Length == 0)
+                if (attribute != null && methodInfo.ReturnType == typeof(void))
                 {
-                    if (attribute is OnInspectorInitializeAttribute)
+                    ParameterInfo[] parameters = methodInfo.GetParameters();
+                    if (parameters.Length == 0)
                     {
-                        methodInfo.Invoke(target, null);
-                    }
-                    else if (attribute is OnRootContainerCreatedAttribute)
-                    {
-                        methodInfo.Invoke(target, new object[1] {rootContainer});
-                    }
-                    else if (attribute is OnInspectorGUIAttribute)
-                    {
-                        if (onInspectorGUICalls == null)
+                        if (attribute is OnInspectorInitializeAttribute)
                         {
-                            onInspectorGUICalls = new List<Action>(1);
+                            methodInfo.Invoke(target, null);
                         }
-
-                        onInspectorGUICalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
-                    }
-                    else if (attribute is OnInspectorDisposeAttribute)
-                    {
-                        if (onInspectorDisposeCalls == null)
+                        else if (attribute is OnInspectorGUIAttribute)
                         {
-                            onInspectorDisposeCalls = new List<Action>(1);
-                        }
-
-                        onInspectorDisposeCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
-                    }
-                    else if (attribute is OnObjectChangedAttribute objectChangedAttribute)
-                    {
-                        if (objectChangedAttribute.DelayCall)
-                        {
-                            if (onObjectChangedDelayCalls == null)
+                            if (onInspectorGUICalls == null)
                             {
-                                onObjectChangedDelayCalls = new List<Action>(1);
+                                onInspectorGUICalls = new List<Action>(1);
                             }
 
-                            onObjectChangedDelayCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                            onInspectorGUICalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
                         }
-                        else
+                        else if (attribute is OnInspectorDisposeAttribute)
                         {
-                            if (onObjectChangedCalls == null)
+                            if (onInspectorDisposeCalls == null)
                             {
-                                onObjectChangedCalls = new List<Action>(1);
+                                onInspectorDisposeCalls = new List<Action>(1);
                             }
 
-                            onObjectChangedCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                            onInspectorDisposeCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                        }
+                        else if (attribute is OnObjectChangedAttribute objectChangedAttribute)
+                        {
+                            if (objectChangedAttribute.DelayCall)
+                            {
+                                if (onObjectChangedDelayCalls == null)
+                                {
+                                    onObjectChangedDelayCalls = new List<Action>(1);
+                                }
+
+                                onObjectChangedDelayCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                            }
+                            else
+                            {
+                                if (onObjectChangedCalls == null)
+                                {
+                                    onObjectChangedCalls = new List<Action>(1);
+                                }
+
+                                onObjectChangedCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                            }
+                        }
+                        else if (attribute is OnObjectGUIChangedAttribute objectGUIChangedAttribute)
+                        {
+                            if (objectGUIChangedAttribute.DelayCall)
+                            {
+                                if (onObjectGUIChangedDelayCalls == null)
+                                {
+                                    onObjectGUIChangedDelayCalls = new List<Action>(1);
+                                }
+
+                                onObjectGUIChangedDelayCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                            }
+                            else
+                            {
+                                if (onObjectGUIChangedCalls == null)
+                                {
+                                    onObjectGUIChangedCalls = new List<Action>(1);
+                                }
+
+                                onObjectGUIChangedCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                            }
                         }
                     }
-                    else if (attribute is OnObjectGUIChangedAttribute objectGUIChangedAttribute)
+                    else if (parameters.Length == 1)
                     {
-                        if (objectGUIChangedAttribute.DelayCall)
+                        if (attribute is OnRootContainerCreatedAttribute)
                         {
-                            if (onObjectGUIChangedDelayCalls == null)
-                            {
-                                onObjectGUIChangedDelayCalls = new List<Action>(1);
-                            }
-
-                            onObjectGUIChangedDelayCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
-                        }
-                        else
-                        {
-                            if (onObjectGUIChangedCalls == null)
-                            {
-                                onObjectGUIChangedCalls = new List<Action>(1);
-                            }
-
-                            onObjectGUIChangedCalls.Add((Action) methodInfo.CreateDelegate(typeof(Action), target));
+                            methodInfo.Invoke(target, new object[1] {rootContainer});
                         }
                     }
                 }
             }
         }
+
 
         /// <summary>
         /// Receive MouseMove events in the GUI in this Editor.
@@ -347,6 +372,22 @@ namespace Pancake.ApexEditor
                     InspectorWindow.wantsMouseMove = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Draw line to mark component as experimental.
+        /// </summary>
+        private void DrawExperimentalLine()
+        {
+            Rect rect = GUILayoutUtility.GetRect(0, 1);
+            if (EditorGUIUtility.hierarchyMode)
+            {
+                rect.x -= 18;
+                rect.width += 22;
+            }
+
+            rect.y -= 4;
+            EditorGUI.DrawRect(rect, new Color32(255, 70, 10, 200));
         }
 
         /// <summary>
@@ -370,12 +411,16 @@ namespace Pancake.ApexEditor
         /// </summary>
         private void DrawSearchField()
         {
-            Rect position = GUILayoutUtility.GetRect(0, EditorGUIUtility.singleLineHeight);
+            Rect position = GUILayoutUtility.GetRect(0, 21);
 
-            position.x -= 18;
+            if (EditorGUIUtility.hierarchyMode)
+            {
+                position.x -= 18;
+                position.width += 22;
+            }
+
             position.y -= 5;
-            position.width += 22;
-            position.height += 4;
+
             EditorGUI.DrawRect(position, new Color(0.25f, 0.25f, 0.25f, 1.0f));
 
             position.x += 4;
@@ -486,11 +531,6 @@ namespace Pancake.ApexEditor
         }
 
         /// <summary>
-        /// Internal reference to default Unity Inspector editor window.
-        /// </summary>
-        private static EditorWindow InspectorWindow;
-
-        /// <summary>
         /// Overrides the internal library of the Unity editor to make the Apex editor uniform for all editors, regardless of the user editors.
         /// </summary>
         [DidReloadScripts]
@@ -567,7 +607,7 @@ namespace Pancake.ApexEditor
                                                 }
 
                                                 FieldInfo editorsMultiField =
- editorStorageType.GetField("customEditorsMultiEdition", BindingFlags.Public | BindingFlags.Instance);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  editorStorageType.GetField("customEditorsMultiEdition", BindingFlags.Public | BindingFlags.Instance);
                                                 if (editorsMultiField != null)
                                                 {
                                                     List<int> invalidItems = new List<int>();
@@ -671,19 +711,25 @@ namespace Pancake.ApexEditor
             }
         }
 
+
         /// <summary>
         /// Overrides the internal library of the Unity editor to make the Apex editor uniform for all editors, regardless of the user editors.
         /// </summary>
         [InitializeOnLoadMethod]
         private static void LaunchOverrideUnityEditor()
         {
-            const string guid = "ApexInternal.UnityEditorLaunched";
-            if (!SessionState.GetBool(guid, false))
+            const string GUID = "ApexInternal.UnityEditorLaunched";
+            if (!SessionState.GetBool(GUID, false))
             {
                 EditorApplication.delayCall += OverrideUnityEditor;
-                SessionState.SetBool(guid, true);
+                SessionState.SetBool(GUID, true);
             }
         }
+
+        /// <summary>
+        /// Internal reference to default Unity Inspector editor window.
+        /// </summary>
+        private static EditorWindow InspectorWindow;
 
         #endregion
 

@@ -148,19 +148,15 @@ namespace Pancake.ApexEditor
                 {
                     do
                     {
+                        if (iterator.name == "m_Script" && hideMonoScript)
+                        {
+                            continue;
+                        }
+
                         try
                         {
                             SerializedField serializedField = new SerializedField(serializedObject, iterator.propertyPath) {Repaint = repaint};
-
-                            if (iterator.name == "m_Script")
-                            {
-                                serializedField.AddManipulator(new ReadOnlyAttribute());
-                                if (hideMonoScript)
-                                {
-                                    continue;
-                                }
-                            }
-
+                            
                             serializedField.SetOrder(order++);
                             visualEntities.Add(serializedField);
                         }

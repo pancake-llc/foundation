@@ -9,12 +9,7 @@
         /// Smoothly animate updating height of visual entities.
         /// </summary>
         public static bool Animate { get; set; } = true;
-
-        /// <summary>
-        /// Vertical spacing between visual entities.
-        /// </summary>
-        public static float VerticalSpacing { get; internal set; } = 2;
-
+        
         /// <summary>
         /// Horizontal spacing between visual entities.
         /// </summary>

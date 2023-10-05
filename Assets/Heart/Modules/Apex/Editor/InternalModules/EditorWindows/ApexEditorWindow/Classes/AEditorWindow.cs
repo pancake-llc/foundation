@@ -47,7 +47,7 @@ namespace Pancake.ApexEditor
         /// </summary>
         public virtual void OnGUI()
         {
-            ApexGUI.IndentLevel = 0;
+            EditorGUI.indentLevel = 0;
             if (isScrollable)
             {
                 scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);

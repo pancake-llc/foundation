@@ -130,7 +130,6 @@ namespace Pancake.ApexEditor
             ResetToggles();
             ExecuteAllManipulatorsBeforeCallback();
             EditorGUI.BeginChangeCheck();
-            ApexGUI.IndentedRect(ref position);
             OnMemberGUI(position);
             if (EditorGUI.EndChangeCheck())
             {

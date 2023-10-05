@@ -110,9 +110,9 @@ namespace Pancake.ApexEditor
                 position.y += 3;
                 using (new BoxScope(ref position, false))
                 {
-                    ApexGUI.IndentLevel++;
+                    EditorGUI.indentLevel++;
                     OnChildrenGUI(position);
-                    ApexGUI.IndentLevel--;
+                    EditorGUI.indentLevel--;
                 }
             }
         }
@@ -127,7 +127,7 @@ namespace Pancake.ApexEditor
             float height = HEADER_HEIGHT;
             if (serializedField.IsExpanded())
             {
-                height += GetChildrenHeight() + (ApexGUIUtility.VerticalSpacing * 3);
+                height += GetChildrenHeight() + (EditorGUIUtility.standardVerticalSpacing * 3);
             }
 
             return height;
@@ -199,12 +199,12 @@ namespace Pancake.ApexEditor
                 position.height = keyHeight;
                 key.SetLabel(KeyContent);
                 key.OnGUI(position);
-                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
                 position.height = valueHeight;
                 value.SetLabel(ValueContent);
                 value.OnGUI(position);
-                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
                 Rect removeButtonPosition = new Rect(position.xMax + 5, yMin, HEADER_HEIGHT, lineHeight);
                 if (GUI.Button(removeButtonPosition, RemoveButtonContent, ApexStyles.BoxCenteredButton))
@@ -214,7 +214,7 @@ namespace Pancake.ApexEditor
                     break;
                 }
 
-                position.y += ApexGUIUtility.VerticalSpacing;
+                position.y += EditorGUIUtility.standardVerticalSpacing;
             }
         }
 

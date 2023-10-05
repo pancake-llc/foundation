@@ -14,7 +14,7 @@ namespace Pancake.ExLibEditor.Windows
             Directory = 1,
             Alphabet = 2
         }
-        
+
         private struct Entry
         {
             public readonly GUIContent content;
@@ -30,6 +30,7 @@ namespace Pancake.ExLibEditor.Windows
         }
 
         private string title = string.Empty;
+        private Texture2D emptyIcon;
         private SortType sortType = SortType.Directory | SortType.Alphabet;
         private List<Entry> entries = new List<Entry>();
 
@@ -40,7 +41,7 @@ namespace Pancake.ExLibEditor.Windows
         /// <returns>Returns the list of SearchTreeEntry objects displayed in the search window.</returns>
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
-            if(sortType != SortType.None) 
+            if (sortType != SortType.None)
             {
                 entries.Sort(SortEntriesByGroup);
             }
@@ -127,6 +128,30 @@ namespace Pancake.ExLibEditor.Windows
         public void AddEntry(string name, Action onSelect) { AddEntry(new GUIContent(name), null, (data) => onSelect?.Invoke()); }
 
         /// <summary>
+        /// Add new indented entity.
+        /// </summary>
+        /// <param name="name">Name of none label.</param>
+        /// <param name="onSelect">Action which called after entry is selected.</param>
+        public void AddEntityIndented(string name, Action onSelect)
+        {
+            GUIContent content = new GUIContent(name, GetEmptyIcon());
+            AddEntry(content, onSelect);
+        }
+
+        /// <summary>
+        /// Add new indented entity.
+        /// </summary>
+        /// <param name="name">Name of none label.</param>
+        /// <param name="data">A user specified object for attaching application specific data to a search tree entry.</param>
+        /// <param name="onSelect">Action with data argument, which called after entry is selected.</param>
+        public void AddEntityIndented(string name, object data, Action<object> onSelect)
+        {
+            GUIContent content = new GUIContent(name, GetEmptyIcon());
+            AddEntry(content, data, onSelect);
+        }
+
+
+        /// <summary>
         /// Open search window.
         /// </summary>
         /// <param name="position">Window position in screen space.</param>
@@ -181,7 +206,7 @@ namespace Pancake.ExLibEditor.Windows
 
             for (int i = 0; i < minLength; i++)
             {
-                if((sortType & SortType.Directory) != 0)
+                if ((sortType & SortType.Directory) != 0)
                 {
                     if (minLength - 1 == i)
                     {
@@ -193,7 +218,7 @@ namespace Pancake.ExLibEditor.Windows
                     }
                 }
 
-                if((sortType & SortType.Alphabet) != 0)
+                if ((sortType & SortType.Alphabet) != 0)
                 {
                     int compareText = lhsPaths[i].CompareTo(rhsPaths[i]);
                     if (compareText != 0)
@@ -204,6 +229,21 @@ namespace Pancake.ExLibEditor.Windows
             }
 
             return 0;
+        }
+
+        /// <summary>
+        /// Get empty icon.
+        /// </summary>
+        private Texture GetEmptyIcon()
+        {
+            if (emptyIcon == null)
+            {
+                emptyIcon = new Texture2D(1, 1);
+                emptyIcon.SetPixel(0, 0, Color.clear);
+                emptyIcon.Apply();
+            }
+
+            return emptyIcon;
         }
 
         #region [Static Methods]
@@ -237,16 +277,11 @@ namespace Pancake.ExLibEditor.Windows
         public string GetTitle() { return title; }
 
         public void SetTitle(string value) { title = value; }
-        
-        public SortType GetSortType()
-        {
-            return sortType;
-        }
 
-        public void SetSortType(SortType value)
-        {
-            sortType = value;
-        }
+        public SortType GetSortType() { return sortType; }
+
+        public void SetSortType(SortType value) { sortType = value; }
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Pancake.ApexEditor
@@ -31,7 +32,7 @@ namespace Pancake.ApexEditor
                 {
                     position.height = entity.GetHeight();
                     entity.OnGUI(position);
-                    position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                    position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
                 }
             }
         }
@@ -41,10 +42,10 @@ namespace Pancake.ApexEditor
             float height = 0;
             for (int i = 0; i < entities.Count; i++)
             {
-                height += entities[i].GetHeight() + ApexGUIUtility.VerticalSpacing;
+                height += entities[i].GetHeight() + EditorGUIUtility.standardVerticalSpacing;
             }
 
-            return height - ApexGUIUtility.VerticalSpacing;
+            return height - EditorGUIUtility.standardVerticalSpacing;
         }
 
         #endregion

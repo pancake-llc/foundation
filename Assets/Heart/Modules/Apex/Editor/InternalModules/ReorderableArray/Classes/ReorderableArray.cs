@@ -8,13 +8,13 @@ namespace Pancake.ApexEditor
     {
         private const float VERTICAL_SPACE = 2;
 
-        // Stored delegates.
-        public OnHeaderGUIDelegate onHeaderGUICallback;
-        public OnElementGUIDelegate onElementGUICallback;
-        public GetElementHeightDelegate getElementHeightCallback;
-        public OnNoneElementGUIDelegate onNoneElementGUICallback;
-        public OnAddClickDelegate onAddClickCallback;
-        public OnRemoveClickDelegate onRemoveClickCallback;
+        public OnHeaderGUI onHeaderGUI;
+        public OnElementGUI onElementGUI;
+        public GetElementHeight getElementHeight;
+        public OnNoneElementGUI onNoneElementGUI;
+        public OnAddClick onAddClick;
+        public OnRemoveClick onRemoveClick;
+        public OnReorder onReorder;
 
         // Stored required properties.
         private string headerName;
@@ -27,6 +27,9 @@ namespace Pancake.ApexEditor
         private GUIContent addButtonContent;
         private GUIContent removeButtonContent;
 
+        /// <summary>
+        /// Reorderable array constructor.
+        /// </summary>
         public ReorderableArray(SerializedField serializedField)
         {
             this.serializedField = serializedField;
@@ -39,7 +42,7 @@ namespace Pancake.ApexEditor
             addButtonContent = EditorGUIUtility.IconContent("Toolbar Plus");
             removeButtonContent = EditorGUIUtility.IconContent("Toolbar Minus");
 
-            onHeaderGUICallback = (position) =>
+            onHeaderGUI = (position) =>
             {
                 if (Event.current.type == EventType.Repaint)
                 {
@@ -54,19 +57,19 @@ namespace Pancake.ApexEditor
                 }
             };
 
-            onElementGUICallback = (position, index, isActive, isFocused) => { serializedField.GetArrayElement(index).OnGUI(position); };
+            onElementGUI = (position, index, isActive, isFocused) => { serializedField.GetArrayElement(index).OnGUI(position); };
 
-            getElementHeightCallback = (index) => { return serializedField.GetArrayElement(index).GetHeight(); };
+            getElementHeight = (index) => { return serializedField.GetArrayElement(index).GetHeight(); };
 
-            onNoneElementGUICallback = (position) =>
+            onNoneElementGUI = (position) =>
             {
                 position.x += 5;
                 GUI.Label(position, $"Add {serializedField.GetLabel().text}...", ApexStyles.Label);
             };
 
-            onAddClickCallback = (position) => { serializedField.IncreaseArraySize(); };
+            onAddClick = (position) => { serializedField.IncreaseArraySize(); };
 
-            onRemoveClickCallback = (position, index) => { serializedField.RemoveArrayElement(index); };
+            onRemoveClick = (position, index) => { serializedField.RemoveArrayElement(index); };
 
             reorderableList = new ReorderableList(serializedField.GetSerializedObject(),
                 serializedField.GetSerializedProperty(),
@@ -78,17 +81,18 @@ namespace Pancake.ApexEditor
                 headerHeight = 0,
                 footerHeight = 0,
                 showDefaultBackground = false,
-                drawNoneElementCallback = onNoneElementGUICallback.Invoke,
+                drawNoneElementCallback = onNoneElementGUI.Invoke,
                 drawElementCallback = (position, index, isActive, isFocused) =>
                 {
                     position.x -= 3;
                     position.width += 7;
 
-                    EditorGUIUtility.labelWidth -= 17;
+                    float width = EditorGUIUtility.labelWidth;
+                    EditorGUIUtility.labelWidth -= Mathf.Max(1, EditorGUI.indentLevel) * 15;
                     position.y += VERTICAL_SPACE;
                     position.width -= buttonWidth;
-                    onElementGUICallback.Invoke(position, index, isActive, isFocused);
-                    EditorGUIUtility.labelWidth += 17;
+                    onElementGUI.Invoke(position, index, isActive, isFocused);
+                    EditorGUIUtility.labelWidth = width;
 
                     position.x = position.xMax + 2;
                     position.y -= VERTICAL_SPACE;
@@ -96,11 +100,11 @@ namespace Pancake.ApexEditor
                     position.height += 1;
                     if (GUI.Button(position, removeButtonContent, ApexStyles.BoxCenteredButton))
                     {
-                        onRemoveClickCallback.Invoke(position, index);
+                        onRemoveClick.Invoke(position, index);
                         GUIUtility.ExitGUI();
                     }
                 },
-                elementHeightCallback = (index) => { return getElementHeightCallback.Invoke(index) + VERTICAL_SPACE; },
+                elementHeightCallback = (index) => { return getElementHeight.Invoke(index) + VERTICAL_SPACE; },
                 drawElementBackgroundCallback = (position, index, isActive, isFocused) =>
                 {
                     position.height += 1;
@@ -128,16 +132,24 @@ namespace Pancake.ApexEditor
                 {
                     serializedField.GetSerializedObject().ApplyModifiedProperties();
                     serializedField.ApplyChildren();
+                    onReorder.Invoke();
                 }
             };
         }
 
+        /// <summary>
+        /// Reorderable array constructor.
+        /// </summary>
         public ReorderableArray(SerializedField serializedField, bool draggable)
             : this(serializedField)
         {
             reorderableList.draggable = draggable;
         }
 
+        /// <summary>
+        /// Draw reorderable array in position.
+        /// </summary>
+        /// <param name="position"></param>
         public void Draw(Rect position)
         {
             position.width += 1;
@@ -153,7 +165,7 @@ namespace Pancake.ApexEditor
                 serializedField.IsExpanded(!serializedField.IsExpanded());
             }
 
-            onHeaderGUICallback.Invoke(position);
+            onHeaderGUI.Invoke(position);
 
             Event current = Event.current;
             bool isHover = position.Contains(current.mousePosition);
@@ -174,9 +186,8 @@ namespace Pancake.ApexEditor
             position.width = buttonWidth;
             if (GUI.Button(position, addButtonContent, ApexStyles.BoxCenteredButton))
             {
-                onAddClickCallback.Invoke(position);
+                onAddClick.Invoke(position);
             }
-
 
             if (serializedField.IsExpanded() && contentHeight > 0)
             {
@@ -186,15 +197,20 @@ namespace Pancake.ApexEditor
                 position.height = contentHeight;
                 GUI.Box(position, GUIContent.none, ApexStyles.BoxEntryBkg);
 
-
                 position.y -= 3;
 
                 reorderableList.DoList(position);
             }
         }
 
+        /// <summary>
+        /// Draw reorderable array auto layout.
+        /// </summary>
         public void DrawLayout() { Draw(ApexGUILayout.GetControlRect(GetHeight())); }
 
+        /// <summary>
+        /// Get height required to draw reorderable array.
+        /// </summary>
         public float GetHeight()
         {
             float height = headerHeight;
@@ -212,7 +228,7 @@ namespace Pancake.ApexEditor
         /// Called to drawing array header.
         /// </summary>
         /// <param name="position">Header position.</param>
-        public delegate void OnHeaderGUIDelegate(Rect position);
+        public delegate void OnHeaderGUI(Rect position);
 
         /// <summary>
         /// Called to drawing element GUI.
@@ -221,31 +237,36 @@ namespace Pancake.ApexEditor
         /// <param name="index">Element array index.</param>
         /// <param name="isActive">Element is active.</param>
         /// <param name="isFocused">Element has been focused.</param>
-        public delegate void OnElementGUIDelegate(Rect position, int index, bool isActive, bool isFocused);
+        public delegate void OnElementGUI(Rect position, int index, bool isActive, bool isFocused);
 
         /// <summary>
         /// Called to calculate element height.
         /// </summary>
         /// <param name="index">Element array index.</param>
-        public delegate float GetElementHeightDelegate(int index);
+        public delegate float GetElementHeight(int index);
 
         /// <summary>
         /// Called to drawing placeholder when array is empty.
         /// </summary>
-        public delegate void OnNoneElementGUIDelegate(Rect position);
+        public delegate void OnNoneElementGUI(Rect position);
 
         /// <summary>
         /// Called when add button is clicked.
         /// </summary>
         /// <param name="position">Button rectangle position.</param>
-        public delegate void OnAddClickDelegate(Rect position);
+        public delegate void OnAddClick(Rect position);
 
         /// <summary>
         /// Called when remove button is clicked.
         /// </summary>
         /// <param name="position">Button rectangle position.</param>
         /// <param name="index">Remove element index.</param>
-        public delegate void OnRemoveClickDelegate(Rect position, int index);
+        public delegate void OnRemoveClick(Rect position, int index);
+
+        /// <summary>
+        /// Called when list reordered.
+        /// </summary>
+        public delegate void OnReorder();
 
         #endregion
 

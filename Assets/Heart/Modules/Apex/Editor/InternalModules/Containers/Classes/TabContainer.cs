@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Pancake.ApexEditor
@@ -66,7 +67,7 @@ namespace Pancake.ApexEditor
                 position.width = width;
                 position.height = contentHeight;
                 GUI.Box(position, GUIContent.none, ApexStyles.BoxEntryBkg);
-                position.y += ApexGUIUtility.VerticalSpacing * ApexGUIUtility.BoxBounds;
+                position.y += EditorGUIUtility.standardVerticalSpacing * ApexGUIUtility.BoxBounds;
 
                 tabIndex = Mathf.Clamp(tabIndex, 0, tabs.Count);
                 Tab tab = tabs[tabIndex];
@@ -86,7 +87,7 @@ namespace Pancake.ApexEditor
             tabIndex = Mathf.Clamp(tabIndex, 0, tabs.Count);
             Tab tab = tabs[tabIndex];
 
-            return headerHeight + (ApexGUIUtility.VerticalSpacing * 2) * ApexGUIUtility.BoxBounds + GetEntitiesHeight(in tab.entities);
+            return headerHeight + (EditorGUIUtility.standardVerticalSpacing * 2) * ApexGUIUtility.BoxBounds + GetEntitiesHeight(in tab.entities);
         }
 
         #endregion

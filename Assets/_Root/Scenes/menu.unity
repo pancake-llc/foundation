@@ -2734,7 +2734,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8beda810942794e40843f94a5b86b7c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasMaster: {fileID: 11400000, guid: eb6564e2a34609041adf55fdffed4eb2, type: 2}
   remoteConfigFetchCompleted: {fileID: 0}
   remoteConfigNewVersion: {fileID: 11400000, guid: 417262f7635563c4a8aac862988c6ea9, type: 2}
   dontShowUpdateAgain: {fileID: 11400000, guid: 5e9c77fdc5001d44584ffa49b70ed929, type: 2}

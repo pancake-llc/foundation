@@ -14,7 +14,7 @@ namespace Pancake.ApexEditor
 
         [SerializeField] private bool animate = true;
 
-        [SerializeField] [Array(OnElementGUI = nameof(OnExceptTypeGUI), GetElementHeight = nameof(GetExceptTypeHeight))]
+        [SerializeField] [Array(OnGUI = nameof(OnExceptTypeGUI), GetHeight = nameof(GetExceptTypeHeight))]
         private ExceptType[] exceptTypes;
 
         /// <summary>
@@ -65,13 +65,13 @@ namespace Pancake.ApexEditor
             position.height = EditorGUIUtility.singleLineHeight;
             EditorGUI.PropertyField(position, name, GUIContent.none);
 
-            position.x = position.xMax + ApexGUIUtility.VerticalSpacing;
+            position.x = position.xMax + EditorGUIUtility.standardVerticalSpacing;
             position.width = 20;
             EditorGUI.PropertyField(position, subClasses, GUIContent.none);
             GUI.backgroundColor = Color.white;
         }
 
-        private float GetExceptTypeHeight(SerializedProperty element) { return EditorGUIUtility.singleLineHeight; }
+        private float GetExceptTypeHeight(SerializedProperty array, int index) { return EditorGUIUtility.singleLineHeight; }
 
         #endregion
 

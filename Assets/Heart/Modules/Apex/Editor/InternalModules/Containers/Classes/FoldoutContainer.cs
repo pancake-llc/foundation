@@ -100,14 +100,18 @@ namespace Pancake.ApexEditor
             float totalHeight = Mathf.Max(0, position.height - EditorGUIUtility.singleLineHeight);
 
             position.height = EditorGUIUtility.singleLineHeight;
-            IsExpanded(ApexGUI.Foldout(position, isExpanded, GetName()));
+            using (new EditorGUI.IndentLevelScope(1))
+            {
+                IsExpanded(EditorGUI.Foldout(position, isExpanded, GetName()));
+            }
+
             if (isExpanded && totalHeight > 0)
             {
-                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
-                ApexGUI.IndentLevel++;
+                EditorGUI.indentLevel++;
                 base.OnGUI(position);
-                ApexGUI.IndentLevel--;
+                EditorGUI.indentLevel--;
             }
         }
 
@@ -119,7 +123,7 @@ namespace Pancake.ApexEditor
             float height = EditorGUIUtility.singleLineHeight;
             if (isExpanded)
             {
-                height += base.GetHeight() + ApexGUIUtility.VerticalSpacing;
+                height += base.GetHeight() + EditorGUIUtility.standardVerticalSpacing;
             }
 
             return height;
@@ -166,11 +170,11 @@ namespace Pancake.ApexEditor
 
             if (isExpanded && totalHeight > 0)
             {
-                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
-                ApexGUI.IndentLevel++;
+                EditorGUI.indentLevel++;
                 base.OnGUI(position);
-                ApexGUI.IndentLevel--;
+                EditorGUI.indentLevel--;
             }
         }
 
@@ -182,7 +186,7 @@ namespace Pancake.ApexEditor
             float height = 20;
             if (isExpanded)
             {
-                height += base.GetHeight() + ApexGUIUtility.VerticalSpacing;
+                height += base.GetHeight() + EditorGUIUtility.standardVerticalSpacing;
             }
 
             return height;
@@ -228,7 +232,7 @@ namespace Pancake.ApexEditor
 
             if (isExpanded && contentHeight > 0)
             {
-                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
                 using (new BoxScope(ref position))
                 {
@@ -245,7 +249,7 @@ namespace Pancake.ApexEditor
             float height = headerHeight;
             if (isExpanded)
             {
-                height += base.GetHeight() + ApexGUIUtility.VerticalSpacing;
+                height += base.GetHeight() + EditorGUIUtility.standardVerticalSpacing;
             }
 
             return height;

@@ -27,6 +27,38 @@ namespace Pancake.ApexEditor
             public override void OnGUI(Rect position, SerializedField serializedField, GUIContent label) { }
         }
 
+        private class ErrorBlock
+        {
+            private GUIContent content;
+            private GUIContent prefix;
+            private float width;
+
+            public ErrorBlock(string memberName, string message)
+            {
+                content = new GUIContent(message);
+                if (string.IsNullOrEmpty(memberName))
+                {
+                    prefix = GUIContent.none;
+                }
+                else
+                {
+                    prefix = new GUIContent(memberName);
+                }
+            }
+
+            public void OnGUI(Rect position)
+            {
+                int controlID = GUIUtility.GetControlID(FocusType.Passive, position);
+                position = EditorGUI.PrefixLabel(position, controlID, prefix);
+                EditorGUI.HelpBox(position, content.text, MessageType.Error);
+                width = position.width;
+            }
+
+            public float GetHeight() { return EditorStyles.helpBox.CalcHeight(content, width); }
+
+            public string GetMessage() { return content.text; }
+        }
+
         private static readonly List<SerializedMember> ChildrenNone;
         private static readonly FieldDrawer DrawerNone;
         private static readonly FieldView ViewNone;
@@ -63,6 +95,7 @@ namespace Pancake.ApexEditor
         private bool childrenLoaded;
         private bool defaultEditor;
         private bool isValueChanged;
+        private ErrorBlock errorBlock;
 
         // Stored callback properties.
         private object lastValue;
@@ -78,11 +111,18 @@ namespace Pancake.ApexEditor
         public SerializedField(SerializedObject serializedObject, string memberName)
             : base(serializedObject, memberName)
         {
-            SerializedProperty serializedProperty = GetSerializedObject().FindProperty(memberName);
+            try
+            {
+                serializedProperty = GetSerializedObject().FindProperty(memberName);
+            }
+            catch (Exception ex)
+            {
+                errorBlock = new ErrorBlock(memberName, ex.Message);
+                return;
+            }
+
             if (serializedProperty != null)
             {
-                this.serializedProperty = serializedProperty.Copy();
-
                 children = ChildrenNone;
                 view = ViewNone;
                 drawer = DrawerNone;
@@ -108,6 +148,12 @@ namespace Pancake.ApexEditor
                 }
 
                 ApplyLabel();
+                if (memberName == "m_Script")
+                {
+                    AddManipulator(new ReadOnlyAttribute());
+                    return;
+                }
+                
                 RegisterCallbacks();
                 LoadDrawer();
                 SafeLoadScriptAttributeUtility();
@@ -128,6 +174,17 @@ namespace Pancake.ApexEditor
                 Type type = GetMemberType();
                 defaultEditor = GetAttribute<UseDefaultEditor>() != null || ApexUtility.IsExceptType(type);
             }
+            else
+            {
+                if(GetMemberType() != null)
+                {
+                    errorBlock = new ErrorBlock(memberName ,"The property cannot be serialized, the [Serializable] attribute may be missing.");
+                }
+                else
+                {
+                    errorBlock = new ErrorBlock(memberName, "Undefined error. The property and type was not found.");
+                }
+            }
         }
 
         #region [SerializedMember Implementation]
@@ -139,30 +196,36 @@ namespace Pancake.ApexEditor
         /// <param name="position">Rectangle position to draw serialized field GUI.</param>
         protected override void OnMemberGUI(Rect position)
         {
-            ResetToggles();
-            MonitorSerializedProperty();
-            DrawAllTopDecorators(ref position);
-
-            if (position.height > 0)
+            if (errorBlock == null)
             {
-                float labelWidth = EditorGUIUtility.labelWidth;
-                float totalHeight = position.height;
+                ResetToggles();
+                MonitorSerializedProperty();
+                DrawAllTopDecorators(ref position);
 
-                position.height = elementHeight;
-                DrawAllInlineDecorators(ref position);
+                if (position.height > 0)
+                {
+                    float labelWidth = EditorGUIUtility.labelWidth;
+                    float totalHeight = position.height;
 
-                OnFieldGUI(position);
-                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                    position.height = elementHeight;
+                    DrawAllInlineDecorators(ref position);
 
-                EditorGUIUtility.labelWidth = labelWidth;
+                    OnFieldGUI(position);
+                    position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
-                position.height = totalHeight - elementHeight;
-                DrawAllBottomDecorators(ref position);
+                    EditorGUIUtility.labelWidth = labelWidth;
+
+                    position.height = totalHeight - elementHeight;
+                    DrawAllBottomDecorators(ref position);
+                }
+                InvokeCallbacks();
+
+                ExecuteAllValidators();
             }
-
-            InvokeCallbacks();
-
-            ExecuteAllValidators();
+            else
+            {
+                errorBlock.OnGUI(position);
+            }
         }
 
         /// <summary>
@@ -170,9 +233,14 @@ namespace Pancake.ApexEditor
         /// </summary>
         protected override float GetMemberHeight()
         {
-            MonitorSerializedProperty();
-            elementHeight = GetFieldHeight();
-            return elementHeight + GetDecoratorsHeight();
+            if(errorBlock == null)
+            {
+                MonitorSerializedProperty();
+                elementHeight = GetFieldHeight();
+                return elementHeight + GetDecoratorsHeight();
+            }
+
+            return errorBlock.GetHeight();
         }
 
         #endregion
@@ -234,13 +302,15 @@ namespace Pancake.ApexEditor
             float totalHeight = position.height - EditorGUIUtility.singleLineHeight;
 
             position.height = EditorGUIUtility.singleLineHeight;
-            IsExpanded(ApexGUI.Foldout(position, IsExpanded(), GetLabel()));
-            position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
-
-            ApexGUI.RemoveIndentFromRect(ref position);
+            using(new EditorGUI.IndentLevelScope(1))
+            {
+                IsExpanded(EditorGUI.Foldout(position, IsExpanded(), GetLabel(), toggleOnLabelClick));
+            }
+            position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
+            
             if (IsExpanded() && totalHeight > 0)
             {
-                ApexGUI.IndentLevel++;
+                EditorGUI.indentLevel++;
                 SerializedMember sizeField = children[0];
                 if (sizeField.IsVisible())
                 {
@@ -255,7 +325,7 @@ namespace Pancake.ApexEditor
                         return;
                     }
 
-                    position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                    position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
                 }
 
 
@@ -273,12 +343,12 @@ namespace Pancake.ApexEditor
                         {
                             position.height = child.GetHeight();
                             child.OnGUI(position);
-                            position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                            position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
                             totalHeight -= position.height;
                         }
                     }
 
-                    ApexGUI.IndentLevel--;
+                    EditorGUI.indentLevel--;
                 }
             }
         }
@@ -303,13 +373,15 @@ namespace Pancake.ApexEditor
                     float totalHeight = position.height - EditorGUIUtility.singleLineHeight;
 
                     position.height = EditorGUIUtility.singleLineHeight;
-                    IsExpanded(ApexGUI.Foldout(position, IsExpanded(), GetLabel()));
-                    position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
-
-                    ApexGUI.RemoveIndentFromRect(ref position);
+                    using (new EditorGUI.IndentLevelScope(1))
+                    {
+                        IsExpanded(EditorGUI.Foldout(position, IsExpanded(), GetLabel(), toggleOnLabelClick));
+                    }
+                    position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
+                    
                     if (IsExpanded() && totalHeight > 0)
                     {
-                        ApexGUI.IndentLevel++;
+                        EditorGUI.indentLevel++;
                         for (int i = 0; i < children.Count; i++)
                         {
                             if (totalHeight <= 0)
@@ -322,12 +394,12 @@ namespace Pancake.ApexEditor
                             {
                                 position.height = child.GetHeight();
                                 child.OnGUI(position);
-                                position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                                position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
                                 totalHeight -= position.height;
                             }
                         }
 
-                        ApexGUI.IndentLevel--;
+                        EditorGUI.indentLevel--;
                     }
                 }
                 else if (serializedProperty.propertyType == SerializedPropertyType.ManagedReference)
@@ -378,7 +450,7 @@ namespace Pancake.ApexEditor
                         return;
                     }
 
-                    position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                    position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
                     totalHeight -= position.height;
                 }
             }
@@ -410,7 +482,7 @@ namespace Pancake.ApexEditor
                 float height = EditorGUIUtility.singleLineHeight;
                 if (IsExpanded())
                 {
-                    height += GetChildrenHeight() + ApexGUIUtility.VerticalSpacing;
+                    height += GetChildrenHeight() + EditorGUIUtility.standardVerticalSpacing;
                 }
 
                 return height;
@@ -432,11 +504,11 @@ namespace Pancake.ApexEditor
                     SerializedMember child = children[i];
                     if (child.IsVisible())
                     {
-                        height += child.GetHeight() + ApexGUIUtility.VerticalSpacing;
+                        height += child.GetHeight() + EditorGUIUtility.standardVerticalSpacing;
                     }
                 }
 
-                height -= ApexGUIUtility.VerticalSpacing;
+                height -= EditorGUIUtility.standardVerticalSpacing;
             }
 
             return height;
@@ -455,7 +527,7 @@ namespace Pancake.ApexEditor
                     FieldDecorator decorator = decorators[i];
                     if (decorator.IsVisible())
                     {
-                        height += decorator.GetHeight() + ApexGUIUtility.VerticalSpacing;
+                        height += decorator.GetHeight() + EditorGUIUtility.standardVerticalSpacing;
                     }
                 }
             }
@@ -996,7 +1068,11 @@ namespace Pancake.ApexEditor
         /// </summary>
         protected void DrawAllTopDecorators(ref Rect position)
         {
+            float x = position.x;
+            float width = position.width;
             float totalHeight = position.height;
+
+            position = EditorGUI.IndentedRect(position);
             for (int i = 0; i < decorators.Count; i++)
             {
                 if (totalHeight > 0)
@@ -1008,13 +1084,15 @@ namespace Pancake.ApexEditor
                         {
                             position.height = decorator.GetHeight();
                             decorator.OnGUI(position);
-                            position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                            position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
                             totalHeight -= position.height;
                         }
                     }
                 }
             }
+            position.x = x;
+            position.width = width;
         }
 
         /// <summary>
@@ -1022,7 +1100,11 @@ namespace Pancake.ApexEditor
         /// </summary>
         protected void DrawAllBottomDecorators(ref Rect position)
         {
+            float x = position.x;
+            float width = position.width;
             float totalHeight = position.height;
+
+            position = EditorGUI.IndentedRect(position);
             for (int i = 0; i < decorators.Count; i++)
             {
                 if (totalHeight > 0)
@@ -1034,13 +1116,16 @@ namespace Pancake.ApexEditor
                         {
                             position.height = decorator.GetHeight();
                             decorator.OnGUI(position);
-                            position.y = position.yMax + ApexGUIUtility.VerticalSpacing;
+                            position.y = position.yMax + EditorGUIUtility.standardVerticalSpacing;
 
                             totalHeight -= position.height;
                         }
                     }
                 }
             }
+
+            position.x = x;
+            position.width = width;
         }
 
         /// <summary>
@@ -1096,29 +1181,7 @@ namespace Pancake.ApexEditor
                 }
                 else
                 {
-                    if (serializedProperty.propertyType == SerializedPropertyType.ManagedReference && serializedProperty.managedReferenceValue != null)
-                    {
-                        Type type = serializedProperty.managedReferenceValue.GetType();
-                        SearchContent attribute = type.GetCustomAttribute<SearchContent>();
-                        if (attribute != null)
-                        {
-                            GUIContent content = new GUIContent(System.IO.Path.GetFileName(attribute.name), attribute.Tooltip);
-                            if (SearchContentUtility.TryLoadContentImage(attribute.Image, out Texture2D icon))
-                            {
-                                content.image = icon;
-                            }
-
-                            SetLabel(content);
-                        }
-                        else
-                        {
-                            SetLabel(new GUIContent(ObjectNames.NicifyVariableName(type.Name), serializedProperty.tooltip));
-                        }
-                    }
-                    else
-                    {
-                        SetLabel(new GUIContent(serializedProperty.displayName, serializedProperty.tooltip));
-                    }
+                    SetLabel(new GUIContent(serializedProperty.displayName, serializedProperty.tooltip));
                 }
             }
             else
@@ -1208,7 +1271,14 @@ namespace Pancake.ApexEditor
             object value = null;
             if (valueGetter != null)
             {
-                value = valueGetter.Invoke(GetDeclaringObject());
+                if(serializedProperty.propertyType == SerializedPropertyType.ObjectReference)
+                {
+                    value = serializedProperty.objectReferenceValue;
+                }
+                else
+                {
+                    value = valueGetter.Invoke(GetDeclaringObject());
+                }
             }
             else if (valueArrayGetter != null)
             {
@@ -1565,6 +1635,7 @@ namespace Pancake.ApexEditor
         #endregion
 
         #region [Event Callback Functions]
+
         /// <summary>
         /// Request to update parent of serialized field.
         /// </summary>
@@ -1574,6 +1645,7 @@ namespace Pancake.ApexEditor
         /// Called when value changed.
         /// </summary>
         public event Action<object> OnValueChanged;
+
         #endregion
 
         #region [Getter / Setter]

@@ -14,7 +14,7 @@ namespace Pancake.ApexEditor
         /// <param name="height">Rectangle height.</param>
         public static Rect GetControlRect(float height)
         {
-            Rect position = GUILayoutUtility.GetRect(EditorGUIUtility.fieldWidth, height + ApexGUIUtility.VerticalSpacing);
+            Rect position = GUILayoutUtility.GetRect(EditorGUIUtility.fieldWidth, height + EditorGUIUtility.standardVerticalSpacing);
             position.height = height;
             return position;
         }
