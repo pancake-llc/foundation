@@ -209,7 +209,7 @@ namespace PancakeEditor
                     UtilitiesHeartSettingDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.ScreenSetting when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesPopupSettingDrawer.OnInspectorGUI();
+                    UtilitiesScreenSettingDrawer.OnInspectorGUI(position);
                     break;
                 case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Track or WizardType.All:
                     TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();

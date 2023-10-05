@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesPopupSettingDrawer
+    public static class UtilitiesScreenSettingDrawer
     {
-        public static void OnInspectorGUI()
+        public static void OnInspectorGUI(Rect position)
         {
             var defaultPopupSetting = Resources.Load<DefaultTransitionSetting>(nameof(DefaultTransitionSetting));
             if (defaultPopupSetting == null)
@@ -35,6 +35,13 @@ namespace PancakeEditor
                 EditorGUILayout.Space();
                 var editor = UnityEditor.Editor.CreateEditor(defaultPopupSetting);
                 editor.OnInspectorGUI();
+                
+                GUILayout.FlexibleSpace();
+                GUI.backgroundColor = Uniform.Green;
+                if (GUILayout.Button("Create Type", GUILayout.MaxHeight(40f)))
+                    PopupWindow.Show(new Rect(), new CreateTypeScreenWindow(position));
+
+                GUI.backgroundColor = Color.white;
             }
         }
     }

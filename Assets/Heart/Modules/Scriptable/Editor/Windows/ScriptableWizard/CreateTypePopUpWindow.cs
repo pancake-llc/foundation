@@ -78,8 +78,7 @@ namespace Pancake.ScriptableEditor
         {
             if (GUILayout.Button("Create", GUILayout.ExpandHeight(true)))
             {
-                if (!IsTypeNameValid())
-                    return;
+                if (!IsTypeNameValid()) return;
 
                 TextAsset newFile = null;
                 var progress = 0f;

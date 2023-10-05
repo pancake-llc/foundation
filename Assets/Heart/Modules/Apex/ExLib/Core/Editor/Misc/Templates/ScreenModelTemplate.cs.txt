@@ -1,0 +1,9 @@
+namespace Pancake.UI
+{
+    public sealed class #TYPE#Model : Model
+    {
+        protected override void DisposeInternal()
+    	{
+    	}
+    }
+}

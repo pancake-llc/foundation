@@ -1,0 +1,7 @@
+namespace Pancake.UI
+{
+    [RequireComponent(typeof(#TYPE#View))]
+    public sealed class #TYPE##TYPE2# : #TYPE2#<#TYPE#View, #TYPE#Model>
+    {
+    }
+}

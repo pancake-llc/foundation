@@ -1,0 +1,12 @@
+using Pancake.Threading.Tasks;
+
+namespace Pancake.UI
+{
+    public sealed class #TYPE#View : View<#TYPE#Model>
+    {
+    	protected override UniTask Initialize(#TYPE#Model model)
+    	{
+        	return UniTask.CompletedTask;
+    	}
+    }
+}
