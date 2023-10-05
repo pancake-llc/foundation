@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: win_gift_progress_value
   m_EditorClassIdentifier: 
   guid: 091b41098013f73448505b7d9f00a3c5
-  value: 38
+  value: 0
   debugLogEnabled: 0
   saved: 1
   defaultValue: 0

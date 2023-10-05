@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: current_level_index
   m_EditorClassIdentifier: 
   guid: a006421cd8bfffd42a013cf538174370
-  value: 37
+  value: 0
   debugLogEnabled: 0
   saved: 1
   defaultValue: 0

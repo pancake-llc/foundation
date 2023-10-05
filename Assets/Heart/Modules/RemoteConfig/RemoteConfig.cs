@@ -75,9 +75,9 @@ namespace Pancake.Tracking
                             remoteData[key].Value = result;
                         }
                     }
-                });
 
-            remoteConfigIsFetchCompleted.Value = true;
+                    remoteConfigIsFetchCompleted.Value = true;
+                });
         }
 #endif
     }

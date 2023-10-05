@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Pancake.UI
 {
+    [EditorIcon("script_setting")]
     public class SimpleUITransitionComponent : UITransitionComponent
     {
         [SerializeField] private float delay;

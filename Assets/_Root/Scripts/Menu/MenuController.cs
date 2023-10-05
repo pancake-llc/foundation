@@ -20,14 +20,15 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonTapToPlay;
         [SerializeField] private Button buttonShop;
 
-         [Header("POPUP")]
-         [SerializeField, PopupPickup] private string popupShop;
-         [SerializeField, PopupPickup] private string popupSetting;
-         [SerializeField, PopupPickup] private string popupUpdate;
+        [Header("POPUP")] [SerializeField, PopupPickup] private string popupShop;
+        [SerializeField, PopupPickup] private string popupSetting;
+        [SerializeField, PopupPickup] private string popupUpdate;
 
         [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
         [SerializeField] private ScriptableEventString changeSceneEvent;
         private CancellationTokenSource _tokenShowUpdate;
+
+        private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
 
         private void Start()
         {
@@ -47,7 +48,7 @@ namespace Pancake.SceneFlow
                 var version = new Version(remoteConfigNewVersion.Value);
                 int result = version.CompareTo(new Version(Application.version));
                 // is new version
-                //if (result > 0 && !dontShowUpdateAgain) popupShowEvent.Raise(popupUpdate, canvasUI);
+                if (result > 0 && !dontShowUpdateAgain) MainPopupContainer.Push<UpdatePopup>(popupUpdate, true);
             }
             catch (OperationCanceledException)
             {
@@ -57,26 +58,9 @@ namespace Pancake.SceneFlow
 
         private void GoToGameplay() { changeSceneEvent.Raise(Constant.GAMEPLAY_SCENE); }
 
-        private void ShowPopupShop()
-        {
-            //popupShowEvent.Raise(popupShop, canvasMaster.Raise().transform);
-        }
-        
-        private void ShowPopupSetting()
-        {
-            //Static.MainPopupContainer.Push<SettingPopup>(popupSetting, true);
-        }
-        
-        // private IPopupPresenter OnModalPresenterCreated(IPopupPresenter presenter, Popup modal,
-        //     bool shouldInitialize = true)
-        // {
-        //     if (shouldInitialize)
-        //     {
-        //         presenter.InitPresenter();
-        //     }
-        //
-        //     return presenter;
-        // }
+        private void ShowPopupShop() { MainPopupContainer.Push<ShopPopup>(popupShop, true); }
+
+        private void ShowPopupSetting() { MainPopupContainer.Push<SettingPopup>(popupSetting, true); }
 
         protected override void OnDisabled()
         {

@@ -1,25 +1,16 @@
 ﻿using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Pancake.UI
 {
-    public abstract class Popup<TView, TModel> : Popup where TView : View<TModel> where TModel : Model
+    public abstract class Popup<TView> : Popup where TView : View
     {
         public TView view;
 
         private bool _isInitialized;
-        private TModel _model;
 
         protected virtual ViewInitMode InitMode => ViewInitMode.BeforeFirstEnter;
-
-        public void Setup(TModel model)
-        {
-            Debug.Log("B");
-            Assert.IsNotNull(view);
-            _model = model;
-        }
-
+        
         public override async Task Initialize()
         {
             Assert.IsNotNull(view);
@@ -28,7 +19,7 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.Initialize && !_isInitialized)
             {
-                await view.InitializeAsync(_model);
+                await view.InitializeAsync();
                 _isInitialized = true;
             }
         }
@@ -41,9 +32,11 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.BeforeFirstEnter && !_isInitialized)
             {
-                await view.InitializeAsync(_model);
+                await view.InitializeAsync();
                 _isInitialized = true;
             }
+            
+            view.Refresh();
         }
     }
 }

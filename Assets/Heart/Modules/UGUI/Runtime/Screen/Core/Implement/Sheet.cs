@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 
 namespace Pancake.UI
 {
-    public abstract class Sheet<TView, TModel> : Sheet where TView : View<TModel> where TModel : Model
+    public abstract class Sheet<TView, TModel> : Sheet where TView : View
     {
         public TView root;
         private bool _isInitialized;
@@ -22,7 +22,7 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.Initialize && !_isInitialized)
             {
-                await root.InitializeAsync(_model);
+                await root.InitializeAsync();
                 _isInitialized = true;
             }
         }
@@ -35,7 +35,7 @@ namespace Pancake.UI
 
             if (InitMode == ViewInitMode.BeforeFirstEnter && !_isInitialized)
             {
-                await root.InitializeAsync(_model);
+                await root.InitializeAsync();
                 _isInitialized = true;
             }
         }

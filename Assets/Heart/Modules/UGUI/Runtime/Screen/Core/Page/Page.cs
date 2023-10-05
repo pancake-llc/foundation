@@ -198,12 +198,12 @@ namespace Pancake.UI
         {
             if (playAnimation)
             {
-                var anim = animationContainer.GetAnimation(push, false, partnerPage.Id);
+                var anim = animationContainer.GetAnimation(push, false, partnerPage?.Id);
                 if (anim == null) anim = DefaultTransitionSetting.GetDefaultPageTransition(push, false);
 
                 if (anim.Duration > 0.0f)
                 {
-                    anim.SetPartner(partnerPage.transform as RectTransform);
+                    anim.SetPartner(partnerPage?.transform as RectTransform);
                     anim.Setup(_rectTransform);
                     yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
                 }

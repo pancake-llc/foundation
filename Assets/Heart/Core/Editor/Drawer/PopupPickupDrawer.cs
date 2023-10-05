@@ -50,7 +50,7 @@ namespace PancakeEditor
                 if (TypeExtensions.TryFindTypeByFullName(NAME_CLASS_INHERIT, out var type))
                 {
                     var result = type.GetAllSubClass();
-                    result = result.Filter(t => !t.Name.Equals("Popup`2"));
+                    result = result.Filter(t => !t.Name.Equals("Popup`1"));
                     for (var i = 0; i < result.Count; i++)
                     {
                         if (i == 0) menu.AddSeparator("");

@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Pancake.UI
 {
     [CreateAssetMenu(menuName = "Pancake/Misc/Simple UI Transition Asset", fileName = "simple_ui_transition_asset.asset")]
+    [EditorIcon("scriptable_setting")]
     // ReSharper disable once InconsistentNaming
     public class SimpleUITransitionAnimationSO : UITransitionAnimationSO
     {

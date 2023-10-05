@@ -18,8 +18,8 @@ MonoBehaviour:
   pagePushExitAnim: {fileID: 0}
   pagePopEnterAnim: {fileID: 0}
   pagePopExitAnim: {fileID: 0}
-  popupEnterAnim: {fileID: 11400000, guid: 807118c5a49395247b6ec2f1e99a920e, type: 2}
-  popupExitAnim: {fileID: 0}
+  popupEnterAnim: {fileID: 11400000, guid: 3153276c2ca94e242a53b6ae3e769dcb, type: 2}
+  popupExitAnim: {fileID: 11400000, guid: 2281618c836b6cd48afbac54a6b7a14f, type: 2}
   popupBackdropEnterAnim: {fileID: 0}
   popupBackdropExitAnim: {fileID: 0}
   popupBackdropPrefab: {fileID: 0}

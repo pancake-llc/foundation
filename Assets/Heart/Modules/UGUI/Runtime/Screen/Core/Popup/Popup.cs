@@ -13,7 +13,7 @@ namespace Pancake.UI
     public class Popup : GameComponent, IPopupLifecycleEvent
     {
         [SerializeField] private bool usePrefabNameAsId = true;
-        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
+        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId)), PopupPickup] private string Id { get; set; }
 
         [SerializeField, InlineEditor] private PopupTransitionContainer animationContainer = new PopupTransitionContainer();
 
@@ -191,12 +191,12 @@ namespace Pancake.UI
             {
                 if (playAnimation)
                 {
-                    var anim = animationContainer.GetAnimation(false, partnerPopup.Id);
+                    var anim = animationContainer.GetAnimation(false, partnerPopup?.Id);
                     if (anim == null) anim = DefaultTransitionSetting.GetDefaultPopupTransition(false);
 
                     if (anim.Duration > 0.0f)
                     {
-                        anim.SetPartner(partnerPopup.transform as RectTransform);
+                        anim.SetPartner(partnerPopup?.transform as RectTransform);
                         anim.Setup(_rectTransform);
                         yield return App.StartCoroutine(anim.CreateRoutine(TransitionProgressReporter));
                     }

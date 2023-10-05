@@ -2,17 +2,19 @@
 
 namespace Pancake.UI
 {
-    public abstract class View<TModel> : GameComponent where TModel : Model
+    public abstract class View : GameComponent
     {
         private bool _isInitialized;
 
-        public async UniTask InitializeAsync(TModel model)
+        public async UniTask InitializeAsync()
         {
             if (_isInitialized) return;
             _isInitialized = true;
-            await Initialize(model);
+            await Initialize();
         }
 
-        protected abstract UniTask Initialize(TModel model);
+        protected abstract UniTask Initialize();
+
+        public abstract void Refresh();
     }
 }

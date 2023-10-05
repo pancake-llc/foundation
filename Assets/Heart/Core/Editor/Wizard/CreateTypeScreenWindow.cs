@@ -110,9 +110,8 @@ namespace PancakeEditor
 
                 if (_page)
                 {
-                    newFile = CreateModel(_typeText, $"{_typeText}Model.cs", _path + "/Page");
                     CreateView(_typeText, $"{_typeText}View.cs", _path + "/Page");
-                    CreatePresenter(_typeText,
+                    newFile = CreatePresenter(_typeText,
                         $"{_typeText}Page.cs",
                         _path + "/Page",
                         true,
@@ -130,9 +129,8 @@ namespace PancakeEditor
 
                 if (_popup)
                 {
-                    newFile = CreateModel(_typeText, $"{_typeText}Model.cs", _path + "/Popup");
                     CreateView(_typeText, $"{_typeText}View.cs", _path + "/Popup");
-                    CreatePresenter(_typeText,
+                    newFile = CreatePresenter(_typeText,
                         $"{_typeText}Popup.cs",
                         _path + "/Popup",
                         false,
@@ -150,9 +148,8 @@ namespace PancakeEditor
 
                 if (_sheet)
                 {
-                    newFile = CreateModel(_typeText, $"{_typeText}Model.cs", _path + "/Sheet");
                     CreateView(_typeText, $"{_typeText}View.cs", _path + "/Sheet");
-                    CreatePresenter(_typeText,
+                    newFile = CreatePresenter(_typeText,
                         $"{_typeText}Sheet.cs",
                         _path + "/Sheet",
                         false,
@@ -190,22 +187,6 @@ namespace PancakeEditor
         {
             var valid = System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(_typeText);
             return valid;
-        }
-
-        private TextAsset CreateModel(string typeName, string fileName, string path)
-        {
-            string content = EditorResources.ScreenModelTemplate.text;
-            content = content.Replace("#TYPE#", typeName);
-            try
-            {
-                var newFile = EditorCreator.CreateTextFile(content, fileName, path);
-                return newFile;
-            }
-            catch (IOException e)
-            {
-                EditorUtility.DisplayDialog("Could not create class", e.Message, "OK");
-                return null;
-            }
         }
 
         private TextAsset CreateView(string typeName, string fileName, string path)

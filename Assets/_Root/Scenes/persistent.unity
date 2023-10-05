@@ -220,7 +220,6 @@ GameObject:
   - component: {fileID: 776958712}
   - component: {fileID: 776958714}
   - component: {fileID: 776958713}
-  - component: {fileID: 776958715}
   - component: {fileID: 776958717}
   - component: {fileID: 776958718}
   - component: {fileID: 776958719}
@@ -343,26 +342,6 @@ MonoBehaviour:
   adSettings: {fileID: 11400000, guid: 85e8c9e26dfa9794ebdd8aeb3ae17c6a, type: 2}
   changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
   changePreventDisplayAppOpenEvent: {fileID: 11400000, guid: 5f35b40808667ca4ca6e2bc78a9ac78b, type: 2}
---- !u!114 &776958715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776958708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dce92d2ed6f9e1044a20bf4e69382cbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  popups:
-  - {fileID: 860888275930579063, guid: 1a36681796865b24cb50fbde837a0877, type: 3}
-  - {fileID: 3430358962796027495, guid: 253b086a56bc4754daccd3ed376a098a, type: 3}
-  - {fileID: 2864087358567331225, guid: 2283bd2d21d5acd44ab84c8d3bbf7e58, type: 3}
-  - {fileID: 7589316212280287813, guid: 1b608fb23fd429244ab134143244063a, type: 3}
-  - {fileID: 8782397639198700089, guid: 88ff2b39ec1706d46a55f6dc8fd5fef6, type: 3}
-  showPopupEvent: {fileID: 11400000, guid: d4469c64a4abe5641be48cc65e2ab907, type: 2}
-  closePopupEvent: {fileID: 11400000, guid: fc37811e37d0adf4eb9f0fc33afe130e, type: 2}
 --- !u!114 &776958717
 MonoBehaviour:
   m_ObjectHideFlags: 0
