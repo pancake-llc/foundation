@@ -48,7 +48,7 @@ namespace Pancake.SceneFlow
                 var version = new Version(remoteConfigNewVersion.Value);
                 int result = version.CompareTo(new Version(Application.version));
                 // is new version
-                if (result > 0 && !dontShowUpdateAgain) MainPopupContainer.Push<UpdatePopup>(popupUpdate, true);
+                if (result > 0 && !dontShowUpdateAgain) await MainPopupContainer.Push<UpdatePopup>(popupUpdate, true);
             }
             catch (OperationCanceledException)
             {

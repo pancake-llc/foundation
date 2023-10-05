@@ -111,7 +111,7 @@ namespace Pancake.SceneFlow
         private void OnButtonWinLevelClicked()
         {
             hideUiGameplayEvent.Raise();
-            var lose = FindObjectOfType<PopupLose>();
+            var lose = FindObjectOfType<LosePopup>();
             if (lose != null)
             {
                 DebugEditor.Log("Popup Win now cannot be displayed because Popup Lose is showing!");

@@ -5,11 +5,10 @@ namespace Pancake.SceneFlow
 {
     public static class PopupHelper
     {
-        public static void Close(Transform transform, bool playAnimation = true)
+        public static AsyncProcessHandle Close(Transform transform, bool playAnimation = true)
         {
             var popupContainer = PopupContainer.Of(transform);
-            if (popupContainer.IsInTransition) return;
-            popupContainer.Pop(playAnimation);
+            return popupContainer.IsInTransition ? null : popupContainer.Pop(playAnimation);
         }
     }
 }

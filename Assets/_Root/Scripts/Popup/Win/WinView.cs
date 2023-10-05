@@ -58,9 +58,9 @@ namespace Pancake.UI
 
         private void OnButtonContinuePressed() { InternalContinue(numberCoinReceive); }
 
-        private void OnButtonHomePressed()
+        private async void OnButtonHomePressed()
         {
-            PopupHelper.Close(transform);
+            await PopupHelper.Close(transform);
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
@@ -87,7 +87,7 @@ namespace Pancake.UI
         {
             await UniTask.WaitUntil(() => _prewarmNextLevel != null);
             reCreateLevelLoadedEvent.Raise();
-            PopupHelper.Close(transform);
+            await PopupHelper.Close(transform);
             showUiGameplayEvent.Raise();
         }
 
@@ -101,7 +101,7 @@ namespace Pancake.UI
         }
 
         public override async void Refresh()
-        {
+        { 
             _prewarmNextLevel = null;
             buttonContinue.gameObject.SetActive(true);
             if (enabledSound) playAudioEvent.Raise(audioWin);

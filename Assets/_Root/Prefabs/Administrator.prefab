@@ -3796,9 +3796,8 @@ MonoBehaviour:
   reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
   hideUiGameplayEvent: {fileID: 11400000, guid: 7dcbf6ffc2eff08498f36bd132ec680a, type: 2}
   currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
-  popupShowEvent: {fileID: 11400000, guid: d4469c64a4abe5641be48cc65e2ab907, type: 2}
-  popupWin: PopupWin
-  popupLose: PopupLose
+  popupWin: WinPopup
+  popupLose: LosePopup
 --- !u!1 &5636817907929682682
 GameObject:
   m_ObjectHideFlags: 0
