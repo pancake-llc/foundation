@@ -21,7 +21,6 @@ namespace PancakeEditor
             get
             {
                 if (_settings != null) return _settings;
-
                 LoadSetting();
                 return _settings;
             }
@@ -58,7 +57,7 @@ namespace PancakeEditor
 
             string json = File.ReadAllText(path);
             if (string.IsNullOrEmpty(json)) return;
-            _settings = JsonConvert.DeserializeObject<T>(json);
+            _settings = JsonConvert.DeserializeObject<T>(json) ?? new T();
         }
 
         public void DeleteSetting()

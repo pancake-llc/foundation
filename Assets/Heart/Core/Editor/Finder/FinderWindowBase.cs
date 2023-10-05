@@ -31,7 +31,9 @@ namespace PancakeEditor
         {
             get
             {
-                if (setting == null) setting = new UserSetting<FinderSetting>();
+                if (setting != null) return setting;
+                setting = new UserSetting<FinderSetting>();
+                setting.LoadSetting();
                 return setting;
             }
         }
