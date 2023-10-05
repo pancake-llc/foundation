@@ -1,4 +1,5 @@
 using Pancake.Apex;
+using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
 using TMPro;
@@ -26,12 +27,7 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonCloseClicked()
-        {
-            var popupContainer = PopupContainer.Of(transform);
-            if (popupContainer.IsInTransition) return;
-            popupContainer.Pop(true);
-        }
+        private void OnButtonCloseClicked() { PopupHelper.Close(transform); }
 
         public override void Refresh()
         {

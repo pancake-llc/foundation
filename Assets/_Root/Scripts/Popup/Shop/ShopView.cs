@@ -55,12 +55,7 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonClosePressed()
-        {
-            var popupContainer = PopupContainer.Of(transform);
-            if (popupContainer.IsInTransition) return;
-            popupContainer.Pop(true);
-        }
+        private void OnButtonClosePressed() { PopupHelper.Close(transform); }
 
         public override void Refresh()
         {

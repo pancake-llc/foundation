@@ -1,4 +1,5 @@
 using Coffee.UIEffects;
+using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using Pancake.Threading.Tasks;
@@ -45,12 +46,7 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonClosePressed()
-        {
-            var popupContainer = PopupContainer.Of(transform);
-            if (popupContainer.IsInTransition) return;
-            popupContainer.Pop(true);
-        }
+        private void OnButtonClosePressed() { PopupHelper.Close(transform); }
 
         private void OnButtonSoundPressed()
         {

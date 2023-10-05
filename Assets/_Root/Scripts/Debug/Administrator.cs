@@ -13,7 +13,6 @@ using UnityEngine.UI;
 
 namespace Pancake.SceneFlow
 {
-    
     /// <summary>
     /// Used for debugging purposes, some performance rules may be ignored
     /// </summary>
@@ -52,7 +51,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private ScriptableEventNoParam hideUiGameplayEvent;
         [SerializeField] private IntVariable currentLevelIndex;
-        //[SerializeField] private PopupShowEvent popupShowEvent;
+
         [SerializeField, PopupPickup] private string popupWin;
         [SerializeField, PopupPickup] private string popupLose;
 
@@ -98,13 +97,15 @@ namespace Pancake.SceneFlow
         private void OnButtonLoseLevelClicked()
         {
             hideUiGameplayEvent.Raise();
-            var win = FindObjectOfType<PopupWin>();
+            var win = FindObjectOfType<WinPopup>();
             if (win != null)
             {
                 DebugEditor.Log("Popup Lose now cannot be displayed because Popup Win is showing!");
                 return;
             }
-            //popupShowEvent.Raise(popupLose, FindObjectOfType<GameplayController>().CanvasUI);
+
+            var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+            popupContainer.Push<LosePopup>("LosePopup", true);
         }
 
         private void OnButtonWinLevelClicked()
@@ -116,7 +117,9 @@ namespace Pancake.SceneFlow
                 DebugEditor.Log("Popup Win now cannot be displayed because Popup Lose is showing!");
                 return;
             }
-            //popupShowEvent.Raise(popupWin, FindObjectOfType<GameplayController>().CanvasUI);
+
+            var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+            popupContainer.Push<WinPopup>("WinPopup", true);
         }
 
         private void OnButtonDisableAdsClicked() { AdStatic.IsRemoveAd = true; }
@@ -174,7 +177,7 @@ namespace Pancake.SceneFlow
 
             reCreateLevelLoadedEvent.Raise();
         }
-        
+
         private void Change(bool state)
         {
             foreach (var @lock in locks)

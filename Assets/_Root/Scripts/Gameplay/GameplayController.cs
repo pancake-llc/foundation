@@ -25,8 +25,6 @@ namespace Pancake.SceneFlow
         [SerializeField] private Transform levelRootHolder;
         [SerializeField] private IntVariable currentLevelIndex;
 
-        public Transform CanvasUI => canvasUI;
-
         private void Start()
         {
             buttonHome.onClick.AddListener(GoToMenu);
