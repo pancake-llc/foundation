@@ -13,7 +13,7 @@ namespace Pancake.UI
     public class Popup : GameComponent, IPopupLifecycleEvent
     {
         [SerializeField] private bool usePrefabNameAsId = true;
-        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId)), PopupPickup] private string Id { get; set; }
+        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
         [SerializeField, InlineEditor] private PopupTransitionContainer animationContainer = new PopupTransitionContainer();
 

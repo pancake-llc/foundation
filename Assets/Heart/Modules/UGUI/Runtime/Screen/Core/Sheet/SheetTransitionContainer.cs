@@ -12,8 +12,8 @@ namespace Pancake.UI
     [Serializable]
     public class SheetTransitionContainer
     {
-        [SerializeField] private List<TransitionAnimation> enterAnimations = new List<TransitionAnimation>();
-        [SerializeField] private List<TransitionAnimation> exitAnimations = new List<TransitionAnimation>();
+        [SerializeField, Array] private List<TransitionAnimation> enterAnimations = new List<TransitionAnimation>();
+        [SerializeField, Array] private List<TransitionAnimation> exitAnimations = new List<TransitionAnimation>();
 
 
         public ITransitionAnimation GetAnimation(bool enter, string partnerTransitionIdentifier)

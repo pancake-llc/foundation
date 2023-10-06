@@ -12,7 +12,7 @@ namespace Pancake.UI
     [DisallowMultipleComponent]
     public class Sheet : MonoBehaviour, ISheetLifecycleEvent
     {
-        [field: SerializeField, SheetPickup] private string Id { get; set; }
+        [field: SerializeField] private string Id { get; set; }
 
         [SerializeField] private int order;
 

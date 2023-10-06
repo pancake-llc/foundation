@@ -13,7 +13,7 @@ namespace Pancake.UI
     public class Page : GameComponent, IPageLifecycleEvent
     {
         [SerializeField] private bool usePrefabNameAsId = true;
-        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId)), PagePickup] private string Id { get; set; }
+        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
         [SerializeField] private int order;
         [SerializeField, InlineEditor] private PageTransitionContainer animationContainer = new PageTransitionContainer();
