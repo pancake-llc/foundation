@@ -4,15 +4,12 @@ using UnityEngine.Assertions;
 
 namespace Pancake.UI
 {
-    public abstract class Sheet<TView, TModel> : Sheet where TView : View
+    public abstract class Sheet<TView> : Sheet where TView : View
     {
         public TView root;
         private bool _isInitialized;
-        private TModel _model;
 
         protected virtual ViewInitMode InitMode => ViewInitMode.BeforeFirstEnter;
-
-        public void Setup(TModel model) { _model = model; }
 
         public override async Task Initialize()
         {
