@@ -7,7 +7,7 @@ namespace Pancake.SceneFlow
 
     public class OutfitSlotElement : MonoBehaviour
     {
-        [SerializeField] private SkeletonGraphic renderer;
+        [SerializeField] private SkeletonGraphic render;
         [SerializeField] private UIButton button;
 
         public void Init()

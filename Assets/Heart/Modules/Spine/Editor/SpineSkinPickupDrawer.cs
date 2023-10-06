@@ -11,48 +11,9 @@ namespace Pancake.SpineEditor
     using UnityEngine;
 
     [CustomPropertyDrawer(typeof(SpineSkinPickupAttribute))]
-    public class SpineSkinPickupDrawer : PropertyDrawer
+    public class SpineSkinPickupDrawer : SpineAttributeDrawerBase
     {
-        private const string DEFAULT_SKIN_NAME = "default";
-        private SkeletonDataAsset _skeletonDataAsset;
-        private GUIContent _noneLabel;
-        private static GUIStyle errorPopupStyle;
-
-        private GUIContent NoneLabel(Texture2D image = null)
-        {
-            if (_noneLabel == null) _noneLabel = new GUIContent(DEFAULT_SKIN_NAME);
-            _noneLabel.image = image;
-            return _noneLabel;
-        }
-
-        private GUIStyle ErrorPopupStyle
-        {
-            get
-            {
-                if (errorPopupStyle == null) errorPopupStyle = new GUIStyle(EditorStyles.popup);
-                errorPopupStyle.normal.textColor = Color.red;
-                errorPopupStyle.hover.textColor = Color.red;
-                errorPopupStyle.focused.textColor = Color.red;
-                errorPopupStyle.active.textColor = Color.red;
-                return errorPopupStyle;
-            }
-        }
-
-        private SpineSkinPickupAttribute TargetAttribute => (SpineSkinPickupAttribute) attribute;
-
-
-        private bool IsValueValid(SerializedProperty property)
-        {
-            if (_skeletonDataAsset != null)
-            {
-                var skeletonData = _skeletonDataAsset.GetSkeletonData(true);
-                if (skeletonData != null && !string.IsNullOrEmpty(property.stringValue)) return IsValueValid(skeletonData, property);
-            }
-
-            return true;
-        }
-
-        private bool IsValueValid(SkeletonData skeletonData, SerializedProperty property) { return skeletonData.FindSkin(property.stringValue) != null; }
+        protected override bool IsValueValid(SkeletonData skeletonData, SerializedProperty property) { return skeletonData.FindSkin(property.stringValue) != null; }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -69,7 +30,7 @@ namespace Pancake.SpineEditor
                 return;
             }
 
-            var guid = AssetDatabase.FindAssets($"{TargetAttribute.Name} t:SkeletonDataAsset").FirstOrDefault();
+            string guid = AssetDatabase.FindAssets($"{((SpineSkinPickupAttribute) attribute).Name} t:SkeletonDataAsset").FirstOrDefault();
 
             if (!string.IsNullOrEmpty(guid))
             {
@@ -94,28 +55,8 @@ namespace Pancake.SpineEditor
                 Selector(property);
         }
 
-        private static GUIContent tempContent;
 
-        private static GUIContent TempContent(string text, Texture2D image = null, string tooltip = null)
-        {
-            if (tempContent == null) tempContent = new GUIContent();
-            tempContent.text = text;
-            tempContent.image = image;
-            tempContent.tooltip = tooltip;
-            return tempContent;
-        }
-
-        protected virtual void Selector(SerializedProperty property)
-        {
-            var data = _skeletonDataAsset.GetSkeletonData(true);
-            if (data == null) return;
-
-            var menu = new GenericMenu();
-            PopulateMenu(menu, property, this.TargetAttribute, data);
-            menu.ShowAsContext();
-        }
-
-        private void PopulateMenu(GenericMenu menu, SerializedProperty property, SpineSkinPickupAttribute targetAttribute, SkeletonData data)
+        protected override void PopulateMenu(GenericMenu menu, SerializedProperty property, SkeletonData data)
         {
             menu.AddDisabledItem(new GUIContent(_skeletonDataAsset.name));
             menu.AddSeparator("");
@@ -129,18 +70,6 @@ namespace Pancake.SpineEditor
                     new SpineDrawerValuePair(name, property));
             }
         }
-
-        protected virtual void HandleSelect(object menuItemObject)
-        {
-            var clickedItem = (SpineDrawerValuePair) menuItemObject;
-            var serializedProperty = clickedItem.property;
-            if (serializedProperty.serializedObject.isEditingMultipleObjects)
-                serializedProperty.stringValue = "oaifnoiasf��123526"; // HACK: to trigger change on multi-editing.
-            serializedProperty.stringValue = clickedItem.stringValue;
-            serializedProperty.serializedObject.ApplyModifiedProperties();
-        }
-
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label) { return 18; }
     }
 }
 #endif

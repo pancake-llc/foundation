@@ -6,7 +6,7 @@ namespace Pancake.Spine
     using UnityEngine;
 
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
-    public class SpineAnimPickupAttribute : MonoBehaviour
+    public class SpineAnimPickupAttribute : PropertyAttribute
     {
         public string Name { get; set; }
 
