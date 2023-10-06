@@ -30,6 +30,16 @@ namespace PancakeEditor
             {
                 var context = new GenericMenu();
                 context.AddItem(new GUIContent("Copy"), false, _ => Copy(property), property);
+                if (GUIUtility.systemCopyBuffer != null)
+                {
+                    context.AddItem(new GUIContent("Paste"), false, _ => Paste(property), property);
+                }
+                else
+                {
+                    context.AddDisabledItem(new GUIContent("Paste"));
+                }
+
+                context.AddItem(new GUIContent("Paste"), false, _ => Paste(property), property);
                 context.AddItem(new GUIContent("Recreate"), false, _ => Recreate(property), property);
                 context.ShowAsContext();
             }
@@ -40,6 +50,7 @@ namespace PancakeEditor
             if (property.propertyType != SerializedPropertyType.String) return;
             property.stringValue = Guid.NewGuid().ToString("N")[..15]; // slower than Guid.NewGuid().ToString() but shorter
             property.serializedObject.ApplyModifiedProperties();
+            AssetDatabase.SaveAssets();
         }
 
         private void Copy(SerializedProperty property)
@@ -49,6 +60,15 @@ namespace PancakeEditor
             var textEditor = new TextEditor {text = property.stringValue};
             textEditor.SelectAll();
             textEditor.Copy();
+        }
+
+        private void Paste(SerializedProperty property)
+        {
+            if (property.propertyType != SerializedPropertyType.String) return;
+
+            property.stringValue = GUIUtility.systemCopyBuffer;
+            property.serializedObject.ApplyModifiedProperties();
+            AssetDatabase.SaveAssets();
         }
     }
 }

@@ -1249,7 +1249,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 7.8}
+  m_AnchoredPosition: {x: 0, y: 7.799999}
   m_SizeDelta: {x: 94, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &316568110
@@ -3389,7 +3389,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 7.8}
+  m_AnchoredPosition: {x: 0, y: 7.799999}
   m_SizeDelta: {x: 90, y: 73}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &995629845
@@ -3944,7 +3944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe51f48b79116924a8ad4942741a2264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderer: {fileID: 412846088}
+  render: {fileID: 0}
   button: {fileID: 1317898288}
 --- !u!114 &1317898288
 MonoBehaviour:
@@ -6403,6 +6403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c3bd90797ca2884d9e5dceb408fd13f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outfitContainer: {fileID: 11400000, guid: 5d5280e28b66d7c43b735d60700ae9ba, type: 2}
 --- !u!224 &2136501741 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8145237921013321427, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}

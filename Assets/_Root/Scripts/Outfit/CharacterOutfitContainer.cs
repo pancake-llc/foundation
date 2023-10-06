@@ -6,7 +6,7 @@ namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "Pancake/Game/Outfit Container", fileName = "OutfitContainer.asset")]
+    [CreateAssetMenu(menuName = "Pancake/Game/Outfit/Outfit Container", fileName = "OutfitContainer.asset")]
     public class CharacterOutfitContainer : ScriptableObject
     {
         [Array] public CharacterOutfit[] outfits;
@@ -15,15 +15,23 @@ namespace Pancake.SceneFlow
     [Serializable]
     public class CharacterOutfit
     {
-        [Guid] public string id;
         public OutfitType type;
-        [SpineSkinPickup("mix-and-match-pro_SkeletonData")] public string skinId;
+        [Array] public OutfitUnitVariable[] list;
     }
+
 
     public enum OutfitType
     {
         Hat = 0,
         Shirt = 1,
         Shoe = 2
+    }
+
+    public enum OutfitUnlockType
+    {
+        Coin,
+        Rewarded,
+        BeginnerGift,
+        Event,
     }
 }
