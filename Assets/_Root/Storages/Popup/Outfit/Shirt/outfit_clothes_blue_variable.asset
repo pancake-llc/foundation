@@ -18,6 +18,7 @@ MonoBehaviour:
     isUnlocked: 0
     unlockType: 2
     value: 0
+    viewPosition: {x: 0, y: 0}
     skinId: clothes/dress-blue
   debugLogEnabled: 0
   saved: 1
@@ -26,5 +27,6 @@ MonoBehaviour:
     isUnlocked: 0
     unlockType: 2
     value: 0
+    viewPosition: {x: 0, y: 0}
     skinId: clothes/dress-blue
   resetOn: 0

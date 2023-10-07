@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.UI
 {
-    public sealed class OutfitSlotsView : View
+    public sealed class OutfitColelctionView : View
     {
 	    [SerializeField] private OutfitType outfitType;
 	    

@@ -18,6 +18,7 @@ MonoBehaviour:
     isUnlocked: 0
     unlockType: 0
     value: 1000
+    viewPosition: {x: 0, y: -366}
     skinId: hair/brown
   debugLogEnabled: 0
   saved: 1
@@ -26,5 +27,6 @@ MonoBehaviour:
     isUnlocked: 0
     unlockType: 0
     value: 1000
+    viewPosition: {x: 0, y: -366}
     skinId: hair/brown
   resetOn: 0

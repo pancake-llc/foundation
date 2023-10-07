@@ -18,23 +18,32 @@ namespace Pancake.SceneFlow
         [Header("BUTTON")] [SerializeField] private Button buttonSetting;
         [SerializeField] private Button buttonTapToPlay;
         [SerializeField] private Button buttonShop;
+        [SerializeField] private Button buttonOutfit;
 
         [Header("POPUP")] [SerializeField, PopupPickup] private string popupShop;
         [SerializeField, PopupPickup] private string popupSetting;
         [SerializeField, PopupPickup] private string popupUpdate;
+        [SerializeField, PagePickup] private string outfitPageName;
 
         [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
         [SerializeField] private ScriptableEventString changeSceneEvent;
         private CancellationTokenSource _tokenShowUpdate;
 
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+        private PageContainer MainPageContainer => PageContainer.Find(Constant.MAIN_PAGE_CONTAINER);
 
         private void Start()
         {
-            buttonSetting.onClick.AddListener(ShowPopupSetting);
-            buttonTapToPlay.onClick.AddListener(GoToGameplay);
-            buttonShop.onClick.AddListener(ShowPopupShop);
+            buttonSetting.onClick.AddListener(OnButtonSettingPressed);
+            buttonTapToPlay.onClick.AddListener(OnButtonTapToPlayPressed);
+            buttonShop.onClick.AddListener(OnButtonShopPressed);
+            buttonOutfit.onClick.AddListener(OnButtonOutfitPressed);
             WaitShowUpdate();
+        }
+
+        private void OnButtonOutfitPressed()
+        {
+            MainPageContainer.Push(outfitPageName, true);
         }
 
         private async void WaitShowUpdate()
@@ -55,11 +64,11 @@ namespace Pancake.SceneFlow
             }
         }
 
-        private void GoToGameplay() { changeSceneEvent.Raise(Constant.GAMEPLAY_SCENE); }
+        private void OnButtonTapToPlayPressed() { changeSceneEvent.Raise(Constant.GAMEPLAY_SCENE); }
 
-        private void ShowPopupShop() { MainPopupContainer.Push<ShopPopup>(popupShop, true); }
+        private void OnButtonShopPressed() { MainPopupContainer.Push<ShopPopup>(popupShop, true); }
 
-        private void ShowPopupSetting() { MainPopupContainer.Push<SettingPopup>(popupSetting, true); }
+        private void OnButtonSettingPressed() { MainPopupContainer.Push<SettingPopup>(popupSetting, true); }
 
         protected override void OnDisabled()
         {

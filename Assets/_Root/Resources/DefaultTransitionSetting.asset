@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a6aa26b924f4a46baed9c803609e91a, type: 3}
   m_Name: DefaultTransitionSetting
   m_EditorClassIdentifier: 
-  sheetEnterAnim: {fileID: 0}
-  sheetExitAnim: {fileID: 0}
-  pagePushEnterAnim: {fileID: 0}
-  pagePushExitAnim: {fileID: 0}
+  sheetEnterAnim: {fileID: 11400000, guid: 9a097498a1208784498ed110e3588df7, type: 2}
+  sheetExitAnim: {fileID: 11400000, guid: fc0a64026e8fd64489f2f32bd0207d3c, type: 2}
+  pagePushEnterAnim: {fileID: 11400000, guid: 0944b47bfd2131649bf35649556f61dd, type: 2}
+  pagePushExitAnim: {fileID: 11400000, guid: c48bbfd06b3324842ae6e019d757897d, type: 2}
   pagePopEnterAnim: {fileID: 0}
   pagePopExitAnim: {fileID: 0}
   popupEnterAnim: {fileID: 11400000, guid: 3153276c2ca94e242a53b6ae3e769dcb, type: 2}

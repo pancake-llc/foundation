@@ -1,3 +1,5 @@
+using Pancake.Apex;
+
 namespace Pancake.SceneFlow
 {
     using Pancake;
@@ -5,6 +7,24 @@ namespace Pancake.SceneFlow
 
     public class OutfitSlotBarComponent : GameComponent
     {
-        [SerializeField] private OutfitSlotElement[] elements;
+        [SerializeField, Array] private OutfitSlotElement[] elements;
+
+        public void Setup(OutfitElement[] datas)
+        {
+            for (var i = 0; i < elements.Length; i++)
+            {
+                var element = elements[i];
+                element.Init(datas[i]);
+                element.gameObject.SetActive(true);
+            }
+
+            if (datas.Length < elements.Length)
+            {
+                for (int i = datas.Length; i < elements.Length; i++)
+                {
+                    elements[i].gameObject.SetActive(false);
+                }
+            }
+        }
     }
 }
