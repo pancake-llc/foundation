@@ -705,9 +705,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   delay: 0.5
   duration: 1
-  value: {x: 1.2, y: 1.2, z: 1.2}
+  value: {x: 1.15, y: 1.15, z: 1.15}
   startWith: 1
-  startValue: {x: 0.8, y: 0.8, z: 0.8}
+  startValue: {x: 0.9, y: 0.9, z: 0.9}
   loop: 1
   cycleMode: 1
   ease: 1

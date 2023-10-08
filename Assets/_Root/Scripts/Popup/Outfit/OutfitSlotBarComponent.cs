@@ -9,9 +9,9 @@ namespace Pancake.SceneFlow
     {
         [SerializeField, Array] private OutfitSlotElement[] elements;
 
-        public void Setup(OutfitElement[] datas)
+        public void Setup(OutfitUnitVariable[] datas)
         {
-            for (var i = 0; i < elements.Length; i++)
+            for (var i = 0; i < datas.Length; i++)
             {
                 var element = elements[i];
                 element.Init(datas[i]);

@@ -499,6 +499,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outfitType: 0
+  chunkSize: 3
+  slotBarPrefab: {fileID: 6083883964460880350, guid: c2f41edf55c4bd04f907d4fa0aa22b4c, type: 3}
+  content: {fileID: 4814279569940970306}
 --- !u!114 &1332071669992820406
 MonoBehaviour:
   m_ObjectHideFlags: 0
