@@ -54,8 +54,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonClose: {fileID: 4667559456464186620}
   outfitContainer: {fileID: 11400000, guid: 5d5280e28b66d7c43b735d60700ae9ba, type: 2}
-  outfitSheetContents: OutfitCollectionSheet
+  skinHatCollectionSheet:
+    m_AssetGUID: bdc3ad773d2248e4598f574080bf5cc9
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  skinShirtCollectionSheet:
+    m_AssetGUID: 6789357a5dcf2c3419943598bf66d354
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  skinShoesCollectionSheet:
+    m_AssetGUID: 34edd711148ed274494ce53f16262527
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   outfitSheetPreview: OutfitPreviewSheet
+  buttonHat: {fileID: 3745213714370086684}
+  buttonShirt: {fileID: 7746090665389272404}
+  buttonShoes: {fileID: 4172909681453629304}
+  buttonShop: {fileID: 7653124386634629689}
+  popupShop: ShopPopup
+  tabHat: {fileID: 8746241291547714361}
+  tabShirt: {fileID: 8124658234890770588}
+  tabShoes: {fileID: 316491454819523356}
 --- !u!114 &5513778889287787257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,7 +427,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 7.799999}
-  m_SizeDelta: {x: 94, y: 65}
+  m_SizeDelta: {x: 70, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &906293715655391988
 CanvasRenderer:
@@ -435,7 +457,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a91809fae3ffdae49b984f524be94ba4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 775622f002771024f9159fb99678e072, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -457,6 +479,7 @@ GameObject:
   - component: {fileID: 6784864608115563475}
   - component: {fileID: 5553714936942630883}
   - component: {fileID: 7746090665389272404}
+  - component: {fileID: 8124658234890770588}
   m_Layer: 5
   m_Name: button_shirt
   m_TagString: Untagged
@@ -512,7 +535,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 050f1085758a60a4da6496979578f50f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f494e6846b7017443aca65285ad2efbc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -547,7 +570,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -604,6 +627,24 @@ MonoBehaviour:
     motion: 3
     duration: 0.1
     ease: 0
+--- !u!114 &8124658234890770588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2381982803233724065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b45230eb467e7eb4e8674b69e18f0958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageTab: {fileID: 5553714936942630883}
+  imageIcon: {fileID: 7796571881147235287}
+  bgTabActive: {fileID: 21300000, guid: 050f1085758a60a4da6496979578f50f, type: 3}
+  bgTabUnactive: {fileID: 21300000, guid: f494e6846b7017443aca65285ad2efbc, type: 3}
+  iconActive: {fileID: 21300000, guid: bdb06b19bb3f85541ad17160051ebcd9, type: 3}
+  iconUnactive: {fileID: 21300000, guid: 067209c94a0a74849a97919f925f7ae6, type: 3}
 --- !u!1 &2402633889697631451
 GameObject:
   m_ObjectHideFlags: 0
@@ -757,7 +798,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 3.5}
-  m_SizeDelta: {x: 99, y: 84}
+  m_SizeDelta: {x: 75, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3386902606829494940
 CanvasRenderer:
@@ -787,7 +828,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bdb06b19bb3f85541ad17160051ebcd9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 067209c94a0a74849a97919f925f7ae6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -832,7 +873,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 7.799999}
-  m_SizeDelta: {x: 90, y: 73}
+  m_SizeDelta: {x: 66, y: 53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5924705660837877562
 CanvasRenderer:
@@ -862,7 +903,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 500d3165cffa04d428116ce96d0d73e5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b2bdb8f4ea67aa94393504ad7e9851b1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -884,6 +925,7 @@ GameObject:
   - component: {fileID: 1202473453626821035}
   - component: {fileID: 1617396824372424922}
   - component: {fileID: 4172909681453629304}
+  - component: {fileID: 316491454819523356}
   m_Layer: 5
   m_Name: button_shoe
   m_TagString: Untagged
@@ -939,7 +981,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 050f1085758a60a4da6496979578f50f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f494e6846b7017443aca65285ad2efbc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -974,7 +1016,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1031,6 +1073,24 @@ MonoBehaviour:
     motion: 3
     duration: 0.1
     ease: 0
+--- !u!114 &316491454819523356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5454282896374899917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b45230eb467e7eb4e8674b69e18f0958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageTab: {fileID: 1617396824372424922}
+  imageIcon: {fileID: 8942347669224195673}
+  bgTabActive: {fileID: 21300000, guid: 050f1085758a60a4da6496979578f50f, type: 3}
+  bgTabUnactive: {fileID: 21300000, guid: f494e6846b7017443aca65285ad2efbc, type: 3}
+  iconActive: {fileID: 21300000, guid: a91809fae3ffdae49b984f524be94ba4, type: 3}
+  iconUnactive: {fileID: 21300000, guid: 775622f002771024f9159fb99678e072, type: 3}
 --- !u!1 &5932575101737326029
 GameObject:
   m_ObjectHideFlags: 0
@@ -1266,6 +1326,7 @@ GameObject:
   - component: {fileID: 4543066193652684956}
   - component: {fileID: 2009654921634131488}
   - component: {fileID: 3745213714370086684}
+  - component: {fileID: 8746241291547714361}
   m_Layer: 5
   m_Name: button_hat
   m_TagString: Untagged
@@ -1321,7 +1382,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 050f1085758a60a4da6496979578f50f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f494e6846b7017443aca65285ad2efbc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1356,7 +1417,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1413,6 +1474,24 @@ MonoBehaviour:
     motion: 3
     duration: 0.1
     ease: 0
+--- !u!114 &8746241291547714361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6560563105516340227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b45230eb467e7eb4e8674b69e18f0958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageTab: {fileID: 2009654921634131488}
+  imageIcon: {fileID: 1464744394717492705}
+  bgTabActive: {fileID: 21300000, guid: 050f1085758a60a4da6496979578f50f, type: 3}
+  bgTabUnactive: {fileID: 21300000, guid: f494e6846b7017443aca65285ad2efbc, type: 3}
+  iconActive: {fileID: 21300000, guid: 500d3165cffa04d428116ce96d0d73e5, type: 3}
+  iconUnactive: {fileID: 21300000, guid: b2bdb8f4ea67aa94393504ad7e9851b1, type: 3}
 --- !u!1 &6625953946090072336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,6 +1769,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8145237921013321427, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
   m_PrefabInstance: {fileID: 6956269999722409074}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7653124386634629689 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 773773205861412427, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
+  m_PrefabInstance: {fileID: 6956269999722409074}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d327287640dac41b4aaade109e3242c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8356767057935152404
 PrefabInstance:
   m_ObjectHideFlags: 0

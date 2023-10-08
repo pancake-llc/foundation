@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Pancake.Linq;
 using Pancake.SceneFlow;
 using Pancake.Threading.Tasks;
@@ -14,30 +13,36 @@ namespace Pancake.UI
         [SerializeField] private Transform content;
 
         private CharacterOutfit _datas;
-        private bool _isBinded;
+        private OutfitSlotBarComponent[] _slotBars;
 
-        protected override UniTask Initialize()
+        protected override UniTask Initialize() { return UniTask.CompletedTask; }
+
+        public override void Refresh()
         {
-            Setup();
-            return UniTask.CompletedTask;
-        }
+            if (_slotBars == null) return;
 
-        public override void Refresh() { }
-
-        public void Binding(CharacterOutfit filter)
-        {
-            _datas = filter;
-            _isBinded = true;
-        }
-
-        public async void Setup()
-        {
-            await UniTask.WaitUntil(() => _isBinded);
             var units = _datas.list.Chunk(chunkSize);
             for (int i = 0; i < units.Length; i++)
             {
-                var bar = Instantiate(slotBarPrefab, content);
-                bar.Setup(units[i]);
+                _slotBars[i].Setup(units[i]);
+            }
+        }
+
+        public void Binding(CharacterOutfit filter, OutfitType outfitType)
+        {
+            this.outfitType = outfitType;
+            _datas = filter;
+            Setup();
+        }
+
+        public void Setup()
+        {
+            var units = _datas.list.Chunk(chunkSize);
+            _slotBars = new OutfitSlotBarComponent[units.Length];
+            for (int i = 0; i < units.Length; i++)
+            {
+                _slotBars[i] = Instantiate(slotBarPrefab, content);
+                _slotBars[i].Setup(units[i]);
             }
         }
     }

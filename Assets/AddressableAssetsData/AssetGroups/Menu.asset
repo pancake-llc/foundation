@@ -33,7 +33,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bdc3ad773d2248e4598f574080bf5cc9
-    m_Address: OutfitCollectionSheet
+    m_Address: SkinHatCollectionSheet
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -44,6 +44,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1ca4925636395984789a813b3c595c09
     m_Address: OutfitPreviewSheet
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6789357a5dcf2c3419943598bf66d354
+    m_Address: SkinShirtCollectionSheet
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34edd711148ed274494ce53f16262527
+    m_Address: SkinShoesCollectionSheet
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

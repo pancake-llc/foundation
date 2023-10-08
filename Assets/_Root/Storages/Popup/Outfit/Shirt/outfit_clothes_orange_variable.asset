@@ -18,7 +18,7 @@ MonoBehaviour:
     isUnlocked: 0
     unlockType: 0
     value: 1000
-    viewPosition: {x: 0, y: 0}
+    viewPosition: {x: 0, y: -234}
     skinId: clothes/hoodie-orange
   debugLogEnabled: 0
   saved: 1
@@ -27,6 +27,6 @@ MonoBehaviour:
     isUnlocked: 0
     unlockType: 0
     value: 1000
-    viewPosition: {x: 0, y: 0}
+    viewPosition: {x: 0, y: -234}
     skinId: clothes/hoodie-orange
   resetOn: 0
