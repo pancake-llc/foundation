@@ -2144,6 +2144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   render: {fileID: 8764275442215900204}
   button: {fileID: 4790041439015936712}
+  eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   buttonDict:
     keys: 0000000001000000
     values:
@@ -2733,6 +2734,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   render: {fileID: 6898062963101886196}
   button: {fileID: 4381192251803765277}
+  eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   buttonDict:
     keys: 0000000001000000
     values:
@@ -3258,6 +3260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   render: {fileID: 7940395184296640487}
   button: {fileID: 539045134372380966}
+  eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   buttonDict:
     keys: 0000000001000000
     values:

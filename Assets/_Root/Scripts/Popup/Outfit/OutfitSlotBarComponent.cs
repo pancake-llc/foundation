@@ -12,7 +12,7 @@ namespace Pancake.SceneFlow
             for (var i = 0; i < datas.Length; i++)
             {
                 var element = elements[i];
-                element.Init(datas[i]);
+                element.Init(ref datas[i]);
                 element.gameObject.SetActive(true);
             }
 

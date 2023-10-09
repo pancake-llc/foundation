@@ -1,7 +1,9 @@
 using Pancake.Apex;
+using Pancake.Scriptable;
 using Pancake.Spine;
 using Pancake.UI;
 using Spine.Unity;
+using UnityEngine.Serialization;
 
 namespace Pancake.SceneFlow
 {
@@ -11,13 +13,14 @@ namespace Pancake.SceneFlow
     {
         [SerializeField] private SkeletonGraphic render;
         [SerializeField] private UIButton button;
+        [SerializeField] private ScriptableEventNoParam eventUpdateCoin;
         [SerializeField] private OutfitTypeButtonDictionary buttonDict;
 
-        private OutfitUnitVariable _outfit;
+        public OutfitUnitVariable outfitUnit;
 
-        public void Init(OutfitUnitVariable element)
+        public void Init(ref OutfitUnitVariable element)
         {
-            _outfit = element;
+            outfitUnit = element;
 
             render.ChangeSkin(element.Value.skinId);
             render.transform.localPosition = element.Value.viewPosition;
@@ -52,9 +55,16 @@ namespace Pancake.SceneFlow
 
         private void OnButtonPurchaseByCoinPressed()
         {
-            if (UserData.GetCurrentCoin() >= _outfit.Value.value)
+            if (UserData.GetCurrentCoin() >= outfitUnit.Value.value)
             {
-                UserData.MinusCoin(_outfit.Value.value);
+                UserData.MinusCoin(outfitUnit.Value.value);
+                eventUpdateCoin.Raise();
+                outfitUnit.Value.isUnlocked = true;
+                outfitUnit.Save();
+                foreach (var b in buttonDict)
+                {
+                    b.Value.gameObject.SetActive(false);
+                }
             }
         }
 
