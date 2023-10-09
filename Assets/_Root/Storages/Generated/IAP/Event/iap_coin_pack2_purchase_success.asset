@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: iap_coin_pack2_purchase_success
   m_EditorClassIdentifier: 
   amount: 500000
+  currentCoin: {fileID: 11400000, guid: 2b085b529f2fac74ba8c4fab7e585cb1, type: 2}

@@ -78,8 +78,7 @@ namespace Pancake.UI
 
         private void CollectReward(int number)
         {
-            // spawn coin
-            Data.Save(Constant.USER_CURRENT_COIN, Data.Load(Constant.USER_CURRENT_COIN, 0) + number);
+            UserData.AddCoin(number);
             fxCoinSpawnEvent.Raise(Vector2.zero, number);
         }
 
@@ -101,7 +100,7 @@ namespace Pancake.UI
         }
 
         public override async void Refresh()
-        { 
+        {
             _prewarmNextLevel = null;
             buttonContinue.gameObject.SetActive(true);
             if (enabledSound) playAudioEvent.Raise(audioWin);

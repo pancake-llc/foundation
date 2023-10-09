@@ -82,6 +82,7 @@ namespace Pancake.UI
         private async void Setup()
         {
             await UniTask.WaitUntil(() => OutfitSlotsContainer != null);
+#pragma warning disable 4014
             OutfitSlotsContainer.Register(skinShoesCollectionSheet.RuntimeKey.ToString(),
                 sheetId: skinShoesCollectionSheet.RuntimeKey.ToString(),
                 onLoad: t =>
@@ -104,6 +105,7 @@ namespace Pancake.UI
                     _currentOutfitCollection.view.Binding(outfitContainer.outfits.Filter(o => o.type == OutfitType.Hat).FirstOrDefault(), OutfitType.Hat);
                 });
             OutfitSlotsContainer.Show(skinHatCollectionSheet.RuntimeKey.ToString(), false);
+#pragma warning restore 4014
             tabHat.Active(true);
             tabShirt.Deactive(true);
             tabShoes.Deactive(true);
@@ -115,7 +117,7 @@ namespace Pancake.UI
             await SheetOutfitPreview.Register(outfitSheetPreview,
                 sheetId: outfitSheetPreview,
                 onLoad: t => { ((OutfitPreviewSheet) t.sheet).view.Setup(outfitContainer); });
-            SheetOutfitPreview.Show(outfitSheetPreview, false);
+            await SheetOutfitPreview.Show(outfitSheetPreview, false);
         }
     }
 }

@@ -3796,6 +3796,7 @@ MonoBehaviour:
   reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
   hideUiGameplayEvent: {fileID: 11400000, guid: 7dcbf6ffc2eff08498f36bd132ec680a, type: 2}
   currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
+  currentCoin: {fileID: 11400000, guid: 2b085b529f2fac74ba8c4fab7e585cb1, type: 2}
   popupWin: WinPopup
   popupLose: LosePopup
 --- !u!1 &5636817907929682682

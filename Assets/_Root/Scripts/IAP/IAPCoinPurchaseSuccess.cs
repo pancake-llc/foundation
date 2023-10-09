@@ -9,11 +9,6 @@ namespace Pancake.SceneFlow
     {
         [SerializeField] private int amount;
 
-        public override void Raise()
-        {
-            int currentCoin = Data.Load(Constant.USER_CURRENT_COIN, 0);
-            currentCoin += amount;
-            Data.Save(Constant.USER_CURRENT_COIN, currentCoin);
-        }
+        public override void Raise() { UserData.AddCoin(amount); }
     }
 }

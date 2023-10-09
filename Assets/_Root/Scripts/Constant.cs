@@ -7,7 +7,7 @@ namespace Pancake.SceneFlow
         public const string MENU_SCENE = "menu";
         public const string GAMEPLAY_SCENE = "gameplay";
 
-        public const string USER_CURRENT_COIN = "user_current_coin";
+        public const string CURRENT_COIN = "user_current_coin";
 
         public const string IAP_DOUBLE_COIN = "iap_double_coin";
         public const string IAP_UNLOCK_ALL_SKIN = "iap_unlock_all_skin";

@@ -1,10 +1,8 @@
 using Pancake.Apex;
+using UnityEngine;
 
 namespace Pancake.SceneFlow
 {
-    using Pancake;
-    using UnityEngine;
-
     public class OutfitSlotBarComponent : GameComponent
     {
         [SerializeField, Array] private OutfitSlotElement[] elements;

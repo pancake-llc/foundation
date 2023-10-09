@@ -2,6 +2,7 @@ using Pancake.Component;
 using Pancake.IAP;
 using Pancake.Monetization;
 using Pancake.SceneFlow;
+using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -104,7 +105,7 @@ namespace Pancake.UI
 
         private void OnCompleteAdGetFreeCoin()
         {
-            Data.Save(Constant.USER_CURRENT_COIN, Data.Load(Constant.USER_CURRENT_COIN, 0) + coinFreeValue);
+            UserData.AddCoin(coinFreeValue);
             fxCoinSpawnEvent.Raise(buttonFreeCoin.transform.position, coinFreeValue);
             //noticeUpdateCoinEvent.Raise(); // use coin collision insteaded so dont need use noticeUpdateCoinEvent
         }

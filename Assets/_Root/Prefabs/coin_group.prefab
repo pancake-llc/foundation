@@ -462,6 +462,7 @@ MonoBehaviour:
   textCoin: {fileID: 474612844238844801}
   eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   updateCoinWithValue: {fileID: 11400000, guid: fd36f245da8848948a005de35c9f6993, type: 2}
+  currentCoin: {fileID: 11400000, guid: 2b085b529f2fac74ba8c4fab7e585cb1, type: 2}
 --- !u!1001 &2560612362465803146
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -2336,6 +2336,7 @@ MonoBehaviour:
   removeAds: {fileID: 11400000, guid: 681167ba2e8fbd3419a4b692721e2e3a, type: 2}
   allPinSkin: {fileID: 11400000, guid: 7c97ef05d361f764f8eebf905370ffaa, type: 2}
   vip: {fileID: 11400000, guid: 5aacffc911e3fe846ba93ab9bdfe9cb5, type: 2}
+  currentCoin: {fileID: 11400000, guid: 2b085b529f2fac74ba8c4fab7e585cb1, type: 2}
   coinFreeValue: 500
   coinPack1Value: 50000
   coinPack2Value: 500000

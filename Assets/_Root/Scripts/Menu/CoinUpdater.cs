@@ -29,6 +29,6 @@ namespace Pancake.SceneFlow
             textCoin.text = $"{previousCoin + value}";
         }
 
-        private void OnNoticeUpdateCoin() { textCoin.text = Data.Load(Constant.USER_CURRENT_COIN, 0).ToString(); }
+        private void OnNoticeUpdateCoin() { textCoin.text = UserData.GetCurrentCoin().ToString(); }
     }
 }
