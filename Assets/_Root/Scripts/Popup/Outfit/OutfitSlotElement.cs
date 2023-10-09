@@ -12,15 +12,16 @@ namespace Pancake.SceneFlow
     public class OutfitSlotElement : MonoBehaviour
     {
         [SerializeField] private SkeletonGraphic render;
+        [SerializeField] private GameObject selectedObject;
         [SerializeField] private UIButton button;
         [SerializeField] private ScriptableEventNoParam eventUpdateCoin;
         [SerializeField] private OutfitTypeButtonDictionary buttonDict;
 
-        public OutfitUnitVariable outfitUnit;
+        private OutfitUnitVariable _outfitUnit;
 
         public void Init(ref OutfitUnitVariable element)
         {
-            outfitUnit = element;
+            _outfitUnit = element;
 
             render.ChangeSkin(element.Value.skinId);
             render.transform.localPosition = element.Value.viewPosition;
@@ -55,12 +56,12 @@ namespace Pancake.SceneFlow
 
         private void OnButtonPurchaseByCoinPressed()
         {
-            if (UserData.GetCurrentCoin() >= outfitUnit.Value.value)
+            if (UserData.GetCurrentCoin() >= _outfitUnit.Value.value)
             {
-                UserData.MinusCoin(outfitUnit.Value.value);
+                UserData.MinusCoin(_outfitUnit.Value.value);
                 eventUpdateCoin.Raise();
-                outfitUnit.Value.isUnlocked = true;
-                outfitUnit.Save();
+                _outfitUnit.Value.isUnlocked = true;
+                _outfitUnit.Save();
                 foreach (var b in buttonDict)
                 {
                     b.Value.gameObject.SetActive(false);
@@ -71,6 +72,14 @@ namespace Pancake.SceneFlow
         private void OnButtonPressed()
         {
             // to_do with outfit
+            if (_outfitUnit.Value.isUnlocked)
+            {
+                selectedObject.SetActive(true);
+            }
+            else
+            {
+                
+            }
         }
     }
 }
