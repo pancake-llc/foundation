@@ -1,3 +1,4 @@
+using Pancake.Apex;
 using Pancake.Spine;
 using Pancake.UI;
 using Spine.Unity;
@@ -20,13 +21,28 @@ namespace Pancake.SceneFlow
 
             render.ChangeSkin(element.Value.skinId);
             render.transform.localPosition = element.Value.viewPosition;
-            foreach (var b in buttonDict)
+            if (element.Value.isUnlocked)
             {
-                if (b.Key == OutfitUnlockType.Coin)
+                foreach (var b in buttonDict)
                 {
-                    b.Value.GetComponent<CurrencyButtonStatus>().Setup(element.Value.value);
-                    b.Value.onClick.RemoveListener(OnButtonPurchaseByCoinPressed);
-                    b.Value.onClick.AddListener(OnButtonPurchaseByCoinPressed);
+                    b.Value.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                foreach (var b in buttonDict)
+                {
+                    if (element.Value.unlockType == b.Key)
+                    {
+                        b.Value.GetComponent<CurrencyButtonStatus>().Setup(element.Value.value);
+                        b.Value.gameObject.SetActive(true);
+                        b.Value.onClick.RemoveListener(OnButtonPurchaseByCoinPressed);
+                        b.Value.onClick.AddListener(OnButtonPurchaseByCoinPressed);
+                    }
+                    else
+                    {
+                        b.Value.gameObject.SetActive(false);
+                    }
                 }
             }
 
@@ -39,7 +55,6 @@ namespace Pancake.SceneFlow
             if (UserData.GetCurrentCoin() >= _outfit.Value.value)
             {
                 UserData.MinusCoin(_outfit.Value.value);
-                
             }
         }
 
