@@ -98,11 +98,13 @@ namespace Pancake.UI
 
         private string[] BuildCharacterSkins()
         {
-            var list = _currentPreviewOutfit.Values.ToList();
-            list.Add("skin-base"); // body
-            list.Add("eyes/green"); // eyes
-            list.Add("nose/short"); // nose
-
+            var list = new List<string>
+            {
+                "skin-base", // body
+                "eyes/green", // eyes
+                "nose/short" // nose
+            };
+            list.AddRange(_currentPreviewOutfit.Values.ToList());
             return list.ToArray();
         }
 
