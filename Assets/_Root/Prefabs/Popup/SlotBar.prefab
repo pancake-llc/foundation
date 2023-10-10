@@ -2146,12 +2146,13 @@ MonoBehaviour:
   selectedObject: {fileID: 4431844641113696676}
   button: {fileID: 4790041439015936712}
   eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
+  eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
+  eventUpdateSelectedEffect: {fileID: 11400000, guid: 71c7ba9fcc33b2b42b9ecfdb73ce793a, type: 2}
   buttonDict:
     keys: 0000000001000000
     values:
     - {fileID: 8492869949782140952}
     - {fileID: 2501495978724417911}
-  outfitUnit: {fileID: 0}
 --- !u!1 &4965795978446628049
 GameObject:
   m_ObjectHideFlags: 0
@@ -2738,12 +2739,13 @@ MonoBehaviour:
   selectedObject: {fileID: 8556281486454314291}
   button: {fileID: 4381192251803765277}
   eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
+  eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
+  eventUpdateSelectedEffect: {fileID: 11400000, guid: 71c7ba9fcc33b2b42b9ecfdb73ce793a, type: 2}
   buttonDict:
     keys: 0000000001000000
     values:
     - {fileID: 7051624880449207424}
     - {fileID: 334487327988106122}
-  outfitUnit: {fileID: 0}
 --- !u!1 &7787325388739382050
 GameObject:
   m_ObjectHideFlags: 0
@@ -3266,12 +3268,13 @@ MonoBehaviour:
   selectedObject: {fileID: 8653576302078037018}
   button: {fileID: 539045134372380966}
   eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
+  eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
+  eventUpdateSelectedEffect: {fileID: 11400000, guid: 71c7ba9fcc33b2b42b9ecfdb73ce793a, type: 2}
   buttonDict:
     keys: 0000000001000000
     values:
     - {fileID: 5041679429568385126}
     - {fileID: 8055933040485762759}
-  outfitUnit: {fileID: 0}
 --- !u!1 &8556281486454314291
 GameObject:
   m_ObjectHideFlags: 0

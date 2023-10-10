@@ -64,6 +64,23 @@ namespace Pancake.Spine
 
             return skeleton;
         }
+        
+        public static SkeletonAnimation ChangeSkins(this SkeletonAnimation skeleton, params string[] skinNames)
+        {
+            var skin = new Skin("temp");
+            var skeletonData = skeleton.Skeleton.Data;
+            foreach (string skinName in skinNames)
+            {
+                skin.AddSkin(skeletonData.FindSkin(skinName));
+            }
+            skeleton.initialSkinName = "temp";
+            skeleton.skeleton.SetSkin(skin);
+            skeleton.skeleton.SetSlotsToSetupPose();
+            skeleton.LateUpdate();
+            skeleton.AnimationState.Apply(skeleton.skeleton);
+
+            return skeleton;
+        }
 
         public static SkeletonGraphic ChangeSkin(this SkeletonGraphic skeleton, string skinName)
         {
@@ -75,6 +92,22 @@ namespace Pancake.Spine
 
             return skeleton;
         }
+
+        public static SkeletonGraphic ChangeSkins(this SkeletonGraphic skeleton, params string[] skinNames)
+        {
+            var skin = new Skin("temp");
+            var skeletonData = skeleton.Skeleton.Data;
+            foreach (string skinName in skinNames)
+            {
+                skin.AddSkin(skeletonData.FindSkin(skinName));
+            }
+            skeleton.Skeleton.SetSkin(skin);
+            skeleton.Skeleton.SetSlotsToSetupPose();
+            skeleton.LateUpdate();
+
+            return skeleton;
+        }
+        
 
         public static SkeletonAnimation OnComplete(this SkeletonAnimation skeleton, Action onComplete, MonoBehaviour target = null)
         {

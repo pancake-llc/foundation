@@ -29,4 +29,4 @@ MonoBehaviour:
     value: 1000
     viewPosition: {x: 0, y: -366}
     skinId: hair/short-red
-  resetOn: 0
+  resetOn: 1

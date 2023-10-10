@@ -114,9 +114,7 @@ namespace Pancake.UI
         private async void SetupPreview()
         {
             await UniTask.WaitUntil(() => SheetOutfitPreview != null);
-            await SheetOutfitPreview.Register(outfitSheetPreview,
-                sheetId: outfitSheetPreview,
-                onLoad: t => { ((OutfitPreviewSheet) t.sheet).view.Setup(outfitContainer); });
+            await SheetOutfitPreview.Register(outfitSheetPreview, sheetId: outfitSheetPreview);
             await SheetOutfitPreview.Show(outfitSheetPreview, false);
         }
     }

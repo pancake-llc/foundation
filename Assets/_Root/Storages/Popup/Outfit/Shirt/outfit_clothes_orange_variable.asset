@@ -15,8 +15,8 @@ MonoBehaviour:
   guid: 5b8aa1d02b3aa2748bd6cbcc216602d8
   value:
     id: 4433613a92c74d1
-    isUnlocked: 0
-    unlockType: 0
+    isUnlocked: 1
+    unlockType: 2
     value: 1000
     viewPosition: {x: 0, y: -234}
     skinId: clothes/hoodie-orange
@@ -24,9 +24,9 @@ MonoBehaviour:
   saved: 1
   defaultValue:
     id: 4433613a92c74d1
-    isUnlocked: 0
-    unlockType: 0
+    isUnlocked: 1
+    unlockType: 2
     value: 1000
     viewPosition: {x: 0, y: -234}
     skinId: clothes/hoodie-orange
-  resetOn: 0
+  resetOn: 1

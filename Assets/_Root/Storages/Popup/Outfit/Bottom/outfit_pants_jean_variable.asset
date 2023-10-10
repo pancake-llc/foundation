@@ -15,7 +15,7 @@ MonoBehaviour:
   guid: ffef2d9b865150d4390b300677f2e188
   value:
     id: 73514aabba66412
-    isUnlocked: 0
+    isUnlocked: 1
     unlockType: 2
     value: 0
     viewPosition: {x: 0, y: -90}
@@ -24,9 +24,9 @@ MonoBehaviour:
   saved: 1
   defaultValue:
     id: 73514aabba66412
-    isUnlocked: 0
+    isUnlocked: 1
     unlockType: 2
     value: 0
     viewPosition: {x: 0, y: -90}
     skinId: legs/pants-jeans
-  resetOn: 0
+  resetOn: 1

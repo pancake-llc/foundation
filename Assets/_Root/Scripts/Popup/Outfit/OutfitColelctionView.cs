@@ -24,7 +24,7 @@ namespace Pancake.UI
             var units = _datas.list.Chunk(chunkSize);
             for (int i = 0; i < units.Length; i++)
             {
-                _slotBars[i].Setup(units[i]);
+                _slotBars[i].Setup(units[i], outfitType);
             }
         }
 
@@ -42,7 +42,7 @@ namespace Pancake.UI
             for (int i = 0; i < units.Length; i++)
             {
                 _slotBars[i] = Instantiate(slotBarPrefab, content);
-                _slotBars[i].Setup(units[i]);
+                _slotBars[i].Setup(units[i], outfitType);
             }
         }
     }

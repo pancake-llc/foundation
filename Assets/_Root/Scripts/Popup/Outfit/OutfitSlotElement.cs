@@ -1,9 +1,8 @@
-using Pancake.Apex;
+using System;
 using Pancake.Scriptable;
 using Pancake.Spine;
 using Pancake.UI;
 using Spine.Unity;
-using UnityEngine.Serialization;
 
 namespace Pancake.SceneFlow
 {
@@ -15,13 +14,19 @@ namespace Pancake.SceneFlow
         [SerializeField] private GameObject selectedObject;
         [SerializeField] private UIButton button;
         [SerializeField] private ScriptableEventNoParam eventUpdateCoin;
+        [SerializeField] private ScriptableEventNoParam eventUpdatePreview;
+        [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
         [SerializeField] private OutfitTypeButtonDictionary buttonDict;
 
         private OutfitUnitVariable _outfitUnit;
+        private OutfitType _outfitType;
 
-        public void Init(ref OutfitUnitVariable element)
+        public void Init(ref OutfitUnitVariable element, OutfitType outfitType)
         {
             _outfitUnit = element;
+            _outfitType = outfitType;
+            eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect;
+            eventUpdateSelectedEffect.OnRaised += UpdateSelectedEffect;
 
             render.ChangeSkin(element.Value.skinId);
             render.transform.localPosition = element.Value.viewPosition;
@@ -75,11 +80,62 @@ namespace Pancake.SceneFlow
             if (_outfitUnit.Value.isUnlocked)
             {
                 selectedObject.SetActive(true);
+
+                switch (_outfitType)
+                {
+                    case OutfitType.Hat:
+                        UserData.SetCurrentSkinHat(_outfitUnit.Value.id);
+                        break;
+                    case OutfitType.Shirt:
+                        UserData.SetCurrentSkinShirt(_outfitUnit.Value.id);
+                        break;
+                    case OutfitType.Shoe:
+                        UserData.SetCurrentSkinShoes(_outfitUnit.Value.id);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                eventUpdatePreview.Raise();
+                eventUpdateSelectedEffect.Raise();
             }
             else
             {
                 
             }
+        }
+
+        private void UpdateSelectedEffect()
+        {
+            if (_outfitUnit.Value.isUnlocked)
+            {
+                switch (_outfitType)
+                {
+                    case OutfitType.Hat:
+                        string hatId = UserData.GetCurrentSkinHat();
+                        selectedObject.SetActive(hatId == _outfitUnit.Value.id);
+                        break;
+                    case OutfitType.Shirt:
+                        string shirtId = UserData.GetCurrentSkinShirt();
+                        selectedObject.SetActive(shirtId == _outfitUnit.Value.id);
+                        break;
+                    case OutfitType.Shoe:
+                        string shoeId = UserData.GetCurrentSkinShoes();
+                        selectedObject.SetActive(shoeId == _outfitUnit.Value.id);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            else
+            {
+                selectedObject.SetActive(false);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect;
         }
     }
 }
