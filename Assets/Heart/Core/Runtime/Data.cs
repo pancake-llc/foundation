@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Pancake
 {
     /// <summary>
-    /// 
+    /// Master class holder data in memory
     /// </summary>
     public static class Data
     {

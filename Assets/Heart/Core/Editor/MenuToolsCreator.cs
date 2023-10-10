@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using Pancake;
 using Pancake.ExLib;
 using RedBlueGames.MulliganRenamer;
 using UnityEditor;
@@ -116,6 +117,7 @@ namespace PancakeEditor
 
                 foreach (var file in di.GetFiles()) file.Delete();
                 foreach (var dir in di.GetDirectories()) dir.Delete(true);
+                Data.DeleteAll();
             }
         }
 
