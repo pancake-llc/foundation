@@ -93,7 +93,7 @@ namespace Pancake.ApexEditor
                 VisualEntity entity = entities[i];
                 if (entity is SerializedField field)
                 {
-                    field.OnValueChanged += OnValueChangedEvent;
+                    field.ValueChanged += OnValueChanged;
                 }
             }
         }
@@ -113,7 +113,7 @@ namespace Pancake.ApexEditor
 
                 if (entity is IGUIChangedCallback callback)
                 {
-                    callback.OnGUIChanged += OnGUIChangedEvent;
+                    callback.GUIChanged += OnGUIChanged;
                 }
             }
         }
@@ -121,12 +121,12 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Serialized field OnValueChanged event to notify that target object has been changed.
         /// </summary>
-        private void OnValueChangedEvent(object value) { objectChanged = true; }
+        private void OnValueChanged(object value) { objectChanged = true; }
 
         /// <summary>
         /// Serialized member OnGUIChanged event to notify that target object GUI has been changed.
         /// </summary>
-        private void OnGUIChangedEvent() { guiChanged = true; }
+        private void OnGUIChanged() { guiChanged = true; }
 
         #region [Static Methods]
 

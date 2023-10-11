@@ -127,15 +127,15 @@ namespace Pancake.ApexEditor
         /// <param name="position">Rectangle position.</param>
         public sealed override void OnGUI(Rect position)
         {
-            ResetToggles();
+            OnBeforeGUI();
             ExecuteAllManipulatorsBeforeCallback();
             EditorGUI.BeginChangeCheck();
             OnMemberGUI(position);
             if (EditorGUI.EndChangeCheck())
             {
-                onGUIChanged.SafeInvoke(GetDeclaringObject());
-                OnGUIChanged?.Invoke();
                 isGUIChanged = true;
+                onGUIChanged.SafeInvoke(GetDeclaringObject());
+                GUIChanged?.Invoke();
             }
 
             ExecuteAllManipulatorsAfterCallback();
@@ -152,6 +152,22 @@ namespace Pancake.ApexEditor
             }
 
             return 0;
+        }
+        
+        /// <summary>
+        /// visual entity visibility state.
+        /// </summary>
+        public override bool IsVisible()
+        {
+            return VisibilityCallback?.Invoke() ?? true;
+        }
+
+        /// <summary>
+        /// Called every GUI call, before all member GUI methods.
+        /// </summary>
+        protected virtual void OnBeforeGUI()
+        {
+            isGUIChanged = false;
         }
 
         /// <summary>
@@ -249,11 +265,6 @@ namespace Pancake.ApexEditor
         public void ClearManipulators() { manipulators = ManipulatorsNone; }
 
         /// <summary>
-        /// visual entity visibility state.
-        /// </summary>
-        public override bool IsVisible() { return VisibilityCallback?.Invoke() ?? true; }
-
-        /// <summary>
         /// Get attached specified attribute.
         /// </summary>
         public T GetAttribute<T>() where T : ApexAttribute
@@ -279,8 +290,6 @@ namespace Pancake.ApexEditor
 
             return new T[0];
         }
-
-        protected virtual void ResetToggles() { isGUIChanged = false; }
 
         /// <summary>
         /// Execute all before gui callback which attached to this element.
@@ -332,13 +341,6 @@ namespace Pancake.ApexEditor
                 }
             }
         }
-        
-        #region [IGUIChangedCallback Implementation]
-        /// <summary>
-        /// Called when GUI has been changed.
-        /// </summary>
-        public event Action OnGUIChanged;
-        #endregion
 
         #region [Static Methods]
 
@@ -439,13 +441,17 @@ namespace Pancake.ApexEditor
 
         #endregion
 
-        #region [Event Callback Functions]
+        #region [Events]
 
         /// <summary>
         /// Use this callback to custom visibility condition.
         /// </summary>
         public event Func<bool> VisibilityCallback;
 
+        /// <summary>
+        /// Called when GUI has been changed.
+        /// </summary>
+        public event Action GUIChanged;
         #endregion
 
         #region [Getter / Setter]

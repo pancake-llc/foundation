@@ -7,6 +7,6 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Called when GUI has been changed.
         /// </summary>
-        event Action OnGUIChanged;
+        event Action GUIChanged;
     }
 }

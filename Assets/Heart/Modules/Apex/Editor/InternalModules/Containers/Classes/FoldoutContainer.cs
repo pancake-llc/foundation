@@ -328,7 +328,7 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Called when GUI has been changed.
         /// </summary>
-        public event Action OnGUIChanged;
+        public event Action GUIChanged;
 
         #endregion
 
@@ -351,7 +351,7 @@ namespace Pancake.ApexEditor
         {
             isExpanded = value;
             OnExpanded?.Invoke(value);
-            OnGUIChanged?.Invoke();
+            GUIChanged?.Invoke();
         }
 
         #endregion

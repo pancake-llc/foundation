@@ -54,7 +54,7 @@ namespace Pancake.ApexEditor
                 if (GUI.Button(position, tabs[i].name, ApexStyles.BoxCenteredButton))
                 {
                     tabIndex = i;
-                    OnGUIChanged?.Invoke();
+                    GUIChanged?.Invoke();
                 }
 
                 position.x = position.xMax;
@@ -97,7 +97,7 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Called when GUI has been changed.
         /// </summary>
-        public event Action OnGUIChanged;
+        public event Action GUIChanged;
 
         #endregion
 

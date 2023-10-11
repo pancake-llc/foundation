@@ -15,7 +15,7 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
 {
-    public class SerializedField : SerializedMember, ISerializedField
+    public class SerializedField : SerializedMember, ISerializedField, IContainer
     {
         sealed class EmptyDrawer : FieldDrawer
         {
@@ -106,7 +106,7 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Implement this constructor to make initializations.
         /// </summary>
-        /// <param name="GetSerializedObject()">Serialized object reference of this serialized member.</param>
+        /// <param name="serializedObject">Serialized object reference of this serialized member.</param>
         /// <param name="memberName">Member name of this serialized member.</param>
         public SerializedField(SerializedObject serializedObject, string memberName)
             : base(serializedObject, memberName)
@@ -198,7 +198,7 @@ namespace Pancake.ApexEditor
         {
             if (errorBlock == null)
             {
-                ResetToggles();
+                OnBeforeGUI();
                 MonitorSerializedProperty();
                 DrawAllTopDecorators(ref position);
 
@@ -245,14 +245,14 @@ namespace Pancake.ApexEditor
 
         #endregion
 
-        #region [ISerializedField Implementation]
-
         /// <summary>
-        /// Target serialized property of serialized field.
+        /// Called every GUI call, before all member GUI methods.
         /// </summary>
-        public SerializedProperty GetSerializedProperty() { return serializedProperty; }
-
-        #endregion
+        protected override void OnBeforeGUI()
+        {
+            base.OnBeforeGUI();
+            isValueChanged = false;
+        }
 
         /// <summary>
         /// Implement this method to override default drawing of serialized field.
@@ -552,6 +552,7 @@ namespace Pancake.ApexEditor
                     {
                         SerializedField field = new SerializedField(GetSerializedObject(), child.propertyPath);
                         field.UpdateParent = ApplyChildren;
+                        field.ValueChanged += (value) => ValueChanged.Invoke(lastValue);
 
                         string relativePath = child.propertyPath.Substring(serializedProperty.propertyPath.Length + 1);
                         if (hideChildrenAttribute != null && hideChildrenAttribute.names.Any(n => n == relativePath))
@@ -1301,8 +1302,9 @@ namespace Pancake.ApexEditor
                 }
 
                 isValueChanged = true;
-                OnValueChanged?.Invoke(value);
+                ValueChanged?.Invoke(value);
                 lastValue = value;
+                ValueChanged?.Invoke(value);
             }
         }
 
@@ -1342,12 +1344,6 @@ namespace Pancake.ApexEditor
 
                 lastArrayLength = serializedProperty.arraySize;
             }
-        }
-
-        protected override void ResetToggles()
-        {
-            base.ResetToggles();
-            isValueChanged = false;
         }
 
         /// <summary>
@@ -1396,29 +1392,28 @@ namespace Pancake.ApexEditor
             searchWindow.Open(position);
         }
 
-        private static void SafeLoadScriptAttributeUtility()
+        #region [ISerializedField Implementation]
+        /// <summary>
+        /// Target serialized property of serialized field.
+        /// </summary>
+        public SerializedProperty GetSerializedProperty()
         {
-            if (UnityPropertyDrawers == null)
+            return serializedProperty;
+        }
+        #endregion
+
+        #region [IContainer Implementation]
+        /// <summary>
+        /// Loop through all entities of the entity container.
+        /// </summary>
+        public IEnumerable<VisualEntity> Entities
+        {
+            get
             {
-                try
-                {
-                    Assembly assembly = Assembly.GetAssembly(typeof(SerializedProperty));
-                    Type scriptAttributeUtility = assembly.GetType("UnityEditor.ScriptAttributeUtility");
-                    if (scriptAttributeUtility != null)
-                    {
-                        FieldInfo fieldInfo = scriptAttributeUtility.GetField("s_DrawerTypeForType", BindingFlags.NonPublic | BindingFlags.Static);
-                        if (fieldInfo != null)
-                        {
-                            UnityPropertyDrawers = fieldInfo.GetValue(null) as IDictionary;
-                        }
-                    }
-                }
-                catch
-                {
-                    Debug.Log("Failed to load the Unity PropertyDrawer cache.");
-                }
+                return children;
             }
         }
+        #endregion
 
         #region [Serialized Property Method Wrappers]
 
@@ -1634,6 +1629,33 @@ namespace Pancake.ApexEditor
 
         #endregion
 
+        #region [Static]
+        private static void SafeLoadScriptAttributeUtility()
+        {
+            if (UnityPropertyDrawers == null)
+            {
+                try
+                {
+                    Assembly assembly = Assembly.GetAssembly(typeof(SerializedProperty));
+                    Type scriptAttributeUtility = assembly.GetType("UnityEditor.ScriptAttributeUtility");
+                    if (scriptAttributeUtility != null)
+                    {
+                        FieldInfo fieldInfo = scriptAttributeUtility.GetField("s_DrawerTypeForType", BindingFlags.NonPublic | BindingFlags.Static);
+                        if (fieldInfo != null)
+                        {
+                            UnityPropertyDrawers = fieldInfo.GetValue(null) as IDictionary;
+                        }
+                    }
+                }
+                catch
+                {
+                    Debug.Log("Failed to load the Unity PropertyDrawer cache.");
+                }
+            }
+        }
+        #endregion
+        
+        
         #region [Event Callback Functions]
 
         /// <summary>
@@ -1644,7 +1666,7 @@ namespace Pancake.ApexEditor
         /// <summary>
         /// Called when value changed.
         /// </summary>
-        public event Action<object> OnValueChanged;
+        public event Action<object> ValueChanged;
 
         #endregion
 
