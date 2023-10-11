@@ -15,6 +15,7 @@ Using button `Use this template` to create new project using this template and n
 
 # Folder Structure
 
+```bash
 ├── _Root
 │   ├── Animations
 │   ├── Editor
@@ -33,8 +34,8 @@ Using button `Use this template` to create new project using this template and n
 │   ├── Core
 │   ├── Modules
 │   ├── Resources
-
-
+└── ...
+```
 
 **DO not put anything into folder Heart, any new asset should be place under folder _Root**
 
