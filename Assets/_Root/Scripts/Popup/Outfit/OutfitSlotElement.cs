@@ -11,10 +11,12 @@ namespace Pancake.SceneFlow
     public class OutfitSlotElement : MonoBehaviour
     {
         [SerializeField] private SkeletonGraphic render;
+        [SerializeField, SpineAnimation(dataField: nameof(render))] private string unlockedStateAnim;
         [SerializeField] private GameObject selectedObject;
         [SerializeField] private UIButton button;
         [SerializeField] private ScriptableEventNoParam eventUpdateCoin;
         [SerializeField] private ScriptableEventNoParam eventUpdatePreview;
+        [SerializeField] private ScriptableEventPreviewLockedOutfit eventPreviewLockedOutfit;
         [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
         [SerializeField] private OutfitTypeButtonDictionary buttonDict;
 
@@ -36,6 +38,9 @@ namespace Pancake.SceneFlow
                 {
                     b.Value.gameObject.SetActive(false);
                 }
+
+                render.PlayOnly(unlockedStateAnim, true);
+                UpdateSelectedEffect();
             }
             else
             {
@@ -101,7 +106,7 @@ namespace Pancake.SceneFlow
             }
             else
             {
-                
+                eventPreviewLockedOutfit.Raise(_outfitType, _outfitUnit.Value.skinId);
             }
         }
 
@@ -133,9 +138,6 @@ namespace Pancake.SceneFlow
             }
         }
 
-        private void OnDestroy()
-        {
-            eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect;
-        }
+        private void OnDestroy() { eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect; }
     }
 }

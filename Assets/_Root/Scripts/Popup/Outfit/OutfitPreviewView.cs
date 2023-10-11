@@ -16,6 +16,7 @@ namespace Pancake.UI
         [SerializeField] private SkeletonGraphic render;
         [SerializeField] private CharacterOutfitContainer outfitContainer;
         [SerializeField] private ScriptableEventNoParam eventUpdatePreview;
+        [SerializeField] private ScriptableEventPreviewLockedOutfit eventPreviewLockedOutfit;
         [SerializeField, SpineAnimation] private string dressUpAnim;
         [SerializeField, SpineAnimation] private string idleAnim;
 
@@ -25,6 +26,7 @@ namespace Pancake.UI
         protected override UniTask Initialize()
         {
             eventUpdatePreview.OnRaised += Refresh;
+            eventPreviewLockedOutfit.OnRaised += RefreshByType;
             return UniTask.CompletedTask;
         }
 
@@ -40,6 +42,43 @@ namespace Pancake.UI
 
             render.ChangeSkins(BuildCharacterSkins());
 
+            App.CancelDelay(_handleDelayDressUp);
+            render.PlayOnly(dressUpAnim, loop: false);
+            _handleDelayDressUp = App.Delay(target: render, render.Duration(dressUpAnim), () => render.PlayOnly(idleAnim, true));
+        }
+
+        private void RefreshByType(OutfitType type, string skinId)
+        {
+            string hat;
+            string shirt;
+            string shoes;
+            switch (type)
+            {
+                case OutfitType.Hat:
+                    hat = skinId;
+                    shirt = GetSkinOrDefault(OutfitType.Shirt);
+                    shoes = GetSkinOrDefault(OutfitType.Shoe);
+                    break;
+                case OutfitType.Shirt:
+                    hat = GetSkinOrDefault(OutfitType.Hat);
+                    shirt = skinId;
+                    shoes = GetSkinOrDefault(OutfitType.Shoe);
+                    break;
+                case OutfitType.Shoe:
+                    hat = GetSkinOrDefault(OutfitType.Hat);
+                    shirt = GetSkinOrDefault(OutfitType.Shirt);
+                    shoes = skinId;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+            
+            if (!_currentPreviewOutfit.TryAdd(OutfitType.Hat, hat)) _currentPreviewOutfit[OutfitType.Hat] = hat;
+            if (!_currentPreviewOutfit.TryAdd(OutfitType.Shirt, shirt)) _currentPreviewOutfit[OutfitType.Shirt] = shirt;
+            if (!_currentPreviewOutfit.TryAdd(OutfitType.Shoe, shoes)) _currentPreviewOutfit[OutfitType.Shoe] = shoes;
+            
+            render.ChangeSkins(BuildCharacterSkins());
+            
             App.CancelDelay(_handleDelayDressUp);
             render.PlayOnly(dressUpAnim, loop: false);
             _handleDelayDressUp = App.Delay(target: render, render.Duration(dressUpAnim), () => render.PlayOnly(idleAnim, true));
@@ -108,6 +147,10 @@ namespace Pancake.UI
             return list.ToArray();
         }
 
-        private void OnDestroy() { eventUpdatePreview.OnRaised -= Refresh; }
+        private void OnDestroy()
+        {
+            eventUpdatePreview.OnRaised -= Refresh;
+            eventPreviewLockedOutfit.OnRaised -= RefreshByType;
+        }
     }
 }

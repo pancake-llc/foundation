@@ -62,6 +62,7 @@ MonoBehaviour:
   render: {fileID: 1400076824929015935}
   outfitContainer: {fileID: 11400000, guid: 5d5280e28b66d7c43b735d60700ae9ba, type: 2}
   eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
+  eventPreviewLockedOutfit: {fileID: 11400000, guid: 9fabcf22be3de07499990bf66430ebd2, type: 2}
   dressUpAnim: dress-up
   idleAnim: idle
 --- !u!114 &3772359497407429516

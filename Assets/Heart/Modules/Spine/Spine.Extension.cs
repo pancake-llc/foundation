@@ -64,7 +64,7 @@ namespace Pancake.Spine
 
             return skeleton;
         }
-        
+
         public static SkeletonAnimation ChangeSkins(this SkeletonAnimation skeleton, params string[] skinNames)
         {
             var skin = new Skin("temp");
@@ -73,6 +73,7 @@ namespace Pancake.Spine
             {
                 skin.AddSkin(skeletonData.FindSkin(skinName));
             }
+
             skeleton.initialSkinName = "temp";
             skeleton.skeleton.SetSkin(skin);
             skeleton.skeleton.SetSlotsToSetupPose();
@@ -101,13 +102,14 @@ namespace Pancake.Spine
             {
                 skin.AddSkin(skeletonData.FindSkin(skinName));
             }
+
             skeleton.Skeleton.SetSkin(skin);
             skeleton.Skeleton.SetSlotsToSetupPose();
             skeleton.LateUpdate();
 
             return skeleton;
         }
-        
+
 
         public static SkeletonAnimation OnComplete(this SkeletonAnimation skeleton, Action onComplete, MonoBehaviour target = null)
         {
@@ -156,10 +158,6 @@ namespace Pancake.Spine
             skeleton.LateUpdate();
             return skeleton;
         }
-
-        //public static SkeletonAnimation MixSkin(this SkeletonAnimation skeleton, params string[] skinNames) { return skeleton; }
-
-        //public static SkeletonGraphic MixSkin(this SkeletonGraphic skeleton, params string[] skinNames) { return skeleton; }
     }
 }
 #endif

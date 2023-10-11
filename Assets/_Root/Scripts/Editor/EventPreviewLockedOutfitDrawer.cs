@@ -1,15 +1,15 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
-using Pancake.Component;
 using Pancake.ExLibEditor;
 using Pancake.Scriptable;
+using UnityEngine;
+using Pancake.SceneFlow;
 using UnityEditor;
 
-namespace Pancake.ComponentEditor
+namespace PancakeEditor
 {
-    using UnityEngine;
-
-    [CustomEditor(typeof(ScriptableEventVfxMagnet))]
-    public class ScriptableEventVfxMagnetDrawer : UnityEditor.Editor
+    [CustomEditor(typeof(ScriptableEventPreviewLockedOutfit))]
+    public class EventPreviewLockedOutfitDrawer : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
@@ -33,3 +33,4 @@ namespace Pancake.ComponentEditor
         }
     }
 }
+#endif
