@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a6aa26b924f4a46baed9c803609e91a, type: 3}
+  m_Name: DefaultTransitionSetting
+  m_EditorClassIdentifier: 
+  sheetEnterAnim: {fileID: 11400000, guid: 9a097498a1208784498ed110e3588df7, type: 2}
+  sheetExitAnim: {fileID: 11400000, guid: fc0a64026e8fd64489f2f32bd0207d3c, type: 2}
+  pagePushEnterAnim: {fileID: 11400000, guid: 0944b47bfd2131649bf35649556f61dd, type: 2}
+  pagePushExitAnim: {fileID: 11400000, guid: c48bbfd06b3324842ae6e019d757897d, type: 2}
+  pagePopEnterAnim: {fileID: 0}
+  pagePopExitAnim: {fileID: 0}
+  popupEnterAnim: {fileID: 11400000, guid: 3153276c2ca94e242a53b6ae3e769dcb, type: 2}
+  popupExitAnim: {fileID: 11400000, guid: 2281618c836b6cd48afbac54a6b7a14f, type: 2}
+  popupBackdropEnterAnim: {fileID: 0}
+  popupBackdropExitAnim: {fileID: 0}
+  popupBackdropPrefab: {fileID: 0}
+  assetLoader: {fileID: 11400000, guid: 61cbdc214a991154d85f96085411c11f, type: 2}
+  enableInteractionInTransition: 0
+  controlInteractionAllContainer: 1

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0307edf6ddd52a4b958a6f8cadd8038, type: 3}
+  m_Name: IAPSettings
+  m_EditorClassIdentifier: 
+  skusData:
+  - isTest: 0
+    id: com.foundation.allskin
+    productType: 1
+  - isTest: 0
+    id: com.foundation.coinpack1
+    productType: 0
+  - isTest: 0
+    id: com.foundation.coinpack2
+    productType: 0
+  - isTest: 0
+    id: com.foundation.doublecoin
+    productType: 1
+  - isTest: 0
+    id: com.foundation.removeads
+    productType: 1
+  - isTest: 0
+    id: com.foundation.vip
+    productType: 1
+  products:
+  - {fileID: 11400000, guid: 7c97ef05d361f764f8eebf905370ffaa, type: 2}
+  - {fileID: 11400000, guid: 86d0e5ab87bd2064db2da785a698f13a, type: 2}
+  - {fileID: 11400000, guid: 32def0cacc911c64f8f3c7e2b7545f73, type: 2}
+  - {fileID: 11400000, guid: 85a963c5dd5676740a41bdd888d84415, type: 2}
+  - {fileID: 11400000, guid: 681167ba2e8fbd3419a4b692721e2e3a, type: 2}
+  - {fileID: 11400000, guid: 5aacffc911e3fe846ba93ab9bdfe9cb5, type: 2}
+  googlePlayStorePublicKey: 
