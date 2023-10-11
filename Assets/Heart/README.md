@@ -15,10 +15,9 @@ Add the lines below to `Packages/manifest.json`
 - for version `2.2.0`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/heart.git#2.2.0",
+"com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#2.2.0",
 ```
 
 # Usages
 
-- [See Wiki](https://github.com/pancake-llc/heart/wiki)
-- [Project implement](https://github.com/gamee-studio/game-foundation)
+- [See Wiki](https://github.com/pancake-llc/foundation/wiki)
