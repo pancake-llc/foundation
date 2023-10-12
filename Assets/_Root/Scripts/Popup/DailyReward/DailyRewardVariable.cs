@@ -13,13 +13,13 @@ namespace Pancake.SceneFlow
     {
         public override void Load()
         {
-            Data.Save(Guid, Value.isClaimed);
+            Value.isClaimed = Data.Load(Guid, DefaultValue.isClaimed);
             base.Load();
         }
 
         public override void Save()
         {
-            Value.isClaimed = Data.Load(Guid, DefaultValue.isClaimed);
+            Data.Save(Guid, Value.isClaimed);
             base.Save();
         }
     }
