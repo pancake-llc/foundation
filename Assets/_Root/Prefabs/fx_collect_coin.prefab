@@ -4870,7 +4870,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1401189525
-  m_SortingLayer: 2
+  m_SortingLayer: 0
   m_SortingOrder: 100
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -4919,7 +4919,9 @@ MonoBehaviour:
   vfxMagnetCollection: {fileID: 11400000, guid: 491280c243b81044cbb54bda9df5a525, type: 2}
   returnPoolEvent: {fileID: 11400000, guid: b39b52d9a5ec5e144aa0c0b97a091f74, type: 2}
   <PS>k__BackingField: {fileID: 3996613071643963069}
-  numberParticle: 40
+  numberParticleMap:
+    keys: 64000000e8030000
+    values: 1400000028000000
   enabledSound: 0
   audioCollision: {fileID: 0}
   audioPlayEvent: {fileID: 0}

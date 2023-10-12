@@ -1,4 +1,6 @@
+using System.Linq;
 using Pancake.Apex;
+using Pancake.Apex.Serialization.Collections.Generic;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEngine;
@@ -12,8 +14,7 @@ namespace Pancake.Component
         [SerializeField] private ScriptableListGameObject vfxMagnetCollection;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
-        [SerializeField] private int numberParticle;
-        [SerializeField, Array] private int[] currenciesRange;
+        [SerializeField] private IntDictionary numberParticleMap;
         [SerializeField] private bool enabledSound;
         [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioCollision;
         [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio audioPlayEvent;
@@ -24,26 +25,21 @@ namespace Pancake.Component
         public void Init(int value)
         {
             _flag = false;
-            int index = 0;
-            for (int i = 0; i < currenciesRange.Length; i++)
+
+            var sorted = numberParticleMap.OrderByDescending(x => x.Key);
+            int maxParticle = sorted.First().Value;
+            foreach (var particle in sorted)
             {
-                if (value >= currenciesRange[i])
+                if (value >= particle.Key)
                 {
-                    continue;
-                }
-                else
-                {
-                    index = i;
+                    maxParticle = particle.Value;
                     break;
                 }
             }
-            
-            _segmentValue = value / numberParticle;
-        }
 
-        private void HandleNumberParticle(int value)
-        {
-            
+            var main = PS.main;
+            main.maxParticles = maxParticle;
+            _segmentValue = value / maxParticle;
         }
 
         private void OnParticleCollision(GameObject particle)
