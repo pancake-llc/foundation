@@ -33,11 +33,13 @@ namespace Pancake.SceneFlow
                     claimedObject.SetActive(true);
                     if (outfitGraphic != null) outfitGraphic.gameObject.SetActive(false);
                     imageIconReward.gameObject.SetActive(false);
+                    textValueReward.gameObject.SetActive(false);
                 }
                 else
                 {
                     claimedObject.SetActive(false);
                     if (outfitGraphic != null) outfitGraphic.gameObject.SetActive(false);
+                    textValueReward.gameObject.SetActive(true);
                     imageIconReward.gameObject.SetActive(true);
                     imageIconReward.sprite = variable.Value.icon;
                 }

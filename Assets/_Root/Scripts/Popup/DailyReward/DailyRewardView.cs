@@ -59,6 +59,8 @@ namespace Pancake.UI
             }
 
             data.Value.isClaimed = true;
+            data.Save();
+            Refresh();
         }
 
         private void OnButtonClaimX5Pressed()
@@ -83,6 +85,8 @@ namespace Pancake.UI
                     }
 
                     data.Value.isClaimed = true;
+                    data.Save();
+                    Refresh();
                 })
                 .OnClosed(() =>
                 {
