@@ -19,5 +19,8 @@ namespace Pancake.SceneFlow
         public const string CHARACTER_SKIN_HAT = "character_skin_hat";
         public const string CHARACTER_SKIN_SHIRT = "character_skin_shirt";
         public const string CHARACTER_SKIN_SHOES = "character_skin_shoes";
+
+        public const string WEEK_DAILY_REWARD = "week_daily_reward";
+        public const string CURRENT_DAY_DAILY_REWARD = "current_day_daily_reward";
     }
 }

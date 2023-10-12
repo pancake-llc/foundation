@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using Pancake.Monetization;
 using Pancake.Scriptable;
 using Pancake.Spine;
 using Pancake.UI;
 using Spine.Unity;
+using UnityEngine.UI;
 
 namespace Pancake.SceneFlow
 {
@@ -19,9 +22,12 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventPreviewLockedOutfit eventPreviewLockedOutfit;
         [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
         [SerializeField] private OutfitTypeButtonDictionary buttonDict;
+        [SerializeField] private RewardVariable rewardVariable;
+        [SerializeField, PopupPickup] private string popupDailyReward;
 
         private OutfitUnitVariable _outfitUnit;
         private OutfitType _outfitType;
+        private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
 
         public void Init(ref OutfitUnitVariable element, OutfitType outfitType)
         {
@@ -48,10 +54,21 @@ namespace Pancake.SceneFlow
                 {
                     if (element.Value.unlockType == b.Key)
                     {
-                        b.Value.GetComponent<CurrencyButtonStatus>().Setup(element.Value.value);
-                        b.Value.gameObject.SetActive(true);
-                        b.Value.onClick.RemoveListener(OnButtonPurchaseByCoinPressed);
-                        b.Value.onClick.AddListener(OnButtonPurchaseByCoinPressed);
+                        switch (b.Key)
+                        {
+                            case OutfitUnlockType.Coin:
+                                SetupPurchaseByCoin(element, b);
+                                break;
+                            case OutfitUnlockType.Rewarded:
+                                SetupPurchaseByAd(b);
+                                break;
+                            case OutfitUnlockType.Event:
+                                // TO_DO
+                                break;
+                            case OutfitUnlockType.DailyReward:
+                                OpenDailyReward(b);
+                                break;
+                        }
                     }
                     else
                     {
@@ -64,18 +81,49 @@ namespace Pancake.SceneFlow
             button.onClick.AddListener(OnButtonPressed);
         }
 
+        private void OpenDailyReward(KeyValuePair<OutfitUnlockType, Button> b)
+        {
+            b.Value.gameObject.SetActive(true);
+            b.Value.onClick.RemoveListener(OnButtonDailyrewardPressed);
+            b.Value.onClick.AddListener(OnButtonDailyrewardPressed);
+        }
+
+        private void OnButtonDailyrewardPressed() { MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true); }
+
+        private void SetupPurchaseByAd(KeyValuePair<OutfitUnlockType, Button> b)
+        {
+            b.Value.gameObject.SetActive(true);
+            b.Value.onClick.RemoveListener(OnButtonPurchaseByAdPressed);
+            b.Value.onClick.AddListener(OnButtonPurchaseByAdPressed);
+        }
+
+        private void OnButtonPurchaseByAdPressed() { rewardVariable.Context().Show().OnCompleted(UnlockedOutfitInternal); }
+
+        private void UnlockedOutfitInternal()
+        {
+            _outfitUnit.Value.isUnlocked = true;
+            _outfitUnit.Save();
+            foreach (var b in buttonDict)
+            {
+                b.Value.gameObject.SetActive(false);
+            }
+        }
+
+        private void SetupPurchaseByCoin(OutfitUnitVariable element, KeyValuePair<OutfitUnlockType, Button> b)
+        {
+            b.Value.GetComponent<CurrencyButtonStatus>().Setup(element.Value.value);
+            b.Value.gameObject.SetActive(true);
+            b.Value.onClick.RemoveListener(OnButtonPurchaseByCoinPressed);
+            b.Value.onClick.AddListener(OnButtonPurchaseByCoinPressed);
+        }
+
         private void OnButtonPurchaseByCoinPressed()
         {
             if (UserData.GetCurrentCoin() >= _outfitUnit.Value.value)
             {
                 UserData.MinusCoin(_outfitUnit.Value.value);
                 eventUpdateCoin.Raise();
-                _outfitUnit.Value.isUnlocked = true;
-                _outfitUnit.Save();
-                foreach (var b in buttonDict)
-                {
-                    b.Value.gameObject.SetActive(false);
-                }
+                UnlockedOutfitInternal();
             }
         }
 

@@ -552,7 +552,7 @@ namespace Pancake.ApexEditor
                     {
                         SerializedField field = new SerializedField(GetSerializedObject(), child.propertyPath);
                         field.UpdateParent = ApplyChildren;
-                        field.ValueChanged += (value) => ValueChanged.Invoke(lastValue);
+                        field.ValueChanged += (value) => ValueChanged?.Invoke(lastValue);
 
                         string relativePath = child.propertyPath.Substring(serializedProperty.propertyPath.Length + 1);
                         if (hideChildrenAttribute != null && hideChildrenAttribute.names.Any(n => n == relativePath))

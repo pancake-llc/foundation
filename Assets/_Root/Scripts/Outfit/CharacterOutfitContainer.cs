@@ -32,5 +32,6 @@ namespace Pancake.SceneFlow
         Rewarded,
         BeginnerGift,
         Event,
+        DailyReward
     }
 }
