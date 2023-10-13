@@ -24,7 +24,9 @@ namespace Pancake.SceneFlow
             int indexLevelGoal = lastLevelShowRate.Value + distanceLevels[rateDisplayTimes.Value.Min(distanceLevels.Length - 1)];
             if (currentLevelIndex.Value == indexLevelGoal)
             {
+#if UNITY_ANDROID
                 initReviewEvent.Raise();
+#endif
                 canShowRate.Value = true;
             }
             else

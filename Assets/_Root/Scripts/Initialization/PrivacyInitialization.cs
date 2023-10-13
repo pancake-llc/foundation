@@ -7,7 +7,7 @@ using Unity.Advertisement.IosSupport;
 namespace Pancake.SceneFlow
 {
     using UnityEngine;
-    
+
     [HideMonoScript]
     public class PrivacyInitialization : Initialize
     {
@@ -60,6 +60,8 @@ namespace Pancake.SceneFlow
         {
             if (Application.isEditor) return;
             App.RemoveFocusCallback(PrivacyPolicyValidate);
+
+#if UNITY_ANDROID
             NativePopup.ShowNeutral(HeartSettings.PrivacyTitle,
                 HeartSettings.PrivacyMessage,
                 "Continue",
@@ -79,6 +81,26 @@ namespace Pancake.SceneFlow
                     App.AddFocusCallback(PrivacyPolicyValidate);
                     Application.OpenURL(HeartSettings.PrivacyUrl);
                 });
+#elif UNITY_IOS
+            NativePopup.ShowQuestion(HeartSettings.PrivacyTitle,
+                HeartSettings.PrivacyMessage,
+                "Continue",
+                "Privacy",
+                () =>
+                {
+                    Time.timeScale = 1;
+                    Data.Save(Invariant.USER_AGREE_PRIVACY_KEY, true);
+                    App.RemoveFocusCallback(PrivacyPolicyValidate);
+
+                    // Show ATT
+                    RequestAuthorizationTracking();
+                },
+                () =>
+                {
+                    App.AddFocusCallback(PrivacyPolicyValidate);
+                    Application.OpenURL(HeartSettings.PrivacyUrl);
+                });
+#endif
             Time.timeScale = 0;
         }
     }
