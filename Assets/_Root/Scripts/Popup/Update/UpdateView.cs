@@ -24,16 +24,13 @@ namespace Pancake.UI
         {
             buttonOk.onClick.AddListener(OnButtonOkClicked);
             buttonClose.onClick.AddListener(OnButtonCloseClicked);
+
+            textDescription.SetText(remoteConfigChangelog.Value);
+            textVersion.SetText($"Version {remoteConfigNewVersion.Value}");
             return UniTask.CompletedTask;
         }
 
         private void OnButtonCloseClicked() { PopupHelper.Close(transform); }
-
-        public override void Refresh()
-        {
-            textDescription.SetText(remoteConfigChangelog.Value);
-            textVersion.SetText($"Version {remoteConfigNewVersion.Value}");
-        }
 
         private void OnButtonOkClicked()
         {

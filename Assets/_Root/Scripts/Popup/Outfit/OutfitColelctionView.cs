@@ -15,17 +15,18 @@ namespace Pancake.UI
         private CharacterOutfit _datas;
         private OutfitSlotBarComponent[] _slotBars;
 
-        protected override UniTask Initialize() { return UniTask.CompletedTask; }
-
-        public override void Refresh()
+        protected override UniTask Initialize()
         {
-            if (_slotBars == null) return;
-
-            var units = _datas.list.Chunk(chunkSize);
-            for (int i = 0; i < units.Length; i++)
+            if (_slotBars != null)
             {
-                _slotBars[i].Setup(units[i], outfitType);
+                var units = _datas.list.Chunk(chunkSize);
+                for (int i = 0; i < units.Length; i++)
+                {
+                    _slotBars[i].Setup(units[i], outfitType);
+                }
             }
+
+            return UniTask.CompletedTask;
         }
 
         public void Binding(CharacterOutfit filter, OutfitType outfitType)

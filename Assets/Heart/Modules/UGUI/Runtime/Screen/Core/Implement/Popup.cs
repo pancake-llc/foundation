@@ -10,7 +10,7 @@ namespace Pancake.UI
         private bool _isInitialized;
 
         protected virtual ViewInitMode InitMode => ViewInitMode.BeforeFirstEnter;
-        
+
         public override async Task Initialize()
         {
             Assert.IsNotNull(view);
@@ -35,8 +35,6 @@ namespace Pancake.UI
                 await view.InitializeAsync();
                 _isInitialized = true;
             }
-            
-            view.Refresh();
         }
     }
 }

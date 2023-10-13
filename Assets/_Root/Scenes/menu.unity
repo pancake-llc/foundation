@@ -2763,10 +2763,12 @@ MonoBehaviour:
   buttonShop: {fileID: 2136501744}
   buttonOutfit: {fileID: 965215512}
   buttonDailyReward: {fileID: 151218371}
+  buttonRank: {fileID: 973215549}
   popupShop: ShopPopup
   popupSetting: SettingPopup
   popupUpdate: UpdatePopup
   popupDailyReward: DailyRewardPopup
+  popupNotification: NotificationPopup
   outfitPageName: OutfitPage
   buttonAudio: {fileID: 1679153822}
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}

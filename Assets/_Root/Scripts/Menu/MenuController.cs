@@ -20,11 +20,13 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonShop;
         [SerializeField] private Button buttonOutfit;
         [SerializeField] private Button buttonDailyReward;
+        [SerializeField] private Button buttonRank;
 
         [Header("POPUP")] [SerializeField, PopupPickup] private string popupShop;
         [SerializeField, PopupPickup] private string popupSetting;
         [SerializeField, PopupPickup] private string popupUpdate;
         [SerializeField, PopupPickup] private string popupDailyReward;
+        [SerializeField, PopupPickup] private string popupNotification;
         [SerializeField, PagePickup] private string outfitPageName;
 
         [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
@@ -41,18 +43,15 @@ namespace Pancake.SceneFlow
             buttonShop.onClick.AddListener(OnButtonShopPressed);
             buttonOutfit.onClick.AddListener(OnButtonOutfitPressed);
             buttonDailyReward.onClick.AddListener(OnButtonDailyRewardPressed);
+            buttonRank.onClick.AddListener(OnButtonRankPressed);
             WaitShowUpdate();
         }
 
-        private void OnButtonDailyRewardPressed()
-        {
-            MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true);
-        }
+        private void OnButtonRankPressed() { MainPopupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: _ => _.popup.view.SetMessage("Comming soon!")); }
 
-        private void OnButtonOutfitPressed()
-        {
-            MainPageContainer.Push(outfitPageName, true);
-        }
+        private void OnButtonDailyRewardPressed() { MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true); }
+
+        private void OnButtonOutfitPressed() { MainPageContainer.Push(outfitPageName, true); }
 
         private async void WaitShowUpdate()
         {

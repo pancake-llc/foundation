@@ -27,10 +27,11 @@ namespace Pancake.UI
         {
             eventUpdatePreview.OnRaised += Refresh;
             eventPreviewLockedOutfit.OnRaised += RefreshByType;
+            Refresh();
             return UniTask.CompletedTask;
         }
 
-        public override void Refresh()
+        private void Refresh()
         {
             string hat = GetSkinOrDefault(OutfitType.Hat);
             string shirt = GetSkinOrDefault(OutfitType.Shirt);

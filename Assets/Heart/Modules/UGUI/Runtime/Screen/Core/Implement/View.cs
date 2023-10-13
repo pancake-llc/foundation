@@ -14,7 +14,5 @@ namespace Pancake.UI
         }
 
         protected abstract UniTask Initialize();
-
-        public abstract void Refresh();
     }
 }

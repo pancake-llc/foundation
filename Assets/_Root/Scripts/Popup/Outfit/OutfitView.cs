@@ -77,8 +77,6 @@ namespace Pancake.UI
 
         private void OnButtonClosePressed() { PageHelper.Close(transform, false); }
 
-        public override void Refresh() { }
-
         private async void Setup()
         {
             await UniTask.WaitUntil(() => OutfitSlotsContainer != null);

@@ -26,6 +26,7 @@ namespace Pancake.UI
 
         protected override UniTask Initialize()
         {
+            buttonReplay.gameObject.SetActive(true);
             buttonHome.onClick.AddListener(OnButtonHomePressed);
             buttonReplay.onClick.AddListener(OnButtonReplayPressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
@@ -68,7 +69,5 @@ namespace Pancake.UI
             await PopupHelper.Close(transform);
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
-
-        public override void Refresh() { buttonReplay.gameObject.SetActive(true); }
     }
 }

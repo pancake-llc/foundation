@@ -34,8 +34,6 @@ namespace Pancake.UI
                 await view.InitializeAsync();
                 _isInitialized = true;
             }
-
-            view.Refresh();
         }
     }
 }

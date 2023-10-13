@@ -100,7 +100,7 @@ namespace Pancake.UI
         }
 #endif
 
-        public override void Refresh()
+        private void Refresh()
         {
             textVersion.text = $"Version {Application.version}";
             bool vibrateState = Vibration.EnableVibration;

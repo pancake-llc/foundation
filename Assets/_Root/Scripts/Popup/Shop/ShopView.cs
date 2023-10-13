@@ -53,12 +53,13 @@ namespace Pancake.UI
             buttonAllPinSkin.onClick.AddListener(OnButtonAllSkinPinPressed);
             buttonVip.onClick.AddListener(OnButtonVipPressed);
             buttonFreeCoin.onClick.AddListener(OnButtonGetFreeCoinPressed);
+            Refresh();
             return UniTask.CompletedTask;
         }
 
         private void OnButtonClosePressed() { PopupHelper.Close(transform); }
 
-        public override void Refresh()
+        private void Refresh()
         {
             bool checkDoubleCoin;
             if (!Application.isMobilePlatform) checkDoubleCoin = Data.Load(Constant.IAP_DOUBLE_COIN, false);

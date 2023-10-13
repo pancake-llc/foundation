@@ -34,6 +34,7 @@ namespace Pancake.UI
             buttonClaim.onClick.AddListener(OnButtonClaimPressed);
             buttonClaimX5.onClick.AddListener(OnButtonClaimX5Pressed);
             boolDailyVariable.OnValueChanged += boolDailyVariable.RegisterTime;
+            Refresh();
             return UniTask.CompletedTask;
         }
 
@@ -90,7 +91,7 @@ namespace Pancake.UI
 
         private void OnButtonClosePressed() { PopupHelper.Close(transform); }
 
-        public override void Refresh()
+        private void Refresh()
         {
             boolDailyVariable.Load();
             if (!boolDailyVariable.Value)

@@ -50,6 +50,7 @@ namespace Pancake.UI
             buttonHome.onClick.AddListener(OnButtonHomePressed);
             buttonContinue.onClick.AddListener(OnButtonContinuePressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
+            Refresh();
             return UniTask.CompletedTask;
         }
 
@@ -99,7 +100,7 @@ namespace Pancake.UI
             App.Delay(2f, Continute);
         }
 
-        public override async void Refresh()
+       private async void Refresh()
         {
             _prewarmNextLevel = null;
             buttonContinue.gameObject.SetActive(true);
