@@ -13,9 +13,18 @@ MonoBehaviour:
   m_Name: HeartSettings
   m_EditorClassIdentifier: 
   enableAdministrator: 1
-  enablePrivacyFirstOpen: 1
-  privacyUrl: https://pancakellc.com/privacy/
-  privacyTitle: Demo
-  privacyMessage: xin chao
+  enablePrivacyFirstOpen: 0
+  privacyUrl: https://pancakellc.com/privacy
+  privacyTitle: 
+  privacyMessage: 'To use <game name>
+
+
+    You must agree to our Privacy Policy.
+
+    We
+    put a lot of love into this app and we hope you enjoy it!
+
+    Please press "Continue"
+    to agree and start using our game.'
   appstoreAppId: 
   skAdConversionValue: 63
