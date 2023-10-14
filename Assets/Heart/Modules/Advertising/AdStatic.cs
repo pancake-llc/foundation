@@ -55,6 +55,8 @@ namespace Pancake.Monetization
         /// <returns></returns>
         public static AdUnitVariable OnCompleted(this AdUnitVariable unit, Action onCompleted)
         {
+            if (!Application.isMobilePlatform) onCompleted?.Invoke();
+
             switch (unit)
             {
                 case AdmobInterVariable inter:
@@ -77,8 +79,6 @@ namespace Pancake.Monetization
                     return unit;
             }
 
-            if (!Application.isMobilePlatform) onCompleted?.Invoke();
-            
             return unit;
         }
 
