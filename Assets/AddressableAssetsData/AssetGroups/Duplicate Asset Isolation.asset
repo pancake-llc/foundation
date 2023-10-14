@@ -1,0 +1,480 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Duplicate Asset Isolation
+  m_EditorClassIdentifier: 
+  m_GroupName: Duplicate Asset Isolation
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 15a30e2af0ddde745846c1ac71f08e6d
+  m_SerializeEntries:
+  - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
+    m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30bd22d31fe9b784688047c9b1d618bd
+    m_Address: Assets/_Root/Animations/Fetch/Fetch.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 363a9d24ee1a4bb4b98afea0c6ae1695
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/default.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea8e3bdb32dced94e9a0f18fa7fdba30
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2feaba033f4f8b34487011f3022c489f
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Home/starter_common_icon_plus.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 00a9ce75f2afdc544872d75c43403135
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_btn_x.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 299629cdad271e34e8e9cbb6378153f1
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Home/starter_common_icon_coin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0c3489d2aed97b46a1913b951625462
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Home/starter_common_small_forceground.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8dbb061a0bd097747b36c2ee7747c035
+    m_Address: Assets/_Root/Materials/Fx/fx_star_s_clear_white.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecfa8f5732b504ef98fba10aa18d0326
+    m_Address: Packages/com.coffee.ui-particle/Shaders/UIAdditive.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9c32cc16173f134da9b670da0e683cd
+    m_Address: Assets/_Root/Sprites/StarterPack/Fx/fx_star_white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 740c80bfeabae64499a1300066af7143
+    m_Address: Assets/_Root/Storages/Generated/notice_update_coin_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd36f245da8848948a005de35c9f6993
+    m_Address: Assets/_Root/Storages/Generated/notice_update_coin_with_value_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86d0e5ab87bd2064db2da785a698f13a
+    m_Address: Assets/_Root/Storages/Generated/IAP/scriptable_iap_coinpack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b08010c7302fff94880de097b201a973
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_coin_pack1_purchase_success.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4b86a922d3601343af85335a52f1441
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_product_purchase_failed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32def0cacc911c64f8f3c7e2b7545f73
+    m_Address: Assets/_Root/Storages/Generated/IAP/scriptable_iap_coinpack2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e99d718ae6d8e8d4abec389cbdfa99b0
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_coin_pack2_purchase_success.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 681167ba2e8fbd3419a4b692721e2e3a
+    m_Address: Assets/_Root/Storages/Generated/IAP/scriptable_iap_removeads.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d47c49f917903a4eae7cef490e10fc3
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_removeads_purchase_success.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5aacffc911e3fe846ba93ab9bdfe9cb5
+    m_Address: Assets/_Root/Storages/Generated/IAP/scriptable_iap_vip.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef4da30511cf88a41b2ad421818391e0
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_vip_purchase_success.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbaf3af7ccd5bd34bbfbb642f62f7987
+    m_Address: Assets/_Root/Storages/Fx/coin_magnet_spawn_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85a963c5dd5676740a41bdd888d84415
+    m_Address: Assets/_Root/Storages/Generated/IAP/scriptable_iap_doublecoin.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1e8f94ba11ba1d4cb16f59aacc1e6b4
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_doublecoin_purchase_success.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d365856548e93d4418b79a2943431b39
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/purchaseEvent.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c97ef05d361f764f8eebf905370ffaa
+    m_Address: Assets/_Root/Storages/Generated/IAP/scriptable_iap_allskin.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdc8aab1f9fea0945a308123a50e4887
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_allpinskin_purchase_success.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc9e6bc45ab7c044499f43ca43c225be
+    m_Address: Assets/_Root/Storages/Generated/IAP/Event/product_onwership_check_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7127d460e8cf74341a319a8dec6427d7
+    m_Address: Assets/_Root/Storages/Advertising/Wrapper/ad_reward_unit_wrapper.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 677bd6bf9b86d1d45935e926f6b0d50c
+    m_Address: Assets/_Root/Storages/Advertising/AppLovin/applovinReward.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e3971a80d268eb4fa25c76ca981517c
+    m_Address: Assets/_Root/Storages/Advertising/Admob/admobReward.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9646a2b346725a14fa934f6e37a84505
+    m_Address: Assets/_Root/Storages/RemoteConfig/remote_config_using_admob.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48ef516679bdeb947a736ff03a170738
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_btn_green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 069f2841914d7074891d5a357a26f964
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_tittle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef279f98ef02e3a429ea342f2d2c40a6
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_play_sfx.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ff6dec2a986b8341b52b362384b2b90
+    m_Address: Assets/_Root/Storages/Generated/Audio/button_audio_generic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9899d6357668f0e45892cbc9b4820777
+    m_Address: Assets/_Root/Sounds/SFX/sfx_button.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 985f91a38bf12e04aa81c817ceb5ef0c
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2f49fe8c22d94f9a9e6cd06ad490155
+    m_Address: Assets/_Root/Fonts/LilitaOne-Regular Outline 50 SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51bda5a7ed19c4c39bbb02ae0c80c2c1
+    m_Address: Assets/_Root/Fonts/LilitaOne-Regular Outline 50 SDF Atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48bb5f55d8670e349b6e614913f9d910
+    m_Address: Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a2382dbf70ac1647b96b112ced5ec92
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_setting_popup.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ce9ad840d2d8ed4084e70cf2d325eb6
+    m_Address: Assets/_Root/Sprites/StarterPack/Launcher/starter_splash.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b90c8c1d5417e844b9633334d43b37d0
+    m_Address: Assets/_Root/Sprites/StarterPack/Launcher/starter_glow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10247cca5ce308843ae5e0c25c17942e
+    m_Address: Assets/_Root/Storages/Generated/change_scene_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61509f6b494b461498cccef441c17f12
+    m_Address: Assets/_Root/Storages/Generated/Level/prewarm_load_level_completed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 069cea4fe43fae241bce20a8088a0e5f
+    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_resume_music.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f40c18cdb6b391741b188b73d884cb92
+    m_Address: Assets/_Root/Storages/Generated/Audio/Music/music_volume.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a97e9acdf82e434983225db6d5b578f
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_volume.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e29be8aadddb964eb9f19c60d630a7c
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_stop_all_sfx.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b759b6d8cd9821449a28381a0f4d9fff
+    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_pause_music.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e9c77fdc5001d44584ffa49b70ed929
+    m_Address: Assets/_Root/Storages/Generated/Menu/dont_show_update_again.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc4a98ebd9e30e1439c375c3115a9301
+    m_Address: Assets/_Root/Storages/RemoteConfig/remote_config_changelog_android.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 417262f7635563c4a8aac862988c6ea9
+    m_Address: Assets/_Root/Storages/RemoteConfig/remote_config_new_version_android.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14a4f116287a1704685337f9640647fb
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Home/starter_common_brow_circle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea8afddd3dd83d34599c2dde4976a50c
+    m_Address: Assets/_Root/Sprites/StarterPack/Gameplay/starter_common_icon_ad.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2576a53e69dd46b4f9f6449877c668d3
+    m_Address: Assets/_Root/Sprites/StarterPack/Gameplay/Win/starter_common_button_green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e74a1f8978a7da348a721508d0d58834
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicMultiply.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfbf95ed0fe6c554c8c2ee6c8325937c
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Multiply.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bab24c479f34eec45be6ea8595891569
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicScreen.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c61244023592f95479fddd71b5067683
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Screen.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e8a610c9e01c3648bac42585e5fc676
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/Spine-Skeleton.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b66cf7a186d13054989b33a5c90044e4
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicDefault.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa95b0fb6983c0f40a152e6f9aa82bfb
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e8245019faeb8c43b75f9ca3ac8ee34
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicAdditive.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1e4ab34b07f81e4e94f0d241c416669
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Additive.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b39b52d9a5ec5e144aa0c0b97a091f74
+    m_Address: Assets/_Root/Storages/Fx/vfx_coin_return_pool_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a8027441b28f7c4ab85700ffe9528f0
+    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_pool.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d58bbac3f0f0ad546b0b447f351826ea
+    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_factory.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7fe4a6ec0fa30b548b7b105b4bd73ece
+    m_Address: Assets/_Root/Prefabs/fx_collect_coin.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83febc520d3eaf345853dcaf224d76dd
+    m_Address: Assets/_Root/Sprites/StarterPack/Fx/coin-animation.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 491280c243b81044cbb54bda9df5a525
+    m_Address: Assets/_Root/Storages/Fx/list_coin_magnet_instance.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb6564e2a34609041adf55fdffed4eb2
+    m_Address: Assets/_Root/Storages/Generated/get_canvas_master_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a17f867f81ce4d844881a1f249b43409
+    m_Address: Assets/_Root/Sprites/StarterPack/Gameplay/Win/starter_common_icon_x5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b4dc6b12e4de5043b9e0337aa36ec9c
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_stop_sfx.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a006421cd8bfffd42a013cf538174370
+    m_Address: Assets/_Root/Storages/Generated/Level/current_level_index.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d34ae6d8c5cba24286f019322591cc7
+    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_play_music.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d79670ea7c53c642a63ce449457b09a
+    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_stop_music.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 252b1bfe33b9f0949b2d8469c8cc647f
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_pause_sfx.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14f7060f6eee48e4fa320e463dff2598
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_resume_sfx.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04ac0e953311a02458e0e69155af0dda
+    m_Address: Assets/_Root/Prefabs/Popup/PopupBackdrop.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d13fa7db81a86084da9a67bbdc7e381f
+    m_Address: Assets/_Root/Storages/Generated/Gameplay/rate/show_ui_gameplay_after_win.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e791799907e357449a2018d8f7f5982b
+    m_Address: Assets/_Root/Storages/Generated/Level/event_load_level.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74e4041815bd38a4b8258cc730da955c
+    m_Address: Assets/_Root/Storages/Generated/Level/re_create_level_loaded_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 135082354cdf1344a81b51eead3b2605
+    m_Address: Assets/_Root/Storages/Generated/Gameplay/rate/can_show_rate.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98a69f3242b31c34da74b3378bf582f1
+    m_Address: Assets/_Root/Storages/Generated/Gameplay/rate/rate_review_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb81634f71d307442907c2378fd2cf49
+    m_Address: Assets/_Root/Sprites/StarterPack/Gameplay/starter_common_icon_home.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69791bee97aec0f44afa2801729a4f91
+    m_Address: Assets/_Root/Storages/Generated/Gameplay/rate/rate_init_review_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3ccdb9f38be711469cdd4dca3dd3f08
+    m_Address: Assets/_Root/Storages/Generated/Level/event_get_next_level_loaded.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7dcbf6ffc2eff08498f36bd132ec680a
+    m_Address: Assets/_Root/Storages/Generated/Gameplay/hide_ui_gameplay_before_win.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 62e87d988a8db174792a5736ca2712ee, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 57ab30de90d864a48a02f394e41c2c9e, type: 2}
+    - {fileID: 11400000, guid: cfa160c5283df6d448f93137e800875a, type: 2}

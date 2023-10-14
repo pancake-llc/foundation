@@ -9,13 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f576ba34eaa54703a5021f28eb805248, type: 3}
-  m_Name: HeartSettings
+  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
+  m_Name: Duplicate Asset Isolation_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  enableAdministrator: 1
-  enablePrivacyFirstOpen: 1
-  privacyUrl: https://pancakellc.com/privacy/
-  privacyTitle: Demo
-  privacyMessage: xin chao
-  appstoreAppId: 
-  skAdConversionValue: 63
+  m_Group: {fileID: 11400000, guid: 87481c7173509144785be8b19df3b825, type: 2}
+  m_StaticContent: 1
