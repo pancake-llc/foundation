@@ -31,9 +31,7 @@ namespace Pancake.UI
         [SerializeField] private IntVariable winGifProgresValue;
         [SerializeField] private Vector2Int rangeGiftValueIncrease;
 
-        [Header("SOUND"), SerializeField] private bool enabledSound;
-        [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioWin;
-        [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio playAudioEvent;
+        [Header("SOUND")]
         [SerializeField] private bool overrideBGM;
         [SerializeField, ShowIf(nameof(overrideBGM))] private Audio bgmWin;
         [SerializeField, ShowIf(nameof(overrideBGM))] private ScriptableEventAudio playBgmEvent;
@@ -61,6 +59,7 @@ namespace Pancake.UI
 
         private async void OnButtonHomePressed()
         {
+            PlaySoundClose();
             await PopupHelper.Close(transform);
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
@@ -87,6 +86,7 @@ namespace Pancake.UI
         {
             await UniTask.WaitUntil(() => _prewarmNextLevel != null);
             reCreateLevelLoadedEvent.Raise();
+            PlaySoundClose();
             await PopupHelper.Close(transform);
             showUiGameplayEvent.Raise();
         }
@@ -104,7 +104,6 @@ namespace Pancake.UI
         {
             _prewarmNextLevel = null;
             buttonContinue.gameObject.SetActive(true);
-            if (enabledSound) playAudioEvent.Raise(audioWin);
             if (overrideBGM) playBgmEvent.Raise(bgmWin);
 
             int addedValue = UnityEngine.Random.Range(rangeGiftValueIncrease.x, rangeGiftValueIncrease.y);

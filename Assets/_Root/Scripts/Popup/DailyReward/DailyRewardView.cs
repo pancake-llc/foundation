@@ -89,7 +89,11 @@ namespace Pancake.UI
                 });
         }
 
-        private void OnButtonClosePressed() { PopupHelper.Close(transform); }
+        private void OnButtonClosePressed()
+        {
+            PlaySoundClose();
+            PopupHelper.Close(transform);
+        }
 
         private void Refresh()
         {

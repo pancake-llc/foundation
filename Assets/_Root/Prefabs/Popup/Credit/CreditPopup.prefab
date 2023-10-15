@@ -680,6 +680,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2061705ed1cd34747863d76410857718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledSound: 0
+  audioOpen: {fileID: 0}
+  audioClose: {fileID: 0}
+  playAudioEvent: {fileID: 0}
   elements:
   - {fileID: 11400000, guid: df38906f4969c8743a9953f893c6e786, type: 2}
   - {fileID: 11400000, guid: 78bd9a9fdcca19641b12d5381abd5841, type: 2}

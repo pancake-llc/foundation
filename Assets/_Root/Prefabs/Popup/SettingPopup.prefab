@@ -1264,6 +1264,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cbb8f1de46c06048a4b083acfa43881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledSound: 1
+  audioOpen: {fileID: 11400000, guid: 5faabd619f34f1345957ffd6b6178887, type: 2}
+  audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
+  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   textVersion: {fileID: 2463034363662746160}
   buttonMusic: {fileID: 2571178757400256735}
   buttonSound: {fileID: 5102706881421395248}

@@ -56,7 +56,11 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonClosePressed() { PopupHelper.Close(transform); }
+        private void OnButtonClosePressed()
+        {
+            PlaySoundClose();
+            PopupHelper.Close(transform);
+        }
 
         private void Refresh()
         {

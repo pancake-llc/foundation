@@ -17,9 +17,6 @@ namespace Pancake.UI
         [SerializeField] private Button buttonShop;
         [SerializeField] private Button buttonSkip;
         [SerializeField, PopupPickup] private string popupShop;
-        [Header("SOUND"), SerializeField] private bool enabledSound;
-        [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioWin;
-        [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio playAudioEvent;
         [Header("EVENT")] [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
@@ -36,7 +33,6 @@ namespace Pancake.UI
             buttonReplay.onClick.AddListener(OnButtonReplayPressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
             buttonSkip.onClick.AddListener(OnButtonSkipPressed);
-            if (enabledSound) playAudioEvent.Raise(audioWin);
             return UniTask.CompletedTask;
         }
 
@@ -57,6 +53,7 @@ namespace Pancake.UI
             currentLevelIndex.Value++;
             await loadLevelEvent.Raise(currentLevelIndex);
             reCreateLevelLoadedEvent.Raise();
+            PlaySoundClose();
             await PopupHelper.Close(transform);
             showUiGameplayEvent.Raise();
         }
@@ -66,12 +63,14 @@ namespace Pancake.UI
         private async void OnButtonReplayPressed()
         {
             reCreateLevelLoadedEvent.Raise();
+            PlaySoundClose();
             await PopupHelper.Close(transform);
             showUiGameplayEvent.Raise();
         }
 
         private async void OnButtonHomePressed()
         {
+            PlaySoundClose();
             await PopupHelper.Close(transform);
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }

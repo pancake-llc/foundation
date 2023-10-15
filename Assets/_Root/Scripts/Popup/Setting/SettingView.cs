@@ -54,7 +54,11 @@ namespace Pancake.UI
             PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<CreditPopup>(popupCredit, true);
         }
 
-        private void OnButtonClosePressed() { PopupHelper.Close(transform); }
+        private void OnButtonClosePressed()
+        {
+            PlaySoundClose();
+            PopupHelper.Close(transform);
+        }
 
         private void OnButtonSoundPressed()
         {

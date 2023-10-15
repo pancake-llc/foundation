@@ -125,6 +125,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bea96b66b853d142888038927668a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledSound: 1
+  audioOpen: {fileID: 11400000, guid: 54af6ac18e07ebd4788e1bbe7ef0277b, type: 2}
+  audioClose: {fileID: 0}
+  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   buttonHome: {fileID: 3546506742219380592}
   buttonVideoX5: {fileID: 3664700572117366651}
   buttonContinue: {fileID: 872414644874235518}
@@ -140,9 +144,6 @@ MonoBehaviour:
   rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   winGifProgresValue: {fileID: 11400000, guid: 091b41098013f73448505b7d9f00a3c5, type: 2}
   rangeGiftValueIncrease: {x: 10, y: 10}
-  enabledSound: 1
-  audioWin: {fileID: 11400000, guid: 54af6ac18e07ebd4788e1bbe7ef0277b, type: 2}
-  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   overrideBGM: 0
   bgmWin: {fileID: 0}
   playBgmEvent: {fileID: 0}

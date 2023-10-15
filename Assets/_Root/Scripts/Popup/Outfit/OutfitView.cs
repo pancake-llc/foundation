@@ -75,7 +75,11 @@ namespace Pancake.UI
             tabShoes.Deactive(true);
         }
 
-        private void OnButtonClosePressed() { PageHelper.Close(transform, false); }
+        private void OnButtonClosePressed()
+        {
+            PlaySoundClose();
+            PageHelper.Close(transform, false);
+        }
 
         private async void Setup()
         {

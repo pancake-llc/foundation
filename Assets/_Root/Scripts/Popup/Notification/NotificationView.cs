@@ -13,12 +13,15 @@ namespace Pancake.UI
 
         protected override UniTask Initialize()
         {
-            Debug.Log("Init");
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonClosePressed() { PopupHelper.Close(transform); }
+        private void OnButtonClosePressed()
+        {
+            PlaySoundClose();
+            PopupHelper.Close(transform);
+        }
 
         public void SetMessage(string message) { textMessage.SetText(message); }
     }

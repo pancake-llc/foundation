@@ -560,14 +560,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f24e3e9a7e993340ac717a3913c8c76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledSound: 1
+  audioOpen: {fileID: 11400000, guid: fd37cf70b24cd754fa56ce46b0ca1fd6, type: 2}
+  audioClose: {fileID: 0}
+  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   buttonHome: {fileID: 1497410325827941835}
   buttonReplay: {fileID: 7172147335923482082}
   buttonShop: {fileID: 4013918265822090470}
   buttonSkip: {fileID: 3139221376541989844}
   popupShop: ShopPopup
-  enabledSound: 1
-  audioWin: {fileID: 11400000, guid: fd37cf70b24cd754fa56ce46b0ca1fd6, type: 2}
-  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
   reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
   loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}

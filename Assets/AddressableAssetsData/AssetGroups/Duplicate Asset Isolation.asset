@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: e597269f25619a748ab2f9dd5e857a1b
+  m_GUID: a616310cf9f67a14d93e24fa3edd481e
   m_SerializeEntries:
   - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
     m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller
@@ -127,6 +127,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdf716089d1d8464bbf80e556d3c62a7
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_popup_close_audio.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 024bcb5b510f50b4487f672a8411c03d
+    m_Address: Assets/_Root/Sounds/SFX/sfx_ui_menu_window_close.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fbaf3af7ccd5bd34bbfbb642f62f7987
     m_Address: Assets/_Root/Storages/Fx/coin_magnet_spawn_event.asset
     m_ReadOnly: 0
@@ -193,12 +203,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ef279f98ef02e3a429ea342f2d2c40a6
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_play_sfx.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_play_sfx.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1ff6dec2a986b8341b52b362384b2b90
-    m_Address: Assets/_Root/Storages/Generated/Audio/button_audio_generic.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_button_audio.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -224,6 +234,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48bb5f55d8670e349b6e614913f9d910
     m_Address: Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5faabd619f34f1345957ffd6b6178887
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_popup_open_audio.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7cb484c2a5cf984497b6b8c46492ede
+    m_Address: Assets/_Root/Sounds/SFX/sfx_ui_menu_window_open.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -253,27 +273,27 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 069cea4fe43fae241bce20a8088a0e5f
-    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_resume_music.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/BGM_Event/event_resume_music.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f40c18cdb6b391741b188b73d884cb92
-    m_Address: Assets/_Root/Storages/Generated/Audio/Music/music_volume.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/BGM_Event/music_volume.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0a97e9acdf82e434983225db6d5b578f
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_volume.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/sfx_volume.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6e29be8aadddb964eb9f19c60d630a7c
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_stop_all_sfx.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_stop_all_sfx.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b759b6d8cd9821449a28381a0f4d9fff
-    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_pause_music.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/BGM_Event/event_pause_music.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -357,6 +377,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f893bd59754ee243917f301f9d3da84
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_purchase_pack_coin_audio.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27691cbd2f5b9544bb6cce9d47c7cdab
+    m_Address: Assets/_Root/Sounds/SFX/sfx_ui_grab_coin.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4a8027441b28f7c4ab85700ffe9528f0
     m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_pool.asset
     m_ReadOnly: 0
@@ -382,6 +412,41 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa33ad2229195f9479821f41de547c98
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_collect_coin_audio.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98d20dbe870ae2b41b87a7e7c72361c5
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bc1de8b81a12114badbf2ba8861b20b
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a100697cf7fce644a629850c1274960
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_5.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d236955734c7bc040a93bfb31f269677
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_6.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a0a5ed18b39b0442bc49c05da077bec
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_4.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bcf55d17e3719042a9532c473f18999
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb6564e2a34609041adf55fdffed4eb2
     m_Address: Assets/_Root/Storages/Generated/get_canvas_master_event.asset
     m_ReadOnly: 0
@@ -393,7 +458,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b4dc6b12e4de5043b9e0337aa36ec9c
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_stop_sfx.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_stop_sfx.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -403,22 +468,22 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7d34ae6d8c5cba24286f019322591cc7
-    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_play_music.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/BGM_Event/event_play_music.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d79670ea7c53c642a63ce449457b09a
-    m_Address: Assets/_Root/Storages/Generated/Audio/Music/event_stop_music.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/BGM_Event/event_stop_music.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 252b1bfe33b9f0949b2d8469c8cc647f
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_pause_sfx.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_pause_sfx.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 14f7060f6eee48e4fa320e463dff2598
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/event_resume_sfx.asset
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_resume_sfx.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

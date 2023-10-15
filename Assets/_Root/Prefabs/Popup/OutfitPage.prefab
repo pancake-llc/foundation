@@ -52,6 +52,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c3bd90797ca2884d9e5dceb408fd13f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledSound: 1
+  audioOpen: {fileID: 11400000, guid: 52705bbee5c451d4ca33a95193782d2a, type: 2}
+  audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
+  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   buttonClose: {fileID: 4667559456464186620}
   outfitContainer: {fileID: 11400000, guid: 5d5280e28b66d7c43b735d60700ae9ba, type: 2}
   skinHatCollectionSheet:

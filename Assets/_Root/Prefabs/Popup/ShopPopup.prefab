@@ -2314,6 +2314,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f69b80f64e1ca0543972783f53c29ae0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledSound: 1
+  audioOpen: {fileID: 11400000, guid: 0e4b2a7a47b622f42b4138666d6500d7, type: 2}
+  audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
+  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   buttonClose: {fileID: 5122827314281746787}
   buttonCoinPack1: {fileID: 2286549561864859643}
   buttonCoinPack2: {fileID: 2164832135074127189}
@@ -2336,7 +2340,6 @@ MonoBehaviour:
   removeAds: {fileID: 11400000, guid: 681167ba2e8fbd3419a4b692721e2e3a, type: 2}
   allPinSkin: {fileID: 11400000, guid: 7c97ef05d361f764f8eebf905370ffaa, type: 2}
   vip: {fileID: 11400000, guid: 5aacffc911e3fe846ba93ab9bdfe9cb5, type: 2}
-  currentCoin: {fileID: 11400000, guid: 2b085b529f2fac74ba8c4fab7e585cb1, type: 2}
   coinFreeValue: 500
   coinPack1Value: 50000
   coinPack2Value: 500000

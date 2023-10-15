@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Pancake.Apex;
 using Pancake.SceneFlow;
@@ -15,6 +14,7 @@ namespace Pancake.UI
         [SerializeField] private CreditTypeElementDictionary prefabContainer;
         [SerializeField] private Transform container;
         [SerializeField] private Button buttonClose;
+        
 
         protected override UniTask Initialize()
         {
@@ -44,6 +44,10 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonClosePressed() { PopupHelper.Close(transform); }
+        private void OnButtonClosePressed()
+        {
+            PlaySoundClose();
+            PopupHelper.Close(transform);
+        }
     }
 }
