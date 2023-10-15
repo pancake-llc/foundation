@@ -16,5 +16,6 @@ MonoBehaviour:
   message: 
   sprite: {fileID: 0}
   titleUnit: Business Lead
-  unitMembers: []
+  unitMembers:
+  - Andy
   space: 0

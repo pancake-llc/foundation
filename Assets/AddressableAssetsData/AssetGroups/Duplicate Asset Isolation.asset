@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: 15a30e2af0ddde745846c1ac71f08e6d
+  m_GUID: e597269f25619a748ab2f9dd5e857a1b
   m_SerializeEntries:
   - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
     m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller

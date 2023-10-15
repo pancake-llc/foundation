@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   message: 
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 85e39f41e03d96b4e8fd8b1c637bf03d, type: 3}
   titleUnit: 
   unitMembers: []
   space: 0

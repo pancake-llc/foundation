@@ -16,5 +16,8 @@ MonoBehaviour:
   message: 
   sprite: {fileID: 0}
   titleUnit: Game Developer
-  unitMembers: []
+  unitMembers:
+  - Viktor
+  - Tom
+  - Tony
   space: 0

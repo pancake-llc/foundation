@@ -17,6 +17,7 @@ namespace Pancake.UI
         [SerializeField] private Button buttonVibrate;
         [SerializeField] private Button buttonUpdate;
         [SerializeField] private Button buttonClose;
+        [SerializeField] private Button buttonCredit;
 
         [SerializeField] private UIEffect musicUIEffect;
         [SerializeField] private UIEffect soundUIEffect;
@@ -27,6 +28,7 @@ namespace Pancake.UI
         [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
         [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
         [SerializeField] private ScriptableEventNoParam eventStopAllSfx;
+        [SerializeField, PopupPickup] private string popupCredit;
 #if UNITY_IOS
         [SerializeField] private Button buttonRestore;
         [SerializeField] private Pancake.IAP.ScriptableEventIAPNoParam restorePurchaseEvent;
@@ -39,11 +41,17 @@ namespace Pancake.UI
             buttonVibrate.onClick.AddListener(OnButtonVibratePressed);
             buttonUpdate.onClick.AddListener(OnButtonUpdatePressed);
             buttonClose.onClick.AddListener(OnButtonClosePressed);
+            buttonCredit.onClick.AddListener(OnButtonCreditPressed);
 #if UNITY_IOS
             buttonRestore.onClick.AddListener(OnButtonRestorePressed);
 #endif
             Refresh();
             return UniTask.CompletedTask;
+        }
+
+        private void OnButtonCreditPressed()
+        {
+            PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<CreditPopup>(popupCredit, true);
         }
 
         private void OnButtonClosePressed() { PopupHelper.Close(transform); }

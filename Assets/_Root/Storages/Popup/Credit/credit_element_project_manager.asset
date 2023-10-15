@@ -16,5 +16,6 @@ MonoBehaviour:
   message: 
   sprite: {fileID: 0}
   titleUnit: Project Manager
-  unitMembers: []
+  unitMembers:
+  - Kaito
   space: 0

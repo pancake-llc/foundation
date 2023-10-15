@@ -16,5 +16,6 @@ MonoBehaviour:
   message: 
   sprite: {fileID: 0}
   titleUnit: Animator
-  unitMembers: []
+  unitMembers:
+  - Snow
   space: 0

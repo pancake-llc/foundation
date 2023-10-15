@@ -16,5 +16,8 @@ MonoBehaviour:
   message: 
   sprite: {fileID: 0}
   titleUnit: Art & Design
-  unitMembers: []
+  unitMembers:
+  - Sky
+  - Momo
+  - Kat
   space: 0
