@@ -54,7 +54,7 @@ namespace PrimeTween {
         internal readonly TweenCoroutineEnumerator coroutineEnumerator = new TweenCoroutineEnumerator();
         internal float timeScale = 1;
         bool warnIgnoredOnCompleteIfTargetDestroyed = true;
-        internal Tween.ShakeData shakeData;
+        internal Tween.ShakeData shakeData = new Tween.ShakeData {frequency = float.NaN};
 
         internal bool updateAndCheckIfRunning(float dt) {
             dt *= timeScale;
