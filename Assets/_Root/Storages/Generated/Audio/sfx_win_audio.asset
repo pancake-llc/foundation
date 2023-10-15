@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9862001d3dabd44a895005136b2843a, type: 3}
-  m_Name: menu_bgm_audio
+  m_Name: sfx_win_audio
   m_EditorClassIdentifier: 
   loop: 0
   volume: 1
   groups:
   - sequenceMode: 0
     clips:
-    - {fileID: 8300000, guid: 8bbda6771a031574f9d13cc11247bc7c, type: 3}
+    - {fileID: 8300000, guid: b4c70d1198b0ea94393bc8ef015a411f, type: 3}

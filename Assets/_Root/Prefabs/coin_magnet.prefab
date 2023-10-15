@@ -55,9 +55,9 @@ MonoBehaviour:
   returnPoolEvent: {fileID: 11400000, guid: b39b52d9a5ec5e144aa0c0b97a091f74, type: 2}
   coinFxScale: 0.8
   coinForceField: {fileID: 1903489153483422032}
-  isPlaySound: 0
-  audioSpawn: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  isPlaySound: 1
+  audioSpawn: {fileID: 11400000, guid: 8f893bd59754ee243917f301f9d3da84, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   useCanvasMaster: 1
   canvas: {fileID: 0}
   getCanvasMasterEvent: {fileID: 11400000, guid: eb6564e2a34609041adf55fdffed4eb2, type: 2}

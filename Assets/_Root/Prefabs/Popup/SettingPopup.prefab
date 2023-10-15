@@ -745,9 +745,9 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  enabledSound: 1
+  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   motionData:
@@ -984,9 +984,9 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  enabledSound: 1
+  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   motionData:
@@ -1461,9 +1461,9 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  enabledSound: 1
+  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   motionData:
@@ -1754,9 +1754,9 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  enabledSound: 1
+  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   motionData:
@@ -1933,9 +1933,9 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  enabledSound: 1
+  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   motionData:
@@ -2226,9 +2226,9 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  enabledSound: 1
+  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   motionData:

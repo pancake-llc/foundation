@@ -1976,6 +1976,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: coin_magnet
       objectReference: {fileID: 0}
+    - target: {fileID: 9115954639634052251, guid: e689b9452c97f874695e68dba8cffcfc, type: 3}
+      propertyPath: audioSpawn
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f893bd59754ee243917f301f9d3da84, type: 2}
+    - target: {fileID: 9115954639634052251, guid: e689b9452c97f874695e68dba8cffcfc, type: 3}
+      propertyPath: isPlaySound
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9115954639634052251, guid: e689b9452c97f874695e68dba8cffcfc, type: 3}
+      propertyPath: audioPlayEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

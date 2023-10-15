@@ -140,9 +140,9 @@ MonoBehaviour:
   rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   winGifProgresValue: {fileID: 11400000, guid: 091b41098013f73448505b7d9f00a3c5, type: 2}
   rangeGiftValueIncrease: {x: 10, y: 10}
-  enabledSound: 0
-  audioWin: {fileID: 0}
-  playAudioEvent: {fileID: 0}
+  enabledSound: 1
+  audioWin: {fileID: 11400000, guid: 54af6ac18e07ebd4788e1bbe7ef0277b, type: 2}
+  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   overrideBGM: 0
   bgmWin: {fileID: 0}
   playBgmEvent: {fileID: 0}

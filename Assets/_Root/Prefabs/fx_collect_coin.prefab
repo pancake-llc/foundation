@@ -4922,6 +4922,6 @@ MonoBehaviour:
   numberParticleMap:
     keys: 64000000e8030000
     values: 1400000028000000
-  enabledSound: 0
-  audioCollision: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
+  enabledSound: 1
+  audioCollision: {fileID: 11400000, guid: aa33ad2229195f9479821f41de547c98, type: 2}
+  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}

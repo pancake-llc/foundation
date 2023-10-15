@@ -1,7 +1,9 @@
+using Pancake.Apex;
 using Pancake.LevelSystem;
 using Pancake.Monetization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
+using Pancake.Sound;
 using Pancake.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +17,9 @@ namespace Pancake.UI
         [SerializeField] private Button buttonShop;
         [SerializeField] private Button buttonSkip;
         [SerializeField, PopupPickup] private string popupShop;
+        [Header("SOUND"), SerializeField] private bool enabledSound;
+        [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioWin;
+        [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio playAudioEvent;
         [Header("EVENT")] [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
@@ -31,6 +36,7 @@ namespace Pancake.UI
             buttonReplay.onClick.AddListener(OnButtonReplayPressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
             buttonSkip.onClick.AddListener(OnButtonSkipPressed);
+            if (enabledSound) playAudioEvent.Raise(audioWin);
             return UniTask.CompletedTask;
         }
 
