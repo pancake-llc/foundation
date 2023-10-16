@@ -30,7 +30,7 @@ namespace Pancake.IAP
         protected override void OnEnabled()
         {
             base.OnEnabled();
-            purchaseEvent.OnRaised += PruchaseProduct;
+            purchaseEvent.OnRaised += PurchaseProduct;
             productOnwershipCheckEvent.OnRaised += IsPurchasedProduct;
 #if UNITY_IOS
             restoreEvent.OnRaised += RestorePurchase;
@@ -43,7 +43,7 @@ namespace Pancake.IAP
             return product.productType == ProductType.NonConsumable && _controller.products.WithID(product.id).hasReceipt;
         }
 
-        private void PruchaseProduct(IAPDataVariable product)
+        private void PurchaseProduct(IAPDataVariable product)
         {
             // call when IAPDataVariable raise event
             if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.Raise(true);
@@ -53,7 +53,7 @@ namespace Pancake.IAP
         protected override void OnDisabled()
         {
             base.OnDisabled();
-            purchaseEvent.OnRaised -= PruchaseProduct;
+            purchaseEvent.OnRaised -= PurchaseProduct;
             productOnwershipCheckEvent.OnRaised -= IsPurchasedProduct;
 #if UNITY_IOS
             restoreEvent.OnRaised -= RestorePurchase;
