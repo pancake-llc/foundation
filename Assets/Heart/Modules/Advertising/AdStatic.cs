@@ -77,6 +77,8 @@ namespace Pancake.Monetization
                     return unit;
             }
 
+            if (!Application.isMobilePlatform) onCompleted?.Invoke();
+            
             return unit;
         }
 
