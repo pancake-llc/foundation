@@ -4,6 +4,7 @@ using Pancake.SceneFlow;
 using Pancake.Threading.Tasks;
 using PrimeTween;
 using TMPro;
+using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +21,7 @@ namespace Pancake.UI
         [SerializeField] private Image imageIconCountrySelected;
         [SerializeField] private TextMeshProUGUI textNameCountrySelected;
         [SerializeField] private TextMeshProUGUI textMessage;
-        [SerializeField] private Button buttonVerify;
+        [SerializeField] private Button buttonOk;
         [SerializeField] private Button buttonClose;
 
         private SmallList<int> _datas;
@@ -31,9 +32,14 @@ namespace Pancake.UI
         private string _userPickName;
         private RectTransform _countryScrollerRT;
 
-        protected override UniTask Initialize()
+        protected override  UniTask Initialize()
         {
-            _buttonVerifyEffect = buttonVerify.GetComponent<UIEffect>();
+            // wait login completed
+            //await UniTask.WaitUntil(() => AuthenticationService.Instance.IsSignedIn);
+            
+            // get current name
+
+            _buttonVerifyEffect = buttonOk.GetComponent<UIEffect>();
             _countryScrollerRT = countryScroller.GetComponent<RectTransform>();
             countryScroller.Delegate = this;
             inputFieldName.characterLimit = 17;
@@ -50,7 +56,7 @@ namespace Pancake.UI
             _selectedCountry = currentCountryData.code.ToString();
 
             buttonClose.onClick.AddListener(OnButtonClosePressed);
-            buttonVerify.onClick.AddListener(OnButtonVerifyPressed);
+            buttonOk.onClick.AddListener(OnButtonOkPressed);
             buttonSelectCountry.onClick.AddListener(OnButtonSelectCountryPressed);
 
             return UniTask.CompletedTask;
@@ -92,13 +98,13 @@ namespace Pancake.UI
             textMessage.gameObject.SetActive(false);
             _countryScrollerRT.pivot = new Vector2(0.5f, 1f);
             countryPopup.gameObject.SetActive(true);
-            buttonVerify.interactable = false;
+            buttonOk.interactable = false;
             countryPopup.SetSizeDeltaY(103);
             Tween.UISizeDelta(countryPopup, new Vector2(countryPopup.sizeDelta.x, 666), 0.5f)
                 .OnComplete(() =>
                 {
                     countryScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
-                    buttonVerify.interactable = true;
+                    buttonOk.interactable = true;
                     _countryScrollerRT.pivot = new Vector2(0.5f, 0.5f);
                 });
         }
@@ -107,7 +113,7 @@ namespace Pancake.UI
         {
             textMessage.gameObject.SetActive(false);
             _countryScrollerRT.pivot = new Vector2(0.5f, 1f);
-            buttonVerify.interactable = false;
+            buttonOk.interactable = false;
 
             Tween.UISizeDelta(countryPopup, new Vector2(countryPopup.sizeDelta.x, 103f), 0.5f)
                 .OnComplete(() =>
@@ -115,14 +121,18 @@ namespace Pancake.UI
                     countryPopup.gameObject.SetActive(false);
                     bool state = inputFieldName.text.Length < 16 || inputFieldName.text.Length >= 3;
                     countryScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
-                    buttonVerify.interactable = state;
+                    buttonOk.interactable = state;
                     textMessage.gameObject.SetActive(!state);
                     _countryScrollerRT.pivot = new Vector2(0.5f, 0.5f);
                 });
             Tween.LocalRotation(buttonSelectCountry.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
         }
 
-        private void OnButtonVerifyPressed() { }
+        private async void OnButtonOkPressed()
+        {
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(_userPickName);
+            // todo
+        }
 
         private void OnButtonClosePressed()
         {
@@ -134,7 +144,7 @@ namespace Pancake.UI
         {
             if (value.Length >= 16)
             {
-                buttonVerify.interactable = false;
+                buttonOk.interactable = false;
                 _buttonVerifyEffect.effectMode = EffectMode.Grayscale;
                 DisplayWarning("Name length cannot be longer than 16 characters!");
             }
@@ -142,13 +152,13 @@ namespace Pancake.UI
             {
                 if (value.Length < 3)
                 {
-                    buttonVerify.interactable = false;
+                    buttonOk.interactable = false;
                     _buttonVerifyEffect.effectMode = EffectMode.Grayscale;
                 }
                 else
                 {
                     textMessage.gameObject.SetActive(false);
-                    buttonVerify.interactable = true;
+                    buttonOk.interactable = true;
                     _buttonVerifyEffect.effectMode = EffectMode.None;
                 }
             }
