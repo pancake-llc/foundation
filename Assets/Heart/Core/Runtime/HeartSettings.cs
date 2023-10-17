@@ -18,8 +18,7 @@ namespace Pancake
         [Indent, Label("Message"), TextArea(3, 6), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
         private string privacyMessage;
 
-        [Header("IOS")]
-        [SerializeField] private string appstoreAppId;
+        [Header("IOS")] [SerializeField] private string appstoreAppId;
         [SerializeField, Range(0, 63)] private int skAdConversionValue = 63;
 
         public static bool EnableAdministrator => Instance.enableAdministrator;

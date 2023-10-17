@@ -47,7 +47,11 @@ namespace Pancake.SceneFlow
             WaitShowUpdate();
         }
 
-        private void OnButtonRankPressed() { MainPopupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: _ => _.popup.view.SetMessage("Comming soon!")); }
+        private void OnButtonRankPressed()
+        {
+            
+            MainPopupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: _ => _.popup.view.SetMessage("Comming soon!"));
+        }
 
         private void OnButtonDailyRewardPressed() { MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true); }
 

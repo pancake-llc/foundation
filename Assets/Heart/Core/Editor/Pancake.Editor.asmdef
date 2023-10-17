@@ -123,6 +123,11 @@
             "name": "com.esotericsoftware.spine.spine-unity",
             "expression": "",
             "define": "PANCAKE_SPINE"
+        },
+        {
+            "name": "com.unity.services.leaderboards",
+            "expression": "1.0.0",
+            "define": "PANCAKE_LEADERBOARD"
         }
     ],
     "noEngineReferences": false

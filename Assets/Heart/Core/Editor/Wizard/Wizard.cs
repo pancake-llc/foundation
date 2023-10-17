@@ -38,6 +38,7 @@ namespace PancakeEditor
             UIEffect,
             ScreenSetting,
             Spine,
+            GameService
         }
 
         private enum WizardMonetizeType
@@ -61,7 +62,8 @@ namespace PancakeEditor
             SelectiveProfiling = WizardAllType.SelectiveProfiling,
             ParticleEffectForUGUI = WizardAllType.ParticleEffectForUGUI,
             UIEffect = WizardAllType.UIEffect,
-            Spine = WizardAllType.Spine
+            Spine = WizardAllType.Spine,
+            GameSerice = WizardAllType.GameService
         }
 
         private enum WizardSettingType
@@ -229,6 +231,9 @@ namespace PancakeEditor
                 case WizardAllType.Spine when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesSpineDrawer.OnInspectorGUI(Repaint, position);
                     break;
+                case WizardAllType.GameService when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesGameServiceDrawer.OnInspectorGUI();
+                    break;
             }
         }
 
@@ -294,6 +299,7 @@ namespace PancakeEditor
                 case WizardAllType.InAppReview:
                 case WizardAllType.NeedleConsole: 
                 case WizardAllType.SelectiveProfiling: 
+                case WizardAllType.GameService:
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;

@@ -112,7 +112,7 @@ namespace PancakeEditor
             DrawButtonUninstall();
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Spine 4.1", GUILayout.MaxHeight((40f))))
+            if (GUILayout.Button("Install Spine 4.1", GUILayout.MaxHeight(40f)))
             {
                 RegistryManager.Add("com.esotericsoftware.spine.spine-csharp", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1");
                 RegistryManager.Add("com.esotericsoftware.spine.spine-unity", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1");

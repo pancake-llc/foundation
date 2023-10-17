@@ -911,10 +911,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 32d74a61-dbca-411f-91f2-498ffbee145f
+  cloudProjectId: 628d3d6f-8fb3-424e-a953-a4993c1d0840
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: heart
+  projectName: foundation
   organizationId: yenmoc
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

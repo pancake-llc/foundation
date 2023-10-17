@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Pancake.Apex;
 using Pancake.Scriptable;
+using Pancake.Threading.Tasks;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Pancake.IAP
     [HideMonoScript]
     public class IAPManager : GameComponent, IDetailedStoreListener
     {
+        [SerializeField] private BoolVariable isServiceInitialized;
         [SerializeField] private IAPSettings iapSettings;
         [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
         [SerializeField] private ScriptableEventIAPFuncProduct productOnwershipCheckEvent;
@@ -64,14 +66,9 @@ namespace Pancake.IAP
 
         private async void Init()
         {
-            var options = new InitializationOptions().SetEnvironmentName("production");
-            await UnityServices.InitializeAsync(options);
-            InitImpl();
-        }
-
-        private void InitImpl()
-        {
             if (IsInitialized) return;
+            
+            await UniTask.WaitUntil(() => isServiceInitialized.Value);
 
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
             RequestProductData(builder);
