@@ -27,6 +27,7 @@ namespace Pancake.SceneFlow
         [SerializeField, PopupPickup] private string popupUpdate;
         [SerializeField, PopupPickup] private string popupDailyReward;
         [SerializeField, PopupPickup] private string popupNotification;
+        [SerializeField, PopupPickup] private string popupRename;
         [SerializeField, PagePickup] private string outfitPageName;
 
         [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
@@ -47,11 +48,7 @@ namespace Pancake.SceneFlow
             WaitShowUpdate();
         }
 
-        private void OnButtonRankPressed()
-        {
-            
-            MainPopupContainer.Push<NotificationPopup>(popupNotification, true, onLoad: _ => _.popup.view.SetMessage("Comming soon!"));
-        }
+        private void OnButtonRankPressed() { MainPopupContainer.Push<RenamePopup>(popupRename, true); }
 
         private void OnButtonDailyRewardPressed() { MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true); }
 

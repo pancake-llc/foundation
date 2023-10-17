@@ -67,6 +67,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3551d477cb7078243a7bd5ac3909de9f
+    m_Address: RenamePopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 62e87d988a8db174792a5736ca2712ee, type: 2}
   m_SchemaSet:
