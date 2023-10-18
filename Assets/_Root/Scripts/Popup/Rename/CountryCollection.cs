@@ -63,7 +63,6 @@ namespace Pancake.SceneFlow
                     if (collection[i].code.ToString() == Path.GetFileNameWithoutExtension(path))
                     {
                         collection[i].icon = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(path);
-                        Debug.Log(collection[i].icon.name);
                     }
                 }
             }
