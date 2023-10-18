@@ -1,7 +1,10 @@
+using Pancake.Component;
 using Pancake.Linq;
+using Pancake.Monetization;
 using Pancake.SceneFlow;
 using Pancake.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Pancake.UI
 {
@@ -11,6 +14,10 @@ namespace Pancake.UI
         [SerializeField] private int chunkSize;
         [SerializeField] private OutfitSlotBarComponent slotBarPrefab;
         [SerializeField] private Transform content;
+        [SerializeField] private Button buttonFreeCoin;
+        [SerializeField] private RewardVariable rewardAd;
+        [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
+        [SerializeField] private int coinFreeValue = 500;
 
         private CharacterOutfit _datas;
         private OutfitSlotBarComponent[] _slotBars;
@@ -26,7 +33,16 @@ namespace Pancake.UI
                 }
             }
 
+            buttonFreeCoin.onClick.AddListener(OnButtonGetFreeCoinPressed);
             return UniTask.CompletedTask;
+        }
+
+        private void OnButtonGetFreeCoinPressed() { rewardAd.Context().OnCompleted(OnCompleteAdGetFreeCoin).Show(); }
+
+        private void OnCompleteAdGetFreeCoin()
+        {
+            UserData.AddCoin(coinFreeValue);
+            fxCoinSpawnEvent.Raise(buttonFreeCoin.transform.position, coinFreeValue);
         }
 
         public void Binding(CharacterOutfit filter, OutfitType outfitType)

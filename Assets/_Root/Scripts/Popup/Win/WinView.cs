@@ -31,8 +31,7 @@ namespace Pancake.UI
         [SerializeField] private IntVariable winGifProgresValue;
         [SerializeField] private Vector2Int rangeGiftValueIncrease;
 
-        [Header("SOUND")]
-        [SerializeField] private bool overrideBGM;
+        [Header("SOUND")] [SerializeField] private bool overrideBGM;
         [SerializeField, ShowIf(nameof(overrideBGM))] private Audio bgmWin;
         [SerializeField, ShowIf(nameof(overrideBGM))] private ScriptableEventAudio playBgmEvent;
 
@@ -64,17 +63,7 @@ namespace Pancake.UI
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
-        private void OnButtonVideoX5Pressed()
-        {
-            if (Application.isMobilePlatform)
-            {
-                rewardVariable.Context().OnCompleted(() => { InternalContinue(numberCoinReceive * 5); }).Show();
-            }
-            else
-            {
-                InternalContinue(numberCoinReceive * 5);
-            }
-        }
+        private void OnButtonVideoX5Pressed() { rewardVariable.Context().OnCompleted(() => { InternalContinue(numberCoinReceive * 5); }).Show(); }
 
         private void CollectReward(int number)
         {
@@ -100,7 +89,7 @@ namespace Pancake.UI
             App.Delay(2f, Continute);
         }
 
-       private async void Refresh()
+        private async void Refresh()
         {
             _prewarmNextLevel = null;
             buttonContinue.gameObject.SetActive(true);

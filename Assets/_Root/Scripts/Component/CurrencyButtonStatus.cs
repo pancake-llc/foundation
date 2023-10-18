@@ -11,6 +11,7 @@ namespace Pancake.SceneFlow
     {
         [SerializeField] private TextMeshProUGUI textValue;
         [SerializeField] private ScriptableEventInt updateCurrencyEvent;
+        [SerializeField] private ScriptableEventNoParam updateImediateCurrencyEvent;
         [SerializeField] private Button button;
         [SerializeField] private UIEffect uiEffect;
 
@@ -20,14 +21,20 @@ namespace Pancake.SceneFlow
         {
             _cost = cost;
             textValue.SetText($"{_cost}");
-            OnUpdateCurrency(UserData.GetCurrentCoin());
+            OnUpdateCurrency();
         }
-        
-        private void OnEnable() { updateCurrencyEvent.OnRaised += OnUpdateCurrency; }
+
+        private void OnEnable()
+        {
+            updateImediateCurrencyEvent.OnRaised += OnUpdateCurrency;
+            updateCurrencyEvent.OnRaised += OnUpdateCurrency;
+        }
+
+        private void OnUpdateCurrency() { OnUpdateCurrency(0); }
 
         private void OnUpdateCurrency(int currentCurrency)
         {
-            if (currentCurrency >= _cost)
+            if (UserData.GetCurrentCoin() >= _cost)
             {
                 textValue.color = Color.white;
                 button.interactable = true;
@@ -41,6 +48,10 @@ namespace Pancake.SceneFlow
             }
         }
 
-        private void OnDisable() { updateCurrencyEvent.OnRaised -= OnUpdateCurrency; }
+        private void OnDisable()
+        {
+            updateImediateCurrencyEvent.OnRaised -= OnUpdateCurrency;
+            updateCurrencyEvent.OnRaised -= OnUpdateCurrency;
+        }
     }
 }

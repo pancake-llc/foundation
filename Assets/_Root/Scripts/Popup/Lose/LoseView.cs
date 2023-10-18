@@ -36,17 +36,7 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonSkipPressed()
-        {
-            if (Application.isMobilePlatform)
-            {
-                rewardVariable.Context().OnCompleted(SkipLevel).Show();
-            }
-            else
-            {
-                SkipLevel();
-            }
-        }
+        private void OnButtonSkipPressed() { rewardVariable.Context().OnCompleted(SkipLevel).Show(); }
 
         private async void SkipLevel()
         {

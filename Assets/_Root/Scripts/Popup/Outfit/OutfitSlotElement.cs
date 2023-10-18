@@ -165,15 +165,42 @@ namespace Pancake.SceneFlow
                 {
                     case OutfitType.Hat:
                         string hatId = UserData.GetCurrentSkinHat();
-                        selectedObject.SetActive(hatId == _outfitUnit.Value.id);
+                        if (string.IsNullOrEmpty(hatId))
+                        {
+                            if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
+                            {
+                                UserData.SetCurrentSkinHat(_outfitUnit.Value.id);
+                                selectedObject.SetActive(true);
+                            }
+                        }
+                        else selectedObject.SetActive(hatId == _outfitUnit.Value.id);
+
                         break;
                     case OutfitType.Shirt:
                         string shirtId = UserData.GetCurrentSkinShirt();
-                        selectedObject.SetActive(shirtId == _outfitUnit.Value.id);
+                        if (string.IsNullOrEmpty(shirtId))
+                        {
+                            if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
+                            {
+                                UserData.SetCurrentSkinShirt(_outfitUnit.Value.id);
+                                selectedObject.SetActive(true);
+                            }
+                        }
+                        else selectedObject.SetActive(shirtId == _outfitUnit.Value.id);
+
                         break;
                     case OutfitType.Shoe:
                         string shoeId = UserData.GetCurrentSkinShoes();
-                        selectedObject.SetActive(shoeId == _outfitUnit.Value.id);
+                        if (string.IsNullOrEmpty(shoeId))
+                        {
+                            if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
+                            {
+                                UserData.SetCurrentSkinShoes(_outfitUnit.Value.id);
+                                selectedObject.SetActive(true);
+                            }
+                        }
+                        else selectedObject.SetActive(shoeId == _outfitUnit.Value.id);
+
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

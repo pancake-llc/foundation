@@ -34,15 +34,7 @@ namespace Pancake.SceneFlow
 
         private void OnButtonSkipByAdClicked()
         {
-            if (!Application.isMobilePlatform)
-            {
-                Execute();
-            }
-            else
-            {
-                rewardVariable.Context().Show().OnCompleted(Execute);
-            }
-
+            rewardVariable.Context().Show().OnCompleted(Execute);
             return;
 
             async void Execute()

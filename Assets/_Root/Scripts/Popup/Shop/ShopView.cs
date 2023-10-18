@@ -95,17 +95,7 @@ namespace Pancake.UI
             buttonVip.gameObject.SetActive(!checkVip);
         }
 
-        private void OnButtonGetFreeCoinPressed()
-        {
-            if (Application.isMobilePlatform)
-            {
-                rewardAd.Context().OnCompleted(OnCompleteAdGetFreeCoin).Show();
-            }
-            else
-            {
-                OnCompleteAdGetFreeCoin();
-            }
-        }
+        private void OnButtonGetFreeCoinPressed() { rewardAd.Context().OnCompleted(OnCompleteAdGetFreeCoin).Show(); }
 
         private void OnCompleteAdGetFreeCoin()
         {

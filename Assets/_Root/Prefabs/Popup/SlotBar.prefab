@@ -754,6 +754,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textValue: {fileID: 7359462937431086123}
   updateCurrencyEvent: {fileID: 11400000, guid: fd36f245da8848948a005de35c9f6993, type: 2}
+  updateImediateCurrencyEvent: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   button: {fileID: 7051624880449207424}
   uiEffect: {fileID: 4637657106597985920}
 --- !u!1 &1900369876456163204
@@ -2429,6 +2430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textValue: {fileID: 7440590722566837297}
   updateCurrencyEvent: {fileID: 11400000, guid: fd36f245da8848948a005de35c9f6993, type: 2}
+  updateImediateCurrencyEvent: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   button: {fileID: 8492869949782140952}
   uiEffect: {fileID: 2258018088388792558}
 --- !u!1 &5842010938040822315
@@ -4236,6 +4238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textValue: {fileID: 4041217207752314487}
   updateCurrencyEvent: {fileID: 11400000, guid: fd36f245da8848948a005de35c9f6993, type: 2}
+  updateImediateCurrencyEvent: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   button: {fileID: 5041679429568385126}
   uiEffect: {fileID: 2690757376505803184}
 --- !u!1001 &871112690327384371
