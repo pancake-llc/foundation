@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 4000494878958821786}
   - component: {fileID: 4345380762767594559}
   m_Layer: 5
-  m_Name: button_verify
+  m_Name: button_ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -372,14 +372,13 @@ MonoBehaviour:
   countryCollection: {fileID: 11400000, guid: e63f0dacb6bdd0c46bcb8f532653d7c2, type: 2}
   countryElementPrefab: {fileID: 2213429971785767137, guid: 815eb80c90ba3904686e738de16e8b60, type: 3}
   countryScroller: {fileID: 1912923825720560903}
-  countryPopupContainer: {fileID: 1804948506164755318}
   countryPopup: {fileID: 2981688165348454243}
   inputFieldName: {fileID: 3464435047195095140}
   buttonSelectCountry: {fileID: 3497636020430980987}
   imageIconCountrySelected: {fileID: 2493093248751661582}
   textNameCountrySelected: {fileID: 7368233670771278523}
   textMessage: {fileID: 7870844135527248633}
-  buttonVerify: {fileID: 4000494878958821786}
+  buttonOk: {fileID: 4000494878958821786}
   buttonClose: {fileID: 7575828963646091385}
 --- !u!114 &6868835479746230754
 MonoBehaviour:
@@ -649,7 +648,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.60784316, g: 0.8588236, b: 0.8588236, a: 1}
+  m_Color: {r: 0.79215693, g: 0.4901961, b: 0.30980393, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2187,8 +2186,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
