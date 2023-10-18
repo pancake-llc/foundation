@@ -17,7 +17,7 @@ namespace Pancake.Services
 
         private async void Init()
         {
-            await UniTask.WaitUntil(() => isServiceInitialized.Value);
+            if (isServiceInitialized != null) await UniTask.WaitUntil(() => isServiceInitialized.Value);
 
 #if PANCAKE_AUTH
             if (!AuthenticationService.Instance.IsSignedIn)

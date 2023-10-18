@@ -1,5 +1,7 @@
+using System;
 using System.Globalization;
 using Coffee.UIEffects;
+using Newtonsoft.Json;
 using Pancake.SceneFlow;
 using Pancake.Threading.Tasks;
 using PrimeTween;
@@ -7,11 +9,18 @@ using TMPro;
 using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Pancake.UI
 {
     public sealed class RenameView : View, IEnhancedScrollerDelegate
     {
+        public class NameList
+        {
+            public string[] names;
+        }
+
+        [SerializeField] private TextAsset namesAsset;
         [SerializeField] private CountryCollection countryCollection;
         [SerializeField] private CountryElementView countryElementPrefab;
         [SerializeField] private EnhancedScroller countryScroller;
@@ -21,8 +30,11 @@ namespace Pancake.UI
         [SerializeField] private Image imageIconCountrySelected;
         [SerializeField] private TextMeshProUGUI textNameCountrySelected;
         [SerializeField] private TextMeshProUGUI textMessage;
+        [SerializeField] private GameObject objectStatusOk;
+        [SerializeField] private GameObject objectBlock;
         [SerializeField] private Button buttonOk;
         [SerializeField] private Button buttonClose;
+        [SerializeField] private Button buttonDice;
 
         private SmallList<int> _datas;
         private bool _isVerifySuccess;
@@ -31,14 +43,14 @@ namespace Pancake.UI
         private bool _firstTimeActiveCountry;
         private string _userPickName;
         private RectTransform _countryScrollerRT;
+        private Action _onCloseCallback;
+        private NameList _nameList;
 
-        protected override  UniTask Initialize()
+        public void SetCallbackClose(Action onCloseCallback) { _onCloseCallback = onCloseCallback; }
+
+        protected override UniTask Initialize()
         {
-            // wait login completed
-            //await UniTask.WaitUntil(() => AuthenticationService.Instance.IsSignedIn);
-            
-            // get current name
-
+            _nameList = JsonConvert.DeserializeObject<NameList>(namesAsset.text);
             _buttonVerifyEffect = buttonOk.GetComponent<UIEffect>();
             _countryScrollerRT = countryScroller.GetComponent<RectTransform>();
             countryScroller.Delegate = this;
@@ -58,8 +70,16 @@ namespace Pancake.UI
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonOk.onClick.AddListener(OnButtonOkPressed);
             buttonSelectCountry.onClick.AddListener(OnButtonSelectCountryPressed);
+            buttonDice.onClick.AddListener(OnButtonDicePressed);
 
             return UniTask.CompletedTask;
+        }
+
+        private void OnButtonDicePressed()
+        {
+            string randomName = _nameList.names.PickRandom();
+            int number = Random.Range(1, 999);
+            inputFieldName.text = $"{randomName}{number}";
         }
 
         private void OnButtonSelectCountryPressed()
@@ -130,8 +150,12 @@ namespace Pancake.UI
 
         private async void OnButtonOkPressed()
         {
+            objectBlock.SetActive(true);
+            objectBlock.SetActive(true);
             await AuthenticationService.Instance.UpdatePlayerNameAsync(_userPickName);
-            // todo
+            objectBlock.SetActive(false);
+            objectStatusOk.SetActive(false);
+            OnButtonClosePressed();
         }
 
         private void OnButtonClosePressed()
