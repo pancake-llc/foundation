@@ -56,6 +56,7 @@ namespace Pancake.UI
             countryScroller.Delegate = this;
             inputFieldName.characterLimit = 17;
             inputFieldName.onValueChanged.AddListener(OnInputNameValueChanged);
+            inputFieldName.onSelect.AddListener(OnInputNameSelected);
             inputFieldName.text = "";
             inputFieldName.ActivateInputField();
             inputFieldName.Select();
@@ -73,6 +74,11 @@ namespace Pancake.UI
             buttonDice.onClick.AddListener(OnButtonDicePressed);
 
             return UniTask.CompletedTask;
+        }
+
+        private void OnInputNameSelected(string value)
+        {
+            if (countryPopup.gameObject.activeInHierarchy) InternalHideSelectCountry();
         }
 
         private void OnButtonDicePressed()
