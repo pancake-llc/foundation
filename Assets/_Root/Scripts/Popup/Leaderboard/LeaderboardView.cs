@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Pancake.Apex;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace Pancake.UI
             public bool firstTime;
             public int pageCount;
             public int myPosition;
+            public int offset;
+            public int limit;
             private readonly string _key;
 
             public LeaderboardData(string key)
@@ -30,6 +33,8 @@ namespace Pancake.UI
                 entries = new List<LeaderboardEntry>();
                 currentPage = 0;
                 pageCount = 0;
+                offset = 0;
+                limit = 100;
                 myPosition = -1;
             }
         }
@@ -47,10 +52,10 @@ namespace Pancake.UI
         [SerializeField] private TextMeshProUGUI textName;
         [SerializeField] private TextMeshProUGUI textRank;
         [SerializeField] private TextMeshProUGUI textCurrentPage;
-        [SerializeField] private GameObject content;
+        [SerializeField] private GameObject contentSlot;
+        [SerializeField] private GameObject rootLeaderboard;
         [SerializeField] private GameObject block;
-        [SerializeField] private LeaderboardElementView[] slots;
-        [SerializeField] private GameObject waitLoginObject;
+        [SerializeField, Array] private LeaderboardElementView[] slots;
         [SerializeField, PopupPickup] private string popupRename;
 
         [SerializeField] private LeaderboardElementColor colorRank1 = new LeaderboardElementColor(new Color(1f, 0.82f, 0f),
@@ -115,15 +120,19 @@ namespace Pancake.UI
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
-                waitLoginObject.SetActive(true);
+                block.SetActive(true);
+                rootLeaderboard.SetActive(false);
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
                 await LeaderboardsService.Instance.AddPlayerScoreAsync(tableId, currentLevel.Value);
-                waitLoginObject.SetActive(false);
+                var worldScorePage = await LeaderboardsService.Instance.GetScoresAsync(tableId, new GetScoresOptions() {Limit = _worldData.limit, Offset = _worldData.offset});
+                block.SetActive(false);
 
                 if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName)) ShowPopupRename(OnPopupRenameClosed);
                 else
                 {
                     textName.text = AuthenticationService.Instance.PlayerName;
+                    rootLeaderboard.SetActive(true);
+                    Refresh(_worldData);
                 }
             }
             else
@@ -132,7 +141,17 @@ namespace Pancake.UI
             }
         }
 
-        private void OnPopupRenameClosed() { textName.text = AuthenticationService.Instance.PlayerName; }
+        private void OnPopupRenameClosed()
+        {
+            if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName))
+            {
+                PopupHelper.Close(transform);
+                return;
+            }
+            textName.text = AuthenticationService.Instance.PlayerName;
+            rootLeaderboard.SetActive(true);
+            Refresh(_worldData);
+        }
 
         private void ShowPopupRename(Action onPopupRenameClosed)
         {
@@ -183,7 +202,13 @@ namespace Pancake.UI
 
             buttonPreviousPage.gameObject.SetActive(data.currentPage != 0);
             buttonNextPage.gameObject.SetActive(data.currentPage < data.pageCount && !(data.entries.Count < 100 && data.currentPage == data.pageCount - 1));
-            content.SetActive(false);
+            contentSlot.SetActive(true);
+            block.SetActive(false);
+
+            for (int i = 0; i < pageData.Count; i++)
+            {
+                //slots[i].Init(pageData[i].Rank, countryCollection.Get());
+            }
         }
     }
 }

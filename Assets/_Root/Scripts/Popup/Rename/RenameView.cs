@@ -7,6 +7,7 @@ using Pancake.Threading.Tasks;
 using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;
+using Unity.Services.CloudSave;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -157,8 +158,9 @@ namespace Pancake.UI
         private async void OnButtonOkPressed()
         {
             objectBlock.SetActive(true);
-            objectBlock.SetActive(true);
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(_userPickName);
+            _userPickName = inputFieldName.text;
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(_userPickName.Trim());
+            //await CloudSaveService.Instance.Data.Player.SaveAsync() // todo save country code
             objectBlock.SetActive(false);
             objectStatusOk.SetActive(false);
             OnButtonClosePressed();
@@ -166,6 +168,7 @@ namespace Pancake.UI
 
         private void OnButtonClosePressed()
         {
+            _onCloseCallback?.Invoke();
             PlaySoundClose();
             PopupHelper.Close(transform);
         }
