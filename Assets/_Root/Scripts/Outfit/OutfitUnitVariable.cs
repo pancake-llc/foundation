@@ -7,6 +7,14 @@ namespace Pancake.SceneFlow
     [EditorIcon("scriptable_variable")]
     public class OutfitUnitVariable : ScriptableVariable<OutfitElement>
     {
+        public void Unlock()
+        {
+            Value.isUnlocked = true;
+            Save();
+        }
+
+        public bool IsUnlocked() => Value.isUnlocked;
+
         public override void Save()
         {
             Data.Save(Guid, Value.isUnlocked);
