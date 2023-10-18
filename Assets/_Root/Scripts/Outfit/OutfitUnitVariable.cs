@@ -1,4 +1,5 @@
-﻿using Pancake.Scriptable;
+﻿using System.Runtime.CompilerServices;
+using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.SceneFlow
@@ -7,12 +8,14 @@ namespace Pancake.SceneFlow
     [EditorIcon("scriptable_variable")]
     public class OutfitUnitVariable : ScriptableVariable<OutfitElement>
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Unlock()
         {
             Value.isUnlocked = true;
             Save();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsUnlocked() => Value.isUnlocked;
 
         public override void Save()

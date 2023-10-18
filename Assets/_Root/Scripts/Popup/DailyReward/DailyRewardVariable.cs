@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Pancake.Apex;
 using Pancake.Scriptable;
 
@@ -11,6 +12,16 @@ namespace Pancake.SceneFlow
     [EditorIcon("scriptable_variable")]
     public class DailyRewardVariable : ScriptableVariable<DailyRewardData>
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Claim()
+        {
+            Value.isClaimed = true;
+            Save();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsClaimed() => Value.isClaimed;
+
         public override void Load()
         {
             Value.isClaimed = Data.Load(Guid, DefaultValue.isClaimed);

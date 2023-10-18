@@ -38,7 +38,7 @@ namespace Pancake.SceneFlow
 
             render.ChangeSkin(element.Value.skinId);
             render.transform.localPosition = element.Value.viewPosition;
-            if (element.Value.isUnlocked)
+            if (element.IsUnlocked())
             {
                 foreach (var b in buttonDict)
                 {
@@ -129,7 +129,7 @@ namespace Pancake.SceneFlow
         private void OnButtonPressed()
         {
             // to_do with outfit
-            if (_outfitUnit.Value.isUnlocked)
+            if (_outfitUnit.IsUnlocked())
             {
                 selectedObject.SetActive(true);
 
@@ -159,7 +159,7 @@ namespace Pancake.SceneFlow
 
         private void UpdateSelectedEffect()
         {
-            if (_outfitUnit.Value.isUnlocked)
+            if (_outfitUnit.IsUnlocked())
             {
                 switch (_outfitType)
                 {

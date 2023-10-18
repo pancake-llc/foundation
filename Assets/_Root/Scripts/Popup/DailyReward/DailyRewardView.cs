@@ -67,11 +67,8 @@ namespace Pancake.UI
                 UserData.NextDayDailyReward(); // next day
             }
 
-            data.Value.isClaimed = true;
+            data.Claim();
             boolDailyVariable.Value = true;
-#if UNITY_EDITOR
-            boolDailyVariable.Save();
-#endif
             Refresh();
         }
 

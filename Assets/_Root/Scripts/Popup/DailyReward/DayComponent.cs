@@ -28,7 +28,7 @@ namespace Pancake.SceneFlow
             if (variable.Value.typeReward == TypeRewardDailyReward.Coin)
             {
                 textValueReward.gameObject.SetActive(true);
-                if (variable.Value.isClaimed)
+                if (variable.IsClaimed())
                 {
                     claimedObject.SetActive(true);
                     if (outfitGraphic != null) outfitGraphic.gameObject.SetActive(false);
@@ -47,7 +47,7 @@ namespace Pancake.SceneFlow
             else
             {
                 textValueReward.gameObject.SetActive(false);
-                if (variable.Value.isClaimed)
+                if (variable.IsClaimed())
                 {
                     claimedObject.SetActive(true);
                     if (outfitGraphic != null) outfitGraphic.gameObject.SetActive(false);
