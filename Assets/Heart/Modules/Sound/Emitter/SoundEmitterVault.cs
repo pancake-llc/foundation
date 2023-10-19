@@ -32,6 +32,13 @@ namespace Pancake.Sound
 
         internal List<SoundEmitter[]> GetAll() => _emitters;
 
+        internal void ClearAll()
+        {
+            _nextUniqueKey = 0;
+            _keys.Clear();
+            _emitters.Clear();
+        }
+
         public void Add(AudioHandle key, SoundEmitter[] emitter)
         {
             _keys.Add(key);

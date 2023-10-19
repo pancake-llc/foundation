@@ -147,9 +147,10 @@ namespace Pancake.Sound
             {
                 foreach (var soundEmitter in s)
                 {
-                    soundEmitter.Stop();
+                    StopAndCleanEmitter(soundEmitter);
                 }
             }
+            _sfx.ClearAll();
         }
 
         public void FinishSfx(AudioHandle handle)
