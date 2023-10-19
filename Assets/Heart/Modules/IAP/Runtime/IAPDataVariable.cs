@@ -12,7 +12,6 @@ namespace Pancake.IAP
     [HideMonoScript]
     public class IAPDataVariable : ScriptableObject
     {
-        [ReadOnly] public bool isTest;
         [ReadOnly] public string id;
         [ReadOnly] public ProductType productType;
 

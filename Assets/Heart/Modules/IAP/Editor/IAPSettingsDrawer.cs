@@ -74,14 +74,12 @@ namespace Pancake.IAPEditor
                 {
                     var iapData = _skusDataProperty.GetArrayElementAtIndex(i);
                     string id = iapData.FindPropertyRelative("id").stringValue;
-                    bool isTest = iapData.FindPropertyRelative("isTest").boolValue;
                     var productType = (ProductType) iapData.FindPropertyRelative("productType").intValue;
                     string itemName = id.Split('.').Last();
                     AssetDatabase.DeleteAsset($"{p}/scriptable_iap_{itemName.ToLower()}.asset"); // delete previous product same name
                     var scriptable = CreateInstance<IAPDataVariable>();
                     (target as IAPSettings)?.Products.Add(scriptable);
                     scriptable.id = id;
-                    scriptable.isTest = isTest;
                     scriptable.productType = productType;
                     AssetDatabase.CreateAsset(scriptable, $"{p}/scriptable_iap_{itemName.ToLower()}.asset");
                     AssetDatabase.SaveAssets();

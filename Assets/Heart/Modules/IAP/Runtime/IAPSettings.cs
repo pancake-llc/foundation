@@ -13,7 +13,6 @@ namespace Pancake.IAP
     [Serializable]
     public class IAPData
     {
-        public bool isTest;
         public string id;
         public ProductType productType;
     }

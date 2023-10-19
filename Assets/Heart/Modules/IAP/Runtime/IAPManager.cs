@@ -184,7 +184,7 @@ namespace Pancake.IAP
         {
             foreach (var p in iapSettings.Products)
             {
-                builder.AddProduct(p.id, p.isTest ? ProductType.Consumable : p.productType);
+                builder.AddProduct(p.id, p.productType);
             }
         }
 
