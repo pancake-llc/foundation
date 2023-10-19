@@ -17,6 +17,8 @@ namespace Pancake.SceneFlow
         public CountryData Get(string code)
         {
             Enum.TryParse(code, out ECountryCode countryCode);
+            var index = (int) countryCode;
+            if (index >= collection.Length) index = 225; // US
             return collection[(int) countryCode];
         }
 

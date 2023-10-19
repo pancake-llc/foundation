@@ -22,5 +22,9 @@ namespace Pancake.SceneFlow
 
         public const string WEEK_DAILY_REWARD = "week_daily_reward";
         public const string CURRENT_DAY_DAILY_REWARD = "current_day_daily_reward";
+
+        public const string KEY_COUNTRY_CODE = "country_code";
+
+        public const string KEY_BUCKET_LEADERBOARD = "leaderboard_bucket";
     }
 }

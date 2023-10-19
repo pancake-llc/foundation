@@ -68,6 +68,9 @@ namespace Pancake
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool VerifyProfile(int profile) { return Data.profile == profile; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SaveAll()
         {
             OnSaveEvent?.Invoke();
@@ -149,10 +152,10 @@ namespace Pancake
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeleteAll() => datas.Clear();
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetJson() => Serialize(datas);
-        
+
         #endregion
     }
 }

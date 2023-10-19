@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace Pancake.SceneFlow
 {
     public struct UserData
@@ -32,5 +36,34 @@ namespace Pancake.SceneFlow
         public static int GetCurrentDayDailyReward() => Data.Load(Constant.CURRENT_DAY_DAILY_REWARD, 1);
         public static void SetCurrentDayDailyReward(int day) => Data.Save(Constant.CURRENT_DAY_DAILY_REWARD, day.Min(7));
         public static void NextDayDailyReward() => Data.Save(Constant.CURRENT_DAY_DAILY_REWARD, (GetCurrentDayDailyReward() + 1).Min(7));
+
+        public static void SwitchDefaultProfile() { Data.ChangeProfile(0); }
+
+        public struct Leaderboard
+        {
+            private const int USER_LEADERBOARD_PROFILE = 1;
+            private const string ERROR_MESSAGE = "You must switch to leaderboard profile before access this data!";
+            public static void SwitchProfile() { Data.ChangeProfile(USER_LEADERBOARD_PROFILE); }
+
+            public static string GetCurrentCountryCode()
+            {
+                if (!Data.VerifyProfile(USER_LEADERBOARD_PROFILE)) throw new Exception(ERROR_MESSAGE);
+
+                return Data.Load(Constant.KEY_COUNTRY_CODE, "US");
+            }
+
+            public static void SetCurrentCountryCode(string countryCode)
+            {
+                if (!Data.VerifyProfile(USER_LEADERBOARD_PROFILE)) throw new Exception(ERROR_MESSAGE);
+                
+                Data.Save(Constant.KEY_COUNTRY_CODE, countryCode);
+            }
+
+            public static string GetJson()
+            {
+                if (!Data.VerifyProfile(USER_LEADERBOARD_PROFILE)) throw new Exception(ERROR_MESSAGE);
+                return Data.GetJson();
+            }
+        }
     }
 }

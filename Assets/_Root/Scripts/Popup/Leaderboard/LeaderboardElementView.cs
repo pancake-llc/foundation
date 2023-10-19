@@ -21,7 +21,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private GameObject decor;
         
         
-        public virtual void Init(int rank, Sprite icon, string userName, int score, LeaderboardElementColor color, Canvas root, bool self)
+        public virtual void Init(int rank, Sprite icon, string userName, int score, LeaderboardElementColor color, bool self)
         {
             txtRank.text = $"{rank}";
             txtUserName.text = userName;
@@ -46,12 +46,12 @@ namespace Pancake.SceneFlow
                 imgCircleRank.gameObject.SetActive(false);
                 txtRank.gameObject.SetActive(false);
                 decor.SetActive(true);
-                var eff = decor.GetComponentInChildren<ParticleSystemRenderer>();
-                if (eff != null)
-                {
-                    eff.sortingLayerName = root.sortingLayerName;
-                    eff.sortingOrder = root.sortingOrder + 1;
-                }
+                // var eff = decor.GetComponentInChildren<ParticleSystemRenderer>();
+                // if (eff != null)
+                // {
+                //     eff.sortingLayerName = root.sortingLayerName;
+                //     eff.sortingOrder = root.sortingOrder + 1;
+                // }
             }
 
             TryGetComponent<UIShiny>(out var uiShiny);

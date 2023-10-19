@@ -15,7 +15,7 @@ MonoBehaviour:
   guid: e92d33afe8fe37b45b6f8b1a9b1f125c
   value:
     id: 64ac0f597dd84cc
-    isUnlocked: 1
+    isUnlocked: 0
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -216}

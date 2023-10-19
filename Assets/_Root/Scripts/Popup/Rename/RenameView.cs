@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Coffee.UIEffects;
 using Newtonsoft.Json;
 using Pancake.SceneFlow;
@@ -55,7 +57,7 @@ namespace Pancake.UI
             _buttonVerifyEffect = buttonOk.GetComponent<UIEffect>();
             _countryScrollerRT = countryScroller.GetComponent<RectTransform>();
             countryScroller.Delegate = this;
-            inputFieldName.characterLimit = 17;
+            inputFieldName.characterLimit = 13;
             inputFieldName.onValueChanged.AddListener(OnInputNameValueChanged);
             inputFieldName.onSelect.AddListener(OnInputNameSelected);
             inputFieldName.text = "";
@@ -85,7 +87,7 @@ namespace Pancake.UI
         private void OnButtonDicePressed()
         {
             string randomName = _nameList.names.PickRandom();
-            int number = Random.Range(1, 999);
+            int number = Random.Range(1, 99);
             inputFieldName.text = $"{randomName}{number}";
         }
 
@@ -141,12 +143,13 @@ namespace Pancake.UI
             textMessage.gameObject.SetActive(false);
             _countryScrollerRT.pivot = new Vector2(0.5f, 1f);
             buttonOk.interactable = false;
+            countryScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Never;
 
             Tween.UISizeDelta(countryPopup, new Vector2(countryPopup.sizeDelta.x, 103f), 0.5f)
                 .OnComplete(() =>
                 {
                     countryPopup.gameObject.SetActive(false);
-                    bool state = inputFieldName.text.Length < 16 || inputFieldName.text.Length >= 3;
+                    bool state = inputFieldName.text.Length < 13 || inputFieldName.text.Length >= 3;
                     countryScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
                     buttonOk.interactable = state;
                     textMessage.gameObject.SetActive(!state);
@@ -159,8 +162,8 @@ namespace Pancake.UI
         {
             objectBlock.SetActive(true);
             _userPickName = inputFieldName.text;
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(_userPickName.Trim());
-            //await CloudSaveService.Instance.Data.Player.SaveAsync() // todo save country code
+            _userPickName += $"#{_selectedCountry}";
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(_userPickName);
             objectBlock.SetActive(false);
             objectStatusOk.SetActive(false);
             OnButtonClosePressed();
@@ -175,11 +178,11 @@ namespace Pancake.UI
 
         private void OnInputNameValueChanged(string value)
         {
-            if (value.Length >= 16)
+            if (value.Length >= 13)
             {
                 buttonOk.interactable = false;
                 _buttonVerifyEffect.effectMode = EffectMode.Grayscale;
-                DisplayWarning("Name length cannot be longer than 16 characters!");
+                DisplayWarning("Name length cannot be longer than 12 characters!");
             }
             else
             {

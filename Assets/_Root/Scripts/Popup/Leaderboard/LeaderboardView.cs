@@ -1,11 +1,14 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Pancake.Apex;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
+using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;
+using Unity.Services.CloudSave;
 using Unity.Services.Leaderboards;
 using Unity.Services.Leaderboards.Models;
 using UnityEngine;
@@ -15,7 +18,7 @@ namespace Pancake.UI
 {
     public sealed class LeaderboardView : View
     {
-        protected class LeaderboardData
+        private class LeaderboardData
         {
             public int currentPage;
             public List<LeaderboardEntry> entries;
@@ -56,6 +59,7 @@ namespace Pancake.UI
         [SerializeField] private GameObject rootLeaderboard;
         [SerializeField] private GameObject block;
         [SerializeField, Array] private LeaderboardElementView[] slots;
+        [SerializeField] private AnimationCurve displayRankCurve;
         [SerializeField, PopupPickup] private string popupRename;
 
         [SerializeField] private LeaderboardElementColor colorRank1 = new LeaderboardElementColor(new Color(1f, 0.82f, 0f),
@@ -86,11 +90,14 @@ namespace Pancake.UI
 
 
         private LeaderboardData _worldData = new LeaderboardData("world-alltime");
+        private Dictionary<string, Dictionary<string, object>> _userLeaderboardData = new Dictionary<string, Dictionary<string, object>>();
         private int _countInOnePage;
+        private Sequence[] _sequences;
 
         protected override UniTask Initialize()
         {
             _countInOnePage = slots.Length;
+            _sequences = new Sequence[slots.Length];
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonNextPage.onClick.AddListener(OnButtonNextPagePressed);
             buttonPreviousPage.onClick.AddListener(OnButtonPreviousPagePressed);
@@ -104,7 +111,6 @@ namespace Pancake.UI
         private void OnButtonCountryPressed() { }
 
         private void OnButtonWorldPressed() { }
-
 
         private void OnButtonPreviousPagePressed() { }
 
@@ -124,14 +130,17 @@ namespace Pancake.UI
                 rootLeaderboard.SetActive(false);
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
                 await LeaderboardsService.Instance.AddPlayerScoreAsync(tableId, currentLevel.Value);
-                var worldScorePage = await LeaderboardsService.Instance.GetScoresAsync(tableId, new GetScoresOptions() {Limit = _worldData.limit, Offset = _worldData.offset});
+                var worldScorePage =
+                    await LeaderboardsService.Instance.GetScoresAsync(tableId, new GetScoresOptions() {Limit = _worldData.limit, Offset = _worldData.offset});
+                _worldData.entries.AddRange(worldScorePage.Results);
+                _worldData.pageCount = (_worldData.entries.Count / (float) _countInOnePage).CeilToInt();
+                _worldData.offset = _worldData.entries.Count;
+
                 block.SetActive(false);
 
                 if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName)) ShowPopupRename(OnPopupRenameClosed);
                 else
                 {
-                    textName.text = AuthenticationService.Instance.PlayerName;
-                    rootLeaderboard.SetActive(true);
                     Refresh(_worldData);
                 }
             }
@@ -148,8 +157,7 @@ namespace Pancake.UI
                 PopupHelper.Close(transform);
                 return;
             }
-            textName.text = AuthenticationService.Instance.PlayerName;
-            rootLeaderboard.SetActive(true);
+
             Refresh(_worldData);
         }
 
@@ -181,6 +189,9 @@ namespace Pancake.UI
 
         private void Refresh(LeaderboardData data)
         {
+            string[] playerNameSplits = AuthenticationService.Instance.PlayerName.Split('#');
+            textName.text = playerNameSplits[0];
+            rootLeaderboard.SetActive(true);
             HideAllSlot();
             textCurrentPage.text = $"PAGE {data.currentPage + 1}";
             if (data.currentPage >= data.pageCount)
@@ -197,6 +208,7 @@ namespace Pancake.UI
             {
                 int index = data.currentPage * _countInOnePage + i;
                 if (data.entries.Count <= index) break;
+
                 pageData.Add(data.entries[index]);
             }
 
@@ -205,9 +217,37 @@ namespace Pancake.UI
             contentSlot.SetActive(true);
             block.SetActive(false);
 
+            StartCoroutine(PageSetup(pageData));
+        }
+
+        private IEnumerator PageSetup(List<LeaderboardEntry> pageData)
+        {
             for (int i = 0; i < pageData.Count; i++)
             {
-                //slots[i].Init(pageData[i].Rank, countryCollection.Get());
+                slots[i]
+                    .Init(pageData[i].Rank + 1,
+                        countryCollection.Get(pageData[i].PlayerName.Split('#')[1]).icon,
+                        pageData[i].PlayerName.Split('#')[0],
+                        (int) pageData[i].Score,
+                        ColorDivision(pageData[i].Rank + 1, pageData[i].PlayerId),
+                        pageData[i].PlayerId.Equals(AuthenticationService.Instance.PlayerId));
+                slots[i].gameObject.SetActive(true);
+
+                // todo play anim
+                _sequences[i] = Sequence.Create();
+                _sequences[i]
+                .Chain(Tween.Scale(slots[i].transform,
+                    Vector3.zero,
+                    new Vector3(1.04f, 1.06f, 1),
+                    0.15f,
+                    Ease.OutQuad));
+                _sequences[i]
+                .Chain(Tween.Scale(slots[i].transform,
+                    new Vector3(1.04f, 1.06f, 1),
+                    Vector3.one,
+                    0.08f,
+                    Ease.InQuad));
+                yield return new WaitForSeconds(displayRankCurve.Evaluate(i / (float) pageData.Count));
             }
         }
     }
