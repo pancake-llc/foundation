@@ -102,7 +102,6 @@ namespace Pancake.SceneFlow
         private void UnlockedOutfitInternal()
         {
             _outfitUnit.Value.isUnlocked = true;
-            _outfitUnit.Save();
             foreach (var b in buttonDict)
             {
                 b.Value.gameObject.SetActive(false);

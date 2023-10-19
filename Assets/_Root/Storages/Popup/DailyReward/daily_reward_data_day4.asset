@@ -19,7 +19,7 @@ MonoBehaviour:
     amount: 100
     icon: {fileID: 21300000, guid: ea8e3bdb32dced94e9a0f18fa7fdba30, type: 3}
     outfitUnit: {fileID: 0}
-    isClaimed: 0
+    isClaimed: 1
   debugLogEnabled: 0
   saved: 1
   defaultValue:

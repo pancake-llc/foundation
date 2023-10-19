@@ -19,7 +19,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private Sprite backgroundNormal;
         [SerializeField] private Sprite backgroundCurrent;
 
-        public void Init(DailyRewardVariable variable)
+        public void Init(DailyRewardVariable variable, BoolDailyVariable detectNewDay)
         {
             int day = variable.Value.day + (UserData.GetCurrentWeekDailyReward() - 1) * 7;
             textDay.SetText($"Day {day}");
@@ -65,7 +65,14 @@ namespace Pancake.SceneFlow
                 }
             }
 
-            imageBackground.sprite = day == UserData.GetCurrentDayDailyReward() ? backgroundCurrent : backgroundNormal;
+            if (detectNewDay.Value)
+            {
+                imageBackground.sprite = day == (UserData.GetCurrentDayDailyReward() - 1).Max(1) ? backgroundCurrent : backgroundNormal;
+            }
+            else
+            {
+                imageBackground.sprite = day == UserData.GetCurrentDayDailyReward() ? backgroundCurrent : backgroundNormal;
+            }
         }
     }
 }
