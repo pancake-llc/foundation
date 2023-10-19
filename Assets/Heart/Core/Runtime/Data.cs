@@ -149,7 +149,10 @@ namespace Pancake
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeleteAll() => datas.Clear();
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetJson() => Serialize(datas);
+        
         #endregion
     }
 }
