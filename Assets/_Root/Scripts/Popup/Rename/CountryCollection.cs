@@ -19,7 +19,7 @@ namespace Pancake.SceneFlow
             Enum.TryParse(code, out ECountryCode countryCode);
             var index = (int) countryCode;
             if (index >= collection.Length) index = 225; // US
-            return collection[(int) countryCode];
+            return collection[index];
         }
 
 #if UNITY_EDITOR

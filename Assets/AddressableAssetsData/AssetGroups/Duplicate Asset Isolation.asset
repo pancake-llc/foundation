@@ -27,11 +27,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 363a9d24ee1a4bb4b98afea0c6ae1695
-    m_Address: Assets/_Root/Sprites/StarterPack/Common/default.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ea8e3bdb32dced94e9a0f18fa7fdba30
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack1.png
     m_ReadOnly: 0

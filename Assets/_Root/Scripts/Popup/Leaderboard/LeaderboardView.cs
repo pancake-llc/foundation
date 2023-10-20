@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Pancake.Apex;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
@@ -8,7 +9,6 @@ using Pancake.Threading.Tasks;
 using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;
-using Unity.Services.CloudSave;
 using Unity.Services.Leaderboards;
 using Unity.Services.Leaderboards.Models;
 using UnityEngine;
@@ -24,7 +24,7 @@ namespace Pancake.UI
             public List<LeaderboardEntry> entries;
             public bool firstTime;
             public int pageCount;
-            public int myPosition;
+            public int myRank;
             public int offset;
             public int limit;
             private readonly string _key;
@@ -35,21 +35,26 @@ namespace Pancake.UI
                 firstTime = true;
                 entries = new List<LeaderboardEntry>();
                 currentPage = 0;
-                pageCount = 0;
+                pageCount = 1;
                 offset = 0;
                 limit = 100;
-                myPosition = -1;
+                myRank = -1;
             }
         }
 
+        public enum ELeaderboardTab
+        {
+            AllTime,
+            Weekly,
+        }
+
+        [SerializeField] private string allTimeTableId = "ALL_TIME_RANK";
+        [SerializeField] private string weeklyTableId = "WEEKLY_RANK";
         [SerializeField] private CountryCollection countryCollection;
-        [SerializeField] private string tableId;
         [SerializeField] private IntVariable currentLevel;
         [SerializeField] private Button buttonClose;
         [SerializeField] private Button buttonNextPage;
         [SerializeField] private Button buttonPreviousPage;
-        [SerializeField] private Button buttonWorld;
-        [SerializeField] private Button buttonCountry;
         [SerializeField] private Button buttonAllTimeRank;
         [SerializeField] private Button buttonWeeklyRank;
         [SerializeField] private TextMeshProUGUI textName;
@@ -89,10 +94,13 @@ namespace Pancake.UI
         [SerializeField] private LeaderboardElementColor colorOutRank = new LeaderboardElementColor();
 
 
-        private LeaderboardData _worldData = new LeaderboardData("world-alltime");
+        private LeaderboardData _allTimeData = new LeaderboardData("alltime_data");
+        private LeaderboardData _weeklyData = new LeaderboardData("weekly_data");
         private Dictionary<string, Dictionary<string, object>> _userLeaderboardData = new Dictionary<string, Dictionary<string, object>>();
         private int _countInOnePage;
         private Sequence[] _sequences;
+        private ELeaderboardTab _currentTab = ELeaderboardTab.AllTime;
+        private AsyncProcessHandle _handleAnimation;
 
         protected override UniTask Initialize()
         {
@@ -101,20 +109,107 @@ namespace Pancake.UI
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonNextPage.onClick.AddListener(OnButtonNextPagePressed);
             buttonPreviousPage.onClick.AddListener(OnButtonPreviousPagePressed);
-            buttonWorld.onClick.AddListener(OnButtonWorldPressed);
-            buttonCountry.onClick.AddListener(OnButtonCountryPressed);
+            buttonAllTimeRank.onClick.AddListener(OnButtonAllTimeRankPressed);
+            buttonWeeklyRank.onClick.AddListener(OnButtonWeeklyRankPressed);
 
             InternalInit();
+
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonCountryPressed() { }
+        private void OnButtonAllTimeRankPressed() { _currentTab = ELeaderboardTab.AllTime; }
 
-        private void OnButtonWorldPressed() { }
+        private void OnButtonWeeklyRankPressed() { _currentTab = ELeaderboardTab.Weekly; }
 
-        private void OnButtonPreviousPagePressed() { }
+        private void OnButtonPreviousPagePressed()
+        {
+            buttonPreviousPage.interactable = false;
+            switch (_currentTab)
+            {
+                case ELeaderboardTab.AllTime:
+                    AllTimePreviousPage();
+                    break;
+                case ELeaderboardTab.Weekly:
+                    WeeklyPreviousPage();
+                    break;
+            }
+        }
 
-        private void OnButtonNextPagePressed() { }
+        private void WeeklyPreviousPage()
+        {
+            if (_weeklyData.currentPage > 0)
+            {
+                _weeklyData.currentPage--;
+                buttonPreviousPage.interactable = true;
+                Refresh(_weeklyData);
+            }
+        }
+
+        private void AllTimePreviousPage()
+        {
+            if (_allTimeData.currentPage > 0)
+            {
+                _allTimeData.currentPage--;
+                buttonPreviousPage.interactable = true;
+                Refresh(_allTimeData);
+            }
+        }
+
+        private void OnButtonNextPagePressed()
+        {
+            buttonNextPage.interactable = false;
+            switch (_currentTab)
+            {
+                case ELeaderboardTab.AllTime:
+                    AllTimeNextPage();
+                    break;
+                case ELeaderboardTab.Weekly:
+                    WeeklyNextPage();
+                    break;
+            }
+        }
+
+        private async void WeeklyNextPage()
+        {
+            _weeklyData.currentPage++;
+            if (_weeklyData.currentPage == _weeklyData.pageCount - 1)
+            {
+                if (_weeklyData.entries.Count > 0)
+                {
+                    block.SetActive(true);
+                    contentSlot.SetActive(false);
+                    await LoadNextDataWeeklyScores(); // request more entry
+                    block.SetActive(false);
+                    Refresh(_weeklyData);
+                }
+            }
+            else
+            {
+                buttonNextPage.interactable = true;
+                Refresh(_weeklyData);
+            }
+        }
+
+        private async void AllTimeNextPage()
+        {
+            _allTimeData.currentPage++;
+            if (_allTimeData.currentPage == _allTimeData.pageCount - 1)
+            {
+                if (_allTimeData.entries.Count > 0)
+                {
+                    block.SetActive(true);
+                    contentSlot.SetActive(false);
+                    await LoadNextDataAllTimeScores(); // request more entry
+                    block.SetActive(false);
+                    Refresh(_allTimeData);
+                }
+            }
+            else
+            {
+                buttonNextPage.interactable = true;
+                Refresh(_allTimeData);
+            }
+        }
 
         private void OnButtonClosePressed()
         {
@@ -129,36 +224,60 @@ namespace Pancake.UI
                 block.SetActive(true);
                 rootLeaderboard.SetActive(false);
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                await LeaderboardsService.Instance.AddPlayerScoreAsync(tableId, currentLevel.Value);
-                var worldScorePage =
-                    await LeaderboardsService.Instance.GetScoresAsync(tableId, new GetScoresOptions() {Limit = _worldData.limit, Offset = _worldData.offset});
-                _worldData.entries.AddRange(worldScorePage.Results);
-                _worldData.pageCount = (_worldData.entries.Count / (float) _countInOnePage).CeilToInt();
-                _worldData.offset = _worldData.entries.Count;
-
-                block.SetActive(false);
-
-                if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName)) ShowPopupRename(OnPopupRenameClosed);
-                else
-                {
-                    Refresh(_worldData);
-                }
+                await Excute();
             }
             else
             {
-                // todo
+                await Excute();
+            }
+
+            return;
+
+            async Task Excute()
+            {
+                rootLeaderboard.SetActive(false);
+                var resultAdded = await LeaderboardsService.Instance.AddPlayerScoreAsync(allTimeTableId, currentLevel.Value);
+                _allTimeData.myRank = resultAdded.Rank;
+                if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName)) ShowPopupRename(OnPopupRenameClosed);
+                else
+                {
+                    await LoadNextDataAllTimeScores();
+                    block.SetActive(false);
+                    Refresh(_allTimeData);
+                }
             }
         }
 
-        private void OnPopupRenameClosed()
+        private async UniTask<bool> LoadNextDataAllTimeScores()
+        {
+            _allTimeData.offset = (_allTimeData.entries.Count - 1).Max(0);
+            var scores = await LeaderboardsService.Instance.GetScoresAsync(allTimeTableId,
+                new GetScoresOptions {Limit = _allTimeData.limit, Offset = _allTimeData.offset});
+            _allTimeData.entries.AddRange(scores.Results);
+            _allTimeData.pageCount = (_allTimeData.entries.Count / (float) _countInOnePage).CeilToInt();
+            return true;
+        }
+
+        private async UniTask<bool> LoadNextDataWeeklyScores()
+        {
+            _weeklyData.offset = (_weeklyData.entries.Count - 1).Max(0);
+            var scores = await LeaderboardsService.Instance.GetScoresAsync(weeklyTableId, new GetScoresOptions {Limit = _weeklyData.limit, Offset = _weeklyData.offset});
+            _weeklyData.entries.AddRange(scores.Results);
+            _weeklyData.pageCount = (_weeklyData.entries.Count / (float) _countInOnePage).CeilToInt();
+            return true;
+        }
+
+        private async void OnPopupRenameClosed()
         {
             if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName))
             {
-                PopupHelper.Close(transform);
+                await PopupHelper.Close(transform);
                 return;
             }
 
-            Refresh(_worldData);
+            await LoadNextDataAllTimeScores();
+            block.SetActive(false);
+            Refresh(_allTimeData);
         }
 
         private void ShowPopupRename(Action onPopupRenameClosed)
@@ -189,20 +308,26 @@ namespace Pancake.UI
 
         private void Refresh(LeaderboardData data)
         {
+            buttonNextPage.interactable = true;
             string[] playerNameSplits = AuthenticationService.Instance.PlayerName.Split('#');
             textName.text = playerNameSplits[0];
+            textRank.text = $"RANK {data.myRank + 1}";
             rootLeaderboard.SetActive(true);
             HideAllSlot();
             textCurrentPage.text = $"PAGE {data.currentPage + 1}";
-            if (data.currentPage >= data.pageCount)
+            if (data.currentPage >= data.pageCount - 1) // reach the end
             {
                 buttonNextPage.gameObject.SetActive(false);
                 buttonPreviousPage.gameObject.SetActive(data.currentPage != 0);
-                block.SetActive(false);
-                return;
             }
 
             block.SetActive(true);
+
+            foreach (var sequence in _sequences)
+            {
+                sequence.Stop();
+            }
+
             var pageData = new List<LeaderboardEntry>();
             for (int i = 0; i < _countInOnePage; i++)
             {
@@ -213,11 +338,11 @@ namespace Pancake.UI
             }
 
             buttonPreviousPage.gameObject.SetActive(data.currentPage != 0);
-            buttonNextPage.gameObject.SetActive(data.currentPage < data.pageCount && !(data.entries.Count < 100 && data.currentPage == data.pageCount - 1));
+            buttonNextPage.gameObject.SetActive(data.currentPage < data.pageCount - 1);
             contentSlot.SetActive(true);
             block.SetActive(false);
 
-            StartCoroutine(PageSetup(pageData));
+            App.StartCoroutine(PageSetup(pageData));
         }
 
         private IEnumerator PageSetup(List<LeaderboardEntry> pageData)
@@ -233,11 +358,12 @@ namespace Pancake.UI
                         pageData[i].PlayerId.Equals(AuthenticationService.Instance.PlayerId));
                 slots[i].gameObject.SetActive(true);
 
+                _sequences[i].Stop();
                 // todo play anim
                 _sequences[i] = Sequence.Create();
                 _sequences[i]
                 .Chain(Tween.Scale(slots[i].transform,
-                    Vector3.zero,
+                    new Vector3(0.5f, 0.5f, 0.5f),
                     new Vector3(1.04f, 1.06f, 1),
                     0.15f,
                     Ease.OutQuad));
