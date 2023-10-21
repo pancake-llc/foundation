@@ -267,11 +267,11 @@ namespace Pancake.UI
             return true;
         }
 
-        private async void OnPopupRenameClosed()
+        private async void OnPopupRenameClosed(bool isCancel)
         {
-            if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName))
+            if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName) || isCancel)
             {
-                await PopupHelper.Close(transform);
+                await PopupHelper.Close(transform, false);
                 return;
             }
 
@@ -280,9 +280,11 @@ namespace Pancake.UI
             Refresh(_allTimeData);
         }
 
-        private void ShowPopupRename(Action onPopupRenameClosed)
+        private async void ShowPopupRename(Action<bool> onPopupRenameClosed)
         {
-            PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<RenamePopup>(popupRename, true, onLoad: t => { t.popup.view.SetCallbackClose(onPopupRenameClosed); });
+            var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+            await UniTask.WaitUntil(() => !popupContainer.IsInTransition);
+            await popupContainer.Push<RenamePopup>(popupRename, true, onLoad: t => { t.popup.view.SetCallbackClose(onPopupRenameClosed); });
         }
 
         private LeaderboardElementColor ColorDivision(int rank, string playerId)

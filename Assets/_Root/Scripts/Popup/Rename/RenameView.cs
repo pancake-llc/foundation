@@ -46,10 +46,10 @@ namespace Pancake.UI
         private bool _firstTimeActiveCountry;
         private string _userPickName;
         private RectTransform _countryScrollerRT;
-        private Action _onCloseCallback;
+        private Action<bool> _onCloseCallback;
         private NameList _nameList;
 
-        public void SetCallbackClose(Action onCloseCallback) { _onCloseCallback = onCloseCallback; }
+        public void SetCallbackClose(Action<bool> onCloseCallback) { _onCloseCallback = onCloseCallback; }
 
         protected override UniTask Initialize()
         {
@@ -166,14 +166,16 @@ namespace Pancake.UI
             await AuthenticationService.Instance.UpdatePlayerNameAsync(_userPickName);
             objectBlock.SetActive(false);
             objectStatusOk.SetActive(false);
-            OnButtonClosePressed();
+            PlaySoundClose();
+            await PopupHelper.Close(transform);
+            _onCloseCallback?.Invoke(false);
         }
 
-        private void OnButtonClosePressed()
+        private async void OnButtonClosePressed()
         {
-            _onCloseCallback?.Invoke();
             PlaySoundClose();
-            PopupHelper.Close(transform);
+            await PopupHelper.Close(transform);
+            _onCloseCallback?.Invoke(true);
         }
 
         private void OnInputNameValueChanged(string value)
