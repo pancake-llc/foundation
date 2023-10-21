@@ -44,7 +44,7 @@ namespace Pancake.UI
             await loadLevelEvent.Raise(currentLevelIndex);
             reCreateLevelLoadedEvent.Raise();
             PlaySoundClose();
-            await PopupHelper.Close(transform);
+            await PopupHelper.Close(transform, false);
             showUiGameplayEvent.Raise();
         }
 
@@ -54,7 +54,7 @@ namespace Pancake.UI
         {
             reCreateLevelLoadedEvent.Raise();
             PlaySoundClose();
-            await PopupHelper.Close(transform);
+            await PopupHelper.Close(transform, false);
             showUiGameplayEvent.Raise();
         }
 

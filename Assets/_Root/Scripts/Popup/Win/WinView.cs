@@ -59,7 +59,7 @@ namespace Pancake.UI
         private async void OnButtonHomePressed()
         {
             PlaySoundClose();
-            await PopupHelper.Close(transform);
+            await PopupHelper.Close(transform, false);
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
@@ -76,7 +76,7 @@ namespace Pancake.UI
             await UniTask.WaitUntil(() => _prewarmNextLevel != null);
             reCreateLevelLoadedEvent.Raise();
             PlaySoundClose();
-            await PopupHelper.Close(transform);
+            await PopupHelper.Close(transform, false);
             showUiGameplayEvent.Raise();
         }
 
