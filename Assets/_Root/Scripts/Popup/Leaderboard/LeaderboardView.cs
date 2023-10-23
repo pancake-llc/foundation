@@ -169,7 +169,9 @@ namespace Pancake.UI
             }
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async void WeeklyNextPage()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             _weeklyData.currentPage++;
             if (_weeklyData.currentPage == _weeklyData.pageCount - 1)
@@ -190,7 +192,9 @@ namespace Pancake.UI
             }
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async void AllTimeNextPage()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             _allTimeData.currentPage++;
             if (_allTimeData.currentPage == _allTimeData.pageCount - 1)
@@ -217,7 +221,9 @@ namespace Pancake.UI
             PopupHelper.Close(transform);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async void InternalInit()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
@@ -248,7 +254,9 @@ namespace Pancake.UI
             }
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async UniTask<bool> LoadNextDataAllTimeScores()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             _allTimeData.offset = (_allTimeData.entries.Count - 1).Max(0);
             var scores = await LeaderboardsService.Instance.GetScoresAsync(allTimeTableId,
@@ -258,7 +266,9 @@ namespace Pancake.UI
             return true;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async UniTask<bool> LoadNextDataWeeklyScores()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             _weeklyData.offset = (_weeklyData.entries.Count - 1).Max(0);
             var scores = await LeaderboardsService.Instance.GetScoresAsync(weeklyTableId, new GetScoresOptions {Limit = _weeklyData.limit, Offset = _weeklyData.offset});
@@ -267,7 +277,9 @@ namespace Pancake.UI
             return true;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async void OnPopupRenameClosed(bool isCancel)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName) || isCancel)
             {
@@ -277,6 +289,7 @@ namespace Pancake.UI
 
             await LoadNextDataAllTimeScores();
             block.SetActive(false);
+
             Refresh(_allTimeData);
         }
 

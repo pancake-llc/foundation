@@ -128,6 +128,11 @@
             "name": "com.unity.services.leaderboards",
             "expression": "1.0.0",
             "define": "PANCAKE_LEADERBOARD"
+        },
+        {
+            "name": "com.unity.services.cloudsave",
+            "expression": "2.0.0",
+            "define": "PANCAKE_CLOUDSAVE"
         }
     ],
     "noEngineReferences": false
