@@ -20,4 +20,4 @@ MonoBehaviour:
   beforeAlpha: 1
   afterAlignment: 4
   afterScale: {x: 0, y: 0, z: 0}
-  afterAlpha: 0
+  afterAlpha: 1

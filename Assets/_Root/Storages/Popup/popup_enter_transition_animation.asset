@@ -17,7 +17,7 @@ MonoBehaviour:
   ease: 1
   beforeAlignment: 4
   beforeScale: {x: 0, y: 0, z: 0}
-  beforeAlpha: 0
+  beforeAlpha: 1
   afterAlignment: 4
   afterScale: {x: 1, y: 1, z: 1}
   afterAlpha: 1
