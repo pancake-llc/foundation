@@ -42,19 +42,15 @@ namespace Pancake.Spine
         {
             if (_handle != null)
             {
-#if UNITY_EDITOR
                 // avoid case app be destroy soon than other component
                 try
                 {
-#endif
                     App.StopCoroutine(_handle);
-#if UNITY_EDITOR
                 }
                 catch (Exception)
                 {
                     // ignored
                 }
-#endif
             }
 
             if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised -= Play;

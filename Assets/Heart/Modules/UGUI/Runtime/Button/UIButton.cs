@@ -145,19 +145,15 @@ namespace Pancake.UI
             base.OnDisable();
             if (_handleMultipleClick != null)
             {
-#if UNITY_EDITOR
                 // avoid case app be destroy soon than other component
                 try
                 {
-#endif
                     App.StopCoroutine(_handleMultipleClick);
-#if UNITY_EDITOR
                 }
                 catch (Exception)
                 {
                     // ignored
                 }
-#endif
             }
 
             if (_routineLongClick != null) StopCoroutine(_routineLongClick);

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 248a4f3cffc84e5e85d3de71942b5f41, type: 3}
-  m_Name: sheet_enter_transition_animation
+  m_Name: full_popup_exit_transition_animation
   m_EditorClassIdentifier: 
   delay: 0
-  duration: 0.02
+  duration: 0.1
   ease: 0
   beforeAlignment: 4
   beforeScale: {x: 1, y: 1, z: 1}
   beforeAlpha: 1
   afterAlignment: 4
   afterScale: {x: 1, y: 1, z: 1}
-  afterAlpha: 1
+  afterAlpha: 0

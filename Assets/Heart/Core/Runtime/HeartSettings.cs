@@ -7,8 +7,10 @@ namespace Pancake
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
         [Label("Debug")] [SerializeField] private bool enableAdministrator;
-        [Label("Privacy on FirstOpen")] [SerializeField] private bool enablePrivacyFirstOpen;
-
+        [Label("Privacy on FirstOpen")] 
+        [SerializeField] private bool enablePrivacyFirstOpen;
+        [SerializeField] private bool enableMultipleTouch;
+        [SerializeField] private TargetFrameRate targetFrameRate;
         [Indent, Label("Url"), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
         private string privacyUrl;
 
@@ -28,5 +30,7 @@ namespace Pancake
         public static string PrivacyMessage => Instance.privacyMessage;
         public static string AppstoreAppId => Instance.appstoreAppId;
         public static int SkAdConversionValue => Instance.skAdConversionValue;
+        public static bool EnableMultipleTouch => Instance.enableMultipleTouch;
+        public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;
     }
 }

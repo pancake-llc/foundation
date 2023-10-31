@@ -34,4 +34,12 @@ namespace Pancake
         Start,
         OnEnabled
     }
+
+    public enum TargetFrameRate
+    {
+        ByDevice = -1,
+        Frame60 = 60,
+        Frame120 = 120,
+        Frame240 = 240
+    }
 }

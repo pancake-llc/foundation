@@ -102,7 +102,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -590,8 +590,16 @@ MonoBehaviour:
   usePrefabNameAsId: 1
   <Id>k__BackingField: LosePopup
   animationContainer:
-    enterAnimations: []
-    exitAnimations: []
+    enterAnimations:
+    - partnerIdRegex: 
+      type: 1
+      uiTransitionComponent: {fileID: 0}
+      uiTransitionAnimationSo: {fileID: 11400000, guid: b0f90654cf33e7b46b1e727d9677f168, type: 2}
+    exitAnimations:
+    - partnerIdRegex: 
+      type: 1
+      uiTransitionComponent: {fileID: 0}
+      uiTransitionAnimationSo: {fileID: 11400000, guid: 361ac707b37606c45b20fd3174014ab0, type: 2}
   view: {fileID: 307215255230531495}
 --- !u!1 &6437183986520228724
 GameObject:

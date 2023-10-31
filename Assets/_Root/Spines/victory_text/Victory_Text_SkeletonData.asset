@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Victory_Text_SkeletonData
   m_EditorClassIdentifier: 
   atlasAssets:
-  - {fileID: 11400000, guid: ed4920bb92905b447a5f8c35ce2638e2, type: 2}
+  - {fileID: 11400000, guid: ede7fd563527f9b4f9294421c009cf0c, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: 6140df137ef650f449afb24da2895ea1, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: 8e4440a9a3f22494cb597f50f4e09aec, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0

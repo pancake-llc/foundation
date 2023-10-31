@@ -21,7 +21,12 @@ namespace Pancake.SceneFlow
 
         private bool _flagLoadedPersistent;
 
-        private void Awake() { LoadScene(); }
+        private void Awake()
+        {
+            Application.targetFrameRate = (int) HeartSettings.TargetFrameRate;
+            Input.multiTouchEnabled = HeartSettings.EnableMultipleTouch;
+            LoadScene();
+        }
 
         private async void LoadScene()
         {

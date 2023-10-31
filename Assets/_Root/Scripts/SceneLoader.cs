@@ -35,7 +35,7 @@ namespace Pancake.SceneFlow
             {
                 string sceneName = handle.Result.Scene.name;
                 Static.sceneHolder.Add(sceneName, handle);
-                App.Delay(0.016f, () => SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName)));
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             }
         }
 

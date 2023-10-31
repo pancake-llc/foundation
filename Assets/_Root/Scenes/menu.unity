@@ -2924,7 +2924,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   clickType: 0
-  allowMultipleClick: 1
+  allowMultipleClick: 0
   timeDisableButton: 0.2
   doubleClickInterval: 0.2
   longClickInterval: 0.5
@@ -2941,11 +2941,11 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
-  isMotion: 1
+  isMotion: 0
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
-  isAffectToSelf: 0
-  affectObject: {fileID: 290372030}
+  isAffectToSelf: 1
+  affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
   audioPlayEvent: {fileID: 0}

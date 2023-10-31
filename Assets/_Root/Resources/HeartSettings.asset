@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableAdministrator: 1
   enablePrivacyFirstOpen: 0
+  targetFrameRate: 60
   privacyUrl: https://pancakellc.com/privacy
   privacyTitle: 
   privacyMessage: 'To use <game name>

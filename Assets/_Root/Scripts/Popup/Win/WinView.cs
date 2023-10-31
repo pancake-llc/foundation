@@ -18,6 +18,7 @@ namespace Pancake.UI
         [SerializeField] private Button buttonVideoX5;
         [SerializeField] private Button buttonContinue;
         [SerializeField] private Button buttonShop;
+        [SerializeField] private GameObject uiConfetti;
         [SerializeField] private int numberCoinReceive = 100;
         [SerializeField, PopupPickup] private string popupShop;
 
@@ -59,7 +60,8 @@ namespace Pancake.UI
         private async void OnButtonHomePressed()
         {
             PlaySoundClose();
-            await PopupHelper.Close(transform, false);
+            uiConfetti.SetActive(false);
+            await PopupHelper.Close(transform);
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
@@ -76,6 +78,7 @@ namespace Pancake.UI
             await UniTask.WaitUntil(() => _prewarmNextLevel != null);
             reCreateLevelLoadedEvent.Raise();
             PlaySoundClose();
+            uiConfetti.SetActive(false);
             await PopupHelper.Close(transform, false);
             showUiGameplayEvent.Raise();
         }
