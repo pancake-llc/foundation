@@ -76,7 +76,7 @@ namespace Pancake.SceneFlow
 
         private void OnButtonShopPressed() { MainPopupContainer.Push<ShopPopup>(popupShop, true); }
 
-        private void OnButtonSettingPressed() { MainPopupContainer.Push<SettingPopup>(popupSetting, true); }
+        private void OnButtonSettingPressed() { MainPopupContainer.Push<SettingPopup>(popupSetting, true, popupId: popupSetting); }
 
         protected override void OnDisabled()
         {

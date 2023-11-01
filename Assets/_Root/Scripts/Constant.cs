@@ -15,6 +15,7 @@ namespace Pancake.SceneFlow
 
         public const string MAIN_PAGE_CONTAINER = "MainPageContainer";
         public const string MAIN_POPUP_CONTAINER = "MainPopupContainer";
+        public const string PERSISTENT_POPUP_CONTAINER = "PersistentPopupContainer";
 
         public const string CHARACTER_SKIN_HAT = "character_skin_hat";
         public const string CHARACTER_SKIN_SHIRT = "character_skin_shirt";

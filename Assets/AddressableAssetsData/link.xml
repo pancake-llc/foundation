@@ -63,6 +63,8 @@
     <type fullname="Pancake.UI.OutfitView" preserve="all" />
     <type fullname="Pancake.UI.RenamePopup" preserve="all" />
     <type fullname="Pancake.UI.RenameView" preserve="all" />
+    <type fullname="Pancake.UI.SceneTransitionPopup" preserve="all" />
+    <type fullname="Pancake.UI.SceneTransitionView" preserve="all" />
     <type fullname="Pancake.UI.SettingPopup" preserve="all" />
     <type fullname="Pancake.UI.SettingView" preserve="all" />
     <type fullname="Pancake.UI.ShopPopup" preserve="all" />

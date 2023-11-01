@@ -41,6 +41,7 @@ namespace Pancake.UI
 
         private LevelComponent _prewarmNextLevel;
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+        private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
 
         protected override UniTask Initialize()
         {
@@ -61,6 +62,10 @@ namespace Pancake.UI
         {
             PlaySoundClose();
             uiConfetti.SetActive(false);
+            await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
+                false,
+                onLoad: t => { t.popup.view.Setup(); },
+                popupId: nameof(SceneTransitionPopup)); // show transition
             await PopupHelper.Close(transform);
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }

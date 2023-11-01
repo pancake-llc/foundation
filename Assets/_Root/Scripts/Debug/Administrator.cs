@@ -105,7 +105,7 @@ namespace Pancake.SceneFlow
             }
 
             var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
-            popupContainer.Push<LosePopup>("LosePopup", true);
+            popupContainer.Push<LosePopup>(nameof(LosePopup), true, popupId: nameof(LosePopup));
         }
 
         private void OnButtonWinLevelClicked()
@@ -119,7 +119,7 @@ namespace Pancake.SceneFlow
             }
 
             var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
-            popupContainer.Push<WinPopup>("WinPopup", true);
+            popupContainer.Push<WinPopup>(nameof(WinPopup), true, popupId: nameof(WinPopup));
         }
 
         private void OnButtonDisableAdsClicked() { AdStatic.IsRemoveAd = true; }
