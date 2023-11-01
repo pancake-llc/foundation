@@ -36,6 +36,7 @@ namespace Pancake.SceneFlow
 
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
         private PageContainer MainPageContainer => PageContainer.Find(Constant.MAIN_PAGE_CONTAINER);
+        private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
 
         private void Start()
         {
@@ -72,7 +73,14 @@ namespace Pancake.SceneFlow
             }
         }
 
-        private void OnButtonTapToPlayPressed() { changeSceneEvent.Raise(Constant.GAMEPLAY_SCENE); }
+        private async void OnButtonTapToPlayPressed()
+        {
+            await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
+                false,
+                onLoad: t => { t.popup.view.Setup(true); },
+                popupId: nameof(SceneTransitionPopup)); // show transition
+            changeSceneEvent.Raise(Constant.GAMEPLAY_SCENE);
+        }
 
         private void OnButtonShopPressed() { MainPopupContainer.Push<ShopPopup>(popupShop, true); }
 
