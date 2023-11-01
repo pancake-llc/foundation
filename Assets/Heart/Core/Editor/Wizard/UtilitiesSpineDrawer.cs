@@ -39,7 +39,7 @@ namespace PancakeEditor
 
                 GUI.backgroundColor = Color.white;
             }
-            
+
             onRepaint = repaint;
 
             Uniform.DrawInstalled("4.1");
@@ -135,7 +135,7 @@ namespace PancakeEditor
         private static List<Skin> currentSkins = new();
         private static bool isNeedReload;
         private static Animation[] animations;
-        private static Skin[] skins;
+        private static List<Skin> skins;
         private static bool autoRun;
         private static float animationLastTime;
         private static float playTime;
@@ -236,7 +236,8 @@ namespace PancakeEditor
                 EditorGUILayout.LabelField(new GUIContent(SpineEditorUtilities.Icons.animation), GUILayout.Width(18));
                 EditorGUILayout.LabelField(a.Name,
                     new GUIStyle {normal = new GUIStyleState {textColor = Color.white}, alignment = TextAnchor.MiddleLeft, margin = new RectOffset(5, 0, 0, 0)},
-                    GUILayout.Height(24), GUILayout.Width(150));
+                    GUILayout.Height(24),
+                    GUILayout.Width(150));
                 EditorGUILayout.LabelField(a.Duration.ToString(CultureInfo.InvariantCulture),
                     new GUIStyle
                     {
@@ -244,7 +245,9 @@ namespace PancakeEditor
                         alignment = TextAnchor.MiddleRight,
                         margin = new RectOffset(5, 5, 0, 0)
                     },
-                    GUILayout.Height(24), GUILayout.ExpandWidth(true), GUILayout.Width(100));
+                    GUILayout.Height(24),
+                    GUILayout.ExpandWidth(true),
+                    GUILayout.Width(100));
 
                 GUILayout.EndHorizontal();
                 var lastRect = GUILayoutUtility.GetLastRect();
@@ -279,9 +282,10 @@ namespace PancakeEditor
             if (searchSkin != searchSkinPrevious)
             {
                 searchSkinPrevious = searchSkin;
-                skins = currentSkeleton.Data.Skins.Items.Where(_ => _.Name.ToLower().Contains(searchSkin.ToLower())).ToArray();
+                skins = currentSkeleton.Data.Skins.Items.Where(s => s != null && s.Name.ToLower().Contains(searchSkin.ToLower())).ToList();
             }
 
+            skins.RemoveAll(_ => _ == null);
             foreach (var s in skins)
             {
                 if (currentSkins.Contains(s))
@@ -454,7 +458,7 @@ namespace PancakeEditor
         private static void UpdateListView()
         {
             animations = currentSkeleton.Data.Animations.Items;
-            skins = currentSkeleton.Data.Skins.Items;
+            skins = currentSkeleton.Data.Skins.Items.ToList();
         }
 
         private static void UpdateGraphic()

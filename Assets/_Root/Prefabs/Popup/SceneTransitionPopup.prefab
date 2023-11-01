@@ -27,7 +27,7 @@ RectTransform:
   m_GameObject: {fileID: 2566858907276457557}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6193729139983887087}
@@ -72,14 +72,14 @@ MonoBehaviour:
   initialSkinName: default
   initialFlipX: 0
   initialFlipY: 0
-  startingAnimation: Default
+  startingAnimation: Close
   startingLoop: 0
   timeScale: 1
   freeze: 0
-  layoutScaleMode: 2
-  referenceSize: {x: 8970, y: 12360}
+  layoutScaleMode: 0
+  referenceSize: {x: 1794, y: 2472}
   referenceScale: 1
-  rectTransformSize: {x: 1794, y: 2472}
+  rectTransformSize: {x: 8970, y: 12360}
   editReferenceRect: 0
   updateWhenInvisible: 3
   allowMultipleCanvasRenderers: 0
@@ -159,8 +159,8 @@ MonoBehaviour:
   transitionGraphic: {fileID: 8051546332804713283}
   nameAnimOpen: Open
   nameAnimClose: Close
-  overrideDuration: 0
-  duration: 0
+  overrideDuration: 1
+  duration: 1
 --- !u!114 &7488548910769150798
 MonoBehaviour:
   m_ObjectHideFlags: 0
