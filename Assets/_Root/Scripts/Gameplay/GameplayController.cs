@@ -1,8 +1,9 @@
-using Pancake.Apex;
 using Pancake.LevelSystem;
 using Pancake.Monetization;
 using Pancake.Scriptable;
 using Pancake.Sound;
+using Pancake.Threading.Tasks;
+using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,8 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventGetLevelCached getNextLevelCached;
         [SerializeField] private Transform levelRootHolder;
         [SerializeField] private IntVariable currentLevelIndex;
+
+        private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
 
         private void Start()
         {
@@ -55,6 +58,13 @@ namespace Pancake.SceneFlow
             var instance = Instantiate(nextLevelPrefab, levelRootHolder, false);
         }
 
-        private void GoToMenu() { changeSceneEvent.Raise(Constant.MENU_SCENE); }
+        private async void GoToMenu()
+        {
+            await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
+                false,
+                onLoad: t => { t.popup.view.Setup(); },
+                popupId: nameof(SceneTransitionPopup)); // show transition
+            changeSceneEvent.Raise(Constant.MENU_SCENE);
+        }
     }
 }

@@ -188,9 +188,9 @@
     <type fullname="Pancake.UI.UIButton/ButtonHoldEvent" preserve="nothing" serialized="true" />
     <type fullname="Pancake.UI.UIButton/MotionData" preserve="nothing" serialized="true" />
     <type fullname="Pancake.UI.PageTransitionContainer" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.PopupTransitionContainer/TransitionAnimation" preserve="nothing" serialized="true" />
     <type fullname="Pancake.UI.SheetTransitionContainer" preserve="nothing" serialized="true" />
     <type fullname="Pancake.UI.SheetTransitionContainer/TransitionAnimation" preserve="nothing" serialized="true" />
-    <type fullname="Pancake.UI.PopupTransitionContainer/TransitionAnimation" preserve="nothing" serialized="true" />
     <type fullname="Pancake.UI.PopupBackdropTransitionContainer" preserve="nothing" serialized="true" />
     <type fullname="Pancake.UI.PopupBackdropTransitionContainer/TransitionAnimation" preserve="nothing" serialized="true" />
   </assembly>
@@ -214,6 +214,7 @@
   </assembly>
   <assembly fullname="Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
     <type fullname="UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.AtlasSpriteProvider" preserve="all" />
     <type fullname="UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider" preserve="all" />
     <type fullname="UnityEngine.ResourceManagement.ResourceProviders.InstanceProvider" preserve="all" />
     <type fullname="UnityEngine.ResourceManagement.ResourceProviders.LegacyResourcesProvider" preserve="all" />

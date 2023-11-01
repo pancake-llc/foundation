@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: a616310cf9f67a14d93e24fa3edd481e
+  m_GUID: 2ab00ead898930f46b272b03bfc0db22
   m_SerializeEntries:
   - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
     m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller
@@ -24,6 +24,51 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30bd22d31fe9b784688047c9b1d618bd
     m_Address: Assets/_Root/Animations/Fetch/Fetch.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46699c8ea281bc54caff01d06f8e5ab9
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6799bf7d00393b40a2dad8cf1f57a7d
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch_atlas.spriteatlasv2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfd600cb6c911074fb3ad3e1801dc731
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39a14d595c1622b44ae08b22d23ad626
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch8.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ff457575ab374e40b6579e410a1c355
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34ec0135919a9be45ac51c8cdc1d7a07
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6766823c3c5c414d943f507e54bed7f
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 558e0a0293b5a224fb5ee3db8f3c3291
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch7.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7d5c201c64017244bca86dff6560cec
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/fetch/fetch5.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -197,6 +242,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ae585d7fcee3674b9d4c307b4e874a1
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_popup.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ef279f98ef02e3a429ea342f2d2c40a6
     m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_play_sfx.asset
     m_ReadOnly: 0
@@ -244,6 +294,51 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2a2382dbf70ac1647b96b112ced5ec92
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_setting_popup.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e74a1f8978a7da348a721508d0d58834
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicMultiply.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfbf95ed0fe6c554c8c2ee6c8325937c
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Multiply.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bab24c479f34eec45be6ea8595891569
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicScreen.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c61244023592f95479fddd71b5067683
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Screen.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e8a610c9e01c3648bac42585e5fc676
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/Spine-Skeleton.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b66cf7a186d13054989b33a5c90044e4
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicDefault.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa95b0fb6983c0f40a152e6f9aa82bfb
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e8245019faeb8c43b75f9ca3ac8ee34
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicAdditive.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1e4ab34b07f81e4e94f0d241c416669
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Additive.shader
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -322,133 +417,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e74a1f8978a7da348a721508d0d58834
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicMultiply.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cfbf95ed0fe6c554c8c2ee6c8325937c
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Multiply.shader
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bab24c479f34eec45be6ea8595891569
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicScreen.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c61244023592f95479fddd71b5067683
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Screen.shader
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1e8a610c9e01c3648bac42585e5fc676
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/Spine-Skeleton.shader
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b66cf7a186d13054989b33a5c90044e4
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicDefault.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fa95b0fb6983c0f40a152e6f9aa82bfb
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic.shader
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2e8245019faeb8c43b75f9ca3ac8ee34
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicAdditive.mat
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a1e4ab34b07f81e4e94f0d241c416669
-    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Additive.shader
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b39b52d9a5ec5e144aa0c0b97a091f74
-    m_Address: Assets/_Root/Storages/Fx/vfx_coin_return_pool_event.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8f893bd59754ee243917f301f9d3da84
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_purchase_pack_coin_audio.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 27691cbd2f5b9544bb6cce9d47c7cdab
-    m_Address: Assets/_Root/Sounds/SFX/sfx_ui_grab_coin.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4a8027441b28f7c4ab85700ffe9528f0
-    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_pool.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d58bbac3f0f0ad546b0b447f351826ea
-    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_factory.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7fe4a6ec0fa30b548b7b105b4bd73ece
-    m_Address: Assets/_Root/Prefabs/fx_collect_coin.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 83febc520d3eaf345853dcaf224d76dd
-    m_Address: Assets/_Root/Sprites/StarterPack/Fx/coin-animation.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 491280c243b81044cbb54bda9df5a525
-    m_Address: Assets/_Root/Storages/Fx/list_coin_magnet_instance.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aa33ad2229195f9479821f41de547c98
-    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_collect_coin_audio.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 98d20dbe870ae2b41b87a7e7c72361c5
-    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_1.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7bc1de8b81a12114badbf2ba8861b20b
-    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_2.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8a100697cf7fce644a629850c1274960
-    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_5.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d236955734c7bc040a93bfb31f269677
-    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_6.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4a0a5ed18b39b0442bc49c05da077bec
-    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_4.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0bcf55d17e3719042a9532c473f18999
-    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_3.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: eb6564e2a34609041adf55fdffed4eb2
-    m_Address: Assets/_Root/Storages/Generated/get_canvas_master_event.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a17f867f81ce4d844881a1f249b43409
     m_Address: Assets/_Root/Sprites/StarterPack/Gameplay/Win/starter_common_icon_x5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 361ac707b37606c45b20fd3174014ab0
+    m_Address: Assets/_Root/Storages/Popup/full_popup_exit_transition_animation.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0f90654cf33e7b46b1e727d9677f168
+    m_Address: Assets/_Root/Storages/Popup/full_popup_enter_transition_animation.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a006421cd8bfffd42a013cf538174370
+    m_Address: Assets/_Root/Storages/Generated/Level/current_level_index.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -457,8 +442,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a006421cd8bfffd42a013cf538174370
-    m_Address: Assets/_Root/Storages/Generated/Level/current_level_index.asset
+  - m_GUID: 491280c243b81044cbb54bda9df5a525
+    m_Address: Assets/_Root/Storages/Fx/list_coin_magnet_instance.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb6564e2a34609041adf55fdffed4eb2
+    m_Address: Assets/_Root/Storages/Generated/get_canvas_master_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a8027441b28f7c4ab85700ffe9528f0
+    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_pool.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f893bd59754ee243917f301f9d3da84
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_purchase_pack_coin_audio.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b39b52d9a5ec5e144aa0c0b97a091f74
+    m_Address: Assets/_Root/Storages/Fx/vfx_coin_return_pool_event.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -484,6 +489,61 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 04ac0e953311a02458e0e69155af0dda
     m_Address: Assets/_Root/Prefabs/Popup/PopupBackdrop.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d58bbac3f0f0ad546b0b447f351826ea
+    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_factory.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27691cbd2f5b9544bb6cce9d47c7cdab
+    m_Address: Assets/_Root/Sounds/SFX/sfx_ui_grab_coin.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7fe4a6ec0fa30b548b7b105b4bd73ece
+    m_Address: Assets/_Root/Prefabs/fx_collect_coin.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa33ad2229195f9479821f41de547c98
+    m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_collect_coin_audio.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83febc520d3eaf345853dcaf224d76dd
+    m_Address: Assets/_Root/Sprites/StarterPack/Fx/coin-animation.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bcf55d17e3719042a9532c473f18999
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a0a5ed18b39b0442bc49c05da077bec
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_4.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d236955734c7bc040a93bfb31f269677
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_6.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a100697cf7fce644a629850c1274960
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_5.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bc1de8b81a12114badbf2ba8861b20b
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98d20dbe870ae2b41b87a7e7c72361c5
+    m_Address: Assets/_Root/Sounds/SFX/sfx_coin_1.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
