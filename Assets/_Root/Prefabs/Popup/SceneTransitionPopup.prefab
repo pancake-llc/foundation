@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2566858907276457557
+--- !u!1 &6722896000203427500
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,24 +8,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1040556467793126643}
-  - component: {fileID: 9100001718650847963}
-  - component: {fileID: 8051546332804713283}
-  m_Layer: 6
+  - component: {fileID: 2708843245944272738}
+  - component: {fileID: 4323121018711623188}
+  - component: {fileID: 8768428986203426180}
+  m_Layer: 0
   m_Name: renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1040556467793126643
+--- !u!224 &2708843245944272738
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2566858907276457557}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 6722896000203427500}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -37,21 +37,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1794, y: 2472}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &9100001718650847963
+--- !u!222 &4323121018711623188
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2566858907276457557}
+  m_GameObject: {fileID: 6722896000203427500}
   m_CullTransparentMesh: 0
---- !u!114 &8051546332804713283
+--- !u!114 &8768428986203426180
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2566858907276457557}
+  m_GameObject: {fileID: 6722896000203427500}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d85b887af7e6c3f45a2e2d2920d641bc, type: 3}
@@ -72,14 +72,14 @@ MonoBehaviour:
   initialSkinName: default
   initialFlipX: 0
   initialFlipY: 0
-  startingAnimation: Close
+  startingAnimation: Default
   startingLoop: 0
   timeScale: 1
   freeze: 0
   layoutScaleMode: 0
   referenceSize: {x: 1794, y: 2472}
   referenceScale: 1
-  rectTransformSize: {x: 8970, y: 12360}
+  rectTransformSize: {x: 1794, y: 2472}
   editReferenceRect: 0
   updateWhenInvisible: 3
   allowMultipleCanvasRenderers: 0
@@ -132,7 +132,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1040556467793126643}
+  - {fileID: 2708843245944272738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -156,7 +156,7 @@ MonoBehaviour:
   audioOpen: {fileID: 0}
   audioClose: {fileID: 0}
   playAudioEvent: {fileID: 0}
-  transitionGraphic: {fileID: 8051546332804713283}
+  transitionGraphic: {fileID: 0}
   nameAnimOpen: Open
   nameAnimClose: Close
   overrideDuration: 1

@@ -9,6 +9,6 @@ rotate:90
 Back
 bounds:1487,440,753,421
 rotate:90
-Logo2
+starter_logo
 bounds:1487,2,464,436
 offsets:0,16,464,452
