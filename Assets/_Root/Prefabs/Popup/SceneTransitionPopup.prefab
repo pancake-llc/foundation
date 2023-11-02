@@ -156,7 +156,7 @@ MonoBehaviour:
   audioOpen: {fileID: 0}
   audioClose: {fileID: 0}
   playAudioEvent: {fileID: 0}
-  transitionGraphic: {fileID: 0}
+  transitionGraphic: {fileID: 8768428986203426180}
   nameAnimOpen: Open
   nameAnimClose: Close
   overrideDuration: 1
