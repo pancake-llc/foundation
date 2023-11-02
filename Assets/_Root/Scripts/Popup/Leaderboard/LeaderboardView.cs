@@ -300,7 +300,7 @@ namespace Pancake.UI
                 resultAdded = await LeaderboardsService.Instance.GetPlayerScoreAsync(weeklyTableId);
             }
 
-            _allTimeData.myRank = resultAdded.Rank;
+            _weeklyData.myRank = resultAdded.Rank;
 
             if (_firstTimeEnterWeekly)
             {
