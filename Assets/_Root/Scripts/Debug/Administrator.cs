@@ -154,6 +154,7 @@ namespace Pancake.SceneFlow
             if (!activeScene.Equals(Constant.GAMEPLAY_SCENE)) return;
 
             int target = (int.Parse(inputLevelIndex.text) - 1).Max(0);
+            currentLevelIndex.Value = target;
             var prefab = await loadLevelEvent.Raise(target);
             if (prefab == null) return;
 
