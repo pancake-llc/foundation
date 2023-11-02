@@ -5437,8 +5437,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4284392148
-  m_fontColor: {r: 0.8313726, g: 0.63529414, b: 0.36862746, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -8879,8 +8879,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278664800
-  m_fontColor: {r: 0.37647063, g: 0.24313727, b: 0.027450982, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -10230,6 +10230,8 @@ MonoBehaviour:
   buttonPreviousPage: {fileID: 1586900645759433161}
   buttonAllTimeRank: {fileID: 3666037277792136193}
   buttonWeeklyRank: {fileID: 1163058702929294548}
+  spriteCurrentTab: {fileID: 21300000, guid: eb846dab01d88fe4b93d957dae9ec1ec, type: 3}
+  spriteNormalTab: {fileID: 21300000, guid: 8d53884bdbd69624f99257379294e358, type: 3}
   textName: {fileID: 5863000223400277419}
   textRank: {fileID: 1326312229077801723}
   textCurrentPage: {fileID: 5408591166815333595}

@@ -59,6 +59,8 @@ namespace Pancake.UI
         [SerializeField] private Button buttonPreviousPage;
         [SerializeField] private Button buttonAllTimeRank;
         [SerializeField] private Button buttonWeeklyRank;
+        [SerializeField] private Sprite spriteCurrentTab;
+        [SerializeField] private Sprite spriteNormalTab;
         [SerializeField] private TextMeshProUGUI textName;
         [SerializeField] private TextMeshProUGUI textRank;
         [SerializeField] private TextMeshProUGUI textCurrentPage;
@@ -68,6 +70,7 @@ namespace Pancake.UI
         [SerializeField, Array] private LeaderboardElementView[] slots;
         [SerializeField] private AnimationCurve displayRankCurve;
         [SerializeField, PopupPickup] private string popupRename;
+
 
         [SerializeField] private LeaderboardElementColor colorRank1 = new LeaderboardElementColor(new Color(1f, 0.82f, 0f),
             new Color(0.44f, 0.33f, 0f),
@@ -103,6 +106,8 @@ namespace Pancake.UI
         private Sequence[] _sequences;
         private ELeaderboardTab _currentTab = ELeaderboardTab.AllTime;
         private AsyncProcessHandle _handleAnimation;
+        private bool _firstTimeEnterWeekly = true;
+        private bool _firstTimeEnterWorld = true;
 
         protected override UniTask Initialize()
         {
@@ -119,9 +124,21 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonAllTimeRankPressed() { _currentTab = ELeaderboardTab.AllTime; }
+        private void OnButtonAllTimeRankPressed()
+        {
+            _currentTab = ELeaderboardTab.AllTime;
+            buttonWeeklyRank.image.sprite = spriteNormalTab;
+            buttonAllTimeRank.image.sprite = spriteCurrentTab;
+            InternalInit();
+        }
 
-        private void OnButtonWeeklyRankPressed() { _currentTab = ELeaderboardTab.Weekly; }
+        private void OnButtonWeeklyRankPressed()
+        {
+            _currentTab = ELeaderboardTab.Weekly;
+            buttonWeeklyRank.image.sprite = spriteCurrentTab;
+            buttonAllTimeRank.image.sprite = spriteNormalTab;
+            InternalInitWeekly();
+        }
 
         private void OnButtonPreviousPagePressed()
         {
@@ -171,9 +188,9 @@ namespace Pancake.UI
             }
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning disable CS1998
         private async void WeeklyNextPage()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning restore CS1998
         {
             _weeklyData.currentPage++;
             if (_weeklyData.currentPage == _weeklyData.pageCount - 1)
@@ -194,9 +211,9 @@ namespace Pancake.UI
             }
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning disable CS1998
         private async void AllTimeNextPage()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning restore CS1998
         {
             _allTimeData.currentPage++;
             if (_allTimeData.currentPage == _allTimeData.pageCount - 1)
@@ -220,12 +237,12 @@ namespace Pancake.UI
         private void OnButtonClosePressed()
         {
             PlaySoundClose();
-            PopupHelper.Close(transform);
+            PopupHelper.Close(transform, false);
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning disable CS1998
         private async void InternalInit()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning restore CS1998
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
@@ -243,31 +260,61 @@ namespace Pancake.UI
 
             async Task Excute()
             {
-                LeaderboardEntry resultAdded = null;
                 rootLeaderboard.SetActive(false);
-                try
+                LeaderboardEntry resultAdded;
+                if (_firstTimeEnterWorld)
                 {
                     resultAdded = await LeaderboardsService.Instance.AddPlayerScoreAsync(allTimeTableId, currentLevel.Value);
                 }
-                catch (Exception e)
+                else
                 {
-                    Debug.Log(e.Message);
+                    resultAdded = await LeaderboardsService.Instance.GetPlayerScoreAsync(allTimeTableId);
                 }
 
                 _allTimeData.myRank = resultAdded.Rank;
                 if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName)) ShowPopupRename(OnPopupRenameClosed);
                 else
                 {
-                    await LoadNextDataAllTimeScores();
+                    if (_firstTimeEnterWorld)
+                    {
+                        _firstTimeEnterWorld = false;
+                        await LoadNextDataAllTimeScores();
+                    }
+
                     block.SetActive(false);
                     Refresh(_allTimeData);
                 }
             }
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        private async void InternalInitWeekly()
+        {
+            rootLeaderboard.SetActive(false);
+            LeaderboardEntry resultAdded;
+            if (_firstTimeEnterWeekly)
+            {
+                resultAdded = await LeaderboardsService.Instance.AddPlayerScoreAsync(weeklyTableId, currentLevel.Value);
+            }
+            else
+            {
+                resultAdded = await LeaderboardsService.Instance.GetPlayerScoreAsync(weeklyTableId);
+            }
+
+            _allTimeData.myRank = resultAdded.Rank;
+
+            if (_firstTimeEnterWeekly)
+            {
+                _firstTimeEnterWeekly = false;
+                await LoadNextDataWeeklyScores();
+            }
+
+            block.SetActive(false);
+            Refresh(_weeklyData);
+        }
+
+#pragma warning disable CS1998
         private async UniTask<bool> LoadNextDataAllTimeScores()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning restore CS1998
         {
             _allTimeData.offset = (_allTimeData.entries.Count - 1).Max(0);
             var scores = await LeaderboardsService.Instance.GetScoresAsync(allTimeTableId,
@@ -277,9 +324,9 @@ namespace Pancake.UI
             return true;
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning disable CS1998
         private async UniTask<bool> LoadNextDataWeeklyScores()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning restore CS1998
         {
             _weeklyData.offset = (_weeklyData.entries.Count - 1).Max(0);
             var scores = await LeaderboardsService.Instance.GetScoresAsync(weeklyTableId, new GetScoresOptions {Limit = _weeklyData.limit, Offset = _weeklyData.offset});
@@ -288,9 +335,9 @@ namespace Pancake.UI
             return true;
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning disable CS1998
         private async void OnPopupRenameClosed(bool isCancel)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning restore CS1998
         {
             if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName) || isCancel)
             {
