@@ -351,7 +351,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16bde078114744647a753d4cc9be9907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneTransitionPopup: SceneTransitionPopup
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
 --- !u!114 &776958712
 MonoBehaviour:
@@ -610,6 +609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUnityServiceInitialized: {fileID: 11400000, guid: 1a8a9f1cc3711e34385ab17524065545, type: 2}
+  environment: 1
 --- !u!1 &1042183226
 GameObject:
   m_ObjectHideFlags: 0

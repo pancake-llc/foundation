@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Pancake.Apex;
 using Pancake.SceneFlow;
@@ -10,6 +11,7 @@ using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
+using Unity.Services.Leaderboards.Exceptions;
 using Unity.Services.Leaderboards.Models;
 using UnityEngine;
 using UnityEngine.UI;
@@ -241,8 +243,17 @@ namespace Pancake.UI
 
             async Task Excute()
             {
+                LeaderboardEntry resultAdded = null;
                 rootLeaderboard.SetActive(false);
-                var resultAdded = await LeaderboardsService.Instance.AddPlayerScoreAsync(allTimeTableId, currentLevel.Value);
+                try
+                {
+                    resultAdded = await LeaderboardsService.Instance.AddPlayerScoreAsync(allTimeTableId, currentLevel.Value);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e.Message);
+                }
+
                 _allTimeData.myRank = resultAdded.Rank;
                 if (string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName)) ShowPopupRename(OnPopupRenameClosed);
                 else
@@ -378,15 +389,15 @@ namespace Pancake.UI
                 _sequences[i] = Sequence.Create();
                 _sequences[i]
                 .Chain(Tween.Scale(slots[i].transform,
-                    new Vector3(0.5f, 0.5f, 0.5f),
+                    new Vector3(0.92f, 0.92f, 0.92f),
                     new Vector3(1.04f, 1.06f, 1),
-                    0.15f,
+                    0.2f,
                     Ease.OutQuad));
                 _sequences[i]
                 .Chain(Tween.Scale(slots[i].transform,
                     new Vector3(1.04f, 1.06f, 1),
                     Vector3.one,
-                    0.08f,
+                    0.15f,
                     Ease.InQuad));
                 yield return new WaitForSeconds(displayRankCurve.Evaluate(i / (float) pageData.Count));
             }
