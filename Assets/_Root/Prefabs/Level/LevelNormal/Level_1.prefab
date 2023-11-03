@@ -301,8 +301,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a2f3af39cf1cc449dc56c4adc5135b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originLevelIndex: 1
-  currentLevelIndex: 37
+  originLevelIndex: 0
+  currentLevelIndex: 0
   winEvent: {fileID: 0}
   loseEvent: {fileID: 0}
   replayEvent: {fileID: 0}

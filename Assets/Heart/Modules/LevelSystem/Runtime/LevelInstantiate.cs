@@ -1,8 +1,7 @@
-using Pancake.LevelSystem;
 using Pancake.Scriptable;
 using UnityEngine;
 
-namespace Pancake.SceneFlow
+namespace Pancake.LevelSystem
 {
     public class LevelInstantiate : GameComponent
     {
@@ -19,10 +18,16 @@ namespace Pancake.SceneFlow
 
         protected override void OnDisabled() { reCreateLevelLoadedEvent.OnRaised -= OnReCreateLevelLoaded; }
 
-        private void OnReCreateLevelLoaded()
+        public void OnReCreateLevelLoaded()
         {
             root.RemoveAllChildren();
-            var _ = Instantiate(loadLevelCachedEvent.Raise(), root, false);
+            LevelComponent levelComponent = null;
+#if UNITY_EDITOR
+            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : loadLevelCachedEvent.Raise();
+#else
+            levelComponent = loadLevelCachedEvent.Raise();
+#endif
+            var _ = Instantiate(levelComponent, root, false);
         }
     }
 }

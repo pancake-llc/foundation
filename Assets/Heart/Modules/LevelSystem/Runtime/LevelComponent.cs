@@ -1,6 +1,7 @@
 ﻿using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Pancake.LevelSystem
 {
@@ -50,16 +51,26 @@ namespace Pancake.LevelSystem
 
 #if UNITY_EDITOR
 
-        [Button]
-        private void PlayThisLevel()
+        [Button, ButtonHeight(30)]
+        public void PlayThisLevel()
         {
             LevelDebug.IsTest = true;
-            LevelDebug.PathLevelPrefab =  UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.Selection.activeGameObject);
-            if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            LevelDebug.LevelPrefab = null;
+            LevelDebug.PathLevelPrefab = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.Selection.activeGameObject);
+            if (!Application.isPlaying)
             {
-                string path = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(0);
-                UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Single);
-                UnityEditor.EditorApplication.isPlaying = true;
+                if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                {
+                    string path = SceneUtility.GetScenePathByBuildIndex(0);
+                    UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Single);
+                    UnityEditor.EditorApplication.isPlaying = true;
+                }
+            }
+            else
+            {
+                // recreate
+                var levelInstantiate = FindObjectOfType<LevelInstantiate>();
+                levelInstantiate.OnReCreateLevelLoaded();
             }
         }
 #endif
