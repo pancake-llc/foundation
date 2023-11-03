@@ -2875,7 +2875,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 520}
+  m_SizeDelta: {x: 400, y: 425}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4588834451538571928
 CanvasRenderer:
@@ -2935,7 +2935,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 165, y: 100}
+  m_CellSize: {x: 165, y: 80}
   m_Spacing: {x: 30, y: 20}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -3929,6 +3929,8 @@ MonoBehaviour:
   - {fileID: 6432063053533125505}
   - {fileID: 1618332164113943209}
   - {fileID: 6830556845473982753}
+  - {fileID: 4271087240392408692}
+  - {fileID: 6413022111614549176}
   - {fileID: 8978078089017402487}
   - {fileID: 4196839579887505961}
   buttonNextLevel: {fileID: 4280268030002575760}
@@ -5273,7 +5275,7 @@ MonoBehaviour:
     m_Top: -36
     m_Bottom: 30
   m_ChildAlignment: 1
-  m_Spacing: 30
+  m_Spacing: 15
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0

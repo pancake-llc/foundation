@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: next_day_detect_variable
   m_EditorClassIdentifier: 
   guid: a66391c4583af954e84a2e823e2dd2c4
-  value: 1
+  value: 0
   debugLogEnabled: 0
   saved: 1
   defaultValue: 0
