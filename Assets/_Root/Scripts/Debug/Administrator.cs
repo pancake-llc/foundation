@@ -41,6 +41,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonShowInter;
         [SerializeField] private Button buttonShowRewarded;
         [SerializeField] private Button buttonShowAppOpen;
+        [SerializeField] private Button buttonNextDayDailyReward;
 
         [Header("Event")] [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private BannerVariable bannerVariable;
@@ -51,6 +52,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private ScriptableEventNoParam hideUiGameplayEvent;
         [SerializeField] private IntVariable currentLevelIndex;
+        [SerializeField] private BoolDailyVariable boolDailyVariable;
 
         [SerializeField, PopupPickup] private string popupWin;
         [SerializeField, PopupPickup] private string popupLose;
@@ -76,6 +78,7 @@ namespace Pancake.SceneFlow
             buttonShowInter.onClick.AddListener(OnButtonShowInterClicked);
             buttonShowRewarded.onClick.AddListener(OnButtonShowRewardedClicked);
             buttonShowAppOpen.onClick.AddListener(OnButtonShowAppOpenClicked);
+            buttonNextDayDailyReward.onClick.AddListener(OnButtonNextDayClicked);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -177,6 +180,14 @@ namespace Pancake.SceneFlow
             if (prefab == null) return;
 
             reCreateLevelLoadedEvent.Raise();
+        }
+
+        private void OnButtonNextDayClicked()
+        {
+            boolDailyVariable.Value = false;
+            boolDailyVariable.Save();
+            var dailyPopup = FindObjectOfType<DailyRewardPopup>();
+            if (dailyPopup != null) dailyPopup.view.Refresh();
         }
 
         private void Change(bool state)

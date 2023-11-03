@@ -67,11 +67,11 @@ namespace Pancake.SceneFlow
 
             if (detectNewDay.Value)
             {
-                imageBackground.sprite = day == (UserData.GetCurrentDayDailyReward() - 1).Max(1) ? backgroundCurrent : backgroundNormal;
+                imageBackground.sprite = variable.Value.day == (UserData.GetCurrentDayDailyReward() - 1).Max(0) ? backgroundCurrent : backgroundNormal;
             }
             else
             {
-                imageBackground.sprite = day == UserData.GetCurrentDayDailyReward() ? backgroundCurrent : backgroundNormal;
+                imageBackground.sprite = variable.Value.day == UserData.GetCurrentDayDailyReward() ? backgroundCurrent : backgroundNormal;
             }
         }
     }

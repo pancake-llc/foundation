@@ -61,13 +61,18 @@ namespace Pancake.UI
             {
                 UserData.SetCurrentDayDailyReward(1); // reset day
                 UserData.NextWeekDailyReward(); // next week
+                foreach (var d in datas)
+                {
+                    d.Value.isClaimed = false;
+                    d.Save();
+                }
             }
             else
             {
+                data.Claim();
                 UserData.NextDayDailyReward(); // next day
             }
-
-            data.Claim();
+            
             boolDailyVariable.Value = true;
             Refresh();
         }
@@ -92,13 +97,13 @@ namespace Pancake.UI
             PopupHelper.Close(transform);
         }
 
-        private void Refresh()
+        public void Refresh()
         {
             boolDailyVariable.Load();
             if (!boolDailyVariable.Value)
             {
                 buttonClaim.gameObject.SetActive(true);
-                buttonClaimX5.gameObject.SetActive(true);
+                buttonClaimX5.gameObject.SetActive(UserData.GetCurrentDayDailyReward() != 7);
             }
             else
             {
