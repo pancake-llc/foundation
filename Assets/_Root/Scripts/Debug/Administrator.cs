@@ -42,6 +42,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonShowRewarded;
         [SerializeField] private Button buttonShowAppOpen;
         [SerializeField] private Button buttonNextDayDailyReward;
+        [SerializeField] private Button buttonUnlockAllSkin;
 
         [Header("Event")] [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private BannerVariable bannerVariable;
@@ -79,8 +80,14 @@ namespace Pancake.SceneFlow
             buttonShowRewarded.onClick.AddListener(OnButtonShowRewardedClicked);
             buttonShowAppOpen.onClick.AddListener(OnButtonShowAppOpenClicked);
             buttonNextDayDailyReward.onClick.AddListener(OnButtonNextDayClicked);
+            buttonUnlockAllSkin.onClick.AddListener(OnButtonUnlockAllSkinClicked);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnButtonUnlockAllSkinClicked()
+        {
+            
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) { Hide(); }
