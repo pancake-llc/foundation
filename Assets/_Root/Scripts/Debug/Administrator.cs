@@ -85,10 +85,7 @@ namespace Pancake.SceneFlow
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void OnButtonUnlockAllSkinClicked()
-        {
-            
-        }
+        private void OnButtonUnlockAllSkinClicked() { }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) { Hide(); }
 
@@ -107,28 +104,29 @@ namespace Pancake.SceneFlow
         private void OnButtonLoseLevelClicked()
         {
             hideUiGameplayEvent.Raise();
-            var win = FindObjectOfType<WinPopup>();
+            var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+            popupContainer.Popups.TryGetValue(nameof(WinPopup), out var win);
             if (win != null)
             {
                 DebugEditor.Log("Popup Lose now cannot be displayed because Popup Win is showing!");
                 return;
             }
 
-            var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
             popupContainer.Push<LosePopup>(nameof(LosePopup), true, popupId: nameof(LosePopup));
         }
 
         private void OnButtonWinLevelClicked()
         {
             hideUiGameplayEvent.Raise();
-            var lose = FindObjectOfType<LosePopup>();
+            var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+            popupContainer.Popups.TryGetValue(nameof(LosePopup), out var lose);
             if (lose != null)
             {
                 DebugEditor.Log("Popup Win now cannot be displayed because Popup Lose is showing!");
                 return;
             }
 
-            var popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+
             popupContainer.Push<WinPopup>(nameof(WinPopup), true, popupId: nameof(WinPopup));
         }
 

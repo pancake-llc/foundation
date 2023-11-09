@@ -78,18 +78,18 @@ namespace Pancake
 
             public static void StopCheckConnection()
             {
-                if (handle != null) App.StopCoroutine(handle);
+                if (handle is {IsTerminated: false}) App.StopCoroutine(handle);
             }
 
             private static void CheckNetworkAndroid(Action<ENetworkStatus> onCompleted)
             {
-                if (handle != null) App.StopCoroutine(handle);
+                if (handle is {IsTerminated: false}) App.StopCoroutine(handle);
                 handle = App.StartCoroutine(Check_HttpStatusCode("https://clients3.google.com/generate_204", HttpStatusCode.NoContent, onCompleted));
             }
 
             private static void CheckNetworkiOS(Action<ENetworkStatus> onCompleted)
             {
-                if (handle != null) App.StopCoroutine(handle);
+                if (handle is {IsTerminated: false}) App.StopCoroutine(handle);
                 handle = App.StartCoroutine(Check_ResponseContain("https://captive.apple.com/hotspot-detect.html",
                     "<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>",
                     onCompleted));
@@ -115,6 +115,7 @@ namespace Pancake
                 status = (int) www.responseCode == (int) statusCode ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
 
                 onCompleted?.Invoke(status);
+                handle = null;
             }
 
             /// <summary>
@@ -136,6 +137,7 @@ namespace Pancake
                 status = www.downloadHandler.text.Trim().Equals(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
 
                 onCompleted?.Invoke(status);
+                handle = null;
             }
 
             /// <summary>
@@ -157,6 +159,7 @@ namespace Pancake
                 status = www.downloadHandler.text.Trim().Contains(expectedContent.Trim()) ? ENetworkStatus.Connected : ENetworkStatus.WalledGarden;
 
                 onCompleted?.Invoke(status);
+                handle = null;
             }
 
 

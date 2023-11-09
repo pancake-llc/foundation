@@ -859,7 +859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePrefabNameAsId: 1
-  <Id>k__BackingField: NoInternet
+  <Id>k__BackingField: NoInternetPopup
   animationContainer:
     enterAnimations: []
     exitAnimations: []

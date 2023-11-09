@@ -10,6 +10,7 @@ namespace Pancake
         [Label("Privacy on FirstOpen")] 
         [SerializeField] private bool enablePrivacyFirstOpen;
         [SerializeField] private bool enableMultipleTouch;
+        [SerializeField] private bool requireInternet;
         [SerializeField] private TargetFrameRate targetFrameRate;
         [Indent, Label("Url"), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
         private string privacyUrl;
@@ -31,6 +32,7 @@ namespace Pancake
         public static string AppstoreAppId => Instance.appstoreAppId;
         public static int SkAdConversionValue => Instance.skAdConversionValue;
         public static bool EnableMultipleTouch => Instance.enableMultipleTouch;
+        public static bool RequireInternet => Instance.requireInternet;
         public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;
     }
 }

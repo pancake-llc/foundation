@@ -143,7 +143,7 @@ namespace Pancake.UI
         protected override void OnDisable()
         {
             base.OnDisable();
-            if (_handleMultipleClick != null)
+            if (_handleMultipleClick is {IsTerminated: false})
             {
                 // avoid case app be destroy soon than other component
                 try

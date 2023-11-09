@@ -4083,6 +4083,7 @@ MonoBehaviour:
   buttonShowRewarded: {fileID: 7148858781172935510}
   buttonShowAppOpen: {fileID: 1183105839701723351}
   buttonNextDayDailyReward: {fileID: 4743238776204078196}
+  buttonUnlockAllSkin: {fileID: 5991077811721522816}
   fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
   bannerVariable: {fileID: 11400000, guid: ff00650560048454880d06e8221ed404, type: 2}
   interVariable: {fileID: 11400000, guid: f5ac8a92fe9b0134eb63adcf04da125b, type: 2}

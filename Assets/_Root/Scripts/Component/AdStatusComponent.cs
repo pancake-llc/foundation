@@ -29,7 +29,7 @@ namespace Pancake.SceneFlow
             try
             {
 #endif
-                if (_handle != null) App.StopCoroutine(_handle);
+                if (_handle is {IsTerminated: false}) App.StopCoroutine(_handle);
 #if UNITY_EDITOR
             }
             catch (Exception)

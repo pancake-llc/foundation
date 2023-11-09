@@ -339,6 +339,7 @@ MonoBehaviour:
   - {fileID: 814159085}
   - {fileID: 814159086}
   - {fileID: 814159087}
+  - {fileID: 814159088}
 --- !u!114 &776958711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -522,6 +523,7 @@ GameObject:
   - component: {fileID: 814159085}
   - component: {fileID: 814159086}
   - component: {fileID: 814159087}
+  - component: {fileID: 814159088}
   m_Layer: 0
   m_Name: Initiazation
   m_TagString: Untagged
@@ -610,6 +612,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUnityServiceInitialized: {fileID: 11400000, guid: 1a8a9f1cc3711e34385ab17524065545, type: 2}
   environment: 1
+--- !u!114 &814159088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814159081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb41020e90074fc4597267877c1bf5ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeCheckAgain: 5
+  popupNoInternet: NoInternetPopup
 --- !u!1 &1042183226
 GameObject:
   m_ObjectHideFlags: 0

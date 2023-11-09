@@ -40,7 +40,7 @@ namespace Pancake.Spine
 
         protected override void OnDisabled()
         {
-            if (_handle != null)
+            if (_handle is {IsTerminated: false})
             {
                 // avoid case app be destroy soon than other component
                 try
