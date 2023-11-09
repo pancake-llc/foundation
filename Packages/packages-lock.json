@@ -8,11 +8,11 @@
       "hash": "b43e40508b167d143330d8b9eff0d5c9965cdf3c"
     },
     "com.coffee.ui-particle": {
-      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.2.1",
+      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.4.0",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "3c11209f17d38f154e020cee8b0518be9ee0fb86"
+      "hash": "3fac6e4773129b94fa15c6eb4d9afae5c9d2889a"
     },
     "com.esotericsoftware.spine.spine-csharp": {
       "version": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1",
