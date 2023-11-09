@@ -8,7 +8,7 @@ using UnityEngine;
 namespace PrimeTween {
     public partial struct Tween {
         /// <summary>Returns the number of running tweens.</summary>
-        /// <param name="onTarget">If specified, returns the number of running tweens on the target. Please note: if target is specified, this method call is O(n) complexity where n is the total number of running tweens.</param>
+        /// <param name="onTarget">If specified, returns the number of running tweens on the target. Please note: if target is specified, this method call has O(n) complexity where n is the total number of running tweens.</param>
         public static int GetTweensCount([CanBeNull] object onTarget = null) {
             if (onTarget == null) {
                 #if UNITY_EDITOR
@@ -119,13 +119,6 @@ namespace PrimeTween {
             return PrimeTweenManager.delayWithoutDurationCheck(target, duration, useUnscaledTime);
         }
 
-        internal static Tween waitFor(Tween other) {
-            Assert.IsTrue(other.isAlive);
-            var result = PrimeTweenManager.createEmpty();
-            result.tween.setWaitFor(other);
-            return result;
-        }
-        
         public static Tween MaterialColor([NotNull] Material target, int propertyId, Color endValue, float duration, Ease ease = default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
             => MaterialColor(target, propertyId, new TweenSettings<Color>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
         public static Tween MaterialColor([NotNull] Material target, int propertyId, Color endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
@@ -313,7 +306,7 @@ namespace PrimeTween {
                     return;
                 }
                 _sequence.timeScale = t.FloatVal;
-            }, t => (t.target as ReusableTween).sequence.timeScale.ToContainer());
+            }, t => (t.target as ReusableTween).timeScale.ToContainer());
             Assert.IsTrue(result.isAlive);
             result.tween.intParam = sequence.id;
             return result;

@@ -218,5 +218,7 @@ namespace PrimeTween {
             }
             return this;
         }
+
+        internal float durationWithWaitDelay => tween.calcDurationWithWaitDependencies();
     }
 }

@@ -48,7 +48,7 @@ namespace PrimeTween {
                     return 0;
                 }
                 var t = first.tween;
-                return t.elapsedTimeInCurrentCycle + t.cyclesDone * t.totalDuration;
+                return t.elapsedTime + t.cyclesDone * t.totalDuration; 
             }
         }
 
@@ -61,9 +61,20 @@ namespace PrimeTween {
                 if (!validateIsAlive()) {
                     return 0;
                 }
-                getLongest(out var result);
+                var result = first.tween.totalDuration;
                 TweenSettings.validateFiniteDuration(result);
                 return result;
+            }
+            // todo validate that sequence has not been started (elapsedTime == 0f)
+            private set {
+                Assert.IsTrue(isAlive);
+                var tween = first.tween;
+                Assert.IsTrue(value >= tween.totalDuration);
+                Assert.IsTrue(value >= tween.settings.duration);
+                Assert.AreEqual(0f, tween.settings.startDelay);
+                Assert.AreEqual(0f, tween.settings.endDelay);
+                tween.settings.duration = value;
+                tween.totalDuration = value;
             }
         }
 
@@ -83,8 +94,9 @@ namespace PrimeTween {
             return new Sequence(PrimeTweenManager.createEmpty());
         }
 
+        // todo take target from firstTween? Add target to Sequence.Create(), then manipulate the whole sequence by this target
         public static Sequence Create(Tween firstTween) {
-            return new Sequence(firstTween);
+            return Create().Group(firstTween);
         }
 
         Sequence(Tween firstTween) {
@@ -105,8 +117,10 @@ namespace PrimeTween {
             firstTween.tween.addAliveTweensInSequence(1, firstTween.id);
             firstTween.tween.sequenceCycles = 1;
             Assert.IsTrue(isAlive);
+            Assert.AreEqual(0f, duration);
+            Assert.AreEqual(0f, durationTotal);
         }
-        
+
         /// <summary>Groups <paramref name="tween"/> with the 'last' tween/sequence in this Sequence.
         /// The 'last' is the tween/sequence passed to the last Group/Chain() method.
         /// Grouped tweens/sequences start at the same time and run in parallel.
@@ -119,20 +133,15 @@ namespace PrimeTween {
             }
             Assert.IsTrue(isAlive);
             validate(tween);
-
-            var waitDep = getWaitDep();
-            if (waitDep.HasValue) {
-                tween.tween.setWaitFor(waitDep.Value);
-            }
+            tween.tween.setWaitDelay(getWaitDep());
             getLastInSelf().tween.setNextInSequence(tween);
             setSequence(tween);
+            duration = Mathf.Max(duration, tween.durationTotal);
             return this;
         }
 
-        Tween? getWaitDep() {
-            var result = getLastChildSequenceOrSelf().getLastInSelf().tween.waitFor;
-            // ReSharper disable once RedundantCast
-            return result.IsCreated ? result : (Tween?)null;
+        float getWaitDep() {
+            return getLastChildSequenceOrSelf().getLastInSelf().tween.waitDelay;
         }
 
         /// <summary>Schedules <see cref="tween"/> after all tweens/sequences in this Sequence.</summary>
@@ -141,16 +150,17 @@ namespace PrimeTween {
             if (!validateIsAlive()) {
                 return this;
             }
-            return chain(tween, getLongest());
+            return chain(tween, duration);
         }
 
-        Sequence chain(Tween other, Tween after) {
+        // todo chain and Group() have common code
+        Sequence chain(Tween other, float waitDelay) {
             Assert.IsTrue(isAlive);
             validate(other);
-            Assert.IsTrue(after.IsCreated);
             getLastInSelf().tween.setNextInSequence(other);
-            other.tween.setWaitFor(after);
+            other.tween.setWaitDelay(waitDelay);
             setSequence(other);
+            duration += other.durationTotal;
             return this;
         }
 
@@ -178,28 +188,6 @@ namespace PrimeTween {
         public Sequence ChainDelay(float _duration, bool useUnscaledTime = false) {
             return Chain(Tween.Delay(_duration, null, useUnscaledTime));
         }
-        
-        internal Tween GetLongestOrDefault() => isAlive ? getLongest() : default;
-
-        Tween getLongest() => getLongest(out _);
-
-        Tween getLongest(out float durationWithWaitDeps) {
-            Assert.IsTrue(isAlive);
-            Tween result = default;
-            float maxDuration = -1;
-            foreach (var current in getEnumerator(true)) {
-                Assert.AreNotEqual(-1, current.tween.settings.cycles);
-                var _duration = current.tween.calcDurationWithWaitDependencies();
-                if (_duration > maxDuration) {
-                    maxDuration = _duration;
-                    result = current;
-                }
-            }
-            Assert.IsTrue(maxDuration >= 0);
-            Assert.IsTrue(result.IsCreated);
-            durationWithWaitDeps = maxDuration;
-            return result;
-        }
 
         Tween getLastInSelf() {
             Assert.IsTrue(isAlive);
@@ -221,6 +209,9 @@ namespace PrimeTween {
             }
             var firstTween = first.tween;
             firstTween.sequenceCyclesDone++;
+            if (firstTween._isAlive) {
+                firstTween.ForceComplete();
+            }
             Assert.IsTrue(firstTween.sequenceCycles == -1 || firstTween.sequenceCyclesDone <= firstTween.sequenceCycles); // $"firstTween.sequenceCyclesDone {firstTween.sequenceCyclesDone} <= firstTween.sequenceCycles {firstTween.sequenceCycles}"
             if (firstTween.sequenceCyclesDone == firstTween.sequenceCycles) {
                 if (parentSequence.IsCreated) {
@@ -241,6 +232,7 @@ namespace PrimeTween {
             Assert.IsTrue(other.tween.settings.cycles >= 1, Constants.infiniteTweenInSequenceError);
         }
 
+        // todo also set useUnscaleTime
         void setSequence(Tween handle) {
             Assert.IsTrue(IsCreated);
             Assert.IsTrue(handle.isAlive); 
@@ -549,22 +541,25 @@ namespace PrimeTween {
             Assert.IsFalse(other.parentSequence.IsCreated, "Sequence can be nested in other sequence only once.");
             var lastChildOrSelf = getLastChildSequenceOrSelf();
             other.parentSequence = lastChildOrSelf;
-            other.setWaitDepAndPausedState(isChainOp ? getLongest() : getWaitDep(), isPaused);
+            other.setWaitDepAndPausedState(isChainOp ? duration : getWaitDep(), isPaused);
             Assert.IsFalse(lastChildOrSelf.childSequence.IsCreated);
             lastChildOrSelf.childSequence = other;
             lastChildOrSelf.first.tween.addAliveTweensInSequence(1, other.first.id);
+            if (isChainOp) {
+                duration += other.durationTotal;
+            } else {
+                duration = Mathf.Max(duration, other.durationTotal);
+            }
             return this;
         }
 
+        // todo also apply timeScale and useUnscaledTime
         /// tests: SequenceNestingDepsChain/SequenceNestingDepsGroup
-        void setWaitDepAndPausedState(Tween? waitDep, bool isPaused) {
-            Assert.IsFalse(first.tween.waitFor.IsCreated);
+        void setWaitDepAndPausedState(float waitDep, bool _isPaused) {
             foreach (var t in getEnumerator(true)) {
                 var tween = t.tween;
-                tween._isPaused = isPaused;
-                if (waitDep.HasValue && !tween.waitFor.IsCreated) {
-                    tween.setWaitFor(waitDep.Value);
-                }
+                tween._isPaused = _isPaused;
+                tween.waitDelay += waitDep;
             }
         }
 

@@ -17,7 +17,7 @@ namespace PrimeTween {
                 return Enumerable.Empty<object>().GetEnumerator();
             }
             var result = tween.coroutineEnumerator;
-            result.SetTween(this);
+            result.Setup(this);
             return result;
         }
 
@@ -45,7 +45,14 @@ namespace PrimeTween {
         /// }
         /// </code></example>
         [NotNull]
-        public IEnumerator ToYieldInstruction() => GetLongestOrDefault().ToYieldInstruction();
+        public IEnumerator ToYieldInstruction() {
+            if (!isAlive) {
+                return Enumerable.Empty<object>().GetEnumerator();
+            }
+            var result = first.tween.coroutineEnumerator;
+            result.Setup(this);
+            return result;
+        }
 
         bool IEnumerator.MoveNext() {
             PrimeTweenManager.Instance.warnStructBoxingInCoroutineOnce();
@@ -63,33 +70,54 @@ namespace PrimeTween {
     }
 
     internal class TweenCoroutineEnumerator : IEnumerator {
-        Tween tween { get; set; }
+        Tween tween;
+        Sequence sequence;
         bool isRunning;
 
-        internal void SetTween(Tween _tween) {
+        internal void Setup(Tween _tween) {
             Assert.IsFalse(isRunning);
             Assert.IsTrue(!tween.IsCreated || tween.Equals(_tween));
             Assert.IsTrue(_tween.isAlive);
+            Assert.IsFalse(sequence.IsCreated);
             tween = _tween;
             isRunning = true;
+            Assert.IsTrue(isAlive);
+        }
+
+        internal void Setup(Sequence _sequence) {
+            Assert.IsFalse(isRunning);
+            Assert.IsTrue(!sequence.IsCreated || sequence.Equals(_sequence));
+            Assert.IsTrue(_sequence.isAlive);
+            Assert.IsFalse(tween.IsCreated);
+            sequence = _sequence;
+            isRunning = true;
+            Assert.IsTrue(isAlive);
         }
 
         bool IEnumerator.MoveNext() {
-            var result = tween.isAlive;
+            var result = isAlive;
             if (!result) {
                 resetEnumerator();
             }
             return result;
         }
 
+        internal bool isAlive {
+            get {
+                Assert.IsFalse(tween.IsCreated && sequence.IsCreated);
+                return tween.isAlive || sequence.isAlive;
+            }
+        }
+        
         internal void resetEnumerator() {
             tween = default;
+            sequence = default;
             isRunning = false;
         }
 
         object IEnumerator.Current {
             get {
-                Assert.IsTrue(tween.isAlive);
+                Assert.IsTrue(isAlive);
 				Assert.IsTrue(isRunning);
                 return null;
             }

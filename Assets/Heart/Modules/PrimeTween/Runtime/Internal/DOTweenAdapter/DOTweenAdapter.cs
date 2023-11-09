@@ -159,7 +159,7 @@ namespace PrimeTween {
             if (!validateIsAlive()) {
                 return this;
             }
-            return chain(other, getLastInSelf());
+            return chain(other, getLastInSelf().durationWithWaitDelay);
         }
 
         public Sequence Append(Tween other) {
@@ -209,32 +209,10 @@ namespace PrimeTween {
 
         public Sequence PrependInterval(float interval) {
             Assert.IsTrue(isAlive);
-            var maybeDelay = PrimeTweenManager.delayWithoutDurationCheck(PrimeTweenManager.dummyTarget, interval, false);
-            Assert.IsTrue(maybeDelay.HasValue);
-            var delay = maybeDelay.Value;
-            var result = Create(delay);
-            int i = 0;
-            bool chainOpEncountered = false;
-            foreach (var t in getEnumerator()) {
-                if (t.tween.waitFor.IsCreated) {
-                    Assert.AreNotEqual(0, i);
-                    chainOpEncountered = true;
-                } else if (!chainOpEncountered) {
-                    t.tween.waitFor = delay;
-                }
-                if (i == 0) {
-                    delay.tween.setNextInSequence(t);
-                    delay.tween.sequenceCycles = t.tween.sequenceCycles;
-                    delay.tween.sequenceCyclesDone = t.tween.sequenceCyclesDone;
-                    
-                    Assert.AreEqual(2, delay.tween.aliveTweensInSequence); // Sequence.Create(delay), delay.tween.setNextInSequence(t) 
-                    delay.tween.aliveTweensInSequence = t.tween.aliveTweensInSequence + 1;
-                    t.tween.aliveTweensInSequence = 0;
-                }
-                t.tween.sequence = result;
-                i++;
+            foreach (var t in getEnumerator(true)) {
+                t.tween.waitDelay += interval;
             }
-            return result;
+            return this;
         }
 
         public Sequence SetUpdate(bool isIndependentUpdate) {
