@@ -17,17 +17,7 @@ namespace PrimeTween {
         [SerializeField] internal bool _isPaused;
         internal bool _isAlive;
         [SerializeField] internal float elapsedTime;
-
-        internal float elapsedTimeInCurrentCycle {
-            get {
-                var result = elapsedTime - waitDelay;
-                if (result < 0f) {
-                    return 0f;
-                }
-                return result;
-            }
-        }
-
+        internal float elapsedTimeInCurrentCycle => elapsedTime;
         internal float easedInterpolationFactor;
         internal float totalDuration;
         internal PropType propType;
@@ -48,7 +38,7 @@ namespace PrimeTween {
         [CanBeNull] object onCompleteCallback;
         [CanBeNull] object onCompleteTarget;
         
-        internal float waitDelay;
+        internal Tween waitFor;
         internal Sequence sequence;
         internal Tween nextInSequence;
         internal int sequenceCycles;
@@ -64,29 +54,27 @@ namespace PrimeTween {
         internal readonly TweenCoroutineEnumerator coroutineEnumerator = new TweenCoroutineEnumerator();
         internal float timeScale = 1;
         bool warnIgnoredOnCompleteIfTargetDestroyed = true;
-        internal Tween.ShakeData shakeData = new Tween.ShakeData {frequency = float.NaN}; // todo write test for the fix
+        internal Tween.ShakeData shakeData = new Tween.ShakeData {frequency = float.NaN};
 
         internal bool updateAndCheckIfRunning(float dt) {
-            Beginning:
             dt *= timeScale;
             const bool isRunning = true;
             const bool shouldRemove = !isRunning;
             if (!_isAlive) {
+                if (sequence.IsCreated && sequence.first.id == id && !_isPaused) {
+                    elapsedTime += dt; // update elapsedTime after death because Sequence relies on elapsedTime when calculates Sequence.elapsedTime and Sequence.elapsedTimeTotal
+                }
                 return shouldRemove;
+            }
+            if (waitFor.isAlive) {
+                return isRunning;
             }
             if (_isPaused) {
                 return isRunning;
             }
             elapsedTime += dt;
-            var elapsedTimeInCycle = elapsedTime - waitDelay;
-            var isWaitDelay = elapsedTimeInCycle < 0f;
-            // Debug.Log($"[{Time.frameCount}] elapsedTimeInCycle: {elapsedTimeInCycle}, isWaitDelay: {isWaitDelay} {GetDescription()}, done: {!isWaitDelay && !(elapsedTimeInCycle < totalDuration - dt * 0.5f)}");
-            if (isWaitDelay) {
-                return isRunning;
-            }
-            Assert.IsTrue(elapsedTimeInCycle >= 0f);
-            var isStartDelay = elapsedTimeInCycle < settings.startDelay;
-            if (isStartDelay) {
+            var isWaitingForStartDelay = elapsedTime < settings.startDelay;
+            if (isWaitingForStartDelay) {
                 return isRunning;
             }
             if (isUnityTargetDestroyed()) {
@@ -99,12 +87,12 @@ namespace PrimeTween {
             if (!isInterpolationCompleted && tweenType != TweenType.Delay) {
                 var duration = settings.duration;
                 var startDelayAndDuration = settings.startDelay + duration;
-                isInterpolationCompleted = elapsedTimeInCycle >= startDelayAndDuration - halfDt;
+                isInterpolationCompleted = elapsedTime >= startDelayAndDuration - halfDt;
                 float interpolationFactor;
                 if (isInterpolationCompleted) {
                     interpolationFactor = 1;
                 } else {
-                    var _elapsedTimeInterpolating = elapsedTimeInCycle - settings.startDelay;
+                    var _elapsedTimeInterpolating = elapsedTime - settings.startDelay;
                     Assert.IsTrue(duration > 0 && _elapsedTimeInterpolating >= 0 && _elapsedTimeInterpolating <= duration);
                     interpolationFactor = _elapsedTimeInterpolating / duration;
                 }
@@ -122,27 +110,26 @@ namespace PrimeTween {
                     return shouldRemove;
                 }
             }
-            var isEndDelay = elapsedTimeInCycle < totalDuration - halfDt;
-            if (isEndDelay) {
+            var isWaitingForEndDelay = elapsedTime < totalDuration - halfDt;
+            if (isWaitingForEndDelay) {
                 return isRunning;
             }
             Assert.AreNotEqual(0, settings.cycles);
             cyclesDone++;
+            elapsedTime = 0; // after completing a cycle it's reasonable that elapsedTime should be reset to 0 because new cycle has begun
             if (cyclesDone == settings.cycles) {
-                elapsedTime = 0f; // after completing all cycles, reset elapsedTime to 0 to correctly run the next potential sequence cycle 
                 kill();
                 ReportOnComplete();
                 updateSequenceAfterKill();
                 return shouldRemove;
             }
-            elapsedTime -= totalDuration;
+            
+            // no need to reset startFromCurrent here because getter should be used only once on tween start
+            // var isCustomTween = getter == null;
+            // startFromCurrent = settings.startFromCurrentValue && !isCustomTween;
+            
             Assert.IsFalse(startFromCurrent);
             onCycleComplete();
-            if (settings.cycles != -1 && totalDuration > 0f && elapsedTime - waitDelay >= totalDuration) {
-                dt = 0f;
-                // Debug.Log($"[{Time.frameCount}] id {id} / cyclesDone {cyclesDone} / extra cycle elapsedTime: {elapsedTime}");
-                goto Beginning;
-            }
             return isRunning;
         }
 
@@ -210,10 +197,10 @@ namespace PrimeTween {
             getter = null;
             stoppedEmergently = false;
             isInterpolationCompleted = false;
-            waitDelay = 0f;
+            waitFor = default;
             coroutineEnumerator.resetEnumerator();
             tweenType = TweenType.None;
-            timeScale = 1f;
+            timeScale = 1;
             warnIgnoredOnCompleteIfTargetDestroyed = true;
             clearOnUpdate();
         }
@@ -230,7 +217,7 @@ namespace PrimeTween {
                 try {
                     callback();
                 } catch (Exception e) {
-                    Debug.LogError($"Tween's onComplete callback raised exception, tween: {tween.GetDescription()}, exception:\n{e}", tween.unityTarget); // todo if tween is in sequence, the sequence will not be stopped after the exception
+                    Debug.LogError($"Tween's onComplete callback raised exception, tween: {tween.GetDescription()}, exception:\n{e}", tween.unityTarget);
                 }
             };
         }
@@ -372,7 +359,7 @@ namespace PrimeTween {
         [NotNull]
         internal string GetDescription() {
             string result = "";
-            if (target != PrimeTweenManager.dummyTarget) {
+            if (target != null) {
                 result += $"{(unityTarget != null ? unityTarget.name : target.GetType().Name)} / ";
             }
             var duration = settings.duration;
@@ -388,10 +375,21 @@ namespace PrimeTween {
         }
     
         internal float calcDurationWithWaitDependencies() {
-            var cycles = settings.cycles;
-            Assert.AreNotEqual(-1, cycles, "It's impossible to calculate the duration of an infinite tween (cycles == -1).");
-            Assert.AreNotEqual(0, cycles);
-            return waitDelay + totalDuration * cycles;
+            var result = 0f;
+            var current = new Tween(this);
+            while (true) {
+                var currentTween = current.tween;
+                var cycles = currentTween.settings.cycles;
+                Assert.AreNotEqual(-1, cycles, "It's impossible to calculate the duration of an infinite tween (cycles == -1).");
+                Assert.AreNotEqual(0, cycles);
+                result += currentTween.totalDuration * cycles;
+                var waitDependency = currentTween.waitFor;
+                if (!waitDependency.IsCreated) {
+                    break;
+                }
+                current = waitDependency;
+            }
+            return result;
         }
 
         internal void recalculateTotalDuration() {
@@ -551,13 +549,13 @@ namespace PrimeTween {
         }
 
         internal void kill() {
-            // Debug.Log($"[{Time.frameCount}] kill {GetDescription()}");
+            // Debug.Log($"{Time.frameCount} kill {GetDescription()}");
             Assert.IsTrue(_isAlive);
             _isAlive = false;
         }
 
         internal void revive() {
-            // Debug.Log($"[{Time.frameCount}] revive {GetDescription()}");
+            // Debug.Log($"{Time.frameCount} revive {GetDescription()}");
             Assert.IsFalse(_isAlive);
             _isAlive = true;
         }
@@ -578,29 +576,27 @@ namespace PrimeTween {
             sequence.first.tween.addAliveTweensInSequence(1, tween.Value.id);
         }
 
-        internal void setWaitDelay(float delay) {
-            Assert.AreEqual(0, waitDelay);
-            waitDelay = delay;
+        internal void setWaitFor(Tween tween) {
+            Assert.IsFalse(waitFor.IsCreated);
+            Assert.IsTrue(tween.IsCreated);
+            Assert.AreNotEqual(id, tween.id);
+            waitFor = tween;
         }
-        
-        internal bool trySetPause(bool isPaused) {
+
+        internal bool trySetPause(bool _isPaused) {
             if (sequence.IsCreated) {
                 Debug.LogError(Constants.setPauseOnTweenInsideSequenceError);
                 return false;
             }
-            if (_isPaused == isPaused) {
+            if (this._isPaused == _isPaused) {
                 return false;
             }
-            _isPaused = isPaused;
+            this._isPaused = _isPaused;
             return true;
         }
 
+        // ReSharper disable once UnusedParameter.Global
         internal void addAliveTweensInSequence(int _diff, int tweenId) {
-            Assert.IsTrue(sequence.IsCreated);
-            // ignore the main tween of a sequence
-            if (sequence.first.id == tweenId) {
-                return;
-            }
             aliveTweensInSequence += _diff;
         }
         
@@ -609,7 +605,7 @@ namespace PrimeTween {
         [CanBeNull] object onUpdateTarget;
         object onUpdateCallback;
         Action<ReusableTween> onUpdate;
-
+        
         internal void SetOnUpdate<T>(T _target, [NotNull] Action<T,Tween> _onUpdate) where T : class {
             Assert.IsNull(onUpdate, "Only one OnUpdate() is allowed for one tween.");
             Assert.IsNotNull(_onUpdate, nameof(_onUpdate) + " is null!");

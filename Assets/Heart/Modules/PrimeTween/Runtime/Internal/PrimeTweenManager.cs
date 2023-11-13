@@ -216,7 +216,7 @@ namespace PrimeTween {
             for (int i = processedCount; i < cachedCount; i++) {
                 var tween = tweens[i];
                 // ReSharper disable once PossibleNullReferenceException
-                if (tween._isAlive && !tween.startFromCurrent && tween.waitDelay == 0 && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed() && !tween.isAdditive) {
+                if (tween._isAlive && !tween.startFromCurrent && !tween.waitFor.isAlive && tween.settings.startDelay == 0 && !tween.isUnityTargetDestroyed() && !tween.isAdditive) {
                     Assert.AreEqual(0, tween.elapsedTime);
                     tween.ReportOnValueChangeIfAnimation(0);
                 }
@@ -330,7 +330,7 @@ namespace PrimeTween {
                     Debug.LogWarning($"Tween is started on GameObject that is not active in hierarchy: {comp.name}. {Constants.buildWarningCanBeDisabledMessage(nameof(warnTweenOnDisabledTarget))}", comp);
                 }
             }
-            // Debug.Log($"[{Time.frameCount}], add tween: {tween.GetDescription()}", tween.unityTarget);
+            // Debug.Log($"{Time.frameCount} add tween {tween.id}, {tween.GetDescription()}", tween.unityTarget);
             tweens.Add(tween);
             #if UNITY_ASSERTIONS && !PRIME_TWEEN_DISABLE_ASSERTIONS
             maxSimultaneousTweensCount = Math.Max(maxSimultaneousTweensCount, tweens.Count);

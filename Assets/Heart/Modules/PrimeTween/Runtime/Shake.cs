@@ -165,7 +165,7 @@ namespace PrimeTween {
             Ease easeBetweenShakes;
             bool isPunch;
             const int disabledFalloff = -42;
-            internal bool isAlive => !float.IsNaN(frequency); // todo replace NaN with 0 (default value)
+            internal bool isAlive => !float.IsNaN(frequency);
             internal Vector3 strengthPerAxis;
             internal float frequency;
 

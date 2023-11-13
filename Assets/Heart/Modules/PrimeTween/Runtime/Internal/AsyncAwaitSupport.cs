@@ -16,53 +16,30 @@ namespace PrimeTween {
         [Obsolete("This struct is needed for async/await support, you should not use it directly.")]
         public readonly struct TweenAwaiter : INotifyCompletion {
             readonly Tween tween;
-            readonly Sequence sequence;
 
             internal TweenAwaiter(Tween tween) {
                 this.tween = tween;
-                sequence = default;
             }
 
-            internal TweenAwaiter(Sequence sequence) {
-                tween = default;
-                this.sequence = sequence;
-            }
-
-            public bool IsCompleted => !isAlive;
+            public bool IsCompleted => !tween.isAlive;
 
             public void OnCompleted([NotNull] Action continuation) {
                 // try-catch is needed here because any exception that is thrown inside the OnCompleted will be silenced
                 // probably because this try in UnitySynchronizationContext.cs has no exception handling:
                 // https://github.com/Unity-Technologies/UnityCsReference/blob/dd0d959800a675836a77dbe188c7dd55abc7c512/Runtime/Export/Scripting/UnitySynchronizationContext.cs#L157
                 try {
-                    Assert.IsTrue(isAlive);
-                    var infiniteSettings = new TweenSettings<float>(0, 0, float.MaxValue, Ease.Linear, -1);
-                    var wait = animate(PrimeTweenManager.dummyTarget, ref infiniteSettings, t => {
-                        if (t._isAlive && !t.coroutineEnumerator.isAlive) {
-                            t.ForceComplete();
-                        }
-                    }, null);
-                    Assert.IsTrue(wait.isAlive);
-                    wait.tween.OnComplete(continuation, true);
-                    Assert.IsTrue(tween.IsCreated ^ sequence.IsCreated);
-                    if (tween.IsCreated) {
-                        wait.tween.coroutineEnumerator.Setup(tween);
-                    } else {
-                        wait.tween.coroutineEnumerator.Setup(sequence);
-                    }
+                    Assert.IsTrue(tween.isAlive);
+                    // waitFor doesn't postpone the await until the next frame because all tweens are updated in order.
+                    // waitFor serves two purposes:
+                    // 1. Work around the limitation of one onComplete callback by wrapping the tween inside a new tween with waitFor dependency.
+                    // 2. If tween is stopped manually, onComplete callback will not be executed.
+                    waitFor(tween).tween.OnComplete(continuation, true);
                 } catch (Exception e) {
                     Debug.LogException(e);
                     throw;
                 }
             }
 
-            bool isAlive {
-                get {
-                    Assert.IsFalse(tween.isAlive && sequence.isAlive);
-                    return tween.isAlive || sequence.isAlive;
-                }
-            }
-            
             public void GetResult() {
             }
         }
@@ -71,7 +48,7 @@ namespace PrimeTween {
     public partial struct Sequence {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Tween.TweenAwaiter GetAwaiter() {
-            return new Tween.TweenAwaiter(this);
+            return new Tween.TweenAwaiter(GetLongestOrDefault());
         }
     }
 }
