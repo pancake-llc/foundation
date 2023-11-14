@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: is_unity_service_initialized
   m_EditorClassIdentifier: 
   guid: 1a8a9f1cc3711e34385ab17524065545
-  value: 0
+  value: 1
   debugLogEnabled: 0
   saved: 0
   defaultValue: 0

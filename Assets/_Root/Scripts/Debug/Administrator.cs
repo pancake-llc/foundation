@@ -85,7 +85,16 @@ namespace Pancake.SceneFlow
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void OnButtonUnlockAllSkinClicked() { }
+        private void OnButtonUnlockAllSkinClicked()
+        {
+            Data.Save(Constant.IAP_UNLOCK_ALL_SKIN, true);
+            var container = PageContainer.Find(Constant.MAIN_PAGE_CONTAINER);
+            container.Pages.TryGetValue(nameof(OutfitPage), out var outfit);
+            if (outfit != null)
+            {
+                
+            }
+        }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) { Hide(); }
 

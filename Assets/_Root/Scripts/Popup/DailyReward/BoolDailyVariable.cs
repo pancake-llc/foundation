@@ -41,5 +41,12 @@ namespace Pancake.SceneFlow
         }
 
         public void RegisterTime(bool _) { _lastTimeUpdated = DateTime.Now.ToShortDateString(); }
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            if (value == PreviousValue) return;
+            ValueChanged();
+        }
+#endif
     }
 }

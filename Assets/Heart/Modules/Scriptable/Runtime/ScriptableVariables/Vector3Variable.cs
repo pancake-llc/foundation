@@ -17,5 +17,13 @@ namespace Pancake.Scriptable
             Value = Data.Load(Guid, DefaultValue);
             base.Load();
         }
+        
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            if (value == PreviousValue) return;
+            ValueChanged();
+        }
+#endif
     }
 }

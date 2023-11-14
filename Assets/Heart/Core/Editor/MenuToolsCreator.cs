@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Pancake;
 using Pancake.ExLib;
@@ -117,7 +118,14 @@ namespace PancakeEditor
 
                 foreach (var file in di.GetFiles()) file.Delete();
                 foreach (var dir in di.GetDirectories()) dir.Delete(true);
-                Data.DeleteAll();
+                try
+                {
+                    Data.DeleteAll();
+                }
+                catch (Exception)
+                {
+                    //
+                }
             }
         }
 

@@ -79,7 +79,7 @@ namespace Pancake.Scriptable
             }
         }
 
-        private void ValueChanged()
+        protected void ValueChanged()
         {
             _onValueChanged?.Invoke(value);
 

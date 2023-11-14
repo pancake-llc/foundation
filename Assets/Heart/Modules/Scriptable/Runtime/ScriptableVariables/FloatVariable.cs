@@ -49,7 +49,8 @@ namespace Pancake.Scriptable
                 if (value < clampedValue || value > clampedValue) value = clampedValue;
             }
 
-            base.OnValidate();
+            if (value.Approximately(PreviousValue)) return;
+            ValueChanged();
         }
 #endif
     }

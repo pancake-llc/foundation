@@ -20,5 +20,13 @@ namespace Pancake.Scriptable
         }
 
         public void Toggle() { Value = !Value; }
+        
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            if (value == PreviousValue) return;
+            ValueChanged();
+        }
+#endif
     }
 }

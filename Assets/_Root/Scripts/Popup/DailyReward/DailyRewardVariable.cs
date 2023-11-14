@@ -33,6 +33,14 @@ namespace Pancake.SceneFlow
             Data.Save(Guid, Value.isClaimed);
             base.Save();
         }
+        
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            if (value.isClaimed == PreviousValue.isClaimed) return;
+            ValueChanged();
+        }
+#endif
     }
 
     [Serializable]

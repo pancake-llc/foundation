@@ -23,7 +23,7 @@ namespace Pancake.UI
         [SerializeField] private TabView tabHat;
         [SerializeField] private TabView tabShirt;
         [SerializeField] private TabView tabShoes;
-        private SheetContainer OutfitSlotsContainer => SheetContainer.Find("SheetOutfitSlots");
+        private SheetContainer SheetOutfitSlot => SheetContainer.Find("SheetOutfitSlots");
         private SheetContainer SheetOutfitPreview => SheetContainer.Find("SheetOutfitPreview");
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
 
@@ -38,6 +38,16 @@ namespace Pancake.UI
             buttonShirt.onClick.AddListener(OnButtonShirtPressed);
             buttonShoes.onClick.AddListener(OnButtonShoesPressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
+            
+            if (Data.Load(Constant.IAP_UNLOCK_ALL_SKIN, false))
+            {
+                // unlock all skill
+                foreach (var outfit in outfitContainer.outfits)
+                {
+                    foreach (var variable in outfit.list) variable.Unlock();
+                }
+            }
+
             Setup();
             SetupPreview();
             return UniTask.CompletedTask;
@@ -49,7 +59,7 @@ namespace Pancake.UI
         {
             if (_currentOutfitType == OutfitType.Shoe) return;
             _currentOutfitType = OutfitType.Shoe;
-            OutfitSlotsContainer.Show(skinShoesCollectionSheet.RuntimeKey.ToString(), false);
+            SheetOutfitSlot.Show(skinShoesCollectionSheet.RuntimeKey.ToString(), false);
             tabHat.Deactive(true);
             tabShirt.Deactive(true);
             tabShoes.Active(true);
@@ -59,7 +69,7 @@ namespace Pancake.UI
         {
             if (_currentOutfitType == OutfitType.Shirt) return;
             _currentOutfitType = OutfitType.Shirt;
-            OutfitSlotsContainer.Show(skinShirtCollectionSheet.RuntimeKey.ToString(), false);
+            SheetOutfitSlot.Show(skinShirtCollectionSheet.RuntimeKey.ToString(), false);
             tabHat.Deactive(true);
             tabShirt.Active(true);
             tabShoes.Deactive(true);
@@ -69,7 +79,7 @@ namespace Pancake.UI
         {
             if (_currentOutfitType == OutfitType.Hat) return;
             _currentOutfitType = OutfitType.Hat;
-            OutfitSlotsContainer.Show(skinHatCollectionSheet.RuntimeKey.ToString(), false);
+            SheetOutfitSlot.Show(skinHatCollectionSheet.RuntimeKey.ToString(), false);
             tabHat.Active(true);
             tabShirt.Deactive(true);
             tabShoes.Deactive(true);
@@ -83,30 +93,30 @@ namespace Pancake.UI
 
         private async void Setup()
         {
-            await UniTask.WaitUntil(() => OutfitSlotsContainer != null);
+            await UniTask.WaitUntil(() => SheetOutfitSlot != null);
 #pragma warning disable 4014
-            OutfitSlotsContainer.Register(skinShoesCollectionSheet.RuntimeKey.ToString(),
+            SheetOutfitSlot.Register(skinShoesCollectionSheet.RuntimeKey.ToString(),
                 sheetId: skinShoesCollectionSheet.RuntimeKey.ToString(),
                 onLoad: t =>
                 {
                     _currentOutfitCollection = (OutfitCollectionSheet) t.sheet;
                     _currentOutfitCollection.view.Binding(outfitContainer.outfits.Filter(o => o.type == OutfitType.Shoe).FirstOrDefault(), OutfitType.Shoe);
                 });
-            OutfitSlotsContainer.Register(skinShirtCollectionSheet.RuntimeKey.ToString(),
+            SheetOutfitSlot.Register(skinShirtCollectionSheet.RuntimeKey.ToString(),
                 sheetId: skinShirtCollectionSheet.RuntimeKey.ToString(),
                 onLoad: t =>
                 {
                     _currentOutfitCollection = (OutfitCollectionSheet) t.sheet;
                     _currentOutfitCollection.view.Binding(outfitContainer.outfits.Filter(o => o.type == OutfitType.Shirt).FirstOrDefault(), OutfitType.Shirt);
                 });
-            await OutfitSlotsContainer.Register(skinHatCollectionSheet.RuntimeKey.ToString(),
+            await SheetOutfitSlot.Register(skinHatCollectionSheet.RuntimeKey.ToString(),
                 sheetId: skinHatCollectionSheet.RuntimeKey.ToString(),
                 onLoad: t =>
                 {
                     _currentOutfitCollection = (OutfitCollectionSheet) t.sheet;
                     _currentOutfitCollection.view.Binding(outfitContainer.outfits.Filter(o => o.type == OutfitType.Hat).FirstOrDefault(), OutfitType.Hat);
                 });
-            OutfitSlotsContainer.Show(skinHatCollectionSheet.RuntimeKey.ToString(), false);
+            SheetOutfitSlot.Show(skinHatCollectionSheet.RuntimeKey.ToString(), false);
 #pragma warning restore 4014
             tabHat.Active(true);
             tabShirt.Deactive(true);

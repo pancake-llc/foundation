@@ -29,5 +29,13 @@ namespace Pancake.SceneFlow
             Value.isUnlocked = Data.Load(Guid, DefaultValue.isUnlocked);
             base.Load();
         }
+        
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            if (value.isUnlocked == PreviousValue.isUnlocked) return;
+            ValueChanged();
+        }
+#endif
     }
 }

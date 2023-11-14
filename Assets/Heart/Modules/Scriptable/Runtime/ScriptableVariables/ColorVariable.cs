@@ -28,5 +28,13 @@ namespace Pancake.Scriptable
                 1f);
             Value = beautifulColor;
         }
+        
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            if (value == PreviousValue) return;
+            ValueChanged();
+        }
+#endif
     }
 }

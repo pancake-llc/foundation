@@ -50,7 +50,8 @@ namespace Pancake.Scriptable
                     value = clampedValue;
             }
 
-            base.OnValidate();
+            if (value == PreviousValue) return;
+            ValueChanged();
         }
 #endif
     }
