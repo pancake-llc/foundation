@@ -104,7 +104,7 @@ namespace Pancake.SceneFlow
             Change(state);
             if (!state) return;
             bool isInGameplay = SceneManager.GetActiveScene().name.Equals(Constant.GAMEPLAY_SCENE);
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < 4; i++)
             {
                 locks[i].SetActive(isInGameplay);
             }
