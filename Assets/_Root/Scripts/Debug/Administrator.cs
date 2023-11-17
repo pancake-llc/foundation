@@ -6,6 +6,7 @@ using Pancake.Monetization;
 using Pancake.Scriptable;
 using Pancake.UI;
 using PrimeTween;
+using Tayx.Graphy;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -43,6 +44,8 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonShowAppOpen;
         [SerializeField] private Button buttonNextDayDailyReward;
         [SerializeField] private Button buttonUnlockAllSkin;
+        [SerializeField] private Button buttonEnabledMonitor;
+        [SerializeField] private Button buttonDisabledMonitor;
 
         [Header("Event")] [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private BannerVariable bannerVariable;
@@ -54,9 +57,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam hideUiGameplayEvent;
         [SerializeField] private IntVariable currentLevelIndex;
         [SerializeField] private BoolDailyVariable boolDailyVariable;
-
-        [SerializeField, PopupPickup] private string popupWin;
-        [SerializeField, PopupPickup] private string popupLose;
+        [SerializeField] private GameObject graphyPrefab;
 
         private bool _stateSlide;
 
@@ -81,8 +82,22 @@ namespace Pancake.SceneFlow
             buttonShowAppOpen.onClick.AddListener(OnButtonShowAppOpenClicked);
             buttonNextDayDailyReward.onClick.AddListener(OnButtonNextDayClicked);
             buttonUnlockAllSkin.onClick.AddListener(OnButtonUnlockAllSkinClicked);
+            buttonEnabledMonitor.onClick.AddListener(OnButtonEnabledMonitorClicked);
+            buttonDisabledMonitor.onClick.AddListener(OnButtonDisabledMonitorClicked);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnButtonDisabledMonitorClicked()
+        {
+            if (GraphyManager.Instance == null) return;
+            GraphyManager.Instance.gameObject.Destroy();
+        }
+
+        private void OnButtonEnabledMonitorClicked()
+        {
+            if (GraphyManager.Instance != null) return;
+            _ = Instantiate(graphyPrefab);
         }
 
         private void OnButtonUnlockAllSkinClicked()

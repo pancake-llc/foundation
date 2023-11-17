@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: e547637d09e186646973773ce57a4448
+  m_GUID: 2bb3e8065c854c443a94ba7981cbb542
   m_SerializeEntries:
   - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
     m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller
@@ -419,6 +419,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a17f867f81ce4d844881a1f249b43409
     m_Address: Assets/_Root/Sprites/StarterPack/Gameplay/Win/starter_common_icon_x5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a66391c4583af954e84a2e823e2dd2c4
+    m_Address: Assets/_Root/Storages/Popup/DailyReward/next_day_detect_variable.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
