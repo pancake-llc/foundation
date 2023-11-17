@@ -22,6 +22,9 @@ namespace Pancake.SceneFlow
         [SerializeField] private RectTransform holder;
         [SerializeField] private RectTransform virtualHolder;
         [SerializeField] private Button buttonSlide;
+        [SerializeField] private Image slideRenderer;
+        [SerializeField] private Sprite slideCloseSprite;
+        [SerializeField] private Sprite slideOpenSprite;
         [SerializeField] private TMP_InputField inputPassword;
         [SerializeField] private Button buttonJoin;
         [SerializeField] private TextMeshProUGUI message;
@@ -107,7 +110,6 @@ namespace Pancake.SceneFlow
             container.Pages.TryGetValue(nameof(OutfitPage), out var outfit);
             if (outfit != null)
             {
-                
             }
         }
 
@@ -266,6 +268,7 @@ namespace Pancake.SceneFlow
         private void Show()
         {
             _stateSlide = true;
+            slideRenderer.sprite = slideCloseSprite;
             Tween.UIAnchoredPositionX(holder, 500, 0.5f);
             Tween.UIAnchoredPositionX(virtualHolder, 500, 0.5f);
             Refresh();
@@ -274,6 +277,7 @@ namespace Pancake.SceneFlow
         private void Hide()
         {
             _stateSlide = false;
+            slideRenderer.sprite = slideOpenSprite;
             Tween.UIAnchoredPositionX(holder, 0, 0.5f);
             Tween.UIAnchoredPositionX(virtualHolder, 0, 0.5f);
         }
