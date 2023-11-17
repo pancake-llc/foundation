@@ -3,28 +3,31 @@ using UnityEngine.UI;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Binds a float variable to a slider
+    /// </summary>
     [AddComponentMenu("Scriptable/Bindings/BindSlider")]
     [RequireComponent(typeof(Slider))]
     public class BindSlider : CacheGameComponent<Slider>
     {
-        [SerializeField] private FloatVariable _floatVariable = null;
+        [SerializeField] private FloatVariable floatVariable;
 
         protected override void Awake()
         {
             base.Awake();
-            OnValueChanged(_floatVariable);
+            OnValueChanged(floatVariable);
             component.onValueChanged.AddListener(SetBoundVariable);
-            _floatVariable.OnValueChanged += OnValueChanged;
+            floatVariable.OnValueChanged += OnValueChanged;
         }
 
         private void OnDestroy()
         {
             component.onValueChanged.RemoveListener(SetBoundVariable);
-            _floatVariable.OnValueChanged -= OnValueChanged;
+            floatVariable.OnValueChanged -= OnValueChanged;
         }
 
         private void OnValueChanged(float value) { component.value = value; }
 
-        private void SetBoundVariable(float value) { _floatVariable.Value = value; }
+        private void SetBoundVariable(float value) { floatVariable.Value = value; }
     }
 }

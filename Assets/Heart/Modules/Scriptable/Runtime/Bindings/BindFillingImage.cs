@@ -3,24 +3,27 @@ using UnityEngine.UI;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Binds a float variable to a filling image
+    /// </summary>
     [AddComponentMenu("Scriptable/Bindings/BindFillingImage")]
     [RequireComponent(typeof(Image))]
     public class BindFillingImage : CacheGameComponent<Image>
     {
-        [SerializeField] private FloatVariable _floatVariable = null;
-        [SerializeField] private FloatReference _maxValue = null;
+        [SerializeField] private FloatVariable floatVariable;
+        [SerializeField] private FloatReference maxValue;
 
         protected override void Awake()
         {
             base.Awake();
             component.type = Image.Type.Filled;
 
-            Refresh(_floatVariable);
-            _floatVariable.OnValueChanged += Refresh;
+            Refresh(floatVariable);
+            floatVariable.OnValueChanged += Refresh;
         }
 
-        private void OnDestroy() { _floatVariable.OnValueChanged -= Refresh; }
+        private void OnDestroy() { floatVariable.OnValueChanged -= Refresh; }
 
-        private void Refresh(float currentValue) { component.fillAmount = _floatVariable.Value / _maxValue.Value; }
+        private void Refresh(float currentValue) { component.fillAmount = floatVariable.Value / maxValue.Value; }
     }
 }

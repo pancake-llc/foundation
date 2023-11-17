@@ -24,6 +24,9 @@ namespace Pancake.Scriptable
         //feel free to uncomment this property if you need to access the list for more functionalities.
         //public List<T> List => list; 
 
+        /// <summary>
+        /// Access an item in the list by index.
+        /// </summary>
         public T this[int index] { get => list[index]; set => list[index] = value; }
 
         /// <summary> Event raised when an item is added or removed from the list. </summary>
@@ -100,8 +103,8 @@ namespace Pancake.Scriptable
         /// Removes a range of items from the list.
         /// Raises OnItemCountChanged and OnItemsAdded event once, after all items have been added.
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="count"></param>
+        /// <param name="index">Starting Index</param>
+        /// <param name="count">Amount of Items</param>
         public void RemoveRange(int index, int count)
         {
             var items = list.GetRange(index, count);

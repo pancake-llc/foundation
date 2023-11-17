@@ -4,6 +4,9 @@ using UnityEngine.Events;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// A listener for a ScriptableEventFunc.
+    /// </summary>
     [EditorIcon("scriptable_event_listener")]
     public abstract class EventListenerFunc<TResult> : EventListenerBase
     {

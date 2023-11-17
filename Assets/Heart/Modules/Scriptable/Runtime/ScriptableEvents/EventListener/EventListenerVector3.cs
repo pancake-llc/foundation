@@ -3,6 +3,9 @@ using UnityEngine.Events;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// A listener for a ScriptableEventVector3.
+    /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerVector3")]
     [EditorIcon("scriptable_event_listener")]
     public class EventListenerVector3 : EventListenerGeneric<Vector3>

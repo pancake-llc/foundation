@@ -2,6 +2,9 @@
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Base class for all event listeners
+    /// </summary>
     [EditorIcon("scriptable_event_listener")]
     public abstract class EventListenerBase : MonoBehaviour
     {
@@ -16,6 +19,9 @@ namespace Pancake.Scriptable
 
         protected abstract void ToggleRegistration(bool toggle);
 
+        /// <summary>
+        /// Returns true if the event listener contains a call to the method with the given name
+        /// </summary>
         public abstract bool ContainsCallToMethod(string methodName);
 
         private void Awake()

@@ -15,6 +15,13 @@ namespace Pancake.Scriptable
         private Vector2Int minMax = new Vector2Int(int.MinValue, int.MaxValue);
 
         public Vector2Int MinMax { get => minMax; set => minMax = value; }
+        public int Min { get => minMax.x; set => minMax.x = value; }
+        public int Max { get => minMax.y; set => minMax.y = value; }
+
+        /// <summary>
+        /// Returns the percentage of the value between the minimum and maximum.
+        /// </summary>
+        public float Ratio => Mathf.InverseLerp(minMax.x, minMax.y, value);
 
         public override void Save()
         {

@@ -4,6 +4,9 @@ using UnityEngine.Events;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// A listener for a ScriptableEventNoParam.
+    /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerNoParam")]
     [EditorIcon("scriptable_event_listener")]
     public class EventListenerNoParam : EventListenerBase

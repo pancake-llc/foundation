@@ -3,11 +3,14 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Binds a string variable to an input field
+    /// </summary>
     [AddComponentMenu("Scriptable/Bindings/BindInputField")]
     [RequireComponent(typeof(TMP_InputField))]
     public class BindInputField : CacheGameComponent<TMP_InputField>
     {
-        [SerializeField] private StringVariable stringVariable = null;
+        [SerializeField] private StringVariable stringVariable;
 
         protected override void Awake()
         {

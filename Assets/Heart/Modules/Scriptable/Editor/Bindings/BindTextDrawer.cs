@@ -9,19 +9,19 @@ namespace Pancake.ScriptableEditor
     [CanEditMultipleObjects]
     public class BindTextDrawer : UnityEditor.Editor
     {
-        BindText _targetScript;
-        SerializedProperty _boolVariableProperty;
-        SerializedProperty _intVariableProperty;
-        SerializedProperty _floatVariableProperty;
-        SerializedProperty _stringVariableProperty;
+        private BindText _targetScript;
+        private SerializedProperty _boolVariableProperty;
+        private SerializedProperty _intVariableProperty;
+        private SerializedProperty _floatVariableProperty;
+        private SerializedProperty _stringVariableProperty;
 
-        void OnEnable()
+        private void OnEnable()
         {
             _targetScript = (BindText) target;
-            _boolVariableProperty = serializedObject.FindProperty("_boolVariable");
-            _intVariableProperty = serializedObject.FindProperty("_intVariable");
-            _floatVariableProperty = serializedObject.FindProperty("_floatVariable");
-            _stringVariableProperty = serializedObject.FindProperty("_stringVariable");
+            _boolVariableProperty = serializedObject.FindProperty("boolVariable");
+            _intVariableProperty = serializedObject.FindProperty("intVariable");
+            _floatVariableProperty = serializedObject.FindProperty("floatVariable");
+            _stringVariableProperty = serializedObject.FindProperty("stringVariable");
         }
 
         public override void OnInspectorGUI()

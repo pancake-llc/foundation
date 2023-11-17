@@ -11,6 +11,7 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_event")]
     public class ScriptableEventNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {
+        [Tooltip("Enable console logs when this event is raised.")]
         [SerializeField] private bool debugLogEnabled;
 
         private readonly List<EventListenerNoParam> _eventListeners = new List<EventListenerNoParam>();
@@ -18,6 +19,9 @@ namespace Pancake.Scriptable
 
         private Action _onRaised;
 
+        /// <summary>
+        /// Action raised when this event is raised.
+        /// </summary>
         public event Action OnRaised
         {
             add
@@ -38,6 +42,9 @@ namespace Pancake.Scriptable
             }
         }
 
+        /// <summary>
+        /// Raise the event
+        /// </summary>
         public void Raise()
         {
             if (!Application.isPlaying)
@@ -56,16 +63,25 @@ namespace Pancake.Scriptable
 #endif
         }
 
+        /// <summary>
+        /// Registers the listener to this event.
+        /// </summary>
         public void RegisterListener(EventListenerNoParam listener)
         {
             if (!_eventListeners.Contains(listener)) _eventListeners.Add(listener);
         }
 
+        /// <summary>
+        /// Unregisters the listener from this event.
+        /// </summary>
         public void UnregisterListener(EventListenerNoParam listener)
         {
             if (_eventListeners.Contains(listener)) _eventListeners.Remove(listener);
         }
 
+        /// <summary>
+        /// Get all objects that are listening to this event.
+        /// </summary>
         public List<Object> GetAllObjects()
         {
             var allObjects = new List<Object>(_eventListeners);

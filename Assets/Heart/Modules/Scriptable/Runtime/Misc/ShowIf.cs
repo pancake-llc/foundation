@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Show a field in the inspector if a condition is met. Hides it otherwise.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     internal class ShowIfAttribute : PropertyAttribute
     {

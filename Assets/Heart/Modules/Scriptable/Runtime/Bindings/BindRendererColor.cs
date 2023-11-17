@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Binds a color variable to a renderer
+    /// </summary>
     [AddComponentMenu("Scriptable/Bindings/BindRendererColor")]
     [RequireComponent(typeof(Renderer))]
     public class BindRendererColor : CacheGameComponent<Renderer>
     {
-        [SerializeField] private ColorVariable colorVariable = null;
+        [SerializeField] private ColorVariable colorVariable;
 
-        private MaterialPropertyBlock _block = null;
+        private MaterialPropertyBlock _block;
+        private static readonly int Color1 = Shader.PropertyToID("_Color");
 
         protected override void Awake()
         {
@@ -24,7 +27,7 @@ namespace Pancake.Scriptable
 
         private void Refresh(Color color)
         {
-            _block.SetColor("_Color", color);
+            _block.SetColor(Color1, color);
             component.SetPropertyBlock(_block);
         }
     }

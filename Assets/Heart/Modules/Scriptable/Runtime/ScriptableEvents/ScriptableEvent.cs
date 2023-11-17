@@ -10,14 +10,18 @@ namespace Pancake.Scriptable
     [Serializable]
     public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector
     {
+        [Tooltip("Enable console logs when this event is raised.")]
         [SerializeField] private bool debugLogEnabled = false;
+        [Tooltip("Value used when raising the event in editor.")]
         [SerializeField] protected T debugValue = default(T);
 
         private readonly List<EventListenerGeneric<T>> _eventListeners = new List<EventListenerGeneric<T>>();
         private readonly List<Object> _listenersObjects = new List<Object>();
         private Action<T> _onRaised = null;
 
-        /// <summary> Event raised when the event is raised. </summary>
+        /// <summary>
+        /// Action raised when this event is raised.
+        /// </summary>
         public event Action<T> OnRaised
         {
             add
@@ -40,7 +44,9 @@ namespace Pancake.Scriptable
 
         public override Type GetGenericType => typeof(T);
 
-        /// <summary> Raise the event </summary>
+        /// <summary>
+        /// Raise the event
+        /// </summary>
         public void Raise(T param)
         {
             if (!Application.isPlaying)
@@ -59,18 +65,27 @@ namespace Pancake.Scriptable
 #endif
         }
 
+        /// <summary>
+        /// Registers the listener to this event.
+        /// </summary>
         public void RegisterListener(EventListenerGeneric<T> listener)
         {
             if (!_eventListeners.Contains(listener))
                 _eventListeners.Add(listener);
         }
 
+        /// <summary>
+        /// Unregisters the listener from this event.
+        /// </summary>
         public void UnregisterListener(EventListenerGeneric<T> listener)
         {
             if (_eventListeners.Contains(listener))
                 _eventListeners.Remove(listener);
         }
 
+        /// <summary>
+        /// Get all objects that are listening to this event.
+        /// </summary>
         public List<Object> GetAllObjects()
         {
             var allObjects = new List<Object>(_eventListeners);

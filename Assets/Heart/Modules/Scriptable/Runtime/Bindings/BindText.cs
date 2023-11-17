@@ -1,19 +1,23 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Binds a variable to a text component
+    /// </summary>
     [AddComponentMenu("Scriptable/Bindings/BindText")]
     [RequireComponent(typeof(Text))]
     public class BindText : CacheGameComponent<Text>
     {
         public CustomVariableType type = CustomVariableType.None;
 
-        [SerializeField] private BoolVariable boolVariable = null;
-        [SerializeField] private IntVariable intVariable = null;
-        [SerializeField] private FloatVariable floatVariable = null;
-        [SerializeField] private StringVariable stringVariable = null;
+        [SerializeField] private BoolVariable boolVariable;
+        [SerializeField] private IntVariable intVariable;
+        [SerializeField] private FloatVariable floatVariable;
+        [SerializeField] private StringVariable stringVariable;
 
         public string prefix = string.Empty;
         public string suffix = string.Empty;
@@ -81,20 +85,16 @@ namespace Pancake.Scriptable
             switch (type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null)
-                        boolVariable.OnValueChanged += (value) => Refresh();
+                    if (boolVariable != null) boolVariable.OnValueChanged += OnValueChanged;
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null)
-                        intVariable.OnValueChanged += (value) => Refresh();
+                    if (intVariable != null) intVariable.OnValueChanged += OnValueChanged;
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null)
-                        floatVariable.OnValueChanged += (value) => Refresh();
+                    if (floatVariable != null) floatVariable.OnValueChanged += OnValueChanged;
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null)
-                        stringVariable.OnValueChanged += (value) => Refresh();
+                    if (stringVariable != null) stringVariable.OnValueChanged += OnValueChanged;
                     break;
             }
         }
@@ -104,22 +104,30 @@ namespace Pancake.Scriptable
             switch (type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null)
-                        boolVariable.OnValueChanged -= (value) => Refresh();
+                    if (boolVariable != null) boolVariable.OnValueChanged -= OnValueChanged;
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null)
-                        intVariable.OnValueChanged -= (value) => Refresh();
+                    if (intVariable != null) intVariable.OnValueChanged -= OnValueChanged;
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null)
-                        floatVariable.OnValueChanged -= (value) => Refresh();
+                    if (floatVariable != null) floatVariable.OnValueChanged -= OnValueChanged;
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null)
-                        stringVariable.OnValueChanged -= (value) => Refresh();
+                    if (stringVariable != null) stringVariable.OnValueChanged -= OnValueChanged;
                     break;
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(bool _) { Refresh(); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(int _) { Refresh(); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(float _) { Refresh(); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(string _) { Refresh(); }
     }
 }

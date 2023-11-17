@@ -58,8 +58,14 @@ namespace Pancake.Scriptable
             }
         }
 
+        /// <summary>
+        /// The previous value just after the value changed.
+        /// </summary>
         public T PreviousValue { get; private set; }
 
+        /// <summary>
+        /// The default value this variable is reset to. 
+        /// </summary>
         public T DefaultValue { get => defaultValue; private set => defaultValue = value; }
 
         public override Type GetGenericType => typeof(T);

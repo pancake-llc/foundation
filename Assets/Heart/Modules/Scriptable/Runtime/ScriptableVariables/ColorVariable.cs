@@ -18,6 +18,9 @@ namespace Pancake.Scriptable
             base.Load();
         }
 
+        /// <summary>
+        /// Sets a random color.
+        /// </summary>
         public void SetRandom()
         {
             var beautifulColor = Random.ColorHSV(0f,

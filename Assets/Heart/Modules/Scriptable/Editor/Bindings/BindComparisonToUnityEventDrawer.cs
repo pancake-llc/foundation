@@ -9,38 +9,38 @@ namespace Pancake.ScriptableEditor
     [CanEditMultipleObjects]
     public class BindComparisonToUnityEventDrawer : UnityEditor.Editor
     {
-        BindComparisonToUnityEvent _targetScript;
-        SerializedProperty _boolVariable;
-        SerializedProperty _boolComparer;
-        SerializedProperty _intVariable;
-        SerializedProperty _intComparer;
-        SerializedProperty _floatVariable;
-        SerializedProperty _floatComparer;
-        SerializedProperty _stringVariable;
-        SerializedProperty _stringComparer;
-        SerializedProperty _unityEvent;
+        private BindComparisonToUnityEvent _targetScript;
+        private SerializedProperty _boolVariable;
+        private SerializedProperty _boolComparer;
+        private SerializedProperty _intVariable;
+        private SerializedProperty _intComparer;
+        private SerializedProperty _floatVariable;
+        private SerializedProperty _floatComparer;
+        private SerializedProperty _stringVariable;
+        private SerializedProperty _stringComparer;
+        private SerializedProperty _unityEvent;
 
-        void OnEnable()
+        private void OnEnable()
         {
             _targetScript = (BindComparisonToUnityEvent) target;
-            _boolVariable = serializedObject.FindProperty("_boolVariable");
-            _boolComparer = serializedObject.FindProperty("_boolComparer");
-            _intVariable = serializedObject.FindProperty("_intVariable");
-            _intComparer = serializedObject.FindProperty("_intComparer");
-            _floatVariable = serializedObject.FindProperty("_floatVariable");
-            _floatComparer = serializedObject.FindProperty("_floatComparer");
-            _stringVariable = serializedObject.FindProperty("_stringVariable");
-            _stringComparer = serializedObject.FindProperty("_stringComparer");
-            _unityEvent = serializedObject.FindProperty("_unityEvent");
+            _boolVariable = serializedObject.FindProperty("boolVariable");
+            _boolComparer = serializedObject.FindProperty("boolComparer");
+            _intVariable = serializedObject.FindProperty("intVariable");
+            _intComparer = serializedObject.FindProperty("intComparer");
+            _floatVariable = serializedObject.FindProperty("floatVariable");
+            _floatComparer = serializedObject.FindProperty("floatComparer");
+            _stringVariable = serializedObject.FindProperty("stringVariable");
+            _stringComparer = serializedObject.FindProperty("stringComparer");
+            _unityEvent = serializedObject.FindProperty("unityEvent");
         }
 
         public override void OnInspectorGUI()
         {
             EditorGUI.BeginChangeCheck();
             Undo.RecordObject(_targetScript, "Modified Custom Inspector");
-            _targetScript.Type = (CustomVariableType) EditorGUILayout.EnumPopup("Variable Type", _targetScript.Type);
+            _targetScript.type = (CustomVariableType) EditorGUILayout.EnumPopup("Variable Type", _targetScript.type);
 
-            switch (_targetScript.Type)
+            switch (_targetScript.type)
             {
                 case CustomVariableType.None:
                     break;
@@ -51,13 +51,13 @@ namespace Pancake.ScriptableEditor
                     break;
                 case CustomVariableType.Int:
                     EditorGUILayout.PropertyField(_intVariable, new GUIContent("Int Variable"));
-                    _targetScript.Comparison = (BindComparisonToUnityEvent.Comparator) EditorGUILayout.EnumPopup("Operation", _targetScript.Comparison);
+                    _targetScript.comparison = (BindComparisonToUnityEvent.Comparator) EditorGUILayout.EnumPopup("Operation", _targetScript.comparison);
                     EditorGUILayout.PropertyField(_intComparer, new GUIContent("Int Comparer"));
                     EditorGUILayout.PropertyField(_unityEvent, new GUIContent("Event"));
                     break;
                 case CustomVariableType.Float:
                     EditorGUILayout.PropertyField(_floatVariable, new GUIContent("Float Variable"));
-                    _targetScript.Comparison = (BindComparisonToUnityEvent.Comparator) EditorGUILayout.EnumPopup("Operation", _targetScript.Comparison);
+                    _targetScript.comparison = (BindComparisonToUnityEvent.Comparator) EditorGUILayout.EnumPopup("Operation", _targetScript.comparison);
                     EditorGUILayout.PropertyField(_floatComparer, new GUIContent("Float Comparer"));
                     EditorGUILayout.PropertyField(_unityEvent, new GUIContent("Event"));
                     break;
@@ -71,8 +71,7 @@ namespace Pancake.ScriptableEditor
             if (EditorGUI.EndChangeCheck())
             {
                 serializedObject.ApplyModifiedProperties();
-                if (!Application.isPlaying)
-                    EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+                if (!Application.isPlaying) EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             }
         }
     }

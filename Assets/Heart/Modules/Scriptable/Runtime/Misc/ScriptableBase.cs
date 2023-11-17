@@ -2,6 +2,9 @@
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Base classes of all ScriptableObjects
+    /// </summary>
     [Searchable]
     [System.Serializable]
     public abstract class ScriptableBase : ScriptableObject

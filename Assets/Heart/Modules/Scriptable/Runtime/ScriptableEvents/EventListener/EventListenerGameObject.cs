@@ -3,6 +3,9 @@ using UnityEngine.Events;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// A listener for a ScriptableEventGameObject
+    /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerGameObject")]
     [EditorIcon("scriptable_event_listener")]
     public class EventListenerGameObject : EventListenerGeneric<GameObject>

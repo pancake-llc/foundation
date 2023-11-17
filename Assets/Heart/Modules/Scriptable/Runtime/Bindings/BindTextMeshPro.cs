@@ -1,22 +1,26 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 using UnityEngine;
 using TMPro;
 
 namespace Pancake.Scriptable
 {
+    /// <summary>
+    /// Binds a variable to a TextMeshPro component
+    /// </summary>
     [AddComponentMenu("Scriptable/Bindings/BindTextMeshPro")]
     [RequireComponent(typeof(TMP_Text))]
     public class BindTextMeshPro : CacheGameComponent<TMP_Text>
     {
         public CustomVariableType type = CustomVariableType.None;
 
-        [SerializeField] private BoolVariable boolVariable = null;
-        [SerializeField] private IntVariable intVariable = null;
-        [SerializeField] private FloatVariable floatVariable = null;
-        [SerializeField] private StringVariable stringVariable = null;
+        [SerializeField] private BoolVariable boolVariable;
+        [SerializeField] private IntVariable intVariable;
+        [SerializeField] private FloatVariable floatVariable;
+        [SerializeField] private StringVariable stringVariable;
 
-        public string prefix = string.Empty;
-        public string suffix = string.Empty;
+        [Tooltip("Displays before the value")] public string prefix = string.Empty;
+        [Tooltip("Displays after the value")] public string suffix = string.Empty;
 
         //int specific
         [Tooltip("Useful too an offset, for example for Level counts. If your level index is  0, add 1, so it displays Level : 1")]
@@ -81,16 +85,16 @@ namespace Pancake.Scriptable
             switch (type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null) boolVariable.OnValueChanged += OnBoolVariableOnOnValueChanged;
+                    if (boolVariable != null) boolVariable.OnValueChanged += OnValueChanged;
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null) intVariable.OnValueChanged += OnIntVariableOnOnValueChanged;
+                    if (intVariable != null) intVariable.OnValueChanged += OnValueChanged;
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null) floatVariable.OnValueChanged += OnFloatVariableOnOnValueChanged;
+                    if (floatVariable != null) floatVariable.OnValueChanged += OnValueChanged;
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null) stringVariable.OnValueChanged += OnStringVariableOnOnValueChanged;
+                    if (stringVariable != null) stringVariable.OnValueChanged += OnValueChanged;
                     break;
             }
         }
@@ -100,26 +104,30 @@ namespace Pancake.Scriptable
             switch (type)
             {
                 case CustomVariableType.Bool:
-                    if (boolVariable != null) boolVariable.OnValueChanged -= OnBoolVariableOnOnValueChanged;
+                    if (boolVariable != null) boolVariable.OnValueChanged -= OnValueChanged;
                     break;
                 case CustomVariableType.Int:
-                    if (intVariable != null) intVariable.OnValueChanged -= OnIntVariableOnOnValueChanged;
+                    if (intVariable != null) intVariable.OnValueChanged -= OnValueChanged;
                     break;
                 case CustomVariableType.Float:
-                    if (floatVariable != null) floatVariable.OnValueChanged -= OnFloatVariableOnOnValueChanged;
+                    if (floatVariable != null) floatVariable.OnValueChanged -= OnValueChanged;
                     break;
                 case CustomVariableType.String:
-                    if (stringVariable != null) stringVariable.OnValueChanged -= OnStringVariableOnOnValueChanged;
+                    if (stringVariable != null) stringVariable.OnValueChanged -= OnValueChanged;
                     break;
             }
         }
 
-        private void OnStringVariableOnOnValueChanged(string _) { Refresh(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(string _) { Refresh(); }
 
-        private void OnFloatVariableOnOnValueChanged(float _) { Refresh(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(float _) { Refresh(); }
 
-        private void OnIntVariableOnOnValueChanged(int _) { Refresh(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(int _) { Refresh(); }
 
-        private void OnBoolVariableOnOnValueChanged(bool _) { Refresh(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChanged(bool _) { Refresh(); }
     }
 }
