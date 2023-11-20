@@ -521,7 +521,7 @@ PluginImporter:
             EditorGUILayout.BeginHorizontal();
 
             GUI.backgroundColor = Uniform.Green;
-            if (GUILayout.Button("Open GoogleAdmobSetting", GUILayout.Height(24)))
+            if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
             {
                 EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
             }
