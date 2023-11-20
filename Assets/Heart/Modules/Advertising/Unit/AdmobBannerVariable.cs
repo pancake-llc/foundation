@@ -19,7 +19,7 @@ namespace Pancake.Monetization
 #endif
 
         private readonly WaitForSeconds _waitBannerReload = new WaitForSeconds(5f);
-        private IEnumerator _reload;
+        private AsyncProcessHandle _reload;
 
         public override void Load()
         {
@@ -104,9 +104,9 @@ namespace Pancake.Monetization
         private void OnAdFailedToLoad(LoadAdError error)
         {
             C.CallActionClean(ref failedToLoadCallback);
-            if (_reload != null) App.StopCoroutine(_reload);
-            _reload = DelayBannerReload();
-            App.StartCoroutine(_reload);
+            
+            if (_reload is {IsTerminated: false}) App.StopCoroutine(_reload);
+            _reload =  App.StartCoroutine(DelayBannerReload());
         }
 
         private void OnAdClosed() { C.CallActionClean(ref closedCallback); }
