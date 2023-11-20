@@ -2,8 +2,8 @@
 -AdColonyUnityAdapter-2.6.2
 -AppLovinUnityAdapter-6.9.1
 -ChartboostUnityAdapter-4.3.0
--DTExchangeUnityAdapter-3.1.6
--InMobiUnityAdapter-4.3.0
+-DTExchangeUnityAdapter-3.1.7
+-InMobiUnityAdapter-4.3.3
 -IronSourceUnityAdapter-2.3.1
 -MetaAudienceNetworkUnityAdapter-3.11.0
 -PangleUnityAdapter-2.3.0
