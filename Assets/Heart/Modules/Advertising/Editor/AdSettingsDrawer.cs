@@ -131,7 +131,7 @@ namespace Pancake.MonetizationEditor
 guid: e869b36b657604102a7166a39ee7d9c9
 labels:
 - gvh
-- gvh_version-8.5.2
+- gvh_version-8.6.0
 - gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/AndroidManifest.xml
 timeCreated: 1427838353
 licenseType: Free
@@ -160,7 +160,7 @@ TextScriptImporter:
 guid: 1d06ef613dfec4baa88b56aeef69cd9c
 labels:
 - gvh
-- gvh_version-8.5.2
+- gvh_version-8.6.0
 - gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/project.properties
 timeCreated: 1427838343
 licenseType: Free
@@ -169,6 +169,7 @@ DefaultImporter:
   assetBundleName:
   assetBundleVariant:
 ";
+
                 if (!File.Exists(path + "/project.properties"))
                 {
                     var writer = new StreamWriter(path + "/project.properties", false);
@@ -180,6 +181,303 @@ DefaultImporter:
                 {
                     var writer = new StreamWriter(path + "/project.properties.meta", false);
                     writer.Write(propertiesMeta);
+                    writer.Close();
+                }
+                
+                string packagingOption = @"android {
+    packagingOptions {
+        pickFirst ""META-INF/kotlinx_coroutines_core.version""
+    }
+}
+";
+                string packagingOptionMeta = @"fileFormatVersion: 2
+guid: 5b00d19726f74439b9a2fd9accf90795
+labels:
+- gvh
+- gvh_version-8.6.0
+- gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/packaging_options.gradle
+timeCreated: 1480838400
+PluginImporter:
+  serializedVersion: 1
+  iconMap: {}
+  executionOrder: {}
+  isPreloaded: 0
+  platformData:
+    Android:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    Any:
+      enabled: 0
+      settings: {}
+    Editor:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+        DefaultValueInitialized: true
+        OS: AnyOS
+    Linux:
+      enabled: 1
+      settings:
+        CPU: x86
+    Linux64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    LinuxUniversal:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    OSXIntel:
+      enabled: 1
+      settings:
+        CPU: x86
+    OSXIntel64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    OSXUniversal:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    Web:
+      enabled: 0
+      settings: {}
+    WebStreamed:
+      enabled: 0
+      settings: {}
+    Win:
+      enabled: 1
+      settings:
+        CPU: x86
+    Win64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    WindowsStoreApps:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+    iOS:
+      enabled: 0
+      settings:
+        CompileFlags:
+        FrameworkDependencies:
+    tvOS:
+      enabled: 0
+      settings:
+        CompileFlags:
+        FrameworkDependencies:
+  userData:
+  assetBundleName:
+  assetBundleVariant:
+";
+                if (!File.Exists(path + "/packaging_options.gradle"))
+                {
+                    var writer = new StreamWriter(path + "/packaging_options.gradle", false);
+                    writer.Write(packagingOption);
+                    writer.Close();
+                }
+
+                if (!File.Exists(path + "/packaging_options.gradle.meta"))
+                {
+                    var writer = new StreamWriter(path + "/packaging_options.gradle.meta", false);
+                    writer.Write(packagingOptionMeta);
+                    writer.Close();
+                }
+                
+                string validateDependency = @"// Copyright (C) 2023 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the ""License"");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an ""AS IS"" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import groovy.util.XmlSlurper
+import groovy.xml.XmlUtil
+
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
+configurations {
+    // Configuration used to resolve the artifacts of dependencies.
+    aarArtifacts.extendsFrom implementation
+}
+
+/**
+ * Validates the Unity GMA plugin dependencies.
+ * Add the following snippet to Assets/Plugins/Android/mainTemplate.gradle in the Unity Editor or
+ * unityLibrary/build.gradle in an Android project to use this script:
+ * <pre>{@code
+ * gradle.projectsEvaluated {
+ *     apply from: 'GoogleMobileAdsPlugin.androidlib/validate_dependencies.gradle'
+ * }
+ * }</pre>
+ */
+task validateDependencies {
+    def expandedArchiveDirectory
+    // List of artifacts resolved from the aarArtifacts configuration.
+    project.configurations.aarArtifacts.
+            resolvedConfiguration.lenientConfiguration.
+            getArtifacts(Specs.satisfyAll()).findResults {
+        ResolvedArtifact artifact ->
+            File artifactTargetFile = new File(artifact.file.parent , artifact.file.name)
+            // Desired artifact - com.google.android.gms:play-services-ads-lite:22.4.0
+            // Group ID    - com.google.android.gms
+            // Artifact ID - play-services-ads-lite
+            // Since Gradle has different naming convention for the same artifact in
+            // * modules-2 cache    - play-services-ads-lite-22.4.0.aar
+            // * transforms-2 cache - com.google.android.gms.play-services-ads-lite-22.4.0
+            // we look for the common segment.
+            if (artifact.name.contains(""play-services-ads-lite"")) {
+                // Explode the archive to a temporary directory.
+                FileTree expandedArchive = project.zipTree(artifactTargetFile)
+                expandedArchive.forEach { File androidManifest ->
+                    if (androidManifest.getName() == ""AndroidManifest.xml"") {
+                        def xml = new XmlSlurper().parse(androidManifest)
+                        def propertyNode = xml.depthFirst().find { it.name() == 'property' }
+                        if (propertyNode) {
+                            // Replace the <property> node with a comment.
+                            propertyNode.replaceNode {
+                                mkp.comment 'android.adservices.AD_SERVICES_CONFIG property'\
+                                + ' removed by GoogleMobileAds Unity plugin - Release notes: '\
+                                + 'https://github.com/googleads/googleads-mobile-unity/releases/'\
+                                + 'tag/v8.6.0'
+                            }
+                        }
+                        def updatedXml = XmlUtil.serialize(xml)
+                        androidManifest.setWritable(true)
+                        androidManifest.text = updatedXml
+                        expandedArchiveDirectory = androidManifest.parent
+                    }
+                }
+                // Update the artifact archive.
+                artifactTargetFile.withOutputStream { outputStream ->
+                    def zipStream = new ZipOutputStream(outputStream)
+                    file(expandedArchiveDirectory).eachFileRecurse { file ->
+                        if (file.isFile()) {
+                            def entry = new ZipEntry(file.name)
+                            zipStream.putNextEntry(entry)
+                            file.withInputStream { zipStream << it }
+                            zipStream.closeEntry()
+                        }
+                    }
+                    zipStream.close()
+                }
+            }
+    }
+    // Clean up the temporary directory.
+    if (expandedArchiveDirectory) delete expandedArchiveDirectory
+}
+
+// Run the update task before unityLibrary project is built.
+project(':unityLibrary:GoogleMobileAdsPlugin.androidlib') {
+    tasks.named('preBuild') {
+        dependsOn validateDependencies
+    }
+}
+";
+                string validateDependencyMeta = @"fileFormatVersion: 2
+guid: 9dfd887a15174d2b91b4e979131a7ac7
+labels:
+- gvh
+- gvh_version-8.6.0
+- gvhp_exportpath-Plugins/Android/GoogleMobileAdsPlugin.androidlib/validate_dependencies.gradle
+timeCreated: 1480838400
+PluginImporter:
+  serializedVersion: 1
+  iconMap: {}
+  executionOrder: {}
+  isPreloaded: 0
+  platformData:
+    Android:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    Any:
+      enabled: 0
+      settings: {}
+    Editor:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+        DefaultValueInitialized: true
+        OS: AnyOS
+    Linux:
+      enabled: 1
+      settings:
+        CPU: x86
+    Linux64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    LinuxUniversal:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    OSXIntel:
+      enabled: 1
+      settings:
+        CPU: x86
+    OSXIntel64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    OSXUniversal:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    Web:
+      enabled: 0
+      settings: {}
+    WebStreamed:
+      enabled: 0
+      settings: {}
+    Win:
+      enabled: 1
+      settings:
+        CPU: x86
+    Win64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    WindowsStoreApps:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+    iOS:
+      enabled: 0
+      settings:
+        CompileFlags:
+        FrameworkDependencies:
+    tvOS:
+      enabled: 0
+      settings:
+        CompileFlags:
+        FrameworkDependencies:
+  userData:
+  assetBundleName:
+  assetBundleVariant:
+";
+                
+                if (!File.Exists(path + "/validate_dependencies.gradle"))
+                {
+                    var writer = new StreamWriter(path + "/validate_dependencies.gradle", false);
+                    writer.Write(validateDependency);
+                    writer.Close();
+                }
+
+                if (!File.Exists(path + "/validate_dependencies.gradle.meta"))
+                {
+                    var writer = new StreamWriter(path + "/validate_dependencies.gradle.meta", false);
+                    writer.Write(validateDependencyMeta);
                     writer.Close();
                 }
 
