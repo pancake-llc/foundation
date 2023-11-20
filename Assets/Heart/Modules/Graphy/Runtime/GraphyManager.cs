@@ -151,9 +151,6 @@ namespace Tayx.Graphy
         [Range(10, 300)] [SerializeField] private int m_ramGraphResolution = 150;
         [Range(1, 200)] [SerializeField] private int m_ramTextUpdateRate = 3; // 3 updates per sec.
 
-        [Tooltip("Must be a power of 2 and between 64-8192")] [SerializeField]
-        private int m_spectrumSize = 512;
-
         #endregion
 
         #region Variables -> Private

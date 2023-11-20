@@ -24,18 +24,7 @@ namespace Tayx.Graphy
         #region Variables -> Private
 
         private GraphyManager m_target;
-
-        private int[] m_spectrumSizeValues =
-        {
-            128,
-            256,
-            512,
-            1024,
-            2048,
-            4096,
-            8192
-        };
-
+        
         #region Section -> Settings
 
         private SerializedProperty m_graphyMode;
