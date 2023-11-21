@@ -1,3 +1,4 @@
+using Pancake.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -12,6 +13,10 @@ namespace Pancake.SceneFlow
 
         private void Awake() { DontDestroyOnLoad(gameObject); }
 
-        private void Start() { Addressables.LoadSceneAsync(launcher); }
+        private async void Start()
+        {
+            await Addressables.LoadSceneAsync(launcher);
+            Destroy(gameObject);
+        }
     }
 }

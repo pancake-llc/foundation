@@ -680,7 +680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e565a4ecc63caff49a8baa7e36f46a3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 1
+  duration: 0.5
   loadingBar: {fileID: 81182940}
   txtPercent: {fileID: 1810225636}
   format: Loading {0}%
