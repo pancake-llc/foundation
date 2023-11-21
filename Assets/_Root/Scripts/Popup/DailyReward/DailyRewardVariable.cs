@@ -37,7 +37,7 @@ namespace Pancake.SceneFlow
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
-            if (value.isClaimed == PreviousValue.isClaimed) return;
+            if (value == null || value.isClaimed == PreviousValue.isClaimed) return;
             ValueChanged();
         }
 #endif
