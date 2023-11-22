@@ -258,8 +258,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: '{inproject}: yenmoc.keystore'
-  AndroidKeyaliasName: yenmoc
+  AndroidKeystoreName: D:/workspace/family-island/rescuekitten.keystore
+  AndroidKeyaliasName: rescuekitten
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -784,23 +784,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: 
-    EmbeddedLinux: PANCAKE_ADVERTISING
+    Android: TextMeshPro
+    EmbeddedLinux: PANCAKE_ADVERTISING;TextMeshPro
     GameCoreScarlett: PANCAKE_ADVERTISING
-    GameCoreXboxOne: PANCAKE_ADVERTISING
+    GameCoreXboxOne: PANCAKE_ADVERTISING;TextMeshPro
     LinuxHeadlessSimulation: PANCAKE_ADVERTISING
-    Nintendo Switch: PANCAKE_ADVERTISING
-    PS4: PANCAKE_ADVERTISING
-    PS5: PANCAKE_ADVERTISING
-    QNX: PANCAKE_ADVERTISING
-    Stadia: PANCAKE_ADVERTISING
-    Standalone: PANCAKE_ADVERTISING
-    VisionOS: PANCAKE_ADVERTISING
-    WebGL: PANCAKE_ADVERTISING
+    Nintendo Switch: PANCAKE_ADVERTISING;TextMeshPro
+    PS4: PANCAKE_ADVERTISING;TextMeshPro
+    PS5: PANCAKE_ADVERTISING;TextMeshPro
+    QNX: PANCAKE_ADVERTISING;TextMeshPro
+    Stadia: PANCAKE_ADVERTISING;TextMeshPro
+    Standalone: PANCAKE_ADVERTISING;TextMeshPro
+    VisionOS: PANCAKE_ADVERTISING;TextMeshPro
+    WebGL: PANCAKE_ADVERTISING;TextMeshPro
     Windows Store Apps: PANCAKE_ADVERTISING
-    XboxOne: PANCAKE_ADVERTISING
-    iPhone: PANCAKE_ADVERTISING
-    tvOS: PANCAKE_ADVERTISING
+    XboxOne: PANCAKE_ADVERTISING;TextMeshPro
+    iPhone: PANCAKE_ADVERTISING;TextMeshPro
+    tvOS: PANCAKE_ADVERTISING;TextMeshPro
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

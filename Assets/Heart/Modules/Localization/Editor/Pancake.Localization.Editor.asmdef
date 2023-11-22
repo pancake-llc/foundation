@@ -1,0 +1,18 @@
+{
+    "name": "Pancake.Localization.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c7e7793e0b5d326429f90e6fd716775e"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

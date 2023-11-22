@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -33,8 +34,15 @@ namespace Pancake.SceneFlow
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
-            if (value == null || value.isUnlocked == PreviousValue.isUnlocked) return;
-            ValueChanged();
+            try
+            {
+                if (value == null || value.isUnlocked == PreviousValue.isUnlocked) return;
+                ValueChanged();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 #endif
     }
