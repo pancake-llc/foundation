@@ -86,6 +86,7 @@ namespace PancakeEditor
         private const float TAB_WIDTH = 65f;
 
         [SerializeField] private int tabIndex = -1;
+        [SerializeField] private int tabLocaleIndex;
         [SerializeField] private bool isInitialized;
 
         [MenuItem("Tools/Pancake/Wizard #W")]
@@ -163,8 +164,9 @@ namespace PancakeEditor
                 EditorGUILayout.BeginHorizontal();
                 var icon = GetIcon((WizardAllType) i);
                 var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 5)};
+                var styleToggle = new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
-                bool clicked = GUILayout.Toggle((int) _selectedItemType == i, ((WizardAllType) i).ToString(), GUI.skin.button, GUILayout.ExpandWidth(true));
+                bool clicked = GUILayout.Toggle((int) _selectedItemType == i, ((WizardAllType) i).ToString(), styleToggle, GUILayout.ExpandWidth(true));
                 EditorGUILayout.EndHorizontal();
 
                 if (clicked) _selectedItemType = (WizardAllType) i;
@@ -237,7 +239,7 @@ namespace PancakeEditor
                     UtilitiesGameServiceDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesLocalizationDrawer.OnInspectorGUI();
+                    UtilitiesLocalizationDrawer.OnInspectorGUI(ref tabLocaleIndex);
                     break;
             }
         }
@@ -302,8 +304,8 @@ namespace PancakeEditor
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 case WizardAllType.InAppReview:
-                case WizardAllType.NeedleConsole: 
-                case WizardAllType.SelectiveProfiling: 
+                case WizardAllType.NeedleConsole:
+                case WizardAllType.SelectiveProfiling:
                 case WizardAllType.GameService:
                 case WizardAllType.Localization:
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;

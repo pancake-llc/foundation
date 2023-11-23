@@ -2,7 +2,8 @@
     "name": "Pancake.Localization.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:c7e7793e0b5d326429f90e6fd716775e"
+        "GUID:c7e7793e0b5d326429f90e6fd716775e",
+        "GUID:adac8d59ad7e8504f82d387cded797a7"
     ],
     "includePlatforms": [
         "Editor"
