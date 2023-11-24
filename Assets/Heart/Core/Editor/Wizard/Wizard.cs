@@ -96,8 +96,9 @@ namespace PancakeEditor
         private TreeViewState _treeViewState;
         internal LocaleTreeView localeTreeView;
         private SearchField _localeSearchField;
-        private Rect BodyViewRect => new(0f, 48f, position.width - TAB_WIDTH * 4f - 22f, position.height - 184f);
+        private Rect BodyViewRect => new(0f, 48f, position.width - TAB_WIDTH * 4f - 22f, position.height - 206f);
         private Rect ToolbarRect => new(0f, 28f, position.width - TAB_WIDTH * 4f - 22f, 20f);
+        private Rect BottomToolbarRect => new(0f, position.height - 154f, position.width - TAB_WIDTH * 4f - 22f, 20);
         private bool _localeInitialized;
         [SerializeField] private MultiColumnHeaderState multiColumnHeaderState;
 
@@ -265,6 +266,7 @@ namespace PancakeEditor
                         ref multiColumnHeaderState,
                         BodyViewRect,
                         ToolbarRect,
+                        BottomToolbarRect,
                         ref _localeSearchField,
                         ref _localeInitialized,
                         ref _currentLocaleTabType);

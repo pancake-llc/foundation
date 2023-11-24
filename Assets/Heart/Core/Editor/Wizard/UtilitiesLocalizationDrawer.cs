@@ -27,6 +27,7 @@ namespace PancakeEditor
             ref MultiColumnHeaderState multiColumnHeaderState,
             Rect bodyViewRect,
             Rect toolBarRect,
+            Rect bootomToolBarRect,
             ref SearchField searchField,
             ref bool initialized,
             ref Wizard.LocaleTabType index)
@@ -40,6 +41,7 @@ namespace PancakeEditor
                     ref multiColumnHeaderState,
                     bodyViewRect,
                     toolBarRect,
+                    bootomToolBarRect,
                     ref searchField,
                     ref initialized);
 #endif
@@ -83,7 +85,6 @@ namespace PancakeEditor
             }
         }
 
-
         private static void DrawTabSetting()
         {
             var setting = Resources.Load<LocaleSettings>(nameof(LocaleSettings));
@@ -118,6 +119,7 @@ namespace PancakeEditor
             ref MultiColumnHeaderState multiColumnHeaderState,
             Rect bodyViewRect,
             Rect toolBarRect,
+            Rect bootomToolBarRect,
             ref SearchField searchField,
             ref bool initialized)
         {
@@ -132,6 +134,8 @@ namespace PancakeEditor
 
             SearchBarView(ref treeView, ref searchField, ref toolBarRect);
             BodyView(ref treeView, ref bodyViewRect);
+
+            BottomToolbarView(ref treeView, bootomToolBarRect);
         }
 
         private static void InitializeIfNeeded(
@@ -388,6 +392,120 @@ namespace PancakeEditor
             {
                 treeView.Reload();
             }
+        }
+
+        private static void BottomToolbarView(ref LocaleTreeView treeView, Rect rect)
+        {
+            var backgroundStyle = new GUIStyle(GUI.skin.box) {normal = {background = EditorCreator.CreateTexture(new Color(0.55f, 0.55f, 0.55f, 1f))}};
+
+            var toolbarStyle = new GUIStyle(EditorStyles.toolbar);
+            var padding = toolbarStyle.padding;
+            padding.left = 0;
+            padding.right = 0;
+            toolbarStyle.padding = padding;
+
+            // Toolbar background.
+            GUI.Box(new Rect(rect.x, rect.y, rect.width, rect.height - 1), GUIContent.none, backgroundStyle);
+
+            // Toolbar itself.
+            GUILayout.BeginArea(new Rect(rect.x, rect.y + 1, rect.width - 1, rect.height));
+            using (new EditorGUILayout.HorizontalScope(toolbarStyle))
+            {
+                TreeViewControls(ref treeView);
+                LocalizedAssetControls(ref treeView);
+                GUILayout.FlexibleSpace();
+                LocaleItemControls(ref treeView);
+            }
+
+            GUILayout.EndArea();
+        }
+
+        private static void TreeViewControls(ref LocaleTreeView treeView)
+        {
+            if (GUILayout.Button(Uniform.IconContent("audio mixer", "Open settings"), EditorStyles.toolbarButton))
+            {
+                var settings = LocaleSettings.Instance;
+                if (settings) Selection.activeObject = settings;
+            }
+
+            if (GUILayout.Button(Uniform.IconContent("refresh", "Refresh the window"), EditorStyles.toolbarButton))
+            {
+                treeView?.Reload();
+            }
+        }
+
+        private static void LocalizedAssetControls(ref LocaleTreeView treeView)
+        {
+            if (GUILayout.Button(new GUIContent("Create", "Create a new localized asset."), EditorStyles.toolbarDropDown))
+            {
+                var mousePosition = Event.current.mousePosition;
+                CreateLocalizedAssetPopup(mousePosition);
+            }
+            
+            var selectedItem = treeView.GetSelectedItem() as AssetTreeViewItem;
+            GUI.enabled = selectedItem != null;
+            if (GUILayout.Button(new GUIContent("Rename", "Rename the selected localized asset."), EditorStyles.toolbarButton))
+            {
+                RenameLocalizedAsset(ref treeView, selectedItem);
+            }
+
+            if (GUILayout.Button(new GUIContent("Delete", "Delete the selected localized asset."), EditorStyles.toolbarButton))
+            {
+                DeleteAssetItems(new[] {selectedItem});
+            }
+
+            GUI.enabled = true;
+        }
+
+        private static void LocaleItemControls(ref LocaleTreeView treeView)
+        {
+            AssetTreeViewItem assetTreeViewItem;
+            LocaleTreeViewItem localeTreeViewItem;
+            TryGetSelectedTreeViewItem(ref treeView, out assetTreeViewItem, out localeTreeViewItem);
+
+            GUI.enabled = assetTreeViewItem != null && assetTreeViewItem.Asset.ValueType == typeof(string);
+            if (GUILayout.Button(new GUIContent("Translate By", "Translate missing locales."), EditorStyles.toolbarButton))
+            {
+            }
+
+            // First element is already default.
+            GUI.enabled = Application.isPlaying;
+            if (GUILayout.Button(new GUIContent("App Language", Application.isPlaying ? "Set application language" : "Application language can be set in play mode"),
+                    EditorStyles.toolbarButton))
+            {
+                var currentLanguage = Locale.CurrentLanguage;
+                var languages = LocaleSettings.Instance.AvailableLanguages;
+
+                var menu = new GenericMenu();
+                foreach (var language in languages)
+                {
+                    menu.AddItem(new GUIContent(language.Name), language == currentLanguage, AppLanguageContextMenu, language);
+                }
+
+                menu.ShowAsContext();
+            }
+
+            GUI.enabled = assetTreeViewItem != null;
+            if (GUILayout.Button(Uniform.IconContent("Toolbar Plus", "Add locale for selected asset."), EditorStyles.toolbarButton))
+            {
+                AddLocale(ref treeView, assetTreeViewItem.Asset);
+            }
+
+            GUI.enabled = localeTreeViewItem != null;
+
+            if (GUILayout.Button(Uniform.IconContent("Toolbar Minus", "Remove selected locale."), EditorStyles.toolbarButton))
+            {
+                RemoveLocale(ref treeView, assetTreeViewItem.Asset, localeTreeViewItem.LocaleItem);
+            }
+
+            GUI.enabled = true;
+        }
+
+        private static void AppLanguageContextMenu(object language) { Locale.CurrentLanguage = (Language) language; }
+
+        private static void AddLocale(ref LocaleTreeView localeTreeView, ScriptableLocaleBase localizedAsset)
+        {
+            if (ScriptableLocaleEditor.AddLocale(localizedAsset)) localeTreeView.Reload();
         }
     }
 }
