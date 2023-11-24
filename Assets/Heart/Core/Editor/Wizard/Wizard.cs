@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Pancake.ExLibEditor;
+using Pancake.LocalizationEditor;
 using Pancake.ScriptableEditor;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace PancakeEditor
@@ -75,7 +77,7 @@ namespace PancakeEditor
             LevelSystem = WizardAllType.LevelSystem,
             ScreenSetting = WizardAllType.ScreenSetting
         }
-        
+
         public enum LocaleTabType
         {
             Setting,
@@ -87,7 +89,20 @@ namespace PancakeEditor
         private List<int> _items;
         private WizardType _currentType = WizardType.All;
         private WizardAllType _selectedItemType = WizardAllType.None;
+
+        #region locale
+
         private LocaleTabType _currentLocaleTabType = LocaleTabType.Setting;
+        private TreeViewState _treeViewState;
+        internal LocaleTreeView localeTreeView;
+        private SearchField _localeSearchField;
+        private Rect BodyViewRect => new(0f, 48f, position.width - TAB_WIDTH * 4f - 22f, position.height - 184f);
+        private Rect ToolbarRect => new(0f, 28f, position.width - TAB_WIDTH * 4f - 22f, 20f);
+        private bool _localeInitialized;
+        [SerializeField] private MultiColumnHeaderState multiColumnHeaderState;
+
+        #endregion
+
 
         private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
         private const float TAB_WIDTH = 65f;
@@ -245,7 +260,14 @@ namespace PancakeEditor
                     UtilitiesGameServiceDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesLocalizationDrawer.OnInspectorGUI(ref _currentLocaleTabType);
+                    UtilitiesLocalizationDrawer.OnInspectorGUI(ref _treeViewState,
+                        ref localeTreeView,
+                        ref multiColumnHeaderState,
+                        BodyViewRect,
+                        ToolbarRect,
+                        ref _localeSearchField,
+                        ref _localeInitialized,
+                        ref _currentLocaleTabType);
                     break;
             }
         }
