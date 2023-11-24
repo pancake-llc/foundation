@@ -104,5 +104,41 @@ namespace Pancake.LocalizationEditor
 
             return Array.Empty<Language>();
         }
+
+        public static Language GetLanguageValueFromProperty(SerializedProperty languageProperty)
+        {
+            var nameProperty = languageProperty.FindPropertyRelative("name");
+            if (nameProperty == null) throw new ArgumentException("Language.Name property could not be found");
+
+            var codeProperty = languageProperty.FindPropertyRelative("code");
+            if (codeProperty == null) throw new ArgumentException("Language.Code property could not be found");
+
+            var customProperty = languageProperty.FindPropertyRelative("custom");
+            if (customProperty == null) throw new ArgumentException("Language.Custom property could not be found");
+
+            return new Language(nameProperty.stringValue, codeProperty.stringValue, customProperty.boolValue);
+        }
+        
+        public static void SetLanguageProperty(SerializedProperty languageProperty, string name, string code,
+            bool custom)
+        {
+            var nameProperty = languageProperty.FindPropertyRelative("name");
+            if (nameProperty == null) throw new ArgumentException("Language.Name property could not be found");
+            
+            var codeProperty = languageProperty.FindPropertyRelative("code");
+            if (codeProperty == null) throw new ArgumentException("Language.Code property could not be found");
+            
+            var customProperty = languageProperty.FindPropertyRelative("custom");
+            if (customProperty == null) throw new ArgumentException("Language.Custom property could not be found");
+
+            nameProperty.stringValue = name;
+            codeProperty.stringValue = code;
+            customProperty.boolValue = custom;
+        }
+        
+        public static void SetLanguageProperty(SerializedProperty languageProperty, Language language)
+        {
+            SetLanguageProperty(languageProperty, language.Name, language.Code, language.Custom);
+        }
     }
 }

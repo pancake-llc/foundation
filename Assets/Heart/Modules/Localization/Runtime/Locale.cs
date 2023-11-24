@@ -64,5 +64,38 @@ namespace Pancake.Localization
         /// Sets the <see cref="CurrentLanguage"/> to default language defined in <see cref="LocaleSettings"/>.
         /// </summary>
         public void SetDefaultLanguage() { CurrentLanguage = LocaleSettings.Instance.AvailableLanguages.FirstOrDefault(); }
+        
+        /// <summary>
+        /// Finds all localized assets with type given. Finds all assets in the project if in Editor; otherwise,
+        /// finds only that loaded in memory.
+        /// </summary>
+        /// <returns>Array of specified localized assets.</returns>
+        public static T[] FindAllLocalizedAssets<T>() where T : ScriptableLocaleBase
+        {
+#if UNITY_EDITOR
+            string[] guids = UnityEditor.AssetDatabase.FindAssets($"t:{typeof(T)}");
+            var assets = new T[guids.Length];
+            for (var i = 0; i < guids.Length; ++i)
+            {
+                string assetPath = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[i]);
+                assets[i] = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                Debug.Assert(assets[i]);
+            }
+
+            return assets;
+#else
+            return Resources.FindObjectsOfTypeAll<T>();
+#endif
+        }
+
+        /// <summary>
+        /// Finds all localized assets.
+        /// </summary>
+        /// <seealso cref="FindAllLocalizedAssets{T}"/>
+        /// <returns>Array of localized assets.</returns>
+        public static ScriptableLocaleBase[] FindAllLocalizedAssets()
+        {
+            return FindAllLocalizedAssets<ScriptableLocaleBase>();
+        }
     }
 }

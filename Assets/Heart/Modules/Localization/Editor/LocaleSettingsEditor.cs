@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Pancake.Localization;
 using UnityEditor;
@@ -18,9 +18,9 @@ namespace Pancake.LocalizationEditor
 
         private void Init()
         {
-            _avaiableLanguageProperty = serializedObject.FindProperty("availableLanguages");
-            _importLocationProperty = serializedObject.FindProperty("importLocation");
-            _googleCredentialProperty = serializedObject.FindProperty("googleCredential");
+            _avaiableLanguageProperty ??= serializedObject.FindProperty("availableLanguages");
+            _importLocationProperty ??= serializedObject.FindProperty("importLocation");
+            _googleCredentialProperty ??= serializedObject.FindProperty("googleCredential");
 
             if (_avaiableLanguageProperty != null)
             {
@@ -33,16 +33,13 @@ namespace Pancake.LocalizationEditor
 
                 _reorderableList.drawHeaderCallback = OnDrawHeaderCallback;
                 _reorderableList.drawElementCallback = OnDrawElementCallback;
-                _reorderableList.onAddDropdownCallback += OnAddCallback;
+                _reorderableList.onAddDropdownCallback += OnAddDropdownCallback;
                 _reorderableList.onRemoveCallback += OnRemoveCallback;
                 _reorderableList.onCanRemoveCallback += OnCanRemoveCallback;
             }
         }
 
-        private bool OnCanRemoveCallback(ReorderableList list)
-        {
-            return false;
-        }
+        private bool OnCanRemoveCallback(ReorderableList list) { return list.count > 1; }
 
         private void OnDrawElementCallback(Rect rect, int index, bool isactive, bool isfocused)
         {
@@ -73,15 +70,142 @@ namespace Pancake.LocalizationEditor
             }
         }
 
-        
+
         private void OnDrawHeaderCallback(Rect rect) { EditorGUI.LabelField(rect, "Available Languages"); }
 
+        private void OnAddDropdownCallback(Rect buttonrect, ReorderableList list)
+        {
+            var menu = new GenericMenu();
+            menu.AddItem(new GUIContent("Language", "Adds built-in language."),
+                false,
+                () =>
+                {
+                    ReorderableList.defaultBehaviours.DoAddButton(list);
 
-        private void OnAddCallback(Rect buttonrect, ReorderableList list) { }
+                    var languageProperty = list.serializedProperty.GetArrayElementAtIndex(list.index);
+                    Helper.SetLanguageProperty(languageProperty, Language.BuiltInLanguages[0]);
 
-        private void OnRemoveCallback(ReorderableList list) { }
+                    serializedObject.ApplyModifiedProperties();
+                });
+            menu.AddItem(new GUIContent("Custom language", "Adds custom language."),
+                false,
+                () =>
+                {
+                    ReorderableList.defaultBehaviours.DoAddButton(list);
 
+                    var languageProperty = list.serializedProperty.GetArrayElementAtIndex(list.index);
+                    Helper.SetLanguageProperty(languageProperty, "", "", true);
 
-        public override void OnInspectorGUI() { base.OnInspectorGUI(); }
+                    serializedObject.ApplyModifiedProperties();
+                });
+            menu.AddItem(new GUIContent("Adds languages in-use", "Adds by searching used languages in assets."),
+                false,
+                () =>
+                {
+                    AddUsedLocales();
+                    serializedObject.ApplyModifiedProperties();
+                });
+            menu.ShowAsContext();
+        }
+
+        private void OnRemoveCallback(ReorderableList list)
+        {
+            var languageProperty = list.serializedProperty.GetArrayElementAtIndex(list.index);
+            var language = Helper.GetLanguageValueFromProperty(languageProperty);
+            if (language.Custom)
+            {
+                var localizedAssets = Locale.FindAllLocalizedAssets();
+                if (localizedAssets.Any(x => x.LocaleItems.Any(y => y.Language == language)))
+                {
+                    if (!EditorUtility.DisplayDialog("Remove \"" + language + "\" language?",
+                            "\"" + language + "\" language is in-use by some localized assets." + " Are you sure to remove?",
+                            "Remove",
+                            "Cancel"))
+                    {
+                        return; // Cancelled.
+                    }
+                }
+            }
+
+            ReorderableList.defaultBehaviours.DoRemoveButton(list);
+        }
+
+        private void AddUsedLocales()
+        {
+            var languages = FindUsedLanguages();
+            _avaiableLanguageProperty.arraySize = languages.Length;
+            for (var i = 0; i < _avaiableLanguageProperty.arraySize; i++)
+            {
+                var languageProperty = _avaiableLanguageProperty.GetArrayElementAtIndex(i);
+                Helper.SetLanguageProperty(languageProperty, languages[i]);
+            }
+        }
+
+        private Language[] FindUsedLanguages()
+        {
+            var languages = new HashSet<Language>();
+            for (var i = 0; i < _avaiableLanguageProperty.arraySize; i++)
+            {
+                languages.Add(Helper.GetLanguageValueFromProperty(_avaiableLanguageProperty.GetArrayElementAtIndex(i)));
+            }
+
+            var localizedAssets = Locale.FindAllLocalizedAssets();
+            foreach (var localizedAsset in localizedAssets)
+            {
+                foreach (var locale in localizedAsset.LocaleItems)
+                {
+                    languages.Add(locale.Language);
+                }
+            }
+
+            return languages.ToArray();
+        }
+
+        public override void OnInspectorGUI()
+        {
+            Init();
+            
+            if (_reorderableList != null)
+            {
+                serializedObject.Update();
+                
+                EditorGUILayout.Separator();
+
+                _reorderableList.DoLayoutList();
+
+                EditorGUILayout.LabelField("Import/Export", EditorStyles.boldLabel);
+                
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(_importLocationProperty.displayName);
+                if (GUILayout.Button(_importLocationProperty.stringValue, EditorStyles.objectField))
+                {
+                    var path = EditorUtility.OpenFolderPanel("Select folder for import location", "Assets/", "");
+                    if (Directory.Exists(path))
+                    {
+                        path = "Assets" + path.Replace(Application.dataPath, "");
+                        if (AssetDatabase.IsValidFolder(path))
+                        {
+                            _importLocationProperty.stringValue = path;    
+                        }
+                            
+                    }
+                }
+                EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.Separator();
+                
+                EditorGUILayout.LabelField("Google Translate", EditorStyles.boldLabel);
+                EditorGUILayout.PropertyField(_googleCredentialProperty);
+                if (!_googleCredentialProperty.objectReferenceValue)
+                {
+                    EditorGUILayout.HelpBox("If you want to use Google Translate in editor or in-game, attach the service account or API key file claimed from Google Cloud.", MessageType.Info);
+                }
+                serializedObject.ApplyModifiedProperties();
+            }
+            else
+            {
+                base.OnInspectorGUI();
+            }
+        }
     }
 }
