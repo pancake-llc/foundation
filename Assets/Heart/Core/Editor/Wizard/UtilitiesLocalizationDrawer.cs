@@ -9,7 +9,7 @@ namespace PancakeEditor
 {
     public static class UtilitiesLocalizationDrawer
     {
-        public static void OnInspectorGUI(ref int index)
+        public static void OnInspectorGUI(ref Wizard.LocaleTabType index)
         {
 #if PANCAKE_LOCALIZATION
             DrawTab(ref index);
@@ -29,7 +29,7 @@ namespace PancakeEditor
 #endif
         }
 
-        private static void DrawTab(ref int index)
+        private static void DrawTab(ref Wizard.LocaleTabType index)
         {
             EditorGUILayout.BeginHorizontal();
 
@@ -38,16 +38,22 @@ namespace PancakeEditor
             EditorGUILayout.EndHorizontal();
         }
 
-        private static void DrawButtonSetting(ref int index)
+        private static void DrawButtonSetting(ref Wizard.LocaleTabType index)
         {
-            bool clicked = GUILayout.Toggle(index == 0, "Settings", GUI.skin.button, GUILayout.ExpandWidth(true));
-            index = clicked ? 0 : 1;
+            bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Setting, "Settings", GUI.skin.button, GUILayout.ExpandWidth(true));
+            if (clicked && index != Wizard.LocaleTabType.Setting)
+            {
+                index = Wizard.LocaleTabType.Setting;
+            }
         }
 
-        private static void DrawButtonExplore(ref int index)
+        private static void DrawButtonExplore(ref Wizard.LocaleTabType index)
         {
-            bool clicked = GUILayout.Toggle(index == 1, "Explore", GUI.skin.button, GUILayout.ExpandWidth(true));
-            index = clicked ? 1 : 0;
+            bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Explore, "Explore", GUI.skin.button, GUILayout.ExpandWidth(true));
+            if (clicked && index != Wizard.LocaleTabType.Explore)
+            {
+                index = Wizard.LocaleTabType.Explore;
+            }
         }
 
 

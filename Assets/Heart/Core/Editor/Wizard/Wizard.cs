@@ -75,18 +75,24 @@ namespace PancakeEditor
             LevelSystem = WizardAllType.LevelSystem,
             ScreenSetting = WizardAllType.ScreenSetting
         }
+        
+        public enum LocaleTabType
+        {
+            Setting,
+            Explore
+        }
 
         private Vector2 _leftSideScrollPosition = Vector2.zero;
         private Vector2 _rightSideScrollPosition = Vector2.zero;
         private List<int> _items;
         private WizardType _currentType = WizardType.All;
         private WizardAllType _selectedItemType = WizardAllType.None;
+        private LocaleTabType _currentLocaleTabType = LocaleTabType.Setting;
 
         private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
         private const float TAB_WIDTH = 65f;
 
         [SerializeField] private int tabIndex = -1;
-        [SerializeField] private int tabLocaleIndex;
         [SerializeField] private bool isInitialized;
 
         [MenuItem("Tools/Pancake/Wizard #W")]
@@ -239,7 +245,7 @@ namespace PancakeEditor
                     UtilitiesGameServiceDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesLocalizationDrawer.OnInspectorGUI(ref tabLocaleIndex);
+                    UtilitiesLocalizationDrawer.OnInspectorGUI(ref _currentLocaleTabType);
                     break;
             }
         }
