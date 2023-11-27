@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 namespace Pancake.Localization
 {
-    public class LocaleStringBehaviour : LocaleBehaviourGeneric<LocaleText, string>
+    [EditorIcon("csharp")]
+    public class LocaleTextBehaviour : LocaleBehaviourGeneric<LocaleText, string>
     {
         [SerializeField] private string[] formatArgs = Array.Empty<string>();
 
@@ -33,8 +34,8 @@ namespace Pancake.Localization
 
         private void Reset()
         {
-            TrySetComponentAndPropertyIfNotSet<Text>("label");
-            TrySetComponentAndPropertyIfNotSet<TextMeshProUGUI>("label");
+            TrySetComponentAndPropertyIfNotSet<Text>("text");
+            TrySetComponentAndPropertyIfNotSet<TextMeshProUGUI>("text");
         }
     }
 }
