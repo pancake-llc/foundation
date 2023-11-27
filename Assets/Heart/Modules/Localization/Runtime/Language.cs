@@ -12,137 +12,18 @@ namespace Pancake.Localization
             get { return new[] {Chinese, English, French, German, Italian, Japanese, Korean, Portuguese, Russian, Spanish, Vietnamese, Unknown}; }
         }
 
-        private static Language chinese;
-
-        public static Language Chinese
-        {
-            get
-            {
-                if (chinese == null) chinese = new Language(SystemLanguage.Chinese.ToString(), "zh");
-                return chinese;
-            }
-        }
-
-        private static Language english;
-
-        public static Language English
-        {
-            get
-            {
-                if (english == null) english = new Language(SystemLanguage.English.ToString(), "en");
-                return english;
-            }
-        }
-
-        private static Language french;
-
-        public static Language French
-        {
-            get
-            {
-                if (french == null) french = new Language(SystemLanguage.French.ToString(), "fr");
-                return french;
-            }
-        }
-
-        private static Language german;
-
-        public static Language German
-        {
-            get
-            {
-                if (german == null) german = new Language(SystemLanguage.German.ToString(), "de");
-                return german;
-            }
-        }
-
-        private static Language italian;
-
-        public static Language Italian
-        {
-            get
-            {
-                if (italian == null) italian = new Language(SystemLanguage.Italian.ToString(), "it");
-                return italian;
-            }
-        }
-
-        private static Language japanese;
-
-        public static Language Japanese
-        {
-            get
-            {
-                if (japanese == null) japanese = new Language(SystemLanguage.Japanese.ToString(), "ja");
-                return japanese;
-            }
-        }
-
-        private static Language korean;
-
-        public static Language Korean
-        {
-            get
-            {
-                if (korean == null) korean = new Language(SystemLanguage.Korean.ToString(), "ko");
-                return korean;
-            }
-        }
-
-        private static Language portuguese;
-
-        public static Language Portuguese
-        {
-            get
-            {
-                if (portuguese == null) portuguese = new Language(SystemLanguage.Portuguese.ToString(), "pt");
-                return portuguese;
-            }
-        }
-
-        private static Language russian;
-
-        public static Language Russian
-        {
-            get
-            {
-                if (russian == null) russian = new Language(SystemLanguage.Russian.ToString(), "ru");
-                return russian;
-            }
-        }
-
-        private static Language spanish;
-
-        public static Language Spanish
-        {
-            get
-            {
-                if (spanish == null) spanish = new Language(SystemLanguage.Spanish.ToString(), "es");
-                return spanish;
-            }
-        }
-
-        private static Language vietnamese;
-
-        public static Language Vietnamese
-        {
-            get
-            {
-                if (vietnamese == null) vietnamese = new Language(SystemLanguage.Vietnamese.ToString(), "vi");
-                return vietnamese;
-            }
-        }
-
-        private static Language unknown;
-
-        public static Language Unknown
-        {
-            get
-            {
-                if (unknown == null) unknown = new Language(SystemLanguage.Unknown.ToString(), "");
-                return unknown;
-            }
-        }
+        public static Language Chinese => new(SystemLanguage.Chinese.ToString(), "zh");
+        public static Language English => new(SystemLanguage.English.ToString(), "en");
+        public static Language French => new(SystemLanguage.French.ToString(), "fr");
+        public static Language German => new(SystemLanguage.German.ToString(), "de");
+        public static Language Italian => new(SystemLanguage.Italian.ToString(), "it");
+        public static Language Japanese => new(SystemLanguage.Japanese.ToString(), "ja");
+        public static Language Korean => new(SystemLanguage.Korean.ToString(), "ko");
+        public static Language Portuguese => new(SystemLanguage.Portuguese.ToString(), "pt");
+        public static Language Russian => new(SystemLanguage.Russian.ToString(), "ru");
+        public static Language Spanish => new(SystemLanguage.Spanish.ToString(), "es");
+        public static Language Vietnamese => new(SystemLanguage.Vietnamese.ToString(), "vi");
+        public static Language Unknown => new(SystemLanguage.Unknown.ToString(), "");
 
         [SerializeField] private string name;
         [SerializeField] private string code;
@@ -150,7 +31,6 @@ namespace Pancake.Localization
 
         public string Name => name;
         public string Code => code;
-
         public bool Custom => custom;
 
         public Language(string name, string code, bool custom = false)
@@ -192,7 +72,7 @@ namespace Pancake.Localization
         public static explicit operator SystemLanguage(Language language)
         {
             if (language.custom) return SystemLanguage.Unknown;
-            
+
             var systemLanguages = (SystemLanguage[]) Enum.GetValues(typeof(SystemLanguage));
             int index = Array.FindIndex(systemLanguages, x => x.ToString() == language.Name);
             return index >= 0 ? systemLanguages[index] : SystemLanguage.Unknown;

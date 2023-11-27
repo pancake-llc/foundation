@@ -45,6 +45,7 @@ namespace Pancake.Localization
                     }
                 }
 #endif
+                
                 return isValueSet ? value : FirstValue;
             }
         }
