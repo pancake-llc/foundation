@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
-    [CreateAssetMenu(menuName = "Pancake/Localization/Sprite", order = 3)]
+    [CreateAssetMenu(menuName = "Pancake/Localization/Sprite", fileName = "sprite_localizevalue", order = 3)]
     [EditorIcon("scriptable_yellow_sprite")]
     public class LocaleSprite : LocaleVariable<Sprite>
     {

@@ -12,7 +12,7 @@ namespace Pancake.LocalizationEditor
     public class ScriptableLocaleEditor : UnityEditor.Editor
     {
         private ReorderableList _reorderable;
-        private SerializedProperty itemsProperty;
+        private SerializedProperty _itemsProperty;
         private Rect _currentLayoutRect;
         private GUIStyle _textAreaStyle;
 
@@ -21,11 +21,11 @@ namespace Pancake.LocalizationEditor
         private void OnEnable()
         {
             var assetValueType = ((ScriptableLocaleBase) target).ValueType;
-            itemsProperty = serializedObject.FindProperty("items");
-            if (itemsProperty != null)
+            _itemsProperty = serializedObject.FindProperty("items");
+            if (_itemsProperty != null)
             {
                 _reorderable = new ReorderableList(serializedObject: serializedObject,
-                    elements: itemsProperty,
+                    elements: _itemsProperty,
                     draggable: true,
                     displayHeader: true,
                     displayAddButton: true,
@@ -127,14 +127,14 @@ namespace Pancake.LocalizationEditor
 
         private void AddLanguages(List<Language> languages)
         {
-            var filteredLanguages = languages.Where(x => !IsLanguageExist(itemsProperty, x)).ToArray();
+            var filteredLanguages = languages.Where(x => !IsLanguageExist(_itemsProperty, x)).ToArray();
 
-            var startIndex = itemsProperty.arraySize;
-            itemsProperty.arraySize += filteredLanguages.Length;
+            var startIndex = _itemsProperty.arraySize;
+            _itemsProperty.arraySize += filteredLanguages.Length;
 
             for (var i = 0; i < filteredLanguages.Length; i++)
             {
-                var localeItem = itemsProperty.GetArrayElementAtIndex(startIndex + i);
+                var localeItem = _itemsProperty.GetArrayElementAtIndex(startIndex + i);
 
                 var localeItemValue = localeItem.FindPropertyRelative("value");
                 localeItemValue.stringValue = "";

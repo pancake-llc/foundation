@@ -5,7 +5,7 @@ using UnityEngine.Video;
 
 namespace Pancake.Localization
 {
-    [CreateAssetMenu(menuName = "Pancake/Localization/VideoClip", order = 8)]
+    [CreateAssetMenu(menuName = "Pancake/Localization/VideoClip", fileName = "videoclip_localizevalue", order = 8)]
     [EditorIcon("scriptable_yellow_videoclip")]
     public class LocaleVideoClip : LocaleVariable<VideoClip>
     {

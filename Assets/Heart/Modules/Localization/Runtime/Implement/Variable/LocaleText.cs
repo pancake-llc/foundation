@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
-    [CreateAssetMenu(menuName = "Pancake/Localization/Text", order = 4)]
+    [CreateAssetMenu(menuName = "Pancake/Localization/Text", fileName = "text_localizevalue", order = 4)]
     [EditorIcon("scriptable_yellow_text")]
     public class LocaleText : LocaleVariable<string>
     {
