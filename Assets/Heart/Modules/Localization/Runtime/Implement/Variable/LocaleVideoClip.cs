@@ -15,6 +15,8 @@ namespace Pancake.Localization
         };
 
         [SerializeField] private VideoClipLocaleItem[] items = new VideoClipLocaleItem[1];
-        public override LocaleItemBase[] LocaleItems => items.ToArray<LocaleItemBase>();
+        
+        // ReSharper disable once CoVariantArrayConversion
+        public override LocaleItemBase[] LocaleItems => items;
     }
 }

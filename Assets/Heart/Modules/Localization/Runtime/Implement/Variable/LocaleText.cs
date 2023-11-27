@@ -17,7 +17,8 @@ namespace Pancake.Localization
 
         [SerializeField] private TextLocaleItem[] items = new TextLocaleItem[1];
 
-        public override LocaleItemBase[] LocaleItems => items.ToArray<LocaleItemBase>();
+        // ReSharper disable once CoVariantArrayConversion
+        public override LocaleItemBase[] LocaleItems => items;
 
         /// <summary>
         /// Sets locale items in Editor or Playmode.
