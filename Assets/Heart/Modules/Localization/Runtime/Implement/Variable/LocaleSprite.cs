@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
+    [CreateAssetMenu(menuName = "Pancake/Localization/Sprite", order = 3)]
     public class LocaleSprite : LocaleVariable<Sprite>
     {
         [Serializable]

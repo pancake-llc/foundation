@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
+    [CreateAssetMenu(menuName = "Pancake/Localization/AudioClip", order = 7)]
     public class LocaleAudioClip : LocaleVariable<AudioClip>
     {
         [Serializable]

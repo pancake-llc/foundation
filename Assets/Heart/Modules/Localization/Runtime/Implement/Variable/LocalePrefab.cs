@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
+    [CreateAssetMenu(menuName = "Pancake/Localization/GameObject", order = 2)]
     public class LocalePrefab : LocaleVariable<GameObject>
     {
         [Serializable]

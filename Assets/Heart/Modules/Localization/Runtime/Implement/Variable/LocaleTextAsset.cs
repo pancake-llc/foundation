@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
+    [CreateAssetMenu(menuName = "Pancake/Localization/TextAsset", order = 5)]
     public class LocaleTextAsset : LocaleVariable<TextAsset>
     {
         [Serializable]

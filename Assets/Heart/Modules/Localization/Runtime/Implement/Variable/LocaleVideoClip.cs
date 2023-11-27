@@ -5,6 +5,7 @@ using UnityEngine.Video;
 
 namespace Pancake.Localization
 {
+    [CreateAssetMenu(menuName = "Pancake/Localization/VideoClip", order = 8)]
     public class LocaleVideoClip : LocaleVariable<VideoClip>
     {
         [Serializable]
