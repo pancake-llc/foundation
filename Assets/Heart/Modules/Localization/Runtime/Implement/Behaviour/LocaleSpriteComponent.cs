@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Pancake.Localization
 {
     [EditorIcon("csharp")]
-    public class LocaleSpriteBehaviour : LocaleBehaviourGeneric<LocaleSprite, Sprite>
+    public class LocaleSpriteComponent : LocaleComponentGeneric<LocaleSprite, Sprite>
     {
         private void Reset()
         {

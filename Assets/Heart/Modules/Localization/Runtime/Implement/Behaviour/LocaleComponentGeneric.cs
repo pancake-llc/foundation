@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
-    public class LocaleBehaviourGeneric<TVariable, T> : LocaleBehaviourGenericBase where TVariable : LocaleVariable<T> where T : class
+    public class LocaleComponentGeneric<TVariable, T> : LocaleComponentGenericBase where TVariable : LocaleVariable<T> where T : class
     {
         [SerializeField] private TVariable variable;
 

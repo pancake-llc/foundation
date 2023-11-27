@@ -3,7 +3,7 @@
 namespace Pancake.Localization
 {
     [EditorIcon("csharp")]
-    public class LocalePrefabBehaviour : LocaleBehaviour
+    public class LocalePrefabComponent : LocaleComponent
     {
         public LocalePrefab prefab;
         private GameObject _instance;

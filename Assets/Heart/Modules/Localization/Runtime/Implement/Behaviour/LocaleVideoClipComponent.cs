@@ -3,7 +3,7 @@
 namespace Pancake.Localization
 {
     [EditorIcon("csharp")]
-    public class LocaleVideoClipBehaviour : LocaleBehaviourGeneric<LocaleVideoClip, VideoClip>
+    public class LocaleVideoClipComponent : LocaleComponentGeneric<LocaleVideoClip, VideoClip>
     {
         private void Reset() { TrySetComponentAndPropertyIfNotSet<VideoPlayer>("video"); }
     }

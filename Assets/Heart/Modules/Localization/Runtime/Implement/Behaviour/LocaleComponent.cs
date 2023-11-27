@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.Localization
 {
     [ExecuteInEditMode]
-    public abstract class LocaleBehaviour : MonoBehaviour
+    public abstract class LocaleComponent : MonoBehaviour
     {
         private bool _isOnValidate;
         public event EventHandler<EventArgs> LocaleChangedEvent;

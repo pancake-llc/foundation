@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Pancake.Localization
 {
     [EditorIcon("csharp")]
-    public class LocaleMaterialBehaviour : LocaleBehaviour
+    public class LocaleMaterialComponent : LocaleComponent
     {
         public Material material;
         public string propertyName = "_MainTex";

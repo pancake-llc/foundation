@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
-    public abstract class LocaleBehaviourGenericBase : LocaleBehaviour
+    public abstract class LocaleComponentGenericBase : LocaleComponent
     {
         [SerializeField] private Component component;
         [SerializeField] private string property;

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Pancake.Localization
 {
     [EditorIcon("csharp")]
-    public class LocaleFontBehaviour : LocaleBehaviourGeneric<LocaleFont, Font>
+    public class LocaleFontComponent : LocaleComponentGeneric<LocaleFont, Font>
     {
         private void Reset()
         {

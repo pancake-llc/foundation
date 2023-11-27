@@ -9,15 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4d69dc1bc6643cb8580d1dd9e553e92, type: 3}
-  m_Name: LocaleSettings
+  m_Script: {fileID: 11500000, guid: 759309c703f44e55a8b2e699057b6670, type: 3}
+  m_Name: font_localize
   m_EditorClassIdentifier: 
-  availableLanguages:
-  - name: English
-    code: en
-    custom: 0
-  - name: Vietnamese
-    code: vi
-    custom: 0
-  importLocation: Assets
-  googleCredential: {fileID: 0}
+  items:
+  - language:
+      name: English
+      code: en
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: {fileID: 0}

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace Pancake.Localization
 {
     [EditorIcon("csharp")]
-    public class LocaleTextBehaviour : LocaleBehaviourGeneric<LocaleText, string>
+    public class LocaleTextComponent : LocaleComponentGeneric<LocaleText, string>
     {
         [SerializeField, Array] private string[] formatArgs = Array.Empty<string>();
 

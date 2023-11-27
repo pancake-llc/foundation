@@ -3,7 +3,7 @@
 namespace Pancake.Localization
 {
     [EditorIcon("csharp")]
-    public class LocaleRendererBehaviour : LocaleBehaviour
+    public class LocaleRendererComponent : LocaleComponent
     {
         public int materialIndex;
         public string propertyName = "_MainTex";
