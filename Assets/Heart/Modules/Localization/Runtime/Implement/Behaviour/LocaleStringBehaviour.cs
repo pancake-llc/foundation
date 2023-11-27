@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Pancake.Localization
 {
-    public class LocaleStringBehaviour : LocaleBehaviourGeneric<LocaleString, string>
+    public class LocaleStringBehaviour : LocaleBehaviourGeneric<LocaleText, string>
     {
         [SerializeField] private string[] formatArgs = Array.Empty<string>();
 
