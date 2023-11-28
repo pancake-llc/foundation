@@ -137,7 +137,15 @@ namespace Pancake.LocalizationEditor
                 var localeItem = _itemsProperty.GetArrayElementAtIndex(startIndex + i);
 
                 var localeItemValue = localeItem.FindPropertyRelative("value");
-                localeItemValue.stringValue = "";
+                switch (localeItemValue.propertyType)
+                {
+                    case SerializedPropertyType.String:
+                        localeItemValue.stringValue = "";
+                        break;
+                    default:
+                        localeItemValue.objectReferenceValue = null;
+                        break;
+                }
 
                 var localeItemLanguage = localeItem.FindPropertyRelative("language");
                 Helper.SetLanguageProperty(localeItemLanguage, filteredLanguages[i]);

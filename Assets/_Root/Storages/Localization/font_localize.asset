@@ -23,3 +23,53 @@ MonoBehaviour:
       code: vi
       custom: 0
     value: {fileID: 0}
+  - language:
+      name: Chinese
+      code: zh
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: French
+      code: fr
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: German
+      code: de
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Italian
+      code: it
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Japanese
+      code: ja
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Korean
+      code: ko
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Portuguese
+      code: pt
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Russian
+      code: ru
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Spanish
+      code: es
+      custom: 0
+    value: {fileID: 0}
+  - language:
+      name: Unknown
+      code: 
+      custom: 0
+    value: {fileID: 0}

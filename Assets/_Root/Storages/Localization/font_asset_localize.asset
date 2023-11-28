@@ -18,3 +18,8 @@ MonoBehaviour:
       code: en
       custom: 0
     value: {fileID: 0}
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: {fileID: 0}

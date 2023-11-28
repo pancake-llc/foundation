@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Pancake.Localization;
+using TMPro;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -72,7 +73,7 @@ namespace Pancake.LocalizationEditor
         {
             for (int i = 0; i < args.GetNumVisibleColumns(); ++i)
             {
-                var columnType = (ColumnType)args.GetColumn(i);
+                var columnType = (ColumnType) args.GetColumn(i);
                 var cellRect = args.GetCellRect(i);
                 CellGUI(cellRect, args.item, columnType, ref args);
 
@@ -84,8 +85,8 @@ namespace Pancake.LocalizationEditor
                 }
             }
         }
-        
-                /// <summary>
+
+        /// <summary>
         /// Make TextArea as expandable as possible.
         /// </summary>
         protected override float GetCustomRowHeight(int row, TreeViewItem item)
@@ -100,12 +101,13 @@ namespace Pancake.LocalizationEditor
                     var column = multiColumnHeader.GetColumn(3);
                     if (column != null)
                     {
-                        var stringValue = (string)localeItem.LocaleItem.ObjectValue;
+                        var stringValue = (string) localeItem.LocaleItem.ObjectValue;
                         var calculatedRowHeight = _textAreaStyle.CalcHeight(new GUIContent(stringValue), column.width) + 4;
                         rowHeight = Mathf.Clamp(calculatedRowHeight, rowHeight, 100);
                     }
                 }
             }
+
             return rowHeight;
         }
 
@@ -142,6 +144,10 @@ namespace Pancake.LocalizationEditor
                 {
                     icon = EditorGUIUtility.ObjectContent(null, typeof(TextAsset)).image;
                 }
+                else if (valueType == typeof(TMP_FontAsset))
+                {
+                    icon = EditorGUIUtility.ObjectContent(null, typeof(Font)).image;
+                }
                 else
                 {
                     icon = EditorGUIUtility.ObjectContent(null, valueType).image;
@@ -152,6 +158,7 @@ namespace Pancake.LocalizationEditor
                 {
                     icon = EditorGUIUtility.ObjectContent(null, typeof(ScriptableObject)).image;
                 }
+
                 if (icon)
                 {
                     GUI.DrawTexture(cellRect, icon, ScaleMode.ScaleToFit);
@@ -190,12 +197,19 @@ namespace Pancake.LocalizationEditor
                 EditorGUI.BeginChangeCheck();
                 if (valueType.IsSubclassOf(typeof(UnityEngine.Object)))
                 {
-                    localeItem.ObjectValue = EditorGUI.ObjectField(cellRect, (UnityEngine.Object)localeItem.ObjectValue, localeItem.ObjectValue.GetType(), false);
+                    if (valueType == typeof(TMP_FontAsset) && localeItem.ObjectValue == null)
+                    {
+                        localeItem.ObjectValue = EditorGUI.ObjectField(cellRect, null, typeof(TMP_FontAsset), false);
+                    }
+                    else
+                    {
+                        localeItem.ObjectValue = EditorGUI.ObjectField(cellRect, (UnityEngine.Object) localeItem.ObjectValue, localeItem.ObjectValue.GetType(), false);
+                    }
                 }
                 else if (valueType == typeof(string))
                 {
                     EditorGUI.BeginChangeCheck();
-                    localeItem.ObjectValue = EditorGUI.TextArea(cellRect, (string)localeItem.ObjectValue, _textAreaStyle);
+                    localeItem.ObjectValue = EditorGUI.TextArea(cellRect, (string) localeItem.ObjectValue, _textAreaStyle);
                     if (EditorGUI.EndChangeCheck())
                     {
                         RefreshCustomRowHeights();
@@ -205,6 +219,7 @@ namespace Pancake.LocalizationEditor
                 {
                     EditorGUI.LabelField(cellRect, valueType + " value type not supported.");
                 }
+
                 if (EditorGUI.EndChangeCheck())
                 {
                     treeViewItem.Parent.IsDirty = true;
@@ -222,6 +237,7 @@ namespace Pancake.LocalizationEditor
                 var renameRect = GetRenameRect(treeViewRect, 0, item);
                 return renameRect.width > 30;
             }
+
             return false;
         }
 
@@ -248,6 +264,7 @@ namespace Pancake.LocalizationEditor
             {
                 return FindItem(selection[0], rootItem);
             }
+
             return null;
         }
 
@@ -312,8 +329,9 @@ namespace Pancake.LocalizationEditor
                 }
             };
 
-            Assert.AreEqual(columns.Length, Enum.GetValues(typeof(ColumnType)).Length,
-                            "Number of columns should match number of enum values: You probably forgot to update one of them.");
+            Assert.AreEqual(columns.Length,
+                Enum.GetValues(typeof(ColumnType)).Length,
+                "Number of columns should match number of enum values: You probably forgot to update one of them.");
 
             var state = new MultiColumnHeaderState(columns);
             return state;

@@ -9,11 +9,11 @@ namespace Pancake.Localization
     public class LocaleTMPFont : LocaleVariable<TMP_FontAsset>
     {
         [Serializable]
-        private class FontLocaleItem : LocaleItem<TMP_FontAsset>
+        private class TMPFontLocaleItem : LocaleItem<TMP_FontAsset>
         {
         };
 
-        [SerializeField] private FontLocaleItem[] items = new FontLocaleItem[1];
+        [SerializeField] private TMPFontLocaleItem[] items = new TMPFontLocaleItem[1];
         
         // ReSharper disable once CoVariantArrayConversion
         public override LocaleItemBase[] LocaleItems => items;
