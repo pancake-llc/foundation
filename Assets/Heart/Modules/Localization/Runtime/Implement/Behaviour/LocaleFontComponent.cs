@@ -10,7 +10,7 @@ namespace Pancake.Localization
         private void Reset()
         {
             TrySetComponentAndPropertyIfNotSet<Text>("font");
-            TrySetComponentAndPropertyIfNotSet<TextMeshProUGUI>("font");
+            TrySetComponentAndPropertyIfNotSet<TextMesh>("font");
         }
     }
 }

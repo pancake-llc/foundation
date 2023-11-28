@@ -8,7 +8,7 @@ namespace Pancake.Localization
     public abstract class LocaleComponentGenericBase : LocaleComponent
     {
         [SerializeField] private Component component;
-        [SerializeField] private string property;
+        [SerializeField] private Optional<string> property;
 
         private PropertyInfo _propertyInfo;
 
@@ -23,7 +23,7 @@ namespace Pancake.Localization
         {
             if (component != null)
             {
-                _propertyInfo = FindProperty(component, property);
+                _propertyInfo = FindProperty(component, property.Value);
                 return _propertyInfo != null;
             }
 
@@ -35,11 +35,11 @@ namespace Pancake.Localization
             component = GetComponent<TComponent>();
             if (component != null)
             {
-                property = propertyName;
+                property = new Optional<string>(false, propertyName);
 
                 if (!TryInitProperty())
                 {
-                    property = "";
+                    property = new Optional<string>(false, "");
                     return false;
                 }
 

@@ -616,10 +616,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: English
+  m_text: TAP TO PLAY
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c2f49fe8c22d94f9a9e6cd06ad490155, type: 2}
-  m_sharedMaterial: {fileID: 3074828514974314926, guid: c2f49fe8c22d94f9a9e6cd06ad490155, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
+  m_sharedMaterial: {fileID: 7374927986402738804, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -726,8 +726,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 290372031}
-  property: text
-  variable: {fileID: 11400000, guid: 5e62946603c703748abd2d1f7bce3193, type: 2}
+  property:
+    enabled: 0
+    value: text
+  variable: {fileID: 11400000, guid: d132b41ed236bce4e8609ace2f7fd155, type: 2}
   formatArgs: []
 --- !u!114 &290372035
 MonoBehaviour:
@@ -738,12 +740,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 290372029}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 039bf27d4d5c4d589f834b515f5df93b, type: 3}
+  m_Script: {fileID: 11500000, guid: 476932f1680198544b423513d634d37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 290372031}
-  property: 
-  variable: {fileID: 0}
+  property:
+    enabled: 0
+    value: font
+  variable: {fileID: 11400000, guid: 2231b50be30e72a46b98a7622c3a1a07, type: 2}
 --- !u!1 &320806795
 GameObject:
   m_ObjectHideFlags: 0
