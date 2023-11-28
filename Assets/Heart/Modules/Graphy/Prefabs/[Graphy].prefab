@@ -119,7 +119,6 @@ MonoBehaviour:
   m_monoRamColor: {r: 0, g: 0.73333335, b: 0.9764706, a: 1}
   m_ramGraphResolution: 128
   m_ramTextUpdateRate: 3
-  m_spectrumSize: 512
 --- !u!114 &11480938
 MonoBehaviour:
   m_ObjectHideFlags: 0

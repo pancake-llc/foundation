@@ -267,16 +267,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c2f49fe8c22d94f9a9e6cd06ad490155
-    m_Address: Assets/_Root/Fonts/LilitaOne-Regular Outline 50 SDF.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 51bda5a7ed19c4c39bbb02ae0c80c2c1
-    m_Address: Assets/_Root/Fonts/LilitaOne-Regular Outline 50 SDF Atlas.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48bb5f55d8670e349b6e614913f9d910
     m_Address: Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader
     m_ReadOnly: 0

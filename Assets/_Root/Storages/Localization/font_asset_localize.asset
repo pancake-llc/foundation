@@ -17,9 +17,9 @@ MonoBehaviour:
       name: English
       code: en
       custom: 0
-    value: {fileID: 0}
+    value: {fileID: 11400000, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
   - language:
       name: Vietnamese
       code: vi
       custom: 0
-    value: {fileID: 0}
+    value: {fileID: 11400000, guid: b7078ffe4d503f1408761dc5b5a8cb91, type: 2}

@@ -59,6 +59,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b354d3ce8de6e5647a58f075d65910f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabledSound: 0
+  audioOpen: {fileID: 0}
+  audioClose: {fileID: 0}
+  playAudioEvent: {fileID: 0}
   render: {fileID: 1400076824929015935}
   outfitContainer: {fileID: 11400000, guid: 5d5280e28b66d7c43b735d60700ae9ba, type: 2}
   eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
