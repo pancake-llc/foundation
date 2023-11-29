@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace PancakeEditor
 {
     public static class UtilitiesLocalizationDrawer
     {
+        private static GoogleTranslator Translator => new(LocaleSettings.Instance.GoogleCredential);
+
         private struct EditorCommands
         {
             public const string DUPLICATE = "Duplicate";
@@ -188,10 +191,10 @@ namespace PancakeEditor
                     switch (e.commandName)
                     {
                         case EditorCommands.DELETE:
-                            DeleteAssetItems(selectedItems);
+                            DeleteAssetItems(selectedItems, ref treeView);
                             break;
                         case EditorCommands.DUPLICATE:
-                            DuplicateAssetItems(selectedItems);
+                            DuplicateAssetItems(selectedItems, ref treeView);
                             break;
                         case EditorCommands.FRAME_SELECTED:
                             RevealLocalizedAsset(selectedItems.FirstOrDefault());
@@ -201,16 +204,19 @@ namespace PancakeEditor
             }
         }
 
-        private static void DeleteAssetItems(IEnumerable<AssetTreeViewItem> items)
+        private static void DeleteAssetItems(IEnumerable<AssetTreeViewItem> items, ref LocaleTreeView treeView)
         {
-            foreach (var item in items)
+            foreach (var item in items.ToList())
             {
                 string assetPath = AssetDatabase.GetAssetPath(item.Asset.GetInstanceID());
                 AssetDatabase.MoveAssetToTrash(assetPath);
             }
+
+            // refresh view
+            treeView.Reload();
         }
 
-        private static void DuplicateAssetItems(IEnumerable<AssetTreeViewItem> items)
+        private static void DuplicateAssetItems(IEnumerable<AssetTreeViewItem> items, ref LocaleTreeView treeView)
         {
             foreach (var item in items)
             {
@@ -218,6 +224,9 @@ namespace PancakeEditor
                 string newPath = AssetDatabase.GenerateUniqueAssetPath(assetPath);
                 AssetDatabase.CopyAsset(assetPath, newPath);
             }
+
+            // refresh view
+            treeView.Reload();
         }
 
         private static void RevealLocalizedAsset(AssetTreeViewItem assetTreeViewItem)
@@ -333,7 +342,7 @@ namespace PancakeEditor
         private static void AssetItemContextMenu_Delete()
         {
             var window = EditorWindow.GetWindow<Wizard>();
-            DeleteAssetItems(GetSelectedAssetItems(ref window.localeTreeView));
+            DeleteAssetItems(GetSelectedAssetItems(ref window.localeTreeView), ref window.localeTreeView);
         }
 
         private static void OnLocaleItemContextMenu(AssetTreeViewItem assetTreeViewItem, LocaleTreeViewItem localeTreeViewItem)
@@ -447,7 +456,7 @@ namespace PancakeEditor
 
             if (GUILayout.Button(new GUIContent("Delete", "Delete the selected localized asset."), EditorStyles.toolbarButton))
             {
-                DeleteAssetItems(new[] {selectedItem});
+                DeleteAssetItems(new[] {selectedItem}, ref treeView);
             }
 
             GUI.enabled = true;
@@ -470,6 +479,17 @@ namespace PancakeEditor
             GUI.enabled = assetTreeViewItem != null && assetTreeViewItem.Asset.ValueType == typeof(string);
             if (GUILayout.Button(new GUIContent("Translate By", "Translate missing locales."), EditorStyles.toolbarButton))
             {
+                TranslateMissingLocalesWithMenu(assetTreeViewItem?.Asset);
+            }
+
+            GUI.enabled = !Application.isPlaying;
+            if (GUILayout.Button(new GUIContent("Translate All", "Translate all missing locales."), EditorStyles.toolbarButton))
+            {
+                if (EditorUtility.DisplayDialog("Translate All", "Are you sure you wish to translate all missing locale?\n This action cannot be reversed.", "Yes", "No"))
+                {
+                    Debug.Log("Starting translate all LocaleText!".TextColor(Uniform.FieryRose));
+                    EditorCoroutine.Start(ExecuteTranslateProcess(treeView));
+                }
             }
 
             // First element is already default.
@@ -503,6 +523,103 @@ namespace PancakeEditor
             }
 
             GUI.enabled = true;
+
+            IEnumerator ExecuteTranslateProcess(LocaleTreeView treeView)
+            {
+                SessionState.EraseInt("translate_all_locale_text_count");
+                var rows = treeView.GetRows();
+                foreach (var viewItem in rows)
+                {
+                    var assetItem = viewItem as AssetTreeViewItem;
+                    TranslateMissingLocales(assetItem?.Asset);
+                    yield return new WaitForSeconds(0.15f);
+                }
+
+                Debug.Log("End translate all LocaleText!".TextColor(Uniform.FieryRose));
+                Debug.Log("Total LocaleText Translated is :" + SessionState.GetInt("translate_all_locale_text_count", 0));
+                SessionState.EraseInt("translate_all_locale_text_count");
+            }
+        }
+
+        private static void TranslateMissingLocalesWithMenu(ScriptableLocaleBase asset)
+        {
+            var localizedText = asset as LocaleText;
+            var options = new List<GUIContent>();
+            if (localizedText != null)
+            {
+                Debug.Log("Starting Translate LocaleText: ".TextColor(Uniform.FieryRose) + localizedText.name);
+                foreach (var locale in localizedText.TypedLocaleItems)
+                {
+                    if (!string.IsNullOrEmpty(locale.Value)) options.Add(new GUIContent(locale.Language.ToString()));
+                }
+
+                var mousePosition = Event.current.mousePosition;
+                var popupPosition = new Rect(mousePosition.x, mousePosition.y, 0, 0);
+                EditorUtility.DisplayCustomMenu(popupPosition,
+                    options.ToArray(),
+                    -1,
+                    TranslateSelected,
+                    localizedText);
+            }
+        }
+
+        /// <summary>
+        /// Translate language by first language value
+        /// </summary>
+        /// <param name="asset"></param>
+        private static void TranslateMissingLocales(ScriptableLocaleBase asset)
+        {
+            var localizedText = asset as LocaleText;
+            var options = new List<GUIContent>();
+            if (localizedText != null)
+            {
+                foreach (var locale in localizedText.TypedLocaleItems)
+                {
+                    if (!string.IsNullOrEmpty(locale.Value)) options.Add(new GUIContent(locale.Language.ToString()));
+                }
+
+                TranslateSelected(localizedText, options.Select(c => c.text).ToArray(), 0);
+            }
+        }
+
+        private static void TranslateSelected(object userData, string[] options, int selected)
+        {
+            var localizedText = (LocaleText) userData;
+
+            var selectedLanguage = LocaleSettings.Instance.AllLanguages.FirstOrDefault(x => x.Name == options[selected]);
+            if (selectedLanguage == null)
+            {
+                Debug.Assert(false, "Selected language not found in LocaleSettings.AllLanguages.");
+                return;
+            }
+
+            if (!localizedText.TryGetLocaleValue(selectedLanguage, out string textValue))
+            {
+                Debug.Assert(false, "Selected language not exist in " + localizedText.name);
+                return;
+            }
+
+            foreach (var locale in localizedText.TypedLocaleItems)
+            {
+                if (string.IsNullOrEmpty(locale.Value))
+                {
+                    var localeItem = locale;
+                    Translator.Translate(new GoogleTranslateRequest(selectedLanguage, locale.Language, textValue),
+                        e =>
+                        {
+                            var response = e.Responses.FirstOrDefault();
+                            if (response != null)
+                            {
+                                localeItem.Value = response.translatedText;
+                                SessionState.SetInt("translate_all_locale_text_count", SessionState.GetInt("translate_all_locale_text_count", 0) + 1);
+                                Debug.Log("Translate Successfull: ".TextColor(Uniform.Green) + localizedText.name);
+                            }
+
+                            EditorUtility.SetDirty(localizedText);
+                        },
+                        e => { Debug.LogError("Response (" + e.ResponseCode + "): " + e.Message); });
+                }
+            }
         }
 
         private static void AppLanguageContextMenu(object language) { Locale.CurrentLanguage = (Language) language; }

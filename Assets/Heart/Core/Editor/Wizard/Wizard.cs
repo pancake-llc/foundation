@@ -112,6 +112,7 @@ namespace PancakeEditor
         [SerializeField] private bool isInitialized;
 
         internal static Wizard window;
+        
 
         [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show()

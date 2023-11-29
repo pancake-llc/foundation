@@ -168,10 +168,26 @@ namespace Pancake.LocalizationEditor
 
         private void DrawNameCell(Rect cellRect, TreeViewItem item, ref RowGUIArgs args)
         {
+            ValidateMissingLocales(item);
+
             CenterRectUsingSingleLineHeight(ref cellRect);
             args.rowRect = cellRect;
             base.RowGUI(args);
+            GUI.contentColor = Color.white;
         }
+
+        private void ValidateMissingLocales(TreeViewItem item)
+        {
+            var assetTreeViewItem = item as AssetTreeViewItem;
+            var assetItem = assetTreeViewItem?.Asset;
+            var localizedText = assetItem as LocaleText;
+            if (localizedText == null) return;
+            foreach (var typedLocaleItem in localizedText.TypedLocaleItems)
+            {
+                GUI.contentColor = string.IsNullOrEmpty(typedLocaleItem.Value) ? new Color(0.97f, 0.33f, 0.41f) : Color.white;
+            }
+        }
+
 
         private void DrawLanguageCell(Rect cellRect, TreeViewItem item)
         {

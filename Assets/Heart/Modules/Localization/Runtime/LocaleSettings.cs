@@ -13,6 +13,7 @@ namespace Pancake.Localization
         
         public string ImportLocation => importLocation;
         public List<Language> AvailableLanguages => availableLanguages;
+        public TextAsset GoogleCredential => googleCredential;
 
         public List<Language> AllLanguages
         {

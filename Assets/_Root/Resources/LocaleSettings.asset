@@ -20,4 +20,4 @@ MonoBehaviour:
     code: vi
     custom: 0
   importLocation: Assets/_Root/Storages/Localization
-  googleCredential: {fileID: 0}
+  googleCredential: {fileID: 4900000, guid: cd0311623b9f05b4f92860285428cd0e, type: 3}
