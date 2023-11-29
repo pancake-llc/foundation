@@ -111,10 +111,12 @@ namespace PancakeEditor
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
 
+        internal static Wizard window;
+
         [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show()
         {
-            var window = GetWindow<Wizard>("Wizard");
+            window = GetWindow<Wizard>("Wizard");
             window.autoRepaintOnSceneChange = true;
             window.Show(true);
             SessionState.SetBool("spine_flag", false);

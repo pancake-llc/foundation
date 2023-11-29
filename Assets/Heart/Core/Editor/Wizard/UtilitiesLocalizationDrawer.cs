@@ -520,8 +520,7 @@ namespace PancakeEditor
     {
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            var window = EditorWindow.GetWindow<Wizard>();
-            if (window) window.localeTreeView?.Reload();
+            if (Wizard.window != null) Wizard.window.localeTreeView?.Reload();
         }
     }
 }
