@@ -53,7 +53,7 @@ namespace PancakeEditor
                 ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_LOCALIZATION");
                 AssetDatabase.Refresh();
                 RegistryManager.Resolve();
-            }W
+            }
             GUI.enabled = true;
 #endif
         }
@@ -146,6 +146,8 @@ namespace PancakeEditor
             ref SearchField searchField,
             ref bool initialized)
         {
+            if (treeViewState == null || treeView == null || searchField == null) initialized = false;
+
             if (!initialized)
             {
                 if (treeViewState == null) treeViewState = new TreeViewState();
@@ -203,7 +205,7 @@ namespace PancakeEditor
         {
             foreach (var item in items)
             {
-                var assetPath = AssetDatabase.GetAssetPath(item.Asset.GetInstanceID());
+                string assetPath = AssetDatabase.GetAssetPath(item.Asset.GetInstanceID());
                 AssetDatabase.MoveAssetToTrash(assetPath);
             }
         }
@@ -212,8 +214,8 @@ namespace PancakeEditor
         {
             foreach (var item in items)
             {
-                var assetPath = AssetDatabase.GetAssetPath(item.Asset.GetInstanceID());
-                var newPath = AssetDatabase.GenerateUniqueAssetPath(assetPath);
+                string assetPath = AssetDatabase.GetAssetPath(item.Asset.GetInstanceID());
+                string newPath = AssetDatabase.GenerateUniqueAssetPath(assetPath);
                 AssetDatabase.CopyAsset(assetPath, newPath);
             }
         }
@@ -228,6 +230,7 @@ namespace PancakeEditor
 
         private static IEnumerable<T> GetSelectedItemsAs<T>(ref LocaleTreeView treeView) where T : TreeViewItem
         {
+            if (treeView == null) return Enumerable.Empty<T>();
             var selection = treeView.GetSelection();
             var items = treeView.GetRows().Where(item => item as T != null && selection.Contains(item.id));
             return items.Cast<T>();
@@ -250,9 +253,7 @@ namespace PancakeEditor
             var mousePosition = currentEvent.mousePosition;
             if (rect.Contains(mousePosition) && currentEvent.type == EventType.ContextClick)
             {
-                AssetTreeViewItem assetTreeViewItem;
-                LocaleTreeViewItem localeTreeViewItem;
-                TryGetSelectedTreeViewItem(ref treeView, out assetTreeViewItem, out localeTreeViewItem);
+                TryGetSelectedTreeViewItem(ref treeView, out var assetTreeViewItem, out var localeTreeViewItem);
 
                 if (assetTreeViewItem != null && localeTreeViewItem != null)
                 {
@@ -281,9 +282,9 @@ namespace PancakeEditor
 
         private static void OnAssetItemContextMenu(ref AssetTreeViewItem assetTreeViewItem, ref Vector2 mousePosition)
         {
-            var itemCreate = "Create";
-            var itemRename = "Rename";
-            var itemDelete = "Delete";
+            const string itemCreate = "Create";
+            const string itemRename = "Rename";
+            const string itemDelete = "Delete";
 
             if (Event.current != null)
             {
@@ -317,10 +318,9 @@ namespace PancakeEditor
 
         private static void AssetItemContextMenu_Rename()
         {
-            AssetTreeViewItem assetTreeViewItem;
             LocaleTreeViewItem localeTreeViewItem;
             var window = EditorWindow.GetWindow<Wizard>();
-            TryGetSelectedTreeViewItem(ref window.localeTreeView, out assetTreeViewItem, out localeTreeViewItem);
+            TryGetSelectedTreeViewItem(ref window.localeTreeView, out var assetTreeViewItem, out localeTreeViewItem);
             RenameLocalizedAsset(ref window.localeTreeView, assetTreeViewItem);
         }
 
@@ -348,19 +348,15 @@ namespace PancakeEditor
 
         private static void LocaleItemContextMenu_MakeDefault()
         {
-            AssetTreeViewItem assetTreeViewItem;
-            LocaleTreeViewItem localeTreeViewItem;
             var window = EditorWindow.GetWindow<Wizard>();
-            TryGetSelectedTreeViewItem(ref window.localeTreeView, out assetTreeViewItem, out localeTreeViewItem);
+            TryGetSelectedTreeViewItem(ref window.localeTreeView, out var assetTreeViewItem, out var localeTreeViewItem);
             MakeLocaleDefault(ref window.localeTreeView, assetTreeViewItem, localeTreeViewItem);
         }
 
         private static void LocaleItemContextMenu_Remove()
         {
-            AssetTreeViewItem assetTreeViewItem;
-            LocaleTreeViewItem localeTreeViewItem;
             var window = EditorWindow.GetWindow<Wizard>();
-            TryGetSelectedTreeViewItem(ref window.localeTreeView, out assetTreeViewItem, out localeTreeViewItem);
+            TryGetSelectedTreeViewItem(ref window.localeTreeView, out var assetTreeViewItem, out var localeTreeViewItem);
             RemoveLocale(ref window.localeTreeView, assetTreeViewItem.Asset, localeTreeViewItem.LocaleItem);
         }
 
@@ -374,7 +370,7 @@ namespace PancakeEditor
             var elements = serializedObject.FindProperty("items");
             if (elements != null && elements.arraySize > 1)
             {
-                var index = Array.FindIndex(localizedAsset.LocaleItems, x => x.Language == language);
+                int index = Array.FindIndex(localizedAsset.LocaleItems, x => x.Language == language);
                 if (index >= 0)
                 {
                     language = new Language(language.Name, language.Code, language.Custom);
@@ -422,7 +418,7 @@ namespace PancakeEditor
 
         private static void TreeViewControls(ref LocaleTreeView treeView)
         {
-            if (GUILayout.Button(Uniform.IconContent("audio mixer", "Open settings"), EditorStyles.toolbarButton))
+            if (GUILayout.Button(Uniform.IconContent("d_SettingsIcon@2x", "Open settings"), EditorStyles.toolbarButton, GUILayout.Width(25)))
             {
                 var settings = LocaleSettings.Instance;
                 if (settings) Selection.activeObject = settings;
@@ -441,7 +437,7 @@ namespace PancakeEditor
                 var mousePosition = Event.current.mousePosition;
                 CreateLocalizedAssetPopup(mousePosition);
             }
-            
+
             var selectedItem = treeView.GetSelectedItem() as AssetTreeViewItem;
             GUI.enabled = selectedItem != null;
             if (GUILayout.Button(new GUIContent("Rename", "Rename the selected localized asset."), EditorStyles.toolbarButton))
@@ -455,13 +451,21 @@ namespace PancakeEditor
             }
 
             GUI.enabled = true;
+
+            if (GUILayout.Button(new GUIContent("Import", "Import text from csv file"), EditorStyles.toolbarButton))
+            {
+                LocaleEditorUtil.Import();
+            }
+
+            if (GUILayout.Button(new GUIContent("Export", "Export text to csv file"), EditorStyles.toolbarButton))
+            {
+                LocaleEditorUtil.Export();
+            }
         }
 
         private static void LocaleItemControls(ref LocaleTreeView treeView)
         {
-            AssetTreeViewItem assetTreeViewItem;
-            LocaleTreeViewItem localeTreeViewItem;
-            TryGetSelectedTreeViewItem(ref treeView, out assetTreeViewItem, out localeTreeViewItem);
+            TryGetSelectedTreeViewItem(ref treeView, out var assetTreeViewItem, out var localeTreeViewItem);
 
             GUI.enabled = assetTreeViewItem != null && assetTreeViewItem.Asset.ValueType == typeof(string);
             if (GUILayout.Button(new GUIContent("Translate By", "Translate missing locales."), EditorStyles.toolbarButton))
@@ -488,14 +492,14 @@ namespace PancakeEditor
             GUI.enabled = assetTreeViewItem != null;
             if (GUILayout.Button(Uniform.IconContent("Toolbar Plus", "Add locale for selected asset."), EditorStyles.toolbarButton))
             {
-                AddLocale(ref treeView, assetTreeViewItem.Asset);
+                AddLocale(ref treeView, assetTreeViewItem?.Asset);
             }
 
             GUI.enabled = localeTreeViewItem != null;
 
             if (GUILayout.Button(Uniform.IconContent("Toolbar Minus", "Remove selected locale."), EditorStyles.toolbarButton))
             {
-                RemoveLocale(ref treeView, assetTreeViewItem.Asset, localeTreeViewItem.LocaleItem);
+                RemoveLocale(ref treeView, assetTreeViewItem?.Asset, localeTreeViewItem?.LocaleItem);
             }
 
             GUI.enabled = true;
@@ -506,6 +510,18 @@ namespace PancakeEditor
         private static void AddLocale(ref LocaleTreeView localeTreeView, ScriptableLocaleBase localizedAsset)
         {
             if (ScriptableLocaleEditor.AddLocale(localizedAsset)) localeTreeView.Reload();
+        }
+    }
+
+    /// <summary>
+    /// Refreshes localization tab wizard if is opened.
+    /// </summary>
+    public class ScriptableLocalePostprocessor : AssetPostprocessor
+    {
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        {
+            var window = EditorWindow.GetWindow<Wizard>();
+            if (window) window.localeTreeView?.Reload();
         }
     }
 }

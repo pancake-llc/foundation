@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using Pancake.Localization;
 using UnityEditor;
@@ -7,7 +9,7 @@ using UnityEngine;
 
 namespace Pancake.LocalizationEditor
 {
-    public static class Helper
+    public static class LocaleEditorUtil
     {
         private static GUIContent[] contents;
 
@@ -31,17 +33,17 @@ namespace Pancake.LocalizationEditor
                 contents[i] = new GUIContent(languages[i].Name);
             }
 
-            var languageName = language.Name;
-            var languageCode = language.Code;
+            string languageName = language.Name;
+            string languageCode = language.Code;
 
-            var currentValue = languages.FindIndex(x => x.Code == languageCode);
+            int currentValue = languages.FindIndex(x => x.Code == languageCode);
             if (currentValue < 0)
             {
                 currentValue = languages.FindIndex(x => x == Language.Unknown);
                 Debug.Assert(currentValue >= 0);
             }
 
-            var newValue = EditorGUI.Popup(position, currentValue, contents);
+            int newValue = EditorGUI.Popup(position, currentValue, contents);
             if (newValue != currentValue)
             {
                 return languages[newValue];
@@ -75,14 +77,14 @@ namespace Pancake.LocalizationEditor
             var languageName = property.FindPropertyRelative("name");
             var languageCode = property.FindPropertyRelative("code");
 
-            var currentValue = languages.FindIndex(x => x.Code == languageCode.stringValue);
+            int currentValue = languages.FindIndex(x => x.Code == languageCode.stringValue);
             if (currentValue < 0)
             {
                 currentValue = languages.FindIndex(x => x == Language.Unknown);
                 Debug.Assert(currentValue >= 0);
             }
 
-            var newValue = EditorGUI.Popup(position, label, currentValue, contents);
+            int newValue = EditorGUI.Popup(position, label, currentValue, contents);
             if (newValue != currentValue)
             {
                 languageName.stringValue = languages[newValue].Name;
@@ -118,16 +120,15 @@ namespace Pancake.LocalizationEditor
 
             return new Language(nameProperty.stringValue, codeProperty.stringValue, customProperty.boolValue);
         }
-        
-        public static void SetLanguageProperty(SerializedProperty languageProperty, string name, string code,
-            bool custom)
+
+        public static void SetLanguageProperty(SerializedProperty languageProperty, string name, string code, bool custom)
         {
             var nameProperty = languageProperty.FindPropertyRelative("name");
             if (nameProperty == null) throw new ArgumentException("Language.Name property could not be found");
-            
+
             var codeProperty = languageProperty.FindPropertyRelative("code");
             if (codeProperty == null) throw new ArgumentException("Language.Code property could not be found");
-            
+
             var customProperty = languageProperty.FindPropertyRelative("custom");
             if (customProperty == null) throw new ArgumentException("Language.Custom property could not be found");
 
@@ -135,10 +136,65 @@ namespace Pancake.LocalizationEditor
             codeProperty.stringValue = code;
             customProperty.boolValue = custom;
         }
-        
+
         public static void SetLanguageProperty(SerializedProperty languageProperty, Language language)
         {
             SetLanguageProperty(languageProperty, language.Name, language.Code, language.Custom);
+        }
+
+        /// <summary>
+        /// Import CSV file
+        /// </summary>
+        public static void Import()
+        {
+            string path = EditorUtility.OpenFilePanel("Import CSV file", "", "csv");
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            try
+            {
+                using (var stream = File.OpenRead(path))
+                {
+                    var serialization = new CsvSerialization();
+                    serialization.Deserialize(stream);
+                }
+
+                Debug.Log("CSV file has been imported.");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+
+        /// <summary>
+        /// Export CSV file
+        /// </summary>
+        public static void Export()
+        {
+            string fileName = Application.productName + "-" + DateTime.Now.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+            string path = EditorUtility.SaveFilePanel("Export CSV file", "", fileName, "csv");
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            try
+            {
+                using (var stream = File.OpenWrite(path))
+                {
+                    var serialization = new CsvSerialization();
+                    serialization.Serialize(stream);
+                }
+
+                Debug.Log("CSV file has been exported to " + path);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
     }
 }

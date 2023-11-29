@@ -180,7 +180,7 @@ namespace Pancake.LocalizationEditor
             var localeItem = item as LocaleTreeViewItem;
             if (localeItem != null)
             {
-                localeItem.LocaleItem.Language = Helper.LanguageField(cellRect, localeItem.LocaleItem.Language);
+                localeItem.LocaleItem.Language = LocaleEditorUtil.LanguageField(cellRect, localeItem.LocaleItem.Language);
             }
         }
 

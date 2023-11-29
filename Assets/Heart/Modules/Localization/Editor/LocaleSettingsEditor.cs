@@ -66,7 +66,7 @@ namespace Pancake.LocalizationEditor
             }
             else
             {
-                Helper.LanguageField(position, languageProperty, GUIContent.none, true);
+                LocaleEditorUtil.LanguageField(position, languageProperty, GUIContent.none, true);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Pancake.LocalizationEditor
                     ReorderableList.defaultBehaviours.DoAddButton(list);
 
                     var languageProperty = list.serializedProperty.GetArrayElementAtIndex(list.index);
-                    Helper.SetLanguageProperty(languageProperty, Language.BuiltInLanguages[0]);
+                    LocaleEditorUtil.SetLanguageProperty(languageProperty, Language.BuiltInLanguages[0]);
 
                     serializedObject.ApplyModifiedProperties();
                 });
@@ -94,7 +94,7 @@ namespace Pancake.LocalizationEditor
                     ReorderableList.defaultBehaviours.DoAddButton(list);
 
                     var languageProperty = list.serializedProperty.GetArrayElementAtIndex(list.index);
-                    Helper.SetLanguageProperty(languageProperty, "", "", true);
+                    LocaleEditorUtil.SetLanguageProperty(languageProperty, "", "", true);
 
                     serializedObject.ApplyModifiedProperties();
                 });
@@ -111,7 +111,7 @@ namespace Pancake.LocalizationEditor
         private void OnRemoveCallback(ReorderableList list)
         {
             var languageProperty = list.serializedProperty.GetArrayElementAtIndex(list.index);
-            var language = Helper.GetLanguageValueFromProperty(languageProperty);
+            var language = LocaleEditorUtil.GetLanguageValueFromProperty(languageProperty);
             if (language.Custom)
             {
                 var localizedAssets = Locale.FindAllLocalizedAssets();
@@ -137,7 +137,7 @@ namespace Pancake.LocalizationEditor
             for (var i = 0; i < _avaiableLanguageProperty.arraySize; i++)
             {
                 var languageProperty = _avaiableLanguageProperty.GetArrayElementAtIndex(i);
-                Helper.SetLanguageProperty(languageProperty, languages[i]);
+                LocaleEditorUtil.SetLanguageProperty(languageProperty, languages[i]);
             }
         }
 
@@ -146,7 +146,7 @@ namespace Pancake.LocalizationEditor
             var languages = new HashSet<Language>();
             for (var i = 0; i < _avaiableLanguageProperty.arraySize; i++)
             {
-                languages.Add(Helper.GetLanguageValueFromProperty(_avaiableLanguageProperty.GetArrayElementAtIndex(i)));
+                languages.Add(LocaleEditorUtil.GetLanguageValueFromProperty(_avaiableLanguageProperty.GetArrayElementAtIndex(i)));
             }
 
             var localizedAssets = Locale.FindAllLocalizedAssets();

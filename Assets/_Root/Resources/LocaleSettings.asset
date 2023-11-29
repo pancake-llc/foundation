@@ -19,5 +19,5 @@ MonoBehaviour:
   - name: Vietnamese
     code: vi
     custom: 0
-  importLocation: Assets
+  importLocation: Assets/_Root/Storages/Localization
   googleCredential: {fileID: 0}

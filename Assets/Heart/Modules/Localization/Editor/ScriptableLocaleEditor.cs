@@ -148,7 +148,7 @@ namespace Pancake.LocalizationEditor
                 }
 
                 var localeItemLanguage = localeItem.FindPropertyRelative("language");
-                Helper.SetLanguageProperty(localeItemLanguage, filteredLanguages[i]);
+                LocaleEditorUtil.SetLanguageProperty(localeItemLanguage, filteredLanguages[i]);
             }
         }
 
