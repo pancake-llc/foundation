@@ -16,9 +16,9 @@ namespace Pancake.Localization
         /// Gets or sets the google cloud API key.
         /// </summary>
         /// <seealso cref="http://cloud.google.com/docs/authentication/api-keys"/>
-        public TextAsset AuthenticationFile { get; set; }
+        public string AuthCredential { get; set; }
 
-        public GoogleTranslator(TextAsset authFile) { AuthenticationFile = authFile; }
+        public GoogleTranslator(string authCredential) { AuthCredential = authCredential; }
 
         /// <summary>
         /// Performs translation with given translate request asynchronous.
@@ -71,10 +71,10 @@ namespace Pancake.Localization
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
-            if (!AuthenticationFile)
+            if (string.IsNullOrEmpty(AuthCredential))
             {
                 // ReSharper disable once NotResolvedInText
-                throw new ArgumentNullException("AuthenticationFile", "Auth file not attached.");
+                throw new ArgumentNullException("AuthCredential", "Auth credential missing!");
             }
 
             var form = new WWWForm();
@@ -82,7 +82,7 @@ namespace Pancake.Localization
             form.AddField(REQUEST_KEY_SOURCE_LANGUAGE, request.source.Code);
             form.AddField(REQUEST_KEY_TARGET_LANGUAGE, request.target.Code);
 
-            var url = string.Format(REQUEST_URL_V2, AuthenticationFile.text);
+            var url = string.Format(REQUEST_URL_V2, AuthCredential);
             return UnityWebRequest.Post(url, form);
         }
 

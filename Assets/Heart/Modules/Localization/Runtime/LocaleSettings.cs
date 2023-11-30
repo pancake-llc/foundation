@@ -9,11 +9,11 @@ namespace Pancake.Localization
     {
         [SerializeField] private List<Language> availableLanguages = new List<Language>(1) {Language.English};
         [SerializeField] private string importLocation = "Assets";
-        [SerializeField] private TextAsset googleCredential;
+        [SerializeField] private string googleCredential;
         
         public string ImportLocation => importLocation;
         public List<Language> AvailableLanguages => availableLanguages;
-        public TextAsset GoogleCredential => googleCredential;
+        public string GoogleCredential => googleCredential;
 
         public List<Language> AllLanguages
         {

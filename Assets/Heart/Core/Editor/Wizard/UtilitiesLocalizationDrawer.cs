@@ -476,7 +476,7 @@ namespace PancakeEditor
         {
             TryGetSelectedTreeViewItem(ref treeView, out var assetTreeViewItem, out var localeTreeViewItem);
 
-            GUI.enabled = assetTreeViewItem != null && assetTreeViewItem.Asset.ValueType == typeof(string);
+            GUI.enabled = assetTreeViewItem != null && assetTreeViewItem.Asset.GetGenericType == typeof(string);
             if (GUILayout.Button(new GUIContent("Translate By", "Translate missing locales."), EditorStyles.toolbarButton))
             {
                 TranslateMissingLocalesWithMenu(assetTreeViewItem?.Asset);

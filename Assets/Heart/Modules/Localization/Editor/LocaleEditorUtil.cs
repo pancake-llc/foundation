@@ -39,7 +39,7 @@ namespace Pancake.LocalizationEditor
             int currentValue = languages.FindIndex(x => x.Code == languageCode);
             if (currentValue < 0)
             {
-                currentValue = languages.FindIndex(x => x == Language.Unknown);
+                currentValue = languages.FindIndex(x => x == Language.English);
                 Debug.Assert(currentValue >= 0);
             }
 
@@ -80,7 +80,7 @@ namespace Pancake.LocalizationEditor
             int currentValue = languages.FindIndex(x => x.Code == languageCode.stringValue);
             if (currentValue < 0)
             {
-                currentValue = languages.FindIndex(x => x == Language.Unknown);
+                currentValue = languages.FindIndex(x => x == Language.English);
                 Debug.Assert(currentValue >= 0);
             }
 

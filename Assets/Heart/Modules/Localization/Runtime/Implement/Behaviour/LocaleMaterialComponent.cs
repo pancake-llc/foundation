@@ -1,23 +1,16 @@
-using UnityEngine;
+using TMPro;
 
 namespace Pancake.Localization
 {
+    using UnityEngine;
+
     [EditorIcon("csharp")]
-    public class LocaleMaterialComponent : LocaleComponent
+    public class LocaleMaterialComponent : LocaleComponentGeneric<LocaleMaterial, Material>
     {
-        public Material material;
-        public string propertyName = "_MainTex";
-        public LocaleTexture localeTexture;
-
-        protected override bool TryUpdateComponentLocalization(bool isOnValidate)
+        private void Reset()
         {
-            if (material && localeTexture)
-            {
-                material.SetTexture(propertyName, GetValueOrDefault(localeTexture));
-                return true;
-            }
-
-            return false;
+            TrySetComponentAndPropertyIfNotSet<Renderer>("material");
+            TrySetComponentAndPropertyIfNotSet<TMP_Text>("fontMaterial");
         }
     }
 }

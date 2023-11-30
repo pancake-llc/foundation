@@ -96,7 +96,7 @@ namespace Pancake.LocalizationEditor
             if (localeItem != null)
             {
                 var assetItem = localeItem.Parent;
-                if (assetItem.Asset.ValueType == typeof(string))
+                if (assetItem.Asset.GetGenericType == typeof(string))
                 {
                     var column = multiColumnHeader.GetColumn(3);
                     if (column != null)
@@ -139,7 +139,7 @@ namespace Pancake.LocalizationEditor
                 Texture icon;
 
                 // Set icon by localized asset value type.
-                var valueType = treeViewItem.Asset.ValueType;
+                var valueType = treeViewItem.Asset.GetGenericType;
                 if (valueType == typeof(string))
                 {
                     icon = EditorGUIUtility.ObjectContent(null, typeof(TextAsset)).image;
@@ -208,7 +208,7 @@ namespace Pancake.LocalizationEditor
             if (treeViewItem != null)
             {
                 var localeItem = treeViewItem.LocaleItem;
-                var valueType = treeViewItem.Parent.Asset.ValueType;
+                var valueType = treeViewItem.Parent.Asset.GetGenericType;
 
                 EditorGUI.BeginChangeCheck();
                 if (valueType.IsSubclassOf(typeof(UnityEngine.Object)))

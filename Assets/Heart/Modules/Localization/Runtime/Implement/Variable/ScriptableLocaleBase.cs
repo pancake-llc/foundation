@@ -14,6 +14,6 @@ namespace Pancake.Localization
         /// <summary>
         /// Gets the value type.
         /// </summary>
-        public abstract Type ValueType { get; }
+        public abstract Type GetGenericType { get; }
     }
 }

@@ -8,11 +8,6 @@ namespace Pancake.Localization
     public abstract class LocaleVariable<T> : ScriptableLocaleBase where T : class
     {
         /// <summary>
-        /// Gets the value type.
-        /// </summary>
-        public static Type GetValueType() => typeof(T);
-
-        /// <summary>
         /// Gets the defined locale items of the localized asset with concrete type.
         /// </summary>
         public LocaleItem<T>[] TypedLocaleItems => (LocaleItem<T>[]) LocaleItems;
@@ -90,6 +85,6 @@ namespace Pancake.Localization
         /// <param name="asset">LocalizedAsset</param>
         public static implicit operator T(LocaleVariable<T> asset) { return asset ? asset.Value : default; }
 
-        public override Type ValueType => GetValueType();
+        public override Type GetGenericType => typeof(T);
     }
 }

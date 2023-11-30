@@ -20,7 +20,8 @@ namespace Pancake.LocalizationEditor
 
         private void OnEnable()
         {
-            var assetValueType = ((ScriptableLocaleBase) target).ValueType;
+            if (target == null) return;
+            var assetValueType = ((ScriptableLocaleBase) target).GetGenericType;
             _itemsProperty = serializedObject.FindProperty("items");
             if (_itemsProperty != null)
             {
@@ -31,7 +32,7 @@ namespace Pancake.LocalizationEditor
                     displayAddButton: true,
                     displayRemoveButton: true)
                 {
-                    drawHeaderCallback = (rect) => { EditorGUI.LabelField(rect, ObjectNames.NicifyVariableName(target.GetType().Name) + "s"); }
+                    drawHeaderCallback = rect => { EditorGUI.LabelField(rect, ObjectNames.NicifyVariableName(target.GetType().Name) + "s"); }
                 };
 
                 _reorderable.drawElementCallback = (rect, index, isActive, isFocused) =>
@@ -55,8 +56,8 @@ namespace Pancake.LocalizationEditor
                         EditorGUI.PropertyField(valueRect, valueProperty, GUIContent.none);
                     }
                 };
-                _reorderable.onCanRemoveCallback = (list) => list.count > 1;
-                _reorderable.elementHeightCallback = (index) =>
+                _reorderable.onCanRemoveCallback = list => list.count > 1;
+                _reorderable.elementHeightCallback = index =>
                 {
                     var element = _reorderable.serializedProperty.GetArrayElementAtIndex(index);
                     var valueProperty = element.FindPropertyRelative("value");

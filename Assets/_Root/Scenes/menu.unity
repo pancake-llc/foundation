@@ -570,6 +570,7 @@ GameObject:
   - component: {fileID: 290372033}
   - component: {fileID: 290372034}
   - component: {fileID: 290372035}
+  - component: {fileID: 290372036}
   m_Layer: 5
   m_Name: text
   m_TagString: Untagged
@@ -748,6 +749,23 @@ MonoBehaviour:
     enabled: 0
     value: font
   variable: {fileID: 11400000, guid: 2231b50be30e72a46b98a7622c3a1a07, type: 2}
+--- !u!114 &290372036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290372029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2e17a0a9298b014daac3f73685bfd04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 290372031}
+  property:
+    enabled: 0
+    value: fontMaterial
+  variable: {fileID: 11400000, guid: 436fdf3efd7603040b69d4071a680f32, type: 2}
 --- !u!1 &320806795
 GameObject:
   m_ObjectHideFlags: 0

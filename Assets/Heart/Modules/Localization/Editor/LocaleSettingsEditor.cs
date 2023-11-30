@@ -29,10 +29,8 @@ namespace Pancake.LocalizationEditor
                     true,
                     true,
                     true,
-                    true);
+                    true) {drawHeaderCallback = OnDrawHeaderCallback, drawElementCallback = OnDrawElementCallback};
 
-                _reorderableList.drawHeaderCallback = OnDrawHeaderCallback;
-                _reorderableList.drawElementCallback = OnDrawElementCallback;
                 _reorderableList.onAddDropdownCallback += OnAddDropdownCallback;
                 _reorderableList.onRemoveCallback += OnRemoveCallback;
                 _reorderableList.onCanRemoveCallback += OnCanRemoveCallback;
@@ -196,9 +194,9 @@ namespace Pancake.LocalizationEditor
                 
                 EditorGUILayout.LabelField("Google Translate", EditorStyles.boldLabel);
                 EditorGUILayout.PropertyField(_googleCredentialProperty);
-                if (!_googleCredentialProperty.objectReferenceValue)
+                if (string.IsNullOrEmpty(_googleCredentialProperty.stringValue))
                 {
-                    EditorGUILayout.HelpBox("If you want to use Google Translate in editor or in-game, attach the service account or API key file claimed from Google Cloud.", MessageType.Info);
+                    EditorGUILayout.HelpBox("If you want to use Google Translate in editor or in-game, attach the API key file claimed from Google Cloud.", MessageType.Info);
                 }
                 serializedObject.ApplyModifiedProperties();
             }
