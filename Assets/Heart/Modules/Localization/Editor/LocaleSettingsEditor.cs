@@ -171,8 +171,6 @@ namespace Pancake.LocalizationEditor
 
                 _reorderableList.DoLayoutList();
 
-                EditorGUILayout.LabelField("Import/Export", EditorStyles.boldLabel);
-                
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(_importLocationProperty.displayName);
                 if (GUILayout.Button(_importLocationProperty.stringValue, EditorStyles.objectField))
@@ -192,7 +190,6 @@ namespace Pancake.LocalizationEditor
                 
                 EditorGUILayout.Separator();
                 
-                EditorGUILayout.LabelField("Google Translate", EditorStyles.boldLabel);
                 EditorGUILayout.PropertyField(_googleCredentialProperty);
                 if (string.IsNullOrEmpty(_googleCredentialProperty.stringValue))
                 {
