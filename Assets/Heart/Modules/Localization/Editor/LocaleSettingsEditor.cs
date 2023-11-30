@@ -198,6 +198,10 @@ namespace Pancake.LocalizationEditor
                 {
                     EditorGUILayout.HelpBox("If you want to use Google Translate in editor or in-game, attach the API key file claimed from Google Cloud.", MessageType.Info);
                 }
+                else
+                {
+                    EditorGUILayout.HelpBox("Replace with your API key", MessageType.Info);
+                }
                 serializedObject.ApplyModifiedProperties();
             }
             else

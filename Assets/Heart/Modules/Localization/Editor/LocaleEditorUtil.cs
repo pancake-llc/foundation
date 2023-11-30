@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Pancake.ExLibEditor.Windows;
 using Pancake.Localization;
 using UnityEditor;
 using UnityEngine;
@@ -11,45 +12,49 @@ namespace Pancake.LocalizationEditor
 {
     public static class LocaleEditorUtil
     {
-        private static GUIContent[] contents;
-
-        public static Language LanguageField(Rect position, Language language, bool showOnlyBuiltin = false)
+        public static void LocaleDrawLanguageField(Rect position, ref LocaleTreeViewItem localeItem, bool showOnlyBuiltin = false)
         {
             var languages = new List<Language>();
             languages.AddRange(Language.BuiltInLanguages);
 
-            if (!showOnlyBuiltin)
+            if (!showOnlyBuiltin) languages.AddRange(GetCustomLanguages());
+
+            int currentValueIndex = -1;
+            for (int i = 0; i < languages.Count; i++)
             {
-                languages.AddRange(GetCustomLanguages());
+                if (languages[i].Code == localeItem.LocaleItem.Language.Code)
+                {
+                    currentValueIndex = i;
+                    break;
+                }
             }
 
-            if (contents == null || contents.Length != languages.Count)
+            if (currentValueIndex < 0)
             {
-                contents = new GUIContent[languages.Count];
+                currentValueIndex = languages.FindIndex(x => x.Code == Language.English.Code);
+                Debug.Assert(currentValueIndex >= 0);
             }
 
-            for (var i = 0; i < languages.Count; i++)
+            int newValueIndex = currentValueIndex;
+            if (GUI.Button(position, languages[currentValueIndex].Name, EditorStyles.popup))
             {
-                contents[i] = new GUIContent(languages[i].Name);
+                var searchWindow = ExSearchWindow.Create("Choose Language");
+
+                foreach (var lang in languages)
+                {
+                    var cache = lang;
+                    var item = localeItem;
+                    searchWindow.AddEntry(lang.Name,
+                        () =>
+                        {
+                            newValueIndex = languages.FindIndex(x => x.Code == cache.Code);
+
+                            if (newValueIndex != currentValueIndex) item.LocaleItem.Language = languages[newValueIndex];
+                        });
+                }
+
+                searchWindow.Open(position);
             }
-
-            string languageName = language.Name;
-            string languageCode = language.Code;
-
-            int currentValue = languages.FindIndex(x => x.Code == languageCode);
-            if (currentValue < 0)
-            {
-                currentValue = languages.FindIndex(x => x == Language.English);
-                Debug.Assert(currentValue >= 0);
-            }
-
-            int newValue = EditorGUI.Popup(position, currentValue, contents);
-            if (newValue != currentValue)
-            {
-                return languages[newValue];
-            }
-
-            return language;
         }
 
         public static void LanguageField(Rect position, SerializedProperty property, GUIContent label, bool showOnlyBuiltin = false)
@@ -57,39 +62,40 @@ namespace Pancake.LocalizationEditor
             var languages = new List<Language>();
             languages.AddRange(Language.BuiltInLanguages);
 
-            if (!showOnlyBuiltin)
-            {
-                languages.AddRange(GetCustomLanguages());
-            }
-
-            if (contents == null || contents.Length != languages.Count)
-            {
-                contents = new GUIContent[languages.Count];
-            }
-
-            for (var i = 0; i < languages.Count; i++)
-            {
-                contents[i] = new GUIContent(languages[i].Name);
-            }
+            if (!showOnlyBuiltin) languages.AddRange(GetCustomLanguages());
 
             EditorGUI.BeginProperty(position, label, property);
 
             var languageName = property.FindPropertyRelative("name");
             var languageCode = property.FindPropertyRelative("code");
 
-            int currentValue = languages.FindIndex(x => x.Code == languageCode.stringValue);
-            if (currentValue < 0)
+            int currentValueIndex = languages.FindIndex(x => x.Code == languageCode.stringValue);
+            if (currentValueIndex < 0)
             {
-                currentValue = languages.FindIndex(x => x == Language.English);
-                Debug.Assert(currentValue >= 0);
+                currentValueIndex = languages.FindIndex(x => x == Language.English);
+                Debug.Assert(currentValueIndex >= 0);
             }
 
-            int newValue = EditorGUI.Popup(position, label, currentValue, contents);
-            if (newValue != currentValue)
+            if (GUI.Button(position, languages[currentValueIndex].Name, EditorStyles.popup))
             {
-                languageName.stringValue = languages[newValue].Name;
-                languageCode.stringValue = languages[newValue].Code;
-                property.serializedObject.ApplyModifiedProperties();
+                var searchWindow = ExSearchWindow.Create("Choose Language");
+                foreach (var lang in languages)
+                {
+                    var cache = lang;
+                    searchWindow.AddEntry(lang.Name,
+                        () =>
+                        {
+                            int newValue = languages.FindIndex(x => x.Code == cache.Code);
+                            if (newValue != currentValueIndex)
+                            {
+                                languageName.stringValue = languages[newValue].Name;
+                                languageCode.stringValue = languages[newValue].Code;
+                                property.serializedObject.ApplyModifiedProperties();
+                            }
+                        });
+                }
+            
+                searchWindow.Open(position);
             }
 
             EditorGUI.EndProperty();

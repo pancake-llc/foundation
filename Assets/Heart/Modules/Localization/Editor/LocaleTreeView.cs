@@ -91,9 +91,8 @@ namespace Pancake.LocalizationEditor
         /// </summary>
         protected override float GetCustomRowHeight(int row, TreeViewItem item)
         {
-            var rowHeight = base.GetCustomRowHeight(row, item);
-            var localeItem = item as LocaleTreeViewItem;
-            if (localeItem != null)
+            var h = base.GetCustomRowHeight(row, item);
+            if (item is LocaleTreeViewItem localeItem)
             {
                 var assetItem = localeItem.Parent;
                 if (assetItem.Asset.GetGenericType == typeof(string))
@@ -103,12 +102,12 @@ namespace Pancake.LocalizationEditor
                     {
                         var stringValue = (string) localeItem.LocaleItem.ObjectValue;
                         var calculatedRowHeight = _textAreaStyle.CalcHeight(new GUIContent(stringValue), column.width) + 4;
-                        rowHeight = Mathf.Clamp(calculatedRowHeight, rowHeight, 100);
+                        h = Mathf.Clamp(calculatedRowHeight, h, 100);
                     }
                 }
             }
 
-            return rowHeight;
+            return h;
         }
 
         void CellGUI(Rect cellRect, TreeViewItem item, ColumnType column, ref RowGUIArgs args)
@@ -193,10 +192,9 @@ namespace Pancake.LocalizationEditor
         {
             cellRect.y += 2;
             cellRect.height -= 4;
-            var localeItem = item as LocaleTreeViewItem;
-            if (localeItem != null)
+            if (item is LocaleTreeViewItem localeItem)
             {
-                localeItem.LocaleItem.Language = LocaleEditorUtil.LanguageField(cellRect, localeItem.LocaleItem.Language);
+                LocaleEditorUtil.LocaleDrawLanguageField(cellRect, ref localeItem);
             }
         }
 
@@ -204,8 +202,7 @@ namespace Pancake.LocalizationEditor
         {
             cellRect.y += 2;
             cellRect.height -= 4;
-            var treeViewItem = item as LocaleTreeViewItem;
-            if (treeViewItem != null)
+            if (item is LocaleTreeViewItem treeViewItem)
             {
                 var localeItem = treeViewItem.LocaleItem;
                 var valueType = treeViewItem.Parent.Asset.GetGenericType;
