@@ -1,4 +1,5 @@
 using Coffee.UIEffects;
+using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Sound;
@@ -11,7 +12,7 @@ namespace Pancake.UI
 {
     public sealed class SettingView : View
     {
-        [SerializeField] private TextMeshProUGUI textVersion;
+        [SerializeField] private LocaleTextComponent localeTextVersion;
         [SerializeField] private Button buttonMusic;
         [SerializeField] private Button buttonSound;
         [SerializeField] private Button buttonVibrate;
@@ -114,7 +115,7 @@ namespace Pancake.UI
 
         private void Refresh()
         {
-            textVersion.text = $"Version {Application.version}";
+            localeTextVersion.UpdateArgs($"{Application.version}");
             bool vibrateState = Vibration.EnableVibration;
 
             RefreshMusicState(musicVolume.Value.Approximately(1));
