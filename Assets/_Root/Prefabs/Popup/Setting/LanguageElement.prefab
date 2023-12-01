@@ -444,7 +444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellIdentifier: language_element
   textName: {fileID: 6458290139366415892}
-  localeTextName: {fileID: 0}
+  localeTextName: {fileID: 6132017885257104679}
   objectHightLight: {fileID: 1397368055162064814}
   buttonSelect: {fileID: 160949149084782860}
 --- !u!1 &5844704876172192846
@@ -458,6 +458,8 @@ GameObject:
   - component: {fileID: 588342621285986655}
   - component: {fileID: 491115964677642518}
   - component: {fileID: 8314220931831279385}
+  - component: {fileID: 6132017885257104679}
+  - component: {fileID: 5147682047486042290}
   m_Layer: 5
   m_Name: NameLocale
   m_TagString: Untagged
@@ -581,3 +583,38 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6132017885257104679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5844704876172192846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c43f4ebada4d6ab7202113210604cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 8314220931831279385}
+  property:
+    enabled: 0
+    value: text
+  variable: {fileID: 0}
+  formatArgs: []
+--- !u!114 &5147682047486042290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5844704876172192846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 476932f1680198544b423513d634d37e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 8314220931831279385}
+  property:
+    enabled: 0
+    value: font
+  variable: {fileID: 11400000, guid: 2231b50be30e72a46b98a7622c3a1a07, type: 2}

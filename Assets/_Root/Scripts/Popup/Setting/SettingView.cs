@@ -1,4 +1,5 @@
 using Coffee.UIEffects;
+using Pancake.Apex;
 using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
@@ -30,7 +31,8 @@ namespace Pancake.UI
         [SerializeField] private RectTransform languagePopup;
         [SerializeField] private UIButton buttonSelectLanguage;
         [SerializeField] private TextMeshProUGUI textNameLanguageSelected;
-        
+        [SerializeField, Array] private LocaleText[] langLocales;
+
         [Space] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
         [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
@@ -163,7 +165,7 @@ namespace Pancake.UI
         private void RefreshMusicState(bool musicState) { musicUIEffect.effectMode = musicState ? EffectMode.None : EffectMode.Grayscale; }
         public int GetNumberOfCells(EnhancedScroller scroller) { return LocaleSettings.Instance.AvailableLanguages.Count; }
 
-        public float GetCellViewSize(EnhancedScroller scroller, int dataIndex) { return 120f;}
+        public float GetCellViewSize(EnhancedScroller scroller, int dataIndex) { return 120f; }
 
         public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
@@ -175,13 +177,16 @@ namespace Pancake.UI
                 element.Init(code,
                     OnButtonElementClicked,
                     IsElementSelected,
+                    GetLocaleTextByIndex,
                     InternalHideSelectLanguage);
                 return element;
             }
 
             return null;
         }
-        
+
+        private LocaleText GetLocaleTextByIndex(int arg) { return langLocales[arg]; }
+
         private void OnButtonElementClicked(LanguageElementView view)
         {
             _selectedLang = view.Lang;
@@ -189,9 +194,9 @@ namespace Pancake.UI
             languageScroller.RefreshActiveCellViews();
             textNameLanguageSelected.text = view.Lang.Name;
         }
-        
+
         private bool IsElementSelected(string code) { return _selectedLang.Code.Equals(code); }
-        
+
         private void InternalShowSelectLanguage()
         {
             _languageScrollerRT.pivot = new Vector2(0.5f, 1f);
@@ -204,7 +209,7 @@ namespace Pancake.UI
                     _languageScrollerRT.pivot = new Vector2(0.5f, 0.5f);
                 });
         }
-        
+
         private void InternalHideSelectLanguage()
         {
             _languageScrollerRT.pivot = new Vector2(0.5f, 1f);

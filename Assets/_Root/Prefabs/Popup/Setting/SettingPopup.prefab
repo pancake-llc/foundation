@@ -1776,6 +1776,9 @@ MonoBehaviour:
   languagePopup: {fileID: 742818637084947580}
   buttonSelectLanguage: {fileID: 1415266517432278116}
   textNameLanguageSelected: {fileID: 5003263306355268004}
+  langLocales:
+  - {fileID: 11400000, guid: b4aed3e2d46a5a14ca86b042d6dec354, type: 2}
+  - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
   musicVolume: {fileID: 11400000, guid: f40c18cdb6b391741b188b73d884cb92, type: 2}
   sfxVolume: {fileID: 11400000, guid: 0a97e9acdf82e434983225db6d5b578f, type: 2}
   eventPauseMusic: {fileID: 11400000, guid: b759b6d8cd9821449a28381a0f4d9fff, type: 2}

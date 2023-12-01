@@ -25,6 +25,7 @@ namespace Pancake.SceneFlow
             Language language,
             Action<LanguageElementView> onClicked,
             Func<string, bool> funcSelected,
+            Func<int, LocaleText> getLocaleText,
             Action onClickedAdvance)
         {
             _funcSelected = funcSelected;
@@ -32,6 +33,8 @@ namespace Pancake.SceneFlow
             _onClickedAdvance = onClickedAdvance;
             Lang = language;
             textName.text = language.Name;
+            localeTextName.Variable = getLocaleText?.Invoke(LocaleSettings.Instance.AvailableLanguages.FindIndex(x => x.Code == language.Code));
+            localeTextName.ForceUpdate();
             buttonSelect.onClick.RemoveListener(OnButtonSelectPressed);
             buttonSelect.onClick.AddListener(OnButtonSelectPressed);
             objectHightLight.SetActive(_funcSelected.Invoke(Lang.Code));
