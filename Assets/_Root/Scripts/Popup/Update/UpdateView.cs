@@ -1,4 +1,5 @@
 using Pancake.Apex;
+using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Pancake.UI
 {
     public sealed class UpdateView : View
     {
-        [SerializeField] private TextMeshProUGUI textVersion;
+        [SerializeField] private LocaleTextComponent localeTextVersion;
         [SerializeField] private TextMeshProUGUI textDescription;
         [SerializeField] private Button buttonOk;
         [SerializeField] private Button buttonClose;
@@ -26,7 +27,7 @@ namespace Pancake.UI
             buttonClose.onClick.AddListener(OnButtonCloseClicked);
 
             textDescription.SetText(remoteConfigChangelog.Value);
-            textVersion.SetText($"Version {remoteConfigNewVersion.Value}");
+            localeTextVersion.UpdateArgs($"{remoteConfigNewVersion.Value}");
             return UniTask.CompletedTask;
         }
 
