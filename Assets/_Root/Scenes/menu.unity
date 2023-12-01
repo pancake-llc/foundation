@@ -936,6 +936,7 @@ GameObject:
   - component: {fileID: 397105622}
   - component: {fileID: 397105621}
   - component: {fileID: 397105623}
+  - component: {fileID: 397105624}
   m_Layer: 5
   m_Name: TextCurrentLevel
   m_TagString: Untagged
@@ -1074,6 +1075,25 @@ MonoBehaviour:
   currentLevel: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
   text: {fileID: 397105621}
   subscribe: 0
+--- !u!114 &397105624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397105619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c43f4ebada4d6ab7202113210604cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 397105621}
+  property:
+    enabled: 0
+    value: text
+  variable: {fileID: 11400000, guid: 995f19852c387db4aa2fc4343f8d09a1, type: 2}
+  formatArgs:
+  - 1
 --- !u!1 &419768268
 GameObject:
   m_ObjectHideFlags: 0

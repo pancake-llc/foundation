@@ -22,6 +22,11 @@ namespace Pancake.Localization
             }
         }
 
+        public void UpdateArgs(params string[] args)
+        {
+            FormatArgs = args;
+        }
+
         protected override object GetLocaleValue()
         {
             var value = (string) base.GetLocaleValue();
