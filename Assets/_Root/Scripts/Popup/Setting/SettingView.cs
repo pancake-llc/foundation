@@ -4,13 +4,14 @@ using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using Pancake.Threading.Tasks;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pancake.UI
 {
-    public sealed class SettingView : View
+    public sealed class SettingView : View, IEnhancedScrollerDelegate
     {
         [SerializeField] private LocaleTextComponent localeTextVersion;
         [SerializeField] private Button buttonMusic;
@@ -24,7 +25,13 @@ namespace Pancake.UI
         [SerializeField] private UIEffect soundUIEffect;
         [SerializeField] private UIEffect vibrateUIEffect;
 
-        [SerializeField] private FloatVariable musicVolume;
+        [Header("Language")] [SerializeField] private LanguageElementView languageElementPrefab;
+        [SerializeField] private EnhancedScroller languageScroller;
+        [SerializeField] private RectTransform languagePopup;
+        [SerializeField] private UIButton buttonSelectLanguage;
+        [SerializeField] private TextMeshProUGUI textNameLanguageSelected;
+        
+        [Space] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
         [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
         [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
@@ -35,14 +42,23 @@ namespace Pancake.UI
         [SerializeField] private Pancake.IAP.ScriptableEventIAPNoParam restorePurchaseEvent;
 #endif
 
+        private Language _selectedLang;
+        private RectTransform _languageScrollerRT;
+        private bool _firstTimeActiveLanguage;
+
         protected override UniTask Initialize()
         {
+            _languageScrollerRT = languageScroller.GetComponent<RectTransform>();
             buttonMusic.onClick.AddListener(OnButtonMusicPressed);
             buttonSound.onClick.AddListener(OnButtonSoundPressed);
             buttonVibrate.onClick.AddListener(OnButtonVibratePressed);
             buttonUpdate.onClick.AddListener(OnButtonUpdatePressed);
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonCredit.onClick.AddListener(OnButtonCreditPressed);
+            buttonSelectLanguage.onClick.AddListener(OnButtonSelectLanguagePressed);
+            languageScroller.Delegate = this;
+            _selectedLang = Locale.CurrentLanguage;
+            textNameLanguageSelected.text = _selectedLang.Name;
 #if UNITY_IOS
             buttonRestore.onClick.AddListener(OnButtonRestorePressed);
 #endif
@@ -50,10 +66,27 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonCreditPressed()
+        private void OnButtonSelectLanguagePressed()
         {
-            PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<CreditPopup>(popupCredit, true);
+            if (buttonSelectLanguage.AffectObject.localEulerAngles.z.Equals(0))
+            {
+                Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 90), 0.3f);
+                InternalShowSelectLanguage();
+
+                if (!_firstTimeActiveLanguage)
+                {
+                    _firstTimeActiveLanguage = true;
+                    languageScroller.ReloadData();
+                }
+            }
+            else
+            {
+                Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
+                InternalHideSelectLanguage();
+            }
         }
+
+        private void OnButtonCreditPressed() { PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<CreditPopup>(popupCredit, true); }
 
         private void OnButtonClosePressed()
         {
@@ -128,5 +161,63 @@ namespace Pancake.UI
         private void RefreshSoundState(bool soundState) { soundUIEffect.effectMode = soundState ? EffectMode.None : EffectMode.Grayscale; }
 
         private void RefreshMusicState(bool musicState) { musicUIEffect.effectMode = musicState ? EffectMode.None : EffectMode.Grayscale; }
+        public int GetNumberOfCells(EnhancedScroller scroller) { return LocaleSettings.Instance.AvailableLanguages.Count; }
+
+        public float GetCellViewSize(EnhancedScroller scroller, int dataIndex) { return 120f;}
+
+        public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+        {
+            var element = scroller.GetCellView(languageElementPrefab) as LanguageElementView;
+            if (element != null)
+            {
+                var code = LocaleSettings.Instance.AvailableLanguages[dataIndex];
+                element.name = "Country_" + code.Name;
+                element.Init(code,
+                    OnButtonElementClicked,
+                    IsElementSelected,
+                    InternalHideSelectLanguage);
+                return element;
+            }
+
+            return null;
+        }
+        
+        private void OnButtonElementClicked(LanguageElementView view)
+        {
+            _selectedLang = view.Lang;
+            Locale.CurrentLanguage = _selectedLang;
+            languageScroller.RefreshActiveCellViews();
+            textNameLanguageSelected.text = view.Lang.Name;
+        }
+        
+        private bool IsElementSelected(string code) { return _selectedLang.Code.Equals(code); }
+        
+        private void InternalShowSelectLanguage()
+        {
+            _languageScrollerRT.pivot = new Vector2(0.5f, 1f);
+            languagePopup.gameObject.SetActive(true);
+            languagePopup.SetSizeDeltaY(74f);
+            Tween.UISizeDelta(languagePopup, new Vector2(languagePopup.sizeDelta.x, 666f), 0.5f)
+                .OnComplete(() =>
+                {
+                    languageScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
+                    _languageScrollerRT.pivot = new Vector2(0.5f, 0.5f);
+                });
+        }
+        
+        private void InternalHideSelectLanguage()
+        {
+            _languageScrollerRT.pivot = new Vector2(0.5f, 1f);
+            languageScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Never;
+
+            Tween.UISizeDelta(languagePopup, new Vector2(languagePopup.sizeDelta.x, 74f), 0.5f)
+                .OnComplete(() =>
+                {
+                    languagePopup.gameObject.SetActive(false);
+                    languageScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
+                    _languageScrollerRT.pivot = new Vector2(0.5f, 0.5f);
+                });
+            Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
+        }
     }
 }

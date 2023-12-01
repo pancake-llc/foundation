@@ -19,51 +19,6 @@ MonoBehaviour:
       custom: 0
     value: English
   - language:
-      name: Chinese
-      code: zh
-      custom: 0
-    value: "\u6C49\u8BED"
-  - language:
-      name: French
-      code: fr
-      custom: 0
-    value: "Fran\xE7ais"
-  - language:
-      name: German
-      code: de
-      custom: 0
-    value: Deutsch
-  - language:
-      name: Italian
-      code: it
-      custom: 0
-    value: Italiano
-  - language:
-      name: Japanese
-      code: ja
-      custom: 0
-    value: "\u65E5\u672C\u8A9E"
-  - language:
-      name: Korean
-      code: ko
-      custom: 0
-    value: "\uC870\uC120\uB9D0"
-  - language:
-      name: Portuguese
-      code: pt
-      custom: 0
-    value: "Portugu\xEAs"
-  - language:
-      name: Russian
-      code: ru
-      custom: 0
-    value: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
-  - language:
-      name: Spanish
-      code: es
-      custom: 0
-    value: Ladino
-  - language:
       name: Vietnamese
       code: vi
       custom: 0
