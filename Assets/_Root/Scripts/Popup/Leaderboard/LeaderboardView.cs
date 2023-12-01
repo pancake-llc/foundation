@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Pancake.Apex;
+using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
@@ -62,8 +63,8 @@ namespace Pancake.UI
         [SerializeField] private Sprite spriteCurrentTab;
         [SerializeField] private Sprite spriteNormalTab;
         [SerializeField] private TextMeshProUGUI textName;
-        [SerializeField] private TextMeshProUGUI textRank;
-        [SerializeField] private TextMeshProUGUI textCurrentPage;
+        [SerializeField] private LocaleTextComponent localeTextRank;
+        [SerializeField] private LocaleTextComponent localeTextCurrentPage;
         [SerializeField] private GameObject contentSlot;
         [SerializeField] private GameObject rootLeaderboard;
         [SerializeField] private GameObject block;
@@ -384,10 +385,10 @@ namespace Pancake.UI
             buttonNextPage.interactable = true;
             string[] playerNameSplits = AuthenticationService.Instance.PlayerName.Split('#');
             textName.text = playerNameSplits[0];
-            textRank.text = $"RANK {data.myRank + 1}";
+            localeTextRank.UpdateArgs($"{data.myRank + 1}");
             rootLeaderboard.SetActive(true);
             HideAllSlot();
-            textCurrentPage.text = $"PAGE {data.currentPage + 1}";
+            localeTextCurrentPage.UpdateArgs($"{data.currentPage + 1}");
             if (data.currentPage >= data.pageCount - 1) // reach the end
             {
                 buttonNextPage.gameObject.SetActive(false);

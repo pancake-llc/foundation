@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23c351e45916415fa870992171e2731d, type: 3}
-  m_Name: text_settingpopup_credit
+  m_Name: text_setting_update
   m_EditorClassIdentifier: 
   items:
   - language:
       name: English
       code: en
       custom: 0
-    value: Credit
+    value: Update
   - language:
       name: Vietnamese
       code: vi
