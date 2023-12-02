@@ -25,12 +25,12 @@ namespace Pancake.ReplacerEditor
 
             List<Component> components = null;
             var currentScene = EditorSceneManager.GetActiveScene();
-            
+
             Undo.SetCurrentGroupName("Replace all legacy text fonts");
             foreach (GameObject go in currentScene.GetRootGameObjects())
             {
                 var textComponents = go.GetComponentsInChildren<Text>(true);
-                
+
                 foreach (var component in textComponents)
                 {
                     if (component.gameObject.scene != currentScene) continue;
@@ -39,9 +39,8 @@ namespace Pancake.ReplacerEditor
                     component.font = font;
                     components ??= new List<Component>();
                     components.Add(component);
+                    Debug.Log($"Replaced: {component.name}", component);
                 }
-
-                Debug.Log($"Replaced: {go.name}", go);
             }
 
             if (components == null) Debug.LogError("Can't find any text components on current scene");
@@ -59,7 +58,7 @@ namespace Pancake.ReplacerEditor
 
             List<Component> components = null;
             var currentScene = EditorSceneManager.GetActiveScene();
-            
+
             Undo.SetCurrentGroupName("Replace all TMP fonts");
             foreach (GameObject go in currentScene.GetRootGameObjects())
             {
@@ -74,11 +73,9 @@ namespace Pancake.ReplacerEditor
                     component.font = font;
                     components ??= new List<Component>();
                     components.Add(component);
+                    Debug.Log($"Replaced: {component.name}", component);
                 }
-
-                Debug.Log($"Replaced: {go.name}", go);
             }
-
 
             if (components == null) Debug.LogError("Can't find any TMP components on current scene");
 
@@ -273,9 +270,8 @@ namespace Pancake.ReplacerEditor
                         if (components == null)
                             components = new();
                         components.Add(component);
+                        Debug.Log($"Replaced: {component.name}", component);
                     }
-
-                    Debug.Log($"Replaced: {prefab.name}", prefab);
                 }
             }
 
@@ -294,9 +290,8 @@ namespace Pancake.ReplacerEditor
                         component.font = font;
                         components ??= new List<Component>();
                         components.Add(component);
+                        Debug.Log($"Replaced: {component.name}", component);
                     }
-
-                    Debug.Log($"Replaced: {go.name}", go);
                 }
 
                 EditorSceneManager.SaveOpenScenes();
