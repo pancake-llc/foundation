@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.SceneManagement;
 using TMPro;
+
 // ReSharper disable AccessToStaticMemberViaDerivedType
 
 namespace Pancake.ReplacerEditor
@@ -24,20 +25,23 @@ namespace Pancake.ReplacerEditor
 
             List<Component> components = null;
             var currentScene = EditorSceneManager.GetActiveScene();
-
-            var textComponents = Resources.FindObjectsOfTypeAll<Text>();
-
+            
             Undo.SetCurrentGroupName("Replace all legacy text fonts");
-
-            foreach (var component in textComponents)
+            foreach (GameObject go in currentScene.GetRootGameObjects())
             {
-                if (component.gameObject.scene != currentScene) continue;
+                var textComponents = go.GetComponentsInChildren<Text>(true);
+                
+                foreach (var component in textComponents)
+                {
+                    if (component.gameObject.scene != currentScene) continue;
 
-                Undo.RecordObject(component, "");
-                component.font = font;
-                components ??= new List<Component>();
-                components.Add(component);
-                Debug.Log($"Replaced: {component.name}", component);
+                    Undo.RecordObject(component, "");
+                    component.font = font;
+                    components ??= new List<Component>();
+                    components.Add(component);
+                }
+
+                Debug.Log($"Replaced: {go.name}", go);
             }
 
             if (components == null) Debug.LogError("Can't find any text components on current scene");
@@ -55,21 +59,26 @@ namespace Pancake.ReplacerEditor
 
             List<Component> components = null;
             var currentScene = EditorSceneManager.GetActiveScene();
-
-            var textComponents = Resources.FindObjectsOfTypeAll<TextMeshProUGUI>();
+            
             Undo.SetCurrentGroupName("Replace all TMP fonts");
-
-            foreach (var component in textComponents)
+            foreach (GameObject go in currentScene.GetRootGameObjects())
             {
-                if (component.gameObject.scene != currentScene) continue;
+                var textComponents = go.GetComponentsInChildren<TextMeshProUGUI>(true);
 
-                Undo.RecordObject(component, "");
+                foreach (var component in textComponents)
+                {
+                    if (component.gameObject.scene != currentScene) continue;
 
-                component.font = font;
-                components ??= new List<Component>();
-                components.Add(component);
-                Debug.Log($"Replaced: {component.name}", component);
+                    Undo.RecordObject(component, "");
+
+                    component.font = font;
+                    components ??= new List<Component>();
+                    components.Add(component);
+                }
+
+                Debug.Log($"Replaced: {go.name}", go);
             }
+
 
             if (components == null) Debug.LogError("Can't find any TMP components on current scene");
 
@@ -273,18 +282,21 @@ namespace Pancake.ReplacerEditor
             var currentScene = EditorSceneManager.GetActiveScene().path;
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 
-            var textComponents = Component.FindObjectsOfType<Text>();
-
-            foreach (string scene in scenesPaths)
+            foreach (string path in scenesPaths)
             {
-                EditorSceneManager.OpenScene(scene);
-                foreach (var component in textComponents)
+                var scene = EditorSceneManager.OpenScene(path);
+                foreach (GameObject go in scene.GetRootGameObjects())
                 {
-                    Undo.RecordObject(component, "");
-                    component.font = font;
-                    components ??= new List<Component>();
-                    components.Add(component);
-                    Debug.Log($"Replaced: {component.name}", component);
+                    var textComponents = go.GetComponentsInChildren<Text>(true);
+                    foreach (var component in textComponents)
+                    {
+                        Undo.RecordObject(component, "");
+                        component.font = font;
+                        components ??= new List<Component>();
+                        components.Add(component);
+                    }
+
+                    Debug.Log($"Replaced: {go.name}", go);
                 }
 
                 EditorSceneManager.SaveOpenScenes();
@@ -329,22 +341,24 @@ namespace Pancake.ReplacerEditor
                     Debug.Log($"Replaced: {prefab.name}", prefab);
                 }
             }
-            
+
             var currentScene = EditorSceneManager.GetActiveScene().path;
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 
-            foreach (string scene in scenesPaths)
+            foreach (string path in scenesPaths)
             {
-                EditorSceneManager.OpenScene(scene);
-
-                var textComponents = Resources.FindObjectsOfTypeAll<TextMeshProUGUI>();
-
-                foreach (var component in textComponents)
+                var scene = EditorSceneManager.OpenScene(path);
+                foreach (GameObject go in scene.GetRootGameObjects())
                 {
-                    component.font = font;
-                    components ??= new List<Component>();
-                    components.Add(component);
-                    Debug.Log($"Replaced: {component.name}", component);
+                    var textComponents = go.GetComponentsInChildren<TextMeshProUGUI>(true);
+                    foreach (var component in textComponents)
+                    {
+                        component.font = font;
+                        components ??= new List<Component>();
+                        components.Add(component);
+                    }
+
+                    Debug.Log($"Replaced: {go.name}", go);
                 }
 
                 EditorSceneManager.SaveOpenScenes();
