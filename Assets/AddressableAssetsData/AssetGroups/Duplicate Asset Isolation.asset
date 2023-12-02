@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: 2bb3e8065c854c443a94ba7981cbb542
+  m_GUID: 0d30408784d52434cac455fa780dc3d9
   m_SerializeEntries:
   - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
     m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller
@@ -74,6 +74,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ea8e3bdb32dced94e9a0f18fa7fdba30
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe7bb7025e567bb419fd8f29bb60c7ff
+    m_Address: Assets/_Root/Storages/Localization/Shop/text_shop_freecoin.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -242,6 +247,31 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2231b50be30e72a46b98a7622c3a1a07
+    m_Address: Assets/_Root/Storages/Localization/font_asset_localize.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7078ffe4d503f1408761dc5b5a8cb91
+    m_Address: Assets/_Root/Fonts/LilitaOne-VietNamese.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68e6db2ebdc24f95958faec2be5558d6
+    m_Address: Assets/TextMesh Pro/Shaders/TMP_SDF.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe393ace9b354375a9cb14cdbbc28be4
+    m_Address: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 479ff250d57c8ce4e846ef3be0127477
+    m_Address: Assets/_Root/Fonts/LilitaOne-ASCII.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4ae585d7fcee3674b9d4c307b4e874a1
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_popup.png
     m_ReadOnly: 0
@@ -264,11 +294,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 985f91a38bf12e04aa81c817ceb5ef0c
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack3.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 48bb5f55d8670e349b6e614913f9d910
-    m_Address: Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -449,6 +474,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4a8027441b28f7c4ab85700ffe9528f0
     m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_pool.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 995f19852c387db4aa2fc4343f8d09a1
+    m_Address: Assets/_Root/Storages/Localization/Common/text_level.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
