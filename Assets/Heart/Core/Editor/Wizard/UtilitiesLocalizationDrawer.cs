@@ -122,8 +122,7 @@ namespace PancakeEditor
                 EditorGUILayout.EndHorizontal();
             }
 
-            GUILayout.FlexibleSpace();
-            GUILayout.Space(20);
+            GUILayout.Space(4);
             GUI.backgroundColor = Uniform.Red;
             if (GUILayout.Button("Remove All Locale Component", GUILayout.Height(24)))
             {
