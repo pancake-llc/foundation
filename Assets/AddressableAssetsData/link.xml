@@ -1,0 +1,354 @@
+<linker>
+  <assembly fullname="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.SceneFlow.Administrator" preserve="all" />
+    <type fullname="Pancake.SceneFlow.AdministratorInitialization" preserve="all" />
+    <type fullname="Pancake.SceneFlow.AdStatusComponent" preserve="all" />
+    <type fullname="Pancake.SceneFlow.BoolDailyVariable" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CharacterOutfitContainer" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CoinUpdater" preserve="all" />
+    <type fullname="Pancake.SceneFlow.ConditionRateComponent" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CountryCollection" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CountryElementView" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CreditElement" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CreditScroller" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CreditUnitMember" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CurrencyButtonStatus" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CurrentLevelComponent" preserve="all" />
+    <type fullname="Pancake.SceneFlow.DailyRewardVariable" preserve="all" />
+    <type fullname="Pancake.SceneFlow.DayComponent" preserve="all" />
+    <type fullname="Pancake.SceneFlow.GameObjectBridgeComponent" preserve="all" />
+    <type fullname="Pancake.SceneFlow.GameplayController" preserve="all" />
+    <type fullname="Pancake.SceneFlow.GiftProgressComponent" preserve="all" />
+    <type fullname="Pancake.SceneFlow.IAPAllPinSkinPurchaseSuccess" preserve="all" />
+    <type fullname="Pancake.SceneFlow.IAPCoinPurchaseSuccess" preserve="all" />
+    <type fullname="Pancake.SceneFlow.IAPDoubleCoinPurchaseSuccess" preserve="all" />
+    <type fullname="Pancake.SceneFlow.IAPProductPurchaseFailed" preserve="all" />
+    <type fullname="Pancake.SceneFlow.IAPRemoveAdsPurchaseSuccess" preserve="all" />
+    <type fullname="Pancake.SceneFlow.IAPVipPurchaseSuccess" preserve="all" />
+    <type fullname="Pancake.SceneFlow.Initazation" preserve="all" />
+    <type fullname="Pancake.SceneFlow.LanguageElementView" preserve="all" />
+    <type fullname="Pancake.SceneFlow.LanguageInitialization" preserve="all" />
+    <type fullname="Pancake.SceneFlow.LeaderboardElementView" preserve="all" />
+    <type fullname="Pancake.SceneFlow.LevelInitialization" preserve="all" />
+    <type fullname="Pancake.SceneFlow.LevelNormal" preserve="all" />
+    <type fullname="Pancake.SceneFlow.Loading" preserve="all" />
+    <type fullname="Pancake.SceneFlow.MenuController" preserve="all" />
+    <type fullname="Pancake.SceneFlow.OutfitSlotBarComponent" preserve="all" />
+    <type fullname="Pancake.SceneFlow.OutfitSlotElement" preserve="all" />
+    <type fullname="Pancake.SceneFlow.OutfitUnitVariable" preserve="all" />
+    <type fullname="Pancake.SceneFlow.PrivacyInitialization" preserve="all" />
+    <type fullname="Pancake.SceneFlow.RequireInternetInitialization" preserve="all" />
+    <type fullname="Pancake.SceneFlow.SceneLoader" preserve="all" />
+    <type fullname="Pancake.SceneFlow.ScriptableEventPreviewLockedOutfit" preserve="all" />
+    <type fullname="Pancake.SceneFlow.TabView" preserve="all" />
+    <type fullname="Pancake.SceneFlow.UIHideBeforeWin" preserve="all" />
+    <type fullname="Pancake.SceneFlow.UIShowAfterWin" preserve="all" />
+    <type fullname="Pancake.SceneFlow.UnityServiceInitialization" preserve="all" />
+    <type fullname="Pancake.SceneFlow.VibationInitialization" preserve="all" />
+    <type fullname="Pancake.UI.CreditPopup" preserve="all" />
+    <type fullname="Pancake.UI.CreditView" preserve="all" />
+    <type fullname="Pancake.UI.DailyRewardPopup" preserve="all" />
+    <type fullname="Pancake.UI.DailyRewardView" preserve="all" />
+    <type fullname="Pancake.UI.LeaderboardPopup" preserve="all" />
+    <type fullname="Pancake.UI.LeaderboardView" preserve="all" />
+    <type fullname="Pancake.UI.LosePopup" preserve="all" />
+    <type fullname="Pancake.UI.LoseView" preserve="all" />
+    <type fullname="Pancake.UI.NoInternetPopup" preserve="all" />
+    <type fullname="Pancake.UI.NoInternetView" preserve="all" />
+    <type fullname="Pancake.UI.NotificationPopup" preserve="all" />
+    <type fullname="Pancake.UI.NotificationView" preserve="all" />
+    <type fullname="Pancake.UI.OutfitColelctionView" preserve="all" />
+    <type fullname="Pancake.UI.OutfitCollectionSheet" preserve="all" />
+    <type fullname="Pancake.UI.OutfitPage" preserve="all" />
+    <type fullname="Pancake.UI.OutfitPreviewSheet" preserve="all" />
+    <type fullname="Pancake.UI.OutfitPreviewView" preserve="all" />
+    <type fullname="Pancake.UI.OutfitView" preserve="all" />
+    <type fullname="Pancake.UI.RenamePopup" preserve="all" />
+    <type fullname="Pancake.UI.RenameView" preserve="all" />
+    <type fullname="Pancake.UI.SceneTransitionPopup" preserve="all" />
+    <type fullname="Pancake.UI.SceneTransitionView" preserve="all" />
+    <type fullname="Pancake.UI.SettingPopup" preserve="all" />
+    <type fullname="Pancake.UI.SettingView" preserve="all" />
+    <type fullname="Pancake.UI.ShopPopup" preserve="all" />
+    <type fullname="Pancake.UI.ShopView" preserve="all" />
+    <type fullname="Pancake.UI.UpdatePopup" preserve="all" />
+    <type fullname="Pancake.UI.UpdateView" preserve="all" />
+    <type fullname="Pancake.UI.WinPopup" preserve="all" />
+    <type fullname="Pancake.UI.WinView" preserve="all" />
+    <type fullname="Pancake.SceneFlow.CharacterOutfit" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.SceneFlow.CountryData" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.SceneFlow.CreditTypeElementDictionary" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.SceneFlow.DailyRewardData" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.SceneFlow.LeaderboardElementColor" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.SceneFlow.OutfitElement" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.SceneFlow.OutfitTypeButtonDictionary" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Coffee.UIParticle, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Coffee.UIExtensions.UIParticle" preserve="all" />
+  </assembly>
+  <assembly fullname="Pancake, Version=2.1.15.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.GameObjectFactory" preserve="all" />
+    <type fullname="Pancake.GameObjectPool" preserve="all" />
+    <type fullname="Pancake.RuntimeInitializer" preserve="all" />
+    <type fullname="Pancake.Optional`1[System.String]" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Pancake.Component, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Component.ScaleComponent" preserve="all" />
+    <type fullname="Pancake.Component.ScriptableEventVfxMagnet" preserve="all" />
+    <type fullname="Pancake.Component.VfxMagnetComponent" preserve="all" />
+    <type fullname="Pancake.Component.VfxParticleCollision" preserve="all" />
+  </assembly>
+  <assembly fullname="Pancake.LevelSystem, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.LevelSystem.LevelCoordinator" preserve="all" />
+    <type fullname="Pancake.LevelSystem.LevelInstantiate" preserve="all" />
+    <type fullname="Pancake.LevelSystem.LevelSetting" preserve="all" />
+    <type fullname="Pancake.LevelSystem.ScriptableEventGetLevelCached" preserve="all" />
+    <type fullname="Pancake.LevelSystem.ScriptableEventLoadLevel" preserve="all" />
+  </assembly>
+  <assembly fullname="Pancake.Localization, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Localization.LocaleMaterial" preserve="all" />
+    <type fullname="Pancake.Localization.LocaleMaterialComponent" preserve="all" />
+    <type fullname="Pancake.Localization.LocaleText" preserve="all" />
+    <type fullname="Pancake.Localization.LocaleTextComponent" preserve="all" />
+    <type fullname="Pancake.Localization.LocaleTMPFont" preserve="all" />
+    <type fullname="Pancake.Localization.LocaleTMPFontComponent" preserve="all" />
+    <type fullname="Pancake.Localization.Language" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.Localization.LocaleText/TextLocaleItem" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.Localization.LocaleMaterial/MaterialLocaleItem" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.Localization.LocaleTMPFont/TMPFontLocaleItem" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Pancake.Monetization, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Monetization.AdmobAppOpenVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.AdmobBannerVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.AdmobClient" preserve="all" />
+    <type fullname="Pancake.Monetization.AdmobInterVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.AdmobRewardInterVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.AdmobRewardVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.AdSettings" preserve="all" />
+    <type fullname="Pancake.Monetization.Advertising" preserve="all" />
+    <type fullname="Pancake.Monetization.ApplovinAdClient" preserve="all" />
+    <type fullname="Pancake.Monetization.ApplovinAppOpenVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.ApplovinBannerVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.ApplovinInterVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.ApplovinRewardInterVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.ApplovinRewardVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.AppOpenVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.BannerVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.InterVariable" preserve="all" />
+    <type fullname="Pancake.Monetization.RewardVariable" preserve="all" />
+  </assembly>
+  <assembly fullname="Pancake.Notification, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Notification.NotificationPrepare" preserve="all" />
+    <type fullname="Pancake.Notification.ScriptableNotificationVariable" preserve="all" />
+    <type fullname="Pancake.Notification.ScriptableNotificationVariable/NotificationData" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Pancake.Purchase, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.IAP.IAPDataVariable" preserve="all" />
+    <type fullname="Pancake.IAP.IAPManager" preserve="all" />
+    <type fullname="Pancake.IAP.IAPSettings" preserve="all" />
+    <type fullname="Pancake.IAP.ScriptableEventIAPFuncProduct" preserve="all" />
+    <type fullname="Pancake.IAP.ScriptableEventIAPProduct" preserve="all" />
+    <type fullname="Pancake.IAP.IAPData" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Pancake.Rate, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Rate.AppRatingComponent" preserve="all" />
+  </assembly>
+  <assembly fullname="Pancake.RemoteConfig, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Tracking.RemoteConfig" preserve="all" />
+    <type fullname="Pancake.Tracking.RemoteConfigData" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Pancake.SafeArea, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.SafeArea.RuntimeSafeAreaUpdater" preserve="all" />
+    <type fullname="Pancake.SafeArea.SafeAreaComponent" preserve="all" />
+  </assembly>
+  <assembly fullname="Pancake.Scriptable, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Scriptable.BoolVariable" preserve="all" />
+    <type fullname="Pancake.Scriptable.FloatVariable" preserve="all" />
+    <type fullname="Pancake.Scriptable.IntVariable" preserve="all" />
+    <type fullname="Pancake.Scriptable.ScriptableEventBool" preserve="all" />
+    <type fullname="Pancake.Scriptable.ScriptableEventGameObject" preserve="all" />
+    <type fullname="Pancake.Scriptable.ScriptableEventGetGameObject" preserve="all" />
+    <type fullname="Pancake.Scriptable.ScriptableEventInt" preserve="all" />
+    <type fullname="Pancake.Scriptable.ScriptableEventNoParam" preserve="all" />
+    <type fullname="Pancake.Scriptable.ScriptableEventString" preserve="all" />
+    <type fullname="Pancake.Scriptable.ScriptableListGameObject" preserve="all" />
+    <type fullname="Pancake.Scriptable.StringConstant" preserve="all" />
+    <type fullname="Pancake.Scriptable.StringVariable" preserve="all" />
+  </assembly>
+  <assembly fullname="Pancake.Sound, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Sound.Audio" preserve="all" />
+    <type fullname="Pancake.Sound.AudioComponent" preserve="all" />
+    <type fullname="Pancake.Sound.AudioManager" preserve="all" />
+    <type fullname="Pancake.Sound.ScriptableEventAudio" preserve="all" />
+    <type fullname="Pancake.Sound.ScriptableEventAudioHandle" preserve="all" />
+    <type fullname="Pancake.Sound.SoundEmitter" preserve="all" />
+    <type fullname="Pancake.Sound.SoundEmitterFactory" preserve="all" />
+    <type fullname="Pancake.Sound.SoundEmitterPool" preserve="all" />
+    <type fullname="Pancake.Sound.AudioGroup" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.Sound.AudioHandle" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Pancake.Spine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.Spine.TrackChainSpineGraphic" preserve="all" />
+    <type fullname="Pancake.Spine.TrackData" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Pancake.UGUI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.UI.EnhancedScroller" preserve="all" />
+    <type fullname="Pancake.UI.PageContainer" preserve="all" />
+    <type fullname="Pancake.UI.PopupBackdrop" preserve="all" />
+    <type fullname="Pancake.UI.PopupContainer" preserve="all" />
+    <type fullname="Pancake.UI.SheetContainer" preserve="all" />
+    <type fullname="Pancake.UI.SimpleUITransitionAnimationSO" preserve="all" />
+    <type fullname="Pancake.UI.UIButton" preserve="all" />
+    <type fullname="Pancake.UI.UIButtonTMP" preserve="all" />
+    <type fullname="Pancake.UI.PopupTransitionContainer" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.UIButton/ButtonHoldEvent" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.UIButton/MotionData" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.PageTransitionContainer" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.PopupTransitionContainer/TransitionAnimation" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.SheetTransitionContainer" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.SheetTransitionContainer/TransitionAnimation" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.PopupBackdropTransitionContainer" preserve="nothing" serialized="true" />
+    <type fullname="Pancake.UI.PopupBackdropTransitionContainer/TransitionAnimation" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="spine-unity, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Spine.Unity.SkeletonDataAsset" preserve="all" />
+    <type fullname="Spine.Unity.SkeletonGraphic" preserve="all" />
+    <type fullname="Spine.Unity.SpineAtlasAsset" preserve="all" />
+    <type fullname="Spine.Unity.BlendModeMaterials" preserve="nothing" serialized="true" />
+    <type fullname="Spine.Unity.MeshGenerator" preserve="nothing" serialized="true" />
+    <type fullname="Spine.Unity.MeshGenerator/Settings" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Tayx.Graphy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Graphy.Runtime.UI.G_SafeArea" preserve="all" />
+    <type fullname="Tayx.Graphy.Fps.G_FpsManager" preserve="all" />
+    <type fullname="Tayx.Graphy.Fps.G_FpsMonitor" preserve="all" />
+    <type fullname="Tayx.Graphy.Fps.G_FpsText" preserve="all" />
+    <type fullname="Tayx.Graphy.GraphyDebugger" preserve="all" />
+    <type fullname="Tayx.Graphy.GraphyManager" preserve="all" />
+    <type fullname="Tayx.Graphy.Ram.G_RamManager" preserve="all" />
+    <type fullname="Tayx.Graphy.Ram.G_RamMonitor" preserve="all" />
+    <type fullname="Tayx.Graphy.Ram.G_RamText" preserve="all" />
+    <type fullname="Tayx.Graphy.GraphyDebugger/DebugCondition" preserve="nothing" serialized="true" />
+    <type fullname="Tayx.Graphy.GraphyDebugger/DebugPacket" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UIEffect, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Coffee.UIEffects.UIEffect" preserve="all" />
+    <type fullname="Coffee.UIEffects.UIShiny" preserve="all" />
+    <type fullname="Coffee.UIEffects.EffectPlayer" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />
+    <type fullname="UnityEngine.AddressableAssets.AssetReference" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.AddressableAssets.AssetReferenceGameObject" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.AtlasSpriteProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.InstanceProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.LegacyResourcesProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.SceneProvider" preserve="all" />
+  </assembly>
+  <assembly fullname="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="TMPro.TextMeshPro" preserve="all" />
+    <type fullname="TMPro.TextMeshProUGUI" preserve="all" />
+    <type fullname="TMPro.TMP_FontAsset" preserve="all" />
+    <type fullname="TMPro.TMP_InputField" preserve="all" />
+    <type fullname="TMPro.VertexGradient" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_InputField/OnChangeEvent" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_InputField/SelectionEvent" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_InputField/SubmitEvent" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_InputField/TextSelectionEvent" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_InputField/TouchScreenKeyboardEvent" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.FaceInfo_Legacy" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.FontAssetCreationSettings" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.KerningTable" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_Character" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_FontFeatureTable" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_FontWeightPair" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.AnimationClip" preserve="all" />
+    <type fullname="UnityEngine.Animator" preserve="all" />
+    <type fullname="UnityEngine.RuntimeAnimatorController" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.AudioClip" preserve="all" />
+    <type fullname="UnityEngine.AudioListener" preserve="all" />
+    <type fullname="UnityEngine.AudioSource" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Camera" preserve="all" />
+    <type fullname="UnityEngine.Cubemap" preserve="all" />
+    <type fullname="UnityEngine.GameObject" preserve="all" />
+    <type fullname="UnityEngine.LightmapSettings" preserve="all" />
+    <type fullname="UnityEngine.Material" preserve="all" />
+    <type fullname="UnityEngine.MeshRenderer" preserve="all" />
+    <type fullname="UnityEngine.Object" preserve="all" />
+    <type fullname="UnityEngine.RectTransform" preserve="all" />
+    <type fullname="UnityEngine.RenderSettings" preserve="all" />
+    <type fullname="UnityEngine.Shader" preserve="all" />
+    <type fullname="UnityEngine.Sprite" preserve="all" />
+    <type fullname="UnityEngine.SpriteRenderer" preserve="all" />
+    <type fullname="UnityEngine.TextAsset" preserve="all" />
+    <type fullname="UnityEngine.Texture2D" preserve="all" />
+    <type fullname="UnityEngine.Transform" preserve="all" />
+    <type fullname="UnityEngine.U2D.SpriteAtlas" preserve="all" />
+    <type fullname="UnityEngine.Events.PersistentCallGroup" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.RectOffset" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.Events.UnityEvent" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.ParticleSystem" preserve="all" />
+    <type fullname="UnityEngine.ParticleSystemForceField" preserve="all" />
+    <type fullname="UnityEngine.ParticleSystemRenderer" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.CircleCollider2D" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.EventSystems.EventSystem" preserve="all" />
+    <type fullname="UnityEngine.EventSystems.StandaloneInputModule" preserve="all" />
+    <type fullname="UnityEngine.UI.Button" preserve="all" />
+    <type fullname="UnityEngine.UI.CanvasScaler" preserve="all" />
+    <type fullname="UnityEngine.UI.ContentSizeFitter" preserve="all" />
+    <type fullname="UnityEngine.UI.GraphicRaycaster" preserve="all" />
+    <type fullname="UnityEngine.UI.GridLayoutGroup" preserve="all" />
+    <type fullname="UnityEngine.UI.HorizontalLayoutGroup" preserve="all" />
+    <type fullname="UnityEngine.UI.Image" preserve="all" />
+    <type fullname="UnityEngine.UI.LayoutElement" preserve="all" />
+    <type fullname="UnityEngine.UI.Mask" preserve="all" />
+    <type fullname="UnityEngine.UI.RectMask2D" preserve="all" />
+    <type fullname="UnityEngine.UI.Scrollbar" preserve="all" />
+    <type fullname="UnityEngine.UI.ScrollRect" preserve="all" />
+    <type fullname="UnityEngine.UI.Shadow" preserve="all" />
+    <type fullname="UnityEngine.UI.Slider" preserve="all" />
+    <type fullname="UnityEngine.UI.Text" preserve="all" />
+    <type fullname="UnityEngine.UI.Toggle" preserve="all" />
+    <type fullname="UnityEngine.UI.VerticalLayoutGroup" preserve="all" />
+    <type fullname="UnityEngine.UI.AnimationTriggers" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Button/ButtonClickedEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.ColorBlock" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.MaskableGraphic/CullStateChangedEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Navigation" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.SpriteState" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Slider/SliderEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.ScrollRect/ScrollRectEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Scrollbar/ScrollEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Toggle/ToggleEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.FontData" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Canvas" preserve="all" />
+    <type fullname="UnityEngine.CanvasRenderer" preserve="all" />
+  </assembly>
+  <assembly fullname="Apex.Serialization">
+    <type fullname="Pancake.Apex.Serialization.Collections.Generic.IntDictionary" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.TextCoreFontEngineModule">
+    <type fullname="UnityEngine.TextCore.FaceInfo" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.Glyph" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.GlyphMetrics" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.GlyphRect" preserve="nothing" serialized="true" />
+  </assembly>
+</linker>
