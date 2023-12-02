@@ -176,7 +176,7 @@ namespace PancakeEditor
                     countComponentRemoved += localeComponents.Length;
                     foreach (var component in localeComponents)
                     {
-                        Object.Destroy(component);
+                        Undo.DestroyObjectImmediate(component);
                     }
                 }
                 
