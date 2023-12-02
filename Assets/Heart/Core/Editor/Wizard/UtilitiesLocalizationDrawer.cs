@@ -100,6 +100,24 @@ namespace PancakeEditor
                 EditorGUILayout.Space();
                 var editor = UnityEditor.Editor.CreateEditor(setting);
                 editor.OnInspectorGUI();
+                
+                GUILayout.FlexibleSpace();
+                GUILayout.Space(20);
+
+                EditorGUILayout.BeginHorizontal();
+                GUI.backgroundColor = Uniform.Green;
+                if (GUILayout.Button("Ping", GUILayout.Height(24))) setting.SelectAndPing();
+
+                GUI.backgroundColor = Uniform.Red;
+                if (GUILayout.Button("Delete Locale Setting", GUILayout.Height(24)))
+                {
+                    bool confirmDelete = EditorUtility.DisplayDialog("Delete Locale Setting", "Are you sure you want to delete locale setting?", "Yes", "No");
+                    if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(setting));
+                }
+
+                GUI.backgroundColor = Color.white;
+
+                EditorGUILayout.EndHorizontal();
             }
         }
 
