@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: pancake
-  productName: login
+  productName: foundation
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -786,23 +786,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: TextMeshPro;PANCAKE_LOCALIZATION
-    EmbeddedLinux: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    GameCoreScarlett: PANCAKE_ADVERTISING;PANCAKE_LOCALIZATION
-    GameCoreXboxOne: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    LinuxHeadlessSimulation: PANCAKE_ADVERTISING;PANCAKE_LOCALIZATION
-    Nintendo Switch: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    PS4: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    PS5: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    QNX: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    Stadia: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    Standalone: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    VisionOS: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    WebGL: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    Windows Store Apps: PANCAKE_ADVERTISING;PANCAKE_LOCALIZATION
-    XboxOne: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    iPhone: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
-    tvOS: PANCAKE_ADVERTISING;TextMeshPro;PANCAKE_LOCALIZATION
+    Android: TextMeshPro
+    EmbeddedLinux: TextMeshPro
+    GameCoreScarlett: 
+    GameCoreXboxOne: TextMeshPro
+    LinuxHeadlessSimulation: 
+    Nintendo Switch: TextMeshPro
+    PS4: TextMeshPro
+    PS5: ;TextMeshPro
+    QNX: TextMeshPro
+    Stadia: TextMeshPro
+    Standalone: TextMeshPro
+    VisionOS: TextMeshPro
+    WebGL: TextMeshPro
+    Windows Store Apps: 
+    XboxOne: TextMeshPro
+    iPhone: TextMeshPro
+    tvOS: TextMeshPro
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

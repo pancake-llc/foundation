@@ -35,7 +35,6 @@ namespace PancakeEditor
             ref bool initialized,
             ref Wizard.LocaleTabType index)
         {
-#if PANCAKE_LOCALIZATION
             DrawTab(ref index);
             if (index == 0) DrawTabSetting();
             else
@@ -47,18 +46,6 @@ namespace PancakeEditor
                     bootomToolBarRect,
                     ref searchField,
                     ref initialized);
-#endif
-
-#if !PANCAKE_LOCALIZATION
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Enable Localization", GUILayout.MaxHeight(40f)))
-            {
-                ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_LOCALIZATION");
-                AssetDatabase.Refresh();
-                RegistryManager.Resolve();
-            }
-            GUI.enabled = true;
-#endif
         }
 
         private static void DrawTab(ref Wizard.LocaleTabType index)
