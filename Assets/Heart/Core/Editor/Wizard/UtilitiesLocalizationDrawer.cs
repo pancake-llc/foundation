@@ -168,17 +168,19 @@ namespace PancakeEditor
             var currentScene = EditorSceneManager.GetActiveScene().path;
             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
 
-            foreach (string scene in scenesPaths)
+            foreach (string path in scenesPaths)
             {
-                EditorSceneManager.OpenScene(scene);
-
-                var localeComponents = Resources.FindObjectsOfTypeAll<LocaleComponent>();
-                countComponentRemoved += localeComponents.Length;
-                foreach (var component in localeComponents)
+                var scene = EditorSceneManager.OpenScene(path);
+                foreach (GameObject go in scene.GetRootGameObjects())
                 {
-                    Object.Destroy(component);
+                    var localeComponents = go.GetComponentsInChildren<LocaleComponent>(true);
+                    countComponentRemoved += localeComponents.Length;
+                    foreach (var component in localeComponents)
+                    {
+                        Object.Destroy(component);
+                    }
                 }
-
+                
                 EditorSceneManager.SaveOpenScenes();
             }
 
