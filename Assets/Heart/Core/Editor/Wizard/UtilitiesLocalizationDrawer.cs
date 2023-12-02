@@ -9,7 +9,9 @@ using Pancake.Localization;
 using Pancake.LocalizationEditor;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PancakeEditor
 {
@@ -100,7 +102,7 @@ namespace PancakeEditor
                 EditorGUILayout.Space();
                 var editor = UnityEditor.Editor.CreateEditor(setting);
                 editor.OnInspectorGUI();
-                
+
                 GUILayout.FlexibleSpace();
                 GUILayout.Space(20);
 
@@ -119,6 +121,72 @@ namespace PancakeEditor
 
                 EditorGUILayout.EndHorizontal();
             }
+
+            GUILayout.FlexibleSpace();
+            GUILayout.Space(20);
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Remove All Locale Component", GUILayout.Height(24)))
+            {
+                bool confirm = EditorUtility.DisplayDialog("Remove All Locale Component",
+                    "Are you sure you want to remove all locale component in project (in all prefab and all scene)?" +
+                    "\nFolder contains name 'Packages' will be ignore!",
+                    "Yes",
+                    "No");
+                if (confirm) RemoveAllLocaleComponentInProject();
+            }
+
+            GUI.backgroundColor = Color.white;
+        }
+
+        private static void RemoveAllLocaleComponentInProject()
+        {
+            string[] scenesPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".unity", System.StringComparison.OrdinalIgnoreCase)).ToArray();
+            string[] prefabsPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".prefab", System.StringComparison.OrdinalIgnoreCase)).ToArray();
+
+            int countComponentRemoved = 0;
+            Undo.SetCurrentGroupName("Remove all Locale component");
+
+            foreach (string path in prefabsPaths)
+            {
+                if (path.Contains("Packages")) continue;
+
+                using (var prefabScope = new PrefabUtility.EditPrefabContentsScope(path))
+                {
+                    var prefab = prefabScope.prefabContentsRoot;
+
+                    var localeComponents = prefab.GetComponentsInChildren<LocaleComponent>(true);
+                    countComponentRemoved += localeComponents.Length;
+
+                    foreach (LocaleComponent component in localeComponents)
+                    {
+                        Object.Destroy(component);
+                    }
+                }
+            }
+
+            // ReSharper disable AccessToStaticMemberViaDerivedType
+            var currentScene = EditorSceneManager.GetActiveScene().path;
+            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+
+            foreach (string scene in scenesPaths)
+            {
+                EditorSceneManager.OpenScene(scene);
+
+                var localeComponents = Resources.FindObjectsOfTypeAll<LocaleComponent>();
+                countComponentRemoved += localeComponents.Length;
+                foreach (var component in localeComponents)
+                {
+                    Object.Destroy(component);
+                }
+
+                EditorSceneManager.SaveOpenScenes();
+            }
+
+            EditorSceneManager.OpenScene(currentScene);
+
+            if (countComponentRemoved == 0) Debug.Log("Can't find any locale component to remove in project");
+            else Debug.Log($"Removed {countComponentRemoved} locale component in project");
+            Undo.IncrementCurrentGroup();
         }
 
         private static void DrawTabExplore(
