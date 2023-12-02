@@ -158,7 +158,7 @@ namespace PancakeEditor
 
                     foreach (LocaleComponent component in localeComponents)
                     {
-                        Object.Destroy(component);
+                        Undo.DestroyObjectImmediate(component);
                     }
                 }
             }
