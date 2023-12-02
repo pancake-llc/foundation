@@ -24,7 +24,8 @@ namespace Pancake.Localization
                     Debug.LogError("Locale only avaiable when application playing!");
                     return null;
                 }
-
+#endif
+                
                 if (instance == null)
                 {
                     instance = new Locale();
@@ -32,7 +33,6 @@ namespace Pancake.Localization
                 }
 
                 return instance;
-#endif
             }
         }
 
