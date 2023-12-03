@@ -51,7 +51,6 @@ internal class CodeGenerator : ScriptableObject {
     [ContextMenu(nameof(generateAll))]
     internal void generateAll() {
         generateInternalMethods();
-        AssetDatabase.SaveAssets();
     }
 
     [ContextMenu(nameof(generateInternalMethods))]
@@ -86,9 +85,13 @@ namespace PrimeTween {
 #endif";
         var script = dotweenMethodsScript;
         var path = AssetDatabase.GetAssetPath(script);
+        if (str == File.ReadAllText(path)) {
+            return;
+        }
         File.WriteAllText(path, str);
         EditorUtility.SetDirty(script);
         AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
     }
 
     [CanBeNull]
@@ -162,9 +165,13 @@ namespace PrimeTween {
 }";
         var script = methodsScript;
         var path = AssetDatabase.GetAssetPath(script);
+        if (text == File.ReadAllText(path)) {
+            return;
+        }
         File.WriteAllText(path, text);
         EditorUtility.SetDirty(methodsScript);
         AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
     }
 
     [NotNull]

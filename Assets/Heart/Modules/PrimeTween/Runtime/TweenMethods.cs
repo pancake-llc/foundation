@@ -1,51 +1,75 @@
-// ReSharper disable PossibleNullReferenceException
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMethodReturnValue.Global
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
 namespace PrimeTween {
     public partial struct Tween {
-        /// <summary>Returns the number of running tweens.</summary>
-        /// <param name="onTarget">If specified, returns the number of running tweens on the target. Please note: if target is specified, this method call is O(n) complexity where n is the total number of running tweens.</param>
+        /// <summary>Returns the number of alive tweens.</summary>
+        /// <param name="onTarget">If specified, returns the number of running tweens on the target. Please note: if target is specified, this method call has O(n) complexity where n is the total number of running tweens.</param>
         public static int GetTweensCount([CanBeNull] object onTarget = null) {
-            if (onTarget == null) {
-                #if UNITY_EDITOR
-                if (Constants.warnNoInstance) {
-                    return default;
-                }
-                #endif
-                return PrimeTweenManager.Instance.tweens.Count;
+            #if UNITY_EDITOR
+            if (Constants.warnNoInstance) {
+                return default;
             }
-            return PrimeTweenManager.processAll(onTarget, _ => true, null, null);
+            #endif
+            var manager = PrimeTweenManager.Instance;
+            if (onTarget == null && manager.updateDepth == 0) {
+                int result = manager.tweensCount;
+                #if PRIME_TWEEN_SAFETY_CHECKS
+                Assert.AreEqual(result, PrimeTweenManager.processAll(null, _ => true));
+                #endif
+                return result;
+            }
+            return PrimeTweenManager.processAll(onTarget, _ => true); // call processAll to filter null tweens
         }
 
-        /// <summary>Stops all tweens. If onTarget is provided, stops only tweens on this target.<br/>
-        /// This method stops tweens, but doesn't stop sequences directly. That is, if a stopped tween was in a sequence, the sequence will only be stopped if it has no more running tweens.</summary>
-        /// <seealso cref="PrimeTweenManager.processAll"/>
-        public static int StopAll([CanBeNull] object onTarget = null, int? numMinExpected = null, int? numMaxExpected = null) {
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static int GetTweensCapacity() {
+            var instance = PrimeTweenConfig.Instance;
+            if (instance == null) {
+                return PrimeTweenManager.customInitialCapacity;
+            }
+            return instance.currentPoolCapacity;
+        }
+        #endif
+
+        /// <summary>Stops all tweens and sequences.<br/>
+        /// If <see cref="onTarget"/> is provided, stops only tweens on this target (stopping a tween inside a Sequence is not allowed).</summary>
+        /// <returns>The number of stopped tweens.</returns>
+        public static int StopAll([CanBeNull] object onTarget = null) {
             var result = PrimeTweenManager.processAll(onTarget, tween => {
-                tween.kill();
-                tween.updateSequenceAfterKill();
+                if (tween.IsInSequence()) {
+                    if (tween.isMainSequenceRoot()) {
+                        tween.sequence.Stop();
+                    }
+                    // do nothing with nested tween or sequence. The main sequence root will process it
+                } else {
+                    tween.kill();
+                }
                 return true;
-            }, numMinExpected, numMaxExpected);
+            });
             forceUpdateManagerIfTargetIsNull(onTarget);
             return result;
         }
 
-        /// <summary>Completes all tweens. If onTarget is provided, completes only tweens on this target.<br/>
-        /// This method completes tweens, but doesn't complete sequences directly. That is, if a completed tween was in a sequence, the sequence will only be completed if it has no more running tweens.</summary>
-        /// <seealso cref="PrimeTweenManager.processAll"/>
-        public static int CompleteAll([CanBeNull] object onTarget = null, int? numMinExpected = null, int? numMaxExpected = null) {
+        /// <summary>Completes all tweens and sequences.<br/>
+        /// If <see cref="onTarget"/> is provided, completes only tweens on this target (completing a tween inside a Sequence is not allowed).</summary>
+        /// <returns>The number of completed tweens.</returns>
+        public static int CompleteAll([CanBeNull] object onTarget = null) {
             var result = PrimeTweenManager.processAll(onTarget, tween => {
-                if (tween.tryManipulate()) {
+                if (tween.IsInSequence()) {
+                    if (tween.isMainSequenceRoot()) {
+                        tween.sequence.Complete();
+                    }
+                    // do nothing with nested tween or sequence. The main sequence root will process it
+                } else {
                     tween.ForceComplete();
-                    tween.updateSequenceAfterKill();
-                    return true;
                 }
-                return false;
-            }, numMinExpected, numMaxExpected);
+                return true;
+            });
             forceUpdateManagerIfTargetIsNull(onTarget);
             return result;
         }
@@ -54,23 +78,26 @@ namespace PrimeTween {
             if (onTarget == null) {
                 var manager = PrimeTweenManager.Instance;
                 if (manager != null) {
-                    manager.Update();
-                    Assert.AreEqual(0, manager.tweens.Count);
+                    if (manager.updateDepth == 0) {
+                        manager.Update();
+                    }
+                    // Assert.AreEqual(0, manager.tweens.Count); // fails if user's OnComplete() creates new tweens
                 }
             }
         }
-
-        /// <summary>Sets 'isPaused' on all tweens. If onTarget is provided, sets 'isPaused' only on this target.</summary>
-        /// <seealso cref="PrimeTweenManager.processAll"/>
-        public static int SetPausedAll(bool isPaused, [CanBeNull] object onTarget = null, int? numMinExpected = null, int? numMaxExpected = null) {
+        
+        /// <summary>Pauses/unpauses all tweens and sequences.<br/>
+        /// If <see cref="onTarget"/> is provided, pauses/unpauses only tweens on this target (pausing/unpausing a tween inside a Sequence is not allowed).</summary>
+        /// <returns>The number of paused/unpaused tweens.</returns>
+        public static int SetPausedAll(bool isPaused, [CanBeNull] object onTarget = null) {
             if (isPaused) {
                 return PrimeTweenManager.processAll(onTarget, tween => {
                     return tween.trySetPause(true);
-                }, numMinExpected, numMaxExpected);
+                });
             }
             return PrimeTweenManager.processAll(onTarget, tween => {
                 return tween.trySetPause(false);
-            }, numMinExpected, numMaxExpected);
+            });
         }
 
         /// <summary>Please note: delay may outlive the caller (the calling UnityEngine.Object may already be destroyed).
@@ -119,13 +146,6 @@ namespace PrimeTween {
             return PrimeTweenManager.delayWithoutDurationCheck(target, duration, useUnscaledTime);
         }
 
-        internal static Tween waitFor(Tween other) {
-            Assert.IsTrue(other.isAlive);
-            var result = PrimeTweenManager.createEmpty();
-            result.tween.setWaitFor(other);
-            return result;
-        }
-        
         public static Tween MaterialColor([NotNull] Material target, int propertyId, Color endValue, float duration, Ease ease = default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
             => MaterialColor(target, propertyId, new TweenSettings<Color>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
         public static Tween MaterialColor([NotNull] Material target, int propertyId, Color endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
@@ -284,7 +304,8 @@ namespace PrimeTween {
         }
 
         public static Tween TweenTimeScale(Tween tween, TweenSettings<float> settings) {
-            clampTimescale(ref settings);
+            TweenSettings.clampTimescale(ref settings.startValue);
+            TweenSettings.clampTimescale(ref settings.endValue);
             if (!tween.tryManipulate()) {
                 return default;
             }
@@ -301,29 +322,8 @@ namespace PrimeTween {
             return result;
         }
 
-        public static Tween TweenTimeScale(Sequence sequence, TweenSettings<float> settings) {
-            clampTimescale(ref settings);
-            if (!sequence.validateIsAlive()) {
-                return default;
-            }
-            var result = animate(sequence.first.tween, ref settings, t => {
-                var _sequence = (t.target as ReusableTween).sequence;
-                if (t.intParam != _sequence.id) {
-                    t.EmergencyStop();
-                    return;
-                }
-                _sequence.timeScale = t.FloatVal;
-            }, t => (t.target as ReusableTween).sequence.timeScale.ToContainer());
-            Assert.IsTrue(result.isAlive);
-            result.tween.intParam = sequence.id;
-            return result;
-        }
+        public static Tween TweenTimeScale(Sequence sequence, TweenSettings<float> settings) => TweenTimeScale(sequence.root, settings);
 
-        static void clampTimescale(ref TweenSettings<float> settings) {
-            TweenSettings.clampTimescale(ref settings.startValue);
-            TweenSettings.clampTimescale(ref settings.endValue);
-        }
-        
         #if PRIME_TWEEN_EXPERIMENTAL
         /// <summary>Similar to position animation with Ease.OutBounce, but gives the ability to customize the bounce behaviour by specifying the exact bounce amplitude, number of bounces, and bounce stiffness.</summary>
         public static Sequence PositionOutBounce([NotNull] Transform target, Vector3 endValue, float duration, float bounceAmplitude, int numBounces = 2, float stiffness = 0.5f, bool useUnscaledTime = false)

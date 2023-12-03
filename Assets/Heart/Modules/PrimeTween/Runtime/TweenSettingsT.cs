@@ -55,7 +55,6 @@ namespace PrimeTween {
             : this(startValue, endValue, new TweenSettings(duration, customEase, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)) {
         }
 
-        // todo this method may confuse users because it sets _startFromCurrent to true by default, which may be unexpected
         /// <summary>Use this method to choose the direction of an animation based on the '<paramref name="toEndValue"/>' parameter.</summary>
         /// <param name="toEndValue">If true, returns TweenSettings to animate towards the <see cref="endValue"/>.<br/>
         /// If false, returns TweenSettings to animate towards the <see cref="startValue"/>.</param>

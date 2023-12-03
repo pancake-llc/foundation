@@ -5,7 +5,7 @@ namespace PrimeTween {
     /// Global PrimeTween configuration.
     [PublicAPI]
     public static partial class PrimeTweenConfig {
-        static PrimeTweenManager Instance {
+        internal static PrimeTweenManager Instance {
             get {
                 #if UNITY_EDITOR
                 Assert.IsFalse(Constants.isEditMode, Constants.editModeWarning);
@@ -41,8 +41,10 @@ namespace PrimeTween {
         public static Ease defaultEase {
             get => Instance.defaultEase;
             set {
-                Assert.AreNotEqual(Ease.Custom, value);
-                Assert.AreNotEqual(Ease.Default, value);
+                if (value == Ease.Custom || value == Ease.Default) {
+                    Debug.LogError($"defaultEase can't be Ease.Custom or Ease.Default.");
+                    return;
+                }
                 Instance.defaultEase = value;
             }
         }

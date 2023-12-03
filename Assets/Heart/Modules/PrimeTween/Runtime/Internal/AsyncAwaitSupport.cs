@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace PrimeTween {
     public partial struct Tween {
+        /// <summary>This method is needed for async/await support. Don't use it directly.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public TweenAwaiter GetAwaiter() {
             return new TweenAwaiter(this);
@@ -18,7 +19,11 @@ namespace PrimeTween {
             readonly Tween tween;
 
             internal TweenAwaiter(Tween tween) {
-                this.tween = tween;
+                if (tween.isAlive && !tween.tryManipulate()) {
+                    this.tween = default;
+                } else {
+                    this.tween = tween;
+                }
             }
 
             public bool IsCompleted => !tween.isAlive;
@@ -29,11 +34,18 @@ namespace PrimeTween {
                 // https://github.com/Unity-Technologies/UnityCsReference/blob/dd0d959800a675836a77dbe188c7dd55abc7c512/Runtime/Export/Scripting/UnitySynchronizationContext.cs#L157
                 try {
                     Assert.IsTrue(tween.isAlive);
-                    // waitFor doesn't postpone the await until the next frame because all tweens are updated in order.
-                    // waitFor serves two purposes:
-                    // 1. Work around the limitation of one onComplete callback by wrapping the tween inside a new tween with waitFor dependency.
-                    // 2. If tween is stopped manually, onComplete callback will not be executed.
-                    waitFor(tween).tween.OnComplete(continuation, true);
+                    var infiniteSettings = new TweenSettings<float>(0, 0, float.MaxValue, Ease.Linear, -1);
+                    var wait = animate(tween.tween, ref infiniteSettings, t => {
+                        if (t._isAlive) {
+                            var target = t.target as ReusableTween;
+                            if (t.intParam != target.id) {
+                                t.ForceComplete();
+                            }
+                        }
+                    }, null);
+                    Assert.IsTrue(wait.isAlive);
+                    wait.tween.intParam = tween.id;
+                    wait.tween.OnComplete(continuation, true);
                 } catch (Exception e) {
                     Debug.LogException(e);
                     throw;
@@ -46,9 +58,10 @@ namespace PrimeTween {
     }
 
     public partial struct Sequence {
+        /// <summary>This method is needed for async/await support. Don't use it directly.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Tween.TweenAwaiter GetAwaiter() {
-            return new Tween.TweenAwaiter(GetLongestOrDefault());
+            return new Tween.TweenAwaiter(root);
         }
     }
 }

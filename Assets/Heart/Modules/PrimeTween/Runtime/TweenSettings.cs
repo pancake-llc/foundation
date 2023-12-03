@@ -106,9 +106,14 @@ namespace PrimeTween {
             validateFiniteDuration(startDelay);
             validateFiniteDuration(endDelay);
             setCyclesTo1If0(ref cycles);
-            duration = Mathf.Max(0, duration);
-            startDelay = Mathf.Max(0, startDelay);
-            endDelay = Mathf.Max(0, endDelay);
+            if (duration != 0f) {
+                duration = Mathf.Max(0.001f, duration);
+            }
+            startDelay = Mathf.Max(0f, startDelay);
+            endDelay = Mathf.Max(0f, endDelay);
+            if (cycles == 1) {
+                cycleMode = CycleMode.Restart;
+            }
         }
 
         internal static void validateFiniteDuration(float f) {

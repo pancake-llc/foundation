@@ -13,7 +13,7 @@ namespace PrimeTween {
         /// </code></example>
         [NotNull]
         public IEnumerator ToYieldInstruction() {
-            if (!isAlive) {
+            if (!isAlive || !tryManipulate()) {
                 return Enumerable.Empty<object>().GetEnumerator();
             }
             var result = tween.coroutineEnumerator;
@@ -45,7 +45,7 @@ namespace PrimeTween {
         /// }
         /// </code></example>
         [NotNull]
-        public IEnumerator ToYieldInstruction() => GetLongestOrDefault().ToYieldInstruction();
+        public IEnumerator ToYieldInstruction() => root.ToYieldInstruction();
 
         bool IEnumerator.MoveNext() {
             PrimeTweenManager.Instance.warnStructBoxingInCoroutineOnce();
@@ -63,12 +63,12 @@ namespace PrimeTween {
     }
 
     internal class TweenCoroutineEnumerator : IEnumerator {
-        Tween tween { get; set; }
+        Tween tween;
         bool isRunning;
 
         internal void SetTween(Tween _tween) {
             Assert.IsFalse(isRunning);
-            Assert.IsTrue(!tween.IsCreated || tween.Equals(_tween));
+            Assert.IsTrue(!tween.IsCreated || tween.id == _tween.id);
             Assert.IsTrue(_tween.isAlive);
             tween = _tween;
             isRunning = true;
