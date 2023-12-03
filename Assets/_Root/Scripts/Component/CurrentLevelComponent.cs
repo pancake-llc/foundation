@@ -1,5 +1,5 @@
+using Pancake.Localization;
 using Pancake.Scriptable;
-using TMPro;
 
 namespace Pancake.SceneFlow
 {
@@ -11,7 +11,7 @@ namespace Pancake.SceneFlow
     public class CurrentLevelComponent : GameComponent
     {
         [SerializeField] private IntVariable currentLevel;
-        [SerializeField] private TextMeshProUGUI text;
+        [SerializeField] private LocaleTextComponent localeText;
         [SerializeField] private bool subscribe;
 
         protected override void OnEnabled()
@@ -20,7 +20,7 @@ namespace Pancake.SceneFlow
             if (subscribe) currentLevel.OnValueChanged += OnValueChanged;
         }
 
-        private void OnValueChanged(int level) { text.text = $"Level {level + 1}"; }
+        private void OnValueChanged(int level) { localeText.UpdateArgs($"{level + 1}"); }
 
         protected override void OnDisabled()
         {

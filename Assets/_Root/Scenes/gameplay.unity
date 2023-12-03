@@ -2064,7 +2064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLevel: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
-  text: {fileID: 1035425548}
+  localeText: {fileID: 1035425554}
   subscribe: 1
 --- !u!114 &1035425551
 MonoBehaviour:
