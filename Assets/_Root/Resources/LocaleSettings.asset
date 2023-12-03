@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d69dc1bc6643cb8580d1dd9e553e92, type: 3}
+  m_Name: LocaleSettings
+  m_EditorClassIdentifier: 
+  availableLanguages:
+  - name: English
+    code: en
+    custom: 0
+  - name: Vietnamese
+    code: vi
+    custom: 0
+  importLocation: Assets/_Root/Storages/Localization
+  googleCredential: AIzaSyCdaIrrJRYcYq0NwAo8luJQ120Dy-mfz6I

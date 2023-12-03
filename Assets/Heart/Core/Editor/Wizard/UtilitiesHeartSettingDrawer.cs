@@ -18,12 +18,11 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create Heart Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<HeartSettings>();
-                    const string path = "Assets/_Root/Resources";
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(HeartSettings)}.asset");
+                    if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(HeartSettings).TextColor("#f75369")} was created ad {path}/{nameof(HeartSettings)}.asset");
+                    Debug.Log($"{nameof(HeartSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

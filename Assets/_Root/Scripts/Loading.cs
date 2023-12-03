@@ -1,8 +1,7 @@
-using System;
 using System.Globalization;
 using Pancake.Apex;
+using Pancake.Localization;
 using Pancake.Scriptable;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,8 +13,7 @@ namespace Pancake.SceneFlow
     {
         [SerializeField, Range(0f, 3f)] private float duration;
         [SerializeField] private Slider loadingBar;
-        [SerializeField] private TextMeshProUGUI txtPercent;
-        [SerializeField] private string format = "Loading {0}%";
+        [SerializeField] private LocaleTextComponent localeTxtPercent;
         [SerializeField] private BoolVariable loadingCompleted;
 
 
@@ -42,11 +40,8 @@ namespace Pancake.SceneFlow
                     _currentTimeLoading += Time.deltaTime;
                 }
 
-                txtPercent.text = string.Format(format, (loadingBar.value * 100).Round().ToString(CultureInfo.InvariantCulture));
-                if (_currentTimeLoading >= duration)
-                {
-                    loadingCompleted.Value = true;
-                }
+                localeTxtPercent.UpdateArgs((loadingBar.value * 100).Round().ToString(CultureInfo.InvariantCulture));
+                if (_currentTimeLoading >= duration) loadingCompleted.Value = true;
             }
         }
     }

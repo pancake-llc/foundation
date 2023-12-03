@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Pancake.ExLibEditor;
+using Pancake.LocalizationEditor;
 using Pancake.ScriptableEditor;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace PancakeEditor
@@ -38,7 +40,8 @@ namespace PancakeEditor
             UIEffect,
             ScreenSetting,
             Spine,
-            GameService
+            GameService,
+            Localization
         }
 
         private enum WizardMonetizeType
@@ -63,7 +66,8 @@ namespace PancakeEditor
             ParticleEffectForUGUI = WizardAllType.ParticleEffectForUGUI,
             UIEffect = WizardAllType.UIEffect,
             Spine = WizardAllType.Spine,
-            GameSerice = WizardAllType.GameService
+            GameSerice = WizardAllType.GameService,
+            Localization = WizardAllType.Localization
         }
 
         private enum WizardSettingType
@@ -74,11 +78,32 @@ namespace PancakeEditor
             ScreenSetting = WizardAllType.ScreenSetting
         }
 
+        public enum LocaleTabType
+        {
+            Setting,
+            Explore
+        }
+
         private Vector2 _leftSideScrollPosition = Vector2.zero;
         private Vector2 _rightSideScrollPosition = Vector2.zero;
         private List<int> _items;
         private WizardType _currentType = WizardType.All;
         private WizardAllType _selectedItemType = WizardAllType.None;
+
+        #region locale
+
+        private LocaleTabType _currentLocaleTabType = LocaleTabType.Setting;
+        private TreeViewState _treeViewState;
+        internal LocaleTreeView localeTreeView;
+        private SearchField _localeSearchField;
+        private Rect BodyViewRect => new(0f, 48f, position.width - TAB_WIDTH * 4f - 22f, position.height - 206f);
+        private Rect ToolbarRect => new(0f, 28f, position.width - TAB_WIDTH * 4f - 22f, 20f);
+        private Rect BottomToolbarRect => new(0f, position.height - 154f, position.width - TAB_WIDTH * 4f - 22f, 20);
+        private bool _localeInitialized;
+        [SerializeField] private MultiColumnHeaderState multiColumnHeaderState;
+
+        #endregion
+
 
         private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
         private const float TAB_WIDTH = 65f;
@@ -86,10 +111,13 @@ namespace PancakeEditor
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
 
+        internal static Wizard window;
+        
+
         [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show()
         {
-            var window = GetWindow<Wizard>("Wizard");
+            window = GetWindow<Wizard>("Wizard");
             window.autoRepaintOnSceneChange = true;
             window.Show(true);
             SessionState.SetBool("spine_flag", false);
@@ -161,8 +189,9 @@ namespace PancakeEditor
                 EditorGUILayout.BeginHorizontal();
                 var icon = GetIcon((WizardAllType) i);
                 var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 5)};
+                var styleToggle = new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
-                bool clicked = GUILayout.Toggle((int) _selectedItemType == i, ((WizardAllType) i).ToString(), GUI.skin.button, GUILayout.ExpandWidth(true));
+                bool clicked = GUILayout.Toggle((int) _selectedItemType == i, ((WizardAllType) i).ToString(), styleToggle, GUILayout.ExpandWidth(true));
                 EditorGUILayout.EndHorizontal();
 
                 if (clicked) _selectedItemType = (WizardAllType) i;
@@ -234,6 +263,17 @@ namespace PancakeEditor
                 case WizardAllType.GameService when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesGameServiceDrawer.OnInspectorGUI();
                     break;
+                case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesLocalizationDrawer.OnInspectorGUI(ref _treeViewState,
+                        ref localeTreeView,
+                        ref multiColumnHeaderState,
+                        BodyViewRect,
+                        ToolbarRect,
+                        BottomToolbarRect,
+                        ref _localeSearchField,
+                        ref _localeInitialized,
+                        ref _currentLocaleTabType);
+                    break;
             }
         }
 
@@ -297,9 +337,10 @@ namespace PancakeEditor
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 case WizardAllType.InAppReview:
-                case WizardAllType.NeedleConsole: 
-                case WizardAllType.SelectiveProfiling: 
+                case WizardAllType.NeedleConsole:
+                case WizardAllType.SelectiveProfiling:
                 case WizardAllType.GameService:
+                case WizardAllType.Localization:
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;

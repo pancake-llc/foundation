@@ -9,7 +9,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_UI_EFFECT
-            Uniform.DrawInstalled("4.0.0-preview.9");
+            Uniform.DrawInstalled("4.0.0-preview.10");
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
             if (GUILayout.Button("Uninstall UI Effect", GUILayout.MaxHeight(25f)))
@@ -30,7 +30,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(40f)))
             {
-                RegistryManager.Add("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.9");
+                RegistryManager.Add("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10");
                 RegistryManager.Resolve();
             }
 

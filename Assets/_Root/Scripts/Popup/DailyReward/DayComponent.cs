@@ -1,3 +1,4 @@
+using Pancake.Localization;
 using Pancake.Spine;
 using Spine.Unity;
 using TMPro;
@@ -9,7 +10,7 @@ namespace Pancake.SceneFlow
 
     public class DayComponent : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI textDay;
+        [SerializeField] private LocaleTextComponent localeTextDay;
         [SerializeField] private TextMeshProUGUI textValueReward;
         [SerializeField] private GameObject claimedObject;
         [SerializeField] private Image imageBackground;
@@ -22,7 +23,7 @@ namespace Pancake.SceneFlow
         public void Init(DailyRewardVariable variable, BoolDailyVariable detectNewDay)
         {
             int day = variable.Value.day + (UserData.GetCurrentWeekDailyReward() - 1) * 7;
-            textDay.SetText($"Day {day}");
+            localeTextDay.UpdateArgs($"{day}");
             textValueReward.SetText($"+{variable.Value.amount}");
 
             if (variable.Value.typeReward == TypeRewardDailyReward.Coin)

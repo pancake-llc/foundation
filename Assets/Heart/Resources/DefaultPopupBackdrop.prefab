@@ -91,10 +91,10 @@ MonoBehaviour:
   animationContainer:
     enterAnimation:
       type: 0
-      uiTransitionComponent: {fileID: 0}
-      uiTransitionAsset: {fileID: 0}
+      transitionAnimationComponent: {fileID: 0}
+      transitionAnimationSo: {fileID: 0}
     exitAnimation:
       type: 0
-      uiTransitionComponent: {fileID: 0}
-      uiTransitionAsset: {fileID: 0}
-  closeModalWhenClicked: 0
+      transitionAnimationComponent: {fileID: 0}
+      transitionAnimationSo: {fileID: 0}
+  closePopupWhenClicked: 0

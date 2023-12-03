@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Unity.SharpZipLib.Zip;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace PancakeEditor
 {
     public static partial class Editor
     {
+        internal const string DEFAULT_RESOURCE_PATH = "Assets/_Root/Resources";
+        
         /// <summary>
         /// thanks @JoshuaMcKenzie and @Edvard-D
         /// remove all empty object reference elements

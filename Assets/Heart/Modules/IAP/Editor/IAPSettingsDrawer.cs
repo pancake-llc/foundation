@@ -27,6 +27,7 @@ namespace Pancake.IAPEditor
 
         private void DrawElementCallback(Rect rect, int index, bool isactive, bool isfocused)
         {
+            EditorGUI.indentLevel++;
             if (index > _skusDataProperty.arraySize - 1) return;
             var element = _skusDataProperty.GetArrayElementAtIndex(index);
             if (GUI.Button(new Rect(rect.x + rect.width - 20, rect.y, 20, EditorGUIUtility.singleLineHeight), "X"))
@@ -37,6 +38,8 @@ namespace Pancake.IAPEditor
             }
 
             EditorGUI.PropertyField(rect, element, new GUIContent(element.FindPropertyRelative("id").stringValue.Split('.').Last().ToCamelCase()), true);
+            EditorGUI.indentLevel--;
+
         }
 
         public override void OnInspectorGUI()

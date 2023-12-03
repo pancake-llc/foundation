@@ -23,12 +23,11 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create Adjust Setting", GUILayout.Height(40)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdjustConfig>();
-                    const string path = "Assets/_Root/Resources";
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(AdjustConfig)}.asset");
+                    if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(AdjustConfig)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(AdjustConfig).TextColor("#f75369")} was created ad {path}/{nameof(AdjustConfig)}.asset");
+                    Debug.Log($"{nameof(AdjustConfig).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(AdjustConfig)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

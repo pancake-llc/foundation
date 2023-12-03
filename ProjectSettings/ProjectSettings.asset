@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: pancake
-  productName: login
+  productName: foundation
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -48,6 +48,7 @@ PlayerSettings:
   defaultScreenHeightWeb: 600
   m_StereoRenderingPath: 0
   m_ActiveColorSpace: 0
+  unsupportedMSAAFallback: 0
   m_SpriteBatchVertexThreshold: 300
   m_MTRendering: 1
   mipStripping: 1
@@ -147,6 +148,7 @@ PlayerSettings:
   isWsaHolographicRemotingEnabled: 0
   enableFrameTimingStats: 0
   enableOpenGLProfilerGPURecorders: 1
+  allowHDRDisplaySupport: 0
   useHDRDisplay: 0
   hdrBitDepth: 0
   m_ColorGamuts: 00000000
@@ -258,8 +260,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: '{inproject}: yenmoc.keystore'
-  AndroidKeyaliasName: yenmoc
+  AndroidKeystoreName: D:/workspace/family-island/rescuekitten.keystore
+  AndroidKeyaliasName: rescuekitten
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -543,6 +545,7 @@ PlayerSettings:
   switchSocketConcurrencyLimit: 14
   switchScreenResolutionBehavior: 2
   switchUseCPUProfiler: 0
+  switchEnableFileSystemTrace: 0
   switchUseGOLDLinker: 0
   switchLTOSetting: 0
   switchApplicationID: 0x01004b9000490000
@@ -673,7 +676,6 @@ PlayerSettings:
   switchSocketBufferEfficiency: 4
   switchSocketInitializeEnabled: 1
   switchNetworkInterfaceManagerInitializeEnabled: 1
-  switchPlayerConnectionEnabled: 1
   switchUseNewStyleFilepaths: 0
   switchUseLegacyFmodPriorities: 0
   switchUseMicroSleepForYield: 1
@@ -784,23 +786,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: 
-    EmbeddedLinux: PANCAKE_ADVERTISING
-    GameCoreScarlett: PANCAKE_ADVERTISING
-    GameCoreXboxOne: PANCAKE_ADVERTISING
-    LinuxHeadlessSimulation: PANCAKE_ADVERTISING
-    Nintendo Switch: PANCAKE_ADVERTISING
-    PS4: PANCAKE_ADVERTISING
-    PS5: PANCAKE_ADVERTISING
-    QNX: PANCAKE_ADVERTISING
-    Stadia: PANCAKE_ADVERTISING
-    Standalone: PANCAKE_ADVERTISING
-    VisionOS: PANCAKE_ADVERTISING
-    WebGL: PANCAKE_ADVERTISING
-    Windows Store Apps: PANCAKE_ADVERTISING
-    XboxOne: PANCAKE_ADVERTISING
-    iPhone: PANCAKE_ADVERTISING
-    tvOS: PANCAKE_ADVERTISING
+    Android: TextMeshPro
+    EmbeddedLinux: TextMeshPro
+    GameCoreScarlett: 
+    GameCoreXboxOne: TextMeshPro
+    LinuxHeadlessSimulation: 
+    Nintendo Switch: TextMeshPro
+    PS4: TextMeshPro
+    PS5: ;TextMeshPro
+    QNX: TextMeshPro
+    Stadia: TextMeshPro
+    Standalone: TextMeshPro
+    VisionOS: TextMeshPro
+    WebGL: TextMeshPro
+    Windows Store Apps: 
+    XboxOne: TextMeshPro
+    iPhone: TextMeshPro
+    tvOS: TextMeshPro
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

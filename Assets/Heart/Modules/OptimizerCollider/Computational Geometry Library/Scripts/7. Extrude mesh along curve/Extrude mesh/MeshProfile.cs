@@ -6,7 +6,7 @@ namespace Pancake.ComputationalGeometry
 {
     //Based on "Procedural Geometry - An Improvised Live Course" https://www.youtube.com/watch?v=6xs0Saff940
 
-    [CreateAssetMenu(menuName = "My Assets/Mesh Profile")]
+    [CreateAssetMenu(menuName = "Pancake/Misc/Mesh Profile")]
     public class MeshProfile : ScriptableObject
     {
         public Vertex[] vertices;

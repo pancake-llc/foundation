@@ -218,8 +218,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 12345
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c2f49fe8c22d94f9a9e6cd06ad490155, type: 2}
-  m_sharedMaterial: {fileID: 3074828514974314926, guid: c2f49fe8c22d94f9a9e6cd06ad490155, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
+  m_sharedMaterial: {fileID: 1670048747954264078, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -462,7 +462,6 @@ MonoBehaviour:
   textCoin: {fileID: 474612844238844801}
   eventUpdateCoin: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
   updateCoinWithValue: {fileID: 11400000, guid: fd36f245da8848948a005de35c9f6993, type: 2}
-  currentCoin: {fileID: 11400000, guid: 2b085b529f2fac74ba8c4fab7e585cb1, type: 2}
 --- !u!1001 &2560612362465803146
 PrefabInstance:
   m_ObjectHideFlags: 0

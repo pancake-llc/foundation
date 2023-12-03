@@ -19,12 +19,11 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create Default Popup Setting", GUILayout.Height(40f)))
                 {
                     var setting = ScriptableObject.CreateInstance<DefaultTransitionSetting>();
-                    const string path = "Assets/_Root/Resources";
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(DefaultTransitionSetting)}.asset");
+                    if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(DefaultTransitionSetting).TextColor("#f75369")} was created ad {path}/{nameof(DefaultTransitionSetting)}.asset");
+                    Debug.Log($"{nameof(DefaultTransitionSetting).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;
