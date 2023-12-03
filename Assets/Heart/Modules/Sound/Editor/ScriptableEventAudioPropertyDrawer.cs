@@ -31,6 +31,11 @@ namespace Pancake.SoundEditor
 
             EditorGUI.EndProperty();
         }
+        
+        protected override void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
+        {
+            EditorGUI.PropertyField(position, property, label);
+        }
 
         protected override void DrawShortcut(Rect position, SerializedProperty property, Object targetObject) { }
     }

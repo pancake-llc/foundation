@@ -24,12 +24,20 @@ namespace Pancake.TrackingEditor
             }
 
             bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
-            DrawIfNotNull(position, property, label, property.objectReferenceValue, isNeedIndent);
+            DrawIfNotNull(position,
+                property,
+                label,
+                property.objectReferenceValue,
+                isNeedIndent);
 
             EditorGUI.EndProperty();
         }
 
+        protected override void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
+        {
+            EditorGUI.PropertyField(position, property, label);
+        }
+
         protected override void DrawShortcut(Rect position, SerializedProperty property, Object targetObject) { }
     }
-
 }
