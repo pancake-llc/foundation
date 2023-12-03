@@ -36,12 +36,13 @@ namespace PrimeTween {
         [HideInInspector] 
         internal int lastId;
         internal Ease defaultEase = Ease.OutQuad;
-        internal const Ease defaultShakeEase = Ease.OutSine;
+        internal const Ease defaultShakeEase = Ease.OutSine; // todo to OutQuad for performance
         internal bool warnTweenOnDisabledTarget = true;
         internal bool warnZeroDuration = true;
         internal bool warnStructBoxingAllocationInCoroutine = true;
         internal bool warnBenchmarkWithAsserts = true;
         internal bool validateCustomCurves = true;
+        internal bool warnEndValueEqualsCurrent = true;
         int processedCount;
         internal int updateDepth;
         internal static readonly object dummyTarget = new object();
@@ -69,10 +70,16 @@ namespace PrimeTween {
 
         const string manualInstanceCreationIsNotAllowedMessage = "Please don't create the " + nameof(PrimeTweenManager) + " instance manually.";
         void Awake() => Assert.IsNull(Instance, manualInstanceCreationIsNotAllowedMessage);
-
+        
         #if UNITY_EDITOR
         [InitializeOnLoadMethod]
         static void iniOnLoad() {
+            EditorApplication.playModeStateChanged += state => {
+                if (state == PlayModeStateChange.EnteredEditMode) {
+                    Instance = null;
+                    customInitialCapacity = -1;
+                }
+            };
             if (!isHotReload) {
                 return;
             }
@@ -134,10 +141,6 @@ namespace PrimeTween {
             Assert.AreEqual(Instance, this, manualInstanceCreationIsNotAllowedMessage);
         }
 
-        void OnDestroy() {
-            customInitialCapacity = -1;
-        }
-        
         /// <summary>
         /// The most common tween lifecycle:
         /// 1. User's script creates a tween in Update() in frame N.
@@ -412,7 +415,7 @@ namespace PrimeTween {
             }
             return numProcessed;
         }
-        
+
         internal void SetTweensCapacity(int capacity) {
             var runningTweens = tweensCount;
             if (capacity < runningTweens) {

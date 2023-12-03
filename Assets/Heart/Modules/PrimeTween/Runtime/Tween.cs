@@ -124,7 +124,8 @@ namespace PrimeTween {
                 value = 0f;
             }
             tween.SetElapsedTimeTotal(value);
-            if (value > durationTotal) {
+            // SetElapsedTimeTotal may complete the tween, so isAlive check is needed
+            if (isAlive && value > durationTotal) {
                 tween.elapsedTimeTotal = durationTotal;
             }
         }

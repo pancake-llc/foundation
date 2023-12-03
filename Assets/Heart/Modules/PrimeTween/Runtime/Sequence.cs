@@ -132,12 +132,6 @@ namespace PrimeTween {
         }
 
         Sequence(Tween rootTween) {
-            #if UNITY_EDITOR
-            if (Constants.noInstance) {
-                root = default;
-                return;
-            }
-            #endif
             root = rootTween;
             setSequence(rootTween);
             Assert.IsTrue(isAlive);

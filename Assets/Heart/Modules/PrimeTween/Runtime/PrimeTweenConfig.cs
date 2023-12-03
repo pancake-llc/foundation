@@ -8,7 +8,7 @@ namespace PrimeTween {
         internal static PrimeTweenManager Instance {
             get {
                 #if UNITY_EDITOR
-                Assert.IsFalse(Constants.isEditMode, Constants.editModeWarning);
+                Assert.IsFalse(Constants.noInstance, Constants.editModeWarning);
                 #endif
                 return PrimeTweenManager.Instance;
             }
@@ -42,7 +42,7 @@ namespace PrimeTween {
             get => Instance.defaultEase;
             set {
                 if (value == Ease.Custom || value == Ease.Default) {
-                    Debug.LogError($"defaultEase can't be Ease.Custom or Ease.Default.");
+                    Debug.LogError("defaultEase can't be Ease.Custom or Ease.Default.");
                     return;
                 }
                 Instance.defaultEase = value;
@@ -71,5 +71,9 @@ namespace PrimeTween {
         }
 
         internal const bool defaultUseUnscaledTimeForShakes = false;
+
+        public static bool warnEndValueEqualsCurrent {
+            set => Instance.warnEndValueEqualsCurrent = value;
+        }
     }
 }
