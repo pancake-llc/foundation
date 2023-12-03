@@ -128,7 +128,8 @@ namespace PancakeEditor
             {
                 bool confirm = EditorUtility.DisplayDialog("Remove All Locale Component",
                     "Are you sure you want to remove all locale component in project (in all prefab and all scene)?" +
-                    "\nFolder contains name 'Packages' will be ignore!",
+                    "\nFolder contains name 'Packages' will be ignore!" +
+                    "\n\n*NOTE* : You need to replace the use of LocaleTextComponent in your C# code with TextMeshProUGUI if applicable",
                     "Yes",
                     "No");
                 if (confirm) RemoveAllLocaleComponentInProject();
