@@ -45,7 +45,7 @@ namespace Pancake.ReplacerEditor
                 }
             }
 
-            if (countFontReplaceInScene > 0) Debug.Log($"[Scene] Replaced font of {countFontReplaceInScene} component Text in: {currentScene.name}");
+            if (countFontReplaceInScene > 0) Debug.Log($"[Scene] Replaced font of {countFontReplaceInScene} component Text in scene: {currentScene.name}");
             else Debug.LogWarning("Can't find any text components on scene :" + currentScene.name);
 
             EditorSceneManager.SaveOpenScenes();
@@ -81,7 +81,7 @@ namespace Pancake.ReplacerEditor
                 }
             }
 
-            if (countFontReplaceInScene > 0) Debug.Log($"[Scene] Replaced font of {countFontReplaceInScene} component Text in: {currentScene.name}");
+            if (countFontReplaceInScene > 0) Debug.Log($"[Scene] Replaced font of {countFontReplaceInScene} component Text in scene: {currentScene.name}");
             else Debug.LogWarning("Can't find any text components on scene :" + currentScene.name);
 
             EditorSceneManager.SaveOpenScenes();
@@ -116,7 +116,7 @@ namespace Pancake.ReplacerEditor
                         count++;
                     }
 
-                    if (prefabTexts.Length > 0) Debug.Log($"[Prefab] Replaced font of {prefabTexts.Length} component Text in: {prefab.name}", prefab);
+                    if (prefabTexts.Length > 0) Debug.Log($"[Prefab] Replaced font of {prefabTexts.Length} component Text in prefab: {prefab.name}", prefab);
                 }
             }
 
@@ -154,7 +154,7 @@ namespace Pancake.ReplacerEditor
                         count++;
                     }
 
-                    if (prefabTexts.Length > 0) Debug.Log($"[Prefab] Replaced font of {prefabTexts.Length} component Text in: {prefab.name}", prefab);
+                    if (prefabTexts.Length > 0) Debug.Log($"[Prefab] Replaced font of {prefabTexts.Length} component Text in prefab: {prefab.name}", prefab);
                 }
             }
 
