@@ -67,18 +67,21 @@ namespace Pancake.ReplacerEditor
                 switch (_windowType)
                 {
                     case WindowType.CurrentScene:
-                        if (_fontType == FontType.LegacyText) ReplaceFont.ReplaceFontInScene(_newFont);
-                        else ReplaceFont.ReplaceFontInScene(_newTMPfont);
+                        bool c = EditorUtility.DisplayDialog("Replace All Font In Scene",
+                            "Are you sure you want to replace all font in current scene?" + "\nText is a part of prefab in scene will be ignore",
+                            "Yes",
+                            "No");
+                        if (c)
+                        {
+                            if (_fontType == FontType.LegacyText) ReplaceFont.ReplaceFontInScene(_newFont);
+                            else ReplaceFont.ReplaceFontInScene(_newTMPfont);
+                        }
+
                         break;
 
                     case WindowType.Prefabs:
                         if (_fontType == FontType.LegacyText) ReplaceFont.ReplaceFontPrefab(_newFont);
                         else ReplaceFont.ReplaceFontPrefab(_newTMPfont);
-                        break;
-
-                    case WindowType.InProject:
-                        if (_fontType == FontType.LegacyText) ReplaceFont.ReplaceFontInProject(_newFont);
-                        else ReplaceFont.ReplaceFontInProject(_newTMPfont);
                         break;
 
                     case WindowType.Specified:
@@ -116,9 +119,8 @@ namespace Pancake.ReplacerEditor
     public enum WindowType
     {
         [InspectorName("Current scene")] CurrentScene,
-        Prefabs,
-        Specified,
-        [InspectorName("All files in project")] InProject
+        [InspectorName("Al Prefab")] Prefabs,
+        Specified
     }
 
     public enum FontType

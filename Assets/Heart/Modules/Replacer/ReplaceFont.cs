@@ -23,28 +23,32 @@ namespace Pancake.ReplacerEditor
                 return;
             }
 
-            List<Component> components = null;
             var currentScene = EditorSceneManager.GetActiveScene();
 
             Undo.SetCurrentGroupName("Replace all legacy text fonts");
+            var countFontReplaceInScene = 0;
             foreach (GameObject go in currentScene.GetRootGameObjects())
             {
-                var textComponents = go.GetComponentsInChildren<Text>(true);
+                var textComponents = go.GetComponentsInChildren<Text>(true).ToList();
+                foreach (var t in textComponents)
+                {
+                    if (PrefabUtility.IsPartOfAnyPrefab(t)) textComponents.Remove(t);
+                }
 
+                countFontReplaceInScene += textComponents.Count;
                 foreach (var component in textComponents)
                 {
                     if (component.gameObject.scene != currentScene) continue;
 
                     Undo.RecordObject(component, "");
                     component.font = font;
-                    components ??= new List<Component>();
-                    components.Add(component);
-                    Debug.Log($"Replaced: {component.name}", component);
                 }
             }
 
-            if (components == null) Debug.LogError("Can't find any text components on current scene");
+            if (countFontReplaceInScene > 0) Debug.Log($"[Scene] Replaced font of {countFontReplaceInScene} component Text in: {currentScene.name}");
+            else Debug.LogWarning("Can't find any text components on scene :" + currentScene.name);
 
+            EditorSceneManager.SaveOpenScenes();
             Undo.IncrementCurrentGroup();
         }
 
@@ -56,29 +60,31 @@ namespace Pancake.ReplacerEditor
                 return;
             }
 
-            List<Component> components = null;
             var currentScene = EditorSceneManager.GetActiveScene();
-
+            var countFontReplaceInScene = 0;
             Undo.SetCurrentGroupName("Replace all TMP fonts");
             foreach (GameObject go in currentScene.GetRootGameObjects())
             {
-                var textComponents = go.GetComponentsInChildren<TextMeshProUGUI>(true);
+                var textComponents = go.GetComponentsInChildren<TextMeshProUGUI>(true).ToList();
+                foreach (var t in textComponents.ToList())
+                {
+                    if (PrefabUtility.IsPartOfAnyPrefab(t)) textComponents.Remove(t);
+                }
 
+                countFontReplaceInScene += textComponents.Count;
                 foreach (var component in textComponents)
                 {
                     if (component.gameObject.scene != currentScene) continue;
 
                     Undo.RecordObject(component, "");
-
                     component.font = font;
-                    components ??= new List<Component>();
-                    components.Add(component);
-                    Debug.Log($"Replaced: {component.name}", component);
                 }
             }
 
-            if (components == null) Debug.LogError("Can't find any TMP components on current scene");
+            if (countFontReplaceInScene > 0) Debug.Log($"[Scene] Replaced font of {countFontReplaceInScene} component Text in: {currentScene.name}");
+            else Debug.LogWarning("Can't find any text components on scene :" + currentScene.name);
 
+            EditorSceneManager.SaveOpenScenes();
             Undo.IncrementCurrentGroup();
         }
 
@@ -92,8 +98,7 @@ namespace Pancake.ReplacerEditor
 
             string[] prefabsPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".prefab", System.StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            List<Component> components = null;
-
+            int count = 0;
             Undo.SetCurrentGroupName("Replace all legacy text fonts");
             foreach (string path in prefabsPaths)
             {
@@ -108,15 +113,14 @@ namespace Pancake.ReplacerEditor
                     {
                         Undo.RecordObject(component, "");
                         component.font = font;
-                        components ??= new List<Component>();
-                        components.Add(component);
+                        count++;
                     }
 
-                    Debug.Log($"Replaced: {prefab.name}", prefab);
+                    if (prefabTexts.Length > 0) Debug.Log($"[Prefab] Replaced font of {prefabTexts.Length} component Text in: {prefab.name}", prefab);
                 }
             }
 
-            if (components == null) Debug.LogError("Can't find any text components in prefabs");
+            if (count == 0) Debug.LogWarning("Can't find any text components in prefabs");
 
             Undo.IncrementCurrentGroup();
         }
@@ -131,7 +135,7 @@ namespace Pancake.ReplacerEditor
 
             string[] prefabsPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".prefab", System.StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            List<Component> components = null;
+            int count = 0;
             Undo.SetCurrentGroupName("Replace all TMP fonts");
 
             foreach (string path in prefabsPaths)
@@ -147,16 +151,14 @@ namespace Pancake.ReplacerEditor
                     {
                         Undo.RecordObject(component, "");
                         component.font = font;
-                        components ??= new List<Component>();
-                        components.Add(component);
+                        count++;
                     }
 
-                    Debug.Log($"Replaced: {prefab.name}", prefab);
+                    if (prefabTexts.Length > 0) Debug.Log($"[Prefab] Replaced font of {prefabTexts.Length} component Text in: {prefab.name}", prefab);
                 }
             }
 
-            if (components == null)
-                Debug.LogError("Can't find any TMP components in prefabs");
+            if (count == 0) Debug.LogWarning("Can't find any TMP components in prefabs");
 
             Undo.IncrementCurrentGroup();
         }
@@ -236,132 +238,6 @@ namespace Pancake.ReplacerEditor
                     "One of the components of the list is empty. Please manually check the list of text objects you have set. All other components have been replaced successfully.",
                     "Ok");
 
-            Undo.IncrementCurrentGroup();
-        }
-
-        public static void ReplaceFontInProject(Font font)
-        {
-            if (font == null)
-            {
-                EditorUtility.DisplayDialog("Replace font Result", "Font is null", "Ok");
-                return;
-            }
-
-            string[] scenesPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".unity", System.StringComparison.OrdinalIgnoreCase)).ToArray();
-            string[] prefabsPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".prefab", System.StringComparison.OrdinalIgnoreCase)).ToArray();
-
-            List<Component> components = null;
-
-            Undo.SetCurrentGroupName("Replace all legacy text fonts");
-            foreach (string path in prefabsPaths)
-            {
-                if (path.Contains("Packages"))
-                    continue;
-
-                using (var prefabScope = new PrefabUtility.EditPrefabContentsScope(path))
-                {
-                    var prefab = prefabScope.prefabContentsRoot;
-
-                    var prefabTexts = prefab.GetComponentsInChildren<Text>(true);
-                    foreach (Text component in prefabTexts)
-                    {
-                        Undo.RecordObject(component, "");
-                        component.font = font;
-                        if (components == null)
-                            components = new();
-                        components.Add(component);
-                        Debug.Log($"Replaced: {component.name}", component);
-                    }
-                }
-            }
-
-            var currentScene = EditorSceneManager.GetActiveScene().path;
-            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-
-            foreach (string path in scenesPaths)
-            {
-                var scene = EditorSceneManager.OpenScene(path);
-                foreach (GameObject go in scene.GetRootGameObjects())
-                {
-                    var textComponents = go.GetComponentsInChildren<Text>(true);
-                    foreach (var component in textComponents)
-                    {
-                        Undo.RecordObject(component, "");
-                        component.font = font;
-                        components ??= new List<Component>();
-                        components.Add(component);
-                        Debug.Log($"Replaced: {component.name}", component);
-                    }
-                }
-
-                EditorSceneManager.SaveOpenScenes();
-            }
-
-            EditorSceneManager.OpenScene(currentScene);
-
-            if (components == null) Debug.LogError("Can't find any text components on all scenes");
-            Undo.IncrementCurrentGroup();
-        }
-
-        public static void ReplaceFontInProject(TMP_FontAsset font)
-        {
-            if (font == null)
-            {
-                EditorUtility.DisplayDialog("Replace font Result", "Font is null", "Ok");
-                return;
-            }
-
-            string[] scenesPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".unity", System.StringComparison.OrdinalIgnoreCase)).ToArray();
-            string[] prefabsPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".prefab", System.StringComparison.OrdinalIgnoreCase)).ToArray();
-
-            List<Component> components = null;
-
-            Undo.SetCurrentGroupName("Replace all TMP fonts");
-            foreach (string path in prefabsPaths)
-            {
-                if (path.Contains("Packages")) continue;
-
-                using (var prefabScope = new PrefabUtility.EditPrefabContentsScope(path))
-                {
-                    var prefab = prefabScope.prefabContentsRoot;
-
-                    var prefabTexts = prefab.GetComponentsInChildren<TextMeshProUGUI>(true);
-                    foreach (TextMeshProUGUI component in prefabTexts)
-                    {
-                        component.font = font;
-                        components ??= new List<Component>();
-                        components.Add(component);
-                    }
-
-                    Debug.Log($"Replaced: {prefab.name}", prefab);
-                }
-            }
-
-            var currentScene = EditorSceneManager.GetActiveScene().path;
-            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-
-            foreach (string path in scenesPaths)
-            {
-                var scene = EditorSceneManager.OpenScene(path);
-                foreach (GameObject go in scene.GetRootGameObjects())
-                {
-                    var textComponents = go.GetComponentsInChildren<TextMeshProUGUI>(true);
-                    foreach (var component in textComponents)
-                    {
-                        component.font = font;
-                        components ??= new List<Component>();
-                        components.Add(component);
-                    }
-
-                    Debug.Log($"Replaced: {go.name}", go);
-                }
-
-                EditorSceneManager.SaveOpenScenes();
-            }
-
-            EditorSceneManager.OpenScene(currentScene);
-
-            if (components == null) Debug.LogError("Can't find any TMP components on all scenes");
             Undo.IncrementCurrentGroup();
         }
     }
