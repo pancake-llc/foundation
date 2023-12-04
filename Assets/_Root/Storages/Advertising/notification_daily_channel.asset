@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: notification_daily_channel
   m_EditorClassIdentifier: 
   identifier: 5a583df7-c2ac-447e-b40c-adfb9026126c
-  minute: 2
+  minute: 1440
   repeat: 1
   bigPicture: 0
   namePicture: channel_manual_picture.jpg
