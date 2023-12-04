@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 316b69983cba47c09f06a794a9d983ce, type: 3}
-  m_Name: notification_channel_data
+  m_Name: notification_daily_channel
   m_EditorClassIdentifier: 
   identifier: 5a583df7-c2ac-447e-b40c-adfb9026126c
   minute: 1440
