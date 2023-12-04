@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: notification_daily_channel
   m_EditorClassIdentifier: 
   identifier: 5a583df7-c2ac-447e-b40c-adfb9026126c
-  minute: 1440
+  minute: 2
   repeat: 1
   bigPicture: 0
   namePicture: channel_manual_picture.jpg
@@ -23,3 +23,6 @@ MonoBehaviour:
   datas:
   - title: Darkness Fall
     message: Heroes, let's join hands to protect the kingdom from the invading darkness
+    enableLocalization: 1
+    titleLocale: {fileID: 11400000, guid: 08b764422b612c242a650ecd01c7d9ec, type: 2}
+    messageLocale: {fileID: 11400000, guid: 6c9de2871153a3347b6791ed77270d34, type: 2}
