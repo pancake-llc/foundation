@@ -19,13 +19,8 @@ namespace Pancake.Scriptable
             [SerializeField] private ScriptableEventFloat scriptableEvent;
             public override ScriptableEvent<float> ScriptableEvent => scriptableEvent;
 
-            [SerializeField] private FloatUnityEvent response;
+            [SerializeField] private Pancake.FloatUnityEvent response;
             public override UnityEvent<float> Response => response;
-        }
-
-        [System.Serializable]
-        public class FloatUnityEvent : UnityEvent<float>
-        {
         }
     }
 }

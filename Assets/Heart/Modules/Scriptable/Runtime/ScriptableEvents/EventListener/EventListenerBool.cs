@@ -22,10 +22,5 @@ namespace Pancake.Scriptable
             [SerializeField] private BoolUnityEvent response;
             public override UnityEvent<bool> Response => response;
         }
-
-        [System.Serializable]
-        public class BoolUnityEvent : UnityEvent<bool>
-        {
-        }
     }
 }

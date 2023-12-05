@@ -22,10 +22,5 @@ namespace Pancake.Scriptable
             [SerializeField] private ColorUnityEvent response;
             public override UnityEvent<Color> Response => response;
         }
-
-        [System.Serializable]
-        public class ColorUnityEvent : UnityEvent<Color>
-        {
-        }
     }
 }

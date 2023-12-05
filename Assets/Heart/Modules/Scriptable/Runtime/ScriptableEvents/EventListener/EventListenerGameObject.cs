@@ -19,13 +19,8 @@ namespace Pancake.Scriptable
             [SerializeField] private ScriptableEventGameObject scriptableEvent;
             public override ScriptableEvent<GameObject> ScriptableEvent => scriptableEvent;
 
-            [SerializeField] private GameObjectUnityEvent response;
+            [SerializeField] private Pancake.GameObjectUnityEvent response;
             public override UnityEvent<GameObject> Response => response;
-        }
-
-        [System.Serializable]
-        public class GameObjectUnityEvent : UnityEvent<GameObject>
-        {
         }
     }
 }

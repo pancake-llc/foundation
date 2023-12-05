@@ -23,8 +23,7 @@ namespace Pancake.Scriptable
                 {
                     eventResponses[i].ScriptableEvent.RegisterListener(this);
 
-                    if (!_dictionary.ContainsKey(eventResponses[i].ScriptableEvent))
-                        _dictionary.Add(eventResponses[i].ScriptableEvent, eventResponses[i].Response);
+                    _dictionary.TryAdd(eventResponses[i].ScriptableEvent, eventResponses[i].Response);
                 }
                 else
                 {

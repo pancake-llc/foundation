@@ -79,7 +79,7 @@ namespace Pancake.Scriptable
             foreach (var del in delegates)
             {
                 var sb = new StringBuilder();
-                sb.Append($"<color=#f75369>[Event] </color>");
+                sb.Append("<color=#f75369>[Event] </color>");
                 sb.Append(name);
                 sb.Append(" => ");
                 sb.Append(del.GetMethodInfo().Name);
