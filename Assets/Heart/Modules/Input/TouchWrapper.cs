@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Pancake.MobileInput
 {
-    public class TouchWrapper
+    public static class TouchWrapper
     {
         public static int TouchCount
         {
@@ -11,7 +11,6 @@ namespace Pancake.MobileInput
             {
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
                 if (Input.touchCount > 0) return Input.touchCount;
-
                 return Input.GetMouseButton(0) ? 1 : 0;
 #else
                 return Input.touchCount;
@@ -26,9 +25,7 @@ namespace Pancake.MobileInput
                 if (TouchCount > 0)
                 {
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
-                    if (Input.touchCount > 0) return TouchData.From(Input.touches[0]);
-
-                    return new TouchData {Position = Input.mousePosition};
+                    return Input.touchCount > 0 ? TouchData.From(Input.touches[0]) : new TouchData {Position = Input.mousePosition};
 #else
                     return TouchData.From(Input.touches[0]);
 #endif
@@ -45,52 +42,40 @@ namespace Pancake.MobileInput
             get
             {
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
-                if (Input.touchCount > 0) return GetTouches();
 
-                return new List<TouchData> {Touch0};
+                return Input.touchCount > 0 ? GetTouchesFromInput() : new List<TouchData> {Touch0};
 #else
-                return GetTouches();
+                return GetTouchesFromInput();
 #endif
             }
         }
 
-        public static Vector2 AverageTouchPosition
-        {
-            get
-            {
-#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
-                if (Input.touchCount > 0) return GetAverageTouchPosition();
-
-                return Input.mousePosition;
-#else
-                return GetAverageTouchPosition();
-#endif
-            }
-        }
-
-        /// <summary>
-        /// Get touches from Unity Input to list <see cref="TouchData"/>
-        /// </summary>
-        /// <returns></returns>
-        private static List<TouchData> GetTouches()
+        private static List<TouchData> GetTouchesFromInput()
         {
             var touches = new List<TouchData>();
             foreach (var touch in Input.touches) touches.Add(TouchData.From(touch));
             return touches;
         }
 
-        /// <summary>
-        /// Get average from list touches of unity input
-        /// </summary>
-        /// <returns></returns>
-        private static Vector2 GetAverageTouchPosition()
+        public static Vector2 AverageTouchPos
+        {
+            get
+            {
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
+                if (Input.touchCount > 0) return GetAverageTouchPositionFromInput();
+                return Input.mousePosition;
+#else
+                return GetAverageTouchPositionFromInput();
+#endif
+            }
+        }
+
+        private static Vector2 GetAverageTouchPositionFromInput()
         {
             var position = Vector2.zero;
-
             if (Input.touches != null && Input.touches.Length > 0)
             {
                 foreach (var touch in Input.touches) position += touch.position;
-
                 position /= Input.touches.Length;
             }
 

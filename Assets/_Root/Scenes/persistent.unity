@@ -299,6 +299,7 @@ GameObject:
   - component: {fileID: 776958719}
   - component: {fileID: 776958720}
   - component: {fileID: 776958721}
+  - component: {fileID: 776958722}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -510,6 +511,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initReviewEvent: {fileID: 11400000, guid: 69791bee97aec0f44afa2801729a4f91, type: 2}
   reviewEvent: {fileID: 11400000, guid: 98a69f3242b31c34da74b3378bf582f1, type: 2}
+--- !u!114 &776958722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 776958708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c70f0dcf360001459616d3dd12fec6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCustom: 0
+  touchDuration: 0.7
+  doubleTapThreshold: 0.5
+  tiltVerticalThreshold: 0.7
+  tiltHorizontalThreshold: 0.5
+  dragThreshold: 0.05
+  longTapStartDrag: 1
 --- !u!1 &814159081
 GameObject:
   m_ObjectHideFlags: 0

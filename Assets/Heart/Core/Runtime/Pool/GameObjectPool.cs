@@ -6,7 +6,7 @@ namespace Pancake
     /// Implements a pool for GameObject
     /// </summary>
     [Searchable]
-    [EditorIcon("script_pool")]
+    [EditorIcon("scriptable_pool")]
     [CreateAssetMenu(fileName = "GameOjectPool", menuName = "Pancake/Misc/Game Object Pool")]
     public class GameObjectPool : ScriptablePool<GameObject>
     {
