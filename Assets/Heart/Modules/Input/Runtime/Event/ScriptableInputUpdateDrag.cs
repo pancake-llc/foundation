@@ -6,7 +6,7 @@ namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
     [CreateAssetMenu(fileName = "scriptable_input_on_update_drag.asset", menuName = "Pancake/Input/Events/on update drag")]
-    public class ScriptableInputUpdateDrag : ScriptableEventBase
+    public class ScriptableInputUpdateDrag : ScriptableInput
     {
         private Action<Vector3, Vector3, Vector3> _onRaised;
 

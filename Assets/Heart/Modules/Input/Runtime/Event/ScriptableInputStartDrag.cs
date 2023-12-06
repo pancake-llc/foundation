@@ -6,7 +6,7 @@ namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
     [CreateAssetMenu(fileName = "scriptable_input_on_start_drag.asset", menuName = "Pancake/Input/Events/on start drag")]
-    public class ScriptableInputStartDrag : ScriptableEventBase
+    public class ScriptableInputStartDrag : ScriptableInput
     {
         private Action<Vector3, bool> _onRaised;
 

@@ -6,7 +6,7 @@ namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
     [CreateAssetMenu(fileName = "scriptable_input_on_update_pinch.asset", menuName = "Pancake/Input/Events/on update pinch")]
-    public class ScriptableInputUpdatePinch : ScriptableEventBase
+    public class ScriptableInputUpdatePinch : ScriptableInput
     {
         private Action<Vector3, float, float> _onRaised;
 

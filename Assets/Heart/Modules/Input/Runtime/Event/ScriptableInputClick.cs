@@ -6,7 +6,7 @@ namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
     [CreateAssetMenu(fileName = "scriptable_input_on_click.asset", menuName = "Pancake/Input/Events/on click")]
-    public class ScriptableInputClick : ScriptableEventBase
+    public class ScriptableInputClick : ScriptableInput
     {
         private Action<Vector3, bool, bool> _onRaised;
 

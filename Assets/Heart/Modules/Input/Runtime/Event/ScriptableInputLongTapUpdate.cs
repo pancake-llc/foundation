@@ -6,7 +6,7 @@ namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
     [CreateAssetMenu(fileName = "scriptable_input_on_long_tap_update.asset", menuName = "Pancake/Input/Events/on long tap update")]
-    public class ScriptableInputLongTapUpdate : ScriptableEventBase
+    public class ScriptableInputLongTapUpdate : ScriptableInput
     {
         private Action<float> _onRaised;
 

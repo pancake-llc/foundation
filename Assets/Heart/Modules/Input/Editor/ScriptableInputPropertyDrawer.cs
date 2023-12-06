@@ -1,16 +1,16 @@
 using System.Reflection;
 using Pancake.Apex;
-using Pancake.Component;
 using Pancake.ExLibEditor;
+using Pancake.MobileInput;
 using Pancake.ScriptableEditor;
 using UnityEditor;
 
-namespace Pancake.ComponentEditor
+namespace Pancake.MobileInputEditor
 {
     using UnityEngine;
 
-    [CustomPropertyDrawer(typeof(ScriptableEventVfxMagnet), true)]
-    public class ScritpableEventVfxMagnetPropertyDrawer : ScriptableBasePropertyDrawer
+    [CustomPropertyDrawer(typeof(ScriptableInput), true)]
+    public class ScriptableInputPropertyDrawer : ScriptableBasePropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -23,12 +23,11 @@ namespace Pancake.ComponentEditor
                 return;
             }
 
-            bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
-            DrawIfNotNull(position, property, label, property.objectReferenceValue, isNeedIndent);
+            DrawUnExpanded(position, property, label, targetObject);
 
             EditorGUI.EndProperty();
         }
-        
+
         protected override void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
         {
             EditorGUI.PropertyField(position, property, label);

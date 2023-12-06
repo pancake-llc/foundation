@@ -11,24 +11,17 @@ namespace Pancake.MobileInput
         private const float DRAG_DURATION_THRESHOLD = 0.01f;
         private const int MOMENTUM_SAMPLES_COUNT = 5;
 
-        public delegate void DragStartDelegate(Vector3 position, bool isLongTap);
-
-        public delegate void InputFingerDownDelegate(Vector3 position);
-
-        public delegate void DragUpdateDelegate(Vector3 startPosition, Vector3 currentPosition, Vector3 correctionOffset);
-
-        public delegate void DragStopDelegate(Vector3 stopPosition, Vector3 finalMomentum);
-
-        public delegate void PinchStartDelegate(Vector3 center, float distance);
-
-        public delegate void PinchUpdateDelegate(Vector3 center, float distance, float startDistance);
-
-        public delegate void PinchUpdateExtendedDelegate(PinchData data);
-
-        public delegate void InputLongTapProgress(float progress);
-
-        public delegate void InputClickDelegate(Vector3 position, bool isDoubleClick, bool isLongTap);
-
+        [Group("Event Drag")] public ScriptableInputStartDrag onStartDrag;
+        [Group("Event Drag")] public ScriptableInputUpdateDrag onUpdateDrag;
+        [Group("Event Drag")] public ScriptableInputStopDrag onStopDrag;
+        [Group("Event Finger")] public ScriptableInputFingerDown onFingerDown;
+        [Group("Event Finger")] public ScriptableInputAction onFingerUp;
+        [Group("Event Finger")] public ScriptableInputClick onClick;
+        [Group("Event Finger")] public ScriptableInputLongTapUpdate onLongTapUpdate;
+        [Group("Event Pinch")] public ScriptableInputStartPinch onStartPinch;
+        [Group("Event Pinch")] public ScriptableInputUpdatePinch onUpdatePinch;
+        [Group("Event Pinch")] public ScriptableInputUpdateExtendPinch onUpdateExtendPinch;
+        [Group("Event Pinch")] public ScriptableInputAction onStopPinch;
 
 #if UNITY_EDITOR
         [SerializeField] private bool isCustom;
@@ -80,18 +73,6 @@ namespace Pancake.MobileInput
         private bool _isClickPrevented;
         private bool _isFingerDown;
 
-
-        public ScriptableInputStartDrag onStartDrag;
-        public ScriptableInputFingerDown onFingerDown;
-        public ScriptableInputAction onFingerUp;
-        public ScriptableInputUpdateDrag onUpdateDrag;
-        public ScriptableInputStopDrag onStopDrag;
-        public ScriptableInputStartPinch onStartPinch;
-        public ScriptableInputUpdatePinch onUpdatePinch;
-        public ScriptableInputUpdateExtendPinch onUpdateExtendPinch;
-        public ScriptableInputAction onStopPinch;
-        public ScriptableInputLongTapUpdate onLongTapUpdate;
-        public ScriptableInputClick onClick;
 
         public bool LongTapStartsDrag => longTapStartsDrag;
 
