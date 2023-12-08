@@ -56,7 +56,7 @@ namespace Pancake.MobileInput
 
         [SerializeField, ShowIf("advanceMode")] [Tooltip("May have fired the OnPickableTransformMoveStarted too early, when it hasn't actually been moved.")]
         private bool useLegacyTransformMoved;
-        
+
         [Space]
         [SerializeField, Foldout("Pickable Callback", Style = "Group")]
         [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected.")]
@@ -66,8 +66,7 @@ namespace Pancake.MobileInput
         [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected through a long tap.")]
         private PickableSelectedUnityEvent onTransformSelectedExtendedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
-        [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is deselected.")]
+        [SerializeField, Foldout("Pickable Callback", Style = "Group")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is deselected.")]
         private TransformUnityEvent onTransformDeselectedCallback;
 
         [SerializeField, Foldout("Pickable Callback", Style = "Group")]
@@ -331,16 +330,12 @@ namespace Pancake.MobileInput
         {
             if (deselectPreviousColliderOnClick == false)
             {
-                if (colliderComponent == null || colliderComponent.GetComponent<TouchPickable>() == null)
-                {
-                    return; //Skip selection change in case the user requested to deselect only in case another pickable is clicked.
-                }
+                //Skip selection change in case the user requested to deselect only in case another pickable is clicked.
+                if (colliderComponent == null || colliderComponent.GetComponent<TouchPickable>() == null) return;
             }
 
-            if (_isManualSelectionRequest)
-            {
-                return; //Skip selection when the user has already requested a manual selection with the same click.
-            }
+            //Skip selection when the user has already requested a manual selection with the same click.
+            if (_isManualSelectionRequest) return;
 
             Component previouslySelectedCollider = SelectedCollider;
             bool skipSelect = false;
