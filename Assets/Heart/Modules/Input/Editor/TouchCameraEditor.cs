@@ -451,20 +451,9 @@ namespace Pancake.MobileInputEditor
                 if (_is2dOverdragMarginEnabledProperty.boolValue) EditorGUILayout.PropertyField(_camOverdragMargin2dProperty, true);
             }
 
-            EditorGUILayout.PropertyField(_onPickItemProperty, true);
-            EditorGUILayout.PropertyField(_onPickItem2DProperty, true);
-            EditorGUILayout.PropertyField(_onPickItemDoubleClickProperty, true);
-            EditorGUILayout.PropertyField(_onPickItem2DDoubleClickProperty, true);
-
-            EditorGUILayout.PropertyField(_onStartDragProperty, true);
-            EditorGUILayout.PropertyField(_onUpdateDragProperty, true);
-            EditorGUILayout.PropertyField(_onStopDragProperty, true);
-            EditorGUILayout.PropertyField(_onFingerDownProperty, true);
-            EditorGUILayout.PropertyField(_onFingerUpProperty, true);
-            EditorGUILayout.PropertyField(_onClickProperty, true);
-            EditorGUILayout.PropertyField(_onStartPinchProperty, true);
-            EditorGUILayout.PropertyField(_onUpdateExtendPinchProperty, true);
-            EditorGUILayout.PropertyField(_onStopPinchProperty, true);
+            Uniform.DrawGroupFoldout("touch_camera_callback", "Callback", DrawCallback);
+            Uniform.DrawGroupFoldout("touch_camera_touch_input_ref", "TouchInput Reference", DrawInputSetting);
+            
 
             if (GUI.changed)
             {
@@ -476,6 +465,27 @@ namespace Pancake.MobileInputEditor
             }
         }
 
+        private void DrawCallback()
+        {
+            EditorGUILayout.PropertyField(_onPickItemProperty, true);
+            EditorGUILayout.PropertyField(_onPickItem2DProperty, true);
+            EditorGUILayout.PropertyField(_onPickItemDoubleClickProperty, true);
+            EditorGUILayout.PropertyField(_onPickItem2DDoubleClickProperty, true);
+        }
+
+        private void DrawInputSetting()
+        {
+            EditorGUILayout.PropertyField(_onStartDragProperty, true);
+            EditorGUILayout.PropertyField(_onUpdateDragProperty, true);
+            EditorGUILayout.PropertyField(_onStopDragProperty, true);
+            EditorGUILayout.PropertyField(_onFingerDownProperty, true);
+            EditorGUILayout.PropertyField(_onFingerUpProperty, true);
+            EditorGUILayout.PropertyField(_onClickProperty, true);
+            EditorGUILayout.PropertyField(_onStartPinchProperty, true);
+            EditorGUILayout.PropertyField(_onUpdateExtendPinchProperty, true);
+            EditorGUILayout.PropertyField(_onStopPinchProperty, true);
+        }
+        
         private void OnScrollDampModeChanged(AutoScrollDampMode dampMode)
         {
             var serializedScrollDamp = serializedObject.FindProperty("autoScrollDamp");

@@ -100,13 +100,13 @@ namespace Pancake.MobileInput
         [SerializeField, Foldout("Pickable Channel", Style = "Group")]
         private ScriptableEventVector3Transform transformMoveEndedEvent;
 
-        [SerializeField, Foldout("Input", Style = "Group")] private BoolVariable longTapStartsDrag;
-        [SerializeField, Foldout("Input", Style = "Group")] private ScriptableInputStartDrag onStartDrag;
-        [SerializeField, Foldout("Input", Style = "Group")] private ScriptableInputUpdateDrag onUpdateDrag;
-        [SerializeField, Foldout("Input", Style = "Group")] private ScriptableInputStopDrag onStopDrag;
-        [SerializeField, Foldout("Input", Style = "Group")] private ScriptableInputFingerDown onFingerDown;
-        [SerializeField, Foldout("Input", Style = "Group")] private ScriptableInputFingerUp onFingerUp;
-        [SerializeField, Foldout("Input", Style = "Group")] private ScriptableInputClick onClick;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private BoolVariable longTapStartsDrag;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputStartDrag onStartDrag;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputUpdateDrag onUpdateDrag;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputStopDrag onStopDrag;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputFingerDown onFingerDown;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputFingerUp onFingerUp;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputClick onClick;
 
         #endregion
 
