@@ -1,5 +1,4 @@
 using System;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.MobileInput

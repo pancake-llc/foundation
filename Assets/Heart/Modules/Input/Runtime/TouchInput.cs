@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Pancake.Apex;
-using UnityEngine.EventSystems;
+using Pancake.Scriptable;
 
 namespace Pancake.MobileInput
 {
@@ -10,18 +10,20 @@ namespace Pancake.MobileInput
     {
         private const float DRAG_DURATION_THRESHOLD = 0.01f;
         private const int MOMENTUM_SAMPLES_COUNT = 5;
+        
+        [SerializeField] private BoolVariable statusTouchOnLockedArea;
 
         [Group("Event Drag")] public ScriptableInputStartDrag onStartDrag;
         [Group("Event Drag")] public ScriptableInputUpdateDrag onUpdateDrag;
         [Group("Event Drag")] public ScriptableInputStopDrag onStopDrag;
         [Group("Event Finger")] public ScriptableInputFingerDown onFingerDown;
-        [Group("Event Finger")] public ScriptableInputAction onFingerUp;
+        [Group("Event Finger")] public ScriptableInputFingerUp onFingerUp;
         [Group("Event Finger")] public ScriptableInputClick onClick;
         [Group("Event Finger")] public ScriptableInputLongTapUpdate onLongTapUpdate;
         [Group("Event Pinch")] public ScriptableInputStartPinch onStartPinch;
         [Group("Event Pinch")] public ScriptableInputUpdatePinch onUpdatePinch;
         [Group("Event Pinch")] public ScriptableInputUpdateExtendPinch onUpdateExtendPinch;
-        [Group("Event Pinch")] public ScriptableInputAction onStopPinch;
+        [Group("Event Pinch")] public ScriptableInputStopPinch onStopPinch;
 
 #if UNITY_EDITOR
         [SerializeField] private bool isCustom;
@@ -49,8 +51,8 @@ namespace Pancake.MobileInput
         private float dragThreshold = 0.05f;
 
         [SerializeField, ShowIf("isCustom")] [Tooltip("When this flag is enabled the drag started event is invoked immediately when the long tap time is succeeded.")]
-        private bool longTapStartsDrag = true;
-
+        private BoolVariable longTapStartsDrag;
+        
         private float _realTimeOfLastFinderDown;
         private float _realTimeOfLastClick;
         private bool _wasFingerDownLastFrame;
@@ -68,7 +70,7 @@ namespace Pancake.MobileInput
         private bool _wasDraggingLastFrame;
         private bool _wasPinchingLastFrame;
         private bool _isPinching;
-        private bool _isTouchOnLockedArea;
+        
         private float _timeSinceDragStart;
         private bool _isClickPrevented;
         private bool _isFingerDown;
@@ -76,7 +78,7 @@ namespace Pancake.MobileInput
 
         public bool LongTapStartsDrag => longTapStartsDrag;
 
-        public bool IsTouchOnLockedArea { get => _isTouchOnLockedArea; set => _isTouchOnLockedArea = value; }
+        public bool IsTouchOnLockedArea { get => statusTouchOnLockedArea.Value; set => statusTouchOnLockedArea.Value = value; }
 
         public void Awake()
         {
@@ -94,18 +96,13 @@ namespace Pancake.MobileInput
             _isClickPrevented = false;
         }
 
-        public void OnEventTriggerPointerDown(BaseEventData baseEventData) { _isTouchOnLockedArea = true; }
-
         public void Update()
         {
-            if (TouchWrapper.IsFingerDown == false)
-            {
-                _isTouchOnLockedArea = false;
-            }
-
+            if (TouchWrapper.IsFingerDown == false) statusTouchOnLockedArea.Value = false;
+            
             var pinchToDragCurrentFrame = false;
 
-            if (_isTouchOnLockedArea == false)
+            if (statusTouchOnLockedArea.Value == false)
             {
                 #region pinch
 
@@ -221,7 +218,7 @@ namespace Pancake.MobileInput
                 if (_dragFinalMomentumVector.Count > MOMENTUM_SAMPLES_COUNT) _dragFinalMomentumVector.RemoveAt(0);
             }
 
-            if (_isTouchOnLockedArea == false) _wasFingerDownLastFrame = TouchWrapper.IsFingerDown;
+            if (statusTouchOnLockedArea.Value == false) _wasFingerDownLastFrame = TouchWrapper.IsFingerDown;
 
             if (_wasFingerDownLastFrame) _lastFinger0DownPosition = TouchWrapper.Touch0.Position;
 

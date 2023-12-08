@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1ac2cd2f05c4eaf8eb90269b863c252, type: 3}
-  m_Name: on_stop_drag
+  m_Script: {fileID: 11500000, guid: 8338e0c0efbf4b9e9d0b4bfccd70ae80, type: 3}
+  m_Name: input_on_update_drag
   m_EditorClassIdentifier: 

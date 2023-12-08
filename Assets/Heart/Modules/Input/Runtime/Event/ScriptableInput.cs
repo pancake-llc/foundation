@@ -2,7 +2,7 @@
 
 namespace Pancake.MobileInput
 {
-    public abstract class ScriptableInput : ScriptableEventBase
+    public abstract class ScriptableInput : ScriptableBase
     {
     }
 }

@@ -1,12 +1,11 @@
 using System;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
-    [CreateAssetMenu(fileName = "scriptable_input_on_action.asset", menuName = "Pancake/Input/Events/on action")]
-    public class ScriptableInputAction : ScriptableInput
+    [CreateAssetMenu(fileName = "scriptable_input_on_finger_up.asset", menuName = "Pancake/Input/Events/on finger up")]
+    public class ScriptableInputFingerUp : ScriptableInput
     {
         private Action _onRaised;
 

@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51d17941dc5a47208cd62a1c508dcf83, type: 3}
-  m_Name: on_finger_up
+  m_Script: {fileID: 11500000, guid: 4d9124ee8d3e4adf9b835d18b4422004, type: 3}
+  m_Name: input_on_stop_pinch
   m_EditorClassIdentifier: 

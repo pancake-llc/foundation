@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a876ad5e735b4049a248d250c48e583, type: 3}
-  m_Name: on_start_drag
+  m_Script: {fileID: 11500000, guid: 51d17941dc5a47208cd62a1c508dcf83, type: 3}
+  m_Name: input_on_finger_up
   m_EditorClassIdentifier: 

@@ -523,24 +523,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fd0aa5103dbbe8418040c315df9825e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  statusTouchOnLockedArea: {fileID: 11400000, guid: e6c3db2713719754c80612f00358cc63, type: 2}
   onStartDrag: {fileID: 11400000, guid: 460b675336e181047ad4b13e874eb8d0, type: 2}
-  onFingerDown: {fileID: 11400000, guid: 5aeaef6ab27c56244b7eb3a8fa52d4ff, type: 2}
-  onFingerUp: {fileID: 11400000, guid: 064c173e3b7811b4bbf2868a600cdc19, type: 2}
   onUpdateDrag: {fileID: 11400000, guid: faa827ffd3de7a8439fcec1b34130da4, type: 2}
   onStopDrag: {fileID: 11400000, guid: 0a5da68c376004046bb5d922d1e02a57, type: 2}
+  onFingerDown: {fileID: 11400000, guid: 5aeaef6ab27c56244b7eb3a8fa52d4ff, type: 2}
+  onFingerUp: {fileID: 11400000, guid: 064c173e3b7811b4bbf2868a600cdc19, type: 2}
+  onClick: {fileID: 11400000, guid: 9a778399fd90c28469dda7866334c82f, type: 2}
+  onLongTapUpdate: {fileID: 11400000, guid: a17fc7e0e0a54e5419e42c6babce9d68, type: 2}
   onStartPinch: {fileID: 11400000, guid: dda2170b3de038848abb7f3f7319acd9, type: 2}
   onUpdatePinch: {fileID: 11400000, guid: e5e286320d8668e409d48f7ee5a9729b, type: 2}
   onUpdateExtendPinch: {fileID: 11400000, guid: 8cdb0fd5e04bb0a4cb73d39d876fb8c6, type: 2}
-  onStopPinch: {fileID: 11400000, guid: 5cede060e8d1eed498c798bdf155bee1, type: 2}
-  onLongTapUpdate: {fileID: 11400000, guid: a17fc7e0e0a54e5419e42c6babce9d68, type: 2}
-  onClick: {fileID: 11400000, guid: 9a778399fd90c28469dda7866334c82f, type: 2}
+  onStopPinch: {fileID: 11400000, guid: 55622c723ed05134982147208332c097, type: 2}
   isCustom: 0
   clickDurationThreshold: 0.7
   doubleClickThreshold: 0.5
   tiltVerticalThreshold: 0.7
   tiltHorizontalThreshold: 0.5
   dragThreshold: 0.05
-  longTapStartsDrag: 1
+  longTapStartsDrag: {fileID: 11400000, guid: 3a598d5cce1e2be488decb7189a667a3, type: 2}
 --- !u!1 &814159081
 GameObject:
   m_ObjectHideFlags: 0

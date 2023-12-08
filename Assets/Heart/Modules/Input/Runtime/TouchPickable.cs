@@ -5,8 +5,6 @@ namespace Pancake.MobileInput
 {
     public class TouchPickable : MonoBehaviour
     {
-        private static TouchCamera touchCam;
-
         [Message("pickableTransform only needs to be set \nin case the collider of the pickable item is not on the root object of the pickable item",
             Height = 36,
             Style = MessageStyle.Warning)]
@@ -24,28 +22,10 @@ namespace Pancake.MobileInput
 
         public void Awake()
         {
-            if (touchCam == null)
-            {
-                touchCam = FindObjectOfType<TouchCamera>();
-            }
-
-            if (touchCam == null)
-            {
-                Debug.LogError("No MobileTouchCamera found in scene. This script will not work without this.");
-            }
-
-            if (pickableTransform == null)  pickableTransform = new Optional<Transform>(transform);
+            if (pickableTransform == null) pickableTransform = new Optional<Transform>(transform);
 
             if (gameObject.GetComponent<Collider>() == null && gameObject.GetComponent<Collider2D>() == null)
-            {
-                Debug.LogError("MobileTouchPickable must be placed on a gameObject that also has a Collider or Collider2D component attached.");
-            }
-
-            if (touchCam.GetComponent<MobilePickingController>() == null)
-            {
-                //Auto add picking controller component to mobile touch cam go.
-                touchCam.gameObject.AddComponent<MobilePickingController>();
-            }
+                Debug.LogError("TouchPickable must be placed on a gameObject that also has a Collider or Collider2D component attached.");
         }
     }
 }

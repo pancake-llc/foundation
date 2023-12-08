@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5097c4781ae4c17aefdee10ee2caed2, type: 3}
-  m_Name: on_long_tap_update
+  m_Script: {fileID: 11500000, guid: ef16bd4f3029496d85bd93008c602edb, type: 3}
+  m_Name: input_on_click
   m_EditorClassIdentifier: 
