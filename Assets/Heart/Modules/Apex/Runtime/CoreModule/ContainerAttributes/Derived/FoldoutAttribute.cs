@@ -10,6 +10,13 @@
 
         #region [Optional Parameters]
 
+        /// <summary>
+        /// Style value canbe <br/>
+        /// default <br/>
+        /// Highlight <br/>
+        /// Header <br/>
+        /// Group <br/>
+        /// </summary>
         public string Style { get; set; }
 
         #endregion
