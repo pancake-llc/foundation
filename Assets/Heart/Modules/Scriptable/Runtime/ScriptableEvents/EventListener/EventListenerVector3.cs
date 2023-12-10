@@ -19,13 +19,8 @@ namespace Pancake.Scriptable
             [SerializeField] private ScriptableEventVector3 scriptableEvent;
             public override ScriptableEvent<Vector3> ScriptableEvent => scriptableEvent;
 
-            [SerializeField] private Vector3UnityEvent response;
+            [SerializeField] private Pancake.Vector3UnityEvent response;
             public override UnityEvent<Vector3> Response => response;
-        }
-
-        [System.Serializable]
-        public class Vector3UnityEvent : UnityEvent<Vector3>
-        {
         }
     }
 }

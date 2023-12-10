@@ -3,7 +3,7 @@
 namespace Pancake.Sound
 {
     [Searchable]
-    [EditorIcon("script_pool")]
+    [EditorIcon("scriptable_pool")]
     [CreateAssetMenu(fileName = "SoundEmitterPool", menuName = "Pancake/Sound/Emitter Pool")]
     public class SoundEmitterPool : ComponentPool<SoundEmitter>
     {

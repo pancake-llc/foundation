@@ -11,7 +11,7 @@ namespace Pancake
     /// A generic pool that generates members of type T on-demand via a factory.
     /// </summary>
     /// <typeparam name="T">Specifies the type of elements to pool.</typeparam>
-    [EditorIcon("script_pool")]
+    [EditorIcon("scriptable_pool")]
     public abstract class ScriptablePool<T> : ScriptableObject, IPool<T>
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;

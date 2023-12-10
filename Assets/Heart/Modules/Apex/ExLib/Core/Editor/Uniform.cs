@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ExLibEditor
 {
@@ -247,6 +249,24 @@ namespace Pancake.ExLibEditor
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        /// <summary>
+        /// Draw property field with validate wrong value
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="error"></param>
+        /// <param name="warning"></param>
+        /// <param name="onError"></param>
+        /// <param name="onWarning"></param>
+        public static void DrawPropertyFieldValidate(SerializedProperty property, bool error, bool warning = false, Action onError = null, Action onWarning = null)
+        {
+            if (error) GUI.color = Red;
+            else if (warning) GUI.color = Orange;
+            EditorGUILayout.PropertyField(property, true);
+            GUI.color = Color.white;
+            if (error) onError?.Invoke();
+            else if (warning) onWarning?.Invoke();
         }
 
         /// <summary>

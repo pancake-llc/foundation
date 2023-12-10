@@ -10,10 +10,11 @@ namespace Pancake.Scriptable
     [Serializable]
     public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [Tooltip("Enable console logs when this event is raised.")]
-        [SerializeField] private bool debugLogEnabled = false;
-        [Tooltip("Value used when raising the event in editor.")]
-        [SerializeField] protected T debugValue = default(T);
+        [Tooltip("Enable console logs when this event is raised.")] [SerializeField]
+        private bool debugLogEnabled = false;
+
+        [Tooltip("Value used when raising the event in editor.")] [SerializeField]
+        protected T debugValue = default(T);
 
         private readonly List<EventListenerGeneric<T>> _eventListeners = new List<EventListenerGeneric<T>>();
         private readonly List<Object> _listenersObjects = new List<Object>();
@@ -29,16 +30,14 @@ namespace Pancake.Scriptable
                 _onRaised += value;
 
                 var listener = value.Target as Object;
-                if (listener != null && !_listenersObjects.Contains(listener))
-                    _listenersObjects.Add(listener);
+                if (listener != null && !_listenersObjects.Contains(listener)) _listenersObjects.Add(listener);
             }
             remove
             {
                 _onRaised -= value;
 
                 var listener = value.Target as Object;
-                if (_listenersObjects.Contains(listener))
-                    _listenersObjects.Remove(listener);
+                if (_listenersObjects.Contains(listener)) _listenersObjects.Remove(listener);
             }
         }
 
@@ -70,8 +69,7 @@ namespace Pancake.Scriptable
         /// </summary>
         public void RegisterListener(EventListenerGeneric<T> listener)
         {
-            if (!_eventListeners.Contains(listener))
-                _eventListeners.Add(listener);
+            if (!_eventListeners.Contains(listener)) _eventListeners.Add(listener);
         }
 
         /// <summary>
@@ -79,8 +77,7 @@ namespace Pancake.Scriptable
         /// </summary>
         public void UnregisterListener(EventListenerGeneric<T> listener)
         {
-            if (_eventListeners.Contains(listener))
-                _eventListeners.Remove(listener);
+            if (_eventListeners.Contains(listener)) _eventListeners.Remove(listener);
         }
 
         /// <summary>

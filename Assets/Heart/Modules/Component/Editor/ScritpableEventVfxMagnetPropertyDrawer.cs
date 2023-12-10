@@ -11,7 +11,6 @@ namespace Pancake.ComponentEditor
 
     [CustomPropertyDrawer(typeof(ScriptableEventVfxMagnet), true)]
     public class ScritpableEventVfxMagnetPropertyDrawer : ScriptableBasePropertyDrawer
-
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
