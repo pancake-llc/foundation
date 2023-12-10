@@ -36,7 +36,7 @@ namespace PrimeTween {
         [Range(0f, 1f)] public float asymmetry;
         /// <see cref="PrimeTweenManager.defaultShakeEase"/>
         [Tooltip("Ease between adjacent shake points.\n\n" +
-                 "Default is Ease.OutSine.")]
+                 "Default is Ease.OutQuad.")]
         public Ease easeBetweenShakes;
         [Tooltip(Constants.cyclesTooltip)]
         public int cycles;
@@ -46,9 +46,10 @@ namespace PrimeTween {
         public float endDelay;
         [Tooltip(Constants.unscaledTimeTooltip)]
         public bool useUnscaledTime;
+        public bool useFixedUpdate;
         internal bool isPunch { get; private set; }
 
-        ShakeSettings(Vector3 strength, float duration, float frequency, Ease? falloffEase, [CanBeNull] AnimationCurve strengthOverTime, Ease easeBetweenShakes, float asymmetryFactor, int cycles, float startDelay, float endDelay, bool useUnscaledTime) {
+        ShakeSettings(Vector3 strength, float duration, float frequency, Ease? falloffEase, [CanBeNull] AnimationCurve strengthOverTime, Ease easeBetweenShakes, float asymmetryFactor, int cycles, float startDelay, float endDelay, bool useUnscaledTime, bool useFixedUpdate) {
             this.frequency = frequency;
             this.strength = strength;
             this.duration = duration;
@@ -68,18 +69,17 @@ namespace PrimeTween {
             this.useUnscaledTime = useUnscaledTime;
             asymmetry = asymmetryFactor;
             isPunch = false;
+            this.useFixedUpdate = useFixedUpdate;
         }
 
-        public ShakeSettings(Vector3 strength, float duration = 0.5f, float frequency = defaultFrequency, bool enableFalloff = true, Ease easeBetweenShakes = Ease.Default, float asymmetryFactor = 0f, int cycles = 1, float startDelay = 0, float endDelay = 0,
-                bool useUnscaledTime = PrimeTweenConfig.defaultUseUnscaledTimeForShakes)
+        public ShakeSettings(Vector3 strength, float duration = 0.5f, float frequency = defaultFrequency, bool enableFalloff = true, Ease easeBetweenShakes = Ease.Default, float asymmetryFactor = 0f, int cycles = 1, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = PrimeTweenConfig.defaultUseUnscaledTimeForShakes, bool useFixedUpdate = false)
             // ReSharper disable once RedundantCast
-            : this(strength, duration, frequency, enableFalloff ? Ease.Default : (Ease?)null, null, easeBetweenShakes, asymmetryFactor, cycles, startDelay, endDelay, useUnscaledTime) {}
+            : this(strength, duration, frequency, enableFalloff ? Ease.Default : (Ease?)null, null, easeBetweenShakes, asymmetryFactor, cycles, startDelay, endDelay, useUnscaledTime, useFixedUpdate) {}
 
-        public ShakeSettings(Vector3 strength, float duration, float frequency, AnimationCurve strengthOverTime, Ease easeBetweenShakes = Ease.Default, float asymmetryFactor = 0f, int cycles = 1, float startDelay = 0, float endDelay = 0,
-            bool useUnscaledTime = PrimeTweenConfig.defaultUseUnscaledTimeForShakes)
-            : this(strength, duration, frequency, Ease.Custom, strengthOverTime, easeBetweenShakes, asymmetryFactor, cycles, startDelay, endDelay, useUnscaledTime) { }
+        public ShakeSettings(Vector3 strength, float duration, float frequency, AnimationCurve strengthOverTime, Ease easeBetweenShakes = Ease.Default, float asymmetryFactor = 0f, int cycles = 1, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = PrimeTweenConfig.defaultUseUnscaledTimeForShakes, bool useFixedUpdate = false)
+            : this(strength, duration, frequency, Ease.Custom, strengthOverTime, easeBetweenShakes, asymmetryFactor, cycles, startDelay, endDelay, useUnscaledTime, useFixedUpdate) { }
 
-        internal TweenSettings tweenSettings => new TweenSettings(duration, Ease.Linear, cycles, CycleMode.Restart, startDelay, endDelay, useUnscaledTime);
+        internal TweenSettings tweenSettings => new TweenSettings(duration, Ease.Linear, cycles, CycleMode.Restart, startDelay, endDelay, useUnscaledTime, useFixedUpdate);
 
         internal 
             #if UNITY_2020_2_OR_NEWER

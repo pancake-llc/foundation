@@ -25,7 +25,7 @@ namespace PrimeTween {
         internal const string endDelayTooltip = "Delays the completion of a tween.\n\n" +
                                                 "For example, can be used to add the delay between cycles.\n\n" +
                                                 "Or can be used to postpone the execution of the onComplete callback.";
-        internal const string infiniteTweenInSequenceError = "It's not allowed to have infinite tweens (cycles == -1) in a sequence. If you want the sequence to repeat forever, " + nameof(Sequence.SetRemainingCycles) + "(-1) on the parent sequence instead."; // todoo error instead of exception?
+        internal const string infiniteTweenInSequenceError = "It's not allowed to have infinite tweens (cycles == -1) in a sequence. If you want the sequence to repeat forever, " + nameof(Sequence.SetRemainingCycles) + "(-1) on the parent sequence instead.";
         internal const string customTweensDontSupportStartFromCurrentWarning =
             "Custom tweens don't support the '" + nameof(T.startFromCurrent) + "' because they don't know the current value of animated property.\n" +
             "This means that the animated value will be changed abruptly if a new tween is started mid-way.\n" +

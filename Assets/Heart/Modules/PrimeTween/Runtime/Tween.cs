@@ -29,7 +29,7 @@ namespace PrimeTween {
         #if !ENABLE_SERIALIZATION
         readonly
         #endif
-        partial struct Tween {
+        partial struct Tween/*: ITween<Tween>*/ {
         /// Uniquely identifies the tween.
         /// Can be observed from the Debug Inspector if PRIME_TWEEN_INSPECTOR_DEBUGGING is defined. Use only for debugging purposes.
         internal
@@ -93,7 +93,7 @@ namespace PrimeTween {
         /// The total number of cycles. Returns -1 to indicate infinite number cycles.
         public int cyclesTotal => validateIsAlive() ? tween.settings.cycles : 0;
         
-        public int cyclesDone => validateIsAlive() ? tween.cyclesDone : 0;
+        public int cyclesDone => validateIsAlive() ? tween.getCyclesDone() : 0;
         /// The duration of one cycle.
         public float duration {
             get {
@@ -237,7 +237,7 @@ namespace PrimeTween {
             if (tween.settings.cycleMode == CycleMode.Restart || tween.settings.cycleMode == CycleMode.Incremental) {
                 Debug.LogWarning(nameof(SetRemainingCycles) + "(bool " + nameof(stopAtEndValue) + ") is meant to be used with CycleMode.Yoyo or Rewind. Please consider using the overload that accepts int instead.");
             }
-            SetRemainingCycles(tween.cyclesDone % 2 == 0 == stopAtEndValue ? 1 : 2);
+            SetRemainingCycles(tween.getCyclesDone() % 2 == 0 == stopAtEndValue ? 1 : 2);
         }
         
         /// <summary>Sets the number of remaining cycles.<br/>
@@ -249,6 +249,9 @@ namespace PrimeTween {
             if (!tryManipulate()) {
                 return;
             }
+            if (tween.timeScale < 0f) {
+                Debug.LogError(nameof(SetRemainingCycles) + "() doesn't work with negative " + nameof(tween.timeScale));
+            }
             if (tween.tweenType == TweenType.Delay && tween.HasOnComplete) {
                 Debug.LogError("Applying cycles to Delay will not repeat the OnComplete() callback, but instead will increase the Delay duration.\n" +
                                "OnComplete() is called only once when ALL tween cycles complete. To repeat the OnComplete() callback, please use the Sequence.Create(cycles: numCycles) and put the tween inside a Sequence.\n" +
@@ -258,13 +261,13 @@ namespace PrimeTween {
                 tween.settings.cycles = -1;
             } else {
                 TweenSettings.setCyclesTo1If0(ref cycles);
-                tween.settings.cycles = tween.cyclesDone + cycles;
+                tween.settings.cycles = tween.getCyclesDone() + cycles;
             }
         }
 
         /// <summary>Adds completion callback. Please consider using <see cref="OnComplete{T}"/> to prevent a possible capture of variable into a closure.</summary>
         /// <param name="warnIfTargetDestroyed">Set to 'false' to disable the error about target's destruction. Please note that the the <see cref="onComplete"/> callback will be silently ignored in the case of target's destruction. More info: https://github.com/KyryloKuzyk/PrimeTween/discussions/4</param>
-        public Tween OnComplete([NotNull] Action onComplete, bool warnIfTargetDestroyed = true) {
+        public Tween OnComplete(Action onComplete, bool warnIfTargetDestroyed = true) {
             if (validateIsAlive()) {
                 tween.OnComplete(onComplete, warnIfTargetDestroyed);
             }
@@ -279,7 +282,7 @@ namespace PrimeTween {
         /// Tween.PositionX(transform, endValue: 1.5f, duration: 1f)
         ///     .OnComplete(transform, _transform =&gt; Destroy(_transform.gameObject));
         /// </code></example>
-        public Tween OnComplete<T>([NotNull] T target, [NotNull] Action<T> onComplete, bool warnIfTargetDestroyed = true) where T : class {
+        public Tween OnComplete<T>(T target, Action<T> onComplete, bool warnIfTargetDestroyed = true) where T : class {
             if (validateIsAlive()) {
                 tween.OnComplete(target, onComplete, warnIfTargetDestroyed);
             }
@@ -305,7 +308,8 @@ namespace PrimeTween {
             get => tryManipulate() ? tween.timeScale : 1;
             set {
                 if (tryManipulate()) {
-                    TweenSettings.clampTimescale(ref value);
+                    Assert.IsFalse(float.IsNaN(value));
+                    Assert.IsFalse(float.IsInfinity(value));
                     tween.timeScale = value;
                 }
             }

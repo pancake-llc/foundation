@@ -2,6 +2,11 @@ using JetBrains.Annotations;
 using UnityEngine;
 
 namespace PrimeTween {
+    /// <summary>
+    /// A wrapper struct that encapsulates three available easing methods: standard Ease, AnimationCurve, or Parametric Easing.<br/>
+    /// Use static methods to create an Easing struct, for example: Easing.Standard(Ease.OutBounce), Easing.Curve(animationCurve),
+    /// Easing.Elastic(strength, period), etc. 
+    /// </summary>
     [PublicAPI]
     public readonly struct Easing {
         internal readonly Ease ease;
@@ -27,7 +32,8 @@ namespace PrimeTween {
         }
         
         public static implicit operator Easing(Ease ease) => Standard(ease);
-        /// <summary>Standard Robert Penner's easing methods. Or simply use Ease enum instead of this method.</summary>
+        
+        /// <summary>Standard Robert Penner's easing method. Or simply use Ease enum instead.</summary>
         public static Easing Standard(Ease ease) {
             Assert.AreNotEqual(Ease.Custom, ease);
             if (ease == Ease.Default) {
@@ -37,21 +43,26 @@ namespace PrimeTween {
         }
 
         public static implicit operator Easing([NotNull] AnimationCurve curve) => Curve(curve);
-        /// <summary>AnimationCurve to use an easing function. Or simply use AnimationCurve instead of this method.</summary>
+        
+        /// <summary>AnimationCurve to use as an easing function. Or simply use AnimationCurve instead.</summary>
         public static Easing Curve([NotNull] AnimationCurve curve) => new Easing(Ease.Custom, curve);
 
-        #if PRIME_TWEEN_EXPERIMENTAL
+        /// <summary>Customizes the bounce <see cref="strength"/> of Ease.OutBounce.</summary>
         public static Easing Bounce(float strength) => new Easing(ParametricEase.Bounce, strength);
-        /// <summary>The first bounce will have the exact <see cref="amplitude"/> measured in meters/angles.</summary>
+        
+        /// <summary>Customizes the exact <see cref="amplitude"/> of the first bounce in meters/angles.</summary>
         public static Easing BounceExact(float amplitude) => new Easing(ParametricEase.BounceExact, amplitude);
+        
+        /// <summary>Customizes the overshoot <see cref="strength"/> of Ease.OutBack.</summary>
         public static Easing Overshoot(float strength) => new Easing(ParametricEase.Overshoot, strength * StandardEasing.backEaseConst);
+        
+        /// <summary>Customizes the <see cref="strength"/> and oscillation <see cref="period"/> of Ease.OutElastic.</summary>
         public static Easing Elastic(float strength, float period = 0.3f) {
             if (strength < 1) {
                 strength = Mathf.Lerp(0.2f, 1f, strength); // remap strength to limit decayFactor
             }
             return new Easing(ParametricEase.Elastic, strength, Mathf.Max(0.1f, period));
         }
-        #endif
 
         internal static float Evaluate(float t, [NotNull] ReusableTween tween) {
             var settings = tween.settings;
