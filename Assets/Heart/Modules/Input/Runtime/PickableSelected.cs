@@ -2,6 +2,7 @@
 
 namespace Pancake.MobileInput
 {
+    [System.Serializable]
     public class PickableSelected
     {
         public Transform Selected { get; set; }

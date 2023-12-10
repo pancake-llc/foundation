@@ -11,6 +11,7 @@ namespace Pancake.MobileInputEditor
         private const int SIZE_LABEL = 100;
 
         private SerializedProperty _cameraAxesProperty;
+        private SerializedProperty _cameraProperty;
         private SerializedProperty _perspectiveZoomModeProperty;
         private SerializedProperty _camZoomMinProperty;
         private SerializedProperty _camZoomMaxProperty;
@@ -78,6 +79,7 @@ namespace Pancake.MobileInputEditor
         private void OnEnable()
         {
             _cameraAxesProperty = serializedObject.FindProperty("cameraAxes");
+            _cameraProperty = serializedObject.FindProperty("cam");
             _perspectiveZoomModeProperty = serializedObject.FindProperty("perspectiveZoomMode");
             _camZoomMinProperty = serializedObject.FindProperty("camZoomMin");
             _camZoomMaxProperty = serializedObject.FindProperty("camZoomMax");
@@ -254,7 +256,7 @@ namespace Pancake.MobileInputEditor
         public override void OnInspectorGUI()
         {
             var touchCamera = (TouchCamera) target;
-
+            EditorGUILayout.PropertyField(_cameraProperty, true);
             string camAxesError = touchCamera.CheckCameraAxesErrors();
             if (!string.IsNullOrEmpty(camAxesError)) EditorGUILayout.HelpBox(camAxesError, MessageType.Error);
 
