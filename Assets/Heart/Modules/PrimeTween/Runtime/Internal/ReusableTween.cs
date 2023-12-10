@@ -32,13 +32,14 @@ namespace PrimeTween {
         internal bool isAdditive;
         internal ValueContainer prevVal;
         [SerializeField] internal TweenSettings settings;
-        [SerializeField] internal int cyclesDone;
+        [SerializeField] int cyclesDone;
+        const int iniCyclesDone = -1;
 
         internal object customOnValueChange;
         internal int intParam;
         Action<ReusableTween> onValueChange;
         
-        [CanBeNull] internal Action<ReusableTween> onComplete;
+        [CanBeNull] Action<ReusableTween> onComplete;
         [CanBeNull] object onCompleteCallback;
         [CanBeNull] object onCompleteTarget;
         
@@ -52,7 +53,7 @@ namespace PrimeTween {
         internal Func<ReusableTween, ValueContainer> getter;
         internal bool startFromCurrent;
 
-        internal bool stoppedEmergently;
+        bool stoppedEmergently;
         internal readonly TweenCoroutineEnumerator coroutineEnumerator = new TweenCoroutineEnumerator();
         internal float timeScale = 1f;
         bool warnIgnoredOnCompleteIfTargetDestroyed = true;
@@ -85,7 +86,7 @@ namespace PrimeTween {
             setElapsedTimeTotal(_elapsedTimeTotal, out int cyclesDiff); // update sequence root
 
             bool isRestartToBeginning = isRestart && cyclesDiff < 0;
-            Assert.IsTrue(!isRestartToBeginning || cyclesDone == 0);
+            Assert.IsTrue(!isRestartToBeginning || cyclesDone == 0 || cyclesDone == iniCyclesDone);
             if (cyclesDiff != 0 && !isRestartToBeginning) {
                 // print($"           sequence cyclesDiff: {cyclesDiff}");
                 if (isRestart) {
@@ -99,8 +100,8 @@ namespace PrimeTween {
                 var interpolationFactor = cyclesDelta > 0 ? 1f : 0f;
                 for (int i = 0; i < cyclesDiffAbs; i++) {
                     Assert.IsTrue(!isRestart || i == 0);
-                    if (cyclesDone == settings.cycles) {
-                        // do nothing when moving backward from the last cycle
+                    if (cyclesDone == settings.cycles || cyclesDone == iniCyclesDone) {
+                        // do nothing when moving backward from the last cycle or forward from the -1 cycle
                         cyclesDone += cyclesDelta;
                         continue;
                     }
@@ -127,7 +128,7 @@ namespace PrimeTween {
                     
                     cyclesDone += cyclesDelta;
                     var sequenceCycleMode = settings.cycleMode;
-                    if (sequenceCycleMode == CycleMode.Restart && cyclesDone != settings.cycles) { // '&& cyclesDone != 0' check is wrong because we should do the restart when moving from 1 to 0 cyclesDone
+                    if (sequenceCycleMode == CycleMode.Restart && cyclesDone != settings.cycles && cyclesDone != iniCyclesDone) { // '&& cyclesDone != 0' check is wrong because we should do the restart when moving from 1 to 0 cyclesDone
                         if (!restartChildren()) {
                             return;
                         }
@@ -142,7 +143,7 @@ namespace PrimeTween {
                                     return false;
                                 }
                                 Assert.IsTrue(isForwardCycle || tween.cyclesDone == tween.settings.cycles);
-                                Assert.IsTrue(!isForwardCycle || tween.cyclesDone == 0);
+                                Assert.IsTrue(!isForwardCycle || tween.cyclesDone <= 0);
                                 Assert.IsTrue(isForwardCycle || tween.state == State.After);
                                 Assert.IsTrue(!isForwardCycle || tween.state == State.Before);
                             }
@@ -172,7 +173,10 @@ namespace PrimeTween {
 
         bool isDone(int cyclesDiff) {
             Assert.IsTrue(settings.cycles == -1 || cyclesDone <= settings.cycles);
-            return cyclesDiff > 0 && cyclesDone == settings.cycles;
+            if (timeScale >= 0f) {
+                return cyclesDiff > 0 && cyclesDone == settings.cycles;
+            }
+            return cyclesDiff < 0 && cyclesDone == iniCyclesDone;
         }
         
         void updateSequenceChild(float encompassingElapsedTime, bool isRestart) {
@@ -224,7 +228,7 @@ namespace PrimeTween {
             }
             _elapsedTimeTotal -= waitDelay; // waitDelay is applied before calculating cycles
             if (_elapsedTimeTotal < 0f) {
-                cyclesDiff = -cyclesDone;
+                cyclesDiff = iniCyclesDone - cyclesDone;
                 newState = State.Before;
                 return 0f;
             }
@@ -233,20 +237,20 @@ namespace PrimeTween {
             var duration = settings.duration;
             if (duration == 0f) {
                 if (cyclesTotal == -1) {
-                    cyclesDiff = 1;
+                    cyclesDiff = cyclesDone == iniCyclesDone ? 2 : 1;
                     newState = State.Running;
                     return 1f;
                 }
                 Assert.AreNotEqual(-1, cyclesTotal);
                 if (_elapsedTimeTotal == 0f) {
-                    cyclesDiff = -cyclesDone;
+                    cyclesDiff = iniCyclesDone - cyclesDone;
                     newState = State.Before;
                     return 0f;
                 }
                 var cyclesLeft = cyclesTotal - cyclesDone;
                 Assert.IsTrue(cyclesLeft >= 0);
                 cyclesDiff = cyclesLeft;
-                newState = State.After;
+                newState = State.After; 
                 return 1f;
             }
             Assert.AreNotEqual(0f, cycleDuration);
@@ -355,7 +359,10 @@ namespace PrimeTween {
             };
         }
 
-        void handleOnCompleteException(Exception e) => Debug.LogError($"Tween's onComplete callback raised exception, tween: {GetDescription()}, exception:\n{e}", unityTarget); 
+        void handleOnCompleteException(Exception e) {
+            // Design decision: if a tween is inside a Sequence and user's tween.OnComplete() throws an exception, the Sequence should continue
+            Debug.LogError($"Tween's onComplete callback raised exception, tween: {GetDescription()}, exception:\n{e}", unityTarget);
+        }
 
         internal static bool isDestroyedUnityObject<T>(T obj) where T: class => obj is UnityEngine.Object unityObject && unityObject == null;
 
@@ -394,7 +401,7 @@ namespace PrimeTween {
             _isPaused = false;
             revive();
 
-            cyclesDone = 0;
+            cyclesDone = iniCyclesDone;
             _settings.SetValidValues();
             settings.CopyFrom(ref _settings);
             recalculateTotalDuration();
@@ -426,7 +433,7 @@ namespace PrimeTween {
             if (startFromCurrent) {
                 startFromCurrent = false;
                 startValue = Tween.tryGetStartValueFromOtherShake(this) ?? getter(this);
-                if (startValue.Vector4Val == endValue.Vector4Val && PrimeTweenManager.Instance.warnEndValueEqualsCurrent) {
+                if (startValue.Vector4Val == endValue.Vector4Val && PrimeTweenManager.Instance.warnEndValueEqualsCurrent && !shakeData.isAlive) {
                     Debug.LogWarning($"Tween's 'endValue' equals to the current animated value: {startValue.Vector4Val}, tween: {GetDescription()}.\n" +
                                      $"{Constants.buildWarningCanBeDisabledMessage(nameof(PrimeTweenConfig.warnEndValueEqualsCurrent))}\n");
                 }
@@ -437,15 +444,14 @@ namespace PrimeTween {
             if (stoppedEmergently || !_isAlive) {
                 return;
             }
-            if (onUpdate != null) {
-                onUpdate(this);
-            }
+            onUpdate?.Invoke(this);
         }
 
         void ReportOnComplete() {
             // Debug.Log($"[{Time.frameCount}] id {id} ReportOnComplete() {easedInterpolationFactor}");
             Assert.IsFalse(startFromCurrent);
-            Assert.AreEqual(settings.cycles, cyclesDone);
+            Assert.IsTrue(timeScale < 0 || cyclesDone == settings.cycles);
+            Assert.IsTrue(timeScale >= 0 || cyclesDone == iniCyclesDone);
             onComplete?.Invoke(this);
         }
 
@@ -703,14 +709,14 @@ namespace PrimeTween {
         object onUpdateCallback;
         Action<ReusableTween> onUpdate;
 
-        internal void SetOnUpdate<T>(T _target, [NotNull] Action<T,Tween> _onUpdate) where T : class {
+        internal void SetOnUpdate<T>(T _target, [NotNull] Action<T, Tween> _onUpdate) where T : class {
             Assert.IsNull(onUpdate, "Only one OnUpdate() is allowed for one tween.");
             Assert.IsNotNull(_onUpdate, nameof(_onUpdate) + " is null!");
             onUpdateTarget = _target;
             onUpdateCallback = _onUpdate;
             onUpdate = reusableTween => reusableTween.invokeOnUpdate<T>();
         }
-        
+
         void invokeOnUpdate<T>() where T : class {
             var callback = onUpdateCallback as Action<T, Tween>;
             Assert.IsNotNull(callback);
@@ -758,6 +764,15 @@ namespace PrimeTween {
             }
             Assert.AreNotEqual(0, cyclesTotal);
             return cycleDuration * cyclesTotal;
+        }
+
+        internal int getCyclesDone() {
+            int result = cyclesDone;
+            if (result == iniCyclesDone) {
+                return 0;
+            }
+            Assert.IsTrue(result >= 0);
+            return result;
         }
     }
 }

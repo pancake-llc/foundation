@@ -27,7 +27,8 @@ namespace PrimeTween {
         #if !ENABLE_SERIALIZATION && UNITY_2020_3_OR_NEWER
         readonly // duration setter produces error in Unity <= 2019.4.40: error CS1604: Cannot assign to 'this' because it is read-only
         #endif
-        partial struct Sequence {
+        partial struct Sequence/*: ITween<Sequence>*/ {
+        const int emptySequenceTag = -43;
         internal 
             #if !ENABLE_SERIALIZATION && UNITY_2020_3_OR_NEWER
             readonly
@@ -95,7 +96,7 @@ namespace PrimeTween {
             return true;
         }
         
-        public static Sequence Create(int cycles = 1, CycleMode cycleMode = CycleMode.Restart, Ease sequenceEase = Ease.Linear, bool useUnscaledTime = false) {
+        public static Sequence Create(int cycles = 1, CycleMode cycleMode = CycleMode.Restart, Ease sequenceEase = Ease.Linear, bool useUnscaledTime = false, bool useFixedUpdate = false) {
             #if UNITY_EDITOR
             if (Constants.warnNoInstance) {
                 return default;
@@ -115,8 +116,9 @@ namespace PrimeTween {
             if (sequenceEase == Ease.Default) {
                 sequenceEase = Ease.Linear;
             }
-            var settings = new TweenSettings(0f, sequenceEase, cycles, cycleMode, 0f, 0f, useUnscaledTime);
+            var settings = new TweenSettings(0f, sequenceEase, cycles, cycleMode, 0f, 0f, useUnscaledTime, useFixedUpdate);
             tween.Setup(PrimeTweenManager.dummyTarget, ref settings, _ => {}, null, false);
+            tween.intParam = emptySequenceTag;
             var root = PrimeTweenManager.addTween(tween);
             Assert.IsTrue(root.isAlive);
             return new Sequence(root);
@@ -164,7 +166,7 @@ namespace PrimeTween {
             if (root.tween.next.IsCreated) {
                 last = getLast();
                 var lastInSelf = getLastInSelfOrRoot();
-                Assert.AreNotEqual(root, lastInSelf);
+                Assert.AreNotEqual(root.id, lastInSelf.id);
                 Assert.IsFalse(lastInSelf.tween.nextSibling.IsCreated);
                 lastInSelf.tween.nextSibling = tween;
                 Assert.IsFalse(tween.tween.prevSibling.IsCreated);
@@ -177,6 +179,7 @@ namespace PrimeTween {
             Assert.IsFalse(tween.tween.prev.IsCreated);
             last.tween.next = tween;
             tween.tween.prev = last;
+            root.tween.intParam = 0;
         }
 
         Tween getLast() {
@@ -277,6 +280,9 @@ namespace PrimeTween {
             }
             if (child.tween.settings.useUnscaledTime) {
                 warnIgnoredChildrenSetting(nameof(TweenSettings.useUnscaledTime));
+            }
+            if (child.tween.settings.useFixedUpdate) {
+                warnIgnoredChildrenSetting(nameof(TweenSettings.useFixedUpdate));
             }
             void warnIgnoredChildrenSetting(string settingName) {
                 Debug.LogError($"'{settingName}' was ignored after adding tween/sequence to the Sequence. Parent Sequence controls isPaused/timeScale/useUnscaledTime/useFixedUpdate of all its children tweens and sequences.\n");
@@ -424,8 +430,7 @@ namespace PrimeTween {
 
             static bool isSequenceEmpty(Sequence s) {
                 // tests: SequenceNestingDifferentSettings(), TestSequenceEnumeratorWithEmptySequences()
-                var firstInSequence = s.root.tween.next;
-                return !firstInSequence.IsCreated || firstInSequence.id == s.root.tween.nextSibling.id;
+                return s.root.tween.intParam == emptySequenceTag;
             }
             
             public 
@@ -556,7 +561,7 @@ namespace PrimeTween {
                 root.tween
             };
             foreach (var t in getAllTweens()) {
-                // Debug.Log($"----- root {t}");
+                // Debug.Log($"----- {t}");
                 if (t.tween.isSequenceRoot()) {
                     foreach (var ch in t.tween.sequence.getSelfChildren()) {
                         // Debug.Log(ch);
@@ -567,6 +572,16 @@ namespace PrimeTween {
             if (buffer.Count != buffer.Select(_ => _.id).Distinct().Count()) {
                 Debug.LogError($"{root.id}, duplicates in validateSequenceEnumerator():\n{string.Join("\n", buffer)}");
             }
+        }
+
+        public Sequence OnComplete(Action onComplete, bool warnIfTargetDestroyed = true) {
+            root.OnComplete(onComplete, warnIfTargetDestroyed);
+            return this;
+        }
+
+        public Sequence OnComplete<T>(T target, Action<T> onComplete, bool warnIfTargetDestroyed = true) where T : class {
+            root.OnComplete(target, onComplete, warnIfTargetDestroyed);
+            return this;
         }
     }
 }

@@ -1,3 +1,4 @@
+// todo add Sequence.SetEase()
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedParameter.Local
@@ -133,6 +134,7 @@ namespace PrimeTween {
         }
 
         public Sequence SetLoops(int loops) {
+            // todo add LoopType parameter
             Assert.IsTrue(isAlive);
             SetRemainingCycles(loops);
             return this;
@@ -242,7 +244,6 @@ namespace PrimeTween {
         }
 
         static Easing getParametricEasing(Ease ease, float? maybeStrength, float? maybePeriod) {
-            #if PRIME_TWEEN_EXPERIMENTAL
             var strength = maybeStrength ?? 1;
             switch (ease) {
                 case Ease.OutBack:
@@ -253,8 +254,6 @@ namespace PrimeTween {
                 case Ease.OutElastic:
                     return Easing.Elastic(strength, maybePeriod ?? 0.3f);
             }
-            #endif
-            Debug.LogWarning($"Custom amplitude/period is not supported for {ease} ease. Consider using custom ease curve instead.");
             return Easing.Standard(ease);
         }
         

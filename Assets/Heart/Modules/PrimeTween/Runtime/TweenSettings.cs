@@ -34,11 +34,12 @@ namespace PrimeTween {
         public float endDelay;
         [Tooltip(Constants.unscaledTimeTooltip)]
         public bool useUnscaledTime;
+        public bool useFixedUpdate;
         [NonSerialized] internal ParametricEase parametricEase;
         [NonSerialized] internal float parametricEaseStrength;
         [NonSerialized] internal float parametricEasePeriod;
 
-        TweenSettings(float duration, Ease ease, Easing? customEasing, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) {
+        TweenSettings(float duration, Ease ease, Easing? customEasing, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false, bool useFixedUpdate = false) {
             this.duration = duration;
             var curve = customEasing?.curve;
             if (ease == Ease.Custom && customEasing?.parametricEase == ParametricEase.None) {
@@ -57,6 +58,7 @@ namespace PrimeTween {
             parametricEase = customEasing?.parametricEase ?? ParametricEase.None;
             parametricEaseStrength = customEasing?.parametricEaseStrength ?? float.NaN;
             parametricEasePeriod = customEasing?.parametricEasePeriod ?? float.NaN;
+            this.useFixedUpdate = useFixedUpdate;
         }
 
         internal void SetEasing(Easing easing) {
@@ -66,24 +68,17 @@ namespace PrimeTween {
             parametricEasePeriod = easing.parametricEasePeriod;
         }
         
-        public TweenSettings(float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
-            : this(duration, ease, null, cycles, cycleMode, startDelay, endDelay, useUnscaledTime) {
+        public TweenSettings(float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false, bool useFixedUpdate = false)
+            : this(duration, ease, null, cycles, cycleMode, startDelay, endDelay, useUnscaledTime, useFixedUpdate) {
         }
 
-        public TweenSettings(float duration, Easing easing, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false)
-            : this(duration, easing.ease, easing, cycles, cycleMode, startDelay, endDelay, useUnscaledTime) {
+        public TweenSettings(float duration, Easing easing, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false, bool useFixedUpdate = false)
+            : this(duration, easing.ease, easing, cycles, cycleMode, startDelay, endDelay, useUnscaledTime, useFixedUpdate) {
         }
   
         internal static void setCyclesTo1If0(ref int cycles) {
             if (cycles == 0) {
                 cycles = 1;
-            }
-        }
-
-        internal static void clampTimescale(ref float value) {
-            if (value < 0) {
-                Debug.LogError($"timeScale should be >= 0, but was {value}");
-                value = 0;
             }
         }
 
@@ -99,6 +94,7 @@ namespace PrimeTween {
             parametricEase = other.parametricEase;
             parametricEaseStrength = other.parametricEaseStrength;
             parametricEasePeriod = other.parametricEasePeriod;
+            useFixedUpdate = other.useFixedUpdate;
         }
 
         internal void SetValidValues() {
@@ -170,7 +166,7 @@ namespace PrimeTween {
         }
     }
     
-    /// <summary>The easing curve of an animation. Different easing curves produce a different animation 'feeling'.<br/>
+    /// <summary>The standard animation easing types. Different easing curves produce a different animation 'feeling'.<br/>
     /// Play around with different ease types to choose one that suites you the best.
     /// You can also provide a custom AnimationCurve as an ease function or parametrize eases with the Easing.Overshoot/Elastic/BounceExact(...) methods.</summary>
     public enum Ease { Custom = -1, Default = 0, Linear = 1, 

@@ -2,6 +2,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMethodReturnValue.Global
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -92,13 +93,16 @@ namespace PrimeTween {
                 return null;
             }
             var manager = PrimeTweenManager.Instance;
-            foreach (var tween in manager.tweens) {
-                if (tween != null && tween != newTween && tween._isAlive && ReferenceEquals(tween.unityTarget, target) && tween.tweenType == newTween.tweenType && !tween.startFromCurrent) {
-                    // Debug.Log($"tryGetStartValueFromOtherShake {tween.GetDescription()}, {tween.startValue}");
-                    return tween.startValue;
+            ValueContainer? findIn(List<ReusableTween> list) {
+                foreach (var tween in list) {
+                    if (tween != null && tween != newTween && tween._isAlive && ReferenceEquals(tween.unityTarget, target) && tween.tweenType == newTween.tweenType && !tween.startFromCurrent) {
+                        // Debug.Log($"tryGetStartValueFromOtherShake {tween.GetDescription()}, {tween.startValue}");
+                        return tween.startValue;
+                    }
                 }
+                return null;
             }
-            return null;
+            return findIn(manager.tweens) ?? findIn(manager.fixedUpdateTweens);
         }
 
         public static Tween ShakeCustom<T>([NotNull] T target, Vector3 startValue, ShakeSettings settings, [NotNull] Action<T, Vector3> onValueChange) where T : class {
@@ -243,9 +247,9 @@ namespace PrimeTween {
                 var interpolationFactor = tween.easedInterpolationFactor;
                 Assert.IsTrue(interpolationFactor <= 1);
 
-                int cyclesDiff = tween.cyclesDone - prevCyclesDone;
-                prevCyclesDone = tween.cyclesDone;
-                if (interpolationFactor == 0f || (cyclesDiff > 0 && tween.cyclesDone != tween.settings.cycles)) {
+                int cyclesDiff = tween.getCyclesDone() - prevCyclesDone;
+                prevCyclesDone = tween.getCyclesDone();
+                if (interpolationFactor == 0f || (cyclesDiff > 0 && tween.getCyclesDone() != tween.settings.cycles)) {
                     onCycleComplete();
                     prevInterpolationFactor = interpolationFactor;
                 }

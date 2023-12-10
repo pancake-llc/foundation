@@ -79,6 +79,7 @@ namespace PrimeTween {
                 var manager = PrimeTweenManager.Instance;
                 if (manager != null) {
                     if (manager.updateDepth == 0) {
+                        manager.FixedUpdate();
                         manager.Update();
                     }
                     // Assert.AreEqual(0, manager.tweens.Count); // fails if user's OnComplete() creates new tweens
@@ -296,16 +297,23 @@ namespace PrimeTween {
         public static Tween GlobalTimeScale(Single endValue, TweenSettings settings) => GlobalTimeScale(new TweenSettings<float>(endValue, settings));
         public static Tween GlobalTimeScale(Single startValue, Single endValue, TweenSettings settings) => GlobalTimeScale(new TweenSettings<float>(startValue, endValue, settings));
         public static Tween GlobalTimeScale(TweenSettings<float> settings) {
+            clampTimescale(ref settings.startValue);
+            clampTimescale(ref settings.endValue);
             if (!settings.settings.useUnscaledTime) {
                 Debug.LogWarning("Setting " + nameof(TweenSettings.useUnscaledTime) + " to true to animate Time.timeScale correctly.");
                 settings.settings.useUnscaledTime = true;
             }
-            return animate(PrimeTweenManager.dummyTarget, ref settings, val => Time.timeScale = val.FloatVal, _ => Time.timeScale.ToContainer());
+            return animate(PrimeTweenManager.dummyTarget, ref settings, t => Time.timeScale = t.FloatVal, _ => Time.timeScale.ToContainer());
+            
+            void clampTimescale(ref float value) {
+                if (value < 0) {
+                    Debug.LogError($"timeScale should be >= 0, but was {value}");
+                    value = 0;
+                }
+            }
         }
 
         public static Tween TweenTimeScale(Tween tween, TweenSettings<float> settings) {
-            TweenSettings.clampTimescale(ref settings.startValue);
-            TweenSettings.clampTimescale(ref settings.endValue);
             if (!tween.tryManipulate()) {
                 return default;
             }
