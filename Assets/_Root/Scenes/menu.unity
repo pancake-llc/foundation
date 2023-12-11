@@ -2845,6 +2845,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1988258784}
   - component: {fileID: 1988258786}
+  - component: {fileID: 1988258787}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -2888,6 +2889,8 @@ MonoBehaviour:
   buttonOutfit: {fileID: 965215512}
   buttonDailyReward: {fileID: 151218371}
   buttonRank: {fileID: 973215549}
+  buttonPet: {fileID: 419768272}
+  buttonRoom: {fileID: 1228167745}
   popupShop: ShopPopup
   popupSetting: SettingPopup
   popupUpdate: UpdatePopup
@@ -2897,6 +2900,24 @@ MonoBehaviour:
   outfitPageName: OutfitPage
   buttonAudio: {fileID: 1679153822}
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
+  localeTextFeatureLocked: {fileID: 11400000, guid: 2bed9aeb75d7c8f4a986c0e269dc0388, type: 2}
+  eventSpawnInGameNotification: {fileID: 11400000, guid: 2261a2a84816d914ab405ff3133db4c1, type: 2}
+--- !u!114 &1988258787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988258783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20a7f8c694d34b98b82633ed1715e4de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnEvent: {fileID: 11400000, guid: 2261a2a84816d914ab405ff3133db4c1, type: 2}
+  pool: {fileID: 11400000, guid: 73f7e4646ca90974ea4f674787c1c807, type: 2}
+  returnPoolEvent: {fileID: 11400000, guid: d1bedc11cc6d4a14e9de7b508197c061, type: 2}
+  getCanvasMasterEvent: {fileID: 11400000, guid: eb6564e2a34609041adf55fdffed4eb2, type: 2}
 --- !u!1 &2023170879
 GameObject:
   m_ObjectHideFlags: 0

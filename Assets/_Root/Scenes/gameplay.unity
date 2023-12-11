@@ -2378,6 +2378,7 @@ GameObject:
   - component: {fileID: 1659228165}
   - component: {fileID: 1659228166}
   - component: {fileID: 1659228167}
+  - component: {fileID: 1659228168}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -2456,6 +2457,22 @@ MonoBehaviour:
   lastLevelShowRate: {fileID: 11400000, guid: eee83a1c61699f34e8eba711713dffd8, type: 2}
   reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
   initReviewEvent: {fileID: 11400000, guid: 69791bee97aec0f44afa2801729a4f91, type: 2}
+--- !u!114 &1659228168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659228163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20a7f8c694d34b98b82633ed1715e4de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnEvent: {fileID: 11400000, guid: 2261a2a84816d914ab405ff3133db4c1, type: 2}
+  pool: {fileID: 11400000, guid: 73f7e4646ca90974ea4f674787c1c807, type: 2}
+  returnPoolEvent: {fileID: 11400000, guid: d1bedc11cc6d4a14e9de7b508197c061, type: 2}
+  getCanvasMasterEvent: {fileID: 11400000, guid: eb6564e2a34609041adf55fdffed4eb2, type: 2}
 --- !u!1 &1753563996
 GameObject:
   m_ObjectHideFlags: 0

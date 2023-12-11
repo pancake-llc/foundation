@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Pancake.Localization;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using Pancake.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonOutfit;
         [SerializeField] private Button buttonDailyReward;
         [SerializeField] private Button buttonRank;
+        [SerializeField] private Button buttonPet;
+        [SerializeField] private Button buttonRoom;
 
         [Header("POPUP")] [SerializeField, PopupPickup] private string popupShop;
         [SerializeField, PopupPickup] private string popupSetting;
@@ -32,6 +35,8 @@ namespace Pancake.SceneFlow
 
         [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
         [SerializeField] private ScriptableEventString changeSceneEvent;
+        [SerializeField] private LocaleText localeTextFeatureLocked;
+        [SerializeField] private ScriptableEventLocaleText eventSpawnInGameNotification;
         private CancellationTokenSource _tokenShowUpdate;
 
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
@@ -46,8 +51,14 @@ namespace Pancake.SceneFlow
             buttonOutfit.onClick.AddListener(OnButtonOutfitPressed);
             buttonDailyReward.onClick.AddListener(OnButtonDailyRewardPressed);
             buttonRank.onClick.AddListener(OnButtonRankPressed);
+            buttonPet.onClick.AddListener(OnButtonPetPressed);
+            buttonRoom.onClick.AddListener(OnButtonRoomPressed);
             WaitShowUpdate();
         }
+
+        private void OnButtonRoomPressed() { eventSpawnInGameNotification.Raise(localeTextFeatureLocked); }
+
+        private void OnButtonPetPressed() { eventSpawnInGameNotification.Raise(localeTextFeatureLocked); }
 
         private void OnButtonRankPressed() { MainPopupContainer.Push<LeaderboardPopup>(popupLeaderboard, false); }
 

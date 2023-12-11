@@ -8,6 +8,7 @@ namespace Pancake.Localization
 {
     [CreateAssetMenu(menuName = "Pancake/Localization/Text", fileName = "text_localizevalue", order = 4)]
     [EditorIcon("scriptable_yellow_text")]
+    [Serializable]
     public class LocaleText : LocaleVariable<string>
     {
         [Serializable]
