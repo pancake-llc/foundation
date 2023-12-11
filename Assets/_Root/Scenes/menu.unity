@@ -1124,6 +1124,7 @@ GameObject:
   - component: {fileID: 419768271}
   - component: {fileID: 419768270}
   - component: {fileID: 419768272}
+  - component: {fileID: 419768273}
   m_Layer: 5
   m_Name: button_pet
   m_TagString: Untagged
@@ -1270,6 +1271,25 @@ MonoBehaviour:
     motion: 3
     duration: 0.1
     ease: 0
+--- !u!114 &419768273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419768268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b2ed11d675446c5a49da1ea296d490, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectFactor: 1
+  m_ColorFactor: 1
+  m_BlurFactor: 1
+  m_EffectMode: 1
+  m_ColorMode: 0
+  m_BlurMode: 0
+  m_AdvancedBlur: 0
 --- !u!1 &441888046
 GameObject:
   m_ObjectHideFlags: 0
@@ -2256,6 +2276,7 @@ GameObject:
   - component: {fileID: 1228167744}
   - component: {fileID: 1228167743}
   - component: {fileID: 1228167745}
+  - component: {fileID: 1228167746}
   m_Layer: 5
   m_Name: button_room
   m_TagString: Untagged
@@ -2402,6 +2423,25 @@ MonoBehaviour:
     motion: 3
     duration: 0.1
     ease: 0
+--- !u!114 &1228167746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228167741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b2ed11d675446c5a49da1ea296d490, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectFactor: 1
+  m_ColorFactor: 1
+  m_BlurFactor: 1
+  m_EffectMode: 1
+  m_ColorMode: 0
+  m_BlurMode: 0
+  m_AdvancedBlur: 0
 --- !u!1 &1380979883
 GameObject:
   m_ObjectHideFlags: 0
