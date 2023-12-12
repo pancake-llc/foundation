@@ -5,11 +5,10 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
-using UnityEngine.SceneManagement;
 
 namespace Pancake.SceneFlow
 {
-    public class Initazation : GameComponent
+    public class LauncherInitialize : GameComponent
     {
         [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private BoolVariable loadingCompleted;
