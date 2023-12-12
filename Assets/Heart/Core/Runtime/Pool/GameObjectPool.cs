@@ -26,17 +26,17 @@ namespace Pancake
                 if (_root != null) return _root;
                 if (rootIsUI)
                 {
-                    var r = new GameObject().AddComponent<RectTransform>();
+                    var r = new GameObject(name).AddComponent<RectTransform>();
                     _root = r;
+                    _root.SetParent(_parent);
                     r.Fill();
                 }
                 else
                 {
                     _root = new GameObject(name).transform;
+                    _root.SetParent(_parent);
                 }
-
-                _root.SetParent(_parent);
-
+                
                 return _root;
             }
         }
