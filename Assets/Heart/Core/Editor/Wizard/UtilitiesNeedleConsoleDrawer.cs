@@ -9,7 +9,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_NEEDLE_CONSOLE
-            Uniform.DrawInstalled("2.3.17");
+            Uniform.DrawInstalled("2.4.1");
             EditorGUILayout.Space();
             if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(25f)))
             {
@@ -37,7 +37,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(40f)))
             {
-                RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.3.17");
+                RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1");
                 RegistryManager.Add("com.pancake.demystifier", "https://github.com/pancake-llc/ben-demystifier.git#0.4.1");
                 RegistryManager.Add("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#5.0.0");
                 RegistryManager.Add("com.pancake.immutable", "https://github.com/pancake-llc/system-immutable.git#5.0.0");
