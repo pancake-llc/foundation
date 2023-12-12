@@ -1485,6 +1485,17 @@ namespace Pancake
             source.SetParent(parent);
             source.Fill();
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="parent"></param>
+        public static void FillWithParent(this RectTransform source, Transform parent)
+        {
+            source.SetParent(parent);
+            source.Fill();
+        }
 
         /// <summary>
         /// 

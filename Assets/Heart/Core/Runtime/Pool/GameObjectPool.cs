@@ -13,8 +13,9 @@ namespace Pancake
     public class GameObjectPool : ScriptablePool<GameObject>
     {
         [SerializeField] private GameObjectFactory factory;
-        [Message("If rootIsUI is true the pool root object will be generated with RectTransform")]
-        [SerializeField] private bool rootIsUI;
+
+        [Message("If rootIsUI is true the pool root object will be generated with RectTransform")] [SerializeField]
+        private bool rootIsUI;
 
         private Transform _root;
         private Transform _parent;
@@ -28,15 +29,14 @@ namespace Pancake
                 {
                     var r = new GameObject(name).AddComponent<RectTransform>();
                     _root = r;
-                    _root.SetParent(_parent);
-                    r.Fill();
+                    r.FillWithParent(_parent);
                 }
                 else
                 {
                     _root = new GameObject(name).transform;
                     _root.SetParent(_parent);
                 }
-                
+
                 return _root;
             }
         }
