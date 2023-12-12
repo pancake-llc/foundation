@@ -218,7 +218,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -512,7 +512,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.08999634, y: 2.920044}
+  m_AnchoredPosition: {x: -0.08996582, y: 2.920044}
   m_SizeDelta: {x: -4.82, y: -10.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &571783149
@@ -915,17 +915,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Loading 0%
+  m_text: 0%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
-  m_sharedMaterial: {fileID: 1670048747954264078, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: a5b80e8a169d5624a8c25be597be1435, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 3791650815
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.88235295}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1103,7 +1103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b362879ef2df607479d151b5a6ef0b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
   loadingCompleted: {fileID: 11400000, guid: 0242afafb7675c5488f3c71b4b484636, type: 2}
   remoteConfigFetchCompleted: {fileID: 0}
   persistentScene:

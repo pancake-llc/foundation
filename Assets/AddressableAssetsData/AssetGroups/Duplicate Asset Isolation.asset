@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: 0d30408784d52434cac455fa780dc3d9
+  m_GUID: 01851d09c72298c4b99a6975ae7119b4
   m_SerializeEntries:
   - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
     m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller
@@ -367,13 +367,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 10247cca5ce308843ae5e0c25c17942e
-    m_Address: Assets/_Root/Storages/Generated/change_scene_event.asset
+  - m_GUID: 61509f6b494b461498cccef441c17f12
+    m_Address: Assets/_Root/Storages/Generated/Level/prewarm_load_level_completed.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 61509f6b494b461498cccef441c17f12
-    m_Address: Assets/_Root/Storages/Generated/Level/prewarm_load_level_completed.asset
+  - m_GUID: 840413f1c26612449b52205cea05e970
+    m_Address: Assets/_Root/Sprites/StarterPack/Common/starter_whitebar.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -457,6 +457,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1bedc11cc6d4a14e9de7b508197c061
+    m_Address: Assets/_Root/Storages/InGameNotification/FloatNotification/event_return_pool_ingame_notification.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b4dc6b12e4de5043b9e0337aa36ec9c
     m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_stop_sfx.asset
     m_ReadOnly: 0
@@ -477,6 +482,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73f7e4646ca90974ea4f674787c1c807
+    m_Address: Assets/_Root/Storages/InGameNotification/FloatNotification/float_notification_pool.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 995f19852c387db4aa2fc4343f8d09a1
     m_Address: Assets/_Root/Storages/Localization/Common/text_level.asset
     m_ReadOnly: 0
@@ -487,8 +497,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2261a2a84816d914ab405ff3133db4c1
+    m_Address: Assets/_Root/Storages/InGameNotification/FloatNotification/event_spawn_ingame_notification.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b39b52d9a5ec5e144aa0c0b97a091f74
     m_Address: Assets/_Root/Storages/Fx/vfx_coin_return_pool_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10247cca5ce308843ae5e0c25c17942e
+    m_Address: Assets/_Root/Storages/Generated/change_scene_event.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -522,8 +542,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86252c8520b2daf478feb300504852d1
+    m_Address: Assets/_Root/Storages/InGameNotification/FloatNotification/float_notification_factory.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 27691cbd2f5b9544bb6cce9d47c7cdab
     m_Address: Assets/_Root/Sounds/SFX/sfx_ui_grab_coin.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad8c0e57917578f40ac15f7d2b915718
+    m_Address: Assets/_Root/Prefabs/float_notification.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

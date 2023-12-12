@@ -70,9 +70,7 @@ namespace Pancake.MobileInputEditor
         private SerializedProperty _onFingerDownProperty;
         private SerializedProperty _onFingerUpProperty;
         private SerializedProperty _onClickProperty;
-        private SerializedProperty _onLongTapUpdateProperty;
         private SerializedProperty _onStartPinchProperty;
-        private SerializedProperty _onUpdatePinchProperty;
         private SerializedProperty _onUpdateExtendPinchProperty;
         private SerializedProperty _onStopPinchProperty;
 
@@ -138,9 +136,7 @@ namespace Pancake.MobileInputEditor
             _onFingerDownProperty = serializedObject.FindProperty("onFingerDown");
             _onFingerUpProperty = serializedObject.FindProperty("onFingerUp");
             _onClickProperty = serializedObject.FindProperty("onClick");
-            _onLongTapUpdateProperty = serializedObject.FindProperty("onLongTapUpdate");
             _onStartPinchProperty = serializedObject.FindProperty("onStartPinch");
-            _onUpdatePinchProperty = serializedObject.FindProperty("onUpdatePinch");
             _onUpdateExtendPinchProperty = serializedObject.FindProperty("onUpdateExtendPinch");
             _onStopPinchProperty = serializedObject.FindProperty("onStopPinch");
         }

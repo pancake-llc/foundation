@@ -17,9 +17,9 @@ MonoBehaviour:
       name: English
       code: en
       custom: 0
-    value: Loading {0}%
+    value: '{0}%'
   - language:
       name: Vietnamese
       code: vi
       custom: 0
-    value: "\u0110ang t\u1EA3i {0}%"
+    value: '{0}%'
