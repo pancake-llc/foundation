@@ -869,6 +869,7 @@ GameObject:
   - component: {fileID: 1810225636}
   - component: {fileID: 1810225639}
   - component: {fileID: 1810225638}
+  - component: {fileID: 1810225640}
   m_Layer: 5
   m_Name: text_percent
   m_TagString: Untagged
@@ -915,7 +916,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0%
+  m_text: Loading 0%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: a5b80e8a169d5624a8c25be597be1435, type: 2}
@@ -1028,6 +1029,23 @@ MonoBehaviour:
   variable: {fileID: 11400000, guid: e92931e063d013940b5cd06f8f229e8b, type: 2}
   formatArgs:
   - 0
+--- !u!114 &1810225640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810225634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2e17a0a9298b014daac3f73685bfd04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 1810225636}
+  property:
+    enabled: 0
+    value: fontMaterial
+  variable: {fileID: 11400000, guid: 436fdf3efd7603040b69d4071a680f32, type: 2}
 --- !u!1 &1867694929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,8 +1128,10 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  isWaitLevelLoad: 1
+  isWaitLevelLoaded: 1
   loadLevelCompleted: {fileID: 11400000, guid: 61509f6b494b461498cccef441c17f12, type: 2}
+  requireInitLocalization: 1
+  localizationInitialized: {fileID: 11400000, guid: 601184d2e3af08841b68fcdf5a5d1a3f, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

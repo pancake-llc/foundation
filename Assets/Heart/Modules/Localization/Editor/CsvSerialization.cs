@@ -15,7 +15,7 @@ namespace Pancake.LocalizationEditor
 
         public void Serialize(Stream stream)
         {
-            var languages = LocaleSettings.Instance.AvailableLanguages;
+            var languages = LocaleSettings.AvailableLanguages;
             var localizedTexts = Locale.FindAllLocalizedAssets<LocaleText>();
 
             using (var writer = new StreamWriter(stream))
@@ -59,7 +59,7 @@ namespace Pancake.LocalizationEditor
 
         public void Deserialize(Stream stream)
         {
-            string importLocation = LocaleSettings.Instance.ImportLocation;
+            string importLocation = LocaleSettings.ImportLocation;
             var localizedTexts = Locale.FindAllLocalizedAssets<LocaleText>();
 
             using (var reader = new StreamReader(stream))
@@ -138,7 +138,7 @@ namespace Pancake.LocalizationEditor
 
         private List<Language> ReadImportLanguages(StreamReader reader)
         {
-            var availableLanguages = LocaleSettings.Instance.AllLanguages;
+            var availableLanguages = LocaleSettings.AllLanguages;
             var importLanguages = new List<Language>();
 
             string[] columnTokens = ReadNextTokens(reader);

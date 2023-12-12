@@ -672,7 +672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf4a260e1ae0ece46bba1ad178dc5ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectDeviceLanguage: 1
+  isInitialized: {fileID: 11400000, guid: 601184d2e3af08841b68fcdf5a5d1a3f, type: 2}
 --- !u!1 &1042183226
 GameObject:
   m_ObjectHideFlags: 0

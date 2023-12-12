@@ -163,7 +163,7 @@ namespace Pancake.UI
         private void RefreshSoundState(bool soundState) { soundUIEffect.effectMode = soundState ? EffectMode.None : EffectMode.Grayscale; }
 
         private void RefreshMusicState(bool musicState) { musicUIEffect.effectMode = musicState ? EffectMode.None : EffectMode.Grayscale; }
-        public int GetNumberOfCells(EnhancedScroller scroller) { return LocaleSettings.Instance.AvailableLanguages.Count; }
+        public int GetNumberOfCells(EnhancedScroller scroller) { return LocaleSettings.AvailableLanguages.Count; }
 
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex) { return 120f; }
 
@@ -172,7 +172,7 @@ namespace Pancake.UI
             var element = scroller.GetCellView(languageElementPrefab) as LanguageElementView;
             if (element != null)
             {
-                var code = LocaleSettings.Instance.AvailableLanguages[dataIndex];
+                var code = LocaleSettings.AvailableLanguages[dataIndex];
                 element.name = "Country_" + code.Name;
                 element.Init(code,
                     OnButtonElementClicked,

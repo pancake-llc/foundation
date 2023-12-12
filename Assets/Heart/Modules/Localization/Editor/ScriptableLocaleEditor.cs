@@ -122,9 +122,9 @@ namespace Pancake.LocalizationEditor
             }
         }
 
-        private void AddAllLanguages() { AddLanguages(LocaleSettings.Instance.AllLanguages); }
+        private void AddAllLanguages() { AddLanguages(LocaleSettings.AllLanguages); }
 
-        private void AddLanguagesFromSettings() { AddLanguages(LocaleSettings.Instance.AvailableLanguages); }
+        private void AddLanguagesFromSettings() { AddLanguages(LocaleSettings.AvailableLanguages); }
 
         private void AddLanguages(List<Language> languages)
         {

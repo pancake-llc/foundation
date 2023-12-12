@@ -51,10 +51,9 @@ namespace MyNamespace
         private static List<string> GetLocalizations()
         {
             var localizations = new List<string>();
-            var localizationSettings = LocaleSettings.Instance;
-            if (localizationSettings)
+            if (LocaleSettings.Instance != null)
             {
-                foreach (var language in localizationSettings.AvailableLanguages)
+                foreach (var language in LocaleSettings.AvailableLanguages)
                 {
                     localizations.Add(language.Code);
                 }

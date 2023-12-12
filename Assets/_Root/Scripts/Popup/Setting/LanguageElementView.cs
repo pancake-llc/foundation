@@ -33,7 +33,7 @@ namespace Pancake.SceneFlow
             _onClickedAdvance = onClickedAdvance;
             Lang = language;
             textName.text = language.Name;
-            localeTextName.Variable = getLocaleText?.Invoke(LocaleSettings.Instance.AvailableLanguages.FindIndex(x => x.Code == language.Code));
+            localeTextName.Variable = getLocaleText?.Invoke(LocaleSettings.AvailableLanguages.FindIndex(x => x.Code == language.Code));
             localeTextName.ForceUpdate();
             buttonSelect.onClick.RemoveListener(OnButtonSelectPressed);
             buttonSelect.onClick.AddListener(OnButtonSelectPressed);

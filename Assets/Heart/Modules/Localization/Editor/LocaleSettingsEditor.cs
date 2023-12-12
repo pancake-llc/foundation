@@ -13,12 +13,14 @@ namespace Pancake.LocalizationEditor
     {
         private ReorderableList _reorderableList;
         private SerializedProperty _avaiableLanguageProperty;
+        private SerializedProperty _detectDeviceLanguageProperty;
         private SerializedProperty _importLocationProperty;
         private SerializedProperty _googleCredentialProperty;
 
         private void Init()
         {
             _avaiableLanguageProperty ??= serializedObject.FindProperty("availableLanguages");
+            _detectDeviceLanguageProperty ??= serializedObject.FindProperty("detectDeviceLanguage");
             _importLocationProperty ??= serializedObject.FindProperty("importLocation");
             _googleCredentialProperty ??= serializedObject.FindProperty("googleCredential");
 
@@ -162,15 +164,17 @@ namespace Pancake.LocalizationEditor
         public override void OnInspectorGUI()
         {
             Init();
-            
+
             if (_reorderableList != null)
             {
                 serializedObject.Update();
-                
+
                 EditorGUILayout.Separator();
 
                 _reorderableList.DoLayoutList();
 
+                EditorGUILayout.PropertyField(_detectDeviceLanguageProperty, true);
+                EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(_importLocationProperty.displayName);
                 if (GUILayout.Button(_importLocationProperty.stringValue, EditorStyles.objectField))
@@ -181,24 +185,26 @@ namespace Pancake.LocalizationEditor
                         path = "Assets" + path.Replace(Application.dataPath, "");
                         if (AssetDatabase.IsValidFolder(path))
                         {
-                            _importLocationProperty.stringValue = path;    
+                            _importLocationProperty.stringValue = path;
                         }
-                            
                     }
                 }
+
                 EditorGUILayout.EndHorizontal();
-                
+
                 EditorGUILayout.Separator();
-                
+
                 EditorGUILayout.PropertyField(_googleCredentialProperty);
                 if (string.IsNullOrEmpty(_googleCredentialProperty.stringValue))
                 {
-                    EditorGUILayout.HelpBox("If you want to use Google Translate in editor or in-game, attach the API key file claimed from Google Cloud.", MessageType.Info);
+                    EditorGUILayout.HelpBox("If you want to use Google Translate in editor or in-game, attach the API key file claimed from Google Cloud.",
+                        MessageType.Info);
                 }
                 else
                 {
                     EditorGUILayout.HelpBox("Replace with your API key", MessageType.Info);
                 }
+
                 serializedObject.ApplyModifiedProperties();
             }
             else

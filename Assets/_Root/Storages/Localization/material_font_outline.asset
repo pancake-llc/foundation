@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acdfe7459f01ac840b0d9cf370ab27ab, type: 3}
-  m_Name: material_font
+  m_Name: material_font_outline
   m_EditorClassIdentifier: 
   items:
   - language:
       name: English
       code: en
       custom: 0
-    value: {fileID: 1670048747954264078, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
+    value: {fileID: 2100000, guid: a5b80e8a169d5624a8c25be597be1435, type: 2}
   - language:
       name: Vietnamese
       code: vi

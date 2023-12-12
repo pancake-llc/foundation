@@ -1,4 +1,5 @@
 using Pancake.Apex;
+using Pancake.Localization;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
 using UnityEngine;
@@ -15,13 +16,22 @@ namespace Pancake.SceneFlow
         [SerializeField] private BoolVariable remoteConfigFetchCompleted;
         [SerializeField] private AssetReference persistentScene;
 
-        [Space] [SerializeField] private bool isWaitLevelLoad;
-        [SerializeField, ShowIf("isWaitLevelLoad")] private BoolVariable loadLevelCompleted;
+        [Space] [SerializeField] private bool isWaitLevelLoaded;
+        [SerializeField, ShowIf("isWaitLevelLoaded")] private BoolVariable loadLevelCompleted;
+
+        [Space] [SerializeField] private bool requireInitLocalization;
+        [SerializeField, ShowIf("requireInitLocalization")] private BoolVariable localizationInitialized;
 
         private void Awake()
         {
             Application.targetFrameRate = (int) HeartSettings.TargetFrameRate;
             Input.multiTouchEnabled = HeartSettings.EnableMultipleTouch;
+            if (requireInitLocalization)
+            {
+                UserData.LoadLanguageSetting(LocaleSettings.DetectDeviceLanguage); // Do not add any other load process here to avoid slow loading
+                localizationInitialized.Value = true;
+            }
+
             LoadScene();
         }
 
@@ -33,7 +43,7 @@ namespace Pancake.SceneFlow
             await UniTask.WaitUntil(() => loadingCompleted.Value);
             await Addressables.LoadSceneAsync(persistentScene);
             if (remoteConfigFetchCompleted != null) await UniTask.WaitUntil(() => remoteConfigFetchCompleted.Value);
-            if (isWaitLevelLoad) await UniTask.WaitUntil(() => loadLevelCompleted.Value);
+            if (isWaitLevelLoaded) await UniTask.WaitUntil(() => loadLevelCompleted.Value);
 
             // TODO : wait something else before load menu
 

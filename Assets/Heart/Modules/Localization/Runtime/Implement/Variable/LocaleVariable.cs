@@ -33,10 +33,9 @@ namespace Pancake.Localization
                 else
                 {
                     // Get default language from settings if is not in Play mode.
-                    var localizationSettings = LocaleSettings.Instance;
-                    if (localizationSettings.AvailableLanguages.Any())
+                    if (LocaleSettings.AvailableLanguages.Any())
                     {
-                        isValueSet = TryGetLocaleValue(localizationSettings.AvailableLanguages.First(), out value);
+                        isValueSet = TryGetLocaleValue(LocaleSettings.AvailableLanguages.First(), out value);
                     }
                 }
 #endif

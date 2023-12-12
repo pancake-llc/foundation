@@ -103,10 +103,9 @@ namespace Pancake.LocalizationEditor
 
         private static Language[] GetCustomLanguages()
         {
-            var localizationSettings = LocaleSettings.Instance;
-            if (localizationSettings != null)
+            if (LocaleSettings.Instance != null)
             {
-                var customLanguages = localizationSettings.AvailableLanguages.Where(x => x.Custom);
+                var customLanguages = LocaleSettings.AvailableLanguages.Where(x => x.Custom);
                 return customLanguages.ToArray();
             }
 

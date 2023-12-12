@@ -17,7 +17,7 @@ namespace PancakeEditor
 {
     public static class UtilitiesLocalizationDrawer
     {
-        private static GoogleTranslator Translator => new(LocaleSettings.Instance.GoogleCredential);
+        private static GoogleTranslator Translator => new(LocaleSettings.GoogleCredential);
 
         private struct EditorCommands
         {
@@ -573,7 +573,7 @@ namespace PancakeEditor
                     EditorStyles.toolbarButton))
             {
                 var currentLanguage = Locale.CurrentLanguage;
-                var languages = LocaleSettings.Instance.AvailableLanguages;
+                var languages = LocaleSettings.AvailableLanguages;
 
                 var menu = new GenericMenu();
                 foreach (var language in languages)
@@ -661,7 +661,7 @@ namespace PancakeEditor
         {
             var localizedText = (LocaleText) userData;
 
-            var selectedLanguage = LocaleSettings.Instance.AllLanguages.FirstOrDefault(x => x.Name == options[selected]);
+            var selectedLanguage = LocaleSettings.AllLanguages.FirstOrDefault(x => x.Name == options[selected]);
             if (selectedLanguage == null)
             {
                 Debug.Assert(false, "Selected language not found in LocaleSettings.AllLanguages.");

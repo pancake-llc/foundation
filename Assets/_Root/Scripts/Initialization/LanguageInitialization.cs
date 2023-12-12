@@ -1,4 +1,5 @@
 using Pancake.Localization;
+using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.SceneFlow
@@ -7,31 +8,12 @@ namespace Pancake.SceneFlow
 
     public class LanguageInitialization : Initialize
     {
-        [SerializeField] private bool detectDeviceLanguage;
+        [SerializeField] private BoolVariable isInitialized;
 
         public override void Init()
         {
             Locale.LocaleChangedEvent += OnLocaleChanged;
-            var list = LocaleSettings.Instance.AvailableLanguages;
-            string lang = UserData.GetCurrentLanguage();
-            // for first time when user not choose lang to display
-            // use system language, if dont use detect system language use first language in list available laguages
-            if (string.IsNullOrEmpty(lang))
-            {
-                var index = 0;
-                if (detectDeviceLanguage)
-                {
-                    var nameSystemLang = Application.systemLanguage.ToString();
-                    index = list.FindIndex(x => x.Name == nameSystemLang);
-                    if (index < 0) index = 0;
-                }
-
-                lang = list[index].Code;
-                UserData.SetCurrentLanguage(lang);
-            }
-
-            int i = list.FindIndex(x => x.Code == lang);
-            Locale.CurrentLanguage = list[i];
+            if (!isInitialized.Value) UserData.LoadLanguageSetting(LocaleSettings.DetectDeviceLanguage);
         }
 
         private void OnDestroy() { Locale.LocaleChangedEvent -= OnLocaleChanged; }

@@ -63,7 +63,7 @@ namespace Pancake.Localization
         /// <summary>
         /// Sets the <see cref="CurrentLanguage"/> to default language defined in <see cref="LocaleSettings"/>.
         /// </summary>
-        public void SetDefaultLanguage() { CurrentLanguage = LocaleSettings.Instance.AvailableLanguages.FirstOrDefault(); }
+        public void SetDefaultLanguage() { CurrentLanguage = LocaleSettings.AvailableLanguages.FirstOrDefault(); }
 
         /// <summary>
         /// Finds all localized assets with type given. Finds all assets in the project if in Editor; otherwise,
