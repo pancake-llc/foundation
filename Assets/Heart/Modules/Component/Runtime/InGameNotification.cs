@@ -1,5 +1,6 @@
 using Pancake.Apex;
 using Pancake.Localization;
+using Pancake.Scriptable;
 using Pancake.Sound;
 using PrimeTween;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace Pancake.Component
         [SerializeField] private LocaleTextComponent localeTextMessage;
         [SerializeField] private float duration = 1f;
         [SerializeField] private float timeAnimate = 0.5f;
+        [SerializeField] private ScriptableEventGameObject returnPoolEvent;
 
         [Header("SOUND"), SerializeField] protected bool enabledSound;
         [SerializeField, ShowIf(nameof(enabledSound))] protected Audio audioOpen;
@@ -28,17 +30,16 @@ namespace Pancake.Component
                 {
                     localeTextMessage.gameObject.SetActive(true);
                     localeTextMessage.Variable = localeText;
+                    App.Delay(this, duration, Hide);
                 });
-            App.Delay(this, duration, Hide);
         }
 
         private void Hide()
         {
             PlaySoundClose();
             localeTextMessage.gameObject.SetActive(false);
-            Tween.UISizeDelta(imageBackgound.rectTransform,
-                new Vector2(-GetComponent<RectTransform>().rect.width, imageBackgound.rectTransform.sizeDelta.y),
-                timeAnimate);
+            Tween.UISizeDelta(imageBackgound.rectTransform, new Vector2(-GetComponent<RectTransform>().rect.width, imageBackgound.rectTransform.sizeDelta.y), timeAnimate)
+                .OnComplete(() => returnPoolEvent.Raise(gameObject));
         }
 
         private void PlaySoundOpen()

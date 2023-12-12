@@ -31,7 +31,6 @@ namespace Pancake.Component
                 // ignored
             }
 #endif
-            
         }
 
         protected override void OnDisabled()
@@ -45,6 +44,11 @@ namespace Pancake.Component
         private void Spawn(LocaleText localeText)
         {
             var instance = pool.Request();
+            instance.transform.localScale = Vector3.one;
+            var rectTransform = instance.transform.GetComponent<RectTransform>();
+            rectTransform.SetLocalPositionZ(0);
+            rectTransform.SetAnchoredPositionY(-444);
+            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width - 100);
             var noti = instance.GetComponent<InGameNotification>();
             noti.Show(localeText);
         }
