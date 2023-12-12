@@ -620,7 +620,7 @@ MonoBehaviour:
   m_text: TAP TO PLAY
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
-  m_sharedMaterial: {fileID: 1670048747954264078, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: a5b80e8a169d5624a8c25be597be1435, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

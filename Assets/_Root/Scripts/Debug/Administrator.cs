@@ -113,7 +113,10 @@ namespace Pancake.SceneFlow
             }
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) { Hide(); }
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (_stateSlide) Hide();
+        }
 
         private void Refresh()
         {
