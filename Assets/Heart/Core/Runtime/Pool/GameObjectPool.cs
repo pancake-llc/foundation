@@ -1,3 +1,5 @@
+using Pancake.Apex;
+
 namespace Pancake
 {
     using UnityEngine;
@@ -11,6 +13,8 @@ namespace Pancake
     public class GameObjectPool : ScriptablePool<GameObject>
     {
         [SerializeField] private GameObjectFactory factory;
+        [Message("If rootIsUI is true the pool root object will be generated with RectTransform")]
+        [SerializeField] private bool rootIsUI;
 
         private Transform _root;
         private Transform _parent;
@@ -19,11 +23,19 @@ namespace Pancake
         {
             get
             {
-                if (_root == null)
+                if (_root != null) return _root;
+                if (rootIsUI)
+                {
+                    var r = new GameObject().AddComponent<RectTransform>();
+                    _root = r;
+                    r.Fill();
+                }
+                else
                 {
                     _root = new GameObject(name).transform;
-                    _root.SetParent(_parent);
                 }
+
+                _root.SetParent(_parent);
 
                 return _root;
             }
