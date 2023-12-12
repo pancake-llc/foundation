@@ -1483,6 +1483,15 @@ namespace Pancake
         public static void FillWithParent(this RectTransform source, RectTransform parent)
         {
             source.SetParent(parent);
+            source.Fill();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        public static void Fill(this RectTransform source)
+        {
             source.localPosition = Vector3.zero;
             source.anchorMin = Vector2.zero;
             source.anchorMax = Vector2.one;
@@ -1678,13 +1687,13 @@ namespace Pancake
 
             return result;
         }
-        
+
         public static T GetOrAddComponent<T>(this Component source) where T : Component
         {
             if (!source.TryGetComponent<T>(out var component)) component = source.gameObject.AddComponent<T>();
             return component;
         }
-        
+
         public static T GetOrAddComponent<T>(this GameObject source) where T : Component
         {
             if (!source.TryGetComponent<T>(out var component)) component = source.AddComponent<T>();
