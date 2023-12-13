@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Pancake
@@ -14,7 +13,7 @@ namespace Pancake
     {
         private static bool isInitialized;
         private static int profile;
-        private static Dictionary<string, string> datas;
+        private static Dictionary<string, byte[]> datas = new();
         private const int INIT_SIZE = 64;
 
         public static event Action OnSaveEvent;
@@ -32,10 +31,11 @@ namespace Pancake
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string Serialize<T>(T data) { return JsonConvert.SerializeObject(data); }
+        private static byte[] Serialize<T>(T data) { return Pancake.Serialize.ToBinary(data); }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T Deserialize<T>(string json) { return JsonConvert.DeserializeObject<T>(json); }
+        private static T Deserialize<T>(byte[] bytes) { return Pancake.Serialize.FromBinary<T>(bytes); }
 
         private static void OnApplicationFocus(bool focus)
         {
@@ -75,8 +75,18 @@ namespace Pancake
         {
             OnSaveEvent?.Invoke();
 
-            string json = Serialize(datas);
-            File.WriteAllText(GetPath, json);
+            byte[] bytes = Serialize(datas);
+            File.WriteAllBytes(GetPath, bytes);
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async void SaveAllAsync()
+        {
+            OnSaveEvent?.Invoke();
+
+            byte[] bytes = Serialize(datas);
+            await File.WriteAllBytesAsync(GetPath, bytes);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -88,8 +98,33 @@ namespace Pancake
                 stream.Close();
             }
 
-            string json = File.ReadAllText(GetPath);
-            datas = Deserialize<Dictionary<string, string>>(json) ?? new Dictionary<string, string>(INIT_SIZE);
+            byte[] bytes = File.ReadAllBytes(GetPath);
+            if (bytes.Length == 0)
+            {
+                datas.Clear();
+                return;
+            }
+            
+            datas = Deserialize<Dictionary<string, byte[]>>(bytes) ?? new Dictionary<string, byte[]>(INIT_SIZE);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async void LoadAllAsync()
+        {
+            if (!File.Exists(GetPath))
+            {
+                var stream = File.Create(GetPath);
+                stream.Close();
+            }
+
+            byte[] bytes = await File.ReadAllBytesAsync(GetPath);
+            if (bytes.Length == 0)
+            {
+                datas.Clear();
+                return;
+            }
+
+            datas = Deserialize<Dictionary<string, byte[]>>(bytes) ?? new Dictionary<string, byte[]>(INIT_SIZE);
         }
 
         /// <summary>
@@ -104,8 +139,10 @@ namespace Pancake
         {
             RequireNullCheck();
 
-            datas.TryGetValue(key, out string value);
-            return !string.IsNullOrEmpty(value) ? Deserialize<T>(value) : @default;
+            datas.TryGetValue(key, out byte[] value);
+            if (value == null || value.Length == 0) return @default;
+
+            return Deserialize<T>(value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -114,7 +151,7 @@ namespace Pancake
             RequireNullCheck();
 
             bool hasKey;
-            if (datas.TryGetValue(key, out string value))
+            if (datas.TryGetValue(key, out byte[] value))
             {
                 data = Deserialize<T>(value);
                 hasKey = true;
@@ -132,16 +169,9 @@ namespace Pancake
         public static void Save<T>(string key, T data)
         {
             RequireNullCheck();
-
-            if (datas.TryGetValue(key, out string _))
-            {
-                datas[key] = Serialize(data);
-            }
-            else
-            {
-                string json = Serialize(data);
-                datas.Add(key, json);
-            }
+            byte[] bytes = Serialize(data);
+            if (datas.TryAdd(key, bytes)) return;
+            datas[key] = bytes;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -152,9 +182,6 @@ namespace Pancake
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeleteAll() => datas.Clear();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetJson() => Serialize(datas);
 
         #endregion
     }
