@@ -1,0 +1,18 @@
+{
+  "name": "Pancake.Greenery",
+  "rootNamespace": "",
+  "references": [
+    "GUID:341d04dbc3e6ced4f903de04a0918a48",
+    "GUID:d8b63aba1907145bea998dd612889d6b",
+    "GUID:d54e067e22b30d84d974d345601e49b6"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

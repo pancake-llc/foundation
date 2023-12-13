@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: a6fef8ade04b0f845afc78c2b28ac1ec
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - windTexture: {fileID: 2800000, guid: 71219d00078acf64baa7b4f8d51b4765, type: 3}
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: e941d5a08d7da5d44a878cdffce24a24, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
