@@ -2,15 +2,15 @@
     "name": "Pancake",
     "rootNamespace": "",
     "references": [
-        "GUID:341d04dbc3e6ced4f903de04a0918a48"
+        "GUID:341d04dbc3e6ced4f903de04a0918a48",
+        "GUID:2765e68924a08a94ea0ea66b31c0168f",
+        "GUID:e0cd26848372d4e5c891c569017e11f1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "Newtonsoft.Json.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
