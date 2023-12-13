@@ -4,7 +4,7 @@
 
 # Environment
 
-- unity 2022.3.14f1 LTS
+- unity 2022.3.12f1 LTS
 - scriptingBackend : IL2CPP
 - apiCompatibilityLevel : .NET Standard 2.1
 
