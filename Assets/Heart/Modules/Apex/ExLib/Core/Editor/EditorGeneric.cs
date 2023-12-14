@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -426,14 +425,14 @@ namespace Pancake.ExLibEditor
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToCamelCase(this string source) { return new CamelCaseNamingStrategy().GetPropertyName(source, false); }
+        public static string ToCamelCase(this string source) { return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(source); }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToSnackCase(this string source) { return new SnakeCaseNamingStrategy().GetPropertyName(source, false); }
+        public static string ToSnackCase(this string source) { return string.IsNullOrEmpty(source) ? string.Empty : source.ToLowerInvariant().Replace(' ', '_'); }
 
         public static bool IsSerializable(Type type)
         {
@@ -456,7 +455,7 @@ namespace Pancake.ExLibEditor
                 GUI.DrawTexture(position, icon, ScaleMode.ScaleToFit);
             }
         }
-        
+
         /// <summary>
         /// check if given type is array or list
         /// </summary>
