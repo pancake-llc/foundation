@@ -1,3 +1,4 @@
+#if PANCAKE_SPINE
 using System.Linq;
 using Pancake.Spine;
 using Spine;
@@ -5,7 +6,6 @@ using Spine.Unity;
 using Spine.Unity.Editor;
 using UnityEditor;
 
-#if PANCAKE_SPINE
 namespace Pancake.SpineEditor
 {
     using UnityEngine;

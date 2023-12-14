@@ -1,4 +1,5 @@
-﻿using Spine;
+﻿#if PANCAKE_SPINE
+using Spine;
 using Spine.Unity;
 using Spine.Unity.Editor;
 using UnityEditor;
@@ -81,3 +82,4 @@ namespace Pancake.SpineEditor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) { return 18; }
     }
 }
+#endif
