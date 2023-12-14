@@ -20,10 +20,10 @@ namespace Pancake.GreeneryEditor
             if (EditorPrefs.HasKey(POINT_CONTROLS_SETTINGS_KEY)) reprojectionHeight = EditorPrefs.GetFloat(POINT_CONTROLS_SETTINGS_KEY);
             else reprojectionHeight = 100;
 
-            toolEditor.OnGUI += OnGUI;
+            toolEditor.onGUI += OnGUI;
         }
 
-        public override void Release() { _toolEditor.OnGUI -= OnGUI; }
+        public override void Release() { _toolEditor.onGUI -= OnGUI; }
 
         public override void OnGUI()
         {

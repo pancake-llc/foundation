@@ -22,8 +22,8 @@ namespace Pancake.GreeneryEditor
 
         public override GUIContent toolbarIcon => EditorGUIUtility.IconContent("d_TreeEditor.Leaf On");
 
-        public Action<Rect> OnToolHandles;
-        public Action OnGUI;
+        public Action<Rect> onToolHandles;
+        public Action onGUI;
 
         private void OnEnable()
         {
@@ -61,19 +61,16 @@ namespace Pancake.GreeneryEditor
             //Drag and drop area to add Greenery Items
             itemsModule.ItemDropArea(toolGUIRect);
 
-            if (OnToolHandles != null)
+            if (onToolHandles != null)
             {
-                OnToolHandles(toolGUIRect);
+                onToolHandles(toolGUIRect);
             }
 
             Handles.BeginGUI();
             EditorGUI.DrawRect(toolGUIRect, new Color(0.1f, 0.1f, 0.1f, toolGUIRect.Contains(Event.current.mousePosition) ? 0.7f : 0.2f));
             GUILayout.BeginArea(toolGUIRect);
 
-            if (OnGUI != null)
-            {
-                OnGUI();
-            }
+            onGUI?.Invoke();
 
             GUILayout.EndArea();
             Handles.EndGUI();

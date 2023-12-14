@@ -13,10 +13,10 @@ namespace Pancake.GreeneryEditor
         public override void Initialize(GreeneryToolEditor toolEditor)
         {
             _toolEditor = toolEditor;
-            toolEditor.OnGUI += OnGUI;
+            toolEditor.onGUI += OnGUI;
         }
 
-        public override void Release() { _toolEditor.OnGUI -= OnGUI; }
+        public override void Release() { _toolEditor.onGUI -= OnGUI; }
 
         public override void OnGUI()
         {

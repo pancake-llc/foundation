@@ -49,13 +49,13 @@ namespace Pancake.GreeneryEditor
                 scattererModule.Initialize(this);
             }
 
-            toolEditor.OnGUI += OnGUI;
+            toolEditor.onGUI += OnGUI;
             Undo.undoRedoPerformed += SaveSettings;
         }
 
         public override void Release()
         {
-            toolEditor.OnGUI -= OnGUI;
+            toolEditor.onGUI -= OnGUI;
             Undo.undoRedoPerformed -= SaveSettings;
 
             foreach (var scattererModule in scattererModules)
@@ -77,7 +77,7 @@ namespace Pancake.GreeneryEditor
             }
 
             scattererModules[activeScaterrerIndex].OnGUI();
-            toolEditor.OnToolHandles = scattererModules[activeScaterrerIndex].ToolHandles;
+            toolEditor.onToolHandles = scattererModules[activeScaterrerIndex].ToolHandles;
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUI.BeginChangeCheck();

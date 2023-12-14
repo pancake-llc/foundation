@@ -46,10 +46,10 @@ namespace Pancake.GreeneryEditor
                 EditorJsonUtility.FromJsonOverwrite(EditorPrefs.GetString(ITEMS_SETTINGS_KEY), itemsModuleSettings);
             }
 
-            toolEditor.OnGUI += OnGUI;
+            toolEditor.onGUI += OnGUI;
         }
 
-        public override void Release() { _toolEditor.OnGUI -= OnGUI; }
+        public override void Release() { _toolEditor.onGUI -= OnGUI; }
 
         public override void OnGUI()
         {
