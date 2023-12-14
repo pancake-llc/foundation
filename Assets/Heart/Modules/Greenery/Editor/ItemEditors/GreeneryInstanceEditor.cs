@@ -10,13 +10,10 @@ namespace Pancake.GreeneryEditor
 
         private void OnEnable()
         {
-            GreeneryInstance item = target as GreeneryInstance;
-            if (item.instanceMaterial != null)
+            var item = target as GreeneryInstance;
+            if (item != null && item.instanceMaterial != null)
             {
-                if (_materialEditor == null)
-                {
-                    _materialEditor = (MaterialEditor) CreateEditor(item.instanceMaterial);
-                }
+                if (_materialEditor == null) _materialEditor = (MaterialEditor) CreateEditor(item.instanceMaterial);
                 else
                 {
                     DestroyImmediate(_materialEditor);

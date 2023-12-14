@@ -12,9 +12,9 @@ namespace Pancake.GreeneryEditor
 
         private const string MESH_FILL_SETTINGS_KEY = "GREENERY_MESH_FILL_SETTINGS";
 
-        float[] sizes;
-        float[] cumulativeSizes;
-        float total = 0;
+        private float[] _sizes;
+        private float[] _cumulativeSizes;
+        private float _total;
 
         public override void Initialize(GreeneryScatteringModule scatteringModule)
         {
@@ -33,11 +33,11 @@ namespace Pancake.GreeneryEditor
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUI.BeginChangeCheck();
-            int pointCount = Mathf.Max(1, EditorGUILayout.IntField("Point count", this.pointCount));
+            int count = Mathf.Max(1, EditorGUILayout.IntField("Point count", pointCount));
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(scatteringModule.toolEditor, "Changed mesh fill point count");
-                this.pointCount = pointCount;
+                pointCount = count;
 
                 SaveSettings();
             }
@@ -55,7 +55,7 @@ namespace Pancake.GreeneryEditor
                         Renderer renderer = gameObject.GetComponentInChildren<Renderer>();
                         CalcAreas(mesh);
                         Undo.RegisterCompleteObjectUndo(greeneryManager, "Added spawn points");
-                        for (int i = 0; i < pointCount; i++)
+                        for (int i = 0; i < count; i++)
                         {
                             var point = GetRandomPointOnMesh(mesh);
                             Vector3 pos = gameObject.transform.TransformPoint(point.Item1);
@@ -78,9 +78,9 @@ namespace Pancake.GreeneryEditor
             EditorGUILayout.EndVertical();
         }
 
-        public override void ToolHandles(Rect GUIRect)
+        public override void ToolHandles(Rect guiRect)
         {
-            if (GUIRect.Contains(Event.current.mousePosition))
+            if (guiRect.Contains(Event.current.mousePosition))
             {
                 if (Event.current.type == EventType.Layout)
                 {
@@ -101,25 +101,25 @@ namespace Pancake.GreeneryEditor
 
         public void CalcAreas(Mesh mesh)
         {
-            sizes = GetTriSizes(mesh.triangles, mesh.vertices);
-            cumulativeSizes = new float[sizes.Length];
-            total = 0;
+            _sizes = GetTriSizes(mesh.triangles, mesh.vertices);
+            _cumulativeSizes = new float[_sizes.Length];
+            _total = 0;
 
-            for (int i = 0; i < sizes.Length; i++)
+            for (int i = 0; i < _sizes.Length; i++)
             {
-                total += sizes[i];
-                cumulativeSizes[i] = total;
+                _total += _sizes[i];
+                _cumulativeSizes[i] = _total;
             }
         }
 
         public (Vector3, Vector3, Vector2) GetRandomPointOnMesh(Mesh mesh)
         {
-            float randomsample = UnityEngine.Random.value * total;
+            float randomsample = UnityEngine.Random.value * _total;
             int triIndex = -1;
 
-            for (int i = 0; i < sizes.Length; i++)
+            for (int i = 0; i < _sizes.Length; i++)
             {
-                if (randomsample <= cumulativeSizes[i])
+                if (randomsample <= _cumulativeSizes[i])
                 {
                     triIndex = i;
                     break;

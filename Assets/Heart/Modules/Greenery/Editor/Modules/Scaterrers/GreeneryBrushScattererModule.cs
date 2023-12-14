@@ -20,7 +20,7 @@ namespace Pancake.GreeneryEditor
 
         [SerializeField] private BrushScattererModuleSettings brushScattererModuleSettings;
 
-        private double lastSpawnTime;
+        private double _lastSpawnTime;
 
 
         public override void Initialize(GreeneryScatteringModule scatteringModule)
@@ -57,9 +57,9 @@ namespace Pancake.GreeneryEditor
             EditorGUILayout.EndVertical();
         }
 
-        public override void ToolHandles(Rect GUIRect)
+        public override void ToolHandles(Rect guiRect)
         {
-            base.ToolHandles(GUIRect);
+            base.ToolHandles(guiRect);
 
             Vector2 mousePos = Event.current.mousePosition;
             Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
@@ -73,7 +73,7 @@ namespace Pancake.GreeneryEditor
                 Handles.DrawSolidDisc(hit.point, hit.normal, brushScattererModuleSettings.brushRadius);
             }
 
-            if (!GUIRect.Contains(mousePos))
+            if (!guiRect.Contains(mousePos))
             {
                 PaintBrush(hit);
             }
@@ -110,7 +110,7 @@ namespace Pancake.GreeneryEditor
                 }
                 else
                 {
-                    if (EditorApplication.timeSinceStartup > lastSpawnTime + Mathf.Lerp(0.1f, 0.0f, brushScattererModuleSettings.brushDensity))
+                    if (EditorApplication.timeSinceStartup > _lastSpawnTime + Mathf.Lerp(0.1f, 0.0f, brushScattererModuleSettings.brushDensity))
                     {
                         AddPoints(greeneryManager,
                             selectedItems,
@@ -119,7 +119,7 @@ namespace Pancake.GreeneryEditor
                             brushScattererModuleSettings.brushDensity,
                             scatteringModule.scatteringModuleSettings);
 
-                        lastSpawnTime = EditorApplication.timeSinceStartup;
+                        _lastSpawnTime = EditorApplication.timeSinceStartup;
                     }
                 }
             }

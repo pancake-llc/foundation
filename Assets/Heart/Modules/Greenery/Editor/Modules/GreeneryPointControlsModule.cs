@@ -12,24 +12,18 @@ namespace Pancake.GreeneryEditor
         private const string POINT_CONTROLS_SETTINGS_KEY = "GREENERY_POINT_CONTROLS_SETTINGS";
 
         [SerializeField] private float reprojectionHeight = 100;
-        private GreeneryToolEditor toolEditor;
+        private GreeneryToolEditor _toolEditor;
 
         public override void Initialize(GreeneryToolEditor toolEditor)
         {
-            this.toolEditor = toolEditor;
-            if (EditorPrefs.HasKey(POINT_CONTROLS_SETTINGS_KEY))
-            {
-                reprojectionHeight = EditorPrefs.GetFloat(POINT_CONTROLS_SETTINGS_KEY);
-            }
-            else
-            {
-                reprojectionHeight = 100;
-            }
+            _toolEditor = toolEditor;
+            if (EditorPrefs.HasKey(POINT_CONTROLS_SETTINGS_KEY)) reprojectionHeight = EditorPrefs.GetFloat(POINT_CONTROLS_SETTINGS_KEY);
+            else reprojectionHeight = 100;
 
             toolEditor.OnGUI += OnGUI;
         }
 
-        public override void Release() { toolEditor.OnGUI -= OnGUI; }
+        public override void Release() { _toolEditor.OnGUI -= OnGUI; }
 
         public override void OnGUI()
         {
@@ -38,8 +32,8 @@ namespace Pancake.GreeneryEditor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Update"))
             {
-                var scatteringModuleSettings = toolEditor.GetScatteringModuleSettings();
-                UpdateAllSpawnData(toolEditor.GetSelectedItems(), scatteringModuleSettings);
+                var scatteringModuleSettings = _toolEditor.GetScatteringModuleSettings();
+                UpdateAllSpawnData(_toolEditor.GetSelectedItems(), scatteringModuleSettings);
             }
 
             //TODO: Implement item replacement
@@ -51,18 +45,15 @@ namespace Pancake.GreeneryEditor
             //     itemSelectionMenu.ShowAsContext();
             // }
 
-            if (GUILayout.Button("Clear points"))
-            {
-                ClearSpawnData(toolEditor.GetSelectedItems());
-            }
+            if (GUILayout.Button("Clear points")) ClearSpawnData(_toolEditor.GetSelectedItems());
 
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Reproject"))
             {
-                var scatteringModuleSettings = toolEditor.GetScatteringModuleSettings();
-                ReprojectSpawnData(toolEditor.GetSelectedItems(), this.reprojectionHeight, scatteringModuleSettings);
+                var scatteringModuleSettings = _toolEditor.GetScatteringModuleSettings();
+                ReprojectSpawnData(_toolEditor.GetSelectedItems(), this.reprojectionHeight, scatteringModuleSettings);
             }
 
             EditorGUILayout.LabelField("Reprojection Height", GUILayout.Width(120));
@@ -70,7 +61,7 @@ namespace Pancake.GreeneryEditor
             float reprojectionHeight = EditorGUILayout.FloatField(this.reprojectionHeight);
             if (EditorGUI.EndChangeCheck())
             {
-                Undo.RecordObject(toolEditor, "Changed reprojection height");
+                Undo.RecordObject(_toolEditor, "Changed reprojection height");
                 this.reprojectionHeight = reprojectionHeight;
                 SaveSettings();
             }
@@ -158,7 +149,7 @@ namespace Pancake.GreeneryEditor
         private void ReplaceSpawnData(object itemObject)
         {
             GreeneryItem newItem = (GreeneryItem) itemObject;
-            List<GreeneryItem> selectedItems = toolEditor.GetSelectedItems();
+            List<GreeneryItem> selectedItems = _toolEditor.GetSelectedItems();
             GreeneryManager greeneryManager = GreeneryEditorUtilities.GetActiveManager();
             foreach (var item in selectedItems)
             {

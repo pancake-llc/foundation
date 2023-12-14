@@ -25,10 +25,8 @@ namespace Pancake.GreeneryEditor
                     sizeFactor,
                     colorGradient.Evaluate(UnityEngine.Random.value)));
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         public static int AddSpawnPoint(
@@ -51,10 +49,8 @@ namespace Pancake.GreeneryEditor
                     sizeFactor,
                     colorGradient.Evaluate(UnityEngine.Random.value)));
             }
-            else
-            {
-                return -1;
-            }
+
+            return -1;
         }
 
         public static int AddSpawnPoint(

@@ -15,10 +15,10 @@ namespace Pancake.GreeneryEditor
             public float slopeThreshold;
             public bool getSurfaceColor;
             public float sizeFactor;
-            public bool sizeFactorLock = false;
-            public Gradient colorGradient = new Gradient();
-            public bool colorLock = false;
-            public int activeScaterrerIndex = 0;
+            public bool sizeFactorLock;
+            public Gradient colorGradient = new();
+            public bool colorLock;
+            public int activeScaterrerIndex;
         }
 
         private const string SCATTERING_SETTINGS_KEY = "GREENERY_SCATTERER_SETTINGS";

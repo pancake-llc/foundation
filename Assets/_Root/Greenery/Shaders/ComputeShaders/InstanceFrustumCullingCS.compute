@@ -1,0 +1,28 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel InstanceFrustumCulling
+
+float4x4 _VPMatrix;
+float4x4 _LocalToWorld;
+uint _InstanceCount;
+float2 _MaxWidthHeight;
+
+StructuredBuffer<float4x4> _TransformBuffer;
+AppendStructuredBuffer<uint> _VisibleInstanceIDBuffer;
+
+float _MaxDrawDistance;
+
+[numthreads(64,1,1)]
+void InstanceFrustumCulling(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _InstanceCount)
+    {
+        return;
+    }
+
+    float3 worldPos = mul(_LocalToWorld, _TransformBuffer[id.x])._m03_m13_m23;
+    float4 absPosCS = abs(mul(_VPMatrix, float4(worldPos, 1.0)));
+    if (absPosCS.z <= absPosCS.w && absPosCS.y <= absPosCS.w * 1.5 + _MaxWidthHeight.y && absPosCS.x <= absPosCS.w * 1.5 + _MaxWidthHeight.x && absPosCS.w <= _MaxDrawDistance)
+    {
+        _VisibleInstanceIDBuffer.Append(id.x);
+    }
+}

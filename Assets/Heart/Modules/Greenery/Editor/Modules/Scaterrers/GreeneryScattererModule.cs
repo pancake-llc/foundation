@@ -17,7 +17,7 @@ namespace Pancake.GreeneryEditor
 
         [SerializeField] protected GreeneryScatteringModule scatteringModule;
 
-        public virtual void ToolHandles(Rect GUIRect)
+        public virtual void ToolHandles(Rect guiRect)
         {
             //Steal control
             if (Event.current.type == EventType.Layout)

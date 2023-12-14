@@ -13,10 +13,8 @@ namespace Pancake.GreeneryEditor
             {
                 return localGreeneryManager;
             }
-            else
-            {
-                return GetFirstNonLocalManager();
-            }
+
+            return GetFirstNonLocalManager();
         }
 
         public static GreeneryManager GetFirstNonLocalManager()
@@ -26,10 +24,8 @@ namespace Pancake.GreeneryEditor
             {
                 return greeneryManagersInScene.Except(GameObject.FindObjectsOfType<LocalGreeneryManager>()).ToList()[0];
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static bool IsLeftClicking(Event currentEvent) { return (currentEvent.type == EventType.MouseDown && currentEvent.button == 0); }

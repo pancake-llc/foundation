@@ -7,26 +7,21 @@ using UnityEngine;
 
 namespace Pancake.GreeneryEditor
 {
+    [Serializable]
     public class GreeneryItemsModule : GreeneryEditorModule
     {
         [Serializable]
         public class ItemsModuleSettings
         {
-            public List<GreeneryItem> greeneryItems;
-            public List<GreeneryItem> selectedItems;
-
-            public ItemsModuleSettings()
-            {
-                greeneryItems = new List<GreeneryItem>();
-                selectedItems = new List<GreeneryItem>();
-            }
+            public List<GreeneryItem> greeneryItems = new();
+            public List<GreeneryItem> selectedItems = new();
         }
 
         public enum ObjectPickingMode
         {
-            none,
-            itemPicking,
-            palettePicking
+            None,
+            ItemPicking,
+            PalettePicking
         }
 
         public ItemsModuleSettings itemsModuleSettings;
@@ -37,14 +32,13 @@ namespace Pancake.GreeneryEditor
         private const int REMOVE_BUTTON_SIZE = 18;
         private const int COLUMNS = 5;
 
-        private int rows;
-        private ObjectPickingMode objectPickingMode;
-
-        private GreeneryToolEditor toolEditor;
+        private int _rows;
+        private ObjectPickingMode _objectPickingMode;
+        private GreeneryToolEditor _toolEditor;
 
         public override void Initialize(GreeneryToolEditor toolEditor)
         {
-            this.toolEditor = toolEditor;
+            _toolEditor = toolEditor;
 
             itemsModuleSettings = new ItemsModuleSettings();
             if (EditorPrefs.HasKey(ITEMS_SETTINGS_KEY))
@@ -55,20 +49,20 @@ namespace Pancake.GreeneryEditor
             toolEditor.OnGUI += OnGUI;
         }
 
-        public override void Release() { toolEditor.OnGUI -= OnGUI; }
+        public override void Release() { _toolEditor.OnGUI -= OnGUI; }
 
         public override void OnGUI()
         {
             int itemsAmount = itemsModuleSettings.greeneryItems.Count;
             var currentEvent = Event.current;
-            Vector2 mousePos = currentEvent.mousePosition;
+            var mousePos = currentEvent.mousePosition;
 
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             EditorGUILayout.LabelField("Greenery Items", EditorStyles.boldLabel, GUILayout.Width(100));
 
             if (GUILayout.Button("Load..."))
             {
-                GenericMenu loadMenu = new GenericMenu();
+                var loadMenu = new GenericMenu();
                 loadMenu.AddItem(new GUIContent("Load from manager"), false, LoadItemsFromManager);
                 loadMenu.AddItem(new GUIContent("Load from palette"), false, LoadItemsFromPalette);
                 loadMenu.ShowAsContext();
@@ -84,23 +78,23 @@ namespace Pancake.GreeneryEditor
 
             EditorGUILayout.EndHorizontal();
 
-            for (int i = 0; i < itemsAmount + 1; i++)
+            for (var i = 0; i < itemsAmount + 1; i++)
             {
                 if (i < itemsAmount && itemsModuleSettings.greeneryItems[i] == null) continue;
 
-                rows = Mathf.FloorToInt((float) itemsAmount / COLUMNS);
-                Rect lastRect = GUILayoutUtility.GetLastRect();
+                _rows = Mathf.FloorToInt((float) itemsAmount / COLUMNS);
+                var lastRect = GUILayoutUtility.GetLastRect();
                 int posX = BUTTON_SIZE * (i - (Mathf.FloorToInt((float) i / COLUMNS)) * COLUMNS);
                 int posY = Mathf.FloorToInt(lastRect.position.y + lastRect.height) + BUTTON_SIZE * Mathf.FloorToInt((float) i / COLUMNS) + 10;
 
-                Rect rect = new Rect(posX, posY, BUTTON_SIZE, BUTTON_SIZE);
-                Rect buttonRect = new Rect(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 4);
-                Rect removeRect = new Rect(buttonRect.position.x + BUTTON_SIZE / 2, buttonRect.y, REMOVE_BUTTON_SIZE, REMOVE_BUTTON_SIZE);
-                Rect borderRect = new Rect(buttonRect.x - 1, buttonRect.y - 1, buttonRect.width + 2, buttonRect.height + 2);
+                var rect = new Rect(posX, posY, BUTTON_SIZE, BUTTON_SIZE);
+                var buttonRect = new Rect(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 4);
+                var removeRect = new Rect(buttonRect.position.x + BUTTON_SIZE / 2f, buttonRect.y, REMOVE_BUTTON_SIZE, REMOVE_BUTTON_SIZE);
+                var borderRect = new Rect(buttonRect.x - 1, buttonRect.y - 1, buttonRect.width + 2, buttonRect.height + 2);
 
                 if (i < itemsAmount)
                 {
-                    GreeneryItem item = itemsModuleSettings.greeneryItems[i];
+                    var item = itemsModuleSettings.greeneryItems[i];
                     Texture itemIcon = null;
                     switch (item)
                     {
@@ -190,9 +184,9 @@ namespace Pancake.GreeneryEditor
                         EditorGUI.DrawRect(borderRect, new Color(1, 1, 1, 0.4f));
                         if (GUI.Button(buttonRect, "", addButtonStyle))
                         {
-                            int controlID = EditorGUIUtility.GetControlID(FocusType.Passive);
+                            int controlID = GUIUtility.GetControlID(FocusType.Passive);
                             EditorGUIUtility.ShowObjectPicker<GreeneryItem>(null, false, "", controlID);
-                            objectPickingMode = ObjectPickingMode.itemPicking;
+                            _objectPickingMode = ObjectPickingMode.ItemPicking;
                         }
                     }
                 }
@@ -200,19 +194,13 @@ namespace Pancake.GreeneryEditor
 
             ObjectPicking();
 
-            EditorGUILayout.Space((rows + 1) * BUTTON_SIZE + 20);
+            EditorGUILayout.Space((_rows + 1) * BUTTON_SIZE + 20);
         }
 
         public void LoadItemsFromManager()
         {
-            GreeneryManager greeneryManager = GreeneryEditorUtilities.GetActiveManager();
-            // foreach (GreeneryItem item in greeneryManager.greeneryProceduralItems) {
-            //     LoadGreeneryItem(item);
-            // }
-            // foreach (GreeneryItem item in greeneryManager.greeneryInstances) {
-            //     LoadGreeneryItem(item);
-            // }
-            foreach (GreeneryItem item in greeneryManager.greeneryItems)
+            var greeneryManager = GreeneryEditorUtilities.GetActiveManager();
+            foreach (var item in greeneryManager.greeneryItems)
             {
                 LoadGreeneryItem(item);
             }
@@ -220,7 +208,7 @@ namespace Pancake.GreeneryEditor
 
         public void LoadGreeneryItemPalette(GreeneryItemPalette palette)
         {
-            foreach (GreeneryItem item in palette.greeneryItems)
+            foreach (var item in palette.greeneryItems)
             {
                 LoadGreeneryItem(item);
             }
@@ -228,27 +216,21 @@ namespace Pancake.GreeneryEditor
 
         public void LoadItemsFromPalette()
         {
-            objectPickingMode = ObjectPickingMode.palettePicking;
-            int controlID = EditorGUIUtility.GetControlID(FocusType.Passive);
+            _objectPickingMode = ObjectPickingMode.PalettePicking;
+            int controlID = GUIUtility.GetControlID(FocusType.Passive);
             EditorGUIUtility.ShowObjectPicker<GreeneryItemPalette>(null, false, "", controlID);
         }
 
         public void LoadGreeneryItem(GreeneryItem item)
         {
-            if (!itemsModuleSettings.greeneryItems.Contains(item))
-            {
-                itemsModuleSettings.greeneryItems.Add(item);
-            }
+            if (!itemsModuleSettings.greeneryItems.Contains(item)) itemsModuleSettings.greeneryItems.Add(item);
 
             SaveSettings();
         }
 
         public void SelectGreeneryItem(GreeneryItem item)
         {
-            if (!itemsModuleSettings.selectedItems.Contains(item))
-            {
-                itemsModuleSettings.selectedItems.Add(item);
-            }
+            if (!itemsModuleSettings.selectedItems.Contains(item)) itemsModuleSettings.selectedItems.Add(item);
 
             SaveSettings();
         }
@@ -258,54 +240,39 @@ namespace Pancake.GreeneryEditor
             string commandName = Event.current.commandName;
             if (commandName == "ObjectSelectorClosed")
             {
-                switch (objectPickingMode)
+                switch (_objectPickingMode)
                 {
-                    case ObjectPickingMode.none:
+                    case ObjectPickingMode.None:
                         break;
-                    case ObjectPickingMode.itemPicking:
-                        GreeneryItem pickedItem = (GreeneryItem) EditorGUIUtility.GetObjectPickerObject();
-                        if (pickedItem != null)
-                        {
-                            LoadGreeneryItem(pickedItem);
-                        }
+                    case ObjectPickingMode.ItemPicking:
+                        var pickedItem = (GreeneryItem) EditorGUIUtility.GetObjectPickerObject();
+                        if (pickedItem != null) LoadGreeneryItem(pickedItem);
 
                         break;
-                    case ObjectPickingMode.palettePicking:
-                        GreeneryItemPalette pickedPalette = (GreeneryItemPalette) EditorGUIUtility.GetObjectPickerObject();
-                        if (pickedPalette != null)
-                        {
-                            LoadGreeneryItemPalette(pickedPalette);
-                        }
+                    case ObjectPickingMode.PalettePicking:
+                        var pickedPalette = (GreeneryItemPalette) EditorGUIUtility.GetObjectPickerObject();
+                        if (pickedPalette != null) LoadGreeneryItemPalette(pickedPalette);
 
                         break;
                 }
             }
         }
 
-        public void ItemDropArea(Rect GUIRect)
+        public void ItemDropArea(Rect guiRect)
         {
-            Event currentEvent = Event.current;
+            var currentEvent = Event.current;
             if (currentEvent.type == EventType.DragPerform || currentEvent.type == EventType.DragUpdated)
             {
-                if (GUIRect.Contains(currentEvent.mousePosition))
-                {
-                    DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                }
+                if (guiRect.Contains(currentEvent.mousePosition)) DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
 
                 if (currentEvent.type == EventType.DragPerform)
                 {
                     DragAndDrop.AcceptDrag();
-                    foreach (UnityEngine.Object draggedObject in DragAndDrop.objectReferences)
+                    foreach (var draggedObject in DragAndDrop.objectReferences)
                     {
-                        if (draggedObject is GreeneryItem item)
-                        {
-                            LoadGreeneryItem(item);
-                        }
+                        if (draggedObject is GreeneryItem item) LoadGreeneryItem(item);
 
-                        if (draggedObject is GreeneryItemPalette palette)
-                        {
-                            LoadGreeneryItemPalette(palette);
-                        }
+                        if (draggedObject is GreeneryItemPalette palette) LoadGreeneryItemPalette(palette);
                     }
                 }
             }
@@ -316,7 +283,7 @@ namespace Pancake.GreeneryEditor
         public override float GetHeight()
         {
             float height = EditorGUIUtility.singleLineHeight * 2;
-            height += (rows + 1) * BUTTON_SIZE;
+            height += (_rows + 1) * BUTTON_SIZE;
             return height;
         }
     }

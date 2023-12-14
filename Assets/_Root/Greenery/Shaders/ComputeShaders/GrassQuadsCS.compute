@@ -1,0 +1,89 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel GrassQuadsMain
+#include "../Includes/MeshGenerationCommon.hlsl"
+
+float4 _HeightWidthRanges;
+float _Spacing;
+
+[numthreads(64,1,1)]
+void GrassQuadsMain(uint3 id : SV_DispatchThreadID)
+{
+    if ((int)id.x >= _NumSpawnData)
+    {
+        return;
+    }
+
+    SpawnData sd = _SpawnDataBuffer[id.x];
+    float3 p = sd.positionOS;
+    float4 surfaceCol = _SpawnDataBuffer[id.x].surfaceColor;
+    float3 worldPos = mul(_LocalToWorld, float4(p, 1.0)).xyz;
+    float4 absPosCS = abs(mul(_VPMatrix, float4(worldPos, 1.0)));
+
+    if (FrustumCulling(worldPos, sd.sizeFactor, _HeightWidthRanges.y, _HeightWidthRanges.w))
+    {
+        return;
+    }
+
+    float3 normal = sd.normalOS;
+    float3 tangent = abs(dot(normal, float3(0, 0, 1))) < 0.001 ? normalize(cross(normal, float3(0, 0, 1))) : float3(1, 0, 0);
+    float3 bitangent = normalize(cross(tangent, normal));
+    float randVal = random(p.xz);
+
+    float height = lerp(_HeightWidthRanges.x, _HeightWidthRanges.y, randVal);
+    float width = lerp(_HeightWidthRanges.z, _HeightWidthRanges.w, randVal);
+
+    float lod = (_ApplyCulling > 0) ? 1.0 - saturate(invLerp(_MinFadeDistance, _MaxDistance, absPosCS.w)) : 1;
+    uint ulod = max(1.0, ceil(lod * 3));
+
+    DrawVertex drawVertices[18];
+
+    for (uint i = 0; i < ulod; i++)
+    {
+        float rot = 0;
+        float3 spacing = 0;
+        switch (i)
+        {
+        case 0:
+            spacing = _Spacing * bitangent;
+            break;
+        case 1:
+            spacing = -_Spacing * normalize(bitangent + tangent);
+            rot = PI / 3;
+            break;
+        case 2:
+            spacing = -_Spacing * normalize(bitangent - tangent);
+            rot = -PI / 3;
+            break;
+        }
+
+        rot += randVal * TWO_PI;
+        float3 quadNormal = -normalize(cross(RotateAboutAxis(tangent, normal, rot), RotateAboutAxis(normal, normal, rot)));
+
+        drawVertices[(i * 6) + 0] = GetVertex(p + RotateAboutAxis(tangent * -width + spacing, normal, rot) * sd.sizeFactor, float2(0, 0), surfaceCol, normal, quadNormal,
+                                              float4(sd.color.rgb, randVal));
+        drawVertices[(i * 6) + 1] = GetVertex(p + RotateAboutAxis(tangent * -width + normal * height + spacing, normal, rot) * sd.sizeFactor, float2(0, 1), surfaceCol, normal,
+                                              quadNormal, float4(sd.color.rgb, randVal));
+        drawVertices[(i * 6) + 2] = GetVertex(p + RotateAboutAxis(tangent * width + normal * height + spacing, normal, rot) * sd.sizeFactor, float2(1, 1), surfaceCol, normal,
+                                              quadNormal, float4(sd.color.rgb, randVal));
+
+        drawVertices[(i * 6) + 3] = GetVertex(p + RotateAboutAxis(tangent * width + normal * height + spacing, normal, rot) * sd.sizeFactor, float2(1, 1), surfaceCol, normal,
+                                              quadNormal, float4(sd.color.rgb, randVal));
+        drawVertices[(i * 6) + 4] = GetVertex(p + RotateAboutAxis(tangent * width + spacing, normal, rot) * sd.sizeFactor, float2(1, 0), surfaceCol, normal, quadNormal,
+                                              float4(sd.color.rgb, randVal));
+        drawVertices[(i * 6) + 5] = GetVertex(p + RotateAboutAxis(tangent * -width + spacing, normal, rot) * sd.sizeFactor, float2(0, 0), surfaceCol, normal, quadNormal,
+                                              float4(sd.color.rgb, randVal));
+    }
+
+    DrawTriangle tri = (DrawTriangle)0;
+
+    for (uint j = 0; j < 6 * ulod; j += 3)
+    {
+        tri.vertices[0] = drawVertices[j];
+        tri.vertices[1] = drawVertices[j + 1];
+        tri.vertices[2] = drawVertices[j + 2];
+
+        _DrawTrianglesBuffer.Append(tri);
+    }
+
+    InterlockedAdd(_IndirectArgsBuffer[0].numVerticesPerInstance, 6 * ulod);
+}

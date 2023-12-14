@@ -7,7 +7,7 @@ namespace Pancake.GreeneryEditor
     {
         public static Color GetSurfaceColor(RaycastHit hit, ref Texture2D surfaceColorTexture)
         {
-            Color surfaceColor = Color.clear;
+            var surfaceColor = Color.clear;
             if (hit.transform.TryGetComponent(out Terrain terrain))
             {
                 if (surfaceColorTexture == null && terrain.terrainData.alphamapLayers > 0)
@@ -44,15 +44,10 @@ namespace Pancake.GreeneryEditor
 
         public static Color GetMeshColor(Renderer renderer, Vector2 uv)
         {
-            Color surfaceColor = Color.clear;
-            Texture2D surfaceColorTexture = null;
+            Color surfaceColor;
             if (renderer.sharedMaterial.mainTexture != null)
             {
-                if (surfaceColorTexture == null)
-                {
-                    surfaceColorTexture = renderer.sharedMaterial.mainTexture as Texture2D;
-                }
-
+                var surfaceColorTexture = renderer.sharedMaterial.mainTexture as Texture2D;
                 surfaceColor = SampleTexture(surfaceColorTexture, uv);
                 surfaceColor.a = 1.0f;
             }
@@ -71,15 +66,15 @@ namespace Pancake.GreeneryEditor
 
         private static Texture2D GetTerrainSurfaceColorTexture(Terrain terrain)
         {
-            RenderTexture rt = new RenderTexture(terrain.terrainData.alphamapTextures[0].width,
+            var rt = new RenderTexture(terrain.terrainData.alphamapTextures[0].width,
                 terrain.terrainData.alphamapTextures[0].height,
                 0,
                 GraphicsFormat.R8G8B8A8_SRGB);
             RenderTexture.active = rt;
 
-            Material mat = new Material(Shader.Find("Hidden/TerrainColorShader"));
+            var mat = new Material(Shader.Find("Hidden/TerrainColorShader"));
             mat.SetTexture("_SplatMap", terrain.terrainData.alphamapTextures[0]);
-            for (int i = 0; i < terrain.terrainData.terrainLayers.Length; i++)
+            for (var i = 0; i < terrain.terrainData.terrainLayers.Length; i++)
             {
                 mat.SetTexture("_Diffuse" + i, terrain.terrainData.terrainLayers[i].diffuseTexture);
                 mat.SetVector("_ST" + i,
@@ -91,7 +86,7 @@ namespace Pancake.GreeneryEditor
 
             Graphics.Blit(null, rt, mat);
 
-            Texture2D terrainColTex = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
+            var terrainColTex = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
             terrainColTex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
             terrainColTex.Apply();
 
@@ -103,23 +98,19 @@ namespace Pancake.GreeneryEditor
 
         private static Color GetTerrainSurfaceColor(RaycastHit hit, Texture2D terrainColTex)
         {
-            Color surfaceColor = Color.black;
-            if (terrainColTex != null)
-            {
-                surfaceColor = SampleTexture(terrainColTex, hit.textureCoord);
-            }
-
+            var surfaceColor = Color.black;
+            if (terrainColTex != null) surfaceColor = SampleTexture(terrainColTex, hit.textureCoord);
             return surfaceColor;
         }
 
         private static Texture2D GetAlbedoGBuffer()
         {
-            RenderTexture rt = new RenderTexture(Screen.width, Screen.height, 0, GraphicsFormat.R8G8B8A8_SRGB);
+            var rt = new RenderTexture(Screen.width, Screen.height, 0, GraphicsFormat.R8G8B8A8_SRGB);
             RenderTexture.active = rt;
-            Material mat = new Material(Shader.Find("Hidden/AlbedoGBufferColor"));
+            var mat = new Material(Shader.Find("Hidden/AlbedoGBufferColor"));
             Graphics.Blit(null, rt, mat);
 
-            Texture2D albedoGBuffer = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
+            var albedoGBuffer = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
             albedoGBuffer.wrapMode = TextureWrapMode.Clamp;
             albedoGBuffer.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
             albedoGBuffer.Apply();
@@ -132,9 +123,8 @@ namespace Pancake.GreeneryEditor
 
         private static Color GetAlbedoGBufferColor(RaycastHit hit, Texture2D albedoGBuffer)
         {
-            Color gbufferColor = Color.black;
             Vector2 uv = Camera.current.WorldToViewportPoint(hit.point);
-            gbufferColor = SampleTexture(albedoGBuffer, uv);
+            var gbufferColor = SampleTexture(albedoGBuffer, uv);
             return gbufferColor;
         }
     }

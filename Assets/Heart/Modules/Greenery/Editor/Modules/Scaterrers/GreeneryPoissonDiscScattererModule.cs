@@ -23,7 +23,7 @@ namespace Pancake.GreeneryEditor
         private const string POISSON_DISC_SCATTERER_SETTINGS_KEY = "GREENERY_POISSON_DISC_SCATTERER_SETTINGS";
 
         [SerializeField] private PoissonDiscScattererModuleSettings poissonDiscScattererModuleSettings;
-        private BoxBoundsHandle boxBounds;
+        private BoxBoundsHandle _boxBounds;
 
         public override void Initialize(GreeneryScatteringModule scatteringModule)
         {
@@ -35,8 +35,7 @@ namespace Pancake.GreeneryEditor
                 EditorJsonUtility.FromJsonOverwrite(EditorPrefs.GetString(POISSON_DISC_SCATTERER_SETTINGS_KEY), poissonDiscScattererModuleSettings);
             }
 
-            boxBounds = new BoxBoundsHandle();
-            boxBounds.midpointHandleSizeFunction = (Vector3 pos) => { return PrimitiveBoundsHandle.DefaultMidpointHandleSizeFunction(pos) * 2.0f; };
+            _boxBounds = new BoxBoundsHandle {midpointHandleSizeFunction = pos => PrimitiveBoundsHandle.DefaultMidpointHandleSizeFunction(pos) * 2.0f};
             Undo.undoRedoPerformed += SaveSettings;
         }
 
@@ -75,31 +74,25 @@ namespace Pancake.GreeneryEditor
             EditorGUILayout.EndVertical();
         }
 
-        public override void ToolHandles(Rect GUIRect)
+        public override void ToolHandles(Rect guiRect)
         {
-            base.ToolHandles(GUIRect);
+            base.ToolHandles(guiRect);
 
-            Color colTransparent = Color.green;
-            colTransparent.a = 0.2f;
-            if (boxBounds == null)
-            {
-                boxBounds = new BoxBoundsHandle();
-                boxBounds.midpointHandleSizeFunction = (Vector3 pos) => { return PrimitiveBoundsHandle.DefaultMidpointHandleSizeFunction(pos) * 2.0f; };
-            }
+            _boxBounds ??= new BoxBoundsHandle {midpointHandleSizeFunction = pos => PrimitiveBoundsHandle.DefaultMidpointHandleSizeFunction(pos) * 2.0f};
 
-            boxBounds.SetColor(Color.green);
-            boxBounds.center = poissonDiscScattererModuleSettings.rectPosition;
-            boxBounds.size = poissonDiscScattererModuleSettings.rectSize;
-            using (var handleScope = new Handles.DrawingScope(Handles.matrix))
+            _boxBounds.SetColor(Color.green);
+            _boxBounds.center = poissonDiscScattererModuleSettings.rectPosition;
+            _boxBounds.size = poissonDiscScattererModuleSettings.rectSize;
+            using (new Handles.DrawingScope(Handles.matrix))
             {
                 using (EditorGUI.ChangeCheckScope changeCheckScope = new EditorGUI.ChangeCheckScope())
                 {
-                    boxBounds.DrawHandle();
+                    _boxBounds.DrawHandle();
                     Vector3 rectPosition = Handles.PositionHandle(poissonDiscScattererModuleSettings.rectPosition, Quaternion.identity);
                     if (changeCheckScope.changed)
                     {
                         Undo.RecordObject(scatteringModule.toolEditor, "Changed poisson handles");
-                        poissonDiscScattererModuleSettings.rectSize = boxBounds.size;
+                        poissonDiscScattererModuleSettings.rectSize = _boxBounds.size;
                         poissonDiscScattererModuleSettings.rectSize.y = 0;
                         poissonDiscScattererModuleSettings.rectPosition = rectPosition;
                         SaveSettings();

@@ -7,24 +7,19 @@ namespace Pancake.GreeneryEditor
     [CustomEditor(typeof(GreeneryLODInstance))]
     public class GreeneryLODInstanceEditor : UnityEditor.Editor
     {
-        private MaterialEditor materialEditor;
-
-        private void OnEnable()
-        {
-            GreeneryLODInstance item = target as GreeneryLODInstance;
-        }
+        private MaterialEditor _materialEditor;
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            GreeneryLODInstance item = target as GreeneryLODInstance;
+            var item = target as GreeneryLODInstance;
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUI.BeginChangeCheck();
             int previewIndex = EditorGUILayout.IntSlider("LOD Preview", item.previewIndex, 0, item.instanceLODs.Count - 1);
 
 
             EditorGUILayout.BeginHorizontal();
-            for (int i = 0; i < item.instanceLODs.Count; i++)
+            for (var i = 0; i < item.instanceLODs.Count; i++)
             {
                 var instanceLOD = item.instanceLODs[i];
                 if (i == 0)
@@ -51,14 +46,11 @@ namespace Pancake.GreeneryEditor
                 Undo.RecordObject(item, "Changed preview index");
                 item.previewIndex = previewIndex;
 
-                if (materialEditor != null)
-                {
-                    DestroyImmediate(materialEditor);
-                }
+                if (_materialEditor != null) DestroyImmediate(_materialEditor);
 
                 if (item.instanceLODs[previewIndex].instanceMaterial != null)
                 {
-                    materialEditor = (MaterialEditor) CreateEditor(item.instanceLODs[previewIndex].instanceMaterial);
+                    _materialEditor = (MaterialEditor) CreateEditor(item.instanceLODs[previewIndex].instanceMaterial);
                 }
             }
 
@@ -68,13 +60,13 @@ namespace Pancake.GreeneryEditor
             EditorGUILayout.EndVertical();
 
 
-            if (materialEditor != null)
+            if (_materialEditor != null)
             {
-                materialEditor.DrawHeader();
-                materialEditor.OnInspectorGUI();
+                _materialEditor.DrawHeader();
+                _materialEditor.OnInspectorGUI();
             }
         }
 
-        private void OnDisable() { DestroyImmediate(materialEditor); }
+        private void OnDisable() { DestroyImmediate(_materialEditor); }
     }
 }

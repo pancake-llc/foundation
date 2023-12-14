@@ -6,21 +6,18 @@ namespace Pancake.GreeneryEditor
     [CustomEditor(typeof(GreeneryProceduralItem), true)]
     public class GreeneryProceduralItemEditor : UnityEditor.Editor
     {
-        private MaterialEditor materialEditor;
+        private MaterialEditor _materialEditor;
 
         private void OnEnable()
         {
-            GreeneryProceduralItem item = target as GreeneryProceduralItem;
-            if (item.renderingMaterial != null)
+            var item = target as GreeneryProceduralItem;
+            if (item != null && item.renderingMaterial != null)
             {
-                if (materialEditor == null)
-                {
-                    materialEditor = (MaterialEditor) CreateEditor(item.renderingMaterial);
-                }
+                if (_materialEditor == null) _materialEditor = (MaterialEditor) CreateEditor(item.renderingMaterial);
                 else
                 {
-                    DestroyImmediate(materialEditor);
-                    materialEditor = (MaterialEditor) CreateEditor(item.renderingMaterial);
+                    DestroyImmediate(_materialEditor);
+                    _materialEditor = (MaterialEditor) CreateEditor(item.renderingMaterial);
                 }
             }
         }
@@ -29,14 +26,14 @@ namespace Pancake.GreeneryEditor
         {
             base.OnInspectorGUI();
 
-            if (materialEditor != null)
+            if (_materialEditor != null)
             {
-                materialEditor.DrawHeader();
-                materialEditor.OnInspectorGUI();
+                _materialEditor.DrawHeader();
+                _materialEditor.OnInspectorGUI();
             }
         }
 
 
-        private void OnDisable() { DestroyImmediate(materialEditor); }
+        private void OnDisable() { DestroyImmediate(_materialEditor); }
     }
 }

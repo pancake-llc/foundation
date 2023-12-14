@@ -12,10 +12,10 @@ namespace Pancake.GreeneryEditor
 
         private const string INDIVIDUAL_PLACEMENT_SETTINGS_KEY = "GREENERY_INDIVIDUAL_PLACEMENT_SETTINGS";
 
-        private Vector2 orMousePos = Vector2.zero;
-        private int spawnPointIndex = -1;
-        private GreeneryItem selectedItem = null;
-        private GreeneryManager greeneryManager;
+        private Vector2 _orMousePos = Vector2.zero;
+        private int _spawnPointIndex = -1;
+        private GreeneryItem _selectedItem;
+        private GreeneryManager _greeneryManager;
 
         public override void Initialize(GreeneryScatteringModule scatteringModule)
         {
@@ -34,11 +34,11 @@ namespace Pancake.GreeneryEditor
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUI.BeginChangeCheck();
-            float scalingSensitivity = Mathf.Max(1, EditorGUILayout.FloatField("Scaling sensitivity", this.scalingSensitivity));
+            float scale = Mathf.Max(1, EditorGUILayout.FloatField("Scaling sensitivity", scalingSensitivity));
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(scatteringModule.toolEditor, "Changed individual placement scaling sensitivity");
-                this.scalingSensitivity = scalingSensitivity;
+                scalingSensitivity = scale;
 
                 SaveSettings();
             }
@@ -47,17 +47,17 @@ namespace Pancake.GreeneryEditor
         }
 
 
-        public override void ToolHandles(Rect GUIRect)
+        public override void ToolHandles(Rect guiRect)
         {
-            base.ToolHandles(GUIRect);
+            base.ToolHandles(guiRect);
 
-            Vector2 mousePos = Event.current.mousePosition;
-            Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, scatteringModule.scatteringModuleSettings.drawingLayerMask))
+            var mousePos = Event.current.mousePosition;
+            var ray = HandleUtility.GUIPointToWorldRay(mousePos);
+            if (Physics.Raycast(ray, out var hit, Mathf.Infinity, scatteringModule.scatteringModuleSettings.drawingLayerMask))
             {
-                if (spawnPointIndex < 0)
+                if (_spawnPointIndex < 0)
                 {
-                    Color discColor = Color.green;
+                    var discColor = Color.green;
                     Handles.color = discColor;
                     Handles.DrawWireDisc(hit.point, hit.normal, 0.5f);
                     discColor.a = 0.1f;
@@ -66,7 +66,7 @@ namespace Pancake.GreeneryEditor
                 }
             }
 
-            if (!GUIRect.Contains(mousePos))
+            if (!guiRect.Contains(mousePos))
             {
                 IndividualPlacement(hit);
             }
@@ -74,52 +74,52 @@ namespace Pancake.GreeneryEditor
 
         public void IndividualPlacement(RaycastHit hit)
         {
-            Event currentEvent = Event.current;
+            var currentEvent = Event.current;
 
             if (currentEvent.button == 0)
             {
-                if (spawnPointIndex < 0 && currentEvent.type == EventType.MouseDown)
+                if (_spawnPointIndex < 0 && currentEvent.type == EventType.MouseDown)
                 {
-                    greeneryManager = GreeneryEditorUtilities.GetFirstNonLocalManager();
+                    _greeneryManager = GreeneryEditorUtilities.GetFirstNonLocalManager();
                     if (hit.collider != null && hit.transform.TryGetComponent(out LocalGreeneryManager localGreeneryManager))
                     {
-                        greeneryManager = localGreeneryManager;
+                        _greeneryManager = localGreeneryManager;
                     }
 
-                    orMousePos = currentEvent.mousePosition;
-                    Color surfaceColor = Color.clear;
+                    _orMousePos = currentEvent.mousePosition;
+                    var surfaceColor = Color.clear;
                     Texture2D surfaceColorTexture = null;
                     if (scatteringModule.scatteringModuleSettings.getSurfaceColor)
                     {
                         surfaceColor = GreenerySurfaceColorSampling.GetSurfaceColor(hit, ref surfaceColorTexture);
                     }
 
-                    Undo.RegisterCompleteObjectUndo(greeneryManager, "Added spawn point");
-                    spawnPointIndex = GreeneryScatteringUtilities.AddSpawnPoint(greeneryManager,
+                    Undo.RegisterCompleteObjectUndo(_greeneryManager, "Added spawn point");
+                    _spawnPointIndex = GreeneryScatteringUtilities.AddSpawnPoint(_greeneryManager,
                         scatteringModule.toolEditor.GetSelectedItems(),
                         hit,
                         surfaceColor,
                         scatteringModule.scatteringModuleSettings.slopeThreshold,
                         scatteringModule.scatteringModuleSettings.sizeFactor,
                         scatteringModule.scatteringModuleSettings.colorGradient,
-                        out selectedItem);
-                    EditorUtility.SetDirty(greeneryManager);
+                        out _selectedItem);
+                    EditorUtility.SetDirty(_greeneryManager);
                 }
                 else if (currentEvent.type == EventType.MouseDrag)
                 {
-                    Vector2 mousePos = currentEvent.mousePosition;
-                    float mousePosDistance = Vector2.Distance(Camera.current.ScreenToViewportPoint(orMousePos), Camera.current.ScreenToViewportPoint(mousePos));
-                    if (spawnPointIndex >= 0)
+                    var mousePos = currentEvent.mousePosition;
+                    float mousePosDistance = Vector2.Distance(Camera.current.ScreenToViewportPoint(_orMousePos), Camera.current.ScreenToViewportPoint(mousePos));
+                    if (_spawnPointIndex >= 0)
                     {
-                        greeneryManager.UpdateSpawnData(selectedItem,
-                            spawnPointIndex,
-                            scatteringModule.scatteringModuleSettings.sizeFactor + this.scalingSensitivity * mousePosDistance,
+                        _greeneryManager.UpdateSpawnData(_selectedItem,
+                            _spawnPointIndex,
+                            scatteringModule.scatteringModuleSettings.sizeFactor + scalingSensitivity * mousePosDistance,
                             scatteringModule.scatteringModuleSettings.colorGradient.Evaluate(UnityEngine.Random.value));
                     }
                 }
                 else if (currentEvent.type == EventType.MouseUp)
                 {
-                    spawnPointIndex = -1;
+                    _spawnPointIndex = -1;
                 }
             }
         }
