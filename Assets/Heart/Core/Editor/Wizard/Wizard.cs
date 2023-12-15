@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Pancake.ExLibEditor;
@@ -8,6 +7,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
+// ReSharper disable UnusedMember.Local
 namespace PancakeEditor
 {
     public class Wizard : ScriptableWindowBase
@@ -41,7 +41,8 @@ namespace PancakeEditor
             ScreenSetting,
             Spine,
             GameService,
-            Localization
+            Greenery,
+            Localization,
         }
 
         private enum WizardMonetizeType
@@ -67,6 +68,7 @@ namespace PancakeEditor
             UIEffect = WizardAllType.UIEffect,
             Spine = WizardAllType.Spine,
             GameSerice = WizardAllType.GameService,
+            Greenery = WizardAllType.Greenery,
             Localization = WizardAllType.Localization
         }
 
@@ -112,7 +114,7 @@ namespace PancakeEditor
         [SerializeField] private bool isInitialized;
 
         internal static Wizard window;
-        
+
 
         [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show()
@@ -204,7 +206,7 @@ namespace PancakeEditor
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
             var icon = GetIcon(_selectedItemType);
             GUILayout.Box(icon, GUIStyle.none, GUILayout.Width(32), GUILayout.Height(32));
-            GUILayout.Label(((WizardAllType) _selectedItemType).ToString(), Uniform.HeaderLabel);
+            GUILayout.Label(_selectedItemType.ToString(), Uniform.HeaderLabel);
             EditorGUILayout.EndHorizontal();
         }
 
@@ -262,6 +264,9 @@ namespace PancakeEditor
                     break;
                 case WizardAllType.GameService when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesGameServiceDrawer.OnInspectorGUI();
+                    break;
+                case WizardAllType.Greenery when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesGreeneryDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesLocalizationDrawer.OnInspectorGUI(ref _treeViewState,
@@ -340,6 +345,7 @@ namespace PancakeEditor
                 case WizardAllType.NeedleConsole:
                 case WizardAllType.SelectiveProfiling:
                 case WizardAllType.GameService:
+                case WizardAllType.Greenery:
                 case WizardAllType.Localization:
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
