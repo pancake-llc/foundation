@@ -1,0 +1,128 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel GreeneryGrassBladesMain
+#include "../Includes/MeshGenerationCommon.hlsl"
+
+float4 _HeightWidthRanges;
+float _PositioningRadius;
+float _ForwardRotation;
+float _BladeCurvature;
+int _BladesPerPoint;
+int _SegmentsPerBlade;
+float _RotationVariation;
+float _CurvatureVariation;
+
+float4 _Time;
+float2 _GLOBAL_GreeneryWindDirection;
+float _NormalCurving;
+
+#define GRASS_BLADES 8
+#define GRASS_SEGMENTS 5
+#define GRASS_NUM_VERTICES_PER_BLADE (GRASS_SEGMENTS * 2 + 1)
+
+float3 GetBezierPoint(float3 a, float3 b, float3 handle, float t)
+{
+    return (1 - t) * ((1 - t) * a + t * handle) + t * ((1 - t) * handle + t * b);
+}
+
+float3 GetBezierPointTangent(float3 a, float3 b, float3 handle, float t)
+{
+    return normalize((2 * t * (a - 2 * handle + b) + 2 * (handle - a)));
+}
+
+[numthreads(128,1,1)]
+void GreeneryGrassBladesMain(uint3 id : SV_DispatchThreadID)
+{
+    if ((int)id.x >= _NumSpawnData)
+    {
+        return;
+    }
+
+    SpawnData sd = _SpawnDataBuffer[id.x];
+    float3 p = sd.positionOS;
+    float4 surfaceCol = _SpawnDataBuffer[id.x].surfaceColor;
+    float3 worldPos = mul(_LocalToWorld, float4(p, 1.0)).xyz;
+    float4 absPosCS = abs(mul(_VPMatrix, float4(worldPos, 1.0)));
+
+    if (FrustumCulling(worldPos, sd.sizeFactor, _HeightWidthRanges.y, _HeightWidthRanges.w))
+    {
+        return;
+    }
+
+    float3 normal = sd.normalOS;
+    float3 tangent = abs(dot(normal, float3(0, 0, 1))) < 0.001 ? normalize(cross(normal, float3(0, 0, 1))) : float3(1, 0, 0);
+    float3 bitangent = normalize(cross(tangent, normal));
+    float randVal = random(p.xz);
+
+
+    uint bladesPerPoint = min(GRASS_BLADES, max(1, _BladesPerPoint));
+    uint segmentsPerBlade = min(GRASS_SEGMENTS, max(1, _SegmentsPerBlade));
+
+    float lod = (_ApplyCulling > 0) ? 1.0 - saturate(invLerp(_MinFadeDistance, _MaxDistance, absPosCS.w)) : 1.0;
+    bladesPerPoint = max(1.0, ceil(lod * bladesPerPoint));
+    segmentsPerBlade = max(1.0, ceil(lod * segmentsPerBlade));
+
+    uint trianglesPerBlade = (segmentsPerBlade - 1) * 2 + 1;
+
+    DrawVertex drawVertices[GRASS_NUM_VERTICES_PER_BLADE];
+
+    for (uint i = 0; i < bladesPerPoint; i++)
+    {
+        float bladeRandVal = random(p.xz * (i + 1));
+        float2 rand2D = random2d(p.xz) * 2.0 - 1.0;
+        float3 bladeOffset = RotateAboutAxis(float3(rand2D.x, 0, rand2D.y), normal, bladeRandVal * TWO_PI) * (i / (float)bladesPerPoint) * _PositioningRadius * (bladeRandVal * 2.0
+            - 1.0);
+        float height = lerp(_HeightWidthRanges.x, _HeightWidthRanges.y, bladeRandVal) * sd.sizeFactor;
+        float width = lerp(_HeightWidthRanges.z, _HeightWidthRanges.w, bladeRandVal) * sd.sizeFactor;
+        float rot = bladeRandVal * TWO_PI * _RotationVariation;
+
+        float3 pointA = 0;
+        float motion = (sin(_Time.y * 3.0 + bladeRandVal * 10.0) * sin(_Time.y * 2.0 + bladeRandVal * 15.0)) * 0.5 + 0.5;
+        float3 windDir = float3(-_GLOBAL_GreeneryWindDirection.x, 0, -_GLOBAL_GreeneryWindDirection.y);
+        bitangent = windDir;
+        float forwardRotation = lerp(lerp(_ForwardRotation, 0, _CurvatureVariation), _ForwardRotation, bladeRandVal);
+        float3 pointB = normal * height + forwardRotation * height * bitangent * motion;
+        tangent = normalize(cross(normal, windDir));
+        float3 rotatedTangent = RotateAboutAxis(tangent, normal, rot);
+        float3 handle = (pointA + pointB) * 0.5 - normalize(cross(pointB - pointA, rotatedTangent)) * _BladeCurvature * forwardRotation * height * motion;
+
+
+        for (uint j = 0; j < segmentsPerBlade; j++)
+        {
+            float t = j / (float)segmentsPerBlade;
+            float3 bezierPoint = RotateAboutAxis(GetBezierPoint(pointA, pointB, handle, t) + bladeOffset, normal, rot);
+            float3 bezierNormal = normalize(cross(RotateAboutAxis(GetBezierPointTangent(pointA, pointB, handle, t), normal, rot), rotatedTangent));
+            float segmentWidth = width * pow(abs(1 - t), 0.2);
+
+            // segmentWidth = j == 0 ? width * 0.3 : segmentWidth;
+
+            drawVertices[j * 2] = GetVertex(p + rotatedTangent * segmentWidth + bezierPoint, float2(0, t), surfaceCol, normal,
+                                            normalize(bezierNormal + rotatedTangent * _NormalCurving), float4(sd.color.rgb, bladeRandVal));
+            drawVertices[j * 2 + 1] = GetVertex(p - rotatedTangent * segmentWidth + bezierPoint, float2(1, t), surfaceCol, normal,
+                                                normalize(bezierNormal - rotatedTangent * _NormalCurving), float4(sd.color.rgb, bladeRandVal));
+        }
+
+        float3 bezierPoint = RotateAboutAxis(GetBezierPoint(pointA, pointB, handle, 1) + bladeOffset, normal, rot);
+        float3 bezierNormal = normalize(cross(RotateAboutAxis(GetBezierPointTangent(pointA, pointB, handle, 1), normal, rot), rotatedTangent));
+        drawVertices[segmentsPerBlade * 2] = GetVertex(p + bezierPoint, float2(0.5, 1), surfaceCol, normal, bezierNormal, float4(sd.color.rgb, bladeRandVal));
+
+        for (uint k = 0; k < trianglesPerBlade; k++)
+        {
+            DrawTriangle tri = (DrawTriangle)0;
+            if (k % 2 == 0)
+            {
+                tri.vertices[0] = drawVertices[k];
+                tri.vertices[1] = drawVertices[k + 1];
+                tri.vertices[2] = drawVertices[k + 2];
+            }
+            else
+            {
+                tri.vertices[0] = drawVertices[k];
+                tri.vertices[1] = drawVertices[k + 2];
+                tri.vertices[2] = drawVertices[k + 1];
+            }
+            _DrawTrianglesBuffer.Append(tri);
+        }
+    }
+
+    InterlockedAdd(_IndirectArgsBuffer[0].numVerticesPerInstance, trianglesPerBlade * bladesPerPoint * 3);
+}
