@@ -3,7 +3,7 @@ namespace Pancake.Greenery
     using Unity.Mathematics;
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "GreeneryGrassQuad", menuName = "Greenery/Greenery Grass Quad", order = 0)]
+    [CreateAssetMenu(fileName = "GreeneryGrassQuad", menuName = "Pancake/Greenery/Greenery Grass Quad", order = 0)]
     public class GreeneryGrassQuad : GreeneryProceduralItem
     {
         [Header("Geometry settings")] public float2 heightRange = new float2(0.5f, 1);

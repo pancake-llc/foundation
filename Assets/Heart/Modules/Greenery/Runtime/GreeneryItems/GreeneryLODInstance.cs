@@ -5,7 +5,7 @@ namespace Pancake.Greenery
     using Pancake.Apex;
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "GreeneryLODInstance", menuName = "Greenery/Greenery LOD Instance", order = 0)]
+    [CreateAssetMenu(fileName = "GreeneryLODInstance", menuName = "Pancake/Greenery/Greenery LOD Instance", order = 0)]
     public class GreeneryLODInstance : GreeneryItem
     {
         [Serializable]

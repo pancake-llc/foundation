@@ -3,7 +3,7 @@ namespace Pancake.Greenery
     using Pancake.Apex;
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "GreeneryInstance", menuName = "Greenery/Greenery Instance", order = 0)]
+    [CreateAssetMenu(fileName = "GreeneryInstance", menuName = "Pancake/Greenery/Greenery Instance", order = 0)]
     public class GreeneryInstance : GreeneryItem
     {
         [Header("Shadow casting")] public bool castShadows = false;
