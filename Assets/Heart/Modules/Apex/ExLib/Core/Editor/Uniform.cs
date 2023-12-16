@@ -492,6 +492,84 @@ namespace Pancake.ExLibEditor
             EditorGUILayout.EndHorizontal();
         }
 
+        /// <summary>
+        /// Draw slider for min-max value
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="width"></param>
+        public static void DrawSlideVector2(ref Rect position, in SerializedProperty property, float min, float max, int width = 5)
+        {
+            float totalWidth = position.width;
+            Vector2 vector = property.vector2Value;
+
+            position.width = EditorGUIUtility.fieldWidth;
+            vector.x = EditorGUI.FloatField(position, vector.x);
+            if (vector.x < min) vector.x = min;
+            else if (vector.x > vector.y) vector.x = vector.y;
+            totalWidth -= position.width;
+
+            position.x = position.xMax + width;
+            position.width = totalWidth - position.width - (width * 2);
+            EditorGUI.MinMaxSlider(position,
+                ref vector.x,
+                ref vector.y,
+                min,
+                max);
+
+            position.x = position.xMax + width;
+            position.width = EditorGUIUtility.fieldWidth;
+            vector.y = EditorGUI.FloatField(position, vector.y);
+            if (vector.y > max) vector.y = max;
+            else if (vector.y < vector.x) vector.y = vector.x;
+
+            property.vector2Value = vector;
+        }
+
+        /// <summary>
+        /// Draw slider for min-max int value
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="width"></param>
+        public static void DrawSilderVector2Int(ref Rect position, in SerializedProperty property, float min, float max, int width = 5)
+        {
+            float totalWidth = position.width;
+            int start = Convert.ToInt32(min);
+            int end = Convert.ToInt32(max);
+            Vector2Int vectorInt = property.vector2IntValue;
+
+            position.width = EditorGUIUtility.fieldWidth;
+            vectorInt.x = EditorGUI.IntField(position, vectorInt.x);
+            if (vectorInt.x < start) vectorInt.x = start;
+            else if (vectorInt.x > vectorInt.y) vectorInt.x = vectorInt.y;
+            totalWidth -= position.width;
+
+            position.x = position.xMax + width;
+            position.width = totalWidth - position.width - width * 2;
+            float xInt = vectorInt.x;
+            float yInt = vectorInt.y;
+            EditorGUI.MinMaxSlider(position,
+                ref xInt,
+                ref yInt,
+                start,
+                end);
+            vectorInt.x = Convert.ToInt32(xInt);
+            vectorInt.y = Convert.ToInt32(yInt);
+
+            position.x = position.xMax + width;
+            position.width = EditorGUIUtility.fieldWidth;
+            vectorInt.y = EditorGUI.IntField(position, vectorInt.y);
+            if (vectorInt.y > end) vectorInt.y = end;
+            else if (vectorInt.y < vectorInt.x) vectorInt.y = vectorInt.x;
+
+            property.vector2IntValue = vectorInt;
+        }
+
         #endregion
 
 
