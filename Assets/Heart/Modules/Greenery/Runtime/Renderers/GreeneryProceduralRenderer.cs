@@ -17,23 +17,23 @@ namespace Pancake.Greenery
         [SerializeField] private ComputeBuffer drawTrianglesBuffer;
         [SerializeField] private ComputeBuffer indirectArgsBuffer;
 
-        [SerializeField] private Material RenderingMaterial { get { return greeneryProceduralItem.renderingMaterial; } }
+        [SerializeField] private Material RenderingMaterial => greeneryProceduralItem.renderingMaterial;
 
         [SerializeField] public Bounds currentBounds;
 
-        private int kernelID;
-        private int threadGroupSize;
+        private int _kernelID;
+        private int _threadGroupSize;
 
         private const int SPAWNDATA_STRIDE = sizeof(float) * (3 + 3 + 4 + 1 + 4);
         private const int DRAW_STRIDE = sizeof(float) * ((3 + 3 + 3 + 2 + 4 + 4) * 3);
         private const int INDIRECT_ARGS_STRIDE = sizeof(int) * 4;
 
-        public int[] indirectArgs = new int[] {0, 1, 0, 0};
+        public int[] indirectArgs = {0, 1, 0, 0};
 
-        private bool initialized = false;
-        private Camera currentCamera;
+        private bool _initialized;
+        private Camera _currentCamera;
 
-        private MaterialPropertyBlock propertyBlock;
+        private MaterialPropertyBlock _propertyBlock;
 
         [SerializeField] private float3 minPos;
         [SerializeField] private float3 maxPos;
@@ -50,48 +50,39 @@ namespace Pancake.Greenery
 
         public override void Initialize()
         {
-            if (initialized)
-            {
-                Release();
-            }
+            if (_initialized) Release();
 
-            if (greeneryProceduralItem.renderingCS == null || greeneryProceduralItem.shader == null)
-            {
-                return;
-            }
+            if (greeneryProceduralItem.renderingCS == null || greeneryProceduralItem.shader == null) return;
 
-            if (spawnDataList.Count == 0)
-            {
-                return;
-            }
+            if (spawnDataList.Count == 0) return;
 
-            currentCamera = GetCamera();
-            propertyBlock = new MaterialPropertyBlock();
+            _currentCamera = GetCamera();
+            _propertyBlock = new MaterialPropertyBlock();
 
-            initialized = true;
+            _initialized = true;
 
             renderingCS = UnityEngine.Object.Instantiate(greeneryProceduralItem.renderingCS);
 
-            kernelID = renderingCS.FindKernel(greeneryProceduralItem.KernelName);
+            _kernelID = renderingCS.FindKernel(greeneryProceduralItem.KernelName);
 
-            renderingCS.GetKernelThreadGroupSizes(kernelID, out uint threadGroupSizeX, out _, out _);
-            threadGroupSize = (int) math.ceil((float) spawnDataList.Count / threadGroupSizeX);
+            renderingCS.GetKernelThreadGroupSizes(_kernelID, out uint threadGroupSizeX, out _, out _);
+            _threadGroupSize = (int) math.ceil((float) spawnDataList.Count / threadGroupSizeX);
 
 
             SetupBuffers();
             greeneryProceduralItem.Setup();
 
-            renderingCS.SetFloat("_MaxDistance", greeneryProceduralItem.maxDistance);
-            renderingCS.SetFloat("_MinFadeDistance", greeneryProceduralItem.minFadeDistance);
+            renderingCS.SetFloat(MaxDistance, greeneryProceduralItem.maxDistance);
+            renderingCS.SetFloat(MinFadeDistance, greeneryProceduralItem.minFadeDistance);
 
-            renderingCS.SetBuffer(kernelID, "_SpawnDataBuffer", spawnDataBuffer);
-            renderingCS.SetBuffer(kernelID, "_DrawTrianglesBuffer", drawTrianglesBuffer);
-            renderingCS.SetBuffer(kernelID, "_IndirectArgsBuffer", indirectArgsBuffer);
-            renderingCS.SetMatrix("_LocalToWorld", greeneryManager.transform.localToWorldMatrix);
-            renderingCS.SetFloat("_ApplyCulling", greeneryProceduralItem.applyCulling ? 1 : 0);
+            renderingCS.SetBuffer(_kernelID, SpawnDataBuffer, spawnDataBuffer);
+            renderingCS.SetBuffer(_kernelID, DrawTrianglesBuffer, drawTrianglesBuffer);
+            renderingCS.SetBuffer(_kernelID, IndirectArgsBuffer, indirectArgsBuffer);
+            renderingCS.SetMatrix(LocalToWorld, greeneryManager.transform.localToWorldMatrix);
+            renderingCS.SetFloat(ApplyCulling, greeneryProceduralItem.applyCulling ? 1 : 0);
             greeneryProceduralItem.SetData(renderingCS);
 
-            propertyBlock.SetBuffer("_DrawTrianglesBuffer", drawTrianglesBuffer);
+            _propertyBlock.SetBuffer(DrawTrianglesBuffer, drawTrianglesBuffer);
 
             UpdateMinMax();
             currentBounds.SetMinMax(minPos, maxPos + greeneryProceduralItem.MaxHeight);
@@ -99,7 +90,7 @@ namespace Pancake.Greenery
             currentBounds = TransformBounds(currentBounds);
 
             spawnDataBuffer.SetData(spawnDataList);
-            renderingCS.SetInt("_NumSpawnData", spawnDataList.Count);
+            renderingCS.SetInt(NumSpawnData, spawnDataList.Count);
 
             if (!greeneryProceduralItem.applyCulling)
             {
@@ -109,7 +100,7 @@ namespace Pancake.Greenery
 
         public override void Release()
         {
-            if (initialized)
+            if (_initialized)
             {
                 if (Application.isPlaying)
                 {
@@ -124,7 +115,7 @@ namespace Pancake.Greenery
                 greeneryProceduralItem.Cleanup();
             }
 
-            initialized = false;
+            _initialized = false;
 
 #if UNITY_EDITOR
             UnityEditor.AssemblyReloadEvents.beforeAssemblyReload -= OnAssemblyReload;
@@ -228,10 +219,7 @@ namespace Pancake.Greenery
                 Initialize();
             }
 
-            if (!initialized)
-            {
-                return;
-            }
+            if (!_initialized) return;
 
             if (greeneryProceduralItem.applyCulling)
             {
@@ -244,7 +232,7 @@ namespace Pancake.Greenery
                 indirectArgsBuffer,
                 0,
                 null,
-                propertyBlock,
+                _propertyBlock,
                 greeneryProceduralItem.castShadows ? ShadowCastingMode.On : ShadowCastingMode.Off,
                 true,
                 greeneryManager.gameObject.layer);
@@ -269,13 +257,13 @@ namespace Pancake.Greenery
                 drawTrianglesBuffer.SetCounterValue(0);
                 indirectArgsBuffer.SetData(indirectArgs);
 
-                Matrix4x4 v = currentCamera.worldToCameraMatrix;
-                Matrix4x4 p = currentCamera.projectionMatrix;
+                Matrix4x4 v = _currentCamera.worldToCameraMatrix;
+                Matrix4x4 p = _currentCamera.projectionMatrix;
                 Matrix4x4 vp = p * v;
-                renderingCS.SetMatrix("_VPMatrix", vp);
-                renderingCS.SetVector("_Time", Shader.GetGlobalVector("_Time"));
+                renderingCS.SetMatrix(VpMatrix, vp);
+                renderingCS.SetVector(Time1, Shader.GetGlobalVector(Time1));
 
-                renderingCS.Dispatch(kernelID, threadGroupSize, 1, 1);
+                renderingCS.Dispatch(_kernelID, _threadGroupSize, 1, 1);
             }
         }
 

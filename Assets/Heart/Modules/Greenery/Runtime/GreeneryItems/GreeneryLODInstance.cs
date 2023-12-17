@@ -18,7 +18,7 @@ namespace Pancake.Greenery
             [Range(0.0f, 1.0f)] public float LODFactor = 0.2f;
         }
 
-        public ComputeShader lodCullingCS;
+        public ComputeShader LODCullingCS;
         public float maxDrawDistance = 100.0f;
         public Vector2 sizeRange = new(1, 1);
         public float pivotOffset;
@@ -28,17 +28,17 @@ namespace Pancake.Greenery
         [MinMaxSlider(0, 360)] public Vector2Int yRotation;
         [MinMaxSlider(0, 360)] public Vector2Int zRotation;
 
-        public List<InstanceLOD> instanceLODs;
+        public List<InstanceLOD> instancesLOD;
 
         [HideInInspector] public int previewIndex;
 
         private void OnValidate()
         {
-            if (instanceLODs.Count >= 2)
+            if (instancesLOD.Count >= 2)
             {
-                for (int i = 1; i < instanceLODs.Count; i++)
+                for (int i = 1; i < instancesLOD.Count; i++)
                 {
-                    instanceLODs[i].LODFactor = Mathf.Max(instanceLODs[i].LODFactor, instanceLODs[i - 1].LODFactor);
+                    instancesLOD[i].LODFactor = Mathf.Max(instancesLOD[i].LODFactor, instancesLOD[i - 1].LODFactor);
                 }
             }
         }

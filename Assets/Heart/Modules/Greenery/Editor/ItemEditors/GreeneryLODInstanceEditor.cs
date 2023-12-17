@@ -10,7 +10,7 @@ namespace Pancake.GreeneryEditor
     public class GreeneryLODInstanceEditor : UnityEditor.Editor
     {
         private MaterialEditor _materialEditor;
-        
+
         private SerializedProperty _lodCullingCsProperty;
         private SerializedProperty _maxDrawDistanceProperty;
         private SerializedProperty _sizeRangeProperty;
@@ -20,11 +20,11 @@ namespace Pancake.GreeneryEditor
         private SerializedProperty _xRotationProperty;
         private SerializedProperty _yRotationProperty;
         private SerializedProperty _zRotationProperty;
-        private SerializedProperty _instanceLODsProperty;
+        private SerializedProperty _instanceLoDsProperty;
 
         private void OnEnable()
         {
-            _lodCullingCsProperty = serializedObject.FindProperty("lodCullingCS");
+            _lodCullingCsProperty = serializedObject.FindProperty("LODCullingCS");
             _maxDrawDistanceProperty = serializedObject.FindProperty("maxDrawDistance");
             _sizeRangeProperty = serializedObject.FindProperty("sizeRange");
             _pivotOffsetProperty = serializedObject.FindProperty("pivotOffset");
@@ -33,14 +33,14 @@ namespace Pancake.GreeneryEditor
             _xRotationProperty = serializedObject.FindProperty("xRotation");
             _yRotationProperty = serializedObject.FindProperty("yRotation");
             _zRotationProperty = serializedObject.FindProperty("zRotation");
-            _instanceLODsProperty = serializedObject.FindProperty("instanceLODs");
+            _instanceLoDsProperty = serializedObject.FindProperty("instancesLOD");
         }
 
 
         public override void OnInspectorGUI()
         {
             var greeneryLOD = target as GreeneryLODInstance;
-            
+
             serializedObject.Update();
             EditorGUILayout.PropertyField(_lodCullingCsProperty);
             EditorGUILayout.PropertyField(_maxDrawDistanceProperty);
@@ -59,53 +59,56 @@ namespace Pancake.GreeneryEditor
             var zRotationRect = new Rect(rect.x, rect.y + 60, rect.width, rect.height);
             zRotationRect = EditorGUI.PrefixLabel(zRotationRect, new GUIContent("Z Rotation"));
             Uniform.DrawSilderVector2Int(ref zRotationRect, _zRotationProperty, 0, 360);
-            
-            EditorGUILayout.PropertyField(_instanceLODsProperty, true);
+
+            EditorGUILayout.PropertyField(_instanceLoDsProperty, true);
             serializedObject.ApplyModifiedProperties();
-            
+
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            EditorGUI.BeginChangeCheck();
-            int previewIndex = EditorGUILayout.IntSlider("LOD Preview", greeneryLOD.previewIndex, 0, Math.Max(greeneryLOD.instanceLODs.Count - 1, 0));
+
+            if (greeneryLOD != null)
+            {
+                try
+                {
+                    EditorGUI.BeginChangeCheck();
+                    int previewIndex = EditorGUILayout.IntSlider("LOD Preview", greeneryLOD.previewIndex, 0, Math.Max(greeneryLOD.instancesLOD.Count - 1, 0));
+
+                    EditorGUILayout.BeginHorizontal();
+                    for (var i = 0; i < greeneryLOD.instancesLOD.Count; i++)
+                    {
+                        var instanceLOD = greeneryLOD.instancesLOD[i];
+                        if (i == 0)
+                        {
+                            if (GUILayout.Button(i.ToString(), GUILayout.Width((Screen.width - 50) * instanceLOD.LODFactor), GUILayout.Height(30))) previewIndex = i;
+                        }
+                        else
+                        {
+                            float w = (Screen.width - 50) * (instanceLOD.LODFactor - greeneryLOD.instancesLOD[i - 1].LODFactor);
+                            if (GUILayout.Button(i.ToString(), GUILayout.Width(w), GUILayout.Height(30))) previewIndex = i;
+                        }
+                    }
+
+
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(greeneryLOD, "Changed preview index");
+                        greeneryLOD.previewIndex = previewIndex;
+
+                        if (_materialEditor != null) DestroyImmediate(_materialEditor);
+                        if (greeneryLOD.instancesLOD.Count == 0) return;
+                        if (greeneryLOD.instancesLOD[previewIndex].instanceMaterial != null)
+                        {
+                            _materialEditor = (MaterialEditor) CreateEditor(greeneryLOD.instancesLOD[previewIndex].instanceMaterial);
+                        }
+                    }
+
+                    EditorGUILayout.EndHorizontal();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
             
-            EditorGUILayout.BeginHorizontal();
-            for (var i = 0; i < greeneryLOD.instanceLODs.Count; i++)
-            {
-                var instanceLOD = greeneryLOD.instanceLODs[i];
-                if (i == 0)
-                {
-                    if (GUILayout.Button(i.ToString(), GUILayout.Width((Screen.width - 50) * instanceLOD.LODFactor), GUILayout.Height(30)))
-                    {
-                        previewIndex = i;
-                    }
-                }
-                else
-                {
-                    if (GUILayout.Button(i.ToString(),
-                            GUILayout.Width((Screen.width - 50) * (instanceLOD.LODFactor - greeneryLOD.instanceLODs[i - 1].LODFactor)),
-                            GUILayout.Height(30)))
-                    {
-                        previewIndex = i;
-                    }
-                }
-            }
-
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(greeneryLOD, "Changed preview index");
-                greeneryLOD.previewIndex = previewIndex;
-
-                if (_materialEditor != null) DestroyImmediate(_materialEditor);
-                if (greeneryLOD.instanceLODs.Count == 0) return;
-                if (greeneryLOD.instanceLODs[previewIndex].instanceMaterial != null)
-                {
-                    _materialEditor = (MaterialEditor) CreateEditor(greeneryLOD.instanceLODs[previewIndex].instanceMaterial);
-                }
-            }
-
-            EditorGUILayout.EndHorizontal();
-
-
             EditorGUILayout.EndVertical();
 
 

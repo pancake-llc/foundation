@@ -8,11 +8,13 @@ namespace Pancake.Greenery
     {
         public bool castShadows;
 
+        [Space]
         // ReSharper disable once InconsistentNaming
         public ComputeShader instanceCullingCS;
         public float maxDrawDistance = 100.0f;
         public Mesh instancedMesh;
         public Material instanceMaterial;
+        [Space]
         public Vector2 sizeRange = new(1, 1);
         public float pivotOffset;
         public bool alignToSurface = true;

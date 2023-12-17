@@ -7,10 +7,16 @@ namespace Pancake.Greenery
     public class GreeneryWind : MonoBehaviour
     {
         public Texture2D windTexture;
-        public float2 textureScale = new float2(1, 1);
-        public Vector4 frequencyFactors = new Vector4(1, 1, 1, 1);
+        public float2 textureScale = new(1, 1);
+        public Vector4 frequencyFactors = new(1, 1, 1, 1);
         public float strength;
         public float speed;
+        private static readonly int GlobalGreeneryWindTexture = Shader.PropertyToID("_GLOBAL_GreeneryWindTexture");
+        private static readonly int GlobalGreeneryWindTextureScale = Shader.PropertyToID("_GLOBAL_GreeneryWindTextureScale");
+        private static readonly int GlobalGreeneryWindDirection = Shader.PropertyToID("_GLOBAL_GreeneryWindDirection");
+        private static readonly int GlobalGreeneryWindStrength = Shader.PropertyToID("_GLOBAL_GreeneryWindStrength");
+        private static readonly int GlobalGreeneryWindSpeed = Shader.PropertyToID("_GLOBAL_GreeneryWindSpeed");
+        private static readonly int GlobalGreeneryFrequencyFactors = Shader.PropertyToID("_GLOBAL_GreeneryFrequencyFactors");
 
         private void OnEnable() { UpdateWind(); }
 
@@ -26,12 +32,12 @@ namespace Pancake.Greenery
 
         public void UpdateWind()
         {
-            Shader.SetGlobalTexture("_GLOBAL_GreeneryWindTexture", windTexture);
-            Shader.SetGlobalVector("_GLOBAL_GreeneryWindTextureScale", new float4(textureScale, 0, 0));
-            Shader.SetGlobalVector("_GLOBAL_GreeneryWindDirection", math.normalize(new float4(-((float3) transform.forward).xz, 0, 0)));
-            Shader.SetGlobalFloat("_GLOBAL_GreeneryWindStrength", strength);
-            Shader.SetGlobalFloat("_GLOBAL_GreeneryWindSpeed", speed);
-            Shader.SetGlobalVector("_GLOBAL_GreeneryFrequencyFactors", frequencyFactors);
+            Shader.SetGlobalTexture(GlobalGreeneryWindTexture, windTexture);
+            Shader.SetGlobalVector(GlobalGreeneryWindTextureScale, new float4(textureScale, 0, 0));
+            Shader.SetGlobalVector(GlobalGreeneryWindDirection, math.normalize(new float4(-((float3) transform.forward).xz, 0, 0)));
+            Shader.SetGlobalFloat(GlobalGreeneryWindStrength, strength);
+            Shader.SetGlobalFloat(GlobalGreeneryWindSpeed, speed);
+            Shader.SetGlobalVector(GlobalGreeneryFrequencyFactors, frequencyFactors);
         }
 
         private void OnDrawGizmos()

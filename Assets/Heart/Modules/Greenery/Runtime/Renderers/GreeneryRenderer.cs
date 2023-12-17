@@ -10,7 +10,29 @@ namespace Pancake.Greenery
     [Serializable]
     public abstract class GreeneryRenderer
     {
-        [SerializeField] public List<SpawnData> spawnDataList = new List<SpawnData>();
+        protected static readonly int TransformBuffer = Shader.PropertyToID("_TransformBuffer");
+        protected static readonly int NormalBuffer = Shader.PropertyToID("_NormalBuffer");
+        protected static readonly int SurfaceColorBuffer = Shader.PropertyToID("_SurfaceColorBuffer");
+        protected static readonly int ColorBuffer = Shader.PropertyToID("_ColorBuffer");
+        protected static readonly int LocalToWorld = Shader.PropertyToID("_LocalToWorld");
+        protected static readonly int UseSurfaceNormals = Shader.PropertyToID("_UseSurfaceNormals");
+        protected static readonly int VisibleInstanceIDBuffer = Shader.PropertyToID("_VisibleInstanceIDBuffer");
+        protected static readonly int MaxDistance = Shader.PropertyToID("_MaxDistance");
+        protected static readonly int VpMatrix = Shader.PropertyToID("_VPMatrix");
+        protected static readonly int MaxDrawDistance = Shader.PropertyToID("_MaxDrawDistance");
+        protected static readonly int InstanceCount = Shader.PropertyToID("_InstanceCount");
+        protected static readonly int MaxWidthHeight = Shader.PropertyToID("_MaxWidthHeight");
+        protected static readonly int RenderingRange = Shader.PropertyToID("_RenderingRange");
+        protected static readonly int EditorPreview = Shader.PropertyToID("_EditorPreview");
+        protected static readonly int DrawTrianglesBuffer = Shader.PropertyToID("_DrawTrianglesBuffer");
+        protected static readonly int MinFadeDistance = Shader.PropertyToID("_MinFadeDistance");
+        protected static readonly int SpawnDataBuffer = Shader.PropertyToID("_SpawnDataBuffer");
+        protected static readonly int IndirectArgsBuffer = Shader.PropertyToID("_IndirectArgsBuffer");
+        protected static readonly int ApplyCulling = Shader.PropertyToID("_ApplyCulling");
+        protected static readonly int NumSpawnData = Shader.PropertyToID("_NumSpawnData");
+        protected static readonly int Time1 = Shader.PropertyToID("_Time");
+        
+        [SerializeField] public List<SpawnData> spawnDataList = new();
         public bool active = true;
         public GreeneryManager greeneryManager;
 

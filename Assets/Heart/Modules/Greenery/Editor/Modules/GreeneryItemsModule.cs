@@ -99,7 +99,7 @@ namespace Pancake.GreeneryEditor
                     switch (item)
                     {
                         case GreeneryLODInstance a:
-                            if (a.instanceLODs[0] != null) itemIcon = AssetPreview.GetAssetPreview(a.instanceLODs[0].instancedMesh);
+                            if (a.instancesLOD[0] != null) itemIcon = AssetPreview.GetAssetPreview(a.instancesLOD[0].instancedMesh);
                             break;
                         case GreeneryInstance b:
                             if (b.instancedMesh != null) itemIcon = AssetPreview.GetAssetPreview(b.instancedMesh);

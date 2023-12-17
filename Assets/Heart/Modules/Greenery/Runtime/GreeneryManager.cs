@@ -9,18 +9,18 @@ namespace Pancake.Greenery
     [ExecuteAlways]
     public class GreeneryManager : MonoBehaviour, ISerializationCallbackReceiver
     {
-        [HideInInspector] public Dictionary<GreeneryItem, GreeneryRenderer> rendererDictionary = new Dictionary<GreeneryItem, GreeneryRenderer>();
-        [HideInInspector, SerializeReference] public List<GreeneryItem> greeneryItems = new List<GreeneryItem>();
-        [HideInInspector, SerializeReference] public List<GreeneryRenderer> greeneryRenderers = new List<GreeneryRenderer>();
+        [HideInInspector] public Dictionary<GreeneryItem, GreeneryRenderer> rendererDictionary = new();
+        [HideInInspector, SerializeReference] public List<GreeneryItem> greeneryItems = new();
+        [HideInInspector, SerializeReference] public List<GreeneryRenderer> greeneryRenderers = new();
 
         private void OnEnable()
         {
 #if UNITY_EDITOR
             EditorApplication.update += UpdateRenderers;
 #endif
-            foreach (GreeneryRenderer renderer in greeneryRenderers)
+            foreach (GreeneryRenderer r in greeneryRenderers)
             {
-                renderer.Initialize();
+                r.Initialize();
             }
 
             foreach (var kvp in rendererDictionary)
@@ -51,8 +51,8 @@ namespace Pancake.Greenery
         {
             for (int i = 0; i < greeneryRenderers.Count; i++)
             {
-                GreeneryRenderer renderer = greeneryRenderers[i];
-                renderer.Render();
+                GreeneryRenderer r = greeneryRenderers[i];
+                r.Render();
             }
         }
 
@@ -60,9 +60,9 @@ namespace Pancake.Greenery
         {
             if (!Application.isPlaying)
             {
-                foreach (GreeneryRenderer renderer in greeneryRenderers)
+                foreach (GreeneryRenderer r in greeneryRenderers)
                 {
-                    renderer?.Update();
+                    r?.Update();
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace Pancake.Greenery
                 }
                 else if (item is GreeneryLODInstance lodInstanceItem)
                 {
-                    if (lodInstanceItem.instanceLODs.Count > 0)
+                    if (lodInstanceItem.instancesLOD.Count > 0)
                     {
                         rendererDictionary.Add(lodInstanceItem, new GreeneryLODInstanceRenderer(lodInstanceItem, this));
                     }

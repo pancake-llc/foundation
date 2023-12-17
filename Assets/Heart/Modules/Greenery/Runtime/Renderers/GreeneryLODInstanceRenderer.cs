@@ -1,5 +1,3 @@
-
-
 namespace Pancake.Greenery
 {
     using System;
@@ -7,7 +5,7 @@ namespace Pancake.Greenery
     using Unity.Mathematics;
     using UnityEngine;
     using UnityEngine.Rendering;
-    
+
 
     [Serializable, ExecuteAlways]
     public class GreeneryLODInstanceRenderer : GreeneryRenderer
@@ -30,9 +28,9 @@ namespace Pancake.Greenery
 
         [SerializeReference] private RendererData[] rendererDataArray;
 
-        private uint[] args = new uint[5] {0, 0, 0, 0, 0};
+        private uint[] _args = {0, 0, 0, 0, 0};
 
-        private Camera currentCamera;
+        private Camera _currentCamera;
 
         [SerializeField] public Bounds currentBounds;
 
@@ -40,20 +38,20 @@ namespace Pancake.Greenery
         {
             this.greeneryLODInstance = greeneryLODInstance;
             this.greeneryManager = greeneryManager;
-            InstantiateCullingCS();
+            InstantiateCullingCs();
         }
 
         public override void Initialize()
         {
-            InstantiateCullingCS();
+            InstantiateCullingCs();
             UpdateBuffersAndData();
         }
 
-        public void InstantiateCullingCS()
+        public void InstantiateCullingCs()
         {
-            if (greeneryLODInstance.lodCullingCS != null)
+            if (greeneryLODInstance.LODCullingCS != null)
             {
-                lodCullingCS = UnityEngine.Object.Instantiate(greeneryLODInstance.lodCullingCS);
+                lodCullingCS = UnityEngine.Object.Instantiate(greeneryLODInstance.LODCullingCS);
             }
         }
 
@@ -64,14 +62,14 @@ namespace Pancake.Greenery
                 return;
             }
 
-            args = new uint[5] {0, 0, 0, 0, 0};
+            _args = new uint[5] {0, 0, 0, 0, 0};
 
             transformBuffer = new ComputeBuffer(spawnDataList.Count, sizeof(float) * 4 * 4, ComputeBufferType.Default, ComputeBufferMode.Immutable);
             normalBuffer = new ComputeBuffer(spawnDataList.Count, sizeof(float) * 3, ComputeBufferType.Default, ComputeBufferMode.Immutable);
             surfaceColorBuffer = new ComputeBuffer(spawnDataList.Count, sizeof(float) * 4, ComputeBufferType.Default, ComputeBufferMode.Immutable);
             colorBuffer = new ComputeBuffer(spawnDataList.Count, sizeof(float) * 3, ComputeBufferType.Default, ComputeBufferMode.Immutable);
 
-            rendererDataArray = new RendererData[greeneryLODInstance.instanceLODs.Count];
+            rendererDataArray = new RendererData[greeneryLODInstance.instancesLOD.Count];
             for (int i = 0; i < rendererDataArray.Length; i++)
             {
                 rendererDataArray[i] = new RendererData();
@@ -85,7 +83,7 @@ namespace Pancake.Greenery
                 }
 
 
-                rendererData.argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+                rendererData.argsBuffer = new ComputeBuffer(1, _args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
                 rendererData.visibleInstanceIDBuffer = new ComputeBuffer(spawnDataList.Count, sizeof(uint), ComputeBufferType.Append);
             }
 
@@ -243,7 +241,7 @@ namespace Pancake.Greenery
                 Quaternion rot = greeneryLODInstance.alignToSurface ? Quaternion.FromToRotation(Vector3.up, data.normal).normalized : Quaternion.identity;
                 Matrix4x4 transform = Matrix4x4.TRS(position, rot * randomRot, Vector3.one * sizeFactor);
                 instanceBounds.center = position;
-                instanceBounds.size = greeneryLODInstance.instanceLODs[0].instancedMesh.bounds.size * sizeFactor;
+                instanceBounds.size = greeneryLODInstance.instancesLOD[0].instancedMesh.bounds.size * sizeFactor;
 
                 transforms[i] = transform;
                 normals[i] = (transform.inverse * new Vector4(data.normal.x, data.normal.y, data.normal.z, 0.0f)).normalized;
@@ -258,33 +256,33 @@ namespace Pancake.Greenery
             surfaceColorBuffer.SetData(surfaceColors);
             colorBuffer.SetData(colors);
 
-            currentCamera = GetCamera();
+            _currentCamera = GetCamera();
 
 
             for (int i = 0; i < rendererDataArray.Length; i++)
             {
                 RendererData rendererData = rendererDataArray[i];
-                args[0] = greeneryLODInstance.instanceLODs[i].instancedMesh.GetIndexCount(0);
-                args[1] = (uint) spawnDataList.Count;
-                args[2] = greeneryLODInstance.instanceLODs[i].instancedMesh.GetIndexStart(0);
-                args[3] = greeneryLODInstance.instanceLODs[i].instancedMesh.GetBaseVertex(0);
+                _args[0] = greeneryLODInstance.instancesLOD[i].instancedMesh.GetIndexCount(0);
+                _args[1] = (uint) spawnDataList.Count;
+                _args[2] = greeneryLODInstance.instancesLOD[i].instancedMesh.GetIndexStart(0);
+                _args[3] = greeneryLODInstance.instancesLOD[i].instancedMesh.GetBaseVertex(0);
 
-                rendererData.argsBuffer.SetData(args);
+                rendererData.argsBuffer.SetData(_args);
 
-                rendererData.materialRuntimeProperties.SetBuffer("_TransformBuffer", transformBuffer);
-                rendererData.materialRuntimeProperties.SetBuffer("_NormalBuffer", normalBuffer);
-                rendererData.materialRuntimeProperties.SetBuffer("_SurfaceColorBuffer", surfaceColorBuffer);
-                rendererData.materialRuntimeProperties.SetBuffer("_ColorBuffer", colorBuffer);
-                rendererData.materialRuntimeProperties.SetMatrix("_LocalToWorld", greeneryManager.transform.localToWorldMatrix);
-                rendererData.materialRuntimeProperties.SetFloat("_UseSurfaceNormals", greeneryLODInstance.useSurfaceNormals ? 1.0f : 0.0f);
+                rendererData.materialRuntimeProperties.SetBuffer(TransformBuffer, transformBuffer);
+                rendererData.materialRuntimeProperties.SetBuffer(NormalBuffer, normalBuffer);
+                rendererData.materialRuntimeProperties.SetBuffer(SurfaceColorBuffer, surfaceColorBuffer);
+                rendererData.materialRuntimeProperties.SetBuffer(ColorBuffer, colorBuffer);
+                rendererData.materialRuntimeProperties.SetMatrix(LocalToWorld, greeneryManager.transform.localToWorldMatrix);
+                rendererData.materialRuntimeProperties.SetFloat(UseSurfaceNormals, greeneryLODInstance.useSurfaceNormals ? 1.0f : 0.0f);
 
-                rendererData.materialRuntimeProperties.SetBuffer("_VisibleInstanceIDBuffer", rendererData.visibleInstanceIDBuffer);
+                rendererData.materialRuntimeProperties.SetBuffer(VisibleInstanceIDBuffer, rendererData.visibleInstanceIDBuffer);
             }
 
             if (lodCullingCS != null)
             {
-                lodCullingCS.SetMatrix("_LocalToWorld", greeneryManager.transform.localToWorldMatrix);
-                lodCullingCS.SetFloat("_MaxDistance", greeneryLODInstance.maxDrawDistance);
+                lodCullingCS.SetMatrix(LocalToWorld, greeneryManager.transform.localToWorldMatrix);
+                lodCullingCS.SetFloat(MaxDistance, greeneryLODInstance.maxDrawDistance);
             }
 
             currentBounds = TransformBounds(currentBounds);
@@ -303,7 +301,7 @@ namespace Pancake.Greenery
                 {
                     RendererData rendererData = rendererDataArray[i];
                     LODCulling(i);
-                    GreeneryLODInstance.InstanceLOD instanceLOD = greeneryLODInstance.instanceLODs[i];
+                    GreeneryLODInstance.InstanceLOD instanceLOD = greeneryLODInstance.instancesLOD[i];
                     if (instanceLOD.instancedMesh != null && instanceLOD.instanceMaterial != null)
                     {
                         Graphics.DrawMeshInstancedIndirect(instanceLOD.instancedMesh,
@@ -322,7 +320,7 @@ namespace Pancake.Greenery
                 int index = greeneryLODInstance.previewIndex;
                 LODCulling(index, true);
                 RendererData rendererData = rendererDataArray[index];
-                GreeneryLODInstance.InstanceLOD instanceLOD = greeneryLODInstance.instanceLODs[index];
+                GreeneryLODInstance.InstanceLOD instanceLOD = greeneryLODInstance.instancesLOD[index];
                 if (instanceLOD.instancedMesh != null && instanceLOD.instanceMaterial != null)
                 {
                     Graphics.DrawMeshInstancedIndirect(instanceLOD.instancedMesh,
@@ -350,38 +348,38 @@ namespace Pancake.Greenery
                 {
                     if (index == 0)
                     {
-                        lodCullingCS.SetVector("_RenderingRange", new Vector2(0, greeneryLODInstance.instanceLODs[index].LODFactor));
+                        lodCullingCS.SetVector(RenderingRange, new Vector2(0, greeneryLODInstance.instancesLOD[index].LODFactor));
                     }
                     else
                     {
-                        lodCullingCS.SetVector("_RenderingRange",
-                            new Vector2(greeneryLODInstance.instanceLODs[index - 1].LODFactor, greeneryLODInstance.instanceLODs[index].LODFactor));
+                        lodCullingCS.SetVector(RenderingRange,
+                            new Vector2(greeneryLODInstance.instancesLOD[index - 1].LODFactor, greeneryLODInstance.instancesLOD[index].LODFactor));
                     }
                 }
 
-                lodCullingCS.SetBuffer(kernelID, "_TransformBuffer", transformBuffer);
-                lodCullingCS.SetInt("_InstanceCount", spawnDataList.Count);
-                lodCullingCS.SetVector("_MaxWidthHeight",
-                    new Vector2(greeneryLODInstance.instanceLODs[index].instancedMesh.bounds.size.x,
-                        greeneryLODInstance.instanceLODs[index].instancedMesh.bounds.size.y) * greeneryLODInstance.sizeRange.y);
+                lodCullingCS.SetBuffer(kernelID, TransformBuffer, transformBuffer);
+                lodCullingCS.SetInt(InstanceCount, spawnDataList.Count);
+                lodCullingCS.SetVector(MaxWidthHeight,
+                    new Vector2(greeneryLODInstance.instancesLOD[index].instancedMesh.bounds.size.x,
+                        greeneryLODInstance.instancesLOD[index].instancedMesh.bounds.size.y) * greeneryLODInstance.sizeRange.y);
 
                 if (editorPreview)
                 {
-                    lodCullingCS.SetInt("_EditorPreview", 1);
+                    lodCullingCS.SetInt(EditorPreview, 1);
                 }
                 else
                 {
-                    lodCullingCS.SetInt("_EditorPreview", 0);
+                    lodCullingCS.SetInt(EditorPreview, 0);
                 }
 
-                Matrix4x4 v = currentCamera.worldToCameraMatrix;
-                Matrix4x4 p = currentCamera.projectionMatrix;
+                Matrix4x4 v = _currentCamera.worldToCameraMatrix;
+                Matrix4x4 p = _currentCamera.projectionMatrix;
                 Matrix4x4 vp = p * v;
-                lodCullingCS.SetMatrix("_VPMatrix", vp);
+                lodCullingCS.SetMatrix(VpMatrix, vp);
 
                 rendererData.visibleInstanceIDBuffer.SetCounterValue(0);
 
-                lodCullingCS.SetBuffer(kernelID, "_VisibleInstanceIDBuffer", rendererData.visibleInstanceIDBuffer);
+                lodCullingCS.SetBuffer(kernelID, VisibleInstanceIDBuffer, rendererData.visibleInstanceIDBuffer);
 
                 lodCullingCS.GetKernelThreadGroupSizes(kernelID, out uint threadGroupSizeX, out _, out _);
 
@@ -403,7 +401,7 @@ namespace Pancake.Greenery
             }
             else return false;
 
-            return rendererDataCheck && rendererDataArray != null && rendererDataArray.Length == greeneryLODInstance.instanceLODs.Count && transformBuffer != null &&
+            return rendererDataCheck && rendererDataArray != null && rendererDataArray.Length == greeneryLODInstance.instancesLOD.Count && transformBuffer != null &&
                    normalBuffer != null && surfaceColorBuffer != null && colorBuffer != null && transformBuffer.count == spawnDataList.Count &&
                    normalBuffer.count == spawnDataList.Count && surfaceColorBuffer.count == spawnDataList.Count && colorBuffer.count == spawnDataList.Count;
         }
@@ -411,7 +409,7 @@ namespace Pancake.Greenery
         private bool CheckMeshData()
         {
             bool instanceCheck = true;
-            foreach (var instanceLOD in greeneryLODInstance.instanceLODs)
+            foreach (var instanceLOD in greeneryLODInstance.instancesLOD)
             {
                 instanceCheck = instanceLOD.instancedMesh != null && instanceLOD.instanceMaterial != null;
             }

@@ -15,20 +15,22 @@ namespace Pancake.Greenery
 
         public Resolution renderTextureResolution;
 
-        private RenderTexture renderTexture;
-        private Camera cam;
+        private RenderTexture _renderTexture;
+        private Camera _cam;
+        private static readonly int GlobalGreeneryInteractionRT = Shader.PropertyToID("_GLOBAL_GreeneryInteractionRT");
+        private static readonly int GlobalGreeneryOrthoCam = Shader.PropertyToID("_GLOBAL_GreeneryOrthoCam");
 
         private void OnEnable()
         {
             int rtSize = 256 << (int) renderTextureResolution;
-            renderTexture = new RenderTexture(rtSize, rtSize, 0, RenderTextureFormat.ARGB32);
-            cam = GetComponent<Camera>();
-            cam.targetTexture = renderTexture;
-            Shader.SetGlobalTexture("_GLOBAL_GreeneryInteractionRT", renderTexture);
+            _renderTexture = new RenderTexture(rtSize, rtSize, 0, RenderTextureFormat.ARGB32);
+            _cam = GetComponent<Camera>();
+            _cam.targetTexture = _renderTexture;
+            Shader.SetGlobalTexture(GlobalGreeneryInteractionRT, _renderTexture);
         }
 
-        private void OnDisable() { renderTexture.Release(); }
+        private void OnDisable() { _renderTexture.Release(); }
 
-        void Update() { Shader.SetGlobalVector("_GLOBAL_GreeneryOrthoCam", new float4(transform.position, cam.orthographicSize)); }
+        void Update() { Shader.SetGlobalVector(GlobalGreeneryOrthoCam, new float4(transform.position, _cam.orthographicSize)); }
     }
 }
