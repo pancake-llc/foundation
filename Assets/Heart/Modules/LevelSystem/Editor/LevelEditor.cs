@@ -800,15 +800,15 @@ namespace Pancake.LevelSystemEditor
                 RaycastHit? raycastHit;
                 if (pos.Contains(e.mousePosition))
                 {
-                    var currentPrefabState = GetCurrentPrefabStage();
-                    if (currentPrefabState != null)
-                    {
-                        var (mouseCast, hitInfo) = RaycastPoint(GetParent(), EventMousePoint);
-                        mousePosition = mouseCast;
-                        normal = hitInfo.HasValue ? hitInfo.Value.normal : Vector3.up;
-                        raycastHit = hitInfo;
-                    }
-                    else
+                    // var currentPrefabState = GetCurrentPrefabStage();
+                    // if (currentPrefabState != null)
+                    // {
+                    //     var (mouseCast, hitInfo) = RaycastPoint(GetParent(), EventMousePoint);
+                    //     mousePosition = mouseCast;
+                    //     normal = hitInfo.HasValue ? hitInfo.Value.normal : Vector3.up;
+                    //     raycastHit = hitInfo;
+                    // }
+                    // else
                     {
                         Probe.Pick(ProbeFilter.Default,
                             sceneView,
