@@ -63,6 +63,7 @@ namespace Pancake.GreeneryEditor
 
             Vector2 mousePos = Event.current.mousePosition;
             Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
+            
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, scatteringModule.scatteringModuleSettings.drawingLayerMask))
             {
                 Color discColor = Event.current.control ? (Event.current.shift ? Color.yellow : Color.red) : Color.cyan;
@@ -72,7 +73,7 @@ namespace Pancake.GreeneryEditor
                 Handles.color = discColor;
                 Handles.DrawSolidDisc(hit.point, hit.normal, brushScattererModuleSettings.brushRadius);
             }
-
+            PaintBrush(hit);
             if (!guiRect.Contains(mousePos))
             {
                 PaintBrush(hit);

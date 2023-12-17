@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6422a0582a7542c18e099d40f8c6c988, type: 3}
   m_Name: LevelSystemEditorSetting
   m_EditorClassIdentifier: 
-  whitelistPaths: []
+  whitelistPaths:
+  - Assets/Cube.prefab
   blacklistPaths: []

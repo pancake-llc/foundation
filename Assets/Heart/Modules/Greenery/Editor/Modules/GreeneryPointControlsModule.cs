@@ -53,16 +53,16 @@ namespace Pancake.GreeneryEditor
             if (GUILayout.Button("Reproject"))
             {
                 var scatteringModuleSettings = _toolEditor.GetScatteringModuleSettings();
-                ReprojectSpawnData(_toolEditor.GetSelectedItems(), this.reprojectionHeight, scatteringModuleSettings);
+                ReprojectSpawnData(_toolEditor.GetSelectedItems(), reprojectionHeight, scatteringModuleSettings);
             }
 
             EditorGUILayout.LabelField("Reprojection Height", GUILayout.Width(120));
             EditorGUI.BeginChangeCheck();
-            float reprojectionHeight = EditorGUILayout.FloatField(this.reprojectionHeight);
+            float h = EditorGUILayout.FloatField(reprojectionHeight);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_toolEditor, "Changed reprojection height");
-                this.reprojectionHeight = reprojectionHeight;
+                reprojectionHeight = h;
                 SaveSettings();
             }
 

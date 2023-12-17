@@ -17,8 +17,7 @@ namespace Pancake.GreeneryEditor
         [SerializeField] private GreeneryPointControlsModule pointControlsModule;
 
         private const float WINDOW_WIDTH = 260;
-        private const float WINDOW_WIDTH_PADDING = 10;
-        private const float WINDOW_HEIGHT_PADDING = 50;
+        private const float WINDOW_HEIGHT_PADDING = 26;
 
         public override GUIContent toolbarIcon => EditorGUIUtility.IconContent("d_TreeEditor.Leaf On");
 
@@ -48,16 +47,14 @@ namespace Pancake.GreeneryEditor
 
         public override void OnToolGUI(EditorWindow window)
         {
+            Rect sceneViewRect = SceneView.lastActiveSceneView.position;
             bool hasSelectedItem = itemsModule.itemsModuleSettings.selectedItems.Count > 0;
             //Get height of all modules
             float windowHeight = managerModule.GetHeight() + itemsModule.GetHeight();
-            windowHeight += hasSelectedItem ? (scatteringModule.GetHeight() + pointControlsModule.GetHeight()) : 0;
+            windowHeight += hasSelectedItem ? scatteringModule.GetHeight() + pointControlsModule.GetHeight() : 0;
 
             //Editor rect
-            Rect toolGUIRect = new Rect(Screen.width - WINDOW_WIDTH - WINDOW_WIDTH_PADDING,
-                Screen.height - windowHeight - WINDOW_HEIGHT_PADDING,
-                WINDOW_WIDTH,
-                windowHeight);
+            Rect toolGUIRect = new Rect(sceneViewRect.width - WINDOW_WIDTH, sceneViewRect.height - windowHeight - WINDOW_HEIGHT_PADDING, WINDOW_WIDTH, windowHeight);
             //Drag and drop area to add Greenery Items
             itemsModule.ItemDropArea(toolGUIRect);
 
@@ -65,7 +62,8 @@ namespace Pancake.GreeneryEditor
 
             Handles.BeginGUI();
             EditorGUI.DrawRect(toolGUIRect, new Color(0.1f, 0.1f, 0.1f, toolGUIRect.Contains(Event.current.mousePosition) ? 0.7f : 0.3f));
-            GUILayout.BeginArea(toolGUIRect);
+            var r = new Rect(toolGUIRect.x, toolGUIRect.y + 6, toolGUIRect.width, toolGUIRect.height);
+            GUILayout.BeginArea(r);
 
             onGUI?.Invoke();
 
