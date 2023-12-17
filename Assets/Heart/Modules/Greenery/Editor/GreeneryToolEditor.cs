@@ -61,13 +61,10 @@ namespace Pancake.GreeneryEditor
             //Drag and drop area to add Greenery Items
             itemsModule.ItemDropArea(toolGUIRect);
 
-            if (onToolHandles != null)
-            {
-                onToolHandles(toolGUIRect);
-            }
+            onToolHandles?.Invoke(toolGUIRect);
 
             Handles.BeginGUI();
-            EditorGUI.DrawRect(toolGUIRect, new Color(0.1f, 0.1f, 0.1f, toolGUIRect.Contains(Event.current.mousePosition) ? 0.7f : 0.2f));
+            EditorGUI.DrawRect(toolGUIRect, new Color(0.1f, 0.1f, 0.1f, toolGUIRect.Contains(Event.current.mousePosition) ? 0.7f : 0.3f));
             GUILayout.BeginArea(toolGUIRect);
 
             onGUI?.Invoke();
