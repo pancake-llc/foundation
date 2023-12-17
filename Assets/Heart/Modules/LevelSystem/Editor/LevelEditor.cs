@@ -797,49 +797,55 @@ namespace Pancake.LevelSystemEditor
             else
             {
                 var pos = EditorExtend.GetInnerGuiPosition(sceneView);
-                RaycastHit? raycastHit;
                 if (pos.Contains(e.mousePosition))
                 {
-                    // var currentPrefabState = GetCurrentPrefabStage();
-                    // if (currentPrefabState != null)
-                    // {
-                    //     var (mouseCast, hitInfo) = RaycastPoint(GetParent(), EventMousePoint);
-                    //     mousePosition = mouseCast;
-                    //     normal = hitInfo.HasValue ? hitInfo.Value.normal : Vector3.up;
-                    //     raycastHit = hitInfo;
-                    // }
-                    // else
-                    {
-                        Probe.Pick(ProbeFilter.Default,
-                            sceneView,
-                            e.mousePosition,
-                            out mousePosition,
-                            out normal);
-                        raycastHit = null;
-                    }
+                    var ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
 
-                    float discSize = HandleUtility.GetHandleSize(mousePosition) * 0.4f;
-                    Handles.color = new Color(1, 0, 0, 0.5f);
-                    Handles.DrawSolidDisc(mousePosition, normal, discSize * 0.5f);
-
-                    if (!_previewPickupObject)
+                    if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, Physics.DefaultRaycastLayers))
                     {
-                        _previewPickupObject = (GameObject) PrefabUtility.InstantiatePrefab(_currentPickObject?.pickedObject);
-                        StageUtility.PlaceGameObjectInCurrentStage(_previewPickupObject);
-                        _previewPickupObject.hideFlags = HideFlags.HideAndDontSave;
-                        _previewPickupObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-                    }
+                        mousePosition = hit.point;
+                        normal = hit.normal;
+                        float radius = HandleUtility.GetHandleSize(e.mousePosition) * 0.4f * 0.5f;
+                        Color discColor = Event.current.control ? Event.current.shift ? Color.yellow : Color.red : Color.cyan;
+                        Handles.color = discColor;
+                        Handles.DrawWireDisc(hit.point, hit.normal, radius);
+                        discColor.a = 0.1f;
+                        Handles.color = discColor;
+                        Handles.DrawSolidDisc(hit.point, hit.normal, radius);
 
-#pragma warning disable CS8321
-                    void SetPosition2()
-                    {
-                        var rendererAttach = _currentPickObject?.pickedObject.GetComponentInChildren<Renderer>();
-                        if (raycastHit == null || rendererAttach == null) return;
-                        var rendererOther = raycastHit.Value.collider.transform.GetComponentInChildren<Renderer>();
-                        if (rendererOther == null) return;
-                        _previewPickupObject.transform.position = GetSpawnPosition(rendererAttach, rendererOther, raycastHit.Value);
+
+                        if (!_previewPickupObject)
+                        {
+                            _previewPickupObject = (GameObject) PrefabUtility.InstantiatePrefab(_currentPickObject?.pickedObject);
+                            StageUtility.PlaceGameObjectInCurrentStage(_previewPickupObject);
+                            _previewPickupObject.hideFlags = HideFlags.HideAndDontSave;
+                            _previewPickupObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                        }
+
+                        SetPosition();
+
+                        if (e.type == EventType.MouseDown && e.button == 0 && _previewPickupObject)
+                        {
+                            AddPickObject(_currentPickObject, _previewPickupObject.transform.position);
+                            EditorExtend.SkipEvent();
+                        }
                     }
-#pragma warning restore CS8321
+                    // Probe.Pick(ProbeFilter.Default,
+                    //     sceneView,
+                    //     e.mousePosition,
+                    //     out mousePosition,
+                    //     out normal);
+
+                    // var discColor = Color.cyan;
+                    // float discSize = HandleUtility.GetHandleSize(mousePosition) * 0.4f;
+                    // Handles.DrawWireDisc(mousePosition, normal, discSize * 0.5f);
+                    // discColor.a = 0.1f;
+                    // Handles.color = discColor;
+                    // Handles.DrawSolidDisc(mousePosition, normal, discSize * 0.5f);
+
+                    // Handles.color = new Color(1, 0, 0, 0.5f);
+                    // Handles.DrawSolidDisc(mousePosition, normal, discSize * 0.5f);
+
 
                     void SetPosition()
                     {
@@ -877,14 +883,6 @@ namespace Pancake.LevelSystemEditor
                             case "ignore":
                                 break;
                         }
-                    }
-
-                    SetPosition();
-
-                    if (e.type == EventType.MouseDown && e.button == 0 && _previewPickupObject)
-                    {
-                        AddPickObject(_currentPickObject, _previewPickupObject.transform.position);
-                        EditorExtend.SkipEvent();
                     }
                 }
             }

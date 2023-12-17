@@ -61,8 +61,8 @@ namespace Pancake.GreeneryEditor
         {
             base.ToolHandles(guiRect);
 
-            Vector2 mousePos = Event.current.mousePosition;
-            Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
+            var mousePos = Event.current.mousePosition;
+            var ray = HandleUtility.GUIPointToWorldRay(mousePos);
             
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, scatteringModule.scatteringModuleSettings.drawingLayerMask))
             {

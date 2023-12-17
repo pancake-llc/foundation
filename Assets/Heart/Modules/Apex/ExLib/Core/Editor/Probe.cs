@@ -1,4 +1,4 @@
-﻿namespace Pancake.LevelSystemEditor
+﻿namespace Pancake.ExLibEditor
 {
     using System;
     using System.Collections.Generic;
@@ -6,9 +6,9 @@
     using UnityEditor;
     using UnityEngine;
 
-    internal delegate void ProbeHitSelectHandler(bool add);
+    public delegate void ProbeHitSelectHandler(bool add);
 
-    internal struct ProbeHit
+    public struct ProbeHit
     {
         public GameObject gameObject;
 
@@ -92,7 +92,7 @@
         }
     }
 
-    internal static class Probe
+    public static class Probe
     {
         #region Object Picking
 
@@ -102,13 +102,17 @@
             E != null && (E.type == EventType.MouseMove || E.type == EventType.MouseDown || E.type == EventType.MouseUp || E.type == EventType.MouseDrag ||
                           E.type == EventType.MouseEnterWindow || E.type == EventType.MouseLeaveWindow);
 
-        internal static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point)
+        public static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point, int layerMask = Physics.DefaultRaycastLayers)
         {
             var results = new List<ProbeHit>();
 
             try
             {
-                PickAllNonAlloc(results, filter, sceneView, guiPosition);
+                PickAllNonAlloc(results,
+                    filter,
+                    sceneView,
+                    guiPosition,
+                    layerMask: layerMask);
 
                 foreach (var result in results)
                 {
@@ -128,13 +132,23 @@
             }
         }
 
-        internal static ProbeHit? Pick(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, out Vector3 point, out Vector3 normal)
+        public static ProbeHit? Pick(
+            ProbeFilter filter,
+            SceneView sceneView,
+            Vector2 guiPosition,
+            out Vector3 point,
+            out Vector3 normal,
+            int layerMask = Physics.DefaultRaycastLayers)
         {
             var results = new List<ProbeHit>();
 
             try
             {
-                PickAllNonAlloc(results, filter, sceneView, guiPosition);
+                PickAllNonAlloc(results,
+                    filter,
+                    sceneView,
+                    guiPosition,
+                    layerMask: layerMask);
 
                 foreach (var result in results)
                 {
@@ -156,24 +170,34 @@
             }
         }
 
-
-        public static ProbeHit[] PickAll(ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, int limit = DEFAULT_LIMIT)
+        public static ProbeHit[] PickAll(
+            ProbeFilter filter,
+            SceneView sceneView,
+            Vector2 guiPosition,
+            int limit = DEFAULT_LIMIT,
+            int layerMask = Physics.DefaultRaycastLayers)
         {
             var results = new List<ProbeHit>();
             PickAllNonAlloc(results,
                 filter,
                 sceneView,
                 guiPosition,
-                limit);
+                limit,
+                layerMask);
             return results.ToArray();
         }
 
-        private static void PickAllNonAlloc(List<ProbeHit> hits, ProbeFilter filter, SceneView sceneView, Vector2 guiPosition, int limit = DEFAULT_LIMIT)
+        private static void PickAllNonAlloc(
+            List<ProbeHit> hits,
+            ProbeFilter filter,
+            SceneView sceneView,
+            Vector2 guiPosition,
+            int limit = DEFAULT_LIMIT,
+            int layerMask = Physics.DefaultRaycastLayers)
         {
             var screenPosition = HandleUtility.GUIPointToScreenPixelCoordinate(guiPosition);
             var ray3D = HandleUtility.GUIPointToWorldRay(guiPosition);
             var worldPosition = sceneView.camera.ScreenToWorldPoint(screenPosition);
-            var layerMask = Physics.DefaultRaycastLayers;
 
             var raycastHits = new RaycastHit[limit];
             var overlapHits = new Collider2D[limit];
