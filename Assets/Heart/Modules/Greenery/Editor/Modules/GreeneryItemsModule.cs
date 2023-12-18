@@ -130,7 +130,7 @@ namespace Pancake.GreeneryEditor
                     if (rect.Contains(mousePos))
                     {
                         EditorGUI.DrawRect(borderRect, new Color(1, 1, 1, 0.4f));
-                        if (GreeneryEditorUtilities.IsLeftClicking(currentEvent))
+                        if (ScreenUtility.IsLeftClicking(currentEvent))
                         {
                             if (currentEvent.shift)
                             {
@@ -152,7 +152,7 @@ namespace Pancake.GreeneryEditor
                     if (removeRect.Contains(mousePos))
                     {
                         EditorGUI.DrawRect(borderRect, new Color(1, 0, 0, 0.4f));
-                        if (GreeneryEditorUtilities.IsLeftClicking(currentEvent))
+                        if (ScreenUtility.IsLeftClicking(currentEvent))
                         {
                             if (itemsModuleSettings.selectedItems.Contains(item))
                             {

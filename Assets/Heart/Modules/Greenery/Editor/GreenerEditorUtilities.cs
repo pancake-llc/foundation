@@ -27,7 +27,5 @@ namespace Pancake.GreeneryEditor
 
             return null;
         }
-
-        public static bool IsLeftClicking(Event currentEvent) { return (currentEvent.type == EventType.MouseDown && currentEvent.button == 0); }
     }
 }

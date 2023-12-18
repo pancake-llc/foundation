@@ -38,7 +38,7 @@ namespace PancakeEditor
             ref Wizard.LocaleTabType index)
         {
             DrawTab(ref index);
-            if (index == 0) DrawTabSetting();
+            if (index == Wizard.LocaleTabType.Setting) DrawTabSetting();
             else
                 DrawTabExplore(ref treeViewState,
                     ref treeView,
@@ -62,19 +62,13 @@ namespace PancakeEditor
         private static void DrawButtonSetting(ref Wizard.LocaleTabType index)
         {
             bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Setting, "Settings", GUI.skin.button, GUILayout.ExpandWidth(true));
-            if (clicked && index != Wizard.LocaleTabType.Setting)
-            {
-                index = Wizard.LocaleTabType.Setting;
-            }
+            if (clicked && index != Wizard.LocaleTabType.Setting) index = Wizard.LocaleTabType.Setting;
         }
 
         private static void DrawButtonExplore(ref Wizard.LocaleTabType index)
         {
             bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Explore, "Explore", GUI.skin.button, GUILayout.ExpandWidth(true));
-            if (clicked && index != Wizard.LocaleTabType.Explore)
-            {
-                index = Wizard.LocaleTabType.Explore;
-            }
+            if (clicked && index != Wizard.LocaleTabType.Explore) index = Wizard.LocaleTabType.Explore;
         }
 
         private static void DrawTabSetting()

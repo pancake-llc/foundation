@@ -86,6 +86,12 @@ namespace PancakeEditor
             Explore
         }
 
+        public enum LevelEditorTabType
+        {
+            Setting,
+            PickupArea
+        }
+
         private Vector2 _leftSideScrollPosition = Vector2.zero;
         private Vector2 _rightSideScrollPosition = Vector2.zero;
         private List<int> _items;
@@ -103,6 +109,12 @@ namespace PancakeEditor
         private Rect BottomToolbarRect => new(0f, position.height - 154f, position.width - TAB_WIDTH * 4f - 22f, 20);
         private bool _localeInitialized;
         [SerializeField] private MultiColumnHeaderState multiColumnHeaderState;
+
+        #endregion
+
+        #region level-editor
+
+        private LevelEditorTabType _currentLevelTabType = LevelEditorTabType.PickupArea;
 
         #endregion
 
@@ -127,6 +139,7 @@ namespace PancakeEditor
 
         protected override void OnEnable()
         {
+            UtilitiesLevelSystemDrawer.OnEnabled();
             if (isInitialized)
             {
                 SelectTab(tabIndex);
@@ -143,6 +156,7 @@ namespace PancakeEditor
 #if PANCAKE_SPINE
             UtilitiesSpineDrawer.Clear();
 #endif
+            UtilitiesLevelSystemDrawer.OnDisabled();
         }
 
         protected override void OnGUI()
@@ -257,7 +271,7 @@ namespace PancakeEditor
                     UtilitiesUIEffectDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesLevelSystemDrawer.OnInspectorGUI();
+                    UtilitiesLevelSystemDrawer.OnInspectorGUI(ref _currentLevelTabType, position);
                     break;
                 case WizardAllType.Spine when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesSpineDrawer.OnInspectorGUI(Repaint, position);
