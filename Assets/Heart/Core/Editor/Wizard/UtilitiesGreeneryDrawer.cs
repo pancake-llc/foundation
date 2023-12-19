@@ -9,7 +9,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Import Greenery Essential Resources", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Import Greenery Essential Resources", GUILayout.MaxHeight(30f)))
             {
                 AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Modules/Greenery/UnityPackage/greenery_asset.unitypackage"), true);
             }

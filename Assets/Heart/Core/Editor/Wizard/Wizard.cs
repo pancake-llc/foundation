@@ -24,25 +24,26 @@ namespace PancakeEditor
         private enum WizardAllType
         {
             None = -1,
-            Advertisement,
-            InAppPurchase,
-            Firebase,
             Adjust,
-            HeartSetting,
-            Scriptable,
-            LevelSystem,
-            Notification,
-            InAppReview,
-            NeedleConsole,
-            SelectiveProfiling,
-            IOS14AdvertisingSupport,
-            ParticleEffectForUGUI,
-            UIEffect,
-            ScreenSetting,
-            Spine,
+            Advertisement,
+            Firebase,
             GameService,
             Greenery,
+            GrowMesh,
+            HeartSetting,
+            IOS14AdvertisingSupport,
+            InAppPurchase,
+            InAppReview,
+            LevelSystem,
             Localization,
+            NeedleConsole,
+            Notification,
+            ParticleEffectForUGUI,
+            ScreenSetting,
+            Scriptable,
+            SelectiveProfiling,
+            Spine,
+            UIEffect
         }
 
         private enum WizardMonetizeType
@@ -69,7 +70,8 @@ namespace PancakeEditor
             Spine = WizardAllType.Spine,
             GameSerice = WizardAllType.GameService,
             Greenery = WizardAllType.Greenery,
-            Localization = WizardAllType.Localization
+            Localization = WizardAllType.Localization,
+            GrowMesh = WizardAllType.GrowMesh
         }
 
         private enum WizardSettingType
@@ -118,7 +120,13 @@ namespace PancakeEditor
 
         #endregion
 
+        #region grow-mesh
 
+        private GameObject _growMeshTarget;
+        private int _growMeshLevel;
+
+        #endregion
+        
         private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
         private const float TAB_WIDTH = 65f;
 
@@ -282,6 +290,9 @@ namespace PancakeEditor
                 case WizardAllType.Greenery when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesGreeneryDrawer.OnInspectorGUI();
                     break;
+                case WizardAllType.GrowMesh when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesGrowMeshDrawer.OnInspectorGUI(ref _growMeshTarget, ref _growMeshLevel, this);
+                    break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesLocalizationDrawer.OnInspectorGUI(ref _treeViewState,
                         ref localeTreeView,
@@ -359,7 +370,6 @@ namespace PancakeEditor
                 case WizardAllType.NeedleConsole:
                 case WizardAllType.SelectiveProfiling:
                 case WizardAllType.GameService:
-                case WizardAllType.Greenery:
                 case WizardAllType.Localization:
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
@@ -368,7 +378,9 @@ namespace PancakeEditor
                 case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
                 case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
-                case WizardAllType.Spine: return EditorResources.ScriptableEditorSetting;
+                case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
+                case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;
+                case WizardAllType.GrowMesh: return EditorResources.ScriptableMesh;
                 default:
                     return null;
             }

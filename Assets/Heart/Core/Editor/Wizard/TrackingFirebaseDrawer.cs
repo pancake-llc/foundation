@@ -35,7 +35,7 @@ namespace PancakeEditor
 
 #if !PANCAKE_FIREBASE_ANALYTIC
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Analytic", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Firebase Analytic", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.google.firebase.analytics", "https://github.com/firebase-unity/firebase-analytics.git#11.5.0");
                 RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#11.5.0");
@@ -49,7 +49,7 @@ namespace PancakeEditor
 
 #if !PANCAKE_FIREBASE_REMOTECONFIG
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Remote Config", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Firebase Remote Config", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.google.firebase.remote-config", "https://github.com/firebase-unity/firebase-remote-config.git#11.5.0");
                 RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#11.5.0");
@@ -62,7 +62,7 @@ namespace PancakeEditor
 
 #if !PANCAKE_FIREBASE_MESSAGING
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Messaging", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Firebase Messaging", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.google.firebase.messaging", "https://github.com/firebase-unity/firebase-messaging.git#11.5.0");
                 RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#11.5.0");
@@ -75,7 +75,7 @@ namespace PancakeEditor
 
 #if !PANCAKE_FIREBASE_CRASHLYTIC
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Firebase Crashlytic", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Firebase Crashlytic", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.google.firebase.crashlytics", "https://github.com/firebase-unity/firebase-crashlytics.git#11.5.0");
                 RegistryManager.Add("com.google.firebase.app", "https://github.com/firebase-unity/firebase-app.git#11.5.0");
@@ -102,12 +102,12 @@ namespace PancakeEditor
             GUI.enabled = true;
             customBundleId = EditorGUILayout.Toggle("Custom Bundle: ", customBundleId);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Run Debug View"))
+            if (GUILayout.Button("Run Debug View", GUILayout.MaxHeight(30f)))
             {
                 SetDebugView(bundleId);
             }
 
-            if (GUILayout.Button("Set None"))
+            if (GUILayout.Button("Set None", GUILayout.MaxHeight(30f)))
             {
                 SetDebugView(".none.");
             }
@@ -135,7 +135,7 @@ namespace PancakeEditor
 #if PANCAKE_FIREBASE_ANALYTIC || PANCAKE_FIREBASE_REMOTECONFIG || PANCAKE_FIREBASE_MESSAGING || PANCAKE_FIREBASE_CRASHLYTIC
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall All Firebase Package", GUILayout.MaxHeight(25f)))
+            if (GUILayout.Button("Uninstall All Firebase Package", GUILayout.MaxHeight(30f)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Firebase", "Are you sure you want to uninstall all firebase package ?", "Yes", "No");
                 if (confirmDelete)

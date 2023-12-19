@@ -20,7 +20,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Adjust Setting", GUILayout.Height(40)))
+                if (GUILayout.Button("Create Adjust Setting", GUILayout.Height(30f)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdjustConfig>();
                     if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
@@ -41,7 +41,7 @@ namespace PancakeEditor
 
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall Adjust Package", GUILayout.MaxHeight(25f)))
+            if (GUILayout.Button("Uninstall Adjust Package", GUILayout.MaxHeight(30f)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Adjust", "Are you sure you want to uninstall adjust package ?", "Yes", "No");
                 if (confirmDelete)
@@ -54,7 +54,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Adjust Package", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Adjust Package", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.pancake.adjust", "https://github.com/pancake-llc/adjust.git#4.34.1");
                 RegistryManager.Resolve();

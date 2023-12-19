@@ -11,14 +11,14 @@ namespace PancakeEditor
 #if PANCAKE_NEEDLE_CONSOLE
             Uniform.DrawInstalled("2.4.1");
             EditorGUILayout.Space();
-            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(25f)))
+            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(30f)))
             {
                 SettingsService.OpenUserPreferences("Preferences/Needle/Console");
             }
            
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall Needle Console", GUILayout.MaxHeight(25f)))
+            if (GUILayout.Button("Uninstall Needle Console", GUILayout.MaxHeight(30f)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Needle Console", "Are you sure you want to uninstall needle console package ?", "Yes", "No");
                 if (confirmDelete)
@@ -35,7 +35,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1");
                 RegistryManager.Add("com.pancake.demystifier", "https://github.com/pancake-llc/ben-demystifier.git#0.4.1");

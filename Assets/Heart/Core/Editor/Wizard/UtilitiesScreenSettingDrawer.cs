@@ -16,7 +16,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Default Popup Setting", GUILayout.Height(40f)))
+                if (GUILayout.Button("Create Default Popup Setting", GUILayout.Height(30f)))
                 {
                     var setting = ScriptableObject.CreateInstance<DefaultTransitionSetting>();
                     if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
@@ -37,7 +37,7 @@ namespace PancakeEditor
                 
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Green;
-                if (GUILayout.Button("Create Type", GUILayout.MaxHeight(40f)))
+                if (GUILayout.Button("Create Type", GUILayout.MaxHeight(30f)))
                     PopupWindow.Show(new Rect(), new CreateTypeScreenWindow(position));
 
                 GUI.backgroundColor = Color.white;

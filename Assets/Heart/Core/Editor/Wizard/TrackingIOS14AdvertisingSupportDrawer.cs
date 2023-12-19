@@ -12,7 +12,7 @@ namespace PancakeEditor
             Uniform.DrawInstalled("1.2.0");
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall iOS 14 Advertising Support Package", GUILayout.MaxHeight(25f)))
+            if (GUILayout.Button("Uninstall iOS 14 Advertising Support Package", GUILayout.MaxHeight(30f)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall iOS14AdvertisingSupport", "Are you sure you want to uninstall iOS 14 Advertising Support package ?", "Yes", "No");
                 if (confirmDelete)
@@ -25,7 +25,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
 #else
 			GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install iOS 14 Advertising Support Package", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install iOS 14 Advertising Support Package", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.unity.ads.ios-support", "1.2.0");
                 RegistryManager.Resolve();

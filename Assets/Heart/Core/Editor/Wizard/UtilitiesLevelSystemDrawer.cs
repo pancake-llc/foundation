@@ -28,7 +28,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Setup Level Editor", GUILayout.Height(40)))
+                if (GUILayout.Button("Setup Level Editor", GUILayout.Height(30f)))
                 {
                     var setting = ScriptableObject.CreateInstance<LevelSystemEditorSetting>();
                     const string path = "Assets/_Root/Editor/Resources";

@@ -16,7 +16,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Scriptable Setting", GUILayout.Height(40)))
+                if (GUILayout.Button("Create Scriptable Setting", GUILayout.Height(30f)))
                 {
                     var setting = ScriptableObject.CreateInstance<ScriptableEditorSetting>();
                     const string path = "Assets/_Root/Editor/Resources";
@@ -41,7 +41,7 @@ namespace PancakeEditor
 
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Green;
-                if (GUILayout.Button("Open Scriptable Wizard", GUILayout.MaxHeight(25f)))
+                if (GUILayout.Button("Open Scriptable Wizard", GUILayout.MaxHeight(30f)))
                 {
                     EditorApplication.ExecuteMenuItem("Tools/Pancake/Scriptable/Wizard");
                 }

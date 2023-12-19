@@ -12,7 +12,7 @@ namespace PancakeEditor
             Uniform.DrawInstalled("4.4.0");
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall Particle Effect For UGUI", GUILayout.MaxHeight(25f)))
+            if (GUILayout.Button("Uninstall Particle Effect For UGUI", GUILayout.MaxHeight(30f)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Particle Effect For UGUI",
                     "Are you sure you want to uninstall particle effect for ugui package ?",
@@ -28,7 +28,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.4.0");
                 RegistryManager.Resolve();

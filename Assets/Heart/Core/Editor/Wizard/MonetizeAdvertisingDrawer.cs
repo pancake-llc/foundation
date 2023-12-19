@@ -20,7 +20,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Adverisement Setting", GUILayout.Height(40f)))
+                if (GUILayout.Button("Create Adverisement Setting", GUILayout.Height(30f)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdSettings>();
                     const string path = "Assets/_Root/Storages/Settings";
@@ -36,7 +36,7 @@ namespace PancakeEditor
 
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Red;
-                if (GUILayout.Button("Uninstall Advertising", GUILayout.MaxHeight(25f)))
+                if (GUILayout.Button("Uninstall Advertising", GUILayout.MaxHeight(30f)))
                 {
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Advertising", "Are you sure you want to uninstall advertising package ?", "Yes", "No");
                     if (confirmDelete)
@@ -63,7 +63,7 @@ namespace PancakeEditor
                         GUI.enabled = false;
                         EditorGUILayout.ObjectField(t, typeof(AdSettings), false);
                         GUI.enabled = true;
-                        if (GUILayout.Button("delete", GUILayout.Width(50))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(t));
+                        if (GUILayout.Button("delete", GUILayout.Width(30))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(t));
                         EditorGUILayout.EndHorizontal();
                     }
 
@@ -78,10 +78,10 @@ namespace PancakeEditor
 
                     EditorGUILayout.BeginHorizontal();
                     GUI.backgroundColor = Uniform.Green;
-                    if (GUILayout.Button("Ping", GUILayout.Height(24))) adSetting[0].SelectAndPing();
+                    if (GUILayout.Button("Ping", GUILayout.Height(30f))) adSetting[0].SelectAndPing();
 
                     GUI.backgroundColor = Uniform.Red;
-                    if (GUILayout.Button("Delete AdSettings", GUILayout.Height(24)))
+                    if (GUILayout.Button("Delete AdSettings", GUILayout.Height(30f)))
                     {
                         bool confirmDelete = EditorUtility.DisplayDialog("Delete AdSettings", "Are you sure you want to delete ad settings?", "Yes", "No");
                         if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(adSetting[0]));
@@ -95,7 +95,7 @@ namespace PancakeEditor
 
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Advertisement", GUILayout.MaxHeight(40f)))
+            if (GUILayout.Button("Install Advertisement", GUILayout.MaxHeight(30f)))
             {
                 ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
                 AssetDatabase.Refresh();
