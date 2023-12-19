@@ -75,9 +75,9 @@ namespace PrimeTween {
             if (!tryManipulate()) {
                 return;
             }
-            if (value < 0f) {
-                Debug.LogError($"elapsed time should be >= 0f, but was {value}");
-                value = 0f;
+            if (value < 0f || float.IsNaN(value)) {
+                Debug.LogError($"Invalid elapsedTime value: {value}, tween: {ToString()}");
+                return;
             }
             var cycleDuration = duration;
             if (value > cycleDuration) {
@@ -119,9 +119,9 @@ namespace PrimeTween {
             if (!tryManipulate()) {
                 return;
             }
-            if (value < 0f) {
-                Debug.LogError($"elapsed time should be >= 0f, but was {value}");
-                value = 0f;
+            if (value < 0f || float.IsNaN(value) || (cyclesTotal == -1 && value >= float.MaxValue)) {
+                Debug.LogError($"Invalid elapsedTimeTotal value: {value}, tween: {ToString()}");
+                return;
             }
             tween.SetElapsedTimeTotal(value);
             // SetElapsedTimeTotal may complete the tween, so isAlive check is needed
@@ -174,6 +174,10 @@ namespace PrimeTween {
                 return Mathf.Min(elapsedTimeTotal / _totalDuration, 1f);
             }
             set {
+                if (cyclesTotal == -1) {
+                    Debug.LogError($"It's not allowed to set progressTotal on infinite tween (cyclesTotal == -1), tween: {ToString()}.");
+                    return;
+                }
                 value = Mathf.Clamp01(value);
                 if (value == 1f) {
                     setElapsedTimeTotal(float.MaxValue);

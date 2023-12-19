@@ -285,6 +285,20 @@ namespace PrimeTween {
         public static Tween LocalRotation([NotNull] Transform target, TweenSettings<Vector3> localEulerAnglesSettings) => LocalRotation(target, toQuaternion(localEulerAnglesSettings));
         static TweenSettings<Quaternion> toQuaternion(TweenSettings<Vector3> s) => new TweenSettings<Quaternion>(Quaternion.Euler(s.startValue), Quaternion.Euler(s.endValue), s.settings) { startFromCurrent = s.startFromCurrent };
         
+        #if TEXT_MESH_PRO_INSTALLED
+        public static Tween TextMaxVisibleCharacters([NotNull] TMPro.TMP_Text target, TweenSettings<int> settings) {
+            int oldCount = target.textInfo.characterCount;
+            target.ForceMeshUpdate();
+            if (oldCount != target.textInfo.characterCount) {
+                Debug.LogWarning("Please call TMP_Text.ForceMeshUpdate() before animating maxVisibleCharacters.");
+            }
+            var floatSettings = new TweenSettings<float>(settings.startValue, settings.endValue, settings.settings);
+            return animate(target, ref floatSettings, _tween => {
+                var _target = _tween.target as TMPro.TMP_Text;
+                _target.maxVisibleCharacters = Mathf.RoundToInt(_tween.FloatVal);
+            }, t => new ValueContainer { FloatVal = (t.target as TMPro.TMP_Text).maxVisibleCharacters });
+        }
+        #endif
         
         public static Tween GlobalTimeScale(Single endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0) 
             => GlobalTimeScale(new TweenSettings<float>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, true)));

@@ -107,6 +107,7 @@ namespace PrimeTween {
             case Dependency.None:
             case Dependency.PRIME_TWEEN_EXPERIMENTAL:
             case Dependency.UI_ELEMENTS_MODULE_INSTALLED:
+            case Dependency.TEXT_MESH_PRO_INSTALLED:
                 return null;
         }
         return dep.ToString();
@@ -120,6 +121,7 @@ namespace PrimeTween {
             case Dependency.PHYSICS2D_MODULE_INSTALLED:
             case Dependency.PRIME_TWEEN_EXPERIMENTAL:
             case Dependency.UI_ELEMENTS_MODULE_INSTALLED:
+            case Dependency.TEXT_MESH_PRO_INSTALLED:
                 return true;
         }
         return false;
@@ -189,10 +191,15 @@ namespace PrimeTween {
         var dependency = group.Key;
         if (dependency != Dependency.None) {
             if (shouldWrapInDefine(dependency)) {
-                if (dependency == Dependency.PRIME_TWEEN_EXPERIMENTAL || dependency == Dependency.UI_ELEMENTS_MODULE_INSTALLED) {
-                    result += $"\n        #if {dependency}";
-                } else {
-                    result += $"\n        #if !UNITY_2019_1_OR_NEWER || {dependency}";
+                switch (dependency) {
+                    case Dependency.PRIME_TWEEN_EXPERIMENTAL:
+                    case Dependency.UI_ELEMENTS_MODULE_INSTALLED:
+                    case Dependency.TEXT_MESH_PRO_INSTALLED:
+                        result += $"\n        #if {dependency}";
+                        break;
+                    default:
+                        result += $"\n        #if !UNITY_2019_1_OR_NEWER || {dependency}";
+                        break;
                 }
             }
         }
@@ -267,6 +274,8 @@ namespace PrimeTween {
                 Type expectedPropType;
                 if (data.propertyType == PropType.Float) {
                     expectedPropType = typeof(float);
+                } else if (data.propertyType == PropType.Int) {
+                    expectedPropType = typeof(int);
                 } else {
                     var typeName = $"{data.propertyType.ToFullTypeName()}, UnityEngine.CoreModule";
                     expectedPropType = Type.GetType(typeName);
@@ -539,13 +548,17 @@ enum Dependency {
     Material,
     Light,
     PRIME_TWEEN_EXPERIMENTAL,
-    UI_ELEMENTS_MODULE_INSTALLED
+    UI_ELEMENTS_MODULE_INSTALLED,
+    TEXT_MESH_PRO_INSTALLED
 }
 
 static class Ext {
     [NotNull]
     internal static string ToFullTypeName(this PropType type) {
         Assert.AreNotEqual(PropType.Float, type);
+        if (type == PropType.Int) {
+            return "int";
+        }
         return $"UnityEngine.{type}";
     }
 }

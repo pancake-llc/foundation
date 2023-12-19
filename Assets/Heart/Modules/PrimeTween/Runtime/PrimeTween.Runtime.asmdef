@@ -1,7 +1,9 @@
 {
     "name": "PrimeTween.Runtime",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -34,6 +36,11 @@
             "name": "com.unity.modules.uielements",
             "expression": "1.0.0",
             "define": "UI_ELEMENTS_MODULE_INSTALLED"
+        },
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "1.0.0",
+            "define": "TEXT_MESH_PRO_INSTALLED"
         }
     ],
     "noEngineReferences": false

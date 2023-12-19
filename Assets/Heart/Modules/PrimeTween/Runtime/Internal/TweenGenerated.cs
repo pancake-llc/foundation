@@ -1586,6 +1586,19 @@ namespace PrimeTween {
         }
 
         #endif
+        #if TEXT_MESH_PRO_INSTALLED
+        public static Tween TextMaxVisibleCharacters([NotNull] TMPro.TMP_Text target, int endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TextMaxVisibleCharacters(target, new TweenSettings<int>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TextMaxVisibleCharacters([NotNull] TMPro.TMP_Text target, int endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TextMaxVisibleCharacters(target, new TweenSettings<int>(endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TextMaxVisibleCharacters([NotNull] TMPro.TMP_Text target, int startValue, int endValue, float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TextMaxVisibleCharacters(target, new TweenSettings<int>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TextMaxVisibleCharacters([NotNull] TMPro.TMP_Text target, int startValue, int endValue, float duration, Easing ease, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
+            => TextMaxVisibleCharacters(target, new TweenSettings<int>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)));
+        public static Tween TextMaxVisibleCharacters([NotNull] TMPro.TMP_Text target, int endValue, TweenSettings settings) => TextMaxVisibleCharacters(target, new TweenSettings<int>(endValue, settings));
+        public static Tween TextMaxVisibleCharacters([NotNull] TMPro.TMP_Text target, int startValue, int endValue, TweenSettings settings) => TextMaxVisibleCharacters(target, new TweenSettings<int>(startValue, endValue, settings));
+
+        #endif
 
         public static Tween Custom(float startValue, float endValue, float duration, [NotNull] Action<float> onValueChange, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false) 
             => Custom(new TweenSettings<float>(startValue, endValue, new TweenSettings(duration, ease, cycles, cycleMode, startDelay, endDelay, useUnscaledTime)), onValueChange);

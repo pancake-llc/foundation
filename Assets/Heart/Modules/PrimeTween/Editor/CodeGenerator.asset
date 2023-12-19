@@ -999,6 +999,17 @@ MonoBehaviour:
     dependency: 1
     placeInGlobalScope: 0
     generateOnlyOverloads: 0
+  - name: TextMaxVisibleCharacters
+    methodName: TextMaxVisibleCharacters
+    targetType: TMPro.TMP_Text
+    propertyType: 8
+    propertyName: maxVisibleCharacters
+    propertyGetter: 
+    propertySetter: 
+    dotweenMethodName: DOMaxVisibleCharacters
+    dependency: 10
+    placeInGlobalScope: 0
+    generateOnlyOverloads: 1
   additiveMethodsGenerator:
     additiveMethods:
     - methodName: PositionAdditive
