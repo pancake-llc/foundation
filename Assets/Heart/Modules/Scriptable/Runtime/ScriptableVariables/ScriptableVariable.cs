@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Pancake.Apex;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -25,8 +26,11 @@ namespace Pancake.Scriptable
 
         [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")] [SerializeField] [ShowIf(nameof(saved))]
         private T defaultValue;
-
-        [Tooltip("Reset to initial value." + " Scene Loaded : when the scene is loaded." + " Application Start : Once, when the application starts.")] [SerializeField]
+        
+        [Message("Reset to initial value when :" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
+                 "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" + "\nApplication Start : Once, when the application starts.",
+            Height = 58)]
+        [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
 
         private readonly List<Object> _listenersObjects = new List<Object>();
@@ -117,12 +121,12 @@ namespace Pancake.Scriptable
 #else
             Init();
 #endif
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            if (resetOn is ResetType.SceneLoaded or ResetType.AdditiveSceneLoaded) SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void OnDisable()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            if (resetOn is ResetType.SceneLoaded or ResetType.AdditiveSceneLoaded) SceneManager.sceneLoaded -= OnSceneLoaded;
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 #endif
@@ -130,9 +134,7 @@ namespace Pancake.Scriptable
 
         protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (resetOn != ResetType.SceneLoaded) return;
-
-            if (mode == LoadSceneMode.Single)
+            if ((resetOn == ResetType.SceneLoaded && mode == LoadSceneMode.Single) || (resetOn == ResetType.AdditiveSceneLoaded && mode == LoadSceneMode.Additive))
             {
                 if (saved) Load();
                 else ResetToInitialValue();

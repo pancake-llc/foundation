@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Linq;
+using Pancake.Apex;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
@@ -10,8 +11,10 @@ namespace Pancake.Scriptable
 {
     public abstract class ScriptableList<T> : ScriptableListBase, IReset, IEnumerable<T>, IDrawObjectsInInspector
     {
-        [Tooltip("Clear the list when:" + " Scene Loaded : when a scene is loaded." +
-                 " Application Start : Once, when the application starts. Modifications persists between scenes")]
+        [Message("Clear the list when:" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
+                 "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" +
+                 "\nApplication Start : Once, when the application starts. Modifications persists between scenes",
+            Height = 58)]
         [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
 
@@ -135,7 +138,7 @@ namespace Pancake.Scriptable
         {
             Clear();
 
-            if (resetOn == ResetType.SceneLoaded) SceneManager.sceneLoaded += OnSceneLoaded;
+            if (resetOn is ResetType.SceneLoaded or ResetType.AdditiveSceneLoaded) SceneManager.sceneLoaded += OnSceneLoaded;
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 #endif
@@ -143,7 +146,7 @@ namespace Pancake.Scriptable
 
         private void OnDisable()
         {
-            if (resetOn == ResetType.SceneLoaded) SceneManager.sceneLoaded -= OnSceneLoaded;
+            if (resetOn is ResetType.SceneLoaded or ResetType.AdditiveSceneLoaded) SceneManager.sceneLoaded -= OnSceneLoaded;
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 #endif
@@ -151,7 +154,7 @@ namespace Pancake.Scriptable
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (mode == LoadSceneMode.Single) Clear();
+            if ((resetOn == ResetType.SceneLoaded && mode == LoadSceneMode.Single) || resetOn == ResetType.AdditiveSceneLoaded && mode == LoadSceneMode.Additive) Clear();
         }
 
         public override void Reset()

@@ -1,3 +1,4 @@
+using System;
 using Pancake.Apex;
 
 namespace Pancake
@@ -81,6 +82,21 @@ namespace Pancake
             member.transform.SetParent(Root);
             member.gameObject.SetActive(false);
             return member;
+        }
+
+        protected override void CleanPool()
+        {
+            try
+            {
+                foreach (var instance in container)
+                {
+                    if (instance != null) instance.Destroy();
+                }
+            }
+            catch (Exception)
+            {
+               // ignored
+            }
         }
 
         public override void OnDisable()

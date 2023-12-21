@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: SoundEmitterPool
   m_EditorClassIdentifier: 
   developerDescription: 
+  resetOn: 1
   factory: {fileID: 11400000, guid: 076cafc4f6524554daf38f260ceff90f, type: 2}
