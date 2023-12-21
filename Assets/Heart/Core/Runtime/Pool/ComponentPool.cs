@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Pancake
@@ -65,6 +66,21 @@ namespace Pancake
         {
             base.OnDisable();
             if (_root != null) _root.gameObject.Destroy();
+        }
+
+        protected override void CleanPool()
+        {
+            try
+            {
+                foreach (var component in container)
+                {
+                    if (component != null) Destroy(component.gameObject);
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
     }
 }

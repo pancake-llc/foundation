@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Pancake.Apex;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -16,7 +17,10 @@ namespace Pancake
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
 
-        [Tooltip("Reset flag IsPrewarmed." + " Scene Loaded : when the scene is loaded." + " Application Start : Once, when the application starts.")] [SerializeField]
+        [Message("Reset flag IsPrewarmed, clear pool container" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
+                 "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" + "\nApplication Start : Once, when the application starts.",
+            Height = 58)]
+        [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
 
         /// <summary>
@@ -92,7 +96,7 @@ namespace Pancake
 
         private void OnEnable()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            if (resetOn is ResetType.SceneLoaded or ResetType.AdditiveSceneLoaded) SceneManager.sceneLoaded += OnSceneLoaded;
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 #endif
@@ -113,20 +117,25 @@ namespace Pancake
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (resetOn != ResetType.SceneLoaded) return;
+            if ((resetOn == ResetType.SceneLoaded && mode is LoadSceneMode.Single) || (resetOn == ResetType.AdditiveSceneLoaded && mode is LoadSceneMode.Additive)) InternalClearPool();
+        }
 
-            if (mode == LoadSceneMode.Single)
-            {
-                container.Clear();
-                IsPrewarmed = false;
-            }
+        /// <summary>
+        /// Destroy objects created by the pool when the pool is reset
+        /// </summary>
+        protected abstract void CleanPool();
+
+        private void InternalClearPool()
+        {
+            CleanPool();
+            container.Clear();
+            IsPrewarmed = false;
         }
 
         public virtual void OnDisable()
         {
-            container.Clear();
-            IsPrewarmed = false;
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            InternalClearPool();
+            if (resetOn is ResetType.SceneLoaded or ResetType.AdditiveSceneLoaded) SceneManager.sceneLoaded -= OnSceneLoaded;
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 #endif
