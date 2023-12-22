@@ -46,7 +46,12 @@ namespace Pancake.LocalizationEditor
 
                 var elementType = fieldInfo.FieldType.GetCorrectElementType();
                 if (elementType != null) typeCreate = elementType;
-                property.objectReferenceValue = EditorCreator.CreateScriptableAt(typeCreate, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED, HeartSettings.EditorNameCreationMode == ENameAssetCreationMode.Auto);
+#pragma warning disable CS0612
+                property.objectReferenceValue = EditorCreator.CreateScriptableAt(typeCreate,
+                    newName,
+                    ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+                    HeartSettings.EditorNameCreationMode == ENameAssetCreationMode.Auto);
+#pragma warning restore CS0612
             }
 
             EditorGUI.EndProperty();
