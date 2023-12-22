@@ -13,6 +13,7 @@
     "com.unity.ide.visualstudio": "2.0.22",
     "com.unity.mobile.notifications": "2.3.1",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.unity.performance.profile-analyzer": "1.2.2",
     "com.unity.purchasing": "4.10.0",
     "com.unity.serialization": "3.1.1",
     "com.unity.services.leaderboards": "2.0.0",
