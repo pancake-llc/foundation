@@ -12,7 +12,7 @@ namespace Pancake.Scriptable
         public bool IsClamped => isClamped;
 
         [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf(nameof(isClamped), true)]
-        private Vector2 minMax = new Vector2(float.MinValue, float.MaxValue);
+        private Vector2 minMax = new Vector2(0, float.MaxValue);
 
         public Vector2 MinMax { get => minMax; set => minMax = value; }
         public float Min { get => minMax.x; set => minMax.x = value; }

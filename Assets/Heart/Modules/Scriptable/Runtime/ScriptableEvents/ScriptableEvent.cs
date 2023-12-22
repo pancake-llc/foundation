@@ -21,7 +21,8 @@ namespace Pancake.Scriptable
         private Action<T> _onRaised = null;
 
         /// <summary>
-        /// Action raised when this event is raised.
+        /// Action triggered when this event has been raised.
+        /// Subscribe to this action if you want to bind methods to this event.
         /// </summary>
         public event Action<T> OnRaised
         {

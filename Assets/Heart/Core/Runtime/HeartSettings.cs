@@ -1,4 +1,5 @@
-﻿using Pancake.Apex;
+﻿using System;
+using Pancake.Apex;
 using UnityEngine;
 
 namespace Pancake
@@ -7,11 +8,11 @@ namespace Pancake
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
         [Label("Debug")] [SerializeField] private bool enableAdministrator;
-        [Label("Privacy on FirstOpen")] 
-        [SerializeField] private bool enablePrivacyFirstOpen;
+        [Label("Privacy on FirstOpen")] [SerializeField] private bool enablePrivacyFirstOpen;
         [SerializeField] private bool enableMultipleTouch;
         [SerializeField] private bool requireInternet;
         [SerializeField] private TargetFrameRate targetFrameRate;
+
         [Indent, Label("Url"), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
         private string privacyUrl;
 
@@ -24,6 +25,12 @@ namespace Pancake
         [Header("IOS")] [SerializeField] private string appstoreAppId;
         [SerializeField, Range(0, 63)] private int skAdConversionValue = 63;
 
+#if UNITY_EDITOR
+        [Header("Editor")] 
+        [Tooltip("Indicates whether you can immediately edit the name asset upon creation?")]
+        [SerializeField] private ENameAssetCreationMode nameCreationMode;
+#endif
+
         public static bool EnableAdministrator => Instance.enableAdministrator;
         public static bool EnablePrivacyFirstOpen => Instance.enablePrivacyFirstOpen;
         public static string PrivacyUrl => Instance.privacyUrl;
@@ -34,5 +41,11 @@ namespace Pancake
         public static bool EnableMultipleTouch => Instance.enableMultipleTouch;
         public static bool RequireInternet => Instance.requireInternet;
         public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;
+#if UNITY_EDITOR
+        /// <summary>
+        /// Only use in editor
+        /// </summary>
+        [Obsolete] public static ENameAssetCreationMode EditorNameCreationMode => Instance.nameCreationMode;
+#endif
     }
 }
