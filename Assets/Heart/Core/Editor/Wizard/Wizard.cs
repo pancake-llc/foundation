@@ -135,7 +135,7 @@ namespace PancakeEditor
 
         internal static Wizard window;
         
-        [MenuItem("Tools/Pancake/Wizard #W")]
+        [MenuItem("Tools/Pancake/Wizard %W")]
         public new static void Show()
         {
             window = GetWindow<Wizard>("Wizard");
