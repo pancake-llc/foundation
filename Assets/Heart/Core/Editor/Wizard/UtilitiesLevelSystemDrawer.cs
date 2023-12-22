@@ -17,12 +17,20 @@ namespace PancakeEditor
 
         public static void OnDisabled() { SceneView.duringSceneGui -= OnSceneGUI; }
 
-        private static void OnSceneGUI(SceneView sceneView) { TryFakeRender(sceneView); }
+        private static void OnSceneGUI(SceneView sceneView)
+        {
+            try
+            {
+                if (LevelSystemEditorSetting.Instance != null) TryFakeRender(sceneView);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
 
         public static void OnInspectorGUI(ref Wizard.LevelEditorTabType tabType, Rect position)
         {
-            if (LevelSystemEditorSetting.Instance.PickObjects.Count == 0) RefreshAll();
-
             var scriptableSetting = Resources.Load<LevelSystemEditorSetting>(nameof(LevelSystemEditorSetting));
             if (scriptableSetting == null)
             {
@@ -46,6 +54,7 @@ namespace PancakeEditor
             }
             else
             {
+                if (LevelSystemEditorSetting.Instance.PickObjects.Count == 0) RefreshAll();
                 DrawTab(ref tabType);
                 if (tabType == Wizard.LevelEditorTabType.Setting)
                 {
