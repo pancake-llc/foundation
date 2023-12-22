@@ -24,9 +24,13 @@ namespace Pancake.ScriptableEditor
                 DrawIfNull(position, property, label);
                 return;
             }
-            
+
             bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
-            DrawIfNotNull(position, property, label, targetObject, isNeedIndent);
+            DrawIfNotNull(position,
+                property,
+                label,
+                targetObject,
+                isNeedIndent);
 
             EditorGUI.EndProperty();
         }
@@ -43,7 +47,12 @@ namespace Pancake.ScriptableEditor
 
                 var elementType = fieldInfo.FieldType.GetCorrectElementType();
                 if (elementType != null) typeCreate = elementType;
-                property.objectReferenceValue = EditorCreator.CreateScriptableAt(typeCreate, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED);
+#pragma warning disable CS0612
+                property.objectReferenceValue = EditorCreator.CreateScriptableAt(typeCreate,
+                    newName,
+                    ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+                    HeartSettings.EditorNameCreationMode == ENameAssetCreationMode.Auto);
+#pragma warning restore CS0612
             }
 
             EditorGUI.EndProperty();

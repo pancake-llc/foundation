@@ -220,7 +220,7 @@ namespace Pancake.SceneFlow
         {
             boolDailyVariable.Value = false;
             boolDailyVariable.Save();
-            var dailyPopup = FindObjectOfType<DailyRewardPopup>();
+            var dailyPopup = FindFirstObjectByType<DailyRewardPopup>(FindObjectsInactive.Include);
             if (dailyPopup != null) dailyPopup.view.Refresh();
         }
 

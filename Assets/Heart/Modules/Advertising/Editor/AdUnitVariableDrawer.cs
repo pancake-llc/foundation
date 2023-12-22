@@ -46,7 +46,12 @@ namespace Pancake.MonetizationEditor
             if (GUI.Button(rect, guiContent))
             {
                 string newName = GetFieldName().ToSnackCase();
-                property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType, newName, ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED);
+#pragma warning disable CS0612
+                property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType,
+                    newName,
+                    ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+                    HeartSettings.EditorNameCreationMode == ENameAssetCreationMode.Auto);
+#pragma warning restore CS0612
             }
 
             EditorGUI.EndProperty();

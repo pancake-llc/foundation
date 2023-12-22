@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -425,14 +426,14 @@ namespace Pancake.ExLibEditor
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToCamelCase(this string source) { return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(source); }
+        public static string ToCamelCase(this string source) { return new CamelCaseNamingStrategy().GetPropertyName(source, false); }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToSnackCase(this string source) { return string.IsNullOrEmpty(source) ? string.Empty : source.ToLowerInvariant().Replace(' ', '_'); }
+        public static string ToSnackCase(this string source) { return new SnakeCaseNamingStrategy().GetPropertyName(source, false); }
 
         public static bool IsSerializable(Type type)
         {
@@ -476,6 +477,34 @@ namespace Pancake.ExLibEditor
             }
 
             return null;
+        }
+        
+        private static readonly Dictionary<string, string> BuiltInTypes = new Dictionary<string, string>
+        {
+            { "byte", "System.Byte" },
+            { "sbyte", "System.SByte" },
+            { "char", "System.Char" },
+            { "decimal", "System.Decimal" },
+            { "double", "System.Double" },
+            { "uint", "System.UInt32" },
+            { "nint", "System.IntPtr" },
+            { "nuint", "System.UIntPtr" },
+            { "long", "System.Int64" },
+            { "ulong", "System.UInt64" },
+            { "short", "System.Int16" },
+            { "ushort", "System.UInt16" },
+            { "int", "System.Int32" },
+            { "float", "System.Single" },
+            { "string", "System.String" },
+            { "object", "System.Object" },
+            { "bool", "System.Boolean" }
+        };
+    
+        public static bool IsBuiltInType(string typeName)
+        {
+            if (BuiltInTypes.TryGetValue(typeName, out var qualifiedName)) typeName = qualifiedName;
+            var type = Type.GetType(typeName);
+            return type?.Namespace != null && type.Namespace.StartsWith("System");
         }
     }
 }

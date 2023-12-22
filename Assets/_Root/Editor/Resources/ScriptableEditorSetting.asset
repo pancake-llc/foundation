@@ -12,4 +12,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c195b740c1e899142bd6526a08680306, type: 3}
   m_Name: ScriptableEditorSetting
   m_EditorClassIdentifier: 
-  drawMode: 0

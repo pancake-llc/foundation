@@ -85,7 +85,7 @@ namespace PancakeEditor
             }
         }
 
-        [MenuItem(itemName: "Assets/Create/Pancake/Scriptable Search &1", isValidateFunction: false, priority: -1)]
+        [MenuItem(itemName: "Assets/Create/Pancake/Scriptable Search #1", isValidateFunction: false, priority: -1)]
         private static void ScriptableSearchMenu()
         {
             var typeTree = new StringTree<Type>();

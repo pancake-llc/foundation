@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEngine;
@@ -10,14 +8,16 @@ namespace Pancake.ScriptableEditor
     public class CreateTypePopUpWindow : PopupWindowContent
     {
         private readonly Rect _position;
-        private string _typeText = "YourType";
+        private string _typeText = "Type";
+        private bool _baseClass = false;
+        private bool _monoBehaviour = true;
         private bool _variable = true;
         private bool _event = true;
         private bool _eventListener = true;
         private bool _list = true;
         private bool _invalidTypeName;
         private string _path;
-        private readonly Vector2 _dimensions = new Vector2(300, 300);
+        private readonly Vector2 _dimensions = new Vector2(350, 350);
         private readonly GUIStyle _bgStyle;
 
         public override Vector2 GetWindowSize() => _dimensions;
@@ -34,48 +34,81 @@ namespace Pancake.ScriptableEditor
             editorWindow.position = Uniform.CenterInWindow(editorWindow.position, _position);
 
             Uniform.DrawHeader("Create new Type");
-            EditorGUI.BeginChangeCheck();
-            _typeText = EditorGUILayout.TextField(_typeText, EditorStyles.textField);
-            if (EditorGUI.EndChangeCheck())
-            {
-                _invalidTypeName = !IsTypeNameValid();
-            }
-
-            var guiStyle = new GUIStyle(EditorStyles.label);
-            guiStyle.normal.textColor = _invalidTypeName ? Uniform.FieryRose : Color.white;
-            guiStyle.fontStyle = FontStyle.Bold;
-            var errorMessage = _invalidTypeName ? "Invalid type name." : "";
-            EditorGUILayout.LabelField(errorMessage, guiStyle);
-
+            DrawTextField();
             DrawTypeToggles();
-
             GUILayout.Space(10);
+            DrawPath();
+            DrawButtons();
+        }
+
+        private void DrawPath()
+        {
             EditorGUILayout.LabelField("Selected path:", EditorStyles.boldLabel);
-            guiStyle = new GUIStyle(EditorStyles.label);
-            guiStyle.fontStyle = FontStyle.Italic;
+            var guiStyle = new GUIStyle(EditorStyles.label) {fontStyle = FontStyle.Italic};
             _path = ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED;
             EditorGUILayout.LabelField($"{_path}", guiStyle);
+        }
 
-            DrawButtons();
+        private void DrawTextField()
+        {
+            EditorGUI.BeginChangeCheck();
+            _typeText = EditorGUILayout.TextField(_typeText, EditorStyles.textField);
+            if (EditorGUI.EndChangeCheck()) _invalidTypeName = !IsTypeNameValid();
+
+            var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.FieryRose : Color.white}, fontStyle = FontStyle.Bold};
+            string errorMessage = _invalidTypeName ? "Invalid type name." : "";
+            EditorGUILayout.LabelField(errorMessage, guiStyle);
         }
 
         private void DrawTypeToggles()
         {
+            var nameType = $"{_typeText.ToCamelCase()}";
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(10);
             EditorGUILayout.BeginVertical();
-
-            _variable = GUILayout.Toggle(_variable, "ScriptableVariable");
+            EditorGUILayout.BeginHorizontal();
+            if (!EditorExtend.IsBuiltInType(_typeText))
+            {
+                DrawToggle(ref _baseClass, nameType, "", EditorGUIUtility.IconContent("cs Script Icon").image, true,140);
+                if (_baseClass) _monoBehaviour = GUILayout.Toggle(_monoBehaviour, "MonoBehaviour?");
+            }
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
             GUILayout.Space(5);
-            _event = GUILayout.Toggle(_event, "ScriptableEvent");
+            DrawToggle(ref _variable,
+                nameType,
+                "Variable",
+                EditorResources.ScriptableVariable,
+                true);
             GUILayout.Space(5);
-            _eventListener = GUILayout.Toggle(_eventListener && _event, "EventListener");
+            DrawToggle(ref _event, "ScriptableEvent", nameType, EditorResources.ScriptableEvent);
             GUILayout.Space(5);
-            _list = GUILayout.Toggle(_list, "ScriptableList");
-
+            DrawToggle(ref _eventListener, "EventListener", nameType, EditorResources.ScriptableEventListener);
+            GUILayout.Space(5);
+            DrawToggle(ref _list, "ScriptableList", nameType, EditorResources.ScriptableList);
             EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawToggle(ref bool toggleValue, string typeName, string second, Texture icon, bool isFirstRed = false, int maxWidth = 200)
+        {
+            EditorGUILayout.BeginHorizontal();
+            var style = new GUIStyle(GUIStyle.none);
+            GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
+            toggleValue = GUILayout.Toggle(toggleValue, "", GUILayout.Width(maxWidth));
+            var firstStyle = new GUIStyle(GUI.skin.label) {padding = {left = 15 - maxWidth}};
+            if (isFirstRed) firstStyle.normal.textColor = Uniform.FieryRose;
+            GUILayout.Label(typeName, firstStyle);
+            var secondStyle = new GUIStyle(GUI.skin.label) {padding = {left = -6}};
+            if (!isFirstRed) secondStyle.normal.textColor = Uniform.FieryRose;
+            GUILayout.Label(second, secondStyle);
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawButtons()
         {
+            GUI.enabled = !_invalidTypeName;
             if (GUILayout.Button("Create", GUILayout.ExpandHeight(true)))
             {
                 if (!IsTypeNameValid()) return;
@@ -83,7 +116,21 @@ namespace Pancake.ScriptableEditor
                 TextAsset newFile = null;
                 var progress = 0f;
                 EditorUtility.DisplayProgressBar("Progress", "Start", progress);
-
+                
+                if (_baseClass && !EditorExtend.IsBuiltInType(_typeText))
+                {
+                    string template = _monoBehaviour ? EditorResources.MonoBehaviourTemplate.text : EditorResources.ClassTemplate.text;
+                    newFile = CreateNewClass(template, _typeText, $"{_typeText}.cs", _path);
+                    if (newFile == null)
+                    {
+                        Close();
+                        return;
+                    }
+                }
+                
+                progress += 0.2f;
+                EditorUtility.DisplayProgressBar("Progress", "Generating...", progress);
+                
                 if (_variable)
                 {
                     newFile = CreateNewClass(EditorResources.ScriptableVariableTemplate.text, _typeText, $"{_typeText}Variable.cs", _path);
@@ -94,7 +141,7 @@ namespace Pancake.ScriptableEditor
                     }
                 }
 
-                progress += 0.25f;
+                progress += 0.2f;
                 EditorUtility.DisplayProgressBar("Progress", "Generating...", progress);
 
                 if (_event)
@@ -110,7 +157,7 @@ namespace Pancake.ScriptableEditor
                     }
                 }
 
-                progress += 0.25f;
+                progress += 0.2f;
                 EditorUtility.DisplayProgressBar("Progress", "Generating...", progress);
 
                 if (_eventListener)
@@ -126,7 +173,7 @@ namespace Pancake.ScriptableEditor
                     }
                 }
 
-                progress += 0.25f;
+                progress += 0.2f;
                 EditorUtility.DisplayProgressBar("Progress", "Generating...", progress);
 
                 if (_list)
@@ -142,7 +189,7 @@ namespace Pancake.ScriptableEditor
                     }
                 }
 
-                progress += 0.25f;
+                progress += 0.2f;
                 EditorUtility.DisplayProgressBar("Progress", "Completed!", progress);
 
                 EditorUtility.DisplayDialog("Success", $"{_typeText} was created!", "OK");
@@ -150,10 +197,7 @@ namespace Pancake.ScriptableEditor
                 EditorGUIUtility.PingObject(newFile);
             }
 
-            if (GUILayout.Button("Cancel", GUILayout.ExpandHeight(true)))
-            {
-                editorWindow.Close();
-            }
+            if (GUILayout.Button("Cancel", GUILayout.ExpandHeight(true)))  editorWindow.Close();
         }
 
         private void Close(bool hasError = true)
