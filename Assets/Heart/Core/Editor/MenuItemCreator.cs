@@ -78,9 +78,9 @@ namespace PancakeEditor
             {
                 return CreateUniPopup(Selection.activeTransform == null ? prefabRoot.transform : Selection.activeTransform);
             }
-            
+
             // find canvas in scene
-            var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
+            var allCanvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             if (allCanvases.Length > 0)
             {
                 if (Selection.activeTransform == null) return CreateUniPopup(allCanvases[0].transform);
@@ -154,7 +154,7 @@ namespace PancakeEditor
             scaler.referenceResolution = new Vector2(1080, 1920);
             canvas.gameObject.AddComponent<GraphicRaycaster>();
 
-            var eventSystem = (EventSystem) Object.FindObjectOfType(typeof(EventSystem));
+            var eventSystem = Object.FindFirstObjectByType<EventSystem>(FindObjectsInactive.Include);
             if (eventSystem == null)
             {
                 eventSystem = new GameObject("EventSystem").AddComponent<EventSystem>();
@@ -182,7 +182,7 @@ namespace PancakeEditor
             }
 
             // find canvas in scene
-            var allCanvases = (Canvas[]) Object.FindObjectsOfType(typeof(Canvas));
+            var allCanvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             if (allCanvases.Length > 0)
             {
                 if (Selection.activeTransform == null) return CreateObjectWithComponent<T>(allCanvases[0].transform, name);

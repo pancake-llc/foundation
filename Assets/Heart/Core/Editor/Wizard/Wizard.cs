@@ -126,7 +126,7 @@ namespace PancakeEditor
         private int _growMeshLevel;
 
         #endregion
-        
+
         private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
         private const float TAB_WIDTH = 65f;
 
@@ -134,8 +134,7 @@ namespace PancakeEditor
         [SerializeField] private bool isInitialized;
 
         internal static Wizard window;
-
-
+        
         [MenuItem("Tools/Pancake/Wizard #W")]
         public new static void Show()
         {
