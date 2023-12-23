@@ -51,6 +51,8 @@ namespace PancakeEditor
                     var importer = (TextureImporter) AssetImporter.GetAtPath(path);
                     importer.textureCompression = TextureImporterCompression.Uncompressed;
                     importer.ClearPlatformTextureSettings("Standalone");
+                    importer.ClearPlatformTextureSettings("Android");
+                    importer.ClearPlatformTextureSettings("iPhone");
                     AssetDatabase.ImportAsset(path);
                 }
 
