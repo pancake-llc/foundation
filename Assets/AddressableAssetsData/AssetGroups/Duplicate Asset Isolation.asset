@@ -15,8 +15,83 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: 01851d09c72298c4b99a6975ae7119b4
+  m_GUID: b5c771bd2246302468b7628a1593dfbf
   m_SerializeEntries:
+  - m_GUID: a3bf58cc721114849a4faa637641b3c6
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_vip.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 065e3e55cfb62864ba90badd3ed67d51
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/shop_atlas.spriteatlasv2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3ada78ff3cb8c244b2ae925e01c69c7
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_groupbar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea8e3bdb32dced94e9a0f18fa7fdba30
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5f4b13b0020c2f4ea2edf4aa8b9bef6
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_ad.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6268890959b17e1459411a995e26246c
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_box1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ae585d7fcee3674b9d4c307b4e874a1
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_popup.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 756338967ad05d143af4072b324c0963
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af4a0696785a8eb429d7d96d07486b3a
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_box2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55b11db538f5d5441a4642f192d9f8de
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_big_title.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2bb17056f9461c4ea287c89eee8dd9c
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_allpin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 985f91a38bf12e04aa81c817ceb5ef0c
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0b22fc2d83fe304bb8d624724d2133b
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_removeads.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62e348115a695434b9b4cf3b4e098f7c
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_label_vip.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d23b38f0c47361549a5165be8232e43d
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_button_vip.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e288d9921efde0a4abad8657a4ad5e6e
     m_Address: Assets/_Root/Animations/Fetch/FetchAnimator.controller
     m_ReadOnly: 0
@@ -72,11 +147,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ea8e3bdb32dced94e9a0f18fa7fdba30
-    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack1.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fe7bb7025e567bb419fd8f29bb60c7ff
     m_Address: Assets/_Root/Storages/Localization/Shop/text_shop_freecoin.asset
     m_ReadOnly: 0
@@ -89,6 +159,46 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 00a9ce75f2afdc544872d75c43403135
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_btn_x.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56d7edbdf0d4aa44fbd75ef0bf31a109
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/setting_atlas.spriteatlasv2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18f0391dd8965ed43b0a3e13ca61c2d3
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_btn_orange.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a2382dbf70ac1647b96b112ced5ec92
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_setting_popup.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11e5bc68be96bfb4cadf5bfb1aa0b429
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_setting_btn_music_on.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f84b439782b61294581a83ed2e3920b1
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_setting_btn_vibra_on.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48ef516679bdeb947a736ff03a170738
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_btn_green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d4093b3b8a15d441bde908d447d3545
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_setting_btn_sound_on.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 069f2841914d7074891d5a357a26f964
+    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_tittle.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -237,16 +347,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 48ef516679bdeb947a736ff03a170738
-    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_btn_green.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 069f2841914d7074891d5a357a26f964
-    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_common_tittle.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2231b50be30e72a46b98a7622c3a1a07
     m_Address: Assets/_Root/Storages/Localization/font_asset_localize.asset
     m_ReadOnly: 0
@@ -272,11 +372,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4ae585d7fcee3674b9d4c307b4e874a1
-    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_popup.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ef279f98ef02e3a429ea342f2d2c40a6
     m_Address: Assets/_Root/Storages/Generated/Audio/SFX_Event/event_play_sfx.asset
     m_ReadOnly: 0
@@ -292,11 +387,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 985f91a38bf12e04aa81c817ceb5ef0c
-    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_coin_pack3.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5faabd619f34f1345957ffd6b6178887
     m_Address: Assets/_Root/Storages/Generated/Audio/SFX/sfx_popup_open_audio.asset
     m_ReadOnly: 0
@@ -304,11 +394,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a7cb484c2a5cf984497b6b8c46492ede
     m_Address: Assets/_Root/Sounds/SFX/sfx_ui_menu_window_open.wav
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2a2382dbf70ac1647b96b112ced5ec92
-    m_Address: Assets/_Root/Sprites/StarterPack/Menu/Setting/starter_setting_popup.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -362,13 +447,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5b80e8a169d5624a8c25be597be1435
+    m_Address: Assets/_Root/Fonts/Material/LilitaOne-ASCII Material Outline.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b90c8c1d5417e844b9633334d43b37d0
     m_Address: Assets/_Root/Sprites/StarterPack/Launcher/starter_glow.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 601184d2e3af08841b68fcdf5a5d1a3f
+    m_Address: Assets/_Root/Storages/Generated/localization_is_initialized.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61509f6b494b461498cccef441c17f12
     m_Address: Assets/_Root/Storages/Generated/Level/prewarm_load_level_completed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 436fdf3efd7603040b69d4071a680f32
+    m_Address: Assets/_Root/Storages/Localization/material_font_outline.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8aa9a9419fc7fb54ab60739de81135d0
+    m_Address: Assets/_Root/Fonts/Material/LilitaOne-VietNamese Material Outline.mat
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
