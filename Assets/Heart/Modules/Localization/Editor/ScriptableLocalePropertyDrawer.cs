@@ -41,7 +41,7 @@ namespace Pancake.LocalizationEditor
             var guiContent = new GUIContent("Create", "Creates the SO at default storage generate path");
             if (GUI.Button(rect, guiContent))
             {
-                string newName = fieldInfo.Name.ToSnackCase();
+                string newName = fieldInfo.Name.ToSnakeCase();
                 var typeCreate = fieldInfo.FieldType;
 
                 var elementType = fieldInfo.FieldType.GetCorrectElementType();

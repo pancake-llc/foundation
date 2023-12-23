@@ -42,7 +42,7 @@ namespace Pancake.ScriptableEditor
             var guiContent = new GUIContent("Create", "Creates the SO at default storage generate path");
             if (GUI.Button(rect, guiContent))
             {
-                string newName = GetFieldName().ToSnackCase();
+                string newName = GetFieldName().ToSnakeCase();
                 var typeCreate = fieldInfo.FieldType;
 
                 var elementType = fieldInfo.FieldType.GetCorrectElementType();

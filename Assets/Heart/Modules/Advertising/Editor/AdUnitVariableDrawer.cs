@@ -45,7 +45,7 @@ namespace Pancake.MonetizationEditor
             var guiContent = new GUIContent("Create", "Creates the SO at default script generate path");
             if (GUI.Button(rect, guiContent))
             {
-                string newName = GetFieldName().ToSnackCase();
+                string newName = GetFieldName().ToSnakeCase();
 #pragma warning disable CS0612
                 property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType,
                     newName,
