@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f612ec3a0e4694baf2b6b6c609b84a, type: 3}
+  m_Name: ad_reward_inter_unit_wrapper
+  m_EditorClassIdentifier: 
+  remoteConfigFlagUseAdmob: {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
+  admobRewardInter: {fileID: 11400000, guid: ef2e464346de2bc4aa4aded35eddb27e, type: 2}
+  applovinRewardInter: {fileID: 11400000, guid: 666856484b0c52e469e8d50809fa3f5d, type: 2}

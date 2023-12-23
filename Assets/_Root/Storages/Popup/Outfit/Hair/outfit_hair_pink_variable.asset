@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 32
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
+  m_Name: outfit_hair_pink_variable
+  m_EditorClassIdentifier: 
+  guid: 5a867abd04b4544448a8e0ff693d1899
+  value:
+    id: f2e2571b478246c
+    isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/pink
+  debugLogEnabled: 0
+  saved: 1
+  defaultValue:
+    id: f2e2571b478246c
+    isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/pink
+  resetOn: 1

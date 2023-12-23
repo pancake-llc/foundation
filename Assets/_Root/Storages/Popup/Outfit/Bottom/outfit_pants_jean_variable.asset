@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 32
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
+  m_Name: outfit_pants_jean_variable
+  m_EditorClassIdentifier: 
+  guid: ffef2d9b865150d4390b300677f2e188
+  value:
+    id: 73514aabba66412
+    isUnlocked: 1
+    unlockType: 2
+    value: 0
+    viewPosition: {x: 0, y: -90}
+    skinId: legs/pants-jeans
+  debugLogEnabled: 0
+  saved: 1
+  defaultValue:
+    id: 73514aabba66412
+    isUnlocked: 1
+    unlockType: 2
+    value: 0
+    viewPosition: {x: 0, y: -90}
+    skinId: legs/pants-jeans
+  resetOn: 1

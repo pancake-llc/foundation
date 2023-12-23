@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f576ba34eaa54703a5021f28eb805248, type: 3}
+  m_Name: HeartSettings
+  m_EditorClassIdentifier: 
+  enableAdministrator: 1
+  enablePrivacyFirstOpen: 0
+  enableMultipleTouch: 0
+  requireInternet: 1
+  targetFrameRate: 60
+  privacyUrl: https://pancakellc.com/privacy
+  privacyTitle: 
+  privacyMessage: 'To use <game name>
+
+
+    You must agree to our Privacy Policy.
+
+    We
+    put a lot of love into this app and we hope you enjoy it!
+
+    Please press "Continue"
+    to agree and start using our game.'
+  appstoreAppId: 
+  skAdConversionValue: 63
+  nameCreationMode: 0

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2400eef271b142798c5180db7f2084e6, type: 3}
+  m_Name: font_asset_localize
+  m_EditorClassIdentifier: 
+  items:
+  - language:
+      name: English
+      code: en
+      custom: 0
+    value: {fileID: 11400000, guid: 479ff250d57c8ce4e846ef3be0127477, type: 2}
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: {fileID: 11400000, guid: b7078ffe4d503f1408761dc5b5a8cb91, type: 2}

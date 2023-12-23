@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9862001d3dabd44a895005136b2843a, type: 3}
+  m_Name: sfx_collect_coin_audio
+  m_EditorClassIdentifier: 
+  loop: 0
+  volume: 1
+  groups:
+  - sequenceMode: 0
+    clips:
+    - {fileID: 8300000, guid: 98d20dbe870ae2b41b87a7e7c72361c5, type: 3}
+    - {fileID: 8300000, guid: 7bc1de8b81a12114badbf2ba8861b20b, type: 3}
+    - {fileID: 8300000, guid: 0bcf55d17e3719042a9532c473f18999, type: 3}
+    - {fileID: 8300000, guid: 4a0a5ed18b39b0442bc49c05da077bec, type: 3}
+    - {fileID: 8300000, guid: 8a100697cf7fce644a629850c1274960, type: 3}
+    - {fileID: 8300000, guid: d236955734c7bc040a93bfb31f269677, type: 3}

@@ -1,0 +1,25 @@
+Victory_Text.png
+size:289,326
+filter:Linear,Linear
+pma:true
+Layer 1
+bounds:2,189,135,143
+rotate:90
+Layer 2
+bounds:147,187,137,140
+rotate:90
+Layer 3
+bounds:218,82,58,103
+Layer 4
+bounds:2,3,89,103
+offsets:0,0,90,104
+rotate:90
+Layer 5
+bounds:112,99,86,104
+rotate:90
+Layer 6
+bounds:112,2,95,103
+rotate:90
+Layer 7
+bounds:2,94,93,108
+rotate:90

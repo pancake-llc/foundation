@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 32
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
+  m_Name: outfit_hair_brown_variable
+  m_EditorClassIdentifier: 
+  guid: 4cd3a6497a7bd554682e9d5597f65729
+  value:
+    id: 68582abc8746459
+    isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/brown
+  debugLogEnabled: 0
+  saved: 1
+  defaultValue:
+    id: 68582abc8746459
+    isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/brown
+  resetOn: 1

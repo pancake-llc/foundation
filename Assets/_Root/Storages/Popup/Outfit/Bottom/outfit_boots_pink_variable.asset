@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 32
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
+  m_Name: outfit_boots_pink_variable
+  m_EditorClassIdentifier: 
+  guid: 56ddfab8c4e0b394281d545625a2bf00
+  value:
+    id: d4cf33d9f96a46a
+    isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -90}
+    skinId: legs/boots-pink
+  debugLogEnabled: 0
+  saved: 1
+  defaultValue:
+    id: d4cf33d9f96a46a
+    isUnlocked: 0
+    unlockType: 0
+    value: 0
+    viewPosition: {x: 0, y: -90}
+    skinId: legs/boots-pink
+  resetOn: 1

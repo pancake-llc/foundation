@@ -1,0 +1,54 @@
+<dependencies>
+  <packages>
+    <package>androidx.recyclerview:recyclerview:1.2.1</package>
+    <package>com.android.support:customtabs:28.+</package>
+    <package>com.android.support:recyclerview-v7:28.+</package>
+    <package>com.applovin.mediation:adcolony-adapter:4.8.0.4</package>
+    <package>com.applovin.mediation:bytedance-adapter:5.4.1.1.0</package>
+    <package>com.applovin.mediation:chartboost-adapter:9.4.1.0</package>
+    <package>com.applovin.mediation:facebook-adapter:[6.16.0.0]</package>
+    <package>com.applovin.mediation:fyber-adapter:8.2.4.0</package>
+    <package>com.applovin.mediation:google-adapter:[22.4.0.0]</package>
+    <package>com.applovin.mediation:google-ad-manager-adapter:[22.4.0.0]</package>
+    <package>com.applovin.mediation:inmobi-adapter:10.5.8.2</package>
+    <package>com.applovin.mediation:ironsource-adapter:7.5.1.0.0</package>
+    <package>com.applovin.mediation:mintegral-adapter:16.5.21.0</package>
+    <package>com.applovin.mediation:unityads-adapter:4.8.0.0</package>
+    <package>com.applovin.mediation:vungle-adapter:6.12.1.1</package>
+    <package>com.applovin:applovin-sdk:11.11.3</package>
+    <package>com.google.ads.mediation:adcolony:4.8.0.2</package>
+    <package>com.google.ads.mediation:applovin:11.11.3.0</package>
+    <package>com.google.ads.mediation:chartboost:9.4.0.0</package>
+    <package>com.google.ads.mediation:facebook:6.15.0.0</package>
+    <package>com.google.ads.mediation:fyber:8.2.3.0</package>
+    <package>com.google.ads.mediation:inmobi:10.5.4.1</package>
+    <package>com.google.ads.mediation:ironsource:7.3.1.0</package>
+    <package>com.google.ads.mediation:mintegral:16.4.61.0</package>
+    <package>com.google.ads.mediation:pangle:5.3.0.6.0</package>
+    <package>com.google.ads.mediation:unity:4.8.0.0</package>
+    <package>com.google.ads.mediation:vungle:6.12.1.1</package>
+    <package>com.google.android.gms:play-services-ads:22.3.0</package>
+    <package>com.google.android.gms:play-services-base:16.1.0</package>
+    <package>com.google.android.ump:user-messaging-platform:2.1.0</package>
+    <package>com.squareup.picasso:picasso:2.71828</package>
+    <package>com.unity3d.ads:unity-ads:4.8.0</package>
+  </packages>
+  <files />
+  <settings>
+    <setting name="androidAbis" value="armeabi-v7a" />
+    <setting name="bundleId" value="com.pancake.login" />
+    <setting name="explodeAars" value="True" />
+    <setting name="gradleBuildEnabled" value="True" />
+    <setting name="gradlePropertiesTemplateEnabled" value="True" />
+    <setting name="gradleTemplateEnabled" value="True" />
+    <setting name="installAndroidPackages" value="True" />
+    <setting name="localMavenRepoDir" value="Assets/GeneratedLocalRepo" />
+    <setting name="packageDir" value="Assets/Plugins/Android" />
+    <setting name="patchAndroidManifest" value="True" />
+    <setting name="patchMainTemplateGradle" value="True" />
+    <setting name="projectExportEnabled" value="False" />
+    <setting name="useFullCustomMavenRepoPathWhenExport" value="True" />
+    <setting name="useFullCustomMavenRepoPathWhenNotExport" value="False" />
+    <setting name="useJetifier" value="True" />
+  </settings>
+</dependencies>
