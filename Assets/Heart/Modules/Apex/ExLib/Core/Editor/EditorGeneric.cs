@@ -433,7 +433,7 @@ namespace Pancake.ExLibEditor
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToSnackCase(this string source) { return new SnakeCaseNamingStrategy().GetPropertyName(source, false); }
+        public static string ToSnakeCase(this string source) { return new SnakeCaseNamingStrategy().GetPropertyName(source, false); }
 
         public static bool IsSerializable(Type type)
         {
