@@ -6,6 +6,7 @@ using Pancake.ScriptableEditor;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using UnityEngine.U2D;
 
 // ReSharper disable UnusedMember.Local
 namespace PancakeEditor
@@ -43,6 +44,7 @@ namespace PancakeEditor
             Scriptable,
             SelectiveProfiling,
             Spine,
+            Texture,
             UIEffect
         }
 
@@ -79,7 +81,8 @@ namespace PancakeEditor
             HeartConfig = WizardAllType.HeartSetting,
             Scriptable = WizardAllType.Scriptable,
             LevelSystem = WizardAllType.LevelSystem,
-            ScreenSetting = WizardAllType.ScreenSetting
+            ScreenSetting = WizardAllType.ScreenSetting,
+            Texture = WizardAllType.Texture
         }
 
         public enum LocaleTabType
@@ -127,6 +130,12 @@ namespace PancakeEditor
 
         #endregion
 
+        #region texture
+
+        private SpriteAtlas _spriteAtlas;
+
+        #endregion
+
         private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
         private const float TAB_WIDTH = 65f;
 
@@ -134,7 +143,7 @@ namespace PancakeEditor
         [SerializeField] private bool isInitialized;
 
         internal static Wizard window;
-        
+
         [MenuItem("Tools/Pancake/Wizard %W")]
         public new static void Show()
         {
@@ -303,6 +312,9 @@ namespace PancakeEditor
                         ref _localeInitialized,
                         ref _currentLocaleTabType);
                     break;
+                case WizardAllType.Texture when _currentType is WizardType.Setting or WizardType.All:
+                    SettingTextureDrawer.OnInspectorGUI(ref _spriteAtlas, this);
+                    break;
             }
         }
 
@@ -373,9 +385,10 @@ namespace PancakeEditor
                 case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;
-                case WizardAllType.Scriptable: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
                 case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;
+                case WizardAllType.Scriptable:
+                case WizardAllType.Texture:
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
                 case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;
