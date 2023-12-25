@@ -33,6 +33,7 @@ namespace PancakeEditor
                     {
                         RegistryManager.Remove("com.esotericsoftware.spine.spine-csharp");
                         RegistryManager.Remove("com.esotericsoftware.spine.spine-unity");
+                        RegistryManager.Remove("com.esotericsoftware.spine.urp-shaders");
                         RegistryManager.Resolve();
                     }
                 }
@@ -112,10 +113,17 @@ namespace PancakeEditor
             DrawButtonUninstall();
 #else
             GUI.enabled = !EditorApplication.isCompiling;
+
             if (GUILayout.Button("Install Spine 4.1", GUILayout.MaxHeight(30f)))
             {
                 RegistryManager.Add("com.esotericsoftware.spine.spine-csharp", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1");
                 RegistryManager.Add("com.esotericsoftware.spine.spine-unity", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1");
+                RegistryManager.Resolve();
+            }
+
+            if (GUILayout.Button("Install Spine URP 4.1", GUILayout.MaxHeight(30)))
+            {
+                RegistryManager.Add("com.esotericsoftware.spine.urp-shaders", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Modules/com.esotericsoftware.spine.urp-shaders#4.1");
                 RegistryManager.Resolve();
             }
 

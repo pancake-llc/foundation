@@ -30,7 +30,6 @@ namespace PancakeEditor
                         foreach (var pool in poolSoundEmitters)
                         {
                             var method = pool.GetType().BaseType.BaseType.GetMethod("InternalClearPool", BindingFlags.Instance | BindingFlags.NonPublic);
-                            Debug.Log(method);
                             method.Invoke(pool, null);
                         }
                     }
