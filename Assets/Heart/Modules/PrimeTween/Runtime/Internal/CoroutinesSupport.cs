@@ -14,6 +14,7 @@ namespace PrimeTween {
         [NotNull]
         public IEnumerator ToYieldInstruction() {
             if (!isAlive || !tryManipulate()) {
+                // ReSharper disable once NotDisposedResourceIsReturned
                 return Enumerable.Empty<object>().GetEnumerator();
             }
             var result = tween.coroutineEnumerator;

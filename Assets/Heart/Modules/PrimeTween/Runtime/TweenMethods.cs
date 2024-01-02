@@ -18,7 +18,7 @@ namespace PrimeTween {
             var manager = PrimeTweenManager.Instance;
             if (onTarget == null && manager.updateDepth == 0) {
                 int result = manager.tweensCount;
-                #if PRIME_TWEEN_SAFETY_CHECKS
+                #if PRIME_TWEEN_SAFETY_CHECKS && UNITY_ASSERTIONS
                 Assert.AreEqual(result, PrimeTweenManager.processAll(null, _ => true));
                 #endif
                 return result;

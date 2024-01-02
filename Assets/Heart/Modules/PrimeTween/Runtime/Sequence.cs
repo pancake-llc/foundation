@@ -35,6 +35,7 @@ namespace PrimeTween {
             #endif
             Tween root;
         internal bool IsCreated => root.IsCreated;
+        int id => root.id;
 
         /// Sequence is 'alive' when any of its tweens is 'alive'.
         public bool isAlive => root.isAlive;
@@ -259,7 +260,7 @@ namespace PrimeTween {
 
         static void requireFinite(Tween other) {
             requireIsAlive(other);
-            Assert.IsTrue(other.tween.settings.cycles >= 1, Constants.infiniteTweenInSequenceError);
+            Assert.IsTrue(other.tween.settings.cycles >= 1, msg: Constants.infiniteTweenInSequenceError);
         }
 
         void setSequence(Tween handle) {
@@ -298,7 +299,7 @@ namespace PrimeTween {
         }
 
         static void requireIsAlive(Tween other) {
-            Assert.IsTrue(other.isAlive, "It's not allowed to add 'dead' tweens to a sequence.");
+            Assert.IsTrue(other.isAlive, msg: "It's not allowed to add 'dead' tweens to a sequence.");
         }
 
         /// Stops all tweens in the Sequence, ignoring callbacks. 
@@ -405,7 +406,7 @@ namespace PrimeTween {
             bool isStarted;
   
             internal SequenceDirectEnumerator(Sequence s, bool isForward) {
-                Assert.IsTrue(s.isAlive);
+                Assert.IsTrue(s.isAlive, s.id);
                 sequence = s;
                 this.isForward = isForward;
                 isStarted = false;

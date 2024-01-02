@@ -8,14 +8,14 @@ namespace PrimeTween {
         internal const string durationInvalidError = "Tween's duration is invalid.";
 
         internal const string cantManipulateNested = "It's not allowed to manipulate 'nested' tweens and sequences, please use the parent Sequence instead.\n" +
-                                                                  "When a tween or sequence is added to another sequence, they become 'nested', and manipulating them directly is no longer allowed. " +
-                                                                  "Use Stop()/Complete()/isPaused/timeScale/elapsedTime/etc. of their parent Sequence instead.";
+                                                                  "When a tween or sequence is added to another sequence, they become 'nested', and manipulating them directly is no longer allowed.\n" +
+                                                                  "Use Stop()/Complete()/isPaused/timeScale/elapsedTime/etc. of their parent Sequence instead.\n";
         [NotNull]
         internal static string buildWarningCanBeDisabledMessage(string settingName) {
             return $"To disable this warning, disable the '{nameof(PrimeTweenConfig)}.{settingName}' setting.";
         }
 
-        internal const string isDeadMessage = "Tween/Sequence is not alive. Please check the 'isAlive' property before calling this API.";
+        internal const string isDeadMessage = "Tween/Sequence is not alive. Please check the 'isAlive' property before calling this API.\n";
         internal const string unscaledTimeTooltip = "The tween will use real time, ignoring Time.timeScale.";
         internal const string cyclesTooltip = "Setting cycles to -1 will repeat the tween indefinitely.";
         internal const string defaultCtorError = "Tween or Sequence is not created properly.\n" +
@@ -38,7 +38,8 @@ namespace PrimeTween {
                                                 "For example, if you're animating a window, the 'endValue' can represent the opened position of the window.";
         internal const string setTweensCapacityMethod = "'" + nameof(PrimeTweenConfig) + "." + nameof(PrimeTweenConfig.SetTweensCapacity) + "(int capacity)'";
         internal const string maxAliveTweens = "Max alive tweens";
-        internal const string sequenceAlreadyStarted = "Sequence has already been started, it's not allowed to ma";
+        internal const string sequenceAlreadyStarted = "Sequence has already been started, it's not allowed to manipulate it anymore.";
+        internal const string addSafetyCheckDefineForMoreInfo = "Add 'PRIME_TWEEN_SAFETY_CHECKS' to 'Project Settings/Player/Scripting Define Symbols' to see which tween produced this error (works only in Development Builds).\n";
 
         #if UNITY_EDITOR
         internal const string editModeWarning = "Please don't call PrimeTween's API in Edit mode (while the scene is not playing).";

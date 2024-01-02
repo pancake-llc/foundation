@@ -32,7 +32,7 @@ namespace PrimeTween {
         internal bool isAdditive;
         internal ValueContainer prevVal;
         [SerializeField] internal TweenSettings settings;
-        [SerializeField] int cyclesDone;
+        [SerializeField] int cyclesDone; // todo ini val of -1 is confusing
         const int iniCyclesDone = -1;
 
         internal object customOnValueChange;
@@ -75,7 +75,9 @@ namespace PrimeTween {
                 setElapsedTimeTotal(newElapsedTimeTotal, out _);
                 return;
             }
+            Assert.IsTrue(sequence.isAlive, id);
             if (isMainSequenceRoot()) {
+                Assert.IsTrue(sequence.root.id == id, id);
                 updateSequence(newElapsedTimeTotal, false);
             }
         }
@@ -116,7 +118,7 @@ namespace PrimeTween {
                         // complete the previous cycles by forcing all children tweens to 0f or 1f
                         // print($" (i:{i}) force to pos: {isForwardCycle}");
                         var simulatedSequenceElapsedTime = isForwardCycle ? float.MaxValue : negativeElapsedTime;
-                        foreach (var t in sequence.getSelfChildren(isForwardCycle)) {
+                        foreach (var t in getSequenceSelfChildren(isForwardCycle)) {
                             var tween = t.tween;
                             tween.updateSequenceChild(simulatedSequenceElapsedTime, isRestart);
                             if (!sequence.isAlive) {
@@ -136,22 +138,22 @@ namespace PrimeTween {
                             // print($"restart to pos: {!isForwardCycle}");
                             var simulatedSequenceElapsedTime = !isForwardCycle ? float.MaxValue : negativeElapsedTime;
                             prevEasedT = simulatedSequenceElapsedTime;
-                            foreach (var t in sequence.getSelfChildren(!isForwardCycle)) {
+                            foreach (var t in getSequenceSelfChildren(!isForwardCycle)) {
                                 var tween = t.tween;
                                 tween.updateSequenceChild(simulatedSequenceElapsedTime, true);
                                 if (!sequence.isAlive) {
                                     return false;
                                 }
-                                Assert.IsTrue(isForwardCycle || tween.cyclesDone == tween.settings.cycles);
-                                Assert.IsTrue(!isForwardCycle || tween.cyclesDone <= 0);
-                                Assert.IsTrue(isForwardCycle || tween.state == State.After);
-                                Assert.IsTrue(!isForwardCycle || tween.state == State.Before);
+                                Assert.IsTrue(isForwardCycle || tween.cyclesDone == tween.settings.cycles, id);
+                                Assert.IsTrue(!isForwardCycle || tween.cyclesDone <= 0, id);
+                                Assert.IsTrue(isForwardCycle || tween.state == State.After, id);
+                                Assert.IsTrue(!isForwardCycle || tween.state == State.Before, id);
                             }
                             return true;
                         }
                     }
                 }
-                Assert.AreEqual(newCyclesDone, cyclesDone);
+                Assert.IsTrue(newCyclesDone == cyclesDone, id);
                 if (isDone(cyclesDiff)) {
                     if (isMainSequenceRoot() && !_isPaused) {
                         sequence.releaseTweens();
@@ -163,7 +165,7 @@ namespace PrimeTween {
             easedInterpolationFactor = Mathf.Clamp01(easedInterpolationFactor);
             bool isForward = easedInterpolationFactor > prevEasedT;
             float sequenceElapsedTime = easedInterpolationFactor * cycleDuration;
-            foreach (var t in sequence.getSelfChildren(isForward)) {
+            foreach (var t in getSequenceSelfChildren(isForward)) {
                 t.tween.updateSequenceChild(sequenceElapsedTime, isRestart);
                 if (!sequence.isAlive) {
                     return;
@@ -171,6 +173,11 @@ namespace PrimeTween {
             }
         }
 
+        Sequence.SequenceDirectEnumerator getSequenceSelfChildren(bool isForward) {
+            Assert.IsTrue(sequence.isAlive, id);
+            return sequence.getSelfChildren(isForward);
+        }
+        
         bool isDone(int cyclesDiff) {
             Assert.IsTrue(settings.cycles == -1 || cyclesDone <= settings.cycles);
             if (timeScale >= 0f) {
@@ -361,7 +368,8 @@ namespace PrimeTween {
 
         void handleOnCompleteException(Exception e) {
             // Design decision: if a tween is inside a Sequence and user's tween.OnComplete() throws an exception, the Sequence should continue
-            Debug.LogError($"Tween's onComplete callback raised exception, tween: {GetDescription()}, exception:\n{e}", unityTarget);
+            var msg = $"Tween's onComplete callback raised exception, tween: {GetDescription()}, exception:\n{e}\n";
+            Debug.LogError(Assert.TryAddStackTrace(msg, id), unityTarget);
         }
 
         internal static bool isDestroyedUnityObject<T>(T obj) where T: class => obj is UnityEngine.Object unityObject && unityObject == null;
@@ -641,7 +649,7 @@ namespace PrimeTween {
                     msg += "\nIf you use tween.OnComplete(), Tween.Delay(), or sequence.ChainDelay() only for cosmetic purposes, you can turn off this error by passing 'warnIfTargetDestroyed: false' to the method.\n" +
                            "More info: https://github.com/KyryloKuzyk/PrimeTween/discussions/4\n";
                 }
-                Debug.LogError(msg, unityTarget);
+                Debug.LogError(Assert.TryAddStackTrace(msg, id), unityTarget);
             }
         }
 

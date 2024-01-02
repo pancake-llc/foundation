@@ -140,17 +140,22 @@ namespace PrimeTween {
             float calcFadeInOutFactor() {
                 var elapsedTimeInterpolating = tween.easedInterpolationFactor * tween.settings.duration;
                 Assert.IsTrue(elapsedTimeInterpolating >= 0f);
+                var duration = tween.settings.duration;
+                float halfDuration = duration * 0.5f;
                 var oneShakeDuration = 1f / tween.shakeData.frequency;
+                if (oneShakeDuration > halfDuration) {
+                    oneShakeDuration = halfDuration;
+                }
                 float fadeInDuration = oneShakeDuration * 0.5f;
                 if (elapsedTimeInterpolating < fadeInDuration) {
                     return Mathf.InverseLerp(0f, fadeInDuration, elapsedTimeInterpolating);
                 }
-                var duration = tween.settings.duration;
                 var fadeoutStartTime = duration - oneShakeDuration;
+                Assert.IsTrue(fadeoutStartTime > 0f, tween.id);
                 if (elapsedTimeInterpolating > fadeoutStartTime) {
                     return Mathf.InverseLerp(duration, fadeoutStartTime, elapsedTimeInterpolating);
                 }
-                return 1;
+                return 1f;
             }
         }
 

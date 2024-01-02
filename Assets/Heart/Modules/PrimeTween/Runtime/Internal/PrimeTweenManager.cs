@@ -35,7 +35,7 @@ namespace PrimeTween {
         internal int maxSimultaneousTweensCount { get; private set; }
         
         [HideInInspector] 
-        internal int lastId;
+        internal int lastId = 1;
         internal Ease defaultEase = Ease.OutQuad;
         internal const Ease defaultShakeEase = Ease.OutQuad;
         internal bool warnTweenOnDisabledTarget = true;
@@ -282,7 +282,6 @@ namespace PrimeTween {
                 result = pool[lastIndex];
                 pool.RemoveAt(lastIndex);    
             }
-            lastId++;
             Assert.AreEqual(-1, result.id);
             result.id = lastId;
             return result;
@@ -331,12 +330,16 @@ namespace PrimeTween {
                     Debug.LogWarning($"Tween is started on GameObject that is not active in hierarchy: {comp.name}. {Constants.buildWarningCanBeDisabledMessage(nameof(warnTweenOnDisabledTarget))}", comp);
                 }
             }
-            // Debug.Log($"[{Time.frameCount}] add tween: {tween.GetDescription()}", tween.unityTarget);
+            #if SAFETY_CHECKS && UNITY_2019_4_OR_NEWER
+            // Debug.Log($"[frame:{Time.frameCount}] created: {tween.GetDescription()}", tween.unityTarget);
+            StackTraces.Record(tween.id);
+            #endif
             if (tween.settings.useFixedUpdate) {
                 fixedUpdateTweens.Add(tween);
             } else {
                 tweens.Add(tween);
             }
+            lastId++; // increment only when tween added successfully
             #if UNITY_ASSERTIONS && !PRIME_TWEEN_DISABLE_ASSERTIONS
             maxSimultaneousTweensCount = Math.Max(maxSimultaneousTweensCount, tweensCount);
             if (warnBenchmarkWithAsserts && maxSimultaneousTweensCount > 50000) {
@@ -387,7 +390,7 @@ namespace PrimeTween {
                             // In my opinion, the benefits of this new API don't outweigh the added complexity. A much more simpler approach is to store the Sequence reference and call sequence.Stop() directly. 
                             Assert.IsFalse(tween.isMainSequenceRoot());
                             if (logCantManipulateError) {
-                                Debug.LogError(Constants.cantManipulateNested);
+                                Debug.LogError(Assert.TryAddStackTrace(Constants.cantManipulateNested, tween.id));
                             }
                             continue;
                         }
