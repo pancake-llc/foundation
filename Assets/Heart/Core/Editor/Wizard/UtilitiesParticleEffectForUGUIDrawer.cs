@@ -9,7 +9,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_PARTICLE_EFFECT_UGUI
-            Uniform.DrawInstalled("4.4.0");
+            Uniform.DrawInstalled("4.5.1");
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
             if (GUILayout.Button("Uninstall Particle Effect For UGUI", GUILayout.MaxHeight(30f)))
@@ -30,7 +30,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(30f)))
             {
-                RegistryManager.Add("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.4.0");
+                RegistryManager.Add("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.5.1");
                 RegistryManager.Resolve();
             }
 
