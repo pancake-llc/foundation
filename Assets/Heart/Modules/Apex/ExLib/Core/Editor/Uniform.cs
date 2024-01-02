@@ -485,9 +485,9 @@ namespace Pancake.ExLibEditor
         {
             EditorGUILayout.BeginHorizontal();
             var label = $"Installed {version}";
-            GUILayout.Label(label);
+            GUILayout.Label(label, new GUIStyle(HeaderLabel) {alignment = TextAnchor.MiddleLeft});
             var lastRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(lastRect.x + label.Length * 6f, lastRect.y, 10, lastRect.height);
+            var iconRect = new Rect(lastRect.x + label.Length * 6f + 4, lastRect.y, 10, lastRect.height);
             GUI.Label(iconRect, Uniform.IconContent("CollabNew"), InstalledIcon);
             EditorGUILayout.EndHorizontal();
         }
