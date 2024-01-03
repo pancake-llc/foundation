@@ -449,8 +449,7 @@ namespace Pancake.MobileInput
 
             if (CamZoomMax < CamZoomMin)
             {
-                Debug.LogWarning("The defined max camera zoom (" + CamZoomMax + ") is smaller than the defined min (" + CamZoomMin +
-                                 "). Automatically switching the values.");
+                Debug.LogWarning($"The defined max camera zoom ({CamZoomMax}) is smaller than the defined min ({CamZoomMin}). Automatically switching the values.");
                 (CamZoomMin, CamZoomMax) = (CamZoomMax, CamZoomMin);
             }
 
