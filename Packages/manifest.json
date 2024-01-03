@@ -14,7 +14,6 @@
     "com.unity.ide.visualstudio": "2.0.22",
     "com.unity.mobile.notifications": "2.3.1",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
-    "com.unity.performance.profile-analyzer": "1.2.2",
     "com.unity.purchasing": "4.10.0",
     "com.unity.render-pipelines.universal": "14.0.9",
     "com.unity.serialization": "3.1.1",
@@ -52,14 +51,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.unity.ads.ios-support": "1.2.0",
-    "com.needle.console": "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1",
-    "com.pancake.demystifier": "https://github.com/pancake-llc/ben-demystifier.git#0.4.1",
-    "com.pancake.unsafe": "https://github.com/pancake-llc/system-unsafe.git#5.0.0",
-    "com.pancake.immutable": "https://github.com/pancake-llc/system-immutable.git#5.0.0",
-    "com.pancake.reflection.metadata": "https://github.com/pancake-llc/reflection-metadata.git#5.0.0",
-    "com.needle.selective-profiling": "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1",
-    "com.unity.project-auditor": "0.10.0"
+    "com.unity.modules.xr": "1.0.0"
   }
 }

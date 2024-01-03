@@ -141,6 +141,16 @@
             "name": "com.unity.project-auditor",
             "expression": "0.10.0",
             "define": "PANCAKE_AUDITOR"
+        },
+        {
+            "name": "com.unity.performance.profile-analyzer",
+            "expression": "1.2.0",
+            "define": "PANCAKE_PROFILE_ANALYZER"
+        },
+        {
+            "name": "com.unity.test-framework.performance",
+            "expression": "1.0.9-preview",
+            "define": "PANCAKE_TEST_PERFORMANCE"
         }
     ],
     "noEngineReferences": false

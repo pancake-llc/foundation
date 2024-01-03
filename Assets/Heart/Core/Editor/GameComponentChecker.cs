@@ -23,13 +23,13 @@ namespace PancakeEditor
                 {
                     if (method.Name == "OnEnable")
                     {
-                        Debug.LogException(new Exception($"{GetExceptionBaseText("OnEnable", type.Name)}" + "protected override void ".TextColor(Uniform.Blue) +
+                        Debug.LogException(new Exception($"{GetExceptionBaseText("OnEnable", type.Name)}" + "protected override void ".TextColor(Uniform.TealBlue) +
                                                          "OnEnabled()".TextColor(Uniform.Orange)));
                     }
 
                     if (method.Name == "OnDisable")
                     {
-                        Debug.LogException(new Exception($"{GetExceptionBaseText("OnDisable", type.Name)}" + "protected override void ".TextColor(Uniform.Blue) +
+                        Debug.LogException(new Exception($"{GetExceptionBaseText("OnDisable", type.Name)}" + "protected override void ".TextColor(Uniform.TealBlue) +
                                                          "OnDisabled()".TextColor(Uniform.Orange)));
                     }
 
@@ -66,7 +66,7 @@ namespace PancakeEditor
             var monoCacheNameColored = nameof(Mono).TextColor(Uniform.Orange);
             var coloredMethod = methodName.TextColor(Uniform.Orange);
 
-            var coloredRecommendedMethod = "protected override void ".TextColor(Uniform.Blue) + recommendedMethod.TextColor(Uniform.Orange);
+            var coloredRecommendedMethod = "protected override void ".TextColor(Uniform.TealBlue) + recommendedMethod.TextColor(Uniform.Orange);
             return $"It is recommended to replace {coloredMethod} method with {coloredRecommendedMethod} " + $"in subclass {coloredClass} of {monoCacheNameColored}";
         }
     }

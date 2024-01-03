@@ -128,7 +128,7 @@ namespace PancakeEditor
 
         #endregion
 
-        private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
+        private readonly Color[] _colors = {Uniform.RichBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
         private const float TAB_WIDTH = 65f;
 
         [SerializeField] private int tabIndex = -1;
@@ -195,6 +195,7 @@ namespace PancakeEditor
             const float width = TAB_WIDTH * 4f;
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
+
             EditorGUILayout.BeginVertical("box", GUILayout.Width(width), GUILayout.ExpandHeight(true));
 
             _leftSideScrollPosition = EditorGUILayout.BeginScrollView(_leftSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
