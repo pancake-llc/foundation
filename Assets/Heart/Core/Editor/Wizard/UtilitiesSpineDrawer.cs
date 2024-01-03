@@ -43,7 +43,7 @@ namespace PancakeEditor
 
             onRepaint = repaint;
 
-            Uniform.DrawInstalled("4.1");
+            Uniform.DrawInstalled("Version 4.1");
 
             var selectionSkeletonAnimation = (Selection.activeObject as GameObject)?.GetComponent<SkeletonAnimation>();
             var selectionSkeletonGraphic = (Selection.activeObject as GameObject)?.GetComponent<SkeletonGraphic>();

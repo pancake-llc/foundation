@@ -37,11 +37,11 @@ namespace PancakeEditor
             LevelSystem,
             Localization,
             Notification,
+            OtherPackage,
             ScreenSetting,
             Scriptable,
             Spine,
-            Texture,
-            OtherPackage
+            Texture
         }
 
         private enum WizardMonetizeType
@@ -358,7 +358,6 @@ namespace PancakeEditor
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 case WizardAllType.InAppReview:
-                case WizardAllType.OtherPackage:
                 case WizardAllType.GameService:
                 case WizardAllType.Localization: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
@@ -369,6 +368,7 @@ namespace PancakeEditor
                 case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
                 case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;
                 case WizardAllType.GrowMesh: return EditorResources.ScriptableMesh;
+                case WizardAllType.OtherPackage: return EditorResources.ScriptableUnity;
                 default:
                     return null;
             }

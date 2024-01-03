@@ -59,6 +59,7 @@
     "com.pancake.unsafe": "https://github.com/pancake-llc/system-unsafe.git#5.0.0",
     "com.pancake.immutable": "https://github.com/pancake-llc/system-immutable.git#5.0.0",
     "com.pancake.reflection.metadata": "https://github.com/pancake-llc/reflection-metadata.git#5.0.0",
-    "com.needle.selective-profiling": "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1"
+    "com.needle.selective-profiling": "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1",
+    "com.unity.project-auditor": "0.10.0"
   }
 }

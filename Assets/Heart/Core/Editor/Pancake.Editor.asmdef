@@ -119,7 +119,7 @@
         },
         {
             "name": "com.unity.addressables",
-            "expression": "",
+            "expression": "1.18.2",
             "define": "PANCAKE_ADDRESSABLE"
         },
         {
@@ -136,6 +136,11 @@
             "name": "com.unity.services.cloudsave",
             "expression": "2.0.0",
             "define": "PANCAKE_CLOUDSAVE"
+        },
+        {
+            "name": "com.unity.project-auditor",
+            "expression": "0.10.0",
+            "define": "PANCAKE_AUDITOR"
         }
     ],
     "noEngineReferences": false

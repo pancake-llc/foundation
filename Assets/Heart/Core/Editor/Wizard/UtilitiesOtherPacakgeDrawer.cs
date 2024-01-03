@@ -9,43 +9,50 @@ namespace PancakeEditor
     {
         public static void OnInspectorGUI()
         {
-            GUILayout.Space(8);
+            GUILayout.Space(12);
+
 #if PANCAKE_ATT
             UninstallAtt();
 #else
             InstallAtt();
 #endif
+            GUILayout.Space(12);
 
-
-            GUILayout.Space(30);
 #if PANCAKE_NEEDLE_CONSOLE
             UninstallNeedleConsole();
 #else
             InstallNeedleConsole();
 #endif
 
+            GUILayout.Space(12);
 
-            GUILayout.Space(30);
 #if PANCAKE_SELECTIVE_PROFILING
             UninstallSelectiveProfiler();
 #else
             InstallSelectiveProfiler();
 #endif
 
+            GUILayout.Space(12);
 
-            GUILayout.Space(30);
 #if PANCAKE_PARTICLE_EFFECT_UGUI
             UninstallParticleEffectUGUI();
 #else
             InstallParticleEffectUGUI();
 #endif
 
+            GUILayout.Space(12);
 
-            GUILayout.Space(30);
 #if PANCAKE_UI_EFFECT
             UninstallUIEffect();
 #else
             InstallUIEffect();
+#endif
+            GUILayout.Space(12);
+
+#if PANCAKE_AUDITOR
+            UninstallProjectAutidor();
+#else
+            InstallProjectAuditor();
 #endif
         }
 
@@ -236,6 +243,45 @@ namespace PancakeEditor
                 if (confirmDelete)
                 {
                     RegistryManager.Remove("com.coffee.ui-effect");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private static void InstallProjectAuditor()
+        {
+            GUI.enabled = !EditorApplication.isCompiling;
+            if (GUILayout.Button("Install Project Auditor", GUILayout.MaxHeight(30f)))
+            {
+                RegistryManager.Add("com.unity.project-auditor", "0.10.0");
+                RegistryManager.Resolve();
+            }
+
+            GUI.enabled = true;
+        }
+
+        private static void UninstallProjectAutidor()
+        {
+            EditorGUILayout.BeginHorizontal();
+            Uniform.DrawInstalled("Project Auditor 0.10.0", new RectOffset(0, 0, 6, 0));
+
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Open Dashboard", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))
+            {
+                EditorApplication.ExecuteMenuItem("Window/Analysis/Project Auditor");
+            }
+
+            GUILayout.Space(8);
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Project Auditor", "Are you sure you want to uninstall ProjectAuditor package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.unity.project-auditor");
                     RegistryManager.Resolve();
                 }
             }

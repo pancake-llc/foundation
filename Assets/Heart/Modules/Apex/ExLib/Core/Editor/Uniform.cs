@@ -487,11 +487,10 @@ namespace Pancake.ExLibEditor
         public static void DrawInstalled(string version, RectOffset labelMargin = null)
         {
             EditorGUILayout.BeginHorizontal();
-            var label = $"Installed {version}";
             labelMargin ??= new RectOffset(0, 0, 0, 0);
-            GUILayout.Label(label, new GUIStyle(EditorStyles.linkLabel) {alignment = TextAnchor.MiddleLeft, margin = labelMargin});
+            GUILayout.Label(version, new GUIStyle(EditorStyles.linkLabel) {alignment = TextAnchor.MiddleLeft, margin = labelMargin});
             var lastRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(lastRect.x + EditorStyles.label.CalcSize(new GUIContent(label)).x + 1.5f, lastRect.y + 1f, 10, lastRect.height);
+            var iconRect = new Rect(lastRect.x + EditorStyles.label.CalcSize(new GUIContent(version)).x + 2f, lastRect.y + 1f, 10, lastRect.height);
             GUI.Label(iconRect, Uniform.IconContent("CollabNew"), InstalledIcon);
             EditorGUILayout.EndHorizontal();
         }
