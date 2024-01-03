@@ -46,13 +46,6 @@
       "dependencies": {},
       "hash": "64445bb59f6d9d4d7f24be5eea45e7fdf2146546"
     },
-    "com.needle.selective-profiling": {
-      "version": "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "57165be0586768b5a0d6c88857281be325917726"
-    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
