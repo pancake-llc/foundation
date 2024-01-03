@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
+// ReSharper disable UnusedMember.Local
 namespace PancakeEditor
 {
     public static class UtilitiesOtherPacakgeDrawer
@@ -9,10 +10,59 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
             GUILayout.Space(8);
-
-            #region att
-
 #if PANCAKE_ATT
+            UninstallAtt();
+#else
+            InstallAtt();
+#endif
+
+            
+            GUILayout.Space(30);
+#if PANCAKE_NEEDLE_CONSOLE
+            UninstallNeedleConsole();
+#else
+            InstallNeedleConsole();
+#endif
+
+            
+            GUILayout.Space(30);
+#if PANCAKE_SELECTIVE_PROFILING
+            UninstallSelectiveProfiler();
+#else
+            InstallSelectiveProfiler();
+#endif
+
+
+            GUILayout.Space(30);
+#if PANCAKE_PARTICLE_EFFECT_UGUI
+            UninstallParticleEffectUGUI();
+#else
+            InstallParticleEffectUGUI();
+#endif
+
+
+            GUILayout.Space(30);
+#if PANCAKE_UI_EFFECT
+            UninstallUIEffect();
+#else
+            InstallUIEffect();
+#endif
+        }
+
+        private static void InstallAtt()
+        {
+            GUI.enabled = !EditorApplication.isCompiling;
+            if (GUILayout.Button("Install iOS 14 Advertising Support Package", GUILayout.MaxHeight(30f)))
+            {
+                RegistryManager.Add("com.unity.ads.ios-support", "1.2.0");
+                RegistryManager.Resolve();
+            }
+
+            GUI.enabled = true;
+        }
+
+        private static void UninstallAtt()
+        {
             EditorGUILayout.BeginHorizontal();
             const string labelAtt = "ATT 1.2.0";
             GUILayout.Label(labelAtt, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
@@ -38,25 +88,26 @@ namespace PancakeEditor
 
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
+        }
 
-#else
+        private static void InstallNeedleConsole()
+        {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install iOS 14 Advertising Support Package", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(30f)))
             {
-                RegistryManager.Add("com.unity.ads.ios-support", "1.2.0");
+                RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1");
+                RegistryManager.Add("com.pancake.demystifier", "https://github.com/pancake-llc/ben-demystifier.git#0.4.1");
+                RegistryManager.Add("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#5.0.0");
+                RegistryManager.Add("com.pancake.immutable", "https://github.com/pancake-llc/system-immutable.git#5.0.0");
+                RegistryManager.Add("com.pancake.reflection.metadata", "https://github.com/pancake-llc/reflection-metadata.git#5.0.0");
                 RegistryManager.Resolve();
             }
 
             GUI.enabled = true;
-#endif
+        }
 
-            #endregion
-
-            GUILayout.Space(30);
-
-            #region needle console
-
-#if PANCAKE_NEEDLE_CONSOLE
+        private static void UninstallNeedleConsole()
+        {
             EditorGUILayout.BeginHorizontal();
             const string labelNeedleConsole = "Needle Console 4.5.1";
             GUILayout.Label(labelNeedleConsole, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
@@ -87,29 +138,22 @@ namespace PancakeEditor
 
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
+        }
 
-#else
+        private static void InstallSelectiveProfiler()
+        {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Selective Profiling", GUILayout.MaxHeight(30f)))
             {
-                RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1");
-                RegistryManager.Add("com.pancake.demystifier", "https://github.com/pancake-llc/ben-demystifier.git#0.4.1");
-                RegistryManager.Add("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#5.0.0");
-                RegistryManager.Add("com.pancake.immutable", "https://github.com/pancake-llc/system-immutable.git#5.0.0");
-                RegistryManager.Add("com.pancake.reflection.metadata", "https://github.com/pancake-llc/reflection-metadata.git#5.0.0");
+                RegistryManager.Add("com.needle.selective-profiling", "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1");
                 RegistryManager.Resolve();
             }
 
             GUI.enabled = true;
-#endif
+        }
 
-            #endregion
-
-            GUILayout.Space(30);
-
-            #region selective profile
-
-#if PANCAKE_SELECTIVE_PROFILING
+        private static void UninstallSelectiveProfiler()
+        {
             EditorGUILayout.BeginHorizontal();
             const string labelSelective = "Selective Profiler 1.0.1-pre.1";
             GUILayout.Label(labelSelective, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
@@ -140,25 +184,22 @@ namespace PancakeEditor
 
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
+        }
 
-#else
+        private static void InstallParticleEffectUGUI()
+        {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Selective Profiling", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(30f)))
             {
-                RegistryManager.Add("com.needle.selective-profiling", "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1");
+                RegistryManager.Add("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.5.1");
                 RegistryManager.Resolve();
             }
 
             GUI.enabled = true;
-#endif
+        }
 
-            #endregion
-
-            GUILayout.Space(30);
-
-            #region particle effect ugui
-
-#if PANCAKE_PARTICLE_EFFECT_UGUI
+        private static void UninstallParticleEffectUGUI()
+        {
             EditorGUILayout.BeginHorizontal();
             const string label = "Particle Effect For UGUI 4.5.1";
             GUILayout.Label(label, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
@@ -182,29 +223,22 @@ namespace PancakeEditor
 
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
+        }
 
-#else
+        private static void InstallUIEffect()
+        {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(30f)))
             {
-                RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1");
-                RegistryManager.Add("com.pancake.demystifier", "https://github.com/pancake-llc/ben-demystifier.git#0.4.1");
-                RegistryManager.Add("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#5.0.0");
-                RegistryManager.Add("com.pancake.immutable", "https://github.com/pancake-llc/system-immutable.git#5.0.0");
-                RegistryManager.Add("com.pancake.reflection.metadata", "https://github.com/pancake-llc/reflection-metadata.git#5.0.0");
+                RegistryManager.Add("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10");
                 RegistryManager.Resolve();
             }
 
             GUI.enabled = true;
-#endif
+        }
 
-            #endregion
-
-            GUILayout.Space(30);
-
-            #region ui effect
-
-#if PANCAKE_UI_EFFECT
+        private static void UninstallUIEffect()
+        {
             EditorGUILayout.BeginHorizontal();
             const string labelUiEffect = "UI Effect 4.0.0-preview.10";
             GUILayout.Label(labelUiEffect, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
@@ -225,19 +259,6 @@ namespace PancakeEditor
 
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
-
-#else
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(30f)))
-            {
-                RegistryManager.Add("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10");
-                RegistryManager.Resolve();
-            }
-
-            GUI.enabled = true;
-#endif
-
-            #endregion
         }
     }
 }

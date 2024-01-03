@@ -32,7 +32,6 @@ namespace PancakeEditor
             Greenery,
             GrowMesh,
             HeartSetting,
-            IOS14AdvertisingSupport,
             InAppPurchase,
             InAppReview,
             LevelSystem,
@@ -55,7 +54,6 @@ namespace PancakeEditor
         {
             Firebase = WizardAllType.Firebase,
             Adjust = WizardAllType.Adjust,
-            IOS14AdvertisingSupport = WizardAllType.IOS14AdvertisingSupport
         }
 
         private enum WizardUtilitiesType
@@ -262,9 +260,6 @@ namespace PancakeEditor
                 case WizardAllType.ScreenSetting when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesScreenSettingDrawer.OnInspectorGUI(position);
                     break;
-                case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Track or WizardType.All:
-                    TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
-                    break;
                 case WizardAllType.Scriptable when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesScriptableDrawer.OnInspectorGUI();
                     break;
@@ -365,8 +360,7 @@ namespace PancakeEditor
                 case WizardAllType.InAppReview:
                 case WizardAllType.OtherPackage:
                 case WizardAllType.GameService:
-                case WizardAllType.Localization:
-                case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
+                case WizardAllType.Localization: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.Scriptable:
