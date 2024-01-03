@@ -5,7 +5,7 @@ namespace Pancake
 {
     public static partial class C
     {
-        public class Convert
+        public static class Convert
         {
             /// <summary>
             /// Gets the specified Boolean value as a byte array.

@@ -4,7 +4,7 @@ namespace Pancake
 {
     public static partial class C
     {
-        public class Encrypt
+        public static class Encrypt
         {
             internal const int QUICK_ENCRYPT_LENGTH = 220;
 
