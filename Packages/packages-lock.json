@@ -46,6 +46,48 @@
       "dependencies": {},
       "hash": "64445bb59f6d9d4d7f24be5eea45e7fdf2146546"
     },
+    "com.needle.console": {
+      "version": "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "008fe7f9fa530a86943e7199914b32ac44991391"
+    },
+    "com.needle.selective-profiling": {
+      "version": "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "57165be0586768b5a0d6c88857281be325917726"
+    },
+    "com.pancake.demystifier": {
+      "version": "https://github.com/pancake-llc/ben-demystifier.git#0.4.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c6e3635d770ad80c57eb2e4884be405f5172903c"
+    },
+    "com.pancake.immutable": {
+      "version": "https://github.com/pancake-llc/system-immutable.git#5.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0c30c6bd00eefbcb49a544ad51335c601755f0d6"
+    },
+    "com.pancake.reflection.metadata": {
+      "version": "https://github.com/pancake-llc/reflection-metadata.git#5.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "34d102585ce3b5b22a51b43767755a89977a4290"
+    },
+    "com.pancake.unsafe": {
+      "version": "https://github.com/pancake-llc/system-unsafe.git#5.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "60534d296ce4aed721d4f218cdee1bb02c9f1971"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -64,6 +106,13 @@
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.modules.unitywebrequestassetbundle": "1.0.0"
       },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.ads.ios-support": {
+      "version": "1.2.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {

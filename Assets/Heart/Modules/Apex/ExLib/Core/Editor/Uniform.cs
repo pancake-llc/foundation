@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -481,13 +482,16 @@ namespace Pancake.ExLibEditor
         /// <summary>
         /// Draw label installed and icon
         /// </summary>
-        public static void DrawInstalled(string version)
+        /// <param name="version"></param>
+        /// <param name="labelMargin"></param>
+        public static void DrawInstalled(string version, RectOffset labelMargin = null)
         {
             EditorGUILayout.BeginHorizontal();
             var label = $"Installed {version}";
-            GUILayout.Label(label, new GUIStyle(HeaderLabel) {alignment = TextAnchor.MiddleLeft});
+            labelMargin ??= new RectOffset(0, 0, 0, 0);
+            GUILayout.Label(label, new GUIStyle(EditorStyles.linkLabel) {alignment = TextAnchor.MiddleLeft, margin = labelMargin});
             var lastRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(lastRect.x + label.Length * 6f + 4, lastRect.y, 10, lastRect.height);
+            var iconRect = new Rect(lastRect.x + EditorStyles.label.CalcSize(new GUIContent(label)).x + 1.5f, lastRect.y + 1f, 10, lastRect.height);
             GUI.Label(iconRect, Uniform.IconContent("CollabNew"), InstalledIcon);
             EditorGUILayout.EndHorizontal();
         }

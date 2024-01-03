@@ -16,7 +16,7 @@ namespace PancakeEditor
             InstallAtt();
 #endif
 
-            
+
             GUILayout.Space(30);
 #if PANCAKE_NEEDLE_CONSOLE
             UninstallNeedleConsole();
@@ -24,7 +24,7 @@ namespace PancakeEditor
             InstallNeedleConsole();
 #endif
 
-            
+
             GUILayout.Space(30);
 #if PANCAKE_SELECTIVE_PROFILING
             UninstallSelectiveProfiler();
@@ -64,11 +64,7 @@ namespace PancakeEditor
         private static void UninstallAtt()
         {
             EditorGUILayout.BeginHorizontal();
-            const string labelAtt = "ATT 1.2.0";
-            GUILayout.Label(labelAtt, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
-            var lastRectAtt = GUILayoutUtility.GetLastRect();
-            var iconRectAtt = new Rect(lastRectAtt.x + labelAtt.Length * 6f + 14, lastRectAtt.y, 10, lastRectAtt.height);
-            GUI.Label(iconRectAtt, Uniform.IconContent("CollabNew"), Uniform.InstalledIcon);
+            Uniform.DrawInstalled("ATT 1.2.0", new RectOffset(0, 0, 6, 0));
 
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
@@ -109,11 +105,8 @@ namespace PancakeEditor
         private static void UninstallNeedleConsole()
         {
             EditorGUILayout.BeginHorizontal();
-            const string labelNeedleConsole = "Needle Console 4.5.1";
-            GUILayout.Label(labelNeedleConsole, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
-            var lastRectNc = GUILayoutUtility.GetLastRect();
-            var iconRectNc = new Rect(lastRectNc.x + labelNeedleConsole.Length * 7f, lastRectNc.y, 10, lastRectNc.height);
-            GUI.Label(iconRectNc, Uniform.IconContent("CollabNew"), Uniform.InstalledIcon);
+            Uniform.DrawInstalled("Needle Console 4.5.1", new RectOffset(0, 0, 6, 0));
+
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))
             {
@@ -155,11 +148,7 @@ namespace PancakeEditor
         private static void UninstallSelectiveProfiler()
         {
             EditorGUILayout.BeginHorizontal();
-            const string labelSelective = "Selective Profiler 1.0.1-pre.1";
-            GUILayout.Label(labelSelective, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
-            var lastRectSelective = GUILayoutUtility.GetLastRect();
-            var iconRectSelective = new Rect(lastRectSelective.x + labelSelective.Length * 6f, lastRectSelective.y, 10, lastRectSelective.height);
-            GUI.Label(iconRectSelective, Uniform.IconContent("CollabNew"), Uniform.InstalledIcon);
+            Uniform.DrawInstalled("Selective Profiler 1.0.1-pre.1", labelMargin: new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))
@@ -201,11 +190,8 @@ namespace PancakeEditor
         private static void UninstallParticleEffectUGUI()
         {
             EditorGUILayout.BeginHorizontal();
-            const string label = "Particle Effect For UGUI 4.5.1";
-            GUILayout.Label(label, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
-            var lastRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(lastRect.x + label.Length * 6f + 10, lastRect.y, 10, lastRect.height);
-            GUI.Label(iconRect, Uniform.IconContent("CollabNew"), Uniform.InstalledIcon);
+            Uniform.DrawInstalled("Particle Effect For UGUI 4.5.1", new RectOffset(0, 0, 6, 0));
+
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))
@@ -240,11 +226,8 @@ namespace PancakeEditor
         private static void UninstallUIEffect()
         {
             EditorGUILayout.BeginHorizontal();
-            const string labelUiEffect = "UI Effect 4.0.0-preview.10";
-            GUILayout.Label(labelUiEffect, new GUIStyle(Uniform.HeaderLabel) {margin = new RectOffset(0, 0, 6, 0)});
-            var lastRectUiEffect = GUILayoutUtility.GetLastRect();
-            var iconRectUiEffect = new Rect(lastRectUiEffect.x + labelUiEffect.Length * 6f + 16, lastRectUiEffect.y, 10, lastRectUiEffect.height);
-            GUI.Label(iconRectUiEffect, Uniform.IconContent("CollabNew"), Uniform.InstalledIcon);
+            Uniform.DrawInstalled("UI Effect 4.0.0-preview.10", new RectOffset(0, 0, 6, 0));
+
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))

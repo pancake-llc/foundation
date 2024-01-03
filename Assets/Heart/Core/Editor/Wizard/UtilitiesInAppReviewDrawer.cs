@@ -13,11 +13,6 @@ namespace PancakeEditor
             EditorGUILayout.Space();
 #endif
 
-#if PANCAKE_GOOGLE_EDM
-            Uniform.DrawInstalled("google edm 1.2.177");
-            EditorGUILayout.Space();
-#endif
-
 #if !PANCAKE_IN_APP_REVIEW
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install In App Review", GUILayout.MaxHeight(30f)))
@@ -33,7 +28,28 @@ namespace PancakeEditor
             GUI.enabled = true;
 #endif
 
-#if !PANCAKE_GOOGLE_EDM
+#if PANCAKE_GOOGLE_EDM
+
+            EditorGUILayout.BeginHorizontal();
+            Uniform.DrawInstalled("EDM4U 1.2.177");
+
+            GUI.backgroundColor = Uniform.Red;
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall EDM4U", "Are you sure you want to uninstall EDM4U package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.google.external-dependency-manager");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+
+#else
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Google External Dependency Manager", GUILayout.MaxHeight(30f)))
             {
@@ -56,22 +72,6 @@ namespace PancakeEditor
                     RegistryManager.Remove("com.google.play.core");
                     RegistryManager.Remove("com.google.play.common");
                     RegistryManager.Remove("com.google.android.appbundle");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-#endif
-
-#if PANCAKE_GOOGLE_EDM
-            EditorGUILayout.Space();
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall Google External Dependency Manager", GUILayout.MaxHeight(30f)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall EDM4U", "Are you sure you want to uninstall EDM4U package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.google.external-dependency-manager");
                     RegistryManager.Resolve();
                 }
             }
