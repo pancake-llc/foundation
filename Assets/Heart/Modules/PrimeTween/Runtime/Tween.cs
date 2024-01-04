@@ -286,7 +286,7 @@ namespace PrimeTween {
         /// Tween.PositionX(transform, endValue: 1.5f, duration: 1f)
         ///     .OnComplete(transform, _transform =&gt; Destroy(_transform.gameObject));
         /// </code></example>
-        public Tween OnComplete<T>(T target, Action<T> onComplete, bool warnIfTargetDestroyed = true) where T : class {
+        public Tween OnComplete<T>([NotNull] T target, Action<T> onComplete, bool warnIfTargetDestroyed = true) where T : class {
             if (validateIsAlive()) {
                 tween.OnComplete(target, onComplete, warnIfTargetDestroyed);
             }

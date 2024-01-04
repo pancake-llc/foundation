@@ -21,8 +21,7 @@ namespace PrimeTween {
         [SerializeField] internal bool _isPaused;
         internal bool _isAlive;
         [SerializeField] internal float elapsedTimeTotal;
-        [SerializeField]
-        internal float easedInterpolationFactor;
+        [SerializeField] internal float easedInterpolationFactor;
         internal float cycleDuration;
         internal PropType propType;
         internal TweenType tweenType;
@@ -340,7 +339,7 @@ namespace PrimeTween {
             };
         }
 
-        internal void OnComplete<T>([NotNull] T _target, [NotNull] Action<T> _onComplete, bool warnIfTargetDestroyed) where T : class {
+        internal void OnComplete<T>([CanBeNull] T _target, [NotNull] Action<T> _onComplete, bool warnIfTargetDestroyed) where T : class {
             if (_target == null || isDestroyedUnityObject(_target)) {
                 Debug.LogError($"{nameof(_target)} is null or has been destroyed. {Constants.onCompleteCallbackIgnored}");
                 return;
@@ -463,7 +462,12 @@ namespace PrimeTween {
             onComplete?.Invoke(this);
         }
 
-        internal bool isUnityTargetDestroyed() => isDestroyedUnityObject(unityTarget);
+        internal bool isUnityTargetDestroyed() {
+            // must use target here instead of unityTarget
+            // unityTarget has the SerializeField attribute, so if ReferenceEquals(unityTarget, null), then Unity will populate the field with non-null UnityEngine.Object when a new scene is loaded in the Editor
+            // https://github.com/KyryloKuzyk/PrimeTween/issues/32
+            return isDestroyedUnityObject(target); 
+        }
 
         internal bool HasOnComplete => onComplete != null;
 
