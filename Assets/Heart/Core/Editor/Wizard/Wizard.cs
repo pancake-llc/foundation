@@ -32,20 +32,16 @@ namespace PancakeEditor
             Greenery,
             GrowMesh,
             HeartSetting,
-            IOS14AdvertisingSupport,
             InAppPurchase,
             InAppReview,
             LevelSystem,
             Localization,
-            NeedleConsole,
             Notification,
-            ParticleEffectForUGUI,
+            OtherPackage,
             ScreenSetting,
             Scriptable,
-            SelectiveProfiling,
             Spine,
-            Texture,
-            UIEffect
+            Texture
         }
 
         private enum WizardMonetizeType
@@ -58,22 +54,18 @@ namespace PancakeEditor
         {
             Firebase = WizardAllType.Firebase,
             Adjust = WizardAllType.Adjust,
-            IOS14AdvertisingSupport = WizardAllType.IOS14AdvertisingSupport
         }
 
         private enum WizardUtilitiesType
         {
             Notification = WizardAllType.Notification,
             InAppReview = WizardAllType.InAppReview,
-            NeedleConsole = WizardAllType.NeedleConsole,
-            SelectiveProfiling = WizardAllType.SelectiveProfiling,
-            ParticleEffectForUGUI = WizardAllType.ParticleEffectForUGUI,
-            UIEffect = WizardAllType.UIEffect,
             Spine = WizardAllType.Spine,
             GameSerice = WizardAllType.GameService,
             Greenery = WizardAllType.Greenery,
             Localization = WizardAllType.Localization,
-            GrowMesh = WizardAllType.GrowMesh
+            GrowMesh = WizardAllType.GrowMesh,
+            OtherPacakge = WizardAllType.OtherPackage
         }
 
         private enum WizardSettingType
@@ -136,7 +128,7 @@ namespace PancakeEditor
 
         #endregion
 
-        private readonly Color[] _colors = {Uniform.DeepCarminePink, Color.yellow, Uniform.RichBlack, Uniform.FluorescentBlue, Uniform.FieryRose};
+        private readonly Color[] _colors = {Uniform.RichBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
         private const float TAB_WIDTH = 65f;
 
         [SerializeField] private int tabIndex = -1;
@@ -203,6 +195,7 @@ namespace PancakeEditor
             const float width = TAB_WIDTH * 4f;
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
+
             EditorGUILayout.BeginVertical("box", GUILayout.Width(width), GUILayout.ExpandHeight(true));
 
             _leftSideScrollPosition = EditorGUILayout.BeginScrollView(_leftSideScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
@@ -262,29 +255,17 @@ namespace PancakeEditor
                 case WizardAllType.InAppReview when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesInAppReviewDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.NeedleConsole when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesNeedleConsoleDrawer.OnInspectorGUI();
-                    break;
-                case WizardAllType.SelectiveProfiling when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesSelectiveProfilingDrawer.OnInspectorGUI();
-                    break;
                 case WizardAllType.HeartSetting when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesHeartSettingDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.ScreenSetting when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesScreenSettingDrawer.OnInspectorGUI(position);
                     break;
-                case WizardAllType.IOS14AdvertisingSupport when _currentType is WizardType.Track or WizardType.All:
-                    TrackingIOS14AdvertisingSupportDrawer.OnInspectorGUI();
-                    break;
                 case WizardAllType.Scriptable when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesScriptableDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.ParticleEffectForUGUI when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesParticleEffectForUGUIDrawer.OnInspectorGUI();
-                    break;
-                case WizardAllType.UIEffect when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesUIEffectDrawer.OnInspectorGUI();
+                case WizardAllType.OtherPackage when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesOtherPacakgeDrawer.OnInspectorGUI();
                     break;
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
                     UtilitiesLevelSystemDrawer.OnInspectorGUI(ref _currentLevelTabType, position);
@@ -378,21 +359,17 @@ namespace PancakeEditor
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
                 case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 case WizardAllType.InAppReview:
-                case WizardAllType.NeedleConsole:
-                case WizardAllType.SelectiveProfiling:
                 case WizardAllType.GameService:
-                case WizardAllType.Localization:
-                case WizardAllType.IOS14AdvertisingSupport: return EditorResources.ScriptableInterface;
+                case WizardAllType.Localization: return EditorResources.ScriptableInterface;
                 case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;
-                case WizardAllType.ParticleEffectForUGUI: return EditorResources.ScriptableSetting;
-                case WizardAllType.UIEffect: return EditorResources.ScriptableSetting;
                 case WizardAllType.Scriptable:
                 case WizardAllType.Texture:
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
                 case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;
                 case WizardAllType.GrowMesh: return EditorResources.ScriptableMesh;
+                case WizardAllType.OtherPackage: return EditorResources.ScriptableUnity;
                 default:
                     return null;
             }

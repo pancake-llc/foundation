@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -148,13 +149,16 @@ namespace Pancake.ExLibEditor
 
         #region color
 
+        public static readonly Color TealBlue = new(0f, 1f, 0.97f, 0.27f);
+        public static readonly Color GothicOlive = new(0.49f, 0.43f, 0.31f);
+        public static readonly Color Maroon = new(0.52f, 0.27f, 0.33f);
+        public static readonly Color ElegantNavy = new(0.15f, 0.21f, 0.41f);
+        public static readonly Color CrystalPurple = new(0.33f, 0.24f, 0.42f);
+        public static readonly Color RichBlack = new(0.04f, 0.05f, 0.11f);
         public static readonly Color Green = new(0.31f, 0.98f, 0.48f, 0.66f);
         public static readonly Color Orange = new(1f, 0.72f, 0.42f, 0.66f);
-        public static readonly Color Blue = new(0f, 1f, 0.97f, 0.27f);
-        public static readonly Color Purple = new(0.74f, 0.58f, 0.98f, 0.39f);
         public static readonly Color Red = new(1f, 0.16f, 0.16f, 0.66f);
         public static readonly Color Pink = new(1f, 0.47f, 0.78f, 0.66f);
-        public static readonly Color RichBlack = new(0.04f, 0.05f, 0.11f);
         public static readonly Color FieryRose = new(0.97f, 0.33f, 0.41f);
         public static readonly Color DeepCarminePink = new(1f, 0.2f, 0.2f);
         public static readonly Color FluorescentBlue = new(0.2f, 1f, 1f);
@@ -481,13 +485,15 @@ namespace Pancake.ExLibEditor
         /// <summary>
         /// Draw label installed and icon
         /// </summary>
-        public static void DrawInstalled(string version)
+        /// <param name="version"></param>
+        /// <param name="labelMargin"></param>
+        public static void DrawInstalled(string version, RectOffset labelMargin = null)
         {
             EditorGUILayout.BeginHorizontal();
-            var label = $"Installed {version}";
-            GUILayout.Label(label);
+            labelMargin ??= new RectOffset(0, 0, 0, 0);
+            GUILayout.Label(version, new GUIStyle(EditorStyles.linkLabel) {alignment = TextAnchor.MiddleLeft, margin = labelMargin});
             var lastRect = GUILayoutUtility.GetLastRect();
-            var iconRect = new Rect(lastRect.x + label.Length * 6f, lastRect.y, 10, lastRect.height);
+            var iconRect = new Rect(lastRect.x + EditorStyles.label.CalcSize(new GUIContent(version)).x + 2f, lastRect.y + 1.3f, 10, lastRect.height);
             GUI.Label(iconRect, Uniform.IconContent("CollabNew"), InstalledIcon);
             EditorGUILayout.EndHorizontal();
         }

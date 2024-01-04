@@ -158,7 +158,7 @@ namespace Pancake
             }
 
             int length = C.Convert.GetBytes(value, CachedBytes);
-            if (length > byte.MaxValue) throw new Exception(string.Format("String '{0}' is too long.", value));
+            if (length > byte.MaxValue) throw new Exception($"String '{value}' is too long.");
 
             C.Encrypt.GetSelfXorBytes(CachedBytes, encryptBytes);
             binaryWriter.Write((byte) length);
