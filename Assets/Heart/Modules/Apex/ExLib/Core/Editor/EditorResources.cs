@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace Pancake.ExLibEditor
@@ -35,6 +36,26 @@ namespace Pancake.ExLibEditor
         public static Texture2D ScriptableUnity => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_unity.png", RELATIVE_PATH);
         public static Texture2D ScriptableAndroid => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_android.png", RELATIVE_PATH);
 
+        public static Texture2D CheckboxChecked =>
+            EditorGUIUtility.isProSkin
+                ? ProjectDatabase.FindAssetWithPath<Texture2D>("checkbox_checked_dark.png", RELATIVE_PATH)
+                : ProjectDatabase.FindAssetWithPath<Texture2D>("checkbox_checked_light.png", RELATIVE_PATH);
+
+        public static Texture2D CheckboxUnchecked =>
+            EditorGUIUtility.isProSkin
+                ? ProjectDatabase.FindAssetWithPath<Texture2D>("checkbox_unchecked_dark.png", RELATIVE_PATH)
+                : ProjectDatabase.FindAssetWithPath<Texture2D>("checkbox_unchecked_light.png", RELATIVE_PATH);
+
+        public static Texture2D IconEyeOpen => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_open.png", RELATIVE_PATH);
+        public static Texture2D IconEyeClose => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_close.png", RELATIVE_PATH);
+        public static Texture2D IconLock => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_lock.png", RELATIVE_PATH);
+        public static Texture2D TreeMapCurrent => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_current.png", RELATIVE_PATH);
+        public static Texture2D TreeMapLast => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_last.png", RELATIVE_PATH);
+        public static Texture2D TreeMapLevel => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level.png", RELATIVE_PATH);
+        public static Texture2D TreeMapLevel4 => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level4.png", RELATIVE_PATH);
+        public static Texture2D TreeMapLine => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_line.png", RELATIVE_PATH);
+        public static Texture2D IconTrim => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_trim.png", RELATIVE_PATH);
+        
         public static Texture2D ReorderableArrayEntryActive(string theme) =>
             ProjectDatabase.FindAssetWithPath<Texture2D>("EntryActiveTexture.png", $"{RELATIVE_REORDERABLE_ARRAY_PATH}/{theme}");
 

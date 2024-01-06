@@ -7,11 +7,12 @@ using UnityEditor.IMGUI.Controls;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace PancakeEditor
+namespace PancakeEditor.Hierarchy
 {
     [InitializeOnLoad]
     public static class HierarchyGUI
     {
+        private static Hierarchy hierarchy;
         private static double nextWindowsUpdate;
         private static EditorWindow[] windowsCache;
         private static readonly FieldInfo SceneHierarchyField;
@@ -61,18 +62,22 @@ namespace PancakeEditor
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject == null) return;
 
+            hierarchy ??= new Hierarchy();
+            hierarchy.OnHierarchyWindowItemOnGUI(gameObject, instanceId, selectionRect);
+
             if (PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject) != null) return;
             if (EditorSceneManager.IsPreviewSceneObject(gameObject)) return;
             var components = gameObject.GetComponents<Component>();
             if (components.IsNullOrEmpty()) return;
-
+            
             var component = components.Length > 1 ? components[1] : components[0];
             var type = component.GetType();
             var content = EditorGUIUtility.ObjectContent(component, type);
             if (content.image == null) return;
-
+            
             ApplyIconByInstanceId(instanceId, (Texture2D) content.image);
-            EditorApplication.RepaintHierarchyWindow();
+
+           EditorApplication.RepaintHierarchyWindow();
         }
 
         public static void ApplyIconByInstanceId(int instanceId, Texture2D icon)
