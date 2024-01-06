@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Mono.Cecil;
 using Pancake;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
@@ -62,23 +63,27 @@ namespace PancakeEditor.Hierarchy
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject == null) return;
 
-            hierarchy ??= new Hierarchy();
-            hierarchy.OnHierarchyWindowItemOnGUI(gameObject, instanceId, selectionRect);
+            var hierarchySetting = Resources.Load<HierarchyEditorSetting>(nameof(HierarchyEditorSetting));
+            if (hierarchySetting != null)
+            {
+                hierarchy ??= new Hierarchy();
+                hierarchy.OnHierarchyWindowItemOnGUI(gameObject, instanceId, selectionRect);
+            }
 
             if (PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject) != null) return;
             if (EditorSceneManager.IsPreviewSceneObject(gameObject)) return;
             var components = gameObject.GetComponents<Component>().ToList();
             components.RemoveAll(_ => _ == null);
             if (components.IsNullOrEmpty()) return;
-            
+
             var component = components.Count > 1 ? components[1] : components[0];
             var type = component.GetType();
             var content = EditorGUIUtility.ObjectContent(component, type);
             if (content.image == null) return;
-            
+
             ApplyIconByInstanceId(instanceId, (Texture2D) content.image);
 
-           EditorApplication.RepaintHierarchyWindow();
+            EditorApplication.RepaintHierarchyWindow();
         }
 
         public static void ApplyIconByInstanceId(int instanceId, Texture2D icon)
