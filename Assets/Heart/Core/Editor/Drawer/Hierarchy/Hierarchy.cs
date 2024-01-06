@@ -7,11 +7,11 @@ namespace PancakeEditor.Hierarchy
 {
     public class Hierarchy
     {
-        private readonly List<BaseHierarchy> _collection = new() {new TreeMapComponent(), new SeparatorComponent(), new VisibilityComponent()};
+        private readonly List<BaseHierarchy> _collection = new() {new TreeMapComponent(), new SeparatorComponent(), new VisibilityComponent(), new ErrorComponent()};
 
         public void OnHierarchyWindowItemOnGUI(GameObject gameObject, int instanceId, Rect selectionRect)
         {
-            Rect curRect = new Rect(selectionRect) {width = 16};
+            var curRect = new Rect(selectionRect);
             curRect.x += selectionRect.width - HierarchyEditorSetting.AdditionalIndent;
 
             float gameObjectNameWidth = HierarchyEditorSetting.AdditionalHideIconIfNotFit ? GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;

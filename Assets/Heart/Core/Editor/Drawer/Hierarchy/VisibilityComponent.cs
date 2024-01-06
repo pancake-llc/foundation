@@ -13,11 +13,12 @@ namespace PancakeEditor.Hierarchy
         public VisibilityComponent() { rect.width = 18; }
 
         protected override bool Enabled => HierarchyEditorSetting.EnabledVisibility;
+        protected override bool ShowComponentDuringPlayMode => HierarchyEditorSetting.VisibilityShowDuringPlayMode;
 
         public override HierarchyLayoutStatus Layout(GameObject gameObject, Rect selectionRect, ref Rect currentRect, float maxWidth)
         {
             if (maxWidth < 18) return HierarchyLayoutStatus.Failed;
-            
+
             rect.x = currentRect.x;
             rect.y = currentRect.y;
             return HierarchyLayoutStatus.Success;

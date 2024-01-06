@@ -20,7 +20,7 @@ MonoBehaviour:
   treeMapTransparentBackground: 0
   enabledSeparator: 1
   showRowShading: 1
-  seperatorColor:
+  separatorColor:
     dark: {r: 0.19, g: 0.19, b: 0.19, a: 0}
     light: {r: 0.4, g: 0.4, b: 0.4, a: 0.28}
   evenRowColor:
@@ -31,14 +31,10 @@ MonoBehaviour:
     light: {r: 1, g: 1, b: 1, a: 0}
   enabledVisibility: 1
   visibilityShowDuringPlayMode: 1
-  enabledLock: 1
-  lockShowDuringPlayMode: 1
-  lockPreventSelectionOfLockedObjects: 0
   enabledError: 1
-  errorShowDuringPlayMode: 0
   showIconOnParent: 0
   showScriptMissing: 1
-  showReferenceNull: 0
+  showReferenceNull: 1
   showReferenceIsMissing: 1
   showMissingEventMethod: 1
   showWhenTagOrLayerIsUndefined: 1
@@ -54,7 +50,5 @@ MonoBehaviour:
   additionalInactiveColor:
     dark: {r: 0.31, g: 0.31, b: 0.31, a: 1}
     light: {r: 0, g: 0, b: 0, a: 0.12}
-  additionalSpecialColor:
-    dark: {r: 0.17, g: 0.66, b: 0.79, a: 1}
-    light: {r: 0.11, g: 0.47, b: 0.84, a: 1}
   additionalHideIconIfNotFit: 0
+  additionalShowModifierWarning: 1

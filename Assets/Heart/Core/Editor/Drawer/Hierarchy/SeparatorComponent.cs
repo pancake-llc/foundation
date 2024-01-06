@@ -6,6 +6,7 @@ namespace PancakeEditor.Hierarchy
     public class SeparatorComponent : BaseHierarchy
     {
         protected override bool Enabled => HierarchyEditorSetting.EnabledSeparator;
+        protected override bool ShowComponentDuringPlayMode => true;
 
         public override void Draw(GameObject gameObject, Rect selectionRect)
         {
@@ -23,7 +24,7 @@ namespace PancakeEditor.Hierarchy
                 selectionRect.height -= 1;
                 selectionRect.y += 1;
                 EditorGUI.DrawRect(selectionRect,
-                    ((Mathf.FloorToInt(((selectionRect.y - 4) / 16) % 2) == 0)) ? HierarchyEditorSetting.EvenRowColor.Get() : HierarchyEditorSetting.OddRowColor.Get());
+                    Mathf.FloorToInt((selectionRect.y - 4) / 16 % 2) == 0 ? HierarchyEditorSetting.EvenRowColor.Get() : HierarchyEditorSetting.OddRowColor.Get());
             }
         }
     }

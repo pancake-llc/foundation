@@ -14,13 +14,13 @@ namespace PancakeEditor.Hierarchy
     {
         protected Rect rect = new Rect(0, 0, 16, 16);
         protected virtual bool Enabled => false;
-        protected bool showComponentDuringPlayMode;
+        protected virtual bool ShowComponentDuringPlayMode => false;
 
         public virtual bool IsEnabled()
         {
             if (!Enabled) return false;
 
-            if (Application.isPlaying) return showComponentDuringPlayMode;
+            if (Application.isPlaying) return ShowComponentDuringPlayMode;
             return true;
         }
 

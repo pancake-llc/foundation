@@ -18,11 +18,7 @@ namespace PancakeEditor.Hierarchy
         private SerializedProperty _oddRowColorProperty;
         private SerializedProperty _enabledVisibilityProperty;
         private SerializedProperty _visibilityShowDuringPlayModeProperty;
-        private SerializedProperty _enabledLockProperty;
-        private SerializedProperty _lockShowDuringPlayModeProperty;
-        private SerializedProperty _lockPreventSelectionOfLockedObjectsProperty;
         private SerializedProperty _enabledErrorProperty;
-        private SerializedProperty _errorShowDuringPlayModeProperty;
         private SerializedProperty _showIconOnParentProperty;
         private SerializedProperty _showScriptMissingProperty;
         private SerializedProperty _showReferenceNullProperty;
@@ -35,7 +31,6 @@ namespace PancakeEditor.Hierarchy
         private SerializedProperty _additionalBackgroundColorProperty;
         private SerializedProperty _additionalActiveColorProperty;
         private SerializedProperty _additionalInactiveColorProperty;
-        private SerializedProperty _additionalSpecialColorProperty;
         private SerializedProperty _additionalHideIconIfNotFitProperty;
         private SerializedProperty _additionalShowModifierWarningProperty;
 
@@ -54,11 +49,7 @@ namespace PancakeEditor.Hierarchy
                 _oddRowColorProperty = serializedObject.FindProperty("oddRowColor");
                 _enabledVisibilityProperty = serializedObject.FindProperty("enabledVisibility");
                 _visibilityShowDuringPlayModeProperty = serializedObject.FindProperty("visibilityShowDuringPlayMode");
-                _enabledLockProperty = serializedObject.FindProperty("enabledLock");
-                _lockShowDuringPlayModeProperty = serializedObject.FindProperty("lockShowDuringPlayMode");
-                _lockPreventSelectionOfLockedObjectsProperty = serializedObject.FindProperty("lockPreventSelectionOfLockedObjects");
                 _enabledErrorProperty = serializedObject.FindProperty("enabledError");
-                _errorShowDuringPlayModeProperty = serializedObject.FindProperty("errorShowDuringPlayMode");
                 _showIconOnParentProperty = serializedObject.FindProperty("showIconOnParent");
                 _showScriptMissingProperty = serializedObject.FindProperty("showScriptMissing");
                 _showReferenceNullProperty = serializedObject.FindProperty("showReferenceNull");
@@ -71,7 +62,6 @@ namespace PancakeEditor.Hierarchy
                 _additionalBackgroundColorProperty = serializedObject.FindProperty("additionalBackgroundColor");
                 _additionalActiveColorProperty = serializedObject.FindProperty("additionalActiveColor");
                 _additionalInactiveColorProperty = serializedObject.FindProperty("additionalInactiveColor");
-                _additionalSpecialColorProperty = serializedObject.FindProperty("additionalSpecialColor");
                 _additionalHideIconIfNotFitProperty = serializedObject.FindProperty("additionalHideIconIfNotFit");
                 _additionalShowModifierWarningProperty = serializedObject.FindProperty("additionalShowModifierWarning");
             }
@@ -124,17 +114,9 @@ namespace PancakeEditor.Hierarchy
                 EditorGUILayout.PropertyField(_visibilityShowDuringPlayModeProperty, new GUIContent("Show In Play Mode"), true);
             }
 
-            EditorGUILayout.PropertyField(_enabledLockProperty, true);
-            if (_enabledLockProperty.boolValue)
-            {
-                EditorGUILayout.PropertyField(_lockShowDuringPlayModeProperty, new GUIContent("Show In Play Mode"), true);
-                EditorGUILayout.PropertyField(_lockPreventSelectionOfLockedObjectsProperty, new GUIContent("Can Select Locked Object"), true);
-            }
-
             EditorGUILayout.PropertyField(_enabledErrorProperty, true);
             if (_enabledErrorProperty.boolValue)
             {
-                EditorGUILayout.PropertyField(_errorShowDuringPlayModeProperty, new GUIContent("Show In Play Mode"), true);
                 EditorGUILayout.PropertyField(_showIconOnParentProperty, true);
                 EditorGUILayout.PropertyField(_showScriptMissingProperty, new GUIContent("Script Missing"), true);
                 EditorGUILayout.PropertyField(_showReferenceNullProperty, new GUIContent("Null Reference"), true);
@@ -154,14 +136,12 @@ namespace PancakeEditor.Hierarchy
                 EditorGUILayout.PropertyField(_additionalBackgroundColorProperty.FindPropertyRelative("dark"), new GUIContent("Background Color"), true);
                 EditorGUILayout.PropertyField(_additionalActiveColorProperty.FindPropertyRelative("dark"), new GUIContent("Active Color"), true);
                 EditorGUILayout.PropertyField(_additionalInactiveColorProperty.FindPropertyRelative("dark"), new GUIContent("Inactive Color"), true);
-                EditorGUILayout.PropertyField(_additionalSpecialColorProperty.FindPropertyRelative("dark"), new GUIContent("SpecialColor"), true);
             }
             else
             {
                 EditorGUILayout.PropertyField(_additionalBackgroundColorProperty.FindPropertyRelative("light"), new GUIContent("Background Color"), true);
                 EditorGUILayout.PropertyField(_additionalActiveColorProperty.FindPropertyRelative("light"), new GUIContent("Active Color"), true);
                 EditorGUILayout.PropertyField(_additionalInactiveColorProperty.FindPropertyRelative("light"), new GUIContent("Inactive Color"), true);
-                EditorGUILayout.PropertyField(_additionalSpecialColorProperty.FindPropertyRelative("light"), new GUIContent("SpecialColor"), true);
             }
 
 

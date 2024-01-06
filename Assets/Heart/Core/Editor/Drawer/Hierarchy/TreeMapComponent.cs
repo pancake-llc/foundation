@@ -13,6 +13,7 @@ namespace PancakeEditor.Hierarchy
         }
 
         protected override bool Enabled => HierarchyEditorSetting.EnabledTreeMap;
+        protected override bool ShowComponentDuringPlayMode => true;
 
         public override HierarchyLayoutStatus Layout(GameObject gameObject, Rect selectionRect, ref Rect currentRect, float maxWidth)
         {
