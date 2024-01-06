@@ -32,6 +32,7 @@ namespace PancakeEditor
             Greenery,
             GrowMesh,
             HeartSetting,
+            HierarchySetting,
             InAppPurchase,
             InAppReview,
             LevelSystem,
@@ -74,7 +75,8 @@ namespace PancakeEditor
             Scriptable = WizardAllType.Scriptable,
             LevelSystem = WizardAllType.LevelSystem,
             ScreenSetting = WizardAllType.ScreenSetting,
-            Texture = WizardAllType.Texture
+            Texture = WizardAllType.Texture,
+            HierarchySetting = WizardAllType.HierarchySetting
         }
 
         public enum LocaleTabType
@@ -296,6 +298,9 @@ namespace PancakeEditor
                 case WizardAllType.Texture when _currentType is WizardType.Setting or WizardType.All:
                     SettingTextureDrawer.OnInspectorGUI(ref _spriteAtlas, this);
                     break;
+                case WizardAllType.HierarchySetting when _currentType is WizardType.Setting or WizardType.All:
+                    SettingHierarchyDrawer.OnInspectorGUI();
+                    break;
             }
         }
 
@@ -365,6 +370,7 @@ namespace PancakeEditor
                 case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;
                 case WizardAllType.Scriptable:
                 case WizardAllType.Texture:
+                case WizardAllType.HierarchySetting:
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
                 case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;

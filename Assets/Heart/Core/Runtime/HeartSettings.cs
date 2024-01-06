@@ -7,28 +7,20 @@ namespace Pancake
     [EditorIcon("scriptable_setting")]
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
-        [Label("Debug")] [SerializeField] private bool enableAdministrator;
-        [Label("Privacy on FirstOpen")] [SerializeField] private bool enablePrivacyFirstOpen;
+        [SerializeField] private bool enableAdministrator;
+        [SerializeField] private bool enablePrivacyFirstOpen;
         [SerializeField] private bool enableMultipleTouch;
         [SerializeField] private bool requireInternet;
         [SerializeField] private TargetFrameRate targetFrameRate;
-
-        [Indent, Label("Url"), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
-        private string privacyUrl;
-
-        [Indent, Label("Title"), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
-        private string privacyTitle;
-
-        [Indent, Label("Message"), TextArea(3, 6), ShowIf(nameof(enablePrivacyFirstOpen))] [SerializeField]
-        private string privacyMessage;
-
+        [SerializeField] private string privacyUrl;
+        [SerializeField] private string privacyTitle;
+        [TextArea(3, 6)] [SerializeField] private string privacyMessage;
         [Header("IOS")] [SerializeField] private string appstoreAppId;
         [SerializeField, Range(0, 63)] private int skAdConversionValue = 63;
 
 #if UNITY_EDITOR
-        [Header("Editor")] 
-        [Tooltip("Indicates whether you can immediately edit the name asset upon creation?")]
-        [SerializeField] private ENameAssetCreationMode nameCreationMode;
+        [Header("Editor")] [Tooltip("Indicates whether you can immediately edit the name asset upon creation?")] [SerializeField]
+        private ENameAssetCreationMode nameCreationMode;
 #endif
 
         public static bool EnableAdministrator => Instance.enableAdministrator;
