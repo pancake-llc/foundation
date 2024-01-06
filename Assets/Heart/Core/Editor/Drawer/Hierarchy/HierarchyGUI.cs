@@ -67,10 +67,11 @@ namespace PancakeEditor.Hierarchy
 
             if (PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject) != null) return;
             if (EditorSceneManager.IsPreviewSceneObject(gameObject)) return;
-            var components = gameObject.GetComponents<Component>();
+            var components = gameObject.GetComponents<Component>().ToList();
+            components.RemoveAll(_ => _ == null);
             if (components.IsNullOrEmpty()) return;
             
-            var component = components.Length > 1 ? components[1] : components[0];
+            var component = components.Count > 1 ? components[1] : components[0];
             var type = component.GetType();
             var content = EditorGUIUtility.ObjectContent(component, type);
             if (content.image == null) return;
