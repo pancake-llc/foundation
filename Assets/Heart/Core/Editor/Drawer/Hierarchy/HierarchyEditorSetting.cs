@@ -101,6 +101,7 @@ namespace PancakeEditor.Hierarchy
         [SerializeField] private EditorThemeColor additionalInactiveColor = new() {dark = new Color(0.31f, 0.31f, 0.31f), light = new Color(0f, 0f, 0f, 0.12f)};
         [SerializeField] private EditorThemeColor additionalSpecialColor = new() {dark = new Color(0.17f, 0.66f, 0.79f), light = new Color(0.11f, 0.47f, 0.84f)};
         [SerializeField] private bool additionalHideIconIfNotFit;
+        [SerializeField] private bool additionalShowModifierWarning = true;
 
         private Dictionary<int, Action> _settingHandlerCollection = new Dictionary<int, Action>();
 
@@ -153,6 +154,7 @@ namespace PancakeEditor.Hierarchy
 
         public static float AdditionalIndent { get => Instance.additionalIndent; set => Instance.additionalIndent = value; }
         public static bool AdditionalHideIconIfNotFit { get => Instance.additionalHideIconIfNotFit; set => Instance.additionalHideIconIfNotFit = value; }
+        public static bool AdditionalShowModifierWarning { get => Instance.additionalShowModifierWarning; set => Instance.additionalShowModifierWarning = value; }
         public static EditorThemeColor AdditionalBackgroundColor { get => Instance.additionalBackgroundColor; set => Instance.additionalBackgroundColor = value; }
         public static EditorThemeColor AdditionalActiveColor { get => Instance.additionalActiveColor; set => Instance.additionalActiveColor = value; }
         public static EditorThemeColor AdditionalInactiveColor { get => Instance.additionalInactiveColor; set => Instance.additionalInactiveColor = value; }

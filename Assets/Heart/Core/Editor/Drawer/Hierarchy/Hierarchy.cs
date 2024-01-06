@@ -7,7 +7,7 @@ namespace PancakeEditor.Hierarchy
 {
     public class Hierarchy
     {
-        private readonly List<BaseHierarchy> _collection = new() {new TreeMapComponent(), new SeparatorComponent()};
+        private readonly List<BaseHierarchy> _collection = new() {new TreeMapComponent(), new SeparatorComponent(), new VisibilityComponent()};
 
         public void OnHierarchyWindowItemOnGUI(GameObject gameObject, int instanceId, Rect selectionRect)
         {

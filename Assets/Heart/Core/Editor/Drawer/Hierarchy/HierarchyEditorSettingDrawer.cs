@@ -37,6 +37,7 @@ namespace PancakeEditor.Hierarchy
         private SerializedProperty _additionalInactiveColorProperty;
         private SerializedProperty _additionalSpecialColorProperty;
         private SerializedProperty _additionalHideIconIfNotFitProperty;
+        private SerializedProperty _additionalShowModifierWarningProperty;
 
         private void OnEnable()
         {
@@ -72,6 +73,7 @@ namespace PancakeEditor.Hierarchy
                 _additionalInactiveColorProperty = serializedObject.FindProperty("additionalInactiveColor");
                 _additionalSpecialColorProperty = serializedObject.FindProperty("additionalSpecialColor");
                 _additionalHideIconIfNotFitProperty = serializedObject.FindProperty("additionalHideIconIfNotFit");
+                _additionalShowModifierWarningProperty = serializedObject.FindProperty("additionalShowModifierWarning");
             }
             catch (Exception)
             {
@@ -145,6 +147,7 @@ namespace PancakeEditor.Hierarchy
 
             EditorGUILayout.PropertyField(_additionalIndentProperty, new GUIContent("Indent"), true);
             EditorGUILayout.PropertyField(_additionalHideIconIfNotFitProperty, new GUIContent("Hide Icon If Not Fit"), true);
+            EditorGUILayout.PropertyField(_additionalShowModifierWarningProperty, new GUIContent("Show Modifier Warning"), true);
 
             if (EditorGUIUtility.isProSkin)
             {
