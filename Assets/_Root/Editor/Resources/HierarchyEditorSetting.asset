@@ -34,7 +34,7 @@ MonoBehaviour:
   enabledError: 1
   showIconOnParent: 0
   showScriptMissing: 1
-  showReferenceNull: 1
+  showReferenceNull: 0
   showReferenceIsMissing: 1
   showMissingEventMethod: 1
   showWhenTagOrLayerIsUndefined: 1
