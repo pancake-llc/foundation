@@ -209,6 +209,7 @@ namespace PrimeTween {
         }
 
         public Sequence OnStepComplete([NotNull] Action action) {
+            Debug.LogWarning("Please use sequence.ChainCallback() as the last operation instead of sequence.OnStepComplete()");
             return ChainCallback(action);
         }
 

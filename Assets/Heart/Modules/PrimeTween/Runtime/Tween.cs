@@ -225,7 +225,7 @@ namespace PrimeTween {
                 return false;
             }
             if (!tween.canManipulate()) {
-                Debug.LogError(Assert.TryAddStackTrace(Constants.cantManipulateNested, id));
+                Assert.LogError(Constants.cantManipulateNested, id);
                 return false;
             }
             return true;
@@ -302,7 +302,7 @@ namespace PrimeTween {
             if (!IsCreated) {
                 Debug.LogError(Constants.defaultCtorError);
             } else if (!isAlive) {
-                Debug.LogError(Assert.TryAddStackTrace(Constants.isDeadMessage, id));
+                Assert.LogError(Constants.isDeadMessage, id);
             }
             return isAlive;
         }

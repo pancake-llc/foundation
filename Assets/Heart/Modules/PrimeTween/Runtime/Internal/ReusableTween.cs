@@ -367,8 +367,7 @@ namespace PrimeTween {
 
         void handleOnCompleteException(Exception e) {
             // Design decision: if a tween is inside a Sequence and user's tween.OnComplete() throws an exception, the Sequence should continue
-            var msg = $"Tween's onComplete callback raised exception, tween: {GetDescription()}, exception:\n{e}\n";
-            Debug.LogError(Assert.TryAddStackTrace(msg, id), unityTarget);
+            Assert.LogError($"Tween's onComplete callback raised exception, tween: {GetDescription()}, exception:\n{e}\n", id, unityTarget);
         }
 
         internal static bool isDestroyedUnityObject<T>(T obj) where T: class => obj is UnityEngine.Object unityObject && unityObject == null;
@@ -441,8 +440,8 @@ namespace PrimeTween {
                 startFromCurrent = false;
                 startValue = Tween.tryGetStartValueFromOtherShake(this) ?? getter(this);
                 if (startValue.Vector4Val == endValue.Vector4Val && PrimeTweenManager.Instance.warnEndValueEqualsCurrent && !shakeData.isAlive) {
-                    Debug.LogWarning($"Tween's 'endValue' equals to the current animated value: {startValue.Vector4Val}, tween: {GetDescription()}.\n" +
-                                     $"{Constants.buildWarningCanBeDisabledMessage(nameof(PrimeTweenConfig.warnEndValueEqualsCurrent))}\n");
+                    Assert.LogWarning($"Tween's 'endValue' equals to the current animated value: {startValue.Vector4Val}, tween: {GetDescription()}.\n" +
+                                      $"{Constants.buildWarningCanBeDisabledMessage(nameof(PrimeTweenConfig.warnEndValueEqualsCurrent))}\n", id);
                 }
                 cacheDiff();
             }
@@ -653,7 +652,7 @@ namespace PrimeTween {
                     msg += "\nIf you use tween.OnComplete(), Tween.Delay(), or sequence.ChainDelay() only for cosmetic purposes, you can turn off this error by passing 'warnIfTargetDestroyed: false' to the method.\n" +
                            "More info: https://github.com/KyryloKuzyk/PrimeTween/discussions/4\n";
                 }
-                Debug.LogError(Assert.TryAddStackTrace(msg, id), unityTarget);
+                Assert.LogError(msg, id, unityTarget);
             }
         }
 
@@ -734,14 +733,14 @@ namespace PrimeTween {
             Assert.IsNotNull(callback);
             var _onUpdateTarget = onUpdateTarget as T;
             if (isDestroyedUnityObject(_onUpdateTarget)) {
-                Debug.LogError($"OnUpdate() will not be called again because OnUpdate()'s target has been destroyed, tween: {GetDescription()}", unityTarget);
+                Assert.LogError($"OnUpdate() will not be called again because OnUpdate()'s target has been destroyed, tween: {GetDescription()}", id, unityTarget);
                 clearOnUpdate();
                 return;
             }
             try {
                 callback(_onUpdateTarget, new Tween(this));
             } catch (Exception e) {
-                Debug.LogError($"OnUpdate() will not be called again because it thrown exception, tween: {GetDescription()}, exception:\n{e}", unityTarget);
+                Assert.LogError($"OnUpdate() will not be called again because it thrown exception, tween: {GetDescription()}, exception:\n{e}", id, unityTarget);
                 clearOnUpdate();
             }
         }
