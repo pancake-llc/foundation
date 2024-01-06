@@ -70,7 +70,7 @@ namespace PancakeEditor.Hierarchy
 
         [Header("SEPARATOR")] [SerializeField] private bool enabledSeparator = true;
         [SerializeField] private bool showRowShading = true;
-        [SerializeField] private EditorThemeColor seperatorColor = new() {dark = new Color(0.19f, 0.19f, 0.19f, 0f), light = new Color(0.4f, 0.4f, 0.4f, 0.28f)};
+        [SerializeField] private EditorThemeColor separatorColor = new() {dark = new Color(0.19f, 0.19f, 0.19f, 0f), light = new Color(0.4f, 0.4f, 0.4f, 0.28f)};
         [SerializeField] private EditorThemeColor evenRowColor = new() {dark = new Color(0f, 0f, 0f, 0.07f), light = new Color(1f, 1f, 1f, 0.03f)};
         [SerializeField] private EditorThemeColor oddRowColor = new() {dark = Color.clear, light = new Color(1f, 1f, 1f, 0f)};
 
@@ -126,7 +126,7 @@ namespace PancakeEditor.Hierarchy
         public static bool TreeMapTransparentBackground { get => Instance.treeMapTransparentBackground; set => Instance.treeMapTransparentBackground = value; }
         public static bool EnabledSeparator { get => Instance.enabledSeparator; set => Instance.enabledSeparator = value; }
         public static bool ShowRowShading { get => Instance.showRowShading; set => Instance.showRowShading = value; }
-        public static EditorThemeColor SeperatorColor { get => Instance.seperatorColor; set => Instance.seperatorColor = value; }
+        public static EditorThemeColor SeperatorColor { get => Instance.separatorColor; set => Instance.separatorColor = value; }
         public static EditorThemeColor EvenRowColor { get => Instance.evenRowColor; set => Instance.evenRowColor = value; }
         public static EditorThemeColor OddRowColor { get => Instance.oddRowColor; set => Instance.oddRowColor = value; }
         public static bool EnabledVisibility { get => Instance.enabledVisibility; set => Instance.enabledVisibility = value; }

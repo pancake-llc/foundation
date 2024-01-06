@@ -13,7 +13,7 @@ namespace PancakeEditor.Hierarchy
         private SerializedProperty _treeMapTransparentBackgroundProperty;
         private SerializedProperty _enabledSeparatorProperty;
         private SerializedProperty _showRowShadingProperty;
-        private SerializedProperty _seperatorColorProperty;
+        private SerializedProperty _separatorColorProperty;
         private SerializedProperty _evenRowColorProperty;
         private SerializedProperty _oddRowColorProperty;
         private SerializedProperty _enabledVisibilityProperty;
@@ -48,7 +48,7 @@ namespace PancakeEditor.Hierarchy
                 _treeMapTransparentBackgroundProperty = serializedObject.FindProperty("treeMapTransparentBackground");
                 _enabledSeparatorProperty = serializedObject.FindProperty("enabledSeparator");
                 _showRowShadingProperty = serializedObject.FindProperty("showRowShading");
-                _seperatorColorProperty = serializedObject.FindProperty("seperatorColor");
+                _separatorColorProperty = serializedObject.FindProperty("separatorColor");
                 _evenRowColorProperty = serializedObject.FindProperty("evenRowColor");
                 _oddRowColorProperty = serializedObject.FindProperty("oddRowColor");
                 _enabledVisibilityProperty = serializedObject.FindProperty("enabledVisibility");
@@ -104,13 +104,13 @@ namespace PancakeEditor.Hierarchy
                 EditorGUILayout.PropertyField(_showRowShadingProperty, true);
                 if (EditorGUIUtility.isProSkin)
                 {
-                    EditorGUILayout.PropertyField(_seperatorColorProperty.FindPropertyRelative("dark"), new GUIContent("Seperator Color"), true);
+                    EditorGUILayout.PropertyField(_separatorColorProperty.FindPropertyRelative("dark"), new GUIContent("Seperator Color"), true);
                     EditorGUILayout.PropertyField(_evenRowColorProperty.FindPropertyRelative("dark"), new GUIContent("Even Row Color"), true);
                     EditorGUILayout.PropertyField(_oddRowColorProperty.FindPropertyRelative("dark"), new GUIContent("Odd Row Color"), true);
                 }
                 else
                 {
-                    EditorGUILayout.PropertyField(_seperatorColorProperty.FindPropertyRelative("light"), new GUIContent("Seperator Color"), true);
+                    EditorGUILayout.PropertyField(_separatorColorProperty.FindPropertyRelative("light"), new GUIContent("Seperator Color"), true);
                     EditorGUILayout.PropertyField(_evenRowColorProperty.FindPropertyRelative("light"), new GUIContent("Even Row Color"), true);
                     EditorGUILayout.PropertyField(_oddRowColorProperty.FindPropertyRelative("light"), new GUIContent("Odd Row Color"), true);
                 }
