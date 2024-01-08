@@ -1173,6 +1173,7 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  dailyNotification: {fileID: 11400000, guid: 99240ac69a3d5ff4aae0aa5239fa8ad7, type: 2}
   isWaitLevelLoaded: 1
   loadLevelCompleted: {fileID: 11400000, guid: 61509f6b494b461498cccef441c17f12, type: 2}
   requireInitLocalization: 1

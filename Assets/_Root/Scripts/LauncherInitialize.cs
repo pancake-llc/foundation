@@ -1,5 +1,6 @@
 using Pancake.Apex;
 using Pancake.Localization;
+using Pancake.Notification;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Pancake.SceneFlow
     {
         [SerializeField] private BoolVariable loadingCompleted;
         [SerializeField] private BoolVariable remoteConfigFetchCompleted;
+        [SerializeField] private ScriptableNotificationVariable dailyNotification;
         [SerializeField] private AssetReference persistentScene;
 
         [Space] [SerializeField] private bool isWaitLevelLoaded;
@@ -32,7 +34,13 @@ namespace Pancake.SceneFlow
                 localizationInitialized.Value = true;
             }
 
+            ScheduleDailyNotification();
             LoadScene();
+        }
+
+        private void ScheduleDailyNotification()
+        {
+            if (dailyNotification != null) dailyNotification.Schedule();
         }
 
         /// <summary>
@@ -46,6 +54,7 @@ namespace Pancake.SceneFlow
             if (isWaitLevelLoaded) await UniTask.WaitUntil(() => loadLevelCompleted.Value);
 
             // TODO : wait something else before load menu
+            // Don't call the ScheduleDailyNotification function here because LoadSceneAsync may cause the Schedule to be inaccurate 
 
             // manual load menu scene not via event
             Addressables.LoadSceneAsync(Constant.MENU_SCENE, LoadSceneMode.Additive).Completed += OnMenuSceneLoaded;

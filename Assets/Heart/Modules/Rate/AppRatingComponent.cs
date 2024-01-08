@@ -5,7 +5,7 @@ namespace Pancake.Rate
     using UnityEngine;
 
 #if UNITY_IOS
-using UnityEngine.iOS;
+    using UnityEngine.iOS;
 #elif UNITY_ANDROID && PANCAKE_REVIEW
     using Google.Play.Review;
 #endif
