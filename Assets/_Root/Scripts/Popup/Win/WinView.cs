@@ -38,6 +38,7 @@ namespace Pancake.UI
 
         [Header("RATE")] [SerializeField] private BoolVariable canShowRate;
         [SerializeField] private ScriptableEventNoParam reviewEvent;
+        [SerializeField] private IntVariable rateDisplayTimes;
 
         private LevelComponent _prewarmNextLevel;
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
@@ -49,6 +50,13 @@ namespace Pancake.UI
             buttonHome.onClick.AddListener(OnButtonHomePressed);
             buttonContinue.onClick.AddListener(OnButtonContinuePressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
+            // handle show rate or show other special popup
+            if (canShowRate)
+            {
+                reviewEvent.Raise();
+                rateDisplayTimes.Value++;
+            }
+
             Refresh();
             return UniTask.CompletedTask;
         }
