@@ -12,9 +12,11 @@
 
 # How To Install
 
-Using button `Use this template` to create new project using this template and now you can do anything with this
+You can choose one of the following ways
 
-### for only install heart as package module ----> add directly in `manifest.json` in folder `Packages/manifest.json`
+1, Using button `Use this template` to create new project using this template and now you can do anything with this
+
+2, for only install heart as package module ----> add directly in `manifest.json` in folder `Packages/manifest.json`
 
 ```csharp
 "com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#2.4.2",
