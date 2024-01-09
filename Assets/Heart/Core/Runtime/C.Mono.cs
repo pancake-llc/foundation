@@ -1485,7 +1485,7 @@ namespace Pancake
             source.SetParent(parent);
             source.Fill();
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -1530,7 +1530,8 @@ namespace Pancake
         /// Destroys all gameObject's children
         /// </summary>
         /// <param name="transform"></param>
-        public static void RemoveAllChildren(this Transform transform)
+        /// <param name="force"></param>
+        public static void RemoveAllChildren(this Transform transform, bool force = false)
         {
 #if UNITY_EDITOR
             UnityEditor.Undo.RecordObject(transform, "Transform RemoveAllChildren");
@@ -1538,14 +1539,13 @@ namespace Pancake
 
             for (int i = transform.childCount - 1; i >= 0; i--)
             {
-                if (Application.isPlaying)
-                {
-                    Object.Destroy(transform.GetChild(i).gameObject);
-                }
-                else
+                if (force || !Application.isPlaying)
                 {
                     Object.DestroyImmediate(transform.GetChild(i).gameObject);
+                    continue;
                 }
+
+                Object.Destroy(transform.GetChild(i).gameObject);
             }
         }
 

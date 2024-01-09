@@ -9,10 +9,7 @@ namespace Pancake.LevelSystem
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private Transform root;
 
-        public void Start()
-        {
-            var _ = Instantiate(loadLevelCachedEvent.Raise(), root, false);
-        }
+        public void Start() { Instantiate(loadLevelCachedEvent.Raise(), root, false); }
 
         protected override void OnEnabled() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
 
@@ -20,14 +17,14 @@ namespace Pancake.LevelSystem
 
         public void OnReCreateLevelLoaded()
         {
-            root.RemoveAllChildren();
+            root.RemoveAllChildren(true);
             LevelComponent levelComponent = null;
 #if UNITY_EDITOR
             levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : loadLevelCachedEvent.Raise();
 #else
             levelComponent = loadLevelCachedEvent.Raise();
 #endif
-            var _ = Instantiate(levelComponent, root, false);
+            Instantiate(levelComponent, root, false);
         }
     }
 }
