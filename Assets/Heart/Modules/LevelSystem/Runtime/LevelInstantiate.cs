@@ -13,7 +13,13 @@ namespace Pancake.LevelSystem
         public void Start()
         {
             if (trackingStartLevelEvent != null) trackingStartLevelEvent.Raise();
-            Instantiate(loadLevelCachedEvent.Raise(), root, false);
+            LevelComponent levelComponent = null;
+#if UNITY_EDITOR
+            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : loadLevelCachedEvent.Raise();
+#else
+            levelComponent = loadLevelCachedEvent.Raise();
+#endif
+            Instantiate(levelComponent, root, false);
         }
 
         protected override void OnEnabled() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
