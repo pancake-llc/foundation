@@ -24,7 +24,7 @@ namespace PancakeEditor.Hierarchy
         [SerializeField] private bool visibilityShowDuringPlayMode = true;
 
         [Header("ERROR")] [SerializeField] private bool enabledError = true;
-        [SerializeField] private bool showIconOnParent;
+        [SerializeField] private bool showIconOnParent = true;
         [SerializeField] private bool showScriptMissing = true;
         [SerializeField] private bool showReferenceNull;
         [SerializeField] private bool showReferenceIsMissing = true;
