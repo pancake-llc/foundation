@@ -7,9 +7,14 @@ namespace Pancake.LevelSystem
     {
         [SerializeField] private ScriptableEventGetLevelCached loadLevelCachedEvent;
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
+        [SerializeField] private ScriptableEventNoParam trackingStartLevelEvent;
         [SerializeField] private Transform root;
 
-        public void Start() { Instantiate(loadLevelCachedEvent.Raise(), root, false); }
+        public void Start()
+        {
+            if (trackingStartLevelEvent != null) trackingStartLevelEvent.Raise();
+            Instantiate(loadLevelCachedEvent.Raise(), root, false);
+        }
 
         protected override void OnEnabled() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
 
@@ -24,6 +29,7 @@ namespace Pancake.LevelSystem
 #else
             levelComponent = loadLevelCachedEvent.Raise();
 #endif
+            if (trackingStartLevelEvent != null) trackingStartLevelEvent.Raise();
             Instantiate(levelComponent, root, false);
         }
     }

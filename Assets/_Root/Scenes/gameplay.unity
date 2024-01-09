@@ -1332,6 +1332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadLevelCachedEvent: {fileID: 11400000, guid: f3ccdb9f38be711469cdd4dca3dd3f08, type: 2}
   reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
+  trackingStartLevelEvent: {fileID: 11400000, guid: a788dcbd7d1e8c74fa7a09135389592a, type: 2}
   root: {fileID: 683471315}
 --- !u!4 &683471315
 Transform:
@@ -2467,6 +2468,7 @@ MonoBehaviour:
   rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}
   getNextLevelCached: {fileID: 11400000, guid: f3ccdb9f38be711469cdd4dca3dd3f08, type: 2}
+  trackingStartLevelEvent: {fileID: 11400000, guid: a788dcbd7d1e8c74fa7a09135389592a, type: 2}
   levelRootHolder: {fileID: 683471315}
   currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
 --- !u!114 &1659228166

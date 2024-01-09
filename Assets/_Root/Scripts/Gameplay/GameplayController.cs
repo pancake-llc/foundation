@@ -23,6 +23,7 @@ namespace Pancake.SceneFlow
         [Header("LEVEL")] [SerializeField] private RewardVariable rewardVariable;
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
         [SerializeField] private ScriptableEventGetLevelCached getNextLevelCached;
+        [SerializeField] private ScriptableEventNoParam trackingStartLevelEvent;
         [SerializeField] private Transform levelRootHolder;
         [SerializeField] private IntVariable currentLevelIndex;
 
@@ -33,6 +34,12 @@ namespace Pancake.SceneFlow
             buttonHome.onClick.AddListener(GoToMenu);
             buttonReplay.onClick.AddListener(OnButtonReplayClicked);
             buttonSkipByAd.onClick.AddListener(OnButtonSkipByAdClicked);
+            trackingStartLevelEvent.OnRaised += OnTrackingStartLevel;
+        }
+
+        private void OnTrackingStartLevel()
+        {
+            // todo tracking with currentLevelIndex
         }
 
         private void OnButtonSkipByAdClicked()
@@ -65,6 +72,12 @@ namespace Pancake.SceneFlow
                 onLoad: t => { t.popup.view.Setup(); },
                 popupId: nameof(SceneTransitionPopup)); // show transition
             changeSceneEvent.Raise(Constant.MENU_SCENE);
+        }
+
+        protected override void OnDisabled()
+        {
+            base.OnDisabled();
+            trackingStartLevelEvent.OnRaised -= OnTrackingStartLevel;
         }
     }
 }
