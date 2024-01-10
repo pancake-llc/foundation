@@ -51,7 +51,7 @@ namespace Pancake.ScriptableEditor
                 property.objectReferenceValue = EditorCreator.CreateScriptableAt(typeCreate,
                     newName,
                     ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
-                    HeartSettings.EditorNameCreationMode == ENameAssetCreationMode.Auto);
+                    HeartEditorSettings.EditorNameCreationMode == ENameAssetCreationMode.Auto);
 #pragma warning restore CS0612
             }
 

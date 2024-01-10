@@ -1,6 +1,4 @@
-﻿using System;
-using Pancake.Apex;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake
 {
@@ -18,11 +16,6 @@ namespace Pancake
         [Header("IOS")] [SerializeField] private string appstoreAppId;
         [SerializeField, Range(0, 63)] private int skAdConversionValue = 63;
 
-#if UNITY_EDITOR
-        [Header("Editor")] [Tooltip("Indicates whether you can immediately edit the name asset upon creation?")] [SerializeField]
-        private ENameAssetCreationMode nameCreationMode;
-#endif
-
         public static bool EnableAdministrator => Instance.enableAdministrator;
         public static bool EnablePrivacyFirstOpen => Instance.enablePrivacyFirstOpen;
         public static string PrivacyUrl => Instance.privacyUrl;
@@ -33,11 +26,5 @@ namespace Pancake
         public static bool EnableMultipleTouch => Instance.enableMultipleTouch;
         public static bool RequireInternet => Instance.requireInternet;
         public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;
-#if UNITY_EDITOR
-        /// <summary>
-        /// Only use in editor
-        /// </summary>
-        [Obsolete] public static ENameAssetCreationMode EditorNameCreationMode => Instance.nameCreationMode;
-#endif
     }
 }

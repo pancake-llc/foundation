@@ -19,12 +19,11 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create Scriptable Setting", GUILayout.Height(30f)))
                 {
                     var setting = ScriptableObject.CreateInstance<ScriptableEditorSetting>();
-                    const string path = "Assets/_Root/Editor/Resources";
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(ScriptableEditorSetting)}.asset");
+                    if (!Directory.Exists(Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_EDITOR_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(ScriptableEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(ScriptableEditorSetting).TextColor("#f75369")} was created ad {path}/{nameof(ScriptableEditorSetting)}.asset");
+                    Debug.Log($"{nameof(ScriptableEditorSetting).TextColor("#f75369")} was created ad {Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(ScriptableEditorSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

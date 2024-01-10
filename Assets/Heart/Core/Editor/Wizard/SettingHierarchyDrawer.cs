@@ -20,12 +20,11 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create Hierarchy Setting", GUILayout.Height(30)))
                 {
                     var setting = ScriptableObject.CreateInstance<HierarchyEditorSetting>();
-                    const string path = "Assets/_Root/Editor/Resources";
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(HierarchyEditorSetting)}.asset");
+                    if (!Directory.Exists(Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_EDITOR_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HierarchyEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(HierarchyEditorSetting).TextColor("#f75369")} was created ad {path}/{nameof(HierarchyEditorSetting)}.asset");
+                    Debug.Log($"{nameof(HierarchyEditorSetting).TextColor("#f75369")} was created ad {Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HierarchyEditorSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

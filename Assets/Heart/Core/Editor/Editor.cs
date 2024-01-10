@@ -7,6 +7,7 @@ namespace PancakeEditor
     public static partial class Editor
     {
         internal const string DEFAULT_RESOURCE_PATH = "Assets/_Root/Resources";
+        internal const string DEFAULT_EDITOR_RESOURCE_PATH = "Assets/_Root/Editor/Resources";
         
         /// <summary>
         /// thanks @JoshuaMcKenzie and @Edvard-D

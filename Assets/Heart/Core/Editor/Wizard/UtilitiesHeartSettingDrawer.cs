@@ -11,18 +11,32 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
             var heartSetting = Resources.Load<HeartSettings>(nameof(HeartSettings));
-            if (heartSetting == null)
+            var heartEditorSetting = Resources.Load<HeartEditorSettings>(nameof(HeartEditorSettings));
+            if (heartSetting == null || heartEditorSetting == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Heart Setting", GUILayout.Height(30f)))
+                if (GUILayout.Button("Create Missing Heart Setting", GUILayout.Height(30f)))
                 {
-                    var setting = ScriptableObject.CreateInstance<HeartSettings>();
-                    if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
-                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
+                    if (heartSetting == null)
+                    {
+                        var setting = ScriptableObject.CreateInstance<HeartSettings>();
+                        if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
+                        AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
+                        Debug.Log($"{nameof(HeartSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
+                    }
+
+                    if (heartEditorSetting == null)
+                    {
+                        var editorSetting = ScriptableObject.CreateInstance<HeartEditorSettings>();
+                        if (!Directory.Exists(Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_EDITOR_RESOURCE_PATH);
+                        AssetDatabase.CreateAsset(editorSetting, $"{Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HeartEditorSettings)}.asset");
+                        Debug.Log(
+                            $"{nameof(HeartEditorSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HeartEditorSettings)}.asset");
+                    }
+
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(HeartSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;
@@ -31,8 +45,11 @@ namespace PancakeEditor
             else
             {
                 EditorGUILayout.Space();
-                var editor = UnityEditor.Editor.CreateEditor(heartSetting);
-                editor.OnInspectorGUI();
+                var editorHeartSetting = UnityEditor.Editor.CreateEditor(heartSetting);
+                editorHeartSetting.OnInspectorGUI();
+                EditorGUILayout.Space();
+                var editorHeartEditorSetting = UnityEditor.Editor.CreateEditor(heartEditorSetting);
+                editorHeartEditorSetting.OnInspectorGUI();
             }
         }
     }
