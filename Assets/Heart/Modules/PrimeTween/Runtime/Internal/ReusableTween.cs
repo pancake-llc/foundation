@@ -31,7 +31,7 @@ namespace PrimeTween {
         internal bool isAdditive;
         internal ValueContainer prevVal;
         [SerializeField] internal TweenSettings settings;
-        [SerializeField] int cyclesDone; // todo ini val of -1 is confusing
+        [SerializeField] int cyclesDone;
         const int iniCyclesDone = -1;
 
         internal object customOnValueChange;
@@ -69,16 +69,29 @@ namespace PrimeTween {
             return _isAlive;
         }
 
+        internal bool isUpdating;
         internal void SetElapsedTimeTotal(float newElapsedTimeTotal) {
-            if (!sequence.IsCreated) {
-                setElapsedTimeTotal(newElapsedTimeTotal, out _);
+            if (isUpdating) {
+                Debug.LogError(Constants.recursiveCallError);
                 return;
             }
-            Assert.IsTrue(sequence.isAlive, id);
-            if (isMainSequenceRoot()) {
-                Assert.IsTrue(sequence.root.id == id, id);
-                updateSequence(newElapsedTimeTotal, false);
+            isUpdating = true;
+            if (!sequence.IsCreated) {
+                setElapsedTimeTotal(newElapsedTimeTotal, out var cyclesDiff);
+                if (!stoppedEmergently && _isAlive && isDone(cyclesDiff)) {
+                    if (!_isPaused) {
+                        kill();
+                    }
+                    ReportOnComplete();
+                }
+            } else {
+                Assert.IsTrue(sequence.isAlive, id);
+                if (isMainSequenceRoot()) {
+                    Assert.IsTrue(sequence.root.id == id, id);
+                    updateSequence(newElapsedTimeTotal, false);
+                }
             }
+            isUpdating = false;
         }
         
         internal void updateSequence(float _elapsedTimeTotal, bool isRestart) {
@@ -157,6 +170,7 @@ namespace PrimeTween {
                     if (isMainSequenceRoot() && !_isPaused) {
                         sequence.releaseTweens();
                     }
+                    ReportOnComplete();
                     return;
                 }
             }
@@ -189,7 +203,10 @@ namespace PrimeTween {
             if (isSequenceRoot()) {
                 updateSequence(encompassingElapsedTime, isRestart);
             } else {
-                setElapsedTimeTotal(encompassingElapsedTime, out _);
+                setElapsedTimeTotal(encompassingElapsedTime, out var cyclesDiff);
+                if (!stoppedEmergently && _isAlive && isDone(cyclesDiff)) {
+                    ReportOnComplete();
+                }
             }
         }
 
@@ -209,15 +226,6 @@ namespace PrimeTween {
                 // print($"state: {state}/{newState}, cycles: {cyclesDone}/{settings.cycles} (diff: {cyclesDiff}), elapsedTimeTotal: {elapsedTimeTotal}, interpolation: {t}/{easedT}");
                 state = newState;
                 ReportOnValueChange(easedT);
-                if (stoppedEmergently || !_isAlive) {
-                    return;
-                }
-            }
-            if (isDone(cyclesDiff)) {
-                if (!IsInSequence() && !_isPaused) {
-                    kill();
-                }
-                ReportOnComplete();
             }
         }
 
@@ -291,6 +299,7 @@ namespace PrimeTween {
         }*/
 
         internal void Reset() {
+            Assert.IsFalse(isUpdating);
             Assert.IsFalse(_isAlive);
             Assert.IsFalse(sequence.IsCreated);
             Assert.IsFalse(prev.IsCreated);
