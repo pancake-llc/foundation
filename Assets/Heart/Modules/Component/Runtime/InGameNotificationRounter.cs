@@ -13,6 +13,8 @@ namespace Pancake.Component
 
         [SerializeField] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
+        private RectTransform _canvasRectTransform;
+        
         protected override void OnEnabled()
         {
             spawnEvent.OnRaised += Spawn;
@@ -23,7 +25,8 @@ namespace Pancake.Component
             try
             {
 #endif
-                pool.SetParent(getCanvasMasterEvent.Raise().transform, true);
+                _canvasRectTransform = getCanvasMasterEvent.Raise().GetComponent<RectTransform>();
+                pool.SetParent(_canvasRectTransform, true);
 #if UNITY_EDITOR
             }
             catch (Exception)
@@ -48,7 +51,7 @@ namespace Pancake.Component
             var rectTransform = instance.transform.GetComponent<RectTransform>();
             rectTransform.SetLocalPositionZ(0);
             rectTransform.SetAnchoredPositionY(-444);
-            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width - 100);
+            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _canvasRectTransform.rect.width - 100);
             var noti = instance.GetComponent<InGameNotification>();
             noti.Show(localeText);
         }
