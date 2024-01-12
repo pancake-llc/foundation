@@ -60,7 +60,7 @@ namespace Pancake.Component
             returnPoolEvent.OnRaised -= ReturnVfxToPool;
         }
 
-        private void SpawnCoinFx(Vector2 screenPos, int value)
+        private void SpawnCoinFx(Vector3 position, int value)
         {
             var coinFx = coinFxPool.Request();
             var vfxParticleCollision = coinFx.GetComponent<VfxParticleCollision>();
@@ -70,7 +70,7 @@ namespace Pancake.Component
             listVfxMagnetInstance.Add(coinFx);
             ps.gameObject.SetActive(true);
             var transformCache = ps.transform;
-            transformCache.position = new Vector3(screenPos.x, screenPos.y);
+            transformCache.position = position;
             var localPos = transformCache.localPosition;
             localPos = new Vector3(localPos.x, localPos.y);
             transformCache.localPosition = localPos;
