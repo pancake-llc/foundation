@@ -49,7 +49,7 @@ namespace Pancake
             if (datas == null) throw new NullReferenceException();
         }
 
-        private static string GetPath => Path.Combine(Application.persistentDataPath, $"masterdata_{profile}.json");
+        private static string GetPath => Path.Combine(Application.persistentDataPath, $"masterdata_{profile}.fo");
 
         #endregion
 
