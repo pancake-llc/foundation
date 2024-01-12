@@ -206,21 +206,19 @@ namespace Pancake.ScriptableEditor
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
             GUI.backgroundColor = color;
 
-            DrawScriptableBases(_scriptableObjects);
+            DrawScriptableBases(_scriptableObjects, width);
 
             EditorGUILayout.EndScrollView();
 
-            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(_buttonHeight)))
-                PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
+            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(_buttonHeight))) PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawScriptableBases(List<ScriptableBase> scriptables)
+        private void DrawScriptableBases(List<ScriptableBase> scriptables, float width)
         {
-            if (scriptables is null)
-                return;
+            if (scriptables is null) return;
 
             var count = scriptables.Count;
             for (var i = count - 1; i >= 0; i--)
@@ -238,7 +236,13 @@ namespace Pancake.ScriptableEditor
                 var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 5)};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
 
-                var clicked = GUILayout.Toggle(selectedScriptableIndex == i, scriptable.name, Uniform.FoldoutButton, GUILayout.ExpandWidth(true));
+                string displayName = scriptable.name;
+                if (displayName.Length > 30)
+                {
+                    displayName = displayName[..30];
+                    displayName = displayName.Insert(displayName.Length, "...");
+                }
+                var clicked = GUILayout.Toggle(selectedScriptableIndex == i, displayName, Uniform.FoldoutButton, GUILayout.Width(width - _tabWidth - 8));
                 DrawFavorite(scriptable);
                 EditorGUILayout.EndHorizontal();
                 if (clicked)
@@ -364,12 +368,9 @@ namespace Pancake.ScriptableEditor
         {
             switch (scriptableBase)
             {
-                case ScriptableVariableBase _:
-                    return EditorResources.ScriptableVariable;
-                case ScriptableEventBase _:
-                    return EditorResources.ScriptableEvent;
-                case ScriptableListBase _:
-                    return EditorResources.ScriptableList;
+                case ScriptableVariableBase: return EditorResources.ScriptableVariable;
+                case ScriptableEventBase: return EditorResources.ScriptableEvent;
+                case ScriptableListBase: return EditorResources.ScriptableList;
                 default: return EditorResources.ScriptableVariable;
             }
         }
