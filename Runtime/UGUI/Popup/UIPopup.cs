@@ -28,7 +28,7 @@ namespace Pancake.UI
 
         #region basic
 
-        [SerializeField, Group("basic"), Ulid, PropertyOrder(0)] private string uniqueId;
+        [SerializeField, Group("basic"), PropertyOrder(0)] private string uniqueId;
         [SerializeField, Group("basic")] protected bool ignoreTimeScale;
 
         #endregion

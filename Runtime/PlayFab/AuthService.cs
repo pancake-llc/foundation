@@ -119,7 +119,7 @@ namespace Pancake.GameService
                 string id = PlayerPrefs.GetString(CUSTOM_ID_STORE_KEY, "");
                 if (string.IsNullOrEmpty(id))
                 {
-                    id = Ulid.NewUlid().ToString();
+                    id = Guid.NewGuid().ToString();
                     PlayerPrefs.SetString(CUSTOM_ID_STORE_KEY, id);
                 }
 

@@ -8,7 +8,7 @@ namespace Pancake
     public class Sound : ScriptableObject
     {
         [SerializeField, TextArea] private string developerDescription;
-        [SerializeField, Ulid] private string id;
+        [SerializeField] private string id;
         [ValidateInput("ValidateSoundName")] public string soundName;
 
         [Header("Clip and Output")] public AudioClip clip = null;
