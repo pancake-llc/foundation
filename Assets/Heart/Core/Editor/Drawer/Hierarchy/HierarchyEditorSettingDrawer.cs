@@ -117,7 +117,16 @@ namespace PancakeEditor.Hierarchy
             EditorGUILayout.PropertyField(_enabledErrorProperty, true);
             if (_enabledErrorProperty.boolValue)
             {
+                EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(_showIconOnParentProperty, true);
+                if (_showIconOnParentProperty.boolValue)
+                {
+                    EditorGUILayout.HelpBox(
+                        "Only enable this option when you want to search for errors in the inspector to fix. Once found, turn it off. Because it's very laggy",
+                        MessageType.Warning);
+                }
+
+                EditorGUILayout.EndHorizontal();
                 EditorGUILayout.PropertyField(_showScriptMissingProperty, new GUIContent("Script Missing"), true);
                 EditorGUILayout.PropertyField(_showReferenceNullProperty, new GUIContent("Null Reference"), true);
                 EditorGUILayout.PropertyField(_showReferenceIsMissingProperty, new GUIContent("Missing Reference"), true);
