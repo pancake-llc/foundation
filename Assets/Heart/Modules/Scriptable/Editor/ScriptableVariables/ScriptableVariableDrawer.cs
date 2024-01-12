@@ -11,16 +11,15 @@ namespace Pancake.ScriptableEditor
     [CustomEditor(typeof(ScriptableVariableBase), true)]
     public class ScriptableVariableDrawer : UnityEditor.Editor
     {
-        private ScriptableBase _scriptableBase = null;
-        private ScriptableVariableBase _scriptableVariable = null;
+        private ScriptableBase _scriptableBase;
+        private ScriptableVariableBase _scriptableVariable;
         private static bool repaintFlag;
 
         public override void OnInspectorGUI()
         {
             serializedObject.UpdateIfRequiredOrScript();
 
-            //Check for Serializable
-            if (_scriptableVariable == null) _scriptableVariable = target as ScriptableVariableBase;
+            RequireCheck();
             var genericType = _scriptableVariable.GetGenericType;
             if (!EditorExtend.IsSerializable(genericType)) EditorExtend.DrawSerializationError(genericType);
 
@@ -39,13 +38,18 @@ namespace Pancake.ScriptableEditor
             if (objects.Count > 0) DisplayAll(objects);
         }
 
-        private void DrawMinimal() { Uniform.DrawOnlyField(serializedObject, "value", false); }
+        protected virtual void RequireCheck()
+        {
+            if (_scriptableVariable == null) _scriptableVariable = target as ScriptableVariableBase;
+        }
+
+        protected virtual void DrawMinimal() { Uniform.DrawOnlyField(serializedObject, "value", false); }
 
         private void DrawDefault()
         {
             Uniform.DrawOnlyField(serializedObject, "m_Script", true);
             var propertiesToHide = CanShowMinMaxProperty(target) ? new[] {"m_Script"} : new[] {"m_Script", "minMax"};
-            Uniform.DrawInspectorExcept(serializedObject, propertiesToHide);
+            DrawDefaultExcept(propertiesToHide);
 
             if (GUILayout.Button("Reset to initial value"))
             {
@@ -53,6 +57,8 @@ namespace Pancake.ScriptableEditor
                 so.ResetToInitialValue();
             }
         }
+
+        protected virtual void DrawDefaultExcept(string[] propertiesToHide) { Uniform.DrawInspectorExcept(serializedObject, propertiesToHide); }
 
         private bool CanShowMinMaxProperty(Object targetObject) { return IsIntClamped(targetObject) || IsFloatClamped(targetObject); }
 

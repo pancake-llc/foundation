@@ -256,6 +256,60 @@ namespace Pancake.ExLibEditor
         }
 
         /// <summary>
+        ///  Draw only the property specified. work only with float or int field
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <param name="fieldName">only name field has type int or float</param>
+        /// <param name="isReadOnly"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public static void DrawOnlyIntField(SerializedObject serializedObject, string fieldName, bool isReadOnly, int start, int end)
+        {
+            serializedObject.Update();
+            var prop = serializedObject.GetIterator();
+            if (prop.NextVisible(true))
+            {
+                do
+                {
+                    if (prop.name != fieldName) continue;
+
+                    GUI.enabled = !isReadOnly;
+                    EditorGUILayout.IntSlider(serializedObject.FindProperty(prop.name), start, end);
+                    GUI.enabled = true;
+                } while (prop.NextVisible(false));
+            }
+
+            serializedObject.ApplyModifiedProperties();
+        }
+
+        /// <summary>
+        ///  Draw only the property specified. work only with float or int field
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <param name="fieldName">only name field has type int or float</param>
+        /// <param name="isReadOnly"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public static void DrawOnlyFloatField(SerializedObject serializedObject, string fieldName, bool isReadOnly, float start, float end)
+        {
+            serializedObject.Update();
+            var prop = serializedObject.GetIterator();
+            if (prop.NextVisible(true))
+            {
+                do
+                {
+                    if (prop.name != fieldName) continue;
+
+                    GUI.enabled = !isReadOnly;
+                    EditorGUILayout.Slider(serializedObject.FindProperty(prop.name), start, end);
+                    GUI.enabled = true;
+                } while (prop.NextVisible(false));
+            }
+
+            serializedObject.ApplyModifiedProperties();
+        }
+
+        /// <summary>
         /// Draw property field with validate wrong value
         /// </summary>
         /// <param name="property"></param>
