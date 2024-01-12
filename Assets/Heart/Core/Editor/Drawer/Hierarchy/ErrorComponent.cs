@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Pancake;
 using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEditorInternal;
@@ -151,7 +152,9 @@ namespace PancakeEditor.Hierarchy
                             {
                                 var field = fieldArray[j];
 
-                                if (Attribute.IsDefined(field, typeof(HideInInspector)) || Attribute.IsDefined(field, typeof(NonSerializedAttribute)) ||
+                                if (Attribute.IsDefined(field, typeof(HideInInspector))
+                                    || Attribute.IsDefined(field, typeof(HierarchyNullableAttribute))
+                                    || Attribute.IsDefined(field, typeof(NonSerializedAttribute)) ||
                                     field.IsStatic) continue;
 
                                 if (field.IsPrivate || !field.IsPublic)
