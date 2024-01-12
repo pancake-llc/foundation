@@ -72,6 +72,22 @@ namespace PancakeEditor
             return true;
         }
 
+        [MenuItem("Tools/Require Scene Save", validate = false)]
+        private static void ToggleRequireSceneSave()
+        {
+            Internal.InternalData.Settings.requireSceneSave = !Internal.InternalData.Settings.requireSceneSave;
+            AssetDatabase.Refresh();
+            string text = Internal.InternalData.Settings.requireSceneSave ? " <color=#f75369>Enabled" : "<color=#FF2828>Disabled";
+            Debug.Log($"Require Scene Save {text}</color>");
+        }
+
+        [MenuItem("Tools/Require Scene Save", validate = true)]
+        private static bool ValidateRequireSceneSave()
+        {
+            Menu.SetChecked("Tools/Require Scene Save", Internal.InternalData.Settings.requireSceneSave);
+            return true;
+        }
+
         [MenuItem("Tools/Pancake/Mulligan Renamer", false)]
         private static void MulliganRenamer() { EditorWindow.GetWindow<MulliganRenamerWindow>(false, "Mulligan Renamer", true); }
 

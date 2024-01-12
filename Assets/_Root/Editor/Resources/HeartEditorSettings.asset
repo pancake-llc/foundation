@@ -13,4 +13,3 @@ MonoBehaviour:
   m_Name: HeartEditorSettings
   m_EditorClassIdentifier: 
   nameCreationMode: 0
-  showInstallerOnReload: 1
