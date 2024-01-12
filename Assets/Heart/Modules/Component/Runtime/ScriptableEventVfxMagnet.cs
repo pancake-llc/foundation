@@ -15,10 +15,10 @@ namespace Pancake.Component
         private readonly List<EventListenerVfxMagnet> _eventListeners = new List<EventListenerVfxMagnet>();
         private readonly List<Object> _listenerObjects = new List<Object>();
         
-        private Action<Vector2, int> _onRaised;
+        private Action<Vector3, int> _onRaised;
 
         /// <summary> Event raised when the event is raised. </summary>
-        public event Action<Vector2, int> OnRaised
+        public event Action<Vector3, int> OnRaised
         {
             add
             {
@@ -35,7 +35,7 @@ namespace Pancake.Component
         }
 
         /// <summary> Raise the event </summary>
-        public void Raise(Vector2 position, int value)
+        public void Raise(Vector3 position, int value)
         {
             if (!Application.isPlaying) return;
             

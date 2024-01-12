@@ -83,7 +83,7 @@ namespace Pancake.UI
         private void CollectReward(int number)
         {
             UserData.AddCoin(number);
-            fxCoinSpawnEvent.Raise(Vector2.zero, number);
+            fxCoinSpawnEvent.Raise(Vector3.zero, number);
         }
 
         private async void Continute()

@@ -176,13 +176,13 @@ namespace Pancake.SceneFlow
         private void OnButtonAdd10KCoinClicked()
         {
             UserData.AddCoin(10000);
-            fxCoinSpawnEvent.Raise(Vector2.zero, 10000);
+            fxCoinSpawnEvent.Raise(Vector3.zero, 10000);
         }
 
         private void OnButtonAdd1MCoinClicked()
         {
             UserData.AddCoin(1000000);
-            fxCoinSpawnEvent.Raise(Vector2.zero, 1000000);
+            fxCoinSpawnEvent.Raise(Vector3.zero, 1000000);
         }
 
         private async void OnButtonJumpToLevelClicked()
