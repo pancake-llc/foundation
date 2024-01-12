@@ -9,7 +9,7 @@ namespace Pancake.ScriptableEditor
     class ScriptableVariableGuidGenerator : AssetPostprocessor
     {
         //this gets cleared every time the domain reloads
-        private static readonly HashSet<string> _guidsCache = new HashSet<string>();
+        private static readonly HashSet<string> GuidsCache = new HashSet<string>();
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
@@ -33,8 +33,7 @@ namespace Pancake.ScriptableEditor
             foreach (var scriptableVariable in scriptableVariableBases)
             {
                 scriptableVariable.Guid = GenerateGuid(scriptableVariable);
-                _guidsCache.Add(scriptableVariable.Guid);
-                //Debug.Log(scriptableVariable.name + " was regenerated and Uid cached");
+                GuidsCache.Add(scriptableVariable.Guid);
             }
         }
 
@@ -42,7 +41,7 @@ namespace Pancake.ScriptableEditor
         {
             foreach (var assetPath in importedAssets)
             {
-                if (_guidsCache.Contains(assetPath))
+                if (GuidsCache.Contains(assetPath))
                     continue;
 
                 var asset = AssetDatabase.LoadAssetAtPath<ScriptableVariableBase>(assetPath);
@@ -50,8 +49,7 @@ namespace Pancake.ScriptableEditor
                     continue;
 
                 asset.Guid = GenerateGuid(asset);
-                _guidsCache.Add(asset.Guid);
-                //Debug.Log(asset.name + " was created and Uid cached");
+                GuidsCache.Add(asset.Guid);
             }
         }
 
@@ -59,11 +57,10 @@ namespace Pancake.ScriptableEditor
         {
             foreach (var assetPath in deletedAssets)
             {
-                if (!_guidsCache.Contains(assetPath))
+                if (!GuidsCache.Contains(assetPath))
                     continue;
 
-                _guidsCache.Remove(assetPath);
-                //Debug.Log(assetPath + " was removed from cache");
+                GuidsCache.Remove(assetPath);
             }
         }
 
