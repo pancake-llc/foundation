@@ -32,7 +32,7 @@ MonoBehaviour:
   enabledVisibility: 1
   visibilityShowDuringPlayMode: 1
   enabledError: 1
-  showIconOnParent: 0
+  showIconOnParent: 1
   showScriptMissing: 1
   showReferenceNull: 0
   showReferenceIsMissing: 1

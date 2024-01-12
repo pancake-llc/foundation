@@ -20,7 +20,10 @@ namespace Pancake.Component
         [SerializeField, ShowIf(nameof(isPlaySound))] private Audio audioSpawn;
         [SerializeField, ShowIf(nameof(isPlaySound))] private ScriptableEventAudio audioPlayEvent;
         [Space] [SerializeField] private bool useCanvasMaster;
-        [SerializeField, HideIf(nameof(useCanvasMaster))] private Transform canvas;
+
+        [SerializeField, HideIf(nameof(useCanvasMaster)), HierarchyNullable]
+        private Transform canvas;
+
         [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
 
