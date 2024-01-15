@@ -6,6 +6,7 @@ using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 
 namespace Pancake.ScriptableEditor
 {
@@ -51,7 +52,7 @@ namespace Pancake.ScriptableEditor
             Favorite
         }
 
-        public new static void Show() => GetWindow<ScriptableWizardWindow>("Scriptable Wizard");
+        public new static ScriptableWizardWindow Show() => GetWindow<ScriptableWizardWindow>("Scriptable Wizard");
 
         [MenuItem("Tools/Pancake/Scriptable/Wizard")]
         private static void OpenScriptableWizard() => Show();
@@ -366,6 +367,21 @@ namespace Pancake.ScriptableEditor
                 case ScriptableEventBase: return EditorResources.ScriptableEvent;
                 case ScriptableListBase: return EditorResources.ScriptableList;
                 default: return EditorResources.ScriptableVariable;
+            }
+        }
+
+        internal void SelectAndScrollTo(Object obj)
+        {
+            for (int i = 0; i < _scriptableObjects.Count; i++)
+            {
+                if (_scriptableObjects[i].Equals(obj))
+                {
+                    selectedScriptableIndex = i;
+                    scriptableBase = obj as ScriptableBase;
+                    _scrollPosition = new Vector2(0,
+                        System.Math.Max(0, new GUIStyle(GUI.skin.button).CalcHeight(GUIContent.none, 0) * (_scriptableObjects.Count - i) - 50));
+                    break;
+                }
             }
         }
     }
