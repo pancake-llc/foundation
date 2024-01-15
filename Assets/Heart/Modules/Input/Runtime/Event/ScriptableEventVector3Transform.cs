@@ -10,8 +10,6 @@ namespace Pancake.MobileInput
     {
         private Action<Vector3, Transform> _onRaised;
 
-        public override Type GetGenericType => typeof(ScriptableEventVector3Transform);
-
         /// <summary>
         /// Action raised when this event is raised.
         /// </summary>

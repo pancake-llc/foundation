@@ -18,11 +18,11 @@ namespace Pancake.Scriptable
         [System.Serializable]
         public class EventResponse<TV, TR>
         {
-            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
-            public float Delay;
-
             public virtual ScriptableEventFuncT_TResult<TV, TR> ScriptableEvent { get; }
             public virtual UnityEvent<TV> Response { get; }
+
+            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
+            public float delay;
         }
 
         protected virtual EventResponse<T, TResult>[] EventResponses { get; }
@@ -32,7 +32,7 @@ namespace Pancake.Scriptable
         public void OnEventRaised(ScriptableEventFuncT_TResult<T, TResult> @event, T param, bool debug = false)
         {
             var eventResponse = _dictionary[@event];
-            if (eventResponse.Delay > 0)
+            if (eventResponse.delay > 0)
             {
                 if (gameObject.activeInHierarchy) StartCoroutine(Cr_DelayInvokeResponse(@event, eventResponse, param, debug));
                 else
@@ -50,7 +50,7 @@ namespace Pancake.Scriptable
 
         private IEnumerator Cr_DelayInvokeResponse(ScriptableEventFuncT_TResult<T, TResult> @event, EventResponse<T, TResult> eventResponse, T param, bool debug)
         {
-            yield return new WaitForSeconds(eventResponse.Delay);
+            yield return new WaitForSeconds(eventResponse.delay);
             InvokeResponse(@event, eventResponse, param, debug);
         }
 
@@ -63,7 +63,7 @@ namespace Pancake.Scriptable
         {
             try
             {
-                await Task.Delay((int) (eventResponse.Delay * 1000), cancellationToken);
+                await Task.Delay((int) (eventResponse.delay * 1000), cancellationToken);
                 InvokeResponse(@event, eventResponse, param, debug);
             }
             catch (TaskCanceledException)

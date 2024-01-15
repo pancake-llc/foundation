@@ -25,13 +25,13 @@ namespace Pancake.Scriptable
             {
                 if (toggle)
                 {
-                    eventResponses[i].ScriptableEvent.RegisterListener(this);
-                    _dictionary.TryAdd(eventResponses[i].ScriptableEvent, eventResponses[i]);
+                    eventResponses[i].scriptableEvent.RegisterListener(this);
+                    _dictionary.TryAdd(eventResponses[i].scriptableEvent, eventResponses[i]);
                 }
                 else
                 {
-                    eventResponses[i].ScriptableEvent.UnregisterListener(this);
-                    if (_dictionary.ContainsKey(eventResponses[i].ScriptableEvent)) _dictionary.Remove(eventResponses[i].ScriptableEvent);
+                    eventResponses[i].scriptableEvent.UnregisterListener(this);
+                    if (_dictionary.ContainsKey(eventResponses[i].scriptableEvent)) _dictionary.Remove(eventResponses[i].scriptableEvent);
                 }
             }
         }
@@ -39,7 +39,7 @@ namespace Pancake.Scriptable
         public void OnEventRaised(ScriptableEventNoParam @event, bool debug = false)
         {
             var eventResponse = _dictionary[@event];
-            if (eventResponse.Delay > 0)
+            if (eventResponse.delay > 0)
             {
                 if (gameObject.activeInHierarchy) StartCoroutine(Cr_DelayInvokeResponse(@event, eventResponse, debug));
                 else DelayInvokeResponseAsync(@event, eventResponse, debug, cancellationTokenSource.Token);
@@ -49,7 +49,7 @@ namespace Pancake.Scriptable
 
         private IEnumerator Cr_DelayInvokeResponse(ScriptableEventNoParam eventRaised, EventResponse eventResponse, bool debug)
         {
-            yield return new WaitForSeconds(eventResponse.Delay);
+            yield return new WaitForSeconds(eventResponse.delay);
             InvokeResponse(eventRaised, eventResponse, debug);
         }
 
@@ -57,7 +57,7 @@ namespace Pancake.Scriptable
         {
             try
             {
-                await Task.Delay((int) (eventResponse.Delay * 1000), cancellationToken);
+                await Task.Delay((int) (eventResponse.delay * 1000), cancellationToken);
                 InvokeResponse(eventRaised, eventResponse, debug);
             }
             catch (TaskCanceledException)
@@ -67,25 +67,25 @@ namespace Pancake.Scriptable
 
         private void InvokeResponse(ScriptableEventNoParam eventRaised, EventResponse eventResponse, bool debug)
         {
-            eventResponse.Response?.Invoke();
+            eventResponse.response?.Invoke();
             if (debug) Debug(eventRaised);
         }
 
         [System.Serializable]
         public struct EventResponse
         {
-            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
-            public float Delay;
+            public ScriptableEventNoParam scriptableEvent;
+            public UnityEvent response;
 
-            public ScriptableEventNoParam ScriptableEvent;
-            public UnityEvent Response;
+            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
+            public float delay;
         }
 
         #region Debugging
 
         private void Debug(ScriptableEventNoParam eventRaised)
         {
-            var response = _dictionary[eventRaised].Response;
+            var response = _dictionary[eventRaised].response;
             int registeredListenerCount = response.GetPersistentEventCount();
 
             for (var i = 0; i < registeredListenerCount; i++)
@@ -107,17 +107,17 @@ namespace Pancake.Scriptable
             var containsMethod = false;
             foreach (var eventResponse in eventResponses)
             {
-                var registeredListenerCount = eventResponse.Response.GetPersistentEventCount();
+                var registeredListenerCount = eventResponse.response.GetPersistentEventCount();
 
                 for (int i = 0; i < registeredListenerCount; i++)
                 {
-                    if (eventResponse.Response.GetPersistentMethodName(i) == methodName)
+                    if (eventResponse.response.GetPersistentMethodName(i) == methodName)
                     {
                         var sb = new StringBuilder();
                         sb.Append("<color=#f75369>");
                         sb.Append(methodName);
                         sb.Append("()</color> is called by the event: <color=#f75369>");
-                        sb.Append(eventResponse.ScriptableEvent.name);
+                        sb.Append(eventResponse.scriptableEvent.name);
                         sb.Append("</color>");
                         UnityEngine.Debug.Log(sb.ToString(), gameObject);
                         containsMethod = true;

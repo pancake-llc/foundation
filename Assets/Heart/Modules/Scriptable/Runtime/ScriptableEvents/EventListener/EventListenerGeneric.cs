@@ -35,7 +35,7 @@ namespace Pancake.Scriptable
         internal void OnEventRaised(ScriptableEvent<T> eventRaised, T param, bool debug = false)
         {
             var eventResponse = _dictionary[eventRaised];
-            if (eventResponse.Delay > 0)
+            if (eventResponse.delay > 0)
             {
                 if (gameObject.activeInHierarchy) StartCoroutine(Cr_DelayInvokeResponse(eventRaised, eventResponse, param, debug));
                 else
@@ -50,7 +50,7 @@ namespace Pancake.Scriptable
 
         private IEnumerator Cr_DelayInvokeResponse(ScriptableEvent<T> eventRaised, EventResponse<T> eventResponse, T param, bool debug)
         {
-            yield return new WaitForSeconds(eventResponse.Delay);
+            yield return new WaitForSeconds(eventResponse.delay);
             InvokeResponse(eventRaised, eventResponse, param, debug);
         }
 
@@ -63,7 +63,7 @@ namespace Pancake.Scriptable
         {
             try
             {
-                await Task.Delay((int) (eventResponse.Delay * 1000), cancellationToken);
+                await Task.Delay((int) (eventResponse.delay * 1000), cancellationToken);
                 InvokeResponse(eventRaised, eventResponse, param, debug);
             }
             catch (TaskCanceledException)
@@ -125,11 +125,10 @@ namespace Pancake.Scriptable
         public class EventResponse<U>
         {
             public virtual ScriptableEvent<U> ScriptableEvent { get; }
+            public virtual UnityEvent<U> Response { get; }
 
             [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
-            public float Delay;
-
-            public virtual UnityEvent<U> Response { get; }
+            public float delay;
         }
     }
 }
