@@ -12,11 +12,10 @@ namespace Pancake.Scriptable
     // ReSharper disable once InconsistentNaming
     public abstract class ScriptableEventFuncT_TResult<T, TResult> : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [SerializeField] private bool debugLogEnabled;
         [SerializeField] protected T debugValue = default;
 
-        private readonly List<EventListenerFuncT_TResult<T, TResult>> _eventListeners = new List<EventListenerFuncT_TResult<T, TResult>>();
-        private readonly List<Object> _listenerObjects = new List<Object>();
+        private readonly List<EventListenerFuncT_TResult<T, TResult>> _eventListeners = new();
+        private readonly List<Object> _listenerObjects = new();
         private Func<T, TResult> _onRaised;
 
         public override Type GetGenericType => typeof(T);

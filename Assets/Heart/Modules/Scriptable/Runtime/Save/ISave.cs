@@ -7,5 +7,6 @@
     {
         void Save();
         void Load();
+        internal bool Saved { get; }
     }
 }

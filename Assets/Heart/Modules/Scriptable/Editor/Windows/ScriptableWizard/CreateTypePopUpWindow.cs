@@ -9,7 +9,7 @@ namespace Pancake.ScriptableEditor
     {
         private readonly Rect _position;
         private string _typeText = "Type";
-        private bool _baseClass = false;
+        private bool _baseClass;
         private bool _monoBehaviour = true;
         private bool _variable = true;
         private bool _event = true;

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cdb8ad39a5bdd4f8ed3d18fae14a63, type: 3}
   m_Name: user_current_coin
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 2b085b529f2fac74ba8c4fab7e585cb1
+  guidCreateMode: 0
   value: 0
   debugLogEnabled: 0
   saved: 1

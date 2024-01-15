@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading;
+using UnityEngine;
 
 namespace Pancake.Scriptable
 {
@@ -15,7 +16,8 @@ namespace Pancake.Scriptable
         }
 
         [SerializeField] protected Binding binding = Binding.UNTIL_DESTROY;
-        [SerializeField] protected bool disableAfterSubscribing = false;
+        [SerializeField] protected bool disableAfterSubscribing;
+        protected readonly CancellationTokenSource cancellationTokenSource = new();
 
         protected abstract void ToggleRegistration(bool toggle);
 
@@ -37,12 +39,20 @@ namespace Pancake.Scriptable
 
         private void OnDisable()
         {
-            if (binding == Binding.UNTIL_DISABLE) ToggleRegistration(false);
+            if (binding == Binding.UNTIL_DISABLE)
+            {
+                ToggleRegistration(false);
+                cancellationTokenSource.Cancel();
+            }
         }
 
         private void OnDestroy()
         {
-            if (binding == Binding.UNTIL_DESTROY) ToggleRegistration(false);
+            if (binding == Binding.UNTIL_DESTROY)
+            {
+                ToggleRegistration(false);
+                cancellationTokenSource.Cancel();
+            }
         }
     }
 }

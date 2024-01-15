@@ -11,10 +11,8 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_event")]
     public abstract class ScriptableEventFunc<TResult> : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [SerializeField] private bool debugLogEnabled;
-
-        private readonly List<EventListenerFunc<TResult>> _eventListeners = new List<EventListenerFunc<TResult>>();
-        private readonly List<Object> _listenerObjects = new List<Object>();
+        private readonly List<EventListenerFunc<TResult>> _eventListeners = new();
+        private readonly List<Object> _listenerObjects = new();
         private Func<TResult> _onRaised;
 
         public event Func<TResult> OnRaised

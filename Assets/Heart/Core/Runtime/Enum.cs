@@ -54,7 +54,7 @@ namespace Pancake
         Frame240 = 240
     }
     
-    public enum ENameAssetCreationMode
+    public enum ECreationMode
     {
         Auto,
         Manual

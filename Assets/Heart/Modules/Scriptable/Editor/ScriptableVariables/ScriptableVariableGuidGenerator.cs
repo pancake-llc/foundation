@@ -32,6 +32,7 @@ namespace Pancake.ScriptableEditor
             var scriptableVariableBases = ProjectDatabase.FindAll<ScriptableVariableBase>();
             foreach (var scriptableVariable in scriptableVariableBases)
             {
+                if (scriptableVariable.GuidCreateMode != ECreationMode.Auto) continue;
                 scriptableVariable.Guid = GenerateGuid(scriptableVariable);
                 GuidsCache.Add(scriptableVariable.Guid);
             }
@@ -41,12 +42,10 @@ namespace Pancake.ScriptableEditor
         {
             foreach (var assetPath in importedAssets)
             {
-                if (GuidsCache.Contains(assetPath))
-                    continue;
+                if (GuidsCache.Contains(assetPath)) continue;
 
                 var asset = AssetDatabase.LoadAssetAtPath<ScriptableVariableBase>(assetPath);
-                if (asset == null)
-                    continue;
+                if (asset == null || asset.GuidCreateMode != ECreationMode.Auto) continue;
 
                 asset.Guid = GenerateGuid(asset);
                 GuidsCache.Add(asset.Guid);

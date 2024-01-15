@@ -15,11 +15,12 @@ namespace Pancake.ScriptableEditor
         protected override string HeaderTitle => "Scriptable";
 
         private Vector2 _scrollPosition = Vector2.zero;
+        private Vector2 _categoryScrollPosition = Vector2.zero;
         private Vector2 _itemScrollPosition = Vector2.zero;
         private List<ScriptableBase> _scriptableObjects;
         private ScriptableType _currentType = ScriptableType.All;
-        private readonly float _tabWidth = 55f;
-        private readonly float _buttonHeight = 40f;
+        private const float TAB_WIDTH = 55f;
+        private const float BUTTON_HEIGHT = 40f;
         private Texture[] _icons;
         private readonly Color[] _colors = {Uniform.RichBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
         private string _searchText = "";
@@ -27,15 +28,21 @@ namespace Pancake.ScriptableEditor
 
         [SerializeField] private string currentFolderPath = "Assets";
         [SerializeField] private int selectedScriptableIndex;
-        [SerializeField] private int tabIndex = -1;
+        [SerializeField] private int typeTabIndex = -1;
+        [SerializeField] private int categoryMask;
         [SerializeField] private bool isInitialized;
         [SerializeField] private ScriptableBase scriptableBase;
         [SerializeField] private ScriptableBase previousScriptableBase;
         [SerializeField] private FavoriteData favoriteData;
+        [SerializeField] private bool categoryAsButtons;
+        [SerializeField] private bool toggleSavedEnabled;
 
         private List<ScriptableBase> Favorites => favoriteData.favorites;
-        public const string PATH_KEY = "scriptable_wizard_path";
-        public const string FAVORITE_KEY = "scriptable_wizard_favorites";
+        private const string PATH_KEY = "scriptable_wizard_path";
+        private const string FAVORITE_KEY = "scriptable_wizard_favorites";
+        private const string CATEGORIES_KEY = "soapwizard_categories";
+        private const string CATEGORIES_LAYOUT_KEY = "soapwizard_categorieslayout";
+
 
         [Serializable]
         private class FavoriteData
@@ -62,7 +69,7 @@ namespace Pancake.ScriptableEditor
             Init();
             if (isInitialized)
             {
-                SelectTab(tabIndex);
+                SelectTab(typeTabIndex);
                 return;
             }
 
@@ -74,6 +81,8 @@ namespace Pancake.ScriptableEditor
         {
             var data = JsonUtility.ToJson(favoriteData, false);
             EditorPrefs.SetString(FAVORITE_KEY, data);
+            EditorPrefs.SetInt(CATEGORIES_KEY, categoryMask);
+            EditorPrefs.SetInt(CATEGORIES_LAYOUT_KEY, categoryAsButtons ? 1 : 0);
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         }
 
@@ -96,12 +105,18 @@ namespace Pancake.ScriptableEditor
 
         private void LoadAssets()
         {
-            _icons = new Texture[5];
+            _icons = new Texture[11];
             _icons[0] = EditorResources.StarEmpty;
             _icons[1] = EditorResources.ScriptableVariable;
             _icons[2] = EditorResources.ScriptableEvent;
             _icons[3] = EditorResources.ScriptableList;
             _icons[4] = EditorResources.StarFull;
+            _icons[5] = EditorResources.IconPing;
+            _icons[6] = EditorResources.IconEdit;
+            _icons[7] = EditorResources.IconDuplicate;
+            _icons[8] = EditorResources.IconDelete;
+            _icons[9] = EditorResources.IconCategoryLayout;
+            _icons[10] = EditorGUIUtility.IconContent("Folder Icon").image;
         }
 
         private void LoadSavedData()
@@ -110,6 +125,8 @@ namespace Pancake.ScriptableEditor
             favoriteData = new FavoriteData();
             string favoriteDataJson = JsonUtility.ToJson(this.favoriteData, false);
             string data = EditorPrefs.GetString(FAVORITE_KEY, favoriteDataJson);
+            categoryMask = EditorPrefs.GetInt(CATEGORIES_KEY, 1);
+            categoryAsButtons = EditorPrefs.GetInt(CATEGORIES_LAYOUT_KEY, 0) != 0;
             JsonUtility.FromJsonOverwrite(data, this.favoriteData);
         }
 
@@ -118,19 +135,112 @@ namespace Pancake.ScriptableEditor
             base.OnGUI();
             DrawFolder();
             GUILayout.Space(2);
-            Uniform.DrawLine(2);
+            Uniform.DrawLine();
             GUILayout.Space(2);
-            DrawTabs();
+            if (categoryAsButtons)
+            {
+                DrawCategoryAsButtons();
+                GUILayout.Space(2);
+                Uniform.DrawLine();
+            }
+
             EditorGUILayout.BeginHorizontal();
             DrawLeftPanel();
             DrawRightPanel();
             EditorGUILayout.EndHorizontal();
         }
 
+        /// <summary>
+        /// Draw category header
+        /// </summary>
+        private void DrawCategoryHeader()
+        {
+            GUILayout.Space(2);
+            var buttonStyle = new GUIStyle(GUI.skin.button) {margin = new RectOffset(2, 2, 0, 0), padding = new RectOffset(4, 4, 4, 4)};
+            var buttonContent = new GUIContent(_icons[9], "Switch Categories Layout");
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxWidth(25), GUILayout.MaxHeight(20))) categoryAsButtons = !categoryAsButtons;
+
+            buttonContent = new GUIContent(_icons[6], "Edit Categories");
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxWidth(25), GUILayout.MaxHeight(20)))
+                PopupWindow.Show(new Rect(), new CategoryPopUpWindow(position));
+            EditorGUILayout.LabelField("Categories", GUILayout.MaxWidth(70));
+        }
+
+        /// <summary>
+        /// Draw toggle filter scriptabled enabled saved
+        /// </summary>
+        private void DrawToggleSavedScriptable()
+        {
+            GUILayout.Space(2);
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent("Scriptable Saved"), GUILayout.MaxWidth(100));
+            toggleSavedEnabled = EditorGUILayout.Toggle("", toggleSavedEnabled, GUILayout.MaxHeight(18));
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawCategoryAsLayerMask()
+        {
+            var height = 20f;
+            var width = TAB_WIDTH * 5 + 5f;
+            EditorGUILayout.BeginHorizontal(GUILayout.MaxHeight(height), GUILayout.MaxWidth(width));
+            DrawCategoryHeader();
+            var categories = ScriptableEditorSetting.Categories.ToArray();
+            categoryMask = EditorGUILayout.MaskField(categoryMask, categories);
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawCategoryAsButtons()
+        {
+            const float height = 20f;
+            var categories = ScriptableEditorSetting.Categories;
+            EditorGUILayout.BeginHorizontal(GUILayout.MaxHeight(height));
+            DrawCategoryHeader();
+            var buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.margin = new RectOffset(2, 2, 0, 0);
+            if (GUILayout.Button("Nothing", buttonStyle, GUILayout.Width(74), GUILayout.Height(height)))
+            {
+                categoryMask = 0;
+            }
+
+            if (GUILayout.Button("Everything", buttonStyle, GUILayout.Width(74f), GUILayout.Height(height)))
+            {
+                categoryMask = (1 << categories.Count) - 1;
+            }
+
+            GUILayout.Space(5f);
+            _categoryScrollPosition = EditorGUILayout.BeginScrollView(_categoryScrollPosition);
+            EditorGUILayout.BeginHorizontal(GUILayout.MaxHeight(height));
+
+            buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
+            buttonStyle.margin = new RectOffset(2, 2, 0, 0);
+            buttonStyle.normal.textColor = Color.white;
+            buttonStyle.onHover.textColor = Color.white;
+            for (int i = 0; i < categories.Count; i++)
+            {
+                var originalColor = GUI.backgroundColor;
+                var isSelected = (categoryMask & (1 << i)) != 0;
+                GUI.backgroundColor = isSelected ? Uniform.RichBlack.Lighten(.5f) : Color.gray;
+                if (GUILayout.Button(categories[i], buttonStyle, GUILayout.Height(height)))
+                {
+                    categoryMask ^= 1 << i; //toggle the bit
+                }
+
+                GUI.backgroundColor = originalColor;
+            }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndScrollView();
+            GUILayout.Space(2);
+            EditorGUILayout.EndHorizontal();
+        }
+
         private void DrawFolder()
         {
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Change Folder", GUILayout.MaxWidth(150)))
+            var buttonContent = new GUIContent(_icons[10], "Change Selected Folder");
+            var buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.margin = new RectOffset(2, 2, 0, 0);
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.Height(20f), GUILayout.MaxWidth(40)))
             {
                 var path = EditorUtility.OpenFolderPanel("Select folder to set path.", currentFolderPath, "");
 
@@ -154,74 +264,83 @@ namespace Pancake.ScriptableEditor
         private void DrawTabs()
         {
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
-            var width = _tabWidth * 5 + 4f; //offset to match
+            GUILayout.Space(2);
+            var width = TAB_WIDTH * 5 + 2f; //offset to match
 
             var style = new GUIStyle(EditorStyles.toolbarButton);
-            tabIndex = GUILayout.Toolbar(tabIndex, Enum.GetNames(typeof(ScriptableType)), style, GUILayout.MaxWidth(width));
+            typeTabIndex = GUILayout.Toolbar(typeTabIndex, Enum.GetNames(typeof(ScriptableType)), style, GUILayout.MaxWidth(width));
 
-            if (tabIndex != (int) _currentType)
-                OnTabSelected((ScriptableType) tabIndex, true);
+            if (typeTabIndex != (int) _currentType) OnTabSelected((ScriptableType) typeTabIndex, true);
 
             EditorGUILayout.EndHorizontal();
         }
 
         private void DrawSearchBar()
         {
-            var width = _tabWidth * 5 + 1f;
-            EditorGUILayout.BeginHorizontal(GUILayout.Width(width));
-            _searchText = EditorGUILayout.TextField(_searchText, EditorStyles.textField, GUILayout.MaxWidth(width));
+            var width = TAB_WIDTH * 5 + 4f;
+            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.Width(width));
+            _searchText = EditorGUILayout.TextField(_searchText, EditorStyles.toolbarSearchField);
 
-            //Draw placeholder Text
-            if (string.IsNullOrEmpty(_searchText))
-            {
-                var guiColor = GUI.color;
-                GUI.color = Color.grey;
-                var rect = GUILayoutUtility.GetLastRect();
-                rect.x += 3f; //little offset due to the search bar hiding the first letter ^^.
-                EditorGUI.LabelField(rect, "Search:");
-                GUI.color = guiColor;
-            }
-
-            //Clear Button
-            GUI.SetNextControlName("clearButton");
-            if (GUILayout.Button("Clear"))
+            if (GUILayout.Button("", GUI.skin.FindStyle("SearchCancelButton")))
             {
                 _searchText = "";
-                //focus the button to defocus the TextField and so clear the text inside!
-                GUI.FocusControl("clearButton");
+                GUI.FocusControl(null);
             }
 
-            EditorGUILayout.EndHorizontal();
+            GUILayout.EndHorizontal();
         }
 
         private void DrawLeftPanel()
         {
             EditorGUILayout.BeginVertical();
+            if (!categoryAsButtons)
+            {
+                DrawCategoryAsLayerMask();
+                GUILayout.Space(2);
+                Uniform.DrawLine();
+            }
+
+            DrawTabs();
+            if (typeTabIndex == 1) // tab variable
+            {
+                // draw toggle to filter scriptable has saved enabled
+                DrawToggleSavedScriptable();
+            }
+
             DrawSearchBar();
-            float width = _tabWidth * 5f;
+            const float width = TAB_WIDTH * 5f;
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
             EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(width), GUILayout.ExpandHeight(true));
-            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             GUI.backgroundColor = color;
-            DrawScriptableBases(_scriptableObjects, width);
+            DrawScriptableBases(_scriptableObjects, typeTabIndex, width);
             EditorGUILayout.EndScrollView();
 
-            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(_buttonHeight))) PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
+            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawScriptableBases(List<ScriptableBase> scriptables, float maxWidth)
+        private void DrawScriptableBases(List<ScriptableBase> scriptables, int tapIndex, float maxWidth)
         {
             if (scriptables is null) return;
 
-            var count = scriptables.Count;
-            for (var i = count - 1; i >= 0; i--)
+            int count = scriptables.Count;
+            for (int i = count - 1; i >= 0; i--)
             {
                 var scriptable = scriptables[i];
                 if (scriptable == null) continue;
+
+                //filter category
+                if ((categoryMask & (1 << scriptable.categoryIndex)) == 0) continue;
+
+                // filter saved if it variable
+                if (tapIndex == 1)
+                {
+                    if (scriptable is ISave {Saved: false}) continue;
+                }
 
                 //filter search
                 if (scriptable.name.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) < 0) continue;
@@ -236,7 +355,7 @@ namespace Pancake.ScriptableEditor
                 bool clicked = GUILayout.Toggle(selectedScriptableIndex == i,
                     scriptable.name,
                     new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft},
-                    GUILayout.MaxWidth(maxWidth - _tabWidth - 8),
+                    GUILayout.MaxWidth(maxWidth - TAB_WIDTH - 8),
                     GUILayout.ExpandWidth(true));
                 DrawFavorite(scriptable);
                 EditorGUILayout.EndHorizontal();
@@ -263,9 +382,10 @@ namespace Pancake.ScriptableEditor
         {
             if (scriptableBase == null) return;
 
-            EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
-
+            EditorGUILayout.BeginVertical(GUI.skin.box);
             _itemScrollPosition = EditorGUILayout.BeginScrollView(_itemScrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
+
+            DrawUtilityButtons();
 
             //Draw Selected Scriptable
             if (_editor == null || scriptableBase != previousScriptableBase)
@@ -279,42 +399,47 @@ namespace Pancake.ScriptableEditor
             _editor.DrawHeader();
             _editor.OnInspectorGUI();
             Uniform.DrawLine();
-            GUILayout.FlexibleSpace();
-            DrawSelectedButtons();
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawSelectedButtons()
+        private void DrawUtilityButtons()
         {
-            if (GUILayout.Button("Select in Project", GUILayout.MaxHeight(_buttonHeight)))
+            EditorGUILayout.BeginHorizontal();
+            var buttonStyle = new GUIStyle(GUI.skin.button) {padding = new RectOffset(8, 8, 8, 8)};
+            var buttonContent = new GUIContent(_icons[5], "Select in Project");
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
             {
                 Selection.activeObject = scriptableBase;
                 EditorGUIUtility.PingObject(scriptableBase);
             }
 
-            if (GUILayout.Button("Rename", GUILayout.MaxHeight(_buttonHeight)))
+            buttonContent = new GUIContent(_icons[6], "Rename");
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
                 PopupWindow.Show(new Rect(), new RenamePopUpWindow(position, scriptableBase));
 
-            if (GUILayout.Button("Create Copy", GUILayout.MaxHeight(_buttonHeight)))
+            buttonContent = new GUIContent(_icons[7], "Create Copy");
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
             {
                 EditorCreator.CreateCopyAsset(scriptableBase);
                 Refresh(_currentType);
             }
 
-            var deleteButtonStyle = new GUIStyle(GUI.skin.button);
-            deleteButtonStyle.normal.textColor = Color.red;
-            deleteButtonStyle.hover.textColor = Color.red;
-            deleteButtonStyle.active.textColor = Color.red;
-            if (GUILayout.Button("Delete", deleteButtonStyle, GUILayout.MaxHeight(_buttonHeight)))
+            buttonContent = new GUIContent(_icons[8], "Delete");
+            Color originalColor = GUI.backgroundColor;
+            GUI.backgroundColor = Color.red.Lighten(.75f);
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
             {
-                bool isDeleted = EditorDialog.DeleteObjectWithConfirmation(scriptableBase);
+                var isDeleted = EditorDialog.DeleteObjectWithConfirmation(scriptableBase);
                 if (isDeleted)
                 {
                     scriptableBase = null;
                     OnTabSelected(_currentType, true);
                 }
             }
+
+            GUI.backgroundColor = originalColor;
+            EditorGUILayout.EndHorizontal();
         }
 
         private void OnTabSelected(ScriptableType type, bool deselectCurrent = false)
@@ -355,8 +480,8 @@ namespace Pancake.ScriptableEditor
 
         private void SelectTab(int index, bool deselect = false)
         {
-            tabIndex = index;
-            OnTabSelected((ScriptableType) tabIndex, deselect);
+            typeTabIndex = index;
+            OnTabSelected((ScriptableType) typeTabIndex, deselect);
         }
 
         private Texture GetIconFor(ScriptableBase scriptableBase)

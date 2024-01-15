@@ -11,9 +11,8 @@ namespace Pancake.ScriptableEditor
         private string _newName = "";
         private readonly Rect _position;
         private readonly Vector2 _dimensions = new Vector2(300, 170);
-        private readonly ScriptableBase _scriptableBase = null;
+        private readonly ScriptableBase _scriptableBase;
         private readonly float _buttonHeight = 40f;
-        private readonly GUIStyle _bgStyle;
 
         public override Vector2 GetWindowSize() => _dimensions;
 
@@ -22,8 +21,6 @@ namespace Pancake.ScriptableEditor
             _position = origin;
             _scriptableBase = scriptableBase;
             _newName = _scriptableBase.name;
-            _bgStyle = new GUIStyle(GUIStyle.none);
-            _bgStyle.normal.background = EditorCreator.CreateTexture(Uniform.FieryRose);
         }
 
         public override void OnGUI(Rect rect)
@@ -42,8 +39,7 @@ namespace Pancake.ScriptableEditor
                 editorWindow.Close();
             }
 
-            if (GUILayout.Button("Cancel", GUILayout.MaxHeight(_buttonHeight)))
-                editorWindow.Close();
+            if (GUILayout.Button("Cancel", GUILayout.MaxHeight(_buttonHeight))) editorWindow.Close();
         }
     }
 }

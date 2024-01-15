@@ -46,7 +46,12 @@ namespace Pancake.ExLibEditor
         public static Texture2D TreeMapLine => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_line.png", RELATIVE_PATH);
         public static Texture2D IconTrim => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_trim.png", RELATIVE_PATH);
         public static Texture2D IconWarning => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_warning.png", RELATIVE_PATH);
-        
+        public static Texture2D IconCategoryLayout => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_category_layout.png", RELATIVE_PATH);
+        public static Texture2D IconDelete => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_delete.png", RELATIVE_PATH);
+        public static Texture2D IconDuplicate => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_duplicate.png", RELATIVE_PATH);
+        public static Texture2D IconEdit => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_edit.png", RELATIVE_PATH);
+        public static Texture2D IconPing => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_ping.png", RELATIVE_PATH);
+
         public static Texture2D ReorderableArrayEntryActive(string theme) =>
             ProjectDatabase.FindAssetWithPath<Texture2D>("EntryActiveTexture.png", $"{RELATIVE_REORDERABLE_ARRAY_PATH}/{theme}");
 
