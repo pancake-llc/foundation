@@ -13,6 +13,8 @@ namespace PancakeEditor
 {
     public class Wizard : ScriptableWindowBase
     {
+        internal const float BUTTON_HEIGHT = 30f;
+        
         private enum WizardType
         {
             All,

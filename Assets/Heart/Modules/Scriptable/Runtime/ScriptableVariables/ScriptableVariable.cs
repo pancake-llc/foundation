@@ -41,8 +41,6 @@ namespace Pancake.Scriptable
         /// <summary> This caches the value when play mode starts. </summary>
         private T _initialValue;
 
-        private bool _saved;
-
         /// <summary>
         /// Event raised when the variable value changes.
         /// </summary>
@@ -208,7 +206,7 @@ namespace Pancake.Scriptable
             if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
         }
 
-        bool ISave.Saved => _saved;
+        bool ISave.Saved => saved;
 
         public override string ToString()
         {

@@ -16,7 +16,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Missing Heart Setting", GUILayout.Height(30f)))
+                if (GUILayout.Button("Create Missing Heart Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     if (heartSetting == null)
                     {

@@ -19,8 +19,8 @@ namespace Pancake.ScriptableEditor
         private Vector2 _itemScrollPosition = Vector2.zero;
         private List<ScriptableBase> _scriptableObjects;
         private ScriptableType _currentType = ScriptableType.All;
+        private FilterVariable _filterVariable = FilterVariable.All;
         private const float TAB_WIDTH = 55f;
-        private const float BUTTON_HEIGHT = 40f;
         private Texture[] _icons;
         private readonly Color[] _colors = {Uniform.RichBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
         private string _searchText = "";
@@ -35,8 +35,6 @@ namespace Pancake.ScriptableEditor
         [SerializeField] private ScriptableBase previousScriptableBase;
         [SerializeField] private FavoriteData favoriteData;
         [SerializeField] private bool categoryAsButtons;
-        [SerializeField] private bool toggleSavedEnabled;
-
         private List<ScriptableBase> Favorites => favoriteData.favorites;
         private const string PATH_KEY = "scriptable_wizard_path";
         private const string FAVORITE_KEY = "scriptable_wizard_favorites";
@@ -57,6 +55,13 @@ namespace Pancake.ScriptableEditor
             Event,
             List,
             Favorite
+        }
+
+        private enum FilterVariable
+        {
+            All,
+            Saved,
+            NotSaved
         }
 
         public new static ScriptableWizardWindow Show() => GetWindow<ScriptableWizardWindow>("Scriptable Wizard");
@@ -169,12 +174,13 @@ namespace Pancake.ScriptableEditor
         /// <summary>
         /// Draw toggle filter scriptabled enabled saved
         /// </summary>
-        private void DrawToggleSavedScriptable()
+        private void DrawFilterSavedVariable()
         {
             GUILayout.Space(2);
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(new GUIContent("Scriptable Saved"), GUILayout.MaxWidth(100));
-            toggleSavedEnabled = EditorGUILayout.Toggle("", toggleSavedEnabled, GUILayout.MaxHeight(18));
+            GUILayout.Label(new GUIContent("Filter"), GUILayout.MaxWidth(30));
+            if (typeTabIndex != (int) _currentType) OnTabSelected((ScriptableType) typeTabIndex, true);
+            _filterVariable = (FilterVariable) EditorGUILayout.EnumPopup("", _filterVariable, GUILayout.MaxWidth(80));
             EditorGUILayout.EndHorizontal();
         }
 
@@ -304,7 +310,7 @@ namespace Pancake.ScriptableEditor
             if (typeTabIndex == 1) // tab variable
             {
                 // draw toggle to filter scriptable has saved enabled
-                DrawToggleSavedScriptable();
+                DrawFilterSavedVariable();
             }
 
             DrawSearchBar();
@@ -317,7 +323,7 @@ namespace Pancake.ScriptableEditor
             DrawScriptableBases(_scriptableObjects, typeTabIndex, width);
             EditorGUILayout.EndScrollView();
 
-            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
+            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
@@ -339,7 +345,14 @@ namespace Pancake.ScriptableEditor
                 // filter saved if it variable
                 if (tapIndex == 1)
                 {
-                    if (scriptable is ISave {Saved: false}) continue;
+                    if (_filterVariable == FilterVariable.Saved)
+                    {
+                        if (scriptable is ISave {Saved: false}) continue;
+                    }
+                    else if (_filterVariable == FilterVariable.NotSaved)
+                    {
+                        if (scriptable is ISave {Saved: true}) continue;
+                    }
                 }
 
                 //filter search
@@ -408,18 +421,18 @@ namespace Pancake.ScriptableEditor
             EditorGUILayout.BeginHorizontal();
             var buttonStyle = new GUIStyle(GUI.skin.button) {padding = new RectOffset(8, 8, 8, 8)};
             var buttonContent = new GUIContent(_icons[5], "Select in Project");
-            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
             {
                 Selection.activeObject = scriptableBase;
                 EditorGUIUtility.PingObject(scriptableBase);
             }
 
             buttonContent = new GUIContent(_icons[6], "Rename");
-            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
                 PopupWindow.Show(new Rect(), new RenamePopUpWindow(position, scriptableBase));
 
             buttonContent = new GUIContent(_icons[7], "Create Copy");
-            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
             {
                 EditorCreator.CreateCopyAsset(scriptableBase);
                 Refresh(_currentType);
@@ -428,7 +441,7 @@ namespace Pancake.ScriptableEditor
             buttonContent = new GUIContent(_icons[8], "Delete");
             Color originalColor = GUI.backgroundColor;
             GUI.backgroundColor = Color.red.Lighten(.75f);
-            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(BUTTON_HEIGHT)))
+            if (GUILayout.Button(buttonContent, buttonStyle, GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
             {
                 var isDeleted = EditorDialog.DeleteObjectWithConfirmation(scriptableBase);
                 if (isDeleted)

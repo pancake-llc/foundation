@@ -6,6 +6,7 @@ namespace PancakeEditor
 {
     public static partial class Editor
     {
+        public const float BUTTON_HEIGHT = 30f;
         internal const string DEFAULT_RESOURCE_PATH = "Assets/_Root/Resources";
         internal const string DEFAULT_EDITOR_RESOURCE_PATH = "Assets/_Root/Editor/Resources";
         

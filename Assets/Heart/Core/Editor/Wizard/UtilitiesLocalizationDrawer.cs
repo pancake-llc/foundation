@@ -78,7 +78,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create Localization Settings", GUILayout.Height(30f)))
+                if (GUILayout.Button("Create Localization Settings", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     setting = ScriptableObject.CreateInstance<LocaleSettings>();
                     if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
@@ -102,10 +102,10 @@ namespace PancakeEditor
 
                 EditorGUILayout.BeginHorizontal();
                 GUI.backgroundColor = Uniform.Green;
-                if (GUILayout.Button("Ping", GUILayout.Height(30f))) setting.SelectAndPing();
+                if (GUILayout.Button("Ping", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) setting.SelectAndPing();
 
                 GUI.backgroundColor = Uniform.Red;
-                if (GUILayout.Button("Delete Locale Setting", GUILayout.Height(30f)))
+                if (GUILayout.Button("Delete Locale Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     bool confirmDelete = EditorUtility.DisplayDialog("Delete Locale Setting", "Are you sure you want to delete locale setting?", "Yes", "No");
                     if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(setting));
@@ -118,7 +118,7 @@ namespace PancakeEditor
 
             GUILayout.Space(4);
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Remove All Locale Component", GUILayout.Height(30f)))
+            if (GUILayout.Button("Remove All Locale Component", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirm = EditorUtility.DisplayDialog("Remove All Locale Component",
                     "Are you sure you want to remove all locale component in project (in all prefab and all scene)?" +

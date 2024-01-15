@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: ScriptableEditorSetting
   m_EditorClassIdentifier: 
   drawMode: 0
+  categories:
+  - Default

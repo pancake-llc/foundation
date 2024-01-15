@@ -14,13 +14,11 @@ namespace Pancake.ScriptableEditor
 
         private readonly Vector2 _dimensions = new Vector2(350, 350);
 
-        // readonly GUIStyle _bgStyle;
         private readonly GUIStyle _buttonIconStyle;
-        private readonly float _buttonHeight = 40f;
         private readonly float _lineHeight = 20f;
         private readonly List<ScriptableBase> _scriptableBases;
         private Vector2 _scrollPosition = Vector2.zero;
-        private Texture[] _icons;
+        private readonly Texture[] _icons;
         private bool _isAddingNewCategory;
         private int _categoryBeingRenamed = -1;
         private int _categoryBeingDeleted = -1;
@@ -52,21 +50,16 @@ namespace Pancake.ScriptableEditor
             EditorGUILayout.BeginVertical();
 
             //Draw the default category
-            var labelStyle = new GUIStyle(GUI.skin.box);
-            labelStyle.alignment = TextAnchor.MiddleLeft;
-            labelStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+            var labelStyle = new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleLeft, normal = {textColor = new Color(0.7f, 0.7f, 0.7f, 1f)}};
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             EditorGUILayout.LabelField("Default", labelStyle, GUILayout.ExpandWidth(true));
 
             //Draw the rest of the categories
             for (int i = 1; i < ScriptableEditorSetting.Categories.Count; i++)
             {
-                if (i == _categoryBeingRenamed)
-                    DrawCategoryBeingRenamed(i);
-                else if (i == _categoryBeingDeleted)
-                    DrawCategoryBeingDeleted(i);
-                else
-                    DrawDefaultCategoryEntry(i);
+                if (i == _categoryBeingRenamed) DrawCategoryBeingRenamed(i);
+                else if (i == _categoryBeingDeleted) DrawCategoryBeingDeleted(i);
+                else DrawDefaultCategoryEntry(i);
             }
 
             EditorGUILayout.EndScrollView();
@@ -90,10 +83,7 @@ namespace Pancake.ScriptableEditor
                 }
             }
 
-            if (GUILayout.Button("Close", GUILayout.MaxHeight(_buttonHeight)))
-            {
-                editorWindow.Close();
-            }
+            if (GUILayout.Button("Close", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT))) editorWindow.Close();
 
             void DrawNewCategoryBeingAdded()
             {
@@ -113,7 +103,7 @@ namespace Pancake.ScriptableEditor
             void DrawAddNewCategoryButton()
             {
                 GUI.enabled = IsAllowedToCreateNewCategory;
-                if (GUILayout.Button("Add New Category", GUILayout.MaxHeight(_buttonHeight)))
+                if (GUILayout.Button("Add New Category", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
                 {
                     _categoryName = "";
                     _isAddingNewCategory = true;

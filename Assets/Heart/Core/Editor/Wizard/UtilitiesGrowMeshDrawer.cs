@@ -16,7 +16,7 @@ namespace PancakeEditor
             target = EditorGUILayout.ObjectField("Target", target, typeof(GameObject), true) as GameObject;
             level = EditorGUILayout.IntSlider("Level", level, 1, 3);
 
-            if (GUILayout.Button("Grow", GUILayout.Height(30f)))
+            if (GUILayout.Button("Grow", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 try
                 {

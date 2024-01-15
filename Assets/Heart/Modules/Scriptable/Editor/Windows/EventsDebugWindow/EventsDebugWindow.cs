@@ -12,8 +12,8 @@ namespace Pancake.ScriptableEditor
         protected override string HeaderTitle => "Event Debug Window";
 
         private string _methodName = string.Empty;
-        private bool _hasClicked = false;
-        private bool _wasFound = false;
+        private bool _hasClicked;
+        private bool _wasFound;
 
         private new static void Show() => GetWindow<EventsDebugWindow>("Events Debug Window");
 
@@ -30,18 +30,16 @@ namespace Pancake.ScriptableEditor
 
             EditorGUI.BeginChangeCheck();
             _methodName = EditorGUILayout.TextField("Method Name", _methodName, EditorStyles.textField);
-            if (EditorGUI.EndChangeCheck())
-                _hasClicked = false;
+            if (EditorGUI.EndChangeCheck()) _hasClicked = false;
 
-            if (GUILayout.Button("Find", GUILayout.MaxHeight(40)))
+            if (GUILayout.Button("Find", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
             {
                 _hasClicked = true;
                 var invocationCount = FindMethodInvocationCount(_methodName);
                 _wasFound = invocationCount > 0;
             }
 
-            if (!_hasClicked)
-                return;
+            if (!_hasClicked) return;
 
             DrawFeedbackText();
         }
@@ -54,8 +52,7 @@ namespace Pancake.ScriptableEditor
             guiStyle.fontStyle = FontStyle.Bold;
             feedbackText += _wasFound ? " was found!" : " was not found!";
             EditorGUILayout.LabelField(feedbackText, guiStyle);
-            if (_wasFound)
-                EditorGUILayout.LabelField("Check the console for more details.", guiStyle);
+            if (_wasFound) EditorGUILayout.LabelField("Check the console for more details.", guiStyle);
         }
 
         private int FindMethodInvocationCount(string methodName)
@@ -64,8 +61,7 @@ namespace Pancake.ScriptableEditor
             var count = 0;
             foreach (var listener in eventListeners)
             {
-                if (listener.ContainsCallToMethod(methodName))
-                    count++;
+                if (listener.ContainsCallToMethod(methodName)) count++;
             }
 
             return count;
@@ -77,8 +73,7 @@ namespace Pancake.ScriptableEditor
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 var s = SceneManager.GetSceneAt(i);
-                if (!s.isLoaded)
-                    continue;
+                if (!s.isLoaded) continue;
 
                 var allGameObjects = s.GetRootGameObjects();
                 for (int j = 0; j < allGameObjects.Length; j++)

@@ -15,15 +15,10 @@ namespace PancakeEditor
         private bool _invalidTypeName;
         private string _path;
         private readonly Vector2 _dimensions = new Vector2(300, 300);
-        private readonly GUIStyle _bgStyle;
 
         public override Vector2 GetWindowSize() => _dimensions;
 
-        public CreateTypeScreenWindow(Rect origin)
-        {
-            _position = origin;
-            _bgStyle = new GUIStyle(GUIStyle.none) {normal = {background = EditorCreator.CreateTexture(Uniform.FieryRose)}};
-        }
+        public CreateTypeScreenWindow(Rect origin) { _position = origin; }
 
         public override void OnGUI(Rect rect)
         {
