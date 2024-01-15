@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+#if PANCAKE_IAP
+using System.Reflection;
 using Pancake.Apex;
 using Pancake.ExLibEditor;
 using Pancake.IAP;
@@ -55,3 +56,5 @@ namespace Pancake.IAPEditor
         }
     }
 }
+
+#endif
