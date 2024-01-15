@@ -20,7 +20,7 @@ namespace Pancake.ScriptableEditor
         private readonly float _tabWidth = 55f;
         private readonly float _buttonHeight = 40f;
         private Texture[] _icons;
-        private readonly Color[] _colors = {Color.gray, Color.cyan, Color.green, Color.yellow, Color.gray};
+        private readonly Color[] _colors = {Uniform.RichBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
         private string _searchText = "";
         private UnityEditor.Editor _editor;
 
@@ -197,17 +197,13 @@ namespace Pancake.ScriptableEditor
         {
             EditorGUILayout.BeginVertical();
             DrawSearchBar();
-            var width = _tabWidth * 5f;
-
+            float width = _tabWidth * 5f;
             var color = GUI.backgroundColor;
             GUI.backgroundColor = _colors[(int) _currentType];
             EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(width), GUILayout.ExpandHeight(true));
-
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
             GUI.backgroundColor = color;
-
             DrawScriptableBases(_scriptableObjects, width);
-
             EditorGUILayout.EndScrollView();
 
             if (GUILayout.Button("Create Type", GUILayout.MaxHeight(_buttonHeight))) PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
@@ -216,7 +212,7 @@ namespace Pancake.ScriptableEditor
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawScriptableBases(List<ScriptableBase> scriptables, float width)
+        private void DrawScriptableBases(List<ScriptableBase> scriptables, float maxWidth)
         {
             if (scriptables is null) return;
 
@@ -236,13 +232,11 @@ namespace Pancake.ScriptableEditor
                 var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 5)};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
 
-                string displayName = scriptable.name;
-                if (displayName.Length > 30)
-                {
-                    displayName = displayName[..30];
-                    displayName = displayName.Insert(displayName.Length, "...");
-                }
-                var clicked = GUILayout.Toggle(selectedScriptableIndex == i, displayName, Uniform.FoldoutButton, GUILayout.Width(width - _tabWidth - 8));
+                bool clicked = GUILayout.Toggle(selectedScriptableIndex == i,
+                    scriptable.name,
+                    new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft},
+                    GUILayout.MaxWidth(maxWidth - _tabWidth - 8),
+                    GUILayout.ExpandWidth(true));
                 DrawFavorite(scriptable);
                 EditorGUILayout.EndHorizontal();
                 if (clicked)
