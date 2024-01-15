@@ -22,8 +22,7 @@ namespace Pancake.ScriptableEditor
                 var t = editor.targets[0];
                 if (!t.GetType().IsSubclassOf(typeof(ScriptableBase))) return;
 
-                var scriptableSetting = Resources.Load<ScriptableEditorSetting>(nameof(ScriptableEditorSetting));
-                if (scriptableSetting == null) return;
+                if (!ScriptableEditorSetting.IsExist()) return;
 
                 EditorGUILayout.BeginHorizontal();
                 var scriptableBase = t as ScriptableBase;

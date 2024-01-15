@@ -62,8 +62,7 @@ namespace PancakeEditor.Hierarchy
             var gameObject = EditorUtility.InstanceIDToObject(instanceId) as GameObject;
             if (gameObject == null) return;
 
-            var hierarchySetting = Resources.Load<HierarchyEditorSetting>(nameof(HierarchyEditorSetting));
-            if (hierarchySetting != null)
+            if (HierarchyEditorSetting.IsExist())
             {
                 hierarchy ??= new Hierarchy();
                 hierarchy.OnHierarchyWindowItemOnGUI(gameObject, instanceId, selectionRect);

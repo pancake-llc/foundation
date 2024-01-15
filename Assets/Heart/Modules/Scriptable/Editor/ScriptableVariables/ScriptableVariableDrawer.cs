@@ -23,8 +23,15 @@ namespace Pancake.ScriptableEditor
             var genericType = _scriptableVariable.GetGenericType;
             if (!EditorExtend.IsSerializable(genericType)) EditorExtend.DrawSerializationError(genericType);
 
-            if (ScriptableEditorSetting.DrawMode == EVariableDrawMode.Minimal) DrawMinimal();
-            else DrawDefault();
+            if (ScriptableEditorSetting.IsExist())
+            {
+                if (ScriptableEditorSetting.DrawMode == EVariableDrawMode.Minimal) DrawMinimal();
+                else DrawDefault();
+            }
+            else
+            {
+                DrawDefault();
+            }
 
             if (serializedObject.ApplyModifiedProperties()) EditorUtility.SetDirty(target);
 
