@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Pancake.ExLibEditor;
+using Pancake.IAP;
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace Pancake.IAPEditor
 {
-    [CustomEditor(typeof(ScriptableEventNoParam))]
-    public class ScriptableEventNoParamDrawer : UnityEditor.Editor
+    [CustomEditor(typeof(ScriptableEventIAPNoParam))]
+    public class ScriptableEventIAPNoParamDrawer : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
@@ -16,7 +17,7 @@ namespace Pancake.ScriptableEditor
             GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Raise"))
             {
-                var eventNoParam = (ScriptableEventNoParam) target;
+                var eventNoParam = (ScriptableEventIAPNoParam) target;
                 eventNoParam.Raise();
             }
 
