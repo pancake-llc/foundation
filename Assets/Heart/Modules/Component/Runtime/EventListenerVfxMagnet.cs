@@ -14,13 +14,13 @@ namespace Pancake.Component
     public class EventListenerVfxMagnet : EventListenerBase
     {
         [System.Serializable]
-        public struct EventResponse
+        public class EventResponse
         {
-            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
-            public float delay;
-
             public ScriptableEventVfxMagnet vfxMagnetEvent;
             public UnityEvent response;
+
+            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
+            public float delay;
         }
 
         [SerializeField] private EventResponse[] eventResponses;

@@ -94,13 +94,13 @@ namespace Pancake.IAP
 
 
         [Serializable]
-        public struct EventResponse
+        public class EventResponse
         {
-            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
-            public float delay;
-
             public ScriptableEventIAPNoParam scriptableEvent;
             public UnityEvent response;
+
+            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
+            public float delay;
         }
     }
 }

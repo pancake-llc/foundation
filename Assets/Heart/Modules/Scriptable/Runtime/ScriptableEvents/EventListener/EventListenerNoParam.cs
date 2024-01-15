@@ -72,7 +72,7 @@ namespace Pancake.Scriptable
         }
 
         [System.Serializable]
-        public struct EventResponse
+        public class EventResponse
         {
             public ScriptableEventNoParam scriptableEvent;
             public UnityEvent response;
