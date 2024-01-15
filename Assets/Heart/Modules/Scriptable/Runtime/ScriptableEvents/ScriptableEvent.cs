@@ -10,14 +10,11 @@ namespace Pancake.Scriptable
     [Serializable]
     public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [Tooltip("Enable console logs when this event is raised.")] [SerializeField]
-        private bool debugLogEnabled = false;
-
         [Tooltip("Value used when raising the event in editor.")] [SerializeField]
         protected T debugValue = default(T);
 
-        private readonly List<EventListenerGeneric<T>> _eventListeners = new List<EventListenerGeneric<T>>();
-        private readonly List<Object> _listenersObjects = new List<Object>();
+        private readonly List<EventListenerGeneric<T>> _eventListeners = new();
+        private readonly List<Object> _listenersObjects = new();
         private Action<T> _onRaised = null;
 
         /// <summary>
@@ -60,15 +57,14 @@ namespace Pancake.Scriptable
 #if UNITY_EDITOR
             //As this uses reflection, I only allow it to be called in Editor.
             //If you want to display debug in builds, delete the #if UNITY_EDITOR
-            if (debugLogEnabled)
-                Debug();
+            if (debugLogEnabled) Debug();
 #endif
         }
 
         /// <summary>
         /// Registers the listener to this event.
         /// </summary>
-        public void RegisterListener(EventListenerGeneric<T> listener)
+        internal void RegisterListener(EventListenerGeneric<T> listener)
         {
             if (!_eventListeners.Contains(listener)) _eventListeners.Add(listener);
         }
@@ -76,7 +72,7 @@ namespace Pancake.Scriptable
         /// <summary>
         /// Unregisters the listener from this event.
         /// </summary>
-        public void UnregisterListener(EventListenerGeneric<T> listener)
+        internal void UnregisterListener(EventListenerGeneric<T> listener)
         {
             if (_eventListeners.Contains(listener)) _eventListeners.Remove(listener);
         }
@@ -93,8 +89,7 @@ namespace Pancake.Scriptable
 
         private void Debug()
         {
-            if (_onRaised == null)
-                return;
+            if (_onRaised == null) return;
             var delegates = _onRaised.GetInvocationList();
             foreach (var del in delegates)
             {

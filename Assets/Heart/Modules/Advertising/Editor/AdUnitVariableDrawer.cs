@@ -50,7 +50,7 @@ namespace Pancake.MonetizationEditor
                 property.objectReferenceValue = EditorCreator.CreateScriptableAt(fieldInfo.FieldType,
                     newName,
                     ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
-                    HeartEditorSettings.EditorNameCreationMode == ENameAssetCreationMode.Auto);
+                    HeartEditorSettings.EditorNameCreationMode == ECreationMode.Auto);
 #pragma warning restore CS0612
             }
 

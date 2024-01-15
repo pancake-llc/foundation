@@ -11,5 +11,6 @@ namespace Pancake.Scriptable
     {
         public virtual void Reset() { }
         public System.Action repaintRequest;
+        [HideInInspector] public int categoryIndex;
     }
 }

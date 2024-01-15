@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
   m_Name: outfit_hair_blue_variable
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 215389beae8ab0d4394b28024fdfbc48
+  guidCreateMode: 0
   value:
     id: ab5b505505ce41e
     isUnlocked: 1

@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Pancake.Scriptable
@@ -15,14 +19,55 @@ namespace Pancake.Scriptable
         {
             public virtual ScriptableEventFunc<TR> ScriptableEvent { get; }
             public virtual UnityEvent Response { get; }
-        }
-        protected virtual EventResponse<TResult>[] EventResponses { get; }
-        private readonly Dictionary<ScriptableEventFunc<TResult>, UnityEvent> _dictionary = new Dictionary<ScriptableEventFunc<TResult>, UnityEvent>();
 
-        public void OnEventRaised(ScriptableEventFunc<TResult> scriptableEvent, bool debug = false)
+            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
+            public float delay;
+        }
+
+        protected virtual EventResponse<TResult>[] EventResponses { get; }
+
+        private readonly Dictionary<ScriptableEventFunc<TResult>, EventResponse<TResult>> _dictionary = new();
+
+        public void OnEventRaised(ScriptableEventFunc<TResult> @event, bool debug = false)
         {
-            _dictionary[scriptableEvent]?.Invoke();
-            if (debug) Debug(scriptableEvent);
+            var eventResponse = _dictionary[@event];
+            if (eventResponse.delay > 0)
+            {
+                if (gameObject.activeInHierarchy) StartCoroutine(Cr_DelayInvokeResponse(@event, eventResponse, debug));
+                else DelayInvokeResponseAsync(@event, eventResponse, debug, cancellationTokenSource.Token);
+            }
+            else
+            {
+                InvokeResponse(@event, eventResponse, debug);
+            }
+        }
+
+        private IEnumerator Cr_DelayInvokeResponse(ScriptableEventFunc<TResult> @event, EventResponse<TResult> eventResponse, bool debug)
+        {
+            yield return new WaitForSeconds(eventResponse.delay);
+            InvokeResponse(@event, eventResponse, debug);
+        }
+
+        private async void DelayInvokeResponseAsync(
+            ScriptableEventFunc<TResult> @event,
+            EventResponse<TResult> eventResponse,
+            bool debug,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Task.Delay((int) (eventResponse.delay * 1000), cancellationToken);
+                InvokeResponse(@event, eventResponse, debug);
+            }
+            catch (TaskCanceledException)
+            {
+            }
+        }
+
+        private void InvokeResponse(ScriptableEventFunc<TResult> @event, EventResponse<TResult> eventResponse, bool debug)
+        {
+            eventResponse.Response?.Invoke();
+            if (debug) Debug(@event);
         }
 
         protected override void ToggleRegistration(bool toggle)
@@ -32,7 +77,7 @@ namespace Pancake.Scriptable
                 if (toggle)
                 {
                     response.ScriptableEvent.RegisterListener(this);
-                    _dictionary.TryAdd(response.ScriptableEvent, response.Response);
+                    _dictionary.TryAdd(response.ScriptableEvent, response);
                 }
                 else
                 {
@@ -67,11 +112,11 @@ namespace Pancake.Scriptable
 
             return containsMethod;
         }
-        
+
         private void Debug(ScriptableEventFunc<TResult> eventRaised)
         {
-            var listener = _dictionary[eventRaised];
-            var registeredListenerCount = listener.GetPersistentEventCount();
+            var response = _dictionary[eventRaised].Response;
+            var registeredListenerCount = response.GetPersistentEventCount();
 
             for (var i = 0; i < registeredListenerCount; i++)
             {
@@ -79,9 +124,9 @@ namespace Pancake.Scriptable
                 sb.Append("<color=#f75369>[Event] </color>");
                 sb.Append(eventRaised.name);
                 sb.Append(" => ");
-                sb.Append(listener.GetPersistentTarget(i).name);
+                sb.Append(response.GetPersistentTarget(i).name);
                 sb.Append(".");
-                sb.Append(listener.GetPersistentMethodName(i));
+                sb.Append(response.GetPersistentMethodName(i));
                 sb.Append("()");
                 UnityEngine.Debug.Log(sb.ToString(), gameObject);
             }

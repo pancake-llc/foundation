@@ -21,8 +21,8 @@ namespace Pancake.IAP
     [EditorIcon("scriptable_iap")]
     public class IAPSettings : ScriptableObject
     {
-        [SerializeField] private List<IAPData> skusData = new List<IAPData>();
-        [SerializeField] private List<IAPDataVariable> products = new List<IAPDataVariable>();
+        [SerializeField] private List<IAPData> skusData = new();
+        [SerializeField] private List<IAPDataVariable> products = new();
 #if UNITY_EDITOR
         [SerializeField, TextArea] private string googlePlayStoreKey;
 #endif

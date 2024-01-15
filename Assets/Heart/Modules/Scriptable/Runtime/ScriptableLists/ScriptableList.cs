@@ -19,6 +19,7 @@ namespace Pancake.Scriptable
         private ResetType resetOn = ResetType.SceneLoaded;
 
         [SerializeField] protected List<T> list = new List<T>();
+        private readonly HashSet<T> _hashSet = new HashSet<T>();
 
         public int Count => list.Count;
         public bool IsEmpty => list.Count == 0;
@@ -57,14 +58,15 @@ namespace Pancake.Scriptable
         /// <param name="item"></param>
         public void Add(T item)
         {
-            if (list.Contains(item)) return;
-
-            list.Add(item);
-            OnItemCountChanged?.Invoke();
-            OnItemAdded?.Invoke(item);
+            if (_hashSet.Add(item))
+            {
+                list.Add(item);
+                OnItemCountChanged?.Invoke();
+                OnItemAdded?.Invoke(item);
 #if UNITY_EDITOR
-            repaintRequest?.Invoke();
+                repaintRequest?.Invoke();
 #endif
+            }
         }
 
         /// <summary>
@@ -75,8 +77,7 @@ namespace Pancake.Scriptable
         public void AddRange(IEnumerable<T> items)
         {
             var itemList = items.ToList();
-            foreach (var item in itemList.Where(item => !list.Contains(item)))
-                list.Add(item);
+            foreach (var item in itemList.Where(item => _hashSet.Add(item))) list.Add(item);
 
             OnItemCountChanged?.Invoke();
             OnItemsAdded?.Invoke(itemList);
@@ -92,14 +93,15 @@ namespace Pancake.Scriptable
         /// <param name="item"></param>
         public void Remove(T item)
         {
-            if (!list.Contains(item)) return;
-
-            list.Remove(item);
-            OnItemCountChanged?.Invoke();
-            OnItemRemoved?.Invoke(item);
+            if (_hashSet.Remove(item))
+            {
+                list.Remove(item);
+                OnItemCountChanged?.Invoke();
+                OnItemRemoved?.Invoke(item);
 #if UNITY_EDITOR
-            repaintRequest?.Invoke();
+                repaintRequest?.Invoke();
 #endif
+            }
         }
 
         /// <summary>
@@ -110,17 +112,23 @@ namespace Pancake.Scriptable
         /// <param name="count">Amount of Items</param>
         public void RemoveRange(int index, int count)
         {
-            var items = list.GetRange(index, count);
+            var itemsToRemove = list.GetRange(index, count);
+
+            foreach (var itemToRemove in itemsToRemove) _hashSet.Remove(itemToRemove);
+
             list.RemoveRange(index, count);
             OnItemCountChanged?.Invoke();
-            OnItemsRemoved?.Invoke(items);
+            OnItemsRemoved?.Invoke(itemsToRemove);
 #if UNITY_EDITOR
             repaintRequest?.Invoke();
 #endif
         }
 
+        public bool Contains(T item) { return _hashSet.Contains(item); }
+
         private void Clear()
         {
+            _hashSet.Clear();
             list.Clear();
             OnCleared?.Invoke();
 #if UNITY_EDITOR
@@ -175,6 +183,12 @@ namespace Pancake.Scriptable
         public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public void ForEach(Action<T> action)
+        {
+            for (var i = list.Count - 1; i >= 0; i--)
+                action(list[i]);
+        }
 
         public List<Object> GetAllObjects()
         {

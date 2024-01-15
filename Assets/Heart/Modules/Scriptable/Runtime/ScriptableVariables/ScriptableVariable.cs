@@ -177,7 +177,7 @@ namespace Pancake.Scriptable
             debugLogEnabled = false;
         }
 
-        public void Init()
+        private void Init()
         {
             _initialValue = value;
             PreviousValue = value;
@@ -205,6 +205,8 @@ namespace Pancake.Scriptable
 
             if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
         }
+
+        bool ISave.Saved => saved;
 
         public override string ToString()
         {

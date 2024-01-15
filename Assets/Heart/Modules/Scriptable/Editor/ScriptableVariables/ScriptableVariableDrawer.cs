@@ -23,8 +23,15 @@ namespace Pancake.ScriptableEditor
             var genericType = _scriptableVariable.GetGenericType;
             if (!EditorExtend.IsSerializable(genericType)) EditorExtend.DrawSerializationError(genericType);
 
-            if (ScriptableEditorSetting.DrawMode == EVariableDrawMode.Minimal) DrawMinimal();
-            else DrawDefault();
+            if (ScriptableEditorSetting.IsExist())
+            {
+                if (ScriptableEditorSetting.DrawMode == EVariableDrawMode.Minimal) DrawMinimal();
+                else DrawDefault();
+            }
+            else
+            {
+                DrawDefault();
+            }
 
             if (serializedObject.ApplyModifiedProperties()) EditorUtility.SetDirty(target);
 
@@ -48,7 +55,7 @@ namespace Pancake.ScriptableEditor
         private void DrawDefault()
         {
             Uniform.DrawOnlyField(serializedObject, "m_Script", true);
-            var propertiesToHide = CanShowMinMaxProperty(target) ? new[] {"m_Script"} : new[] {"m_Script", "minMax"};
+            var propertiesToHide = CanShowMinMaxProperty(target) ? new[] {"m_Script", "guid", "guidCreateMode"} : new[] {"m_Script", "minMax", "guid", "guidCreateMode"};
             DrawDefaultExcept(propertiesToHide);
 
             if (GUILayout.Button("Reset to initial value"))
@@ -58,7 +65,7 @@ namespace Pancake.ScriptableEditor
             }
         }
 
-        protected virtual void DrawDefaultExcept(string[] propertiesToHide) { Uniform.DrawInspectorExcept(serializedObject, propertiesToHide); }
+        protected virtual void DrawDefaultExcept(string[] propertiesToHide) { Uniform.DrawVariableCustomInspector(serializedObject, propertiesToHide); }
 
         private bool CanShowMinMaxProperty(Object targetObject) { return IsIntClamped(targetObject) || IsFloatClamped(targetObject); }
 

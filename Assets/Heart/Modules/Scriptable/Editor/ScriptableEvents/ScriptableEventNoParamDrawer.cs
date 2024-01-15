@@ -22,8 +22,7 @@ namespace Pancake.ScriptableEditor
 
             GUI.enabled = true;
 
-            if (!EditorApplication.isPlaying)
-                return;
+            if (!EditorApplication.isPlaying) return;
 
             Uniform.DrawLine();
 

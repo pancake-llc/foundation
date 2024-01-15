@@ -19,7 +19,7 @@ namespace PancakeEditor
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
-                if (GUILayout.Button("Create IAP Setting", GUILayout.Height(30f)))
+                if (GUILayout.Button("Create IAP Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<IAPSettings>();
                     const string path = "Assets/_Root/Storages/Settings";
@@ -75,10 +75,10 @@ namespace PancakeEditor
 
                     EditorGUILayout.BeginHorizontal();
                     GUI.backgroundColor = Uniform.Green;
-                    if (GUILayout.Button("Ping", GUILayout.Height(30f))) iapSetting[0].SelectAndPing();
+                    if (GUILayout.Button("Ping", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) iapSetting[0].SelectAndPing();
 
                     GUI.backgroundColor = Uniform.Red;
-                    if (GUILayout.Button("Delete IAPSettings", GUILayout.Height(30f)))
+                    if (GUILayout.Button("Delete IAPSettings", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                     {
                         bool confirmDelete = EditorUtility.DisplayDialog("Delete IAPSettings", "Are you sure you want to delete iap settings?", "Yes", "No");
                         if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(iapSetting[0]));

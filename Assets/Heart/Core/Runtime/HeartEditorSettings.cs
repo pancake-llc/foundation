@@ -7,10 +7,10 @@ namespace Pancake
     public class HeartEditorSettings : ScriptableSettings<HeartEditorSettings>
     {
         [Header("Editor")] [Tooltip("Indicates whether you can immediately edit the name asset upon creation?")] [SerializeField]
-        private ENameAssetCreationMode nameCreationMode;
+        private ECreationMode nameCreationMode;
 
 
-        public static ENameAssetCreationMode EditorNameCreationMode => Instance.nameCreationMode;
+        public static ECreationMode EditorNameCreationMode => Instance.nameCreationMode;
     }
 #endif
 }

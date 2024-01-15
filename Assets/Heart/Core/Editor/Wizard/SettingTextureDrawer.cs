@@ -19,7 +19,7 @@ namespace PancakeEditor
                                     "\n     4) Also speeds up SpriteAtlas packing as it does not involve decompression (some formats can be slow to decompress).",
                 MessageType.Info);
             spriteAtlas = EditorGUILayout.ObjectField("Target", spriteAtlas, typeof(SpriteAtlas), false) as SpriteAtlas;
-            if (GUILayout.Button("Uncompressed Source Texture", GUILayout.Height(30f)))
+            if (GUILayout.Button("Uncompressed Source Texture", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 if (spriteAtlas == null)
                 {

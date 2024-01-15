@@ -26,6 +26,14 @@ namespace Pancake
             return color;
         }
 
+        public static Color Lighten(this Color color, float a)
+        {
+            color.r += a;
+            color.g += a;
+            color.b += a;
+            return color;
+        }
+
         public static void SetRed(this SpriteRenderer spriteRenderer, float red)
         {
             var color = spriteRenderer.color;

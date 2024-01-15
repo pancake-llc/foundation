@@ -18,5 +18,7 @@ namespace Pancake
                 return instance;
             }
         }
+
+        public static bool IsExist() => Resources.Load<T>(typeof(T).Name) != null;
     }
 }

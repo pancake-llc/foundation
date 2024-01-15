@@ -396,6 +396,51 @@ namespace Pancake.ExLibEditor
             serializedObject.ApplyModifiedProperties();
         }
 
+        public static void DrawVariableCustomInspector(SerializedObject serializedObject, string[] fieldsToSkip)
+        {
+            serializedObject.Update();
+            var prop = serializedObject.GetIterator();
+            var propertyCount = 0;
+
+            if (prop.NextVisible(true))
+            {
+                do
+                {
+                    if (fieldsToSkip.Any(skipProp => prop.name == skipProp)) continue;
+
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty(prop.name), true);
+                    propertyCount++;
+
+                    if (propertyCount != 4) continue;
+
+                    //Draw save properties
+                    var isSaved = serializedObject.FindProperty("saved");
+                    if (!isSaved.boolValue) continue;
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.BeginHorizontal();
+                    var guidProperty = serializedObject.FindProperty("guid");
+                    var guidCreateMode = serializedObject.FindProperty("guidCreateMode");
+                    int index = guidCreateMode.enumValueIndex;
+                    EditorGUILayout.PropertyField(guidCreateMode, true);
+                    if (index == 0)
+                    {
+                        GUI.enabled = false;
+                        EditorGUILayout.TextField(guidProperty.stringValue);
+                        GUI.enabled = true;
+                    }
+                    else
+                    {
+                        guidProperty.stringValue = EditorGUILayout.TextField(guidProperty.stringValue);
+                    }
+
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUI.indentLevel--;
+                } while (prop.NextVisible(false));
+            }
+
+            serializedObject.ApplyModifiedProperties();
+        }
+
         /// <summary>
         /// Draw group selection with header
         /// </summary>

@@ -11,11 +11,8 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_event")]
     public class ScriptableEventNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {
-        [Tooltip("Enable console logs when this event is raised.")]
-        [SerializeField] private bool debugLogEnabled;
-
-        private readonly List<EventListenerNoParam> _eventListeners = new List<EventListenerNoParam>();
-        private readonly List<Object> _listenersObjects = new List<Object>();
+        private readonly List<EventListenerNoParam> _eventListeners = new();
+        private readonly List<Object> _listenersObjects = new();
 
         private Action _onRaised;
 
@@ -29,16 +26,14 @@ namespace Pancake.Scriptable
                 _onRaised += value;
 
                 var listener = value.Target as Object;
-                if (listener != null && !_listenersObjects.Contains(listener))
-                    _listenersObjects.Add(listener);
+                if (listener != null && !_listenersObjects.Contains(listener)) _listenersObjects.Add(listener);
             }
             remove
             {
                 _onRaised -= value;
 
                 var listener = value.Target as Object;
-                if (_listenersObjects.Contains(listener))
-                    _listenersObjects.Remove(listener);
+                if (_listenersObjects.Contains(listener)) _listenersObjects.Remove(listener);
             }
         }
 
@@ -47,8 +42,7 @@ namespace Pancake.Scriptable
         /// </summary>
         public void Raise()
         {
-            if (!Application.isPlaying)
-                return;
+            if (!Application.isPlaying) return;
 
             for (var i = _eventListeners.Count - 1; i >= 0; i--)
                 _eventListeners[i].OnEventRaised(this, debugLogEnabled);
@@ -58,8 +52,7 @@ namespace Pancake.Scriptable
 #if UNITY_EDITOR
             //As this uses reflection, I only allow it to be called in Editor.
             //If you want to display debug in builds, delete the #if UNITY_EDITOR
-            if (debugLogEnabled)
-                Debug();
+            if (debugLogEnabled) Debug();
 #endif
         }
 
@@ -91,8 +84,7 @@ namespace Pancake.Scriptable
 
         private void Debug()
         {
-            if (_onRaised == null)
-                return;
+            if (_onRaised == null) return;
             var delegates = _onRaised.GetInvocationList();
             foreach (var del in delegates)
             {

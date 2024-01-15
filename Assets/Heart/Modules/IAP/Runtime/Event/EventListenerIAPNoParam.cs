@@ -1,9 +1,13 @@
 ﻿#if PANCAKE_IAP
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Pancake.IAP
 {
@@ -11,45 +15,72 @@ namespace Pancake.IAP
     [AddComponentMenu("Scriptable/EventListeners/EventListenerIAPNoParam")]
     public class EventListenerIAPNoParam : EventListenerBase
     {
-        [SerializeField] private EventResponse[] _eventResponses = null;
-        private Dictionary<ScriptableEventIAPNoParam, UnityEvent> _dictionary = new Dictionary<ScriptableEventIAPNoParam, UnityEvent>();
+        [SerializeField] private EventResponse[] eventResponses;
+        private readonly Dictionary<ScriptableEventIAPNoParam, EventResponse> _dictionary = new();
 
         protected override void ToggleRegistration(bool toggle)
         {
-            for (var i = 0; i < _eventResponses.Length; i++)
+            for (var i = 0; i < eventResponses.Length; i++)
             {
                 if (toggle)
                 {
-                    _eventResponses[i].ScriptableEvent.RegisterListener(this);
+                    eventResponses[i].scriptableEvent.RegisterListener(this);
 
-                    if (!_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
-                        _dictionary.Add(_eventResponses[i].ScriptableEvent, _eventResponses[i].Response);
+                    if (!_dictionary.ContainsKey(eventResponses[i].scriptableEvent)) _dictionary.Add(eventResponses[i].scriptableEvent, eventResponses[i]);
                 }
                 else
                 {
-                    _eventResponses[i].ScriptableEvent.UnregisterListener(this);
-                    if (_dictionary.ContainsKey(_eventResponses[i].ScriptableEvent))
-                        _dictionary.Remove(_eventResponses[i].ScriptableEvent);
+                    eventResponses[i].scriptableEvent.UnregisterListener(this);
+                    if (_dictionary.ContainsKey(eventResponses[i].scriptableEvent)) _dictionary.Remove(eventResponses[i].scriptableEvent);
                 }
             }
         }
 
-        public void OnEventRaised(ScriptableEventIAPNoParam eventRaised) { _dictionary[eventRaised].Invoke(); }
+        public void OnEventRaised(ScriptableEventIAPNoParam @event)
+        {
+            var eventResponse = _dictionary[@event];
+            if (eventResponse.delay > 0)
+            {
+                if (gameObject.activeInHierarchy) StartCoroutine(Cr_DelayInvokeResponse(eventResponse));
+                else DelayInvokeResponseAsync(eventResponse, cancellationTokenSource.Token);
+            }
+            else InvokeResponse(eventResponse);
+        }
+
+        private IEnumerator Cr_DelayInvokeResponse(EventResponse eventResponse)
+        {
+            yield return new WaitForSeconds(eventResponse.delay);
+            InvokeResponse(eventResponse);
+        }
+
+        private async void DelayInvokeResponseAsync(EventResponse eventResponse, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Task.Delay((int) (eventResponse.delay * 1000), cancellationToken);
+                InvokeResponse(eventResponse);
+            }
+            catch (TaskCanceledException)
+            {
+            }
+        }
+
+        private void InvokeResponse(EventResponse eventResponse) { eventResponse.response?.Invoke(); }
 
         public override bool ContainsCallToMethod(string methodName)
         {
             var containsMethod = false;
-            foreach (var eventResponse in _eventResponses)
+            foreach (var eventResponse in eventResponses)
             {
-                var registeredListenerCount = eventResponse.Response.GetPersistentEventCount();
+                var registeredListenerCount = eventResponse.response.GetPersistentEventCount();
 
                 for (int i = 0; i < registeredListenerCount; i++)
                 {
-                    if (eventResponse.Response.GetPersistentMethodName(i) == methodName)
+                    if (eventResponse.response.GetPersistentMethodName(i) == methodName)
                     {
                         var debugText = $"<color=#f75369>{methodName}()</color>";
                         debugText += " is called by the event: <color=#f75369>";
-                        debugText += eventResponse.ScriptableEvent.name;
+                        debugText += eventResponse.scriptableEvent.name;
                         debugText += "</color>";
                         Debug.Log(debugText, gameObject);
                         containsMethod = true;
@@ -63,10 +94,13 @@ namespace Pancake.IAP
 
 
         [Serializable]
-        public struct EventResponse
+        public class EventResponse
         {
-            public ScriptableEventIAPNoParam ScriptableEvent;
-            public UnityEvent Response;
+            public ScriptableEventIAPNoParam scriptableEvent;
+            public UnityEvent response;
+
+            [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
+            public float delay;
         }
     }
 }

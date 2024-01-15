@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
   m_Name: outfit_pants_jean_variable
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: ffef2d9b865150d4390b300677f2e188
+  guidCreateMode: 0
   value:
     id: 73514aabba66412
     isUnlocked: 1

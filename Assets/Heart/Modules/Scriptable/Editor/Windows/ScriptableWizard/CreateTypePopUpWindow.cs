@@ -9,7 +9,7 @@ namespace Pancake.ScriptableEditor
     {
         private readonly Rect _position;
         private string _typeText = "Type";
-        private bool _baseClass = false;
+        private bool _baseClass;
         private bool _monoBehaviour = true;
         private bool _variable = true;
         private bool _event = true;
@@ -18,16 +18,10 @@ namespace Pancake.ScriptableEditor
         private bool _invalidTypeName;
         private string _path;
         private readonly Vector2 _dimensions = new Vector2(350, 350);
-        private readonly GUIStyle _bgStyle;
 
         public override Vector2 GetWindowSize() => _dimensions;
 
-        public CreateTypePopUpWindow(Rect origin)
-        {
-            _position = origin;
-            _bgStyle = new GUIStyle(GUIStyle.none);
-            _bgStyle.normal.background = EditorCreator.CreateTexture(Uniform.FieryRose);
-        }
+        public CreateTypePopUpWindow(Rect origin) { _position = origin; }
 
         public override void OnGUI(Rect rect)
         {
@@ -38,6 +32,7 @@ namespace Pancake.ScriptableEditor
             DrawTypeToggles();
             GUILayout.Space(10);
             DrawPath();
+            GUILayout.FlexibleSpace();
             DrawButtons();
         }
 
@@ -69,9 +64,15 @@ namespace Pancake.ScriptableEditor
             EditorGUILayout.BeginHorizontal();
             if (!EditorExtend.IsBuiltInType(_typeText))
             {
-                DrawToggle(ref _baseClass, nameType, "", EditorGUIUtility.IconContent("cs Script Icon").image, true,140);
+                DrawToggle(ref _baseClass,
+                    nameType,
+                    "",
+                    EditorGUIUtility.IconContent("cs Script Icon").image,
+                    true,
+                    140);
                 if (_baseClass) _monoBehaviour = GUILayout.Toggle(_monoBehaviour, "MonoBehaviour?");
             }
+
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(5);
@@ -109,14 +110,14 @@ namespace Pancake.ScriptableEditor
         private void DrawButtons()
         {
             GUI.enabled = !_invalidTypeName;
-            if (GUILayout.Button("Create", GUILayout.ExpandHeight(true)))
+            if (GUILayout.Button("Create", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
             {
                 if (!IsTypeNameValid()) return;
 
                 TextAsset newFile = null;
                 var progress = 0f;
                 EditorUtility.DisplayProgressBar("Progress", "Start", progress);
-                
+
                 if (_baseClass && !EditorExtend.IsBuiltInType(_typeText))
                 {
                     string template = _monoBehaviour ? EditorResources.MonoBehaviourTemplate.text : EditorResources.ClassTemplate.text;
@@ -127,10 +128,10 @@ namespace Pancake.ScriptableEditor
                         return;
                     }
                 }
-                
+
                 progress += 0.2f;
                 EditorUtility.DisplayProgressBar("Progress", "Generating...", progress);
-                
+
                 if (_variable)
                 {
                     newFile = CreateNewClass(EditorResources.ScriptableVariableTemplate.text, _typeText, $"{_typeText}Variable.cs", _path);
@@ -197,7 +198,7 @@ namespace Pancake.ScriptableEditor
                 EditorGUIUtility.PingObject(newFile);
             }
 
-            if (GUILayout.Button("Cancel", GUILayout.ExpandHeight(true)))  editorWindow.Close();
+            if (GUILayout.Button("Cancel", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT))) editorWindow.Close();
         }
 
         private void Close(bool hasError = true)
