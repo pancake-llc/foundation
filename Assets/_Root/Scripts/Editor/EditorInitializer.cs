@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
 using System.Reflection;
+using Pancake;
 using Pancake.ExLibEditor;
+using Pancake.Linq;
 using Pancake.SceneFlow;
-using Pancake.Sound;
 using Pancake.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -26,11 +27,10 @@ namespace PancakeEditor
                     await Addressables.LoadSceneAsync(Constant.LAUNCHER_SCENE);
                     if (startScene.Equals(Constant.PERSISTENT_SCENE))
                     {
-                        var poolSoundEmitters = ProjectDatabase.FindAll<SoundEmitterPool>();
-                        foreach (var pool in poolSoundEmitters)
+                        var poolCleaner = ProjectDatabase.FindAll<ScriptableObject>().Map(o => o as IPoolCleaner).Filter(c => c != null);
+                        foreach (var cleaner in poolCleaner)
                         {
-                            var method = pool.GetType().BaseType.BaseType.GetMethod("InternalClearPool", BindingFlags.Instance | BindingFlags.NonPublic);
-                            method.Invoke(pool, null);
+                            cleaner.InternalClearPool();
                         }
                     }
 
