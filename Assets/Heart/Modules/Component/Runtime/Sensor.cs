@@ -29,9 +29,9 @@ namespace Pancake.Component
             if (stopEvent != null) stopEvent.OnRaised -= Stop;
         }
 
-        protected override void OnEnabled() { Register(); }
+        protected void OnEnable() { Register(); }
 
-        protected override void OnDisabled() { Unregister(); }
+        protected void OnDisable() { Unregister(); }
 
         protected abstract void Pulse();
 

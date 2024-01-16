@@ -88,7 +88,7 @@ namespace Pancake.Component
             isPlaying = true;
         }
         
-        protected override void FixedTick()
+        protected void FixedUpdate()
         {
             if (!isPlaying) return;
 

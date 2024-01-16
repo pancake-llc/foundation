@@ -78,9 +78,8 @@ namespace Pancake.ExTag
 
         #region Lifecycles
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
-            base.OnEnabled();
             if (!IsInitialized(gameObject))
             {
                 TaggedGameObjects.Clear();
@@ -108,9 +107,8 @@ namespace Pancake.ExTag
             }
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
-            base.OnDisabled();
             if (TagInstances.ContainsKey(gameObject)) TagInstances.Remove(gameObject);
             for (var i = 0; i < Tags.Count; i++)
             {

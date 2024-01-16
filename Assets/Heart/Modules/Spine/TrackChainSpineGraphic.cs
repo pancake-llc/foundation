@@ -32,13 +32,13 @@ namespace Pancake.Spine
             if (startupMode == StartupMode.Start) Play();
         }
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
             if (startupMode == StartupMode.OnEnabled) Play();
             if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised += Play;
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
             if (_handle is {IsTerminated: false})
             {

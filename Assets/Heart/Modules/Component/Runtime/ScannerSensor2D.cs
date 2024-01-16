@@ -69,7 +69,7 @@ namespace Pancake.Component
         }
 
 
-        protected override void FixedTick()
+        protected void FixedUpdate()
         {
             if (!isPlaying) return;
 

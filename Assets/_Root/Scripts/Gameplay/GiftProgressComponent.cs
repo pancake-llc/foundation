@@ -12,7 +12,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private Image progressBar;
         [SerializeField] private TextMeshProUGUI textPercent;
 
-        protected override void OnEnabled() { progressValue.OnValueChanged += OnValueChanged; }
+        protected void OnEnable() { progressValue.OnValueChanged += OnValueChanged; }
 
         private void OnValueChanged(int value)
         {
@@ -20,6 +20,6 @@ namespace Pancake.SceneFlow
             progressBar.fillAmount = value / 100f;
         }
 
-        protected override void OnDisabled() { progressValue.OnValueChanged -= OnValueChanged; }
+        protected void OnDisable() { progressValue.OnValueChanged -= OnValueChanged; }
     }
 }

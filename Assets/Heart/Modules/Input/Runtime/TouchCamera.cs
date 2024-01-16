@@ -1099,7 +1099,7 @@ namespace Pancake.MobileInput
             return new Vector2(Mathf.Max(v0.x, v1.x, v2.x, v3.x), Mathf.Max(v0.y, v1.y, v2.y, v3.y));
         }
 
-        protected override void Tick()
+        protected void Update()
         {
             #region auto scroll code
 
@@ -1118,7 +1118,7 @@ namespace Pancake.MobileInput
             #endregion
         }
 
-        protected override void LateTick()
+        protected void LateUpdate()
         {
             //Pinch.
             UpdatePinch(Time.unscaledDeltaTime);

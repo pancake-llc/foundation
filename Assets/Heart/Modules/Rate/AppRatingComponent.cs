@@ -22,7 +22,7 @@ namespace Pancake.Rate
 #endif
         [SerializeField] private ScriptableEventNoParam reviewEvent;
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
 #if UNITY_ANDROID
             initReviewEvent.OnRaised += OnInitReview;
@@ -50,7 +50,7 @@ namespace Pancake.Rate
 #endif
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
 #if UNITY_ANDROID
             initReviewEvent.OnRaised -= OnInitReview;

@@ -44,9 +44,9 @@ namespace Pancake.LevelSystem
             if (skipEvent != null) skipEvent.OnRaised -= OnSkipLevel;
         }
 
-        protected override void OnEnabled() { OnSpawned(); }
+        protected void OnEnable() { OnSpawned(); }
 
-        protected override void OnDisabled() { OnDespawned(); }
+        protected void OnDisable() { OnDespawned(); }
 
 
 #if UNITY_EDITOR

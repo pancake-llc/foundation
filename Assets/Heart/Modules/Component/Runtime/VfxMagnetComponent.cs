@@ -27,7 +27,7 @@ namespace Pancake.Component
         [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
             returnPoolEvent.OnRaised += ReturnVfxToPool;
@@ -54,7 +54,7 @@ namespace Pancake.Component
             coinFxPool.Return(vfx);
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
             spawnEvent.OnRaised -= SpawnCoinFx;
             returnPoolEvent.OnRaised -= ReturnVfxToPool;

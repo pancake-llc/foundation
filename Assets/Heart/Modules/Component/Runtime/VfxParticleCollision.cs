@@ -48,7 +48,7 @@ namespace Pancake.Component
             if (enabledSound) audioPlayEvent.Raise(audioCollision);
         }
 
-        protected override void Tick()
+        protected void Update()
         {
             if (PS.particleCount > 0) return;
 

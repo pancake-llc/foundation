@@ -18,7 +18,7 @@ namespace Pancake.Spring
         private void Awake() { _nextNudgeFrequency = Random.Range(frequency.x, frequency.y); }
 
 
-        protected override void Tick()
+        protected void Update()
         {
             if (autoNudge && _lastNudgeTime + _nextNudgeFrequency < Time.time) Nudge();
         }

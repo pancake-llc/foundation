@@ -13,9 +13,9 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam hideEvent;
         [SerializeField] private float duration = 0.5f;
 
-        protected override void OnEnabled() { hideEvent.OnRaised += OnHide; }
+        protected void OnEnable() { hideEvent.OnRaised += OnHide; }
 
-        protected override void OnDisabled() { hideEvent.OnRaised -= OnHide; }
+        protected void OnDisable() { hideEvent.OnRaised -= OnHide; }
 
         private void OnHide()
         {
