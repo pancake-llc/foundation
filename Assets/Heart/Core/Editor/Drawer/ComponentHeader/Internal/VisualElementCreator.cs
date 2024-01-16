@@ -1,5 +1,6 @@
 ﻿using System;
-using Pancake;
+using System.Collections.Generic;
+using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -9,6 +10,61 @@ namespace PancakeEditor.ComponentHeader
 {
     internal static class VisualElementCreator
     {
+        private static readonly Dictionary<ButtonType, Texture2D> IconCaches = new();
+        private static readonly Dictionary<ButtonType, Texture2D> IconDarkCaches = new();
+
+        private static Texture2D GetIcon(ButtonType buttonType)
+        {
+            if (EditorGUIUtility.isProSkin)
+            {
+                if (IconCaches.TryGetValue(buttonType, out var result)) return result;
+                switch (buttonType)
+                {
+                    case ButtonType.Remove:
+                        IconCaches[buttonType] = EditorResources.IconRemoveComponent;
+                        break;
+                    case ButtonType.MoveUp:
+                        IconCaches[buttonType] = EditorResources.IconMoveUp;
+                        break;
+                    case ButtonType.MoveDown:
+                        IconCaches[buttonType] = EditorResources.IconMoveDown;
+                        break;
+                    case ButtonType.PasteComponentValue:
+                        IconCaches[buttonType] = EditorResources.IconPasteComponentValues;
+                        break;
+                    case ButtonType.CopyComponent:
+                        IconCaches[buttonType] = EditorResources.IconCopyComponent;
+                        break;
+                }
+
+                return IconCaches[buttonType];
+            }
+            else
+            {
+                if (IconDarkCaches.TryGetValue(buttonType, out var result)) return result;
+                switch (buttonType)
+                {
+                    case ButtonType.Remove:
+                        IconDarkCaches[buttonType] = EditorResources.IconRemoveComponentDark;
+                        break;
+                    case ButtonType.MoveUp:
+                        IconDarkCaches[buttonType] = EditorResources.IconMoveUpDark;
+                        break;
+                    case ButtonType.MoveDown:
+                        IconDarkCaches[buttonType] = EditorResources.IconMoveDownDark;
+                        break;
+                    case ButtonType.PasteComponentValue:
+                        IconDarkCaches[buttonType] = EditorResources.IconPasteComponentValuesDark;
+                        break;
+                    case ButtonType.CopyComponent:
+                        IconDarkCaches[buttonType] = EditorResources.IconCopyComponentDark;
+                        break;
+                }
+
+                return IconDarkCaches[buttonType];
+            }
+        }
+
         public static VisualElement CreateContainer(string headerElementName, Action onRefresh)
         {
             var container = new VisualElement {pickingMode = PickingMode.Ignore, style = {flexDirection = FlexDirection.RowReverse, height = 22,}};
@@ -61,7 +117,7 @@ namespace PancakeEditor.ComponentHeader
                     style =
                     {
                         position = Position.Relative,
-                        backgroundImage = TextureManager.Get(buttonType),
+                        backgroundImage = GetIcon(buttonType),
                         top = 3,
                         right = 63 + (int) buttonType * 3,
                         width = 16,

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a11231538da9894d8dce88b47df6a36, type: 3}
   m_Name: prewarm_load_level_completed
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 61509f6b494b461498cccef441c17f12
+  guidCreateMode: 0
   value: 1
   debugLogEnabled: 0
   saved: 0

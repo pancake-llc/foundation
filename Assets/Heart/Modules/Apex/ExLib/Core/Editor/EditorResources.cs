@@ -6,6 +6,7 @@ namespace Pancake.ExLibEditor
     public static class EditorResources
     {
         private const string RELATIVE_PATH = "Modules/Apex/ExLib/Core/Editor/Misc/Icons";
+        private const string RELATIVE_COMPONENT_HEADER_PATH = "Modules/Apex/ExLib/Core/Editor/Misc/Icons/ComponentHeader";
         private const string RELATIVE_REORDERABLE_ARRAY_PATH = "Modules/Apex/ExLib/Core/Editor/Misc/Icons/ReorderableArray";
         private const string RELATIVE_TEMPLATE_PATH = "Modules/Apex/ExLib/Core/Editor/Misc/Templates";
 
@@ -34,11 +35,8 @@ namespace Pancake.ExLibEditor
         public static Texture2D ScriptableMesh => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_mesh.png", RELATIVE_PATH);
         public static Texture2D ScriptableLeaf => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_leaf.png", RELATIVE_PATH);
         public static Texture2D ScriptableUnity => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_unity.png", RELATIVE_PATH);
-        public static Texture2D ScriptableAndroid => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_android.png", RELATIVE_PATH);
-
         public static Texture2D IconEyeOpen => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_open.png", RELATIVE_PATH);
         public static Texture2D IconEyeClose => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_close.png", RELATIVE_PATH);
-        public static Texture2D IconLock => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_lock.png", RELATIVE_PATH);
         public static Texture2D TreeMapCurrent => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_current.png", RELATIVE_PATH);
         public static Texture2D TreeMapLast => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_last.png", RELATIVE_PATH);
         public static Texture2D TreeMapLevel => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level.png", RELATIVE_PATH);
@@ -51,6 +49,16 @@ namespace Pancake.ExLibEditor
         public static Texture2D IconDuplicate => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_duplicate.png", RELATIVE_PATH);
         public static Texture2D IconEdit => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_edit.png", RELATIVE_PATH);
         public static Texture2D IconPing => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_ping.png", RELATIVE_PATH);
+        public static Texture2D IconCopyComponent => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_copy_component.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconCopyComponentDark => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_copy_component_dark.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconMoveDown => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_move_down.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconMoveDownDark => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_move_down_dark.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconMoveUp => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_move_up.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconMoveUpDark => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_move_up_dark.png", RELATIVE_COMPONENT_HEADER_PATH); 
+        public static Texture2D IconPasteComponentValues => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_paste_component_values.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconPasteComponentValuesDark => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_paste_component_values_dark.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconRemoveComponent => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_remove_component.png", RELATIVE_COMPONENT_HEADER_PATH);
+        public static Texture2D IconRemoveComponentDark => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_remove_component_dark.png", RELATIVE_COMPONENT_HEADER_PATH);
 
         public static Texture2D ReorderableArrayEntryActive(string theme) =>
             ProjectDatabase.FindAssetWithPath<Texture2D>("EntryActiveTexture.png", $"{RELATIVE_REORDERABLE_ARRAY_PATH}/{theme}");
