@@ -16,11 +16,11 @@ namespace Pancake.Component
         [System.Serializable]
         public class EventResponse
         {
-            public ScriptableEventVfxMagnet vfxMagnetEvent;
-            public UnityEvent response;
-
             [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
             public float delay;
+
+            public ScriptableEventVfxMagnet vfxMagnetEvent;
+            public UnityEvent response;
         }
 
         [SerializeField] private EventResponse[] eventResponses;

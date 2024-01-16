@@ -74,11 +74,11 @@ namespace Pancake.Scriptable
         [System.Serializable]
         public class EventResponse
         {
-            public ScriptableEventNoParam scriptableEvent;
-            public UnityEvent response;
-
             [Min(0)] [Tooltip("Delay in seconds before invoking the response.")]
             public float delay;
+
+            public ScriptableEventNoParam scriptableEvent;
+            public UnityEvent response;
         }
 
         #region Debugging
