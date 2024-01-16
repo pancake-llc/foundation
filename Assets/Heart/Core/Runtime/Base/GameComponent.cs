@@ -1,8 +1,7 @@
 namespace Pancake
 {
     /// <summary>
-    /// Passenger : a person who is travelling in a vehicle but is not driving it, flying it, or working on it
-    /// Is the basic unit, Your entities need to inherit this class
+    /// Use as an alternative to MonoBehaviour using a managed player loop.
     /// </summary>
     public abstract class GameComponent : UnityEngine.MonoBehaviour, ITickProcess, IFixedTickProcess, ILateTickProcess, IComponent
     {
