@@ -12,30 +12,25 @@ namespace Pancake
     [AddComponentMenu("")]
     public class GlobalComponent : MonoBehaviour
     {
-        internal event Action FixedUpdateInternal;
-        internal event Action WaitForFixedUpdateInternal;
-        internal event Action UpdateInternal;
-        internal event Action LateUpdateInternal;
-        internal event Action WaitForEndOfFrameInternal;
-        private readonly List<Action> _toMainThreads = new();
-        private volatile bool _isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
-
+        internal event Action OnUpdate;
+        internal event Action OnFixedUpdate;
+        internal event Action OnLateUpdate;
         internal event Action<bool> OnGamePause;
         internal event Action<bool> OnGameFocus;
         internal event Action OnGameQuit;
 
-        internal readonly List<ITickProcess> tickProcesses = new List<ITickProcess>(1024);
-        internal readonly List<IFixedTickProcess> fixedTickProcesses = new List<IFixedTickProcess>(512);
-        internal readonly List<ILateTickProcess> lateTickProcesses = new List<ILateTickProcess>(256);
-        private List<Action> _localToMainThreads = new();
+        private readonly List<Action> _toMainThreads = new();
+        private volatile bool _isToMainThreadQueueEmpty = true; // Flag indicating whether there's any action queued to be run on game thread.
+        private readonly List<Action> _localToMainThreads = new();
+
 
         #region delay handle
 
-        private List<DelayHandle> _timers = new List<DelayHandle>();
+        private List<DelayHandle> _timers = new();
 
         // buffer adding timers so we don't edit a collection during iteration
-        private List<DelayHandle> _timersToAdd = new List<DelayHandle>();
-        private int _fixedFrameCount;
+        private List<DelayHandle> _timersToAdd = new();
+        //private int _fixedFrameCount;
 
         internal void RegisterDelayHandle(DelayHandle delayHandle) { _timersToAdd.Add(delayHandle); }
 
@@ -87,7 +82,7 @@ namespace Pancake
 
         #region coroutine
 
-        private readonly Dictionary<int, UnityEngine.Coroutine> _runningCoroutines = new Dictionary<int, Coroutine>();
+        private readonly Dictionary<int, UnityEngine.Coroutine> _runningCoroutines = new();
         private int _currentRoutineId;
         internal bool ThrowException { get; set; } = true;
 
@@ -106,7 +101,7 @@ namespace Pancake
                 OnTerminate);
             _runningCoroutines.Add(id, coroutine);
             return handle;
-            
+
             void OnCompleted(object result) => handleSetter.Complete(result);
             void OnError(Exception e) => handleSetter.Error(e);
             void OnTerminate() => _runningCoroutines.Remove(id);
@@ -194,43 +189,9 @@ namespace Pancake
 
         #region event function
 
-        private void Start()
-        {
-            StartCoroutine(WaitForFixedUpdate());
-            StartCoroutine(WaitForEndOfFrame());
-
-            IEnumerator WaitForFixedUpdate()
-            {
-                var wait = new WaitForFixedUpdate();
-                while (true)
-                {
-                    yield return wait;
-                    _fixedFrameCount += 1;
-                    WaitForFixedUpdateInternal?.Invoke();
-                }
-                // ReSharper disable once IteratorNeverReturns
-            }
-
-            IEnumerator WaitForEndOfFrame()
-            {
-                var wait = new WaitForEndOfFrame();
-                while (true)
-                {
-                    yield return wait;
-                    WaitForEndOfFrameInternal?.Invoke();
-                }
-                // ReSharper disable once IteratorNeverReturns
-            }
-        }
-
         private void Update()
         {
-            for (var i = 0; i < tickProcesses.Count; i++)
-            {
-                tickProcesses[i]?.OnTick();
-            }
-
-            UpdateInternal?.Invoke();
+            OnUpdate?.Invoke();
             UpdateAllDelayHandle();
 
             if (_isToMainThreadQueueEmpty) return;
@@ -248,25 +209,9 @@ namespace Pancake
             }
         }
 
-        private void FixedUpdate()
-        {
-            for (int i = 0; i < fixedTickProcesses.Count; i++)
-            {
-                fixedTickProcesses[i]?.OnFixedTick();
-            }
+        private void FixedUpdate() { OnFixedUpdate?.Invoke(); }
 
-            FixedUpdateInternal?.Invoke();
-        }
-
-        private void LateUpdate()
-        {
-            for (int i = 0; i < lateTickProcesses.Count; i++)
-            {
-                lateTickProcesses[i]?.OnLateTick();
-            }
-
-            LateUpdateInternal?.Invoke();
-        }
+        private void LateUpdate() { OnLateUpdate?.Invoke(); }
 
         /// <summary>
         /// Called when the gamme loses or gains focus. 
@@ -337,7 +282,7 @@ namespace Pancake
         internal Action<T> ToMainThreadImpl<T>(Action<T> action)
         {
             if (action == null) return delegate { };
-            return (arg) => RunOnMainThreadImpl(() => action(arg));
+            return arg => RunOnMainThreadImpl(() => action(arg));
         }
 
         /// <summary>

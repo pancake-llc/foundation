@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 
 namespace Pancake
 {
@@ -45,19 +46,13 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    globalComponent.FixedUpdateInternal += action;
-                    return;
-                case UpdateMode.WaitForFixedUpdate:
-                    globalComponent.WaitForFixedUpdateInternal += action;
+                    globalComponent.OnFixedUpdate += action;
                     return;
                 case UpdateMode.Update:
-                    globalComponent.UpdateInternal += action;
+                    globalComponent.OnUpdate += action;
                     return;
-                case UpdateMode.LateUpdate:
-                    globalComponent.LateUpdateInternal += action;
-                    return;
-                case UpdateMode.WaitForEndOfFrame:
-                    globalComponent.WaitForEndOfFrameInternal += action;
+                case UpdateMode.PostLateUpdate:
+                    globalComponent.OnLateUpdate += action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -69,36 +64,18 @@ namespace Pancake
             switch (mode)
             {
                 case UpdateMode.FixedUpdate:
-                    globalComponent.FixedUpdateInternal -= action;
-                    return;
-                case UpdateMode.WaitForFixedUpdate:
-                    globalComponent.WaitForFixedUpdateInternal -= action;
+                    globalComponent.OnFixedUpdate -= action;
                     return;
                 case UpdateMode.Update:
-                    globalComponent.UpdateInternal -= action;
+                    globalComponent.OnUpdate -= action;
                     return;
-                case UpdateMode.LateUpdate:
-                    globalComponent.LateUpdateInternal -= action;
-                    return;
-                case UpdateMode.WaitForEndOfFrame:
-                    globalComponent.WaitForEndOfFrameInternal -= action;
+                case UpdateMode.PostLateUpdate:
+                    globalComponent.OnLateUpdate -= action;
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
         }
-
-        public static void AddTick(ITickProcess tick) { globalComponent.tickProcesses.Add(tick); }
-
-        public static void AddFixedTick(IFixedTickProcess tick) { globalComponent.fixedTickProcesses.Add(tick); }
-
-        public static void AddLateTick(ILateTickProcess tick) { globalComponent.lateTickProcesses.Add(tick); }
-
-        public static void RemoveTick(ITickProcess tick) { globalComponent.tickProcesses.Remove(tick); }
-
-        public static void RemoveFixedTick(IFixedTickProcess tick) { globalComponent.fixedTickProcesses.Remove(tick); }
-
-        public static void RemoveLateTick(ILateTickProcess tick) { globalComponent.lateTickProcesses.Remove(tick); }
 
         public static void AddPauseCallback(Action<bool> callback)
         {
@@ -124,31 +101,31 @@ namespace Pancake
 
         public static void RemoveQuitCallback(Action callback) { globalComponent.OnGameQuit -= callback; }
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static AsyncProcessHandle StartCoroutine(IEnumerator routine) => globalComponent.StartCoroutineInternal(routine);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void StopCoroutine(AsyncProcessHandle handle) => globalComponent.StopCoroutineInternal(handle);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DisableThrowException() => globalComponent.ThrowException = false;
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void EnableThrowException() => globalComponent.ThrowException = true;
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Action ToMainThread(Action action) => globalComponent.ToMainThreadImpl(action);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Action<T> ToMainThread<T>(Action<T> action) => globalComponent.ToMainThreadImpl(action);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Action<T1, T2> ToMainThread<T1, T2>(Action<T1, T2> action) => globalComponent.ToMainThreadImpl(action);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Action<T1, T2, T3> ToMainThread<T1, T2, T3>(Action<T1, T2, T3> action) => globalComponent.ToMainThreadImpl(action);
 
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunOnMainThread(Action action) => globalComponent.RunOnMainThreadImpl(action);
 
         /// <summary>
