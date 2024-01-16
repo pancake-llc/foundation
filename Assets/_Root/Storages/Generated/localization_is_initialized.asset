@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a11231538da9894d8dce88b47df6a36, type: 3}
   m_Name: localization_is_initialized
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 601184d2e3af08841b68fcdf5a5d1a3f
+  guidCreateMode: 0
   value: 0
   debugLogEnabled: 0
   saved: 0
