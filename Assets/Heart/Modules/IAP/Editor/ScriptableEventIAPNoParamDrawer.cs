@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#if PANCAKE_IAP
+using System.Collections.Generic;
 using Pancake.ExLibEditor;
 using Pancake.IAP;
 using Pancake.Scriptable;
@@ -45,3 +46,5 @@ namespace Pancake.IAPEditor
         }
     }
 }
+
+#endif
