@@ -13,7 +13,7 @@ namespace Pancake
     /// </summary>
     /// <typeparam name="T">Specifies the type of elements to pool.</typeparam>
     [EditorIcon("scriptable_pool")]
-    public abstract class ScriptablePool<T> : ScriptableObject, IPool<T>
+    public abstract class ScriptablePool<T> : ScriptableObject, IPool<T>, IPoolCleaner
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
 
@@ -117,7 +117,8 @@ namespace Pancake
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if ((resetOn == ResetType.SceneLoaded && mode is LoadSceneMode.Single) || (resetOn == ResetType.AdditiveSceneLoaded && mode is LoadSceneMode.Additive)) InternalClearPool();
+            if ((resetOn == ResetType.SceneLoaded && mode is LoadSceneMode.Single) || (resetOn == ResetType.AdditiveSceneLoaded && mode is LoadSceneMode.Additive))
+                ((IPoolCleaner) this).InternalClearPool();
         }
 
         /// <summary>
@@ -125,7 +126,7 @@ namespace Pancake
         /// </summary>
         protected abstract void CleanPool();
 
-        private void InternalClearPool()
+        void IPoolCleaner.InternalClearPool()
         {
             CleanPool();
             container.Clear();
@@ -134,7 +135,7 @@ namespace Pancake
 
         public virtual void OnDisable()
         {
-            InternalClearPool();
+            ((IPoolCleaner) this).InternalClearPool();
             if (resetOn is ResetType.SceneLoaded or ResetType.AdditiveSceneLoaded) SceneManager.sceneLoaded -= OnSceneLoaded;
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
