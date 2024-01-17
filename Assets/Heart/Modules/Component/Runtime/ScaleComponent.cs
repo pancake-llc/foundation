@@ -21,9 +21,8 @@ namespace Pancake.Component
 
         private Tween _tween;
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
-            base.OnEnabled();
             var cycles = 0;
             if (loop) cycles = -1;
             if (startWith) transform.localScale = startValue;
@@ -39,10 +38,6 @@ namespace Pancake.Component
             });
         }
 
-        protected override void OnDisabled()
-        {
-            base.OnDisabled();
-            _tween.Stop();
-        }
+        protected void OnDisable() { _tween.Stop(); }
     }
 }

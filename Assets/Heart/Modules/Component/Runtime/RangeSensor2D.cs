@@ -8,7 +8,7 @@ namespace Pancake.Component
     [HideMonoScript]
     public class RangeSensor2D : Sensor
     {
-         [Space(8)] [SerializeField] private float radius = 1f;
+        [Space(8)] [SerializeField] private float radius = 1f;
 
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
         [SerializeField] private bool detectOnStart = true;
@@ -34,7 +34,7 @@ namespace Pancake.Component
             isPlaying = true;
         }
 
-        protected override void FixedTick()
+        protected void FixedUpdate()
         {
             if (!isPlaying) return;
             _frames++;

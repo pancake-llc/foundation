@@ -14,9 +14,9 @@ namespace Pancake.SceneFlow
 
         private Vector2 _defaultPosition;
 
-        protected override void OnEnabled() { showEvent.OnRaised += OnShow; }
+        protected void OnEnable() { showEvent.OnRaised += OnShow; }
 
-        protected override void OnDisabled() { showEvent.OnRaised -= OnShow; }
+        protected void OnDisable() { showEvent.OnRaised -= OnShow; }
 
         private void Start() { _defaultPosition = target.anchoredPosition; }
 

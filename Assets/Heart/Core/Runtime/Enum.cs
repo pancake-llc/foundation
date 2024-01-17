@@ -15,10 +15,8 @@ namespace Pancake
     public enum UpdateMode
     {
         Update = 0,
-        LateUpdate = 1,
-        FixedUpdate = 2,
-        WaitForFixedUpdate = 3,
-        WaitForEndOfFrame = 4
+        FixedUpdate = 1,
+        LateUpdate = 2
     }
 
     public enum ResetType
@@ -53,7 +51,7 @@ namespace Pancake
         Frame120 = 120,
         Frame240 = 240
     }
-    
+
     public enum ECreationMode
     {
         Auto,

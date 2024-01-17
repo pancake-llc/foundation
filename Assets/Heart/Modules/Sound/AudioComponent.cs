@@ -31,11 +31,10 @@ namespace Pancake.Sound
             if (playOnStart) StartCoroutine(IePlayDelayed());
         }
 
-        protected override void OnDisabled()
+        private void OnDisable()
         {
             playOnStart = false;
             Stop();
-            base.OnDisabled();
         }
 
         private IEnumerator IePlayDelayed()

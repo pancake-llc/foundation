@@ -15,7 +15,7 @@ namespace Pancake.Component
 
         private RectTransform _canvasRectTransform;
         
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
             spawnEvent.OnRaised += Spawn;
             returnPoolEvent.OnRaised += ReturnToPool;
@@ -36,7 +36,7 @@ namespace Pancake.Component
 #endif
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
             spawnEvent.OnRaised -= Spawn;
             returnPoolEvent.OnRaised -= ReturnToPool;

@@ -52,9 +52,8 @@ namespace Pancake
 
 #endif
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
-            base.OnEnabled();
             if (manual) return;
             Move();
         }
@@ -74,9 +73,8 @@ namespace Pancake
                 cycleMode);
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
-            base.OnDisabled();
             _tween.Stop();
         }
     }

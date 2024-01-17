@@ -12,9 +12,9 @@ namespace Pancake.SceneFlow
         [SerializeField, Label("Event")] private ScriptableEventGetGameObject getGameObjectEvent;
         [SerializeField] private GameObject target;
 
-        protected override void OnEnabled() { getGameObjectEvent.OnRaised += GetGameObject; }
+        protected void OnEnable() { getGameObjectEvent.OnRaised += GetGameObject; }
 
-        protected override void OnDisabled() { getGameObjectEvent.OnRaised -= GetGameObject; }
+        protected void OnDisable() { getGameObjectEvent.OnRaised -= GetGameObject; }
 
         private GameObject GetGameObject() { return target; }
     }

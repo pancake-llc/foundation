@@ -97,7 +97,7 @@ namespace Pancake.SceneFlow
 
         private void OnButtonSettingPressed() { MainPopupContainer.Push<SettingPopup>(popupSetting, true, popupId: popupSetting); }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
             if (_tokenShowUpdate != null)
             {

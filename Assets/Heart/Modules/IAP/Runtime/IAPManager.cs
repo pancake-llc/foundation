@@ -29,9 +29,8 @@ namespace Pancake.IAP
 
         public bool IsInitialized { get; set; }
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
-            base.OnEnabled();
             purchaseEvent.OnRaised += PurchaseProduct;
             productOnwershipCheckEvent.OnRaised += IsPurchasedProduct;
 #if UNITY_IOS
@@ -52,9 +51,8 @@ namespace Pancake.IAP
             PurchaseProductInternal(product);
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
-            base.OnDisabled();
             purchaseEvent.OnRaised -= PurchaseProduct;
             productOnwershipCheckEvent.OnRaised -= IsPurchasedProduct;
 #if UNITY_IOS

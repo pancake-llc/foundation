@@ -13,7 +13,7 @@ namespace Pancake.SceneFlow
         private readonly WaitForSeconds _wait = new WaitForSeconds(0.1f);
         private AsyncProcessHandle _handle;
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
             if (!Application.isMobilePlatform)
             {
@@ -23,7 +23,7 @@ namespace Pancake.SceneFlow
             _handle = App.StartCoroutine(IeValidate());
         }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
 #if UNITY_EDITOR
             try

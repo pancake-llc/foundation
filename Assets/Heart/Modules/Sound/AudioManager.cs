@@ -57,9 +57,8 @@ namespace Pancake.Sound
             }
         }
 
-        protected override void OnEnabled()
+        private void OnEnable()
         {
-            base.OnEnabled();
             eventPlaySfx.OnRaised += PlaySfx;
             eventStopSfx.OnRaised += StopSfx;
             eventPauseSfx.OnRaised += PauseSfx;
@@ -72,9 +71,8 @@ namespace Pancake.Sound
             eventResumeMusic.OnRaised += ResumeMusic;
         }
 
-        protected override void OnDisabled()
+        private void OnDisable()
         {
-            base.OnDisabled();
             eventPlaySfx.OnRaised -= PlaySfx;
             eventStopSfx.OnRaised -= StopSfx;
             eventPauseSfx.OnRaised -= PauseSfx;

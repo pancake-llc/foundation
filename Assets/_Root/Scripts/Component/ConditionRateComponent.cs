@@ -17,7 +17,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam initReviewEvent;
 #endif
 
-        protected override void OnEnabled() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
+        protected void OnEnable() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
 
         private void OnReCreateLevelLoaded()
         {
@@ -37,6 +37,6 @@ namespace Pancake.SceneFlow
             if (currentLevelIndex.Value >= indexLevelGoal) lastLevelShowRate.Value = currentLevelIndex.Value;
         }
 
-        protected override void OnDisabled() { reCreateLevelLoadedEvent.OnRaised -= OnReCreateLevelLoaded; }
+        protected void OnDisable() { reCreateLevelLoadedEvent.OnRaised -= OnReCreateLevelLoaded; }
     }
 }

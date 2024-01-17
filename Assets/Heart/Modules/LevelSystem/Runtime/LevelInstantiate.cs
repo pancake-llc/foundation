@@ -22,9 +22,9 @@ namespace Pancake.LevelSystem
             Instantiate(levelComponent, root, false);
         }
 
-        protected override void OnEnabled() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
+        protected void OnEnable() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
 
-        protected override void OnDisabled() { reCreateLevelLoadedEvent.OnRaised -= OnReCreateLevelLoaded; }
+        protected void OnDisable() { reCreateLevelLoadedEvent.OnRaised -= OnReCreateLevelLoaded; }
 
         public void OnReCreateLevelLoaded()
         {

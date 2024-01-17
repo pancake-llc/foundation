@@ -74,10 +74,6 @@ namespace Pancake.SceneFlow
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
-        protected override void OnDisabled()
-        {
-            base.OnDisabled();
-            trackingStartLevelEvent.OnRaised -= OnTrackingStartLevel;
-        }
+        protected void OnDisable() { trackingStartLevelEvent.OnRaised -= OnTrackingStartLevel; }
     }
 }

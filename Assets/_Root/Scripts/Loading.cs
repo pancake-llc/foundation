@@ -1,6 +1,8 @@
+using System;
 using System.Globalization;
 using Pancake.Apex;
 using Pancake.Localization;
+using Pancake.PlayerLoop;
 using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,7 +27,7 @@ namespace Pancake.SceneFlow
             loadingCompleted.Value = false;
         }
 
-        protected override void Tick()
+        private void Update()
         {
             if (!loadingCompleted.Value)
             {

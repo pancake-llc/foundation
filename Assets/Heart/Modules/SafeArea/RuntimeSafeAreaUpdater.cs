@@ -15,7 +15,7 @@ namespace Pancake.SafeArea
             component.UpdateRect();
         }
 
-        protected override void Tick()
+        protected void Update()
         {
             if (_safeArea == Screen.safeArea) return;
             _safeArea = Screen.safeArea;

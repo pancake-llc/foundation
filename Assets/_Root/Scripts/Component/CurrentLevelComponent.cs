@@ -14,7 +14,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private LocaleTextComponent localeText;
         [SerializeField] private bool subscribe;
 
-        protected override void OnEnabled()
+        protected void OnEnable()
         {
             OnValueChanged(currentLevel.Value);
             if (subscribe) currentLevel.OnValueChanged += OnValueChanged;
@@ -22,7 +22,7 @@ namespace Pancake.SceneFlow
 
         private void OnValueChanged(int level) { localeText.UpdateArgs($"{level + 1}"); }
 
-        protected override void OnDisabled()
+        protected void OnDisable()
         {
             if (subscribe) currentLevel.OnValueChanged -= OnValueChanged;
         }
