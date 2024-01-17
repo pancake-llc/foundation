@@ -66,7 +66,7 @@ namespace Pancake.ScriptableEditor
 
         public new static ScriptableWizardWindow Show() => GetWindow<ScriptableWizardWindow>("Scriptable Wizard");
 
-        [MenuItem("Tools/Pancake/Scriptable/Wizard")]
+        [MenuItem("Tools/Pancake/Scriptable/Wizard %`")]
         private static void OpenScriptableWizard() => Show();
 
         protected override void OnEnable()
