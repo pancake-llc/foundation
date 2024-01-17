@@ -37,7 +37,7 @@ namespace PancakeEditor
                 
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Green;
-                if (GUILayout.Button("Create Type", GUILayout.MaxHeight(30f)))
+                if (GUILayout.Button("Create Type", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                     PopupWindow.Show(new Rect(), new CreateTypeScreenWindow(position));
 
                 GUI.backgroundColor = Color.white;

@@ -15,7 +15,7 @@ namespace PancakeEditor
 
 #if !PANCAKE_IN_APP_REVIEW
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install In App Review", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install In App Review", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.google.play.review", "https://github.com/google-unity/in-app-review.git#1.8.1");
                 RegistryManager.Add("com.google.play.core", "https://github.com/google-unity/google-play-core.git#1.8.1");
@@ -36,7 +36,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(120)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(120)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall EDM4U", "Are you sure you want to uninstall EDM4U package ?", "Yes", "No");
                 if (confirmDelete)
@@ -51,7 +51,7 @@ namespace PancakeEditor
 
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Google External Dependency Manager", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Google External Dependency Manager", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.177");
                 RegistryManager.Resolve();
@@ -63,7 +63,7 @@ namespace PancakeEditor
 #if PANCAKE_IN_APP_REVIEW
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall In App Review", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Uninstall In App Review", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall In App Review", "Are you sure you want to uninstall in-app-review package ?", "Yes", "No");
                 if (confirmDelete)

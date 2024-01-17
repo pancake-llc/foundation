@@ -40,7 +40,7 @@ namespace PancakeEditor
 
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Green;
-                if (GUILayout.Button("Open Scriptable Wizard", GUILayout.MaxHeight(30f)))
+                if (GUILayout.Button("Open Scriptable Wizard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     EditorApplication.ExecuteMenuItem("Tools/Pancake/Scriptable/Wizard");
                 }

@@ -76,7 +76,7 @@ namespace PancakeEditor
         private static void InstallAtt()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install iOS 14 Advertising Support Package", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install iOS 14 Advertising Support Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.unity.ads.ios-support", "1.2.0");
                 RegistryManager.Resolve();
@@ -93,7 +93,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall iOS14AdvertisingSupport",
                     "Are you sure you want to uninstall iOS 14 Advertising Support package ?",
@@ -113,7 +113,7 @@ namespace PancakeEditor
         private static void InstallNeedleConsole()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1");
                 RegistryManager.Add("com.pancake.demystifier", "https://github.com/pancake-llc/ben-demystifier.git#0.4.1");
@@ -132,14 +132,14 @@ namespace PancakeEditor
             Uniform.DrawInstalled("Needle Console 4.5.1", new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 SettingsService.OpenUserPreferences("Preferences/Needle/Console");
             }
 
             GUILayout.Space(8);
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Needle Console", "Are you sure you want to uninstall needle console package ?", "Yes", "No");
                 if (confirmDelete)
@@ -160,7 +160,7 @@ namespace PancakeEditor
         private static void InstallSelectiveProfiler()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Selective Profiling", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Selective Profiling", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.needle.selective-profiling", "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1");
                 RegistryManager.Resolve();
@@ -175,14 +175,14 @@ namespace PancakeEditor
             Uniform.DrawInstalled("Selective Profiler 1.0.1-pre.1", labelMargin: new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 SettingsService.OpenProjectSettings("Project/Needle/Selective Profiler");
             }
 
             GUILayout.Space(8);
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Selective Profiling",
                     "Are you sure you want to uninstall selective profiling package ?",
@@ -202,7 +202,7 @@ namespace PancakeEditor
         private static void InstallParticleEffectUGUI()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.5.1");
                 RegistryManager.Resolve();
@@ -218,7 +218,7 @@ namespace PancakeEditor
 
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Particle Effect For UGUI",
                     "Are you sure you want to uninstall particle effect for ugui package ?",
@@ -238,7 +238,7 @@ namespace PancakeEditor
         private static void InstallUIEffect()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install UI Effect", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.coffee.ui-effect", "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10");
                 RegistryManager.Resolve();
@@ -254,7 +254,7 @@ namespace PancakeEditor
 
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall UI Effect", "Are you sure you want to uninstall ui effect package ?", "Yes", "No");
                 if (confirmDelete)
@@ -271,7 +271,7 @@ namespace PancakeEditor
         private static void InstallProjectAuditor()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Project Auditor", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Project Auditor", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.unity.project-auditor", "0.10.0");
                 RegistryManager.Resolve();
@@ -286,14 +286,14 @@ namespace PancakeEditor
             Uniform.DrawInstalled("Project Auditor 0.10.0", new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Open Dashboard", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Open Dashboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 EditorApplication.ExecuteMenuItem("Window/Analysis/Project Auditor");
             }
 
             GUILayout.Space(8);
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Project Auditor", "Are you sure you want to uninstall ProjectAuditor package ?", "Yes", "No");
                 if (confirmDelete)
@@ -310,7 +310,7 @@ namespace PancakeEditor
         private static void InstallProfileAnalyzer()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Profiler Analyzer", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Profiler Analyzer", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.unity.performance.profile-analyzer", "1.2.2");
                 RegistryManager.Resolve();
@@ -325,14 +325,14 @@ namespace PancakeEditor
             Uniform.DrawInstalled("Profile Analyzer 1.2.2", new RectOffset(0, 0, 6, 0));
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Open Dashboard", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Open Dashboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 EditorApplication.ExecuteMenuItem("Window/Analysis/Profile Analyzer");
             }
 
             GUILayout.Space(8);
             GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Profile Analyzer",
                     "Are you sure you want to uninstall ProfileAnalyzer package ?",
@@ -353,7 +353,7 @@ namespace PancakeEditor
         private static void InstallTestPerformance()
         {
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Test Performance", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Test Performance", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.unity.test-framework.performance", "1.0.9-preview");
                 RegistryManager.Resolve();
@@ -370,7 +370,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(30f), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Test Performance",
                     "Are you sure you want to uninstall Test Performance package ?",

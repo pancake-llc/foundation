@@ -34,7 +34,7 @@ namespace PancakeEditor
 
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Red;
-                if (GUILayout.Button("Uninstall IAP Package", GUILayout.MaxHeight(30f)))
+                if (GUILayout.Button("Uninstall IAP Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall IAP", "Are you sure you want to uninstall in-app-purchase package ?", "Yes", "No");
                     if (confirmDelete)
@@ -92,7 +92,7 @@ namespace PancakeEditor
 
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Unity Purchasing", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Unity Purchasing", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.unity.purchasing", "4.10.0");
                 RegistryManager.Resolve();

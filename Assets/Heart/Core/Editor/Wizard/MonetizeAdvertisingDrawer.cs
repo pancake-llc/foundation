@@ -36,7 +36,7 @@ namespace PancakeEditor
 
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Red;
-                if (GUILayout.Button("Uninstall Advertising", GUILayout.MaxHeight(30f)))
+                if (GUILayout.Button("Uninstall Advertising", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Advertising", "Are you sure you want to uninstall advertising package ?", "Yes", "No");
                     if (confirmDelete)
@@ -95,7 +95,7 @@ namespace PancakeEditor
 
 #else
             GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Advertisement", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Advertisement", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
                 AssetDatabase.Refresh();

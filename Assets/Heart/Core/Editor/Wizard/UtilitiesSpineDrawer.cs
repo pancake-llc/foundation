@@ -26,7 +26,7 @@ namespace PancakeEditor
                 GUILayout.FlexibleSpace();
                 EditorGUILayout.Space();
                 GUI.backgroundColor = Uniform.Red;
-                if (GUILayout.Button("Uninstall Spine", GUILayout.MaxHeight(30f)))
+                if (GUILayout.Button("Uninstall Spine", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Spine", "Are you sure you want to uninstall spine package ?", "Yes", "No");
                     if (confirmDelete)
@@ -114,14 +114,14 @@ namespace PancakeEditor
 #else
             GUI.enabled = !EditorApplication.isCompiling;
 
-            if (GUILayout.Button("Install Spine 4.1", GUILayout.MaxHeight(30f)))
+            if (GUILayout.Button("Install Spine 4.1", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.esotericsoftware.spine.spine-csharp", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1");
                 RegistryManager.Add("com.esotericsoftware.spine.spine-unity", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1");
                 RegistryManager.Resolve();
             }
 
-            if (GUILayout.Button("Install Spine URP 4.1", GUILayout.MaxHeight(30)))
+            if (GUILayout.Button("Install Spine URP 4.1", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.esotericsoftware.spine.urp-shaders", "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Modules/com.esotericsoftware.spine.urp-shaders#4.1");
                 RegistryManager.Resolve();
