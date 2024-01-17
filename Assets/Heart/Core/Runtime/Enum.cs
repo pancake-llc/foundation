@@ -14,12 +14,9 @@ namespace Pancake
     /// </summary>
     public enum UpdateMode
     {
-        EarlyUpdate = 2,
-        FixedUpdate = 3,
-        PreUpdate = 4,
-        Update = 5,
-        PreLateUpdate = 6,
-        PostLateUpdate = 7
+        Update = 0,
+        FixedUpdate = 1,
+        LateUpdate = 2
     }
 
     public enum ResetType

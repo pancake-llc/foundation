@@ -41,7 +41,7 @@ namespace Pancake
 
         public static float DeltaTime(TimeMode mode) => mode == TimeMode.Normal ? Time.deltaTime : Time.unscaledDeltaTime;
 
-        public static void Add(UpdateMode mode, Action action)
+        public static void AddListener(UpdateMode mode, Action action)
         {
             switch (mode)
             {
@@ -51,7 +51,7 @@ namespace Pancake
                 case UpdateMode.Update:
                     globalComponent.OnUpdate += action;
                     return;
-                case UpdateMode.PostLateUpdate:
+                case UpdateMode.LateUpdate:
                     globalComponent.OnLateUpdate += action;
                     return;
                 default:
@@ -59,7 +59,7 @@ namespace Pancake
             }
         }
 
-        public static void Remove(UpdateMode mode, Action action)
+        public static void RemoveListener(UpdateMode mode, Action action)
         {
             switch (mode)
             {
@@ -69,7 +69,7 @@ namespace Pancake
                 case UpdateMode.Update:
                     globalComponent.OnUpdate -= action;
                     return;
-                case UpdateMode.PostLateUpdate:
+                case UpdateMode.LateUpdate:
                     globalComponent.OnLateUpdate -= action;
                     return;
                 default:

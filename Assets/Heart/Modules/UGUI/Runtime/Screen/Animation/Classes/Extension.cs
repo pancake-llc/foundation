@@ -10,7 +10,7 @@ namespace Pancake.UI
         {
             var player = new AnimationPlayer(transition);
 
-            App.Add(UpdateMode.Update, Update);
+            App.AddListener(UpdateMode.Update, Update);
             progress?.Report(0.0f);
             player.Play();
             while (!player.IsFinished)
@@ -19,7 +19,7 @@ namespace Pancake.UI
                 progress?.Report(player.Time / transition.Duration);
             }
 
-            App.Remove(UpdateMode.Update, Update);
+            App.RemoveListener(UpdateMode.Update, Update);
             yield break;
 
             void Update() => player.Update(Time.unscaledDeltaTime);
