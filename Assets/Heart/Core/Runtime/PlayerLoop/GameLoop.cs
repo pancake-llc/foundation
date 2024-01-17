@@ -46,9 +46,9 @@ namespace Pancake.PlayerLoop
             switch (state)
             {
                 case PlayModeStateChange.EnteredEditMode:
-                    var defPls = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-                    UnregisterAll(ref defPls);
-                    UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(defPls);
+                    var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
+                    UnregisterAll(ref currentPlayerLoop);
+                    UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
                     EditorApplication.playModeStateChanged -= OnPlayModeState;
                     break;
 
