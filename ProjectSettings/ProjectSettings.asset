@@ -786,23 +786,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: TextMeshPro
-    EmbeddedLinux: TextMeshPro
-    GameCoreScarlett: 
-    GameCoreXboxOne: TextMeshPro
-    LinuxHeadlessSimulation: 
-    Nintendo Switch: TextMeshPro
-    PS4: TextMeshPro
-    PS5: ;TextMeshPro
-    QNX: TextMeshPro
-    Stadia: TextMeshPro
-    Standalone: TextMeshPro
-    VisionOS: TextMeshPro
-    WebGL: TextMeshPro
-    Windows Store Apps: 
-    XboxOne: TextMeshPro
-    iPhone: TextMeshPro
-    tvOS: TextMeshPro
+    Android: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    EmbeddedLinux: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    GameCoreScarlett: PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    GameCoreXboxOne: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    LinuxHeadlessSimulation: PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    Nintendo Switch: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    PS4: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    PS5: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    QNX: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    Stadia: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    Standalone: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    VisionOS: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    WebGL: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    Windows Store Apps: PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    XboxOne: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    iPhone: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
+    tvOS: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_ADMOB
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
