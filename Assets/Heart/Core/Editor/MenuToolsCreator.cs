@@ -153,5 +153,12 @@ namespace PancakeEditor
         }
 
         #endregion
+
+        #region -1
+
+        [MenuItem("Component/Miscellaneous/Wizard %`")]
+        public static void ShowWizardExtra() { Wizard.Show(); }
+
+        #endregion
     }
 }
