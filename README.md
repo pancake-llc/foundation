@@ -19,7 +19,7 @@ You can choose one of the following ways
 2, for only install heart as package module ----> add directly in `manifest.json` in folder `Packages/manifest.json`
 
 ```csharp
-"com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#2.5.0",
+"com.pancake.heart": "https://github.com/pancake-llc/foundation.git?path=Assets/Heart#2.5.1",
 ```
 
 
