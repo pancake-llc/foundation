@@ -12,7 +12,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Package Leaderboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.services.leaderboards", "1.0.0");
+                RegistryManager.Add("com.unity.services.leaderboards", "2.0.0");
                 RegistryManager.Resolve();
             }
 
@@ -23,7 +23,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Package CloudSave", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.services.cloudsave", "3.0.0");
+                RegistryManager.Add("com.unity.services.cloudsave", "3.1.0");
                 RegistryManager.Resolve();
             }
 
