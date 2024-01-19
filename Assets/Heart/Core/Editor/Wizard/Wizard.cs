@@ -14,7 +14,7 @@ namespace PancakeEditor
     public class Wizard : ScriptableWindowBase
     {
         internal const float BUTTON_HEIGHT = 30f;
-        
+
         private enum WizardType
         {
             All,
@@ -97,7 +97,7 @@ namespace PancakeEditor
         private Vector2 _rightSideScrollPosition = Vector2.zero;
         private List<int> _items;
         private WizardType _currentType = WizardType.All;
-        private WizardAllType _selectedItemType = WizardAllType.None;
+        private WizardAllType _selectedItemType = WizardAllType.HeartSetting;
 
         #region locale
 
@@ -323,7 +323,24 @@ namespace PancakeEditor
         {
             Refresh(type);
             _currentType = type;
-            if (deselectCurrent) _selectedItemType = WizardAllType.None;
+            switch (type)
+            {
+                case WizardType.All:
+                    if (deselectCurrent) _selectedItemType = WizardAllType.HeartSetting;
+                    break;
+                case WizardType.Money:
+                    if (deselectCurrent) _selectedItemType = WizardAllType.Advertisement;
+                    break;
+                case WizardType.Track:
+                    if (deselectCurrent) _selectedItemType = WizardAllType.Firebase;
+                    break;
+                case WizardType.Setting:
+                    if (deselectCurrent) _selectedItemType = WizardAllType.Scriptable;
+                    break;
+                case WizardType.Utilities:
+                    if (deselectCurrent) _selectedItemType = WizardAllType.OtherPackage;
+                    break;
+            }
         }
 
         private void Refresh(WizardType type)
