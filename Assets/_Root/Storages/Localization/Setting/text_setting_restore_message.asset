@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23c351e45916415fa870992171e2731d, type: 3}
+  m_Name: text_setting_restore_message
+  m_EditorClassIdentifier: 
+  items:
+  - language:
+      name: English
+      code: en
+      custom: 0
+    value: 'The current data on your device will be updated to be the same as the
+      data in the cloud.
+
+
+      Current data on the device will be overwritten.'
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: "D\u1EEF li\u1EC7u hi\u1EC7n t\u1EA1i tr\xEAn thi\u1EBFt b\u1ECB c\u1EE7a
+      b\u1EA1n s\u1EBD \u0111\u01B0\u1EE3c c\u1EADp nh\u1EADt gi\u1ED1ng v\u1EDBi
+      d\u1EEF li\u1EC7u tr\xEAn \u0111\xE1m m\xE2y. D\u1EEF li\u1EC7u hi\u1EC7n t\u1EA1i
+      tr\xEAn thi\u1EBFt b\u1ECB s\u1EBD b\u1ECB ghi \u0111\xE8."

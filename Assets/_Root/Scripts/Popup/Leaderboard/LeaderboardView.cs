@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Pancake.Apex;
 using Pancake.Localization;
@@ -12,7 +11,6 @@ using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
-using Unity.Services.Leaderboards.Exceptions;
 using Unity.Services.Leaderboards.Models;
 using UnityEngine;
 using UnityEngine.UI;

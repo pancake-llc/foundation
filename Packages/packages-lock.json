@@ -46,6 +46,13 @@
       "dependencies": {},
       "hash": "64445bb59f6d9d4d7f24be5eea45e7fdf2146546"
     },
+    "com.google.play.games": {
+      "version": "https://github.com/pancake-llc/google-play-games.git#11.0.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d5b1ab39bb50ed802a2567c0b9e91dedc803c65f"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -210,6 +217,16 @@
         "com.unity.services.core": "1.12.0",
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.ugui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.services.cloudsave": {
+      "version": "3.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.services.authentication": "2.6.1",
+        "com.unity.services.core": "1.4.3"
       },
       "url": "https://packages.unity.com"
     },

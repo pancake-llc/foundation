@@ -151,6 +151,11 @@
             "name": "com.unity.test-framework.performance",
             "expression": "1.0.9-preview",
             "define": "PANCAKE_TEST_PERFORMANCE"
+        },
+        {
+            "name": "com.google.play.games",
+            "expression": "10.0.0",
+            "define": "PANCAKE_GPGS"
         }
     ],
     "noEngineReferences": false

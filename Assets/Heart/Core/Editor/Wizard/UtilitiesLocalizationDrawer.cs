@@ -597,7 +597,7 @@ namespace PancakeEditor
             {
                 SessionState.EraseInt("translate_all_locale_text_count");
                 var rows = treeView.GetRows();
-                foreach (var viewItem in rows)
+                foreach (var viewItem in rows.ToList())
                 {
                     var assetItem = viewItem as AssetTreeViewItem;
                     TranslateMissingLocales(assetItem?.Asset);

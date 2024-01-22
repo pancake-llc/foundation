@@ -51,6 +51,8 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.unity.services.cloudsave": "3.1.0",
+    "com.google.play.games": "https://github.com/pancake-llc/google-play-games.git#11.0.1"
   }
 }
