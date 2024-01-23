@@ -15,12 +15,13 @@ namespace Pancake.UI
         {
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonBackup.onClick.AddListener(OnButtonBackupPressed);
+
             return UniTask.CompletedTask;
         }
 
         private void OnButtonBackupPressed()
         {
-            var choosePlatform = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<ChoosePlatformLoginPopup>(popupChoosePlatform, true);
+            PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<ChoosePlatformLoginPopup>(popupChoosePlatform, true, onLoad: tuple => tuple.popup.view.Setup(true));
         }
 
         private void OnButtonClosePressed()

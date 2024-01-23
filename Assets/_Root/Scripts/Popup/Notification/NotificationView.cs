@@ -1,6 +1,7 @@
+using System;
+using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,21 +9,25 @@ namespace Pancake.UI
 {
     public sealed class NotificationView : View
     {
-        [SerializeField] private TextMeshProUGUI textMessage;
-        [SerializeField] private Button buttonClose;
+        [SerializeField] private LocaleTextComponent localeText;
+        [SerializeField] private Button buttonOk;
+
+        private Action _action;
 
         protected override UniTask Initialize()
         {
-            buttonClose.onClick.AddListener(OnButtonClosePressed);
+            buttonOk.onClick.AddListener(OnButtonOkPressed);
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonClosePressed()
+        private void OnButtonOkPressed()
         {
+            C.CallActionClean(ref _action);
             PlaySoundClose();
             PopupHelper.Close(transform);
         }
 
-        public void SetMessage(string message) { textMessage.SetText(message); }
+        public void SetMessage(LocaleText localeMessage) { localeText.Variable = localeMessage; }
+        public void SetAction(Action action) { _action = action; }
     }
 }

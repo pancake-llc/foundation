@@ -372,8 +372,16 @@ MonoBehaviour:
   audioOpen: {fileID: 11400000, guid: 5faabd619f34f1345957ffd6b6178887, type: 2}
   audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
   playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
+  bucket: masterdata
   buttonClose: {fileID: 1067179467155030880}
   buttonGpgs: {fileID: 1023392252457856855}
+  block: {fileID: 0}
+  popupNotification: 
+  popupQuestion: 
+  localeLoginFail: {fileID: 11400000, guid: 01d4d4a0a95fb094f80b623390fadea9, type: 2}
+  localeLinkedGooglePlayGameFail: {fileID: 11400000, guid: 57e1e46826fb32944a367f17ec6902bc, type: 2}
+  localeBackupSuccess: {fileID: 11400000, guid: 297f7d3e9b9bf7b42a13715ab2c9b8ab, type: 2}
+  localeRestoreSuccess: {fileID: 11400000, guid: 66158f4962e906c4cad8f0565518557b, type: 2}
 --- !u!114 &4654702364358413821
 MonoBehaviour:
   m_ObjectHideFlags: 0
