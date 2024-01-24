@@ -18,8 +18,10 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonBackupPressed()
+        private async void OnButtonBackupPressed()
         {
+            PlaySoundClose();
+            await PopupHelper.Close(transform);
             PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<ChoosePlatformLoginPopup>(popupChoosePlatform, true, onLoad: tuple => tuple.popup.view.Setup(false));
         }
 
