@@ -73,7 +73,61 @@ namespace Pancake.SceneFlow
             await GpgsRestore();
         }
 
-        private async UniTask GpgsRestore() { }
+        private async UniTask GpgsRestore()
+        {
+            statusGpgs.Value = false;
+            if (!AuthenticationGooglePlayGames.IsSignIn())
+            {
+                gpgsLoginEvent.Raise();
+                await UniTask.WaitUntil(() => statusGpgs.Value);
+
+                if (string.IsNullOrEmpty(serverCode.Value))
+                {
+                    await _popupContainer.Push<NotificationPopup>(popupNotification,
+                        true,
+                        onLoad: tuple =>
+                        {
+                            tuple.popup.view.SetMessage(localeLoginFail);
+                            tuple.popup.view.SetAction(OnButtonClosePressed);
+                        });
+                    return;
+                }
+            }
+            else
+            {
+                statusGpgs.Value = false;
+                gpgsGetNewServerCode.Raise();
+                await UniTask.WaitUntil(() => statusGpgs.Value);
+            }
+
+            if (AuthenticationService.Instance.SessionTokenExists)
+            {
+                // signin cached
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            else
+            {
+                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
+            }
+
+            await FetchData();
+            return;
+
+            async Task FetchData()
+            {
+                // save process
+                byte[] inputBytes = await LoadFileBytes(bucket);
+                Data.Restore(inputBytes);
+
+                await _popupContainer.Push<NotificationPopup>(popupNotification,
+                    true,
+                    onLoad: tuple =>
+                    {
+                        tuple.popup.view.SetMessage(localeRestoreSuccess);
+                        tuple.popup.view.SetAction(TurnOffBlock);
+                    });
+            }
+        }
 
         private async UniTask GpgsBackup()
         {
