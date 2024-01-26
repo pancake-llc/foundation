@@ -31,7 +31,7 @@ namespace Pancake.GooglePlayGames
             if (!PlayGamesPlatform.Instance.IsAuthenticated()) return;
             (serverCode.Value, status.Value) = await GetNewServerCode();
         }
-        
+
         private Task<(string, bool)> GetNewServerCode()
         {
             var taskSource = new TaskCompletionSource<(string, bool)>();
@@ -71,7 +71,14 @@ namespace Pancake.GooglePlayGames
 #endif
             return taskSource.Task;
         }
-        
-        
+
+
+        public static bool IsSignIn()
+        {
+#if PANCAKE_GPGS
+            return PlayGamesPlatform.Instance.IsAuthenticated();
+#endif
+            return false;
+        }
     }
 }

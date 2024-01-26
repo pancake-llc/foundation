@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Pancake.GooglePlayGames;
 #if UNITY_ANDROID && PANCAKE_GPGS
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -47,7 +48,6 @@ namespace Pancake.SceneFlow
             buttonGpgs.onClick.AddListener(OnButtonGpgsPressed);
             buttonGpgs.gameObject.SetActive(true);
             buttonApple.gameObject.SetActive(false);
-            PlayGamesPlatform.Activate();
 #elif UNITY_IOS
             buttonGpgs.gameObject.SetActive(false);
             buttonApple.onClick.AddListener(OnButtonApplePressed);
@@ -78,30 +78,39 @@ namespace Pancake.SceneFlow
         private async UniTask GpgsBackup()
         {
             statusGpgs.Value = false;
-            gpgsLoginEvent.Raise();
-            await UniTask.WaitUntil(() => statusGpgs.Value);
-
-            if (string.IsNullOrEmpty(serverCode.Value))
+            if (!AuthenticationGooglePlayGames.IsSignIn())
             {
-                await _popupContainer.Push<NotificationPopup>(popupNotification,
-                    true,
-                    onLoad: tuple =>
-                    {
-                        tuple.popup.view.SetMessage(localeLoginFail);
-                        tuple.popup.view.SetAction(OnButtonClosePressed);
-                    });
-                return;
+                gpgsLoginEvent.Raise();
+                await UniTask.WaitUntil(() => statusGpgs.Value);
+
+                if (string.IsNullOrEmpty(serverCode.Value))
+                {
+                    await _popupContainer.Push<NotificationPopup>(popupNotification,
+                        true,
+                        onLoad: tuple =>
+                        {
+                            tuple.popup.view.SetMessage(localeLoginFail);
+                            tuple.popup.view.SetAction(OnButtonClosePressed);
+                        });
+                    return;
+                }
+            }
+            else
+            {
+                statusGpgs.Value = false;
+                gpgsGetNewServerCode.Raise();
+                await UniTask.WaitUntil(() => statusGpgs.Value);
             }
 
             if (AuthenticationService.Instance.SessionTokenExists)
             {
+                // signin cached
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
             else
             {
                 await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
             }
-
 
             await PushData();
             return;
@@ -125,35 +134,6 @@ namespace Pancake.SceneFlow
         private void TurnOffBlock() { block.SetActive(false); }
 
         private async void OnButtonApplePressed() { }
-
-
-        private Task<string> GetNewServerCode()
-        {
-            var taskSource = new TaskCompletionSource<string>();
-            PlayGamesPlatform.Instance.RequestServerSideAccess(true, code => taskSource.SetResult(code));
-            return taskSource.Task;
-        }
-
-        private async Task SignInWithGooglePlayGamesAsync(string authCode)
-        {
-            try
-            {
-                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(authCode);
-                // SignIn is successful.
-            }
-            catch (AuthenticationException ex)
-            {
-                // Compare error code to AuthenticationErrorCodes
-                // Notify the player with the proper error message
-                Debug.LogException(ex);
-            }
-            catch (RequestFailedException ex)
-            {
-                // Compare error code to CommonErrorCodes
-                // Notify the player with the proper error message
-                Debug.LogException(ex);
-            }
-        }
 
         private async Task SaveFileBytes(string key, byte[] bytes)
         {
