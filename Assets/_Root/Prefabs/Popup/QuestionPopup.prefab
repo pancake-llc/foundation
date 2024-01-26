@@ -384,7 +384,8 @@ MonoBehaviour:
   audioOpen: {fileID: 11400000, guid: 5faabd619f34f1345957ffd6b6178887, type: 2}
   audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
   playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
-  localeText: {fileID: 8719683442971173534}
+  localeMessage: {fileID: 8719683442971173534}
+  localeYes: {fileID: 8018616281051327999}
   buttonYes: {fileID: 2748903216881031624}
   buttonNo: {fileID: 2192816221403176018}
 --- !u!114 &5723918084654431873
@@ -416,6 +417,8 @@ GameObject:
   - component: {fileID: 3290078906682931249}
   - component: {fileID: 8050804878025984482}
   - component: {fileID: 5103285904936303974}
+  - component: {fileID: 8018616281051327999}
+  - component: {fileID: 2043585633397983127}
   m_Layer: 5
   m_Name: text_yes
   m_TagString: Untagged
@@ -539,6 +542,41 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8018616281051327999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263472299671247767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c43f4ebada4d6ab7202113210604cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 5103285904936303974}
+  property:
+    enabled: 0
+    value: text
+  variable: {fileID: 11400000, guid: ad8f57c836c40404eac635289e3242db, type: 2}
+  formatArgs: []
+--- !u!114 &2043585633397983127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263472299671247767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 476932f1680198544b423513d634d37e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  component: {fileID: 5103285904936303974}
+  property:
+    enabled: 0
+    value: font
+  variable: {fileID: 11400000, guid: 2231b50be30e72a46b98a7622c3a1a07, type: 2}
 --- !u!1 &4399662376586185454
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,9 +987,9 @@ MonoBehaviour:
   m_fontSize: 50
   m_fontSizeBase: 50
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 32
+  m_fontSizeMax: 50
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

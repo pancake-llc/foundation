@@ -381,8 +381,8 @@ MonoBehaviour:
   popupNotification: NotificationPopup
   popupQuestion: QuestionPopup
   localeLoginFail: {fileID: 11400000, guid: 01d4d4a0a95fb094f80b623390fadea9, type: 2}
-  localeGpgsLoginFail: {fileID: 11400000, guid: ab436e4b42ccc474894aa30c9a4517ff, type: 2}
   localeLinkedGooglePlayGameFail: {fileID: 11400000, guid: 57e1e46826fb32944a367f17ec6902bc, type: 2}
+  localeLink: {fileID: 11400000, guid: a887de502a2c98941b1f330c911f22df, type: 2}
   localeBackupSuccess: {fileID: 11400000, guid: 297f7d3e9b9bf7b42a13715ab2c9b8ab, type: 2}
   localeRestoreSuccess: {fileID: 11400000, guid: 66158f4962e906c4cad8f0565518557b, type: 2}
 --- !u!114 &4654702364358413821

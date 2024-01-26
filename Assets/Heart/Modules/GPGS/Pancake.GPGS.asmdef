@@ -1,0 +1,20 @@
+{
+    "name": "Pancake.GPGS",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1ed07ff861e5f468287b0baef844706d",
+        "GUID:b0a110e2f808b4d4d82f5694f91b251a"
+    ],
+    "includePlatforms": [
+        "Android",
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

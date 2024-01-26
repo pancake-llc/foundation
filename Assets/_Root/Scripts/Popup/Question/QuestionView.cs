@@ -2,6 +2,7 @@ using System;
 using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,8 @@ namespace Pancake.UI
 {
     public sealed class QuestionView : View
     {
-        [SerializeField] private LocaleTextComponent localeText;
+        [SerializeField] private LocaleTextComponent localeMessage;
+        [SerializeField] private LocaleTextComponent localeYes;
         [SerializeField] private Button buttonYes;
         [SerializeField] private Button buttonNo;
 
@@ -37,7 +39,9 @@ namespace Pancake.UI
             PopupHelper.Close(transform);
         }
 
-        public void SetMessage(LocaleText localeMessage) { localeText.Variable = localeMessage; }
+        public void SetMessage(LocaleText localeMessage) { this.localeMessage.Variable = localeMessage; }
+
+        public void SetLocaleButtonYes(LocaleText localeYes) { this.localeYes.Variable = localeYes; }
 
         public void SetAction(Action yes, Action no)
         {

@@ -1,10 +1,11 @@
 using System;
 using System.Threading.Tasks;
-#if UNITY_ANDROID
+#if UNITY_ANDROID && PANCAKE_GPGS
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 #endif
 using Pancake.Localization;
+using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
 using Pancake.UI;
 using Unity.Services.Authentication;
@@ -27,18 +28,22 @@ namespace Pancake.SceneFlow
         [SerializeField, PopupPickup] private string popupQuestion;
         [SerializeField] private LocaleText localeLoginFail;
         [SerializeField] private LocaleText localeLinkedGooglePlayGameFail;
+        [SerializeField] private LocaleText localeLink;
         [SerializeField] private LocaleText localeBackupSuccess;
         [SerializeField] private LocaleText localeRestoreSuccess;
 
-        private string _serverCode;
+        [Header("Authen GPGS")] [SerializeField] private StringVariable serverCode;
+        [SerializeField] private BoolVariable statusGpgs;
+        [SerializeField] private ScriptableEventNoParam gpgsLoginEvent;
+        [SerializeField] private ScriptableEventNoParam gpgsGetNewServerCode;
+
         private bool _isBackup;
         private PopupContainer _popupContainer;
 
         protected override UniTask Initialize()
         {
-            _serverCode = "";
             _popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
-#if UNITY_ANDROID
+#if UNITY_ANDROID && PANCAKE_GPGS
             buttonGpgs.onClick.AddListener(OnButtonGpgsPressed);
             buttonGpgs.gameObject.SetActive(true);
             buttonApple.gameObject.SetActive(false);
@@ -68,69 +73,41 @@ namespace Pancake.SceneFlow
             await GpgsRestore();
         }
 
-        private async UniTask GpgsRestore() { LoginGooglePlayGames(); }
+        private async UniTask GpgsRestore() { }
 
         private async UniTask GpgsBackup()
         {
-            _serverCode = await LoginGooglePlayGames();
-            
-            if (string.IsNullOrEmpty(_serverCode))
+            statusGpgs.Value = false;
+            gpgsLoginEvent.Raise();
+            await UniTask.WaitUntil(() => statusGpgs.Value);
+
+            if (string.IsNullOrEmpty(serverCode.Value))
             {
                 await _popupContainer.Push<NotificationPopup>(popupNotification,
                     true,
                     onLoad: tuple =>
                     {
                         tuple.popup.view.SetMessage(localeLoginFail);
-                        tuple.popup.view.SetAction(TurnOffBlock);
+                        tuple.popup.view.SetAction(OnButtonClosePressed);
                     });
                 return;
             }
 
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            try
+            if (AuthenticationService.Instance.SessionTokenExists)
             {
-                await AuthenticationService.Instance.LinkWithGooglePlayGamesAsync(_serverCode);
-                // Link is successful.
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
-            catch (AuthenticationException ex) when (ex.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked)
+            else
             {
-                await _popupContainer.Push<QuestionPopup>(popupQuestion,
-                    true,
-                    onLoad: tuple =>
-                    {
-                        tuple.popup.view.SetMessage(localeLinkedGooglePlayGameFail);
-                        tuple.popup.view.SetAction(Ok, null);
-                        return;
+                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
+            }
 
-                        async void Ok()
-                        {
-                            AuthenticationService.Instance.SignOut(true);
-                            await SignInWithGooglePlayGamesAsync(_serverCode);
-                            if (AuthenticationService.Instance.SessionTokenExists) await AuthenticationService.Instance.SignInAnonymouslyAsync(); 
-                            await PushData();
-                        }
-                    });
-                return;
-            }
-            catch (AuthenticationException ex)
-            {
-                // Compare error code to AuthenticationErrorCodes
-                // Notify the player with the proper error message
-                Debug.LogException(ex);
-            }
-            catch (RequestFailedException ex)
-            {
-                // Compare error code to CommonErrorCodes
-                // Notify the player with the proper error message
-                Debug.LogException(ex);
-            }
 
             await PushData();
             return;
 
             async Task PushData()
             {
-                Debug.Log(AuthenticationService.Instance.PlayerId);
                 // save process
                 byte[] inputBytes = Data.Backup();
                 await SaveFileBytes(bucket, inputBytes);
@@ -149,30 +126,11 @@ namespace Pancake.SceneFlow
 
         private async void OnButtonApplePressed() { }
 
-        private Task<string> LoginGooglePlayGames()
+
+        private Task<string> GetNewServerCode()
         {
             var taskSource = new TaskCompletionSource<string>();
-            PlayGamesPlatform.Instance.Authenticate((success) =>
-            {
-                if (success == SignInStatus.Success)
-                {
-                    PlayGamesPlatform.Instance.RequestServerSideAccess(true, code => taskSource.SetResult(code));
-                }
-                else
-                {
-                    PlayGamesPlatform.Instance.ManuallyAuthenticate(success =>
-                    {
-                        if (success == SignInStatus.Success)
-                        {
-                            PlayGamesPlatform.Instance.RequestServerSideAccess(true, code => taskSource.SetResult(code));
-                        }
-                        else
-                        {
-                            taskSource.SetResult(null);
-                        }
-                    });
-                }
-            });
+            PlayGamesPlatform.Instance.RequestServerSideAccess(true, code => taskSource.SetResult(code));
             return taskSource.Task;
         }
 
@@ -243,6 +201,7 @@ namespace Pancake.SceneFlow
 
         private void OnButtonClosePressed()
         {
+            TurnOffBlock();
             PlaySoundClose();
             PopupHelper.Close(transform);
         }

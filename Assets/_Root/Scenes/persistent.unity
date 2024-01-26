@@ -345,6 +345,7 @@ GameObject:
   - component: {fileID: 776958720}
   - component: {fileID: 776958721}
   - component: {fileID: 776958722}
+  - component: {fileID: 776958723}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -587,6 +588,20 @@ MonoBehaviour:
   tiltHorizontalThreshold: 0.5
   dragThreshold: 0.05
   longTapStartsDrag: {fileID: 11400000, guid: 3a598d5cce1e2be488decb7189a667a3, type: 2}
+--- !u!114 &776958723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 776958708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c8ab7c40ea40c419f7e91bd073b662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverCode: {fileID: 11400000, guid: 9d6cf00fd4c45db4b864edc5f09c3269, type: 2}
+  loginEvent: {fileID: 11400000, guid: 5f14cc6af0a90434eb9fac7fae2fedc0, type: 2}
 --- !u!1 &814159081
 GameObject:
   m_ObjectHideFlags: 0
