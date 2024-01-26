@@ -601,7 +601,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverCode: {fileID: 11400000, guid: 9d6cf00fd4c45db4b864edc5f09c3269, type: 2}
+  status: {fileID: 11400000, guid: 07f6d12cd53d8ad4090943cae6eed64f, type: 2}
   loginEvent: {fileID: 11400000, guid: 5f14cc6af0a90434eb9fac7fae2fedc0, type: 2}
+  getNewServerCode: {fileID: 11400000, guid: 49491b9fd9e0800489cc701eabe7bdd6, type: 2}
 --- !u!1 &814159081
 GameObject:
   m_ObjectHideFlags: 0

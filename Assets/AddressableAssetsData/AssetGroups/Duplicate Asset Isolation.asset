@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: b5c771bd2246302468b7628a1593dfbf
+  m_GUID: a4060c806e2a8564b98a5100e62c2d5e
   m_SerializeEntries:
   - m_GUID: a3bf58cc721114849a4faa637641b3c6
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_vip.png
@@ -397,6 +397,51 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e74a1f8978a7da348a721508d0d58834
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicMultiply.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfbf95ed0fe6c554c8c2ee6c8325937c
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Multiply.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bab24c479f34eec45be6ea8595891569
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicScreen.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c61244023592f95479fddd71b5067683
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Screen.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e8a610c9e01c3648bac42585e5fc676
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/Spine-Skeleton.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b66cf7a186d13054989b33a5c90044e4
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicDefault.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa95b0fb6983c0f40a152e6f9aa82bfb
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e8245019faeb8c43b75f9ca3ac8ee34
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Materials/SkeletonGraphicAdditive.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1e4ab34b07f81e4e94f0d241c416669
+    m_Address: Packages/com.esotericsoftware.spine.spine-unity/Runtime/spine-unity/Shaders/SkeletonGraphic/Spine-SkeletonGraphic-Additive.shader
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4ce9ad840d2d8ed4084e70cf2d325eb6
     m_Address: Assets/_Root/Sprites/StarterPack/Launcher/starter_splash.jpg
     m_ReadOnly: 0
@@ -417,6 +462,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99240ac69a3d5ff4aae0aa5239fa8ad7
+    m_Address: Assets/_Root/Storages/Advertising/notification_daily_channel.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61509f6b494b461498cccef441c17f12
     m_Address: Assets/_Root/Storages/Generated/Level/prewarm_load_level_completed.asset
     m_ReadOnly: 0
@@ -429,6 +479,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8aa9a9419fc7fb54ab60739de81135d0
     m_Address: Assets/_Root/Fonts/Material/LilitaOne-VietNamese Material Outline.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08b764422b612c242a650ecd01c7d9ec
+    m_Address: Assets/_Root/Storages/Localization/ScheduleNotification/Daily/text_notification_daily_title1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c9de2871153a3347b6791ed77270d34
+    m_Address: Assets/_Root/Storages/Localization/ScheduleNotification/Daily/text_notification_daily_message1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -512,8 +572,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49491b9fd9e0800489cc701eabe7bdd6
+    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_get_new_server_code.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d6cf00fd4c45db4b864edc5f09c3269
+    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_server_code.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07f6d12cd53d8ad4090943cae6eed64f
+    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_status_task.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a006421cd8bfffd42a013cf538174370
     m_Address: Assets/_Root/Storages/Generated/Level/current_level_index.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f14cc6af0a90434eb9fac7fae2fedc0
+    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_login_event.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -659,6 +739,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 98d20dbe870ae2b41b87a7e7c72361c5
     m_Address: Assets/_Root/Sounds/SFX/sfx_coin_1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07b02a6eeefe11a408abec7267e4c252
+    m_Address: Assets/_Root/Storages/Generated/Gameplay/rate/rate_display_times.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

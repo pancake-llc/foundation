@@ -10499,6 +10499,12 @@ MonoBehaviour:
     colorBoder: {r: 0.99, g: 0.96, b: 0.82, a: 1}
     colorHeader: {r: 1, g: 0.67, b: 0.26, a: 1}
     colorText: {r: 0.68, g: 0.3, b: 0.01, a: 1}
+  serverCode: {fileID: 11400000, guid: 9d6cf00fd4c45db4b864edc5f09c3269, type: 2}
+  statusGpgs: {fileID: 11400000, guid: 07f6d12cd53d8ad4090943cae6eed64f, type: 2}
+  gpgsLoginEvent: {fileID: 11400000, guid: 5f14cc6af0a90434eb9fac7fae2fedc0, type: 2}
+  gpgsGetNewServerCode: {fileID: 11400000, guid: 49491b9fd9e0800489cc701eabe7bdd6, type: 2}
+  popupNotification: NotificationPopup
+  localeLoginFail: {fileID: 11400000, guid: 01d4d4a0a95fb094f80b623390fadea9, type: 2}
 --- !u!114 &1957585220786037092
 MonoBehaviour:
   m_ObjectHideFlags: 0

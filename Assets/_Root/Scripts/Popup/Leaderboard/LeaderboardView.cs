@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pancake.Apex;
+using Pancake.GooglePlayGames;
 using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
@@ -70,7 +71,6 @@ namespace Pancake.UI
         [SerializeField] private AnimationCurve displayRankCurve;
         [SerializeField, PopupPickup] private string popupRename;
 
-
         [SerializeField] private LeaderboardElementColor colorRank1 = new LeaderboardElementColor(new Color(1f, 0.82f, 0f),
             new Color(0.44f, 0.33f, 0f),
             new Color(0.99f, 0.96f, 0.82f),
@@ -97,6 +97,12 @@ namespace Pancake.UI
 
         [SerializeField] private LeaderboardElementColor colorOutRank = new LeaderboardElementColor();
 
+        [Header("Authen GPGS")] [SerializeField] private StringVariable serverCode;
+        [SerializeField] private BoolVariable statusGpgs;
+        [SerializeField] private ScriptableEventNoParam gpgsLoginEvent;
+        [SerializeField] private ScriptableEventNoParam gpgsGetNewServerCode;
+        [SerializeField, PopupPickup] private string popupNotification;
+        [SerializeField] private LocaleText localeLoginFail;
 
         private LeaderboardData _allTimeData = new LeaderboardData("alltime_data");
         private LeaderboardData _weeklyData = new LeaderboardData("weekly_data");
@@ -243,17 +249,44 @@ namespace Pancake.UI
         private async void InternalInit()
 #pragma warning restore CS1998
         {
-            if (!AuthenticationService.Instance.IsSignedIn)
+            block.SetActive(true);
+            rootLeaderboard.SetActive(false);
+            if (!AuthenticationGooglePlayGames.IsSignIn())
             {
-                block.SetActive(true);
-                rootLeaderboard.SetActive(false);
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                await Excute();
+                statusGpgs.Value = false;
+                gpgsLoginEvent.Raise();
+                await UniTask.WaitUntil(() => statusGpgs.Value);
+                if (string.IsNullOrEmpty(serverCode.Value))
+                {
+                    await PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER)
+                        .Push<NotificationPopup>(popupNotification,
+                            true,
+                            onLoad: tuple =>
+                            {
+                                tuple.popup.view.SetMessage(localeLoginFail);
+                                tuple.popup.view.SetAction(OnButtonClosePressed);
+                            });
+                    return;
+                }
             }
             else
             {
-                await Excute();
+                statusGpgs.Value = false;
+                gpgsGetNewServerCode.Raise();
+                await UniTask.WaitUntil(() => statusGpgs.Value);
             }
+
+            if (AuthenticationService.Instance.SessionTokenExists)
+            {
+                // signin cached
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            else
+            {
+                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
+            }
+
+            await Excute();
 
             return;
 

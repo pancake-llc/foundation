@@ -107,7 +107,10 @@ namespace Pancake.SceneFlow
             }
             else
             {
+#if UNITY_ANDROID && PANCAKE_GPGS
                 await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
+#elif UNITY_IOS
+#endif
             }
 
             await FetchData();
@@ -131,9 +134,9 @@ namespace Pancake.SceneFlow
 
         private async UniTask GpgsBackup()
         {
-            statusGpgs.Value = false;
             if (!AuthenticationGooglePlayGames.IsSignIn())
             {
+                statusGpgs.Value = false;
                 gpgsLoginEvent.Raise();
                 await UniTask.WaitUntil(() => statusGpgs.Value);
 
