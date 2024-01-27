@@ -31,4 +31,4 @@ MonoBehaviour:
     value: 0
     viewPosition: {x: 0, y: -366}
     skinId: hair/blue
-  resetOn: 1
+  resetOn: 2

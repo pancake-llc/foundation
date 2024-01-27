@@ -389,6 +389,7 @@ MonoBehaviour:
   statusGpgs: {fileID: 11400000, guid: 07f6d12cd53d8ad4090943cae6eed64f, type: 2}
   gpgsLoginEvent: {fileID: 11400000, guid: 5f14cc6af0a90434eb9fac7fae2fedc0, type: 2}
   gpgsGetNewServerCode: {fileID: 11400000, guid: 49491b9fd9e0800489cc701eabe7bdd6, type: 2}
+  changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
 --- !u!114 &4654702364358413821
 MonoBehaviour:
   m_ObjectHideFlags: 0

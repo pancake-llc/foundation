@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0b07739cea07de4a9f0f31ad1e92461, type: 3}
   m_Name: daily_reward_data_day2
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 8aa628d6ce5aafc4f8c52cd2b732ce80
+  guidCreateMode: 0
   value:
     day: 2
     typeReward: 0
@@ -29,4 +31,4 @@ MonoBehaviour:
     icon: {fileID: 0}
     outfitUnit: {fileID: 0}
     isClaimed: 0
-  resetOn: 0
+  resetOn: 2

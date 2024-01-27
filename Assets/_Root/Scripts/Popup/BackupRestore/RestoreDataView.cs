@@ -22,7 +22,7 @@ namespace Pancake.UI
         {
             PlaySoundClose();
             await PopupHelper.Close(transform);
-            PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<ChoosePlatformLoginPopup>(popupChoosePlatform, true, onLoad: tuple => tuple.popup.view.Setup(false));
+            await PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<ChoosePlatformLoginPopup>(popupChoosePlatform, true, onLoad: tuple => tuple.popup.view.Setup(false));
         }
 
         private void OnButtonClosePressed()

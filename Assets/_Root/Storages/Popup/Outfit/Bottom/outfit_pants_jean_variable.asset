@@ -31,4 +31,4 @@ MonoBehaviour:
     value: 0
     viewPosition: {x: 0, y: -90}
     skinId: legs/pants-jeans
-  resetOn: 1
+  resetOn: 2

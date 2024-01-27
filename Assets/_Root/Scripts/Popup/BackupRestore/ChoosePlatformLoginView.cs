@@ -37,6 +37,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private BoolVariable statusGpgs;
         [SerializeField] private ScriptableEventNoParam gpgsLoginEvent;
         [SerializeField] private ScriptableEventNoParam gpgsGetNewServerCode;
+        [SerializeField] private ScriptableEventString changeSceneEvent;
 
         private bool _isBackup;
         private PopupContainer _popupContainer;
@@ -127,9 +128,28 @@ namespace Pancake.SceneFlow
                     onLoad: tuple =>
                     {
                         tuple.popup.view.SetMessage(localeRestoreSuccess);
-                        tuple.popup.view.SetAction(TurnOffBlock);
+
+                        tuple.popup.view.SetAction(ActionOk);
+                        return;
+
+                        async void ActionOk()
+                        {
+                            TurnOffBlock();
+                            PlaySoundClose();
+                            await PopupHelper.Close(transform);
+                            ReloadMenu();
+                        }
                     });
             }
+        }
+        
+        private async void ReloadMenu()
+        {
+            await PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER).Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
+                false,
+                onLoad: t => { t.popup.view.Setup(); },
+                popupId: nameof(SceneTransitionPopup)); // show transition
+            changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
         private async UniTask GpgsBackup()

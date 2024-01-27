@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Pancake.Apex;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,7 +12,7 @@ namespace Pancake.Scriptable
 {
     [Serializable]
     [EditorIcon("scriptable_variable")]
-    public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IDrawObjectsInInspector
+    public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IResetOn, IDrawObjectsInInspector
     {
         [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeField]
         protected T value;
@@ -26,10 +25,9 @@ namespace Pancake.Scriptable
 
         [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")] [SerializeField] [ShowIf(nameof(saved))]
         private T defaultValue;
-        
-        [Message("Reset to initial value when :" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
-                 "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" + "\nApplication Start : Once, when the application starts.",
-            Height = 58)]
+
+        [Tooltip("Reset to initial value when :" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
+                 "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" + "\nApplication Start : Once, when the application starts.")]
         [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
 
@@ -207,6 +205,7 @@ namespace Pancake.Scriptable
         }
 
         bool ISave.Saved => saved;
+        ResetType IResetOn.ResetOn => resetOn;
 
         public override string ToString()
         {

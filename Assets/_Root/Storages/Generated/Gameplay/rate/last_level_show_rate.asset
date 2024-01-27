@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cdb8ad39a5bdd4f8ed3d18fae14a63, type: 3}
   m_Name: last_level_show_rate
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: eee83a1c61699f34e8eba711713dffd8
+  guidCreateMode: 0
   value: 0
   debugLogEnabled: 0
   saved: 1
   defaultValue: 0
-  resetOn: 0
+  resetOn: 2
   isClamped: 0
   minMax: {x: -2147483648, y: 2147483647}

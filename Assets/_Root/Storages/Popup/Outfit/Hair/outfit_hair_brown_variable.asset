@@ -17,7 +17,7 @@ MonoBehaviour:
   guidCreateMode: 0
   value:
     id: 68582abc8746459
-    isUnlocked: 1
+    isUnlocked: 0
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -366}
@@ -31,4 +31,4 @@ MonoBehaviour:
     value: 1000
     viewPosition: {x: 0, y: -366}
     skinId: hair/brown
-  resetOn: 1
+  resetOn: 2
