@@ -1,17 +1,11 @@
-using System;
 using System.Threading.Tasks;
 using Pancake.GooglePlayGames;
-#if UNITY_ANDROID && PANCAKE_GPGS
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
-#endif
 using Pancake.Localization;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;
 using Pancake.UI;
 using Unity.Services.Authentication;
 using Unity.Services.CloudSave;
-using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -142,13 +136,14 @@ namespace Pancake.SceneFlow
                     });
             }
         }
-        
+
         private async void ReloadMenu()
         {
-            await PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER).Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
-                false,
-                onLoad: t => { t.popup.view.Setup(); },
-                popupId: nameof(SceneTransitionPopup)); // show transition
+            await PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER)
+                .Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
+                    false,
+                    onLoad: t => { t.popup.view.Setup(); },
+                    popupId: nameof(SceneTransitionPopup)); // show transition
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
@@ -210,7 +205,9 @@ namespace Pancake.SceneFlow
 
         private void TurnOffBlock() { block.SetActive(false); }
 
+#if UNITY_IOS
         private async void OnButtonApplePressed() { }
+#endif
 
         private async Task SaveFileBytes(string key, byte[] bytes)
         {
@@ -237,7 +234,6 @@ namespace Pancake.SceneFlow
             try
             {
                 byte[] results = await CloudSaveService.Instance.Files.Player.LoadBytesAsync(key);
-
                 return results;
             }
             catch (CloudSaveValidationException e)
