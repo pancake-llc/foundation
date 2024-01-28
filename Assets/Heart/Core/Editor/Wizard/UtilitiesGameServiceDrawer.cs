@@ -73,7 +73,7 @@ namespace PancakeEditor
 
             bool gpgsInstalled = File.Exists("Assets/GooglePlayGames/com.google.play.games/Runtime/Google.Play.Games.asmdef");
 
-            string contentInstallLabel = "Install GPGS v11.01 (1)";
+            var contentInstallLabel = "Install GPGS v11.01 (1)";
             if (gpgsInstalled)
             {
                 GUI.backgroundColor = Uniform.Green;
@@ -127,6 +127,7 @@ namespace PancakeEditor
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GooglePlayGames.meta"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/GeneratedLocalRepo", "GooglePlayGames"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/GeneratedLocalRepo", "GooglePlayGames.meta"));
+                    AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                 }
             }
