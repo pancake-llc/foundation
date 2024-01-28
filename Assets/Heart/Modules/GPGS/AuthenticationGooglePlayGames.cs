@@ -1,14 +1,13 @@
 using System.Threading.Tasks;
 using Pancake.Scriptable;
-#if UNITY_ANDROID || PANCAKE_GPGS
+#if UNITY_ANDROID && PANCAKE_GPGS
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 #endif
+using UnityEngine;
 
 namespace Pancake.GooglePlayGames
 {
-    using UnityEngine;
-
     public class AuthenticationGooglePlayGames : MonoBehaviour
     {
         [SerializeField] private StringVariable serverCode;
@@ -16,14 +15,13 @@ namespace Pancake.GooglePlayGames
         [SerializeField] private ScriptableEventNoParam loginEvent;
         [SerializeField] private ScriptableEventNoParam getNewServerCode;
 
+#if UNITY_ANDROID && PANCAKE_GPGS
         private void Start()
         {
             serverCode.Value = "";
-#if UNITY_ANDROID || PANCAKE_GPGS
             PlayGamesPlatform.Activate();
             loginEvent.OnRaised += OnGooglePlayGameLogin;
             getNewServerCode.OnRaised += OnGetNewServerCode;
-#endif
         }
 
         private async void OnGetNewServerCode()
@@ -39,14 +37,17 @@ namespace Pancake.GooglePlayGames
             return taskSource.Task;
         }
 
-        private void OnDisable() { loginEvent.OnRaised -= OnGooglePlayGameLogin; }
+        private void OnDisable()
+        {
+            loginEvent.OnRaised -= OnGooglePlayGameLogin;
+            getNewServerCode.OnRaised -= OnGetNewServerCode;
+        }
 
         private async void OnGooglePlayGameLogin() { (serverCode.Value, status.Value) = await LoginGooglePlayGames(); }
 
         private Task<(string, bool)> LoginGooglePlayGames()
         {
             var taskSource = new TaskCompletionSource<(string, bool)>();
-#if UNITY_ANDROID || PANCAKE_GPGS
             PlayGamesPlatform.Instance.Authenticate(status =>
             {
                 if (status == SignInStatus.Success)
@@ -68,17 +69,17 @@ namespace Pancake.GooglePlayGames
                     });
                 }
             });
-#endif
             return taskSource.Task;
         }
 
-
+#endif
         public static bool IsSignIn()
         {
-#if PANCAKE_GPGS
+#if UNITY_ANDROID && PANCAKE_GPGS
             return PlayGamesPlatform.Instance.IsAuthenticated();
-#endif
+#else
             return false;
+#endif
         }
     }
 }

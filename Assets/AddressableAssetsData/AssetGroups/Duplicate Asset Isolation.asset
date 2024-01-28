@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Duplicate Asset Isolation
   m_Data:
     m_SerializedData: []
-  m_GUID: a4060c806e2a8564b98a5100e62c2d5e
+  m_GUID: 81bca8eb793bfab41b95b37847b7213d
   m_SerializeEntries:
   - m_GUID: a3bf58cc721114849a4faa637641b3c6
     m_Address: Assets/_Root/Sprites/StarterPack/Menu/Shop/starter_shop_icon_vip.png
@@ -573,17 +573,17 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 49491b9fd9e0800489cc701eabe7bdd6
-    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_get_new_server_code.asset
+    m_Address: Assets/_Root/Storages/Generated/Backup/gpgs_get_new_server_code.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9d6cf00fd4c45db4b864edc5f09c3269
-    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_server_code.asset
+    m_Address: Assets/_Root/Storages/Generated/Backup/gpgs_apple_server_code.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 07f6d12cd53d8ad4090943cae6eed64f
-    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_status_task.asset
+    m_Address: Assets/_Root/Storages/Generated/Backup/gpgs_apple_status_task.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -593,7 +593,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f14cc6af0a90434eb9fac7fae2fedc0
-    m_Address: Assets/_Root/Storages/Generated/GPGS/gpgs_login_event.asset
+    m_Address: Assets/_Root/Storages/Generated/Backup/gpgs_apple_login_event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10247cca5ce308843ae5e0c25c17942e
+    m_Address: Assets/_Root/Storages/Generated/change_scene_event.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -644,11 +649,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b39b52d9a5ec5e144aa0c0b97a091f74
     m_Address: Assets/_Root/Storages/Fx/vfx_coin_return_pool_event.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 10247cca5ce308843ae5e0c25c17942e
-    m_Address: Assets/_Root/Storages/Generated/change_scene_event.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

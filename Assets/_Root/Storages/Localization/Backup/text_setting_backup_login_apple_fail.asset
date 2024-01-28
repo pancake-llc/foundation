@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23c351e45916415fa870992171e2731d, type: 3}
-  m_Name: text_setting_backup_link
+  m_Name: text_setting_backup_login_apple_fail
   m_EditorClassIdentifier: 
   items:
   - language:
       name: English
       code: en
       custom: 0
-    value: Link
+    value: Failed to login Apple
   - language:
       name: Vietnamese
       code: vi
       custom: 0
-    value: "Li\xEAn k\u1EBFt"
+    value: "Kh\xF4ng \u0111\u0103ng nh\u1EADp \u0111\u01B0\u1EE3c Apple"

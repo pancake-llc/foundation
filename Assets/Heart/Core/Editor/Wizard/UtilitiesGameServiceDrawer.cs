@@ -18,6 +18,10 @@ namespace PancakeEditor
             Uniform.DrawInstalled("CloudSave Version 3.1.0");
 #endif
 
+#if PANCAKE_APPLE_SIGNIN
+            Uniform.DrawInstalled("Apple SignIn Version 1.4.3");
+#endif
+
             GUI.enabled = !EditorApplication.isCompiling;
 #if !PANCAKE_LEADERBOARD
             if (GUILayout.Button("Install Package Leaderboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
@@ -122,6 +126,28 @@ namespace PancakeEditor
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GooglePlayGames"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GooglePlayGames.meta"));
                     AssetDatabase.Refresh();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+#endif
+
+
+#if !PANCAKE_APPLE_SIGNIN
+            if (GUILayout.Button("Install Apple SignIn 1.4.3", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                RegistryManager.Add("com.lupidan.apple-signin-unity", "https://github.com/lupidan/apple-signin-unity.git#v1.4.3");
+                RegistryManager.Resolve();
+            }
+#else
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Uninstall Apple SignIn", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Apple SignIn", "Are you sure you want to uninstall apple signin package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.lupidan.apple-signin-unity");
+                    RegistryManager.Resolve();
                 }
             }
 

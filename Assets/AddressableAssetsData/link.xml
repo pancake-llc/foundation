@@ -100,6 +100,9 @@
     <type fullname="Pancake.RuntimeInitializer" preserve="all" />
     <type fullname="Pancake.Optional`1[System.String]" preserve="nothing" serialized="true" />
   </assembly>
+  <assembly fullname="Pancake.AppleSignIn, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="Pancake.AppleSignIn.AuthenticationApple" preserve="all" />
+  </assembly>
   <assembly fullname="Pancake.Component, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="Pancake.Component.InGameNotification" preserve="all" />
     <type fullname="Pancake.Component.InGameNotificationRounter" preserve="all" />

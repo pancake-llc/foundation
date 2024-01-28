@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a11231538da9894d8dce88b47df6a36, type: 3}
-  m_Name: gpgs_status_task
+  m_Name: gpgs_apple_status_task
   m_EditorClassIdentifier: 
   categoryIndex: 0
   guid: 07f6d12cd53d8ad4090943cae6eed64f

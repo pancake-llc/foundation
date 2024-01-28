@@ -380,14 +380,13 @@ MonoBehaviour:
   block: {fileID: 8752788960893260696}
   popupNotification: NotificationPopup
   popupQuestion: QuestionPopup
-  localeLoginFail: {fileID: 11400000, guid: 01d4d4a0a95fb094f80b623390fadea9, type: 2}
-  localeLinkedGooglePlayGameFail: {fileID: 11400000, guid: 57e1e46826fb32944a367f17ec6902bc, type: 2}
-  localeLink: {fileID: 11400000, guid: a887de502a2c98941b1f330c911f22df, type: 2}
+  localeLoginGpgsFail: {fileID: 11400000, guid: 01d4d4a0a95fb094f80b623390fadea9, type: 2}
+  localeLoginAppleFail: {fileID: 11400000, guid: 53fb02daf68f1624b818983db5bd8f42, type: 2}
   localeBackupSuccess: {fileID: 11400000, guid: 297f7d3e9b9bf7b42a13715ab2c9b8ab, type: 2}
   localeRestoreSuccess: {fileID: 11400000, guid: 66158f4962e906c4cad8f0565518557b, type: 2}
   serverCode: {fileID: 11400000, guid: 9d6cf00fd4c45db4b864edc5f09c3269, type: 2}
-  statusGpgs: {fileID: 11400000, guid: 07f6d12cd53d8ad4090943cae6eed64f, type: 2}
-  gpgsLoginEvent: {fileID: 11400000, guid: 5f14cc6af0a90434eb9fac7fae2fedc0, type: 2}
+  status: {fileID: 11400000, guid: 07f6d12cd53d8ad4090943cae6eed64f, type: 2}
+  loginEvent: {fileID: 11400000, guid: 5f14cc6af0a90434eb9fac7fae2fedc0, type: 2}
   gpgsGetNewServerCode: {fileID: 11400000, guid: 49491b9fd9e0800489cc701eabe7bdd6, type: 2}
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
 --- !u!114 &4654702364358413821
