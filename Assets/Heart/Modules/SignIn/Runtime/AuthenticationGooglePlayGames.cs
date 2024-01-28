@@ -6,7 +6,7 @@ using GooglePlayGames.BasicApi;
 #endif
 using UnityEngine;
 
-namespace Pancake.GooglePlayGames
+namespace Pancake.SignIn
 {
     public class AuthenticationGooglePlayGames : MonoBehaviour
     {

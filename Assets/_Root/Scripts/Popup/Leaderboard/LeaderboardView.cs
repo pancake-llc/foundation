@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pancake.Apex;
-using Pancake.GooglePlayGames;
+using Pancake.SignIn;
 using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
@@ -97,12 +97,13 @@ namespace Pancake.UI
 
         [SerializeField] private LeaderboardElementColor colorOutRank = new LeaderboardElementColor();
 
-        [Header("Authen GPGS")] [SerializeField] private StringVariable serverCode;
-        [SerializeField] private BoolVariable statusGpgs;
-        [SerializeField] private ScriptableEventNoParam gpgsLoginEvent;
+        [Header("Authen")] [SerializeField] private StringVariable serverCode;
+        [SerializeField] private BoolVariable status;
+        [SerializeField] private ScriptableEventNoParam loginEvent;
         [SerializeField] private ScriptableEventNoParam gpgsGetNewServerCode;
         [SerializeField, PopupPickup] private string popupNotification;
-        [SerializeField] private LocaleText localeLoginFail;
+        [SerializeField] private LocaleText localeLoginGpgsFail;
+        [SerializeField] private LocaleText localeLoginAppleFail;
 
         private LeaderboardData _allTimeData = new LeaderboardData("alltime_data");
         private LeaderboardData _weeklyData = new LeaderboardData("weekly_data");
@@ -251,11 +252,14 @@ namespace Pancake.UI
         {
             block.SetActive(true);
             rootLeaderboard.SetActive(false);
+#if UNITY_EDITOR
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+#elif UNITY_ANDROID && PANCAKE_GPGS
             if (!AuthenticationGooglePlayGames.IsSignIn())
             {
-                statusGpgs.Value = false;
-                gpgsLoginEvent.Raise();
-                await UniTask.WaitUntil(() => statusGpgs.Value);
+                status.Value = false;
+                loginEvent.Raise();
+                await UniTask.WaitUntil(() => status.Value);
                 if (string.IsNullOrEmpty(serverCode.Value))
                 {
                     await PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER)
@@ -263,7 +267,7 @@ namespace Pancake.UI
                             true,
                             onLoad: tuple =>
                             {
-                                tuple.popup.view.SetMessage(localeLoginFail);
+                                tuple.popup.view.SetMessage(localeLoginGpgsFail);
                                 tuple.popup.view.SetAction(OnButtonClosePressed);
                             });
                     return;
@@ -271,11 +275,30 @@ namespace Pancake.UI
             }
             else
             {
-                statusGpgs.Value = false;
+                status.Value = false;
                 gpgsGetNewServerCode.Raise();
-                await UniTask.WaitUntil(() => statusGpgs.Value);
+                await UniTask.WaitUntil(() => status.Value);
             }
+#elif UNITY_IOS
+            status.Value = false;
+            loginEvent.Raise();
+            await UniTask.WaitUntil(() => status.Value);
 
+            if (string.IsNullOrEmpty(serverCode.Value))
+            {
+                await PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER)
+                    .Push<NotificationPopup>(popupNotification,
+                        true,
+                        onLoad: tuple =>
+                        {
+                            tuple.popup.view.SetMessage(localeLoginAppleFail);
+                            tuple.popup.view.SetAction(OnButtonClosePressed);
+                        });
+                return;
+            }
+#endif
+
+#if UNITY_ANDROID && !UNITY_EDITOR
             if (AuthenticationService.Instance.SessionTokenExists)
             {
                 // signin cached
@@ -285,6 +308,17 @@ namespace Pancake.UI
             {
                 await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
             }
+#elif UNITY_IOS && !UNITY_EDITOR
+            if (AuthenticationService.Instance.SessionTokenExists)
+            {
+                // signin cached
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            else
+            {
+                await AuthenticationService.Instance.SignInWithAppleAsync(serverCode.Value);
+            }
+#endif
 
             await Excute();
 

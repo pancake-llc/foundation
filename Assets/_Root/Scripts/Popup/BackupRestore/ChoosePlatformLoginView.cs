@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Pancake.GooglePlayGames;
+using Pancake.SignIn;
 using Pancake.Localization;
 using Pancake.Scriptable;
 using Pancake.Threading.Tasks;

@@ -1,14 +1,12 @@
 {
-    "name": "Pancake.AppleSignIn",
+    "name": "Pancake.SignIn",
     "rootNamespace": "",
     "references": [
         "AppleAuth",
-        "Pancake.Scriptable"
+        "Pancake.Scriptable",
+        "Google.Play.Games"
     ],
-    "includePlatforms": [
-        "Editor",
-        "iOS"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
