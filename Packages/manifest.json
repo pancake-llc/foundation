@@ -52,7 +52,6 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0",
-    "com.unity.services.cloudsave": "3.1.0",
-    "com.lupidan.apple-signin-unity": "https://github.com/lupidan/apple-signin-unity.git#v1.4.3"
+    "com.unity.services.cloudsave": "3.1.0"
   }
 }

@@ -125,6 +125,8 @@ namespace PancakeEditor
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/Android", "GooglePlayGamesManifest.androidlib.meta"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GooglePlayGames"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "GooglePlayGames.meta"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/GeneratedLocalRepo", "GooglePlayGames"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/GeneratedLocalRepo", "GooglePlayGames.meta"));
                     AssetDatabase.Refresh();
                 }
             }
