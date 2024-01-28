@@ -104,7 +104,7 @@ namespace Pancake
                 datas.Clear();
                 return;
             }
-            
+
             datas = Deserialize<Dictionary<string, byte[]>>(bytes) ?? new Dictionary<string, byte[]>(INIT_SIZE);
         }
 
@@ -182,6 +182,20 @@ namespace Pancake
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeleteAll() => datas.Clear();
+
+        /// <summary>
+        /// Get raw byte[] of all data of profile
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte[] Backup() { return Pancake.Serialize.ToBinary(datas); }
+
+        /// <summary>
+        /// Load from byte[]
+        /// </summary>
+        /// <param name="bytes"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Restore(byte[] bytes) { datas = Pancake.Serialize.FromBinary<Dictionary<string, byte[]>>(bytes); }
 
         #endregion
     }

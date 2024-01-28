@@ -21,6 +21,8 @@ namespace Pancake.UI
         [SerializeField] private Button buttonUpdate;
         [SerializeField] private Button buttonClose;
         [SerializeField] private Button buttonCredit;
+        [SerializeField] private Button buttonBackupData;
+        [SerializeField] private Button buttonRestoreData;
 
         [SerializeField] private UIEffect musicUIEffect;
         [SerializeField] private UIEffect soundUIEffect;
@@ -39,6 +41,8 @@ namespace Pancake.UI
         [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
         [SerializeField] private ScriptableEventNoParam eventStopAllSfx;
         [SerializeField, PopupPickup] private string popupCredit;
+        [SerializeField, PopupPickup] private string popupBackupData;
+        [SerializeField, PopupPickup] private string popupRestoreData;
 #if UNITY_IOS
         [SerializeField] private Button buttonRestore;
         [SerializeField] private Pancake.IAP.ScriptableEventIAPNoParam restorePurchaseEvent;
@@ -47,6 +51,7 @@ namespace Pancake.UI
         private Language _selectedLang;
         private RectTransform _languageScrollerRT;
         private bool _firstTimeActiveLanguage;
+        private PopupContainer _popupContainer;
 
         protected override UniTask Initialize()
         {
@@ -57,6 +62,8 @@ namespace Pancake.UI
             buttonUpdate.onClick.AddListener(OnButtonUpdatePressed);
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonCredit.onClick.AddListener(OnButtonCreditPressed);
+            buttonBackupData.onClick.AddListener(OnButtonBackupDataPressed);
+            buttonRestoreData.onClick.AddListener(OnButtonRestoreDataPressed);
             buttonSelectLanguage.onClick.AddListener(OnButtonSelectLanguagePressed);
             languageScroller.Delegate = this;
             _selectedLang = Locale.CurrentLanguage;
@@ -64,9 +71,14 @@ namespace Pancake.UI
 #if UNITY_IOS
             buttonRestore.onClick.AddListener(OnButtonRestorePressed);
 #endif
+            _popupContainer = PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
             Refresh();
             return UniTask.CompletedTask;
         }
+
+        private void OnButtonRestoreDataPressed() { _popupContainer.Push<RestoreDataPopup>(popupRestoreData, true); }
+
+        private void OnButtonBackupDataPressed() { _popupContainer.Push<BackupDataPopup>(popupBackupData, true); }
 
         private void OnButtonSelectLanguagePressed()
         {
@@ -88,7 +100,7 @@ namespace Pancake.UI
             }
         }
 
-        private void OnButtonCreditPressed() { PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER).Push<CreditPopup>(popupCredit, true); }
+        private void OnButtonCreditPressed() { _popupContainer.Push<CreditPopup>(popupCredit, true); }
 
         private void OnButtonClosePressed()
         {

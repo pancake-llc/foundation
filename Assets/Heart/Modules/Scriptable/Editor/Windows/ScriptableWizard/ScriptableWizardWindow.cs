@@ -61,6 +61,7 @@ namespace Pancake.ScriptableEditor
         {
             All,
             Saved,
+            [InspectorName("Saved With Warning")] SavedApplicationStart,
             NotSaved
         }
 
@@ -323,7 +324,8 @@ namespace Pancake.ScriptableEditor
             DrawScriptableBases(_scriptableObjects, typeTabIndex, width);
             EditorGUILayout.EndScrollView();
 
-            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
+            if (GUILayout.Button("Create Type", GUILayout.MaxHeight(ScriptableEditorSetting.BUTTON_HEIGHT)))
+                PopupWindow.Show(new Rect(), new CreateTypePopUpWindow(position));
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
@@ -345,13 +347,21 @@ namespace Pancake.ScriptableEditor
                 // filter saved if it variable
                 if (tapIndex == 1)
                 {
-                    if (_filterVariable == FilterVariable.Saved)
+                    switch (_filterVariable)
                     {
-                        if (scriptable is ISave {Saved: false}) continue;
-                    }
-                    else if (_filterVariable == FilterVariable.NotSaved)
-                    {
-                        if (scriptable is ISave {Saved: true}) continue;
+                        case FilterVariable.Saved:
+                            var temp = scriptable as ISave;
+                            if (temp == null || temp.Saved == false) continue;
+                            break;
+                        case FilterVariable.NotSaved when scriptable is ISave {Saved: true}:
+                            continue;
+                        case FilterVariable.SavedApplicationStart:
+                        {
+                            var isSave = scriptable as ISave;
+                            var resetOn = scriptable as IResetOn;
+                            if (isSave == null || resetOn == null || isSave.Saved == false || resetOn.ResetOn != ResetType.ApplicationStarts) continue;
+                            break;
+                        }
                     }
                 }
 

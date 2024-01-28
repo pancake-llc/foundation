@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Pancake.Apex;
+using Pancake.SignIn;
 using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
@@ -12,7 +12,6 @@ using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
-using Unity.Services.Leaderboards.Exceptions;
 using Unity.Services.Leaderboards.Models;
 using UnityEngine;
 using UnityEngine.UI;
@@ -72,7 +71,6 @@ namespace Pancake.UI
         [SerializeField] private AnimationCurve displayRankCurve;
         [SerializeField, PopupPickup] private string popupRename;
 
-
         [SerializeField] private LeaderboardElementColor colorRank1 = new LeaderboardElementColor(new Color(1f, 0.82f, 0f),
             new Color(0.44f, 0.33f, 0f),
             new Color(0.99f, 0.96f, 0.82f),
@@ -99,6 +97,13 @@ namespace Pancake.UI
 
         [SerializeField] private LeaderboardElementColor colorOutRank = new LeaderboardElementColor();
 
+        [Header("Authen")] [SerializeField] private StringVariable serverCode;
+        [SerializeField] private BoolVariable status;
+        [SerializeField] private ScriptableEventNoParam loginEvent;
+        [SerializeField] private ScriptableEventNoParam gpgsGetNewServerCode;
+        [SerializeField, PopupPickup] private string popupNotification;
+        [SerializeField] private LocaleText localeLoginGpgsFail;
+        [SerializeField] private LocaleText localeLoginAppleFail;
 
         private LeaderboardData _allTimeData = new LeaderboardData("alltime_data");
         private LeaderboardData _weeklyData = new LeaderboardData("weekly_data");
@@ -245,17 +250,77 @@ namespace Pancake.UI
         private async void InternalInit()
 #pragma warning restore CS1998
         {
-            if (!AuthenticationService.Instance.IsSignedIn)
+            block.SetActive(true);
+            rootLeaderboard.SetActive(false);
+#if UNITY_EDITOR
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+#elif UNITY_ANDROID && PANCAKE_GPGS
+            if (!AuthenticationGooglePlayGames.IsSignIn())
             {
-                block.SetActive(true);
-                rootLeaderboard.SetActive(false);
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                await Excute();
+                status.Value = false;
+                loginEvent.Raise();
+                await UniTask.WaitUntil(() => status.Value);
+                if (string.IsNullOrEmpty(serverCode.Value))
+                {
+                    await PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER)
+                        .Push<NotificationPopup>(popupNotification,
+                            true,
+                            onLoad: tuple =>
+                            {
+                                tuple.popup.view.SetMessage(localeLoginGpgsFail);
+                                tuple.popup.view.SetAction(OnButtonClosePressed);
+                            });
+                    return;
+                }
             }
             else
             {
-                await Excute();
+                status.Value = false;
+                gpgsGetNewServerCode.Raise();
+                await UniTask.WaitUntil(() => status.Value);
             }
+#elif UNITY_IOS
+            status.Value = false;
+            loginEvent.Raise();
+            await UniTask.WaitUntil(() => status.Value);
+
+            if (string.IsNullOrEmpty(serverCode.Value))
+            {
+                await PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER)
+                    .Push<NotificationPopup>(popupNotification,
+                        true,
+                        onLoad: tuple =>
+                        {
+                            tuple.popup.view.SetMessage(localeLoginAppleFail);
+                            tuple.popup.view.SetAction(OnButtonClosePressed);
+                        });
+                return;
+            }
+#endif
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            if (AuthenticationService.Instance.SessionTokenExists)
+            {
+                // signin cached
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            else
+            {
+                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
+            }
+#elif UNITY_IOS && !UNITY_EDITOR
+            if (AuthenticationService.Instance.SessionTokenExists)
+            {
+                // signin cached
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            else
+            {
+                await AuthenticationService.Instance.SignInWithAppleAsync(serverCode.Value);
+            }
+#endif
+
+            await Excute();
 
             return;
 

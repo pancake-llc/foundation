@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
   m_Name: outfit_hair_long_blue_variable
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 77bc8cc7df15f9d40a9ffc3705a4cfd7
+  guidCreateMode: 0
   value:
     id: d462cac3c11d414
     isUnlocked: 0
@@ -29,4 +31,4 @@ MonoBehaviour:
     value: 1000
     viewPosition: {x: 0, y: -312}
     skinId: hair/long-blue-with-scarf
-  resetOn: 1
+  resetOn: 2

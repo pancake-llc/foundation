@@ -17,7 +17,7 @@ namespace Pancake.SceneFlow
         public static void MinusCoin(int amount) => Data.Save(Constant.CURRENT_COIN, Data.Load<int>(Constant.CURRENT_COIN) - amount);
 
         public static int GetCurrentCoin() => Data.Load<int>(Constant.CURRENT_COIN);
-
+        
         public static void SetCurrentSkinHat(string id) => Data.Save(Constant.CHARACTER_SKIN_HAT, id);
         public static string GetCurrentSkinHat() => Data.Load(Constant.CHARACTER_SKIN_HAT, "");
 

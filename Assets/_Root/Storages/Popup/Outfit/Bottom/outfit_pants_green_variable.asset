@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
   m_Name: outfit_pants_green_variable
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: a0dbdd08f995b7c41af78399ffa73e0b
+  guidCreateMode: 0
   value:
     id: 620225f92c3b43d
     isUnlocked: 0
@@ -29,4 +31,4 @@ MonoBehaviour:
     value: 0
     viewPosition: {x: 0, y: -90}
     skinId: legs/pants-green
-  resetOn: 1
+  resetOn: 2

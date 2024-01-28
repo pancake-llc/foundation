@@ -939,7 +939,7 @@ GameObject:
   - component: {fileID: 397105624}
   - component: {fileID: 397105625}
   m_Layer: 5
-  m_Name: TextCurrentLevel
+  m_Name: text_current_level
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1075,7 +1075,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevel: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
   localeText: {fileID: 397105624}
-  subscribe: 0
+  subscribe: 1
 --- !u!114 &397105624
 MonoBehaviour:
   m_ObjectHideFlags: 0

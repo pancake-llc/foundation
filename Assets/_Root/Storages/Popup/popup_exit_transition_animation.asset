@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: popup_exit_transition_animation
   m_EditorClassIdentifier: 
   delay: 0
-  duration: 0.3
+  duration: 0.2
   ease: 1
   beforeAlignment: 4
   beforeScale: {x: 1, y: 1, z: 1}

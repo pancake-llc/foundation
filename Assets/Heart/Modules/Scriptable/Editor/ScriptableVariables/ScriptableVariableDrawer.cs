@@ -11,7 +11,6 @@ namespace Pancake.ScriptableEditor
     [CustomEditor(typeof(ScriptableVariableBase), true)]
     public class ScriptableVariableDrawer : UnityEditor.Editor
     {
-        private ScriptableBase _scriptableBase;
         private ScriptableVariableBase _scriptableVariable;
         private static bool repaintFlag;
 
@@ -55,9 +54,22 @@ namespace Pancake.ScriptableEditor
         private void DrawDefault()
         {
             Uniform.DrawOnlyField(serializedObject, "m_Script", true);
-            var propertiesToHide = CanShowMinMaxProperty(target) ? new[] {"m_Script", "guid", "guidCreateMode"} : new[] {"m_Script", "minMax", "guid", "guidCreateMode"};
+            string[] propertiesToHide = CanShowMinMaxProperty(target)
+                ? new[] {"m_Script", "guid", "guidCreateMode"}
+                : new[] {"m_Script", "minMax", "guid", "guidCreateMode"};
             DrawDefaultExcept(propertiesToHide);
+            
+            GUILayout.Space(4);
+            var isSaved = serializedObject.FindProperty("saved");
+            var resetOn = serializedObject.FindProperty("resetOn");
+            if (isSaved.boolValue && resetOn.enumValueIndex == (int) ResetType.ApplicationStarts)
+            {
+                EditorGUILayout.HelpBox(
+                    "When saved equal true \nresetOn should be set to SceneLoaded or AdditiveSceneLoaded \nSo that the value is updated again when using the Restore Data.",
+                    MessageType.Warning);
+            }
 
+            GUILayout.Space(4);
             if (GUILayout.Button("Reset to initial value"))
             {
                 var so = (IReset) target;
@@ -108,10 +120,9 @@ namespace Pancake.ScriptableEditor
 
         private void OnEnable()
         {
-            if (repaintFlag)
-                return;
+            if (repaintFlag) return;
 
-            _scriptableBase = target as ScriptableBase;
+            RequireCheck();
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             repaintFlag = true;
         }
@@ -124,10 +135,10 @@ namespace Pancake.ScriptableEditor
 
             if (obj == PlayModeStateChange.EnteredPlayMode)
             {
-                if (_scriptableBase == null) _scriptableBase = (ScriptableBase) target;
-                _scriptableBase.repaintRequest += OnRepaintRequested;
+                RequireCheck();
+                _scriptableVariable.repaintRequest += OnRepaintRequested;
             }
-            else if (obj == PlayModeStateChange.ExitingPlayMode) _scriptableBase.repaintRequest -= OnRepaintRequested;
+            else if (obj == PlayModeStateChange.ExitingPlayMode) _scriptableVariable.repaintRequest -= OnRepaintRequested;
         }
 
         private void OnRepaintRequested() => Repaint();

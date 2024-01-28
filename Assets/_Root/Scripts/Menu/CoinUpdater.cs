@@ -1,3 +1,4 @@
+using System;
 using Pancake.Apex;
 using Pancake.Scriptable;
 using TMPro;
@@ -16,11 +17,18 @@ namespace Pancake.SceneFlow
 
         [SerializeField] private ScriptableEventInt updateCoinWithValue;
 
-        private void Start()
+        private void Start() { OnNoticeUpdateCoin(); }
+
+        private void OnEnable()
         {
-            OnNoticeUpdateCoin();
             if (eventUpdateCoin != null) eventUpdateCoin.OnRaised += OnNoticeUpdateCoin;
             if (updateCoinWithValue != null) updateCoinWithValue.OnRaised += OnNoticeUpdateCoin;
+        }
+
+        private void OnDisable()
+        {
+            if (eventUpdateCoin != null) eventUpdateCoin.OnRaised -= OnNoticeUpdateCoin;
+            if (updateCoinWithValue != null) updateCoinWithValue.OnRaised -= OnNoticeUpdateCoin;
         }
 
         private void OnNoticeUpdateCoin(int value)

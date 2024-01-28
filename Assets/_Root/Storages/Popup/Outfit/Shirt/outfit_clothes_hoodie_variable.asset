@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
   m_Name: outfit_clothes_hoodie_variable
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: bdbc67b50d99b7849921966f93d19445
+  guidCreateMode: 0
   value:
     id: 65036017fad740c
     isUnlocked: 0
@@ -29,4 +31,4 @@ MonoBehaviour:
     value: 1000
     viewPosition: {x: 0, y: -234}
     skinId: clothes/hoodie-blue-and-scarf
-  resetOn: 1
+  resetOn: 2

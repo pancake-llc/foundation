@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0926914124914c3eba99c6f46c0cd18c, type: 3}
   m_Name: outfit_hair_pink_variable
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 5a867abd04b4544448a8e0ff693d1899
+  guidCreateMode: 0
   value:
     id: f2e2571b478246c
     isUnlocked: 0
@@ -29,4 +31,4 @@ MonoBehaviour:
     value: 1000
     viewPosition: {x: 0, y: -366}
     skinId: hair/pink
-  resetOn: 1
+  resetOn: 2

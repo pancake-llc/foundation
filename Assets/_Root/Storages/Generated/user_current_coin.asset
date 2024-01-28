@@ -19,6 +19,6 @@ MonoBehaviour:
   debugLogEnabled: 0
   saved: 1
   defaultValue: 0
-  resetOn: 0
+  resetOn: 2
   isClamped: 1
   minMax: {x: 0, y: 2147483647}

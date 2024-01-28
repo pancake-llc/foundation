@@ -101,25 +101,12 @@ namespace PancakeEditor
         private static RectTransform CreateUniPopup(Transform parent)
         {
             var popup = CreateEmptyRectTransformObject(parent, "popup_basic");
-            popup.gameObject.AddComponent<Canvas>().overrideSorting = true;
-            popup.gameObject.AddComponent<GraphicRaycaster>();
-            popup.gameObject.AddComponent<CanvasGroup>();
             popup.anchorMin = Vector2.zero;
             popup.anchorMax = Vector2.one;
             popup.pivot = new Vector2(0.5f, 0.5f);
             popup.sizeDelta = Vector2.zero;
             popup.anchoredPosition3D = Vector3.zero;
             popup.localPosition = Vector3.zero;
-
-            var background = CreateEmptyRectTransformObject(popup.transform, "background");
-            background.anchorMin = Vector2.zero;
-            background.anchorMax = Vector2.one;
-            background.pivot = new Vector2(0.5f, 0.5f);
-            background.sizeDelta = Vector2.zero;
-            background.anchoredPosition3D = Vector3.zero;
-            background.localPosition = Vector3.zero;
-            var img = background.gameObject.AddComponent<Image>();
-            img.color = new Color(0f, 0f, 0f, 0.78f);
 
             var container = CreateEmptyRectTransformObject(popup.transform, "container");
             container.gameObject.AddComponent<Image>().GetComponent<RectTransform>().sizeDelta = new Vector2(710, 730);

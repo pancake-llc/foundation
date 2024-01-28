@@ -1,3 +1,4 @@
+using System;
 using Pancake.Localization;
 using Pancake.Scriptable;
 
@@ -14,17 +15,18 @@ namespace Pancake.SceneFlow
         [SerializeField] private LocaleTextComponent localeText;
         [SerializeField] private bool subscribe;
 
+        private void Start() { OnValueChanged(currentLevel.Value); }
+
         protected void OnEnable()
         {
-            OnValueChanged(currentLevel.Value);
             if (subscribe) currentLevel.OnValueChanged += OnValueChanged;
         }
-
-        private void OnValueChanged(int level) { localeText.UpdateArgs($"{level + 1}"); }
 
         protected void OnDisable()
         {
             if (subscribe) currentLevel.OnValueChanged -= OnValueChanged;
         }
+
+        private void OnValueChanged(int level) { localeText.UpdateArgs($"{level + 1}"); }
     }
 }

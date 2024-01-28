@@ -42,8 +42,8 @@ namespace PancakeEditor
                     if (confirmDelete)
                     {
                         ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
+                        AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
-                        RegistryManager.Resolve();
                     }
                 }
 

@@ -46,6 +46,13 @@
       "dependencies": {},
       "hash": "64445bb59f6d9d4d7f24be5eea45e7fdf2146546"
     },
+    "com.lupidan.apple-signin-unity": {
+      "version": "https://github.com/lupidan/apple-signin-unity.git#v1.4.3",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d4296dba75e5c4f2457200cd30577ee421b43e56"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -67,11 +74,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.11",
+      "version": "1.8.12",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.mathematics": "1.2.1"
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -212,6 +220,16 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.services.cloudsave": {
+      "version": "3.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.services.authentication": "2.6.1",
+        "com.unity.services.core": "1.4.3"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.services.core": {
       "version": "1.12.0",
       "depth": 1,
@@ -243,7 +261,7 @@
       }
     },
     "com.unity.sharp-zip-lib": {
-      "version": "1.3.4-preview",
+      "version": "1.3.5-preview",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -261,7 +279,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.0.6",
+      "version": "3.0.7",
       "depth": 0,
       "source": "registry",
       "dependencies": {

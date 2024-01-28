@@ -8,7 +8,7 @@ PlayerSettings:
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 0
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
@@ -136,7 +136,7 @@ PlayerSettings:
   vulkanEnableLateAcquireNextImage: 0
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
-  bundleVersion: 1.0.0
+  bundleVersion: 1.0.2
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -166,7 +166,7 @@ PlayerSettings:
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
-  AndroidBundleVersionCode: 5
+  AndroidBundleVersionCode: 8
   AndroidMinSdkVersion: 22
   AndroidTargetSdkVersion: 33
   AndroidPreferredInstallLocation: 1
@@ -250,18 +250,18 @@ PlayerSettings:
   templateDefaultScene: Assets/Scenes/SampleScene.unity
   useCustomMainManifest: 0
   useCustomLauncherManifest: 0
-  useCustomMainGradleTemplate: 0
+  useCustomMainGradleTemplate: 1
   useCustomLauncherGradleManifest: 0
   useCustomBaseGradleTemplate: 0
-  useCustomGradlePropertiesTemplate: 0
+  useCustomGradlePropertiesTemplate: 1
   useCustomGradleSettingsTemplate: 0
   useCustomProguardFile: 0
-  AndroidTargetArchitectures: 2
+  AndroidTargetArchitectures: 3
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: D:/workspace/family-island/rescuekitten.keystore
-  AndroidKeyaliasName: rescuekitten
+  AndroidKeystoreName: '{dedicated}: Downloads/yenmoc.keystore'
+  AndroidKeyaliasName: yenmoc
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -269,7 +269,7 @@ PlayerSettings:
   AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
-  androidUseCustomKeystore: 0
+  androidUseCustomKeystore: 1
   m_AndroidBanners:
   - width: 320
     height: 180
@@ -280,7 +280,14 @@ PlayerSettings:
   AndroidMinifyDebug: 0
   AndroidValidateAppBundleSize: 1
   AndroidAppBundleSizeToValidate: 150
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: b83e9ebf09baaaf4b8318699304be45a, type: 3}
+      m_Width: 128
+      m_Height: 128
+      m_Kind: 0
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: iPhone
     m_Icons:
@@ -786,23 +793,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: TextMeshPro
-    EmbeddedLinux: TextMeshPro
-    GameCoreScarlett: 
-    GameCoreXboxOne: TextMeshPro;
-    LinuxHeadlessSimulation: 
-    Nintendo Switch: TextMeshPro
-    PS4: TextMeshPro
-    PS5: TextMeshPro
-    QNX: TextMeshPro
-    Stadia: TextMeshPro
-    Standalone: TextMeshPro
-    VisionOS: TextMeshPro
-    WebGL: TextMeshPro
-    Windows Store Apps: 
-    XboxOne: TextMeshPro
-    iPhone: TextMeshPro
-    tvOS: TextMeshPro
+    Android: TextMeshPro;PANCAKE_GPGS
+    EmbeddedLinux: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    GameCoreScarlett: PANCAKE_ADVERTISING;PANCAKE_GPGS
+    GameCoreXboxOne: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    LinuxHeadlessSimulation: PANCAKE_ADVERTISING;PANCAKE_GPGS
+    Nintendo Switch: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    PS4: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    PS5: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    QNX: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    Stadia: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    Standalone: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    VisionOS: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    WebGL: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    Windows Store Apps: PANCAKE_ADVERTISING;PANCAKE_GPGS
+    XboxOne: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    iPhone: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
+    tvOS: TextMeshPro;PANCAKE_ADVERTISING;PANCAKE_GPGS
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

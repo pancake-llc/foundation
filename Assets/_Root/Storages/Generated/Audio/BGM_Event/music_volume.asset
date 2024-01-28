@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9978ce9c8bdc724896114c9952c52ea, type: 3}
   m_Name: music_volume
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: f40c18cdb6b391741b188b73d884cb92
+  guidCreateMode: 0
   value: 1
   debugLogEnabled: 0
   saved: 1
   defaultValue: 1
-  resetOn: 0
+  resetOn: 2
   isClamped: 1
   minMax: {x: 0, y: 1}

@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cdb8ad39a5bdd4f8ed3d18fae14a63, type: 3}
   m_Name: win_gift_progress_value
   m_EditorClassIdentifier: 
+  categoryIndex: 0
   guid: 091b41098013f73448505b7d9f00a3c5
+  guidCreateMode: 0
   value: 0
   debugLogEnabled: 0
   saved: 1
   defaultValue: 0
-  resetOn: 0
+  resetOn: 2
   isClamped: 1
   minMax: {x: 0, y: 100}
