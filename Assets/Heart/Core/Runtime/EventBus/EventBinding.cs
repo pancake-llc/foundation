@@ -19,14 +19,14 @@ namespace Pancake
 
         public EventBinding(Action<T> onEvent)
         {
-            this._onEvent = onEvent;
-            this.Listen = true;
+            _onEvent = onEvent;
+            Listen = true;
         }
 
         public EventBinding(Action onEventNoArgs)
         {
-            this._onEventNoArgs = onEventNoArgs;
-            this.Listen = true;
+            _onEventNoArgs = onEventNoArgs;
+            Listen = true;
         }
 
         public void Add(Action<T> onEvent) => _onEvent += onEvent;
@@ -37,13 +37,10 @@ namespace Pancake
 
         private void SetListen(bool value)
         {
-            if (value == _listen)
-                return;
+            if (value == _listen) return;
 
-            if (value)
-                EventBus<T>.Register(this);
-            else
-                EventBus<T>.Unregister(this);
+            if (value) EventBus<T>.Register(this);
+            else EventBus<T>.Unregister(this);
 
             _listen = value;
         }
