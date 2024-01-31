@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Pancake
@@ -99,11 +100,11 @@ namespace Pancake
         private static EventBinding<T>[] bindings = new EventBinding<T>[64];
         private static readonly List<Callback> Callbacks = new List<Callback>();
         private static int count;
+        private static readonly Stack<Awaiter> AwaiterPool = new Stack<Awaiter>();
 
         public class Awaiter : EventBinding<T>
         {
-            public bool EventRaised { get; private set; }
-            public T Payload { get; private set; }
+            private readonly TaskCompletionSource<T> _tcs = new TaskCompletionSource<T>();
 
             public Awaiter()
                 : base((Action) null)
@@ -113,9 +114,11 @@ namespace Pancake
 
             private void OnEvent(T ev)
             {
-                EventRaised = true;
-                Payload = ev;
+                _tcs.TrySetResult(ev);
+                EventBus<T>.ReleaseAwaiter(this);
             }
+
+            public Task<T> Async() => _tcs.Task;
         }
 
         private struct Callback
@@ -126,7 +129,7 @@ namespace Pancake
 
         private static void Clear()
         {
-            bindings = new EventBinding<T>[64];
+            Array.Clear(bindings, 0, count);
             Callbacks.Clear();
             count = 0;
         }
@@ -135,12 +138,7 @@ namespace Pancake
         {
             if (binding.Registered) return;
 
-            if (bindings.Length <= count)
-            {
-                var newarray = new EventBinding<T>[bindings.Length * 2];
-                Array.Copy(bindings, newarray, bindings.Length);
-                bindings = newarray;
-            }
+            if (bindings.Length <= count) Array.Resize(ref bindings, bindings.Length * 2);
 
             binding.InternalIndex = count;
             bindings[count] = binding;
@@ -168,10 +166,7 @@ namespace Pancake
             int index = binding.InternalIndex;
 
             // binding invalid
-            if (index == -1 || index > count) return;
-
-            // binding invalid
-            if (bindings[index] != binding) return;
+            if (index == -1 || index >= count || bindings[index] != binding) return;
 
             if (index == count - 1)
             {
@@ -189,7 +184,6 @@ namespace Pancake
 
             if (last != null) last.InternalIndex = index;
             binding.InternalIndex = -1;
-
             count--;
         }
 
@@ -216,15 +210,8 @@ namespace Pancake
 
         public static string GetDebugInfoString() { return "Bindings: " + count + " BufferSize: " + bindings.Length + "\n" + "Callbacks: " + Callbacks.Count; }
 
-        /// <summary>
-        /// Allocates an Awaiter : <see cref="EventBinding{T}"/>
-        /// Use to await event in coroutines
-        /// </summary>
-        /// <returns></returns>
-        public static Awaiter NewAwaiter()
-        {
-            // TODO: do it non alloc
-            return new Awaiter();
-        }
+        public static Awaiter GetAwaiter() { return AwaiterPool.Count > 0 ? AwaiterPool.Pop() : new Awaiter(); }
+
+        private static void ReleaseAwaiter(Awaiter awaiter) { AwaiterPool.Push(awaiter); }
     }
 }
