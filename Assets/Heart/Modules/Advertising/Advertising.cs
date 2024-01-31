@@ -1,4 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+#if PANCAKE_ADMOB
+using GoogleMobileAds.Ump.Api;
+#endif
 using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
@@ -10,7 +14,12 @@ namespace Pancake.Monetization
     {
         [SerializeField] private AdSettings adSettings;
         [SerializeField] private ScriptableEventString changeNetworkEvent;
+
         [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
+#if PANCAKE_ADMOB
+        [SerializeField] private ScriptableEventNoParam showGdprAgainEvent;
+        [SerializeField] private ScriptableEventNoParam gdprResetEvent;
+#endif
 
         private IEnumerator _autoLoadAdCoroutine;
         private float _lastTimeLoadInterstitialAdTimestamp = DEFAULT_TIMESTAMP;
@@ -21,16 +30,88 @@ namespace Pancake.Monetization
 
         private void Start()
         {
-            if (adSettings.AdmobClient != null) adSettings.AdmobClient.Init();
-            if (adSettings.ApplovinClient != null) adSettings.ApplovinClient.Init();
+            if (adSettings.Gdpr)
+            {
+#if PANCAKE_ADMOB
+                showGdprAgainEvent.OnRaised += LoadAndShowConsentForm;
+                gdprResetEvent.OnRaised += GdprReset;
+                var request = new ConsentRequestParameters {TagForUnderAgeOfConsent = false};
+                if (adSettings.GdprTestMode)
+                {
+                    string deviceID = SystemInfo.deviceUniqueIdentifier.ToUpper();
+                    var consentDebugSettings = new ConsentDebugSettings {DebugGeography = DebugGeography.EEA, TestDeviceHashedIds = new List<string> {deviceID}};
+                    request.ConsentDebugSettings = consentDebugSettings;
+                }
+
+                ConsentInformation.Update(request, OnConsentInfoUpdated);
+#endif
+            }
+            else
+            {
+                InternalInitAd();
+            }
 
             if (changeNetworkEvent != null) changeNetworkEvent.OnRaised += OnChangeNetworkCallback;
             if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.OnRaised += OnChangePreventDisplayOpenAd;
+        }
+
+        private void InternalInitAd()
+        {
+            if (adSettings.AdmobClient != null) adSettings.AdmobClient.Init();
+            if (adSettings.ApplovinClient != null) adSettings.ApplovinClient.Init();
 
             if (_autoLoadAdCoroutine != null) StopCoroutine(_autoLoadAdCoroutine);
             _autoLoadAdCoroutine = IeAutoLoadAll();
             StartCoroutine(_autoLoadAdCoroutine);
         }
+
+#if PANCAKE_ADMOB
+        private void OnConsentInfoUpdated(FormError consentError)
+        {
+            if (consentError != null)
+            {
+                Debug.Log("Error consentError = " + consentError);
+                return;
+            }
+
+            ConsentForm.LoadAndShowConsentFormIfRequired(formError =>
+            {
+                if (formError != null)
+                {
+                    Debug.Log("Error consentError = " + formError);
+                    return;
+                }
+
+                if (ConsentInformation.CanRequestAds()) InternalInitAd();
+            });
+        }
+
+        private void LoadAndShowConsentForm()
+        {
+            ConsentForm.Load((consentForm, loadError) =>
+            {
+                if (loadError != null)
+                {
+                    Debug.Log("Error loadError = " + loadError);
+                    return;
+                }
+
+                consentForm.Show(showError =>
+                {
+                    if (showError != null)
+                    {
+                        Debug.Log("Error showError = " + showError);
+                        return;
+                    }
+
+                    if (ConsentInformation.CanRequestAds()) InternalInitAd();
+                });
+            });
+        }
+
+        private void GdprReset() { ConsentInformation.Reset(); }
+
+#endif
 
         private void OnChangePreventDisplayOpenAd(bool state) { AdStatic.isShowingAd = state; }
 
@@ -93,6 +174,14 @@ namespace Pancake.Monetization
                 EAdNetwork.Admob => adSettings.AdmobClient,
                 _ => adSettings.ApplovinClient,
             };
+        }
+
+        private void OnDisable()
+        {
+#if PANCAKE_ADMOB
+            showGdprAgainEvent.OnRaised -= LoadAndShowConsentForm;
+            gdprResetEvent.OnRaised -= GdprReset;
+#endif
         }
 
 #if PANCAKE_APPLOVIN

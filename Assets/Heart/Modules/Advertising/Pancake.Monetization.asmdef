@@ -1,26 +1,28 @@
 {
-  "name": "Pancake.Monetization",
-  "rootNamespace": "",
-  "references": [
-    "GUID:341d04dbc3e6ced4f903de04a0918a48",
-    "GUID:d54e067e22b30d84d974d345601e49b6",
-    "GUID:adac8d59ad7e8504f82d387cded797a7",
-    "GUID:b0a110e2f808b4d4d82f5694f91b251a",
-    "GUID:f7dabdcbede30aa4d84803a163c2fa1b",
-    "GUID:a4cfc1a18fa3a469b96d885db522f42e"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": true,
-  "precompiledReferences": [
-    "GoogleMobileAds.dll",
-    "GoogleMobileAds.Common.dll",
-    "GoogleMobileAds.Core.dll",
-    "Newtonsoft.Json.dll"
-  ],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Pancake.Monetization",
+    "rootNamespace": "",
+    "references": [
+        "GUID:341d04dbc3e6ced4f903de04a0918a48",
+        "GUID:d54e067e22b30d84d974d345601e49b6",
+        "GUID:adac8d59ad7e8504f82d387cded797a7",
+        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
+        "GUID:f7dabdcbede30aa4d84803a163c2fa1b",
+        "GUID:a4cfc1a18fa3a469b96d885db522f42e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "GoogleMobileAds.dll",
+        "GoogleMobileAds.Common.dll",
+        "GoogleMobileAds.Core.dll",
+        "Newtonsoft.Json.dll",
+        "GoogleMobileAds.Ump.dll",
+        "GoogleMobileAds.Ump.Unity.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

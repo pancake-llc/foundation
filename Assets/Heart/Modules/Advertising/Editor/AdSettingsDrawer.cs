@@ -14,6 +14,8 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _adCheckingIntervalProperty;
         private SerializedProperty _adLoadingIntervalProperty;
         private SerializedProperty _currentNetworkProperty;
+        private SerializedProperty _gdprProperty;
+        private SerializedProperty _gdprTestModeProperty;
         private SerializedProperty _admobEnableTestModeProperty;
         private SerializedProperty _admobDevicesTestProperty;
         private SerializedProperty _admobClientProperty;
@@ -38,6 +40,8 @@ namespace Pancake.MonetizationEditor
             _adCheckingIntervalProperty = serializedObject.FindProperty("adCheckingInterval");
             _adLoadingIntervalProperty = serializedObject.FindProperty("adLoadingInterval");
             _currentNetworkProperty = serializedObject.FindProperty("currentNetwork");
+            _gdprProperty = serializedObject.FindProperty("gdpr");
+            _gdprTestModeProperty = serializedObject.FindProperty("gdprTestMode");
             _admobEnableTestModeProperty = serializedObject.FindProperty("admobEnableTestMode");
             _admobDevicesTestProperty = serializedObject.FindProperty("admobDevicesTest");
             _admobClientProperty = serializedObject.FindProperty("admobClient");
@@ -66,6 +70,18 @@ namespace Pancake.MonetizationEditor
             EditorGUILayout.PropertyField(_adCheckingIntervalProperty);
             EditorGUILayout.PropertyField(_adLoadingIntervalProperty);
             EditorGUILayout.PropertyField(_currentNetworkProperty);
+            EditorGUILayout.PropertyField(_gdprProperty, new GUIContent("GDPR"));
+            EditorGUILayout.PropertyField(_gdprTestModeProperty, new GUIContent("GDPR Test Mode"));
+            if (_gdprProperty.boolValue)
+            {
+                bool umpSdkInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.Ump.dll");
+                if (!umpSdkInstalled)
+                {
+                    EditorGUILayout.HelpBox(
+                        "GDPR is currently implemented using the UMP SDK provided in the Admob SDK so if you use GDPR you need to install the Admob SDK. you need to leave admob client blank to avoid admob init if you only use Applovin to show ads.\\nRemember to enable Delay app measurement in GoogleMobileAds settings.",
+                        MessageType.Warning);
+                }
+            }
 
             GUILayout.Space(4);
 
@@ -167,6 +183,7 @@ namespace Pancake.MonetizationEditor
                 var previousColor = GUI.color;
                 if (googleMobileAdsInstalled) GUI.color = Uniform.Green;
 
+                GUI.enabled = googleMobileAdsInstalled;
                 GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
@@ -182,6 +199,7 @@ namespace Pancake.MonetizationEditor
                     }
                 }
 
+                GUI.enabled = true;
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 #endif
@@ -231,25 +249,44 @@ namespace Pancake.MonetizationEditor
                 GUI.backgroundColor = Color.white;
 
                 EditorGUILayout.BeginHorizontal();
-                GUI.backgroundColor = Uniform.Green;
-                if (GUILayout.Button("Install AppLovin SDK (1)", GUILayout.Height(24)))
+                bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
+                var contentInstallLabel = "Install Applovin v6.1.2 (1)";
+                if (applovinInstalled)
+                {
+                    GUI.backgroundColor = Uniform.Green;
+                    contentInstallLabel = "Applovin SDK v6.1.2 Installed (1)";
+                }
+                else
+                {
+                    GUI.backgroundColor = Color.white;
+                }
+
+                if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing <color=#FF77C6>applovin</color> sdk");
                     AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/applovin.unitypackage"),
                         false);
                 }
 
-                GUI.backgroundColor = Uniform.Red;
+                var previousColor = GUI.color;
+                if (applovinInstalled) GUI.color = Uniform.Green;
+                GUI.enabled = applovinInstalled;
+                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+                GUI.color = previousColor;
+                GUI.backgroundColor = Color.white;
+
                 if (GUILayout.Button("Add AppLovin Symbol (2)", GUILayout.Height(24)))
                 {
                     var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
                     if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                        AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
                     }
                 }
 
+                GUI.enabled = true;
                 GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
