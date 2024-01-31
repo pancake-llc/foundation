@@ -355,7 +355,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Test Performance", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.test-framework.performance", "1.0.9-preview");
+                RegistryManager.Add("com.unity.test-framework.performance", "3.0.3");
                 RegistryManager.Resolve();
             }
 
@@ -365,7 +365,7 @@ namespace PancakeEditor
         private static void UninstallTestPerformance()
         {
             EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Test Performance 1.0.9-preview", new RectOffset(0, 0, 6, 0));
+            Uniform.DrawInstalled("Test Performance 3.0.3", new RectOffset(0, 0, 6, 0));
 
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();

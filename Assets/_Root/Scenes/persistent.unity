@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3708985, g: 0.3783704, b: 0.35722548, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -468,6 +468,8 @@ MonoBehaviour:
   adSettings: {fileID: 11400000, guid: 85e8c9e26dfa9794ebdd8aeb3ae17c6a, type: 2}
   changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
   changePreventDisplayAppOpenEvent: {fileID: 11400000, guid: 5f35b40808667ca4ca6e2bc78a9ac78b, type: 2}
+  showGdprAgainEvent: {fileID: 11400000, guid: 3e8d0865f936c1046b928bc9fbfe996c, type: 2}
+  gdprResetEvent: {fileID: 11400000, guid: 5ba4bd5a6e13cd3449dada6baa1b60c5, type: 2}
 --- !u!114 &776958717
 MonoBehaviour:
   m_ObjectHideFlags: 0
