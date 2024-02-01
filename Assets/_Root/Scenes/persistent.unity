@@ -468,8 +468,6 @@ MonoBehaviour:
   adSettings: {fileID: 11400000, guid: 85e8c9e26dfa9794ebdd8aeb3ae17c6a, type: 2}
   changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
   changePreventDisplayAppOpenEvent: {fileID: 11400000, guid: 5f35b40808667ca4ca6e2bc78a9ac78b, type: 2}
-  showGdprAgainEvent: {fileID: 11400000, guid: 3e8d0865f936c1046b928bc9fbfe996c, type: 2}
-  gdprResetEvent: {fileID: 11400000, guid: 5ba4bd5a6e13cd3449dada6baa1b60c5, type: 2}
 --- !u!114 &776958717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,11 +583,26 @@ MonoBehaviour:
   onUpdateExtendPinch: {fileID: 11400000, guid: 8cdb0fd5e04bb0a4cb73d39d876fb8c6, type: 2}
   onStopPinch: {fileID: 11400000, guid: 55622c723ed05134982147208332c097, type: 2}
   isCustom: 0
-  clickDurationThreshold: 0.7
-  doubleClickThreshold: 0.5
-  tiltVerticalThreshold: 0.7
-  tiltHorizontalThreshold: 0.5
-  dragThreshold: 0.05
+  clickDurationThreshold:
+    UseLocal: 1
+    LocalValue: 0.7
+    Variable: {fileID: 0}
+  doubleClickThreshold:
+    UseLocal: 1
+    LocalValue: 0.5
+    Variable: {fileID: 0}
+  tiltVerticalThreshold:
+    UseLocal: 1
+    LocalValue: 0.7
+    Variable: {fileID: 0}
+  tiltHorizontalThreshold:
+    UseLocal: 1
+    LocalValue: 0.5
+    Variable: {fileID: 0}
+  dragThreshold:
+    UseLocal: 1
+    LocalValue: 0.05
+    Variable: {fileID: 0}
   longTapStartsDrag: {fileID: 11400000, guid: 3a598d5cce1e2be488decb7189a667a3, type: 2}
 --- !u!114 &776958723
 MonoBehaviour:

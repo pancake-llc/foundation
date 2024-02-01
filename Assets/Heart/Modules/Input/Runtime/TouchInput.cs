@@ -10,7 +10,7 @@ namespace Pancake.MobileInput
     {
         private const float DRAG_DURATION_THRESHOLD = 0.01f;
         private const int MOMENTUM_SAMPLES_COUNT = 5;
-        
+
         [SerializeField] private BoolVariable statusTouchOnLockedArea;
 
         [Group("Event Drag")] public ScriptableInputStartDrag onStartDrag;
@@ -31,28 +31,28 @@ namespace Pancake.MobileInput
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip("When the finger is held on an item for at least this duration without moving, the gesture is recognized as a long tap.")]
-        private float clickDurationThreshold = 0.7f;
+        private FloatReference clickDurationThreshold ; //0.7f
 
         [SerializeField, ShowIf("isCustom")] [Tooltip("A double click gesture is recognized when the time between two consecutive taps is shorter than this duration.")]
-        private float doubleClickThreshold = 0.5f;
+        private FloatReference doubleClickThreshold; //0.5f
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip("This value controls how close to a vertical line the user has to perform a tilt gesture for it to be recognized as such.")]
-        private float tiltVerticalThreshold = 0.7f;
+        private FloatReference tiltVerticalThreshold; //0.7f
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip(
             "Threshold value for detecting whether the fingers are horizontal enough for starting the tilt. Using this value you can prevent vertical finger placement to be counted as tilt gesture.")]
-        private float tiltHorizontalThreshold = 0.5f;
+        private FloatReference tiltHorizontalThreshold; // 0.5f
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip(
             "A drag is started as soon as the user moves his finger over a longer distance than this value. The value is defined as normalized value. Dragging the entire width of the screen equals 1. Dragging the entire height of the screen also equals 1.")]
-        private float dragThreshold = 0.05f;
+        private FloatReference dragThreshold; // 0.05f
 
         [SerializeField, ShowIf("isCustom")] [Tooltip("When this flag is enabled the drag started event is invoked immediately when the long tap time is succeeded.")]
         private BoolVariable longTapStartsDrag;
-        
+
         private float _realTimeOfLastFinderDown;
         private float _realTimeOfLastClick;
         private bool _wasFingerDownLastFrame;
@@ -70,7 +70,7 @@ namespace Pancake.MobileInput
         private bool _wasDraggingLastFrame;
         private bool _wasPinchingLastFrame;
         private bool _isPinching;
-        
+
         private float _timeSinceDragStart;
         private bool _isClickPrevented;
         private bool _isFingerDown;
@@ -99,7 +99,7 @@ namespace Pancake.MobileInput
         public void Update()
         {
             if (TouchWrapper.IsFingerDown == false) statusTouchOnLockedArea.Value = false;
-            
+
             var pinchToDragCurrentFrame = false;
 
             if (statusTouchOnLockedArea.Value == false)
@@ -151,7 +151,7 @@ namespace Pancake.MobileInput
                                     onLongTapUpdate.Raise(longTapProgress);
                                 }
 
-                                if ((dragDistance >= dragThreshold && dragTime >= DRAG_DURATION_THRESHOLD) || (longTapStartsDrag && isLongTap))
+                                if ((dragDistance >= dragThreshold.Value && dragTime >= DRAG_DURATION_THRESHOLD) || (longTapStartsDrag && isLongTap))
                                 {
                                     _isDragging = true;
                                     _dragStartOffset = _lastFinger0DownPosition - _dragStartPosition;
