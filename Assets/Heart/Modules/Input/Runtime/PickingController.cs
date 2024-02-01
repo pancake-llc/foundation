@@ -480,7 +480,7 @@ namespace Pancake.MobileInput
             }
         }
 
-        private void InputOnDragUpdate(Vector3 dragPosStart, Vector3 dragPosCurrent, Vector3 correctionOffset)
+        private void InputOnDragUpdate(Vector3 dragPosStart, Vector3 dragPosCurrent, Vector3 correctionOffset, Vector3 delta)
         {
             if (CurrentlyDraggedTransform != null)
             {

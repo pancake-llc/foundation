@@ -59,6 +59,7 @@ namespace Pancake.MobileInput
         private Vector3 _lastFinger0DownPosition;
         private bool _isDragging;
         private Vector3 _dragStartPosition;
+        private Vector3 _dragPreviousFramePosition;
         private Vector3 _dragStartOffset;
         private List<Vector3> _dragFinalMomentumVector;
         private float _pinchStartDistance;
@@ -86,6 +87,7 @@ namespace Pancake.MobileInput
             _realTimeOfLastClick = 0;
             _lastFinger0DownPosition = Vector3.zero;
             _dragStartPosition = Vector3.zero;
+            _dragPreviousFramePosition = Vector3.zero;
             _isDragging = false;
             _wasFingerDownLastFrame = false;
             _dragFinalMomentumVector = new List<Vector3>();
@@ -156,6 +158,7 @@ namespace Pancake.MobileInput
                                     _isDragging = true;
                                     _dragStartOffset = _lastFinger0DownPosition - _dragStartPosition;
                                     _dragStartPosition = _lastFinger0DownPosition;
+                                    _dragPreviousFramePosition = _lastFinger0DownPosition;
                                     DragStart(_dragStartPosition, isLongTap);
                                 }
                             }
@@ -167,12 +170,17 @@ namespace Pancake.MobileInput
                         {
                             _isDragging = true;
                             _dragStartPosition = TouchWrapper.Touch0.Position;
+                            _dragPreviousFramePosition = TouchWrapper.Touch0.Position;
                             DragStart(_dragStartPosition, false);
                             pinchToDragCurrentFrame = true;
                         }
                     }
 
-                    if (_isDragging && TouchWrapper.IsFingerDown) DragUpdate(TouchWrapper.Touch0.Position);
+                    if (_isDragging && TouchWrapper.IsFingerDown)
+                    {
+                        DragUpdate(TouchWrapper.Touch0.Position, TouchWrapper.Touch0.Position - _dragPreviousFramePosition);
+                        _dragPreviousFramePosition = TouchWrapper.Touch0.Position;
+                    }
 
                     if (_isDragging && TouchWrapper.IsFingerDown == false)
                     {
@@ -191,6 +199,7 @@ namespace Pancake.MobileInput
                     {
                         _realTimeOfLastFinderDown = Time.realtimeSinceStartup;
                         _dragStartPosition = TouchWrapper.Touch0.Position;
+                        _dragPreviousFramePosition = TouchWrapper.Touch0.Position;
                         FingerDown(TouchWrapper.AverageTouchPos);
                     }
 
@@ -326,13 +335,13 @@ namespace Pancake.MobileInput
             _dragFinalMomentumVector.Clear();
         }
 
-        private void DragUpdate(Vector3 currentPosition)
+        private void DragUpdate(Vector3 currentPosition, Vector3 delta)
         {
             if (onUpdateDrag != null)
             {
                 _timeSinceDragStart += Time.unscaledDeltaTime;
                 var offset = Vector3.Lerp(Vector3.zero, _dragStartOffset, Mathf.Clamp01(_timeSinceDragStart * 10.0f));
-                onUpdateDrag.Raise(_dragStartPosition, currentPosition, offset);
+                onUpdateDrag.Raise(_dragStartPosition, currentPosition, offset, delta);
             }
         }
 
