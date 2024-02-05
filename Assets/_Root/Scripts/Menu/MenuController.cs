@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using Pancake.Localization;
 using Pancake.Scriptable;
-using Pancake.Sound;
 using Pancake.Threading.Tasks;
 using Pancake.UI;
 using UnityEngine;
@@ -29,11 +28,10 @@ namespace Pancake.SceneFlow
         [SerializeField, PopupPickup] private string popupSetting;
         [SerializeField, PopupPickup] private string popupUpdate;
         [SerializeField, PopupPickup] private string popupDailyReward;
-        [SerializeField, PopupPickup] private string popupNotification;
         [SerializeField, PopupPickup] private string popupLeaderboard;
         [SerializeField, PagePickup] private string outfitPageName;
 
-        [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
+        [Header("OTHER")]
         [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private LocaleText localeTextFeatureLocked;
         [SerializeField] private ScriptableEventLocaleText eventSpawnInGameNotification;
