@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Pancake.Component
 {
-    public class InGameNotificationRounter : GameComponent
+    public class InGameNotificationRouter : GameComponent
     {
         [Header("POOL")] [SerializeField] private ScriptableEventLocaleText spawnEvent;
         [SerializeField] private GameObjectPool pool;
