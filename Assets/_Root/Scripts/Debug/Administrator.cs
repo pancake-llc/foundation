@@ -38,8 +38,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonLoseLevel;
         [SerializeField] private Button buttonAdd10KCoin;
         [SerializeField] private Button buttonAdd1MCoin;
-        [SerializeField] private Button buttonEnableAds;
-        [SerializeField] private Button buttonDisableAds;
+        [SerializeField] private Toggle toggleEnableAds;
         [SerializeField] private Button buttonShowBanner;
         [SerializeField] private Button buttonHideBanner;
         [SerializeField] private Button buttonShowInter;
@@ -47,8 +46,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonShowAppOpen;
         [SerializeField] private Button buttonNextDayDailyReward;
         [SerializeField] private Button buttonUnlockAllSkin;
-        [SerializeField] private Button buttonEnabledMonitor;
-        [SerializeField] private Button buttonDisabledMonitor;
+        [SerializeField] private Toggle toggleEnabledMonitor;
 
         [Header("Event")] [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private BannerVariable bannerVariable;
@@ -76,8 +74,7 @@ namespace Pancake.SceneFlow
             buttonLoseLevel.onClick.AddListener(OnButtonLoseLevelClicked);
             buttonAdd10KCoin.onClick.AddListener(OnButtonAdd10KCoinClicked);
             buttonAdd1MCoin.onClick.AddListener(OnButtonAdd1MCoinClicked);
-            buttonEnableAds.onClick.AddListener(OnButtonEnableAdsClicked);
-            buttonDisableAds.onClick.AddListener(OnButtonDisableAdsClicked);
+            toggleEnableAds.onValueChanged.AddListener(OnToggleValueChanged);
             buttonShowBanner.onClick.AddListener(OnButtonShowBannerClicked);
             buttonHideBanner.onClick.AddListener(OnButtonHideBannerClicked);
             buttonShowInter.onClick.AddListener(OnButtonShowInterClicked);
@@ -85,22 +82,29 @@ namespace Pancake.SceneFlow
             buttonShowAppOpen.onClick.AddListener(OnButtonShowAppOpenClicked);
             buttonNextDayDailyReward.onClick.AddListener(OnButtonNextDayClicked);
             buttonUnlockAllSkin.onClick.AddListener(OnButtonUnlockAllSkinClicked);
-            buttonEnabledMonitor.onClick.AddListener(OnButtonEnabledMonitorClicked);
-            buttonDisabledMonitor.onClick.AddListener(OnButtonDisabledMonitorClicked);
+            toggleEnabledMonitor.onValueChanged.AddListener(OnToggleMonitorValueChanged);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void OnButtonDisabledMonitorClicked()
+        private void OnToggleMonitorValueChanged(bool arg0)
         {
-            if (GraphyManager.Instance == null) return;
-            GraphyManager.Instance.gameObject.Destroy();
+            if (arg0)
+            {
+                if (GraphyManager.Instance != null) return;
+                _ = Instantiate(graphyPrefab);
+            }
+            else
+            {
+                if (GraphyManager.Instance == null) return;
+                GraphyManager.Instance.gameObject.Destroy();
+            }
         }
 
-        private void OnButtonEnabledMonitorClicked()
+        private void OnToggleValueChanged(bool arg0)
         {
-            if (GraphyManager.Instance != null) return;
-            _ = Instantiate(graphyPrefab);
+            if (arg0) AdStatic.IsRemoveAd = false;
+            else AdStatic.IsRemoveAd = true;
         }
 
         private void OnButtonUnlockAllSkinClicked()
@@ -158,10 +162,6 @@ namespace Pancake.SceneFlow
 
             popupContainer.Push<WinPopup>(nameof(WinPopup), true, popupId: nameof(WinPopup));
         }
-
-        private void OnButtonDisableAdsClicked() { AdStatic.IsRemoveAd = true; }
-
-        private void OnButtonEnableAdsClicked() { AdStatic.IsRemoveAd = false; }
 
         private void OnButtonShowAppOpenClicked() { appOpenVariable.Context().Show(); }
 
