@@ -29,6 +29,7 @@ namespace PancakeEditor
             None = -1,
             Adjust,
             Advertisement,
+            Build,
             Firebase,
             GameService,
             Greenery,
@@ -68,7 +69,8 @@ namespace PancakeEditor
             Greenery = WizardAllType.Greenery,
             Localization = WizardAllType.Localization,
             GrowMesh = WizardAllType.GrowMesh,
-            OtherPacakge = WizardAllType.OtherPackage
+            OtherPacakge = WizardAllType.OtherPackage,
+            Build = WizardAllType.Build
         }
 
         private enum WizardSettingType
@@ -129,6 +131,12 @@ namespace PancakeEditor
         #region texture
 
         private SpriteAtlas _spriteAtlas;
+
+        #endregion
+
+        #region build
+
+        private AndroidBuildPipelineSettings _currentAndroidBuildPipeline;
 
         #endregion
 
@@ -303,6 +311,9 @@ namespace PancakeEditor
                 case WizardAllType.HierarchySetting when _currentType is WizardType.Setting or WizardType.All:
                     SettingHierarchyDrawer.OnInspectorGUI();
                     break;
+                case WizardAllType.Build when _currentType is WizardType.Utilities or WizardType.All:
+                    UtilitiesBuildDrawer.OnInspectorGUI(ref _currentAndroidBuildPipeline);
+                    break;
             }
         }
 
@@ -394,6 +405,7 @@ namespace PancakeEditor
                 case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
                 case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;
                 case WizardAllType.GrowMesh: return EditorResources.ScriptableMesh;
+                case WizardAllType.Build:
                 case WizardAllType.OtherPackage: return EditorResources.ScriptableUnity;
                 default:
                     return null;
