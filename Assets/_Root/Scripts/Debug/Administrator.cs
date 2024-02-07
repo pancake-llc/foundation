@@ -19,6 +19,7 @@ namespace Pancake.SceneFlow
     /// </summary>
     public class Administrator : GameComponent
     {
+        [SerializeField] private Button buttonClose;
         [SerializeField] private RectTransform holder;
         [SerializeField] private RectTransform virtualHolder;
         [SerializeField] private Button buttonSlide;
@@ -65,6 +66,7 @@ namespace Pancake.SceneFlow
         private void Start()
         {
             Refresh();
+            buttonClose.onClick.AddListener(Hide);
             buttonSlide.onClick.AddListener(OnButtonSlideClicked);
             buttonJoin.onClick.AddListener(OnButtonJoinClicked);
             buttonNextLevel.onClick.AddListener(OnButtonNextLevelClicked);
@@ -74,7 +76,7 @@ namespace Pancake.SceneFlow
             buttonLoseLevel.onClick.AddListener(OnButtonLoseLevelClicked);
             buttonAdd10KCoin.onClick.AddListener(OnButtonAdd10KCoinClicked);
             buttonAdd1MCoin.onClick.AddListener(OnButtonAdd1MCoinClicked);
-            toggleEnableAds.onValueChanged.AddListener(OnToggleValueChanged);
+            toggleEnableAds.onValueChanged.AddListener(OnToggleEnableAdValueChanged);
             buttonShowBanner.onClick.AddListener(OnButtonShowBannerClicked);
             buttonHideBanner.onClick.AddListener(OnButtonHideBannerClicked);
             buttonShowInter.onClick.AddListener(OnButtonShowInterClicked);
@@ -85,6 +87,7 @@ namespace Pancake.SceneFlow
             toggleEnabledMonitor.onValueChanged.AddListener(OnToggleMonitorValueChanged);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+            
         }
 
         private void OnToggleMonitorValueChanged(bool arg0)
@@ -101,7 +104,7 @@ namespace Pancake.SceneFlow
             }
         }
 
-        private void OnToggleValueChanged(bool arg0)
+        private void OnToggleEnableAdValueChanged(bool arg0)
         {
             if (arg0) AdStatic.IsRemoveAd = false;
             else AdStatic.IsRemoveAd = true;
@@ -132,6 +135,8 @@ namespace Pancake.SceneFlow
             {
                 locks[i].SetActive(isInGameplay);
             }
+
+            toggleEnableAds.isOn = !AdStatic.IsRemoveAd;
         }
 
         private void OnButtonLoseLevelClicked()
@@ -271,18 +276,20 @@ namespace Pancake.SceneFlow
         private void Show()
         {
             _stateSlide = true;
+            buttonClose.gameObject.SetActive(true);
             slideRenderer.sprite = slideCloseSprite;
-            Tween.UIAnchoredPositionX(holder, 500, 0.5f);
-            Tween.UIAnchoredPositionX(virtualHolder, 500, 0.5f);
+            Tween.UIAnchoredPositionX(holder, 500, 0.25f);
+            Tween.UIAnchoredPositionX(virtualHolder, 500, 0.25f);
             Refresh();
         }
 
         private void Hide()
         {
             _stateSlide = false;
+            buttonClose.gameObject.SetActive(false);
             slideRenderer.sprite = slideOpenSprite;
-            Tween.UIAnchoredPositionX(holder, 0, 0.5f);
-            Tween.UIAnchoredPositionX(virtualHolder, 0, 0.5f);
+            Tween.UIAnchoredPositionX(holder, 0, 0.25f);
+            Tween.UIAnchoredPositionX(virtualHolder, 0, 0.25f);
         }
     }
 }
