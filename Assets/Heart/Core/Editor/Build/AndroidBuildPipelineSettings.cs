@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Pancake;
 using Pancake.ExLibEditor;
+using Pancake.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,9 +47,9 @@ namespace PancakeEditor
         public string password = "";
         public string alias = "";
         public string aliasPassword = "";
-
         public string versionNumber = "1.0.0";
         public int buildNumber = 1;
+        public List<string> allVerifyProcesses;
     }
 
     [CustomEditor(typeof(AndroidBuildPipelineSettings), true)]
@@ -65,6 +68,7 @@ namespace PancakeEditor
         private SerializedProperty _aliasProperty;
         private SerializedProperty _aliasPasswordProperty;
         private SerializedProperty _keystorePathProperty;
+        private SerializedProperty _allVerifyProcessesProperty;
 
         private void OnEnable()
         {
@@ -81,6 +85,7 @@ namespace PancakeEditor
             _aliasProperty = serializedObject.FindProperty("alias");
             _aliasPasswordProperty = serializedObject.FindProperty("aliasPassword");
             _keystorePathProperty = serializedObject.FindProperty("keystorePath");
+            _allVerifyProcessesProperty = serializedObject.FindProperty("allVerifyProcesses");
         }
 
         public override void OnInspectorGUI()
@@ -151,6 +156,11 @@ namespace PancakeEditor
                 EditorGUILayout.PropertyField(_aliasPasswordProperty);
             }
 
+            GUILayout.Space(4);
+            GUI.enabled = false;
+            EditorGUILayout.PropertyField(_allVerifyProcessesProperty);
+            GUI.enabled = true;
+
             GUILayout.FlexibleSpace();
             EditorGUILayout.BeginHorizontal();
             bool status = SessionState.GetBool("build_verify", false);
@@ -164,9 +174,20 @@ namespace PancakeEditor
 
             if (GUILayout.Button(content, GUILayout.Height(30)))
             {
-                bool check = new AndroidManifestVerify().OnVerify();
-                Debug.Log(check ? "[AndroidManifest] Verify Success".TextColor(Uniform.Green) : "[AndroidManifest] Verify Failure".TextColor(Uniform.Red));
-                
+                var type = typeof(IVerifyBuildProcess);
+                var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => type.IsAssignableFrom(p) && type != p).ToList();
+
+                _allVerifyProcessesProperty.arraySize = types.Count;
+                bool check = false;
+                for (var index = 0; index < types.Count; index++)
+                {
+                    _allVerifyProcessesProperty.GetArrayElementAtIndex(index).stringValue = types[index].Name;
+                    var instance = (IVerifyBuildProcess) Activator.CreateInstance(types[index]);
+                    check = instance.OnVerify();
+                    instance.OnComplete(check);
+                    if (!check) break;
+                }
+
                 SessionState.SetBool("build_verify", check);
             }
 

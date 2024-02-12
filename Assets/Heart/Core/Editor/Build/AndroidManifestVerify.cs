@@ -1,7 +1,9 @@
 ﻿using System.IO;
+using Pancake;
 using Pancake.ExLibEditor;
 using UnityEditor;
-using UnityEngine.Device;
+using UnityEngine;
+using Application = UnityEngine.Device.Application;
 
 namespace PancakeEditor
 {
@@ -76,6 +78,11 @@ namespace PancakeEditor
             }
 
             return true;
+        }
+
+        public void OnComplete(bool status)
+        {
+            Debug.Log(status ? "[AndroidManifest] Verify Success".TextColor(Uniform.Green) : "[AndroidManifest] Verify Failure".TextColor(Uniform.Red));
         }
     }
 }
