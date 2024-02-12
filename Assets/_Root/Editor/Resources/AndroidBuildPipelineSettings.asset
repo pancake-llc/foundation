@@ -13,11 +13,18 @@ MonoBehaviour:
   m_Name: AndroidBuildPipelineSettings
   m_EditorClassIdentifier: 
   environment: 0
-  dateTimeFormat: 0
   compressOption: 0
   buildType: 0
   createSymbol: 1
   buildSystem: 0
-  customMainGradle: 1
+  customMainGradle: 0
+  customKeystore: 1
+  keystorePath: 
+  password: 
+  alias: 
+  aliasPassword: 
   versionNumber: 1.0.0
   buildNumber: 1
+  allVerifyProcesses:
+  - AndroidManifestVerify
+  - GradleVerify
