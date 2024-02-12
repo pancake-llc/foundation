@@ -154,7 +154,6 @@ namespace PancakeEditor
             window = GetWindow<Wizard>("Wizard");
             window.autoRepaintOnSceneChange = true;
             window.Show(true);
-            SessionState.SetBool("spine_flag", false);
         }
 
         protected override void OnEnable()
@@ -168,7 +167,8 @@ namespace PancakeEditor
 
             SelectTab((int) _currentType, true);
             isInitialized = true;
-            SessionState.SetBool("advertising_flag", false);
+            SessionState.SetBool("spine_flag", false);
+            SessionState.SetBool("build_verify", false);
         }
 
         private void OnDisable()

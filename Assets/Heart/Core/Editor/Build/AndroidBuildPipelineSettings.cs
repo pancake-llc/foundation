@@ -22,12 +22,6 @@ namespace PancakeEditor
             [InspectorName("LZ4HC")] LZ4HC
         }
 
-        public enum DateTimeFormat
-        {
-            [InspectorName("ddMMyyyy")] ddMMyyy,
-            [InspectorName("MMddyyyy")] MMddyyyy
-        }
-
         public enum BuildType
         {
             [InspectorName("APK")] APK,
@@ -40,7 +34,6 @@ namespace PancakeEditor
         }
 
         public Environment environment = Environment.Development;
-        public DateTimeFormat dateTimeFormat;
         public CompressOption compressOption = CompressOption.LZ4;
         public BuildType buildType = BuildType.APK;
         public AndroidCreateSymbols createSymbol = AndroidCreateSymbols.Public;
@@ -60,7 +53,6 @@ namespace PancakeEditor
     public class EditorAndroidBuildPipelineSettingDrawer : UnityEditor.Editor
     {
         private SerializedProperty _environmentProperty;
-        private SerializedProperty _dateTimeFormatProperty;
         private SerializedProperty _compressOptionProperty;
         private SerializedProperty _buildTypeProperty;
         private SerializedProperty _buildSystemProperty;
@@ -77,7 +69,6 @@ namespace PancakeEditor
         private void OnEnable()
         {
             _environmentProperty = serializedObject.FindProperty("environment");
-            _dateTimeFormatProperty = serializedObject.FindProperty("dateTimeFormat");
             _compressOptionProperty = serializedObject.FindProperty("compressOption");
             _buildTypeProperty = serializedObject.FindProperty("buildType");
             _buildSystemProperty = serializedObject.FindProperty("buildSystem");
@@ -130,9 +121,6 @@ namespace PancakeEditor
             EditorGUILayout.PropertyField(_versionNumberProperty);
             EditorGUILayout.PropertyField(_buildNumberProperty);
 
-
-            GUILayout.Space(4);
-            EditorGUILayout.PropertyField(_dateTimeFormatProperty);
             GUILayout.Space(4);
 
             if (_environmentProperty.enumValueIndex == (int) AndroidBuildPipelineSettings.Environment.Development)
@@ -150,19 +138,53 @@ namespace PancakeEditor
                     _keystorePathProperty.stringValue = EditorUtility.OpenFilePanel("Select Keystore", "Assets", "keystore");
 
                     string rootFolder = Application.dataPath.Replace("/Assets", "");
-                    
+
                     if (_keystorePathProperty.stringValue.Contains(rootFolder))
                         _keystorePathProperty.stringValue = _keystorePathProperty.stringValue.Replace(rootFolder, "");
                 }
 
                 EditorGUILayout.LabelField(_keystorePathProperty.stringValue, GUI.skin.textField);
                 EditorGUILayout.EndHorizontal();
-                
+
                 EditorGUILayout.PropertyField(_passwordProperty);
                 EditorGUILayout.PropertyField(_aliasProperty);
                 EditorGUILayout.PropertyField(_aliasPasswordProperty);
             }
 
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.BeginHorizontal();
+            bool status = SessionState.GetBool("build_verify", false);
+            var content = "Verify";
+            var previousColor = GUI.color;
+            if (status)
+            {
+                GUI.color = Uniform.Green;
+                content = "Verify Success";
+            }
+
+            if (GUILayout.Button(content, GUILayout.Height(30)))
+            {
+                bool check = new AndroidManifestVerify().OnVerify();
+                Debug.Log(check ? "[AndroidManifest] Verify Success".TextColor(Uniform.Green) : "[AndroidManifest] Verify Failure".TextColor(Uniform.Red));
+                
+                SessionState.SetBool("build_verify", check);
+            }
+
+            GUI.enabled = status;
+            if (status) GUI.color = Uniform.Green;
+            GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+            GUI.color = previousColor;
+            GUI.backgroundColor = Color.white;
+
+            if (GUILayout.Button("BUILD", GUILayout.Height(30)))
+            {
+            }
+
+            GUI.enabled = true;
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(4);
             serializedObject.ApplyModifiedProperties();
         }
     }
