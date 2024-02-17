@@ -122,6 +122,17 @@ namespace PancakeEditor
             serializedObject.Update();
             GUILayout.Space(8);
 
+            if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
+            {
+                GUILayout.Label("Switch Platform To Android To Use This Pipeline Setting".TextColor(Uniform.FieryRose).TextSize(18), Uniform.RichCenterLabel);
+                GUILayout.Space(8);
+                if (GUILayout.Button("Switch Android", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                {
+                    EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
+                }
+                return;
+            }
+            
             EditorGUI.BeginChangeCheck();
 
             var color = _environmentProperty.intValue switch
