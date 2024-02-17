@@ -13,16 +13,20 @@ namespace Pancake
         [SerializeField] private string privacyUrl;
         [SerializeField] private string privacyTitle;
         [TextArea(3, 6)] [SerializeField] private string privacyMessage;
+#if UNITY_IPHONE
         [Header("IOS")] [SerializeField] private string appstoreAppId;
         [SerializeField, Range(0, 63)] private int skAdConversionValue = 63;
+#endif
 
         public static bool EnableAdministrator => Instance.enableAdministrator;
         public static bool EnablePrivacyFirstOpen => Instance.enablePrivacyFirstOpen;
         public static string PrivacyUrl => Instance.privacyUrl;
         public static string PrivacyTitle => Instance.privacyTitle;
         public static string PrivacyMessage => Instance.privacyMessage;
+#if UNITY_IPHONE
         public static string AppstoreAppId => Instance.appstoreAppId;
         public static int SkAdConversionValue => Instance.skAdConversionValue;
+#endif
         public static bool EnableMultipleTouch => Instance.enableMultipleTouch;
         public static bool RequireInternet => Instance.requireInternet;
         public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;

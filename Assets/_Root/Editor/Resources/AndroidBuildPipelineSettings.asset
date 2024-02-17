@@ -18,7 +18,10 @@ MonoBehaviour:
   createSymbol: 1
   buildSystem: 0
   customMainGradle: 0
-  customKeystore: 1
+  minAPITarget: 23
+  maxAPITarget: 33
+  optimizedFramePacing: 0
+  customKeystore: 0
   keystorePath: 
   password: 
   alias: 
@@ -27,4 +30,6 @@ MonoBehaviour:
   buildNumber: 1
   allVerifyProcesses:
   - AndroidManifestVerify
+  - CompressOptionVerify
   - GradleVerify
+  - KeystoreVerify

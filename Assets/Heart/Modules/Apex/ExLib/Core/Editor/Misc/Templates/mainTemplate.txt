@@ -3,7 +3,6 @@ apply plugin: 'com.android.library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:multidex:1.0.1'
 **DEPS**}
 
 android {
@@ -18,7 +17,6 @@ android {
     }
 
     defaultConfig {
-        multiDexEnabled true
         minSdkVersion **MINSDKVERSION**
         targetSdkVersion **TARGETSDKVERSION**
         ndk {

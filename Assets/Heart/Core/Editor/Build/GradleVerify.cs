@@ -13,6 +13,7 @@ namespace PancakeEditor
             bool customMainGradle = AndroidBuildPipelineSettings.Instance.customMainGradle;
             const string path = "Plugins/Android/mainTemplate.gradle";
             string fullPath = Path.Combine(Application.dataPath, path);
+            string fullPathMeta = Path.Combine(Application.dataPath, path + ".meta");
             if (customMainGradle)
             {
                 if (!File.Exists(fullPath))
@@ -40,6 +41,7 @@ namespace PancakeEditor
                             "Cancel"))
                     {
                         File.Delete(fullPath);
+                        File.Delete(fullPathMeta);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
                     }
@@ -61,10 +63,7 @@ namespace PancakeEditor
                 {
                     EditorCreator.CreateTextFile(EditorResources.GradlePropertiesTemplate.text, "gradleTemplate.properties", "Assets/Plugins/Android");
                 }
-                else
-                {
-                    return false;
-                }
+                else return false;
             }
 
             const string pathGradleSetting = "Plugins/Android/settingsTemplate.gradle";

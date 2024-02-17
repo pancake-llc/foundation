@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Pancake;
 using Pancake.ExLibEditor;
 using Pancake.Linq;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace PancakeEditor
 {
@@ -36,12 +39,32 @@ namespace PancakeEditor
             Gradle
         }
 
+        public enum AndroidAPITarget
+        {
+            [InspectorName("Android 5   API Level 22")] Android5_1 = 22,
+            [InspectorName("Android 6   API Level 23")] Android6 = 23,
+            [InspectorName("Android 7   API Level 24")] Android7 = 24,
+            [InspectorName("Android 7.1 API Level 25")] Android7_1 = 25,
+            [InspectorName("Android 8   API Level 26")] Android8 = 26,
+            [InspectorName("Android 8.1 API Level 27")] Android8_1 = 27,
+            [InspectorName("Android 9   API Level 28")] Android9 = 28,
+            [InspectorName("Android 10  API Level 29")] Android10 = 29,
+            [InspectorName("Android 11  API Level 30")] Android11 = 30,
+            [InspectorName("Android 12  API Level 31")] Android12 = 31,
+            [InspectorName("Android 12L API Level 32")] Android12_1 = 32,
+            [InspectorName("Android 13  API Level 33")] Android13 = 33,
+            [InspectorName("Android 14  API Level 34")] Android14 = 34,
+        }
+
         public Environment environment = Environment.Development;
         public CompressOption compressOption = CompressOption.LZ4;
         public BuildType buildType = BuildType.APK;
-        public AndroidCreateSymbols createSymbol = AndroidCreateSymbols.Public;
+        public AndroidCreateSymbols createSymbol = AndroidCreateSymbols.Debugging;
         public BuildSystem buildSystem = BuildSystem.Gradle;
         public bool customMainGradle = true;
+        public AndroidAPITarget minAPITarget = AndroidAPITarget.Android6;
+        public AndroidAPITarget maxAPITarget = AndroidAPITarget.Android13;
+        public bool optimizedFramePacing;
         public bool customKeystore = false;
         public string keystorePath;
         public string password = "";
@@ -60,6 +83,9 @@ namespace PancakeEditor
         private SerializedProperty _buildTypeProperty;
         private SerializedProperty _buildSystemProperty;
         private SerializedProperty _customMainGradleProperty;
+        private SerializedProperty _optimizedFramePacingProperty;
+        private SerializedProperty _minAPITargetProperty;
+        private SerializedProperty _maxAPITargetProperty;
         private SerializedProperty _versionNumberProperty;
         private SerializedProperty _buildNumberProperty;
         private SerializedProperty _createSymbolProperty;
@@ -77,6 +103,9 @@ namespace PancakeEditor
             _buildTypeProperty = serializedObject.FindProperty("buildType");
             _buildSystemProperty = serializedObject.FindProperty("buildSystem");
             _customMainGradleProperty = serializedObject.FindProperty("customMainGradle");
+            _optimizedFramePacingProperty = serializedObject.FindProperty("optimizedFramePacing");
+            _minAPITargetProperty = serializedObject.FindProperty("minAPITarget");
+            _maxAPITargetProperty = serializedObject.FindProperty("maxAPITarget");
             _versionNumberProperty = serializedObject.FindProperty("versionNumber");
             _buildNumberProperty = serializedObject.FindProperty("buildNumber");
             _createSymbolProperty = serializedObject.FindProperty("createSymbol");
@@ -93,6 +122,8 @@ namespace PancakeEditor
             serializedObject.Update();
             GUILayout.Space(8);
 
+            EditorGUI.BeginChangeCheck();
+
             var color = _environmentProperty.intValue switch
             {
                 (int) AndroidBuildPipelineSettings.Environment.Production => Uniform.FluorescentBlue,
@@ -106,6 +137,7 @@ namespace PancakeEditor
             EditorGUILayout.PropertyField(_environmentProperty);
             GUILayout.Space(4);
             EditorGUILayout.PropertyField(_compressOptionProperty);
+
             EditorGUILayout.PropertyField(_buildTypeProperty);
             if (_environmentProperty.enumValueIndex == (int) AndroidBuildPipelineSettings.Environment.Production &&
                 _buildTypeProperty.enumValueIndex == (int) AndroidBuildPipelineSettings.BuildType.AAB)
@@ -117,6 +149,9 @@ namespace PancakeEditor
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_customMainGradleProperty);
             EditorGUI.indentLevel--;
+            EditorGUILayout.PropertyField(_optimizedFramePacingProperty);
+            EditorGUILayout.PropertyField(_minAPITargetProperty);
+            EditorGUILayout.PropertyField(_maxAPITargetProperty);
 
             GUILayout.Space(4);
             EditorGUILayout.HelpBox("Semantic Version : <major>.<minor>.<patch>" + "\nMajor increases when the API breaks backward compatibility." +
@@ -157,9 +192,14 @@ namespace PancakeEditor
             }
 
             GUILayout.Space(4);
+
+            EditorGUILayout.HelpBox("Since Android Gradle Plugin 7.0 always uses R8 so don't need turn on R8", MessageType.Info);
+
+            GUILayout.Space(4);
             GUI.enabled = false;
             EditorGUILayout.PropertyField(_allVerifyProcessesProperty);
             GUI.enabled = true;
+            if (EditorGUI.EndChangeCheck()) SessionState.SetBool("build_verify", false);
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.BeginHorizontal();
@@ -174,6 +214,7 @@ namespace PancakeEditor
 
             if (GUILayout.Button(content, GUILayout.Height(30)))
             {
+                SessionState.SetBool("build_verify", false);
                 var type = typeof(IVerifyBuildProcess);
                 var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => type.IsAssignableFrom(p) && type != p).ToList();
 
@@ -188,6 +229,8 @@ namespace PancakeEditor
                     if (!check) break;
                 }
 
+                if (check) Debug.Log("ALL VERIFY SUCCESS! YOU CAN BUILD NOW".TextColor(Uniform.Green).TextBold());
+
                 SessionState.SetBool("build_verify", check);
             }
 
@@ -199,6 +242,40 @@ namespace PancakeEditor
 
             if (GUILayout.Button("BUILD", GUILayout.Height(30)))
             {
+                PlayerSettings.Android.optimizedFramePacing = _optimizedFramePacingProperty.boolValue;
+                PlayerSettings.Android.minSdkVersion = (AndroidSdkVersions) _minAPITargetProperty.intValue;
+                PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions) _maxAPITargetProperty.intValue;
+                PlayerSettings.Android.minifyRelease = false;
+                PlayerSettings.Android.minifyDebug = false;
+                PlayerSettings.Android.useCustomKeystore = _customKeystoreProperty.boolValue;
+
+                PlayerSettings.SetScriptingBackend(EditorUserBuildSettings.selectedBuildTargetGroup, ScriptingImplementation.IL2CPP);
+                if (_customKeystoreProperty.boolValue || _environmentProperty.intValue == (int) AndroidBuildPipelineSettings.Environment.Production)
+                {
+                    string keystorePath = _keystorePathProperty.stringValue;
+                    if (keystorePath.StartsWith("/")) keystorePath = Path.Combine(Application.dataPath, $"..{keystorePath}");
+
+                    PlayerSettings.Android.keystoreName = keystorePath;
+                    PlayerSettings.Android.keyaliasName = _aliasProperty.stringValue;
+                    PlayerSettings.Android.keyaliasPass = _aliasPasswordProperty.stringValue;
+                    PlayerSettings.Android.keystorePass = _passwordProperty.stringValue;
+                }
+
+                AssetDatabase.Refresh();
+                PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64;
+                EditorUserBuildSettings.buildAppBundle = _buildTypeProperty.intValue == (int) AndroidBuildPipelineSettings.BuildType.AAB;
+                PlayerSettings.Android.bundleVersionCode = _buildNumberProperty.intValue;
+                PlayerSettings.bundleVersion = _versionNumberProperty.stringValue;
+
+                string[] scenes = EditorBuildSettings.scenes.Where(x => x.enabled).Select(scene => scene.path).ToArray();
+                string path = GetFilePath(((AndroidBuildPipelineSettings.Environment) _environmentProperty.intValue).ToString().ToLower(),
+                    _buildTypeProperty.intValue == (int) AndroidBuildPipelineSettings.BuildType.APK);
+                var buildOptions = _compressOptionProperty.intValue == (int) AndroidBuildPipelineSettings.CompressOption.LZ4
+                    ? BuildOptions.CompressWithLz4
+                    : BuildOptions.CompressWithLz4HC;
+                var report = BuildPipeline.BuildPlayer(scenes, path, BuildTarget.Android, buildOptions);
+                Process.Start(Path.GetDirectoryName(report.summary.outputPath) ?? Application.dataPath);
+                GUIUtility.ExitGUI();
             }
 
             GUI.enabled = true;
@@ -207,6 +284,40 @@ namespace PancakeEditor
 
             GUILayout.Space(4);
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private static string GetFilePath(string prefix, bool buildApk)
+        {
+            string outputPath = GetCommandLineArgs("-outputPath");
+            string productName = PlayerSettings.productName;
+            string gameName = GetValidFileName(productName);
+            string extension = buildApk ? ".apk" : ".aab";
+            if (outputPath != null)
+                return
+                    $"{outputPath}/{gameName}_{prefix}_v{PlayerSettings.bundleVersion}_code{PlayerSettings.Android.bundleVersionCode}_{DateTime.Now:ddMM_hhmmtt}{extension}";
+            return Path.Combine(Application.dataPath,
+                $"../Builds/{gameName}_{prefix}_v{PlayerSettings.bundleVersion}_code{PlayerSettings.Android.bundleVersionCode}_{DateTime.Now:ddMM_hhmmtt}{extension}");
+        }
+
+        private static string GetCommandLineArgs(string name)
+        {
+            string[] args = Environment.GetCommandLineArgs();
+            for (var i = 0; i < args.Length; i++)
+            {
+                if (args[i] == name && args.Length > i + 1) return args[i + 1];
+            }
+
+            return null;
+        }
+
+        private static string GetValidFileName(string fileName)
+        {
+            foreach (char @char in Path.GetInvalidFileNameChars())
+            {
+                fileName = fileName.Replace(@char, '_');
+            }
+
+            return fileName;
         }
     }
 }
