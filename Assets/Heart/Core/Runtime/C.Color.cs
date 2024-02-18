@@ -151,15 +151,5 @@ namespace Pancake
 
             return ColorUtility.TryParseHtmlString(stringColor, out color);
         }
-
-
-        public static string TextColor(this string text, string color)
-        {
-            if (color.IndexOf('#') == -1) color = '#' + color;
-            return $"<color={color}>{text}</color>";
-        }
-
-
-        public static string TextColor(this string text, Color color) { return $"<color={color.ToHtmlStringRGBA()}>{text}</color>"; }
     }
 }

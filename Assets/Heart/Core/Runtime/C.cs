@@ -229,7 +229,9 @@ namespace Pancake
         {
             string url = Application.platform switch
             {
+#if UNITY_IPHONE
                 RuntimePlatform.IPhonePlayer => $"https://apps.apple.com/us/app/{HeartSettings.AppstoreAppId}",
+#endif
                 _ => "market://details?id=" + Application.identifier
             };
 

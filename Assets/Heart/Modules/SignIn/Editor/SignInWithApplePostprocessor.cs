@@ -1,4 +1,4 @@
-#if UNITY_EDITOR && UNITY_IOS
+#if UNITY_EDITOR && UNITY_IOS && PANCAKE_APPLE_SIGNIN
 using AppleAuth.Editor;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -15,7 +15,6 @@ namespace Pancake.AppleSignIn
         {
             if (target == BuildTarget.iOS || target == BuildTarget.tvOS)
             {
-#if PANCAKE_APPLE_SIGNIN
                     var projectPath = PBXProject.GetPBXProjectPath(path);
                     #if UNITY_2019_3_OR_NEWER
                         var project = new PBXProject();
@@ -28,7 +27,6 @@ namespace Pancake.AppleSignIn
                         manager.AddSignInWithAppleWithCompatibility();
                         manager.WriteToFile();
                     #endif
-#endif
             }
             else if (target == BuildTarget.StandaloneOSX)
             {
