@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using UnityEditor;
 
 namespace Pancake.ExLib.Reflection
 {
@@ -56,9 +58,9 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return memberInfo;
                 }
+
                 type = type.BaseType;
-            }
-            while (type != null && type != limitDescendant);
+            } while (type != null && type != limitDescendant);
         }
 
         /// <summary>
@@ -73,9 +75,9 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return fieldInfo;
                 }
+
                 type = type.BaseType;
-            }
-            while (type != null && type != limitDescendant);
+            } while (type != null && type != limitDescendant);
         }
 
         /// <summary>
@@ -90,9 +92,9 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return methodInfo;
                 }
+
                 type = type.BaseType;
-            }
-            while (type != null && type != limitDescendant);
+            } while (type != null && type != limitDescendant);
         }
 
         /// <summary>
@@ -107,42 +109,30 @@ namespace Pancake.ExLib.Reflection
                 {
                     yield return propertyInfo;
                 }
+
                 type = type.BaseType;
-            }
-            while (type != null && type != limitDescendant);
+            } while (type != null && type != limitDescendant);
         }
-        
+
         /// <summary>
         /// Iterate through all the members of the current type and all base types.
         /// </summary>
-        public static IEnumerable<MemberInfo> AllMembers(this Type type)
-        {
-            return type.AllMembers(null);
-        }
+        public static IEnumerable<MemberInfo> AllMembers(this Type type) { return type.AllMembers(null); }
 
         /// <summary>
         /// Iterate through all the fields of the current type and all base types.
         /// </summary>
-        public static IEnumerable<FieldInfo> AllFields(this Type type)
-        {
-            return type.AllFields(null);
-        }
+        public static IEnumerable<FieldInfo> AllFields(this Type type) { return type.AllFields(null); }
 
         /// <summary>
         /// Iterate through all the methods of the current type and all base types.
         /// </summary>
-        public static IEnumerable<MethodInfo> AllMethods(this Type type)
-        {
-            return type.AllMethods(null);
-        }
+        public static IEnumerable<MethodInfo> AllMethods(this Type type) { return type.AllMethods(null); }
 
         /// <summary>
         /// Iterate through all the properties of the current type and all base types.
         /// </summary>
-        public static IEnumerable<PropertyInfo> AllProperties(this Type type)
-        {
-            return type.AllProperties(null);
-        }
+        public static IEnumerable<PropertyInfo> AllProperties(this Type type) { return type.AllProperties(null); }
 
         /// <summary>
         /// Check if a type provides default constructor?
@@ -150,79 +140,17 @@ namespace Pancake.ExLib.Reflection
         /// <param name="type"></param>
         /// <returns></returns>
         public static bool HasDefaultConstructor(this Type type) { return type.IsValueType || type.GetConstructor(Type.EmptyTypes) != null; }
-        
-        private static bool IsSystem(Assembly assembly)
-        {
-            var assemblyFullName = assembly.FullName;
-            if (assemblyFullName.StartsWith("Unity", StringComparison.Ordinal) || assemblyFullName.StartsWith("System", StringComparison.Ordinal) ||
-                assemblyFullName.StartsWith("Mono", StringComparison.Ordinal) || assemblyFullName.StartsWith("Accessibility", StringComparison.Ordinal) ||
-                assemblyFullName.StartsWith("mscorlib", StringComparison.Ordinal)
-                || assemblyFullName.StartsWith("Boo")
-                || assemblyFullName.StartsWith("ExCSS")
-                || assemblyFullName.StartsWith("I18N")
-                || assemblyFullName.StartsWith("nunit.framework")
-                || assemblyFullName.StartsWith("ICSharpCode.SharpZipLib")
-               ) return true;
-
-            return false;
-        }
-
-        public static List<Type> GetTypes(Predicate<Type> filter = null)
-        {
-            var result = new List<Type>();
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
-            {
-                if (IsSystem(assembly)) continue;
-
-                Type[] types;
-                try
-                {
-                    types = assembly.GetTypes();
-                }
-                catch
-                {
-                    continue;
-                }
-
-                if (filter == null)
-                {
-                    for (var i = 0; i < types.Length; i++) result.Add(types[i]);
-                }
-                else
-                {
-                    for (var i = 0; i < types.Length; i++)
-                    {
-                        var type = types[i];
-                        if (filter(type)) result.Add(type);
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// retrurn all sub type without abstract type
-        /// </summary>
-        /// <param name="targetType"></param>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public static List<Type> GetAllSubClassNoAbstract(this Type targetType, Predicate<Type> filter = null)
-        {
-            bool SubclassFilter(Type type) => type.IsClass && !type.IsAbstract && type.IsSubclassOf(targetType);
-            return filter == null ? GetTypes(SubclassFilter) : GetTypes(type => SubclassFilter(type) && filter(type));
-        }
 
         /// <summary>
         /// Iterate through all subclasses of specific type.
         /// </summary>
         /// <param name="targetType"></param>
         /// <param name="filter"></param>
-        public static List<Type> GetAllSubClass(this Type targetType, Predicate<Type> filter = null)
+        public static List<Type> GetAllSubClass<T>(this Type targetType, Predicate<Type> filter = null)
         {
+            var list = TypeCache.GetTypesDerivedFrom<T>().ToList();
+            return list.Where(type => SubclassFilter(type) && (filter == null || filter(type))).ToList();
             bool SubclassFilter(Type type) => type.IsClass && type.IsSubclassOf(targetType);
-            return filter == null ? GetTypes(SubclassFilter) : GetTypes(type => SubclassFilter(type) && filter(type));
         }
 
         public static bool TryFindTypeByFullName(string name, out Type type)
