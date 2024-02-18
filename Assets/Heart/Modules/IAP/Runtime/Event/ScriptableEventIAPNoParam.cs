@@ -15,7 +15,7 @@ namespace Pancake.IAP
         private readonly List<EventListenerIAPNoParam> _eventListeners = new List<EventListenerIAPNoParam>();
         private readonly List<Object> _listenersObjects = new List<Object>();
 
-        public override Type GetGenericType => typeof(ScriptableEventIAPNoParam);
+        public override Type GetGenericType => typeof(void);
 
         private Action _onRaised = null;
 

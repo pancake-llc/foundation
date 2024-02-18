@@ -20,7 +20,12 @@ namespace Pancake.ScriptableEditor
 
             RequireCheck();
             var genericType = _scriptableVariable.GetGenericType;
-            if (!EditorExtend.IsSerializable(genericType)) EditorExtend.DrawSerializationError(genericType);
+            bool canBeSerialized = EditorExtend.IsUnityType(genericType) || EditorExtend.IsSerializable(genericType);
+            if (!canBeSerialized)
+            {
+                EditorExtend.DrawSerializationError(genericType);
+                return;
+            }
 
             if (ScriptableEditorSetting.IsExist())
             {

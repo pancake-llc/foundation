@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Pancake.ScriptableEditor
 {
-    class ScriptableVariableGuidGenerator : AssetPostprocessor
+    internal class ScriptableVariableGuidGenerator : AssetPostprocessor
     {
         //this gets cleared every time the domain reloads
         private static readonly HashSet<string> GuidsCache = new HashSet<string>();
@@ -21,7 +21,7 @@ namespace Pancake.ScriptableEditor
             }
             else
             {
-                OnAssetCreated(importedAssets);
+                OnAssetCreatedOrSaved(importedAssets);
                 OnAssetDeleted(deletedAssets);
                 OnAssetMoved(movedFromAssetPaths, movedAssets);
             }
@@ -38,7 +38,7 @@ namespace Pancake.ScriptableEditor
             }
         }
 
-        private static void OnAssetCreated(string[] importedAssets)
+        private static void OnAssetCreatedOrSaved(string[] importedAssets)
         {
             foreach (var assetPath in importedAssets)
             {
@@ -66,7 +66,7 @@ namespace Pancake.ScriptableEditor
         private static void OnAssetMoved(string[] movedFromAssetPaths, string[] movedAssets)
         {
             OnAssetDeleted(movedFromAssetPaths);
-            OnAssetCreated(movedAssets);
+            OnAssetCreatedOrSaved(movedAssets);
         }
 
         private static string GenerateGuid(ScriptableObject scriptableObject)

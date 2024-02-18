@@ -9,7 +9,5 @@ namespace Pancake.Scriptable
         protected bool debugLogEnabled;
 
         public bool DebugLogEnabled => debugLogEnabled;
-
-        public virtual System.Type GetGenericType { get; }
     }
 }

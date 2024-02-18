@@ -437,11 +437,40 @@ namespace Pancake.ExLibEditor
 
         public static bool IsSerializable(Type type)
         {
-            var isSerializable = false;
-            isSerializable |= type.IsSerializable;
-            isSerializable |= type.Namespace == "UnityEngine";
-            isSerializable |= type.IsSubclassOf(typeof(MonoBehaviour));
-            return isSerializable;
+            if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return true;
+
+            if (type.IsArray)
+            {
+                //dont support multi-dimensional arrays
+                if (type.GetArrayRank() != 1) return false;
+
+                type = type.GetElementType();
+                if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return true;
+            }
+            else if (type.IsGenericType)
+            {
+                // Generic types are allowed on 2020.1 and later
+#if UNITY_2020_1_OR_NEWER
+                if (type.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    type = type.GetGenericArguments()[0];
+
+                    if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return true;
+                }
+
+#else
+                if (type.GetGenericTypeDefinition() != typeof(List<>)) return false;
+
+                type = type.GetGenericArguments()[0];
+                if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return true;
+#endif
+            }
+
+#if !UNITY_2020_1_OR_NEWER
+            if (type.IsGenericType) return false;
+#endif
+
+            return Attribute.IsDefined(type, typeof(SerializableAttribute), false);
         }
 
         public static void DrawSerializationError(Type type, Rect position = default)
@@ -484,7 +513,7 @@ namespace Pancake.ExLibEditor
             {"byte", "System.Byte"},
             {"sbyte", "System.SByte"},
             {"char", "System.Char"},
-            {"decimal", "System.Decimal"},
+            {"decimal", "System.Decimal"}, //not serializable by unity [DO NOT USE]. Use float or double instead.
             {"double", "System.Double"},
             {"uint", "System.UInt32"},
             {"nint", "System.IntPtr"},
@@ -500,12 +529,96 @@ namespace Pancake.ExLibEditor
             {"bool", "System.Boolean"}
         };
 
+        private static readonly HashSet<Type> UnityTypes = new()
+        {
+            typeof(string),
+            typeof(Vector4),
+            typeof(Vector3),
+            typeof(Vector2),
+            typeof(Rect),
+            typeof(Quaternion),
+            typeof(Color),
+            typeof(Color32),
+            typeof(LayerMask),
+            typeof(Bounds),
+            typeof(Matrix4x4),
+            typeof(AnimationCurve),
+            typeof(Gradient),
+            typeof(RectOffset),
+            typeof(bool[]),
+            typeof(byte[]),
+            typeof(sbyte[]),
+            typeof(char[]),
+            typeof(double[]),
+            typeof(float[]),
+            typeof(int[]),
+            typeof(uint[]),
+            typeof(long[]),
+            typeof(ulong[]),
+            typeof(short[]),
+            typeof(ushort[]),
+            typeof(string[]),
+            typeof(Vector4[]),
+            typeof(Vector3[]),
+            typeof(Vector2[]),
+            typeof(Rect[]),
+            typeof(Quaternion[]),
+            typeof(Color[]),
+            typeof(Color32[]),
+            typeof(LayerMask[]),
+            typeof(Bounds[]),
+            typeof(Matrix4x4[]),
+            typeof(AnimationCurve[]),
+            typeof(Gradient[]),
+            typeof(RectOffset[]),
+            typeof(List<bool>),
+            typeof(List<byte>),
+            typeof(List<sbyte>),
+            typeof(List<char>),
+            typeof(List<double>),
+            typeof(List<float>),
+            typeof(List<int>),
+            typeof(List<uint>),
+            typeof(List<long>),
+            typeof(List<ulong>),
+            typeof(List<short>),
+            typeof(List<ushort>),
+            typeof(List<string>),
+            typeof(List<Vector4>),
+            typeof(List<Vector3>),
+            typeof(List<Vector2>),
+            typeof(List<Rect>),
+            typeof(List<Quaternion>),
+            typeof(List<Color>),
+            typeof(List<Color32>),
+            typeof(List<LayerMask>),
+            typeof(List<Bounds>),
+            typeof(List<Matrix4x4>),
+            typeof(List<AnimationCurve>),
+            typeof(List<Gradient>),
+            typeof(List<RectOffset>),
+            typeof(Vector3Int),
+            typeof(Vector2Int),
+            typeof(RectInt),
+            typeof(BoundsInt),
+            typeof(Vector3Int[]),
+            typeof(Vector2Int[]),
+            typeof(RectInt[]),
+            typeof(BoundsInt[]),
+            typeof(List<Vector3Int>),
+            typeof(List<Vector2Int>),
+            typeof(List<RectInt>),
+            typeof(List<BoundsInt>)
+        };
+
         public static bool IsBuiltInType(string typeName)
         {
             if (BuiltInTypes.TryGetValue(typeName, out var qualifiedName)) typeName = qualifiedName;
             var type = Type.GetType(typeName);
             return type?.Namespace != null && type.Namespace.StartsWith("System");
         }
+
+        public static bool IsUnityType(Type type) => UnityTypes.Contains(type);
 
         /// <summary>
         /// Convert image from string base 64

@@ -25,7 +25,8 @@ namespace Pancake.ScriptableEditor
             if (_scriptableListBase == null) _scriptableListBase = _serializedObject.targetObject as ScriptableListBase;
 
             var genericType = _scriptableListBase.GetGenericType;
-            if (!EditorExtend.IsSerializable(genericType))
+            bool canBeSerialized = EditorExtend.IsUnityType(genericType) || EditorExtend.IsSerializable(genericType);
+            if (!canBeSerialized)
             {
                 EditorExtend.DrawSerializationError(genericType, position);
                 return;

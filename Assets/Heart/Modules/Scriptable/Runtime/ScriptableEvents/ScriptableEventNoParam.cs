@@ -100,5 +100,7 @@ namespace Pancake.Scriptable
         }
 
         public override void Reset() { debugLogEnabled = false; }
+
+        public override Type GetGenericType => typeof(void);
     }
 }

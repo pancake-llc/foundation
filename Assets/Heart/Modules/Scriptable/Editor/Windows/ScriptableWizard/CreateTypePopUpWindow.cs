@@ -10,14 +10,18 @@ namespace Pancake.ScriptableEditor
         private readonly Rect _position;
         private string _typeText = "Type";
         private bool _baseClass;
-        private bool _monoBehaviour = true;
+        private bool _monoBehaviour;
         private bool _variable = true;
         private bool _event = true;
         private bool _eventListener = true;
         private bool _list = true;
-        private bool _invalidTypeName;
+        private bool _invalidTypeName = true;
         private string _path;
         private readonly Vector2 _dimensions = new Vector2(350, 350);
+        private int _destinationFolderIndex = 0;
+        private readonly string[] _destinationFolderOptions = {"Default", "Custom"};
+        private const string DESTINATION_FOLDER_INDEX_KEY = "editor_scriptable_destination_folder_index";
+        private const string DESTINATION_FOLDER_PATH_KEY = "editor_scriptable_destination_folder_path";
 
         public override Vector2 GetWindowSize() => _dimensions;
 
@@ -30,18 +34,33 @@ namespace Pancake.ScriptableEditor
             Uniform.DrawHeader("Create new Type");
             DrawTextField();
             DrawTypeToggles();
-            GUILayout.Space(10);
+            GUILayout.Space(20);
             DrawPath();
-            GUILayout.FlexibleSpace();
+            GUILayout.Space(5);
             DrawButtons();
         }
 
         private void DrawPath()
         {
-            EditorGUILayout.LabelField("Selected path:", EditorStyles.boldLabel);
-            var guiStyle = new GUIStyle(EditorStyles.label) {fontStyle = FontStyle.Italic};
-            _path = ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED;
-            EditorGUILayout.LabelField($"{_path}", guiStyle);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Destination Path:", EditorStyles.boldLabel);
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUI.BeginChangeCheck();
+            _destinationFolderIndex = GUILayout.SelectionGrid(_destinationFolderIndex, _destinationFolderOptions, 2);
+            if (EditorGUI.EndChangeCheck()) EditorPrefs.SetInt(DESTINATION_FOLDER_INDEX_KEY, _destinationFolderIndex);
+            if (_destinationFolderIndex == 0)
+            {
+                _path = ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED;
+                EditorGUILayout.LabelField($"{_path}", new GUIStyle(EditorStyles.label) {fontStyle = FontStyle.Italic});
+            }
+            else
+            {
+                EditorGUI.BeginChangeCheck();
+                _path = EditorGUILayout.TextField(_path);
+                if (EditorGUI.EndChangeCheck()) EditorPrefs.SetString(DESTINATION_FOLDER_PATH_KEY, _path);
+            }
         }
 
         private void DrawTextField()
@@ -84,7 +103,10 @@ namespace Pancake.ScriptableEditor
             GUILayout.Space(5);
             DrawToggle(ref _event, "ScriptableEvent", nameType, EditorResources.ScriptableEvent);
             GUILayout.Space(5);
+            if (!_event) _eventListener = false;
+            GUI.enabled = _event;
             DrawToggle(ref _eventListener, "EventListener", nameType, EditorResources.ScriptableEventListener);
+            GUI.enabled = true;
             GUILayout.Space(5);
             DrawToggle(ref _list, "ScriptableList", nameType, EditorResources.ScriptableList);
             EditorGUILayout.EndVertical();

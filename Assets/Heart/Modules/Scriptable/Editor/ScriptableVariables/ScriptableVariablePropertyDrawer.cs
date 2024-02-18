@@ -10,6 +10,7 @@ namespace Pancake.ScriptableEditor
     {
         private SerializedObject _serializedObject;
         private ScriptableVariableBase _scriptableVariable;
+        private float? _propertyWidthRatio;
 
         protected override string GetFieldName()
         {
@@ -21,8 +22,7 @@ namespace Pancake.ScriptableEditor
 
         protected override void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
         {
-            if (_serializedObject == null || _serializedObject.targetObject != targetObject)
-                _serializedObject = new SerializedObject(targetObject);
+            if (_serializedObject == null || _serializedObject.targetObject != targetObject) _serializedObject = new SerializedObject(targetObject);
 
             _serializedObject.UpdateIfRequiredOrScript();
             base.DrawUnExpanded(position, property, label, targetObject);
@@ -34,7 +34,8 @@ namespace Pancake.ScriptableEditor
             if (_scriptableVariable == null) _scriptableVariable = _serializedObject.targetObject as ScriptableVariableBase;
 
             var genericType = _scriptableVariable.GetGenericType;
-            if (!EditorExtend.IsSerializable(genericType))
+            bool canBeSerialized = EditorExtend.IsUnityType(genericType) || EditorExtend.IsSerializable(genericType);
+            if (!canBeSerialized)
             {
                 EditorExtend.DrawSerializationError(genericType, position);
                 return;
@@ -42,6 +43,26 @@ namespace Pancake.ScriptableEditor
 
             var value = _serializedObject.FindProperty("value");
             EditorGUI.PropertyField(position, value, GUIContent.none);
+        }
+
+        protected override float PropertyWidthRatio
+        {
+            get
+            {
+                if (_scriptableVariable == null)
+                {
+                    _propertyWidthRatio = null;
+                    return 0.82f;
+                }
+
+                if (_propertyWidthRatio.HasValue) return _propertyWidthRatio.Value;
+
+                var genericType = _scriptableVariable.GetGenericType;
+                if (genericType == typeof(Vector2)) _propertyWidthRatio = 0.72f;
+                else if (genericType == typeof(Vector3)) _propertyWidthRatio = 0.62f;
+                else _propertyWidthRatio = 0.82f;
+                return _propertyWidthRatio.Value;
+            }
         }
     }
 }

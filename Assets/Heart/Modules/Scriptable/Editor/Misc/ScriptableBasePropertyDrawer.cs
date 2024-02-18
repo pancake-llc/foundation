@@ -12,7 +12,7 @@ namespace Pancake.ScriptableEditor
     public abstract class ScriptableBasePropertyDrawer : PropertyDrawer
     {
         private UnityEditor.Editor _editor;
-        private const float PROPERTY_WIDTH_RATIO = 0.82f;
+        protected virtual float PropertyWidthRatio { get; } = 0.82f;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -61,11 +61,12 @@ namespace Pancake.ScriptableEditor
         private Rect DrawPropertyField(Rect position, SerializedProperty property, GUIContent label)
         {
             var rectPosition = position;
-            rectPosition.width = position.width * PROPERTY_WIDTH_RATIO;
+            float propertyWidthRatio = PropertyWidthRatio;
+            rectPosition.width = position.width * propertyWidthRatio;
             EditorGUI.PropertyField(rectPosition, property, label);
 
             rectPosition.x += rectPosition.width + 5f;
-            rectPosition.width = position.width * (1 - PROPERTY_WIDTH_RATIO) - 5f;
+            rectPosition.width = position.width * (1 - propertyWidthRatio) - 5f;
             return rectPosition;
         }
 

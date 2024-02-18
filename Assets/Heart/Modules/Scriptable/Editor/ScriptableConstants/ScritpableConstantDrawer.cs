@@ -7,7 +7,7 @@ namespace Pancake.ScriptableEditor
     [CustomEditor(typeof(ScriptableConstant<>), true)]
     public class ScritpableConstantDrawer : Editor
     {
-        private ScriptableVariableBase _scriptableVariable = null;
+        private ScriptableVariableBase _scriptableVariable;
 
         public override void OnInspectorGUI()
         {
@@ -16,7 +16,8 @@ namespace Pancake.ScriptableEditor
             //Check for Serializable
             if (_scriptableVariable == null) _scriptableVariable = target as ScriptableVariableBase;
             var genericType = _scriptableVariable.GetGenericType;
-            if (!EditorExtend.IsSerializable(genericType)) EditorExtend.DrawSerializationError(genericType);
+            bool canBeSerialized = EditorExtend.IsUnityType(genericType) || EditorExtend.IsSerializable(genericType);
+            if (!canBeSerialized) EditorExtend.DrawSerializationError(genericType);
 
             Uniform.DrawOnlyField(serializedObject, "value", false);
 

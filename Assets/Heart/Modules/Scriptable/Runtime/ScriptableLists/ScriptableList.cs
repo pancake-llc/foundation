@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
-    public abstract class ScriptableList<T> : ScriptableListBase, IReset, IEnumerable<T>, IDrawObjectsInInspector
+    public abstract class ScriptableList<T> : ScriptableListBase, IReset, IList<T>, IDrawObjectsInInspector
     {
         [Message("Clear the list when:" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
                  "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" +
@@ -23,6 +23,7 @@ namespace Pancake.Scriptable
 
         public int Count => list.Count;
         public bool IsEmpty => list.Count == 0;
+        public bool IsReadOnly => false;
         public override Type GetGenericType => typeof(T);
 
         //feel free to uncomment this property if you need to access the list for more functionalities.
@@ -51,58 +52,133 @@ namespace Pancake.Scriptable
         /// <summary> Event raised  when the list is cleared. </summary>
         public event Action OnCleared;
 
+        public int IndexOf(T item) => list.IndexOf(item);
+        public bool Contains(T item) => _hashSet.Contains(item);
+
         /// <summary>
-        /// Adds an item to the list only if its not in the list.
+        /// Adds an item to the list.
         /// Raises OnItemCountChanged and OnItemAdded event.
         /// </summary>
-        /// <param name="item"></param>
         public void Add(T item)
         {
-            if (_hashSet.Add(item))
-            {
-                list.Add(item);
-                OnItemCountChanged?.Invoke();
-                OnItemAdded?.Invoke(item);
-#if UNITY_EDITOR
-                repaintRequest?.Invoke();
-#endif
-            }
+            list.Add(item);
+            AddItemToHashAndRaiseEvents(item);
         }
 
         /// <summary>
-        /// Adds a range of items to the list. An item is only added if its not in the list.
-        /// Triggers OnItemCountChanged and OnItemsAdded event once, after all items have been added.
+        /// Adds an item to the list only if it's not in the list.
+        /// If success, raises OnItemCountChanged and OnItemAdded event.
         /// </summary>
-        /// <param name="items"></param>
-        public void AddRange(IEnumerable<T> items)
+        public bool TryAdd(T item)
         {
-            var itemList = items.ToList();
-            foreach (var item in itemList.Where(item => _hashSet.Add(item))) list.Add(item);
+            if (!_hashSet.Contains(item))
+            {
+                list.Add(item);
+                AddItemToHashAndRaiseEvents(item);
+                return true;
+            }
 
+            return false;
+        }
+
+        public void Insert(int index, T item)
+        {
+            list.Insert(index, item);
+            AddItemToHashAndRaiseEvents(item);
+        }
+
+        private void AddItemToHashAndRaiseEvents(T item)
+        {
+            _hashSet.Add(item);
             OnItemCountChanged?.Invoke();
-            OnItemsAdded?.Invoke(itemList);
+            OnItemAdded?.Invoke(item);
 #if UNITY_EDITOR
             repaintRequest?.Invoke();
 #endif
         }
 
         /// <summary>
-        /// Removes an item from the list only if its in the list.
-        /// Raises OnItemCountChanged and OnItemRemoved event.
+        /// Adds a range of items to the list.
+        /// Raises OnItemCountChanged and OnItemsAdded event once, after all items have been added.
+        /// </summary>
+        public void AddRange(IEnumerable<T> items)
+        {
+            var collection = items.ToArray();
+            if (collection.Length == 0) return;
+
+            list.AddRange(collection);
+            _hashSet.UnionWith(collection);
+
+            OnItemCountChanged?.Invoke();
+            OnItemsAdded?.Invoke(collection);
+#if UNITY_EDITOR
+            repaintRequest?.Invoke();
+#endif
+        }
+
+        /// <summary>
+        /// Adds a range of items to the list. An item is only added if its not in the list.
+        /// Raises OnItemCountChanged and OnItemsAdded event once, after all items have been added.
+        /// </summary>
+        public bool TryAddRange(IEnumerable<T> items)
+        {
+            if (items == null) return false;
+
+            var uniqueItems = items.Where(item => !_hashSet.Contains(item)).ToList();
+            if (uniqueItems.Count > 0)
+            {
+                AddRange(uniqueItems);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void CopyTo(T[] array, int arrayIndex) { list.CopyTo(array, arrayIndex); }
+
+        /// <summary>
+        /// Removes an item from the list only if it's in the list.
+        /// If Success, raises OnItemCountChanged and OnItemRemoved event.
         /// </summary>
         /// <param name="item"></param>
-        public void Remove(T item)
+        public bool Remove(T item)
         {
-            if (_hashSet.Remove(item))
+            if (!_hashSet.Contains(item))
+                return false;
+
+            bool removedFromList = list.Remove(item);
+            if (removedFromList)
             {
-                list.Remove(item);
+                _hashSet.Remove(item);
                 OnItemCountChanged?.Invoke();
                 OnItemRemoved?.Invoke(item);
 #if UNITY_EDITOR
                 repaintRequest?.Invoke();
 #endif
+                return true;
             }
+
+            return false;
         }
+
+        bool ICollection<T>.Remove(T item) { return list.Remove(item); }
+
+        /// <summary>
+        /// Removes an item from the list at a specific index.
+        /// </summary>
+        /// <param name="index"></param>
+        public void RemoveAt(int index)
+        {
+            var item = list[index];
+            list.RemoveAt(index);
+            _hashSet.Remove(item);
+            OnItemCountChanged?.Invoke();
+            OnItemRemoved?.Invoke(item);
+#if UNITY_EDITOR
+            repaintRequest?.Invoke();
+#endif
+        }
+
 
         /// <summary>
         /// Removes a range of items from the list.
@@ -110,8 +186,12 @@ namespace Pancake.Scriptable
         /// </summary>
         /// <param name="index">Starting Index</param>
         /// <param name="count">Amount of Items</param>
-        public void RemoveRange(int index, int count)
+        public bool RemoveRange(int index, int count)
         {
+            if (index < 0 || count < 0) return false;
+
+            if (index + count > list.Count) return false;
+
             var itemsToRemove = list.GetRange(index, count);
 
             foreach (var itemToRemove in itemsToRemove) _hashSet.Remove(itemToRemove);
@@ -122,11 +202,10 @@ namespace Pancake.Scriptable
 #if UNITY_EDITOR
             repaintRequest?.Invoke();
 #endif
+            return true;
         }
 
-        public bool Contains(T item) { return _hashSet.Contains(item); }
-
-        private void Clear()
+        public void Clear()
         {
             _hashSet.Clear();
             list.Clear();
