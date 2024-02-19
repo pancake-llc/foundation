@@ -5,13 +5,13 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class FinderWindow : FinderWindowBase, IHasCustomMenu
     {
         internal static void ShowWindow()
         {
-            var window = EditorWindow.GetWindow<Pancake.Editor.Finder.FinderWindow>("Finder", true, InEditor.InspectorWindow);
+            var window = EditorWindow.GetWindow<PancakeEditor.FinderWindow>("Finder", true, InEditor.InspectorWindow);
             if (window != null)
             {
                 window.InitIfNeeded();

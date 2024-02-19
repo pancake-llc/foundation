@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Pancake.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityObject = UnityEngine.Object;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public enum EFinderAssetType
     {
@@ -105,7 +106,6 @@ namespace Pancake.Editor.Finder
         [FormerlySerializedAs("m_assetbundle")] [SerializeField] private string mAssetbundle;
         [FormerlySerializedAs("m_addressable")] [SerializeField] private string mAddressable;
 
-        [FormerlySerializedAs("m_atlas")] [SerializeField] private string mAtlas;
         [FormerlySerializedAs("m_fileSize")] [SerializeField] private long mFileSize;
 
         [FormerlySerializedAs("m_assetChangeTS")] [SerializeField] private int mAssetChangeTs; // Realtime when asset changed (trigger by import asset operation)
@@ -315,19 +315,6 @@ namespace Pancake.Editor.Finder
             //if (!string.IsNullOrEmpty(m_addressable)) Debug.LogWarning(guid + " --> " + m_addressable);
             mAssetbundle = AssetDatabase.GetImplicitAssetBundleName(_mAssetPath);
 
-            if (assetType == typeof(Texture2D))
-            {
-                var importer = AssetImporter.GetAtPath(_mAssetPath);
-                if (importer is TextureImporter)
-                {
-                    var tImporter = importer as TextureImporter;
-                    if (tImporter.qualifiesForSpritePacking)
-                    {
-                        mAtlas = tImporter.spritePackingTag;
-                    }
-                }
-            }
-
             // check if file content changed
             var metaInfo = new FileInfo(_mAssetPath + ".meta");
             var assetTime = FinderUnity.Epoch(info.LastWriteTime);
@@ -352,15 +339,6 @@ namespace Pancake.Editor.Finder
             {
                 LoadFileInfo();
                 return mFileSize;
-            }
-        }
-
-        public string AtlasName
-        {
-            get
-            {
-                LoadFileInfo();
-                return mAtlas;
             }
         }
 
@@ -905,16 +883,6 @@ namespace Pancake.Editor.Finder
                 }
             }
 
-            if (showAtlasName)
-            {
-                GUI2.RightRect(10f, ref r); //margin
-                Rect abRect = GUI2.RightRect(120f, ref r); // filesize label
-                if (!string.IsNullOrEmpty(mAtlas))
-                {
-                    GUI.Label(abRect, mAtlas, GUI2.MiniLabelAlignRight);
-                }
-            }
-
             if (showAbName)
             {
                 GUI2.RightRect(10f, ref r); //margin
@@ -1145,7 +1113,7 @@ namespace Pancake.Editor.Finder
 
             if (_mAssetPath == "ProjectSettings/EditorBuildSettings.asset")
             {
-                var listScenes = EditorBuildSettings.scenes;
+                var listScenes = UnityEditor.EditorBuildSettings.scenes;
                 foreach (var scene in listScenes)
                 {
                     if (!scene.enabled) continue;

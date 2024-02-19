@@ -11,7 +11,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using UnityEngine.SceneManagement;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class FinderUnity
     {

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pancake.Editor;
 using UnityEditor;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     internal static class GUI2
     {

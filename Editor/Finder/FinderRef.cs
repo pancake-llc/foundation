@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class FinderSceneRef : FinderRef
     {
@@ -836,7 +836,6 @@ namespace Pancake.Editor.Finder
             Type,
             Extension,
             Folder,
-            Atlas,
             AssetBundle,
 
             None
@@ -1138,7 +1137,6 @@ namespace Pancake.Editor.Finder
                     return "Level " + rf.depth.ToString();
                 }
 
-                case Mode.Atlas: return rf.isSceneRef ? "(not in atlas)" : (string.IsNullOrEmpty(rf.asset.AtlasName) ? "(not in atlas)" : rf.asset.AtlasName);
                 case Mode.AssetBundle:
                     return rf.isSceneRef ? "(not in assetbundle)" : (string.IsNullOrEmpty(rf.asset.AssetBundleName) ? "(not in assetbundle)" : rf.asset.AssetBundleName);
             }

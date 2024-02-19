@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Pancake.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     public class FinderSelection : IRefDraw
     {

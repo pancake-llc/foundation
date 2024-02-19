@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-namespace Pancake.Editor.Finder
+namespace PancakeEditor
 {
     [InitializeOnLoad]
     public class FinderCacheHelper : AssetPostprocessor
@@ -28,8 +28,8 @@ namespace Pancake.Editor.Finder
                 InitIgnore();
 
 #if UNITY_2018_1_OR_NEWER
-                EditorBuildSettings.sceneListChanged -= InitListScene;
-                EditorBuildSettings.sceneListChanged += InitListScene;
+                UnityEditor.EditorBuildSettings.sceneListChanged -= InitListScene;
+                UnityEditor.EditorBuildSettings.sceneListChanged += InitListScene;
 #endif
 
                 EditorApplication.projectWindowItemOnGUI -= OnGUIProjectItem;
@@ -68,7 +68,7 @@ namespace Pancake.Editor.Finder
         {
             scenes = new HashSet<string>();
 
-            foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
+            foreach (EditorBuildSettingsScene scene in UnityEditor.EditorBuildSettings.scenes)
             {
                 string sce = AssetDatabase.AssetPathToGUID(scene.path);
 
@@ -186,6 +186,7 @@ namespace Pancake.Editor.Finder
 
         public Color32 rowColor = new Color32(0, 0, 0, 12);
         public Color32 scanColor = new Color32(0, 204, 102, 255);
+        [Newtonsoft.Json.JsonIgnore]
         public Color selectedColor = new Color(0, 0f, 1f, 0.25f);
 
         [NonSerialized] internal static HashSet<string> hashIgnore;

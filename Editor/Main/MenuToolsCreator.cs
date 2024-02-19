@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using PancakeEditor;
 #if PANCAKE_PLAYFAB
 using System.Collections.Generic;
 using Pancake.GameService;
@@ -129,9 +130,18 @@ namespace Pancake.Editor
         }
 
         [MenuItem("Tools/Pancake/Finder %#K")]
-        private static void OpenFinder()
+        private static void OpenFinder() { FinderWindow.ShowWindow(); }
+
+        [MenuItem("Tools/Pancake/Finder - Delete User Settings")]
+        private static void DeleteUserFinderSetting()
         {
-            Finder.FinderWindow.ShowWindow();
+            const string path = "UserSettings/FinderSetting.asset";
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+                AssetDatabase.Refresh();
+                Debug.Log("Success delete user settings of finder!");
+            }
         }
     }
 }
