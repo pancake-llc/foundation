@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Pancake.Apex;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -17,11 +17,14 @@ namespace Pancake
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
 
-        [Message("Reset flag IsPrewarmed, clear pool container" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
-                 "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" + "\nApplication Start : Once, when the application starts.",
-            Height = 58)]
+        [Space]
+        [Tooltip("Reset flag IsPrewarmed, clear pool container" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
+                 "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" + "\nApplication Start : Once, when the application starts.")]
         [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
+
+        [SerializeField] private bool isCacheSpawned;
+        private readonly List<T> _objectsSpawned = new List<T>();
 
         /// <summary>
         /// The factory which will be used to create <typeparamref name="T"/> on demand.
@@ -56,7 +59,12 @@ namespace Pancake
         /// Requests a <typeparamref name="T"/> from this pool.
         /// </summary>
         /// <returns>The requested <typeparamref name="T"/>.</returns>
-        public virtual T Request() { return container.Count > 0 ? container.Pop() : Create(); }
+        public virtual T Request()
+        {
+            var member = container.Count > 0 ? container.Pop() : Create();
+            if (isCacheSpawned) _objectsSpawned.Add(member);
+            return member;
+        }
 
         /// <summary>
         /// Batch requests a <typeparamref name="T"/> collection from this pool.
@@ -78,15 +86,31 @@ namespace Pancake
         /// Returns a <typeparamref name="T"/> to the pool.
         /// </summary>
         /// <param name="member">The <typeparamref name="T"/> to return.</param>
-        public virtual void Return(T member) { container.Push(member); }
+        public virtual void Return(T member)
+        {
+            if (isCacheSpawned) _objectsSpawned.Remove(member);
+            container.Push(member);
+        }
 
         /// <summary>
         /// Returns a <typeparamref name="T"/> collection to the pool.
         /// </summary>
         /// <param name="members">The <typeparamref name="T"/> collection to return.</param>
-        public virtual void Return(IEnumerable<T> members)
+        public virtual void Return(List<T> members)
         {
-            foreach (var member in members)
+            foreach (var member in members.ToArray())
+            {
+                Return(member);
+            }
+        }
+
+        /// <summary>
+        /// Returns a <typeparamref name="T"/> collection to the pool.
+        /// </summary>
+        /// <param name="members">The <typeparamref name="T"/> collection to return.</param>
+        public virtual void Return(T[] members)
+        {
+            foreach (var member in members.ToArray())
             {
                 Return(member);
             }
@@ -141,5 +165,7 @@ namespace Pancake
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 #endif
         }
+
+        public void ReturnAllSpawned() { Return(_objectsSpawned); }
     }
 }

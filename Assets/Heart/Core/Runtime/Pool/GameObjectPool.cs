@@ -1,5 +1,4 @@
 using System;
-using Pancake.Apex;
 
 namespace Pancake
 {
@@ -13,10 +12,10 @@ namespace Pancake
     [CreateAssetMenu(fileName = "GameOjectPool", menuName = "Pancake/Misc/Game Object Pool")]
     public class GameObjectPool : ScriptablePool<GameObject>
     {
-        [SerializeField] private GameObjectFactory factory;
-
-        [Message("If rootIsUI is true the pool root object will be generated with RectTransform")] [SerializeField]
+        [Tooltip("If RootIsUI is true the pool root object will be generated with RectTransform")] [SerializeField]
         private bool rootIsUI;
+
+        [SerializeField] private GameObjectFactory factory;
 
         private Transform _root;
         private Transform _parent;
@@ -95,7 +94,7 @@ namespace Pancake
             }
             catch (Exception)
             {
-               // ignored
+                // ignored
             }
         }
 
