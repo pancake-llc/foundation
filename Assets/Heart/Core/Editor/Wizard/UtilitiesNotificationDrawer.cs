@@ -9,7 +9,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_NOTIFICATION
-            Uniform.DrawInstalled("Version 2.3.1");
+            Uniform.DrawInstalled("Version 2.3.2");
             GUILayout.FlexibleSpace();
             
             if (GUILayout.Button("Open Mobile Unity Notification Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
@@ -39,7 +39,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.mobile.notifications", "2.3.1");
+                RegistryManager.Add("com.unity.mobile.notifications", "2.3.2");
                 RegistryManager.Resolve();
             }
 

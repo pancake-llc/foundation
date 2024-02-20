@@ -42,7 +42,7 @@ namespace PancakeEditor
                     if (!Directory.Exists(Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_EDITOR_RESOURCE_PATH);
                     AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
-                    RegistryManager.Add("com.unity.addressables", "1.21.19");
+                    RegistryManager.Add("com.unity.addressables", "1.21.20");
                     RegistryManager.Resolve();
                     AssetDatabase.Refresh();
                     Debug.Log($"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
