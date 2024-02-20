@@ -1709,5 +1709,16 @@ namespace Pancake
             if (!source.TryGetComponent<T>(out var component)) component = source.AddComponent<T>();
             return component;
         }
+
+        /// <summary>
+        /// manually update Content Size Fitter immediately when it does not update automatically
+        /// </summary>
+        /// <param name="fitter"></param>
+        public static void ManualUpdate(this UnityEngine.UI.ContentSizeFitter fitter)
+        {
+            fitter.SetLayoutHorizontal();
+            fitter.SetLayoutVertical();
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(fitter.GetComponent<RectTransform>());
+        }
     }
 }
