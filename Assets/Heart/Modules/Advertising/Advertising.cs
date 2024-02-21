@@ -121,7 +121,8 @@ namespace Pancake.Monetization
                 "admob" => EAdNetwork.Admob,
                 _ => EAdNetwork.Applovin
             };
-
+            AdStatic.waitAppOpenClosedAction = null;
+            AdStatic.waitAppOpenDisplayedAction = null;
             InitClient();
         }
 

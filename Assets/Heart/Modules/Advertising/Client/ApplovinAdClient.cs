@@ -24,6 +24,7 @@ namespace Pancake.Monetization
             LoadRewardedInterstitial();
             LoadAppOpen();
             LoadBanner();
+            (adSettings.ApplovinBanner as IBannerHide)?.Hide(); // hide banner first time when banner auto show when loaded
 #endif
         }
 

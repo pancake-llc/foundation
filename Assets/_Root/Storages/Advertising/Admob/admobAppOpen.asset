@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06fc7ffb206a49799f42aac1a2992f56, type: 3}
   m_Name: admobAppOpen
   m_EditorClassIdentifier: 
-  androidId: ca-app-pub-3940256099942544/3419835294
-  orientation: 1
+  androidId: ca-app-pub-3940256099942544/9257395921

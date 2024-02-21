@@ -9,6 +9,8 @@ namespace Pancake.Monetization
         /// prevent show app open ad, it will become true when interstitial or rewarded was showed
         /// </summary>
         internal static bool isShowingAd;
+        internal static Action waitAppOpenDisplayedAction;
+        internal static Action waitAppOpenClosedAction;
 
         public static bool IsRemoveAd { get => Data.Load($"{Application.identifier}_removeads", false); set => Data.Save($"{Application.identifier}_removeads", value); }
 

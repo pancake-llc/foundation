@@ -82,7 +82,7 @@ namespace Pancake.Monetization
 
         private void OnAdOpening()
         {
-            EventBus<WaitAppOpenDisplayed>.Raise();
+            AdStatic.waitAppOpenDisplayedAction?.Invoke();
             AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
@@ -91,7 +91,7 @@ namespace Pancake.Monetization
 
         private void OnAdClosed()
         {
-            EventBus<WaitAppOpenClosed>.Raise();
+            AdStatic.waitAppOpenClosedAction?.Invoke();
             AdStatic.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
             Destroy();
@@ -116,9 +116,9 @@ namespace Pancake.Monetization
         protected void FillDefaultTestId()
         {
 #if UNITY_ANDROID
-            "ca-app-pub-3940256099942544/3419835294".CopyToClipboard();
+            "ca-app-pub-3940256099942544/9257395921".CopyToClipboard();
 #elif UNITY_IOS
-            "ca-app-pub-3940256099942544/5662855259".CopyToClipboard();
+            "ca-app-pub-3940256099942544/5575463023".CopyToClipboard();
 #endif
             DebugEditor.Toast("[Admob] Copy App Open Test Unit Id Success!");
         }
