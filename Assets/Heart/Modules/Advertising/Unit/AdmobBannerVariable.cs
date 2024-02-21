@@ -9,10 +9,14 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("scriptable_variable")]
-    public class AdmobBannerVariable : AdUnitVariable
+    public class AdmobBannerVariable : AdUnitVariable, IBannerHide
     {
         public EBannerSize size = EBannerSize.Adaptive;
         public EBannerPosition position = EBannerPosition.Bottom;
+        private EventBinding<WaitAppOpenDisplayed> _waitAppOpenDisplayed;
+        private EventBinding<WaitAppOpenClosed> _waitAppOpenClosed;
+        private bool _isBannerShowing;
+        private bool _previousBannerShowStatus;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private BannerView _bannerView;
@@ -34,7 +38,26 @@ namespace Pancake.Monetization
             _bannerView.OnAdFullScreenContentOpened += OnAdOpening;
             _bannerView.OnAdPaid += OnAdPaided;
             _bannerView.LoadAd(new AdRequest());
+            _waitAppOpenDisplayed ??= new EventBinding<WaitAppOpenDisplayed>(OnWaitAppOpenDisplayed);
+            _waitAppOpenClosed ??= new EventBinding<WaitAppOpenClosed>(OnWaitAppOpenClosed);
+            _waitAppOpenDisplayed.Listen = false;
+            _waitAppOpenClosed.Listen = false;
 #endif
+        }
+
+        private void OnWaitAppOpenClosed(WaitAppOpenClosed _)
+        {
+            if (_previousBannerShowStatus)
+            {
+                _previousBannerShowStatus = false;
+                Show();
+            }
+        }
+
+        private void OnWaitAppOpenDisplayed(WaitAppOpenDisplayed _)
+        {
+            _previousBannerShowStatus = _isBannerShowing;
+            if (_isBannerShowing) Hide();
         }
 
         public override bool IsReady()
@@ -49,13 +72,14 @@ namespace Pancake.Monetization
         protected override void ShowImpl()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            Load();
+            _isBannerShowing = true;
             _bannerView.Show();
 #endif
         }
 
         public override void Destroy()
         {
+            _isBannerShowing = false;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
             if (_bannerView == null) return;
             _bannerView.Destroy();
@@ -63,6 +87,13 @@ namespace Pancake.Monetization
 #endif
         }
 
+        public void Hide()
+        {
+            _isBannerShowing = false;
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            _bannerView?.Hide();
+#endif
+        }
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         public AdSize ConvertSize()
@@ -97,19 +128,25 @@ namespace Pancake.Monetization
                 EAdNetwork.Admob.ToString());
         }
 
-        private void OnAdOpening() { C.CallActionClean(ref displayedCallback); }
+        private void OnAdOpening()
+        {
+            C.CallActionClean(ref displayedCallback);
+        }
 
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
         private void OnAdFailedToLoad(LoadAdError error)
         {
             C.CallActionClean(ref failedToLoadCallback);
-            
+
             if (_reload is {IsTerminated: false}) App.StopCoroutine(_reload);
-            _reload =  App.StartCoroutine(DelayBannerReload());
+            _reload = App.StartCoroutine(DelayBannerReload());
         }
 
-        private void OnAdClosed() { C.CallActionClean(ref closedCallback); }
+        private void OnAdClosed()
+        {
+            C.CallActionClean(ref closedCallback);
+        }
 
         private IEnumerator DelayBannerReload()
         {

@@ -5,7 +5,7 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("scriptable_variable")]
-    public class ApplovinBannerVariable : AdUnitVariable
+    public class ApplovinBannerVariable : AdUnitVariable, IBannerHide
     {
         public EBannerSize size;
         public EBannerPosition position;
@@ -44,7 +44,6 @@ namespace Pancake.Monetization
         protected override void ShowImpl()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            Load();
             MaxSdk.ShowBanner(Id);
 #endif
         }
@@ -92,5 +91,12 @@ namespace Pancake.Monetization
         private void OnAdLoaded(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref loadedCallback); }
 
 #endif
+        public void Hide()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            if (string.IsNullOrEmpty(Id)) return;
+            MaxSdk.HideBanner(Id);
+#endif
+        }
     }
 }

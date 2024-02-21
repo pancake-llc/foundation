@@ -12,13 +12,14 @@ namespace Pancake.Monetization
     [HideMonoScript]
     public class Advertising : GameComponent
     {
+        private AdClient _adClient;
         [SerializeField] private AdSettings adSettings;
         [SerializeField] private ScriptableEventString changeNetworkEvent;
 
         [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
 #if PANCAKE_ADMOB
-        [SerializeField] private ScriptableEventNoParam showGdprAgainEvent;
-        [SerializeField] private ScriptableEventNoParam gdprResetEvent;
+        [SerializeField, Label("Show GDPR Again Event")] private ScriptableEventNoParam showGdprAgainEvent;
+        [SerializeField, Label("GDPR Reset Event")] private ScriptableEventNoParam gdprResetEvent;
 #endif
 
         private IEnumerator _autoLoadAdCoroutine;
@@ -33,8 +34,8 @@ namespace Pancake.Monetization
             if (adSettings.Gdpr)
             {
 #if PANCAKE_ADMOB
-                showGdprAgainEvent.OnRaised += LoadAndShowConsentForm;
-                gdprResetEvent.OnRaised += GdprReset;
+                if (showGdprAgainEvent != null) showGdprAgainEvent.OnRaised += LoadAndShowConsentForm;
+                if (gdprResetEvent != null) gdprResetEvent.OnRaised += GdprReset;
                 var request = new ConsentRequestParameters {TagForUnderAgeOfConsent = false};
                 if (adSettings.GdprTestMode)
                 {
@@ -57,9 +58,7 @@ namespace Pancake.Monetization
 
         private void InternalInitAd()
         {
-            if (adSettings.AdmobClient != null) adSettings.AdmobClient.Init();
-            if (adSettings.ApplovinClient != null) adSettings.ApplovinClient.Init();
-
+            InitClient();
             if (_autoLoadAdCoroutine != null) StopCoroutine(_autoLoadAdCoroutine);
             _autoLoadAdCoroutine = IeAutoLoadAll();
             StartCoroutine(_autoLoadAdCoroutine);
@@ -122,6 +121,21 @@ namespace Pancake.Monetization
                 "admob" => EAdNetwork.Admob,
                 _ => EAdNetwork.Applovin
             };
+
+            InitClient();
+        }
+
+        private void InitClient()
+        {
+            _adClient = adSettings.CurrentNetwork switch
+            {
+                EAdNetwork.Applovin => new ApplovinAdClient(),
+                EAdNetwork.Admob => new AdmobClient(),
+                _ => _adClient
+            };
+
+            _adClient.SetupSetting(adSettings);
+            _adClient.Init();
         }
 
         private IEnumerator IeAutoLoadAll(float delay = 0)
@@ -142,52 +156,43 @@ namespace Pancake.Monetization
         private void AutoLoadInterstitialAd()
         {
             if (Time.realtimeSinceStartup - _lastTimeLoadInterstitialAdTimestamp < adSettings.AdLoadingInterval) return;
-            GetClient(adSettings.CurrentNetwork).LoadInterstitial();
+            _adClient.LoadInterstitial();
             _lastTimeLoadInterstitialAdTimestamp = Time.realtimeSinceStartup;
         }
 
         private void AutoLoadRewardedAd()
         {
             if (Time.realtimeSinceStartup - _lastTimeLoadRewardedTimestamp < adSettings.AdLoadingInterval) return;
-            GetClient(adSettings.CurrentNetwork).LoadRewarded();
+            _adClient.LoadRewarded();
             _lastTimeLoadRewardedTimestamp = Time.realtimeSinceStartup;
         }
 
         private void AutoLoadRewardedInterstitialAd()
         {
             if (Time.realtimeSinceStartup - _lastTimeLoadRewardedInterstitialTimestamp < adSettings.AdLoadingInterval) return;
-            GetClient(adSettings.CurrentNetwork).LoadRewardedInterstitial();
+            _adClient.LoadRewardedInterstitial();
             _lastTimeLoadRewardedInterstitialTimestamp = Time.realtimeSinceStartup;
         }
 
         private void AutoLoadAppOpenAd()
         {
             if (Time.realtimeSinceStartup - _lastTimeLoadAppOpenTimestamp < adSettings.AdLoadingInterval) return;
-            GetClient(adSettings.CurrentNetwork).LoadAppOpen();
+            _adClient.LoadAppOpen();
             _lastTimeLoadAppOpenTimestamp = Time.realtimeSinceStartup;
-        }
-
-        private AdClient GetClient(EAdNetwork network)
-        {
-            return network switch
-            {
-                EAdNetwork.Admob => adSettings.AdmobClient,
-                _ => adSettings.ApplovinClient,
-            };
         }
 
         private void OnDisable()
         {
 #if PANCAKE_ADMOB
-            showGdprAgainEvent.OnRaised -= LoadAndShowConsentForm;
-            gdprResetEvent.OnRaised -= GdprReset;
+            if (showGdprAgainEvent != null) showGdprAgainEvent.OnRaised -= LoadAndShowConsentForm;
+            if (gdprResetEvent != null) gdprResetEvent.OnRaised -= GdprReset;
 #endif
         }
 
 #if PANCAKE_APPLOVIN
         private void OnApplicationPause(bool pauseStatus)
         {
-            if (!pauseStatus) (GetClient(adSettings.CurrentNetwork) as ApplovinAdClient)?.ShowAppOpen();
+            if (!pauseStatus) (_adClient as ApplovinAdClient)?.ShowAppOpen();
         }
 #endif
     }

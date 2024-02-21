@@ -272,7 +272,7 @@ PlayerSettings:
   AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
-  androidUseCustomKeystore: 1
+  androidUseCustomKeystore: 0
   m_AndroidBanners:
   - width: 320
     height: 180
@@ -795,23 +795,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: TextMeshPro
-    EmbeddedLinux: TextMeshPro
-    GameCoreScarlett: 
-    GameCoreXboxOne: TextMeshPro
-    LinuxHeadlessSimulation: 
-    Nintendo Switch: TextMeshPro
-    PS4: TextMeshPro
-    PS5: TextMeshPro
-    QNX: TextMeshPro
-    Stadia: TextMeshPro
-    Standalone: TextMeshPro
-    VisionOS: TextMeshPro
-    WebGL: TextMeshPro
-    Windows Store Apps: 
-    XboxOne: TextMeshPro
-    iPhone: TextMeshPro
-    tvOS: TextMeshPro
+    Android: TextMeshPro;PANCAKE_ADVERTISING
+    EmbeddedLinux: TextMeshPro;PANCAKE_ADVERTISING
+    GameCoreScarlett: PANCAKE_ADVERTISING
+    GameCoreXboxOne: TextMeshPro;PANCAKE_ADVERTISING
+    LinuxHeadlessSimulation: PANCAKE_ADVERTISING
+    Nintendo Switch: TextMeshPro;PANCAKE_ADVERTISING
+    PS4: TextMeshPro;PANCAKE_ADVERTISING
+    PS5: TextMeshPro;PANCAKE_ADVERTISING
+    QNX: TextMeshPro;PANCAKE_ADVERTISING
+    Stadia: TextMeshPro;PANCAKE_ADVERTISING
+    Standalone: TextMeshPro;PANCAKE_ADVERTISING
+    VisionOS: TextMeshPro;PANCAKE_ADVERTISING
+    WebGL: TextMeshPro;PANCAKE_ADVERTISING
+    Windows Store Apps: PANCAKE_ADVERTISING
+    XboxOne: TextMeshPro;PANCAKE_ADVERTISING
+    iPhone: TextMeshPro;PANCAKE_ADVERTISING
+    tvOS: TextMeshPro;PANCAKE_ADVERTISING
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

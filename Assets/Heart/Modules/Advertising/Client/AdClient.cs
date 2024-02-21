@@ -1,17 +1,17 @@
 using Pancake.Apex;
-using UnityEngine;
 
 namespace Pancake.Monetization
 {
     [HideMonoScript]
-    public abstract class AdClient : ScriptableObject
+    public abstract class AdClient
     {
-        [SerializeField, ReadOnly] protected AdSettings adSettings;
+        protected AdSettings adSettings;
         protected bool statusAppOpenFirstIgnore;
 
         public void SetupSetting(AdSettings adSettings) { this.adSettings = adSettings; }
 
         public abstract void Init();
+        public abstract void LoadBanner();
         public abstract void LoadInterstitial();
         public abstract bool IsInterstitialReady();
         public abstract void LoadRewarded();

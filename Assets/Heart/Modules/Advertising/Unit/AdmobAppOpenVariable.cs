@@ -82,6 +82,7 @@ namespace Pancake.Monetization
 
         private void OnAdOpening()
         {
+            EventBus<WaitAppOpenDisplayed>.Raise();
             AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
@@ -90,6 +91,7 @@ namespace Pancake.Monetization
 
         private void OnAdClosed()
         {
+            EventBus<WaitAppOpenClosed>.Raise();
             AdStatic.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
             Destroy();

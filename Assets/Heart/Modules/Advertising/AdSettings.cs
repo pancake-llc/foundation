@@ -18,7 +18,6 @@ namespace Pancake.Monetization
         [Header("[admob]")] [SerializeField] private bool admobEnableTestMode;
 
         [SerializeField] private List<string> admobDevicesTest;
-        [SerializeField] private AdmobClient admobClient;
         [SerializeField] private AdmobBannerVariable admobBanner;
         [SerializeField] private AdmobInterVariable admobInter;
         [SerializeField] private AdmobRewardVariable admobReward;
@@ -28,7 +27,6 @@ namespace Pancake.Monetization
 
         public List<string> AdmobDevicesTest => admobDevicesTest;
         public bool AdmobEnableTestMode => admobEnableTestMode;
-        public AdmobClient AdmobClient => admobClient;
         public AdUnitVariable AdmobBanner => admobBanner;
         public AdUnitVariable AdmobInter => admobInter;
         public AdUnitVariable AdmobReward => admobReward;
@@ -37,7 +35,6 @@ namespace Pancake.Monetization
 
         [Header("[applovin]")] [SerializeField, TextArea] private string sdkKey;
 
-        [SerializeField,] private ApplovinAdClient applovinClient;
         [SerializeField] private ApplovinBannerVariable applovinBanner;
         [SerializeField] private ApplovinInterVariable applovinInter;
         [SerializeField] private ApplovinRewardVariable applovinReward;
@@ -46,7 +43,6 @@ namespace Pancake.Monetization
         [SerializeField] private bool applovinEnableAgeRestrictedUser;
 
         public string SDKKey => sdkKey;
-        public ApplovinAdClient ApplovinClient => applovinClient;
         public AdUnitVariable ApplovinBanner => applovinBanner;
         public AdUnitVariable ApplovinInter => applovinInter;
         public AdUnitVariable ApplovinReward => applovinReward;

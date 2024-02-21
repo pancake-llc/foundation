@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 
-namespace Pancake.ExLib.Reflection
+namespace Pancake.ExLibEditor
 {
     public static class TypeExtensions
     {

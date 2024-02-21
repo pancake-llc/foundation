@@ -174,7 +174,7 @@ namespace Pancake.SceneFlow
 
         private void OnButtonShowInterClicked() { interVariable.Context().Show(); }
 
-        private void OnButtonHideBannerClicked() { bannerVariable.Context().Destroy(); }
+        private void OnButtonHideBannerClicked() { (bannerVariable.Context() as IBannerHide)?.Hide(); }
 
         private void OnButtonShowBannerClicked() { bannerVariable.Context().Show(); }
 
