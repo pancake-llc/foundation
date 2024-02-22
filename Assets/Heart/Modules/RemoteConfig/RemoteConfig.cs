@@ -15,6 +15,8 @@ namespace Pancake.Tracking
     {
         [SerializeField, Label("Status")] private BoolVariable remoteConfigIsFetchCompleted;
         [SerializeField] private RemoteConfigData remoteData;
+        [SerializeField] private StringVariable remoteConfigCurrentAdNetwork;
+        [SerializeField] private ScriptableEventString changeNetworkEvent;
 
 #if PANCAKE_REMOTE_CONFIG
         private void Start()
@@ -75,7 +77,12 @@ namespace Pancake.Tracking
                             remoteData[key].Value = result;
                         }
                     }
-
+                    
+                    if (remoteConfigCurrentAdNetwork != null && remoteConfigCurrentAdNetwork.Value != string.Empty)
+                    {
+                        if (changeNetworkEvent != null) changeNetworkEvent.Raise(remoteConfigCurrentAdNetwork.Value);
+                    }
+                    
                     remoteConfigIsFetchCompleted.Value = true;
                 });
         }

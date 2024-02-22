@@ -1,6 +1,5 @@
 ﻿using Pancake.Apex;
 using Pancake.ExLibEditor;
-using Pancake.ExLibEditor;
 using Pancake.ExLibEditor.Windows;
 using System;
 using System.Collections;

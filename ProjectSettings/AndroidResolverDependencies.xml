@@ -16,15 +16,13 @@
     <package>com.applovin.mediation:unityads-adapter:4.9.2.1</package>
     <package>com.applovin.mediation:vungle-adapter:7.1.0.0</package>
     <package>com.applovin:applovin-sdk:12.1.0</package>
-    <package>com.google.android.gms:play-services-ads:22.6.0</package>
     <package>com.google.android.gms:play-services-base:16.1.0</package>
-    <package>com.google.android.ump:user-messaging-platform:2.1.0</package>
     <package>com.squareup.picasso:picasso:2.71828</package>
   </packages>
   <files />
   <settings>
     <setting name="androidAbis" value="arm64-v8a,armeabi-v7a" />
-    <setting name="bundleId" value="com.pancake.foundation" />
+    <setting name="bundleId" value="com.gamee.pull.pin.puzzle" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
     <setting name="gradlePropertiesTemplateEnabled" value="True" />

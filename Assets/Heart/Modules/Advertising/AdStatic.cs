@@ -9,6 +9,7 @@ namespace Pancake.Monetization
         /// prevent show app open ad, it will become true when interstitial or rewarded was showed
         /// </summary>
         internal static bool isShowingAd;
+        internal static EAdNetwork currentNetworkShared;
         internal static Action waitAppOpenDisplayedAction;
         internal static Action waitAppOpenClosedAction;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
@@ -65,6 +66,7 @@ namespace Pancake.Monetization
             _isBannerShowing = true;
             AdStatic.waitAppOpenClosedAction = OnWaitAppOpenClosed;
             AdStatic.waitAppOpenDisplayedAction = OnWaitAppOpenDisplayed;
+            Load(); // load banner again if destroyed banner before
             MaxSdk.ShowBanner(Id);
 #endif
         }

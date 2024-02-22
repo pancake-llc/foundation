@@ -15,7 +15,6 @@ namespace Pancake.Monetization
         private AdClient _adClient;
         [SerializeField] private AdSettings adSettings;
         [SerializeField] private ScriptableEventString changeNetworkEvent;
-
         [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
 #if PANCAKE_ADMOB
         [SerializeField, Label("Show GDPR Again Event")] private ScriptableEventNoParam showGdprAgainEvent;
@@ -31,6 +30,7 @@ namespace Pancake.Monetization
 
         private void Start()
         {
+            AdStatic.currentNetworkShared = adSettings.CurrentNetwork;
             if (adSettings.Gdpr)
             {
 #if PANCAKE_ADMOB
@@ -121,6 +121,7 @@ namespace Pancake.Monetization
                 "admob" => EAdNetwork.Admob,
                 _ => EAdNetwork.Applovin
             };
+            AdStatic.currentNetworkShared = adSettings.CurrentNetwork;
             AdStatic.waitAppOpenClosedAction = null;
             AdStatic.waitAppOpenDisplayedAction = null;
             InitClient();
