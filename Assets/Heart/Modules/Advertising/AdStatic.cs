@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using UnityEngine;
 
 namespace Pancake.Monetization
@@ -10,6 +9,9 @@ namespace Pancake.Monetization
         /// prevent show app open ad, it will become true when interstitial or rewarded was showed
         /// </summary>
         internal static bool isShowingAd;
+        internal static EAdNetwork currentNetworkShared;
+        internal static Action waitAppOpenDisplayedAction;
+        internal static Action waitAppOpenClosedAction;
 
         public static bool IsRemoveAd { get => Data.Load($"{Application.identifier}_removeads", false); set => Data.Save($"{Application.identifier}_removeads", value); }
 
@@ -107,22 +109,6 @@ namespace Pancake.Monetization
             }
 
             return unit;
-        }
-
-        // ReSharper disable once InconsistentNaming
-        public static bool IsInEEA()
-        {
-            string code = RegionInfo.CurrentRegion.Name;
-            if (code.Equals("AT") || code.Equals("BE") || code.Equals("BG") || code.Equals("HR") || code.Equals("CY") || code.Equals("CZ") || code.Equals("DK") ||
-                code.Equals("EE") || code.Equals("FI") || code.Equals("FR") || code.Equals("DE") || code.Equals("EL") || code.Equals("HU") || code.Equals("IE") ||
-                code.Equals("IT") || code.Equals("LV") || code.Equals("LT") || code.Equals("LU") || code.Equals("MT") || code.Equals("NL") || code.Equals("PL") ||
-                code.Equals("PT") || code.Equals("RO") || code.Equals("SK") || code.Equals("SI") || code.Equals("ES") || code.Equals("SE") || code.Equals("IS") ||
-                code.Equals("LI") || code.Equals("NO"))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

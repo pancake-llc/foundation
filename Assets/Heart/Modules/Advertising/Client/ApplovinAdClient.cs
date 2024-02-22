@@ -6,8 +6,7 @@ using UnityEngine;
 // ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
 {
-    [EditorIcon("scriptable_ad")]
-    public class ApplovinAdClient : AdClient
+    public sealed class ApplovinAdClient : AdClient
     {
         public override void Init()
         {
@@ -24,6 +23,15 @@ namespace Pancake.Monetization
             LoadRewarded();
             LoadRewardedInterstitial();
             LoadAppOpen();
+            LoadBanner();
+            (adSettings.ApplovinBanner as IBannerHide)?.Hide(); // hide banner first time when banner auto show when loaded
+#endif
+        }
+
+        public override void LoadBanner()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            adSettings.AdmobBanner.Load();
 #endif
         }
 

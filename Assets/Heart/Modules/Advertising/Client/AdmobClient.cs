@@ -5,8 +5,7 @@ using Pancake.Tracking;
 
 namespace Pancake.Monetization
 {
-    [EditorIcon("scriptable_ad")]
-    public class AdmobClient : AdClient
+    public sealed class AdmobClient : AdClient
     {
         public override void Init()
         {
@@ -31,6 +30,15 @@ namespace Pancake.Monetization
             LoadRewarded();
             LoadRewardedInterstitial();
             LoadAppOpen();
+            LoadBanner();
+            (adSettings.AdmobBanner as IBannerHide)?.Hide(); // hide banner first time when banner auto show when loaded
+#endif
+        }
+
+        public override void LoadBanner()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+            adSettings.AdmobBanner.Load();
 #endif
         }
 

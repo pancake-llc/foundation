@@ -58,6 +58,10 @@ namespace Pancake.Monetization
             closedCallback = null;
         }
 
+        protected virtual void Impl_HideBanner()
+        {
+            
+        }
         protected abstract void ShowImpl();
         public abstract void Destroy();
     }

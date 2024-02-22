@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
@@ -66,6 +65,7 @@ namespace Pancake.Monetization
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
+            AdStatic.waitAppOpenClosedAction?.Invoke();
             AdStatic.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
 
@@ -74,6 +74,7 @@ namespace Pancake.Monetization
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info)
         {
+            AdStatic.waitAppOpenDisplayedAction?.Invoke();
             AdStatic.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }

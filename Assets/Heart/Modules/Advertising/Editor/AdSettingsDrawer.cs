@@ -18,7 +18,6 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _gdprTestModeProperty;
         private SerializedProperty _admobEnableTestModeProperty;
         private SerializedProperty _admobDevicesTestProperty;
-        private SerializedProperty _admobClientProperty;
         private SerializedProperty _admobBannerProperty;
         private SerializedProperty _admobInterProperty;
         private SerializedProperty _admobRewardProperty;
@@ -26,7 +25,6 @@ namespace Pancake.MonetizationEditor
         private SerializedProperty _admobAppOpenProperty;
 
         private SerializedProperty _sdkKeyPropertyProperty;
-        private SerializedProperty _applovinClientProperty;
         private SerializedProperty _applovinBannerProperty;
         private SerializedProperty _applovinInterProperty;
         private SerializedProperty _applovinRewardProperty;
@@ -44,7 +42,6 @@ namespace Pancake.MonetizationEditor
             _gdprTestModeProperty = serializedObject.FindProperty("gdprTestMode");
             _admobEnableTestModeProperty = serializedObject.FindProperty("admobEnableTestMode");
             _admobDevicesTestProperty = serializedObject.FindProperty("admobDevicesTest");
-            _admobClientProperty = serializedObject.FindProperty("admobClient");
             _admobBannerProperty = serializedObject.FindProperty("admobBanner");
             _admobInterProperty = serializedObject.FindProperty("admobInter");
             _admobRewardProperty = serializedObject.FindProperty("admobReward");
@@ -52,7 +49,6 @@ namespace Pancake.MonetizationEditor
             _admobAppOpenProperty = serializedObject.FindProperty("admobAppOpen");
 
             _sdkKeyPropertyProperty = serializedObject.FindProperty("sdkKey");
-            _applovinClientProperty = serializedObject.FindProperty("applovinClient");
             _applovinBannerProperty = serializedObject.FindProperty("applovinBanner");
             _applovinInterProperty = serializedObject.FindProperty("applovinInter");
             _applovinRewardProperty = serializedObject.FindProperty("applovinReward");
@@ -84,7 +80,7 @@ namespace Pancake.MonetizationEditor
             }
 
             GUILayout.Space(4);
-
+            
             if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Admob)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -148,7 +144,6 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.PropertyField(_admobEnableTestModeProperty, new GUIContent("Test Mode"));
                 if (_admobEnableTestModeProperty.boolValue) EditorGUILayout.PropertyField(_admobDevicesTestProperty, new GUIContent("Devices Test"));
 
-                EditorGUILayout.PropertyField(_admobClientProperty, new GUIContent("Client"));
                 EditorGUILayout.PropertyField(_admobBannerProperty, new GUIContent("Banner"));
                 EditorGUILayout.PropertyField(_admobInterProperty, new GUIContent("Interstitial"));
                 EditorGUILayout.PropertyField(_admobRewardProperty, new GUIContent("Rewarded"));
@@ -236,7 +231,6 @@ namespace Pancake.MonetizationEditor
             EditorGUILayout.EndHorizontal();
             
             EditorGUILayout.PropertyField(_sdkKeyPropertyProperty);
-            EditorGUILayout.PropertyField(_applovinClientProperty, new GUIContent("Client"));
             EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
             EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
             EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
@@ -250,11 +244,11 @@ namespace Pancake.MonetizationEditor
 
                 EditorGUILayout.BeginHorizontal();
                 bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
-                var contentInstallLabel = "Install Applovin v6.1.2 (1)";
+                var contentInstallLabel = "Install Applovin v6.2.1 (1)";
                 if (applovinInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Applovin SDK v6.1.2 Installed (1)";
+                    contentInstallLabel = "Applovin SDK v6.2.1 Installed (1)";
                 }
                 else
                 {

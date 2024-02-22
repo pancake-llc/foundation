@@ -336,8 +336,8 @@ GameObject:
   - component: {fileID: 776958709}
   - component: {fileID: 776958710}
   - component: {fileID: 776958711}
-  - component: {fileID: 776958712}
   - component: {fileID: 776958714}
+  - component: {fileID: 776958712}
   - component: {fileID: 776958713}
   - component: {fileID: 776958717}
   - component: {fileID: 776958718}
@@ -421,7 +421,7 @@ MonoBehaviour:
     - LEVEL_BETWEEN_SHOW_AD
     - FIRST_TIME_LEVEL_SHOW_AD
     - TURN_ON_AD
-    - USING_ADMOB
+    - CURRENT_AD_NETWORK
     - NEW_VERSION_ANDROID
     - NEW_VERSION_IOS
     - CHANGELOG_ANDROID
@@ -436,6 +436,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 0da29de6fbacc8e45be8a853b0b23dfb, type: 2}
     - {fileID: 11400000, guid: cc4a98ebd9e30e1439c375c3115a9301, type: 2}
     - {fileID: 11400000, guid: d93790b7691a62f468bd84dc00c93abc, type: 2}
+  remoteConfigCurrentAdNetwork: {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
+  changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
 --- !u!114 &776958713
 MonoBehaviour:
   m_ObjectHideFlags: 0

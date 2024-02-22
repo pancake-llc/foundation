@@ -1,11 +1,12 @@
 ﻿using System;
+using UnityEngine;
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
 namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("scriptable_variable")]
-    public class ApplovinBannerVariable : AdUnitVariable
+    public class ApplovinBannerVariable : AdUnitVariable, IBannerHide
     {
         public EBannerSize size;
         public EBannerPosition position;
@@ -13,6 +14,8 @@ namespace Pancake.Monetization
 #pragma warning disable 0414
         private bool _isBannerDestroyed = true;
         private bool _registerCallback;
+        private bool _isBannerShowing;
+        private bool _previousBannerShowStatus;
 #pragma warning restore 0414
 
         public override void Load()
@@ -28,6 +31,7 @@ namespace Pancake.Monetization
                 MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaid;
                 // The latest MAX Unity plugin (versions 4.3.1 and above) enables adaptive banners automatically
                 if (size != EBannerSize.Adaptive) MaxSdk.SetBannerExtraParameter(Id, "adaptive_banner", "false");
+                
                 _registerCallback = true;
             }
 
@@ -38,13 +42,31 @@ namespace Pancake.Monetization
             }
 #endif
         }
+        
+        private void OnWaitAppOpenClosed()
+        {
+            if (_previousBannerShowStatus)
+            {
+                _previousBannerShowStatus = false;
+                Show();
+            }
+        }
+
+        private void OnWaitAppOpenDisplayed()
+        {
+            _previousBannerShowStatus = _isBannerShowing;
+            if (_isBannerShowing) Hide();
+        }
 
         public override bool IsReady() { return !string.IsNullOrEmpty(Id); }
 
         protected override void ShowImpl()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            Load();
+            _isBannerShowing = true;
+            AdStatic.waitAppOpenClosedAction = OnWaitAppOpenClosed;
+            AdStatic.waitAppOpenDisplayedAction = OnWaitAppOpenDisplayed;
+            Load(); // load banner again if destroyed banner before
             MaxSdk.ShowBanner(Id);
 #endif
         }
@@ -53,7 +75,10 @@ namespace Pancake.Monetization
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
             if (string.IsNullOrEmpty(Id)) return;
+            _isBannerShowing = false;
             _isBannerDestroyed = true;
+            AdStatic.waitAppOpenClosedAction = null;
+            AdStatic.waitAppOpenDisplayedAction = null;
             MaxSdk.DestroyBanner(Id);
 #endif
         }
@@ -92,5 +117,13 @@ namespace Pancake.Monetization
         private void OnAdLoaded(string unit, MaxSdkBase.AdInfo info) { C.CallActionClean(ref loadedCallback); }
 
 #endif
+        public void Hide()
+        {
+#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
+            _isBannerShowing = false;
+            if (string.IsNullOrEmpty(Id)) return;
+            MaxSdk.HideBanner(Id);
+#endif
+        }
     }
 }

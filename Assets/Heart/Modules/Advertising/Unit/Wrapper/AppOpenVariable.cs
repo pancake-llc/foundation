@@ -1,5 +1,4 @@
-﻿using Pancake.Scriptable;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pancake.Monetization
 {
@@ -11,14 +10,17 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_bind")]
     public class AppOpenVariable : ScriptableObject
     {
-        [SerializeField] private StringVariable remoteConfigFlagUseAdmob;
-        public AdUnitVariable admobAppOpen;
-        public AdUnitVariable applovinAppOpen;
+        [SerializeField] private AdUnitVariable admobAppOpen;
+        [SerializeField] private AdUnitVariable applovinAppOpen;
 
         public AdUnitVariable Context()
         {
-            bool.TryParse(remoteConfigFlagUseAdmob.Value, out bool status);
-            return status ? admobAppOpen : applovinAppOpen;
+            return AdStatic.currentNetworkShared switch
+            {
+                EAdNetwork.Applovin => applovinAppOpen,
+                EAdNetwork.Admob => admobAppOpen,
+                _ => admobAppOpen
+            };
         }
     }
 }

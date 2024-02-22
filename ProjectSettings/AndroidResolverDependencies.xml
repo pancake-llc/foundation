@@ -1,14 +1,28 @@
 <dependencies>
   <packages>
-    <package>com.google.games:gpgs-plugin-support:0.11.01</package>
+    <package>androidx.recyclerview:recyclerview:1.2.1</package>
+    <package>com.android.support:customtabs:28.+</package>
+    <package>com.android.support:recyclerview-v7:28.+</package>
+    <package>com.applovin.mediation:adcolony-adapter:4.8.0.4</package>
+    <package>com.applovin.mediation:bytedance-adapter:5.7.0.3.0</package>
+    <package>com.applovin.mediation:chartboost-adapter:9.6.1.0</package>
+    <package>com.applovin.mediation:facebook-adapter:[6.16.0.2]</package>
+    <package>com.applovin.mediation:fyber-adapter:8.2.5.0</package>
+    <package>com.applovin.mediation:google-adapter:[22.6.0.0]</package>
+    <package>com.applovin.mediation:google-ad-manager-adapter:[22.6.0.0]</package>
+    <package>com.applovin.mediation:inmobi-adapter:10.6.3.0</package>
+    <package>com.applovin.mediation:ironsource-adapter:7.6.0.0.0</package>
+    <package>com.applovin.mediation:mintegral-adapter:16.6.21.0</package>
+    <package>com.applovin.mediation:unityads-adapter:4.9.2.1</package>
+    <package>com.applovin.mediation:vungle-adapter:7.1.0.0</package>
+    <package>com.applovin:applovin-sdk:12.1.0</package>
+    <package>com.google.android.gms:play-services-base:16.1.0</package>
+    <package>com.squareup.picasso:picasso:2.71828</package>
   </packages>
-  <files>
-    <file>Assets/GeneratedLocalRepo/GooglePlayGames/com.google.play.games/Editor/m2repository/com/google/games/gpgs-plugin-support/0.11.01/gpgs-plugin-support-0.11.01.aar</file>
-    <file>Assets/GeneratedLocalRepo/GooglePlayGames/com.google.play.games/Editor/m2repository/com/google/games/gpgs-plugin-support/0.11.01/gpgs-plugin-support-0.11.01.pom</file>
-  </files>
+  <files />
   <settings>
     <setting name="androidAbis" value="arm64-v8a,armeabi-v7a" />
-    <setting name="bundleId" value="com.pancake.foundation" />
+    <setting name="bundleId" value="com.gamee.pull.pin.puzzle" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
     <setting name="gradlePropertiesTemplateEnabled" value="True" />

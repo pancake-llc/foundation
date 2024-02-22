@@ -15,5 +15,6 @@ MonoBehaviour:
   developerDescription: coin fx pool using for spawn fx coin when user receive coin
     when build from shop or win level
   resetOn: 1
-  factory: {fileID: 11400000, guid: d58bbac3f0f0ad546b0b447f351826ea, type: 2}
+  isCacheSpawned: 0
   rootIsUI: 0
+  factory: {fileID: 11400000, guid: d58bbac3f0f0ad546b0b447f351826ea, type: 2}
