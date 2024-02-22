@@ -2,7 +2,6 @@
 
 namespace Pancake.Scriptable
 {
-    [System.Serializable]
     [EditorIcon("scriptable_variable")]
     public abstract class ScriptableVariableBase : ScriptableBase
     {

@@ -7,7 +7,6 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
-    [Serializable]
     public abstract class ScriptableEvent<T> : ScriptableEventBase, IDrawObjectsInInspector
     {
         [Tooltip("Value used when raising the event in editor.")] [SerializeField]

@@ -6,7 +6,6 @@ namespace Pancake.Scriptable
     /// Base classes of all ScriptableObjects
     /// </summary>
     [Searchable]
-    [System.Serializable]
     public abstract class ScriptableBase : ScriptableObject
     {
         public virtual void Reset() { }

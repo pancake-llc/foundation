@@ -10,7 +10,6 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
-    [Serializable]
     [EditorIcon("scriptable_variable")]
     public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IResetOn, IDrawObjectsInInspector
     {
