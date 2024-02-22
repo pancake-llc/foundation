@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40f1c410b144ecc871f491b41b747ba, type: 3}
   m_Name: applovinBanner
   m_EditorClassIdentifier: 
-  androidId: 446e2be989d7621b
+  androidId: 
   size: 0
   position: 0

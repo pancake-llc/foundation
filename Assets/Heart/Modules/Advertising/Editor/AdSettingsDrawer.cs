@@ -244,11 +244,11 @@ namespace Pancake.MonetizationEditor
 
                 EditorGUILayout.BeginHorizontal();
                 bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
-                var contentInstallLabel = "Install Applovin v6.1.2 (1)";
+                var contentInstallLabel = "Install Applovin v6.2.1 (1)";
                 if (applovinInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Applovin SDK v6.1.2 Installed (1)";
+                    contentInstallLabel = "Applovin SDK v6.2.1 Installed (1)";
                 }
                 else
                 {
