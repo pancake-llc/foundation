@@ -6,7 +6,6 @@ using Pancake.Apex;
 using Pancake.AssetLoader;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Pancake.UI
@@ -21,7 +20,6 @@ namespace Pancake.UI
         [SerializeField] private PopupBackdrop overridePopupPrefab;
 
         private readonly Dictionary<string, AssetLoadHandle<GameObject>> _assetLoadHandles = new Dictionary<string, AssetLoadHandle<GameObject>>();
-        private readonly List<PopupBackdrop> _backdrops = new List<PopupBackdrop>();
         private readonly List<IPopupContainerCallbackReceiver> _callbackReceivers = new List<IPopupContainerCallbackReceiver>();
         private readonly Dictionary<string, Popup> _popups = new Dictionary<string, Popup>();
         private readonly List<string> _orderedPopupIds = new List<string>();
@@ -30,6 +28,7 @@ namespace Pancake.UI
         private PopupBackdrop _backdropPrefab;
         private CanvasGroup _canvasGroup;
 
+        public List<PopupBackdrop> Backdrops { get; } = new List<PopupBackdrop>();
         public static List<PopupContainer> Instances { get; } = new List<PopupContainer>();
 
         /// <summary>
@@ -289,7 +288,7 @@ namespace Pancake.UI
 
             var backdrop = Instantiate(_backdropPrefab);
             backdrop.Setup((RectTransform) transform);
-            _backdrops.Add(backdrop);
+            Backdrops.Add(backdrop);
 
             var instance = Instantiate(assetLoadHandle.Result);
             if (!instance.TryGetComponent(popupType, out var c)) c = instance.AddComponent(popupType);
@@ -400,7 +399,7 @@ namespace Pancake.UI
                 var unusedPopupId = _orderedPopupIds[i];
                 unusedPopupIds.Add(unusedPopupId);
                 unusedPopups.Add(_popups[unusedPopupId]);
-                unusedBackdrops.Add(_backdrops[i]);
+                unusedBackdrops.Add(Backdrops[i]);
             }
 
             var enterPopupIndex = _orderedPopupIds.Count - popCount - 1;
@@ -468,7 +467,7 @@ namespace Pancake.UI
 
             foreach (var unusedBackdrop in unusedBackdrops)
             {
-                _backdrops.Remove(unusedBackdrop);
+                Backdrops.Remove(unusedBackdrop);
                 Destroy(unusedBackdrop.gameObject);
             }
 
