@@ -51,7 +51,7 @@ namespace PancakeEditor
             GUILayout.Space(8);
 
 #if PANCAKE_TEST_PERFORMANCE
-            UninstallTestPerformance();
+            Uninstall("Test Performance 3.0.3", "com.unity.test-framework.performance");
 #else
             InstallTestPerformance();
 #endif
@@ -59,7 +59,7 @@ namespace PancakeEditor
             GUILayout.Space(8);
 
 #if PANCAKE_PARTICLE_EFFECT_UGUI
-            UninstallParticleEffectUGUI();
+            Uninstall("Particle Effect For UGUI 4.6.2", "com.coffee.ui-particle");
 #else
             InstallParticleEffectUGUI();
 #endif
@@ -67,7 +67,7 @@ namespace PancakeEditor
             GUILayout.Space(8);
 
 #if PANCAKE_UI_EFFECT
-            UninstallUIEffect();
+            Uninstall("UI Effect 4.0.0-preview.10", "com.coffee.ui-effect");
 #else
             InstallUIEffect();
 #endif
@@ -211,30 +211,6 @@ namespace PancakeEditor
             GUI.enabled = true;
         }
 
-        private static void UninstallParticleEffectUGUI()
-        {
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Particle Effect For UGUI 4.6.2", new RectOffset(0, 0, 6, 0));
-
-            GUI.backgroundColor = Uniform.Red;
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Particle Effect For UGUI",
-                    "Are you sure you want to uninstall particle effect for ugui package ?",
-                    "Yes",
-                    "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.coffee.ui-particle");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-        }
-
         private static void InstallUIEffect()
         {
             GUI.enabled = !EditorApplication.isCompiling;
@@ -247,26 +223,6 @@ namespace PancakeEditor
             GUI.enabled = true;
         }
 
-        private static void UninstallUIEffect()
-        {
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("UI Effect 4.0.0-preview.10", new RectOffset(0, 0, 6, 0));
-
-            GUI.backgroundColor = Uniform.Red;
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall UI Effect", "Are you sure you want to uninstall ui effect package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.coffee.ui-effect");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-        }
 
         private static void InstallProjectAuditor()
         {
@@ -362,23 +318,20 @@ namespace PancakeEditor
             GUI.enabled = true;
         }
 
-        private static void UninstallTestPerformance()
+        private static void Uninstall(string namePackage, string bundle)
         {
             EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Test Performance 3.0.3", new RectOffset(0, 0, 6, 0));
+            Uniform.DrawInstalled(namePackage, new RectOffset(0, 0, 6, 0));
 
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
 
             if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
             {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Test Performance",
-                    "Are you sure you want to uninstall Test Performance package ?",
-                    "Yes",
-                    "No");
+                bool confirmDelete = EditorUtility.DisplayDialog($"Uninstall {namePackage}", $"Are you sure you want to uninstall {namePackage} package ?", "Yes", "No");
                 if (confirmDelete)
                 {
-                    RegistryManager.Remove("com.unity.test-framework.performance");
+                    RegistryManager.Remove(bundle);
                     RegistryManager.Resolve();
                 }
             }
