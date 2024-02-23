@@ -227,6 +227,12 @@ namespace Pancake.UI
             TransitionAnimationType = null;
         }
 
+        internal void BeforeReleaseAndForget()
+        {
+            foreach (var lifecycleEvent in _lifecycleEvents)
+                lifecycleEvent.Cleanup();
+        }
+
         internal AsyncProcessHandle BeforeRelease()
         {
             // Evaluate here because users may add/remove lifecycle events within the lifecycle events.

@@ -208,10 +208,10 @@ namespace Pancake.UI
             TransitionAnimationType = null;
         }
 
-        internal AsyncProcessHandle BeforeRelease()
+        internal void BeforeReleaseAndForget()
         {
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.Select(x => x.Cleanup()).ToArray()));
+            foreach (var lifecycleEvent in _lifecycleEvents)
+                lifecycleEvent.Cleanup();
         }
 
         private IEnumerator CreateCoroutine(IEnumerable<Task> targets)

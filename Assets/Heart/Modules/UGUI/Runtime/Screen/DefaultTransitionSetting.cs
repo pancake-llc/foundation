@@ -1,4 +1,5 @@
-﻿using Pancake.AssetLoader;
+﻿using Pancake.Apex;
+using Pancake.AssetLoader;
 using PrimeTween;
 using UnityEngine;
 
@@ -14,17 +15,21 @@ namespace Pancake.UI
         [SerializeField] private UITransitionAnimationSO pagePushExitAnim;
         [SerializeField] private UITransitionAnimationSO pagePopEnterAnim;
         [SerializeField] private UITransitionAnimationSO pagePopExitAnim;
-        
+
         [Space] [SerializeField] private UITransitionAnimationSO popupEnterAnim;
         [SerializeField] private UITransitionAnimationSO popupExitAnim;
-        
+
         [Space] [SerializeField] private UITransitionAnimationSO popupBackdropEnterAnim;
         [SerializeField] private UITransitionAnimationSO popupBackdropExitAnim;
 
         [SerializeField] private PopupBackdrop popupBackdropPrefab;
         [Space] [SerializeField] private AssetLoaderObject assetLoader;
         [SerializeField] private bool enableInteractionInTransition;
-        [SerializeField] private bool controlInteractionAllContainer = true;
+
+        [ShowIf(nameof(enableInteractionInTransition)), SerializeField]
+        private bool controlInteractionAllContainer = true;
+
+        [SerializeField] private bool callCleanupWhenDestroy = true;
 
         private IAssetLoader _defaultAssetLoader;
         private PopupBackdrop _defaultPopupBackdrop;
@@ -111,5 +116,7 @@ namespace Pancake.UI
         public static bool EnableInteractionInTransition { get => Instance.enableInteractionInTransition; set => Instance.enableInteractionInTransition = value; }
 
         public static bool ControlInteractionAllContainer { get => Instance.controlInteractionAllContainer; set => Instance.controlInteractionAllContainer = value; }
+
+        public static bool CallCleanupWhenDestroy => Instance.callCleanupWhenDestroy;
     }
 }

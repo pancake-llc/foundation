@@ -74,6 +74,7 @@ namespace Pancake.UI
                 var popup = _popups[popupId];
                 var assetLoadHandle = _assetLoadHandles[popupId];
 
+                if (DefaultTransitionSetting.CallCleanupWhenDestroy) popup.BeforeReleaseAndForget();
                 Destroy(popup.gameObject);
                 AssetLoader.Release(assetLoadHandle);
             }

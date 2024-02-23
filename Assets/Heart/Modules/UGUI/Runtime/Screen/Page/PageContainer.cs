@@ -66,6 +66,7 @@ namespace Pancake.UI
                 var page = _pages[pageId];
                 var assetLoadHandle = _assetLoadHandles[pageId];
 
+                if (DefaultTransitionSetting.CallCleanupWhenDestroy) page.BeforeReleaseAndForget();
                 Destroy(page.gameObject);
                 AssetLoader.Release(assetLoadHandle);
             }

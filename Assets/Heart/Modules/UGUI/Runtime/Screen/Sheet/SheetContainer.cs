@@ -409,7 +409,11 @@ namespace Pancake.UI
         /// </summary>
         public void UnregisterAll()
         {
-            foreach (var sheet in _sheets.Values) Destroy(sheet.gameObject);
+            foreach (var sheet in _sheets.Values)
+            {
+                if (DefaultTransitionSetting.CallCleanupWhenDestroy) sheet.BeforeReleaseAndForget();
+                Destroy(sheet.gameObject);
+            }
 
             foreach (var assetLoadHandle in _assetLoadHandles.Values) AssetLoader.Release(assetLoadHandle);
 
