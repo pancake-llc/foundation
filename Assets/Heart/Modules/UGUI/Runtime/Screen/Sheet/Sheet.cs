@@ -32,8 +32,7 @@ namespace Pancake.UI
             }
         }
 
-        private readonly PriorityList<ISheetLifecycleEvent> _lifecycleEvents = new PriorityList<ISheetLifecycleEvent>();
-
+        private readonly CompositeLifecycleEvent<ISheetLifecycleEvent> _lifecycleEvents = new();
 
         public SheetTransitionContainer AnimationContainer => animationContainer;
 
@@ -72,15 +71,15 @@ namespace Pancake.UI
         public virtual Task Cleanup() { return Task.CompletedTask; }
 
 
-        public void AddLifecycleEvent(ISheetLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.Add(lifecycleEvent, priority); }
+        public void AddLifecycleEvent(ISheetLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
 
-        public void RemoveLifecycleEvent(ISheetLifecycleEvent lifecycleEvent) { _lifecycleEvents.Remove(lifecycleEvent); }
+        public void RemoveLifecycleEvent(ISheetLifecycleEvent lifecycleEvent) { _lifecycleEvents.RemoveItem(lifecycleEvent); }
 
         internal AsyncProcessHandle AfterLoad(RectTransform parentTransform)
         {
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
-            _lifecycleEvents.Add(this, 0);
+            _lifecycleEvents.AddItem(this, 0);
             _parentTransform = parentTransform;
             _rectTransform.FillWithParent(_parentTransform);
 
@@ -100,8 +99,7 @@ namespace Pancake.UI
 
             gameObject.SetActive(false);
 
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.Select(x => x.Initialize()).ToArray()));
+            return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize())));
         }
 
         internal AsyncProcessHandle BeforeEnter(Sheet partnerSheet) { return App.StartCoroutine(BeforeEnterRoutine(partnerSheet)); }
@@ -116,8 +114,7 @@ namespace Pancake.UI
 
             _canvasGroup.alpha = 0.0f;
 
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var handle = App.StartCoroutine(CreateCoroutine(_lifecycleEvents.Select(x => x.WillEnter()).ToArray()));
+            var handle = App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillEnter())));
             while (!handle.IsTerminated)
                 yield return null;
         }
@@ -147,11 +144,7 @@ namespace Pancake.UI
 
         internal void AfterEnter(Sheet partnerSheet)
         {
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var lifecycleEvents = _lifecycleEvents.ToArray();
-            foreach (var lifecycleEvent in lifecycleEvents)
-                lifecycleEvent.DidEnter();
-
+            _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidEnter());
             IsTransitioning = false;
             TransitionAnimationType = null;
         }
@@ -168,8 +161,7 @@ namespace Pancake.UI
 
             _canvasGroup.alpha = 1.0f;
 
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var handle = App.StartCoroutine(CreateCoroutine(_lifecycleEvents.Select(x => x.WillExit()).ToArray()));
+            var handle = App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillExit())));
             while (!handle.IsTerminated)
                 yield return null;
         }
@@ -197,25 +189,15 @@ namespace Pancake.UI
 
         internal void AfterExit(Sheet partnerSheet)
         {
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var lifecycleEvents = _lifecycleEvents.ToArray();
-            foreach (var lifecycleEvent in lifecycleEvents)
-                lifecycleEvent.DidExit();
-
+            _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidExit());
             gameObject.SetActive(false);
-
             IsTransitioning = false;
             TransitionAnimationType = null;
         }
 
-        internal void BeforeReleaseAndForget()
-        {
-            foreach (var lifecycleEvent in _lifecycleEvents)
-                lifecycleEvent.Cleanup();
-        }
+        internal void BeforeReleaseAndForget() { _ = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
 
         private IEnumerator CreateCoroutine(IEnumerable<Task> targets)
-
         {
             foreach (var target in targets)
             {

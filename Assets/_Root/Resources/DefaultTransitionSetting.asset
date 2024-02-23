@@ -26,3 +26,4 @@ MonoBehaviour:
   assetLoader: {fileID: 11400000, guid: 61cbdc214a991154d85f96085411c11f, type: 2}
   enableInteractionInTransition: 0
   controlInteractionAllContainer: 1
+  callCleanupWhenDestroy: 1

@@ -26,7 +26,7 @@ namespace Pancake.UI
         [Space] [SerializeField] private AssetLoaderObject assetLoader;
         [SerializeField] private bool enableInteractionInTransition;
 
-        [ShowIf(nameof(enableInteractionInTransition)), SerializeField]
+        [HideIf(nameof(enableInteractionInTransition)), Indent, SerializeField]
         private bool controlInteractionAllContainer = true;
 
         [SerializeField] private bool callCleanupWhenDestroy = true;

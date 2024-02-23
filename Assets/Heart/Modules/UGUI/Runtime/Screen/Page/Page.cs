@@ -16,7 +16,7 @@ namespace Pancake.UI
         [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
         [SerializeField] private int order;
-        [SerializeField, InlineEditor] private PageTransitionContainer animationContainer = new PageTransitionContainer();
+        [SerializeField, InlineEditor] private PageTransitionContainer animationContainer = new();
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
         private RectTransform _rectTransform;
@@ -31,7 +31,7 @@ namespace Pancake.UI
             }
         }
 
-        private readonly PriorityList<IPageLifecycleEvent> _lifecycleEvents = new PriorityList<IPageLifecycleEvent>();
+        private readonly CompositeLifecycleEvent<IPageLifecycleEvent> _lifecycleEvents = new();
 
         /// <summary>
         ///     Progress of the transition animation.
@@ -82,14 +82,14 @@ namespace Pancake.UI
             TransitionAnimationProgressChanged?.Invoke(progress);
         }
 
-        public void AddLifecycleEvent(IPageLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.Add(lifecycleEvent, priority); }
-        public void RemoveLifecycleEvent(IPageLifecycleEvent lifecycleEvent) { _lifecycleEvents.Remove(lifecycleEvent); }
+        public void AddLifecycleEvent(IPageLifecycleEvent lifecycleEvent, int priority = 0) { _lifecycleEvents.AddItem(lifecycleEvent, priority); }
+        public void RemoveLifecycleEvent(IPageLifecycleEvent lifecycleEvent) { _lifecycleEvents.RemoveItem(lifecycleEvent); }
 
         internal AsyncProcessHandle AfterLoad(RectTransform parentTransform)
         {
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
-            _lifecycleEvents.Add(this, 0);
+            _lifecycleEvents.AddItem(this, 0);
             Id = usePrefabNameAsId ? gameObject.name.Replace("(Clone)", string.Empty) : Id;
             _parentTransform = parentTransform;
             _rectTransform.FillWithParent(_parentTransform);
@@ -110,9 +110,7 @@ namespace Pancake.UI
 
             _canvasGroup.alpha = 0.0f;
 
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var initializeEvents = _lifecycleEvents.Select(x => x.Initialize()).ToArray();
-            return App.StartCoroutine(CreateCoroutine(initializeEvents));
+            return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Initialize())));
         }
 
         internal AsyncProcessHandle BeforeEnter(bool push, Page partnerPage) { return App.StartCoroutine(BeforeEnterRoutine(push, partnerPage)); }
@@ -126,9 +124,10 @@ namespace Pancake.UI
             SetTransitionProgress(0.0f);
             _canvasGroup.alpha = 0.0f;
 
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var routines = push ? _lifecycleEvents.Select(x => x.WillPushEnter()).ToArray() : _lifecycleEvents.Select(x => x.WillPopEnter()).ToArray();
-            var handle = App.StartCoroutine(CreateCoroutine(routines));
+            var task = push
+                ? _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushEnter())
+                : _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopEnter());
+            var handle = App.StartCoroutine(CreateCoroutine(task));
 
             while (!handle.IsTerminated) yield return null;
         }
@@ -157,18 +156,8 @@ namespace Pancake.UI
 
         internal void AfterEnter(bool push, Page partnerPage)
         {
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var lifecycleEvents = _lifecycleEvents.ToArray();
-            if (push)
-            {
-                foreach (var lifecycleEvent in lifecycleEvents)
-                    lifecycleEvent.DidPushEnter();
-            }
-            else
-            {
-                foreach (var lifecycleEvent in lifecycleEvents)
-                    lifecycleEvent.DidPopEnter();
-            }
+            if (push) _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidPushEnter());
+            else _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidPopEnter());
 
             IsTransitioning = false;
             TransitionType = null;
@@ -185,9 +174,10 @@ namespace Pancake.UI
             SetTransitionProgress(0.0f);
             _canvasGroup.alpha = 1.0f;
 
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var routines = push ? _lifecycleEvents.Select(x => x.WillPushExit()).ToArray() : _lifecycleEvents.Select(x => x.WillPopExit()).ToArray();
-            var handle = App.StartCoroutine(CreateCoroutine(routines));
+            var task = push
+                ? _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPushExit())
+                : _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.WillPopExit());
+            var handle = App.StartCoroutine(CreateCoroutine(task));
 
             while (!handle.IsTerminated) yield return null;
         }
@@ -215,36 +205,17 @@ namespace Pancake.UI
 
         internal void AfterExit(bool push, Page partnerPage)
         {
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var lifecycleEvents = _lifecycleEvents.ToArray();
-            if (push)
-            {
-                foreach (var lifecycleEvent in lifecycleEvents)
-                    lifecycleEvent.DidPushExit();
-            }
-            else
-            {
-                foreach (var lifecycleEvent in lifecycleEvents)
-                    lifecycleEvent.DidPopExit();
-            }
+            if (push) _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidPushExit());
+            else _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.DidPopExit());
 
             gameObject.SetActive(false);
             IsTransitioning = false;
             TransitionType = null;
         }
 
-        internal void BeforeReleaseAndForget()
-        {
-            foreach (var lifecycleEvent in _lifecycleEvents)
-                lifecycleEvent.Cleanup();
-        }
+        internal void BeforeReleaseAndForget() { _ = _lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()); }
 
-        internal AsyncProcessHandle BeforeRelease()
-        {
-            // Evaluate here because users may add/remove lifecycle events within the lifecycle events.
-            var cleanupEvents = _lifecycleEvents.Select(x => x.Cleanup()).ToArray();
-            return App.StartCoroutine(CreateCoroutine(cleanupEvents));
-        }
+        internal AsyncProcessHandle BeforeRelease() { return App.StartCoroutine(CreateCoroutine(_lifecycleEvents.ExecuteLifecycleEventsSequentially(x => x.Cleanup()))); }
 
         private IEnumerator CreateCoroutine(IEnumerable<Task> targets)
         {
