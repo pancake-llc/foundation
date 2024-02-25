@@ -2232,16 +2232,9 @@ MonoBehaviour:
   buttonSelectLanguage: {fileID: 1415266517432278116}
   textNameLanguageSelected: {fileID: 5003263306355268004}
   langData:
-    keys: 0a000000270000001a0000001b0000001000000020000000220000002400000025000000
+    keys: 0a00000027000000
     values:
     - {fileID: 11400000, guid: b4aed3e2d46a5a14ca86b042d6dec354, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
     - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
   musicVolume: {fileID: 11400000, guid: f40c18cdb6b391741b188b73d884cb92, type: 2}
   sfxVolume: {fileID: 11400000, guid: 0a97e9acdf82e434983225db6d5b578f, type: 2}
@@ -2865,9 +2858,9 @@ RectTransform:
   - {fileID: 1271277306873699211}
   m_Father: {fileID: 4768909398571029482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -189.5}
   m_SizeDelta: {x: 0, y: 113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874660293915068792

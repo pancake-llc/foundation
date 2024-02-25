@@ -5,7 +5,7 @@ namespace Pancake
     [EditorIcon("scriptable_setting")]
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
-        [SerializeField] private bool enableAdministrator;
+        [SerializeField] private bool debugView;
         [SerializeField] private bool enablePrivacyFirstOpen;
         [SerializeField] private bool enableMultipleTouch;
         [SerializeField] private bool requireInternet;
@@ -18,7 +18,7 @@ namespace Pancake
         [SerializeField, Range(0, 63)] private int skAdConversionValue = 63;
 #endif
 
-        public static bool EnableAdministrator => Instance.enableAdministrator;
+        public static bool DebugView => Instance.debugView;
         public static bool EnablePrivacyFirstOpen => Instance.enablePrivacyFirstOpen;
         public static string PrivacyUrl => Instance.privacyUrl;
         public static string PrivacyTitle => Instance.privacyTitle;
