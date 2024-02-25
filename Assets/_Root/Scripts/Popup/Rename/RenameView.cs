@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Coffee.UIEffects;
 using Newtonsoft.Json;
 using Pancake.SceneFlow;
@@ -15,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace Pancake.UI
 {
-    public sealed class RenameView : View, IEnhancedScrollerDelegate
+    public sealed class RenameView : View, IRecyclerViewCellProvider, IRecyclerViewDataProvider
     {
         public class NameList
         {
@@ -24,8 +23,7 @@ namespace Pancake.UI
 
         [SerializeField] private TextAsset namesAsset;
         [SerializeField] private CountryCollection countryCollection;
-        [SerializeField] private CountryElementView countryElementPrefab;
-        [SerializeField] private EnhancedScroller countryScroller;
+        [SerializeField] private GameObjectPool countryElementPool;
         [SerializeField] private RectTransform countryPopup;
         [SerializeField] private TMP_InputField inputFieldName;
         [SerializeField] private UIButton buttonSelectCountry;
@@ -38,7 +36,6 @@ namespace Pancake.UI
         [SerializeField] private Button buttonClose;
         [SerializeField] private Button buttonDice;
 
-        private SmallList<int> _datas;
         private bool _isVerifySuccess;
         private UIEffect _buttonVerifyEffect;
         private string _selectedCountry;
@@ -47,15 +44,37 @@ namespace Pancake.UI
         private RectTransform _countryScrollerRT;
         private Action<bool> _onCloseCallback;
         private NameList _nameList;
+        private RecyclerView _recyclerView;
+        private readonly List<CountryElementCellModel> _datas = new();
+
+        private RecyclerView RecyclerView
+        {
+            get
+            {
+                if (_recyclerView == null)
+                {
+                    _recyclerView = countryPopup.GetComponentInChildren<RecyclerView>();
+                    _recyclerView.DataCount = 0;
+                    _recyclerView.CellProvider = this;
+                    _recyclerView.DataProvider = this;
+                }
+
+                return _recyclerView;
+            }
+        }
 
         public void SetCallbackClose(Action<bool> onCloseCallback) { _onCloseCallback = onCloseCallback; }
 
         protected override UniTask Initialize()
         {
+            countryElementPool.SetParent(transform, true);
+            // Add padding for the safe area.
+            float canvasScaleFactor = GetComponentInParent<Canvas>().scaleFactor;
+            RecyclerView.AfterPadding += (int) (Screen.safeArea.y / canvasScaleFactor);
+
             _nameList = JsonConvert.DeserializeObject<NameList>(namesAsset.text);
             _buttonVerifyEffect = buttonOk.GetComponent<UIEffect>();
-            _countryScrollerRT = countryScroller.GetComponent<RectTransform>();
-            countryScroller.Delegate = this;
+            _countryScrollerRT = RecyclerView.GetComponent<RectTransform>();
             inputFieldName.characterLimit = 13;
             inputFieldName.onValueChanged.AddListener(OnInputNameValueChanged);
             inputFieldName.onSelect.AddListener(OnInputNameSelected);
@@ -112,13 +131,19 @@ namespace Pancake.UI
 
         private void InitCountryData()
         {
-            _datas = new SmallList<int>();
+            _datas.Clear();
             for (int i = 0; i < countryCollection.Collection.Length; i++)
             {
-                _datas.Add(i);
+                _datas.Add(new CountryElementCellModel
+                {
+                    CountryData = countryCollection.Collection[i], IsSelected = IsElementSelected,
+                    OnClickedAction = OnButtonElementClicked,
+                    OnHideSelectCountryAction = InternalHideSelectCountry
+                });
+                RecyclerView.DataCount++;
             }
 
-            countryScroller.ReloadData();
+            RecyclerView.RefreshData();
         }
 
         private void InternalShowSelectCountry()
@@ -128,10 +153,11 @@ namespace Pancake.UI
             countryPopup.gameObject.SetActive(true);
             buttonOk.interactable = false;
             countryPopup.SetSizeDeltaY(103);
+            RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
             Tween.UISizeDelta(countryPopup, new Vector2(countryPopup.sizeDelta.x, 666), 0.5f)
                 .OnComplete(() =>
                 {
-                    countryScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
+                    RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(true);
                     buttonOk.interactable = true;
                     _countryScrollerRT.pivot = new Vector2(0.5f, 0.5f);
                 });
@@ -142,14 +168,14 @@ namespace Pancake.UI
             textMessage.gameObject.SetActive(false);
             _countryScrollerRT.pivot = new Vector2(0.5f, 1f);
             buttonOk.interactable = false;
-            countryScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Never;
+            RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
 
             Tween.UISizeDelta(countryPopup, new Vector2(countryPopup.sizeDelta.x, 103f), 0.5f)
                 .OnComplete(() =>
                 {
                     countryPopup.gameObject.SetActive(false);
                     bool state = inputFieldName.text.Length < 13 || inputFieldName.text.Length >= 3;
-                    countryScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
+                    RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(true);
                     buttonOk.interactable = state;
                     textMessage.gameObject.SetActive(!state);
                     _countryScrollerRT.pivot = new Vector2(0.5f, 0.5f);
@@ -208,38 +234,26 @@ namespace Pancake.UI
             Tween.PunchScale(textMessage.transform, new Vector3(0.1f, 0.1f, 0.1f), 0.2f, 5);
         }
 
-        public int GetNumberOfCells(EnhancedScroller scroller) { return _datas.Count; }
-
-        public float GetCellViewSize(EnhancedScroller scroller, int dataIndex) { return 120f; }
-
-        public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+        private void OnButtonElementClicked(CountryData countryData)
         {
-            var element = scroller.GetCellView(countryElementPrefab) as CountryElementView;
-            if (element != null)
-            {
-                var code = (ECountryCode) dataIndex;
-                element.name = "Country_" + code;
-                element.Init(_datas[dataIndex],
-                    OnButtonElementClicked,
-                    IsElementSelected,
-                    countryCollection.Get,
-                    InternalHideSelectCountry);
-                return element;
-            }
-
-            return null;
-        }
-
-        private void OnButtonElementClicked(CountryElementView view)
-        {
-            _selectedCountry = view.CountryData.code.ToString();
+            _selectedCountry = countryData.code.ToString();
             _userPickName = inputFieldName.text;
-            countryScroller.RefreshActiveCellViews();
-            imageIconCountrySelected.sprite = view.CountryData.icon;
+            imageIconCountrySelected.sprite = countryData.icon;
             imageIconCountrySelected.color = Color.white;
-            textNameCountrySelected.text = view.CountryData.name;
+            textNameCountrySelected.text = countryData.name;
         }
 
         private bool IsElementSelected(string code) { return _selectedCountry.Equals(code); }
+
+        public GameObject GetCell(int dataIndex) { return countryElementPool.Request(); }
+
+        public void ReleaseCell(GameObject cell) { countryElementPool.Return(cell); }
+
+        public void SetupCell(int dataIndex, GameObject cell) { cell.GetComponent<ICell>().Setup(_datas[dataIndex]); }
+
+        private void OnDisable()
+        {
+            (countryElementPool as IPoolCleaner).InternalClearPool(); // manual clear pool when it attach into specify object
+        }
     }
 }

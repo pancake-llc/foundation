@@ -1490,9 +1490,10 @@ namespace Pancake
         /// </summary>
         /// <param name="source"></param>
         /// <param name="parent"></param>
-        public static void FillWithParent(this RectTransform source, Transform parent)
+        /// <param name="worldPositionStatys"></param>
+        public static void FillWithParent(this RectTransform source, Transform parent, bool worldPositionStatys = true)
         {
-            source.SetParent(parent);
+            source.SetParent(parent, worldPositionStatys);
             source.Fill();
         }
 

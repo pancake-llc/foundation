@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Coffee.UIEffects;
 using Pancake.Apex;
 using Pancake.Localization;
@@ -12,7 +14,7 @@ using UnityEngine.UI;
 
 namespace Pancake.UI
 {
-    public sealed class SettingView : View, IEnhancedScrollerDelegate
+    public sealed class SettingView : View, IRecyclerViewCellProvider, IRecyclerViewDataProvider
     {
         [SerializeField] private LocaleTextComponent localeTextVersion;
         [SerializeField] private Button buttonMusic;
@@ -28,12 +30,11 @@ namespace Pancake.UI
         [SerializeField] private UIEffect soundUIEffect;
         [SerializeField] private UIEffect vibrateUIEffect;
 
-        [Header("Language")] [SerializeField] private LanguageElementView languageElementPrefab;
-        [SerializeField] private EnhancedScroller languageScroller;
+        [Header("Language")] [SerializeField] private GameObjectPool languageElementPool;
         [SerializeField] private RectTransform languagePopup;
         [SerializeField] private UIButton buttonSelectLanguage;
         [SerializeField] private TextMeshProUGUI textNameLanguageSelected;
-        [SerializeField, Array] private LocaleText[] langLocales;
+        [SerializeField] private LanguageData langData;
 
         [Space] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
@@ -52,10 +53,47 @@ namespace Pancake.UI
         private RectTransform _languageScrollerRT;
         private bool _firstTimeActiveLanguage;
         private PopupContainer _popupContainer;
+        private RecyclerView _recyclerView;
+        private readonly List<LanguageElementCellModel> _datas = new();
+
+        private RecyclerView RecyclerView
+        {
+            get
+            {
+                if (_recyclerView == null)
+                {
+                    _recyclerView = languagePopup.GetComponentInChildren<RecyclerView>();
+                    _recyclerView.DataCount = 0;
+                    _recyclerView.CellProvider = this;
+                    _recyclerView.DataProvider = this;
+                }
+
+                return _recyclerView;
+            }
+        }
 
         protected override UniTask Initialize()
         {
-            _languageScrollerRT = languageScroller.GetComponent<RectTransform>();
+            languageElementPool.SetParent(transform, true);
+            // Add padding for the safe area.
+            float canvasScaleFactor = GetComponentInParent<Canvas>().scaleFactor;
+            RecyclerView.AfterPadding += (int) (Screen.safeArea.y / canvasScaleFactor);
+
+            _datas.Clear();
+            foreach (var key in langData.Keys)
+            {
+                _datas.Add(new LanguageElementCellModel
+                {
+                    Lang = key,
+                    LocaleText = langData[key],
+                    IsSelected = IsElementSelected,
+                    OnSelectAction = OnButtonElementClicked,
+                    OnHideLanuageaAction = InternalHideSelectLanguage
+                });
+                _recyclerView.DataCount++;
+            }
+
+            _languageScrollerRT = RecyclerView.GetComponent<RectTransform>();
             buttonMusic.onClick.AddListener(OnButtonMusicPressed);
             buttonSound.onClick.AddListener(OnButtonSoundPressed);
             buttonVibrate.onClick.AddListener(OnButtonVibratePressed);
@@ -65,7 +103,6 @@ namespace Pancake.UI
             buttonBackupData.onClick.AddListener(OnButtonBackupDataPressed);
             buttonRestoreData.onClick.AddListener(OnButtonRestoreDataPressed);
             buttonSelectLanguage.onClick.AddListener(OnButtonSelectLanguagePressed);
-            languageScroller.Delegate = this;
             _selectedLang = Locale.CurrentLanguage;
             textNameLanguageSelected.text = _selectedLang.Name;
 #if UNITY_IOS
@@ -90,7 +127,7 @@ namespace Pancake.UI
                 if (!_firstTimeActiveLanguage)
                 {
                     _firstTimeActiveLanguage = true;
-                    languageScroller.ReloadData();
+                    RecyclerView.Reload();
                 }
             }
             else
@@ -175,49 +212,27 @@ namespace Pancake.UI
         private void RefreshSoundState(bool soundState) { soundUIEffect.effectMode = soundState ? EffectMode.None : EffectMode.Grayscale; }
 
         private void RefreshMusicState(bool musicState) { musicUIEffect.effectMode = musicState ? EffectMode.None : EffectMode.Grayscale; }
-        public int GetNumberOfCells(EnhancedScroller scroller) { return LocaleSettings.AvailableLanguages.Count; }
 
-        public float GetCellViewSize(EnhancedScroller scroller, int dataIndex) { return 120f; }
-
-        public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+        private void OnButtonElementClicked(Language lang)
         {
-            var element = scroller.GetCellView(languageElementPrefab) as LanguageElementView;
-            if (element != null)
-            {
-                var code = LocaleSettings.AvailableLanguages[dataIndex];
-                element.name = "Country_" + code.Name;
-                element.Init(code,
-                    OnButtonElementClicked,
-                    IsElementSelected,
-                    GetLocaleTextByIndex,
-                    InternalHideSelectLanguage);
-                return element;
-            }
-
-            return null;
-        }
-
-        private LocaleText GetLocaleTextByIndex(int arg) { return langLocales[arg]; }
-
-        private void OnButtonElementClicked(LanguageElementView view)
-        {
-            _selectedLang = view.Lang;
+            _selectedLang = lang;
             Locale.CurrentLanguage = _selectedLang;
-            languageScroller.RefreshActiveCellViews();
-            textNameLanguageSelected.text = view.Lang.Name;
+            RecyclerView.RefreshData();
+            textNameLanguageSelected.text = lang.Name;
         }
 
-        private bool IsElementSelected(string code) { return _selectedLang.Code.Equals(code); }
+        private bool IsElementSelected(Language lang) { return _selectedLang.Code.Equals(lang.Code); }
 
         private void InternalShowSelectLanguage()
         {
             _languageScrollerRT.pivot = new Vector2(0.5f, 1f);
             languagePopup.gameObject.SetActive(true);
             languagePopup.SetSizeDeltaY(74f);
+            RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
             Tween.UISizeDelta(languagePopup, new Vector2(languagePopup.sizeDelta.x, 666f), 0.5f)
                 .OnComplete(() =>
                 {
-                    languageScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
+                    RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(true);
                     _languageScrollerRT.pivot = new Vector2(0.5f, 0.5f);
                 });
         }
@@ -225,16 +240,27 @@ namespace Pancake.UI
         private void InternalHideSelectLanguage()
         {
             _languageScrollerRT.pivot = new Vector2(0.5f, 1f);
-            languageScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Never;
+            RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
 
             Tween.UISizeDelta(languagePopup, new Vector2(languagePopup.sizeDelta.x, 74f), 0.5f)
                 .OnComplete(() =>
                 {
                     languagePopup.gameObject.SetActive(false);
-                    languageScroller.ScrollbarVisibility = EnhancedScroller.ScrollbarVisibilityEnum.Always;
+                    RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(true);
                     _languageScrollerRT.pivot = new Vector2(0.5f, 0.5f);
                 });
             Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
+        }
+
+        GameObject IRecyclerViewCellProvider.GetCell(int dataIndex) { return languageElementPool.Request(); }
+
+        void IRecyclerViewCellProvider.ReleaseCell(GameObject cell) { languageElementPool.Return(cell); }
+
+        void IRecyclerViewDataProvider.SetupCell(int dataIndex, GameObject cell) { cell.GetComponent<ICell>().Setup(_datas[dataIndex]); }
+
+        private void OnDisable()
+        {
+            (languageElementPool as IPoolCleaner).InternalClearPool(); // manual clear pool when it attach into specify object
         }
     }
 }

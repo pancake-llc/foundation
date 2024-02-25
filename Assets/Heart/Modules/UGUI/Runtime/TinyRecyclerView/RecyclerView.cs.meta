@@ -1,19 +1,5 @@
 fileFormatVersion: 2
-guid: 9c1b74f910281224a8cae6d8e4fc1f43
-labels:
-- Cell
-- Cells
-- Data
-- Inventory
-- List
-- Recycle
-- Reuse
-- Scroll
-- ScrollRect
-- ScrollView
-- Scroller
-- UI
-- Virtualize
+guid: eaf3bc79723aff942891fb113da652be
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
