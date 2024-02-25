@@ -6,7 +6,6 @@ using Pancake.Monetization;
 using Pancake.Scriptable;
 using Pancake.UI;
 using PrimeTween;
-using Tayx.Graphy;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -47,7 +46,6 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonShowAppOpen;
         [SerializeField] private Button buttonNextDayDailyReward;
         [SerializeField] private Button buttonUnlockAllSkin;
-        [SerializeField] private Toggle toggleEnabledMonitor;
 
         [Header("Event")] [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private BannerVariable bannerVariable;
@@ -84,24 +82,9 @@ namespace Pancake.SceneFlow
             buttonShowAppOpen.onClick.AddListener(OnButtonShowAppOpenClicked);
             buttonNextDayDailyReward.onClick.AddListener(OnButtonNextDayClicked);
             buttonUnlockAllSkin.onClick.AddListener(OnButtonUnlockAllSkinClicked);
-            toggleEnabledMonitor.onValueChanged.AddListener(OnToggleMonitorValueChanged);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
             
-        }
-
-        private void OnToggleMonitorValueChanged(bool arg0)
-        {
-            if (arg0)
-            {
-                if (GraphyManager.Instance != null) return;
-                _ = Instantiate(graphyPrefab);
-            }
-            else
-            {
-                if (GraphyManager.Instance == null) return;
-                GraphyManager.Instance.gameObject.Destroy();
-            }
         }
 
         private void OnToggleEnableAdValueChanged(bool arg0)

@@ -156,6 +156,11 @@
             "name": "com.lupidan.apple-signin-unity",
             "expression": "1.4.0",
             "define": "PANCAKE_APPLE_SIGNIN"
+        },
+        {
+            "name": "com.tayx.graphy",
+            "expression": "1.0.0",
+            "define": "PANCAKE_GRAPHY"
         }
     ],
     "noEngineReferences": false
