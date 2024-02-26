@@ -20,7 +20,7 @@
         {
             "name": "com.tayx.graphy",
             "expression": "",
-            "define": "UDS_GRAPHY_SUPPORT"
+            "define": "PANCAKE_GRAPHY"
         }
     ],
     "noEngineReferences": false

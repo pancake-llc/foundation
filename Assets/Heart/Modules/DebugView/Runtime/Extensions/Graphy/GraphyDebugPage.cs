@@ -1,3 +1,4 @@
+#if PANCAKE_GRAPHY
 using System;
 using System.Collections;
 using Tayx.Graphy;
@@ -87,3 +88,4 @@ namespace Pancake.DebugView
         }
     }
 }
+#endif
