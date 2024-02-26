@@ -401,7 +401,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 490, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &537281505641266388
 CanvasRenderer:
@@ -517,7 +517,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14b4a72266744f08e880e8d4d254d2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellIdentifier: country_element
   imageIcon: {fileID: 3421906575669765509}
   textName: {fileID: 6458290139366415892}
   objectHightLight: {fileID: 1397368055162064814}

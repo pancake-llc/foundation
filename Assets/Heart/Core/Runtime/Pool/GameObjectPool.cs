@@ -29,12 +29,12 @@ namespace Pancake
                 {
                     var r = new GameObject(name).AddComponent<RectTransform>();
                     _root = r;
-                    r.FillWithParent(_parent);
+                    r.FillWithParent(_parent, false);
                 }
                 else
                 {
                     _root = new GameObject(name).transform;
-                    _root.SetParent(_parent);
+                    _root.SetParent(_parent, false);
                 }
 
                 return _root;
@@ -78,7 +78,7 @@ namespace Pancake
         protected override GameObject Create()
         {
             var member = base.Create();
-            member.transform.SetParent(Root);
+            member.transform.SetParent(Root, false); // set false because factory when create object in world space first
             member.gameObject.SetActive(false);
             return member;
         }

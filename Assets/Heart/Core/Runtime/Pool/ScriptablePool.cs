@@ -133,7 +133,7 @@ namespace Pancake
             {
                 case PlayModeStateChange.ExitingEditMode:
                 case PlayModeStateChange.EnteredEditMode:
-                    IsPrewarmed = false;
+                    ((IPoolCleaner) this).InternalClearPool();
                     break;
             }
         }

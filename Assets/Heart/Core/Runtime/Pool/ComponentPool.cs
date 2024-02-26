@@ -57,7 +57,7 @@ namespace Pancake
         protected override T Create()
         {
             var member = base.Create();
-            member.transform.SetParent(Root);
+            member.transform.SetParent(Root, false); // set false because factory when create object in world space first
             member.gameObject.SetActive(false);
             return member;
         }

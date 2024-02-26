@@ -253,7 +253,7 @@ namespace Pancake.UI
             block.SetActive(true);
             rootLeaderboard.SetActive(false);
 #if UNITY_EDITOR
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
 #elif UNITY_ANDROID && PANCAKE_GPGS
             if (!AuthenticationGooglePlayGames.IsSignIn())
             {
