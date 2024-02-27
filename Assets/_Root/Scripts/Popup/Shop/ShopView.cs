@@ -10,6 +10,7 @@ namespace Pancake.UI
 {
     public sealed class ShopView : View
     {
+        [SerializeField] private GameObject coinGroup;
         [SerializeField] private Button buttonClose;
         [SerializeField] private Button buttonCoinPack1;
         [SerializeField] private Button buttonCoinPack2;
@@ -53,6 +54,7 @@ namespace Pancake.UI
             buttonVip.onClick.AddListener(OnButtonVipPressed);
             buttonFreeCoin.onClick.AddListener(OnButtonGetFreeCoinPressed);
             Refresh();
+            App.Delay(DefaultTransitionSetting.PopupEnterAnim.Duration, () => coinGroup.SetActive(true));
             return UniTask.CompletedTask;
         }
 

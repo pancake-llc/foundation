@@ -2227,7 +2227,7 @@ MonoBehaviour:
   musicUIEffect: {fileID: 9018291667453916183}
   soundUIEffect: {fileID: 5651522672628340280}
   vibrateUIEffect: {fileID: 2768682543534061907}
-  languageElementPool: {fileID: 11400000, guid: 0d50199b19355d14389441d0738c1a85, type: 2}
+  languageElementPrefab: {fileID: 5602949441496932617, guid: 9a6b306dbd312bd41a7c294337a5698d, type: 3}
   languagePopup: {fileID: 742818637084947580}
   buttonSelectLanguage: {fileID: 1415266517432278116}
   textNameLanguageSelected: {fileID: 5003263306355268004}
@@ -2858,9 +2858,9 @@ RectTransform:
   - {fileID: 1271277306873699211}
   m_Father: {fileID: 4768909398571029482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -189.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874660293915068792

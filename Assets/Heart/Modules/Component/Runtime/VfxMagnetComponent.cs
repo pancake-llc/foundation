@@ -12,46 +12,24 @@ namespace Pancake.Component
     {
         [SerializeField] private ScriptableEventVfxMagnet spawnEvent;
         [SerializeField] private ScriptableListGameObject listVfxMagnetInstance;
-        [SerializeField] private GameObjectPool coinFxPool;
+        [SerializeField] private GameObject coinFxPrefab;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [SerializeField] private float coinFxScale = 1f;
         [SerializeField] private ParticleSystemForceField coinForceField;
         [SerializeField] private bool isPlaySound;
-        [SerializeField, ShowIf(nameof(isPlaySound))] private Audio audioSpawn;
-        [SerializeField, ShowIf(nameof(isPlaySound))] private ScriptableEventAudio audioPlayEvent;
-        [Space] [SerializeField] private bool useCanvasMaster;
-
-        [SerializeField, HideIf(nameof(useCanvasMaster)), HierarchyNullable]
-        private Transform canvas;
-
-        [SerializeField, ShowIf(nameof(useCanvasMaster))] private ScriptableEventGetGameObject getCanvasMasterEvent;
-
+        [SerializeField, ShowIf(nameof(isPlaySound)), Indent] private Audio audioSpawn;
+        [SerializeField, ShowIf(nameof(isPlaySound)), Indent] private ScriptableEventAudio audioPlayEvent;
 
         protected void OnEnable()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
             returnPoolEvent.OnRaised += ReturnVfxToPool;
-
-            // trycatch only in editor to avoid case startup from any scene
-#if UNITY_EDITOR
-            try
-            {
-#endif
-                var parent = useCanvasMaster ? getCanvasMasterEvent.Raise().transform : canvas;
-                coinFxPool.SetParent(parent, true);
-#if UNITY_EDITOR
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-#endif
         }
 
         private void ReturnVfxToPool(GameObject vfx)
         {
             listVfxMagnetInstance.Remove(vfx);
-            coinFxPool.Return(vfx);
+            vfx.Return();
         }
 
         protected void OnDisable()
@@ -62,7 +40,7 @@ namespace Pancake.Component
 
         private void SpawnCoinFx(Vector3 position, int value)
         {
-            var coinFx = coinFxPool.Request();
+            var coinFx = coinFxPrefab.Request();
             var vfxParticleCollision = coinFx.GetComponent<VfxParticleCollision>();
             if (vfxParticleCollision == null) return;
             vfxParticleCollision.Init(value);

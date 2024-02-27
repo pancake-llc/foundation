@@ -2354,6 +2354,7 @@ MonoBehaviour:
   audioOpen: {fileID: 11400000, guid: 0e4b2a7a47b622f42b4138666d6500d7, type: 2}
   audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
   playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
+  coinGroup: {fileID: 5429411680897000367}
   buttonClose: {fileID: 5122827314281746787}
   buttonCoinPack1: {fileID: 2286549561864859643}
   buttonCoinPack2: {fileID: 2164832135074127189}
@@ -6362,6 +6363,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3533363137245220783, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3533363137245220783, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
@@ -6384,6 +6389,10 @@ PrefabInstance:
     - target: {fileID: 6886570766295681435, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6886570766295681435, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8145237921013321427, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
       propertyPath: m_Pivot.x
@@ -6474,6 +6483,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
+--- !u!1 &5429411680897000367 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6886570766295681435, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}
+  m_PrefabInstance: {fileID: 1498333667772869172}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7332586092687156455 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8145237921013321427, guid: ffed8e470c1a6b945aadbb922acce9a9, type: 3}

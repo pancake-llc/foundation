@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3708985, g: 0.3783704, b: 0.35722548, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -496,8 +496,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 656a4e49ea4a53443bdee498d2fd0fc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pool: {fileID: 11400000, guid: 9f22a63f4ae641c43b38c273ce32d91e, type: 2}
-  initialSize: 10
+  prefab: {fileID: 7453307853223308394, guid: 02a1a626475d155488cbe05a16ac0f3e, type: 3}
+  prewarmSize: 10
   eventPlaySfx: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   eventStopSfx: {fileID: 11400000, guid: 0b4dc6b12e4de5043b9e0337aa36ec9c, type: 2}
   eventPauseSfx: {fileID: 11400000, guid: 252b1bfe33b9f0949b2d8469c8cc647f, type: 2}
@@ -736,6 +736,7 @@ MonoBehaviour:
   currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
   loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}
   reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
+  hideUiGameplayEvent: {fileID: 11400000, guid: 7dcbf6ffc2eff08498f36bd132ec680a, type: 2}
 --- !u!114 &814159087
 MonoBehaviour:
   m_ObjectHideFlags: 0

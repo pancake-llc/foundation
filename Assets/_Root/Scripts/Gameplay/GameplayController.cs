@@ -12,13 +12,11 @@ namespace Pancake.SceneFlow
     [EditorIcon("script_controller")]
     public class GameplayController : GameComponent
     {
-        [SerializeField] private Transform canvasUI;
         [Header("BUTTON")] [SerializeField] private Button buttonHome;
         [SerializeField] private Button buttonReplay;
         [SerializeField] private Button buttonSkipByAd;
 
-        [Header("OTHER")] [SerializeField] private AudioComponent buttonAudio;
-        [SerializeField] private ScriptableEventString changeSceneEvent;
+        [Header("OTHER")] [SerializeField] private ScriptableEventString changeSceneEvent;
 
         [Header("LEVEL")] [SerializeField] private RewardVariable rewardVariable;
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;

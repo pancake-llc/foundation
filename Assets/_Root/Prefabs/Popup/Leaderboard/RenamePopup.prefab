@@ -407,9 +407,9 @@ MonoBehaviour:
   audioOpen: {fileID: 11400000, guid: 5faabd619f34f1345957ffd6b6178887, type: 2}
   audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
   playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
+  countryElementPrefab: {fileID: 5602949441496932617, guid: 815eb80c90ba3904686e738de16e8b60, type: 3}
   namesAsset: {fileID: 4900000, guid: cd56e12236178f240bd3765d9acd94c1, type: 3}
   countryCollection: {fileID: 11400000, guid: e63f0dacb6bdd0c46bcb8f532653d7c2, type: 2}
-  countryElementPool: {fileID: 11400000, guid: f812c781bc515a848ab2e1ac458befd2, type: 2}
   countryPopup: {fileID: 2981688165348454243}
   inputFieldName: {fileID: 3464435047195095140}
   buttonSelectCountry: {fileID: 3497636020430980987}

@@ -6,8 +6,8 @@ namespace Pancake.Sound
     [EditorIcon("csharp")]
     public sealed class AudioManager : GameComponent
     {
-        [Header("Sound Emitter Pool")] [SerializeField] private SoundEmitterPool pool;
-        [SerializeField] private int initialSize = 10;
+        [Header("Sound Emitter Pool")] [SerializeField] private GameObject prefab;
+        [SerializeField] private int prewarmSize = 10;
 
         [Header("Listening Channel")] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to play SFXs")] [SerializeField]
         private ScriptableEventAudio eventPlaySfx;
@@ -35,8 +35,7 @@ namespace Pancake.Sound
         private void Awake()
         {
             _sfx = new SoundEmitterVault();
-            pool.Prewarm(initialSize);
-            pool.SetParent(transform);
+            prefab.Populate(prewarmSize);
             sfxVolume.OnValueChanged += OnSfxVolumeChanged;
             musicVolume.OnValueChanged += OnMusicVolumeChanged;
         }
@@ -96,7 +95,7 @@ namespace Pancake.Sound
             int nOfClips = clipsToPlay.Length;
             for (int i = 0; i < nOfClips; i++)
             {
-                soundEmitters[i] = pool.Request();
+                soundEmitters[i] = prefab.Request<SoundEmitter>();
                 if (soundEmitters[i] != null)
                 {
                     soundEmitters[i].PlayAudioClip(clipsToPlay[i], audio.loop, audio.volume * sfxVolume.Value);
@@ -148,6 +147,7 @@ namespace Pancake.Sound
                     StopAndCleanEmitter(soundEmitter);
                 }
             }
+
             _sfx.ClearAll();
         }
 
@@ -190,7 +190,7 @@ namespace Pancake.Sound
                 startTime = _music.FadeMusicOut(fadeDuration);
             }
 
-            _music = pool.Request();
+            _music = prefab.Request<SoundEmitter>();
             _music.FadeMusicIn(audio.GetClips()[0], 0.2f, audio.volume * musicVolume.Value, startTime);
             _music.OnCompleted += StopMusicEmitter;
 
@@ -202,8 +202,8 @@ namespace Pancake.Sound
         {
             if (_music != null)
             {
-                if ( _music.IsPlaying()) _music.Stop();
-                pool.Return(_music);
+                if (_music.IsPlaying()) _music.Stop();
+                _music.gameObject.Return();
             }
         }
 
@@ -224,7 +224,7 @@ namespace Pancake.Sound
             if (!soundEmitter.IsLooping()) soundEmitter.OnCompleted -= OnSoundEmitterFinishedPlaying;
 
             soundEmitter.Stop();
-            pool.Return(soundEmitter);
+            soundEmitter.gameObject.Return();
 
             //TODO: is the above enough?
             //_soundEmitterVault.Remove(audioCueKey); is never called if StopAndClean is called after a Finish event
@@ -234,7 +234,7 @@ namespace Pancake.Sound
         private void StopMusicEmitter(SoundEmitter soundEmitter)
         {
             soundEmitter.OnCompleted -= StopMusicEmitter;
-            pool.Return(soundEmitter);
+            soundEmitter.gameObject.Return();
         }
     }
 }

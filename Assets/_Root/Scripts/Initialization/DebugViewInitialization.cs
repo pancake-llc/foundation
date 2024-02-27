@@ -21,6 +21,7 @@ namespace Pancake.SceneFlow
         [Header("level")] [SerializeField] private IntVariable currentLevelIndex;
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
+        [SerializeField] private ScriptableEventNoParam hideUiGameplayEvent;
 
         public override void Init()
         {
@@ -39,7 +40,14 @@ namespace Pancake.SceneFlow
             initialPage.AddPageLinkButton<DebugToolsPage>("Debug Tools", icon: toolIcon);
             initialPage.AddPageLinkButton<AdsToolsPage>("Ads Tools", onLoad: tuple => { tuple.page.Setup(bannerVariable, interVariable, rewardVariable); });
             initialPage.AddPageLinkButton<LevelToolsPage>("Level Tools",
-                onLoad: tuple => { tuple.page.Setup(fxCoinSpawnEvent, currentLevelIndex, loadLevelEvent, reCreateLevelLoadedEvent); });
+                onLoad: tuple =>
+                {
+                    tuple.page.Setup(fxCoinSpawnEvent,
+                        currentLevelIndex,
+                        loadLevelEvent,
+                        reCreateLevelLoadedEvent,
+                        hideUiGameplayEvent);
+                });
             initialPage.Reload();
         }
     }

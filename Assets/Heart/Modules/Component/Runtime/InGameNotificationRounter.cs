@@ -8,13 +8,13 @@ namespace Pancake.Component
     public class InGameNotificationRouter : GameComponent
     {
         [Header("POOL")] [SerializeField] private ScriptableEventLocaleText spawnEvent;
-        [SerializeField] private GameObjectPool pool;
+        [SerializeField] private GameObject notificationPrefab;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
 
         [SerializeField] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
         private RectTransform _canvasRectTransform;
-        
+
         protected void OnEnable()
         {
             spawnEvent.OnRaised += Spawn;
@@ -26,7 +26,6 @@ namespace Pancake.Component
             {
 #endif
                 _canvasRectTransform = getCanvasMasterEvent.Raise().GetComponent<RectTransform>();
-                pool.SetParent(_canvasRectTransform, true);
 #if UNITY_EDITOR
             }
             catch (Exception)
@@ -42,18 +41,18 @@ namespace Pancake.Component
             returnPoolEvent.OnRaised -= ReturnToPool;
         }
 
-        private void ReturnToPool(GameObject prefab) { pool.Return(prefab); }
+        private void ReturnToPool(GameObject prefab) { prefab.Return(); }
 
         private void Spawn(LocaleText localeText)
         {
-            var instance = pool.Request();
+            var instance = notificationPrefab.Request<InGameNotification>();
+            instance.transform.SetParent(_canvasRectTransform, false);
             instance.transform.localScale = Vector3.one;
             var rectTransform = instance.transform.GetComponent<RectTransform>();
             rectTransform.SetLocalPositionZ(0);
             rectTransform.SetAnchoredPositionY(-444);
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _canvasRectTransform.rect.width - 100);
-            var noti = instance.GetComponent<InGameNotification>();
-            noti.Show(localeText);
+            instance.Show(localeText);
         }
     }
 }

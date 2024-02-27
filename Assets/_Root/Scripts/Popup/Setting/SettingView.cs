@@ -30,7 +30,7 @@ namespace Pancake.UI
         [SerializeField] private UIEffect soundUIEffect;
         [SerializeField] private UIEffect vibrateUIEffect;
 
-        [Header("Language")] [SerializeField] private GameObjectPool languageElementPool;
+        [Header("Language")] [SerializeField] private GameObject languageElementPrefab;
         [SerializeField] private RectTransform languagePopup;
         [SerializeField] private UIButton buttonSelectLanguage;
         [SerializeField] private TextMeshProUGUI textNameLanguageSelected;
@@ -74,7 +74,6 @@ namespace Pancake.UI
 
         protected override UniTask Initialize()
         {
-            languageElementPool.SetParent(transform, true);
             // Add padding for the safe area.
             float canvasScaleFactor = GetComponentInParent<Canvas>().scaleFactor;
             RecyclerView.AfterPadding += (int) (Screen.safeArea.y / canvasScaleFactor);
@@ -252,15 +251,10 @@ namespace Pancake.UI
             Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
         }
 
-        GameObject IRecyclerViewCellProvider.GetCell(int dataIndex) { return languageElementPool.Request(); }
+        GameObject IRecyclerViewCellProvider.GetCell(int dataIndex) { return languageElementPrefab.Request(); }
 
-        void IRecyclerViewCellProvider.ReleaseCell(GameObject cell) { languageElementPool.Return(cell); }
+        void IRecyclerViewCellProvider.ReleaseCell(GameObject cell) { cell.Return(); }
 
         void IRecyclerViewDataProvider.SetupCell(int dataIndex, GameObject cell) { cell.GetComponent<ICell>().Setup(_datas[dataIndex]); }
-
-        private void OnDisable()
-        {
-            (languageElementPool as IPoolCleaner).InternalClearPool(); // manual clear pool when it attach into specify object
-        }
     }
 }

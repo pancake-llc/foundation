@@ -1721,5 +1721,21 @@ namespace Pancake
             fitter.SetLayoutVertical();
             UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(fitter.GetComponent<RectTransform>());
         }
+
+        /// <summary>
+        /// Convert UI positon to world position
+        /// </summary>
+        /// <param name="transform">transform is transform in canvas space (RectTransfom</param>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public static Vector2 ToWorldPosition(this RectTransform transform, Camera camera = null)
+        {
+            var cam = camera;
+            if (cam == null) cam = Camera.main;
+            if (cam == null) return Vector2.zero;
+            var pos = cam.ViewportToWorldPoint(transform.position);
+            var worldPosition = cam.WorldToViewportPoint(pos);
+            return worldPosition;
+        }
     }
 }

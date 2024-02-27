@@ -1,8 +1,4 @@
 #if UNITY_EDITOR
-using System.Reflection;
-using Pancake;
-using Pancake.ExLibEditor;
-using Pancake.Linq;
 using Pancake.SceneFlow;
 using Pancake.Threading.Tasks;
 using UnityEngine;
@@ -23,17 +19,7 @@ namespace PancakeEditor
                 case Constant.PERSISTENT_SCENE:
                 case Constant.MENU_SCENE:
                 case Constant.GAMEPLAY_SCENE:
-
                     await Addressables.LoadSceneAsync(Constant.LAUNCHER_SCENE);
-                    if (startScene.Equals(Constant.PERSISTENT_SCENE))
-                    {
-                        var poolCleaner = ProjectDatabase.FindAll<ScriptableObject>().Map(o => o as IPoolCleaner).Filter(c => c != null);
-                        foreach (var cleaner in poolCleaner)
-                        {
-                            cleaner.InternalClearPool();
-                        }
-                    }
-
                     break;
             }
         }

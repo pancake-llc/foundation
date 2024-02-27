@@ -21,9 +21,9 @@ namespace Pancake.UI
             public string[] names;
         }
 
+        [SerializeField] private GameObject countryElementPrefab;
         [SerializeField] private TextAsset namesAsset;
         [SerializeField] private CountryCollection countryCollection;
-        [SerializeField] private GameObjectPool countryElementPool;
         [SerializeField] private RectTransform countryPopup;
         [SerializeField] private TMP_InputField inputFieldName;
         [SerializeField] private UIButton buttonSelectCountry;
@@ -67,7 +67,6 @@ namespace Pancake.UI
 
         protected override UniTask Initialize()
         {
-            countryElementPool.SetParent(transform, true);
             // Add padding for the safe area.
             float canvasScaleFactor = GetComponentInParent<Canvas>().scaleFactor;
             RecyclerView.AfterPadding += (int) (Screen.safeArea.y / canvasScaleFactor);
@@ -245,15 +244,10 @@ namespace Pancake.UI
 
         private bool IsElementSelected(string code) { return _selectedCountry.Equals(code); }
 
-        public GameObject GetCell(int dataIndex) { return countryElementPool.Request(); }
+        public GameObject GetCell(int dataIndex) { return countryElementPrefab.Request(); }
 
-        public void ReleaseCell(GameObject cell) { countryElementPool.Return(cell); }
+        public void ReleaseCell(GameObject cell) { cell.Return(); }
 
         public void SetupCell(int dataIndex, GameObject cell) { cell.GetComponent<ICell>().Setup(_datas[dataIndex]); }
-
-        private void OnDisable()
-        {
-            (countryElementPool as IPoolCleaner).InternalClearPool(); // manual clear pool when it attach into specify object
-        }
     }
 }

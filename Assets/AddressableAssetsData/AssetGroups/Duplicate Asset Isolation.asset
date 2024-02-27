@@ -622,16 +622,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4a8027441b28f7c4ab85700ffe9528f0
-    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_pool.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 73f7e4646ca90974ea4f674787c1c807
-    m_Address: Assets/_Root/Storages/InGameNotification/FloatNotification/float_notification_pool.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 995f19852c387db4aa2fc4343f8d09a1
     m_Address: Assets/_Root/Storages/Localization/Common/text_level.asset
     m_ReadOnly: 0
@@ -674,16 +664,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 04ac0e953311a02458e0e69155af0dda
     m_Address: Assets/_Root/Prefabs/Popup/PopupBackdrop.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d58bbac3f0f0ad546b0b447f351826ea
-    m_Address: Assets/_Root/Storages/Pool/Fx/fx_coin_factory.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 86252c8520b2daf478feb300504852d1
-    m_Address: Assets/_Root/Storages/InGameNotification/FloatNotification/float_notification_factory.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
