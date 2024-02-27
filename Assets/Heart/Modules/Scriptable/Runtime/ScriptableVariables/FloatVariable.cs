@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pancake.Apex;
+using UnityEngine;
 
 namespace Pancake.Scriptable
 {
@@ -11,7 +12,7 @@ namespace Pancake.Scriptable
 
         public bool IsClamped => isClamped;
 
-        [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField] [ShowIf(nameof(isClamped), true)]
+        [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField, ShowIf(nameof(isClamped)), Indent]
         private Vector2 minMax = new(0, 100);
 
         public Vector2 MinMax { get => minMax; set => minMax = value; }

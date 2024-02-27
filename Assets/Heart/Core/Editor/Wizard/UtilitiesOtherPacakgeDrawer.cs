@@ -59,7 +59,7 @@ namespace PancakeEditor
             GUILayout.Space(8);
 
 #if PANCAKE_GRAPHY
-            Uninstall("Graphy 3.0.5", "com.tayx.graphy");
+            Uninstall("Graphy 3.0.6", "com.tayx.graphy");
 #else
             InstallGraphy();
 #endif
@@ -331,7 +331,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Graphy", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.tayx.graphy", "https://github.com/Tayx94/graphy.git#v3.0.5");
+                RegistryManager.Add("com.tayx.graphy", "https://github.com/pancake-llc/graphy.git#3.0.6");
                 RegistryManager.Resolve();
             }
 

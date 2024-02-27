@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3f39f579066605409b539400e8d7b94, type: 3}
-  m_Name: change_advertising_network_event
+  m_Script: {fileID: 11500000, guid: e3466a0417964e66ba22ffb88467dbe1, type: 3}
+  m_Name: applovin_reward_ad
   m_EditorClassIdentifier: 
-  categoryIndex: 0
-  debugLogEnabled: 0
-  debugValue: 
+  androidId: 

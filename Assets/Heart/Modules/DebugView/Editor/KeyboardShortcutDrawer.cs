@@ -17,11 +17,11 @@ namespace Pancake.DebugViewEditor
             if (_propertyDataPerPropertyPath.TryGetValue(property.propertyPath, out _property)) return;
 
             _property = new PropertyData();
-            _property.enabledProperty = property.FindPropertyRelative("_enabled");
-            _property.controlProperty = property.FindPropertyRelative("_control");
-            _property.altProperty = property.FindPropertyRelative("_alt");
-            _property.shiftProperty = property.FindPropertyRelative("_shift");
-            _property.keyProperty = property.FindPropertyRelative("_key");
+            _property.enabledProperty = property.FindPropertyRelative("enabled");
+            _property.controlProperty = property.FindPropertyRelative("control");
+            _property.altProperty = property.FindPropertyRelative("alt");
+            _property.shiftProperty = property.FindPropertyRelative("shift");
+            _property.keyProperty = property.FindPropertyRelative("key");
             _propertyDataPerPropertyPath.Add(property.propertyPath, _property);
         }
 
