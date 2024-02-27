@@ -4,6 +4,7 @@ using System;
 namespace Pancake
 {
     [DisallowMultipleComponent]
+    [EditorIcon("cs")]
     internal sealed class Poolable : MonoBehaviour
     {
         private IPoolable[] _poolables = Array.Empty<IPoolable>();
