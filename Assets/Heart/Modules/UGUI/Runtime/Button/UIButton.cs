@@ -269,7 +269,8 @@ namespace Pancake.UI
         private IEnumerator IeDisableButton(float duration)
         {
             interactable = false;
-            yield return new WaitForSeconds(duration);
+            if (ignoreTimeScale) yield return new WaitForSecondsRealtime(duration);
+            else yield return new WaitForSeconds(duration);
             interactable = true;
         }
 
@@ -303,11 +304,11 @@ namespace Pancake.UI
         private IEnumerator IeExecute(PointerEventData eventData)
         {
             if (IsDetectSingleClick) base.OnPointerClick(eventData);
-            
+
             if (!allowMultipleClick && clickType == EButtonClickType.OnlySingleClick)
             {
                 if (!interactable) yield break;
-                
+
                 _handleMultipleClick = App.StartCoroutine(IeDisableButton(timeDisableButton));
                 yield break;
             }
@@ -448,7 +449,8 @@ namespace Pancake.UI
         private IEnumerator IeExcuteHold()
         {
             _holding = false;
-            yield return new WaitForSeconds(delayDetectHold);
+            if (ignoreTimeScale) yield return new WaitForSecondsRealtime(delayDetectHold);
+            else yield return new WaitForSeconds(delayDetectHold);
             _holding = true;
             while (true)
             {
@@ -523,14 +525,14 @@ namespace Pancake.UI
                         break;
                     }
 
-                    _tweenUp = Tween.Scale(AffectObject, DefaultScale, motionData.duration, motionData.ease);
+                    _tweenUp = Tween.Scale(AffectObject, DefaultScale, motionData.duration, motionData.ease, useUnscaledTime: ignoreTimeScale);
                     break;
                 case EButtonMotion.Uniform:
                     break;
                 case EButtonMotion.Late:
                     _isCompletePhaseDown = false;
                     _endValue = new Vector3(DefaultScale.x * motionData.scale.x, DefaultScale.y * motionData.scale.y);
-                    _tweenDown = Tween.Scale(AffectObject, _endValue, motionData.duration, motionData.ease).OnComplete(() => _isCompletePhaseDown = true);
+                    _tweenDown = Tween.Scale(AffectObject, _endValue, motionData.duration, motionData.ease, useUnscaledTime: ignoreTimeScale).OnComplete(() => _isCompletePhaseDown = true);
 
                     try
                     {
@@ -541,7 +543,7 @@ namespace Pancake.UI
                         break;
                     }
 
-                    _tweenUp = Tween.Scale(AffectObject, DefaultScale, motionData.duration, motionData.ease);
+                    _tweenUp = Tween.Scale(AffectObject, DefaultScale, motionData.duration, motionData.ease, useUnscaledTime: ignoreTimeScale);
 
                     break;
             }
@@ -561,11 +563,11 @@ namespace Pancake.UI
                     break;
                 case EButtonMotion.Normal:
                     _isCompletePhaseDown = false;
-                    _tweenDown = Tween.Scale(AffectObject, _endValue, motionData.duration, motionData.ease).OnComplete(() => _isCompletePhaseDown = true);
+                    _tweenDown = Tween.Scale(AffectObject, _endValue, motionData.duration, motionData.ease, useUnscaledTime: ignoreTimeScale).OnComplete(() => _isCompletePhaseDown = true);
                     break;
                 case EButtonMotion.Uniform:
                     _isCompletePhaseDown = false;
-                    _tweenDown = Tween.Scale(AffectObject, _endValue, motionData.duration, motionData.ease).OnComplete(() => _isCompletePhaseDown = true);
+                    _tweenDown = Tween.Scale(AffectObject, _endValue, motionData.duration, motionData.ease, useUnscaledTime: ignoreTimeScale).OnComplete(() => _isCompletePhaseDown = true);
                     try
                     {
                         await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
@@ -575,7 +577,7 @@ namespace Pancake.UI
                         break;
                     }
 
-                    _tweenUp = Tween.Scale(AffectObject, DefaultScale, motionData.duration, motionData.ease);
+                    _tweenUp = Tween.Scale(AffectObject, DefaultScale, motionData.duration, motionData.ease, useUnscaledTime: ignoreTimeScale);
                     break;
                 case EButtonMotion.Late:
                     break;
