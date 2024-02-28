@@ -50,11 +50,11 @@
       "hash": "64445bb59f6d9d4d7f24be5eea45e7fdf2146546"
     },
     "com.tayx.graphy": {
-      "version": "https://github.com/Tayx94/graphy.git#v3.0.5",
+      "version": "https://github.com/pancake-llc/graphy.git#3.0.6",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "0874cf1e1a75576b118ceeaeedc042341df877bc"
+      "hash": "9ded9ea5743bac53592c1988ea7c35939404e655"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",

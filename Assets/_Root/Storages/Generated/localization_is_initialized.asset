@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: localization_is_initialized
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 601184d2e3af08841b68fcdf5a5d1a3f
-  guidCreateMode: 0
   value: 0
   debugLogEnabled: 0
   saved: 0
   defaultValue: 0
+  guidCreateMode: 0
+  guid: 601184d2e3af08841b68fcdf5a5d1a3f
   resetOn: 1

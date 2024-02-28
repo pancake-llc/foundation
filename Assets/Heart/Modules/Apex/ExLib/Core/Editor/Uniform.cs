@@ -173,7 +173,7 @@ namespace Pancake.ExLibEditor
         public static readonly Color FieryRose = new(0.97f, 0.33f, 0.41f);
         public static readonly Color DeepCarminePink = new(1f, 0.2f, 0.2f);
         public static readonly Color FluorescentBlue = new(0.2f, 1f, 1f);
-        public static readonly Color Yellow = new Color(0.92f, 0.76f, 0.2f);
+        public static readonly Color Yellow = new(0.92f, 0.76f, 0.2f);
 
         #endregion
 

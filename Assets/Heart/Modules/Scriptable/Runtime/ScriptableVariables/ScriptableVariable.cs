@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Pancake.Apex;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,7 +12,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.Scriptable
 {
     [EditorIcon("scriptable_variable")]
-    public abstract class ScriptableVariable<T> : ScriptableVariableBase, ISave, IReset, IResetOn, IDrawObjectsInInspector
+    public abstract class ScriptableVariable<T> : ScriptableBase, ISave, IReset, IResetOn, IDrawObjectsInInspector, IGuid
     {
         [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeField]
         protected T value;
@@ -22,8 +23,15 @@ namespace Pancake.Scriptable
         [Tooltip("If true, saves the value to Player Prefs and loads it onEnable.")] [SerializeField]
         private bool saved;
 
-        [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")] [SerializeField] [ShowIf(nameof(saved))]
+        [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")]
+        [SerializeField, ShowIf(nameof(saved)), Indent]
         private T defaultValue;
+
+        [SerializeField, ShowIf(nameof(saved)), HorizontalGroup("guid"), Indent]
+        private ECreationMode guidCreateMode;
+
+        [SerializeField, ShowIf(nameof(saved)), DisableIf(nameof(guidCreateMode), ECreationMode.Auto), HorizontalGroup("guid"), HideLabel, Indent]
+        private string guid;
 
         [Tooltip("Reset to initial value when :" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
                  "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" + "\nApplication Start : Once, when the application starts.")]
@@ -68,6 +76,9 @@ namespace Pancake.Scriptable
         /// The default value this variable is reset to. 
         /// </summary>
         public T DefaultValue { get => defaultValue; private set => defaultValue = value; }
+
+        public string Guid { get => guid; set => guid = value; }
+        public ECreationMode GuidCreateMode { get => guidCreateMode; set => guidCreateMode = value; }
 
         public override Type GetGenericType => typeof(T);
 
@@ -183,6 +194,7 @@ namespace Pancake.Scriptable
         }
 
         /// <summary> Reset to initial value</summary>
+        [Button]
         public void ResetToInitialValue()
         {
             Value = _initialValue;
@@ -219,6 +231,16 @@ namespace Pancake.Scriptable
         public List<Object> GetAllObjects() => _listenersObjects;
 
         public static implicit operator T(ScriptableVariable<T> variable) => variable.Value;
+
+#if UNITY_EDITOR
+        private bool IsInPlayMode => Application.isPlaying;
+        [Button, ButtonHeight(20), Color(1f, 0.47f, 0.78f, 0.66f), ShowIf("IsInPlayMode")]
+        private void ShowListener()
+        {
+            VariableListenerWindow.Show();
+            VariableListenerWindow.objects = _listenersObjects;
+        }
+#endif
     }
 
     public enum CustomVariableType

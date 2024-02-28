@@ -31,8 +31,6 @@ namespace PancakeEditor
             }
             else
             {
-                EditorGUILayout.LabelField("Default: displays all the parameters of variables. " + "\nMinimal : only displays the value.", EditorStyles.wordWrappedLabel);
-
                 var editor = UnityEditor.Editor.CreateEditor(scriptableSetting);
                 editor.OnInspectorGUI();
                 //needed to refresh directly even if not focused during play mode.

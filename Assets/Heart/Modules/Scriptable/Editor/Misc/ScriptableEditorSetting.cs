@@ -8,16 +8,13 @@ namespace Pancake.ScriptableEditor
     {
         internal const float BUTTON_HEIGHT = 30f;
 
-        [SerializeField] private EVariableDrawMode drawMode = EVariableDrawMode.Default;
-        [SerializeField] private List<string> categories = new List<string> {"Default"};
+        [SerializeField] private List<string> categories = new() {"Default"};
 
-        public static EVariableDrawMode DrawMode => Instance.drawMode;
         public static List<string> Categories => Instance.categories;
     }
 
-    public enum EVariableDrawMode
+    [UnityEditor.CustomEditor(typeof(ScriptableEditorSetting), true)]
+    public class ScriptableEditorSettingDrawer : UnityEditor.Editor
     {
-        Default,
-        Minimal
     }
 }

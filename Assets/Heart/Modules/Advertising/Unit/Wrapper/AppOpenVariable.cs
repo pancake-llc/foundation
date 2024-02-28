@@ -10,8 +10,8 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_bind")]
     public class AppOpenVariable : ScriptableObject
     {
-        [SerializeField] private AdUnitVariable admobAppOpen;
-        [SerializeField] private AdUnitVariable applovinAppOpen;
+        [SerializeField] private AdmobAppOpenVariable admobAppOpen;
+        [SerializeField] private ApplovinAppOpenVariable applovinAppOpen;
 
         public AdUnitVariable Context()
         {

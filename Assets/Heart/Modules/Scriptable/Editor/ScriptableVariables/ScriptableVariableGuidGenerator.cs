@@ -13,7 +13,7 @@ namespace Pancake.ScriptableEditor
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            var isInitialized = SessionState.GetBool("initialized", false);
+            bool isInitialized = SessionState.GetBool("initialized", false);
             if (!isInitialized)
             {
                 RegenerateAllGuids();
@@ -29,35 +29,36 @@ namespace Pancake.ScriptableEditor
 
         private static void RegenerateAllGuids()
         {
-            var scriptableVariableBases = ProjectDatabase.FindAll<ScriptableVariableBase>();
-            foreach (var scriptableVariable in scriptableVariableBases)
+            var scriptableVariables = ProjectDatabase.FindAll<ScriptableBase>();
+            foreach (var scriptableVariable in scriptableVariables)
             {
-                if (scriptableVariable.GuidCreateMode != ECreationMode.Auto) continue;
-                scriptableVariable.Guid = GenerateGuid(scriptableVariable);
-                GuidsCache.Add(scriptableVariable.Guid);
+                if (scriptableVariable is IGuid iGuid)
+                {
+                    if (iGuid.GuidCreateMode != ECreationMode.Auto) continue;
+                    iGuid.Guid = GenerateGuid(scriptableVariable);
+                    GuidsCache.Add(iGuid.Guid);
+                }
             }
         }
 
         private static void OnAssetCreatedOrSaved(string[] importedAssets)
         {
-            foreach (var assetPath in importedAssets)
+            foreach (string assetPath in importedAssets)
             {
                 if (GuidsCache.Contains(assetPath)) continue;
 
-                var asset = AssetDatabase.LoadAssetAtPath<ScriptableVariableBase>(assetPath);
-                if (asset == null || asset.GuidCreateMode != ECreationMode.Auto) continue;
-
-                asset.Guid = GenerateGuid(asset);
-                GuidsCache.Add(asset.Guid);
+                var asset = AssetDatabase.LoadAssetAtPath<ScriptableBase>(assetPath);
+                if (asset == null || asset is not IGuid iGuid) continue;
+                iGuid.Guid = GenerateGuid(asset);
+                GuidsCache.Add(iGuid.Guid);
             }
         }
 
         private static void OnAssetDeleted(string[] deletedAssets)
         {
-            foreach (var assetPath in deletedAssets)
+            foreach (string assetPath in deletedAssets)
             {
-                if (!GuidsCache.Contains(assetPath))
-                    continue;
+                if (!GuidsCache.Contains(assetPath)) continue;
 
                 GuidsCache.Remove(assetPath);
             }
@@ -71,8 +72,8 @@ namespace Pancake.ScriptableEditor
 
         private static string GenerateGuid(ScriptableObject scriptableObject)
         {
-            var path = AssetDatabase.GetAssetPath(scriptableObject);
-            var guid = AssetDatabase.AssetPathToGUID(path);
+            string path = AssetDatabase.GetAssetPath(scriptableObject);
+            string guid = AssetDatabase.AssetPathToGUID(path);
             return guid;
         }
     }

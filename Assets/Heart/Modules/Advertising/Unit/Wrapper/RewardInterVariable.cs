@@ -10,8 +10,8 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_bind")]
     public class RewardInterVariable : ScriptableObject
     {
-        [SerializeField] private AdUnitVariable admobRewardInter;
-        [SerializeField] private AdUnitVariable applovinRewardInter;
+        [SerializeField] private AdmobRewardInterVariable admobRewardInter;
+        [SerializeField] private ApplovinRewardInterVariable applovinRewardInter;
 
         public AdUnitVariable Context()
         {

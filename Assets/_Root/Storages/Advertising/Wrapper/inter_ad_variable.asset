@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3f39f579066605409b539400e8d7b94, type: 3}
-  m_Name: change_advertising_network_event
+  m_Script: {fileID: 11500000, guid: bb687b6dfe9e4ad9a07f31307e7cf838, type: 3}
+  m_Name: inter_ad_variable
   m_EditorClassIdentifier: 
-  categoryIndex: 0
-  debugLogEnabled: 0
-  debugValue: 
+  admobInter: {fileID: 11400000, guid: 835064f865ed6bf4fb488191f0c57b80, type: 2}
+  applovinInter: {fileID: 11400000, guid: 006f0d683cb309e47b93bd1b15769ce8, type: 2}

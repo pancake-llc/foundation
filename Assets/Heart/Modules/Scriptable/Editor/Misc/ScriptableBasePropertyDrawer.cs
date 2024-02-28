@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
 using Pancake.Apex;
 using Pancake.ExLibEditor;
-using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Pancake.ScriptableEditor
 {
-    [CustomPropertyDrawer(typeof(ScriptableBase), true)]
-    public abstract class ScriptableBasePropertyDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(ScriptableObject), true)]
+    public class ScriptableBasePropertyDrawer : PropertyDrawer
     {
         private UnityEditor.Editor _editor;
         protected virtual float PropertyWidthRatio { get; } = 0.82f;
@@ -58,7 +57,7 @@ namespace Pancake.ScriptableEditor
             EditorGUI.EndProperty();
         }
 
-        private Rect DrawPropertyField(Rect position, SerializedProperty property, GUIContent label)
+        protected Rect DrawPropertyField(Rect position, SerializedProperty property, GUIContent label)
         {
             var rectPosition = position;
             float propertyWidthRatio = PropertyWidthRatio;
@@ -101,10 +100,7 @@ namespace Pancake.ScriptableEditor
 
         protected virtual void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
         {
-            var rect = DrawPropertyField(position, property, label);
-            DrawShortcut(rect, property, targetObject);
+            EditorGUI.PropertyField(position, property, label);
         }
-
-        protected abstract void DrawShortcut(Rect position, SerializedProperty property, Object targetObject);
     }
 }

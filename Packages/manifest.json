@@ -6,6 +6,7 @@
     "com.esotericsoftware.spine.spine-unity": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1",
     "com.esotericsoftware.spine.urp-shaders": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Modules/com.esotericsoftware.spine.urp-shaders#4.1",
     "com.google.external-dependency-manager": "https://github.com/google-unity/external-dependency-manager.git#1.2.177",
+    "com.tayx.graphy": "https://github.com/pancake-llc/graphy.git#3.0.6",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "1.21.20",
     "com.unity.burst": "1.8.12",
@@ -52,7 +53,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.tayx.graphy": "https://github.com/Tayx94/graphy.git#v3.0.5"
+    "com.unity.modules.xr": "1.0.0"
   }
 }

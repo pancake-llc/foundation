@@ -189,7 +189,7 @@ namespace Pancake.ApexEditor
                 {
                     continue;
                 }
-                
+
                 CustomEditor customEditor;
                 try
                 {
@@ -219,7 +219,10 @@ namespace Pancake.ApexEditor
                                               (!string.IsNullOrEmpty(inspectedType.Namespace) &&
                                                !inspectedType.Namespace.StartsWith("Pancake", StringComparison.Ordinal) &&
                                                !inspectedType.Namespace.StartsWith("TMPro", StringComparison.Ordinal) &&
+                                               !inspectedType.Namespace.StartsWith("Spine", StringComparison.Ordinal) &&
                                                !inspectedType.Namespace.StartsWith("Coffee", StringComparison.Ordinal) &&
+                                               !inspectedType.Namespace.StartsWith("Tayx.Graphy", StringComparison.Ordinal) &&
+                                               !inspectedType.Namespace.StartsWith("Unity.Services", StringComparison.Ordinal) &&
                                                !inspectedType.Namespace.StartsWith("UnityEditor", StringComparison.Ordinal) &&
                                                !inspectedType.Namespace.StartsWith("UnityEngine", StringComparison.Ordinal))))
                 {
