@@ -87,14 +87,14 @@ namespace Pancake
             _allInstances = null;
         }
 
-        public GameObject Reuse()
+        public GameObject Request()
         {
             var instance = GetInstance();
 
             return instance.gameObject;
         }
 
-        public GameObject Reuse(Transform parent)
+        public GameObject Request(Transform parent)
         {
             var instance = GetInstance();
 
@@ -103,7 +103,7 @@ namespace Pancake
             return instance.gameObject;
         }
 
-        public GameObject Reuse(Transform parent, bool worldPositionStays)
+        public GameObject Request(Transform parent, bool worldPositionStays)
         {
             var instance = GetInstance();
 
@@ -112,7 +112,7 @@ namespace Pancake
             return instance.gameObject;
         }
 
-        public GameObject Reuse(Vector3 position, Quaternion rotation)
+        public GameObject Request(Vector3 position, Quaternion rotation)
         {
             var instance = GetInstance();
 
@@ -121,7 +121,7 @@ namespace Pancake
             return instance.gameObject;
         }
 
-        public GameObject Reuse(Vector3 position, Quaternion rotation, Transform parent)
+        public GameObject Request(Vector3 position, Quaternion rotation, Transform parent)
         {
             var instance = GetInstance();
             var instanceTransform = instance.transform;
