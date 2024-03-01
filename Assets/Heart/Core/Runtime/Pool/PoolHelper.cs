@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pancake
 {
-    public static class PoolHelper
+    public static partial class PoolHelper
     {
         public static void Populate(this GameObject prefab, int count) { Pool.GetPoolByPrefab(prefab).Populate(count); }
 
