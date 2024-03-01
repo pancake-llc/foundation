@@ -52,6 +52,11 @@ namespace Pancake.Scriptable
         /// <summary> Event raised  when the list is cleared. </summary>
         public event Action OnCleared;
 
+        /// <summary>
+        /// Event raised when the list is not content any element
+        /// </summary>
+        public event Action OnEmpty;
+
         public int IndexOf(T item) => list.IndexOf(item);
         public bool Contains(T item) => _hashSet.Contains(item);
 
@@ -152,6 +157,7 @@ namespace Pancake.Scriptable
                 _hashSet.Remove(item);
                 OnItemCountChanged?.Invoke();
                 OnItemRemoved?.Invoke(item);
+                if (Count == 0) OnEmpty?.Invoke();
 #if UNITY_EDITOR
                 repaintRequest?.Invoke();
 #endif
@@ -174,6 +180,7 @@ namespace Pancake.Scriptable
             _hashSet.Remove(item);
             OnItemCountChanged?.Invoke();
             OnItemRemoved?.Invoke(item);
+            if (Count == 0) OnEmpty?.Invoke();
 #if UNITY_EDITOR
             repaintRequest?.Invoke();
 #endif
@@ -210,6 +217,7 @@ namespace Pancake.Scriptable
             _hashSet.Clear();
             list.Clear();
             OnCleared?.Invoke();
+            OnEmpty?.Invoke();
 #if UNITY_EDITOR
             repaintRequest?.Invoke();
 #endif
