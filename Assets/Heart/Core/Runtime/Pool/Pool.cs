@@ -26,6 +26,9 @@ namespace Pancake
             if (_prototype == null)
             {
                 _prototype = Object.Instantiate(prefab).AddComponent<Poolable>();
+#if UNITY_EDITOR
+                _prototype.name = prefab.name;
+#endif
                 Object.DontDestroyOnLoad(_prototype);
                 _prototype.gameObject.SetActive(false);
                 _prototypeIsNotSource = true;
@@ -167,6 +170,7 @@ namespace Pancake
 
                             return instance;
                         }
+
                         count--;
                     }
 
