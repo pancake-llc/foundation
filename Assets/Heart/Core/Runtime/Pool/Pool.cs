@@ -13,8 +13,8 @@ namespace Pancake
         private readonly Vector3 _scale;
         private readonly bool _prototypeIsNotSource;
 
-        private static readonly Dictionary<GameObject, Pool> PrefabLookup = new(64);
-        private static readonly Dictionary<GameObject, Pool> InstanceLookup = new(512);
+        private static readonly Dictionary<GameObject, Pool> PrefabLookup = new Dictionary<GameObject, Pool>(64);
+        private static readonly Dictionary<GameObject, Pool> InstanceLookup = new Dictionary<GameObject, Pool>(512);
 
         private const int INITIAL_SIZE = 128;
 
@@ -42,8 +42,10 @@ namespace Pancake
 
         public static Pool GetPoolByPrefab(GameObject prefab, bool create = true)
         {
-            bool hasPool = PrefabLookup.TryGetValue(prefab, out var pool);
+            var hasPool = PrefabLookup.TryGetValue(prefab, out var pool);
+
             if (!hasPool && create) pool = new Pool(prefab);
+
             return pool;
         }
 
@@ -84,14 +86,14 @@ namespace Pancake
             _allInstances = null;
         }
 
-        public GameObject Request()
+        public GameObject Reuse()
         {
             var instance = GetInstance();
 
             return instance.gameObject;
         }
 
-        public GameObject Request(Transform parent)
+        public GameObject Reuse(Transform parent)
         {
             var instance = GetInstance();
 
@@ -100,7 +102,7 @@ namespace Pancake
             return instance.gameObject;
         }
 
-        public GameObject Request(Transform parent, bool worldPositionStays)
+        public GameObject Reuse(Transform parent, bool worldPositionStays)
         {
             var instance = GetInstance();
 
@@ -109,7 +111,7 @@ namespace Pancake
             return instance.gameObject;
         }
 
-        public GameObject Request(Vector3 position, Quaternion rotation)
+        public GameObject Reuse(Vector3 position, Quaternion rotation)
         {
             var instance = GetInstance();
 
@@ -118,7 +120,7 @@ namespace Pancake
             return instance.gameObject;
         }
 
-        public GameObject Request(Vector3 position, Quaternion rotation, Transform parent)
+        public GameObject Reuse(Vector3 position, Quaternion rotation, Transform parent)
         {
             var instance = GetInstance();
             var instanceTransform = instance.transform;
@@ -167,11 +169,11 @@ namespace Pancake
 
                             return instance;
                         }
-
                         count--;
                     }
 
                     instance = CreateInstance();
+                    instance.OnRequest();
                     instance.gameObject.SetActive(true);
 
                     return instance;
@@ -185,6 +187,7 @@ namespace Pancake
             else
             {
                 var instance = CreateInstance();
+                instance.OnRequest();
                 instance.gameObject.SetActive(true);
 
                 return instance;
