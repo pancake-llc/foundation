@@ -25,7 +25,7 @@ namespace Pancake.Sound
             return result;
         }
     }
-    
+
     /// <summary>
     /// Represents a group of AudioClips that can be treated as one
     /// and provides automatic randomisation or sequencing based on the <c>SequenceMode</c> value.
@@ -45,6 +45,10 @@ namespace Pancake.Sound
 
         private int _nextClipToPlay = -1;
         private int _lastClipPlayed = -1;
+        private float _lastTimePlayed;
+        [SerializeField] private bool cooldownToPlay;
+
+        [ShowIf(nameof(cooldownToPlay)), SerializeField, Indent] private float cooldown;
 
         /// <summary>
         /// Chooses the next clip in the sequence, either following the order or randomly.
@@ -52,6 +56,12 @@ namespace Pancake.Sound
         /// <returns>A reference to an AudioClip</returns>
         public AudioClip GetNextClip()
         {
+            if (cooldownToPlay)
+            {
+                if (Time.time - _lastTimePlayed <= cooldown) return null;
+                _lastTimePlayed = Time.time;
+            }
+
             // Fast out if there is only one clip to play
             if (clips.Length == 1) return clips[0];
 
