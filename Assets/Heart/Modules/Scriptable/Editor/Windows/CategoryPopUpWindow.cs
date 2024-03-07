@@ -31,7 +31,7 @@ namespace Pancake.ScriptableEditor
             _position = origin;
             _scriptableBases = ProjectDatabase.FindAll<ScriptableBase>();
             _buttonIconStyle = new GUIStyle(GUI.skin.button) {padding = new RectOffset(4, 4, 4, 4)};
-            _icons = new[] {EditorResources.IconEdit, EditorResources.IconDelete, EditorGUIUtility.IconContent("Warning").image};
+            _icons = new[] {EditorResources.IconEdit, EditorResources.IconDelete, EditorGUIUtility.IconContent("Warning").image, EditorResources.IconCancel};
         }
 
         public override void OnGUI(Rect rect)
@@ -150,7 +150,7 @@ namespace Pancake.ScriptableEditor
                 EditorGUILayout.LabelField($"{ScriptableEditorSetting.Categories[i]} can't be deleted because it's used by:");
 
                 //Close Button
-                if (GUILayout.Button("x", _buttonIconStyle, GUILayout.Width(_lineHeight), GUILayout.Height(_lineHeight))) _categoryBeingDeleted = -1;
+                if (GUILayout.Button(_icons[3], _buttonIconStyle, GUILayout.Width(_lineHeight), GUILayout.Height(_lineHeight))) _categoryBeingDeleted = -1;
 
                 EditorGUILayout.EndHorizontal();
 

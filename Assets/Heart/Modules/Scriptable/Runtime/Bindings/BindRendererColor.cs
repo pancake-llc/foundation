@@ -10,14 +10,12 @@ namespace Pancake.Scriptable
     public class BindRendererColor : CacheGameComponent<Renderer>
     {
         [SerializeField] private ColorVariable colorVariable;
-
-        private MaterialPropertyBlock _block;
+        
         private static readonly int Color1 = Shader.PropertyToID("_Color");
 
         protected override void Awake()
         {
             base.Awake();
-            _block = new MaterialPropertyBlock();
 
             Refresh(colorVariable);
             colorVariable.OnValueChanged += Refresh;
@@ -27,8 +25,7 @@ namespace Pancake.Scriptable
 
         private void Refresh(Color color)
         {
-            _block.SetColor(Color1, color);
-            component.SetPropertyBlock(_block);
+            component.material.color = color;
         }
     }
 }
