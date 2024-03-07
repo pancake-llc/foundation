@@ -49,6 +49,7 @@ namespace Pancake.ExLibEditor
         public static Texture2D IconDuplicate => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_duplicate.png", RELATIVE_PATH);
         public static Texture2D IconEdit => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_edit.png", RELATIVE_PATH);
         public static Texture2D IconPing => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_ping.png", RELATIVE_PATH);
+        public static Texture2D IconCancel => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_cancel.png", RELATIVE_PATH);
         public static Texture2D IconCopyComponent => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_copy_component.png", RELATIVE_COMPONENT_HEADER_PATH);
         public static Texture2D IconCopyComponentDark => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_copy_component_dark.png", RELATIVE_COMPONENT_HEADER_PATH);
         public static Texture2D IconMoveDown => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_move_down.png", RELATIVE_COMPONENT_HEADER_PATH);
