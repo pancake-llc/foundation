@@ -1,0 +1,22 @@
+{
+    "name": "Pancake.Nav",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8c4dd21966739024fbd72155091d199e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.ai.navigation",
+            "expression": "",
+            "define": "PANCAKE_AI"
+        }
+    ],
+    "noEngineReferences": false
+}
