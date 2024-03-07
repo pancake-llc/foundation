@@ -6,7 +6,7 @@ namespace Pancake.UI
     {
     }
 
-    public interface IUniTMP
+    public interface ILabel
     {
         TMPro.TextMeshProUGUI Label { get; }
     }

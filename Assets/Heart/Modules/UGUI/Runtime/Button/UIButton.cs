@@ -13,7 +13,6 @@ using UnityEngine.UI;
 namespace Pancake.UI
 {
     [EditorIcon("script_button")]
-    [RequireComponent(typeof(Image))]
     public class UIButton : Button, IButton, IButtonAffect
     {
         private const float DOUBLE_CLICK_TIME_INTERVAL = 0.2f;
@@ -115,6 +114,7 @@ namespace Pancake.UI
         protected override void Awake()
         {
             base.Awake();
+            if (!Application.isPlaying) return; // not execute awake when not playing
             _tokenSource = new CancellationTokenSource();
             DefaultScale = AffectObject.localScale;
             onClick.AddListener(PlaySound);
@@ -143,6 +143,7 @@ namespace Pancake.UI
         protected override void OnDisable()
         {
             base.OnDisable();
+            if (!Application.isPlaying) return; // not execute awake when not playing
             if (_handleMultipleClick is {IsTerminated: false})
             {
                 // avoid case app be destroy soon than other component

@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    [CustomEditor(typeof(UIButtonTMP), true)]
+    [CustomEditor(typeof(UIButtonText), true)]
     [CanEditMultipleObjects]
-    public class UIButtonTMPEditor : UIButtonEditor
+    public class UIButtonTextEditor : UIButtonEditor
     {
         private SerializedProperty _label;
 

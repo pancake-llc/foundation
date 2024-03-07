@@ -7,8 +7,7 @@ using UnityEngine;
 namespace Pancake.UI
 {
     [EditorIcon("script_button")]
-    [RequireComponent(typeof(UnityEngine.UI.Image))]
-    public sealed class UIButtonTMP : UIButton, IUniTMP
+    public sealed class UIButtonText : UIButton, ILabel
     {
         [SerializeField] private TextMeshProUGUI label;
 
@@ -42,6 +41,7 @@ namespace Pancake.UI
             var childText = new GameObject("Label");
             childText.transform.SetParent(transform, false);
             label = childText.AddComponent<TextMeshProUGUI>();
+            label.rectTransform.Fill();
         }
 
         private void FindChildText()

@@ -1,5 +1,6 @@
 using Pancake.ExLibEditor;
 using Pancake.UI;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,10 +14,12 @@ namespace PancakeEditor
         [MenuItem("GameObject/Pancake/UIButton", false, 1000)]
         public static void CreateUIButtonEmpty()
         {
-            var button = CreateObject<UIButton>("Button");
+            var t = CreateObject<Image>("Button");
+            var button = t.gameObject.AddComponent<UIButton>();
+            button.targetGraphic = t.GetComponent<Image>();
             Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton");
-            SetupUIButton(button);
-            Selection.activeTransform = button;
+            SetupUIButton(t);
+            Selection.activeTransform = t;
         }
 
         private static void SetupUIButton(RectTransform button)
@@ -26,13 +29,26 @@ namespace PancakeEditor
             uiButton.IsMotion = true;
         }
 
-        [MenuItem("GameObject/Pancake/UIButton - TMP", false, 1000)]
-        private static void CreateUIButtonTMP()
+        [MenuItem("GameObject/Pancake/UIButton - TextMeshPro", false, 1000)]
+        private static void CreateUIButtonText()
         {
-            var button = CreateObject<UIButtonTMP>("Button");
+            var t = CreateObject<Image>("Button");
+            var button = t.gameObject.AddComponent<UIButtonText>();
+            button.targetGraphic = t.GetComponent<Image>();
             Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton TMP");
-            SetupUIButton(button);
-            Selection.activeTransform = button;
+            SetupUIButton(t);
+            Selection.activeTransform = t;
+        }
+        
+        [MenuItem("GameObject/Pancake/UIButton - Text Only", false, 1000)]
+        private static void CreateUIButtonTextOnly()
+        {
+            var t = CreateObject<TextMeshProUGUI>("Button");
+            var button = t.gameObject.AddComponent<UIButtonText>();
+            button.targetGraphic = t.GetComponent<TextMeshProUGUI>();
+            Undo.RegisterCreatedObjectUndo(button.gameObject, "Create UIButton Only Text");
+            SetupUIButton(t);
+            Selection.activeTransform = t;
         }
 
         [MenuItem("GameObject/Pancake/UIPopup", false, 1000)]

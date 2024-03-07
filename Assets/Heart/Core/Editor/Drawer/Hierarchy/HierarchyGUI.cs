@@ -2,10 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Pancake;
+using Pancake.Linq;
+using Pancake.UI;
+using TMPro;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace PancakeEditor.Hierarchy
 {
@@ -71,11 +75,31 @@ namespace PancakeEditor.Hierarchy
             if (PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject) != null) return;
             if (EditorSceneManager.IsPreviewSceneObject(gameObject)) return;
             var components = gameObject.GetComponents<Component>().ToList();
-            components.RemoveAll(_ => _ == null);
+            components.RemoveAll(c => c == null || c.GetType() == typeof(Transform) || c is RectTransform || c is CanvasRenderer);
+
             if (components.IsNullOrEmpty()) return;
 
-            var component = components.Count > 1 ? components[1] : components[0];
+            var component = components[0];
             var type = component.GetType();
+            if (type == typeof(Image) || type == typeof(TextMeshProUGUI))
+            {
+                var result = components.Filter(x => x.GetType() == typeof(Button));
+                if (!result.IsNullOrEmpty())
+                {
+                    component = result[0];
+                    type = typeof(Button);
+                }
+                else
+                {
+                    result = components.Filter(x => x.GetType() == typeof(UIButton) || x is UIButtonText);
+                    if (!result.IsNullOrEmpty())
+                    {
+                        component = result[0];
+                        type = typeof(UIButton);
+                    }
+                }
+            }
+
             var content = EditorGUIUtility.ObjectContent(component, type);
             if (content.image == null) return;
 

@@ -5,6 +5,7 @@ using Pancake.Tracking;
 using UnityEditor;
 using UnityEngine;
 using Pancake.UI;
+using UnityEngine.UI;
 
 namespace PancakeEditor
 {
@@ -13,8 +14,8 @@ namespace PancakeEditor
     public class UIButtonEditor : UnityEditor.UI.ButtonEditor
     {
         protected const int DEFAULT_LABEL_WIDTH = 115;
-        protected static readonly string[] ButtonMotion = {"Immediate", "Normal", "Uniform", "Late"};
-        public static readonly string[] ButtonTypeClick = {"OnlySingleClick", "OnlyDoubleClick", "LongClick", "Instant", "Delayed", "Hold"};
+        private static readonly string[] ButtonMotion = {"Immediate", "Normal", "Uniform", "Late"};
+        private static readonly string[] ButtonTypeClick = {"OnlySingleClick", "OnlyDoubleClick", "LongClick", "Instant", "Delayed", "Hold"};
         private SerializedProperty _isMotion;
         private SerializedProperty _clickType;
         private SerializedProperty _onLongClick;
