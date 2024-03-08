@@ -8,6 +8,8 @@ namespace Pancake
     internal sealed class Poolable : MonoBehaviour
     {
         private IPoolable[] _poolables = Array.Empty<IPoolable>();
+        
+        public Transform Transform => transform;
 
         private IPoolable[] Poolables
         {

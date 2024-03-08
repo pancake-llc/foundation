@@ -6,7 +6,18 @@ namespace Pancake
     {
         public static void Populate(this GameObject prefab, int count) { Pool.GetPoolByPrefab(prefab).Populate(count); }
 
-        public static void Clear(this GameObject prefab, bool destroyActive) { Pool.GetPoolByPrefab(prefab, false)?.Clear(destroyActive); }
+        /// <summary>
+        /// Clear all instance inside pool
+        /// </summary>
+        /// <param name="prefab"></param>
+        /// <param name="isDestroy"></param>
+        public static void Clear(this GameObject prefab, bool isDestroy = true) { Pool.GetPoolByPrefab(prefab, false)?.Clear(isDestroy); }
+
+        /// <summary>
+        /// Return all outside instance to pool
+        /// </summary>
+        /// <param name="prefab"></param>
+        public static void ReturnAll(this GameObject prefab) { Pool.GetPoolByPrefab(prefab, false)?.ReturnAll(); }
 
         public static GameObject Request(this GameObject prefab) { return Pool.GetPoolByPrefab(prefab).Request(); }
 
@@ -17,7 +28,10 @@ namespace Pancake
             return Pool.GetPoolByPrefab(prefab).Request(parent, worldPositionStays);
         }
 
-        public static GameObject Request(this GameObject prefab, Vector3 position, Quaternion rotation) { return Pool.GetPoolByPrefab(prefab).Request(position, rotation); }
+        public static GameObject Request(this GameObject prefab, Vector3 position, Quaternion rotation)
+        {
+            return Pool.GetPoolByPrefab(prefab).Request(position, rotation);
+        }
 
         public static GameObject Request(this GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
         {
@@ -48,6 +62,22 @@ namespace Pancake
             bool isPooled = Pool.GetPoolByInstance(instance, out var pool);
             if (isPooled) pool.Return(instance);
             else Object.Destroy(instance);
+        }
+
+        public static void ClearAllPool()
+        {
+            foreach (var lookup in Pool.PrefabLookup)
+            {
+                lookup.Value.Clear();
+            }
+        }
+
+        public static void ReturnAllPool()
+        {
+            foreach (var lookup in Pool.PrefabLookup)
+            {
+                lookup.Value.ReturnAll();
+            }
         }
     }
 }
