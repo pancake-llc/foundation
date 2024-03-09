@@ -63,10 +63,7 @@ namespace Pancake
     {
         None = 0,
         Update = 1 << 1,
-        PostUpdate = 1 << 2,
-        FixedUpdate = 1 << 3,
-        PostFixedUpdate = 1 << 4,
-        LateUpdate = 1 << 5,
-        PostLateUpdate = 1 << 6
+        FixedUpdate = 1 << 2,
+        LateUpdate = 1 << 3,
     }
 }
