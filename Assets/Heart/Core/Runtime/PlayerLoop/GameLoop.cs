@@ -1,203 +1,224 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.LowLevel;
+using UnityEngine.PlayerLoop;
 
 namespace Pancake.PlayerLoop
 {
     public static class GameLoop
     {
-        public static ulong Frame { get; private set; }
+        private static readonly PlayerLoopRunner[] LoopRunners = new PlayerLoopRunner[12];
+        private static readonly Dictionary<object, PlayerLoopItem> Disposables = new();
 
-#if UNITY_EDITOR
-        private static readonly List<IEarlyUpdate> EarlyUpdates = new();
-        private static readonly List<IFixedUpdate> FixedUpdates = new();
-        private static readonly List<IPreUpdate> PreUpdates = new();
-        private static readonly List<IUpdate> Updates = new();
-        private static readonly List<IPreLateUpdate> PreLateUpdates = new();
-        private static readonly List<IPostLateUpdate> PostLateUpdates = new();
-#endif
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
-            Frame = 0;
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-#if UNITY_EDITOR
-            CheckIntegrity(currentPlayerLoop);
-            // Make sure we unregister before we do register.
-            EditorApplication.playModeStateChanged -= OnPlayModeState;
-            EditorApplication.playModeStateChanged += OnPlayModeState;
-#endif
-            currentPlayerLoop.subSystemList[UpdateType.Update.ToIndex()].updateDelegate += FrameCounter;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
+            Application.quitting += Quit;
+
+            LoopRunners[(int) PlayerLoopTiming.PreTimeUpdate] = new PlayerLoopRunner();
+            LoopRunners[(int) PlayerLoopTiming.PostTimeUpdate] = new PlayerLoopRunner();
+            LoopRunners[(int) PlayerLoopTiming.PreInitialization] = new PlayerLoopRunner(true);
+            LoopRunners[(int) PlayerLoopTiming.PostInitialization] = new PlayerLoopRunner(true);
+            LoopRunners[(int) PlayerLoopTiming.PreStart] = new PlayerLoopRunner(true);
+            LoopRunners[(int) PlayerLoopTiming.PostStart] = new PlayerLoopRunner(true);
+            LoopRunners[(int) PlayerLoopTiming.PreFixedUpdate] = new PlayerLoopRunner();
+            LoopRunners[(int) PlayerLoopTiming.PostFixedUpdate] = new PlayerLoopRunner();
+            LoopRunners[(int) PlayerLoopTiming.PreUpdate] = new PlayerLoopRunner();
+            LoopRunners[(int) PlayerLoopTiming.PostUpdate] = new PlayerLoopRunner();
+            LoopRunners[(int) PlayerLoopTiming.PreLateUpdate] = new PlayerLoopRunner();
+            LoopRunners[(int) PlayerLoopTiming.PostLateUpdate] = new PlayerLoopRunner();
+
+            var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
+
+            var subSystemList = playerLoop.subSystemList.ToArray();
+
+            int timeUpdateSystemIndex = PlayerLoopHelper.FindLoopSystemIndex(typeof(TimeUpdate), subSystemList);
+            int initializeSystemIndex = PlayerLoopHelper.FindLoopSystemIndex(typeof(Initialization), subSystemList);
+            int earlyUpdateSystemIndex = PlayerLoopHelper.FindLoopSystemIndex(typeof(EarlyUpdate), subSystemList);
+            int fixedUpdateSystemIndex = PlayerLoopHelper.FindLoopSystemIndex(typeof(FixedUpdate), subSystemList);
+            int updateSystemIndex = PlayerLoopHelper.FindLoopSystemIndex(typeof(Update), subSystemList);
+            int lateUpdateSystemIndex = PlayerLoopHelper.FindLoopSystemIndex(typeof(PreLateUpdate), subSystemList);
+
+            ref var timeUpdateSystem = ref subSystemList[timeUpdateSystemIndex];
+            ref var initializeSystem = ref subSystemList[initializeSystemIndex];
+            ref var earlyUpdateSystem = ref subSystemList[earlyUpdateSystemIndex];
+            ref var fixedUpdateSystem = ref subSystemList[fixedUpdateSystemIndex];
+            ref var updateSystem = ref subSystemList[updateSystemIndex];
+            ref var lateUpdateSystem = ref subSystemList[lateUpdateSystemIndex];
+
+            var preTimeUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPreTimeUpdate>(LoopRunners[(int) PlayerLoopTiming.PreTimeUpdate].Run);
+            var postTimeUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPostTimeUpdate>(LoopRunners[(int) PlayerLoopTiming.PostTimeUpdate].Run);
+            var preInitializeSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPreInitialization>(LoopRunners[(int) PlayerLoopTiming.PreInitialization].Run);
+            var postInitializeSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPostInitialization>(LoopRunners[(int) PlayerLoopTiming.PostInitialization].Run);
+            var preStartSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPreStart>(LoopRunners[(int) PlayerLoopTiming.PreStart].Run);
+            var postStartSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPostStart>(LoopRunners[(int) PlayerLoopTiming.PostStart].Run);
+            var preFixedUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPreFixedUpdate>(LoopRunners[(int) PlayerLoopTiming.PreFixedUpdate].Run);
+            var postFixedUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPostFixedUpdate>(LoopRunners[(int) PlayerLoopTiming.PostFixedUpdate].Run);
+            var preUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPreUpdate>(LoopRunners[(int) PlayerLoopTiming.PreUpdate].Run);
+            var postUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPostUpdate>(LoopRunners[(int) PlayerLoopTiming.PostUpdate].Run);
+            var preLateUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPreLateUpdate>(LoopRunners[(int) PlayerLoopTiming.PreLateUpdate].Run);
+            var postLateUpdateSystem = PlayerLoopHelper.CreateLoopSystem<GameLoopPostLateUpdate>(LoopRunners[(int) PlayerLoopTiming.PostLateUpdate].Run);
+
+            PlayerLoopHelper.InsertSubSystem(ref timeUpdateSystem, 0, ref preTimeUpdateSystem);
+            PlayerLoopHelper.AppendSubSystem(ref timeUpdateSystem, ref postTimeUpdateSystem);
+
+            PlayerLoopHelper.InsertSubSystem(ref initializeSystem, 0, ref preInitializeSystem);
+            PlayerLoopHelper.AppendSubSystem(ref initializeSystem, ref postInitializeSystem);
+
+            PlayerLoopHelper.InsertSubSystem(ref earlyUpdateSystem,
+                typeof(EarlyUpdate.ScriptRunDelayedStartupFrame),
+                PlayerLoopHelper.InsertPosition.Before,
+                ref preStartSystem);
+            PlayerLoopHelper.InsertSubSystem(ref earlyUpdateSystem,
+                typeof(EarlyUpdate.ScriptRunDelayedStartupFrame),
+                PlayerLoopHelper.InsertPosition.After,
+                ref postStartSystem);
+
+            PlayerLoopHelper.InsertSubSystem(ref fixedUpdateSystem,
+                typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
+                PlayerLoopHelper.InsertPosition.Before,
+                ref preFixedUpdateSystem);
+            PlayerLoopHelper.InsertSubSystem(ref fixedUpdateSystem,
+                typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
+                PlayerLoopHelper.InsertPosition.After,
+                ref postFixedUpdateSystem);
+
+            PlayerLoopHelper.InsertSubSystem(ref updateSystem, typeof(Update.ScriptRunBehaviourUpdate), PlayerLoopHelper.InsertPosition.Before, ref preUpdateSystem);
+            PlayerLoopHelper.InsertSubSystem(ref updateSystem, typeof(Update.ScriptRunBehaviourUpdate), PlayerLoopHelper.InsertPosition.After, ref postUpdateSystem);
+
+            PlayerLoopHelper.InsertSubSystem(ref lateUpdateSystem,
+                typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
+                PlayerLoopHelper.InsertPosition.Before,
+                ref preLateUpdateSystem);
+            PlayerLoopHelper.InsertSubSystem(ref lateUpdateSystem,
+                typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
+                PlayerLoopHelper.InsertPosition.After,
+                ref postLateUpdateSystem);
+
+            playerLoop.subSystemList = subSystemList;
+            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(playerLoop);
         }
 
-#if UNITY_EDITOR
-        private static void CheckIntegrity(PlayerLoopSystem playerLoop)
+        private static void Quit()
         {
-            for (var uType = UpdateType.EarlyUpdate; uType <= UpdateType.PostLateUpdate; uType++)
-                Debug.Assert(playerLoop.subSystemList[uType.ToIndex()].type == uType.ToType(), $"Fatal Error: Unity player-loop incompatible ({uType})!");
-        }
-
-        private static void OnPlayModeState(PlayModeStateChange state)
-        {
-            switch (state)
+            foreach (var loopRunner in LoopRunners)
             {
-                case PlayModeStateChange.EnteredEditMode:
-                    var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-                    UnregisterAll(ref currentPlayerLoop);
-                    UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
-                    EditorApplication.playModeStateChanged -= OnPlayModeState;
-                    break;
+                loopRunner.Clear();
+            }
 
-                case PlayModeStateChange.EnteredPlayMode: break;
-                case PlayModeStateChange.ExitingEditMode: break;
-                case PlayModeStateChange.ExitingPlayMode: break;
-                default: throw new ArgumentOutOfRangeException(nameof(state), state, null);
+            foreach (var disposable in Disposables.Values)
+            {
+                disposable.action?.Invoke();
+            }
+
+            Disposables.Clear();
+        }
+
+        public static void Register(Action action, PlayerLoopTiming timing)
+        {
+            LoopRunners[(int) timing].Register(action.Target, action);
+
+            if (action.Target is IDisposable disposable)
+            {
+                if (!Disposables.ContainsKey(action.Target))
+                {
+                    var playerLoopItem = new PlayerLoopItem() {target = action.Target, action = disposable.Dispose};
+                    Disposables.Add(playerLoopItem.target, playerLoopItem);
+                }
             }
         }
 
-        private static void UnregisterAll(ref PlayerLoopSystem playerLoop)
+        public static void Register(object target, Action action, PlayerLoopTiming timing)
         {
-            playerLoop.subSystemList[UpdateType.Update.ToIndex()].updateDelegate -= FrameCounter;
-            foreach (var earlyUpdate in EarlyUpdates) playerLoop.subSystemList[UpdateType.EarlyUpdate.ToIndex()].updateDelegate -= earlyUpdate.OnEarlyUpdate;
-            foreach (var fixedUpdate in FixedUpdates) playerLoop.subSystemList[UpdateType.FixedUpdate.ToIndex()].updateDelegate -= fixedUpdate.OnFixedUpdate;
-            foreach (var preUpdate in PreUpdates) playerLoop.subSystemList[UpdateType.PreUpdate.ToIndex()].updateDelegate -= preUpdate.OnPreUpdate;
-            foreach (var update in Updates) playerLoop.subSystemList[UpdateType.Update.ToIndex()].updateDelegate -= update.OnUpdate;
-            foreach (var preLateUpdate in PreLateUpdates) playerLoop.subSystemList[UpdateType.PreLateUpdate.ToIndex()].updateDelegate -= preLateUpdate.OnPreLateUpdate;
-            foreach (var postLateUpdate in PostLateUpdates)
-                playerLoop.subSystemList[UpdateType.PostLateUpdate.ToIndex()].updateDelegate -= postLateUpdate.OnPostLateUpdate;
-            EarlyUpdates.Clear();
-            FixedUpdates.Clear();
-            PreUpdates.Clear();
-            Updates.Clear();
-            PreLateUpdates.Clear();
-            PostLateUpdates.Clear();
-        }
-#endif
+            LoopRunners[(int) timing].Register(target, action);
 
-        private static void FrameCounter() => Frame++;
-
-        public static void AddListener(IEarlyUpdate client)
-        {
-#if UNITY_EDITOR
-            EarlyUpdates.Add(client);
-#endif
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.EarlyUpdate.ToIndex()].updateDelegate += client.OnEarlyUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
+            if (target is IDisposable disposable)
+            {
+                if (!Disposables.ContainsKey(target))
+                {
+                    var playerLoopItem = new PlayerLoopItem() {target = target, action = disposable.Dispose};
+                    Disposables.Add(playerLoopItem.target, playerLoopItem);
+                }
+            }
         }
 
-        public static void AddListener(IFixedUpdate client)
+        public static void Register(object target)
         {
-#if UNITY_EDITOR
-            FixedUpdates.Add(client);
-#endif
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.FixedUpdate.ToIndex()].updateDelegate += client.OnFixedUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
+            if (target is IInitialize initialize) Register(target, initialize.OnInitialize, PlayerLoopTiming.PreInitialization);
+            if (target is IPostInitialize postInitialize) Register(target, postInitialize.OnPostInitialize, PlayerLoopTiming.PostInitialization);
+            if (target is IStart start) Register(target, start.OnStartup, PlayerLoopTiming.PreStart);
+            if (target is IPostStart postStart) Register(target, postStart.OnPostStartup, PlayerLoopTiming.PostStart);
+            if (target is IFixedUpdate fixedUpdate) Register(target, fixedUpdate.OnFixedUpdate, PlayerLoopTiming.PreFixedUpdate);
+            if (target is IPostFixedUpdate postFixedUpdate) Register(target, postFixedUpdate.OnPostFixedUpdate, PlayerLoopTiming.PostFixedUpdate);
+            if (target is IUpdate update) Register(target, update.OnUpdate, PlayerLoopTiming.PreUpdate);
+            if (target is IPostUpdate postUpdate) Register(target, postUpdate.OnPostUpdate, PlayerLoopTiming.PostUpdate);
+            if (target is ILateUpdate lateUpdate) Register(target, lateUpdate.OnLateUpdate, PlayerLoopTiming.PreLateUpdate);
+            if (target is IPostLateUpdate postLateUpdate) Register(target, postLateUpdate.OnPostLateUpdate, PlayerLoopTiming.PostLateUpdate);
         }
 
-        public static void AddListener(IPreUpdate client)
+        public static void Unregister(object target, PlayerLoopTiming timing) { LoopRunners[(int) timing].Unregister(target); }
+
+        public static void Unregister(object target)
         {
-#if UNITY_EDITOR
-            PreUpdates.Add(client);
-#endif
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.PreUpdate.ToIndex()].updateDelegate += client.OnPreUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
+            foreach (var loopRunner in LoopRunners)
+            {
+                loopRunner.Unregister(target);
+            }
+
+            if (Disposables.TryGetValue(target, out var disposable))
+            {
+                disposable.action?.Invoke();
+                Disposables.Remove(target);
+            }
         }
 
-        public static void AddListener(IUpdate client)
+        private struct GameLoopPreTimeUpdate
         {
-#if UNITY_EDITOR
-            Updates.Add(client);
-#endif
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.Update.ToIndex()].updateDelegate += client.OnUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
         }
 
-        public static void AddListener(IPreLateUpdate client)
+        private struct GameLoopPostTimeUpdate
         {
-#if UNITY_EDITOR
-            PreLateUpdates.Add(client);
-#endif
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.PreLateUpdate.ToIndex()].updateDelegate += client.OnPreLateUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
         }
 
-        public static void AddListener(IPostLateUpdate client)
+        private struct GameLoopPreInitialization
         {
-#if UNITY_EDITOR
-            PostLateUpdates.Add(client);
-#endif
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.PostLateUpdate.ToIndex()].updateDelegate += client.OnPostLateUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
         }
 
-        public static void RemoveListener(IEarlyUpdate client)
+        private struct GameLoopPostInitialization
         {
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.EarlyUpdate.ToIndex()].updateDelegate -= client.OnEarlyUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
-#if UNITY_EDITOR
-            EarlyUpdates.Remove(client);
-#endif
         }
 
-        public static void RemoveListener(IFixedUpdate client)
+        private struct GameLoopPreStart
         {
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.FixedUpdate.ToIndex()].updateDelegate -= client.OnFixedUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
-#if UNITY_EDITOR
-            FixedUpdates.Remove(client);
-#endif
         }
 
-        public static void RemoveListener(IPreUpdate client)
+        private struct GameLoopPostStart
         {
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.PreUpdate.ToIndex()].updateDelegate -= client.OnPreUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
-#if UNITY_EDITOR
-            PreUpdates.Remove(client);
-#endif
         }
 
-        public static void RemoveListener(IUpdate client)
+        private struct GameLoopPreFixedUpdate
         {
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.Update.ToIndex()].updateDelegate -= client.OnUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
-#if UNITY_EDITOR
-            Updates.Remove(client);
-#endif
         }
 
-        public static void RemoveListener(IPreLateUpdate client)
+        private struct GameLoopPostFixedUpdate
         {
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.PreLateUpdate.ToIndex()].updateDelegate -= client.OnPreLateUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
-#if UNITY_EDITOR
-            PreLateUpdates.Remove(client);
-#endif
         }
 
-        public static void RemoveListener(IPostLateUpdate client)
+        private struct GameLoopPreUpdate
         {
-            var currentPlayerLoop = UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop();
-            currentPlayerLoop.subSystemList[UpdateType.PostLateUpdate.ToIndex()].updateDelegate -= client.OnPostLateUpdate;
-            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(currentPlayerLoop);
-#if UNITY_EDITOR
-            PostLateUpdates.Remove(client);
-#endif
+        }
+
+        private struct GameLoopPostUpdate
+        {
+        }
+
+        private struct GameLoopPreLateUpdate
+        {
+        }
+
+        private struct GameLoopPostLateUpdate
+        {
         }
     }
 }
