@@ -13,9 +13,9 @@ namespace Pancake
 
         protected virtual void Register()
         {
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.Update)) GameLoop.Register(this, (this as IUpdate).OnUpdate, PlayerLoopTiming.PreUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate)) GameLoop.Register(this, (this as ILateUpdate).OnLateUpdate, PlayerLoopTiming.PreLateUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate)) GameLoop.Register(this, (this as IFixedUpdate).OnFixedUpdate, PlayerLoopTiming.PreFixedUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.Update)) GameLoop.Register(this, OnUpdate, PlayerLoopTiming.PreUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate)) GameLoop.Register(this, OnLateUpdate, PlayerLoopTiming.PreLateUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate)) GameLoop.Register(this, OnFixedUpdate, PlayerLoopTiming.PreFixedUpdate);
         }
 
         protected virtual void UnRegister()
