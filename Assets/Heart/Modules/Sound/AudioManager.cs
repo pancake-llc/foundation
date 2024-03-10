@@ -36,7 +36,7 @@ namespace Pancake.Sound
         private void Awake()
         {
             _sfx = new SoundEmitterVault();
-            prefab.Populate(prewarmSize, persistent: true);
+            prefab.Populate(prewarmSize, true);
             sfxVolume.OnValueChanged += OnSfxVolumeChanged;
             musicVolume.OnValueChanged += OnMusicVolumeChanged;
         }
