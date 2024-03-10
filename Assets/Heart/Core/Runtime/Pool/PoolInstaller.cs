@@ -22,7 +22,7 @@ namespace Pancake
             [SerializeField] private bool persistent;
             [SerializeField, Min(1)] private int size;
 
-            public void Populate() { prefab.Populate(size, persistent: persistent); }
+            public void Populate() { prefab.Populate(size, persistent); }
         }
     }
 }
