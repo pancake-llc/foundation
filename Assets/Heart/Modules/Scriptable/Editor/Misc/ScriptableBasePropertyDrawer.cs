@@ -10,8 +10,6 @@ namespace Pancake.ScriptableEditor
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
     public class ScriptableBasePropertyDrawer : PropertyDrawer
     {
-        private UnityEditor.Editor _editor;
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
@@ -89,18 +87,15 @@ namespace Pancake.ScriptableEditor
                 //Draw an embedded inspector 
                 rect.width = position.width;
                 EditorGUI.PropertyField(rect, property, label);
-                EditorGUI.indentLevel++;
                 var cacheBgColor = GUI.backgroundColor;
                 GUI.backgroundColor = Uniform.FieryRose;
                 GUILayout.BeginVertical(GUI.skin.box);
-                if (_editor == null) UnityEditor.Editor.CreateCachedEditor(targetObject, null, ref _editor);
-                // Draw object properties
+                var editor = UnityEditor.Editor.CreateEditor(targetObject);
                 EditorGUI.BeginChangeCheck();
-                if (_editor) _editor.OnInspectorGUI();
+                editor.OnInspectorGUI();
                 if (EditorGUI.EndChangeCheck()) property.serializedObject.ApplyModifiedProperties();
                 GUI.backgroundColor = cacheBgColor;
                 GUILayout.EndVertical();
-                EditorGUI.indentLevel--;
             }
             else DrawUnExpanded(position, property, label, targetObject);
         }
