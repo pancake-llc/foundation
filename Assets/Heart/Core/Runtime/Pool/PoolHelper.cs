@@ -1,10 +1,11 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Pancake
 {
     public static partial class PoolHelper
     {
-        public static void Populate(this GameObject prefab, int count) { Pool.GetPoolByPrefab(prefab).Populate(count); }
+        public static void Populate(this GameObject prefab, int count, bool persistent = false) { Pool.GetPoolByPrefab(prefab, persistent: persistent).Populate(count); }
 
         /// <summary>
         /// Clear all instance inside pool
@@ -66,7 +67,7 @@ namespace Pancake
 
         public static void ClearAllPool()
         {
-            foreach (var lookup in Pool.PrefabLookup)
+            foreach (var lookup in Pool.PrefabLookup.ToList())
             {
                 lookup.Value.Clear();
             }
@@ -74,7 +75,7 @@ namespace Pancake
 
         public static void ReturnAllPool()
         {
-            foreach (var lookup in Pool.PrefabLookup)
+            foreach (var lookup in Pool.PrefabLookup.ToList())
             {
                 lookup.Value.ReturnAll();
             }

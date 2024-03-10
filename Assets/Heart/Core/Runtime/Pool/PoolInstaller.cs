@@ -19,9 +19,10 @@ namespace Pancake
         private struct PoolContainer
         {
             [SerializeField] private GameObject prefab;
+            [SerializeField] private bool persistent;
             [SerializeField, Min(1)] private int size;
 
-            public void Populate() { prefab.Populate(size); }
+            public void Populate() { prefab.Populate(size, persistent: persistent); }
         }
     }
 }

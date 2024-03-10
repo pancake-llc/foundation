@@ -12,13 +12,14 @@ namespace Pancake
         private readonly Quaternion _rotation;
         private readonly Vector3 _scale;
         private readonly bool _prototypeIsNotSource;
+        private bool _persistent;
 
         internal static readonly Dictionary<GameObject, Pool> PrefabLookup = new(64);
         private static readonly Dictionary<GameObject, Pool> InstanceLookup = new(512);
 
         private const int INITIAL_SIZE = 128;
 
-        public Pool(GameObject prefab)
+        public Pool(GameObject prefab, bool persistent)
         {
             _source = prefab;
             _prototype = prefab.GetComponent<Poolable>();
@@ -43,10 +44,10 @@ namespace Pancake
             _scale = transform.localScale;
         }
 
-        public static Pool GetPoolByPrefab(GameObject prefab, bool create = true)
+        public static Pool GetPoolByPrefab(GameObject prefab, bool create = true, bool persistent = false)
         {
             bool hasPool = PrefabLookup.TryGetValue(prefab, out var pool);
-            if (!hasPool && create) pool = new Pool(prefab);
+            if (!hasPool && create) pool = new Pool(prefab, persistent);
             return pool;
         }
 
@@ -66,6 +67,8 @@ namespace Pancake
 
         public void Clear(bool isDestroy = true)
         {
+            if (_persistent) return;
+
             PrefabLookup.Remove(_source);
 
             foreach (var instance in _insidePoolableInstances)
