@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: dont_show_update_again
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 5e9c77fdc5001d44584ffa49b70ed929
-  guidCreateMode: 0
+  description: 
   value: 0
   debugLogEnabled: 0
   saved: 1
   defaultValue: 0
+  guidCreateMode: 0
+  guid: 5e9c77fdc5001d44584ffa49b70ed929
   resetOn: 2

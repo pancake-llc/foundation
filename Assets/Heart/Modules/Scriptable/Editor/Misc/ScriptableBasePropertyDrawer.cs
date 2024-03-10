@@ -11,7 +11,6 @@ namespace Pancake.ScriptableEditor
     public class ScriptableBasePropertyDrawer : PropertyDrawer
     {
         private UnityEditor.Editor _editor;
-        protected virtual float PropertyWidthRatio { get; } = 0.82f;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -67,7 +66,7 @@ namespace Pancake.ScriptableEditor
         protected Rect DrawPropertyField(Rect position, SerializedProperty property, GUIContent label)
         {
             var rectPosition = position;
-            float propertyWidthRatio = PropertyWidthRatio;
+            const float propertyWidthRatio = 0.82f;
             rectPosition.width = position.width * propertyWidthRatio;
             EditorGUI.PropertyField(rectPosition, property, label);
 
@@ -95,7 +94,10 @@ namespace Pancake.ScriptableEditor
                 GUI.backgroundColor = Uniform.FieryRose;
                 GUILayout.BeginVertical(GUI.skin.box);
                 if (_editor == null) UnityEditor.Editor.CreateCachedEditor(targetObject, null, ref _editor);
-                _editor.OnInspectorGUI();
+                // Draw object properties
+                EditorGUI.BeginChangeCheck();
+                if (_editor) _editor.OnInspectorGUI();
+                if (EditorGUI.EndChangeCheck()) property.serializedObject.ApplyModifiedProperties();
                 GUI.backgroundColor = cacheBgColor;
                 GUILayout.EndVertical();
                 EditorGUI.indentLevel--;
@@ -107,7 +109,49 @@ namespace Pancake.ScriptableEditor
 
         protected virtual void DrawUnExpanded(Rect position, SerializedProperty property, GUIContent label, Object targetObject)
         {
-            EditorGUI.PropertyField(position, property, label);
+            if (property.serializedObject.isEditingMultipleObjects || property.objectReferenceValue == null)
+            {
+                base.OnGUI(position, property, label);
+                return;
+            }
+
+            label = EditorGUI.BeginProperty(position, label, property);
+            position = EditorGUI.PrefixLabel(position, label);
+            var inner = new SerializedObject(property.objectReferenceValue);
+            var valueProp = inner.FindProperty("value");
+            if (valueProp != null)
+            {
+                var previewRect = new Rect(position) {width = GetPreviewSpace(valueProp?.type)};
+                int indent = EditorGUI.indentLevel;
+                EditorGUI.indentLevel = 0;
+                position.xMin = previewRect.xMax;
+                EditorGUI.PropertyField(previewRect, valueProp, GUIContent.none, false);
+
+                position.x = position.x + 6f;
+                position.width = position.width - 6f;
+                EditorGUI.PropertyField(position, property, GUIContent.none);
+
+                EditorGUI.indentLevel = indent;
+            }
+            else
+            {
+                EditorGUI.PropertyField(position, property, GUIContent.none);
+            }
+
+            inner.ApplyModifiedProperties();
+            EditorGUI.EndProperty();
+        }
+
+        private float GetPreviewSpace(string type)
+        {
+            switch (type)
+            {
+                case "Vector2":
+                case "Vector3":
+                    return 128;
+                default:
+                    return 58;
+            }
         }
     }
 }
