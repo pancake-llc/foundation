@@ -13,8 +13,14 @@ namespace Pancake.DebugView
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        protected override void SetProgressInternal(float visibility) { _canvasGroup.alpha = visibility; }
+        protected override void SetProgressInternal(float visibility)
+        {
+            if (_canvasGroup != null) _canvasGroup.alpha = visibility;
+        }
 
-        protected override void SetInteractable(bool interactable) { _canvasGroup.interactable = interactable; }
+        protected override void SetInteractable(bool interactable)
+        {
+            if (_canvasGroup != null) _canvasGroup.interactable = interactable;
+        }
     }
 }
