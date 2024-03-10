@@ -105,7 +105,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.27",
+      "version": "3.0.28",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -273,7 +273,7 @@
       }
     },
     "com.unity.sharp-zip-lib": {
-      "version": "1.3.5-preview",
+      "version": "1.3.6-preview",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
