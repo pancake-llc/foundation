@@ -36,9 +36,16 @@ namespace Pancake.ScriptableEditor
 
         protected void DrawIfNull(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (fieldInfo.FieldType.IsAbstract)
+            {
+                EditorGUI.PropertyField(position, property, label);
+                return;
+            }
+
             //Draw property and a create button
             var rect = DrawPropertyField(position, property, label);
             var guiContent = new GUIContent("Create", "Creates the SO at default storage generate path");
+
             if (GUI.Button(rect, guiContent))
             {
                 string newName = GetFieldName().ToSnakeCase();
