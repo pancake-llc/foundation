@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Pancake
@@ -54,7 +55,18 @@ namespace Pancake
 
         public static bool GetPoolByInstance(GameObject instance, out Pool pool) { return InstanceLookup.TryGetValue(instance, out pool); }
 
-        public static void Remove(GameObject instance) { InstanceLookup.Remove(instance); }
+        public static void Remove(GameObject instance)
+        {
+            var poolable = instance.GetComponent<Poolable>();
+            Remove(poolable);
+        }
+
+        public static void Remove(Poolable poolable)
+        {
+            bool isPooled = GetPoolByInstance(poolable.gameObject, out var pool);
+            if (isPooled) pool._outsidePoolableInstances.Remove(poolable);
+            InstanceLookup.Remove(poolable.gameObject);
+        }
 
         public void Populate(int count)
         {
@@ -92,12 +104,14 @@ namespace Pancake
 
         public void ReturnAll()
         {
-            foreach (var poolable in _outsidePoolableInstances)
+            if (_persistent) return;
+
+            foreach (var poolable in _outsidePoolableInstances.ToList())
             {
                 Return(poolable);
             }
 
-            _outsidePoolableInstances = null;
+            _outsidePoolableInstances.Clear();
         }
 
         public GameObject Request()

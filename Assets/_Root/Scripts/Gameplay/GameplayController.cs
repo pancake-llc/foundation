@@ -65,6 +65,7 @@ namespace Pancake.SceneFlow
 
         private async void GoToMenu()
         {
+            PoolHelper.ReturnAllPool();
             await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
                 false,
                 onLoad: t => { t.popup.view.Setup(); },

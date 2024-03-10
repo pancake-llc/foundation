@@ -31,8 +31,7 @@ namespace Pancake.SceneFlow
         [SerializeField, PopupPickup] private string popupLeaderboard;
         [SerializeField, PagePickup] private string outfitPageName;
 
-        [Header("OTHER")]
-        [SerializeField] private ScriptableEventString changeSceneEvent;
+        [Header("OTHER")] [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private LocaleText localeTextFeatureLocked;
         [SerializeField] private ScriptableEventLocaleText eventSpawnInGameNotification;
         private CancellationTokenSource _tokenShowUpdate;
@@ -84,6 +83,7 @@ namespace Pancake.SceneFlow
 
         private async void OnButtonTapToPlayPressed()
         {
+            PoolHelper.ReturnAllPool();
             await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
                 false,
                 onLoad: t => { t.popup.view.Setup(true); },

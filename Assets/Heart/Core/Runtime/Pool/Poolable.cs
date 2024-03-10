@@ -20,7 +20,7 @@ namespace Pancake
             }
         }
 
-        private void OnDestroy() { Pool.Remove(gameObject); }
+        private void OnDestroy() { Pool.Remove(this); }
 
         public void OnRequest()
         {
