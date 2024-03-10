@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: prewarm_load_level_completed
   m_EditorClassIdentifier: 
   categoryIndex: 0
+  description: 
   value: 1
   debugLogEnabled: 0
   saved: 0

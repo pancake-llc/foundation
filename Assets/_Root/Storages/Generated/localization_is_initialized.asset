@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: localization_is_initialized
   m_EditorClassIdentifier: 
   categoryIndex: 0
+  description: 
   value: 0
   debugLogEnabled: 0
   saved: 0

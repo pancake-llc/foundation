@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: outfit_clothes_orange_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
+  description: 
   value:
     id: 4433613a92c74d1
     isUnlocked: 1

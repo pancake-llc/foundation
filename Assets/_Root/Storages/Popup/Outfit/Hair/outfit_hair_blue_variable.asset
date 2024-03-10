@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: outfit_hair_blue_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
+  description: 
   value:
     id: ab5b505505ce41e
     isUnlocked: 1
