@@ -13,15 +13,15 @@ namespace Pancake.PlayerLoop
     {
         public int ItemCount => _playerLoopItemList.Count;
 
-        private readonly List<PlayerLoopItem> _playerLoopItemList = new List<PlayerLoopItem>();
-        private readonly Dictionary<object, PlayerLoopItem> _playerLoopItemDictionary = new Dictionary<object, PlayerLoopItem>();
+        private readonly List<PlayerLoopItem> _playerLoopItemList = new();
+        private readonly Dictionary<object, PlayerLoopItem> _playerLoopItemDictionary = new();
         private readonly bool _autoClear;
 
         public PlayerLoopRunner(bool autoClear = false) { _autoClear = autoClear; }
 
         public void Run()
         {
-            foreach (var item in _playerLoopItemList)
+            foreach (var item in _playerLoopItemList.ToArray())
             {
                 item.action?.Invoke();
             }
@@ -37,7 +37,7 @@ namespace Pancake.PlayerLoop
         {
             if (_playerLoopItemDictionary.ContainsKey(target)) return;
 
-            PlayerLoopItem playerLoopItem = new PlayerLoopItem() {target = target, action = action};
+            var playerLoopItem = new PlayerLoopItem() {target = target, action = action};
             _playerLoopItemList.Add(playerLoopItem);
             _playerLoopItemDictionary.Add(playerLoopItem.target, playerLoopItem);
         }
