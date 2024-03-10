@@ -12,7 +12,7 @@ namespace Pancake
         private readonly Quaternion _rotation;
         private readonly Vector3 _scale;
         private readonly bool _prototypeIsNotSource;
-        private bool _persistent;
+        private readonly bool _persistent;
 
         internal static readonly Dictionary<GameObject, Pool> PrefabLookup = new(64);
         private static readonly Dictionary<GameObject, Pool> InstanceLookup = new(512);
@@ -23,6 +23,7 @@ namespace Pancake
         {
             _source = prefab;
             _prototype = prefab.GetComponent<Poolable>();
+            _persistent = persistent;
 
             if (_prototype == null)
             {
