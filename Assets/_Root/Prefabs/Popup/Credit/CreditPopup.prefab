@@ -136,6 +136,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -149,6 +152,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2

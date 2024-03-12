@@ -5,7 +5,6 @@ using Pancake.Tracking;
 using UnityEditor;
 using UnityEngine;
 using Pancake.UI;
-using UnityEngine.UI;
 
 namespace PancakeEditor
 {
@@ -44,6 +43,8 @@ namespace PancakeEditor
         private SerializedProperty _scaleUnableInteract;
         private SerializedProperty _durationUnableInteract;
         private SerializedProperty _easeInteract;
+        private SerializedProperty _useVariableListener;
+        private SerializedProperty _callbackVariable;
 
         protected override void OnEnable()
         {
@@ -76,6 +77,8 @@ namespace PancakeEditor
             _isMotionUnableInteract = serializedObject.FindProperty("isMotionUnableInteract");
             _ease = serializedObject.FindProperty("motionData").FindPropertyRelative("ease");
             _easeInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("ease");
+            _useVariableListener = serializedObject.FindProperty("useVariableListener");
+            _callbackVariable = serializedObject.FindProperty("callbackVariable");
         }
 
         public override void OnInspectorGUI()
@@ -115,7 +118,7 @@ namespace PancakeEditor
                     {
                         EditorGUILayout.BeginHorizontal();
                         GUILayout.Label(new GUIContent("  Duration(s)", "Number of seconds to trigger next click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                        _timeDisableButton.floatValue = EditorGUILayout.Slider(_timeDisableButton.floatValue, 0.05f, 1f);
+                        _timeDisableButton.floatValue = EditorGUILayout.Slider(_timeDisableButton.floatValue, 0.01f, 1f);
                         EditorGUILayout.EndHorizontal();
                     }
 
@@ -124,7 +127,7 @@ namespace PancakeEditor
                 case EButtonClickType.LongClick:
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Label(new GUIContent("  Duration(s)", "Number of seconds to trigger long click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                    _longClickInterval.floatValue = EditorGUILayout.Slider(_longClickInterval.floatValue, 0.1f, 5f);
+                    _longClickInterval.floatValue = EditorGUILayout.Slider(_longClickInterval.floatValue, 0.01f, 5f);
                     EditorGUILayout.EndHorizontal();
                     break;
                 case EButtonClickType.OnlyDoubleClick:
@@ -132,13 +135,13 @@ namespace PancakeEditor
                 case EButtonClickType.Delayed:
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Label(new GUIContent("  Duration(s)", "Number of seconds to trigger double click"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                    _doubleClickInterval.floatValue = EditorGUILayout.Slider(_doubleClickInterval.floatValue, 0.05f, 1f);
+                    _doubleClickInterval.floatValue = EditorGUILayout.Slider(_doubleClickInterval.floatValue, 0.01f, 1f);
                     EditorGUILayout.EndHorizontal();
                     break;
                 case EButtonClickType.Hold:
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Label(new GUIContent("  Delay Detect(s)", "Number of seconds to detect hold"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                    _delayDetectHold.floatValue = EditorGUILayout.Slider(_delayDetectHold.floatValue, 0.2f, 1f);
+                    _delayDetectHold.floatValue = EditorGUILayout.Slider(_delayDetectHold.floatValue, 0.01f, 1f);
                     EditorGUILayout.EndHorizontal();
                     break;
             }
@@ -166,12 +169,32 @@ namespace PancakeEditor
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("   Audio", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _audioClick.objectReferenceValue = EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
+                if (_audioClick.objectReferenceValue == null)
+                {
+                    if (GUILayout.Button("Create", GUILayout.Width(60)))
+                    {
+                        _audioClick.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(Audio),
+                            target.name.ToLower() + "_audio",
+                            ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+                            true);
+                    }
+                }
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("   Channel", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _audioPlayEvent.objectReferenceValue =
                     EditorGUILayout.ObjectField("", _audioPlayEvent.objectReferenceValue, typeof(ScriptableEventAudio), false) as ScriptableEventAudio;
+                if (_audioPlayEvent.objectReferenceValue == null)
+                {
+                    if (GUILayout.Button("Create", GUILayout.Width(60)))
+                    {
+                        _audioPlayEvent.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableEventAudio),
+                            target.name.ToLower() + "_audio_event",
+                            ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+                            true);
+                    }
+                }
                 EditorGUILayout.EndHorizontal();
             }
 
@@ -182,19 +205,50 @@ namespace PancakeEditor
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Label("Enable Tracking", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                     _enabledTracking.boolValue = GUILayout.Toggle(_enabledTracking.boolValue, "");
-                    EditorGUILayout.EndHorizontal();
 
                     if (_enabledTracking.boolValue)
                     {
-                        EditorGUILayout.BeginHorizontal();
-                        GUILayout.Label("   Event", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                         _trackingEvent.objectReferenceValue =
                             EditorGUILayout.ObjectField("", _trackingEvent.objectReferenceValue, typeof(ScriptableTrackingNoParam), false) as ScriptableTrackingNoParam;
-                        EditorGUILayout.EndHorizontal();
+                        if (_trackingEvent.objectReferenceValue == null)
+                        {
+                            if (GUILayout.Button("Create", GUILayout.Width(60)))
+                            {
+                                _trackingEvent.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableTrackingNoParam),
+                                    target.name.ToLower() + "_tracking_no_param",
+                                    ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+                                    true);
+                            }
+                        }
                     }
 
+                    EditorGUILayout.EndHorizontal();
                     break;
             }
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("Custom Listener", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+            _useVariableListener.boolValue = GUILayout.Toggle(_useVariableListener.boolValue, "");
+            if (_useVariableListener.boolValue)
+            {
+                _callbackVariable.objectReferenceValue =
+                    EditorGUILayout.ObjectField(_callbackVariable.objectReferenceValue, typeof(ScriptableButtonCallbackVariable), false) as
+                        ScriptableButtonCallbackVariable;
+
+                if (_callbackVariable.objectReferenceValue == null)
+                {
+                    if (GUILayout.Button("Create", GUILayout.Width(60)))
+                    {
+                        _callbackVariable.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableButtonCallbackVariable),
+                            target.name.ToLower() + "_callback_variable",
+                            ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+                            true);
+                    }
+                }
+            }
+
+            EditorGUILayout.EndHorizontal();
+
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();

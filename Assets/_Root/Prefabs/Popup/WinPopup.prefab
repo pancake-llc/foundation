@@ -383,6 +383,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -396,6 +399,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -752,6 +757,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -765,6 +773,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2014,6 +2024,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -2027,6 +2040,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
