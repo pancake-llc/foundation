@@ -36,6 +36,7 @@ namespace Pancake.Spine
 
         public static SkeletonGraphic PlayOnly(this SkeletonGraphic skeleton, string animationName, bool loop = false)
         {
+            skeleton.startingAnimation = animationName;
             skeleton.AnimationState.SetAnimation(0, animationName, loop);
             return skeleton;
         }
