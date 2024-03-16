@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3708985, g: 0.3783704, b: 0.35722548, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -199,7 +199,6 @@ GameObject:
   - component: {fileID: 464475643}
   - component: {fileID: 464475642}
   - component: {fileID: 464475644}
-  - component: {fileID: 464475645}
   m_Layer: 0
   m_Name: PlaceHolderCamera
   m_TagString: Untagged
@@ -281,50 +280,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 464475641}
   m_Enabled: 1
---- !u!114 &464475645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464475641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_AllowXRRendering: 1
-  m_AllowHDROutput: 1
-  m_UseScreenCoordOverride: 0
-  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
-  m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
 --- !u!1 &776958708
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,25 +541,25 @@ MonoBehaviour:
   onStopPinch: {fileID: 11400000, guid: 55622c723ed05134982147208332c097, type: 2}
   isCustom: 0
   clickDurationThreshold:
-    UseLocal: 1
-    LocalValue: 0.7
-    Variable: {fileID: 0}
+    useLocal: 0
+    localValue: 0
+    variable: {fileID: 0}
   doubleClickThreshold:
-    UseLocal: 1
-    LocalValue: 0.5
-    Variable: {fileID: 0}
+    useLocal: 0
+    localValue: 0
+    variable: {fileID: 0}
   tiltVerticalThreshold:
-    UseLocal: 1
-    LocalValue: 0.7
-    Variable: {fileID: 0}
+    useLocal: 0
+    localValue: 0
+    variable: {fileID: 0}
   tiltHorizontalThreshold:
-    UseLocal: 1
-    LocalValue: 0.5
-    Variable: {fileID: 0}
+    useLocal: 0
+    localValue: 0
+    variable: {fileID: 0}
   dragThreshold:
-    UseLocal: 1
-    LocalValue: 0.05
-    Variable: {fileID: 0}
+    useLocal: 0
+    localValue: 0
+    variable: {fileID: 0}
   longTapStartsDrag: {fileID: 11400000, guid: 3a598d5cce1e2be488decb7189a667a3, type: 2}
 --- !u!114 &776958723
 MonoBehaviour:
