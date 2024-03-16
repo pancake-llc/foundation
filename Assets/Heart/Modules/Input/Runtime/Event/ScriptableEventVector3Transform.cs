@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_event")]
-    [CreateAssetMenu(fileName = "scriptable_event_vector3, transform.asset", menuName = "Pancake/Input/Events/vector3_transform")]
+    [CreateAssetMenu(fileName = "event_vector3, transform.asset", menuName = "Pancake/Input/Events/vector3_transform")]
     public class ScriptableEventVector3Transform : ScriptableEventBase
     {
         private Action<Vector3, Transform> _onRaised;

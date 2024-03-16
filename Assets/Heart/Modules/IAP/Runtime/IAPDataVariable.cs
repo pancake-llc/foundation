@@ -7,7 +7,7 @@ using UnityEngine.Purchasing;
 namespace Pancake.IAP
 {
     [EditorIcon("scriptable_variable")]
-    [CreateAssetMenu(fileName = "scriptable_variable_IAPData.asset", menuName = "Pancake/IAP/Scriptable IAPData")]
+    [CreateAssetMenu(fileName = "variable_IAPData.asset", menuName = "Pancake/IAP/Scriptable IAPData")]
     [Serializable]
     [HideMonoScript]
     public class IAPDataVariable : ScriptableObject

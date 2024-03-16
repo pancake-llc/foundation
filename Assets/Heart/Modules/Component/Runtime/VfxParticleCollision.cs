@@ -11,7 +11,7 @@ namespace Pancake.Component
     {
         [SerializeField] private ScriptableEventInt updateCoinWithValueEvent;
         [SerializeField] private ScriptableEventNoParam updateCoinEvent;
-        [SerializeField] private ScriptableListGameObject vfxMagnetCollection;
+        [SerializeField] private ListGameObject vfxMagnetCollection;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
         [SerializeField] private IntDictionary numberParticleMap;

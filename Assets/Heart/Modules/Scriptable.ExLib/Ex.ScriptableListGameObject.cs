@@ -6,7 +6,7 @@ namespace Pancake.Scriptable.ExLib
 {
     public static class Extension
     {
-        public static T Get<T>(this ScriptableListGameObject list) where T : Component
+        public static T Get<T>(this ListGameObject list) where T : Component
         {
             if (list is null || !list) return default(T);
 
@@ -19,7 +19,7 @@ namespace Pancake.Scriptable.ExLib
             return default(T);
         }
 
-        public static T Get<T>(this ScriptableListGameObject list, Func<GameObject, bool> predicate) where T : Component
+        public static T Get<T>(this ListGameObject list, Func<GameObject, bool> predicate) where T : Component
         {
             if (list is null || !list) return default(T);
 
@@ -33,7 +33,7 @@ namespace Pancake.Scriptable.ExLib
             return default(T);
         }
 
-        public static IEnumerable<T> GetList<T>(this ScriptableListGameObject list) where T : Component
+        public static IEnumerable<T> GetList<T>(this ListGameObject list) where T : Component
         {
             if (list is null || !list) return new List<T>();
 
@@ -47,7 +47,7 @@ namespace Pancake.Scriptable.ExLib
             return results;
         }
 
-        public static IEnumerable<T> GetList<T>(this ScriptableListGameObject list, Func<GameObject, bool> predicate) where T : Component
+        public static IEnumerable<T> GetList<T>(this ListGameObject list, Func<GameObject, bool> predicate) where T : Component
         {
             if (list is null || !list) return new List<T>();
 

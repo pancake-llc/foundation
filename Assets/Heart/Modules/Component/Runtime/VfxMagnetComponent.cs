@@ -11,7 +11,7 @@ namespace Pancake.Component
     public class VfxMagnetComponent : GameComponent
     {
         [SerializeField] private ScriptableEventVfxMagnet spawnEvent;
-        [SerializeField] private ScriptableListGameObject listVfxMagnetInstance;
+        [SerializeField] private ListGameObject listVfxMagnetInstance;
         [SerializeField] private GameObject coinFxPrefab;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [SerializeField] private float coinFxScale = 1f;

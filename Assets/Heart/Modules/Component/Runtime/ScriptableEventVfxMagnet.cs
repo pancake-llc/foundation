@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.Component
 {
     [Serializable]
-    [CreateAssetMenu(fileName = "scriptable_event_vfx_magnet.asset", menuName = "Pancake/Misc/Events/Vfx Magnet Event")]
+    [CreateAssetMenu(fileName = "event_vfx_magnet.asset", menuName = "Pancake/Misc/Events/Vfx Magnet Event")]
     [EditorIcon("scriptable_event")]
     public class ScriptableEventVfxMagnet : ScriptableEventBase, IDrawObjectsInInspector
     {

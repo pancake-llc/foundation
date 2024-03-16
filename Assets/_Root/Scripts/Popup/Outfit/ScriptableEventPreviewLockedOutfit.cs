@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.SceneFlow
 {
     [Serializable]
-    [CreateAssetMenu(fileName = "scriptable_event_preview_locked_outfit.asset", menuName = "Pancake/Misc/Events/Preview Locked Outfit")]
+    [CreateAssetMenu(fileName = "event_preview_locked_outfit.asset", menuName = "Pancake/Misc/Events/Preview Locked Outfit")]
     [EditorIcon("scriptable_event")]
     public class ScriptableEventPreviewLockedOutfit : ScriptableEventBase
     {
