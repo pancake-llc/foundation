@@ -33,7 +33,6 @@ namespace PancakeEditor
             Firebase,
             GameService,
             Greenery,
-            GrowMesh,
             HeartSetting,
             HierarchySetting,
             InAppPurchase,
@@ -68,7 +67,6 @@ namespace PancakeEditor
             GameSerice = WizardAllType.GameService,
             Greenery = WizardAllType.Greenery,
             Localization = WizardAllType.Localization,
-            GrowMesh = WizardAllType.GrowMesh,
             OtherPacakge = WizardAllType.OtherPackage,
             Build = WizardAllType.Build
         }
@@ -118,13 +116,6 @@ namespace PancakeEditor
         #region level-editor
 
         private LevelEditorTabType _currentLevelTabType = LevelEditorTabType.PickupArea;
-
-        #endregion
-
-        #region grow-mesh
-
-        private GameObject _growMeshTarget;
-        private int _growMeshLevel;
 
         #endregion
 
@@ -291,9 +282,6 @@ namespace PancakeEditor
                 case WizardAllType.Greenery when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesGreeneryDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.GrowMesh when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesGrowMeshDrawer.OnInspectorGUI(ref _growMeshTarget, ref _growMeshLevel, this);
-                    break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesLocalizationDrawer.OnInspectorGUI(ref _treeViewState,
                         ref localeTreeView,
@@ -404,7 +392,6 @@ namespace PancakeEditor
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
                 case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;
-                case WizardAllType.GrowMesh: return EditorResources.ScriptableMesh;
                 case WizardAllType.Build:
                 case WizardAllType.OtherPackage: return EditorResources.ScriptableUnity;
                 default:
