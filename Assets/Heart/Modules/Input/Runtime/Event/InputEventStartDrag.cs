@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
-    [CreateAssetMenu(fileName = "scriptable_input_on_start_drag.asset", menuName = "Pancake/Input/Events/on start drag")]
-    public class ScriptableInputStartDrag : ScriptableInput
+    [CreateAssetMenu(fileName = "input_event_on_start_drag.asset", menuName = "Pancake/Input/Events/on start drag")]
+    public class InputEventStartDrag : ScriptableInput
     {
         private Action<Vector3, bool> _onRaised;
 

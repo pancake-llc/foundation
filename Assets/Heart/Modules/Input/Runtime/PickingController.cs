@@ -86,7 +86,7 @@ namespace Pancake.MobileInput
         private ScriptableEventTransform transformSelectedEvent;
 
         [SerializeField, Foldout("Pickable Channel", Style = "Group")]
-        private ScriptableEventPickableSelected transformSelectedExtendedEvent;
+        private InputEventPickableSelected transformSelectedExtendedEvent;
 
         [SerializeField, Foldout("Pickable Channel", Style = "Group")]
         private ScriptableEventTransform transformDeselectedEvent;
@@ -101,12 +101,12 @@ namespace Pancake.MobileInput
         private ScriptableEventVector3Transform transformMoveEndedEvent;
 
         [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private BoolVariable longTapStartsDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputStartDrag onStartDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputUpdateDrag onUpdateDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputStopDrag onStopDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputFingerDown onFingerDown;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputFingerUp onFingerUp;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private ScriptableInputClick onClick;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventStartDrag onStartDrag;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventUpdateDrag onUpdateDrag;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventStopDrag onStopDrag;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventFingerDown onFingerDown;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventFingerUp onFingerUp;
+        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventClick onClick;
 
         #endregion
 

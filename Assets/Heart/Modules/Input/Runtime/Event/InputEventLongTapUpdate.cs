@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
-    [CreateAssetMenu(fileName = "scriptable_input_on_long_tap_update.asset", menuName = "Pancake/Input/Events/on long tap update")]
-    public class ScriptableInputLongTapUpdate : ScriptableInput
+    [CreateAssetMenu(fileName = "input_event_on_long_tap_update.asset", menuName = "Pancake/Input/Events/on long tap update")]
+    public class InputEventLongTapUpdate : ScriptableInput
     {
         private Action<float> _onRaised;
 

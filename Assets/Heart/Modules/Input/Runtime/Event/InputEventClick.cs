@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
-    [CreateAssetMenu(fileName = "scriptable_input_on_click.asset", menuName = "Pancake/Input/Events/on click")]
-    public class ScriptableInputClick : ScriptableInput
+    [CreateAssetMenu(fileName = "input_event_on_click.asset", menuName = "Pancake/Input/Events/on click")]
+    public class InputEventClick : ScriptableInput
     {
         private Action<Vector3, bool, bool> _onRaised;
 

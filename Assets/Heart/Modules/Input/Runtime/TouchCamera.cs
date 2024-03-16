@@ -144,15 +144,15 @@ namespace Pancake.MobileInput
 
         #endregion
 
-        [SerializeField] private ScriptableInputStartDrag onStartDrag;
-        [SerializeField] private ScriptableInputUpdateDrag onUpdateDrag;
-        [SerializeField] private ScriptableInputStopDrag onStopDrag;
-        [SerializeField] private ScriptableInputFingerDown onFingerDown;
-        [SerializeField] private ScriptableInputFingerUp onFingerUp;
-        [SerializeField] private ScriptableInputClick onClick;
-        [SerializeField] private ScriptableInputStartPinch onStartPinch;
-        [SerializeField] private ScriptableInputUpdateExtendPinch onUpdateExtendPinch;
-        [SerializeField] private ScriptableInputStopPinch onStopPinch;
+        [SerializeField] private InputEventStartDrag onStartDrag;
+        [SerializeField] private InputEventUpdateDrag onUpdateDrag;
+        [SerializeField] private InputEventStopDrag onStopDrag;
+        [SerializeField] private InputEventFingerDown onFingerDown;
+        [SerializeField] private InputEventFingerUp onFingerUp;
+        [SerializeField] private InputEventClick onClick;
+        [SerializeField] private InputEventStartPinch onStartPinch;
+        [SerializeField] private InputEventUpdateExtendPinch onUpdateExtendPinch;
+        [SerializeField] private InputEventStopPinch onStopPinch;
 
 
         public CameraPlaneAxes CameraAxes { get => cameraAxes; set => cameraAxes = value; }

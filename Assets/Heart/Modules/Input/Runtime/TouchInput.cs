@@ -13,17 +13,17 @@ namespace Pancake.MobileInput
 
         [SerializeField] private BoolVariable statusTouchOnLockedArea;
 
-        [Group("Event Drag")] public ScriptableInputStartDrag onStartDrag;
-        [Group("Event Drag")] public ScriptableInputUpdateDrag onUpdateDrag;
-        [Group("Event Drag")] public ScriptableInputStopDrag onStopDrag;
-        [Group("Event Finger")] public ScriptableInputFingerDown onFingerDown;
-        [Group("Event Finger")] public ScriptableInputFingerUp onFingerUp;
-        [Group("Event Finger")] public ScriptableInputClick onClick;
-        [Group("Event Finger")] public ScriptableInputLongTapUpdate onLongTapUpdate;
-        [Group("Event Pinch")] public ScriptableInputStartPinch onStartPinch;
-        [Group("Event Pinch")] public ScriptableInputUpdatePinch onUpdatePinch;
-        [Group("Event Pinch")] public ScriptableInputUpdateExtendPinch onUpdateExtendPinch;
-        [Group("Event Pinch")] public ScriptableInputStopPinch onStopPinch;
+        [Group("Event Drag")] public InputEventStartDrag onStartDrag;
+        [Group("Event Drag")] public InputEventUpdateDrag onUpdateDrag;
+        [Group("Event Drag")] public InputEventStopDrag onStopDrag;
+        [Group("Event Finger")] public InputEventFingerDown onFingerDown;
+        [Group("Event Finger")] public InputEventFingerUp onFingerUp;
+        [Group("Event Finger")] public InputEventClick onClick;
+        [Group("Event Finger")] public InputEventLongTapUpdate onLongTapUpdate;
+        [Group("Event Pinch")] public InputEventStartPinch onStartPinch;
+        [Group("Event Pinch")] public InputEventUpdatePinch onUpdatePinch;
+        [Group("Event Pinch")] public InputEventUpdateExtendPinch onUpdateExtendPinch;
+        [Group("Event Pinch")] public InputEventStopPinch onStopPinch;
 
 #if UNITY_EDITOR
         [SerializeField] private bool isCustom;

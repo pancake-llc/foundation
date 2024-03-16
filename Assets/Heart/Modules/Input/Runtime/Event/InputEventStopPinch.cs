@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Pancake.MobileInput
 {
     [EditorIcon("scriptable_input")]
-    [CreateAssetMenu(fileName = "scriptable_input_on_stop_pinch.asset", menuName = "Pancake/Input/Events/on stop pinch")]
-    public class ScriptableInputStopPinch : ScriptableInput
+    [CreateAssetMenu(fileName = "input_event_on_stop_pinch.asset", menuName = "Pancake/Input/Events/on stop pinch")]
+    public class InputEventStopPinch : ScriptableInput
     {
         private Action _onRaised;
 
