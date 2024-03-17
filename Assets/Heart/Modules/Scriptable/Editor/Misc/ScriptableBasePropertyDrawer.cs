@@ -110,28 +110,30 @@ namespace Pancake.ScriptableEditor
                 return;
             }
 
-            label = EditorGUI.BeginProperty(position, label, property);
-            position = EditorGUI.PrefixLabel(position, label);
             var inner = new SerializedObject(property.objectReferenceValue);
             var valueProp = inner.FindProperty("value");
-            if (valueProp != null)
-            {
-                var previewRect = new Rect(position) {width = GetPreviewSpace(valueProp?.type)};
-                int indent = EditorGUI.indentLevel;
-                EditorGUI.indentLevel = 0;
-                position.xMin = previewRect.xMax;
-                EditorGUI.PropertyField(previewRect, valueProp, GUIContent.none, false);
 
-                position.x = position.x + 6f;
-                position.width = position.width - 6f;
-                EditorGUI.PropertyField(position, property, GUIContent.none);
-
-                EditorGUI.indentLevel = indent;
-            }
-            else
+            if (valueProp == null || valueProp.propertyType == SerializedPropertyType.Generic)
             {
-                EditorGUI.PropertyField(position, property, GUIContent.none);
+                EditorGUI.PropertyField(position, property, label);
+                inner.ApplyModifiedProperties();
+                return;
             }
+
+            label = EditorGUI.BeginProperty(position, label, property);
+            position = EditorGUI.PrefixLabel(position, label);
+
+            var previewRect = new Rect(position) {width = GetPreviewSpace(valueProp?.type)};
+            int indent = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = 0;
+            position.xMin = previewRect.xMax;
+            EditorGUI.PropertyField(previewRect, valueProp, GUIContent.none, false);
+
+            position.x += 6f;
+            position.width -= 6f;
+            EditorGUI.PropertyField(position, property, GUIContent.none);
+
+            EditorGUI.indentLevel = indent;
 
             inner.ApplyModifiedProperties();
             EditorGUI.EndProperty();
@@ -142,6 +144,7 @@ namespace Pancake.ScriptableEditor
             switch (type)
             {
                 case "Vector2":
+                case "Vector2Int":
                 case "Vector3":
                     return 128;
                 default:
