@@ -31,6 +31,10 @@ namespace Pancake
             UpdateCumulativeWeights();
         }
 
+        /// <summary>
+        /// <para>Indicates the random value in the <see cref="data"/>. If <see cref="data"/> is empty return default vaule of T</para>
+        /// </summary>
+        /// <returns></returns>
         public T Pick()
         {
             if (data == null || data.Count == 0) return default;
@@ -61,10 +65,15 @@ namespace Pancake
             return data[hi].item;
         }
 
+
+        /// <summary>
+        /// <para>Indicates the random value in the <see cref="data"/> and also remove that element. If <see cref="data"/> is empty return default vaule of T</para>
+        /// </summary>
+        /// <returns></returns>
         public T Pop()
         {
             if (data == null || data.Count == 0) return default;
-            
+
             float point = Random.Range(0f, _totalWeight);
             var lo = 0;
             int hi = _cumulativeWeights.Length - 1;
