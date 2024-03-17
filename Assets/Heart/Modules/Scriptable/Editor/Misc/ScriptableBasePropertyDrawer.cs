@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Pancake.Apex;
-using Pancake.ExLibEditor;
+﻿using Pancake.ExLibEditor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -21,12 +19,12 @@ namespace Pancake.ScriptableEditor
                 return;
             }
 
-            bool isNeedIndent = fieldInfo.FieldType.IsCollectionType() && fieldInfo.GetCustomAttribute<ArrayAttribute>(false) != null;
+            bool isInCollection = fieldInfo.FieldType.IsCollectionType();
             DrawIfNotNull(position,
                 property,
                 label,
                 targetObject,
-                isNeedIndent);
+                isInCollection);
 
             EditorGUI.EndProperty();
         }
@@ -73,29 +71,33 @@ namespace Pancake.ScriptableEditor
             return rectPosition;
         }
 
-        protected void DrawIfNotNull(Rect position, SerializedProperty property, GUIContent label, Object targetObject, bool isNeedIndent)
+        protected void DrawIfNotNull(Rect position, SerializedProperty property, GUIContent label, Object targetObject, bool isInCollection)
         {
             var rect = position;
             var labelRect = position;
             labelRect.width = position.width * 0.4f; //only expands on the first half on the window when clicked
 
-            if (isNeedIndent) labelRect.position += new Vector2(10, 0);
-            if (isNeedIndent) label.text = $"   {label.text.Trim()}";
-            property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, new GUIContent(""), true);
-            if (property.isExpanded)
+            if (!isInCollection)
             {
-                //Draw an embedded inspector 
-                rect.width = position.width;
-                EditorGUI.PropertyField(rect, property, label);
-                var cacheBgColor = GUI.backgroundColor;
-                GUI.backgroundColor = Uniform.FieryRose;
-                GUILayout.BeginVertical(GUI.skin.box);
-                var editor = UnityEditor.Editor.CreateEditor(targetObject);
-                EditorGUI.BeginChangeCheck();
-                editor.OnInspectorGUI();
-                if (EditorGUI.EndChangeCheck()) property.serializedObject.ApplyModifiedProperties();
-                GUI.backgroundColor = cacheBgColor;
-                GUILayout.EndVertical();
+                property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, new GUIContent(""), true);
+                int indent = EditorGUI.indentLevel;
+                if (property.isExpanded)
+                {
+                    //Draw an embedded inspector
+                    rect.width = position.width;
+                    EditorGUI.PropertyField(rect, property, label);
+                    var cacheBgColor = GUI.backgroundColor;
+                    GUI.backgroundColor = Uniform.FieryRose;
+                    GUILayout.BeginVertical(GUI.skin.box);
+                    var editor = Editor.CreateEditor(targetObject);
+                    EditorGUI.BeginChangeCheck();
+                    editor.OnInspectorGUI();
+                    if (EditorGUI.EndChangeCheck()) property.serializedObject.ApplyModifiedProperties();
+                    GUI.backgroundColor = cacheBgColor;
+                    GUILayout.EndVertical();
+                    EditorGUI.indentLevel = indent;
+                }
+                else DrawUnExpanded(position, property, label, targetObject);
             }
             else DrawUnExpanded(position, property, label, targetObject);
         }
@@ -123,7 +125,7 @@ namespace Pancake.ScriptableEditor
             label = EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, label);
 
-            var previewRect = new Rect(position) {width = GetPreviewSpace(valueProp?.type)};
+            var previewRect = new Rect(position) {width = GetPreviewSpace(valueProp.type)};
             int indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
             position.xMin = previewRect.xMax;

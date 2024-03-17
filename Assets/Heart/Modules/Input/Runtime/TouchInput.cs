@@ -13,17 +13,17 @@ namespace Pancake.MobileInput
 
         [SerializeField] private BoolVariable statusTouchOnLockedArea;
 
-        [Group("Event Drag")] public InputEventStartDrag onStartDrag;
-        [Group("Event Drag")] public InputEventUpdateDrag onUpdateDrag;
-        [Group("Event Drag")] public InputEventStopDrag onStopDrag;
-        [Group("Event Finger")] public InputEventFingerDown onFingerDown;
-        [Group("Event Finger")] public InputEventFingerUp onFingerUp;
-        [Group("Event Finger")] public InputEventClick onClick;
-        [Group("Event Finger")] public InputEventLongTapUpdate onLongTapUpdate;
-        [Group("Event Pinch")] public InputEventStartPinch onStartPinch;
-        [Group("Event Pinch")] public InputEventUpdatePinch onUpdatePinch;
-        [Group("Event Pinch")] public InputEventUpdateExtendPinch onUpdateExtendPinch;
-        [Group("Event Pinch")] public InputEventStopPinch onStopPinch;
+        [Header("Event Drag")] public InputEventStartDrag onStartDrag;
+        public InputEventUpdateDrag onUpdateDrag;
+        public InputEventStopDrag onStopDrag;
+        [Header("Event Finger")] public InputEventFingerDown onFingerDown;
+        public InputEventFingerUp onFingerUp;
+        public InputEventClick onClick;
+        public InputEventLongTapUpdate onLongTapUpdate;
+        [Header("Event Pinch")] public InputEventStartPinch onStartPinch;
+        public InputEventUpdatePinch onUpdatePinch;
+        public InputEventUpdateExtendPinch onUpdateExtendPinch;
+        public InputEventStopPinch onStopPinch;
 
 #if UNITY_EDITOR
         [SerializeField] private bool isCustom;
@@ -31,7 +31,7 @@ namespace Pancake.MobileInput
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip("When the finger is held on an item for at least this duration without moving, the gesture is recognized as a long tap.")]
-        private FloatReference clickDurationThreshold ; //0.7f
+        private FloatReference clickDurationThreshold; //0.7f
 
         [SerializeField, ShowIf("isCustom")] [Tooltip("A double click gesture is recognized when the time between two consecutive taps is shorter than this duration.")]
         private FloatReference doubleClickThreshold; //0.5f

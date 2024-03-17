@@ -38,6 +38,7 @@ namespace Pancake.ApexEditor
             ApexUtility.ExceptTypes.Clear();
             ApexUtility.ExceptTypes.Add(new ExceptType("UnityEventBase", true));
             ApexUtility.ExceptTypes.Add(new ExceptType("Optional`1", true));
+            ApexUtility.ExceptTypes.Add(new ExceptType("Bag`1", true));
 
             if (exceptTypes != null)
             {
