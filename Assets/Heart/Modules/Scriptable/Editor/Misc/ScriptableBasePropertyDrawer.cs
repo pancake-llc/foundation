@@ -8,6 +8,8 @@ namespace Pancake.ScriptableEditor
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
     public class ScriptableBasePropertyDrawer : PropertyDrawer
     {
+        private Editor _editor;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
@@ -89,15 +91,17 @@ namespace Pancake.ScriptableEditor
                     var cacheBgColor = GUI.backgroundColor;
                     GUI.backgroundColor = Uniform.FieryRose;
                     GUILayout.BeginVertical(GUI.skin.box);
-                    var editor = Editor.CreateEditor(targetObject);
-                    EditorGUI.BeginChangeCheck();
-                    editor.OnInspectorGUI();
-                    if (EditorGUI.EndChangeCheck()) property.serializedObject.ApplyModifiedProperties();
+                    if (_editor == null) Editor.CreateCachedEditor(targetObject, null, ref _editor);
+                    _editor.OnInspectorGUI();
                     GUI.backgroundColor = cacheBgColor;
                     GUILayout.EndVertical();
                     EditorGUI.indentLevel = indent;
                 }
-                else DrawUnExpanded(position, property, label, targetObject);
+                else
+                {
+                    _editor = null;
+                    DrawUnExpanded(position, property, label, targetObject);
+                }
             }
             else DrawUnExpanded(position, property, label, targetObject);
         }

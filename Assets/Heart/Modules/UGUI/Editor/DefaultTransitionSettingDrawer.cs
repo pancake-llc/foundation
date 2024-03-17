@@ -44,6 +44,7 @@ namespace PancakeEditor
 
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
             GUILayout.Label("[Sheet]");
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_sheetEnterAnimProperty, new GUIContent("Enter Anim"));
@@ -66,7 +67,7 @@ namespace PancakeEditor
             EditorGUILayout.PropertyField(_popupExitAnimProperty, new GUIContent("Exit Anim"));
             EditorGUI.indentLevel--;
             GUILayout.Space(4);
-            
+
             GUILayout.Label("[Backdrop]");
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_popupBackdropEnterAnimProperty, new GUIContent("Enter Anim"));
@@ -74,7 +75,7 @@ namespace PancakeEditor
             EditorGUILayout.PropertyField(_popupBackdropPrefabProperty, new GUIContent("Prefab"));
             EditorGUI.indentLevel--;
             GUILayout.Space(4);
-            
+
             EditorGUILayout.PropertyField(_enableInteractionInTransitionProperty, new GUIContent("Interact In Transition"));
             if (!_enableInteractionInTransitionProperty.boolValue)
             {
@@ -84,6 +85,8 @@ namespace PancakeEditor
             }
 
             EditorGUILayout.PropertyField(_callCleanupWhenDestroyProperty, new GUIContent("Clean When Destroy"));
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

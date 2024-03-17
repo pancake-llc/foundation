@@ -14,13 +14,18 @@ namespace Pancake.Scriptable
     [EditorIcon("scriptable_variable")]
     public abstract class ScriptableVariable<T> : ScriptableBase, ISave, IReset, IResetOn, IDrawObjectsInInspector, IGuid
     {
-        [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")] [SerializeField]
+#if UNITY_EDITOR
+        protected virtual bool EditorDisableValue => false;
+#endif
+        [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")]
+        [SerializeField, DisableIf("EditorDisableValue")]
+        [IgnoreTypeMismatch]
         protected T value;
 
         [Tooltip("Log in the console whenever this variable is changed, loaded or saved.")] [SerializeField]
         private bool debugLogEnabled;
 
-        [Tooltip("If true, saves the value to Player Prefs and loads it onEnable.")] [SerializeField]
+        [Tooltip("If true, saves the value to Player Prefs and loads it onEnable.")] [SerializeField, HideIf("EditorDisableValue")]
         private bool saved;
 
         [Tooltip("The default value of this variable. When loading from Data the first time, it will be set to this value.")]

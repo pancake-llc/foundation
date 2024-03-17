@@ -13,23 +13,17 @@ MonoBehaviour:
   m_Name: IAPSettings
   m_EditorClassIdentifier: 
   skusData:
-  - isTest: 0
-    id: com.foundation.allskin
+  - id: com.foundation.allskin
     productType: 1
-  - isTest: 0
-    id: com.foundation.coinpack1
+  - id: com.foundation.coinpack1
     productType: 0
-  - isTest: 0
-    id: com.foundation.coinpack2
+  - id: com.foundation.coinpack2
     productType: 0
-  - isTest: 0
-    id: com.foundation.doublecoin
+  - id: com.foundation.doublecoin
     productType: 1
-  - isTest: 0
-    id: com.foundation.removeads
+  - id: com.foundation.removeads
     productType: 1
-  - isTest: 0
-    id: com.foundation.vip
+  - id: com.foundation.vip
     productType: 1
   products:
   - {fileID: 11400000, guid: 7c97ef05d361f764f8eebf905370ffaa, type: 2}
@@ -38,4 +32,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 85a963c5dd5676740a41bdd888d84415, type: 2}
   - {fileID: 11400000, guid: 681167ba2e8fbd3419a4b692721e2e3a, type: 2}
   - {fileID: 11400000, guid: 5aacffc911e3fe846ba93ab9bdfe9cb5, type: 2}
-  googlePlayStorePublicKey: 
+  googlePlayStoreKey: 
