@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
@@ -94,6 +93,7 @@ namespace Pancake.ApexEditor
         private bool childrenLoaded;
         private bool defaultEditor;
         private bool isValueChanged;
+        private bool isHiddenLabel;
         private ErrorBlock errorBlock;
 
         // Stored callback properties.
@@ -309,6 +309,12 @@ namespace Pancake.ApexEditor
             
             if (IsExpanded() && totalHeight > 0)
             {
+                if (ApexGUIUtility.FixIndentLevel)
+                {
+                    position.x += ApexGUI.IndentPerLevel;
+                    position.width -= ApexGUI.IndentPerLevel;
+                }
+                
                 EditorGUI.indentLevel++;
                 SerializedMember sizeField = children[0];
                 if (sizeField.IsVisible())
@@ -369,6 +375,11 @@ namespace Pancake.ApexEditor
 
                 if (isValid)
                 {
+                    if (!IsHiddenLabel())
+                    {
+                        GetLabel().text = serializedProperty.displayName;
+                    }
+
                     float totalHeight = position.height - EditorGUIUtility.singleLineHeight;
 
                     position.height = EditorGUIUtility.singleLineHeight;
@@ -380,6 +391,12 @@ namespace Pancake.ApexEditor
                     
                     if (IsExpanded() && totalHeight > 0)
                     {
+                        if (ApexGUIUtility.FixIndentLevel)
+                        {
+                            position.x += ApexGUI.IndentPerLevel;
+                            position.width -= ApexGUI.IndentPerLevel;
+                        }
+
                         EditorGUI.indentLevel++;
                         for (int i = 0; i < children.Count; i++)
                         {
@@ -1171,6 +1188,7 @@ namespace Pancake.ApexEditor
         /// </summary>
         protected void ApplyLabel()
         {
+            isHiddenLabel = false;
             HideLabelAttribute hideLabelAttribute = GetAttribute<HideLabelAttribute>();
             if (hideLabelAttribute == null)
             {
@@ -1186,8 +1204,17 @@ namespace Pancake.ApexEditor
             }
             else
             {
+                isHiddenLabel = true;
                 SetLabel(GUIContent.none);
             }
+        }
+
+        /// <summary>
+        /// Check is field has [HideLabel] attribute.
+        /// </summary>
+        public bool IsHiddenLabel()
+        {
+            return isHiddenLabel;
         }
 
         /// <summary>

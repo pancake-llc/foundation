@@ -14,6 +14,14 @@ namespace Pancake.ApexEditor
 
         [SerializeField] private bool animate = true;
 
+        [SerializeField] [OnValueChanged(nameof(IncludeAllAssembliesChanged))]
+        private bool includeAllAssemblies = true;
+
+        [SerializeField] [DisableIf(nameof(includeAllAssemblies))] private bool includeDefaultAssemblies = true;
+
+        [SerializeField] [Array] [HideIf(nameof(includeAllAssemblies))]
+        private AssemblyScope[] assemblyScopes;
+
         [SerializeField] [Array(OnGUI = nameof(OnExceptTypeGUI), GetHeight = nameof(GetExceptTypeHeight))]
         private ExceptType[] exceptTypes;
 
@@ -33,7 +41,30 @@ namespace Pancake.ApexEditor
         {
             ApexUtility.Enabled = enabled;
             ApexUtility.Master = master;
+            ApexUtility.IncludeAllAssemblies = includeAllAssemblies;
+            ApexUtility.IncludeDefaultAssemblies = includeDefaultAssemblies;
             ApexGUIUtility.Animate = animate;
+
+            ApexUtility.AssemblyScopes.Clear();
+            if (assemblyScopes != null)
+            {
+                for (int i = 0; i < assemblyScopes.Length; i++)
+                {
+                    AssemblyScope assemblyScope = assemblyScopes[i];
+                    if (string.IsNullOrWhiteSpace(assemblyScope.GetName()))
+                    {
+                        Debug.LogWarning(
+                            $"<b>Message:</b> An attempt to add assembly scope with empty or white space name. Invalid scope: <color=red>index {i + 1}</color>");
+                        continue;
+                    }
+
+                    if (!ApexUtility.AssemblyScopes.Add(assemblyScope))
+                    {
+                        Debug.LogWarning(
+                            $"<b>Message:</b> An attempt to add two identical assembly scope. Duplicate scopes: <color=red>{assemblyScope.GetName()}</color>");
+                    }
+                }
+            }
 
             ApexUtility.ExceptTypes.Clear();
             ApexUtility.ExceptTypes.Add(new ExceptType("UnityEventBase", true));
@@ -45,6 +76,12 @@ namespace Pancake.ApexEditor
                 for (int i = 0; i < exceptTypes.Length; i++)
                 {
                     ExceptType exceptType = exceptTypes[i];
+                    if (string.IsNullOrWhiteSpace(exceptType.GetName()))
+                    {
+                        Debug.LogWarning($"<b>Message:</b> An attempt to add type with empty or white space name. Invalid type: <color=red>index {i + 1}</color>");
+                        continue;
+                    }
+
                     if (!ApexUtility.ExceptTypes.Add(exceptType))
                     {
                         Debug.LogWarning(
@@ -54,7 +91,16 @@ namespace Pancake.ApexEditor
             }
         }
 
-        #region [ExceptType GUI]
+        #region [Apex Callbacks]
+
+        private void IncludeAllAssembliesChanged(SerializedProperty property)
+        {
+            if (property.boolValue)
+            {
+                includeDefaultAssemblies = true;
+                property.serializedObject.Update();
+            }
+        }
 
         private void OnExceptTypeGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -76,7 +122,7 @@ namespace Pancake.ApexEditor
 
         #endregion
 
-        #region [Static Methods]
+        #region [Static]
 
         /// <summary>
         /// Reset specific settings to default.
@@ -87,6 +133,7 @@ namespace Pancake.ApexEditor
             settings.enabled = true;
             settings.master = true;
             settings.animate = true;
+            settings.assemblyScopes = null;
             settings.exceptTypes = null;
         }
 
@@ -103,24 +150,30 @@ namespace Pancake.ApexEditor
         public bool Enabled() { return enabled; }
 
         public void Enabled(bool value) { enabled = value; }
-        
-        public bool Master()
-        {
-            return master;
-        }
 
-        public void Master(bool value)
-        {
-            master = value;
-        }
+        public bool Master() { return master; }
+
+        public void Master(bool value) { master = value; }
 
         public bool Animate() { return animate; }
 
         public void Animate(bool value) { animate = value; }
 
+        public bool IncludeAllAssembly() { return includeAllAssemblies; }
+
+        public void IncludeAllAssembly(bool value) { includeAllAssemblies = value; }
+
+        public bool IncludeDefaultAssembly() { return includeDefaultAssemblies; }
+
+        public void IncludeDefaultAssembly(bool value) { includeDefaultAssemblies = value; }
+
         public ExceptType[] GetExceptTypes() { return exceptTypes; }
 
         public void SetExceptTypes(ExceptType[] exceptTypes) { this.exceptTypes = exceptTypes; }
+
+        public AssemblyScope[] GetAssemblyScopes() { return assemblyScopes; }
+
+        public void SetAssemblyScopes(AssemblyScope[] value) { assemblyScopes = value; }
 
         #endregion
     }

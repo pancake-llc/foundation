@@ -84,6 +84,12 @@ namespace Pancake.ApexEditor
                 drawNoneElementCallback = onNoneElementGUI.Invoke,
                 drawElementCallback = (position, index, isActive, isFocused) =>
                 {
+                    if (ApexGUIUtility.FixIndentLevel)
+                    {
+                        position.x -= ApexGUI.IndentPerLevel;
+                        position.width += ApexGUI.IndentPerLevel;
+                    }
+
                     position.x -= 3;
                     position.width += 7;
 

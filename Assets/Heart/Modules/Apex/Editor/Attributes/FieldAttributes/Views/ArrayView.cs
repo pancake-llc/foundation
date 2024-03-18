@@ -4,7 +4,6 @@ using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Vexe.Runtime.Extensions;
 using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor
@@ -31,7 +30,6 @@ namespace Pancake.ApexEditor
         public override void Initialize(SerializedField serializedField, ViewAttribute viewAttribute, GUIContent label)
         {
             FindCallbacks(serializedField, viewAttribute as ArrayAttribute);
-            OverrideElementsLabel(serializedField);
 
             this.serializedField = serializedField;
             reorderableArray = new ReorderableArray(serializedField, true)
@@ -114,7 +112,6 @@ namespace Pancake.ApexEditor
         {
             int index = serializedField.GetArrayLength();
             serializedField.IncreaseArraySize();
-            OverrideElementsLabel(serializedField);
             onAdd?.Invoke(serializedField.GetSerializedProperty(), index);
         }
 
@@ -125,7 +122,6 @@ namespace Pancake.ApexEditor
         {
             onRemove?.Invoke(serializedField.GetSerializedProperty(), index);
             serializedField.RemoveArrayElement(index);
-            OverrideElementsLabel(serializedField);
         }
 
         /// <summary>
@@ -133,25 +129,7 @@ namespace Pancake.ApexEditor
         /// </summary>
         private void OnReorderList()
         {
-            OverrideElementsLabel(serializedField);
             onReorder?.Invoke(serializedField.GetSerializedProperty());
-        }
-
-        /// <summary>
-        /// Override elements label by label callback.
-        /// </summary>
-        /// <param name="serializedField">Serialzied field of array.</param>
-        private void OverrideElementsLabel(SerializedField serializedField)
-        {
-            if (getLabel != null)
-            {
-                SerializedProperty array = serializedField.GetSerializedProperty();
-                for (int i = 0; i < serializedField.GetArrayLength(); i++)
-                {
-                    SerializedField field = serializedField.GetArrayElement(i);
-                    field.SetLabel(getLabel.Invoke(array, i));
-                }
-            }
         }
 
         /// <summary>

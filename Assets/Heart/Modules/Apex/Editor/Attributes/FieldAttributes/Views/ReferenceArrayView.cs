@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Vexe.Runtime.Extensions;
 using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor

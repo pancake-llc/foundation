@@ -61,11 +61,15 @@ namespace Pancake.ApexEditor
             }
 
             Type type = target.GetType();
-            if (type.BaseType == null || type.BaseType == typeof(Component) || type.BaseType == typeof(Behaviour))
-            {
-                defaultEditor = true;
-            }
-            else
+            defaultEditor = type.BaseType == null 
+                            || type.BaseType == typeof(Component) 
+                            || type.BaseType == typeof(Behaviour) 
+                            || type.GetCustomAttribute<UseDefaultEditor>() != null 
+                            || ApexUtility.IsExceptType(type)
+                            || !ApexUtility.InAssemblyScope(type.Assembly);
+
+
+            if (!defaultEditor)
             {
                 try
                 {
@@ -79,7 +83,6 @@ namespace Pancake.ApexEditor
 
                     experimental = type.GetCustomAttribute<ExperimentalAttribute>() != null;
                     searchableEditor = type.GetCustomAttribute<SearchableEditorAttribute>() != null;
-                    defaultEditor = type.GetCustomAttribute<UseDefaultEditor>() != null || ApexUtility.IsExceptType(type);
                 }
                 catch (Exception ex)
                 {
@@ -94,48 +97,45 @@ namespace Pancake.ApexEditor
         /// </summary>
         public override void OnInspectorGUI()
         {
-            if (serializedObject != null && serializedObject.targetObject != null)
+            if (defaultEditor)
             {
-                if (defaultEditor)
+                base.OnInspectorGUI();
+            }
+            else if (serializedObject != null && serializedObject.targetObject != null)
+            {
+
+                if (searchableEditor)
                 {
-                    base.OnInspectorGUI();
+                    DrawSearchField();
+                }
+
+                if (experimental)
+                {
+                    DrawExperimentalLine();
+                }
+
+                EditorGUI.indentLevel = 0;
+                if (!searchableEditor || searchEntities.Count == 0)
+                {
+                    HandleMouseMove();
+
+                    rootContainer.DoLayout();
+
+                    if (rootContainer.HasObjectChanged())
+                    {
+                        SafeInvokeObjectChanged();
+                    }
+
+                    if (rootContainer.HasGUIChanged())
+                    {
+                        SafeInvokeObjectGUIChanged();
+                    }
                 }
                 else
                 {
-                    if (searchableEditor)
-                    {
-                        DrawSearchField();
-                    }
-
-                    if (experimental)
-                    {
-                        DrawExperimentalLine();
-                    }
-
-                    EditorGUI.indentLevel = 0;
-                    if (!searchableEditor || searchEntities.Count == 0)
-                    {
-                        HandleMouseMove();
-
-                        rootContainer.DoLayout();
-
-                        if (rootContainer.HasObjectChanged())
-                        {
-                            SafeInvokeObjectChanged();
-                        }
-
-                        if (rootContainer.HasGUIChanged())
-                        {
-                            SafeInvokeObjectGUIChanged();
-                        }
-                    }
-                    else
-                    {
-                        OnSearchGUI();
-                    }
-
-                    SafeInvokeInspectorGUI();
+                    OnSearchGUI();
                 }
+                SafeInvokeInspectorGUI();
             }
             else
             {
