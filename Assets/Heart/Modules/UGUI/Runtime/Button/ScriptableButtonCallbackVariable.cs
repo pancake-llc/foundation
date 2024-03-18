@@ -7,6 +7,5 @@ namespace Pancake.UI
     [EditorIcon("scriptable_variable")]
     public class ScriptableButtonCallbackVariable : ScriptableVariable<ButtonCallbackData>
     {
-        
     }
 }

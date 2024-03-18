@@ -26,11 +26,11 @@ namespace Pancake.UI
         public void RemoveListenerLongClick(Action onLongClick) { OnLongClick -= onLongClick; }
         public void RemoveListenerHold(Action<float> onHold) { OnHold -= onHold; }
 
-        internal void InvokePointerUp() { OnPointerUp?.Invoke(); }
-        internal void InvokePointerDown() { OnPointerDown?.Invoke(); }
-        internal void InvokeClick() { OnClick?.Invoke(); }
-        internal void InvokeDoubleClick() { OnDoubleClick?.Invoke(); }
-        internal void InvokeLongClick() { OnLongClick?.Invoke(); }
-        internal void InvokeHold(float time) { OnHold?.Invoke(time); }
+        public void InvokePointerUp() { OnPointerUp?.Invoke(); }
+        public void InvokePointerDown() { OnPointerDown?.Invoke(); }
+        public void InvokeClick() { OnClick?.Invoke(); }
+        public void InvokeDoubleClick() { OnDoubleClick?.Invoke(); }
+        public void InvokeLongClick() { OnLongClick?.Invoke(); }
+        public void InvokeHold(float time) { OnHold?.Invoke(time); }
     }
 }
