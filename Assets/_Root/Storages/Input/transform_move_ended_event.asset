@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150bfb8975034212b5c5e205c1c29bdf, type: 3}
   m_Name: transform_move_ended_event
   m_EditorClassIdentifier: 
+  categoryIndex: 0
+  description: 
+  debugLogEnabled: 0
