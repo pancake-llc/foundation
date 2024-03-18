@@ -437,6 +437,8 @@ namespace Pancake.ExLibEditor
 
         public static bool IsSerializable(Type type)
         {
+            if (type == null) return false;
+            
             if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return true;
 
             if (type.IsArray)
