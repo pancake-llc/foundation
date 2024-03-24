@@ -13,22 +13,23 @@ MonoBehaviour:
   m_Name: daily_reward_data_day1
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: d82d9cffde819074795ca86a49f4757a
-  guidCreateMode: 0
-  value:
+  description: 
+  initialValue:
     day: 1
     typeReward: 0
     amount: 100
     icon: {fileID: 21300000, guid: ea8e3bdb32dced94e9a0f18fa7fdba30, type: 3}
     outfitUnit: {fileID: 0}
     isClaimed: 0
-  debugLogEnabled: 0
-  saved: 1
-  defaultValue:
+  value:
     day: 0
     typeReward: 0
     amount: 0
     icon: {fileID: 0}
     outfitUnit: {fileID: 0}
     isClaimed: 0
+  debugLogEnabled: 0
+  saved: 1
+  guidCreateMode: 0
+  guid: d82d9cffde819074795ca86a49f4757a
   resetOn: 2
