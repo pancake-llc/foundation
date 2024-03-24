@@ -23,7 +23,6 @@
 # Environment
 
 - unity 2022.3.20f1 LTS
-- use URP 14
 - scriptingBackend : IL2CPP
 - apiCompatibilityLevel : .NET Standard 2.1
 
