@@ -13,22 +13,23 @@ MonoBehaviour:
   m_Name: outfit_hair_short_red_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 7a8817554ccbde34faf3485cba394c0d
-  guidCreateMode: 0
-  value:
-    id: 47b47629e03c495
+  description: 
+  initialValue:
+    id: f0cd2efa820c458
     isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/short-red
+  value:
+    id: f0cd2efa820c458
+    isUnlocked: 1
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -366}
     skinId: hair/short-red
   debugLogEnabled: 0
   saved: 1
-  defaultValue:
-    id: 47b47629e03c495
-    isUnlocked: 0
-    unlockType: 0
-    value: 1000
-    viewPosition: {x: 0, y: -366}
-    skinId: hair/short-red
+  guidCreateMode: 0
+  guid: 7a8817554ccbde34faf3485cba394c0d
   resetOn: 2

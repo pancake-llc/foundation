@@ -13,22 +13,23 @@ MonoBehaviour:
   m_Name: outfit_clothes_hoodie_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: bdbc67b50d99b7849921966f93d19445
-  guidCreateMode: 0
-  value:
-    id: 65036017fad740c
+  description: 
+  initialValue:
+    id: 50c5c5ab291945e
     isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -234}
+    skinId: clothes/hoodie-blue-and-scarf
+  value:
+    id: 50c5c5ab291945e
+    isUnlocked: 1
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -234}
     skinId: clothes/hoodie-blue-and-scarf
   debugLogEnabled: 0
   saved: 1
-  defaultValue:
-    id: 65036017fad740c
-    isUnlocked: 0
-    unlockType: 0
-    value: 1000
-    viewPosition: {x: 0, y: -234}
-    skinId: clothes/hoodie-blue-and-scarf
+  guidCreateMode: 0
+  guid: bdbc67b50d99b7849921966f93d19445
   resetOn: 2

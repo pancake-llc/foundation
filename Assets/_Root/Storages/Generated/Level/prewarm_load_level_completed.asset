@@ -16,7 +16,6 @@ MonoBehaviour:
   description: 
   initialValue: 0
   value: 0
-  previousValue: 0
   debugLogEnabled: 0
   saved: 0
   guidCreateMode: 0

@@ -13,22 +13,23 @@ MonoBehaviour:
   m_Name: outfit_hair_brown_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 4cd3a6497a7bd554682e9d5597f65729
-  guidCreateMode: 0
-  value:
-    id: 68582abc8746459
+  description: 
+  initialValue:
+    id: 4c447650431a49d
     isUnlocked: 0
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -366}
     skinId: hair/brown
+  value:
+    id: 
+    isUnlocked: 0
+    unlockType: 0
+    value: 0
+    viewPosition: {x: 0, y: 0}
+    skinId: 
   debugLogEnabled: 0
   saved: 1
-  defaultValue:
-    id: 68582abc8746459
-    isUnlocked: 0
-    unlockType: 0
-    value: 1000
-    viewPosition: {x: 0, y: -366}
-    skinId: hair/brown
+  guidCreateMode: 0
+  guid: 4cd3a6497a7bd554682e9d5597f65729
   resetOn: 2

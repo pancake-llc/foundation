@@ -13,22 +13,23 @@ MonoBehaviour:
   m_Name: outfit_boots_red_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: a14eee0d9c3452a4bb103885b4dd3c55
-  guidCreateMode: 0
-  value:
-    id: 88cba280b6f34f7
+  description: 
+  initialValue:
+    id: 71bff728626244c
     isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -90}
+    skinId: legs/boots-red
+  value:
+    id: 71bff728626244c
+    isUnlocked: 1
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -90}
     skinId: legs/boots-red
   debugLogEnabled: 0
   saved: 1
-  defaultValue:
-    id: 88cba280b6f34f7
-    isUnlocked: 0
-    unlockType: 0
-    value: 0
-    viewPosition: {x: 0, y: -90}
-    skinId: legs/boots-red
+  guidCreateMode: 0
+  guid: a14eee0d9c3452a4bb103885b4dd3c55
   resetOn: 2

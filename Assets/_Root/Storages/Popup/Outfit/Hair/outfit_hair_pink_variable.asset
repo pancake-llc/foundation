@@ -13,22 +13,23 @@ MonoBehaviour:
   m_Name: outfit_hair_pink_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 5a867abd04b4544448a8e0ff693d1899
-  guidCreateMode: 0
-  value:
-    id: f2e2571b478246c
+  description: 
+  initialValue:
+    id: 71c76b5064e845a
     isUnlocked: 0
     unlockType: 0
     value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/pink
+  value:
+    id: 71c76b5064e845a
+    isUnlocked: 0
+    unlockType: 1000
+    value: 0
     viewPosition: {x: 0, y: -366}
     skinId: hair/pink
   debugLogEnabled: 0
   saved: 1
-  defaultValue:
-    id: f2e2571b478246c
-    isUnlocked: 0
-    unlockType: 0
-    value: 1000
-    viewPosition: {x: 0, y: -366}
-    skinId: hair/pink
+  guidCreateMode: 0
+  guid: 5a867abd04b4544448a8e0ff693d1899
   resetOn: 2

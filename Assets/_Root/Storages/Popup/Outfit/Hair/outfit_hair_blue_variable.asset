@@ -15,22 +15,15 @@ MonoBehaviour:
   categoryIndex: 0
   description: 
   initialValue:
-    id: 
+    id: 43ca78109d2c44d
     isUnlocked: 1
-    unlockType: 0
-    value: 0
-    viewPosition: {x: 0, y: 0}
-    skinId: 
+    unlockType: 2
+    value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/blue
   value:
     id: 
-    isUnlocked: 1
-    unlockType: 0
-    value: 0
-    viewPosition: {x: 0, y: 0}
-    skinId: 
-  previousValue:
-    id: 
-    isUnlocked: 1
+    isUnlocked: 0
     unlockType: 0
     value: 0
     viewPosition: {x: 0, y: 0}
@@ -38,5 +31,5 @@ MonoBehaviour:
   debugLogEnabled: 0
   saved: 1
   guidCreateMode: 0
-  guid: 215389beae8ab0d4394b28024fdfbc48
+  guid: e50a99c327078d948ba537f6884472ca
   resetOn: 2

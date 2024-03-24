@@ -36,9 +36,17 @@ namespace Pancake.SceneFlow
             eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect;
             eventUpdateSelectedEffect.OnRaised += UpdateSelectedEffect;
 
-            render.ChangeSkin(element.Value.skinId);
-            render.transform.localPosition = element.Value.viewPosition;
-            if (element.IsUnlocked())
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(OnButtonPressed);
+
+            Setup();
+        }
+
+        private void Setup()
+        {
+            render.ChangeSkin(_outfitUnit.Value.skinId);
+            render.transform.localPosition = _outfitUnit.Value.viewPosition;
+            if (_outfitUnit.IsUnlocked())
             {
                 foreach (var b in buttonDict)
                 {
@@ -52,12 +60,12 @@ namespace Pancake.SceneFlow
             {
                 foreach (var b in buttonDict)
                 {
-                    if (element.Value.unlockType == b.Key)
+                    if (_outfitUnit.Value.unlockType == b.Key)
                     {
                         switch (b.Key)
                         {
                             case OutfitUnlockType.Coin:
-                                SetupPurchaseByCoin(element, b);
+                                SetupPurchaseByCoin(_outfitUnit, b);
                                 break;
                             case OutfitUnlockType.Rewarded:
                                 SetupPurchaseByAd(b);
@@ -76,9 +84,6 @@ namespace Pancake.SceneFlow
                     }
                 }
             }
-
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(OnButtonPressed);
         }
 
         private void OpenDailyReward(KeyValuePair<OutfitUnlockType, Button> b)

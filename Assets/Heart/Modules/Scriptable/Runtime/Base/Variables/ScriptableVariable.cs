@@ -24,9 +24,6 @@ namespace Pancake.Scriptable
         [SerializeField, HideInEditorMode, IgnoreTypeMismatch]
         protected T value;
 
-        [SerializeField, HideInEditorMode, DisableInPlayMode, IgnoreTypeMismatch]
-        protected T previousValue;
-
         [Tooltip("Log in the console whenever this variable is changed, loaded or saved.")] [SerializeField]
         private bool debugLogEnabled;
 
@@ -73,7 +70,7 @@ namespace Pancake.Scriptable
         /// <summary>
         /// The previous value just after the value changed.
         /// </summary>
-        public T PreviousValue => previousValue;
+        public T PreviousValue { get; private set; }
 
         public string Guid { get => guid; set => guid = value; }
         public ECreationMode GuidCreateMode { get => guidCreateMode; set => guidCreateMode = value; }
@@ -91,7 +88,7 @@ namespace Pancake.Scriptable
             set
             {
                 if (Equals(this.value, value)) return;
-                previousValue = this.value;
+                PreviousValue = this.value;
                 this.value = value;
                 ValueChanged();
             }
@@ -177,7 +174,7 @@ namespace Pancake.Scriptable
             _listenersObjects.Clear();
             Value = default;
             InitialValue = default;
-            previousValue = default;
+            PreviousValue = default;
             saved = false;
             resetOn = ResetType.SceneLoaded;
             debugLogEnabled = false;
@@ -186,7 +183,7 @@ namespace Pancake.Scriptable
         private void Init()
         {
             value = InitialValue;
-            previousValue = value;
+            PreviousValue = value;
             if (saved) Load();
             _listenersObjects.Clear();
         }
@@ -196,7 +193,7 @@ namespace Pancake.Scriptable
         public void ResetToInitialValue()
         {
             Value = InitialValue;
-            previousValue = InitialValue;
+            PreviousValue = InitialValue;
         }
 
         public virtual void Save()
@@ -208,7 +205,7 @@ namespace Pancake.Scriptable
 
         public virtual void Load()
         {
-            previousValue = value;
+            PreviousValue = value;
 
             if (debugLogEnabled) Debug.Log(GetColorizedString() + " <color=#f75369>[Loaded].</color>");
         }

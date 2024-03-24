@@ -15,7 +15,7 @@ MonoBehaviour:
   outfits:
   - type: 0
     list:
-    - {fileID: 11400000, guid: 215389beae8ab0d4394b28024fdfbc48, type: 2}
+    - {fileID: 11400000, guid: e50a99c327078d948ba537f6884472ca, type: 2}
     - {fileID: 11400000, guid: 4cd3a6497a7bd554682e9d5597f65729, type: 2}
     - {fileID: 11400000, guid: 77bc8cc7df15f9d40a9ffc3705a4cfd7, type: 2}
     - {fileID: 11400000, guid: 5a867abd04b4544448a8e0ff693d1899, type: 2}

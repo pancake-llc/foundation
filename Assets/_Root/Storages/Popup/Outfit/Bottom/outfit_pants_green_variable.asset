@@ -13,22 +13,23 @@ MonoBehaviour:
   m_Name: outfit_pants_green_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: a0dbdd08f995b7c41af78399ffa73e0b
-  guidCreateMode: 0
-  value:
-    id: 620225f92c3b43d
+  description: 
+  initialValue:
+    id: a0e915f9888741b
     isUnlocked: 0
     unlockType: 4
     value: 1000
     viewPosition: {x: 0, y: -90}
     skinId: legs/pants-green
-  debugLogEnabled: 0
-  saved: 1
-  defaultValue:
-    id: 620225f92c3b43d
+  value:
+    id: 
     isUnlocked: 0
     unlockType: 0
     value: 0
-    viewPosition: {x: 0, y: -90}
-    skinId: legs/pants-green
+    viewPosition: {x: 0, y: 0}
+    skinId: 
+  debugLogEnabled: 0
+  saved: 1
+  guidCreateMode: 0
+  guid: a0dbdd08f995b7c41af78399ffa73e0b
   resetOn: 2
