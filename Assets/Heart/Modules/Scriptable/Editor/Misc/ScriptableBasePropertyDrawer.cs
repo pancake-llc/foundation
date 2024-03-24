@@ -127,35 +127,10 @@ namespace Pancake.ScriptableEditor
             }
 
             label = EditorGUI.BeginProperty(position, label, property);
-            position = EditorGUI.PrefixLabel(position, label);
-
-            var previewRect = new Rect(position) {width = GetPreviewSpace(valueProp.type)};
-            int indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
-            position.xMin = previewRect.xMax;
-            EditorGUI.PropertyField(previewRect, valueProp, GUIContent.none, false);
-
-            position.x += 6f;
-            position.width -= 6f;
-            EditorGUI.PropertyField(position, property, GUIContent.none);
-
-            EditorGUI.indentLevel = indent;
-
+            var rect = DrawPropertyField(position, property, label);
+            EditorGUI.PropertyField(rect, valueProp, GUIContent.none, false);
             inner.ApplyModifiedProperties();
             EditorGUI.EndProperty();
-        }
-
-        private float GetPreviewSpace(string type)
-        {
-            switch (type)
-            {
-                case "Vector2":
-                case "Vector2Int":
-                case "Vector3":
-                    return 128;
-                default:
-                    return 58;
-            }
         }
     }
 }
