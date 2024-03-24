@@ -128,7 +128,21 @@ namespace Pancake.ScriptableEditor
 
             label = EditorGUI.BeginProperty(position, label, property);
             var rect = DrawPropertyField(position, property, label);
-            EditorGUI.PropertyField(rect, valueProp, GUIContent.none, false);
+            if (valueProp.propertyType == SerializedPropertyType.ObjectReference)
+            {
+                GUI.enabled = false;
+                EditorGUI.ObjectField(rect,
+                    GUIContent.none,
+                    valueProp.objectReferenceValue,
+                    typeof(Object),
+                    true);
+                GUI.enabled = true;
+            }
+            else
+            {
+                EditorGUI.PropertyField(rect, valueProp, GUIContent.none, false);
+            }
+
             inner.ApplyModifiedProperties();
             EditorGUI.EndProperty();
         }
