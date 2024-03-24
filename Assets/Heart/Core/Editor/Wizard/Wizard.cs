@@ -32,7 +32,6 @@ namespace PancakeEditor
             Build,
             Firebase,
             GameService,
-            Greenery,
             HeartSetting,
             HierarchySetting,
             InAppPurchase,
@@ -65,7 +64,6 @@ namespace PancakeEditor
             InAppReview = WizardAllType.InAppReview,
             Spine = WizardAllType.Spine,
             GameSerice = WizardAllType.GameService,
-            Greenery = WizardAllType.Greenery,
             Localization = WizardAllType.Localization,
             OtherPacakge = WizardAllType.OtherPackage,
             Build = WizardAllType.Build
@@ -279,9 +277,6 @@ namespace PancakeEditor
                 case WizardAllType.GameService when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesGameServiceDrawer.OnInspectorGUI();
                     break;
-                case WizardAllType.Greenery when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesGreeneryDrawer.OnInspectorGUI();
-                    break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
                     UtilitiesLocalizationDrawer.OnInspectorGUI(ref _treeViewState,
                         ref localeTreeView,
@@ -391,7 +386,6 @@ namespace PancakeEditor
                 case WizardAllType.HierarchySetting:
                 case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
                 case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
-                case WizardAllType.Greenery: return EditorResources.ScriptableLeaf;
                 case WizardAllType.Build:
                 case WizardAllType.OtherPackage: return EditorResources.ScriptableUnity;
                 default:
