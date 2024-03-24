@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: music_volume
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: f40c18cdb6b391741b188b73d884cb92
-  guidCreateMode: 0
+  description: 
+  initialValue: 1
   value: 1
+  previousValue: 1
   debugLogEnabled: 0
   saved: 1
-  defaultValue: 1
+  guidCreateMode: 0
+  guid: f40c18cdb6b391741b188b73d884cb92
   resetOn: 2
   isClamped: 1
   minMax: {x: 0, y: 1}

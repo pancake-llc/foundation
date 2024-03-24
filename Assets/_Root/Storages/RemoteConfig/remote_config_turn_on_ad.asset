@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: remote_config_turn_on_ad
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 1970e99d71fffd44a83fee3291b14826
-  guidCreateMode: 0
-  value: true
+  description: 
+  initialValue: 
+  value: 
+  previousValue: 
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 
+  guidCreateMode: 0
+  guid: 1970e99d71fffd44a83fee3291b14826
   resetOn: 0

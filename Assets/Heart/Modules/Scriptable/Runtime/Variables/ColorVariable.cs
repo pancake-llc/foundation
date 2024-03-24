@@ -14,8 +14,8 @@ namespace Pancake.Scriptable
 
         public override void Load()
         {
-            Value = Data.Load(Guid, DefaultValue);
             base.Load();
+            Value = Data.Load(Guid, InitialValue);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Pancake.Scriptable
                 1f);
             Value = beautifulColor;
         }
-        
+
 #if UNITY_EDITOR
         protected override void OnValidate()
         {

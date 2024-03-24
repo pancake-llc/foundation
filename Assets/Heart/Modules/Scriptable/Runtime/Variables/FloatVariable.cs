@@ -10,11 +10,10 @@ namespace Pancake.Scriptable
         [Tooltip("Clamps the value of this variable to a minimum and maximum.")] [SerializeField]
         private bool isClamped;
 
-        public bool IsClamped => isClamped;
-
         [Tooltip("If clamped, sets the minimum and maximum")] [SerializeField, ShowIf(nameof(isClamped)), Indent]
         private Vector2 minMax = new(0, 100);
 
+        public bool IsClamped => isClamped;
         public Vector2 MinMax { get => minMax; set => minMax = value; }
         public float Min { get => minMax.x; set => minMax.x = value; }
         public float Max { get => minMax.y; set => minMax.y = value; }
@@ -32,8 +31,8 @@ namespace Pancake.Scriptable
 
         public override void Load()
         {
-            Value = Data.Load(Guid, DefaultValue);
             base.Load();
+            Value = Data.Load(Guid, InitialValue);
         }
 
         public void Add(float value) { Value += value; }

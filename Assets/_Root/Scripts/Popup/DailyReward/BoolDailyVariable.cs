@@ -19,6 +19,8 @@ namespace Pancake.SceneFlow
 
         public override void Load()
         {
+            base.Load();
+            
             string currentShortDate = DateTime.Now.ToShortDateString();
             DateTime.TryParse(currentShortDate, out var shortDate);
             var oneDay = new TimeSpan(24, 0, 0);
@@ -27,10 +29,8 @@ namespace Pancake.SceneFlow
 
             var comparison = shortDate - lastTime;
 
-            if (comparison >= oneDay) Value = DefaultValue;
-            else Value = Data.Load(Guid, DefaultValue);
-
-            base.Load();
+            if (comparison >= oneDay) Value = InitialValue;
+            else Value = Data.Load(Guid, InitialValue);
         }
 
         public override void Save()

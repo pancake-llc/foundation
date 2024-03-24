@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: apple_user_id
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 
-  guidCreateMode: 0
+  description: 
+  initialValue: 
   value: 
+  previousValue: 
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 
+  guidCreateMode: 0
+  guid: b68a0354d7023a24790218162ff3b773
   resetOn: 0

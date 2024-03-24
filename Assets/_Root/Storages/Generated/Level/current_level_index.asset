@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: current_level_index
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: a006421cd8bfffd42a013cf538174370
-  guidCreateMode: 0
+  description: 
+  initialValue: 0
   value: 0
+  previousValue: 0
   debugLogEnabled: 0
-  saved: 1
-  defaultValue: 0
+  saved: 0
+  guidCreateMode: 0
+  guid: a006421cd8bfffd42a013cf538174370
   resetOn: 2
   isClamped: 0
   minMax: {x: -2147483648, y: 2147483647}

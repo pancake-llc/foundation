@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: gpgs_apple_server_code
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 
-  guidCreateMode: 0
+  description: 
+  initialValue: 
   value: 
+  previousValue: 
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 
+  guidCreateMode: 0
+  guid: 9d6cf00fd4c45db4b864edc5f09c3269
   resetOn: 0

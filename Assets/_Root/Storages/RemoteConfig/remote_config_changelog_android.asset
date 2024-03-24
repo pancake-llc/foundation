@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbb51723e892a404a87b22018981eb5d, type: 3}
   m_Name: remote_config_changelog_android
   m_EditorClassIdentifier: 
-  guid: cc4a98ebd9e30e1439c375c3115a9301
+  categoryIndex: 0
+  description: 
+  initialValue: 
   value: 
+  previousValue: 
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 
+  guidCreateMode: 0
+  guid: cc4a98ebd9e30e1439c375c3115a9301
   resetOn: 0

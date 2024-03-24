@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a11231538da9894d8dce88b47df6a36, type: 3}
   m_Name: input_long_tap_starts_drag
   m_EditorClassIdentifier: 
-  guid: 3a598d5cce1e2be488decb7189a667a3
-  value: 1
+  categoryIndex: 0
+  description: 
+  initialValue: 0
+  value: 0
+  previousValue: 0
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: 3a598d5cce1e2be488decb7189a667a3
   resetOn: 0

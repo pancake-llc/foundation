@@ -7,7 +7,7 @@ namespace Pancake.Scriptable
     public class GameObjectVariable : ScriptableVariable<GameObject>
     {
 #if UNITY_EDITOR
-        protected override bool EditorDisableValue => true;
+        protected override bool IgnoreDraw => true;
 #endif
     }
 }

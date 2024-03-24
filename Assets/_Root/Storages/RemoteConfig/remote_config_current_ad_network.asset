@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: remote_config_current_ad_network
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 9646a2b346725a14fa934f6e37a84505
-  guidCreateMode: 0
-  value: admob
+  description: 
+  initialValue: 
+  value: 
+  previousValue: 
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 
+  guidCreateMode: 0
+  guid: 9646a2b346725a14fa934f6e37a84505
   resetOn: 0

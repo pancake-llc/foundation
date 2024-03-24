@@ -24,8 +24,8 @@ namespace Pancake.SceneFlow
 
         public override void Load()
         {
-            Value.isClaimed = Data.Load(Guid, DefaultValue.isClaimed);
             base.Load();
+            Value.isClaimed = Data.Load(Guid, InitialValue.isClaimed);
         }
 
         public override void Save()

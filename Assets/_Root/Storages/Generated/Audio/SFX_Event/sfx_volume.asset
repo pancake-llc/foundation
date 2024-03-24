@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: sfx_volume
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 0a97e9acdf82e434983225db6d5b578f
-  guidCreateMode: 0
+  description: 
+  initialValue: 1
   value: 1
+  previousValue: 1
   debugLogEnabled: 0
   saved: 1
-  defaultValue: 1
+  guidCreateMode: 0
+  guid: 0a97e9acdf82e434983225db6d5b578f
   resetOn: 2
   isClamped: 1
   minMax: {x: 0, y: 1}

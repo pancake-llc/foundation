@@ -32,8 +32,8 @@ namespace Pancake.Scriptable
 
         public override void Load()
         {
-            Value = Data.Load(Guid, DefaultValue);
             base.Load();
+            Value = Data.Load(Guid, InitialValue);
         }
 
         public void Add(int value) { Value += value; }

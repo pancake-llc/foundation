@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: remote_config_level_between_show_ad
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 40f31351f653c524193c94085e92772d
-  guidCreateMode: 0
+  description: 
+  initialValue: 
   value: 
+  previousValue: 
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 
+  guidCreateMode: 0
+  guid: 40f31351f653c524193c94085e92772d
   resetOn: 0

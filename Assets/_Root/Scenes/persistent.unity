@@ -541,24 +541,24 @@ MonoBehaviour:
   onStopPinch: {fileID: 11400000, guid: 55622c723ed05134982147208332c097, type: 2}
   isCustom: 0
   clickDurationThreshold:
-    useLocal: 0
-    localValue: 0
+    useLocal: 1
+    localValue: 0.7
     variable: {fileID: 0}
   doubleClickThreshold:
-    useLocal: 0
-    localValue: 0
+    useLocal: 1
+    localValue: 0.5
     variable: {fileID: 0}
   tiltVerticalThreshold:
-    useLocal: 0
-    localValue: 0
+    useLocal: 1
+    localValue: 0.7
     variable: {fileID: 0}
   tiltHorizontalThreshold:
-    useLocal: 0
-    localValue: 0
+    useLocal: 1
+    localValue: 0.5
     variable: {fileID: 0}
   dragThreshold:
-    useLocal: 0
-    localValue: 0
+    useLocal: 1
+    localValue: 0.05
     variable: {fileID: 0}
   longTapStartsDrag: {fileID: 11400000, guid: 3a598d5cce1e2be488decb7189a667a3, type: 2}
 --- !u!114 &776958723

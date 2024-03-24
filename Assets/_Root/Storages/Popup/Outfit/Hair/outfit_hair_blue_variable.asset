@@ -14,22 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   categoryIndex: 0
   description: 
-  value:
-    id: ab5b505505ce41e
+  initialValue:
+    id: 
     isUnlocked: 1
-    unlockType: 2
+    unlockType: 0
     value: 0
-    viewPosition: {x: 0, y: -366}
-    skinId: hair/blue
+    viewPosition: {x: 0, y: 0}
+    skinId: 
+  value:
+    id: 
+    isUnlocked: 1
+    unlockType: 0
+    value: 0
+    viewPosition: {x: 0, y: 0}
+    skinId: 
+  previousValue:
+    id: 
+    isUnlocked: 1
+    unlockType: 0
+    value: 0
+    viewPosition: {x: 0, y: 0}
+    skinId: 
   debugLogEnabled: 0
   saved: 1
-  defaultValue:
-    id: ab5b505505ce41e
-    isUnlocked: 1
-    unlockType: 2
-    value: 0
-    viewPosition: {x: 0, y: -366}
-    skinId: hair/blue
   guidCreateMode: 0
   guid: 215389beae8ab0d4394b28024fdfbc48
   resetOn: 2

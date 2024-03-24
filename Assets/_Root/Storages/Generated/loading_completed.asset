@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   categoryIndex: 0
   description: 
+  initialValue: 0
   value: 0
+  previousValue: 0
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 0
   guidCreateMode: 0
   guid: 0242afafb7675c5488f3c71b4b484636
   resetOn: 0
