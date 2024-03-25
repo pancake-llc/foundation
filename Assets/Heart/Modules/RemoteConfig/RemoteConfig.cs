@@ -61,7 +61,8 @@ namespace Pancake.Tracking
             var info = remoteConfig.Info;
             if (info.LastFetchStatus != LastFetchStatus.Success)
             {
-                Debug.LogError($"{nameof(FetchComplete)} was unsuccessful\n{nameof(info.LastFetchStatus)}: {info.LastFetchStatus}");
+                Debug.LogError(
+                    $"{nameof(FetchComplete)} was unsuccessful\n{nameof(info.LastFetchStatus)}: {info.LastFetchStatus}");
                 return;
             }
 
@@ -73,16 +74,19 @@ namespace Pancake.Tracking
                     {
                         if (!string.IsNullOrEmpty(key))
                         {
-                            string result = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
-                            remoteData[key].Value = result;
+                            ConfigValue configValue = FirebaseRemoteConfig.DefaultInstance.GetValue(key);
+                            if (configValue.Source == ValueSource.RemoteValue)
+                            {
+                                remoteData[key].Value = configValue.StringValue;
+                            }
                         }
                     }
-                    
+
                     if (remoteConfigCurrentAdNetwork != null && remoteConfigCurrentAdNetwork.Value != string.Empty)
                     {
                         if (changeNetworkEvent != null) changeNetworkEvent.Raise(remoteConfigCurrentAdNetwork.Value);
                     }
-                    
+
                     remoteConfigIsFetchCompleted.Value = true;
                 });
         }
