@@ -76,7 +76,7 @@ namespace Pancake.Scriptable
         public ECreationMode GuidCreateMode { get => guidCreateMode; set => guidCreateMode = value; }
 
         public override Type GetGenericType => typeof(T);
-        public virtual T InitialValue { get => initialValue; set => initialValue = value; }
+        public virtual T InitialValue => initialValue;
 
         /// <summary>
         /// Modify this to change the value of the variable.
@@ -170,7 +170,7 @@ namespace Pancake.Scriptable
         {
             _listenersObjects.Clear();
             Value = default;
-            InitialValue = default;
+            initialValue = default;
             PreviousValue = default;
             saved = false;
             resetOn = ResetType.SceneLoaded;
