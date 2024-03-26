@@ -154,10 +154,7 @@ namespace Pancake.Scriptable
         public void OnPlayModeStateChanged(PlayModeStateChange playModeStateChange)
         {
             if (playModeStateChange == PlayModeStateChange.ExitingEditMode) Init();
-            else if (playModeStateChange == PlayModeStateChange.EnteredEditMode)
-            {
-                if (!saved) ResetToInitialValue();
-            }
+            else if (playModeStateChange == PlayModeStateChange.EnteredEditMode) ResetToInitialValueWithout();
         }
 
         protected virtual void OnValidate()
@@ -194,6 +191,18 @@ namespace Pancake.Scriptable
         {
             Value = InitialValue;
             PreviousValue = InitialValue;
+#if UNITY_EDITOR
+            SetDirtyAndRepaint();
+#endif
+        }
+
+        private void ResetToInitialValueWithout()
+        {
+            value = InitialValue; // with out trigger value changed
+            PreviousValue = InitialValue;
+#if UNITY_EDITOR
+            SetDirtyAndRepaint();
+#endif
         }
 
         public virtual void Save()
