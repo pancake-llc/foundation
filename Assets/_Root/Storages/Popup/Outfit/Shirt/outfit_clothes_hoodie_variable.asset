@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 
   initialValue:
     id: 50c5c5ab291945e
-    isUnlocked: 1
+    isUnlocked: 0
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -234}
