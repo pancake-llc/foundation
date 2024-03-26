@@ -144,7 +144,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "4.10.0",
+      "version": "4.11.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -217,7 +217,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.sharp-zip-lib": {
-      "version": "1.3.6-preview",
+      "version": "1.3.7",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
