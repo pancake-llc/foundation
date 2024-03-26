@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: gpgs_apple_status_task
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 07f6d12cd53d8ad4090943cae6eed64f
-  guidCreateMode: 0
+  description: 
+  initialValue: 0
   value: 0
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: 07f6d12cd53d8ad4090943cae6eed64f
   resetOn: 0

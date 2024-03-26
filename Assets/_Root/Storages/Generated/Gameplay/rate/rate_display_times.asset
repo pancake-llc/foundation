@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: rate_display_times
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 07b02a6eeefe11a408abec7267e4c252
-  guidCreateMode: 0
+  description: 
+  initialValue: 0
   value: 0
   debugLogEnabled: 0
   saved: 1
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: 07b02a6eeefe11a408abec7267e4c252
   resetOn: 2
   isClamped: 0
   minMax: {x: -2147483648, y: 2147483647}

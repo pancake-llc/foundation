@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: last_level_show_rate
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: eee83a1c61699f34e8eba711713dffd8
-  guidCreateMode: 0
+  description: 
+  initialValue: 0
   value: 0
   debugLogEnabled: 0
   saved: 1
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: eee83a1c61699f34e8eba711713dffd8
   resetOn: 2
   isClamped: 0
   minMax: {x: -2147483648, y: 2147483647}

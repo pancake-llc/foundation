@@ -27,7 +27,7 @@ MonoBehaviour:
     unlockType: 0
     value: 1000
     viewPosition: {x: 0, y: -216}
-    skinId: clothes/dress-blue
+    skinId: clothes/dress-green
   debugLogEnabled: 0
   saved: 1
   guidCreateMode: 0

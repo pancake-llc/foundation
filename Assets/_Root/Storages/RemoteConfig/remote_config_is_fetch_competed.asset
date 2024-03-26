@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a11231538da9894d8dce88b47df6a36, type: 3}
   m_Name: remote_config_is_fetch_competed
   m_EditorClassIdentifier: 
-  guid: 54998a0dfba51d049a2b6ac1b700584d
+  categoryIndex: 0
+  description: 
+  initialValue: 0
   value: 0
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: 54998a0dfba51d049a2b6ac1b700584d
   resetOn: 0

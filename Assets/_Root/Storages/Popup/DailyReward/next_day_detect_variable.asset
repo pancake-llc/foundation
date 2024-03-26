@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: next_day_detect_variable
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: a66391c4583af954e84a2e823e2dd2c4
-  guidCreateMode: 0
+  description: 
+  initialValue: 0
   value: 0
   debugLogEnabled: 0
   saved: 1
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: a66391c4583af954e84a2e823e2dd2c4
   resetOn: 2
   message: The value will be reset after each new day, requiring the Saved attribute
     to be enabled

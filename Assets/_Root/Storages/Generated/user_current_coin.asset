@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: user_current_coin
   m_EditorClassIdentifier: 
   categoryIndex: 0
-  guid: 2b085b529f2fac74ba8c4fab7e585cb1
-  guidCreateMode: 0
+  description: 
+  initialValue: 0
   value: 0
   debugLogEnabled: 0
   saved: 1
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: 2b085b529f2fac74ba8c4fab7e585cb1
   resetOn: 2
   isClamped: 1
   minMax: {x: 0, y: 2147483647}

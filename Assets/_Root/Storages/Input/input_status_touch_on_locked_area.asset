@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a11231538da9894d8dce88b47df6a36, type: 3}
   m_Name: input_status_touch_on_locked_area
   m_EditorClassIdentifier: 
-  guid: 
+  categoryIndex: 0
+  description: 
+  initialValue: 0
   value: 0
   debugLogEnabled: 0
   saved: 0
-  defaultValue: 0
+  guidCreateMode: 0
+  guid: e6c3db2713719754c80612f00358cc63
   resetOn: 0

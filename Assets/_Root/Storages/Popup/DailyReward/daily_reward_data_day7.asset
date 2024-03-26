@@ -22,11 +22,11 @@ MonoBehaviour:
     outfitUnit: {fileID: 11400000, guid: a0dbdd08f995b7c41af78399ffa73e0b, type: 2}
     isClaimed: 0
   value:
-    day: 0
-    typeReward: 0
-    amount: 0
+    day: 7
+    typeReward: 1
+    amount: 1
     icon: {fileID: 0}
-    outfitUnit: {fileID: 0}
+    outfitUnit: {fileID: 11400000, guid: a0dbdd08f995b7c41af78399ffa73e0b, type: 2}
     isClaimed: 0
   debugLogEnabled: 0
   saved: 1
