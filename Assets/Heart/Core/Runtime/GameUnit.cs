@@ -7,28 +7,45 @@ namespace Pancake
     {
         [Header("base"), SerializeField] private GameLoopType gameLoop;
 
-        private void OnEnable() { Register(); }
+        public virtual void OnEnable()
+        {
+            Register();
+        }
 
-        private void OnDisable() { UnRegister(); }
+        public virtual void OnDisable()
+        {
+            UnRegister();
+        }
 
         protected virtual void Register()
         {
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.Update)) GameLoop.Register(this, OnUpdate, PlayerLoopTiming.PreUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate)) GameLoop.Register(this, OnLateUpdate, PlayerLoopTiming.PreLateUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate)) GameLoop.Register(this, OnFixedUpdate, PlayerLoopTiming.PreFixedUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.Update))
+                GameLoop.Register(this, OnUpdate, PlayerLoopTiming.PreUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate))
+                GameLoop.Register(this, OnLateUpdate, PlayerLoopTiming.PreLateUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate))
+                GameLoop.Register(this, OnFixedUpdate, PlayerLoopTiming.PreFixedUpdate);
         }
 
         protected virtual void UnRegister()
         {
             if (C.HasFlagUnsafe(gameLoop, GameLoopType.Update)) GameLoop.Unregister(this, PlayerLoopTiming.PreUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate)) GameLoop.Unregister(this, PlayerLoopTiming.PreLateUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate)) GameLoop.Unregister(this, PlayerLoopTiming.PreFixedUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate))
+                GameLoop.Unregister(this, PlayerLoopTiming.PreLateUpdate);
+            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate))
+                GameLoop.Unregister(this, PlayerLoopTiming.PreFixedUpdate);
         }
 
-        public virtual void OnUpdate() { }
-        
-        public virtual void OnFixedUpdate() { }
-        
-        public virtual void OnLateUpdate() { }
+        public virtual void OnUpdate()
+        {
+        }
+
+        public virtual void OnFixedUpdate()
+        {
+        }
+
+        public virtual void OnLateUpdate()
+        {
+        }
     }
 }
