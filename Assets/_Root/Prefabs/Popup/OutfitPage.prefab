@@ -61,16 +61,19 @@ MonoBehaviour:
   skinHatCollectionSheet:
     m_AssetGUID: bdc3ad773d2248e4598f574080bf5cc9
     m_SubObjectName: 
+    m_SubObjectGUID: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   skinShirtCollectionSheet:
     m_AssetGUID: 6789357a5dcf2c3419943598bf66d354
     m_SubObjectName: 
+    m_SubObjectGUID: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   skinShoesCollectionSheet:
     m_AssetGUID: 34edd711148ed274494ce53f16262527
     m_SubObjectName: 
+    m_SubObjectGUID: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   outfitSheetPreview: OutfitPreviewSheet

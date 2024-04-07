@@ -16,12 +16,12 @@ namespace Pancake.ApexEditor
 
         public override void OnGUI(Rect position, SerializedField serializedField, GUIContent label)
         {
-            string[] navMeshAreaNames = GameObjectUtility.GetNavMeshAreaNames();
+            string[] navMeshAreaNames = UnityEngine.AI.NavMesh.GetAreaNames();
             long longValue = property.longValue;
             int num = 0;
             for (int i = 0; i < navMeshAreaNames.Length; i++)
             {
-                int navMeshAreaFromName = GameObjectUtility.GetNavMeshAreaFromName(navMeshAreaNames[i]);
+                int navMeshAreaFromName = UnityEngine.AI.NavMesh.GetAreaFromName(navMeshAreaNames[i]);
                 if ((1L << (navMeshAreaFromName & 31) & longValue) != 0L)
                 {
                     num |= 1 << i;
@@ -49,7 +49,7 @@ namespace Pancake.ApexEditor
                     {
                         if ((num2 >> j & 1) != 0)
                         {
-                            num3 |= 1u << GameObjectUtility.GetNavMeshAreaFromName(navMeshAreaNames[j]);
+                            num3 |= 1u << UnityEngine.AI.NavMesh.GetAreaFromName(navMeshAreaNames[j]);
                         }
                     }
 
