@@ -1,7 +1,5 @@
-﻿using Pancake;
-using Pancake.Common;
+﻿using Pancake.Common;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 

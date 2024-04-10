@@ -6,7 +6,6 @@ using System.Linq;
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using Pancake.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -128,7 +127,7 @@ namespace PancakeEditor
             {
                 GUILayout.Label("Switch Platform To Android To Use This Pipeline Setting".TextColor(Uniform.FieryRose).TextSize(18), Uniform.RichCenterLabel);
                 GUILayout.Space(8);
-                if (GUILayout.Button("Switch Android", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                if (GUILayout.Button("Switch Android", GUILayout.MaxHeight(30f)))
                 {
                     EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
                 }

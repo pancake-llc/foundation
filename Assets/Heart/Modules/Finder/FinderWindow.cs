@@ -11,7 +11,7 @@ namespace PancakeEditor
 {
     public class FinderWindow : FinderWindowBase, IHasCustomMenu
     {
-        internal static void ShowWindow()
+        public static void ShowWindow()
         {
             var window = EditorWindow.GetWindow<PancakeEditor.FinderWindow>("Finder", true, Editor.InspectorWindow);
             if (window != null)

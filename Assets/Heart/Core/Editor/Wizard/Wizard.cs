@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using PancakeEditor.Common;
-
 using Pancake.LocalizationEditor;
-using Pancake.ScriptableEditor;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;

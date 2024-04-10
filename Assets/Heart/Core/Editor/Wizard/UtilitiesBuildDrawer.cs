@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Pancake;
+﻿using System.IO;
 using Pancake.Common;
 using UnityEditor;
 using UnityEngine;
+
 
 namespace PancakeEditor
 {
