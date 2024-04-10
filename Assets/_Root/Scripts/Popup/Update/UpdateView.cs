@@ -26,7 +26,7 @@ namespace Pancake.UI
         {
             buttonOk.onClick.AddListener(OnButtonOkClicked);
             buttonClose.onClick.AddListener(OnButtonCloseClicked);
-
+        
             textDescription.SetText(remoteConfigChangelog.Value);
             localeTextVersion.UpdateArgs($"{remoteConfigNewVersion.Value}");
             return UniTask.CompletedTask;

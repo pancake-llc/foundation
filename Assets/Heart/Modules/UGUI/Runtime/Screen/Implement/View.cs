@@ -1,7 +1,9 @@
 ﻿using Pancake.Apex;
 using Pancake.Sound;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 namespace Pancake.UI
 {
@@ -13,6 +15,7 @@ namespace Pancake.UI
         [SerializeField, ShowIf(nameof(enabledSound))] protected ScriptableEventAudio playAudioEvent;
         private bool _isInitialized;
 
+#if PANCAKE_UNITASK
         public async UniTask InitializeAsync()
         {
             if (_isInitialized) return;
@@ -20,8 +23,11 @@ namespace Pancake.UI
             PlaySoundOpen();
             await Initialize();
         }
+#endif
 
+#if PANCAKE_UNITASK
         protected abstract UniTask Initialize();
+#endif
 
         protected virtual void PlaySoundOpen()
         {

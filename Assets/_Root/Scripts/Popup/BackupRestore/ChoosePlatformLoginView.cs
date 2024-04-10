@@ -65,7 +65,7 @@ namespace Pancake.SceneFlow
                 await GpgsBackup();
                 return;
             }
-
+        
             await GpgsRestore();
         }
 
@@ -76,7 +76,7 @@ namespace Pancake.SceneFlow
                 status.Value = false;
                 loginEvent.Raise();
                 await UniTask.WaitUntil(() => status.Value);
-
+        
                 if (string.IsNullOrEmpty(serverCode.Value))
                 {
                     await _popupContainer.Push<NotificationPopup>(popupNotification,
@@ -95,7 +95,7 @@ namespace Pancake.SceneFlow
                 gpgsGetNewServerCode.Raise();
                 await UniTask.WaitUntil(() => status.Value);
             }
-
+        
             if (AuthenticationService.Instance.SessionTokenExists)
             {
                 // signin cached
@@ -105,16 +105,16 @@ namespace Pancake.SceneFlow
             {
                 await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
             }
-
+        
             await FetchData();
             return;
-
+        
             async Task FetchData()
             {
                 // save process
                 byte[] inputBytes = await LoadFileBytes(bucket);
                 Data.Restore(inputBytes);
-
+        
                 await _popupContainer.Push<NotificationPopup>(popupNotification,
                     true,
                     onLoad: tuple =>
@@ -122,7 +122,7 @@ namespace Pancake.SceneFlow
                         tuple.popup.view.SetMessage(localeRestoreSuccess);
                         tuple.popup.view.SetAction(ActionOk);
                         return;
-
+        
                         async void ActionOk()
                         {
                             TurnOffBlock();
@@ -133,7 +133,7 @@ namespace Pancake.SceneFlow
                     });
             }
         }
-
+        
         private async UniTask GpgsBackup()
         {
             if (!AuthenticationGooglePlayGames.IsSignIn())
@@ -141,7 +141,7 @@ namespace Pancake.SceneFlow
                 status.Value = false;
                 loginEvent.Raise();
                 await UniTask.WaitUntil(() => status.Value);
-
+        
                 if (string.IsNullOrEmpty(serverCode.Value))
                 {
                     await _popupContainer.Push<NotificationPopup>(popupNotification,
@@ -160,7 +160,7 @@ namespace Pancake.SceneFlow
                 gpgsGetNewServerCode.Raise();
                 await UniTask.WaitUntil(() => status.Value);
             }
-
+        
             if (AuthenticationService.Instance.SessionTokenExists)
             {
                 // signin cached
@@ -170,16 +170,16 @@ namespace Pancake.SceneFlow
             {
                 await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverCode.Value);
             }
-
+        
             await PushData();
             return;
-
+        
             async Task PushData()
             {
                 // save process
                 byte[] inputBytes = Data.Backup();
                 await SaveFileBytes(bucket, inputBytes);
-
+        
                 await _popupContainer.Push<NotificationPopup>(popupNotification,
                     true,
                     onLoad: tuple =>
@@ -202,7 +202,7 @@ namespace Pancake.SceneFlow
                 await AppleBackup();
                 return;
             }
-
+        
             await AppleRestore();
         }
 
@@ -211,7 +211,7 @@ namespace Pancake.SceneFlow
             status.Value = false;
             loginEvent.Raise();
             await UniTask.WaitUntil(() => status.Value);
-
+        
             if (string.IsNullOrEmpty(serverCode.Value))
             {
                 await _popupContainer.Push<NotificationPopup>(popupNotification,
@@ -223,7 +223,7 @@ namespace Pancake.SceneFlow
                     });
                 return;
             }
-
+        
             if (AuthenticationService.Instance.SessionTokenExists)
             {
                 // signin cached
@@ -233,16 +233,16 @@ namespace Pancake.SceneFlow
             {
                 await AuthenticationService.Instance.SignInWithAppleAsync(serverCode.Value);
             }
-
+        
             await FetchData();
             return;
-
+        
             async Task FetchData()
             {
                 // save process
                 byte[] inputBytes = await LoadFileBytes(bucket);
                 Data.Restore(inputBytes);
-
+        
                 await _popupContainer.Push<NotificationPopup>(popupNotification,
                     true,
                     onLoad: tuple =>
@@ -250,7 +250,7 @@ namespace Pancake.SceneFlow
                         tuple.popup.view.SetMessage(localeRestoreSuccess);
                         tuple.popup.view.SetAction(ActionOk);
                         return;
-
+        
                         async void ActionOk()
                         {
                             TurnOffBlock();
@@ -267,7 +267,7 @@ namespace Pancake.SceneFlow
             status.Value = false;
             loginEvent.Raise();
             await UniTask.WaitUntil(() => status.Value);
-
+        
             if (string.IsNullOrEmpty(serverCode.Value))
             {
                 await _popupContainer.Push<NotificationPopup>(popupNotification,
@@ -279,7 +279,7 @@ namespace Pancake.SceneFlow
                     });
                 return;
             }
-
+        
             if (AuthenticationService.Instance.SessionTokenExists)
             {
                 // signin cached
@@ -289,16 +289,16 @@ namespace Pancake.SceneFlow
             {
                 await AuthenticationService.Instance.SignInWithAppleAsync(serverCode.Value);
             }
-
+        
             await PushData();
             return;
-
+        
             async Task PushData()
             {
                 // save process
                 byte[] inputBytes = Data.Backup();
                 await SaveFileBytes(bucket, inputBytes);
-
+        
                 await _popupContainer.Push<NotificationPopup>(popupNotification,
                     true,
                     onLoad: tuple =>

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using Pancake.Apex;
 using Pancake.Common;
 using Pancake.Scriptable;
+#if PANCAKE_UNITASK
 using Cysharp.Threading.Tasks;
+#endif
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
 using UnityEngine;
@@ -66,8 +68,10 @@ namespace Pancake.IAP
         private async void Init()
         {
             if (IsInitialized) return;
-            
+
+#if PANCAKE_UNITASK
             await UniTask.WaitUntil(() => isServiceInitialized.Value);
+#endif
 
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
             RequestProductData(builder);

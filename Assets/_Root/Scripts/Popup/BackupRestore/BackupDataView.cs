@@ -15,7 +15,7 @@ namespace Pancake.UI
         {
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonBackup.onClick.AddListener(OnButtonBackupPressed);
-
+        
             return UniTask.CompletedTask;
         }
 

@@ -29,6 +29,11 @@
             "name": "com.unity.purchasing",
             "expression": "4.8.0",
             "define": "PANCAKE_IAP"
+        },
+        {
+            "name": "com.cysharp.unitask",
+            "expression": "2.0.0",
+            "define": "PANCAKE_UNITASK"
         }
     ],
     "noEngineReferences": false

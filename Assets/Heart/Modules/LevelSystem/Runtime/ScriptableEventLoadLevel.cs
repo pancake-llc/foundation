@@ -1,4 +1,5 @@
-﻿using Pancake.Scriptable;
+﻿#if PANCAKE_UNITASK
+using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -11,3 +12,4 @@ namespace Pancake.LevelSystem
     {
     }
 }
+#endif

@@ -125,9 +125,9 @@ namespace Pancake.UI
             buttonPreviousPage.onClick.AddListener(OnButtonPreviousPagePressed);
             buttonAllTimeRank.onClick.AddListener(OnButtonAllTimeRankPressed);
             buttonWeeklyRank.onClick.AddListener(OnButtonWeeklyRankPressed);
-
+        
             InternalInit();
-
+        
             return UniTask.CompletedTask;
         }
 
@@ -347,7 +347,7 @@ namespace Pancake.UI
                         _firstTimeEnterWorld = false;
                         await LoadNextDataAllTimeScores();
                     }
-
+                
                     block.SetActive(false);
                     Refresh(_allTimeData);
                 }

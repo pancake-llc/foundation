@@ -57,7 +57,7 @@ namespace Pancake.UI
                 reviewEvent.Raise();
                 rateDisplayTimes.Value++;
             }
-
+        
             Refresh();
             return UniTask.CompletedTask;
         }

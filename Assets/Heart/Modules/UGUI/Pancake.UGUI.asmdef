@@ -20,6 +20,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.cysharp.unitask",
+            "expression": "2.0.0",
+            "define": "PANCAKE_UNITASK"
+        }
+    ],
     "noEngineReferences": false
 }

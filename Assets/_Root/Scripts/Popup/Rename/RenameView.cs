@@ -71,7 +71,7 @@ namespace Pancake.UI
             // Add padding for the safe area.
             float canvasScaleFactor = GetComponentInParent<Canvas>().scaleFactor;
             RecyclerView.AfterPadding += (int) (Screen.safeArea.y / canvasScaleFactor);
-
+        
             _nameList = JsonConvert.DeserializeObject<NameList>(namesAsset.text);
             _buttonVerifyEffect = buttonOk.GetComponent<UIEffect>();
             _countryScrollerRT = RecyclerView.GetComponent<RectTransform>();
@@ -81,19 +81,19 @@ namespace Pancake.UI
             inputFieldName.text = "";
             inputFieldName.ActivateInputField();
             inputFieldName.Select();
-
+        
             textMessage.gameObject.SetActive(false);
             var currentCountryData = countryCollection.Get(RegionInfo.CurrentRegion.TwoLetterISORegionName);
             imageIconCountrySelected.sprite = currentCountryData.icon;
             imageIconCountrySelected.color = Color.white;
             textNameCountrySelected.text = currentCountryData.name;
             _selectedCountry = currentCountryData.code.ToString();
-
+        
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonOk.onClick.AddListener(OnButtonOkPressed);
             buttonSelectCountry.onClick.AddListener(OnButtonSelectCountryPressed);
             buttonDice.onClick.AddListener(OnButtonDicePressed);
-
+        
             return UniTask.CompletedTask;
         }
 
@@ -192,14 +192,14 @@ namespace Pancake.UI
             objectBlock.SetActive(false);
             objectStatusOk.SetActive(false);
             PlaySoundClose();
-            await PopupHelper.Close(transform);
+            //await PopupHelper.Close(transform);
             _onCloseCallback?.Invoke(false);
         }
 
         private async void OnButtonClosePressed()
         {
             PlaySoundClose();
-            await PopupHelper.Close(transform);
+            //await PopupHelper.Close(transform);
             _onCloseCallback?.Invoke(true);
         }
 

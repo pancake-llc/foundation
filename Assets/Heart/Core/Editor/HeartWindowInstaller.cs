@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 
 namespace PancakeEditor.Common
@@ -7,9 +8,10 @@ namespace PancakeEditor.Common
 
     internal sealed class HeartWindowInstaller : WindowInstallDependency
     {
-        private static readonly List<string> InternalDependencies = new() {"com.unity.nuget.newtonsoft-json"};
+        private static readonly Dictionary<string, string> InternalDependencies =
+            new() {{"com.cysharp.unitask", "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4"}};
 
-        protected override List<string> Dependencies => InternalDependencies;
+        protected override Dictionary<string, string> Dependencies => InternalDependencies;
 
         private new static void Show()
         {
@@ -45,9 +47,8 @@ namespace PancakeEditor.Common
             else
             {
                 EditorApplication.update -= Reload;
-                if (Editor.GetEditorBool(nameof(HeartWindowInstaller), true) && IsStillMissingPackage(InternalDependencies)) Show();
+                if (Editor.GetEditorBool(nameof(HeartWindowInstaller), true) && IsStillMissingPackage(InternalDependencies.Keys.ToList())) Show();
             }
         }
     }
-
 }

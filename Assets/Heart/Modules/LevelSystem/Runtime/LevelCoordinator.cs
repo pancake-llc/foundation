@@ -4,7 +4,9 @@ using Pancake.Apex;
 using Pancake.Common;
 using Pancake.Linq;
 using Pancake.Scriptable;
+#if PANCAKE_UNITASK
 using Cysharp.Threading.Tasks;
+#endif
 using UnityEngine;
 #if PANCAKE_ADDRESSABLE
 using UnityEngine.AddressableAssets;
@@ -18,7 +20,9 @@ namespace Pancake.LevelSystem
     {
         [SerializeField] private string id = "normal";
         [SerializeField] private IntVariable currentLevelIndex;
+#if PANCAKE_UNITASK
         [SerializeField] private ScriptableEventLoadLevel eventLoadLevel;
+#endif
         [SerializeField] private ScriptableEventGetLevelCached eventGetNextLevelLoaded;
         [SerializeField] private ScriptableEventGetLevelCached eventGetPreviousLevelLoaded;
         [SerializeField] private ELoopType loopType = ELoopType.Shuffle;
@@ -53,14 +57,14 @@ namespace Pancake.LevelSystem
             }
 
             CheckCacheLevel(currentLevelIndex.Value);
-#if PANCAKE_ADDRESSABLE
+#if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
             eventLoadLevel.OnRaised += LoadLevel;
             eventGetNextLevelLoaded.OnRaised += GetNextLevel;
             eventGetPreviousLevelLoaded.OnRaised += GetPreviousLevel;
 #endif
         }
 
-#if PANCAKE_ADDRESSABLE
+#if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
         private async UniTask<LevelComponent> LoadLevel(int currentLevelIndex)
         {
             int indexInSegment = currentLevelIndex % _segmentLength;

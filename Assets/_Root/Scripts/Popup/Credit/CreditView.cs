@@ -15,7 +15,6 @@ namespace Pancake.UI
         [SerializeField] private Transform container;
         [SerializeField] private Button buttonClose;
         
-
         protected override UniTask Initialize()
         {
             foreach (CreditElement element in elements)
@@ -38,9 +37,9 @@ namespace Pancake.UI
                         break;
                 }
             }
-
+        
             buttonClose.onClick.AddListener(OnButtonClosePressed);
-
+        
             return UniTask.CompletedTask;
         }
 

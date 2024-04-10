@@ -2,11 +2,11 @@
   "dependencies": {
     "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10",
     "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.2",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4",
     "com.esotericsoftware.spine.spine-csharp": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1",
     "com.esotericsoftware.spine.spine-unity": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1",
     "com.google.external-dependency-manager": "https://github.com/google-unity/external-dependency-manager.git#1.2.179",
     "com.tayx.graphy": "https://github.com/pancake-llc/graphy.git#3.0.6",
-    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "2.0.8",
     "com.unity.burst": "1.8.13",

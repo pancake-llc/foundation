@@ -32,7 +32,7 @@ namespace Pancake.UI
                     _slotBars[i].Setup(units[i], outfitType);
                 }
             }
-
+        
             buttonFreeCoin.onClick.AddListener(OnButtonGetFreeCoinPressed);
             return UniTask.CompletedTask;
         }

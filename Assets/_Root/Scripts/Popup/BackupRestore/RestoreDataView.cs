@@ -17,7 +17,7 @@ namespace Pancake.UI
             buttonBackup.onClick.AddListener(OnButtonBackupPressed);
             return UniTask.CompletedTask;
         }
-
+        
         private async void OnButtonBackupPressed()
         {
             PlaySoundClose();

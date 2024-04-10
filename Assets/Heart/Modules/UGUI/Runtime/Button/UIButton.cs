@@ -3,12 +3,14 @@ using System.Collections;
 using System.Threading;
 using Pancake.Common;
 using Pancake.Sound;
-using Cysharp.Threading.Tasks;
 using Pancake.Tracking;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+#if PANCAKE_UNITASK
+using Cysharp.Threading.Tasks;
+#endif
 
 
 namespace Pancake.UI
@@ -556,6 +558,7 @@ namespace Pancake.UI
                     AffectObject.localScale = DefaultScale;
                     break;
                 case EButtonMotion.Normal:
+#if PANCAKE_UNITASK
                     try
                     {
                         await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
@@ -564,6 +567,7 @@ namespace Pancake.UI
                     {
                         break;
                     }
+#endif
 
                     _tweenUp = Tween.Scale(AffectObject,
                         DefaultScale,
@@ -583,6 +587,7 @@ namespace Pancake.UI
                             useUnscaledTime: ignoreTimeScale)
                         .OnComplete(() => _isCompletePhaseDown = true);
 
+#if PANCAKE_UNITASK
                     try
                     {
                         await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
@@ -591,6 +596,7 @@ namespace Pancake.UI
                     {
                         break;
                     }
+#endif
 
                     _tweenUp = Tween.Scale(AffectObject,
                         DefaultScale,
@@ -631,6 +637,7 @@ namespace Pancake.UI
                             motionData.ease,
                             useUnscaledTime: ignoreTimeScale)
                         .OnComplete(() => _isCompletePhaseDown = true);
+#if PANCAKE_UNITASK
                     try
                     {
                         await UniTask.WaitUntil(() => _isCompletePhaseDown, cancellationToken: _tokenSource.Token);
@@ -639,6 +646,7 @@ namespace Pancake.UI
                     {
                         break;
                     }
+#endif
 
                     _tweenUp = Tween.Scale(AffectObject,
                         DefaultScale,

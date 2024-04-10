@@ -47,7 +47,7 @@ namespace Pancake.UI
                     foreach (var variable in outfit.list) variable.Unlock();
                 }
             }
-
+        
             Setup();
             SetupPreview();
             return UniTask.CompletedTask;

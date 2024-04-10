@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace PancakeEditor.Common
 {
     public abstract class WindowInstallDependency : WindowBase
     {
-        protected abstract List<string> Dependencies { get; }
+        protected abstract Dictionary<string, string> Dependencies { get; }
 
         protected override void OnGUI()
         {
@@ -17,7 +18,7 @@ namespace PancakeEditor.Common
             GUILayout.Space(4);
 
 
-            bool isStillMissingPackage = IsStillMissingPackage(Dependencies, DrawValidateDependency);
+            bool isStillMissingPackage = IsStillMissingPackage(Dependencies.Keys.ToList(), DrawValidateDependency);
 
             GUILayout.Space(4);
 
@@ -25,7 +26,7 @@ namespace PancakeEditor.Common
             if (GUILayout.Button("Install All"))
             {
                 Close();
-                Client.AddAndRemove(Dependencies.ToArray());
+                Client.AddAndRemove(Dependencies.Values.ToArray());
             }
 
             GUI.enabled = true;
