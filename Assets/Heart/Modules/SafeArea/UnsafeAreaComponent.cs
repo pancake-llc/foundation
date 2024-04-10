@@ -1,5 +1,6 @@
 ﻿using System;
 using Pancake.Apex;
+using Pancake.Common;
 using UnityEngine;
 
 namespace Pancake.SafeArea

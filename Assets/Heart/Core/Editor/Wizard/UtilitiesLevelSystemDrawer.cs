@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Pancake;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
+
 using Pancake.LevelSystemEditor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -39,13 +41,13 @@ namespace PancakeEditor
                 if (GUILayout.Button("Setup Level Editor", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<LevelSystemEditorSetting>();
-                    if (!Directory.Exists(Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_EDITOR_RESOURCE_PATH);
-                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
+                    if (!Directory.Exists(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     RegistryManager.Add("com.unity.addressables", "1.21.20");
                     RegistryManager.Resolve();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
+                    Debug.Log($"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;
@@ -153,21 +155,21 @@ namespace PancakeEditor
             Vector3 normal;
             if (sceneView.in2DMode)
             {
-                bool state = EditorExtend.Get2DMouseScenePosition(out var mousePosition2d);
+                bool state = Common.Editor.Get2DMouseScenePosition(out var mousePosition2d);
                 mousePosition = mousePosition2d;
                 if (!state) return;
-                EditorExtend.FakeRenderSprite(LevelSystemEditorSetting.Instance.CurrentPickObject.pickedObject, mousePosition, Vector3.one, Quaternion.identity);
+                Common.Editor.FakeRenderSprite(LevelSystemEditorSetting.Instance.CurrentPickObject.pickedObject, mousePosition, Vector3.one, Quaternion.identity);
                 SceneView.RepaintAll();
 
                 if (e.type == EventType.MouseDown && e.button == 0)
                 {
                     AddPickObject(LevelSystemEditorSetting.Instance.CurrentPickObject, mousePosition);
-                    EditorExtend.SkipEvent();
+                    Common.Editor.SkipEvent();
                 }
             }
             else
             {
-                var pos = EditorExtend.GetInnerGuiPosition(sceneView);
+                var pos = Common.Editor.GetInnerGuiPosition(sceneView);
                 if (pos.Contains(e.mousePosition))
                 {
                     var ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
@@ -199,7 +201,7 @@ namespace PancakeEditor
                         if (e.type == EventType.MouseDown && e.button == 0 && LevelSystemEditorSetting.Instance.PreviewPickupObject)
                         {
                             AddPickObject(LevelSystemEditorSetting.Instance.CurrentPickObject, LevelSystemEditorSetting.Instance.PreviewPickupObject.transform.position);
-                            EditorExtend.SkipEvent();
+                            Common.Editor.SkipEvent();
                         }
                     }
 

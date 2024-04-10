@@ -1,10 +1,11 @@
 ﻿using Pancake.Apex;
-using Pancake.ExLibEditor;
-using Pancake.ExLibEditor.Windows;
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -59,7 +60,7 @@ namespace Pancake.ApexEditor
             object value = thisGetter.Invoke(target);
             if (GUI.Button(position, value?.ToString() ?? "null", EditorStyles.popup))
             {
-                ExSearchWindow searchWindow = ExSearchWindow.Create("Values");
+                SearchWindow searchWindow = SearchWindow.Create("Values");
 
                 object[] values = GetValues();
                 for (int i = 0; i < values.Length; i++)

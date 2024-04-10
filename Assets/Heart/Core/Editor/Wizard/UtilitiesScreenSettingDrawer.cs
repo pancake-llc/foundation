@@ -1,6 +1,8 @@
 using System.IO;
 using Pancake;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
+
 using Pancake.UI;
 using UnityEditor;
 using UnityEngine;
@@ -19,11 +21,11 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create Default Popup Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<DefaultTransitionSetting>();
-                    if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
-                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
+                    if (!Directory.Exists(Common.Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(DefaultTransitionSetting).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
+                    Debug.Log($"{nameof(DefaultTransitionSetting).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

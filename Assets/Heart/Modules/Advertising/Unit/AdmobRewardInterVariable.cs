@@ -1,4 +1,5 @@
 ﻿using System;
+using Pancake.Common;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;

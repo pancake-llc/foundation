@@ -1,3 +1,5 @@
+using Pancake.Common;
+
 namespace Pancake.Component
 {
     using UnityEngine;

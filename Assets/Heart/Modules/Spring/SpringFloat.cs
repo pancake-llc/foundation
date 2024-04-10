@@ -1,4 +1,6 @@
-﻿namespace Pancake.Spring
+﻿using Pancake.Common;
+
+namespace Pancake.Spring
 {
     /// <summary>
     /// Closed-form solution for the ODE of damped harmonic oscillator.

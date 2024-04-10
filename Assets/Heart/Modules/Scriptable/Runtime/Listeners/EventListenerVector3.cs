@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pancake.Common;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Pancake.Scriptable
@@ -19,7 +20,7 @@ namespace Pancake.Scriptable
             [SerializeField] private ScriptableEventVector3 scriptableEvent;
             public override ScriptableEvent<Vector3> ScriptableEvent => scriptableEvent;
 
-            [SerializeField] private Pancake.Vector3UnityEvent response;
+            [SerializeField] private Vector3UnityEvent response;
             public override UnityEvent<Vector3> Response => response;
         }
     }

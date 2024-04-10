@@ -1,4 +1,6 @@
-﻿namespace Pancake.UI
+﻿using Pancake.Common;
+
+namespace Pancake.UI
 {
     public class AnimationPlayer : IUpdatable
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using PancakeEditor.Common;
 using UnityEngine;
 using UnityEditor;
 #if PANCAKE_SPINE
@@ -6,7 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Pancake;
-using Pancake.ExLibEditor;
+
 using Spine;
 using Spine.Unity;
 using Spine.Unity.Editor;

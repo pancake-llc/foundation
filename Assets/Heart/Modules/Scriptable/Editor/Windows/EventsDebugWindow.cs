@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
+
 using Pancake.Scriptable;
 using UnityEngine.SceneManagement;
 
 namespace Pancake.ScriptableEditor
 {
-    public class EventsDebugWindow : ScriptableWindowBase
+    public class EventsDebugWindow : WindowBase
     {
-        protected override string HeaderTitle => "Event Debug Window";
-
         private string _methodName = string.Empty;
         private bool _hasClicked;
         private bool _wasFound;

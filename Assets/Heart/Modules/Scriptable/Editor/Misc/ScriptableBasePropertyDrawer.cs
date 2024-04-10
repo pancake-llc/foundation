@@ -1,6 +1,8 @@
-﻿using Pancake.ExLibEditor;
+﻿using PancakeEditor.Common;
+
 using UnityEditor;
 using UnityEngine;
+using Editor = UnityEditor.Editor;
 using Object = UnityEngine.Object;
 
 namespace Pancake.ScriptableEditor

@@ -1,6 +1,5 @@
 ﻿using System;
 using Pancake.Apex;
-using Pancake.ExLibEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +7,9 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using System.Collections;
+using PancakeEditor.Common;
 using UnityEditor.Callbacks;
+using Editor = UnityEditor.Editor;
 using Object = UnityEngine.Object;
 
 namespace Pancake.ApexEditor

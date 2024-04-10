@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Pancake;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
+
 using Pancake.Localization;
 using Pancake.LocalizationEditor;
 using UnityEditor;
@@ -81,11 +83,11 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create Localization Settings", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     setting = ScriptableObject.CreateInstance<LocaleSettings>();
-                    if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
-                    AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(LocaleSettings)}.asset");
+                    if (!Directory.Exists(Common.Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(LocaleSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(LocaleSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(LocaleSettings)}.asset");
+                    Debug.Log($"{nameof(LocaleSettings).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(LocaleSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

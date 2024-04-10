@@ -1,4 +1,5 @@
 ﻿using System;
+using Pancake.Common;
 using UnityEngine;
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB

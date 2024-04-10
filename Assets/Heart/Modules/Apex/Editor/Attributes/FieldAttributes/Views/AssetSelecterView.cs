@@ -1,7 +1,8 @@
 ﻿using Pancake.Apex;
-using Pancake.ExLibEditor.Windows;
+
 using System;
 using System.IO;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -61,7 +62,7 @@ namespace Pancake.ApexEditor
                     type = attribute.AssetType;
                 }
 
-                ExSearchWindow searchWindow = ExSearchWindow.Create();
+                SearchWindow searchWindow = SearchWindow.Create();
                 foreach (string path in Directory.EnumerateFiles(attribute.Path, attribute.Pattern, attribute.Option))
                 {
                     Object asset = AssetDatabase.LoadAssetAtPath(path, type);

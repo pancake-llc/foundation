@@ -1,9 +1,10 @@
 ﻿using Pancake.Apex;
-using Pancake.ExLibEditor;
-using Pancake.ExLibEditor.Windows;
+
+
 using System;
 using System.Linq;
 using System.Reflection;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -179,7 +180,7 @@ namespace Pancake.ApexEditor
         private void DropdownTypes(Rect position, SerializedField serializedField)
         {
             string title = string.IsNullOrWhiteSpace(attribute.DropdownTitle) ? "Types" : attribute.DropdownTitle;
-            ExSearchWindow searchWindow = ExSearchWindow.Create(title);
+            SearchWindow searchWindow = SearchWindow.Create(title);
 
             Type memberType = serializedField.GetMemberType();
             Type elementType = memberType.GetElementType();

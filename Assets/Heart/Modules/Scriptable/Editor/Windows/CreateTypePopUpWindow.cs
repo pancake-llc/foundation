@@ -1,5 +1,6 @@
 ﻿using System.IO;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ namespace Pancake.ScriptableEditor
         {
             editorWindow.position = Uniform.CenterInWindow(editorWindow.position, _position);
 
-            Uniform.DrawHeader("Create new Type");
+            //Uniform.DrawHeader("Create new Type");
             DrawTextField();
             DrawTypeToggles();
             GUILayout.Space(20);
@@ -81,7 +82,7 @@ namespace Pancake.ScriptableEditor
             GUILayout.Space(10);
             EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
-            if (!EditorExtend.IsBuiltInType(_typeText))
+            if (!PancakeEditor.Common.Editor.IsBuiltInType(_typeText))
             {
                 DrawToggle(ref _baseClass,
                     nameType,
@@ -140,7 +141,7 @@ namespace Pancake.ScriptableEditor
                 var progress = 0f;
                 EditorUtility.DisplayProgressBar("Progress", "Start", progress);
 
-                if (_baseClass && !EditorExtend.IsBuiltInType(_typeText))
+                if (_baseClass && !PancakeEditor.Common.Editor.IsBuiltInType(_typeText))
                 {
                     string template = _monoBehaviour ? EditorResources.MonoBehaviourTemplate.text : EditorResources.ClassTemplate.text;
                     newFile = CreateNewClass(template, _typeText, $"{_typeText}.cs", _path);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Pancake;
+using Pancake.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,10 +21,10 @@ namespace PancakeEditor
                 if (GUILayout.Button("Create", GUILayout.Width(80)))
                 {
                     pipelineSettings = ScriptableObject.CreateInstance<AndroidBuildPipelineSettings>();
-                    if (!Directory.Exists(Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_EDITOR_RESOURCE_PATH);
-                    AssetDatabase.CreateAsset(pipelineSettings, $"{Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AndroidBuildPipelineSettings)}.asset");
+                    if (!Directory.Exists(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(pipelineSettings, $"{Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AndroidBuildPipelineSettings)}.asset");
                     Debug.Log(
-                        $"{nameof(AndroidBuildPipelineSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AndroidBuildPipelineSettings)}.asset");
+                        $"{nameof(AndroidBuildPipelineSettings).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AndroidBuildPipelineSettings)}.asset");
                 }
             }
 

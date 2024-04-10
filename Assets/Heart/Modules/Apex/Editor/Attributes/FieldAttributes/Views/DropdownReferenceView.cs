@@ -1,8 +1,9 @@
 ﻿using Pancake.Apex;
-using Pancake.ExLibEditor.Windows;
+
 using System;
 using System.Reflection;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -212,8 +213,8 @@ namespace Pancake.ApexEditor
         /// <param name="serializedField">Serialized field of reference.</param>
         private void DropdownReferences(Rect position, SerializedField serializedField)
         {
-            ExSearchWindow window = ExSearchWindow.Create("References");
-            window.SetSortType(ExSearchWindow.SortType.None);
+            SearchWindow window = SearchWindow.Create("References");
+            window.SetSortType(SearchWindow.SortType.None);
 
             window.AddEntry("None", () => SetReference(null, null));
 

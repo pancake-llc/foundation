@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using Pancake.Common;
 
 namespace Pancake.MobileInput
 {

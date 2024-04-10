@@ -19,7 +19,7 @@ namespace Pancake.Scriptable
             [SerializeField] private ScriptableEventInt scriptableEvent;
             public override ScriptableEvent<int> ScriptableEvent => scriptableEvent;
 
-            [SerializeField] private Pancake.IntUnityEvent response;
+            [SerializeField] private Pancake.Common.IntUnityEvent response;
             public override UnityEvent<int> Response => response;
         }
     }

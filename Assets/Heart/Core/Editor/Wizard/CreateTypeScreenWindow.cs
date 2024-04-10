@@ -1,5 +1,6 @@
 using System.IO;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ namespace PancakeEditor
         {
             editorWindow.position = Uniform.CenterInWindow(editorWindow.position, _position);
 
-            Uniform.DrawHeader("Create new Type");
+            //Uniform.DrawHeader("Create new Type");
             EditorGUI.BeginChangeCheck();
             _typeText = EditorGUILayout.TextField(_typeText, EditorStyles.textField);
             if (EditorGUI.EndChangeCheck())

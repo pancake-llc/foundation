@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Pancake.ExLib;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
 using Pancake.Monetization;
 using UnityEditor;
 using UnityEngine;
@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Pancake.MonetizationEditor
 {
     [CustomEditor(typeof(AdSettings), true)]
-    public class AdSettingsDrawer : Editor
+    public class AdSettingsDrawer : UnityEditor.Editor
     {
         private SerializedProperty _adCheckingIntervalProperty;
         private SerializedProperty _adLoadingIntervalProperty;

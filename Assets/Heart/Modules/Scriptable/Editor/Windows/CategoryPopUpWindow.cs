@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
+
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
@@ -37,7 +39,7 @@ namespace Pancake.ScriptableEditor
         public override void OnGUI(Rect rect)
         {
             editorWindow.position = Uniform.CenterInWindow(editorWindow.position, _position);
-            Uniform.DrawHeader("Categoties");
+            //Uniform.DrawHeader("Categoties");
             GUILayout.Space(10f);
             DrawCategories();
             GUILayout.Space(10f);

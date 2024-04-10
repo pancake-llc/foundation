@@ -1,24 +1,5 @@
 namespace Pancake
 {
-    /// <summary>
-    /// TimeMode
-    /// </summary>
-    public enum TimeMode
-    {
-        Normal = 0,
-        Unscaled = 1,
-    }
-
-    /// <summary>
-    /// UpdateMode
-    /// </summary>
-    public enum UpdateMode
-    {
-        Update = 0,
-        FixedUpdate = 1,
-        LateUpdate = 2,
-    }
-
     public enum ResetType
     {
         /// <summary>

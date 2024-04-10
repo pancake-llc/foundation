@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
+
 using Pancake.LocalizationEditor;
 using Pancake.ScriptableEditor;
 using UnityEditor;
@@ -11,7 +12,7 @@ using UnityEngine.U2D;
 // ReSharper disable UnusedMember.Local
 namespace PancakeEditor
 {
-    public class Wizard : ScriptableWindowBase
+    public class Wizard : WindowBase
     {
         internal const float BUTTON_HEIGHT = 30f;
 
@@ -129,7 +130,7 @@ namespace PancakeEditor
 
         #endregion
 
-        private readonly Color[] _colors = {Uniform.RichBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
+        private readonly Color[] _colors = {Uniform.RaisinBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
         private const float TAB_WIDTH = 65f;
 
         [SerializeField] private int tabIndex = -1;
@@ -145,8 +146,9 @@ namespace PancakeEditor
             window.Show(true);
         }
 
-        protected override void OnEnable()
+        protected override void Init()
         {
+            base.Init();
             UtilitiesLevelSystemDrawer.OnEnabled();
             if (isInitialized)
             {
@@ -170,7 +172,7 @@ namespace PancakeEditor
 
         protected override void OnGUI()
         {
-            Uniform.DrawHeader("Wizard");
+            //Uniform.DrawHeader("Wizard");
             Uniform.DrawLine(2);
             DrawTabs();
             EditorGUILayout.BeginHorizontal();

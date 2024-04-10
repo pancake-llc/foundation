@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using Pancake;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -21,18 +23,18 @@ namespace PancakeEditor
                     if (heartSetting == null)
                     {
                         var setting = ScriptableObject.CreateInstance<HeartSettings>();
-                        if (!Directory.Exists(Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_RESOURCE_PATH);
-                        AssetDatabase.CreateAsset(setting, $"{Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
-                        Debug.Log($"{nameof(HeartSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
+                        if (!Directory.Exists(Common.Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_RESOURCE_PATH);
+                        AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
+                        Debug.Log($"{nameof(HeartSettings).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(HeartSettings)}.asset");
                     }
 
                     if (heartEditorSetting == null)
                     {
                         var editorSetting = ScriptableObject.CreateInstance<HeartEditorSettings>();
-                        if (!Directory.Exists(Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Editor.DEFAULT_EDITOR_RESOURCE_PATH);
-                        AssetDatabase.CreateAsset(editorSetting, $"{Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HeartEditorSettings)}.asset");
+                        if (!Directory.Exists(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH);
+                        AssetDatabase.CreateAsset(editorSetting, $"{Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HeartEditorSettings)}.asset");
                         Debug.Log(
-                            $"{nameof(HeartEditorSettings).TextColor("#f75369")} was created ad {Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HeartEditorSettings)}.asset");
+                            $"{nameof(HeartEditorSettings).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(HeartEditorSettings)}.asset");
                     }
 
                     AssetDatabase.SaveAssets();

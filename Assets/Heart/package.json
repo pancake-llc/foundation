@@ -15,7 +15,6 @@
     "unity"
   ],
   "dependencies": {
-    "com.unity.sharp-zip-lib": "1.3.7",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.burst": "1.8.13",
     "com.unity.collections": "2.1.4",

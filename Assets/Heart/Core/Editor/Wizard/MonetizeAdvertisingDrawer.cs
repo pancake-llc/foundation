@@ -3,8 +3,9 @@ using System.IO;
 using Pancake.Monetization;
 using Pancake;
 #endif
-using Pancake.ExLibEditor;
-using Pancake.ExLib;
+using Pancake.Common;
+using PancakeEditor.Common;
+
 using UnityEditor;
 using UnityEngine;
 

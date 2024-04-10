@@ -1,6 +1,7 @@
 ﻿using Pancake.Apex;
-using Pancake.ExLibEditor.Windows;
+
 using System.Collections.Generic;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -51,8 +52,8 @@ namespace Pancake.ApexEditor
                     emptyIcon = emptyTexture;
                 }
 
-                ExSearchWindow searchWindow = ExSearchWindow.Create(ObjectNames.NicifyVariableName(GetEnumType().Name));
-                searchWindow.SetSortType(ExSearchWindow.SortType.None);
+                SearchWindow searchWindow = SearchWindow.Create(ObjectNames.NicifyVariableName(GetEnumType().Name));
+                searchWindow.SetSortType(SearchWindow.SortType.None);
 
                 List<MenuItem> menuItems = GetMenuItems();
                 for (int i = 0; i < menuItems.Count; i++)

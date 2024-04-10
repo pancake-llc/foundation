@@ -1,8 +1,9 @@
 ﻿#if UNITY_ANDROID
 using System.Diagnostics;
-using Pancake.ExLibEditor;
+
 using UnityEditor.Android;
 #endif
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 

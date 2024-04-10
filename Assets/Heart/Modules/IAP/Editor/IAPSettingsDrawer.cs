@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Pancake.ExLibEditor;
+using PancakeEditor.Common;
 using Pancake.IAP;
 using UnityEditor;
 using UnityEditorInternal;
@@ -14,7 +14,7 @@ using UnityEngine.Purchasing;
 namespace Pancake.IAPEditor
 {
     [CustomEditor(typeof(IAPSettings))]
-    public class IAPSettingsDrawer : Editor
+    public class IAPSettingsDrawer : UnityEditor.Editor
     {
         private SerializedProperty _skusDataProperty;
         private SerializedProperty _productsProperty;

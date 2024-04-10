@@ -1,9 +1,12 @@
 ﻿using System.IO;
 using Pancake;
-using Pancake.ExLibEditor;
+using Pancake.Common;
+using PancakeEditor.Common;
+
 using PancakeEditor.Hierarchy;
 using UnityEditor;
 using UnityEngine;
+using Editor = PancakeEditor.Common.Editor;
 
 namespace PancakeEditor
 {

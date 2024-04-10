@@ -1,11 +1,12 @@
 ﻿using Pancake.Apex;
-using Pancake.ExLibEditor;
-using Pancake.ExLibEditor.Windows;
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
@@ -1378,7 +1379,7 @@ namespace Pancake.ApexEditor
         /// <param name="position">Button rectangle position.</param>
         private void OpenDerivedTypesWindow(Rect position)
         {
-            ExSearchWindow searchWindow = ExSearchWindow.Create("Derived Types");
+            SearchWindow searchWindow = SearchWindow.Create("Derived Types");
 
             TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom(GetMemberType());
             for (int i = 0; i < types.Count; i++)

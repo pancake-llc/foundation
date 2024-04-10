@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Pancake.ExLibEditor.Windows;
+using PancakeEditor.Common;
 using Pancake.Localization;
 using UnityEditor;
 using UnityEngine;
@@ -38,7 +38,7 @@ namespace Pancake.LocalizationEditor
             int newValueIndex = currentValueIndex;
             if (GUI.Button(position, languages[currentValueIndex].Name, EditorStyles.popup))
             {
-                var searchWindow = ExSearchWindow.Create("Choose Language");
+                var searchWindow = SearchWindow.Create("Choose Language");
 
                 foreach (var lang in languages)
                 {
@@ -78,7 +78,7 @@ namespace Pancake.LocalizationEditor
 
             if (GUI.Button(position, languages[currentValueIndex].Name, EditorStyles.popup))
             {
-                var searchWindow = ExSearchWindow.Create("Choose Language");
+                var searchWindow = SearchWindow.Create("Choose Language");
                 foreach (var lang in languages)
                 {
                     var cache = lang;

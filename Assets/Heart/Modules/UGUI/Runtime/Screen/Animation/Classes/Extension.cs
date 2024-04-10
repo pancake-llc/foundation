@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Pancake.Common;
 using UnityEngine;
 
 namespace Pancake.UI
@@ -10,7 +11,7 @@ namespace Pancake.UI
         {
             var player = new AnimationPlayer(transition);
 
-            App.AddListener(UpdateMode.Update, Update);
+            App.AddListener(EUpdateMode.Update, Update);
             progress?.Report(0.0f);
             player.Play();
             while (!player.IsFinished)
@@ -19,7 +20,7 @@ namespace Pancake.UI
                 progress?.Report(player.Time / transition.Duration);
             }
 
-            App.RemoveListener(UpdateMode.Update, Update);
+            App.RemoveListener(EUpdateMode.Update, Update);
             yield break;
 
             void Update() => player.Update(Time.unscaledDeltaTime);
