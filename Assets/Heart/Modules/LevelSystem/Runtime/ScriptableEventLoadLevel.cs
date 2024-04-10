@@ -1,5 +1,5 @@
 ﻿using Pancake.Scriptable;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Pancake.LevelSystem

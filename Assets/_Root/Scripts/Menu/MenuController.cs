@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Pancake.Localization;
 using Pancake.Scriptable;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;

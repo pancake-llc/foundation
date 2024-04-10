@@ -8,7 +8,7 @@ using Pancake.SignIn;
 using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;

@@ -2,7 +2,7 @@ using Pancake.Component;
 using Pancake.Linq;
 using Pancake.Monetization;
 using Pancake.SceneFlow;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 

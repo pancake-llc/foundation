@@ -17,6 +17,13 @@
       },
       "hash": "25a9cdb4007f5fc05692576bf27d65063de0b4cd"
     },
+    "com.cysharp.unitask": {
+      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d057074f177b078e29f10dd511b54df48a8806ea"
+    },
     "com.esotericsoftware.spine.spine-csharp": {
       "version": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1",
       "depth": 0,

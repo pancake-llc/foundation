@@ -6,7 +6,7 @@ using Pancake.Linq;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Spine;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Spine.Unity;
 using UnityEngine;
 

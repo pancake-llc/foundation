@@ -1,4 +1,4 @@
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 namespace Pancake.UI
 {

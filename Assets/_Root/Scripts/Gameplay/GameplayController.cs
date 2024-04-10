@@ -3,7 +3,7 @@ using Pancake.LevelSystem;
 using Pancake.Monetization;
 using Pancake.Scriptable;
 using Pancake.Sound;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,6 +1,6 @@
 ﻿using Pancake.Apex;
 using Pancake.Sound;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Pancake.UI

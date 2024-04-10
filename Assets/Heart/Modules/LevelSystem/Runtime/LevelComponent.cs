@@ -69,7 +69,7 @@ namespace Pancake.LevelSystem
             else
             {
                 // recreate
-                var levelInstantiate = FindObjectOfType<LevelInstantiate>();
+                var levelInstantiate = FindAnyObjectByType<LevelInstantiate>();
                 levelInstantiate.OnReCreateLevelLoaded();
             }
         }

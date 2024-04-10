@@ -2,7 +2,7 @@ using Pancake.Apex;
 using Pancake.Common;
 using Pancake.SceneFlow;
 using Pancake.Spine;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Spine.Unity;
 using UnityEngine;
 

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Pancake.SignIn;
 using Pancake.Localization;
 using Pancake.Scriptable;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Pancake.UI;
 using Unity.Services.Authentication;
 using Unity.Services.CloudSave;

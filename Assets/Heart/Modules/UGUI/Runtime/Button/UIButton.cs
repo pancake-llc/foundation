@@ -3,7 +3,7 @@ using System.Collections;
 using System.Threading;
 using Pancake.Common;
 using Pancake.Sound;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Pancake.Tracking;
 using PrimeTween;
 using UnityEngine;

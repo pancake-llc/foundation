@@ -5,7 +5,7 @@ using Coffee.UIEffects;
 using Newtonsoft.Json;
 using Pancake.Common;
 using Pancake.SceneFlow;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using PrimeTween;
 using TMPro;
 using Unity.Services.Authentication;

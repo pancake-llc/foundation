@@ -2,7 +2,7 @@ using Pancake.Apex;
 using Pancake.Localization;
 using Pancake.Notification;
 using Pancake.Scriptable;
-using Pancake.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
