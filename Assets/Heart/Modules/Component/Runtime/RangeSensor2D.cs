@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using Pancake.Apex;
 using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Component
 {
-    [HideMonoScript]
     public class RangeSensor2D : Sensor
     {
         [Space(8)] [SerializeField] private float radius = 1f;
@@ -15,8 +13,8 @@ namespace Pancake.Component
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-        [Space(8)] [SerializeField, NotNull] private Transform center;
-        [SerializeField, NotNull] private Transform source;
+        [Space(8)] [SerializeField] private Transform center;
+        [SerializeField] private Transform source;
         [SerializeField] private ScriptableEventGameObject detectedEvent;
 
         private Collider2D[] _hits;

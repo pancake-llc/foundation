@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Common;
 using Pancake.Linq;
 using Pancake.Scriptable;
@@ -14,7 +14,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Pancake.LevelSystem
 {
-    [HideMonoScript]
+
     [EditorIcon("csharp")]
     public class LevelCoordinator : GameComponent
     {
@@ -26,7 +26,7 @@ namespace Pancake.LevelSystem
         [SerializeField] private ScriptableEventGetLevelCached eventGetNextLevelLoaded;
         [SerializeField] private ScriptableEventGetLevelCached eventGetPreviousLevelLoaded;
         [SerializeField] private ELoopType loopType = ELoopType.Shuffle;
-        [HorizontalLine(Space = 10)] [SerializeField, Array] private LevelSetting[] levelSettings;
+        [HorizontalLine] [SerializeField] private LevelSetting[] levelSettings;
 
         [SerializeField, ReadOnly] private LevelComponent previousLevelLoaded;
         [SerializeField, ReadOnly] private LevelComponent nextLevelLoaded;

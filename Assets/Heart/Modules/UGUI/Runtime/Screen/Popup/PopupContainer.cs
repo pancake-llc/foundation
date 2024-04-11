@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
 using UnityEngine;
@@ -17,7 +17,7 @@ namespace Pancake.UI
         private static readonly Dictionary<int, PopupContainer> InstanceCacheByTransform = new Dictionary<int, PopupContainer>();
         private static readonly Dictionary<string, PopupContainer> InstanceCacheByName = new Dictionary<string, PopupContainer>();
 
-        [SerializeField, Label("Name")] private string displayName;
+        [SerializeField, LabelText("Name")] private string displayName;
         [SerializeField] private PopupBackdrop overridePopupPrefab;
 
         private readonly Dictionary<string, AssetLoadHandle<GameObject>> _assetLoadHandles = new Dictionary<string, AssetLoadHandle<GameObject>>();

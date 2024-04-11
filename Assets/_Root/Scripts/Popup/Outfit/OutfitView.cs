@@ -14,12 +14,12 @@ namespace Pancake.UI
         [SerializeField] private AssetReferenceGameObject skinHatCollectionSheet;
         [SerializeField] private AssetReferenceGameObject skinShirtCollectionSheet;
         [SerializeField] private AssetReferenceGameObject skinShoesCollectionSheet;
-        [SerializeField, SheetPickup] private string outfitSheetPreview;
+        [SerializeField/*, SheetPickup*/] private string outfitSheetPreview;
         [SerializeField] private Button buttonHat;
         [SerializeField] private Button buttonShirt;
         [SerializeField] private Button buttonShoes;
         [SerializeField] private Button buttonShop;
-        [SerializeField, PopupPickup] private string popupShop;
+        [SerializeField/*, PopupPickup*/] private string popupShop;
         [SerializeField] private TabView tabHat;
         [SerializeField] private TabView tabShirt;
         [SerializeField] private TabView tabShoes;

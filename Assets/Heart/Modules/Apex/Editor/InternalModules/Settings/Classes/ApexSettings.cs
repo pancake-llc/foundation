@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.ApexEditor
 {
-    [HideMonoScript]
+
     [UnityEditor.FilePath("ProjectSettings/ApexSettings.asset", UnityEditor.FilePathAttribute.Location.ProjectFolder)]
     public sealed class ApexSettings : ScriptableSingleton<ApexSettings>
     {

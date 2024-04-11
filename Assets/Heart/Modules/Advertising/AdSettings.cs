@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Pancake.Apex;
+
 using UnityEngine;
 
 
 namespace Pancake.Monetization
 {
-    [HideMonoScript]
+
     [EditorIcon("scriptable_ad")]
     public class AdSettings : ScriptableObject
     {

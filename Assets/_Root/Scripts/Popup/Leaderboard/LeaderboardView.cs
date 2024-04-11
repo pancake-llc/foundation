@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pancake.Apex;
 using Pancake.Common;
 using Pancake.SignIn;
 using Pancake.Localization;
@@ -68,9 +67,9 @@ namespace Pancake.UI
         [SerializeField] private GameObject contentSlot;
         [SerializeField] private GameObject rootLeaderboard;
         [SerializeField] private GameObject block;
-        [SerializeField, Array] private LeaderboardElementView[] slots;
+        [SerializeField] private LeaderboardElementView[] slots;
         [SerializeField] private AnimationCurve displayRankCurve;
-        [SerializeField, PopupPickup] private string popupRename;
+        [SerializeField/*, PopupPickup*/] private string popupRename;
 
         [SerializeField] private LeaderboardElementColor colorRank1 = new LeaderboardElementColor(new Color(1f, 0.82f, 0f),
             new Color(0.44f, 0.33f, 0f),
@@ -102,7 +101,7 @@ namespace Pancake.UI
         [SerializeField] private BoolVariable status;
         [SerializeField] private ScriptableEventNoParam loginEvent;
         [SerializeField] private ScriptableEventNoParam gpgsGetNewServerCode;
-        [SerializeField, PopupPickup] private string popupNotification;
+        [SerializeField/*, PopupPickup*/] private string popupNotification;
         [SerializeField] private LocaleText localeLoginGpgsFail;
         [SerializeField] private LocaleText localeLoginAppleFail;
 

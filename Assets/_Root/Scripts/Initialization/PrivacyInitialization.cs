@@ -1,4 +1,3 @@
-using Pancake.Apex;
 using Pancake.Common;
 using Pancake.Tracking;
 #if UNITY_IOS
@@ -9,7 +8,7 @@ namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    [HideMonoScript]
+
     public class PrivacyInitialization : Initialize
     {
         public override void Init()

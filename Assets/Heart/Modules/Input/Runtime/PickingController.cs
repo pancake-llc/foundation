@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Common;
 using Pancake.Scriptable;
 using UnityEngine.Events;
@@ -59,55 +59,55 @@ namespace Pancake.MobileInput
         private bool useLegacyTransformMoved;
 
         [Space]
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Callback")]
         [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected.")]
         private TransformUnityEvent onTransformSelectedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Callback")]
         [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is selected through a long tap.")]
         private PickableSelectedUnityEvent onTransformSelectedExtendedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is deselected.")]
+        [SerializeField, FoldoutGroup("Pickable Callback")] [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is deselected.")]
         private TransformUnityEvent onTransformDeselectedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Callback")]
         [Tooltip("Here you can set up callbacks to be invoked when the moving of a pickable transform is started.")]
         private TransformUnityEvent onTransformMoveStartedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Callback")]
         [Tooltip("Here you can set up callbacks to be invoked when a pickable transform is moved to a new position.")]
         private TransformUnityEvent onTransformMovedCallback;
 
-        [SerializeField, Foldout("Pickable Callback", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Callback")]
         [Tooltip(
             "Here you can set up callbacks to be invoked when the moving of a pickable transform is ended. The event requires 2 parameters. The first is the start position of the drag. The second is the dragged transform. The start position can be used to reset the transform in case the drag has ended on an invalid position.")]
         private Vector3TransformUnityEvent onTransformMoveEndedCallback;
 
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Channel")]
         private ScriptableEventTransform transformSelectedEvent;
 
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Channel")]
         private InputEventPickableSelected transformSelectedExtendedEvent;
 
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Channel")]
         private ScriptableEventTransform transformDeselectedEvent;
 
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Channel")]
         private ScriptableEventTransform transformMoveStartedEvent;
 
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Channel")]
         private ScriptableEventTransform transformMovedEvent;
 
-        [SerializeField, Foldout("Pickable Channel", Style = "Group")]
+        [SerializeField, FoldoutGroup("Pickable Channel")]
         private ScriptableEventVector3Transform transformMoveEndedEvent;
 
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private BoolVariable longTapStartsDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventStartDrag onStartDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventUpdateDrag onUpdateDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventStopDrag onStopDrag;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventFingerDown onFingerDown;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventFingerUp onFingerUp;
-        [SerializeField, Foldout("TouchInput Reference", Style = "Group")] private InputEventClick onClick;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private BoolVariable longTapStartsDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventStartDrag onStartDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventUpdateDrag onUpdateDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventStopDrag onStopDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventFingerDown onFingerDown;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventFingerUp onFingerUp;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventClick onClick;
 
         #endregion
 

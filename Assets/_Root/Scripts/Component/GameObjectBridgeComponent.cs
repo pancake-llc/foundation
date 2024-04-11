@@ -1,15 +1,15 @@
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Scriptable;
 
 namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    [HideMonoScript]
+
     [EditorIcon("csharp")]
     public class GameObjectBridgeComponent : GameComponent
     {
-        [SerializeField, Label("Event")] private ScriptableEventGetGameObject getGameObjectEvent;
+        [SerializeField, LabelText("Event")] private ScriptableEventGetGameObject getGameObjectEvent;
         [SerializeField] private GameObject target;
 
         protected void OnEnable() { getGameObjectEvent.OnRaised += GetGameObject; }

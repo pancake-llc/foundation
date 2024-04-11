@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8223c6a82e2c4b3680865bf569e5c07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enabled: 1
+  enabled: 0
   master: 1
   animate: 1
+  includeAllAssemblies: 1
+  includeDefaultAssemblies: 1
+  assemblyScopes: []
   exceptTypes: []

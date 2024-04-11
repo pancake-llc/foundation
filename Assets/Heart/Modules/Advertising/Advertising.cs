@@ -3,13 +3,13 @@ using System.Collections.Generic;
 #if PANCAKE_ADMOB
 using GoogleMobileAds.Ump.Api;
 #endif
-using Pancake.Apex;
+
 using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
-    [HideMonoScript]
+
     public class Advertising : GameComponent
     {
         private AdClient _adClient;

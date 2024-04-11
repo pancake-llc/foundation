@@ -1,5 +1,4 @@
 using System;
-using Pancake.Apex;
 
 namespace Pancake.SceneFlow
 {
@@ -8,14 +7,14 @@ namespace Pancake.SceneFlow
     [CreateAssetMenu(menuName = "Pancake/Game/Outfit/Outfit Container", fileName = "OutfitContainer.asset")]
     public class CharacterOutfitContainer : ScriptableObject
     {
-        [Array] public CharacterOutfit[] outfits;
+        public CharacterOutfit[] outfits;
     }
 
     [Serializable]
     public class CharacterOutfit
     {
         public OutfitType type;
-        [Array] public OutfitUnitVariable[] list;
+        public OutfitUnitVariable[] list;
     }
 
 

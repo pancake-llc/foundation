@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Linq;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
@@ -11,10 +11,9 @@ namespace Pancake.Scriptable
 {
     public abstract class ScriptableList<T> : ScriptableListBase, IReset, IList<T>, IDrawObjectsInInspector
     {
-        [Message("Clear the list when:" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
+        [Blockquote("Clear the list when:" + "\nScene Loaded : when the scene is loaded by LoadSceneMode.Single" +
                  "\nAdditive Scene Loaded : when the scene is loaded by LoadSceneMode.Additive" +
-                 "\nApplication Start : Once, when the application starts. Modifications persists between scenes",
-            Height = 58)]
+                 "\nApplication Start : Once, when the application starts. Modifications persists between scenes")]
         [SerializeField]
         private ResetType resetOn = ResetType.SceneLoaded;
 

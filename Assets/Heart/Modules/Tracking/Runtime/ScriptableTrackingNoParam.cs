@@ -1,4 +1,4 @@
-﻿using Pancake.Apex;
+﻿using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake.Tracking
@@ -11,8 +11,8 @@ namespace Pancake.Tracking
         [SerializeField, TextArea(3, 6)] private string developerDescription;
 
 
-        [SerializeField, Label("Firebase")] private ScriptableTrackingFirebaseNoParam scriptableTrackingFirebaseNoParamEvent;
-        [SerializeField, Label("Adjust")] private ScriptableTrackingAdjustNoParam scriptableTrackingAdjustNoParamEvent;
+        [SerializeField, LabelText("Firebase")] private ScriptableTrackingFirebaseNoParam scriptableTrackingFirebaseNoParamEvent;
+        [SerializeField, LabelText("Adjust")] private ScriptableTrackingAdjustNoParam scriptableTrackingAdjustNoParamEvent;
 
 
         public void Track()

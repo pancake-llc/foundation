@@ -1,13 +1,11 @@
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake.MobileInput
 {
     public class TouchPickable : MonoBehaviour
     {
-        [Message("pickableTransform only needs to be set \nin case the collider of the pickable item is not on the root object of the pickable item",
-            Height = 36,
-            Style = MessageStyle.Warning)]
+        [Blockquote("pickableTransform only needs to be set \nin case the collider of the pickable item is not on the root object of the pickable item")]
         [SerializeField]
         private Optional<Transform> pickableTransform;
 

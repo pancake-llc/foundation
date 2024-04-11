@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Common;
 using Pancake.Localization;
 using UnityEngine;
@@ -34,21 +34,21 @@ namespace Pancake.Notification
         [SerializeField] private bool repeat;
         [SerializeField] internal bool bigPicture;
 
-        [ShowIf(nameof(bigPicture)), Message("File bigpicture must be place in folder StreamingAsset", Height = 24),
-         Message("Name Picture must contains file extension ex .jpg", Height = 24), Label("  Name Picture")]
+        [ShowIf(nameof(bigPicture)), Blockquote("File bigpicture must be place in folder StreamingAsset \nName Picture must contains file extension ex .jpg"),
+         LabelText("  Name Picture")]
         [SerializeField]
         internal string namePicture;
 
         [SerializeField] internal bool overrideIcon;
 
-        [SerializeField, ShowIf(nameof(overrideIcon)), Label("  Small Icon")]
+        [SerializeField, ShowIf(nameof(overrideIcon)), LabelText("  Small Icon")]
         internal string smallIcon = "icon_0";
 
-        [SerializeField, ShowIf(nameof(overrideIcon)), Label("  Large Icon")]
+        [SerializeField, ShowIf(nameof(overrideIcon)), LabelText("  Large Icon")]
         internal string largeIcon = "icon_1";
 
 
-        [Array, SerializeField] private NotificationData[] datas;
+        [SerializeField] private NotificationData[] datas;
 
 
         public void Send()

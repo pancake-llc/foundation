@@ -1,4 +1,5 @@
-using Pancake.Apex;
+using Alchemy.Inspector;
+using UnityEngine.UIElements;
 
 namespace Pancake.SceneFlow
 {
@@ -8,11 +9,20 @@ namespace Pancake.SceneFlow
     public class CreditElement : ScriptableObject
     {
         public CreditElementType type;
-        [ShowIf(nameof(type), CreditElementType.Message)] public string message;
-        [ShowIf(nameof(type), CreditElementType.Image)] public Sprite sprite;
-        [ShowIf(nameof(type), CreditElementType.Unit)] public string titleUnit;
-        [ShowIf(nameof(type), CreditElementType.Unit)] [Array] public string[] unitMembers;
-        [ShowIf(nameof(type), CreditElementType.Space)] public float space;
+#if UNITY_EDITOR
+        private bool IsMessage => type == CreditElementType.Message;
+        private bool IsImage => type == CreditElementType.Image;
+        private bool IsUnit => type == CreditElementType.Unit;
+        private bool IsSpace => type == CreditElementType.Space;
+#endif
+        [ShowIf("IsMessage")] public string message;
+        [ShowIf("IsImage")] public Sprite sprite;
+        [ShowIf("IsUnit")] public string titleUnit;
+
+        [ShowIf("IsUnit")] [ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)]
+        public string[] unitMembers;
+
+        [ShowIf("IsSpace")] public float space;
     }
 
     public enum CreditElementType

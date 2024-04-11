@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -12,7 +12,7 @@ namespace Pancake.Sound
     [EditorIcon("csharp")]
     public sealed class AudioComponent : GameComponent
     {
-        [Header("Sound definition")] [SerializeField, Label("Audio")]
+        [Header("Sound definition")] [SerializeField, LabelText("Audio")]
         private Audio au;
 
         [SerializeField] private bool playOnStart;

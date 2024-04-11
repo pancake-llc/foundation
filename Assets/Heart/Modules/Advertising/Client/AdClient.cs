@@ -1,8 +1,8 @@
-using Pancake.Apex;
+
 
 namespace Pancake.Monetization
 {
-    [HideMonoScript]
+
     public abstract class AdClient
     {
         protected AdSettings adSettings;

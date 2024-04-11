@@ -1,6 +1,6 @@
 #if PANCAKE_IAP
 using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
@@ -9,7 +9,7 @@ namespace Pancake.IAP
     [EditorIcon("scriptable_variable")]
     [CreateAssetMenu(fileName = "variable_IAPData.asset", menuName = "Pancake/IAP/Scriptable IAPData")]
     [Serializable]
-    [HideMonoScript]
+
     public class IAPDataVariable : ScriptableObject
     {
         [ReadOnly] public string id;

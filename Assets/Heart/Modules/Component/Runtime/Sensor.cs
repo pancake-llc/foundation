@@ -1,4 +1,4 @@
-﻿using Pancake.Apex;
+﻿using Alchemy.Inspector;
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ namespace Pancake.Component
 {
     public abstract class Sensor : GameComponent
     {
-        [Message("Raycast after raycastRate frame\nraycastRate = 1 => Raycast after every frame\nraycastRate = 2 => Raycast every 2 frames", Height = 42)]
+        [Blockquote("Raycast after raycastRate frame\nraycastRate = 1 => Raycast after every frame\nraycastRate = 2 => Raycast every 2 frames")]
         [SerializeField, Range(1, 8)]
         protected int raycastRate = 1;
 

@@ -1,8 +1,6 @@
-﻿using Pancake.Apex;
-
-namespace Pancake
+﻿namespace Pancake
 {
-    public sealed class IgnoreTypeMismatchAttribute : ViewAttribute
-    {
-    }
+    // public sealed class IgnoreTypeMismatchAttribute : ViewAttribute
+    // {
+    // }
 }

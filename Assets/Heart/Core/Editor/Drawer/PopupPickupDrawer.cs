@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    [ViewTarget(typeof(PopupPickupAttribute))]
+    //[ViewTarget(typeof(PopupPickupAttribute))]
     public sealed class PopupPickupDrawer : FieldView, ITypeValidationCallback
     {
         private const string NAME_CLASS_INHERIT = "Pancake.UI.Popup";

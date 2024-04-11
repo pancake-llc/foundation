@@ -1,5 +1,5 @@
 ﻿using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake.UI
@@ -12,10 +12,15 @@ namespace Pancake.UI
         {
             [SerializeField] private AnimationAssetType type;
 
-            [SerializeField, ShowIf(nameof(type), AnimationAssetType.MonoBehaviour), Label("Animation")]
+#if UNITY_EDITOR
+            private bool IsMonobehaviour => type == AnimationAssetType.MonoBehaviour;
+            private bool IsScriptableObject => type == AnimationAssetType.MonoBehaviour;
+#endif
+            
+            [SerializeField, ShowIf("IsMonobehaviour"), LabelText("Animation")]
             private UITransitionComponent transitionAnimationComponent;
 
-            [SerializeField, ShowIf(nameof(type), AnimationAssetType.ScriptableObject), Label("Animation")]
+            [SerializeField, ShowIf("IsScriptableObject"), LabelText("Animation")]
             private UITransitionAnimationSO transitionAnimationSo;
 
             public ITransitionAnimation GetAnimation()

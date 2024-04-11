@@ -1,5 +1,5 @@
 using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake.Sound
@@ -11,7 +11,7 @@ namespace Pancake.Sound
     {
         public bool loop;
         [Range(0f, 1f)] public float volume = 1f;
-        [SerializeField, Array] private AudioGroup[] groups;
+        [SerializeField] private AudioGroup[] groups;
 
         public AudioClip[] GetClips()
         {
@@ -41,7 +41,7 @@ namespace Pancake.Sound
         }
 
         public SequenceMode sequenceMode = SequenceMode.RandomNoImmediateRepeat;
-        [Array] public AudioClip[] clips;
+         public AudioClip[] clips;
 
         private int _nextClipToPlay = -1;
         private int _lastClipPlayed = -1;

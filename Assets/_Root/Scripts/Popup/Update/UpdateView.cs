@@ -1,4 +1,4 @@
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Common;
 using Pancake.Localization;
 using Pancake.SceneFlow;
@@ -18,8 +18,8 @@ namespace Pancake.UI
         [SerializeField] private Button buttonClose;
         [SerializeField] private Toggle toggleDontShowAgain;
         [SerializeField] private BoolVariable dontShowUpdateAgain;
-        [SerializeField, Label("Change Log")] private StringVariable remoteConfigChangelog;
-        [SerializeField, Label("Version")] private StringVariable remoteConfigNewVersion;
+        [SerializeField, LabelText("Change Log")] private StringVariable remoteConfigChangelog;
+        [SerializeField, LabelText("Version")] private StringVariable remoteConfigNewVersion;
 
 
         protected override UniTask Initialize()

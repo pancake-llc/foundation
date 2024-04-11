@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -17,10 +17,15 @@ namespace Pancake.UI
             [SerializeField] private string partnerIdRegex;
             [SerializeField] private AnimationAssetType type;
 
-            [SerializeField, ShowIf(nameof(type), AnimationAssetType.MonoBehaviour), Label("Animation")]
+#if UNITY_EDITOR
+            private bool IsMonobehaviour => type == AnimationAssetType.MonoBehaviour;
+            private bool IsScriptableObject => type == AnimationAssetType.MonoBehaviour;
+#endif
+            
+            [SerializeField, ShowIf("IsMonobehaviour"), LabelText("Animation")]
             private UITransitionComponent uiTransitionComponent;
 
-            [FormerlySerializedAs("uiTransitionAsset")] [SerializeField, ShowIf(nameof(type), AnimationAssetType.ScriptableObject), Label("Animation")]
+            [FormerlySerializedAs("uiTransitionAsset")] [SerializeField, ShowIf("IsScriptableObject"), LabelText("Animation")]
             private UITransitionAnimationSO uiTransitionAnimationSo;
 
             private Regex _partnerIdRegexCache;
@@ -50,10 +55,10 @@ namespace Pancake.UI
             }
         }
 
-        [SerializeField, Array] private List<TransitionAnimation> pushEnterAnimations = new List<TransitionAnimation>();
-        [SerializeField, Array] private List<TransitionAnimation> pushExitAnimations = new List<TransitionAnimation>();
-        [SerializeField, Array] private List<TransitionAnimation> popEnterAnimations = new List<TransitionAnimation>();
-        [SerializeField, Array] private List<TransitionAnimation> popExitAnimations = new List<TransitionAnimation>();
+        [SerializeField] private List<TransitionAnimation> pushEnterAnimations = new List<TransitionAnimation>();
+        [SerializeField] private List<TransitionAnimation> pushExitAnimations = new List<TransitionAnimation>();
+        [SerializeField] private List<TransitionAnimation> popEnterAnimations = new List<TransitionAnimation>();
+        [SerializeField] private List<TransitionAnimation> popExitAnimations = new List<TransitionAnimation>();
 
         public ITransitionAnimation GetAnimation(bool push, bool enter, string partnerId)
         {

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Coffee.UIEffects;
-using Pancake.Apex;
 using Pancake.Common;
 using Pancake.Localization;
 using Pancake.SceneFlow;
@@ -42,9 +41,9 @@ namespace Pancake.UI
         [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
         [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
         [SerializeField] private ScriptableEventNoParam eventStopAllSfx;
-        [SerializeField, PopupPickup] private string popupCredit;
-        [SerializeField, PopupPickup] private string popupBackupData;
-        [SerializeField, PopupPickup] private string popupRestoreData;
+        [SerializeField] private string popupCredit;
+        [SerializeField] private string popupBackupData;
+        [SerializeField] private string popupRestoreData;
 #if UNITY_IOS
         [SerializeField] private Button buttonRestore;
         [SerializeField] private Pancake.IAP.ScriptableEventIAPNoParam restorePurchaseEvent;

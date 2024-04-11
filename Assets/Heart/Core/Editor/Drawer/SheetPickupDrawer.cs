@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    [ViewTarget(typeof(SheetPickupAttribute))]
+    //[ViewTarget(typeof(SheetPickupAttribute))]
     public class SheetPickupDrawer : FieldView, ITypeValidationCallback
     {
         private const string NAME_CLASS_INHERIT = "Pancake.UI.Sheet";

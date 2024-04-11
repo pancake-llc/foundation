@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    [ViewTarget(typeof(PagePickupAttribute))]
+    //[ViewTarget(typeof(PagePickupAttribute))]
     public class PagePickupDrawer : FieldView, ITypeValidationCallback
     {
         private const string NAME_CLASS_INHERIT = "Pancake.UI.Page";

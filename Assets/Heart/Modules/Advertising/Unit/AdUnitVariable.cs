@@ -1,5 +1,5 @@
 ﻿using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake.Monetization
@@ -9,7 +9,7 @@ namespace Pancake.Monetization
     [EditorIcon("scriptable_variable")]
     public abstract class AdUnitVariable : ScriptableObject
     {
-        [Message("When you change the platform need to double check if the id is empty?")]
+        [Blockquote("When you change the platform need to double check if the id is empty?")]
 #if UNITY_ANDROID
         [SerializeField]
         protected string androidId;

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.AssetLoader;
 using Pancake.Common;
 using UnityEngine;
@@ -14,7 +14,7 @@ namespace Pancake.UI
     [RequireComponent(typeof(RectMask2D))]
     public sealed class PageContainer : GameComponent
     {
-        [SerializeField, Label("Name")] private string displayName;
+        [SerializeField, LabelText("Name")] private string displayName;
         private static readonly Dictionary<int, PageContainer> InstanceCacheByTransform = new Dictionary<int, PageContainer>();
         private static readonly Dictionary<string, PageContainer> InstanceCacheByName = new Dictionary<string, PageContainer>();
         private readonly Dictionary<string, AssetLoadHandle<GameObject>> _assetLoadHandles = new Dictionary<string, AssetLoadHandle<GameObject>>();

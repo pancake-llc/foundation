@@ -1,11 +1,11 @@
 ﻿using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake
 {
     [Serializable]
-    [UseDefaultEditor]
+    [DisableAlchemyEditor]
     public abstract class RandomValue<T>
     {
         [SerializeField] protected bool useConstant;

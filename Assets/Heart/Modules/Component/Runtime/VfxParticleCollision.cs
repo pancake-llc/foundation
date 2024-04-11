@@ -1,20 +1,23 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Pancake.Apex;
-using Pancake.Apex.Serialization.Collections.Generic;
+using Alchemy.Inspector;
+using Alchemy.Serialization;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEngine;
 
 namespace Pancake.Component
 {
-    public class VfxParticleCollision : GameComponent
+    [AlchemySerialize]
+    public partial class VfxParticleCollision : GameComponent
     {
         [SerializeField] private ScriptableEventInt updateCoinWithValueEvent;
         [SerializeField] private ScriptableEventNoParam updateCoinEvent;
         [SerializeField] private ListGameObject vfxMagnetCollection;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
-        [SerializeField] private IntDictionary numberParticleMap;
+        [AlchemySerializeField, NonSerialized] public Dictionary<int, int> numberParticleMap = new ();
         [SerializeField] private bool enabledSound;
         [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioCollision;
         [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio audioPlayEvent;

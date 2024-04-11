@@ -24,12 +24,12 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonPet;
         [SerializeField] private Button buttonRoom;
 
-        [Header("POPUP")] [SerializeField, PopupPickup] private string popupShop;
-        [SerializeField, PopupPickup] private string popupSetting;
-        [SerializeField, PopupPickup] private string popupUpdate;
-        [SerializeField, PopupPickup] private string popupDailyReward;
-        [SerializeField, PopupPickup] private string popupLeaderboard;
-        [SerializeField, PagePickup] private string outfitPageName;
+        [Header("POPUP")] [SerializeField/*, PopupPickup*/] private string popupShop;
+        [SerializeField/*, PopupPickup*/] private string popupSetting;
+        [SerializeField/*, PopupPickup*/] private string popupUpdate;
+        [SerializeField/*, PopupPickup*/] private string popupDailyReward;
+        [SerializeField/*, PopupPickup*/] private string popupLeaderboard;
+        [SerializeField/*, PagePickup*/] private string outfitPageName;
 
         [Header("OTHER")] [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private LocaleText localeTextFeatureLocked;

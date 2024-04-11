@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ namespace Pancake.Component
 {
     public class RaySensor : Sensor
     {
-        [Message("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate", Height = 30)] [SerializeField]
+        [Blockquote("How many sensor points should there be along the start and end point\nHigher = less performant but more accurate")] [SerializeField]
         private int sensorNumber = 2;
 
         [SerializeField] private float radius = 1f;
@@ -20,8 +20,8 @@ namespace Pancake.Component
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-        [Space(8)] [SerializeField, NotNull] private Transform start;
-        [SerializeField, NotNull] private Transform source;
+        [Space(8)] [SerializeField] private Transform start;
+        [SerializeField] private Transform source;
         [SerializeField] private ScriptableEventGameObject detectedEvent;
 
         private Vector3[] _sensors;

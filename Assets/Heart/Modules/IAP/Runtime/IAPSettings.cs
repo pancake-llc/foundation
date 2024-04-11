@@ -1,6 +1,5 @@
 #if PANCAKE_IAP
 using System.Collections.Generic;
-using Pancake.Apex;
 using UnityEngine;
 using System;
 
@@ -17,7 +16,7 @@ namespace Pancake.IAP
         public ProductType productType;
     }
 
-    [HideMonoScript]
+
     [EditorIcon("scriptable_iap")]
     public class IAPSettings : ScriptableObject
     {

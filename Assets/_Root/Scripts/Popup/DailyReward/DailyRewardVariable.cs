@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Scriptable;
 
 namespace Pancake.SceneFlow
@@ -33,7 +33,7 @@ namespace Pancake.SceneFlow
             Data.Save(Guid, Value.isClaimed);
             base.Save();
         }
-        
+
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
@@ -56,8 +56,12 @@ namespace Pancake.SceneFlow
         public int day;
         public TypeRewardDailyReward typeReward;
         public int amount;
-        [ShowIf(nameof(typeReward), TypeRewardDailyReward.Coin)] public Sprite icon;
-        [ShowIf(nameof(typeReward), TypeRewardDailyReward.Outfit)] public OutfitUnitVariable outfitUnit;
+#if UNITY_EDITOR
+        private bool IsRewardCoin => typeReward == TypeRewardDailyReward.Coin;
+        private bool IsRewardOutfit => typeReward == TypeRewardDailyReward.Outfit;
+#endif
+        [ShowIf("IsRewardCoin")] public Sprite icon;
+        [ShowIf("IsRewardOutfit")] public OutfitUnitVariable outfitUnit;
         public bool isClaimed;
     }
 

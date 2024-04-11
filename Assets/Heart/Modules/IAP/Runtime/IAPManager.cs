@@ -1,7 +1,6 @@
 #if PANCAKE_IAP
 using System;
 using System.Collections.Generic;
-using Pancake.Apex;
 using Pancake.Common;
 using Pancake.Scriptable;
 #if PANCAKE_UNITASK
@@ -15,7 +14,7 @@ using UnityEngine.Purchasing.Extension;
 
 namespace Pancake.IAP
 {
-    [HideMonoScript]
+
     public class IAPManager : GameComponent, IDetailedStoreListener
     {
         [SerializeField] private BoolVariable isServiceInitialized;

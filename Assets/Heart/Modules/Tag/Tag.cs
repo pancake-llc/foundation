@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Pancake.Apex;
 using Pancake.Scriptable;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -11,7 +9,7 @@ using UnityEngine;
 namespace Pancake.ExTag
 {
     [EditorIcon("script_enum")]
-    [HideMonoScript]
+
     public class Tag : GameComponent, ISerializationCallbackReceiver
     {
         /// <summary>
@@ -34,7 +32,7 @@ namespace Pancake.ExTag
 
         private ReadOnlyList<StringConstant> _readOnlyTags;
 
-        [SerializeField, Array] private List<StringConstant> tags = new List<StringConstant>();
+        [SerializeField] private List<StringConstant> tags = new List<StringConstant>();
 
         private SortedList<string, StringConstant> _sortedTags = new SortedList<string, StringConstant>();
 

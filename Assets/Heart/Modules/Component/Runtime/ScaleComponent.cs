@@ -1,4 +1,4 @@
-using Pancake.Apex;
+using Alchemy.Inspector;
 using PrimeTween;
 using UnityEngine;
 
@@ -12,11 +12,11 @@ namespace Pancake.Component
         [SerializeField] private Vector3 value;
         [SerializeField] private bool startWith;
 
-        [SerializeField, ShowIf(nameof(startWith)), Label("     Value")]
+        [SerializeField, ShowIf(nameof(startWith)), LabelText("     Value")]
         private Vector3 startValue;
 
         [SerializeField] private bool loop;
-        [SerializeField, ShowIf(nameof(loop)), Label("      Mode")] private CycleMode cycleMode = CycleMode.Restart;
+        [SerializeField, ShowIf(nameof(loop)), LabelText("      Mode")] private CycleMode cycleMode = CycleMode.Restart;
         [SerializeField] private Ease ease;
 
         private Tween _tween;

@@ -1,13 +1,13 @@
-using Pancake.Apex;
+
 using UnityEngine;
 
 namespace Pancake
 {
-    [HideMonoScript]
+
     [EditorIcon("csharp")]
     public class RuntimeInitializer : GameComponent
     {
-        [SerializeField, Array] private Initialize[] initializes;
+        [SerializeField] private Initialize[] initializes;
 
         private void Start()
         {

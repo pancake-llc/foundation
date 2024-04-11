@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Component;
 using Pancake.Monetization;
 using Pancake.SceneFlow;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 namespace Pancake.UI
 {
@@ -18,13 +19,13 @@ namespace Pancake.UI
         [SerializeField] private Button buttonClaim;
         [SerializeField] private Button buttonClaimX5;
         [SerializeField] private TextMeshProUGUI textValueX5;
-        [SerializeField, PopupPickup] private string popupShop;
+        [SerializeField/*, PopupPickup*/] private string popupShop;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private RewardVariable rewardVariable;
         [SerializeField] private BoolDailyVariable boolDailyVariable;
 
-        [SerializeField, Array] private List<DailyRewardVariable> datas;
-        [SerializeField, Array] private DayComponent[] days;
+        [SerializeField, ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)] private List<DailyRewardVariable> datas;
+        [SerializeField, ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)] private DayComponent[] days;
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
 
         protected override UniTask Initialize()

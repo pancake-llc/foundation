@@ -1,12 +1,10 @@
-using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEngine;
 
 namespace Pancake.Component
 {
-    [HideMonoScript]
     [EditorIcon("csharp")]
     public class VfxMagnetComponent : GameComponent
     {

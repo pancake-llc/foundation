@@ -1,12 +1,11 @@
-﻿using Pancake.Apex;
-using Pancake.Common;
+﻿using Pancake.Common;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Pancake.Sound
 {
-    [HideMonoScript]
+
     [EditorIcon("script_sound")]
     [RequireComponent(typeof(AudioSource))]
     public class SoundEmitter : CacheGameComponent<AudioSource>

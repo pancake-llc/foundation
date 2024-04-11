@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
@@ -12,8 +12,8 @@ namespace Pancake.UI
     [Serializable]
     public class SheetTransitionContainer
     {
-        [SerializeField, Array] private List<TransitionAnimation> enterAnimations = new List<TransitionAnimation>();
-        [SerializeField, Array] private List<TransitionAnimation> exitAnimations = new List<TransitionAnimation>();
+        [SerializeField] private List<TransitionAnimation> enterAnimations = new List<TransitionAnimation>();
+        [SerializeField] private List<TransitionAnimation> exitAnimations = new List<TransitionAnimation>();
 
 
         public ITransitionAnimation GetAnimation(bool enter, string partnerTransitionIdentifier)
@@ -30,10 +30,15 @@ namespace Pancake.UI
             [SerializeField] private string partnerIdRegex;
             [SerializeField] private AnimationAssetType type;
 
-            [SerializeField] [ShowIf(nameof(type), AnimationAssetType.MonoBehaviour)]
+#if UNITY_EDITOR
+            private bool IsMonobehaviour => type == AnimationAssetType.MonoBehaviour;
+            private bool IsScriptableObject => type == AnimationAssetType.MonoBehaviour;
+#endif
+            
+            [SerializeField] [ShowIf("IsMonobehaviour")]
             private UITransitionComponent uiTransitionComponent;
 
-            [FormerlySerializedAs("uiTransitionAsset")] [SerializeField] [ShowIf(nameof(type), AnimationAssetType.ScriptableObject)]
+            [FormerlySerializedAs("uiTransitionAsset")] [SerializeField] [ShowIf("IsScriptableObject")]
             private UITransitionAnimationSO uiTransitionAnimationSo;
 
             private Regex _partnerIdRegexCache;

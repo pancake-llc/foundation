@@ -1,4 +1,3 @@
-using Pancake.Apex;
 using Pancake.Common;
 using Pancake.Scriptable;
 using UnityEngine;
@@ -8,7 +7,7 @@ namespace Pancake.SceneFlow
     [EditorIcon("csharp")]
     public class ConditionRateComponent : GameComponent
     {
-        [SerializeField, Array] private int[] distanceLevels;
+        [SerializeField] private int[] distanceLevels;
         [SerializeField] private IntVariable currentLevelIndex;
         [SerializeField] private IntVariable rateDisplayTimes;
         [SerializeField] private BoolVariable canShowRate;

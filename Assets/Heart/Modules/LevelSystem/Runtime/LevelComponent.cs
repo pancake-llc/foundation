@@ -1,16 +1,16 @@
-﻿using Pancake.Apex;
+﻿using Alchemy.Inspector;
 using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Pancake.LevelSystem
 {
-    [HideMonoScript]
+
     [EditorIcon("csharp")]
     public abstract class LevelComponent : GameComponent
     {
-        [SerializeField, HideInEditorMode, ReadOnly] protected int originLevelIndex;
-        [SerializeField, HideInEditorMode, ReadOnly] protected int currentLevelIndex;
+        [SerializeField, HideInEditMode, ReadOnly] protected int originLevelIndex;
+        [SerializeField, HideInEditMode, ReadOnly] protected int currentLevelIndex;
 
         [SerializeField, Group("Event")] private ScriptableEventNoParam winEvent;
         [SerializeField, Group("Event")] private ScriptableEventNoParam loseEvent;
@@ -51,7 +51,7 @@ namespace Pancake.LevelSystem
 
 #if UNITY_EDITOR
 
-        [Button, ButtonHeight(30)]
+        [Button]
         public void PlayThisLevel()
         {
             LevelDebug.IsTest = true;

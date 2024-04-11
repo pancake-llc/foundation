@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Pancake.Apex;
+using Alchemy.Inspector;
 #if PANCAKE_REMOTE_CONFIG
 using Firebase;
 using Firebase.Extensions;
@@ -13,7 +13,7 @@ namespace Pancake.Tracking
 {
     public class RemoteConfig : GameComponent
     {
-        [SerializeField, Label("Status")] private BoolVariable remoteConfigIsFetchCompleted;
+        [SerializeField, LabelText("Status")] private BoolVariable remoteConfigIsFetchCompleted;
         [SerializeField] private RemoteConfigData remoteData;
         [SerializeField] private StringVariable remoteConfigCurrentAdNetwork;
         [SerializeField] private ScriptableEventString changeNetworkEvent;

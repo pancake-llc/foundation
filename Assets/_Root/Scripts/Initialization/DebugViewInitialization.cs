@@ -1,5 +1,4 @@
 using System;
-using Pancake.Apex;
 using Pancake.Component;
 using Pancake.DebugView;
 using Pancake.LevelSystem;
@@ -9,7 +8,7 @@ using UnityEngine;
 
 namespace Pancake.SceneFlow
 {
-    [HideMonoScript]
+
     public class DebugViewInitialization : Initialize
     {
         [SerializeField] private GameObject debugViewPrefab;

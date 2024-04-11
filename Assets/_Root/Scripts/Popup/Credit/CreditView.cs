@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Pancake.Apex;
 using Pancake.SceneFlow;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -10,7 +9,7 @@ namespace Pancake.UI
 {
     public sealed class CreditView : View
     {
-        [SerializeField, Array] private List<CreditElement> elements;
+        [SerializeField] private List<CreditElement> elements;
         [SerializeField] private CreditTypeElementDictionary prefabContainer;
         [SerializeField] private Transform container;
         [SerializeField] private Button buttonClose;

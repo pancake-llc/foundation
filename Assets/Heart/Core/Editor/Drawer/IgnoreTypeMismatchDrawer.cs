@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    [ViewTarget(typeof(IgnoreTypeMismatchAttribute))]
+    //[ViewTarget(typeof(IgnoreTypeMismatchAttribute))]
     public class IgnoreTypeMismatchDrawer : FieldView, ITypeValidationCallback
     {
         public override void OnGUI(Rect position, SerializedField element, GUIContent label)

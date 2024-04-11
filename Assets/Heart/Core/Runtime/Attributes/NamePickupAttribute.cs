@@ -1,8 +1,8 @@
-﻿using Pancake.Apex;
+﻿
 
 namespace Pancake
 {
-    /// <summary>
+    /*/// <summary>
     /// provides a way to select the name of the class from a collected list of names of all classes that inherit from T
     /// </summary>
     public sealed class NamePickupAttribute : ViewAttribute
@@ -10,5 +10,5 @@ namespace Pancake
         public string NameClassInherit { get; set; }
 
         public NamePickupAttribute(string nameClassInherit) { NameClassInherit = nameClassInherit; }
-    }
+    }*/
 }

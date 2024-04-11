@@ -1,7 +1,7 @@
 #if PANCAKE_SPINE
 using System;
 using System.Collections;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Common;
 using Pancake.Scriptable;
 using Spine.Unity;
@@ -25,10 +25,13 @@ namespace Pancake.Spine
         [SerializeField] private bool loopLastestTrack;
         [SerializeField] private StartupMode startupMode = StartupMode.OnEnabled;
 
-        [SerializeField, ShowIf(nameof(startupMode), StartupMode.Manual), Label("   Play Event")]
+#if UNITY_EDITOR
+        private bool IsManual => startupMode == StartupMode.Manual;
+#endif
+        [SerializeField, ShowIf("IsManual"), LabelText("   Play Event")]
         private ScriptableEventNoParam playAnimationEvent;
 
-        [SerializeField, Array] private TrackData[] datas;
+        [SerializeField] private TrackData[] datas;
 
         private AsyncProcessHandle _handle;
 

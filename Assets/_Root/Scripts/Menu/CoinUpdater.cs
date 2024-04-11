@@ -1,5 +1,5 @@
 using System;
-using Pancake.Apex;
+using Alchemy.Inspector;
 using Pancake.Scriptable;
 using TMPro;
 using UnityEngine;
@@ -9,10 +9,10 @@ namespace Pancake.SceneFlow
     [EditorIcon("cs")]
     public class CoinUpdater : GameComponent
     {
-        [Message("Update text coin with current coin of user")] [SerializeField]
+        [Blockquote("Update text coin with current coin of user")] [SerializeField]
         private TextMeshProUGUI textCoin;
 
-        [Message("Update text coin with temp value")] [SerializeField]
+        [Blockquote("Update text coin with temp value")] [SerializeField]
         private ScriptableEventNoParam eventUpdateCoin;
 
         [SerializeField] private ScriptableEventInt updateCoinWithValue;
