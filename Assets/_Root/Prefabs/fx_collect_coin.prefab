@@ -4926,5 +4926,6 @@ MonoBehaviour:
   alchemySerializationData:
     numberParticleMap:
       isCreated: 1
-      data: '[]'
+      data: "[\n    {\n        \"Key\": 100,\n        \"Value\": 20\n    },\n   
+        {\n        \"Key\": 1000,\n        \"Value\": 40\n    }\n]"
     unityObjectReferences: []
