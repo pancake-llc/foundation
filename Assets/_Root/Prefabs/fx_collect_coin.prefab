@@ -4844,6 +4844,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4917,9 +4920,11 @@ MonoBehaviour:
   vfxMagnetCollection: {fileID: 11400000, guid: 491280c243b81044cbb54bda9df5a525, type: 2}
   returnPoolEvent: {fileID: 11400000, guid: b39b52d9a5ec5e144aa0c0b97a091f74, type: 2}
   <PS>k__BackingField: {fileID: 3996613071643963069}
-  numberParticleMap:
-    keys: 64000000e8030000
-    values: 1400000028000000
   enabledSound: 1
   audioCollision: {fileID: 11400000, guid: aa33ad2229195f9479821f41de547c98, type: 2}
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
+  alchemySerializationData:
+    numberParticleMap:
+      isCreated: 1
+      data: '[]'
+    unityObjectReferences: []

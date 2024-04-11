@@ -20,8 +20,8 @@ namespace Pancake.Component
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-        [Space(8)] [SerializeField] private Transform start;
-        [SerializeField] private Transform source;
+        [Space(8)] [SerializeField, Required] private Transform start;
+        [SerializeField, Required] private Transform source;
         [SerializeField] private ScriptableEventGameObject detectedEvent;
 
         private Vector2[] _sensors;
