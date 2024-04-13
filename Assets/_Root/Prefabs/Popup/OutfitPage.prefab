@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePrefabNameAsId: 1
-  <Id>k__BackingField: OutfitPage
+  id: 
   order: 0
   animationContainer:
     pushEnterAnimations: []

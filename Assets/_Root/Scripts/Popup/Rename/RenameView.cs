@@ -192,14 +192,14 @@ namespace Pancake.UI
             objectBlock.SetActive(false);
             objectStatusOk.SetActive(false);
             PlaySoundClose();
-            //await PopupHelper.Close(transform);
+            await PopupHelper.Close(transform);
             _onCloseCallback?.Invoke(false);
         }
 
         private async void OnButtonClosePressed()
         {
             PlaySoundClose();
-            //await PopupHelper.Close(transform);
+            await PopupHelper.Close(transform);
             _onCloseCallback?.Invoke(true);
         }
 
