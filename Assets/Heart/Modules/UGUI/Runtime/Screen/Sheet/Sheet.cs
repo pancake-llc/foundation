@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alchemy.Inspector;
 using Pancake.Common;
 using UnityEngine;
 
@@ -15,7 +14,7 @@ namespace Pancake.UI
 
         [SerializeField] private int order;
 
-        [SerializeField, InlineEditor] private SheetTransitionContainer animationContainer = new SheetTransitionContainer();
+        public SheetTransitionContainer animationContainer = new();
 
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
@@ -32,8 +31,6 @@ namespace Pancake.UI
         }
 
         private readonly CompositeLifecycleEvent<ISheetLifecycleEvent> _lifecycleEvents = new();
-
-        public SheetTransitionContainer AnimationContainer => animationContainer;
 
         public bool IsTransitioning { get; private set; }
 

@@ -15,7 +15,7 @@ namespace Pancake.UI
         [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
         [SerializeField] private int order;
-        [SerializeField, InlineEditor] private PageTransitionContainer animationContainer = new();
+        public PageTransitionContainer animationContainer = new();
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
         private RectTransform _rectTransform;

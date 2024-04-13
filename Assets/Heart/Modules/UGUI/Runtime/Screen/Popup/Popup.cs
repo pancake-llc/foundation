@@ -9,13 +9,12 @@ using Pancake.Common;
 namespace Pancake.UI
 {
     [DisallowMultipleComponent]
-    public class Popup : GameComponent, IPopupLifecycleEvent
+    public abstract class Popup : GameComponent, IPopupLifecycleEvent
     {
         [SerializeField] private bool usePrefabNameAsId = true;
         [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
-        [SerializeField, InlineEditor] private PopupTransitionContainer animationContainer = new PopupTransitionContainer();
-
+        public PopupTransitionContainer animationContainer = new();
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
         private RectTransform _rectTransform;
@@ -31,8 +30,6 @@ namespace Pancake.UI
         }
 
         private readonly CompositeLifecycleEvent<IPopupLifecycleEvent> _lifecycleEvents = new();
-
-        public PopupTransitionContainer AnimationContainer => animationContainer;
 
         public bool IsTransitioning { get; private set; }
 

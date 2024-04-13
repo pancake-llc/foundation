@@ -7,7 +7,7 @@ namespace Pancake.UI
 {
     public class PopupBackdrop : GameComponent
     {
-        [SerializeField] private PopupBackdropTransitionContainer animationContainer;
+        public PopupBackdropTransitionContainer animationContainer;
         [SerializeField] private bool closePopupWhenClicked;
 
         private CanvasGroup _canvasGroup;
