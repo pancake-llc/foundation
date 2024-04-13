@@ -519,7 +519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePrefabNameAsId: 1
-  <Id>k__BackingField: DailyRewardPopup
+  id: 
   animationContainer:
     enterAnimations: []
     exitAnimations: []

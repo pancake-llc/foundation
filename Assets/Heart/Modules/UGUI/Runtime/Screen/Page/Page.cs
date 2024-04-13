@@ -12,10 +12,10 @@ namespace Pancake.UI
     public class Page : GameComponent, IPageLifecycleEvent
     {
         [SerializeField] private bool usePrefabNameAsId = true;
-        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
-
+        [SerializeField, HideIf(nameof(usePrefabNameAsId)), Indent] private string id;
         [SerializeField] private int order;
         public PageTransitionContainer animationContainer = new();
+        
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
         private RectTransform _rectTransform;
@@ -89,7 +89,7 @@ namespace Pancake.UI
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
             _lifecycleEvents.AddItem(this, 0);
-            Id = usePrefabNameAsId ? gameObject.name.Replace("(Clone)", string.Empty) : Id;
+            if (usePrefabNameAsId) id = gameObject.name.Replace("(Clone)", string.Empty);
             _parentTransform = parentTransform;
             _rectTransform.FillWithParent(_parentTransform);
 
@@ -138,7 +138,7 @@ namespace Pancake.UI
             _canvasGroup.alpha = 1f;
             if (playAnimation)
             {
-                var anim = animationContainer.GetAnimation(push, true, partnerPage?.Id);
+                var anim = animationContainer.GetAnimation(push, true, partnerPage?.id);
                 if (anim == null) anim = DefaultTransitionSetting.GetDefaultPageTransition(push, true);
 
                 if (anim.Duration > 0f)
@@ -187,7 +187,7 @@ namespace Pancake.UI
         {
             if (playAnimation)
             {
-                var anim = animationContainer.GetAnimation(push, false, partnerPage?.Id);
+                var anim = animationContainer.GetAnimation(push, false, partnerPage?.id);
                 if (anim == null) anim = DefaultTransitionSetting.GetDefaultPageTransition(push, false);
 
                 if (anim.Duration > 0.0f)

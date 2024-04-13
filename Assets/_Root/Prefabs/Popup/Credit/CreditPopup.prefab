@@ -731,7 +731,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePrefabNameAsId: 1
-  <Id>k__BackingField: CreditPopup
+  id: 
   animationContainer:
     enterAnimations:
     - partnerIdRegex: 

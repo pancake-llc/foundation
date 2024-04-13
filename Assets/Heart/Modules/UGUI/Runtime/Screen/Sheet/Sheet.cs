@@ -10,10 +10,8 @@ namespace Pancake.UI
     [DisallowMultipleComponent]
     public class Sheet : MonoBehaviour, ISheetLifecycleEvent
     {
-        [field: SerializeField] private string Id { get; set; }
-
+        [SerializeField] private string id;
         [SerializeField] private int order;
-
         public SheetTransitionContainer animationContainer = new();
 
         private CanvasGroup _canvasGroup;
@@ -123,7 +121,7 @@ namespace Pancake.UI
 
             if (playAnimation)
             {
-                var anim = animationContainer.GetAnimation(true, partnerSheet?.Id);
+                var anim = animationContainer.GetAnimation(true, partnerSheet?.id);
                 if (anim == null) anim = DefaultTransitionSetting.GetDefaultSheetTransition(true);
 
                 if (anim.Duration > 0.0f)
@@ -168,7 +166,7 @@ namespace Pancake.UI
         {
             if (playAnimation)
             {
-                var anim = animationContainer.GetAnimation(false, partnerSheet?.Id);
+                var anim = animationContainer.GetAnimation(false, partnerSheet?.id);
                 if (anim == null) anim = DefaultTransitionSetting.GetDefaultSheetTransition(false);
 
                 if (anim.Duration > 0.0f)

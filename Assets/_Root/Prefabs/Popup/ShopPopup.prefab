@@ -2430,7 +2430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePrefabNameAsId: 1
-  <Id>k__BackingField: ShopPopup
+  id: 
   animationContainer:
     enterAnimations: []
     exitAnimations: []

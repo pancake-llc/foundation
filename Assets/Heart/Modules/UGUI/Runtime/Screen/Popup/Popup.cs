@@ -12,9 +12,9 @@ namespace Pancake.UI
     public abstract class Popup : GameComponent, IPopupLifecycleEvent
     {
         [SerializeField] private bool usePrefabNameAsId = true;
-        [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
-
+        [SerializeField, HideIf(nameof(usePrefabNameAsId)), Indent] private string id;
         public PopupTransitionContainer animationContainer = new();
+        
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
         private RectTransform _rectTransform;
@@ -79,7 +79,7 @@ namespace Pancake.UI
             _rectTransform = (RectTransform) transform;
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
             _lifecycleEvents.AddItem(this, 0);
-            Id = usePrefabNameAsId ? gameObject.name.Replace("(Clone)", string.Empty) : Id;
+            if (usePrefabNameAsId) id = gameObject.name.Replace("(Clone)", string.Empty);
             _parentTransform = parentTransform;
             _rectTransform.FillWithParent(_parentTransform);
             _canvasGroup.alpha = 0.0f;
@@ -125,7 +125,7 @@ namespace Pancake.UI
 
                 if (playAnimation)
                 {
-                    var anim = animationContainer.GetAnimation(true, partnerPopup?.Id);
+                    var anim = animationContainer.GetAnimation(true, partnerPopup?.id);
                     if (anim == null)
                         anim = DefaultTransitionSetting.GetDefaultPopupTransition(true);
 
@@ -184,7 +184,7 @@ namespace Pancake.UI
             {
                 if (playAnimation)
                 {
-                    var anim = animationContainer.GetAnimation(false, partnerPopup?.Id);
+                    var anim = animationContainer.GetAnimation(false, partnerPopup?.id);
                     if (anim == null) anim = DefaultTransitionSetting.GetDefaultPopupTransition(false);
 
                     if (anim.Duration > 0.0f)
