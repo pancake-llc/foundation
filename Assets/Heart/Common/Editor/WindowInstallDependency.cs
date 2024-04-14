@@ -40,6 +40,7 @@ namespace PancakeEditor.Common
 
             OnDrawShowOnStartup();
 
+            GUILayout.FlexibleSpace();
             base.OnGUI();
 
             return;

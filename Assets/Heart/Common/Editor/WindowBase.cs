@@ -23,7 +23,6 @@ namespace PancakeEditor.Common
 
         protected virtual void OnGUI()
         {
-            GUILayout.FlexibleSpace();
             Uniform.DrawFooter("\u00a9 2024 pancake-llc");
         }
     }
