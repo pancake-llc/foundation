@@ -4,6 +4,7 @@ using Pancake;
 using Pancake.Common;
 using RedBlueGames.MulliganRenamer;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine;
 
 namespace PancakeEditor
@@ -31,7 +32,7 @@ namespace PancakeEditor
         private static void ToggleDotweenAdapter()
         {
             bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+                NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)));
             toggle = !toggle;
             if (toggle)
             {
@@ -51,7 +52,7 @@ namespace PancakeEditor
         private static bool ValidateToggleDotweenAdapter()
         {
             bool toggle = ScriptingDefinition.IsSymbolDefined("PRIME_TWEEN_DOTWEEN_ADAPTER",
-                BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+                NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)));
             Menu.SetChecked("Tools/Pancake/DOTween Adapter", toggle);
             return true;
         }

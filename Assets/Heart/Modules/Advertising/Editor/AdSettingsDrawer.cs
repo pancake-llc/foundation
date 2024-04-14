@@ -4,6 +4,7 @@ using Pancake.Common;
 using PancakeEditor.Common;
 using Pancake.Monetization;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine;
 
 namespace Pancake.MonetizationEditor
@@ -80,7 +81,7 @@ namespace Pancake.MonetizationEditor
             }
 
             GUILayout.Space(4);
-            
+
             if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Admob)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -171,8 +172,7 @@ namespace Pancake.MonetizationEditor
                 if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob.unitypackage"),
-                        false);
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob.unitypackage"), false);
                 }
 
                 var previousColor = GUI.color;
@@ -185,8 +185,8 @@ namespace Pancake.MonetizationEditor
 
                 if (GUILayout.Button("Add Admob Symbol (2)", GUILayout.Height(24)))
                 {
-                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", group))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB",
+                            NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget))))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
                         AssetDatabase.SaveAssets();
@@ -258,8 +258,7 @@ namespace Pancake.MonetizationEditor
                 if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing <color=#FF77C6>applovin</color> sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/applovin.unitypackage"),
-                        false);
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/applovin.unitypackage"), false);
                 }
 
                 var previousColor = GUI.color;
@@ -271,8 +270,7 @@ namespace Pancake.MonetizationEditor
 
                 if (GUILayout.Button("Add AppLovin Symbol (2)", GUILayout.Height(24)))
                 {
-                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget))))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
                         AssetDatabase.SaveAssets();
