@@ -40,8 +40,10 @@ namespace PancakeEditor
                 EditorGUILayout.PrefixLabel(new GUIContent($" {SerializedProperty.displayName}"));
                 var lastRect = GUILayoutUtility.GetLastRect();
                 var rect = TargetElement.contentRect;
-                rect.width -= lastRect.width;
-                rect.x += lastRect.width + 2f;
+                const float percent = 0.39f;
+                rect.x = lastRect.x + rect.width * percent + 4f;
+                rect.width = TargetElement.contentRect.width * (1f - percent);
+                
                 if (GUI.Button(rect, new GUIContent(label), EditorStyles.popup))
                 {
                     var menu = new GenericMenu();
