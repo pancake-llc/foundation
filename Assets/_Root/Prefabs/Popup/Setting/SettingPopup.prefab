@@ -110,15 +110,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -395,15 +397,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -591,6 +595,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -604,6 +611,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -850,6 +859,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -863,6 +875,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -983,15 +997,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1154,15 +1170,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1521,6 +1539,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -1534,6 +1555,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -1966,15 +1989,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2135,15 +2160,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2231,11 +2258,6 @@ MonoBehaviour:
   languagePopup: {fileID: 742818637084947580}
   buttonSelectLanguage: {fileID: 1415266517432278116}
   textNameLanguageSelected: {fileID: 5003263306355268004}
-  langData:
-    keys: 0a00000027000000
-    values:
-    - {fileID: 11400000, guid: b4aed3e2d46a5a14ca86b042d6dec354, type: 2}
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
   musicVolume: {fileID: 11400000, guid: f40c18cdb6b391741b188b73d884cb92, type: 2}
   sfxVolume: {fileID: 11400000, guid: 0a97e9acdf82e434983225db6d5b578f, type: 2}
   eventPauseMusic: {fileID: 11400000, guid: b759b6d8cd9821449a28381a0f4d9fff, type: 2}
@@ -2244,6 +2266,14 @@ MonoBehaviour:
   popupCredit: CreditPopup
   popupBackupData: BackupDataPopup
   popupRestoreData: RestoreDataPopup
+  alchemySerializationData:
+    langData:
+      isCreated: 1
+      data: "[\n    {\n        \"Key\": 10,\n        \"Value\": 0\n    },\n    {\n       
+        \"Key\": 39,\n        \"Value\": 1\n    }\n]"
+    unityObjectReferences:
+    - {fileID: 11400000, guid: b4aed3e2d46a5a14ca86b042d6dec354, type: 2}
+    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
 --- !u!114 &2176503854581155739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2257,7 +2287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePrefabNameAsId: 1
-  <Id>k__BackingField: SettingPopup
+  id: 
   animationContainer:
     enterAnimations: []
     exitAnimations: []
@@ -2417,6 +2447,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -2430,6 +2463,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2587,15 +2622,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2801,6 +2838,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -2814,6 +2854,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2858,10 +2900,10 @@ RectTransform:
   - {fileID: 1271277306873699211}
   m_Father: {fileID: 4768909398571029482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 113}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -189.5}
+  m_SizeDelta: {x: 652, y: 113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874660293915068792
 MonoBehaviour:
@@ -3039,6 +3081,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -3052,6 +3097,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3199,6 +3246,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -3212,6 +3262,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3596,6 +3648,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -3609,6 +3664,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3775,6 +3832,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -3788,6 +3848,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -4044,15 +4106,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4215,15 +4279,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4413,6 +4479,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -4426,6 +4495,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2

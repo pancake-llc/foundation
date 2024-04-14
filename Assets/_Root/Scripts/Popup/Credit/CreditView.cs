@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Alchemy.Serialization;
 using Pancake.SceneFlow;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -7,13 +9,15 @@ using UnityEngine.UI;
 
 namespace Pancake.UI
 {
-    public sealed class CreditView : View
+    [AlchemySerialize]
+    public partial class CreditView : View
     {
         [SerializeField] private List<CreditElement> elements;
-        [SerializeField] private CreditTypeElementDictionary prefabContainer;
+        // ReSharper disable once InconsistentNaming
+        [AlchemySerializeField, NonSerialized] private Dictionary<CreditElementType, GameObject> prefabContainer = new ();
         [SerializeField] private Transform container;
         [SerializeField] private Button buttonClose;
-        
+
         protected override UniTask Initialize()
         {
             foreach (CreditElement element in elements)
@@ -36,9 +40,9 @@ namespace Pancake.UI
                         break;
                 }
             }
-        
+
             buttonClose.onClick.AddListener(OnButtonClosePressed);
-        
+
             return UniTask.CompletedTask;
         }
 

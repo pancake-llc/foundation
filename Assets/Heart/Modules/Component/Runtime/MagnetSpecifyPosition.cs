@@ -14,7 +14,7 @@ public class MagnetSpecifyPosition : MonoBehaviour
     private void OnEnable()
     {
         if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
-        if (_component == null) _component = FindObjectOfType<VfxMagnetComponent>();
+        if (_component == null) _component = FindFirstObjectByType<VfxMagnetComponent>();
         App.StartCoroutine(IeExecute());
     }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Alchemy.Serialization;
 using Pancake.Monetization;
 using Pancake.Scriptable;
 using Pancake.Spine;
@@ -11,7 +12,8 @@ namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    public class OutfitSlotElement : MonoBehaviour
+    [AlchemySerialize]
+    public partial class OutfitSlotElement : MonoBehaviour
     {
         [SerializeField] private SkeletonGraphic render;
         [SerializeField, SpineAnimation(dataField: nameof(render))] private string unlockedStateAnim;
@@ -21,7 +23,8 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam eventUpdatePreview;
         [SerializeField] private ScriptableEventPreviewLockedOutfit eventPreviewLockedOutfit;
         [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
-        [SerializeField] private OutfitTypeButtonDictionary buttonDict;
+        // ReSharper disable once InconsistentNaming
+        [AlchemySerializeField, NonSerialized] private Dictionary<OutfitUnlockType, Button> buttonDict = new ();
         [SerializeField] private RewardVariable rewardVariable;
         [SerializeField, PopupPickup] private string popupDailyReward;
 

@@ -82,7 +82,7 @@ namespace Pancake.ExTag
             {
                 TaggedGameObjects.Clear();
                 TagInstances.Clear();
-                var tagsInScene = GameObject.FindObjectsOfType<Tag>();
+                var tagsInScene = FindObjectsByType<Tag>(FindObjectsSortMode.None);
 
                 for (var i = 0; i < tagsInScene.Length; ++i)
                 {
@@ -121,7 +121,7 @@ namespace Pancake.ExTag
 
         public static void OnInitialization(Action handler)
         {
-            var t = GameObject.FindObjectOfType<Tag>();
+            var t = FindFirstObjectByType<Tag>();
             if (t != null && !IsInitialized(t.gameObject))
             {
                 onInitialization += handler;

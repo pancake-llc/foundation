@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Alchemy.Serialization;
 using Coffee.UIEffects;
 using Pancake.Common;
 using Pancake.Localization;
@@ -14,7 +15,8 @@ using UnityEngine.UI;
 
 namespace Pancake.UI
 {
-    public sealed class SettingView : View, IRecyclerViewCellProvider, IRecyclerViewDataProvider
+    [AlchemySerialize]
+    public partial class SettingView : View, IRecyclerViewCellProvider, IRecyclerViewDataProvider
     {
         [SerializeField] private LocaleTextComponent localeTextVersion;
         [SerializeField] private Button buttonMusic;
@@ -34,7 +36,8 @@ namespace Pancake.UI
         [SerializeField] private RectTransform languagePopup;
         [SerializeField] private UIButton buttonSelectLanguage;
         [SerializeField] private TextMeshProUGUI textNameLanguageSelected;
-        [SerializeField] private LanguageData langData;
+        // ReSharper disable once InconsistentNaming
+        [AlchemySerializeField, NonSerialized] private Dictionary<SystemLanguage, LocaleText> langData = new ();
 
         [Space] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;

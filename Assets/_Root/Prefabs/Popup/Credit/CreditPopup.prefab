@@ -498,8 +498,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4628202171778745202}
   m_HandleRect: {fileID: 3196126871460671790}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.89687717
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -575,7 +575,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: -1918.421}
+  m_AnchoredPosition: {x: 20, y: -1921.0452}
   m_SizeDelta: {x: -40, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &5812871064201299233
@@ -709,15 +709,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: df38906f4969c8743a9953f893c6e786, type: 2}
   - {fileID: 11400000, guid: 0ad3b413857ad77409c961148035855a, type: 2}
   - {fileID: 11400000, guid: df38906f4969c8743a9953f893c6e786, type: 2}
-  prefabContainer:
-    keys: 00000000010000000200000003000000
-    values:
+  container: {fileID: 2485103165204280189}
+  buttonClose: {fileID: 4487852404142314590}
+  alchemySerializationData:
+    prefabContainer:
+      isCreated: 1
+      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": 0\n    },\n    {\n       
+        \"Key\": 1,\n        \"Value\": 1\n    },\n    {\n        \"Key\": 2,\n       
+        \"Value\": 2\n    }\n]"
+    unityObjectReferences:
     - {fileID: 995968833226339298, guid: 9ff642a41b80bd145b2998394decfd20, type: 3}
     - {fileID: 2751185077155432247, guid: 1b6b5dac5fabf204fad126c0553e69f9, type: 3}
     - {fileID: 3685194583428526754, guid: ebf548ca3e8f3584198d42f48bd10208, type: 3}
-    - {fileID: 8713169971505445862, guid: 0527cc17a3766464e995bb92259edb91, type: 3}
-  container: {fileID: 2485103165204280189}
-  buttonClose: {fileID: 4487852404142314590}
 --- !u!114 &7197829546575903931
 MonoBehaviour:
   m_ObjectHideFlags: 0

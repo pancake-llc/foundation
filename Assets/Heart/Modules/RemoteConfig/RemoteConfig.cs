@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alchemy.Inspector;
+using Alchemy.Serialization;
 #if PANCAKE_REMOTE_CONFIG
 using Firebase;
 using Firebase.Extensions;
@@ -11,10 +13,11 @@ using UnityEngine;
 
 namespace Pancake.Tracking
 {
-    public class RemoteConfig : GameComponent
+    [AlchemySerialize]
+    public partial class RemoteConfig : MonoBehaviour
     {
         [SerializeField, LabelText("Status")] private BoolVariable remoteConfigIsFetchCompleted;
-        [SerializeField] private RemoteConfigData remoteData;
+        [AlchemySerializeField, NonSerialized] private Dictionary<string, StringVariable> remoteData = new();
         [SerializeField] private StringVariable remoteConfigCurrentAdNetwork;
         [SerializeField] private ScriptableEventString changeNetworkEvent;
 

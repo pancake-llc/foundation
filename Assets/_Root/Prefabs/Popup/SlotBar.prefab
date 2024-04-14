@@ -241,6 +241,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -254,6 +257,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -418,6 +423,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -431,6 +439,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -697,6 +707,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -710,6 +723,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -1042,15 +1057,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1178,15 +1195,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1594,15 +1613,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1840,15 +1861,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2040,6 +2063,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -2053,6 +2079,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2219,6 +2247,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -2232,6 +2263,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2262,14 +2295,18 @@ MonoBehaviour:
   eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
   eventPreviewLockedOutfit: {fileID: 11400000, guid: 9fabcf22be3de07499990bf66430ebd2, type: 2}
   eventUpdateSelectedEffect: {fileID: 11400000, guid: 71c7ba9fcc33b2b42b9ecfdb73ce793a, type: 2}
-  buttonDict:
-    keys: 000000000100000004000000
-    values:
+  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
+  popupDailyReward: DailyRewardPopup
+  alchemySerializationData:
+    buttonDict:
+      isCreated: 1
+      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": 0\n    },\n    {\n       
+        \"Key\": 1,\n        \"Value\": 1\n    },\n    {\n        \"Key\": 4,\n       
+        \"Value\": 2\n    }\n]"
+    unityObjectReferences:
     - {fileID: 8492869949782140952}
     - {fileID: 2501495978724417911}
     - {fileID: 4471599347431116973}
-  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
-  popupDailyReward: DailyRewardPopup
 --- !u!1 &4965795978446628049
 GameObject:
   m_ObjectHideFlags: 0
@@ -2484,6 +2521,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -2497,6 +2537,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2680,6 +2722,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -2693,6 +2738,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2814,15 +2861,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2985,15 +3034,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3187,6 +3238,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -3200,6 +3254,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3230,14 +3286,18 @@ MonoBehaviour:
   eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
   eventPreviewLockedOutfit: {fileID: 11400000, guid: 9fabcf22be3de07499990bf66430ebd2, type: 2}
   eventUpdateSelectedEffect: {fileID: 11400000, guid: 71c7ba9fcc33b2b42b9ecfdb73ce793a, type: 2}
-  buttonDict:
-    keys: 000000000100000004000000
-    values:
+  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
+  popupDailyReward: DailyRewardPopup
+  alchemySerializationData:
+    buttonDict:
+      isCreated: 1
+      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": 0\n    },\n    {\n       
+        \"Key\": 1,\n        \"Value\": 1\n    },\n    {\n        \"Key\": 4,\n       
+        \"Value\": 2\n    }\n]"
+    unityObjectReferences:
     - {fileID: 7051624880449207424}
     - {fileID: 334487327988106122}
     - {fileID: 5949929129563084738}
-  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
-  popupDailyReward: DailyRewardPopup
 --- !u!1 &7614068006070140641
 GameObject:
   m_ObjectHideFlags: 0
@@ -3374,6 +3434,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -3387,6 +3450,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3508,15 +3573,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3677,15 +3744,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3811,15 +3880,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4053,6 +4124,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -4066,6 +4140,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -4096,14 +4172,18 @@ MonoBehaviour:
   eventUpdatePreview: {fileID: 11400000, guid: bf1ba8626d4e2cf4dbfa905a3206afc9, type: 2}
   eventPreviewLockedOutfit: {fileID: 11400000, guid: 9fabcf22be3de07499990bf66430ebd2, type: 2}
   eventUpdateSelectedEffect: {fileID: 11400000, guid: 71c7ba9fcc33b2b42b9ecfdb73ce793a, type: 2}
-  buttonDict:
-    keys: 000000000100000004000000
-    values:
+  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
+  popupDailyReward: DailyRewardPopup
+  alchemySerializationData:
+    buttonDict:
+      isCreated: 1
+      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": 0\n    },\n    {\n       
+        \"Key\": 1,\n        \"Value\": 1\n    },\n    {\n        \"Key\": 4,\n       
+        \"Value\": 2\n    }\n]"
+    unityObjectReferences:
     - {fileID: 5041679429568385126}
     - {fileID: 8055933040485762759}
     - {fileID: 4067383218307332332}
-  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
-  popupDailyReward: DailyRewardPopup
 --- !u!1 &8730256945997023857
 GameObject:
   m_ObjectHideFlags: 0
@@ -4240,6 +4320,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -4253,6 +4336,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -4403,6 +4488,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -4416,6 +4504,8 @@ MonoBehaviour:
   audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  useVariableListener: 0
+  callbackVariable: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2

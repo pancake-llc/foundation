@@ -2,7 +2,6 @@
     "name": "Pancake.UGUI.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:341d04dbc3e6ced4f903de04a0918a48",
         "GUID:71a2e5fd62742b447a45a06bf18f9a7d",
         "GUID:f4bbbe38ed06eef458a5b3516216a659",
         "GUID:b0a110e2f808b4d4d82f5694f91b251a",
