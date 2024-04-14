@@ -73,22 +73,23 @@ namespace PancakeEditor.Common
         /// Search for assets with type <typeparamref name="T"/> by specified <paramref name="fullPath"/>
         /// </summary>
         /// <param name="fullPath"></param>
+        /// <param name="directlyPath"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T FindAssetWithPath<T>(string fullPath) where T : Object
+        public static T FindAssetWithPath<T>(string fullPath, bool directlyPath = false) where T : Object
         {
-            string path = GetPathInCurrentEnvironent(fullPath);
+            string path = directlyPath ? fullPath : GetPathInCurrentEnvironent(fullPath);
             var t = AssetDatabase.LoadAssetAtPath(path, typeof(T));
             if (t == null) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t as T;
         }
-        
+
         /// <summary>
         /// Search for assets with type <typeparamref name="T"/> by specified <paramref name="nameAsset"/> and relative path <paramref name="relativePath"/>
         /// </summary>
-        public static T FindAssetWithPath<T>(string nameAsset, string relativePath) where T : Object
+        public static T FindAssetWithPath<T>(string nameAsset, string relativePath, bool directlyPath = false) where T : Object
         {
-            string path = AssetInPackagePath(relativePath, nameAsset);
+            string path = directlyPath ? $"{relativePath}/{nameAsset}" : AssetInPackagePath(relativePath, nameAsset);
             var t = AssetDatabase.LoadAssetAtPath(path, typeof(T));
             if (t == null) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t as T;
@@ -98,9 +99,9 @@ namespace PancakeEditor.Common
         /// Search for all assets with type <typeparamref name="T"/> by specified <paramref name="nameAsset"/> and relative path <paramref name="relativePath"/>
         /// typical case is loading sprite sheet, it will return sprite array
         /// </summary>
-        public static T[] FindAssetsWithPath<T>(string nameAsset, string relativePath) where T : Object
+        public static T[] FindAssetsWithPath<T>(string nameAsset, string relativePath, bool directlyPath = false) where T : Object
         {
-            string path = AssetInPackagePath(relativePath, nameAsset);
+            string path = directlyPath ? $"{relativePath}/{nameAsset}" : AssetInPackagePath(relativePath, nameAsset);
             var t = AssetDatabase.LoadAllAssetsAtPath(path).OfType<T>().ToArray();
             if (t.Length == 0) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t;
