@@ -14,7 +14,6 @@ namespace Pancake.ScriptableEditor
 {
     public class WizardWindow : WindowBase
     {
-
         private Vector2 _scrollPosition = Vector2.zero;
         private Vector2 _categoryScrollPosition = Vector2.zero;
         private Vector2 _itemScrollPosition = Vector2.zero;
@@ -135,7 +134,6 @@ namespace Pancake.ScriptableEditor
 
         protected override void OnGUI()
         {
-            base.OnGUI();
             DrawFolder();
             GUILayout.Space(2);
             Uniform.DrawLine();
@@ -151,6 +149,7 @@ namespace Pancake.ScriptableEditor
             DrawLeftPanel();
             DrawRightPanel();
             EditorGUILayout.EndHorizontal();
+            base.OnGUI();
         }
 
         /// <summary>

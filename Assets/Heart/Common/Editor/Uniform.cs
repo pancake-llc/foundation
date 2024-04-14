@@ -24,7 +24,7 @@ namespace PancakeEditor.Common
 
         private static readonly Dictionary<string, GUIContent> CachedIconContent = new();
         private static readonly UniformFoldoutState FoldoutSettings = new();
-        public static readonly string Theme = EditorGUIUtility.isProSkin ? "DarkTheme" : "LightTheme";
+        public static string Theme => EditorGUIUtility.isProSkin ? "DarkTheme" : "LightTheme";
 
         #endregion
 

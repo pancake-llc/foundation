@@ -170,13 +170,13 @@ namespace PancakeEditor
 
         protected override void OnGUI()
         {
-            //Uniform.DrawHeader("Wizard");
             Uniform.DrawLine(2);
             DrawTabs();
             EditorGUILayout.BeginHorizontal();
             DrawLeftSide();
             DrawRightSide();
             EditorGUILayout.EndHorizontal();
+            base.OnGUI();
         }
 
         private void DrawRightSide()
