@@ -8,6 +8,7 @@ using Pancake.Common;
 using PancakeEditor.Common;
 using Pancake.Linq;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -261,7 +262,7 @@ namespace PancakeEditor
                 PlayerSettings.Android.minifyDebug = false;
                 PlayerSettings.Android.useCustomKeystore = _customKeystoreProperty.boolValue;
 
-                PlayerSettings.SetScriptingBackend(EditorUserBuildSettings.selectedBuildTargetGroup, ScriptingImplementation.IL2CPP);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
                 if (_customKeystoreProperty.boolValue || _environmentProperty.intValue == (int) AndroidBuildPipelineSettings.Environment.Production)
                 {
                     string keystorePath = _keystorePathProperty.stringValue;
