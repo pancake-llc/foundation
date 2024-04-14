@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 
@@ -8,21 +7,19 @@ namespace PancakeEditor.Hierarchy
 {
     public class Hierarchy
     {
-        private readonly List<BaseHierarchy> _collection = new() {new TreeMapComponent(), new SeparatorComponent(), new VisibilityComponent(), new ErrorComponent()};
+        private readonly List<BaseHierarchy> _collection = new() {new TreeMapComponent(), new SeparatorComponent()};
 
         public void OnHierarchyWindowItemOnGUI(GameObject gameObject, int instanceId, Rect selectionRect)
         {
             var curRect = new Rect(selectionRect);
-            curRect.x += selectionRect.width - HierarchyEditorSetting.AdditionalIndent;
-
-            float gameObjectNameWidth = HierarchyEditorSetting.AdditionalHideIconIfNotFit ? GUI.skin.label.CalcSize(new GUIContent(gameObject.name)).x : 0;
+            curRect.x += selectionRect.width;
 
             DrawComponents(_collection,
                 selectionRect,
                 ref curRect,
                 gameObject,
                 true,
-                HierarchyEditorSetting.AdditionalHideIconIfNotFit ? selectionRect.x + gameObjectNameWidth + 7 : 0);
+                0);
         }
 
 
@@ -81,9 +78,7 @@ namespace PancakeEditor.Hierarchy
                 if (layoutStatus != HierarchyLayoutStatus.Success)
                 {
                     rect.width = 7;
-                    GUI.color = HierarchyEditorSetting.AdditionalInactiveColor.Get();
                     GUI.DrawTexture(rect, EditorResources.IconTrim);
-                    GUI.color = Color.white;
                 }
             }
             else if (Event.current.isMouse)

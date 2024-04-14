@@ -640,8 +640,8 @@ namespace PancakeEditor.Common
         /// <returns></returns>
         public static Texture2D ConvertToTexture(string base64)
         {
-            var tex = new Texture2D(0,
-                0,
+            var tex = new Texture2D(1,
+                1,
                 TextureFormat.RGBA32,
                 false,
                 false) {hideFlags = HideFlags.HideAndDontSave};
@@ -650,7 +650,7 @@ namespace PancakeEditor.Common
         }
 
         /// <summary>
-        /// thanks @JoshuaMcKenzie and @Edvard-D
+        /// thanks, @JoshuaMcKenzie and @Edvard-D
         /// remove all empty object reference elements
         /// </summary>
         /// <param name="list"></param>

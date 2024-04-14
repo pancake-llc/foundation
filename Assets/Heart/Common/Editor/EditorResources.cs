@@ -233,7 +233,6 @@ namespace PancakeEditor.Common
         public static Texture2D ScriptableEventListener => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_event_listener.png", RELATIVE_PATH);
         public static Texture2D ScriptableList => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_list.png", RELATIVE_PATH);
         public static Texture2D ScriptableVariable => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_variable.png", RELATIVE_PATH);
-        public static Texture2D Dreamblale => ProjectDatabase.FindAssetWithPath<Texture2D>("dreamblade.png", RELATIVE_PATH);
         public static Texture2D StarEmpty => ProjectDatabase.FindAssetWithPath<Texture2D>("star_empty.png", RELATIVE_PATH);
         public static Texture2D StarFull => ProjectDatabase.FindAssetWithPath<Texture2D>("star_full.png", RELATIVE_PATH);
         public static Texture2D ScriptableAd => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_ad.png", RELATIVE_PATH);
@@ -246,16 +245,80 @@ namespace PancakeEditor.Common
         public static Texture2D ScriptableEditorSpine => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_editor_spine.png", RELATIVE_PATH);
         public static Texture2D ScriptableInterface => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_interface.png", RELATIVE_PATH);
         public static Texture2D ScriptableFactory => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_factory.png", RELATIVE_PATH);
-        public static Texture2D ScriptableMesh => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_mesh.png", RELATIVE_PATH);
-        public static Texture2D ScriptableLeaf => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_leaf.png", RELATIVE_PATH);
         public static Texture2D ScriptableUnity => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_unity.png", RELATIVE_PATH);
         public static Texture2D IconEyeOpen => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_open.png", RELATIVE_PATH);
         public static Texture2D IconEyeClose => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_close.png", RELATIVE_PATH);
-        public static Texture2D TreeMapCurrent => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_current.png", RELATIVE_PATH);
-        public static Texture2D TreeMapLast => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_last.png", RELATIVE_PATH);
-        public static Texture2D TreeMapLevel => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level.png", RELATIVE_PATH);
-        public static Texture2D TreeMapLevel4 => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level4.png", RELATIVE_PATH);
-        public static Texture2D TreeMapLine => ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_line.png", RELATIVE_PATH);
+
+        public static Texture2D TreeMapCurrent
+        {
+            get
+            {
+                TextureCached.TryGetValue(nameof(TreeMapCurrent), out var tex);
+
+                if (tex != null) return tex;
+                tex = Editor.ConvertToTexture(
+                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAQ0lEQVQoFWNgwA+E/wMBUIkwujImdAFi+aMa8YQUCx45dCmUKCFKIzAq36CbQpRGRkZGEbI0QjW9RdY8mgCQQwONDQApiglJmB+fmgAAAABJRU5ErkJggg==");
+                TextureCached.Add(nameof(TreeMapCurrent), tex);
+                return tex;
+            }
+        }
+
+        public static Texture2D TreeMapLast
+        {
+            get
+            {
+                TextureCached.TryGetValue(nameof(TreeMapLast), out var tex);
+
+                if (tex != null) return tex;
+                tex = Editor.ConvertToTexture(
+                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAPUlEQVQoFWNgwA+E/wMBUIkwujImdAFi+aMa8YQUCx45dCmUKCFKIzAq36CbwogugMbnBvI50MRGuTQLAQD/rQhHffk54gAAAABJRU5ErkJggg==");
+                TextureCached.Add(nameof(TreeMapLast), tex);
+                return tex;
+            }
+        }
+
+        public static Texture2D TreeMapLevel
+        {
+            get
+            {
+                TextureCached.TryGetValue(nameof(TreeMapLevel), out var tex);
+
+                if (tex != null) return tex;
+                tex = Editor.ConvertToTexture(
+                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAJElEQVQoFWNgwA8k/wMBUIkkujImdAFi+aMa8YTUaOCM8MABAI00BE1+cZ4yAAAAAElFTkSuQmCC");
+                TextureCached.Add(nameof(TreeMapLevel), tex);
+                return tex;
+            }
+        }
+
+        public static Texture2D TreeMapLevel4
+        {
+            get
+            {
+                TextureCached.TryGetValue(nameof(TreeMapLevel4), out var tex);
+
+                if (tex != null) return tex;
+                tex = Editor.ConvertToTexture(
+                    "iVBORw0KGgoAAAANSUhEUgAAADgAAAAQCAYAAABDebxFAAAATklEQVRIDe2SMQoAMAgDpV/w/29t3QWzpnKOGiHmjJgrb1VJcpa1qc3eadaWNTjwd6AQhKB5AryoOSBpD4IyInMBBM0BSXsQlBGZC9YTfL7XEKcUdfHdAAAAAElFTkSuQmCC");
+                TextureCached.Add(nameof(TreeMapLevel4), tex);
+                return tex;
+            }
+        }
+
+        public static Texture2D TreeMapLine
+        {
+            get
+            {
+                TextureCached.TryGetValue(nameof(TreeMapLine), out var tex);
+
+                if (tex != null) return tex;
+                tex = Editor.ConvertToTexture(
+                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAACVBMVEX///8AAAD///9+749PAAAAAnRSTlMAE/ItjOYAAAAWSURBVHgBY6AbYEQAEJcJDhjRZWkJABQbACw6WoebAAAAAElFTkSuQmCC");
+                TextureCached.Add(nameof(TreeMapLine), tex);
+                return tex;
+            }
+        }
+
         public static Texture2D IconTrim => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_trim.png", RELATIVE_PATH);
         public static Texture2D IconWarning => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_warning.png", RELATIVE_PATH);
         public static Texture2D IconCategoryLayout => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_category_layout.png", RELATIVE_PATH);
@@ -264,7 +327,6 @@ namespace PancakeEditor.Common
         public static Texture2D IconEdit => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_edit.png", RELATIVE_PATH);
         public static Texture2D IconPing => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_ping.png", RELATIVE_PATH);
         public static Texture2D IconCancel => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_cancel.png", RELATIVE_PATH);
-
 
         public static Texture2D IconCopyComponent(string theme)
         {
@@ -305,7 +367,6 @@ namespace PancakeEditor.Common
             TextureCached.Add($"{nameof(IconMoveDown)}{theme}", tex);
             return tex;
         }
-
 
         public static Texture2D IconMoveUp(string theme)
         {
