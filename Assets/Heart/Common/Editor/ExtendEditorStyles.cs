@@ -5,6 +5,7 @@ namespace PancakeEditor.Common
 {
     public static class ExtendEditorStyles
     {
+        public static readonly string Theme = EditorGUIUtility.isProSkin ? "DarkTheme" : "LightTheme";
         private static GUIStyle arrayLabel;
 
         public static GUIStyle Label
@@ -66,12 +67,11 @@ namespace PancakeEditor.Common
                     arrayHeader.alignment = TextAnchor.MiddleLeft;
                     arrayHeader.border = new RectOffset(2, 2, 2, 2);
                     arrayHeader.padding = new RectOffset(10, 0, 0, 1);
-
-                    string theme = EditorGUIUtility.isProSkin ? "DarkTheme" : "LightTheme";
+                    
                     Color32 textColor = EditorGUIUtility.isProSkin ? new Color32(200, 200, 200, 255) : new Color32(3, 3, 3, 255);
 
                     arrayHeader.normal.textColor = textColor;
-                    arrayHeader.normal.background = EditorResources.ReorderableArrayNormal(theme);
+                    arrayHeader.normal.background = EditorResources.ReorderableArrayNormal(Theme);
                     arrayHeader.normal.scaledBackgrounds = new Texture2D[1] {arrayHeader.normal.background};
                 }
 

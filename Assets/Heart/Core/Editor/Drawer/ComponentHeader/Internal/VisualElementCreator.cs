@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -11,58 +10,22 @@ namespace PancakeEditor.ComponentHeader
 {
     internal static class VisualElementCreator
     {
-        private static readonly Dictionary<ButtonType, Texture2D> IconCaches = new();
-        private static readonly Dictionary<ButtonType, Texture2D> IconDarkCaches = new();
-
         private static Texture2D GetIcon(ButtonType buttonType)
         {
-            if (EditorGUIUtility.isProSkin)
+            switch (buttonType)
             {
-                if (IconCaches.TryGetValue(buttonType, out var result)) return result;
-                switch (buttonType)
-                {
-                    case ButtonType.Remove:
-                        IconCaches[buttonType] = EditorResources.IconRemoveComponent;
-                        break;
-                    case ButtonType.MoveUp:
-                        IconCaches[buttonType] = EditorResources.IconMoveUp;
-                        break;
-                    case ButtonType.MoveDown:
-                        IconCaches[buttonType] = EditorResources.IconMoveDown;
-                        break;
-                    case ButtonType.PasteComponentValue:
-                        IconCaches[buttonType] = EditorResources.IconPasteComponentValues;
-                        break;
-                    case ButtonType.CopyComponent:
-                        IconCaches[buttonType] = EditorResources.IconCopyComponent;
-                        break;
-                }
-
-                return IconCaches[buttonType];
-            }
-            else
-            {
-                if (IconDarkCaches.TryGetValue(buttonType, out var result)) return result;
-                switch (buttonType)
-                {
-                    case ButtonType.Remove:
-                        IconDarkCaches[buttonType] = EditorResources.IconRemoveComponentDark;
-                        break;
-                    case ButtonType.MoveUp:
-                        IconDarkCaches[buttonType] = EditorResources.IconMoveUpDark;
-                        break;
-                    case ButtonType.MoveDown:
-                        IconDarkCaches[buttonType] = EditorResources.IconMoveDownDark;
-                        break;
-                    case ButtonType.PasteComponentValue:
-                        IconDarkCaches[buttonType] = EditorResources.IconPasteComponentValuesDark;
-                        break;
-                    case ButtonType.CopyComponent:
-                        IconDarkCaches[buttonType] = EditorResources.IconCopyComponentDark;
-                        break;
-                }
-
-                return IconDarkCaches[buttonType];
+                case ButtonType.Remove:
+                    return EditorResources.IconRemoveComponent(ExtendEditorStyles.Theme);
+                case ButtonType.MoveUp:
+                    return EditorResources.IconMoveUp(ExtendEditorStyles.Theme);
+                case ButtonType.MoveDown:
+                    return EditorResources.IconMoveDown(ExtendEditorStyles.Theme);
+                case ButtonType.PasteComponentValue:
+                    return EditorResources.IconPasteComponentValues(ExtendEditorStyles.Theme);
+                case ButtonType.CopyComponent:
+                    return EditorResources.IconCopyComponent(ExtendEditorStyles.Theme);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null);
             }
         }
 
