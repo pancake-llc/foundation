@@ -62,7 +62,7 @@ namespace Pancake.UI
             _callbackReceivers.AddRange(GetComponents<IPopupContainerCallbackReceiver>());
             if (!string.IsNullOrWhiteSpace(displayName)) InstanceCacheByName.Add(displayName, this);
 
-            _backdropPrefab = overridePopupPrefab ? overridePopupPrefab : DefaultTransitionSetting.PopupBackdropPrefab;
+            _backdropPrefab = overridePopupPrefab != null ? overridePopupPrefab : DefaultTransitionSetting.PopupBackdropPrefab;
 
             _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
         }

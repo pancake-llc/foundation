@@ -1,7 +1,10 @@
-﻿using System;
+﻿using System.IO;
+using Pancake.Common;
 using Pancake.UI;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace PancakeEditor
 {
@@ -72,7 +75,38 @@ namespace PancakeEditor
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(_popupBackdropEnterAnimProperty, new GUIContent("Enter Anim"));
             EditorGUILayout.PropertyField(_popupBackdropExitAnimProperty, new GUIContent("Exit Anim"));
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PropertyField(_popupBackdropPrefabProperty, new GUIContent("Prefab"));
+            if (_popupBackdropPrefabProperty.objectReferenceValue == null)
+            {
+                if (GUILayout.Button("Create", GUILayout.Width(80)))
+                {
+                    var go = new GameObject("DefaultPopupBackdrop",
+                        typeof(RectTransform),
+                        typeof(CanvasRenderer),
+                        typeof(Image),
+                        typeof(PopupBackdrop));
+                    go.hideFlags = HideFlags.HideInHierarchy;
+                    if (go.TryGetComponent<Image>(out var image))
+                    {
+                        image.rectTransform.Fill();
+                        image.color = Color.black;
+                        image.color = image.color.ChangeAlpha(0.75f);
+                    }
+
+                    if (!Directory.Exists("Assets/_Root/Prefabs/Popup")) Directory.CreateDirectory("Assets/_Root/Prefabs/Popup");
+                    const string path = "Assets/_Root/Prefabs/Popup/DefaultPopupBackdrop.prefab";
+                    if (File.Exists(path)) AssetDatabase.DeleteAsset(path);
+
+                    PrefabUtility.SaveAsPrefabAsset(go, path);
+                    AssetDatabase.SaveAssets();
+                    _popupBackdropPrefabProperty.objectReferenceValue = ProjectDatabase.FindAssetWithPath<GameObject>(path, true);
+                    
+                    AssetDatabase.Refresh();
+                }
+            }
+
+            EditorGUILayout.EndHorizontal();
             EditorGUI.indentLevel--;
             GUILayout.Space(4);
 
