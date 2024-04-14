@@ -19,7 +19,7 @@ namespace Pancake.UI
         [SerializeField] private Button buttonClaim;
         [SerializeField] private Button buttonClaimX5;
         [SerializeField] private TextMeshProUGUI textValueX5;
-        [SerializeField/*, PopupPickup*/] private string popupShop;
+        [SerializeField, PopupPickup] private string popupShop;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private RewardVariable rewardVariable;
         [SerializeField] private BoolDailyVariable boolDailyVariable;

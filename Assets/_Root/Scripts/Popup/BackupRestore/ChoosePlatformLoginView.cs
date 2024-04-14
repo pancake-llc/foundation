@@ -19,8 +19,8 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonApple;
         [SerializeField] private GameObject block;
 
-        [SerializeField/*, PopupPickup*/] private string popupNotification;
-        [SerializeField/*, PopupPickup*/] private string popupQuestion;
+        [SerializeField, PopupPickup] private string popupNotification;
+        [SerializeField, PopupPickup] private string popupQuestion;
         [SerializeField] private LocaleText localeLoginGpgsFail;
         [SerializeField] private LocaleText localeLoginAppleFail;
         [SerializeField] private LocaleText localeBackupSuccess;

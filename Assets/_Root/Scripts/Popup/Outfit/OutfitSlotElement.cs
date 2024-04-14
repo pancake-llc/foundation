@@ -23,7 +23,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
         [SerializeField] private OutfitTypeButtonDictionary buttonDict;
         [SerializeField] private RewardVariable rewardVariable;
-        [SerializeField/*, PopupPickup*/] private string popupDailyReward;
+        [SerializeField, PopupPickup] private string popupDailyReward;
 
         private OutfitUnitVariable _outfitUnit;
         private OutfitType _outfitType;

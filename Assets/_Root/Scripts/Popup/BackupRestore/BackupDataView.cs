@@ -9,7 +9,7 @@ namespace Pancake.UI
     {
         [SerializeField] private Button buttonClose;
         [SerializeField] private Button buttonBackup;
-        [SerializeField/*, PopupPickup*/] private string popupChoosePlatform;
+        [SerializeField, PopupPickup] private string popupChoosePlatform;
 
         protected override UniTask Initialize()
         {

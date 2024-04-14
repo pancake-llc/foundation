@@ -21,7 +21,7 @@ namespace Pancake.UI
         [SerializeField] private Button buttonShop;
         [SerializeField] private GameObject uiConfetti;
         [SerializeField] private int numberCoinReceive = 100;
-        [SerializeField/*, PopupPickup*/] private string popupShop;
+        [SerializeField, PopupPickup] private string popupShop;
 
         [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;

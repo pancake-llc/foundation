@@ -9,7 +9,7 @@ namespace Pancake.SceneFlow
     public class RequireInternetInitialization : Initialize
     {
         [SerializeField] private float timeCheckAgain = 5f;
-        [SerializeField/*, PopupPickup*/] private string popupNoInternet;
+        [SerializeField, PopupPickup] private string popupNoInternet;
 
         public override void Init()
         {

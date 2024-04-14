@@ -15,7 +15,7 @@ namespace Pancake.UI
         [SerializeField] private Button buttonReplay;
         [SerializeField] private Button buttonShop;
         [SerializeField] private Button buttonSkip;
-        [SerializeField/*, PopupPickup*/] private string popupShop;
+        [SerializeField, PopupPickup] private string popupShop;
         [Header("EVENT")] [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
