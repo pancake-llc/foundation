@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEditorInternal;
@@ -15,15 +14,15 @@ namespace PancakeEditor.ComponentHeader
             switch (buttonType)
             {
                 case ButtonType.Remove:
-                    return EditorResources.IconRemoveComponent(ExtendEditorStyles.Theme);
+                    return EditorResources.IconRemoveComponent(Uniform.Theme);
                 case ButtonType.MoveUp:
-                    return EditorResources.IconMoveUp(ExtendEditorStyles.Theme);
+                    return EditorResources.IconMoveUp(Uniform.Theme);
                 case ButtonType.MoveDown:
-                    return EditorResources.IconMoveDown(ExtendEditorStyles.Theme);
+                    return EditorResources.IconMoveDown(Uniform.Theme);
                 case ButtonType.PasteComponentValue:
-                    return EditorResources.IconPasteComponentValues(ExtendEditorStyles.Theme);
+                    return EditorResources.IconPasteComponentValues(Uniform.Theme);
                 case ButtonType.CopyComponent:
-                    return EditorResources.IconCopyComponent(ExtendEditorStyles.Theme);
+                    return EditorResources.IconCopyComponent(Uniform.Theme);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null);
             }

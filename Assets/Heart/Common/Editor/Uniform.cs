@@ -22,8 +22,9 @@ namespace PancakeEditor.Common
         private static GUIStyle headerLabel;
         private static GUIStyle richCenterLabel;
 
-        private static readonly Dictionary<string, GUIContent> CachedIconContent = new Dictionary<string, GUIContent>();
-        private static readonly UniformFoldoutState FoldoutSettings = new UniformFoldoutState();
+        private static readonly Dictionary<string, GUIContent> CachedIconContent = new();
+        private static readonly UniformFoldoutState FoldoutSettings = new();
+        public static readonly string Theme = EditorGUIUtility.isProSkin ? "DarkTheme" : "LightTheme";
 
         #endregion
 
@@ -37,26 +38,6 @@ namespace PancakeEditor.Common
                 if (contentList != null) return contentList;
                 contentList = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.EvenBackground}};
                 return contentList;
-            }
-        }
-
-        public static GUIStyle ContentListBlue
-        {
-            get
-            {
-                if (contentListBlue != null) return contentListBlue;
-                contentListBlue = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.EvenBackgroundBlue}};
-                return contentListBlue;
-            }
-        }
-
-        public static GUIStyle ContentListDark
-        {
-            get
-            {
-                if (contentListDark != null) return contentListDark;
-                contentListDark = new GUIStyle {border = new RectOffset(2, 2, 2, 2), normal = {background = EditorResources.EvenBackgroundDark}};
-                return contentListDark;
             }
         }
 
