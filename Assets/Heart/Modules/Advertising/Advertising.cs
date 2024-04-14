@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Alchemy.Inspector;
 #if PANCAKE_ADMOB
 using GoogleMobileAds.Ump.Api;
 #endif
@@ -17,8 +18,8 @@ namespace Pancake.Monetization
         [SerializeField] private ScriptableEventString changeNetworkEvent;
         [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
 #if PANCAKE_ADMOB
-        [SerializeField, Label("Show GDPR Again Event")] private ScriptableEventNoParam showGdprAgainEvent;
-        [SerializeField, Label("GDPR Reset Event")] private ScriptableEventNoParam gdprResetEvent;
+        [SerializeField, LabelText("Show GDPR Again Event")] private ScriptableEventNoParam showGdprAgainEvent;
+        [SerializeField, LabelText("GDPR Reset Event")] private ScriptableEventNoParam gdprResetEvent;
 #endif
 
         private IEnumerator _autoLoadAdCoroutine;
