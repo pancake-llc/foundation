@@ -73,12 +73,12 @@ namespace PancakeEditor.Common
         /// Search for assets with type <typeparamref name="T"/> by specified <paramref name="fullPath"/>
         /// </summary>
         /// <param name="fullPath"></param>
-        /// <param name="directlyPath"></param>
+        /// <param name="outsideScope">When outside scope false path will-be scan only in heart package</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T FindAssetWithPath<T>(string fullPath, bool directlyPath = false) where T : Object
+        public static T FindAssetWithPath<T>(string fullPath, bool outsideScope = false) where T : Object
         {
-            string path = directlyPath ? fullPath : GetPathInCurrentEnvironent(fullPath);
+            string path = outsideScope ? fullPath : GetPathInCurrentEnvironent(fullPath);
             var t = AssetDatabase.LoadAssetAtPath(path, typeof(T));
             if (t == null) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t as T;
@@ -87,9 +87,14 @@ namespace PancakeEditor.Common
         /// <summary>
         /// Search for assets with type <typeparamref name="T"/> by specified <paramref name="nameAsset"/> and relative path <paramref name="relativePath"/>
         /// </summary>
-        public static T FindAssetWithPath<T>(string nameAsset, string relativePath, bool directlyPath = false) where T : Object
+        /// <param name="nameAsset"></param>
+        /// <param name="relativePath"></param>
+        /// <param name="outsideScope">When outside scope false path will-be scan only in heart package</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T FindAssetWithPath<T>(string nameAsset, string relativePath, bool outsideScope = false) where T : Object
         {
-            string path = directlyPath ? $"{relativePath}/{nameAsset}" : AssetInPackagePath(relativePath, nameAsset);
+            string path = outsideScope ? $"{relativePath}/{nameAsset}" : AssetInPackagePath(relativePath, nameAsset);
             var t = AssetDatabase.LoadAssetAtPath(path, typeof(T));
             if (t == null) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t as T;
@@ -99,9 +104,14 @@ namespace PancakeEditor.Common
         /// Search for all assets with type <typeparamref name="T"/> by specified <paramref name="nameAsset"/> and relative path <paramref name="relativePath"/>
         /// typical case is loading sprite sheet, it will return sprite array
         /// </summary>
-        public static T[] FindAssetsWithPath<T>(string nameAsset, string relativePath, bool directlyPath = false) where T : Object
+        /// <param name="nameAsset"></param>
+        /// <param name="relativePath"></param>
+        /// <param name="outsideScope">When outside scope false path will-be scan only in heart package</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T[] FindAssetsWithPath<T>(string nameAsset, string relativePath, bool outsideScope = false) where T : Object
         {
-            string path = directlyPath ? $"{relativePath}/{nameAsset}" : AssetInPackagePath(relativePath, nameAsset);
+            string path = outsideScope ? $"{relativePath}/{nameAsset}" : AssetInPackagePath(relativePath, nameAsset);
             var t = AssetDatabase.LoadAllAssetsAtPath(path).OfType<T>().ToArray();
             if (t.Length == 0) Debug.LogError($"Couldn't load the {nameof(T)} at path :{path}");
             return t;
