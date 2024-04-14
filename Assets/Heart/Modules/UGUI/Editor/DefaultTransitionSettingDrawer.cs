@@ -85,8 +85,7 @@ namespace PancakeEditor
                         typeof(RectTransform),
                         typeof(CanvasRenderer),
                         typeof(Image),
-                        typeof(PopupBackdrop));
-                    go.hideFlags = HideFlags.HideInHierarchy;
+                        typeof(PopupBackdrop)) {hideFlags = HideFlags.HideInHierarchy};
                     if (go.TryGetComponent<Image>(out var image))
                     {
                         image.rectTransform.Fill();
@@ -101,7 +100,7 @@ namespace PancakeEditor
                     PrefabUtility.SaveAsPrefabAsset(go, path);
                     AssetDatabase.SaveAssets();
                     _popupBackdropPrefabProperty.objectReferenceValue = ProjectDatabase.FindAssetWithPath<GameObject>(path, true);
-                    
+                    DestroyImmediate(go);
                     AssetDatabase.Refresh();
                 }
             }
