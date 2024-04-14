@@ -3,7 +3,6 @@ using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
 using UnityEditor;
-using UnityEditor.Build;
 using UnityEngine;
 
 namespace PancakeEditor
@@ -99,8 +98,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
             if (GUILayout.Button("Add GPGS Symbol (2)", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_GPGS",
-                        NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget))))
+                if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_GPGS", BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)))
                 {
                     ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_GPGS");
                     AssetDatabase.SaveAssets();

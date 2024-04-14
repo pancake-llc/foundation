@@ -9,38 +9,39 @@ namespace Pancake.Common
 {
     public static class ScriptingDefinition
     {
-        private static NamedBuildTarget[] workingBuildTargetGroups;
+        private static BuildTargetGroup[] workingBuildTargetGroups;
 
         /// <summary>
         /// Gets all supported build target groups, excluding the <see cref="BuildTargetGroup.Unknown"/>
         /// and the obsolete ones.
         /// </summary>
         /// <returns>The working build target groups.</returns>
-        public static NamedBuildTarget[] GetWorkingBuildTargetGroups()
+        private static BuildTargetGroup[] GetWorkingBuildTargetGroups()
         {
-            if (workingBuildTargetGroups != null) return workingBuildTargetGroups;
+            if (workingBuildTargetGroups != null)
+                return workingBuildTargetGroups;
 
-            var groups = new List<NamedBuildTarget>();
-            var btgType = typeof(NamedBuildTarget);
+            var groups = new List<BuildTargetGroup>();
+            var btgType = typeof(BuildTargetGroup);
 
-            foreach (var name in Enum.GetNames(btgType))
+            foreach (string name in Enum.GetNames(btgType))
             {
                 // First check obsolete.
                 var memberInfo = btgType.GetMember(name)[0];
                 if (Attribute.IsDefined(memberInfo, typeof(ObsoleteAttribute))) continue;
 
                 // Name -> enum value and exclude the 'Unknown'.
-                var g = (NamedBuildTarget) Enum.Parse(btgType, name);
-                if (g != NamedBuildTarget.Unknown) groups.Add(g);
+                var g = (BuildTargetGroup) Enum.Parse(btgType, name);
+                if (g != BuildTargetGroup.Unknown) groups.Add(g);
             }
 
             workingBuildTargetGroups = groups.ToArray();
             return workingBuildTargetGroups;
         }
 
-        public static bool IsSymbolDefined(string symbol, NamedBuildTarget target)
+        public static bool IsSymbolDefined(string symbol, BuildTargetGroup platform)
         {
-            var currentSymbol = PlayerSettings.GetScriptingDefineSymbols(target);
+            string currentSymbol = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform));
             var symbols = new List<string>(currentSymbol.Split(';'));
 
             return symbols.Contains(symbol);
@@ -74,10 +75,10 @@ namespace Pancake.Common
         /// Adds the scripting define symbols in given array to the target platforms if they don't exist.
         /// </summary>
         /// <param name="symbols">Symbols.</param>
-        /// <param name="target">Platform.</param>
-        public static void AddDefineSymbols(string[] symbols, NamedBuildTarget target)
+        /// <param name="platform">Platform.</param>
+        public static void AddDefineSymbols(string[] symbols, BuildTargetGroup platform)
         {
-            var currentSymbol = PlayerSettings.GetScriptingDefineSymbols(target);
+            string currentSymbol = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform));
             var currentSymbols = new List<string>(currentSymbol.Split(';'));
             var added = 0;
 
@@ -101,7 +102,7 @@ namespace Pancake.Common
                         sb.Append(";");
                 }
 
-                PlayerSettings.SetScriptingDefineSymbols(target, sb.ToString());
+                PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform), sb.ToString());
             }
         }
 
@@ -109,10 +110,10 @@ namespace Pancake.Common
         /// Adds the scripting define symbols on the platform if it doesn't exist.
         /// </summary>
         /// <param name="symbol">Symbol.</param>
-        /// <param name="target"></param>
-        public static void AddDefineSymbol(string symbol, NamedBuildTarget target)
+        /// <param name="platform"></param>
+        public static void AddDefineSymbol(string symbol, BuildTargetGroup platform)
         {
-            var currentSymbol = PlayerSettings.GetScriptingDefineSymbols(target);
+            string currentSymbol = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform));
             var symbols = new List<string>(currentSymbol.Split(';'));
 
             if (!symbols.Contains(symbol))
@@ -128,7 +129,7 @@ namespace Pancake.Common
                         sb.Append(";");
                 }
 
-                PlayerSettings.SetScriptingDefineSymbols(target, sb.ToString());
+                PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform), sb.ToString());
             }
         }
 
@@ -160,10 +161,10 @@ namespace Pancake.Common
         /// Removes the scripting define symbols in the given array on the target platform if they exists.
         /// </summary>
         /// <param name="symbols">Symbols.</param>
-        /// <param name="target">Platform.</param>
-        public static void RemoveDefineSymbols(string[] symbols, NamedBuildTarget target)
+        /// <param name="platform">Platform.</param>
+        public static void RemoveDefineSymbols(string[] symbols, BuildTargetGroup platform)
         {
-            var currentSymbol = PlayerSettings.GetScriptingDefineSymbols(target);
+            string currentSymbol = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform));
             var currentSymbols = new List<string>(currentSymbol.Split(';'));
             var removed = 0;
 
@@ -187,7 +188,7 @@ namespace Pancake.Common
                         sb.Append(";");
                 }
 
-                PlayerSettings.SetScriptingDefineSymbols(target, sb.ToString());
+                PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform), sb.ToString());
             }
         }
 
@@ -196,25 +197,25 @@ namespace Pancake.Common
         /// </summary>
         /// <param name="symbol">Symbol.</param>
         /// <param name="platform">Platform.</param>
-        public static void RemoveDefineSymbol(string symbol, NamedBuildTarget platform)
+        public static void RemoveDefineSymbol(string symbol, BuildTargetGroup platform)
         {
-            var currentSymbol = PlayerSettings.GetScriptingDefineSymbols(platform);
+            string currentSymbol = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform));
             var symbols = new List<string>(currentSymbol.Split(';'));
 
             if (symbols.Contains(symbol))
             {
                 symbols.Remove(symbol);
 
-                var settings = new StringBuilder();
+                var sb = new StringBuilder();
 
                 for (var i = 0; i < symbols.Count; i++)
                 {
-                    settings.Append(symbols[i]);
+                    sb.Append(symbols[i]);
                     if (i < symbols.Count - 1)
-                        settings.Append(";");
+                        sb.Append(";");
                 }
 
-                PlayerSettings.SetScriptingDefineSymbols(platform, settings.ToString());
+                PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform), sb.ToString());
             }
         }
     }

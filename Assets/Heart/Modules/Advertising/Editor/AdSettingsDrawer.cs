@@ -4,7 +4,6 @@ using Pancake.Common;
 using PancakeEditor.Common;
 using Pancake.Monetization;
 using UnityEditor;
-using UnityEditor.Build;
 using UnityEngine;
 
 namespace Pancake.MonetizationEditor
@@ -118,6 +117,9 @@ namespace Pancake.MonetizationEditor
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "unity-plugin-library.a"));
                     FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "unity-plugin-library.a.meta"));
 
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "NativeTemplates"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets/Plugins/iOS", "NativeTemplates.meta"));
+
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                 }
@@ -158,11 +160,11 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.BeginHorizontal();
 
                 bool googleMobileAdsInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.dll");
-                var contentInstallLabel = "Install Admob SDK v8.7.0 (1)";
+                var contentInstallLabel = "Install Admob SDK v9.0.0 (1)";
                 if (googleMobileAdsInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Admob SDK v8.7.0 Installed (1)";
+                    contentInstallLabel = "Admob SDK v9.0.0 Installed (1)";
                 }
                 else
                 {
@@ -185,8 +187,7 @@ namespace Pancake.MonetizationEditor
 
                 if (GUILayout.Button("Add Admob Symbol (2)", GUILayout.Height(24)))
                 {
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB",
-                            NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget))))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_ADMOB", BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_ADMOB");
                         AssetDatabase.SaveAssets();
@@ -270,7 +271,7 @@ namespace Pancake.MonetizationEditor
 
                 if (GUILayout.Button("Add AppLovin Symbol (2)", GUILayout.Height(24)))
                 {
-                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget))))
+                    if (!ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)))
                     {
                         ScriptingDefinition.AddDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
                         AssetDatabase.SaveAssets();
