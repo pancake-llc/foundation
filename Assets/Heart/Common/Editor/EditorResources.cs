@@ -226,8 +226,8 @@ namespace PancakeEditor.Common
         }
 
 
-        private const string RELATIVE_PATH = "Modules/Apex/ExLib/Core/Editor/Misc/Icons";
-        private const string RELATIVE_TEMPLATE_PATH = "Modules/Apex/ExLib/Core/Editor/Misc/Templates";
+        private const string RELATIVE_PATH = "Editor/Textures";
+        private const string RELATIVE_TEMPLATE_PATH = "Editor/Templates";
 
         public static Texture2D ScriptableEvent => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_event.png", RELATIVE_PATH);
         public static Texture2D ScriptableEventListener => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_event_listener.png", RELATIVE_PATH);
@@ -246,8 +246,6 @@ namespace PancakeEditor.Common
         public static Texture2D ScriptableInterface => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_interface.png", RELATIVE_PATH);
         public static Texture2D ScriptableFactory => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_factory.png", RELATIVE_PATH);
         public static Texture2D ScriptableUnity => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_unity.png", RELATIVE_PATH);
-        public static Texture2D IconEyeOpen => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_open.png", RELATIVE_PATH);
-        public static Texture2D IconEyeClose => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_eye_close.png", RELATIVE_PATH);
 
         public static Texture2D TreeMapCurrent
         {
@@ -256,8 +254,7 @@ namespace PancakeEditor.Common
                 TextureCached.TryGetValue(nameof(TreeMapCurrent), out var tex);
 
                 if (tex != null) return tex;
-                tex = Editor.ConvertToTexture(
-                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAQ0lEQVQoFWNgwA+E/wMBUIkwujImdAFi+aMa8YQUCx45dCmUKCFKIzAq36CbQpRGRkZGEbI0QjW9RdY8mgCQQwONDQApiglJmB+fmgAAAABJRU5ErkJggg==");
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_current.png", RELATIVE_PATH);
                 TextureCached.Add(nameof(TreeMapCurrent), tex);
                 return tex;
             }
@@ -270,8 +267,7 @@ namespace PancakeEditor.Common
                 TextureCached.TryGetValue(nameof(TreeMapLast), out var tex);
 
                 if (tex != null) return tex;
-                tex = Editor.ConvertToTexture(
-                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAPUlEQVQoFWNgwA+E/wMBUIkwujImdAFi+aMa8YQUCx45dCmUKCFKIzAq36CbwogugMbnBvI50MRGuTQLAQD/rQhHffk54gAAAABJRU5ErkJggg==");
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_last.png", RELATIVE_PATH);
                 TextureCached.Add(nameof(TreeMapLast), tex);
                 return tex;
             }
@@ -284,8 +280,7 @@ namespace PancakeEditor.Common
                 TextureCached.TryGetValue(nameof(TreeMapLevel), out var tex);
 
                 if (tex != null) return tex;
-                tex = Editor.ConvertToTexture(
-                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAYAAAAmlE46AAAAJElEQVQoFWNgwA8k/wMBUIkkujImdAFi+aMa8YTUaOCM8MABAI00BE1+cZ4yAAAAAElFTkSuQmCC");
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level.png", RELATIVE_PATH);
                 TextureCached.Add(nameof(TreeMapLevel), tex);
                 return tex;
             }
@@ -298,8 +293,7 @@ namespace PancakeEditor.Common
                 TextureCached.TryGetValue(nameof(TreeMapLevel4), out var tex);
 
                 if (tex != null) return tex;
-                tex = Editor.ConvertToTexture(
-                    "iVBORw0KGgoAAAANSUhEUgAAADgAAAAQCAYAAABDebxFAAAATklEQVRIDe2SMQoAMAgDpV/w/29t3QWzpnKOGiHmjJgrb1VJcpa1qc3eadaWNTjwd6AQhKB5AryoOSBpD4IyInMBBM0BSXsQlBGZC9YTfL7XEKcUdfHdAAAAAElFTkSuQmCC");
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level4.png", RELATIVE_PATH);
                 TextureCached.Add(nameof(TreeMapLevel4), tex);
                 return tex;
             }
@@ -312,8 +306,7 @@ namespace PancakeEditor.Common
                 TextureCached.TryGetValue(nameof(TreeMapLine), out var tex);
 
                 if (tex != null) return tex;
-                tex = Editor.ConvertToTexture(
-                    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAACVBMVEX///8AAAD///9+749PAAAAAnRSTlMAE/ItjOYAAAAWSURBVHgBY6AbYEQAEJcJDhjRZWkJABQbACw6WoebAAAAAElFTkSuQmCC");
+                tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_line.png", RELATIVE_PATH);
                 TextureCached.Add(nameof(TreeMapLine), tex);
                 return tex;
             }

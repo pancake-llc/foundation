@@ -129,7 +129,7 @@ namespace Pancake.MonetizationEditor
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob mediation");
                     AssetDatabase.ImportPackage(
-                        ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/admob-mediation.unitypackage"),
+                        ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob-mediation.unitypackage"),
                         false);
                 }
 
@@ -171,7 +171,7 @@ namespace Pancake.MonetizationEditor
                 if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/admob.unitypackage"),
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob.unitypackage"),
                         false);
                 }
 
@@ -258,7 +258,7 @@ namespace Pancake.MonetizationEditor
                 if (GUILayout.Button(contentInstallLabel, GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing <color=#FF77C6>applovin</color> sdk");
-                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/applovin.unitypackage"),
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/applovin.unitypackage"),
                         false);
                 }
 

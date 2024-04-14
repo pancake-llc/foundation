@@ -88,7 +88,7 @@ namespace PancakeEditor
             if (GUILayout.Button(contentInstallLabel, GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 DebugEditor.Log("<color=#FF77C6>[Game Service]</color> importing google play game sdk 11.01");
-                AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Modules/Apex/ExLib/Core/Editor/Misc/UnityPackages/gpgs.unitypackage"), false);
+                AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/gpgs.unitypackage"), false);
             }
 
             var previousColor = GUI.color;
