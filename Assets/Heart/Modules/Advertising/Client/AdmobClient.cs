@@ -1,4 +1,5 @@
-﻿#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
+﻿using Pancake.Common;
+#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
 using GoogleMobileAds.Api;
 using Pancake.Tracking;
 #endif
@@ -14,6 +15,9 @@ namespace Pancake.Monetization
             {
                 App.RunOnMainThread(() =>
                 {
+                    // Indicates if the Unity app should be paused when a full-screen ad is displayed.
+                    // On Android, Unity is paused when displaying full-screen ads. Calling this method with true duplicates this behavior on iOS.
+                    MobileAds.SetiOSAppPauseOnBackground(true);
                     if (!adSettings.AdmobEnableTestMode) return;
                     var configuration = new RequestConfiguration {TestDeviceIds = adSettings.AdmobDevicesTest};
                     MobileAds.SetRequestConfiguration(configuration);
