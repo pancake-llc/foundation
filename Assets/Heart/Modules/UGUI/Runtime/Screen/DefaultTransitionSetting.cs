@@ -1,4 +1,5 @@
-﻿using Alchemy.Inspector;
+﻿using System;
+using Alchemy.Inspector;
 using Pancake.AssetLoader;
 using PrimeTween;
 using UnityEngine;
@@ -32,7 +33,6 @@ namespace Pancake.UI
         [SerializeField] private bool callCleanupWhenDestroy = true;
 
         private IAssetLoader _defaultAssetLoader;
-        private PopupBackdrop _defaultPopupBackdrop;
 
         public static ITransitionAnimation GetDefaultPageTransition(bool push, bool enter)
         {
@@ -48,11 +48,9 @@ namespace Pancake.UI
         {
             get
             {
-                if (PopupBackdropPrefab != null) return Instance.popupBackdropPrefab;
+                if (Instance.popupBackdropPrefab == null) throw new NullReferenceException(nameof(Instance.popupBackdropPrefab));
 
-                if (Instance._defaultPopupBackdrop == null) Instance._defaultPopupBackdrop = Resources.Load<PopupBackdrop>("DefaultPopupBackdrop");
-
-                return Instance._defaultPopupBackdrop;
+                return Instance.popupBackdropPrefab;
             }
         }
 
