@@ -158,7 +158,7 @@ namespace PancakeEditor.Common
         public static Color Success => Green;
         public static Color Error => Red;
         public static Color Warning => Orange;
-        public static Color Notice => GothicOlive;
+        public static Color Notice => Orange;
 
         #endregion
 

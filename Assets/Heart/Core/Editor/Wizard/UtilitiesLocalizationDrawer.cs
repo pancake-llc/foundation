@@ -635,12 +635,12 @@ namespace PancakeEditor
 
         private static void TranslateMissingLocalesWithMenu(ScriptableLocaleBase asset)
         {
-            var localizedText = asset as LocaleText;
+            var localeText = asset as LocaleText;
             var options = new List<GUIContent>();
-            if (localizedText != null)
+            if (localeText != null)
             {
-                Debug.Log("Starting Translate LocaleText: ".TextColor(Uniform.Notice) + localizedText.name);
-                foreach (var locale in localizedText.TypedLocaleItems)
+                Debug.Log("[Localization] Starting Translate LocaleText: ".TextColor(Uniform.Notice) + localeText.name);
+                foreach (var locale in localeText.TypedLocaleItems)
                 {
                     if (!string.IsNullOrEmpty(locale.Value)) options.Add(new GUIContent(locale.Language.ToString()));
                 }
@@ -651,7 +651,7 @@ namespace PancakeEditor
                     options.ToArray(),
                     -1,
                     TranslateSelected,
-                    localizedText);
+                    localeText);
             }
         }
 
@@ -739,7 +739,7 @@ namespace PancakeEditor
                             {
                                 localeItem.Value = response.translatedText;
                                 SessionState.SetInt("translate_all_locale_text_count", SessionState.GetInt("translate_all_locale_text_count", 0) + 1);
-                                Debug.Log("Translate Successfull: ".TextColor(Uniform.Success) + localizedText.name);
+                                Debug.Log("[Localization] Translate Successfull: ".TextColor(Uniform.Success) + localizedText.name);
                             }
 
                             EditorUtility.SetDirty(localizedText);

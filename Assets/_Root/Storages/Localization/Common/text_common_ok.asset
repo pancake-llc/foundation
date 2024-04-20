@@ -18,3 +18,8 @@ MonoBehaviour:
       code: en
       custom: 0
     value: Ok
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: "\u0110\u01B0\u1EE3c r\u1ED3i"

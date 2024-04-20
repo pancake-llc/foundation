@@ -13,7 +13,7 @@ namespace Pancake.Localization
         public LocaleItem<T>[] TypedLocaleItems => (LocaleItem<T>[]) LocaleItems;
 
         /// <summary>
-        /// Gets localized asset value regarding to <see cref="Locale.CurrentLanguage"/> if available.
+        /// Gets localized asset value regarding <see cref="Locale.CurrentLanguage"/> if available.
         /// Gets first value of the asset if application is not playing.
         /// </summary>
         /// <seealso cref="Application.isPlaying"/>

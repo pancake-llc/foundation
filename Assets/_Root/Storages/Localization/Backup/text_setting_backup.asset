@@ -18,3 +18,8 @@ MonoBehaviour:
       code: en
       custom: 0
     value: Backup
+  - language:
+      name: Vietnamese
+      code: vi
+      custom: 0
+    value: "Sao l\u01B0u"

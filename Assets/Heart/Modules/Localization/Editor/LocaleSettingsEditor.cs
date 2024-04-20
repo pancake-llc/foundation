@@ -58,13 +58,13 @@ namespace PancakeEditor.Localization
             var languageProperty = _reorderableList.serializedProperty.GetArrayElementAtIndex(index);
             var position = new Rect(rect.x, rect.y + 2, rect.width, EditorGUIUtility.singleLineHeight);
 
-            var isCustom = languageProperty.FindPropertyRelative("custom").boolValue;
+            bool isCustom = languageProperty.FindPropertyRelative("custom").boolValue;
             if (isCustom)
             {
                 var languageName = languageProperty.FindPropertyRelative("name");
                 var languageCode = languageProperty.FindPropertyRelative("code");
 
-                var labelWidth = EditorGUIUtility.labelWidth;
+                float labelWidth = EditorGUIUtility.labelWidth;
 
                 EditorGUIUtility.labelWidth = 40;
                 var r1 = new Rect(position.x, position.y, position.width / 2 - 2, position.height);
@@ -190,7 +190,7 @@ namespace PancakeEditor.Localization
                 EditorGUILayout.PrefixLabel(_importLocationProperty.displayName);
                 if (GUILayout.Button(_importLocationProperty.stringValue, EditorStyles.objectField))
                 {
-                    var path = EditorUtility.OpenFolderPanel("Select folder for import location", "Assets/", "");
+                    string path = EditorUtility.OpenFolderPanel("Select folder for import location", "Assets/", "");
                     if (Directory.Exists(path))
                     {
                         path = "Assets" + path.Replace(Application.dataPath, "");
