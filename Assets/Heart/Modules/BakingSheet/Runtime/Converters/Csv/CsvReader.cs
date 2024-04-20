@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace NReco.Csv
+namespace Pancake.Csv
 {
     /// <summary>
     /// Fast and memory efficient implementation of CSV reader (3x times faster than CsvHelper).

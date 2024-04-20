@@ -184,7 +184,7 @@ namespace PancakeEditor
         private static void ClearPersistentDataPath()
         {
             if (EditorUtility.DisplayDialog("Clear Persistent Data Path",
-                    "Are you sure you wish to clear the persistent data path?\n This action cannot be reversed.",
+                    "Are you sure you wish to clear the persistent data path?\nThis action cannot be reversed.",
                     "Clear",
                     "Cancel"))
             {

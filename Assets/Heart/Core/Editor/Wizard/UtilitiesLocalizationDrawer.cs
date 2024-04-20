@@ -3,23 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using Pancake.Localization;
-using Pancake.LocalizationEditor;
+using PancakeEditor.Localization;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace PancakeEditor
 {
     public static class UtilitiesLocalizationDrawer
     {
-        private static GoogleTranslator Translator => new(LocaleSettings.GoogleCredential);
+        private static GoogleTranslator Translator => new(LocaleSettings.GoogleTranslateApiKey);
 
         private struct EditorCommands
         {
@@ -176,7 +173,7 @@ namespace PancakeEditor
                         Undo.DestroyObjectImmediate(component);
                     }
                 }
-                
+
                 EditorSceneManager.SaveOpenScenes();
             }
 
@@ -208,7 +205,6 @@ namespace PancakeEditor
 
             SearchBarView(ref treeView, ref searchField, ref toolBarRect);
             BodyView(ref treeView, ref bodyViewRect);
-
             BottomToolbarView(ref treeView, bootomToolBarRect);
         }
 
@@ -556,10 +552,20 @@ namespace PancakeEditor
             GUI.enabled = !Application.isPlaying;
             if (GUILayout.Button(new GUIContent("Translate All", "Translate all missing locales."), EditorStyles.toolbarButton))
             {
-                if (EditorUtility.DisplayDialog("Translate All", "Are you sure you wish to translate all missing locale?\n This action cannot be reversed.", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Translate All", "Are you sure you wish to translate all missing locale?\nThis action cannot be reversed.", "Yes", "No"))
                 {
-                    Debug.Log("Starting translate all LocaleText!".TextColor(Uniform.FieryRose));
+                    Debug.Log("[Localization] Starting translate all LocaleText!".TextColor(Uniform.Notice));
                     EditorCoroutine.Start(ExecuteTranslateProcess(treeView));
+                }
+            }
+
+            if (GUILayout.Button(new GUIContent("Fill All Locale", "Fill all language missing in all locale."), EditorStyles.toolbarButton))
+            {
+                if (EditorUtility.DisplayDialog("Fill All Locale",
+                        "Are you sure you wish to fill all language missing in locale?\nThis action cannot be reversed.",
+                        "Yes",
+                        "No"))
+                {
                 }
             }
 
@@ -606,7 +612,7 @@ namespace PancakeEditor
                     yield return new WaitForSeconds(0.15f);
                 }
 
-                Debug.Log("End translate all LocaleText!".TextColor(Uniform.FieryRose));
+                Debug.Log("[Localization] End translate all LocaleText!".TextColor(Uniform.Success));
                 Debug.Log("Total LocaleText Translated is :" + SessionState.GetInt("translate_all_locale_text_count", 0));
                 SessionState.EraseInt("translate_all_locale_text_count");
             }
@@ -618,7 +624,7 @@ namespace PancakeEditor
             var options = new List<GUIContent>();
             if (localizedText != null)
             {
-                Debug.Log("Starting Translate LocaleText: ".TextColor(Uniform.FieryRose) + localizedText.name);
+                Debug.Log("Starting Translate LocaleText: ".TextColor(Uniform.Notice) + localizedText.name);
                 foreach (var locale in localizedText.TypedLocaleItems)
                 {
                     if (!string.IsNullOrEmpty(locale.Value)) options.Add(new GUIContent(locale.Language.ToString()));
@@ -683,7 +689,7 @@ namespace PancakeEditor
                             {
                                 localeItem.Value = response.translatedText;
                                 SessionState.SetInt("translate_all_locale_text_count", SessionState.GetInt("translate_all_locale_text_count", 0) + 1);
-                                Debug.Log("Translate Successfull: ".TextColor(Uniform.Green) + localizedText.name);
+                                Debug.Log("Translate Successfull: ".TextColor(Uniform.Success) + localizedText.name);
                             }
 
                             EditorUtility.SetDirty(localizedText);

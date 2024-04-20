@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Pancake.LocalizationEditor
+namespace PancakeEditor.Localization
 {
     [CustomEditor(typeof(ScriptableLocaleBase), true)]
     public class ScriptableLocaleEditor : UnityEditor.Editor

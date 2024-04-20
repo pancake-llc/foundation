@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace NReco.Csv
+namespace Pancake.Csv
 {
     /// <summary>
     /// Fast and efficient implementation of CSV writer.

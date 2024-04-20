@@ -21,4 +21,14 @@ MonoBehaviour:
     custom: 0
   detectDeviceLanguage: 1
   importLocation: Assets/_Root/Storages/Localization
-  googleCredential: AIzaSyCdaIrrJRYcYq0NwAo8luJQ120Dy-mfz6I
+  googleTranslateApiKey: AIzaSyCdaIrrJRYcYq0NwAo8luJQ120Dy-mfz6I
+  spreadsheetKey: 1nrBGe90JmKJGj0INy9AWbZKAZDUsFuJkkI6_SxLUS5U
+  serviceAccountCredential: "{\r\n  \"type\": \"service_account\",\r\n  \"project_id\":
+    \"foundation-01\",\r\n  \"private_key_id\": \"958cae96caad4986342c63af19a88e633f3eda7f\",\r\n 
+    \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCs12JSFiP9eUqF\\nf0s9TFDQo8f2GwQ4157dIFmFS3OyllNuVURuJwS/U2xsbd+6Jbf/H5zZXHXWYuJ0\\nzS7CEX6BaZMWHuX72Go13ZOwDRD7DBzDaPdCApfn9k0Bdhk3jXBWnfx3mpHzsPV+\\n0QWmRmBUVqSV93Zt/EmNJKRstp3nNqtIaTTPyzixP2XUwmMF/7VDxhMhIO+aqAyZ\\nARQPmb5//ry+SFwUoEWnI8sZN0iDs9Z5/b+5UwOAak66TlTxRYcALiJNBpTswCQq\\nY/HH3rJHJpHmtZSytE4SYSGAoAv+xj/gvsad6oek33QiAoplRgIsLsVh9VwNIw9o\\nO/TYvpudAgMBAAECggEATADYRNVklRkJaoOrv7Q300855mBB7obuXjlT9DfWFAFj\\nhaBsG23/+ewCwPldyJq+eqrZi4FLde78urThK0iLEvgsTC1hH2ouZipdv6w3O9W7\\nLjiRhc7jIobdnNdkRlflPslxE9z98iVuBop+i/vlbyC8dg+f3cRzSWQEA6QX8mwO\\n9+YE8TEMQHXkrySIIEqgy9MldP82a3u/iROeyfANht8CtkHGjfZSfAwg48UvkVrg\\nnhxrazZucdkPzqjAtIktz+3zDpKZW88YshG52u3YI+ZE2mRH8IUFSaG4iP1aPxgk\\n1xkBZ1he+FLUe9+WKd2nMfLFcAZpr6VsFtD0OLrXNwKBgQDtLAGQ8mdSSliLooE5\\nasQwv5PuxcNQZ2kqb3sMzzriHbCNz6aMJnPcHdKFpaHQom64mcw3iEspdvuVKDFo\\nxD/9eMKpRstcK73kj9fTZTEWNgkMVtIK94Jxzs+Nb/sPie0vmjOIhGSUN/hNCa88\\n2GfThEcwFHRFHtBSgdkHDhZ60wKBgQC6kAB2nc8W5SqBX3/F87PJSTUlf0LaZ6Q/\\n0JDjo2SOKMy+6I05AeZR6ai1gmHwOXndg0QkWi3MnKPfIHuz8DVZDXAlOqUpw67a\\nZEWT+ISWI71eL5kuzgOe5umdGg6lI8EaDcXakuextdgzGCo1gQBomrstXMjfaRjB\\nWSpoxxSpzwKBgAKVeibkHTAOU0yiJppDiYOmcqwlR2120vR9Zm/LSi7wd93zpzLb\\nsGNzh7mhBlRJkL8+HbV1LKx0+WS0nWUwzimqySQi+1AzwcvdrVJGRfSh/hM+Vud7\\nrtYilKxLzgZrUEQ2f9065AWhXnkoY9pb2TW6uTPS5Tljjo13kK+8/Y21AoGAHlNc\\nD+v1Bra3oxH/9hB4MAb7YZ3/Ivtn4ounkak0pjsRlRK+Kf8aDkSaDO8ltmPRYGV/\\nBR23hiQMKy/fi89HDLO3gAW5ZUGOwac8/CGQg8tJc+7uyoHoasMERGpA6S0XrYGB\\noNbyXJu/igaqjcnrZBWKyYPkjxRJVtyEnUWHIVcCgYAFp9EREl2p4R/vDhP2G/NS\\nDyW02tVVenjMT7gJ4CTXMYFp4Vy9T/FjyLr/ExB8Pzup95o7A2xQxLqykIzec+pz\\nclSLlpaOiwOSJ7u8qHw7XzmyJaJRd7RzyEhV558vnWXRjhB/vOZt1HOlFCf/hRED\\nglgFpHDdWahOn0wOjPFs/w==\\n-----END
+    PRIVATE KEY-----\\n\",\r\n  \"client_email\": \"foundation-dummy@foundation-01.iam.gserviceaccount.com\",\r\n 
+    \"client_id\": \"100866232390657630694\",\r\n  \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\r\n 
+    \"token_uri\": \"https://oauth2.googleapis.com/token\",\r\n  \"auth_provider_x509_cert_url\":
+    \"https://www.googleapis.com/oauth2/v1/certs\",\r\n  \"client_x509_cert_url\":
+    \"https://www.googleapis.com/robot/v1/metadata/x509/foundation-dummy%40foundation-01.iam.gserviceaccount.com\",\r\n 
+    \"universe_domain\": \"googleapis.com\"\r\n}\r\n"

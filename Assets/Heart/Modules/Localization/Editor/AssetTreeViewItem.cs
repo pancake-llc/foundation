@@ -1,7 +1,7 @@
 using Pancake.Localization;
 using UnityEditor.IMGUI.Controls;
 
-namespace Pancake.LocalizationEditor
+namespace PancakeEditor.Localization
 {
     public class AssetTreeViewItem : TreeViewItem
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using NReco.Csv;
+using Pancake.Csv;
 using Pancake.BakingSheet.Internal;
 using Pancake.BakingSheet.Raw;
 
@@ -110,8 +110,7 @@ namespace Pancake.BakingSheet
                     while (csv.Read())
                     {
                         var row = table.AddRow();
-                        for (int i = 0; i < csv.FieldsCount; ++i)
-                            row.Add(csv[i]);
+                        for (var i = 0; i < csv.FieldsCount; ++i) row.Add(csv[i]);
                     }
 
                     string fileName = Path.GetFileNameWithoutExtension(file);

@@ -54,8 +54,7 @@ namespace Pancake.BakingSheet
             {
                 var success = await importer.Import(context);
 
-                if (!success)
-                    return false;
+                if (!success) return false;
             }
 
             PostLoad();

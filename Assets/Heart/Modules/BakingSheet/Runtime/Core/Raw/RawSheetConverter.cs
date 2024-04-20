@@ -28,8 +28,7 @@ namespace Pancake.BakingSheet.Raw
             foreach (var pair in context.Container.GetSheetProperties())
             {
                 var sheet = pair.Value.GetValue(context.Container) as ISheet;
-                if (sheet == null)
-                    continue;
+                if (sheet == null) continue;
 
                 var page = CreatePage(sheet.Name);
                 ExportPage(page, context, sheet);
@@ -118,14 +117,12 @@ namespace Pancake.BakingSheet.Raw
                         var value = node.GetValue(sheetRow, vindex, indexes.GetEnumerator());
 
                         string valueString = null;
-                        if (value != null)
-                            valueString = node.ValueConverter.ValueToString(node.ValueType, value, valueContext);
+                        if (value != null) valueString = node.ValueConverter.ValueToString(node.ValueType, value, valueContext);
 
                         page.SetCell(pageColumn, pageRow + vindex, valueString);
                     }
 
-                    if (maxVerticalCount < verticalCount)
-                        maxVerticalCount = verticalCount;
+                    if (maxVerticalCount < verticalCount) maxVerticalCount = verticalCount;
 
                     pageColumn++;
                 }

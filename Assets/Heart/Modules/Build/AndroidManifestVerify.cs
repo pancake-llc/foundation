@@ -84,7 +84,7 @@ namespace PancakeEditor
 
         public void OnComplete(bool status)
         {
-            Debug.Log(status ? "[AndroidManifest] Verify Success".TextColor(Uniform.Green) : "[AndroidManifest] Verify Failure".TextColor(Uniform.Red));
+            Debug.Log(status ? "[AndroidManifest] Verify Success".TextColor(Uniform.Success) : "[AndroidManifest] Verify Failure".TextColor(Uniform.Error));
         }
     }
 }

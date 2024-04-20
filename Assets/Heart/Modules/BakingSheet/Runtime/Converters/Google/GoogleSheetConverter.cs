@@ -24,7 +24,7 @@ namespace Pancake.BakingSheet
             : base(timeZoneInfo, formatProvider)
         {
             _gsheetAddress = gsheetAddress;
-            _credential = GoogleCredential.FromJson(credential).CreateScoped(new[] {DriveService.Scope.DriveReadonly});
+            _credential = GoogleCredential.FromJson(credential).CreateScoped(DriveService.Scope.DriveReadonly);
             _pages = new Dictionary<string, List<Page>>();
         }
 

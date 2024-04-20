@@ -2,7 +2,7 @@ using Pancake.Localization;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.LocalizationEditor
+namespace PancakeEditor.Localization
 {
     [CustomPropertyDrawer(typeof(Language))]
     public class LanguagePropertyDrawer : PropertyDrawer

@@ -1,28 +1,40 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Pancake.Common;
 using Pancake.Localization;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using Color = UnityEngine.Color;
+using Editor = UnityEditor.Editor;
 
-namespace Pancake.LocalizationEditor
+namespace PancakeEditor.Localization
 {
     [CustomEditor(typeof(LocaleSettings), true)]
-    public class LocaleSettingsEditor : UnityEditor.Editor
+    public class LocaleSettingsEditor : Editor
     {
         private ReorderableList _reorderableList;
         private SerializedProperty _avaiableLanguageProperty;
         private SerializedProperty _detectDeviceLanguageProperty;
         private SerializedProperty _importLocationProperty;
-        private SerializedProperty _googleCredentialProperty;
+        private SerializedProperty _googleTranslateApiKeyProperty;
+        private SerializedProperty _spreadsheetKeyProperty;
+        private SerializedProperty _serviceAccountCredentialProperty;
 
         private void Init()
         {
             _avaiableLanguageProperty ??= serializedObject.FindProperty("availableLanguages");
             _detectDeviceLanguageProperty ??= serializedObject.FindProperty("detectDeviceLanguage");
             _importLocationProperty ??= serializedObject.FindProperty("importLocation");
-            _googleCredentialProperty ??= serializedObject.FindProperty("googleCredential");
+            _googleTranslateApiKeyProperty ??= serializedObject.FindProperty("googleTranslateApiKey");
+            _spreadsheetKeyProperty ??= serializedObject.FindProperty("spreadsheetKey");
+            _serviceAccountCredentialProperty ??= serializedObject.FindProperty("serviceAccountCredential");
 
             if (_avaiableLanguageProperty != null)
             {
@@ -69,8 +81,7 @@ namespace Pancake.LocalizationEditor
                 LocaleEditorUtil.LanguageField(position, languageProperty, GUIContent.none, true);
             }
         }
-
-
+        
         private void OnDrawHeaderCallback(Rect rect) { EditorGUI.LabelField(rect, "Available Languages"); }
 
         private void OnAddDropdownCallback(Rect buttonrect, ReorderableList list)
@@ -174,7 +185,7 @@ namespace Pancake.LocalizationEditor
                 _reorderableList.DoLayoutList();
 
                 EditorGUILayout.PropertyField(_detectDeviceLanguageProperty, true);
-                EditorGUILayout.Space();
+                EditorGUILayout.Separator();
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(_importLocationProperty.displayName);
                 if (GUILayout.Button(_importLocationProperty.stringValue, EditorStyles.objectField))
@@ -193,24 +204,113 @@ namespace Pancake.LocalizationEditor
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.Separator();
-
-                EditorGUILayout.PropertyField(_googleCredentialProperty);
-                if (string.IsNullOrEmpty(_googleCredentialProperty.stringValue))
+                EditorGUILayout.PropertyField(_googleTranslateApiKeyProperty);
+                if (string.IsNullOrEmpty(_googleTranslateApiKeyProperty.stringValue))
                 {
                     EditorGUILayout.HelpBox("If you want to use Google Translate in editor or in-game, attach the API key file claimed from Google Cloud.",
                         MessageType.Info);
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox("Replace with your API key", MessageType.Info);
+                    if (_googleTranslateApiKeyProperty.stringValue.StartsWith("AIzaSyCdaIrr") && _googleTranslateApiKeyProperty.stringValue.EndsWith("120Dy-mfz6I"))
+                        EditorGUILayout.HelpBox("Do not use this key. Replace with your API key", MessageType.Info);
                 }
 
+                EditorGUILayout.Separator();
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(_spreadsheetKeyProperty);
+                if (GUILayout.Button("Open", GUILayout.Width(65)))
+                {
+                    Application.OpenURL($"https://docs.google.com/spreadsheets/d/{_spreadsheetKeyProperty.stringValue}");
+                }
+
+                GUI.backgroundColor = Uniform.Green;
+                GUI.enabled = !EditorApplication.isCompiling && !SessionState.GetBool("spreasheet_importing", false);
+                if (GUILayout.Button("Import", GUILayout.Width(65)))
+                {
+                    if (EditorUtility.DisplayDialog("Import Locale From Spreasheet",
+                            "Are you sure you wish import Locale from Spreasheet?\nThis action cannot be reversed.",
+                            "Ok",
+                            "Cancel"))
+                    {
+                        ImportFormSpreadsheet();
+                    }
+                }
+
+                GUI.enabled = true;
+                GUI.backgroundColor = Color.white;
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.PropertyField(_serviceAccountCredentialProperty, GUILayout.MaxHeight(150));
                 serializedObject.ApplyModifiedProperties();
             }
             else
             {
                 base.OnInspectorGUI();
             }
+        }
+
+        private async void ImportFormSpreadsheet()
+        {
+            SessionState.SetBool("spreasheet_importing", true);
+            string importLocation = LocaleSettings.ImportLocation;
+            var localizedTexts = Locale.FindAllLocalizedAssets<LocaleText>();
+
+            using (var service = new SheetsService(new BaseClientService.Initializer
+                   {
+                       HttpClientInitializer = GoogleCredential.FromJson(_serviceAccountCredentialProperty.stringValue).CreateScoped(DriveService.Scope.DriveReadonly)
+                   }))
+            {
+                var sheetReq = service.Spreadsheets.Get(_spreadsheetKeyProperty.stringValue);
+                sheetReq.Fields = "properties,sheets(properties,data.rowData.values.formattedValue)";
+                var spreadsheet = await sheetReq.ExecuteAsync();
+
+                var languages = new List<Language>();
+                var availableLanguages = LocaleSettings.AllLanguages;
+                foreach (var s in spreadsheet.Sheets)
+                {
+                    if (!s.Properties.Title.Equals(Application.productName)) continue;
+                    foreach (var g in s.Data)
+                    {
+                        for (var i = 1; i < g.RowData[0].Values.Count; i++)
+                        {
+                            string code = g.RowData[0].Values[i].FormattedValue;
+                            var language = availableLanguages.FirstOrDefault(x => x.Code == code);
+                            if (language == null) Debug.LogWarning("Language code (" + code + ") not exist in localization system.");
+
+                            // Add null language as well to maintain order.
+                            languages.Add(language);
+                        }
+
+                        for (var i = 1; i < g.RowData.Count; i++)
+                        {
+                            var row = g.RowData[i].Values;
+                            var key = row[0];
+                            var localizedText = localizedTexts.FirstOrDefault(x => x.name == key.FormattedValue);
+                            if (localizedText == null)
+                            {
+                                localizedText = CreateInstance<LocaleText>();
+
+                                string assetPath = Path.Combine(importLocation, $"{key}.asset");
+                                AssetDatabase.CreateAsset(localizedText, assetPath);
+                                AssetDatabase.SaveAssets();
+                            }
+
+                            // Read languages by ignoring first column (Key).
+                            for (var j = 1; j < row.Count; j++)
+                            {
+                                ScriptableLocaleEditor.AddOrUpdateLocale(localizedText, languages[j - 1], row[j].FormattedValue);
+                            }
+
+                            EditorUtility.SetDirty(localizedText);
+                        }
+                    }
+                }
+
+                AssetDatabase.Refresh();
+            }
+
+            Debug.Log("[Localization] The import process from spreasheet is complete".TextColor(Uniform.Success));
+            SessionState.SetBool("spreasheet_importing", false);
         }
     }
 }

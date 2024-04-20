@@ -7,7 +7,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Pancake.LocalizationEditor
+namespace PancakeEditor.Localization
 {
     public class LocaleTreeView : TreeView
     {

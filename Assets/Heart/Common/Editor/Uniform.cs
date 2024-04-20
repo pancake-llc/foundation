@@ -155,6 +155,10 @@ namespace PancakeEditor.Common
         public static readonly Color FluorescentBlue = new(0.2f, 1f, 1f);
         public static readonly Color Yellow = new(0.92f, 0.76f, 0.2f);
         public static readonly Color Jet = new(0.21f, 0.21f, 0.21f);
+        public static Color Success => Green;
+        public static Color Error => Red;
+        public static Color Warning => Orange;
+        public static Color Notice => GothicOlive;
 
         #endregion
 
@@ -317,6 +321,7 @@ namespace PancakeEditor.Common
         /// <summary>
         /// Draws a line in the inspector.
         /// </summary>
+        /// <param name="color"></param>
         /// <param name="height"></param>
         public static void DrawLine(Color color, float height = 1f)
         {
@@ -359,10 +364,7 @@ namespace PancakeEditor.Common
         /// </summary>
         /// <param name="serializedObject"></param>
         /// <param name="fieldToSkip">The name of the field that should be excluded. Example: "m_Script" will skip the default Script field.</param>
-        public static void DrawInspectorExcept(SerializedObject serializedObject, string fieldToSkip)
-        {
-            Uniform.DrawInspectorExcept(serializedObject, new[] {fieldToSkip});
-        }
+        public static void DrawInspectorExcept(SerializedObject serializedObject, string fieldToSkip) { DrawInspectorExcept(serializedObject, new[] {fieldToSkip}); }
 
         /// <summary>
         /// Draws all properties like base.OnInspectorGUI() but excludes the specified fields by name.
@@ -442,7 +444,7 @@ namespace PancakeEditor.Common
         /// <param name="drawer"></param>
         /// <param name="defaultFoldout"></param>
         /// <param name="isShowContent"></param>
-        public static float DrawGroupFoldout(string key, string sectionName, System.Action drawer, bool defaultFoldout = true, bool isShowContent = true)
+        public static float DrawGroupFoldout(string key, string sectionName, Action drawer, bool defaultFoldout = true, bool isShowContent = true)
         {
             bool foldout = GetFoldoutState(key, defaultFoldout);
 
@@ -489,8 +491,8 @@ namespace PancakeEditor.Common
         public static float DrawGroupFoldoutWithRightClick(
             string key,
             string sectionName,
-            System.Action drawer,
-            System.Action actionRightClick,
+            Action drawer,
+            Action actionRightClick,
             bool defaultFoldout = true,
             bool isShowContent = true)
         {
@@ -586,7 +588,7 @@ namespace PancakeEditor.Common
             GUILayout.Label(version, new GUIStyle(EditorStyles.linkLabel) {alignment = TextAnchor.MiddleLeft, margin = labelMargin});
             var lastRect = GUILayoutUtility.GetLastRect();
             var iconRect = new Rect(lastRect.x + EditorStyles.label.CalcSize(new GUIContent(version)).x + 2f, lastRect.y + 1.3f, 10, lastRect.height);
-            GUI.Label(iconRect, Uniform.IconContent("CollabNew"), InstalledIcon);
+            GUI.Label(iconRect, IconContent("CollabNew"), InstalledIcon);
             EditorGUILayout.EndHorizontal();
         }
 
@@ -673,13 +675,13 @@ namespace PancakeEditor.Common
 
         #region foldout state
 
-        public static bool GetFoldoutState(string key, bool defaultFoldout = true)
+        private static bool GetFoldoutState(string key, bool defaultFoldout = true)
         {
             if (!FoldoutSettings.ContainsKey(key)) FoldoutSettings.Add(key, defaultFoldout);
             return FoldoutSettings[key];
         }
 
-        public static void SetFoldoutState(string key, bool state)
+        private static void SetFoldoutState(string key, bool state)
         {
             if (!FoldoutSettings.ContainsKey(key))
             {
@@ -691,14 +693,14 @@ namespace PancakeEditor.Common
             }
         }
 
-        [System.Serializable]
+        [Serializable]
         public class FoldoutState
         {
             public string key;
             public bool state;
         }
 
-        [System.Serializable]
+        [Serializable]
         public class UniformFoldoutState
         {
             public List<FoldoutState> uniformFoldouts;
