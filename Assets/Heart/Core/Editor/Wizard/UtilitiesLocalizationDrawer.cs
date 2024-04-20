@@ -133,8 +133,8 @@ namespace PancakeEditor
 
         private static void RemoveAllLocaleComponentInProject()
         {
-            string[] scenesPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".unity", System.StringComparison.OrdinalIgnoreCase)).ToArray();
-            string[] prefabsPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".prefab", System.StringComparison.OrdinalIgnoreCase)).ToArray();
+            string[] scenesPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".unity", StringComparison.OrdinalIgnoreCase)).ToArray();
+            string[] prefabsPaths = AssetDatabase.GetAllAssetPaths().Where(path => path.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase)).ToArray();
 
             int countComponentRemoved = 0;
             Undo.SetCurrentGroupName("Remove all Locale component");
@@ -394,9 +394,8 @@ namespace PancakeEditor
 
         private static void AssetItemContextMenu_Rename()
         {
-            LocaleTreeViewItem localeTreeViewItem;
             var window = EditorWindow.GetWindow<Wizard>();
-            TryGetSelectedTreeViewItem(ref window.localeTreeView, out var assetTreeViewItem, out localeTreeViewItem);
+            TryGetSelectedTreeViewItem(ref window.localeTreeView, out var assetTreeViewItem, out _);
             RenameLocalizedAsset(ref window.localeTreeView, assetTreeViewItem);
         }
 
@@ -559,13 +558,14 @@ namespace PancakeEditor
                 }
             }
 
-            if (GUILayout.Button(new GUIContent("Fill All Locale", "Fill all language missing in all locale."), EditorStyles.toolbarButton))
+            if (GUILayout.Button(new GUIContent("Fill All LocaleText", "Fill language same with AvaiableLanguage for all LocaleText."), EditorStyles.toolbarButton))
             {
-                if (EditorUtility.DisplayDialog("Fill All Locale",
-                        "Are you sure you wish to fill all language missing in locale?\nThis action cannot be reversed.",
+                if (EditorUtility.DisplayDialog("Fill language same AvaiableLanguage for all LocaleText",
+                        "Are you sure you wish to fill language same AvaiableLanguage for all LocaleText?\nThis action cannot be reversed.",
                         "Yes",
                         "No"))
                 {
+                    EditorCoroutine.Start(ExecuteFillMissingLangProcess(treeView));
                 }
             }
 
@@ -600,6 +600,21 @@ namespace PancakeEditor
             }
 
             GUI.enabled = true;
+
+            IEnumerator ExecuteFillMissingLangProcess(LocaleTreeView treeView)
+            {
+                Debug.Log("[Localization] Starting fill language same with AvaiableLanguage for LocaleText!".TextColor(Uniform.Notice));
+                var rows = treeView.GetRows();
+                foreach (var viewItem in rows.ToList())
+                {
+                    var assetItem = viewItem as AssetTreeViewItem;
+                    FillLanguageSameAvaiableLanguage(assetItem?.Asset);
+                    yield return null;
+                }
+
+                treeView.Reload();
+                Debug.Log("[Localization] End fill language all LocaleText!".TextColor(Uniform.Success));
+            }
 
             IEnumerator ExecuteTranslateProcess(LocaleTreeView treeView)
             {
@@ -656,6 +671,41 @@ namespace PancakeEditor
                 }
 
                 TranslateSelected(localizedText, options.Select(c => c.text).ToArray(), 0);
+            }
+        }
+
+        /// <summary>
+        /// Translate language by first language value
+        /// </summary>
+        /// <param name="asset"></param>
+        private static void FillLanguageSameAvaiableLanguage(ScriptableLocaleBase asset)
+        {
+            var localizedText = asset as LocaleText;
+            if (localizedText != null)
+            {
+                foreach (var item in asset.LocaleItems.ToList())
+                {
+                    int index = Array.FindIndex(asset.LocaleItems, x => x.Language == item.Language);
+                    if (!LocaleSettings.AvailableLanguages.Contains(asset.LocaleItems[index].Language))
+                    {
+                        asset.LocaleItems.ToList().RemoveAt(index);
+                    }
+                }
+
+                if (asset.LocaleItems.Length < LocaleSettings.AvailableLanguages.Count)
+                {
+                    foreach (var lang in LocaleSettings.AvailableLanguages)
+                    {
+                        int index = Array.FindIndex(asset.LocaleItems, x => x.Language == lang);
+                        if (index >= 0) continue;
+
+                        ScriptableLocaleEditor.AddLocale(asset);
+                        index = asset.LocaleItems.Length - 1;
+                        var localeItem = asset.LocaleItems[index];
+                        localeItem.Language = lang;
+                        localeItem.ObjectValue = "";
+                    }
+                }
             }
         }
 

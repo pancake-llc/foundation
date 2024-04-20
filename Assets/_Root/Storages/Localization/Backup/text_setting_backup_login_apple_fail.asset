@@ -18,8 +18,3 @@ MonoBehaviour:
       code: en
       custom: 0
     value: Failed to login Apple
-  - language:
-      name: Vietnamese
-      code: vi
-      custom: 0
-    value: "Kh\xF4ng \u0111\u0103ng nh\u1EADp \u0111\u01B0\u1EE3c Apple"

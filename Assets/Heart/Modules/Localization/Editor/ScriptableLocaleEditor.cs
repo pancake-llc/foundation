@@ -180,7 +180,7 @@ namespace PancakeEditor.Localization
             var elements = serializedObject.FindProperty("items");
             if (elements != null && elements.arraySize > 0)
             {
-                var index = Array.FindIndex(localizedAsset.LocaleItems, x => x.Language == language);
+                int index = Array.FindIndex(localizedAsset.LocaleItems, x => x.Language == language);
                 if (index < 0)
                 {
                     AddLocale(localizedAsset);
@@ -227,7 +227,7 @@ namespace PancakeEditor.Localization
             var elements = serializedObject.FindProperty("items");
             if (elements != null && elements.arraySize > 1)
             {
-                var index = Array.IndexOf(localizedAsset.LocaleItems, localeItem);
+                int index = Array.IndexOf(localizedAsset.LocaleItems, localeItem);
                 if (index >= 0)
                 {
                     elements.DeleteArrayElementAtIndex(index);

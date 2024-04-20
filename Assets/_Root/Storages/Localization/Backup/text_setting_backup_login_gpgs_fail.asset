@@ -18,9 +18,3 @@ MonoBehaviour:
       code: en
       custom: 0
     value: Failed to retrieve Google play games authorization code
-  - language:
-      name: Vietnamese
-      code: vi
-      custom: 0
-    value: "Kh\xF4ng l\u1EA5y \u0111\u01B0\u1EE3c m\xE3 \u1EE7y quy\u1EC1n tr\xF2
-      ch\u01A1i c\u1EE7a Google Play"
