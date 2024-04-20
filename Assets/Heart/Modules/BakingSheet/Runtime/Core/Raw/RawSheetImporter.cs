@@ -106,7 +106,7 @@ namespace Pancake.BakingSheet.Raw
                 if (lastValidRow == -1)
                     break;
 
-                columnNames.Add(string.Join(Config.IndexDelimiter, headerRows.Take(lastValidRow + 1)));
+                columnNames.Add(string.Join(Config.INDEX_DELIMITER, headerRows.Take(lastValidRow + 1)));
             }
 
             PropertyMap propertyMap = sheet.GetPropertyMap(context);
@@ -120,7 +120,7 @@ namespace Pancake.BakingSheet.Raw
 
                 if (!string.IsNullOrEmpty(idCellValue))
                 {
-                    if (idCellValue.StartsWith(Config.Comment))
+                    if (idCellValue.StartsWith(Config.COMMENT))
                         continue;
 
                     sheetRow = Activator.CreateInstance(sheet.RowType) as ISheetRow;
@@ -179,7 +179,7 @@ namespace Pancake.BakingSheet.Raw
             {
                 string columnValue = columnNames[pageColumn];
 
-                if (columnValue.StartsWith(Config.Comment))
+                if (columnValue.StartsWith(Config.COMMENT))
                     continue;
 
                 string cellValue = page.GetCell(pageColumn, pageRow);

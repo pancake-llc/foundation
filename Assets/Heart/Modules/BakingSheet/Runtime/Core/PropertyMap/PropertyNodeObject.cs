@@ -44,7 +44,7 @@ namespace Pancake.BakingSheet.Internal
             if (FullPath == null)
                 return subpath;
 
-            return $"{FullPath}{Config.IndexDelimiter}{subpath}";
+            return $"{FullPath}{Config.INDEX_DELIMITER}{subpath}";
         }
 
         public override void UpdateIndex(object obj)

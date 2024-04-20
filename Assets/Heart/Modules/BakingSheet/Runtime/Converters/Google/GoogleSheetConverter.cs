@@ -60,7 +60,7 @@ namespace Pancake.BakingSheet
 
             foreach (var gSheet in _spreadsheet.Sheets)
             {
-                if (gSheet.Properties.Title.StartsWith(Config.Comment)) continue;
+                if (gSheet.Properties.Title.StartsWith(Config.COMMENT)) continue;
 
                 var (sheetName, subName) = Config.ParseSheetName(gSheet.Properties.Title);
 

@@ -11,23 +11,18 @@ namespace Pancake.BakingSheet
         public string RawValue { get; }
         public string FullPath { get; }
 
-        public virtual string BasePath => string.Empty;
-        public virtual string Extension => string.Empty;
-
         [Preserve]
-        public AssetPath(string rawValue)
+        public AssetPath(string rawValue, string basePath = "", string extension = "")
         {
             RawValue = rawValue;
 
-            if (string.IsNullOrEmpty(RawValue))
-                return;
+            if (string.IsNullOrEmpty(RawValue)) return;
 
             string filePath = RawValue;
 
-            if (!string.IsNullOrEmpty(Extension))
-                filePath = $"{filePath}.{Extension}";
+            if (!string.IsNullOrEmpty(extension)) filePath = $"{filePath}.{extension}";
 
-            FullPath = Path.Combine(BasePath, filePath);
+            FullPath = Path.Combine(basePath, filePath);
         }
     }
 

@@ -57,7 +57,7 @@ namespace Pancake.BakingSheet.Internal
             return indexer.Current;
         }
 
-        protected string AppendIndex(int depth) { return $"{FullPath}{Config.IndexDelimiter}{{{depth}}}"; }
+        protected string AppendIndex(int depth) { return $"{FullPath}{Config.INDEX_DELIMITER}{{{depth}}}"; }
 
         public virtual int GetVerticalCount(ISheetRow row, IEnumerator<object> indexer) { return Parent?.GetVerticalCount(row, indexer) ?? 1; }
 
