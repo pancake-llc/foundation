@@ -11,7 +11,6 @@ namespace Pancake.ReplacerEditor
         private static float sizeY = 95;
         private static EditorWindow window;
 
-
         private Font _newFont;
         private TMP_FontAsset _newTMPfont;
         [SerializeField] private List<UnityEngine.UI.Text> specifiedLegacyTextObjects = new();
@@ -24,11 +23,7 @@ namespace Pancake.ReplacerEditor
         {
             window = GetWindow(typeof(ReplaceFontEditorWindow));
             window.titleContent = new GUIContent("Replace font Tool");
-
-            sizeY = 95;
-            sizeX = 350;
-            window.maxSize = new Vector2(sizeX, sizeY);
-            window.minSize = new Vector2(sizeX, sizeY);
+            window.maxSize = window.minSize = new Vector2(sizeX, sizeY);
         }
 
         private void OnGUI()
@@ -110,8 +105,7 @@ namespace Pancake.ReplacerEditor
                 if (Mathf.Approximately(sizeY, 500f)) sizeX = 350 + 13;
                 else sizeX = 350;
 
-                window.maxSize = new Vector2(sizeX, sizeY);
-                window.minSize = new Vector2(sizeX, sizeY);
+                window.maxSize = window.minSize= new Vector2(sizeX, sizeY);
             }
         }
     }
