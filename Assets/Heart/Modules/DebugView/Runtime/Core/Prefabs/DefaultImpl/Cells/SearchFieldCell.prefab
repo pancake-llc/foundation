@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8782834240773379670}
   - component: {fileID: 9141408995461159137}
   - component: {fileID: 4584757574869805309}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: InputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0ee86222b996411458108c5f0e8555ab, type: 3}
+  m_Sprite: {fileID: 2104336825, guid: 4af772ecd7baf6f4094435ff70d6a76b, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 8326554396643542248}
   - component: {fileID: 3661337975162089328}
   - component: {fileID: 8743531881670052013}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 9033344891533545095}
   - component: {fileID: 387964794859554442}
   - component: {fileID: 8947024557992003610}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 1528339577530645756}
   - component: {fileID: 8996773292222086059}
   - component: {fileID: 8729935245364271555}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: SearchFieldCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -456,7 +456,7 @@ GameObject:
   - component: {fileID: 8732108740928299481}
   - component: {fileID: 9127110710641975177}
   - component: {fileID: 8731833413898469743}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -510,7 +510,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8e33872cdb6eb41c9a3ce3cee92b26a0, type: 3}
+  m_Sprite: {fileID: -2098789751, guid: 4af772ecd7baf6f4094435ff70d6a76b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -530,7 +530,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5893407376721942122}
   - component: {fileID: 2683014579114933415}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: HorizontalLayoutGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -594,6 +594,10 @@ PrefabInstance:
     - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_Name
       value: Separator
+      objectReference: {fileID: 0}
+    - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_IsActive

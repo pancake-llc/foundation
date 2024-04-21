@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5328071186489051568}
   - component: {fileID: 5328071186489051571}
   - component: {fileID: 6067666834378568908}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 5219826391005424479}
   - component: {fileID: 651234222854136039}
   - component: {fileID: 2195826748733574801}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: CellTexts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 2201349191654816048}
   - component: {fileID: 6167183614721557690}
   - component: {fileID: 2654096747054989793}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: SubText
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2970271379395799414}
   - component: {fileID: 3843569089636158192}
   - component: {fileID: 8938078345667057352}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: InputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6948172885096436683}
   - component: {fileID: 6404924636492977888}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 652469213962985588}
   - component: {fileID: 4482505217515932350}
   - component: {fileID: 27655600140429095}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 8359287582297074007}
   - component: {fileID: 6754138127432237890}
   - component: {fileID: 4356174690166608766}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: SliderCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -434,7 +434,7 @@ GameObject:
   - component: {fileID: 5731899511282575531}
   - component: {fileID: 5731899511282575529}
   - component: {fileID: 5731899511282575530}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6ee3c980ea242514f90624b49d05d899, type: 3}
+  m_Sprite: {fileID: 1334892800, guid: 4af772ecd7baf6f4094435ff70d6a76b, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -507,7 +507,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5731899511344459954}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -545,7 +545,7 @@ GameObject:
   - component: {fileID: 5731899511388243385}
   - component: {fileID: 5731899511388243527}
   - component: {fileID: 5731899511388243384}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -599,7 +599,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6ee3c980ea242514f90624b49d05d899, type: 3}
+  m_Sprite: {fileID: 1334892800, guid: 4af772ecd7baf6f4094435ff70d6a76b, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -618,7 +618,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5731899511457022335}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -656,7 +656,7 @@ GameObject:
   - component: {fileID: 5731899511493429146}
   - component: {fileID: 9128353051908576877}
   - component: {fileID: 6242887484594263068}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -733,7 +733,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5731899511793645788}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -770,7 +770,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5731899512268640202}
   - component: {fileID: 5731899512268640201}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -861,7 +861,7 @@ GameObject:
   - component: {fileID: 5731899512877410792}
   - component: {fileID: 5731899512877410806}
   - component: {fileID: 5731899512877410807}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -915,7 +915,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 11596bee872b1f34fa4332136399b8c4, type: 3}
+  m_Sprite: {fileID: 190074986, guid: 4af772ecd7baf6f4094435ff70d6a76b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -936,7 +936,7 @@ GameObject:
   - component: {fileID: 6099270871521640605}
   - component: {fileID: 1216188483402694258}
   - component: {fileID: 2869777416088541924}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: HorizontalLayoutGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1114,6 +1114,10 @@ PrefabInstance:
       propertyPath: m_Text
       value: Text
       objectReference: {fileID: 0}
+    - target: {fileID: 5328071186489051573, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6167183614721557690, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
       propertyPath: m_Text
       value: SubText
@@ -1121,6 +1125,10 @@ PrefabInstance:
     - target: {fileID: 7609024890140785489, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
       propertyPath: m_Name
       value: CellTexts
+      objectReference: {fileID: 0}
+    - target: {fileID: 7609024890140785489, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7654756026697305820, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1141,6 +1149,10 @@ PrefabInstance:
     - target: {fileID: 7654756026697305820, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9065878508763713684, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1174,6 +1186,10 @@ PrefabInstance:
     - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_Name
       value: Separator
+      objectReference: {fileID: 0}
+    - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8195653037228414761, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_Pivot.x
@@ -1364,6 +1380,10 @@ PrefabInstance:
     - target: {fileID: 7438122401491679915, guid: 9da3af46d98c04dcdbaea50dab79c57f, type: 3}
       propertyPath: m_Name
       value: CellIcon
+      objectReference: {fileID: 0}
+    - target: {fileID: 7438122401491679915, guid: 9da3af46d98c04dcdbaea50dab79c57f, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7438122401491679915, guid: 9da3af46d98c04dcdbaea50dab79c57f, type: 3}
       propertyPath: m_IsActive

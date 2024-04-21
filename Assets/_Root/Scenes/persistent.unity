@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -38,13 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3708985, g: 0.3783704, b: 0.35722548, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 12
-  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -67,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -242,7 +238,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 9.6
-  m_Depth: 2
+  m_Depth: 10
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 64
@@ -370,29 +366,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remoteConfigIsFetchCompleted: {fileID: 11400000, guid: 54998a0dfba51d049a2b6ac1b700584d, type: 2}
-  remoteData:
-    keys:
-    - DURATION_BETWEEN_SHOW_AD
-    - LEVEL_BETWEEN_SHOW_AD
-    - FIRST_TIME_LEVEL_SHOW_AD
-    - TURN_ON_AD
-    - CURRENT_AD_NETWORK
-    - NEW_VERSION_ANDROID
-    - NEW_VERSION_IOS
-    - CHANGELOG_ANDROID
-    - CHANGELOG_IOS
-    values:
-    - {fileID: 11400000, guid: d92f0059d9308d04da08a9e4b7f1c149, type: 2}
-    - {fileID: 11400000, guid: 40f31351f653c524193c94085e92772d, type: 2}
-    - {fileID: 11400000, guid: b8ad4ed9041808e45b8c278feda7814d, type: 2}
-    - {fileID: 11400000, guid: 1970e99d71fffd44a83fee3291b14826, type: 2}
-    - {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
-    - {fileID: 11400000, guid: 417262f7635563c4a8aac862988c6ea9, type: 2}
-    - {fileID: 11400000, guid: 0da29de6fbacc8e45be8a853b0b23dfb, type: 2}
-    - {fileID: 11400000, guid: cc4a98ebd9e30e1439c375c3115a9301, type: 2}
-    - {fileID: 11400000, guid: d93790b7691a62f468bd84dc00c93abc, type: 2}
   remoteConfigCurrentAdNetwork: {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
   changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
+  alchemySerializationData:
+    remoteData:
+      isCreated: 1
+      data: '{}'
+    unityObjectReferences: []
 --- !u!114 &776958713
 MonoBehaviour:
   m_ObjectHideFlags: 0

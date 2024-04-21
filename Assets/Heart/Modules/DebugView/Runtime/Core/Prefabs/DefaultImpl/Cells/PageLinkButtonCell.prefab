@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1794865743103344133}
   - component: {fileID: 8352298729884101343}
   - component: {fileID: 1811107992743415080}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0d6b453c584eedc4585898a1771e6dd6, type: 3}
+  m_Sprite: {fileID: 47745588, guid: 4af772ecd7baf6f4094435ff70d6a76b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 8456933259870272629}
   - component: {fileID: 6653448960547917396}
   - component: {fileID: 2423390379905381641}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: PageLinkButtonCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +297,7 @@ GameObject:
   - component: {fileID: 8557767035315580617}
   - component: {fileID: 5148038083251083262}
   - component: {fileID: 5042906977157765316}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: HorizontalLayoutGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -476,9 +476,17 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5328071186489051573, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7609024890140785489, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
       propertyPath: m_Name
       value: CellTexts
+      objectReference: {fileID: 0}
+    - target: {fileID: 7609024890140785489, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7654756026697305820, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
       propertyPath: m_AnchorMax.y
@@ -499,6 +507,10 @@ PrefabInstance:
     - target: {fileID: 7654756026697305820, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9065878508763713684, guid: e82ecf64a6412455bbcb615317cd704e, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -617,6 +629,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CellIcon
       objectReference: {fileID: 0}
+    - target: {fileID: 7438122401491679915, guid: 9da3af46d98c04dcdbaea50dab79c57f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -649,6 +665,10 @@ PrefabInstance:
     - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_Name
       value: Separator
+      objectReference: {fileID: 0}
+    - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8195653037228414761, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_Pivot.x

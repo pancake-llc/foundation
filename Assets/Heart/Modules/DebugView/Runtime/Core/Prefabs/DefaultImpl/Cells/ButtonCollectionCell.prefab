@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6653448960547917396}
   - component: {fileID: 2423390379905381641}
   - component: {fileID: 8334957296638601105}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: ButtonCollectionCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 8557767035315580617}
   - component: {fileID: 5042906977157765316}
   - component: {fileID: 581065862727600301}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: GridLayoutGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,6 +227,10 @@ PrefabInstance:
     - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_Name
       value: Separator
+      objectReference: {fileID: 0}
+    - target: {fileID: 8195653037228414758, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8195653037228414761, guid: 8f9797cb2f3c28f48bbf5af42b75d0f1, type: 3}
       propertyPath: m_Pivot.x
