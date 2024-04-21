@@ -60,7 +60,9 @@ namespace Pancake.UI
             if (playAnimation)
             {
                 var anim = animationContainer.GetAnimation(true);
+#if PANCAKE_LITMOTION
                 if (anim == null) anim = DefaultTransitionSetting.PopupBackdropEnter;
+#endif
 
                 if (anim.Duration > 0)
                 {
@@ -83,7 +85,9 @@ namespace Pancake.UI
             if (playAnimation)
             {
                 var anim = animationContainer.GetAnimation(false);
+#if PANCAKE_LITMOTION
                 if (anim == null) anim = DefaultTransitionSetting.PopupBackdropExit;
+#endif
 
                 if (anim.Duration > 0)
                 {

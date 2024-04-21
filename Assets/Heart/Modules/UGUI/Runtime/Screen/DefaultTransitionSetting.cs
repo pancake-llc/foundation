@@ -1,7 +1,11 @@
 ﻿using System;
+#if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
+#endif
+#if PANCAKE_LITMOTION
+using LitMotion;
+#endif
 using Pancake.AssetLoader;
-using PrimeTween;
 using UnityEngine;
 
 namespace Pancake.UI
@@ -27,7 +31,10 @@ namespace Pancake.UI
         [Space] [SerializeField] private AssetLoaderObject assetLoader;
         [SerializeField] private bool enableInteractionInTransition;
 
-        [HideIf(nameof(enableInteractionInTransition)), Indent, SerializeField]
+#if PANCAKE_ALCHEMY
+        [HideIf(nameof(enableInteractionInTransition)), Indent]
+#endif
+        [SerializeField]
         private bool controlInteractionAllContainer = true;
 
         [SerializeField] private bool callCleanupWhenDestroy = true;
@@ -65,11 +72,13 @@ namespace Pancake.UI
             }
         }
 
+#if PANCAKE_LITMOTION
         public static ITransitionAnimation SheetEnterAnim =>
             Instance.sheetEnterAnim != null ? Instantiate(Instance.sheetEnterAnim) : SimpleUITransitionAnimationSO.CreateInstance(beforeAlpha: 0f, easeType: Ease.Linear);
 
         public static ITransitionAnimation SheetExitAnim =>
             Instance.sheetExitAnim != null ? Instantiate(Instance.sheetExitAnim) : SimpleUITransitionAnimationSO.CreateInstance(afterAlpha: 0f, easeType: Ease.Linear);
+#endif
 
         public static ITransitionAnimation PagePushEnterAnim =>
             Instance.pagePushEnterAnim != null
@@ -101,6 +110,7 @@ namespace Pancake.UI
                 ? Instantiate(Instance.popupExitAnim)
                 : SimpleUITransitionAnimationSO.CreateInstance(afterScale: Vector3.one * 0.3f, afterAlpha: 0f);
 
+#if PANCAKE_LITMOTION
         public static ITransitionAnimation PopupBackdropEnter =>
             Instance.popupBackdropEnterAnim != null
                 ? Instantiate(Instance.popupBackdropEnterAnim)
@@ -110,6 +120,7 @@ namespace Pancake.UI
             Instance.popupBackdropExitAnim != null
                 ? Instantiate(Instance.popupBackdropExitAnim)
                 : SimpleUITransitionAnimationSO.CreateInstance(afterAlpha: 1f, easeType: Ease.Linear);
+#endif
 
         public static bool EnableInteractionInTransition { get => Instance.enableInteractionInTransition; set => Instance.enableInteractionInTransition = value; }
 
