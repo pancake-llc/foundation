@@ -3,7 +3,7 @@ namespace Pancake.Sound
     [System.Serializable]
     public struct AudioHandle
     {
-        public static AudioHandle invalid = new AudioHandle(-1, null);
+        public static AudioHandle invalid = new(-1, null);
 
         internal int value;
         internal Audio audio;

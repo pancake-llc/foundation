@@ -1,11 +1,13 @@
 ﻿using Pancake.Common;
-using PrimeTween;
 using UnityEngine;
 using UnityEngine.Events;
+#if PANCAKE_LITMOTION
+using LitMotion;
+using LitMotion.Extensions;
+#endif
 
 namespace Pancake.Sound
 {
-
     [EditorIcon("script_sound")]
     [RequireComponent(typeof(AudioSource))]
     public class SoundEmitter : CacheGameComponent<AudioSource>
@@ -50,12 +52,16 @@ namespace Pancake.Sound
             //TODO: find a better way to sync fading songs
             if (startTime <= component.clip.length) component.time = startTime;
 
-            Tween.AudioVolume(component, volume, duration);
+#if PANCAKE_LITMOTION
+            LMotion.Create(component.volume, volume, duration).BindToVolume(component).AddTo(gameObject);
+#endif
         }
 
         internal float FadeMusicOut(float duration)
         {
-            Tween.AudioVolume(component, 0, duration);
+#if PANCAKE_LITMOTION
+            LMotion.Create(component.volume, 0, duration).BindToVolume(component).AddTo(gameObject);
+#endif
 
             return component.time;
         }

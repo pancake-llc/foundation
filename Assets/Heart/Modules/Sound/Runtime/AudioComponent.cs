@@ -1,5 +1,7 @@
 ﻿using System.Collections;
+#if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
+#endif
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -12,7 +14,11 @@ namespace Pancake.Sound
     [EditorIcon("csharp")]
     public sealed class AudioComponent : GameComponent
     {
-        [Header("Sound definition")] [SerializeField, LabelText("Audio")]
+        [Header("Sound definition")]
+#if PANCAKE_ALCHEMY
+        [LabelText("Audio")]
+#endif
+        [SerializeField]
         private Audio au;
 
         [SerializeField] private bool playOnStart;

@@ -1,5 +1,7 @@
 using System;
+#if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
+#endif
 using UnityEngine;
 
 namespace Pancake.Sound
@@ -41,14 +43,18 @@ namespace Pancake.Sound
         }
 
         public SequenceMode sequenceMode = SequenceMode.RandomNoImmediateRepeat;
-         public AudioClip[] clips;
+        public AudioClip[] clips;
 
         private int _nextClipToPlay = -1;
         private int _lastClipPlayed = -1;
         private float _lastTimePlayed;
         [SerializeField] private bool cooldownToPlay;
 
-        [ShowIf(nameof(cooldownToPlay)), SerializeField, Indent] private float cooldown;
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(cooldownToPlay)), Indent]
+#endif
+        [SerializeField]
+        private float cooldown;
 
         /// <summary>
         /// Chooses the next clip in the sequence, either following the order or randomly.
