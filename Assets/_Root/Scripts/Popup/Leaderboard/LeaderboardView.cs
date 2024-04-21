@@ -8,7 +8,8 @@ using Pancake.Localization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
-using PrimeTween;
+using LitMotion;
+using LitMotion.Extensions;
 using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
@@ -109,7 +110,7 @@ namespace Pancake.UI
         private LeaderboardData _weeklyData = new LeaderboardData("weekly_data");
         private Dictionary<string, Dictionary<string, object>> _userLeaderboardData = new Dictionary<string, Dictionary<string, object>>();
         private int _countInOnePage;
-        private Sequence[] _sequences;
+        private MotionHandle[] _handles;
         private ELeaderboardTab _currentTab = ELeaderboardTab.AllTime;
         private AsyncProcessHandle _handleAnimation;
         private bool _firstTimeEnterWeekly = true;
@@ -118,15 +119,15 @@ namespace Pancake.UI
         protected override UniTask Initialize()
         {
             _countInOnePage = slots.Length;
-            _sequences = new Sequence[slots.Length];
+            _handles = new MotionHandle[slots.Length];
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonNextPage.onClick.AddListener(OnButtonNextPagePressed);
             buttonPreviousPage.onClick.AddListener(OnButtonPreviousPagePressed);
             buttonAllTimeRank.onClick.AddListener(OnButtonAllTimeRankPressed);
             buttonWeeklyRank.onClick.AddListener(OnButtonWeeklyRankPressed);
-        
+
             InternalInit();
-        
+
             return UniTask.CompletedTask;
         }
 
@@ -346,7 +347,7 @@ namespace Pancake.UI
                         _firstTimeEnterWorld = false;
                         await LoadNextDataAllTimeScores();
                     }
-                
+
                     block.SetActive(false);
                     Refresh(_allTimeData);
                 }
@@ -462,9 +463,9 @@ namespace Pancake.UI
 
             block.SetActive(true);
 
-            foreach (var sequence in _sequences)
+            foreach (var handle in _handles)
             {
-                sequence.Stop();
+                if (handle.IsActive()) handle.Cancel();
             }
 
             var pageData = new List<LeaderboardEntry>();
@@ -497,21 +498,16 @@ namespace Pancake.UI
                         pageData[i].PlayerId.Equals(AuthenticationService.Instance.PlayerId));
                 slots[i].gameObject.SetActive(true);
 
-                _sequences[i].Stop();
+                if (_handles[i].IsActive()) _handles[i].Cancel();
                 // todo play anim
-                _sequences[i] = Sequence.Create();
-                _sequences[i]
-                .Chain(Tween.Scale(slots[i].transform,
-                    new Vector3(0.92f, 0.92f, 0.92f),
-                    new Vector3(1.04f, 1.06f, 1),
-                    0.2f,
-                    Ease.OutQuad));
-                _sequences[i]
-                .Chain(Tween.Scale(slots[i].transform,
-                    new Vector3(1.04f, 1.06f, 1),
-                    Vector3.one,
-                    0.15f,
-                    Ease.InQuad));
+                int i1 = i;
+                var a = new Vector3(0.92f, 0.92f, 0.92f);
+                var b = new Vector3(1.04f, 1.06f, 1);
+                _handles[i] = LMotion.Create(a, b, 0.2f)
+                    .WithEase(Ease.OutQuad)
+                    .WithOnComplete(() => { _handles[i1] = LMotion.Create(b, Vector3.one, 0.15f).WithEase(Ease.InQuad).BindToLocalScale(slots[i1].transform); })
+                    .BindToLocalScale(slots[i].transform);
+
                 yield return new WaitForSeconds(displayRankCurve.Evaluate(i / (float) pageData.Count));
             }
         }

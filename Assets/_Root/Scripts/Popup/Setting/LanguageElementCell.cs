@@ -1,8 +1,9 @@
 using System;
+using LitMotion;
+using LitMotion.Extensions;
 using Pancake.Common;
 using Pancake.Localization;
 using Pancake.UI;
-using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private GameObject objectHightLight;
         [SerializeField] private Button buttonSelect;
 
-        private Tween _tween;
+        private MotionHandle _handle;
 
         protected override void SetModel(LanguageElementCellModel model)
         {
@@ -35,12 +36,13 @@ namespace Pancake.SceneFlow
 
             void ActiveTween(Action action)
             {
-                _tween.Stop();
+                if (_handle.IsActive()) _handle.Cancel();
                 objectHightLight.SetActive(model.IsSelected(model.Lang));
                 if (objectHightLight.activeInHierarchy)
                 {
-                    objectHightLight.transform.SetScaleX(0);
-                    _tween = Tween.ScaleX(objectHightLight.transform, 1f, 0.25f).OnComplete(action.Invoke);
+                    _handle = LMotion.Create(0f, 1f, 0.25f)
+                        .WithOnComplete(action.Invoke)
+                        .BindToLocalScaleX(objectHightLight.transform);
                 }
             }
         }

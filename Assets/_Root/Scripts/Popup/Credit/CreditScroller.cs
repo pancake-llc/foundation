@@ -1,6 +1,6 @@
+using LitMotion;
 using Pancake.Common;
 using Pancake.UI;
-using PrimeTween;
 using UnityEngine.UI;
 
 namespace Pancake.SceneFlow
@@ -18,7 +18,7 @@ namespace Pancake.SceneFlow
         private float _tweenValue;
         private bool _autoScroll;
         private bool _touchInside;
-        private Tween _tweenScrollBar;
+        private MotionHandle _handleScrollbar;
         private Camera _camera;
         private float _currentStart;
         private float _time;
@@ -50,8 +50,7 @@ namespace Pancake.SceneFlow
         private void OnDisable()
         {
             scrollRect.content.transform.SetPositionY(0);
-            _tweenScrollBar.Complete();
-            _tweenScrollBar.Stop();
+            if (_handleScrollbar.IsActive()) _handleScrollbar.Complete();
         }
 
         private void Update()
@@ -70,7 +69,7 @@ namespace Pancake.SceneFlow
                 var ray = _camera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray))
                 {
-                    _tweenScrollBar.Stop();
+                    if (_handleScrollbar.IsActive()) _handleScrollbar.Cancel();
                     _autoScroll = false;
                     _touchInside = true;
                 }
@@ -100,7 +99,7 @@ namespace Pancake.SceneFlow
 
                     if (Physics.Raycast(ray))
                     {
-                        _tweenScrollBar.Stop();
+                        if (_handleScrollbar.IsActive()) _handleScrollbar.Cancel();
                         _autoScroll = false;
                         _touchInside = true;
                     }
@@ -157,23 +156,13 @@ namespace Pancake.SceneFlow
         private void InitialEaseIn()
         {
             _tweenValue = _currentStart;
-            _tweenScrollBar = Tween.Custom(_tweenValue,
-                    _easeInA,
-                    1,
-                    value => _tweenValue = value,
-                    Ease.InQuad)
-                .OnComplete(InitialScroll);
+            _handleScrollbar = LMotion.Create(_tweenValue, _easeInA, 1).WithEase(Ease.InQuad).WithOnComplete(InitialScroll).Bind(value => _tweenValue = value);
         }
 
         private void InitialScroll()
         {
             _tweenValue = _easeInA;
-            _tweenScrollBar = Tween.Custom(_tweenValue,
-                    0,
-                    _time,
-                    value => _tweenValue = value,
-                    Ease.Linear)
-                .OnComplete(AutoScrollEnd);
+            AutoScroll();
         }
 
         private void PressReleased()
@@ -187,23 +176,13 @@ namespace Pancake.SceneFlow
             _autoScroll = true;
             if (_tweenValue != 0)
             {
-                _tweenScrollBar = Tween.Custom(_tweenValue,
-                        _easeStart,
-                        1,
-                        value => _tweenValue = value,
-                        Ease.InQuad)
-                    .OnComplete(AutoScroll);
+                _handleScrollbar = LMotion.Create(_tweenValue, _easeStart, 1).WithEase(Ease.InQuad).WithOnComplete(AutoScroll).Bind(value => _tweenValue = value);
             }
         }
 
         private void AutoScroll()
         {
-            _tweenScrollBar = Tween.Custom(_tweenValue,
-                    0,
-                    _time,
-                    value => _tweenValue = value,
-                    Ease.Linear)
-                .OnComplete(AutoScrollEnd);
+            _handleScrollbar = LMotion.Create(_tweenValue, 0, _time).WithEase(Ease.Linear).WithOnComplete(AutoScrollEnd).Bind(value => _tweenValue = value);
         }
 
         private void AutoScrollEnd() { _autoScroll = false; }

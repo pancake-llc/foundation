@@ -8,7 +8,8 @@ using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using Cysharp.Threading.Tasks;
-using PrimeTween;
+using LitMotion;
+using LitMotion.Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,8 +37,9 @@ namespace Pancake.UI
         [SerializeField] private RectTransform languagePopup;
         [SerializeField] private UIButton buttonSelectLanguage;
         [SerializeField] private TextMeshProUGUI textNameLanguageSelected;
+
         // ReSharper disable once InconsistentNaming
-        [AlchemySerializeField, NonSerialized] private Dictionary<SystemLanguage, LocaleText> langData = new ();
+        [AlchemySerializeField, NonSerialized] private Dictionary<SystemLanguage, LocaleText> langData = new();
 
         [Space] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
@@ -123,7 +125,7 @@ namespace Pancake.UI
         {
             if (buttonSelectLanguage.AffectObject.localEulerAngles.z.Equals(0))
             {
-                Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 90), 0.3f);
+                LMotion.Create(0f, 90f, 0.3f).BindToLocalEulerAnglesZ(buttonSelectLanguage.AffectObject);
                 InternalShowSelectLanguage();
 
                 if (!_firstTimeActiveLanguage)
@@ -134,7 +136,7 @@ namespace Pancake.UI
             }
             else
             {
-                Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
+                LMotion.Create(90f, 0f, 0.3f).BindToLocalEulerAnglesZ(buttonSelectLanguage.AffectObject);
                 InternalHideSelectLanguage();
             }
         }
@@ -231,12 +233,13 @@ namespace Pancake.UI
             languagePopup.gameObject.SetActive(true);
             languagePopup.SetSizeDeltaY(74f);
             RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
-            Tween.UISizeDelta(languagePopup, new Vector2(languagePopup.sizeDelta.x, 666f), 0.5f)
-                .OnComplete(() =>
+            LMotion.Create(languagePopup.sizeDelta.y, 666f, 0.5f)
+                .WithOnComplete(() =>
                 {
                     RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(true);
                     _languageScrollerRT.pivot = new Vector2(0.5f, 0.5f);
-                });
+                })
+                .BindToSizeDeltaY(languagePopup);
         }
 
         private void InternalHideSelectLanguage()
@@ -244,14 +247,16 @@ namespace Pancake.UI
             _languageScrollerRT.pivot = new Vector2(0.5f, 1f);
             RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
 
-            Tween.UISizeDelta(languagePopup, new Vector2(languagePopup.sizeDelta.x, 74f), 0.5f)
-                .OnComplete(() =>
+            LMotion.Create(languagePopup.sizeDelta.y, 74f, 0.5f)
+                .WithOnComplete(() =>
                 {
                     languagePopup.gameObject.SetActive(false);
                     RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(true);
                     _languageScrollerRT.pivot = new Vector2(0.5f, 0.5f);
-                });
-            Tween.LocalRotation(buttonSelectLanguage.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
+                })
+                .BindToSizeDeltaY(languagePopup);
+
+            LMotion.Create(90f, 0f, 0.3f).BindToLocalEulerAnglesZ(buttonSelectLanguage.AffectObject);
         }
 
         GameObject IRecyclerViewCellProvider.GetCell(int dataIndex) { return languageElementPrefab.Request(); }

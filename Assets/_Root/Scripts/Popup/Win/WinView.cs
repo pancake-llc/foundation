@@ -7,7 +7,7 @@ using Pancake.SceneFlow;
 using Pancake.Scriptable;
 using Pancake.Sound;
 using Cysharp.Threading.Tasks;
-using PrimeTween;
+using LitMotion;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,7 +57,7 @@ namespace Pancake.UI
                 reviewEvent.Raise();
                 rateDisplayTimes.Value++;
             }
-        
+
             Refresh();
             return UniTask.CompletedTask;
         }
@@ -115,10 +115,9 @@ namespace Pancake.UI
             int addedValue = UnityEngine.Random.Range(rangeGiftValueIncrease.x, rangeGiftValueIncrease.y);
             int startValue = winGifProgresValue.Value;
 #pragma warning disable 4014
-            Tween.Custom(startValue,
-                startValue + addedValue,
-                0.35f,
-                v =>
+
+            LMotion.Create(startValue, startValue + addedValue, 0.35f)
+                .Bind(v =>
                 {
                     if (v >= 100)
                     {
@@ -126,7 +125,7 @@ namespace Pancake.UI
                     }
                     else
                     {
-                        winGifProgresValue.Value = (int) v;
+                        winGifProgresValue.Value = v;
                     }
                 });
 #pragma warning restore 4014

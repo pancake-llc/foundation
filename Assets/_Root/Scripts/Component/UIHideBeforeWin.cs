@@ -1,5 +1,6 @@
+using LitMotion;
+using LitMotion.Extensions;
 using Pancake.Scriptable;
-using PrimeTween;
 
 namespace Pancake.SceneFlow
 {
@@ -22,16 +23,16 @@ namespace Pancake.SceneFlow
             switch (direction)
             {
                 case EFourDirection.Top:
-                    Tween.UIAnchoredPositionY(target, value, duration);
+                    LMotion.Create(target.anchoredPosition.y, value, duration).BindToAnchoredPositionY(target);
                     break;
                 case EFourDirection.Down:
-                    Tween.UIAnchoredPositionX(target, -value, duration);
+                    LMotion.Create(target.anchoredPosition.y, -value, duration).BindToAnchoredPositionY(target);
                     break;
                 case EFourDirection.Left:
-                    Tween.UIAnchoredPositionX(target, -value, duration);
+                    LMotion.Create(target.anchoredPosition.x, -value, duration).BindToAnchoredPositionX(target);
                     break;
                 case EFourDirection.Right:
-                    Tween.UIAnchoredPositionX(target, value, duration);
+                    LMotion.Create(target.anchoredPosition.x, value, duration).BindToAnchoredPositionX(target);
                     break;
             }
         }

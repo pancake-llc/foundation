@@ -6,7 +6,8 @@ using Newtonsoft.Json;
 using Pancake.Common;
 using Pancake.SceneFlow;
 using Cysharp.Threading.Tasks;
-using PrimeTween;
+using LitMotion;
+using LitMotion.Extensions;
 using TMPro;
 using Unity.Services.Authentication;
 using UnityEngine;
@@ -71,7 +72,7 @@ namespace Pancake.UI
             // Add padding for the safe area.
             float canvasScaleFactor = GetComponentInParent<Canvas>().scaleFactor;
             RecyclerView.AfterPadding += (int) (Screen.safeArea.y / canvasScaleFactor);
-        
+
             _nameList = JsonConvert.DeserializeObject<NameList>(namesAsset.text);
             _buttonVerifyEffect = buttonOk.GetComponent<UIEffect>();
             _countryScrollerRT = RecyclerView.GetComponent<RectTransform>();
@@ -81,19 +82,19 @@ namespace Pancake.UI
             inputFieldName.text = "";
             inputFieldName.ActivateInputField();
             inputFieldName.Select();
-        
+
             textMessage.gameObject.SetActive(false);
             var currentCountryData = countryCollection.Get(RegionInfo.CurrentRegion.TwoLetterISORegionName);
             imageIconCountrySelected.sprite = currentCountryData.icon;
             imageIconCountrySelected.color = Color.white;
             textNameCountrySelected.text = currentCountryData.name;
             _selectedCountry = currentCountryData.code.ToString();
-        
+
             buttonClose.onClick.AddListener(OnButtonClosePressed);
             buttonOk.onClick.AddListener(OnButtonOkPressed);
             buttonSelectCountry.onClick.AddListener(OnButtonSelectCountryPressed);
             buttonDice.onClick.AddListener(OnButtonDicePressed);
-        
+
             return UniTask.CompletedTask;
         }
 
@@ -113,7 +114,7 @@ namespace Pancake.UI
         {
             if (buttonSelectCountry.AffectObject.localEulerAngles.z.Equals(0))
             {
-                Tween.LocalRotation(buttonSelectCountry.AffectObject.transform, Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 90), 0.3f);
+                LMotion.Create(0f, 90f, 0.3f).BindToLocalEulerAnglesZ(buttonSelectCountry.AffectObject);
                 InternalShowSelectCountry();
 
                 if (!_firstTimeActiveCountry)
@@ -124,7 +125,7 @@ namespace Pancake.UI
             }
             else
             {
-                Tween.LocalRotation(buttonSelectCountry.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
+                LMotion.Create(90f, 0f, 0.3f).BindToLocalEulerAnglesZ(buttonSelectCountry.AffectObject);
                 InternalHideSelectCountry();
             }
         }
@@ -136,7 +137,8 @@ namespace Pancake.UI
             {
                 _datas.Add(new CountryElementCellModel
                 {
-                    CountryData = countryCollection.Collection[i], IsSelected = IsElementSelected,
+                    CountryData = countryCollection.Collection[i],
+                    IsSelected = IsElementSelected,
                     OnClickedAction = OnButtonElementClicked,
                     OnHideSelectCountryAction = InternalHideSelectCountry
                 });
@@ -154,13 +156,15 @@ namespace Pancake.UI
             buttonOk.interactable = false;
             countryPopup.SetSizeDeltaY(103);
             RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
-            Tween.UISizeDelta(countryPopup, new Vector2(countryPopup.sizeDelta.x, 666), 0.5f)
-                .OnComplete(() =>
+
+            LMotion.Create(countryPopup.sizeDelta.y, 666f, 0.5f)
+                .WithOnComplete(() =>
                 {
                     RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(true);
                     buttonOk.interactable = true;
                     _countryScrollerRT.pivot = new Vector2(0.5f, 0.5f);
-                });
+                })
+                .BindToSizeDeltaY(countryPopup);
         }
 
         private void InternalHideSelectCountry()
@@ -170,8 +174,8 @@ namespace Pancake.UI
             buttonOk.interactable = false;
             RecyclerView.ScrollRect.verticalScrollbar.handleRect.gameObject.SetActive(false);
 
-            Tween.UISizeDelta(countryPopup, new Vector2(countryPopup.sizeDelta.x, 103f), 0.5f)
-                .OnComplete(() =>
+            LMotion.Create(countryPopup.sizeDelta.y, 103f, 0.5f)
+                .WithOnComplete(() =>
                 {
                     countryPopup.gameObject.SetActive(false);
                     bool state = inputFieldName.text.Length < 13 || inputFieldName.text.Length >= 3;
@@ -179,8 +183,10 @@ namespace Pancake.UI
                     buttonOk.interactable = state;
                     textMessage.gameObject.SetActive(!state);
                     _countryScrollerRT.pivot = new Vector2(0.5f, 0.5f);
-                });
-            Tween.LocalRotation(buttonSelectCountry.AffectObject.transform, Quaternion.Euler(0, 0, 90), Quaternion.Euler(0, 0, 0), 0.3f);
+                })
+                .BindToSizeDeltaY(countryPopup);
+
+            LMotion.Create(90f, 0f, 0.3f).BindToLocalEulerAnglesZ(buttonSelectCountry.AffectObject);
         }
 
         private async void OnButtonOkPressed()
@@ -231,7 +237,7 @@ namespace Pancake.UI
         {
             textMessage.gameObject.SetActive(true);
             textMessage.text = message;
-            Tween.PunchScale(textMessage.transform, new Vector3(0.1f, 0.1f, 0.1f), 0.2f, 5);
+            LMotion.Punch.Create(Vector3.one, new Vector3(0.05f, 0.05f, 0.05f), 0.4f).BindToLocalScale(textMessage.transform);
         }
 
         private void OnButtonElementClicked(CountryData countryData)
