@@ -126,7 +126,7 @@
         },
         {
             "name": "com.esotericsoftware.spine.spine-unity",
-            "expression": "",
+            "expression": "3.8.0",
             "define": "PANCAKE_SPINE"
         },
         {

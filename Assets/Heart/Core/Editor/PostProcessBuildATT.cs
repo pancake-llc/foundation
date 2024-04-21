@@ -23,7 +23,7 @@ namespace PancakeEditor
             }
         }
 
-
+#if PANCAKE_FIREBASE_ANALYTIC
         [PostProcessBuild]
         public static void OnPostProcessBuildAddFirebaseFile(BuildTarget buildTarget, string pathToBuiltProject)
         {
@@ -36,6 +36,7 @@ namespace PancakeEditor
                 proj.WriteToFile(projPath);
             }
         }
+#endif
     }
 }
 
