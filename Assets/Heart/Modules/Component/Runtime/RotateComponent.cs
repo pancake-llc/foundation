@@ -1,3 +1,4 @@
+using UnityEngine;
 #if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
 #endif
@@ -5,12 +6,11 @@ using Alchemy.Inspector;
 using LitMotion;
 using LitMotion.Extensions;
 #endif
-using UnityEngine;
 
 namespace Pancake.Component
 {
     [EditorIcon("csharp")]
-    public class ScaleComponent : GameComponent
+    public class RotateComponent : GameComponent
     {
         [SerializeField] private float delay;
         [SerializeField] private float duration;
@@ -41,13 +41,13 @@ namespace Pancake.Component
         {
             var cycles = 0;
             if (loop) cycles = -1;
-            if (startWith) transform.localScale = startValue;
+            if (startWith) transform.eulerAngles = startValue;
 #if PANCAKE_LITMOTION
-            _handle = LMotion.Create(transform.localScale, value, duration)
+            _handle = LMotion.Create(transform.eulerAngles, value, duration)
                 .WithDelay(delay)
                 .WithEase(ease)
                 .WithLoops(cycles, loopType)
-                .BindToLocalScale(transform)
+                .BindToLocalEulerAngles(transform)
                 .AddTo(gameObject);
 #endif
         }

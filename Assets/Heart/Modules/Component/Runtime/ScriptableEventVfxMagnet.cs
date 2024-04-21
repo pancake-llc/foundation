@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Pancake.Scriptable;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,8 +11,8 @@ namespace Pancake.Component
     [EditorIcon("scriptable_event")]
     public class ScriptableEventVfxMagnet : ScriptableEventBase, IDrawObjectsInInspector
     {
-        private readonly List<EventListenerVfxMagnet> _eventListeners = new List<EventListenerVfxMagnet>();
-        private readonly List<Object> _listenerObjects = new List<Object>();
+        private readonly List<EventListenerVfxMagnet> _eventListeners = new();
+        private readonly List<Object> _listenerObjects = new();
         
         private Action<Vector3, int> _onRaised;
 

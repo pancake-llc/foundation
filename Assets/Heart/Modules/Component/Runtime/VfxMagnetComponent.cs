@@ -1,4 +1,6 @@
+#if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
+#endif
 using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEngine;
@@ -15,8 +17,17 @@ namespace Pancake.Component
         [SerializeField] private float coinFxScale = 1f;
         [SerializeField] private ParticleSystemForceField coinForceField;
         [SerializeField] private bool isPlaySound;
-        [SerializeField, ShowIf(nameof(isPlaySound)), Indent] private Audio audioSpawn;
-        [SerializeField, ShowIf(nameof(isPlaySound)), Indent] private ScriptableEventAudio audioPlayEvent;
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(isPlaySound)), Indent]
+#endif
+        [SerializeField]
+        private Audio audioSpawn;
+        
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(isPlaySound)), Indent]
+#endif
+        [SerializeField]
+        private ScriptableEventAudio audioPlayEvent;
 
         protected void OnEnable()
         {

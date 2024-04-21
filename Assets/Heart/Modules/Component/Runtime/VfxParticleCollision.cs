@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
 using Alchemy.Serialization;
+#endif
 using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEngine;
@@ -17,10 +19,23 @@ namespace Pancake.Component
         [SerializeField] private ListGameObject vfxMagnetCollection;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
-        [AlchemySerializeField, NonSerialized] public Dictionary<int, int> numberParticleMap = new ();
+#if PANCAKE_ALCHEMY
+        [AlchemySerializeField, NonSerialized]
+#endif
+        public Dictionary<int, int> numberParticleMap = new();
+
         [SerializeField] private bool enabledSound;
-        [SerializeField, ShowIf(nameof(enabledSound))] private Audio audioCollision;
-        [SerializeField, ShowIf(nameof(enabledSound))] private ScriptableEventAudio audioPlayEvent;
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(enabledSound))]
+#endif
+        [SerializeField]
+        private Audio audioCollision;
+        
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(enabledSound))]
+#endif
+        [SerializeField]
+        private ScriptableEventAudio audioPlayEvent;
 
         private int _segmentValue;
         private bool _flag;
@@ -29,7 +44,7 @@ namespace Pancake.Component
         {
             _flag = false;
 
-            var sorted = numberParticleMap.OrderByDescending(x => x.Key);
+            var sorted = numberParticleMap.OrderByDescending(x => x.Key).ToList();
             int maxParticle = sorted.First().Value;
             foreach (var particle in sorted)
             {

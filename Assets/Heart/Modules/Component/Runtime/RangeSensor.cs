@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+#if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
+#endif
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -14,8 +16,16 @@ namespace Pancake.Component
 #if UNITY_EDITOR
         [SerializeField] private bool showGizmos = true;
 #endif
-        [Space(8)] [SerializeField, Required] private Transform center;
-        [SerializeField, Required] private Transform source;
+#if PANCAKE_ALCHEMY
+        [Required]
+#endif
+        [Space(8), SerializeField]
+        private Transform center;
+
+#if PANCAKE_ALCHEMY
+        [Required]
+#endif
+        [SerializeField] private Transform source;
         [SerializeField] private ScriptableEventGameObject detectedEvent;
 
         private Collider[] _hits;

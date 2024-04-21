@@ -2079,7 +2079,7 @@ MonoBehaviour:
   startWith: 1
   startValue: {x: 0, y: 0, z: 0}
   loop: 0
-  cycleMode: 0
+  loopType: 0
   ease: 1
 --- !u!1 &8142593490092756069
 GameObject:

@@ -1,5 +1,4 @@
 using System.Collections;
-using Pancake;
 using Pancake.Common;
 using Pancake.Component;
 using UnityEngine;
@@ -8,8 +7,6 @@ public class MagnetSpecifyPosition : MonoBehaviour
 {
     private RectTransform _rectTransform;
     private VfxMagnetComponent _component;
-    private readonly WaitForEndOfFrame _endOfFrame = new();
-
 
     private void OnEnable()
     {

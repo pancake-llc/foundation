@@ -1,5 +1,10 @@
+#if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
-using PrimeTween;
+#endif
+#if PANCAKE_LITMOTION
+using LitMotion;
+using LitMotion.Extensions;
+#endif
 using UnityEngine;
 
 namespace Pancake
@@ -10,20 +15,33 @@ namespace Pancake
         [SerializeField] private float duration;
         [SerializeField] private bool useTransform;
 
-        [SerializeField, ShowIf(nameof(useTransform)), LabelText("      Target")]
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(useTransform)), LabelText("      Target")]
+#endif
+        [SerializeField]
         private Transform target;
 
-        [SerializeField, HideIf(nameof(useTransform)), LabelText("     Value")]
+#if PANCAKE_ALCHEMY
+        [HideIf(nameof(useTransform)), LabelText("     Value")]
+#endif
+        [SerializeField]
         private Vector3 value;
 
         [SerializeField] private bool loop;
-        [SerializeField, ShowIf(nameof(loop)), LabelText("      Mode")] private CycleMode cycleMode = CycleMode.Restart;
+
+#if PANCAKE_LITMOTION
+#if PANCAKE_ALCHEMY
+        [ShowIf(nameof(loop)), LabelText("      Mode")]
+#endif
+        [SerializeField]
+        private LoopType loopType = LoopType.Restart;
+
         [SerializeField] private Ease ease;
+        private MotionHandle _handle;
+#endif
 
-        private Tween _tween;
 
-
-#if UNITY_EDITOR
+#if UNITY_EDITOR && PANCAKE_ALCHEMY
         [Button, ShowIf(nameof(ShowButtonEdit))]
         private void Edit()
         {
@@ -40,15 +58,9 @@ namespace Pancake
             UnityEditor.SessionState.SetBool($"move_component{name}_key", false);
         }
 
-        private bool ShowButtonRecord()
-        {
-            return !useTransform && UnityEditor.SessionState.GetBool($"move_component{name}_key", false);
-        }
-        
-        private bool ShowButtonEdit()
-        {
-            return !useTransform && UnityEditor.SessionState.GetBool($"move_component{name}_key", false) == false;
-        }
+        private bool ShowButtonRecord() { return !useTransform && UnityEditor.SessionState.GetBool($"move_component{name}_key", false); }
+
+        private bool ShowButtonEdit() { return !useTransform && UnityEditor.SessionState.GetBool($"move_component{name}_key", false) == false; }
 
 #endif
 
@@ -60,22 +72,23 @@ namespace Pancake
 
         public void Move()
         {
-            _tween.Stop();
+#if PANCAKE_LITMOTION
+            if (_handle.IsActive()) _handle.Cancel();
+#endif
             var cyles = 0;
             if (loop) cyles = -1;
             var pos = value;
             if (useTransform) pos = target.position;
-            _tween = Tween.LocalPosition(transform,
-                pos,
-                duration,
-                ease,
-                cyles,
-                cycleMode);
+#if PANCAKE_LITMOTION
+            _handle = LMotion.Create(transform.position, pos, duration).WithEase(ease).WithLoops(cyles, loopType).BindToLocalPosition(transform).AddTo(gameObject);
+#endif
         }
 
         protected void OnDisable()
         {
-            _tween.Stop();
+#if PANCAKE_LITMOTION
+            if (_handle.IsActive()) _handle.Cancel();
+#endif
         }
     }
 }
