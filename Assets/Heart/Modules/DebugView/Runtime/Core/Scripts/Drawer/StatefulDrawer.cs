@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PrimeTween;
 using UnityEngine;
+#if PANCAKE_LITMOTION
+using LitMotion;
+#endif
 
 namespace Pancake.DebugView
 {
@@ -29,13 +31,15 @@ namespace Pancake.DebugView
 
         public void SetState(DrawerState state) { Progress = GetStateProgress(state); }
 
+#if PANCAKE_LITMOTION
         public void SetStateWithAnimation(DrawerState to, float durationSec, Ease easeType, Action completed = null)
         {
             PlayProgressAnimation(GetStateProgress(to), durationSec, easeType, completed: completed);
         }
+#endif
 
         /// <summary>
-        ///     Returns the state with a nearest progress with the current one.
+        ///     Returns the state with the nearest progress with the current one.
         /// </summary>
         /// <returns></returns>
         public DrawerState GetNearestState()
@@ -44,7 +48,7 @@ namespace Pancake.DebugView
             float nearestDistance = 1;
             foreach (var state in GetValidStates())
             {
-                var distance = Mathf.Abs(GetStateProgress(state) - Progress);
+                float distance = Mathf.Abs(GetStateProgress(state) - Progress);
                 if (distance <= nearestDistance)
                 {
                     nearestState = state;
@@ -84,8 +88,7 @@ namespace Pancake.DebugView
             var lowerState = DrawerState.Min;
             foreach (var state in GetValidStates().OrderBy(GetStateProgress))
             {
-                if (GetStateProgress(state) >= Progress)
-                    break;
+                if (GetStateProgress(state) >= Progress) break;
 
                 lowerState = state;
             }
@@ -98,22 +101,20 @@ namespace Pancake.DebugView
             switch (state)
             {
                 case DrawerState.Min:
-                    var min = Mathf.Min(minProgress, maxProgress);
+                    float min = Mathf.Min(minProgress, maxProgress);
                     if (useMiddleState) min = Mathf.Min(min, middleProgress);
                     return min;
                 case DrawerState.Middle:
                     if (useMiddleState)
                     {
-                        var middle = Mathf.Max(minProgress, middleProgress);
+                        float middle = Mathf.Max(minProgress, middleProgress);
                         middle = Mathf.Min(middle, maxProgress);
                         return middle;
                     }
-                    else
-                    {
-                        throw new Exception("The middle state progress is requested, but the Middle state is not enabled.");
-                    }
+
+                    throw new Exception("The middle state progress is requested, but the Middle state is not enabled.");
                 case DrawerState.Max:
-                    var max = Mathf.Max(minProgress, maxProgress);
+                    float max = Mathf.Max(minProgress, maxProgress);
                     if (useMiddleState) max = Mathf.Max(max, middleProgress);
                     return max;
                 default:

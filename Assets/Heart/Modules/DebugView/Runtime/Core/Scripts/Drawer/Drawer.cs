@@ -1,6 +1,8 @@
 using System;
-using PrimeTween;
 using UnityEngine;
+#if PANCAKE_LITMOTION
+using LitMotion;
+#endif
 
 namespace Pancake.DebugView
 {
@@ -23,7 +25,9 @@ namespace Pancake.DebugView
         private bool _isTransformDirty;
         private Vector2 _lastFullSize;
         private float _progress = 1.0f;
-        private Tween _progressTween;
+#if PANCAKE_LITMOTION
+        private MotionHandle _handle;
+#endif
 
         public DrawerDirection Direction
         {
@@ -70,7 +74,17 @@ namespace Pancake.DebugView
             }
         }
 
-        public bool IsInAnimation => _progressTween.isAlive;
+        public bool IsInAnimation
+        {
+            get
+            {
+#if PANCAKE_LITMOTION
+                return _handle.IsActive();
+#else
+                return false;
+#endif
+            }
+        }
 
         protected virtual void Start()
         {
@@ -147,28 +161,31 @@ namespace Pancake.DebugView
         {
             if (IsInAnimation) throw new Exception("Progress Animation is now playing. If you want to play new animation, call StopProgressAnimation first.");
 
-            void ValueChanged(float value) { Progress = value; }
+#if PANCAKE_LITMOTION
+            LMotion.Create(fromProgress, toProgress, durationSec).WithEase(ease).WithOnComplete(() => completed?.Invoke()).Bind(ValueChanged);
+#endif
+            return;
 
-            _progressTween = Tween.Custom(fromProgress,
-                    toProgress,
-                    durationSec,
-                    ValueChanged,
-                    ease)
-                .OnComplete(() => { completed?.Invoke(); });
+            void ValueChanged(float value) { Progress = value; }
         }
 
-        public void StopProgressAnimation() { _progressTween.Stop(); }
+        public void StopProgressAnimation()
+        {
+#if PANCAKE_LITMOTION
+            if (_handle.IsActive()) _handle.Cancel();
+#endif
+        }
 
         public float GetProgressFromDistance(float distance)
         {
-            var scaleFactor = canvas.scaleFactor;
+            float scaleFactor = canvas.scaleFactor;
             var fullSize = new Vector2(Screen.width, Screen.height) / scaleFactor;
             var safeArea = Screen.safeArea;
             safeArea.position /= scaleFactor;
             safeArea.size /= scaleFactor;
-            var minPos = GetStartPos(fullSize, safeArea, direction, moveInsideSafeArea);
-            var maxPos = GetEndPos(fullSize, safeArea, direction);
-            var length = Mathf.Abs(maxPos - minPos);
+            float minPos = GetStartPos(fullSize, safeArea, direction, moveInsideSafeArea);
+            float maxPos = GetEndPos(fullSize, safeArea, direction);
+            float length = Mathf.Abs(maxPos - minPos);
             return distance / length;
         }
 
@@ -189,9 +206,9 @@ namespace Pancake.DebugView
         private void UpdateProgress(Vector2 fullSize, Rect safeArea)
         {
             var rectTransform = (RectTransform) transform;
-            var minPos = GetStartPos(fullSize, safeArea, direction, moveInsideSafeArea);
-            var maxPos = GetEndPos(fullSize, safeArea, direction);
-            var normalizedSize = Mathf.Lerp(0.0f, size, _progress);
+            float minPos = GetStartPos(fullSize, safeArea, direction, moveInsideSafeArea);
+            float maxPos = GetEndPos(fullSize, safeArea, direction);
+            float normalizedSize = Mathf.Lerp(0.0f, size, _progress);
             var anchoredPosition = rectTransform.anchoredPosition;
             if (direction == DrawerDirection.LeftToRight || direction == DrawerDirection.RightToLeft)
                 anchoredPosition.x = Mathf.Lerp(minPos, maxPos, normalizedSize);

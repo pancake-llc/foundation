@@ -1,8 +1,11 @@
 using System;
-using PrimeTween;
+using LitMotion.Extensions;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+#if PANCAKE_LITMOTION
+using LitMotion;
+#endif
 
 namespace Pancake.DebugView
 {
@@ -13,7 +16,9 @@ namespace Pancake.DebugView
         [SerializeField] private Button backdropButton;
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private float animationDuration = 0.25f;
+#if PANCAKE_LITMOTION
         [SerializeField] private Ease animationType = Ease.InCirc;
+#endif
         [SerializeField] private Text balloonText;
 
         private Canvas _canvas;
@@ -97,13 +102,18 @@ namespace Pancake.DebugView
             canvasGroup.alpha = 0.0f;
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = true;
-            Tween.Alpha(canvasGroup, 1, animationDuration, animationType)
-                .OnComplete(() =>
+#if PANCAKE_LITMOTION
+            LMotion.Create(canvasGroup.alpha, 1, animationDuration)
+                .WithEase(animationType)
+                .WithOnComplete(() =>
                 {
                     canvasGroup.alpha = 1.0f;
                     canvasGroup.interactable = true;
                     IsAnimating = false;
-                });
+                })
+                .BindToCanvasGroupAlpha(canvasGroup)
+                .AddTo(gameObject);
+#endif
         }
 
         private void HideRoutine()
@@ -113,14 +123,19 @@ namespace Pancake.DebugView
             IsAnimating = true;
             canvasGroup.alpha = 1.0f;
             canvasGroup.interactable = true;
-            Tween.Alpha(canvasGroup, 0, animationDuration, animationType)
-                .OnComplete(() =>
+#if PANCAKE_LITMOTION
+            LMotion.Create(canvasGroup.alpha, 0, animationDuration)
+                .WithEase(animationType)
+                .WithOnComplete(() =>
                 {
                     canvasGroup.alpha = 0.0f;
                     canvasGroup.interactable = false;
                     canvasGroup.blocksRaycasts = false;
                     IsAnimating = false;
-                });
+                })
+                .BindToCanvasGroupAlpha(canvasGroup)
+                .AddTo(gameObject);
+#endif
         }
     }
 }
