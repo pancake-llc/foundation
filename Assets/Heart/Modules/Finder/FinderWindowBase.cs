@@ -248,7 +248,6 @@ namespace PancakeEditor
         {
             if (EditorApplication.isCompiling || EditorApplication.isUpdating) return;
 
-            Debug.LogWarning("OnFinderCheck");
             EditorApplication.update -= OnFinderCheck;
             CacheSetting.Check4Changes(false);
         }

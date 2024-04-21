@@ -40,13 +40,14 @@ namespace PancakeEditor
 
         private void OnEnable()
         {
+            CacheSetting.disabled = false;
             Repaint();
-
             CacheSetting?.Check4Changes(false);
         }
 
         private void OnDisable()
         {
+            CacheSetting.disabled = true;
             Cache.SaveSetting();
             Setting.SaveSetting();
         }

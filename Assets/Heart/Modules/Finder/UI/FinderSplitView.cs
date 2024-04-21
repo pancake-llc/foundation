@@ -68,11 +68,7 @@ namespace PancakeEditor
                 _visibleCount++;
             }
 
-            if (_visibleCount == 0 || totalWeight == 0)
-            {
-                //Debug.LogWarning("Nothing visible!");
-                return;
-            }
+            if (_visibleCount == 0 || totalWeight == 0) return;
 
             var cWeight = 0f;
             for (var i = 0; i < splits.Count; i++)
