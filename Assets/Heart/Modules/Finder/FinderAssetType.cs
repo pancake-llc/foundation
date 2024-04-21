@@ -11,7 +11,7 @@ namespace PancakeEditor
 
         internal static readonly FinderAssetType[] Filters =
         {
-            new FinderAssetType("Scene", ".unity"), new FinderAssetType("Prefab", ".prefab"), new FinderAssetType("Model",
+            new("Scene", ".unity"), new("Prefab", ".prefab"), new("Model",
                 ".3df",
                 ".3dm",
                 ".3dmf",
@@ -34,7 +34,7 @@ namespace PancakeEditor
                 ".skp",
                 ".max",
                 ".blend"),
-            new FinderAssetType("Material", ".mat", ".cubemap", ".physicsmaterial"), new FinderAssetType("Texture",
+            new("Material", ".mat", ".cubemap", ".physicsmaterial"), new("Texture",
                 ".ai",
                 ".apng",
                 ".png",
@@ -74,7 +74,7 @@ namespace PancakeEditor
                 ".psd",
                 ".exr",
                 ".rendertexture"),
-            new FinderAssetType("Video",
+            new("Video",
                 ".asf",
                 ".asx",
                 ".avi",
@@ -104,7 +104,7 @@ namespace PancakeEditor
                 ".wmv",
                 ".xvid",
                 ".flv"),
-            new FinderAssetType("Audio",
+            new("Audio",
                 ".mp3",
                 ".wav",
                 ".ogg",
@@ -114,66 +114,52 @@ namespace PancakeEditor
                 ".it",
                 ".s3m",
                 ".xm"),
-            new FinderAssetType("Script",
+            new("Script",
                 ".cs",
                 ".js",
                 ".boo",
                 ".h"),
-            new FinderAssetType("Text",
+            new("Text",
                 ".txt",
                 ".json",
                 ".xml",
                 ".bytes",
                 ".sql"),
-            new FinderAssetType("Shader", ".shader", ".cginc"), new FinderAssetType("Animation",
+            new("Shader", ".shader", ".cginc"), new("Animation",
                 ".anim",
                 ".controller",
                 ".overridecontroller",
                 ".mask"),
-            new FinderAssetType("Unity Asset",
+            new("Unity Asset",
                 ".asset",
                 ".guiskin",
                 ".flare",
                 ".fontsettings",
                 ".prefs"),
-            new FinderAssetType("Others") //
+            new("Others") //
         };
 
         private static FinderIgnore ignore;
-        public HashSet<string> extension;
-        public string name;
+        private readonly HashSet<string> _extension;
+        public readonly string name;
 
         public FinderAssetType(string name, params string[] exts)
         {
             this.name = name;
-            extension = new HashSet<string>();
+            _extension = new HashSet<string>();
             for (var i = 0; i < exts.Length; i++)
             {
-                extension.Add(exts[i]);
+                _extension.Add(exts[i]);
             }
         }
 
-        private static FinderIgnore Ignore
-        {
-            get
-            {
-                if (ignore == null)
-                {
-                    ignore = new FinderIgnore();
-                }
-
-                return ignore;
-            }
-        }
+        private static FinderIgnore Ignore => ignore ??= new FinderIgnore();
 
         public static int GetIndex(string ext)
         {
             for (var i = 0; i < Filters.Length - 1; i++)
             {
-                if (Filters[i].extension.Contains(ext))
-                {
-                    return i;
-                }
+                if (Filters[i]._extension.Contains(ext)) return i;
             }
 
             return Filters.Length - 1; //Others
@@ -182,7 +168,7 @@ namespace PancakeEditor
         public static bool DrawSearchFilter()
         {
             int n = Filters.Length;
-            var nCols = 4;
+            const int nCols = 4;
             int nRows = Mathf.CeilToInt(n / (float) nCols);
             var result = false;
 
@@ -209,10 +195,7 @@ namespace PancakeEditor
                 for (var j = 0; j < nRows; j++)
                 {
                     int idx = i * nCols + j;
-                    if (idx >= n)
-                    {
-                        break;
-                    }
+                    if (idx >= n) break;
 
                     bool s = !FinderWindowBase.IsTypeExcluded(idx);
                     bool s1 = GUILayout.Toggle(s, Filters[idx].name);
@@ -224,10 +207,7 @@ namespace PancakeEditor
                 }
 
                 GUILayout.EndVertical();
-                if ((i + 1) * nCols >= n)
-                {
-                    break;
-                }
+                if ((i + 1) * nCols >= n) break;
             }
 
             GUILayout.EndHorizontal();
@@ -239,37 +219,30 @@ namespace PancakeEditor
 
         public static bool DrawIgnoreFolder()
         {
-            var change = false;
             Ignore.Draw();
-            
-            return change;
+            return false;
         }
 
         private class FinderIgnore
         {
-            public readonly FinderTreeUI.GroupDrawer groupIgnore;
+            private readonly FinderTreeUI.GroupDrawer _groupIgnore;
             private bool _dirty;
             private Dictionary<string, FinderRef> _refs;
 
             public FinderIgnore()
             {
-                groupIgnore = new FinderTreeUI.GroupDrawer(DrawGroup, DrawItem);
-                groupIgnore.hideGroupIfPossible = false;
+                _groupIgnore = new FinderTreeUI.GroupDrawer(DrawGroup, DrawItem) {hideGroupIfPossible = false};
 
                 ApplyFiter();
             }
 
             private void DrawItem(Rect r, string guid)
             {
-                FinderRef rf;
-                if (!_refs.TryGetValue(guid, out rf))
-                {
-                    return;
-                }
+                if (!_refs.TryGetValue(guid, out var rf)) return;
 
                 if (rf.depth == 1) //mode != Mode.Dependency && 
                 {
-                    Color c = GUI.color;
+                    var c = GUI.color;
                     GUI.color = Color.blue;
                     GUI.DrawTexture(new Rect(r.x - 4f, r.y + 2f, 2f, 2f), EditorGUIUtility.whiteTexture);
                     GUI.color = c;
@@ -284,27 +257,21 @@ namespace PancakeEditor
                     false,
                     null);
 
-                Rect drawR = r;
+                var drawR = r;
                 drawR.x = drawR.x + drawR.width - 50f; // (groupDrawer.TreeNoScroll() ? 60f : 70f) ;
                 drawR.width = 30;
                 drawR.y += 1;
                 drawR.height -= 2;
 
-                if (GUI.Button(drawR, "X", EditorStyles.miniButton))
-                {
-                    FinderWindowBase.RemoveIgnore(rf.asset.AssetPath);
-                }
+                if (GUI.Button(drawR, "X", EditorStyles.miniButton)) FinderWindowBase.RemoveIgnore(rf.asset.AssetPath);
             }
 
             private void DrawGroup(Rect r, string id, int childCound)
             {
                 GUI.Label(r, id, EditorStyles.boldLabel);
-                if (childCound <= 1)
-                {
-                    return;
-                }
+                if (childCound <= 1) return;
 
-                Rect drawR = r;
+                var drawR = r;
                 drawR.x = drawR.x + drawR.width - 50f; // (groupDrawer.TreeNoScroll() ? 60f : 70f) ;
                 drawR.width = 30;
                 drawR.y += 1;
@@ -315,10 +282,7 @@ namespace PancakeEditor
 
             public void Draw()
             {
-                if (_dirty)
-                {
-                    ApplyFiter();
-                }
+                if (_dirty) ApplyFiter();
 
                 GUILayout.BeginHorizontal();
                 {
@@ -329,31 +293,26 @@ namespace PancakeEditor
                         for (var i = 0; i < drops.Length; i++)
                         {
                             string path = AssetDatabase.GetAssetPath(drops[i]);
-
                             FinderWindowBase.AddIgnore(path);
                         }
                     }
 
-                    groupIgnore.DrawLayout();
+                    _groupIgnore.DrawLayout();
                 }
                 GUILayout.EndHorizontal();
             }
-
 
             private void ApplyFiter()
             {
                 _dirty = false;
                 _refs = new Dictionary<string, FinderRef>();
-                
+
                 foreach (string item2 in FinderWindowBase.ListIgnore)
                 {
                     string guid = AssetDatabase.AssetPathToGUID(item2);
-                    if (string.IsNullOrEmpty(guid))
-                    {
-                        continue;
-                    }
+                    if (string.IsNullOrEmpty(guid)) continue;
 
-                    FinderAsset asset = FinderWindowBase.CacheSetting.Get(guid, true);
+                    var asset = FinderWindowBase.CacheSetting.Get(guid, true);
                     var r = new FinderRef(0,
                         0,
                         asset,
@@ -362,7 +321,7 @@ namespace PancakeEditor
                     _refs.Add(guid, r);
                 }
 
-                groupIgnore.Reset(_refs.Values.ToList(), rf => rf.asset != null ? rf.asset.guid : "", GetGroup, SortGroup);
+                _groupIgnore.Reset(_refs.Values.ToList(), rf => rf.asset != null ? rf.asset.guid : "", GetGroup, SortGroup);
             }
 
             private string GetGroup(FinderRef rf) { return "Ignore"; }

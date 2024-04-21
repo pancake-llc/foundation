@@ -11,7 +11,6 @@ namespace PancakeEditor
         public Action afterDraw;
     }
 
-
     public class FinderTabView
     {
         public int current;
@@ -29,7 +28,7 @@ namespace PancakeEditor
 
         public bool DrawLayout()
         {
-            bool result = false;
+            var result = false;
 
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
             {
@@ -37,10 +36,10 @@ namespace PancakeEditor
 
                 for (var i = 0; i < labels.Length; i++)
                 {
-                    var isActive = (i == current);
+                    bool isActive = (i == current);
 
                     var lb = labels[i];
-                    var clicked = (lb.image != null)
+                    bool clicked = (lb.image != null)
                         ? GUI2.ToolbarToggle(ref isActive, lb.image, Vector2.zero, lb.tooltip)
                         : GUI2.Toggle(ref isActive, lb, EditorStyles.toolbarButton);
 
@@ -67,7 +66,7 @@ namespace PancakeEditor
             var values = Enum.GetValues(enumType);
             var labels = new List<GUIContent>();
 
-            foreach (var item in values)
+            foreach (object item in values)
             {
                 labels.Add(new GUIContent(item.ToString()));
             }
@@ -77,16 +76,19 @@ namespace PancakeEditor
 
         public static GUIContent GetGUIContent(object tex)
         {
-            if (tex is GUIContent) return (GUIContent) tex;
-            if (tex is Texture) return new GUIContent((Texture) tex);
-            if (tex is string) return new GUIContent((string) tex);
-            return GUIContent.none;
+            return tex switch
+            {
+                GUIContent content => content,
+                Texture texture => new GUIContent(texture),
+                string s => new GUIContent(s),
+                _ => GUIContent.none
+            };
         }
 
         public static FinderTabView Create(IWindow w, bool canDeselectAll = false, params object[] titles)
         {
             var labels = new List<GUIContent>();
-            foreach (var item in titles)
+            foreach (object item in titles)
             {
                 labels.Add(GetGUIContent(item));
             }

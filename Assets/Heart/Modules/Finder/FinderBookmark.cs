@@ -7,118 +7,96 @@ namespace PancakeEditor
 {
     public class FinderBookmark : IRefDraw
     {
-        internal static HashSet<string> guidSet = new HashSet<string>();
-        internal static HashSet<string> instSet = new HashSet<string>(); // Do not reference directly to SceneObject (which might be destroyed anytime)
+        private static readonly HashSet<string> GuidSet = new();
+        private static readonly HashSet<string> InstSet = new(); // Do not reference directly to SceneObject (which might be destroyed anytime)
 
-        public static int Count => guidSet.Count + instSet.Count;
+        public static int Count => GuidSet.Count + InstSet.Count;
 
-        public static bool Contains(string guidOrInstID) { return guidSet.Contains(guidOrInstID) || instSet.Contains(guidOrInstID); }
+        public static bool Contains(string guidOrInstID) { return GuidSet.Contains(guidOrInstID) || InstSet.Contains(guidOrInstID); }
 
         public static bool Contains(UnityObject sceneObject)
         {
             var id = sceneObject.GetInstanceID().ToString();
-            return instSet.Contains(id);
+            return InstSet.Contains(id);
         }
 
         public static bool Contains(FinderRef rf)
         {
-            if (rf.isSceneRef)
-            {
-                if (instSet == null) return false;
-                return instSet.Contains(rf.component.GetInstanceID().ToString());
-            }
-            else
-            {
-                if (guidSet == null) return false;
-                return guidSet.Contains(rf.asset.guid);
-            }
+            if (rf.isSceneRef) return InstSet != null && InstSet.Contains(rf.component.GetInstanceID().ToString());
+
+            return GuidSet != null && GuidSet.Contains(rf.asset.guid);
         }
 
         public static void Add(UnityObject sceneObject)
         {
             if (sceneObject == null) return;
             var id = sceneObject.GetInstanceID().ToString();
-            instSet.Add(id); // hashset does not need to check exist before add
+            InstSet.Add(id); // hashset does not need to check exist before add
             dirty = true;
         }
 
         public static void Add(string guid)
         {
-            if (guidSet.Contains(guid)) return;
-            var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            if (GuidSet.Contains(guid)) return;
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
             if (string.IsNullOrEmpty(assetPath))
             {
                 Debug.LogWarning("Invalid GUID: " + guid);
                 return;
             }
 
-            guidSet.Add(guid);
+            GuidSet.Add(guid);
             dirty = true;
-            //Debug.Log(instSet.Count + " : " + guidSet.Count);
         }
 
         public static void Remove(UnityObject sceneObject)
         {
             if (sceneObject == null) return;
             var id = sceneObject.GetInstanceID().ToString();
-            instSet.Remove(id);
+            InstSet.Remove(id);
             dirty = true;
         }
 
         public static void Remove(string guidOrInstID)
         {
-            guidSet.Remove(guidOrInstID);
-            instSet.Remove(guidOrInstID);
+            GuidSet.Remove(guidOrInstID);
+            InstSet.Remove(guidOrInstID);
             dirty = true;
         }
 
         public static void Clear()
         {
-            guidSet.Clear();
-            instSet.Clear();
+            GuidSet.Clear();
+            InstSet.Clear();
             dirty = true;
         }
 
         public static void Add(FinderRef rf)
         {
-            if (rf.isSceneRef)
-            {
-                //Debug.Log("add " + rf.component);
-                Add(rf.component);
-            }
-            else
-            {
-                Add(rf.asset.guid);
-            }
+            if (rf.isSceneRef) Add(rf.component);
+            else Add(rf.asset.guid);
         }
 
         public static void Remove(FinderRef rf)
         {
-            if (rf.isSceneRef)
-            {
-                //Debug.Log("remove: " + rf.component);
-                Remove(rf.component);
-            }
-            else
-            {
-                Remove(rf.asset.guid);
-            }
+            if (rf.isSceneRef) Remove(rf.component);
+            else Remove(rf.asset.guid);
         }
 
         public static void Commit()
         {
-            var list = new List<Object>();
+            var list = new List<UnityObject>();
 
-            foreach (string guid in guidSet)
+            foreach (string guid in GuidSet)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                Object obj = AssetDatabase.LoadAssetAtPath(path, typeof(Object));
+                var obj = AssetDatabase.LoadAssetAtPath(path, typeof(UnityObject));
                 if (obj != null) list.Add(obj);
             }
 
-            foreach (string instID in instSet)
+            foreach (string instID in InstSet)
             {
-                var id = int.Parse(instID);
+                int id = int.Parse(instID);
                 var obj = EditorUtility.InstanceIDToObject(id);
                 if (obj != null) list.Add(obj);
             }
@@ -131,17 +109,15 @@ namespace PancakeEditor
 
         private static bool dirty;
         private readonly FinderRefDrawer _drawer;
-        internal Dictionary<string, FinderRef> refs = new Dictionary<string, FinderRef>();
+        internal Dictionary<string, FinderRef> refs = new();
 
         public FinderBookmark(IWindow window)
         {
-            this.Window = window;
-            _drawer = new FinderRefDrawer(window);
-            _drawer.messageNoRefs = "Do bookmark something!";
-
-            _drawer.groupDrawer.hideGroupIfPossible = true;
-            _drawer.forceHideDetails = true;
-            _drawer.level0Group = string.Empty;
+            Window = window;
+            _drawer = new FinderRefDrawer(window)
+            {
+                messageNoRefs = "Do bookmark something!", groupDrawer = {hideGroupIfPossible = true}, forceHideDetails = true, level0Group = string.Empty
+            };
 
             dirty = true;
             _drawer.SetDirty();
@@ -149,7 +125,7 @@ namespace PancakeEditor
 
         public IWindow Window { get; set; }
 
-        public int ElementCount() { return refs == null ? 0 : refs.Count; }
+        public int ElementCount() { return refs?.Count ?? 0; }
 
         public bool DrawLayout()
         {
@@ -175,7 +151,7 @@ namespace PancakeEditor
 
         public void SetDirty() { _drawer.SetDirty(); }
 
-        void DrawButtons(Rect rect)
+        private void DrawButtons(Rect rect)
         {
             if (Count == 0) return;
 
@@ -202,16 +178,16 @@ namespace PancakeEditor
 
         public void RefreshView()
         {
-            if (refs == null) refs = new Dictionary<string, FinderRef>();
+            refs ??= new Dictionary<string, FinderRef>();
             refs.Clear();
 
-            foreach (var guid in guidSet)
+            foreach (string guid in GuidSet)
             {
                 var asset = FinderWindowBase.CacheSetting.Get(guid, false);
                 refs.Add(guid, new FinderRef(0, 0, asset, null));
             }
 
-            foreach (var instId in instSet)
+            foreach (string instId in InstSet)
             {
                 refs.Add(instId, new FinderSceneRef(0, EditorUtility.InstanceIDToObject(int.Parse(instId))));
             }
@@ -219,7 +195,6 @@ namespace PancakeEditor
 
             _drawer.SetRefs(refs);
 
-            //Debug.Log("RefreshView: " + refs.Count);
             dirty = false;
         }
 

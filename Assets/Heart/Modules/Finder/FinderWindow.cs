@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 using Editor = PancakeEditor.Common.Editor;
@@ -13,7 +12,7 @@ namespace PancakeEditor
     {
         public static void ShowWindow()
         {
-            var window = EditorWindow.GetWindow<PancakeEditor.FinderWindow>("Finder", true, Editor.InspectorWindow);
+            var window = GetWindow<FinderWindow>("Finder", true, Editor.InspectorWindow);
             if (window != null)
             {
                 window.InitIfNeeded();
@@ -32,14 +31,12 @@ namespace PancakeEditor
         [NonSerialized] internal FinderRefDrawer sceneUsesDrawer; // [Selected GameObjects] are [USING] ---> those components / GameObjects in current scene
         [NonSerialized] internal FinderRefDrawer refSceneInScene; // [Selected GameObjects] are [USED BY] <---- those components / GameObjects in current scene
 
-
         internal int level;
         private Vector2 _scrollPos;
         private string _tempGuid;
         private Object _tempObject;
 
         protected bool LockSelection => selection != null && selection.isLock;
-
 
         private void OnEnable()
         {
@@ -107,25 +104,10 @@ namespace PancakeEditor
         {
             Repaint();
 
-            if (!IsCacheReady)
-            {
-                return;
-            }
-
-            if (focusedWindow == null)
-            {
-                return;
-            }
-
-            if (sceneUsesDrawer == null)
-            {
-                InitIfNeeded();
-            }
-
-            if (usesDrawer == null)
-            {
-                InitIfNeeded();
-            }
+            if (!IsCacheReady) return;
+            if (focusedWindow == null) return;
+            if (sceneUsesDrawer == null) InitIfNeeded();
+            if (usesDrawer == null) InitIfNeeded();
 
             if (!LockSelection)
             {
@@ -135,13 +117,10 @@ namespace PancakeEditor
                 //ignore selection on asset when selected any object in scene
                 if (Selection.gameObjects.Length > 0 && !FinderUnity.IsInAsset(Selection.gameObjects[0]))
                 {
-                    _ids = new string[0];
+                    _ids = Array.Empty<string>();
                     selection.AddRange(Selection.gameObjects);
                 }
-                else
-                {
-                    selection.AddRange(_ids);
-                }
+                else selection.AddRange(_ids);
 
                 level = 0;
 
@@ -187,15 +166,15 @@ namespace PancakeEditor
         public FinderSplitView sp1; // container : Selection / sp2 / Bookmark 
         public FinderSplitView sp2; // Scene / Assets
 
-        void InitPanes()
+        private void InitPanes()
         {
             sp2 = new FinderSplitView(this)
             {
                 isHorz = false,
                 splits = new List<FinderSplitView.Info>()
                 {
-                    new FinderSplitView.Info() {title = new GUIContent("Scene", Uniform.IconContent("SceneAsset Icon").image), draw = DrawScene},
-                    new FinderSplitView.Info() {title = new GUIContent("Assets", Uniform.IconContent("Folder Icon").image), draw = DrawAsset},
+                    new() {title = new GUIContent("Scene", Uniform.IconContent("SceneAsset Icon").image), draw = DrawScene},
+                    new() {title = new GUIContent("Assets", Uniform.IconContent("Folder Icon").image), draw = DrawAsset},
                 }
             };
 
@@ -206,28 +185,22 @@ namespace PancakeEditor
                 isHorz = true,
                 splits = new List<FinderSplitView.Info>()
                 {
-                    new FinderSplitView.Info()
+                    new()
                     {
                         title = new GUIContent("Selection", Uniform.IconContent("d_RectTransformBlueprint").image),
                         weight = 0.4f,
                         visible = true,
                         draw = (rect) => selection.Draw(rect)
                     },
-                    new FinderSplitView.Info()
+                    new()
                     {
                         draw = (r) =>
                         {
-                            if (IsFocusingUses || IsFocusingUsedBy)
-                            {
-                                sp2.Draw(r);
-                            }
-                            else
-                            {
-                                DrawTools(r);
-                            }
+                            if (IsFocusingUses || IsFocusingUsedBy) sp2.Draw(r);
+                            else DrawTools(r);
                         }
                     },
-                    new FinderSplitView.Info()
+                    new()
                     {
                         title = new GUIContent("Bookmark", Uniform.IconContent("Favorite On Icon").image),
                         weight = 0.4f,
@@ -244,9 +217,9 @@ namespace PancakeEditor
         private FinderTabView _bottomTabs;
         private FinderSearchView _search;
 
-        void DrawScene(Rect rect)
+        private void DrawScene(Rect rect)
         {
-            FinderRefDrawer drawer = IsFocusingUses ? (selection.IsSelectingAsset ? null : sceneUsesDrawer) : (selection.IsSelectingAsset ? refInScene : refSceneInScene);
+            var drawer = IsFocusingUses ? (selection.IsSelectingAsset ? null : sceneUsesDrawer) : (selection.IsSelectingAsset ? refInScene : refSceneInScene);
             if (drawer == null) return;
 
             if (!FinderSceneCache.ready)
@@ -270,30 +243,22 @@ namespace PancakeEditor
         }
 
 
-        FinderRefDrawer GetAssetDrawer()
+        private FinderRefDrawer GetAssetDrawer()
         {
-            if (IsFocusingUses)
-            {
-                return selection.IsSelectingAsset ? usesDrawer : sceneToAssetDrawer;
-            }
-
-            if (IsFocusingUsedBy)
-            {
-                return selection.IsSelectingAsset ? usedByDrawer : null;
-            }
-
+            if (IsFocusingUses) return selection.IsSelectingAsset ? usesDrawer : sceneToAssetDrawer;
+            if (IsFocusingUsedBy) return selection.IsSelectingAsset ? usedByDrawer : null;
             return null;
         }
 
-        void DrawAsset(Rect rect)
+        private void DrawAsset(Rect rect)
         {
             var drawer = GetAssetDrawer();
-            if (drawer != null) drawer.Draw(rect);
+            drawer?.Draw(rect);
         }
 
-        void DrawSearch()
+        private void DrawSearch()
         {
-            if (_search == null) _search = new FinderSearchView();
+            _search ??= new FinderSearchView();
             _search.DrawLayout();
         }
 
@@ -320,10 +285,7 @@ namespace PancakeEditor
             if (EditorSettings.serializationMode != SerializationMode.ForceText)
             {
                 EditorGUILayout.HelpBox("Finder requires serialization mode set to FORCE TEXT!", MessageType.Warning);
-                if (GUILayout.Button("FORCE TEXT"))
-                {
-                    EditorSettings.serializationMode = SerializationMode.ForceText;
-                }
+                if (GUILayout.Button("FORCE TEXT")) EditorSettings.serializationMode = SerializationMode.ForceText;
 
                 return false;
             }
@@ -349,33 +311,24 @@ namespace PancakeEditor
 
                 DrawPriorityGUI();
 
-                if (!DrawEnable())
-                {
-                    return false;
-                }
-
+                if (!DrawEnable()) return false;
 
                 string text = "Refreshing ... " + (int) (CacheSetting.Progress * CacheSetting.workCount) + " / " + CacheSetting.workCount;
-                Rect rect = GUILayoutUtility.GetRect(1f, Screen.width, 18f, 18f);
+                var rect = GUILayoutUtility.GetRect(1f, Screen.width, 18f, 18f);
                 EditorGUI.ProgressBar(rect, CacheSetting.Progress, text);
                 Repaint();
                 return false;
             }
 
-            if (!DrawEnable())
-            {
-                return false;
-            }
-
-            return true;
+            return DrawEnable();
         }
 
         protected bool IsFocusingUses => _tabs != null && _tabs.current == 0;
         protected bool IsFocusingUsedBy => _tabs != null && _tabs.current == 1;
 
-        void OnTabChange() { }
+        private void OnTabChange() { }
 
-        void InitTabs()
+        private void InitTabs()
         {
             _tabs = FinderTabView.Create(this, false, "Uses", "Used By");
             _tabs.onTabChange = OnTabChange;
@@ -462,9 +415,9 @@ namespace PancakeEditor
             return false;
         }
 
-        void DrawAssetViewSettings()
+        private void DrawAssetViewSettings()
         {
-            var isDisable = !sp2.splits[1].visible;
+            bool isDisable = !sp2.splits[1].visible;
             EditorGUI.BeginDisabledGroup(isDisable);
             {
                 GUI2.ToolbarToggle(ref Setting.Settings.displayAssetBundleName,
@@ -483,7 +436,7 @@ namespace PancakeEditor
             EditorGUI.EndDisabledGroup();
         }
 
-        void DrawViewModes()
+        private void DrawViewModes()
         {
             var gMode = GroupMode;
             if (GUI2.EnumPopup(ref gMode, Uniform.IconContent("EditCollider", "Group by"), EditorStyles.toolbarPopup, GUILayout.Width(100f)))
@@ -504,10 +457,7 @@ namespace PancakeEditor
 
         protected void OnGUI2()
         {
-            if (!CheckDrawImport())
-            {
-                return;
-            }
+            if (!CheckDrawImport()) return;
 
             if (sp1 == null) InitPanes();
 
@@ -516,16 +466,13 @@ namespace PancakeEditor
             DrawSettings();
             DrawFooter();
 
-            if (WillRepaint)
-            {
-                Repaint();
-            }
+            if (WillRepaint) Repaint();
         }
 
 
-        void DrawTools(Rect rect) { }
+        private void DrawTools(Rect rect) { }
 
-        void DrawSettings()
+        private void DrawSettings()
         {
             if (_bottomTabs.current == -1) return;
 
@@ -542,20 +489,13 @@ namespace PancakeEditor
 
                     case 1:
                     {
-                        if (FinderAssetType.DrawIgnoreFolder())
-                        {
-                            MarkDirty();
-                        }
-
+                        if (FinderAssetType.DrawIgnoreFolder()) MarkDirty();
                         break;
                     }
 
                     case 2:
                     {
-                        if (FinderAssetType.DrawSearchFilter())
-                        {
-                            MarkDirty();
-                        }
+                        if (FinderAssetType.DrawSearchFilter()) MarkDirty();
 
                         break;
                     }

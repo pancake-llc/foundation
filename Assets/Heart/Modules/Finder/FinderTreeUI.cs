@@ -67,8 +67,8 @@ namespace PancakeEditor
 
         public void DrawLayout()
         {
-            EventType evtType = Event.current.type;
-            Rect r = GUILayoutUtility.GetRect(1f, Screen.width, 16f, Screen.height);
+            var evtType = Event.current.type;
+            var r = GUILayoutUtility.GetRect(1f, Screen.width, 16f, Screen.height);
 
             if (evtType != EventType.Layout)
             {
@@ -118,15 +118,13 @@ namespace PancakeEditor
 
                 for (var i = 0; i < items.Count; i++)
                 {
-                    List<string> list;
-
                     string groupName = groupFunc(items[i]);
                     if (groupName == null) continue; // do not exclude groupName string.Empty
 
                     string itemId = idFunc(items[i]);
                     if (string.IsNullOrEmpty(itemId)) continue; // ignore items without id
 
-                    if (!_groupDict.TryGetValue(groupName, out list))
+                    if (!_groupDict.TryGetValue(groupName, out var list))
                     {
                         list = new List<string>();
                         _groupDict.Add(groupName, list);
@@ -140,7 +138,7 @@ namespace PancakeEditor
                     tree = new FinderTreeUI(this);
                 }
 
-                List<string> groups = _groupDict.Keys.ToList();
+                var groups = _groupDict.Keys.ToList();
 
                 if (hideGroupIfPossible && groups.Count == 1) //single group : Flat list
                 {
@@ -151,14 +149,8 @@ namespace PancakeEditor
                 else
                 {
                     //multiple groups
-                    if (customGroupSort != null)
-                    {
-                        customGroupSort(groups);
-                    }
-                    else
-                    {
-                        groups.Sort();
-                    }
+                    if (customGroupSort != null) customGroupSort(groups);
+                    else groups.Sort();
 
                     tree.Reset(groups.ToArray());
                 }
@@ -166,7 +158,7 @@ namespace PancakeEditor
 
             public void Draw(Rect r)
             {
-                if (tree != null) tree.Draw(r);
+                tree?.Draw(r);
             }
 
             public bool HasChildren => tree != null && tree._rootItem.childCount > 0;
@@ -175,7 +167,7 @@ namespace PancakeEditor
 
             public void DrawLayout()
             {
-                if (tree != null) tree.DrawLayout();
+                tree?.DrawLayout();
             }
 
             // ----------------- DRAWER WRAPPER ------------------
@@ -184,24 +176,12 @@ namespace PancakeEditor
             {
                 if (string.IsNullOrEmpty(id)) return 0;
 
-                List<string> group;
-                if (_groupDict.TryGetValue(id, out group))
-                {
-                    return group.Count;
-                }
-
-                return 0;
+                return _groupDict.TryGetValue(id, out var group) ? group.Count : 0;
             }
 
             public override string[] GetChildren(string id)
             {
-                List<string> group;
-                if (_groupDict.TryGetValue(id, out group))
-                {
-                    return group.ToArray();
-                }
-
-                return null;
+                return _groupDict.TryGetValue(id, out var group) ? group.ToArray() : null;
             }
 
             public override void Draw(Rect r, TreeItem item)
@@ -246,22 +226,16 @@ namespace PancakeEditor
                 get => isOpen;
                 set
                 {
-                    if (isOpen == value || childCount == 0)
-                    {
-                        return;
-                    }
+                    if (isOpen == value || childCount == 0)  return;
 
                     isOpen = value;
 
                     if (isOpen)
                     {
-                        if (children == null)
-                        {
-                            RefreshChildren(tree.drawer.GetChildren(id));
-                        }
+                        if (children == null)  RefreshChildren(tree.drawer.GetChildren(id));
 
                         //Update height for all parents
-                        TreeItem p = parent;
+                        var p = parent;
                         while (p != null)
                         {
                             p.childrenHeight += childrenHeight;
@@ -271,7 +245,7 @@ namespace PancakeEditor
                     else
                     {
                         //Update height for all parents
-                        TreeItem p = parent;
+                        var p = parent;
                         while (p != null)
                         {
                             p.childrenHeight -= childrenHeight;
@@ -284,10 +258,7 @@ namespace PancakeEditor
             internal void DeepOpen()
             {
                 IsOpen = true;
-                if (children == null)
-                {
-                    return;
-                }
+                if (children == null)  return;
 
                 for (var i = 0; i < children.Count; i++)
                 {
@@ -299,12 +270,6 @@ namespace PancakeEditor
             {
                 drawCall++;
 
-                // if (DrawCall < 10)
-                // {
-                // 	Debug.Log(index + ":" + rect + ":" + minY + ":" + maxY + ":" + height + ":" + childrenHeight);
-                // }
-
-                //var skipDraw = (rect.y >= maxY) || (height <=0);
                 float min = rect.y;
                 float max = rect.y + height;
                 bool interMin = min >= minY && min <= maxY;
@@ -317,9 +282,8 @@ namespace PancakeEditor
 
                     if (index % 2 == 1 && FinderWindowBase.AlternateRowColor)
                     {
-                        Color o = GUI.color;
+                        var o = GUI.color;
                         GUI.color = FinderWindowBase.RowColor;
-                        // GUI.DrawTexture(rect, EditorGUIUtility.whiteTexture);
                         GUI.DrawTexture(new Rect(rect.x - FinderWindowBase.TreeIndent, rect.y, rect.width, rect.height), EditorGUIUtility.whiteTexture);
                         GUI.color = o;
                     }
@@ -345,10 +309,7 @@ namespace PancakeEditor
                     for (var i = 0; i < children.Count; i++)
                     {
                         children[i].Draw(ref index, ref rect, minY, maxY);
-                        if (rect.y > maxY)
-                        {
-                            break;
-                        }
+                        if (rect.y > maxY)  break;
                     }
                 }
             }

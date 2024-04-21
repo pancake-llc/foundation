@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
@@ -9,24 +8,24 @@ namespace PancakeEditor
 {
     public class FinderSelection : IRefDraw
     {
-        internal HashSet<string> guidSet = new HashSet<string>();
-        internal HashSet<string> instSet = new HashSet<string>(); // Do not reference directly to SceneObject (which might be destroyed anytime)
+        private readonly HashSet<string> _guidSet = new();
+        private readonly HashSet<string> _instSet = new(); // Do not reference directly to SceneObject (which might be destroyed anytime)
 
-        public int Count => guidSet.Count + instSet.Count;
+        public int Count => _guidSet.Count + _instSet.Count;
 
-        public bool Contains(string guidOrInstID) { return guidSet.Contains(guidOrInstID) || instSet.Contains(guidOrInstID); }
+        public bool Contains(string guidOrInstID) { return _guidSet.Contains(guidOrInstID) || _instSet.Contains(guidOrInstID); }
 
         public bool Contains(UnityObject sceneObject)
         {
             var id = sceneObject.GetInstanceID().ToString();
-            return instSet.Contains(id);
+            return _instSet.Contains(id);
         }
 
         public void Add(UnityObject sceneObject)
         {
             if (sceneObject == null) return;
             var id = sceneObject.GetInstanceID().ToString();
-            instSet.Add(id); // hashset does not need to check exist before add
+            _instSet.Add(id); // hashset does not need to check exist before add
             _dirty = true;
         }
 
@@ -35,7 +34,7 @@ namespace PancakeEditor
             foreach (var go in sceneObjects)
             {
                 var id = go.GetInstanceID().ToString();
-                instSet.Add(id); // hashset does not need to check exist before add	
+                _instSet.Add(id); // hashset does not need to check exist before add	
             }
 
             _dirty = true;
@@ -43,21 +42,21 @@ namespace PancakeEditor
 
         public void Add(string guid)
         {
-            if (guidSet.Contains(guid)) return;
-            var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            if (_guidSet.Contains(guid)) return;
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
             if (string.IsNullOrEmpty(assetPath))
             {
                 Debug.LogWarning("Invalid GUID: " + guid);
                 return;
             }
 
-            guidSet.Add(guid);
+            _guidSet.Add(guid);
             _dirty = true;
         }
 
         public void AddRange(params string[] guids)
         {
-            foreach (var id in guids)
+            foreach (string id in guids)
             {
                 Add(id);
             }
@@ -69,49 +68,37 @@ namespace PancakeEditor
         {
             if (sceneObject == null) return;
             var id = sceneObject.GetInstanceID().ToString();
-            instSet.Remove(id);
+            _instSet.Remove(id);
             _dirty = true;
         }
 
         public void Remove(string guidOrInstID)
         {
-            guidSet.Remove(guidOrInstID);
-            instSet.Remove(guidOrInstID);
+            _guidSet.Remove(guidOrInstID);
+            _instSet.Remove(guidOrInstID);
 
             _dirty = true;
         }
 
         public void Clear()
         {
-            guidSet.Clear();
-            instSet.Clear();
+            _guidSet.Clear();
+            _instSet.Clear();
             _dirty = true;
         }
 
-        public bool IsSelectingAsset => instSet.Count == 0;
+        public bool IsSelectingAsset => _instSet.Count == 0;
 
         public void Add(FinderRef rf)
         {
-            if (rf.isSceneRef)
-            {
-                Add(rf.component);
-            }
-            else
-            {
-                Add(rf.asset.guid);
-            }
+            if (rf.isSceneRef) Add(rf.component);
+            else Add(rf.asset.guid);
         }
 
         public void Remove(FinderRef rf)
         {
-            if (rf.isSceneRef)
-            {
-                Remove(rf.component);
-            }
-            else
-            {
-                Remove(rf.asset.guid);
-            }
+            if (rf.isSceneRef) Remove(rf.component);
+            else Remove(rf.asset.guid);
         }
 
         // ------------ instance
@@ -123,12 +110,8 @@ namespace PancakeEditor
 
         public FinderSelection(IWindow window)
         {
-            this.Window = window;
-            _drawer = new FinderRefDrawer(window);
-            _drawer.groupDrawer.hideGroupIfPossible = true;
-            _drawer.forceHideDetails = true;
-            _drawer.level0Group = string.Empty;
-
+            Window = window;
+            _drawer = new FinderRefDrawer(window) {groupDrawer = {hideGroupIfPossible = true}, forceHideDetails = true, level0Group = string.Empty};
             _dirty = true;
             _drawer.SetDirty();
         }
@@ -155,8 +138,8 @@ namespace PancakeEditor
 
         public void SetDirty() { _drawer.SetDirty(); }
 
-        private static readonly Color Pro = new Color(0.8f, 0.8f, 0.8f, 1f);
-        private static readonly Color Indie = new Color(0.1f, 0.1f, 0.1f, 1f);
+        private static readonly Color Pro = new(0.8f, 0.8f, 0.8f, 1f);
+        private static readonly Color Indie = new(0.1f, 0.1f, 0.1f, 1f);
 
         public void DrawLock(Rect rect)
         {
@@ -177,16 +160,16 @@ namespace PancakeEditor
             if (refs == null) refs = new Dictionary<string, FinderRef>();
             refs.Clear();
 
-            if (instSet.Count > 0)
+            if (_instSet.Count > 0)
             {
-                foreach (var instId in instSet)
+                foreach (string instId in _instSet)
                 {
                     refs.Add(instId, new FinderSceneRef(0, EditorUtility.InstanceIDToObject(int.Parse(instId))));
                 }
             }
             else
             {
-                foreach (var guid in guidSet)
+                foreach (string guid in _guidSet)
                 {
                     var asset = FinderWindowBase.CacheSetting.Get(guid, false);
                     refs.Add(guid, new FinderRef(0, 0, asset, null) {isSceneRef = false});

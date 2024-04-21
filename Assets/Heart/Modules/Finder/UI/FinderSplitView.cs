@@ -45,7 +45,7 @@ namespace PancakeEditor
         }
 
         public bool isHorz;
-        public List<Info> splits = new List<Info>();
+        public List<Info> splits = new();
 
         public bool IsVisible => _visibleCount > 0;
 
@@ -87,10 +87,7 @@ namespace PancakeEditor
 
         public void Draw(Rect rect)
         {
-            if (rect.width > 0 || rect.height > 0)
-            {
-                _rect = rect;
-            }
+            if (rect.width > 0 || rect.height > 0) _rect = rect;
 
             if (_dirty)
             {
@@ -98,9 +95,9 @@ namespace PancakeEditor
                 CalculateWeight();
             }
 
-            var sz = (_visibleCount - 1) * SPLIT_SIZE;
-            var dx = _rect.x;
-            var dy = _rect.y;
+            float sz = (_visibleCount - 1) * SPLIT_SIZE;
+            float dx = _rect.x;
+            float dy = _rect.y;
 
             for (var i = 0; i < splits.Count; i++)
             {
@@ -121,14 +118,8 @@ namespace PancakeEditor
                     DrawSpliter(i, isHorz ? info.rect.xMax : info.rect.yMax);
                 }
 
-                if (isHorz)
-                {
-                    dx += info.rect.width + SPLIT_SIZE;
-                }
-                else
-                {
-                    dy += info.rect.height + SPLIT_SIZE;
-                }
+                if (isHorz) dx += info.rect.width + SPLIT_SIZE;
+                else dy += info.rect.height + SPLIT_SIZE;
             }
         }
 
@@ -144,7 +135,7 @@ namespace PancakeEditor
         private int _resizeIndex = -1;
 
 
-        void RefreshSpliterPos(int index, float px)
+        private void RefreshSpliterPos(int index, float px)
         {
             var sp1 = splits[index];
             var sp2 = splits[index + 1];
@@ -152,13 +143,13 @@ namespace PancakeEditor
             var r1 = sp1.rect;
             var r2 = sp2.rect;
 
-            var w1 = sp1.weight;
-            var w2 = sp2.weight;
-            var tt = w1 + w2;
+            float w1 = sp1.weight;
+            float w2 = sp2.weight;
+            float tt = w1 + w2;
 
-            var dd = isHorz ? (r2.xMax - r1.xMin) : (r2.yMax - r1.yMin) - SPLIT_SIZE;
-            var m = isHorz ? (Event.current.mousePosition.x - r1.x) : (Event.current.mousePosition.y - r1.y);
-            var pct = Mathf.Min(0.9f, Mathf.Max(0.1f, m / dd));
+            float dd = isHorz ? (r2.xMax - r1.xMin) : (r2.yMax - r1.yMin) - SPLIT_SIZE;
+            float m = isHorz ? (Event.current.mousePosition.x - r1.x) : (Event.current.mousePosition.y - r1.y);
+            float pct = Mathf.Min(0.9f, Mathf.Max(0.1f, m / dd));
 
             sp1.weight = tt * pct;
             sp2.weight = tt * (1 - pct);
@@ -167,7 +158,7 @@ namespace PancakeEditor
             if (_window != null) _window.WillRepaint = true;
         }
 
-        void DrawSpliter(int index, float px)
+        private void DrawSpliter(int index, float px)
         {
             var dRect = _rect;
 
@@ -196,34 +187,22 @@ namespace PancakeEditor
                 RefreshSpliterPos(index, px);
             }
 
-            if (_resizeIndex == index)
-            {
-                RefreshSpliterPos(index, px);
-            }
+            if (_resizeIndex == index) RefreshSpliterPos(index, px);
 
-            if (Event.current.type == EventType.MouseUp)
-            {
-                _resizeIndex = -1;
-            }
+            if (Event.current.type == EventType.MouseUp) _resizeIndex = -1;
         }
 
-        Rect StartLayout(bool horz)
+        private Rect StartLayout(bool horz)
         {
             return horz
                 ? EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true))
                 : EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
         }
 
-        void EndLayout(bool horz)
+        private void EndLayout(bool horz)
         {
-            if (horz)
-            {
-                EditorGUILayout.EndHorizontal();
-            }
-            else
-            {
-                EditorGUILayout.EndVertical();
-            }
+            if (horz) EditorGUILayout.EndHorizontal();
+            else  EditorGUILayout.EndVertical();
         }
     }
 }

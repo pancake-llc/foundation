@@ -21,7 +21,7 @@ namespace PancakeEditor
 
         public bool DrawLayout()
         {
-            bool dirty = false;
+            var dirty = false;
 
             if (toolbarSearchField == null)
             {
@@ -45,7 +45,7 @@ namespace PancakeEditor
                     dirty = true;
                 }
 
-                GUIStyle style = string.IsNullOrEmpty(_searchTerm) ? toolbarSearchFieldCancelButtonEmpty : toolbarSearchFieldCancelButton;
+                var style = string.IsNullOrEmpty(_searchTerm) ? toolbarSearchFieldCancelButtonEmpty : toolbarSearchFieldCancelButton;
                 if (GUILayout.Button("Cancel", style))
                 {
                     _searchTerm = string.Empty;

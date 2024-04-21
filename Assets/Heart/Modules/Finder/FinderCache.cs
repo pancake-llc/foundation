@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace PancakeEditor
 {
     [InitializeOnLoad]
@@ -28,8 +27,8 @@ namespace PancakeEditor
                 InitIgnore();
 
 #if UNITY_2018_1_OR_NEWER
-                UnityEditor.EditorBuildSettings.sceneListChanged -= InitListScene;
-                UnityEditor.EditorBuildSettings.sceneListChanged += InitListScene;
+                EditorBuildSettings.sceneListChanged -= InitListScene;
+                EditorBuildSettings.sceneListChanged += InitListScene;
 #endif
 
                 EditorApplication.projectWindowItemOnGUI -= OnGUIProjectItem;
@@ -55,10 +54,7 @@ namespace PancakeEditor
             foreach (string item in FinderWindowBase.IgnoreAsset)
             {
                 string guid = AssetDatabase.AssetPathToGUID(item);
-                if (guidsIgnore.Contains(guid))
-                {
-                    continue;
-                }
+                if (guidsIgnore.Contains(guid)) continue;
 
                 guidsIgnore.Add(guid);
             }
@@ -68,14 +64,11 @@ namespace PancakeEditor
         {
             scenes = new HashSet<string>();
 
-            foreach (EditorBuildSettingsScene scene in UnityEditor.EditorBuildSettings.scenes)
+            foreach (var scene in EditorBuildSettings.scenes)
             {
                 string sce = AssetDatabase.AssetPathToGUID(scene.path);
 
-                if (scenes.Contains(sce))
-                {
-                    continue;
-                }
+                if (scenes.Contains(sce)) continue;
 
                 scenes.Add(sce);
             }
@@ -85,10 +78,7 @@ namespace PancakeEditor
         {
             FinderWindowBase.FinderDelayCheck4Changes();
 
-            if (!FinderWindowBase.IsCacheReady)
-            {
-                return;
-            }
+            if (!FinderWindowBase.IsCacheReady) return;
 
             if (FinderWindowBase.CacheSetting.assetMap == null) return;
 
@@ -115,11 +105,8 @@ namespace PancakeEditor
             for (var i = 0; i < movedAssets.Length; i++)
             {
                 string guid = AssetDatabase.AssetPathToGUID(movedAssets[i]);
-                FinderAsset asset = FinderWindowBase.CacheSetting.Get(guid);
-                if (asset != null)
-                {
-                    asset.MarkAsDirty(true, false);
-                }
+                var asset = FinderWindowBase.CacheSetting.Get(guid);
+                asset?.MarkAsDirty();
             }
 
             FinderWindowBase.CacheSetting.Check4Work();
@@ -138,15 +125,9 @@ namespace PancakeEditor
                 EditorGUI.DrawRect(ignoreRect, GUI2.darkRed);
             }
 
-            if (!FinderWindowBase.IsCacheReady)
-            {
-                return; // not ready
-            }
+            if (!FinderWindowBase.IsCacheReady) return; // not ready
 
-            if (!FinderWindowBase.ShowReferenceCount)
-            {
-                return;
-            }
+            if (!FinderWindowBase.ShowReferenceCount) return;
 
             if (FinderWindowBase.CacheSetting.assetMap == null) FinderWindowBase.CacheSetting.Check4Changes(false);
 
@@ -170,7 +151,7 @@ namespace PancakeEditor
         public bool alternateColor = true;
         public int excludeTypes; //32-bit type Mask
         public FinderRefDrawer.Mode groupMode;
-        public List<string> listIgnore = new List<string>();
+        public List<string> listIgnore = new();
         public bool pingRow = true;
         public bool showReferenceCount = true;
 
@@ -184,10 +165,9 @@ namespace PancakeEditor
 
         public int treeIndent = 10;
 
-        public Color32 rowColor = new Color32(0, 0, 0, 12);
-        public Color32 scanColor = new Color32(0, 204, 102, 255);
-        [Newtonsoft.Json.JsonIgnore]
-        public Color selectedColor = new Color(0, 0f, 1f, 0.25f);
+        public Color32 rowColor = new(0, 0, 0, 12);
+        public Color32 scanColor = new(0, 204, 102, 255);
+        [Newtonsoft.Json.JsonIgnore] public Color selectedColor = new(0, 0f, 1f, 0.25f);
 
         [NonSerialized] internal static HashSet<string> hashIgnore;
 
@@ -233,7 +213,7 @@ namespace PancakeEditor
                 var item = assetList[i];
                 item.state = EFinderAssetState.Cache;
 
-                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(item.guid);
+                string path = AssetDatabase.GUIDToAssetPath(item.guid);
                 if (string.IsNullOrEmpty(path))
                 {
                     item.type = EFinderAssetType.Unknown; // to make sure if GUIDs being reused for a different kind of asset
@@ -263,10 +243,7 @@ namespace PancakeEditor
 
         internal void RefreshAsset(string guid, bool force)
         {
-            if (!assetMap.TryGetValue(guid, out var asset))
-            {
-                return;
-            }
+            if (!assetMap.TryGetValue(guid, out var asset)) return;
 
             RefreshAsset(asset, force);
         }
@@ -281,15 +258,15 @@ namespace PancakeEditor
         {
             if (assetMap == null || assetMap.Count == 0) ReadFromCache();
 
-            var paths = AssetDatabase.GetAllAssetPaths();
+            string[] paths = AssetDatabase.GetAllAssetPaths();
             cacheStamp++;
             workCount = 0;
-            if (queueLoadContent != null) queueLoadContent.Clear();
+            queueLoadContent?.Clear();
 
             // Check for new assets
-            foreach (var p in paths)
+            foreach (string p in paths)
             {
-                var isValid = FinderUnity.StringStartsWith(p,
+                bool isValid = FinderUnity.StringStartsWith(p,
                     "Assets/",
                     "Packages/",
                     "Library/",
@@ -297,10 +274,9 @@ namespace PancakeEditor
 
                 if (!isValid) continue;
 
-                var guid = AssetDatabase.AssetPathToGUID(p);
+                string guid = AssetDatabase.AssetPathToGUID(p);
 
-                FinderAsset asset;
-                if (!assetMap.TryGetValue(guid, out asset))
+                if (!assetMap.TryGetValue(guid, out var asset))
                 {
                     AddAsset(guid);
                 }
@@ -311,19 +287,15 @@ namespace PancakeEditor
 
                     if (force) asset.MarkAsDirty(true, true);
 
-
                     workCount++;
                     queueLoadContent.Add(asset);
                 }
             }
 
             // Check for deleted assets
-            for (var i = assetList.Count - 1; i >= 0; i--)
+            for (int i = assetList.Count - 1; i >= 0; i--)
             {
-                if (assetList[i].refreshStamp != cacheStamp)
-                {
-                    RemoveAsset(assetList[i]);
-                }
+                if (assetList[i].refreshStamp != cacheStamp) RemoveAsset(assetList[i]);
             }
         }
 
@@ -417,17 +389,13 @@ namespace PancakeEditor
 
             while (c-- > 0)
             {
-                T last = arr[c];
+                var last = arr[c];
                 arr.RemoveAt(c);
                 action(c, last);
                 //workCount--;
 
                 float dt = Time.realtimeSinceStartup - t - frameDuration;
-                if (dt >= 0)
-                {
-                    return false;
-                }
-
+                if (dt >= 0) return false;
                 counter++;
             }
 
@@ -444,20 +412,13 @@ namespace PancakeEditor
         {
             if (assetMap == null) Check4Changes(false);
             if (asset.IsFolder) return;
-            foreach (KeyValuePair<string, HashSet<int>> item in asset.UseGUIDs)
+            foreach (var item in asset.UseGUIDs)
             {
-                FinderAsset tAsset;
-                if (assetMap.TryGetValue(item.Key, out tAsset))
+                if (assetMap.TryGetValue(item.Key, out var tAsset))
                 {
-                    if (tAsset == null || tAsset.usedByMap == null)
-                    {
-                        continue;
-                    }
+                    if (tAsset?.usedByMap == null) continue;
 
-                    if (!tAsset.usedByMap.ContainsKey(asset.guid))
-                    {
-                        tAsset.AddUsedBy(asset.guid, asset);
-                    }
+                    if (!tAsset.usedByMap.ContainsKey(asset.guid)) tAsset.AddUsedBy(asset.guid, asset);
                 }
             }
         }
@@ -466,74 +427,42 @@ namespace PancakeEditor
 
         internal List<FinderAsset> FindAssets(string[] guids, bool scanFolder)
         {
-            if (assetMap == null)
-            {
-                Check4Changes(false);
-            }
+            if (assetMap == null) Check4Changes(false);
 
             var result = new List<FinderAsset>();
 
-            if (!ready)
-            {
-                return result;
-            }
+            if (!ready) return result;
 
             var folderList = new List<FinderAsset>();
 
-            if (guids.Length == 0)
-            {
-                return result;
-            }
+            if (guids.Length == 0) return result;
 
             for (var i = 0; i < guids.Length; i++)
             {
                 string guid = guids[i];
-                FinderAsset asset;
-                if (!assetMap.TryGetValue(guid, out asset))
-                {
-                    continue;
-                }
+                if (!assetMap.TryGetValue(guid, out var asset)) continue;
 
-                if (asset.IsMissing)
-                {
-                    continue;
-                }
+                if (asset.IsMissing) continue;
 
                 if (asset.IsFolder)
                 {
-                    if (!folderList.Contains(asset))
-                    {
-                        folderList.Add(asset);
-                    }
+                    if (!folderList.Contains(asset)) folderList.Add(asset);
                 }
-                else
-                {
-                    result.Add(asset);
-                }
+                else result.Add(asset);
             }
 
-            if (!scanFolder || folderList.Count == 0)
-            {
-                return result;
-            }
+            if (!scanFolder || folderList.Count == 0) return result;
 
             int count = folderList.Count;
             for (var i = 0; i < count; i++)
             {
-                FinderAsset item = folderList[i];
+                var item = folderList[i];
 
-                foreach (KeyValuePair<string, HashSet<int>> useM in item.UseGUIDs)
+                foreach (var useM in item.UseGUIDs)
                 {
-                    FinderAsset a;
-                    if (!assetMap.TryGetValue(useM.Key, out a))
-                    {
-                        continue;
-                    }
+                    if (!assetMap.TryGetValue(useM.Key, out var a)) continue;
 
-                    if (a.IsMissing)
-                    {
-                        continue;
-                    }
+                    if (a.IsMissing) continue;
 
                     if (a.IsFolder)
                     {

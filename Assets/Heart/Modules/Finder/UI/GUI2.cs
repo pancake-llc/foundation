@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
@@ -52,17 +51,17 @@ namespace PancakeEditor
             var rect = GUILayoutUtility.GetRect(w, h);
             GUI.Box(rect, GUIContent.none, EditorStyles.textArea);
 
-            var cx = rect.x + w / 2f;
-            var cy = rect.y + h / 2f;
-            var pz = w / 3f; // plus size
+            float cx = rect.x + w / 2f;
+            float cy = rect.y + h / 2f;
+            float pz = w / 3f; // plus size
 
             var plusRect = new Rect(cx - pz / 2f, (cy - pz / 2f), pz, pz);
             Color(() => { GUI.DrawTexture(plusRect, Uniform.IconContent("ShurikenPlus").image, ScaleMode.ScaleToFit); }, UnityEngine.Color.white, 0.1f);
 
             GUI.Label(rect, title, EditorStyles.wordWrappedMiniLabel);
 
-            EventType eventType = Event.current.type;
-            bool isAccepted = false;
+            var eventType = Event.current.type;
+            var isAccepted = false;
 
             if (eventType == EventType.DragUpdated || eventType == EventType.DragPerform)
             {
@@ -84,14 +83,14 @@ namespace PancakeEditor
         {
             var oColor = GUI.color;
             if (c != null) GUI.color = c.Value;
-            var result = GUI.Button(r, icon, GUIStyle.none);
+            bool result = GUI.Button(r, icon, GUIStyle.none);
             GUI.color = oColor;
             return result;
         }
 
         public static bool Toggle(ref bool value, GUIContent tex, GUIStyle style, params GUILayoutOption[] options)
         {
-            var vv = GUILayout.Toggle(value, tex, style, options);
+            bool vv = GUILayout.Toggle(value, tex, style, options);
             if (vv == value) return false;
             value = vv;
             return true;
@@ -99,7 +98,7 @@ namespace PancakeEditor
 
         public static bool Toggle(Rect rect, ref bool value, GUIContent tex)
         {
-            var vv = GUI.Toggle(rect, value, tex, GUIStyle.none);
+            bool vv = GUI.Toggle(rect, value, tex, GUIStyle.none);
             if (vv == value) return false;
             value = vv;
             return true;
@@ -107,20 +106,19 @@ namespace PancakeEditor
 
         public static bool Toggle(Rect rect, ref bool value)
         {
-            var vv = GUI.Toggle(rect, value, GUIContent.none);
+            bool vv = GUI.Toggle(rect, value, GUIContent.none);
             if (vv == value) return false;
             value = vv;
             return true;
         }
 
-        private static Dictionary<string, GUIContent> tooltipCache = new Dictionary<string, GUIContent>();
+        private static Dictionary<string, GUIContent> tooltipCache = new();
 
         private static GUIContent GetTooltip(string tooltip)
         {
             if (string.IsNullOrEmpty(tooltip)) return GUIContent.none;
 
-            GUIContent result;
-            if (tooltipCache.TryGetValue(tooltip, out result)) return result;
+            if (tooltipCache.TryGetValue(tooltip, out var result)) return result;
             result = new GUIContent(string.Empty, tooltip);
             tooltipCache.Add(tooltip, result);
             return result;
@@ -130,7 +128,7 @@ namespace PancakeEditor
         {
             var previousColor = GUI.backgroundColor;
             if (value) GUI.backgroundColor = new Color(0.66f, 0.87f, 1f);
-            var vv = GUILayout.Toggle(value, GetTooltip(tooltip), EditorStyles.toolbarButton, GUILayout.Width(22f));
+            bool vv = GUILayout.Toggle(value, GetTooltip(tooltip), EditorStyles.toolbarButton, GUILayout.Width(22f));
             GUI.backgroundColor = previousColor;
 
             if (icon != null)
@@ -154,10 +152,7 @@ namespace PancakeEditor
             GUI.Label(cRect, icon);
 
             var vv = EditorGUILayout.EnumPopup(obj, style, options);
-            if (Equals(vv, obj))
-            {
-                return false;
-            }
+            if (Equals(vv, obj)) return false;
 
             mode = (T) (object) vv;
             return true;
@@ -182,12 +177,11 @@ namespace PancakeEditor
 
         private static GUIStyle miniLabelAlignRight;
 
-        public static GUIStyle MiniLabelAlignRight =>
-            miniLabelAlignRight ?? (miniLabelAlignRight = new GUIStyle(EditorStyles.miniLabel) {alignment = TextAnchor.MiddleRight});
+        public static GUIStyle MiniLabelAlignRight => miniLabelAlignRight ??= new GUIStyle(EditorStyles.miniLabel) {alignment = TextAnchor.MiddleRight};
 
-        public static Color darkRed = new Color(0.5f, .0f, 0f, 1f);
-        public static Color darkGreen = new Color(0, .5f, 0f, 1f);
-        public static Color darkBlue = new Color(0, .0f, 0.5f, 1f);
-        public static Color lightRed = new Color(1f, 0.5f, 0.5f, 1f);
+        public static Color darkRed = new(0.5f, .0f, 0f, 1f);
+        public static Color darkGreen = new(0, .5f, 0f, 1f);
+        public static Color darkBlue = new(0, .0f, 0.5f, 1f);
+        public static Color lightRed = new(1f, 0.5f, 0.5f, 1f);
     }
 }

@@ -37,7 +37,7 @@ namespace PancakeEditor
     {
         // ------------------------------ CONSTANTS ---------------------------
 
-        private static readonly HashSet<string> ScriptExtensions = new HashSet<string>
+        private static readonly HashSet<string> ScriptExtensions = new()
         {
             ".cs",
             ".js",
@@ -49,7 +49,7 @@ namespace PancakeEditor
             ".mm"
         };
 
-        private static readonly HashSet<string> ReferencableExtensions = new HashSet<string>
+        private static readonly HashSet<string> ReferencableExtensions = new()
         {
             ".anim",
             ".controller",
@@ -71,8 +71,8 @@ namespace PancakeEditor
             ".spriteatlas"
         };
 
-        private static readonly Dictionary<int, Type> HashClasses = new Dictionary<int, Type>();
-        internal static Dictionary<string, GUIContent> cacheImage = new Dictionary<string, GUIContent>();
+        private static readonly Dictionary<int, Type> HashClasses = new();
+        internal static Dictionary<string, GUIContent> cacheImage = new();
 
         private bool _isExcluded;
         private Dictionary<string, HashSet<int>> _useGUIDs;
@@ -121,9 +121,9 @@ namespace PancakeEditor
 
         // Do not cache
         [NonSerialized] internal EFinderAssetState state;
-        internal Dictionary<string, FinderAsset> usedByMap = new Dictionary<string, FinderAsset>();
-        internal HashSet<int> hashUsedByClassesIds = new HashSet<int>();
-        [FormerlySerializedAs("UseGUIDsList")] [SerializeField] private List<Classes> useGUIDsList = new List<Classes>();
+        internal Dictionary<string, FinderAsset> usedByMap = new();
+        internal HashSet<int> hashUsedByClassesIds = new();
+        [FormerlySerializedAs("UseGUIDsList")] [SerializeField] private List<Classes> useGUIDsList = new();
 
         public FinderAsset(string guid)
         {
@@ -148,7 +148,7 @@ namespace PancakeEditor
 
             if (_mAssetFolder.StartsWith("Assets/"))
             {
-                _mAssetFolder = _mAssetFolder.Substring(7);
+                _mAssetFolder = _mAssetFolder[7..];
             }
             else if (!FinderUnity.StringStartsWith(_mAssetPath, "Packages/", "Project Settings/", "Library/"))
             {
@@ -263,7 +263,7 @@ namespace PancakeEditor
 
         public bool IsDirty => FileInfoDirty || FileContentDirty;
 
-        bool ExistOnDisk()
+        private bool ExistOnDisk()
         {
             if (IsMissing) return false; // asset not exist - no need to check FileSystem!
             if (type == EFinderAssetType.Folder || type == EFinderAssetType.Unknown)
@@ -306,19 +306,18 @@ namespace PancakeEditor
 
             if (type == EFinderAssetType.Folder) return; // nothing to read
 
-            var assetType = AssetDatabase.GetMainAssetTypeAtPath(_mAssetPath);
+            //var assetType = AssetDatabase.GetMainAssetTypeAtPath(_mAssetPath);
 
             var info = new FileInfo(_mAssetPath);
             mFileSize = info.Length;
             mFileInfoHash = info.Length + info.Extension;
             mAddressable = FinderUnity.GetAddressable(guid);
-            //if (!string.IsNullOrEmpty(m_addressable)) Debug.LogWarning(guid + " --> " + m_addressable);
             mAssetbundle = AssetDatabase.GetImplicitAssetBundleName(_mAssetPath);
 
             // check if file content changed
             var metaInfo = new FileInfo(_mAssetPath + ".meta");
-            var assetTime = FinderUnity.Epoch(info.LastWriteTime);
-            var metaTime = FinderUnity.Epoch(metaInfo.LastWriteTime);
+            int assetTime = FinderUnity.Epoch(info.LastWriteTime);
+            int metaTime = FinderUnity.Epoch(metaInfo.LastWriteTime);
 
             // update fileChangeTimeStamp
             mFileWriteTs = Mathf.Max(metaTime, assetTime);
@@ -373,23 +372,19 @@ namespace PancakeEditor
                 _useGUIDs = new Dictionary<string, HashSet<int>>(useGUIDsList.Count);
                 for (var i = 0; i < useGUIDsList.Count; i++)
                 {
-                    string guid = useGUIDsList[i].guid;
-                    if (_useGUIDs.ContainsKey(guid))
+                    string id = useGUIDsList[i].guid;
+                    if (_useGUIDs.ContainsKey(id))
                     {
                         for (var j = 0; j < useGUIDsList[i].ids.Count; j++)
                         {
                             int val = useGUIDsList[i].ids[j];
-                            if (_useGUIDs[guid].Contains(val))
-                            {
-                                continue;
-                            }
-
-                            _useGUIDs[guid].Add(useGUIDsList[i].ids[j]);
+                            if (_useGUIDs[id].Contains(val)) continue;
+                            _useGUIDs[id].Add(useGUIDsList[i].ids[j]);
                         }
                     }
                     else
                     {
-                        _useGUIDs.Add(guid, new HashSet<int>(useGUIDsList[i].ids));
+                        _useGUIDs.Add(id, new HashSet<int>(useGUIDsList[i].ids));
                     }
                 }
 
@@ -446,7 +441,7 @@ namespace PancakeEditor
 
         public int UsageCount() { return usedByMap.Count; }
 
-        public override string ToString() { return string.Format("FinderAsset[{0}]", _mAssetName); }
+        public override string ToString() { return $"FinderAsset[{_mAssetName}]"; }
 
         //--------------------------------- STATIC ----------------------------
 
@@ -454,7 +449,7 @@ namespace PancakeEditor
         {
             if (isMoved)
             {
-                var newPath = AssetDatabase.GUIDToAssetPath(guid);
+                string newPath = AssetDatabase.GUIDToAssetPath(guid);
                 if (newPath != _mAssetPath)
                 {
                     _mPathLoaded = false;
@@ -486,7 +481,7 @@ namespace PancakeEditor
 
                     try
                     {
-                        FileStream stream = File.OpenRead(_mAssetPath);
+                        var stream = File.OpenRead(_mAssetPath);
                         stream.Read(buffer, 0, 5);
                         stream.Close();
                     }
@@ -496,7 +491,7 @@ namespace PancakeEditor
                         return;
                     }
 
-                    string str = string.Empty;
+                    var str = string.Empty;
                     foreach (byte t in buffer)
                     {
                         str += (char) t;
@@ -528,15 +523,9 @@ namespace PancakeEditor
             if (!FileContentDirty) return;
             mCachefileWriteTs = mFileWriteTs;
 
-            if (IsMissing || type == EFinderAssetType.NonReadable)
-            {
-                return;
-            }
+            if (IsMissing || type == EFinderAssetType.NonReadable) return;
 
-            if (type == EFinderAssetType.DLL)
-            {
-                return;
-            }
+            if (type == EFinderAssetType.DLL) return;
 
             if (!ExistOnDisk())
             {
@@ -570,17 +559,11 @@ namespace PancakeEditor
 
             if (fFileId != -1)
             {
-                if (UseGUIDs[fguid].Contains(fFileId))
-                {
-                    return;
-                }
+                if (UseGUIDs[fguid].Contains(fFileId)) return;
 
                 UseGUIDs[fguid].Add(fFileId);
-                Classes i = useGUIDsList.FirstOrDefault(x => x.guid == fguid);
-                if (i != null)
-                {
-                    i.ids.Add(fFileId);
-                }
+                var i = useGUIDsList.FirstOrDefault(x => x.guid == fguid);
+                i?.ids.Add(fFileId);
             }
         }
 
@@ -588,15 +571,9 @@ namespace PancakeEditor
 
         internal static int SortByExtension(FinderAsset a1, FinderAsset a2)
         {
-            if (a1 == null)
-            {
-                return -1;
-            }
+            if (a1 == null) return -1;
 
-            if (a2 == null)
-            {
-                return 1;
-            }
+            if (a2 == null) return 1;
 
             int result = string.Compare(a1._mExtension, a2._mExtension, StringComparison.Ordinal);
             return result == 0 ? string.Compare(a1._mAssetName, a2._mAssetName, StringComparison.Ordinal) : result;
@@ -604,13 +581,9 @@ namespace PancakeEditor
 
         internal static List<FinderAsset> FindUsage(FinderAsset asset)
         {
-            if (asset == null)
-            {
-                return null;
-            }
+            if (asset == null) return null;
 
-            List<FinderAsset> refs = FinderWindowBase.CacheSetting.FindAssets(asset.UseGUIDs.Keys.ToArray(), true);
-
+            var refs = FinderWindowBase.CacheSetting.FindAssets(asset.UseGUIDs.Keys.ToArray(), true);
 
             return refs;
         }
@@ -622,15 +595,11 @@ namespace PancakeEditor
             var result = new HashSet<string>();
             if (asset == null)
             {
-                Debug.LogWarning("Asset invalid : " + asset._mAssetName);
+                Debug.LogWarning("Asset invalid asset");
                 return result.ToList();
             }
 
-            // for (var i = 0;i < asset.UseGUIDs.Count; i++)
-            // {
-            // 	result.Add(asset.UseGUIDs[i]);
-            // }
-            foreach (KeyValuePair<string, HashSet<int>> item in asset.UseGUIDs)
+            foreach (var item in asset.UseGUIDs)
             {
                 result.Add(item.Key);
             }
@@ -668,7 +637,6 @@ namespace PancakeEditor
                 menu.AddItem(new GUIContent("Open"), false, Open);
                 menu.AddItem(new GUIContent("Ping"), false, Ping);
                 menu.AddItem(new GUIContent(guid), false, CopyGuid);
-                //menu.AddItem(new GUIContent("Reload"), false, Reload);
 
                 menu.AddSeparator(string.Empty);
                 menu.AddItem(new GUIContent("Bookmark"), selected, AddToSelection);
@@ -676,86 +644,52 @@ namespace PancakeEditor
                 menu.AddItem(new GUIContent("Copy path"), false, CopyAssetPath);
                 menu.AddItem(new GUIContent("Copy full path"), false, CopyAssetPathFull);
 
-                //if (IsScript)
-                //{
-                //    menu.AddSeparator(string.Empty);
-                //    AddArray(menu, ScriptSymbols, "+ ", "Definitions", "No Definition", false);
-
-                //    menu.AddSeparator(string.Empty);
-                //    AddArray(menu, ScriptUsage, "-> ", "Depends", "No Dependency", true);
-                //}
-
                 menu.ShowAsContext();
                 Event.current.Use();
             }
 
             if (IsMissing)
             {
-                if (!singleLine)
-                {
-                    r.y += 16f;
-                }
+                if (!singleLine) r.y += 16f;
 
-                if (Event.current.type != EventType.Repaint)
-                {
-                    return 0;
-                }
+                if (Event.current.type != EventType.Repaint) return 0;
 
                 GUI.Label(r, "(missing) " + guid, EditorStyles.whiteBoldLabel);
                 return 0;
             }
 
-            Rect iconRect = GUI2.LeftRect(16f, ref r);
+            var iconRect = GUI2.LeftRect(16f, ref r);
             if (Event.current.type == EventType.Repaint)
             {
-                Texture icon = AssetDatabase.GetCachedIcon(_mAssetPath);
-                if (icon != null)
-                {
-                    GUI.DrawTexture(iconRect, icon);
-                }
+                var icon = AssetDatabase.GetCachedIcon(_mAssetPath);
+                if (icon != null) GUI.DrawTexture(iconRect, icon);
             }
-
 
             if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
             {
-                Rect pingRect = FinderWindowBase.PingRow ? new Rect(0, r.y, r.x + r.width, r.height) : iconRect;
+                var pingRect = FinderWindowBase.PingRow ? new Rect(0, r.y, r.x + r.width, r.height) : iconRect;
                 if (pingRect.Contains(Event.current.mousePosition))
                 {
                     if (Event.current.control || Event.current.command)
                     {
-                        if (selected)
-                        {
-                            RemoveFromSelection();
-                        }
-                        else
-                        {
-                            AddToSelection();
-                        }
+                        if (selected) RemoveFromSelection();
+                        else AddToSelection();
 
-                        if (window != null)
-                        {
-                            window.Repaint();
-                        }
+                        window?.Repaint();
                     }
                     else
                     {
                         Ping();
                     }
-
-
-                    //Event.current.Use();
                 }
             }
 
-            if (Event.current.type != EventType.Repaint)
-            {
-                return 0;
-            }
+            if (Event.current.type != EventType.Repaint) return 0;
 
             if (usedByMap != null && usedByMap.Count > 0)
             {
                 var str = new GUIContent(usedByMap.Count.ToString());
-                Rect countRect = iconRect;
+                var countRect = iconRect;
                 countRect.x -= 16f;
                 countRect.xMin = -10f;
                 GUI.Label(countRect, str, GUI2.MiniLabelAlignRight);
@@ -763,15 +697,15 @@ namespace PancakeEditor
 
             float pathW = drawPath ? EditorStyles.miniLabel.CalcSize(new GUIContent(_mAssetFolder)).x : 0;
             float nameW = EditorStyles.boldLabel.CalcSize(new GUIContent(_mAssetName)).x;
-            Color cc = FinderWindowBase.SelectedColor;
+            var cc = FinderWindowBase.SelectedColor;
 
             if (singleLine)
             {
-                Rect lbRect = GUI2.LeftRect(pathW + nameW, ref r);
+                var lbRect = GUI2.LeftRect(pathW + nameW, ref r);
 
                 if (selected)
                 {
-                    Color c1 = GUI.color;
+                    var c1 = GUI.color;
                     GUI.color = cc;
                     GUI.DrawTexture(lbRect, EditorGUIUtility.whiteTexture);
                     GUI.color = c1;
@@ -779,7 +713,7 @@ namespace PancakeEditor
 
                 if (drawPath)
                 {
-                    Color c2 = GUI.color;
+                    var c2 = GUI.color;
                     GUI.color = new Color(c2.r, c2.g, c2.b, c2.a * 0.5f);
                     GUI.Label(GUI2.LeftRect(pathW, ref lbRect), _mAssetFolder, EditorStyles.miniLabel);
                     GUI.color = c2;
@@ -794,16 +728,10 @@ namespace PancakeEditor
             }
             else
             {
-                if (drawPath)
-                {
-                    GUI.Label(new Rect(r.x, r.y + 16f, r.width, r.height), _mAssetFolder, EditorStyles.miniLabel);
-                }
+                if (drawPath) GUI.Label(new Rect(r.x, r.y + 16f, r.width, r.height), _mAssetFolder, EditorStyles.miniLabel);
 
-                Rect lbRect = GUI2.LeftRect(nameW, ref r);
-                if (selected)
-                {
-                    GUI2.Rect(lbRect, cc);
-                }
+                var lbRect = GUI2.LeftRect(nameW, ref r);
+                if (selected) GUI2.Rect(lbRect, cc);
 
                 GUI.Label(lbRect, _mAssetName, EditorStyles.boldLabel);
             }
@@ -816,25 +744,21 @@ namespace PancakeEditor
                 GUI2.Rect(rr, GUI2.darkGreen);
             }
 
-            Color c = GUI.color;
+            var c = GUI.color;
             GUI.color = new Color(c.r, c.g, c.b, c.a * 0.5f);
 
             if (showFileSize)
             {
-                Rect fsRect = GUI2.RightRect(40f, ref r); // filesize label
+                var fsRect = GUI2.RightRect(40f, ref r); // filesize label
 
-                if (_fileSizeText == null)
-                {
-                    _fileSizeText = new GUIContent(FileSize.GetSizeInMemory());
-                }
-
+                _fileSizeText ??= new GUIContent(FileSize.GetSizeInMemory());
 
                 GUI.Label(fsRect, _fileSizeText, GUI2.MiniLabelAlignRight);
             }
 
             if (!string.IsNullOrEmpty(mAddressable))
             {
-                Rect adRect = GUI2.RightRect(100f, ref r);
+                var adRect = GUI2.RightRect(100f, ref r);
                 GUI.Label(adRect, mAddressable, GUI2.MiniLabelAlignRight);
             }
 
@@ -843,31 +767,20 @@ namespace PancakeEditor
             {
                 foreach (int item in hashUsedByClassesIds)
                 {
-                    if (!FinderUnity.HashClassesNormal.ContainsKey(item))
-                    {
-                        continue;
-                    }
+                    if (!FinderUnity.HashClassesNormal.ContainsKey(item)) continue;
 
                     string name = FinderUnity.HashClassesNormal[item];
-                    Type t = null;
-                    if (!HashClasses.TryGetValue(item, out t))
+                    if (!HashClasses.TryGetValue(item, out var t))
                     {
                         t = FinderUnity.GetType(name);
                         HashClasses.Add(item, t);
                     }
 
-                    GUIContent content = null;
-                    var isExisted = cacheImage.TryGetValue(name, out content);
-                    if (content == null) content = new GUIContent(EditorGUIUtility.ObjectContent(null, t).image, name);
+                    bool isExisted = cacheImage.TryGetValue(name, out var content);
+                    content ??= new GUIContent(EditorGUIUtility.ObjectContent(null, t).image, name);
 
-                    if (!isExisted)
-                    {
-                        cacheImage.Add(name, content);
-                    }
-                    else
-                    {
-                        cacheImage[name] = content;
-                    }
+                    if (!isExisted) cacheImage.Add(name, content);
+                    else cacheImage[name] = content;
 
                     if (content != null)
                     {
@@ -877,7 +790,7 @@ namespace PancakeEditor
                         }
                         catch
                         {
-                            //
+                            // ignored
                         }
                     }
                 }
@@ -886,29 +799,20 @@ namespace PancakeEditor
             if (showAbName)
             {
                 GUI2.RightRect(10f, ref r); //margin
-                Rect abRect = GUI2.RightRect(100f, ref r); // filesize label
-                if (!string.IsNullOrEmpty(mAssetbundle))
-                {
-                    GUI.Label(abRect, mAssetbundle, GUI2.MiniLabelAlignRight);
-                }
+                var abRect = GUI2.RightRect(100f, ref r); // filesize label
+                if (!string.IsNullOrEmpty(mAssetbundle)) GUI.Label(abRect, mAssetbundle, GUI2.MiniLabelAlignRight);
             }
 
             if (true)
             {
                 GUI2.RightRect(10f, ref r); //margin
-                Rect abRect = GUI2.RightRect(100f, ref r); // filesize label
-                if (!string.IsNullOrEmpty(mAddressable))
-                {
-                    GUI.Label(abRect, mAddressable, GUI2.MiniLabelAlignRight);
-                }
+                var abRect = GUI2.RightRect(100f, ref r); // filesize label
+                if (!string.IsNullOrEmpty(mAddressable)) GUI.Label(abRect, mAddressable, GUI2.MiniLabelAlignRight);
             }
 
             GUI.color = c;
 
-            if (Event.current.type == EventType.Repaint)
-            {
-                return rw < pathW + nameW ? 32f : 18f;
-            }
+            if (Event.current.type == EventType.Repaint) return rw < pathW + nameW ? 32f : 18f;
 
             return r.height;
         }
@@ -917,7 +821,7 @@ namespace PancakeEditor
         internal GenericMenu AddArray(GenericMenu menu, List<string> list, string prefix, string title, string emptyTitle, bool showAsset, int max = 10)
         {
             menu.AddItem(new GUIContent(emptyTitle), true, null);
-            
+
             return menu;
         }
 
@@ -948,18 +852,12 @@ namespace PancakeEditor
 
         internal void AddToSelection()
         {
-            if (!FinderBookmark.Contains(guid))
-            {
-                FinderBookmark.Add(guid);
-            }
+            if (!FinderBookmark.Contains(guid)) FinderBookmark.Add(guid);
         }
 
         internal void RemoveFromSelection()
         {
-            if (FinderBookmark.Contains(guid))
-            {
-                FinderBookmark.Remove(guid);
-            }
+            if (FinderBookmark.Contains(guid)) FinderBookmark.Remove(guid);
         }
 
         internal void Ping() { EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject))); }
@@ -968,10 +866,10 @@ namespace PancakeEditor
 
         internal void EditPrefab()
         {
-            UnityObject prefab = AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject));
+            var prefab = AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject));
             UnityObject.Instantiate(prefab);
         }
-        
+
         // ----------------------------- SERIALIZED UTILS ---------------------------------------
 
 
@@ -979,7 +877,7 @@ namespace PancakeEditor
 
         internal void LoadGameObject(GameObject go)
         {
-            Component[] compList = go.GetComponentsInChildren<Component>();
+            var compList = go.GetComponentsInChildren<Component>();
             for (var i = 0; i < compList.Length; i++)
             {
                 LoadSerialized(compList[i]);
@@ -988,20 +886,14 @@ namespace PancakeEditor
 
         internal void LoadSerialized(UnityObject target)
         {
-            SerializedProperty[] props = FinderUnity.XGetSerializedProperties(target, true);
+            var props = FinderUnity.XGetSerializedProperties(target, true);
 
             for (var i = 0; i < props.Length; i++)
             {
-                if (props[i].propertyType != SerializedPropertyType.ObjectReference)
-                {
-                    continue;
-                }
+                if (props[i].propertyType != SerializedPropertyType.ObjectReference) continue;
 
-                UnityObject refObj = props[i].objectReferenceValue;
-                if (refObj == null)
-                {
-                    continue;
-                }
+                var refObj = props[i].objectReferenceValue;
+                if (refObj == null) continue;
 
                 string refGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(refObj));
 
@@ -1012,7 +904,7 @@ namespace PancakeEditor
         internal void LoadTerrainData(TerrainData terrain)
         {
 #if UNITY_2018_3_OR_NEWER
-            TerrainLayer[] arr0 = terrain.terrainLayers;
+            var arr0 = terrain.terrainLayers;
             for (var i = 0; i < arr0.Length; i++)
             {
                 string aPath = AssetDatabase.GetAssetPath(arr0[i]);
@@ -1021,8 +913,7 @@ namespace PancakeEditor
             }
 #endif
 
-
-            DetailPrototype[] arr = terrain.detailPrototypes;
+            var arr = terrain.detailPrototypes;
 
             for (var i = 0; i < arr.Length; i++)
             {
@@ -1031,7 +922,7 @@ namespace PancakeEditor
                 AddUseGuid(refGuid);
             }
 
-            TreePrototype[] arr2 = terrain.treePrototypes;
+            var arr2 = terrain.treePrototypes;
             for (var i = 0; i < arr2.Length; i++)
             {
                 string aPath = AssetDatabase.GetAssetPath(arr2[i].prefab);
@@ -1039,29 +930,20 @@ namespace PancakeEditor
                 AddUseGuid(refGuid);
             }
 
-            FinderUnity.TerrainTextureData[] arr3 = FinderUnity.GetTerrainTextureDatas(terrain);
+            var arr3 = FinderUnity.GetTerrainTextureDatas(terrain);
             for (var i = 0; i < arr3.Length; i++)
             {
-                FinderUnity.TerrainTextureData texs = arr3[i];
+                var texs = arr3[i];
                 for (var k = 0; k < texs.textures.Length; k++)
                 {
-                    Texture2D tex = texs.textures[k];
-                    if (tex == null)
-                    {
-                        continue;
-                    }
+                    var tex = texs.textures[k];
+                    if (tex == null) continue;
 
                     string aPath = AssetDatabase.GetAssetPath(tex);
-                    if (string.IsNullOrEmpty(aPath))
-                    {
-                        continue;
-                    }
+                    if (string.IsNullOrEmpty(aPath)) continue;
 
                     string refGuid = AssetDatabase.AssetPathToGUID(aPath);
-                    if (string.IsNullOrEmpty(refGuid))
-                    {
-                        continue;
-                    }
+                    if (string.IsNullOrEmpty(refGuid)) continue;
 
                     AddUseGuid(refGuid);
                 }
@@ -1074,29 +956,27 @@ namespace PancakeEditor
             useGUIDsList.Clear();
         }
 
-        static int binaryLoaded;
+        private static int binaryLoaded;
 
         internal void LoadBinaryAsset()
         {
             ClearUseGUIDs();
 
-            UnityObject assetData = AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject));
-            if (assetData is GameObject)
+            var assetData = AssetDatabase.LoadAssetAtPath(_mAssetPath, typeof(UnityObject));
+            if (assetData is GameObject data)
             {
                 type = EFinderAssetType.Model;
-                LoadGameObject(assetData as GameObject);
+                LoadGameObject(data);
             }
-            else if (assetData is TerrainData)
+            else if (assetData is TerrainData terrainData)
             {
                 type = EFinderAssetType.Terrain;
-                LoadTerrainData(assetData as TerrainData);
+                LoadTerrainData(terrainData);
             }
             else
             {
                 LoadSerialized(assetData);
             }
-
-            assetData = null;
 
             if (binaryLoaded++ <= 30) return;
             binaryLoaded = 0;
@@ -1113,18 +993,14 @@ namespace PancakeEditor
 
             if (_mAssetPath == "ProjectSettings/EditorBuildSettings.asset")
             {
-                var listScenes = UnityEditor.EditorBuildSettings.scenes;
+                var listScenes = EditorBuildSettings.scenes;
                 foreach (var scene in listScenes)
                 {
                     if (!scene.enabled) continue;
-                    var path = scene.path;
-                    var guid = AssetDatabase.AssetPathToGUID(path);
-
-                    AddUseGuid(guid, 0);
+                    AddUseGuid(AssetDatabase.AssetPathToGUID(scene.path), 0);
                 }
             }
 
-            // var text = string.Empty;
             try
             {
                 using (var sr = new StreamReader(_mAssetPath))
@@ -1151,6 +1027,7 @@ namespace PancakeEditor
                             }
                             catch
                             {
+                                // ignored
                             }
                         }
 
@@ -1175,7 +1052,6 @@ namespace PancakeEditor
             // do not analyse folders outside project
             if (!_mAssetPath.StartsWith("Assets/")) return;
 
-
             try
             {
                 string[] files = Directory.GetFiles(_mAssetPath);
@@ -1183,16 +1059,10 @@ namespace PancakeEditor
 
                 foreach (string f in files)
                 {
-                    if (f.EndsWith(".meta", StringComparison.Ordinal))
-                    {
-                        continue;
-                    }
+                    if (f.EndsWith(".meta", StringComparison.Ordinal)) continue;
 
                     string fguid = AssetDatabase.AssetPathToGUID(f);
-                    if (string.IsNullOrEmpty(fguid))
-                    {
-                        continue;
-                    }
+                    if (string.IsNullOrEmpty(fguid)) continue;
 
                     AddUseGuid(fguid);
                 }
@@ -1200,10 +1070,7 @@ namespace PancakeEditor
                 foreach (string d in dirs)
                 {
                     string fguid = AssetDatabase.AssetPathToGUID(d);
-                    if (string.IsNullOrEmpty(fguid))
-                    {
-                        continue;
-                    }
+                    if (string.IsNullOrEmpty(fguid)) continue;
 
                     AddUseGuid(fguid);
                 }

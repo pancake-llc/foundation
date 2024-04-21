@@ -80,7 +80,7 @@ namespace PancakeEditor
                     FinderSetting.hashIgnore = new HashSet<string>();
                     if (ListIgnore == null) return FinderSetting.hashIgnore;
 
-                    for (int i = 0; i < ListIgnore.Count; i++)
+                    for (var i = 0; i < ListIgnore.Count; i++)
                     {
                         if (FinderSetting.hashIgnore.Contains(ListIgnore[i])) continue;
 
@@ -160,7 +160,7 @@ namespace PancakeEditor
 
                 EditorGUI.BeginDisabledGroup(!AlternateRowColor);
                 {
-                    Color c = EditorGUILayout.ColorField(RowColor);
+                    var c = EditorGUILayout.ColorField(RowColor);
                     if (!c.Equals(RowColor))
                     {
                         RowColor = c;
@@ -186,7 +186,7 @@ namespace PancakeEditor
 
             GUILayout.BeginHorizontal();
             {
-                Color c = EditorGUILayout.ColorField("Duplicate Scan Color", Setting.Settings.scanColor);
+                var c = EditorGUILayout.ColorField("Duplicate Scan Color", Setting.Settings.scanColor);
                 if (!c.Equals(Setting.Settings.scanColor))
                 {
                     Setting.Settings.scanColor = c;
@@ -240,15 +240,16 @@ namespace PancakeEditor
 
         internal static void FinderDelayCheck4Changes()
         {
-            EditorApplication.update -= FinderCheck;
-            EditorApplication.update += FinderCheck;
+            EditorApplication.update -= OnFinderCheck;
+            EditorApplication.update += OnFinderCheck;
         }
 
-        static void FinderCheck()
+        private static void OnFinderCheck()
         {
             if (EditorApplication.isCompiling || EditorApplication.isUpdating) return;
 
-            EditorApplication.update -= FinderCheck;
+            Debug.LogWarning("OnFinderCheck");
+            EditorApplication.update -= OnFinderCheck;
             CacheSetting.Check4Changes(false);
         }
 

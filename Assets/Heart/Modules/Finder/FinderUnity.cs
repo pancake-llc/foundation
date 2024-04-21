@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 
 #if PANCAKE_ADDRESSABLE
@@ -35,8 +34,8 @@ namespace PancakeEditor
             assetFolder = string.Empty;
 
             if (string.IsNullOrEmpty(assetPath)) return;
-            var lastSlash = assetPath.LastIndexOf("/", StringComparison.Ordinal) + 1;
-            var lastDot = assetPath.LastIndexOf(".", StringComparison.Ordinal);
+            int lastSlash = assetPath.LastIndexOf("/", StringComparison.Ordinal) + 1;
+            int lastDot = assetPath.LastIndexOf(".", StringComparison.Ordinal);
 
             assetName = assetPath.Substring(lastSlash, assetPath.Length - lastSlash);
             assetExtension = (lastDot > lastSlash && lastDot > 0) ? assetPath.Substring(lastDot, assetPath.Length - lastDot).ToLower() : string.Empty;
@@ -54,13 +53,10 @@ namespace PancakeEditor
                 {
 #if UNITY_2018_1_OR_NEWER
                     {
-                        var guid = "";
-                        long fileid = -1;
-
                         try
                         {
                             // missing references will cause null exception
-                            if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(item, out guid, out fileid))
+                            if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(item, out string guid, out long fileid))
                             {
                                 selectionAssetGUIDs.Add(guid + "/" + fileid);
                             }
@@ -104,7 +100,7 @@ namespace PancakeEditor
         }
 
 
-        public static readonly Dictionary<int, string> HashClassesNormal = new Dictionary<int, string>
+        public static readonly Dictionary<int, string> HashClassesNormal = new()
         {
             {1, "UnityEngine.GameObject"},
             {2, "UnityEngine.Component"},
@@ -254,7 +250,7 @@ namespace PancakeEditor
             {1110, "UnityEditor.SpeedTreeImporter"},
             {1113, "UnityEditor.LightmapParameters"}
         };
-        
+
         public static void UnloadUnusedAssets()
         {
             EditorUtility.UnloadUnusedAssetsImmediate();
@@ -301,9 +297,9 @@ namespace PancakeEditor
 
         internal static void RepaintAllEditor(string className)
         {
-            EditorWindow[] list = Resources.FindObjectsOfTypeAll<EditorWindow>();
+            var list = Resources.FindObjectsOfTypeAll<EditorWindow>();
 
-            foreach (EditorWindow item in list)
+            foreach (var item in list)
             {
                 if (item.GetType().FullName != className)
                 {
@@ -320,19 +316,13 @@ namespace PancakeEditor
 
         public static Type GetType(string typeName)
         {
-            Type type = Type.GetType(typeName);
-            if (type != null)
-            {
-                return type;
-            }
+            var type = Type.GetType(typeName);
+            if (type != null) return type;
 
-            foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
                 type = a.GetType(typeName);
-                if (type != null)
-                {
-                    return type;
-                }
+                if (type != null) return type;
             }
 
             return null;
@@ -342,8 +332,8 @@ namespace PancakeEditor
         {
             for (var j = 0; j < SceneManager.sceneCount; j++)
             {
-                Scene scene = SceneManager.GetSceneAt(j);
-                foreach (GameObject item in GetGameObjectsInScene(scene))
+                var scene = SceneManager.GetSceneAt(j);
+                foreach (var item in GetGameObjectsInScene(scene))
                 {
                     yield return item;
                 }
@@ -357,21 +347,18 @@ namespace PancakeEditor
                 {
                     temp = new GameObject();
                     Object.DontDestroyOnLoad(temp);
-                    Scene dontDestroyOnLoad = temp.scene;
+                    var dontDestroyOnLoad = temp.scene;
                     Object.DestroyImmediate(temp);
                     temp = null;
 
-                    foreach (GameObject item in GetGameObjectsInScene(dontDestroyOnLoad))
+                    foreach (var item in GetGameObjectsInScene(dontDestroyOnLoad))
                     {
                         yield return item;
                     }
                 }
                 finally
                 {
-                    if (temp != null)
-                    {
-                        Object.DestroyImmediate(temp);
-                    }
+                    if (temp != null) Object.DestroyImmediate(temp);
                 }
             }
         }
@@ -379,19 +366,16 @@ namespace PancakeEditor
         private static IEnumerable<GameObject> GetGameObjectsInScene(Scene scene)
         {
             var rootObjects = new List<GameObject>();
-            if (!scene.isLoaded)
-            {
-                yield break;
-            }
+            if (!scene.isLoaded) yield break;
 
             scene.GetRootGameObjects(rootObjects);
 
             // iterate root objects and do something
             for (var i = 0; i < rootObjects.Count; ++i)
             {
-                GameObject gameObject = rootObjects[i];
+                var gameObject = rootObjects[i];
 
-                foreach (GameObject item in GetAllChild(gameObject))
+                foreach (var item in GetAllChild(gameObject))
                 {
                     yield return item;
                 }
@@ -402,17 +386,14 @@ namespace PancakeEditor
 
         public static IEnumerable<GameObject> GetAllChild(GameObject target, bool returnMe = false)
         {
-            if (returnMe)
-            {
-                yield return target;
-            }
+            if (returnMe) yield return target;
 
             if (target.transform.childCount > 0)
             {
                 for (var i = 0; i < target.transform.childCount; i++)
                 {
                     yield return target.transform.GetChild(i).gameObject;
-                    foreach (GameObject item in GetAllChild(target.transform.GetChild(i).gameObject, false))
+                    foreach (var item in GetAllChild(target.transform.GetChild(i).gameObject))
                     {
                         yield return item;
                     }
@@ -422,27 +403,18 @@ namespace PancakeEditor
 
         public static IEnumerable<Object> GetAllRefObjects(GameObject obj)
         {
-            Component[] components = obj.GetComponents<Component>();
-            foreach (Component com in components)
+            var components = obj.GetComponents<Component>();
+            foreach (var com in components)
             {
-                if (com == null)
-                {
-                    continue;
-                }
+                if (com == null) continue;
 
                 var serialized = new SerializedObject(com);
-                SerializedProperty it = serialized.GetIterator().Copy();
+                var it = serialized.GetIterator().Copy();
                 while (it.NextVisible(true))
                 {
-                    if (it.propertyType != SerializedPropertyType.ObjectReference)
-                    {
-                        continue;
-                    }
+                    if (it.propertyType != SerializedPropertyType.ObjectReference) continue;
 
-                    if (it.objectReferenceValue == null)
-                    {
-                        continue;
-                    }
+                    if (it.objectReferenceValue == null) continue;
 
                     yield return it.objectReferenceValue;
                 }
@@ -451,15 +423,9 @@ namespace PancakeEditor
 
         public static int StringMatch(string pattern, string input)
         {
-            if (input == pattern)
-            {
-                return int.MaxValue;
-            }
+            if (input == pattern) return int.MaxValue;
 
-            if (input.Contains(pattern))
-            {
-                return int.MaxValue - 1;
-            }
+            if (input.Contains(pattern)) return int.MaxValue - 1;
 
             var pidx = 0;
             var score = 0;
@@ -472,22 +438,16 @@ namespace PancakeEditor
                 {
                     tokenScore += tokenScore + 1; //increasing score for continuos token
                     pidx++;
-                    if (pidx >= pattern.Length)
-                    {
-                        break;
-                    }
+                    if (pidx >= pattern.Length) break;
                 }
-                else
-                {
-                    tokenScore = 0;
-                }
+                else tokenScore = 0;
 
                 score += tokenScore;
             }
 
             return score;
         }
-        
+
         public static bool IsInAsset(GameObject obj) { return !string.IsNullOrEmpty(AssetDatabase.GetAssetPath(obj)); }
 
         public static string GetPrefabParent(Object obj)
@@ -507,10 +467,7 @@ namespace PancakeEditor
 
         public static string GetGameObjectPath(GameObject obj, bool includeMe = true)
         {
-            if (obj == null)
-            {
-                return string.Empty;
-            }
+            if (obj == null) return string.Empty;
 
             string path = includeMe ? "/" + obj.name : "/";
             while (obj.transform.parent != null)
@@ -538,7 +495,7 @@ namespace PancakeEditor
             var arr = new TerrainTextureData[data.terrainLayers.Length];
             for (var i = 0; i < data.terrainLayers.Length; i++)
             {
-                TerrainLayer layer = data.terrainLayers[i];
+                var layer = data.terrainLayers[i];
                 arr[i] = new TerrainTextureData(layer.normalMapTexture, layer.maskMapTexture, layer.diffuseTexture);
             }
 
@@ -560,26 +517,14 @@ namespace PancakeEditor
 
         public static void Clear<T1, T2>(ref Dictionary<T1, T2> dict)
         {
-            if (dict == null)
-            {
-                dict = new Dictionary<T1, T2>();
-            }
-            else
-            {
-                dict.Clear();
-            }
+            if (dict == null) dict = new Dictionary<T1, T2>();
+            else dict.Clear();
         }
 
         public static void Clear<T>(ref List<T> list)
         {
-            if (list == null)
-            {
-                list = new List<T>();
-            }
-            else
-            {
-                list.Clear();
-            }
+            if (list == null) list = new List<T>();
+            else list.Clear();
         }
 
         public static SerializedProperty[] XGetSerializedProperties(Object go, bool processArray)
@@ -588,19 +533,13 @@ namespace PancakeEditor
             so.Update();
             var result = new List<SerializedProperty>();
 
-            SerializedProperty iterator = so.GetIterator();
+            var iterator = so.GetIterator();
             while (iterator.NextVisible(true))
             {
-                SerializedProperty copy = iterator.Copy();
+                var copy = iterator.Copy();
 
-                if (processArray && iterator.isArray)
-                {
-                    result.AddRange(XGetSoArray(copy));
-                }
-                else
-                {
-                    result.Add(copy);
-                }
+                if (processArray && iterator.isArray) result.AddRange(XGetSoArray(copy));
+                else result.Add(copy);
             }
 
             return result.ToArray();
@@ -613,16 +552,10 @@ namespace PancakeEditor
 
             for (var i = 0; i < size; i++)
             {
-                SerializedProperty p = prop.GetArrayElementAtIndex(i);
+                var p = prop.GetArrayElementAtIndex(i);
 
-                if (p.isArray)
-                {
-                    result.AddRange(XGetSoArray(p.Copy()));
-                }
-                else
-                {
-                    result.Add(p.Copy());
-                }
+                if (p.isArray) result.AddRange(XGetSoArray(p.Copy()));
+                else result.Add(p.Copy());
             }
 
             return result;
@@ -630,15 +563,12 @@ namespace PancakeEditor
 
         public class TerrainTextureData
         {
-            public Texture2D[] textures;
+            public readonly Texture2D[] textures;
 
             public TerrainTextureData(params Texture2D[] texs)
             {
                 var count = 0;
-                if (texs != null)
-                {
-                    count = texs.Length;
-                }
+                if (texs != null)  count = texs.Length;
 
                 textures = new Texture2D[count];
                 for (var i = 0; i < count; i++)
