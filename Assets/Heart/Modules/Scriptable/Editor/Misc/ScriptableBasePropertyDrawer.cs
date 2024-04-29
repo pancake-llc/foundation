@@ -91,7 +91,7 @@ namespace Pancake.ScriptableEditor
                     rect.width = position.width;
                     EditorGUI.PropertyField(rect, property, label);
                     var cacheBgColor = GUI.backgroundColor;
-                    GUI.backgroundColor = Uniform.FieryRose;
+                    GUI.backgroundColor = EditorGUIUtility.isProSkin ? Uniform.BabyBlueEyes : Uniform.ChinesePink;;
                     GUILayout.BeginVertical(GUI.skin.box);
                     if (_editor == null) Editor.CreateCachedEditor(targetObject, null, ref _editor);
                     _editor.OnInspectorGUI();

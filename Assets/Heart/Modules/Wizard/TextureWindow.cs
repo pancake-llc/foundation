@@ -8,7 +8,7 @@ using UnityEngine.U2D;
 
 namespace PancakeEditor
 {
-    public static class SettingTextureWindow
+    internal static class TextureWindow
     {
         public static void OnInspectorGUI(ref SpriteAtlas spriteAtlas, EditorWindow window)
         {

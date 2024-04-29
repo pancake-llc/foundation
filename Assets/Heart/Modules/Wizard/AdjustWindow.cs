@@ -8,7 +8,7 @@ using Editor = PancakeEditor.Common.Editor;
 
 namespace PancakeEditor
 {
-    public static class AdjustWindow
+    internal static class AdjustWindow
     {
         public static void OnInspectorGUI()
         {

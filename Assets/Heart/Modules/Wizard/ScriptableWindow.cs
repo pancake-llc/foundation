@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class ScriptableWindow
+    internal static class ScriptableWindow
     {
         public static void OnInspectorGUI()
         {

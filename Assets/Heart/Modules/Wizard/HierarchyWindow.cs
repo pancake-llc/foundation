@@ -9,7 +9,7 @@ using Editor = PancakeEditor.Common.Editor;
 
 namespace PancakeEditor
 {
-    public static class SettingHierarchyWindow
+    internal static class HierarchyWindow
     {
         public static void OnInspectorGUI()
         {

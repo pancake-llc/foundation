@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class HeartSettingWindow
+    internal static class HeartSettingWindow
     {
         public static void OnInspectorGUI()
         {

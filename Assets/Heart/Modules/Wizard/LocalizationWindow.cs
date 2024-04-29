@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class LocalizationWindow
+    internal static class LocalizationWindow
     {
         private static GoogleTranslator Translator => new(LocaleSettings.GoogleTranslateApiKey);
 

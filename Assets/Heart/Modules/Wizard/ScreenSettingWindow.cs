@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class ScreenSettingWindow
+    internal static class ScreenSettingWindow
     {
         public static void OnInspectorGUI(Rect position)
         {

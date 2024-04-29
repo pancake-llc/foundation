@@ -70,7 +70,7 @@ namespace Pancake.ScriptableEditor
             _typeText = EditorGUILayout.TextField(_typeText, EditorStyles.textField);
             if (EditorGUI.EndChangeCheck()) _invalidTypeName = !IsTypeNameValid();
 
-            var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.FieryRose : Color.white}, fontStyle = FontStyle.Bold};
+            var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.SunsetOrange : Color.white}, fontStyle = FontStyle.Bold};
             string errorMessage = _invalidTypeName ? "Invalid type name." : "";
             EditorGUILayout.LabelField(errorMessage, guiStyle);
         }
@@ -121,10 +121,10 @@ namespace Pancake.ScriptableEditor
             GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
             toggleValue = GUILayout.Toggle(toggleValue, "", GUILayout.Width(maxWidth));
             var firstStyle = new GUIStyle(GUI.skin.label) {padding = {left = 15 - maxWidth}};
-            if (isFirstRed) firstStyle.normal.textColor = Uniform.FieryRose;
+            if (isFirstRed) firstStyle.normal.textColor = Uniform.SunsetOrange;
             GUILayout.Label(typeName, firstStyle);
             var secondStyle = new GUIStyle(GUI.skin.label) {padding = {left = -6}};
-            if (!isFirstRed) secondStyle.normal.textColor = Uniform.FieryRose;
+            if (!isFirstRed) secondStyle.normal.textColor = Uniform.SunsetOrange;
             GUILayout.Label(second, secondStyle);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();

@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class LevelSystemWindow
+    internal static class LevelSystemWindow
     {
         public static void OnEnabled() { SceneView.duringSceneGui += OnSceneGUI; }
 

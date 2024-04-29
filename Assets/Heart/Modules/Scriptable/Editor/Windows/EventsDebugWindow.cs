@@ -47,7 +47,7 @@ namespace Pancake.ScriptableEditor
         {
             var feedbackText = _methodName;
             var guiStyle = new GUIStyle(EditorStyles.label);
-            guiStyle.normal.textColor = _wasFound ? Color.white : Uniform.FieryRose;
+            guiStyle.normal.textColor = _wasFound ? Color.white : Uniform.SunsetOrange;
             guiStyle.fontStyle = FontStyle.Bold;
             feedbackText += _wasFound ? " was found!" : " was not found!";
             EditorGUILayout.LabelField(feedbackText, guiStyle);

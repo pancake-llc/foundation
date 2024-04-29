@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class IAPWindow
+    internal static class IAPWindow
     {
         public static void OnInspectorGUI()
         {

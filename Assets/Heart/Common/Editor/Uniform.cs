@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -150,7 +151,11 @@ namespace PancakeEditor.Common
         public static readonly Color Orange = new(1f, 0.72f, 0.42f, 0.66f);
         public static readonly Color Red = new(1f, 0.16f, 0.16f, 0.66f);
         public static readonly Color Pink = new(1f, 0.47f, 0.78f, 0.66f);
-        public static readonly Color FieryRose = new(0.97f, 0.33f, 0.41f);
+        public static readonly Color SunsetOrange = new(0.99f, 0.33f, 0.37f);
+        public static readonly Color SolidPink = new(0.55f, 0.2f, 0.23f);
+        public static readonly Color ChinesePink = new(0.87f, 0.44f, 0.64f);
+        public static readonly Color TwilightLavender = new(0.53f, 0.28f, 0.42f);
+        public static readonly Color BabyBlueEyes = new(0.6f, 0.8f, 1f);
         public static readonly Color DeepCarminePink = new(1f, 0.2f, 0.2f);
         public static readonly Color FluorescentBlue = new(0.2f, 1f, 1f);
         public static readonly Color Yellow = new(0.92f, 0.76f, 0.2f);

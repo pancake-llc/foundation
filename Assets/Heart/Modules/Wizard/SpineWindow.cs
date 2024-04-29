@@ -16,7 +16,7 @@ using Event = UnityEngine.Event;
 
 namespace PancakeEditor
 {
-    public static class SpineWindow
+    internal static class SpineWindow
     {
         public static void OnInspectorGUI(Action repaint, Rect position)
         {

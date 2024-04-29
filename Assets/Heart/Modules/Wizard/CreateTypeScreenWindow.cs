@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public class CreateTypeScreenWindow : PopupWindowContent
+    internal class CreateTypeScreenWindow : PopupWindowContent
     {
         private readonly Rect _position;
         private string _typeText = "YourType";
@@ -33,7 +33,7 @@ namespace PancakeEditor
             }
 
             var guiStyle = new GUIStyle(EditorStyles.label);
-            guiStyle.normal.textColor = _invalidTypeName ? Uniform.FieryRose : Color.white;
+            guiStyle.normal.textColor = _invalidTypeName ? Uniform.SunsetOrange : Color.white;
             guiStyle.fontStyle = FontStyle.Bold;
             var errorMessage = _invalidTypeName ? "Invalid type name." : "";
             EditorGUILayout.LabelField(errorMessage, guiStyle);

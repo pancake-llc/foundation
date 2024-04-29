@@ -40,8 +40,7 @@ namespace PancakeEditor
             ScreenSetting,
             Scriptable,
             Spine,
-            Texture,
-            UIDesign
+            Texture
         }
 
         private enum MonetizationType
@@ -280,10 +279,10 @@ namespace PancakeEditor
                         ref _currentLocaleTabType);
                     break;
                 case WizardAllType.Texture when _currentType is WizardType.Setting or WizardType.All:
-                    SettingTextureWindow.OnInspectorGUI(ref _spriteAtlas, this);
+                    TextureWindow.OnInspectorGUI(ref _spriteAtlas, this);
                     break;
                 case WizardAllType.HierarchySetting when _currentType is WizardType.Setting or WizardType.All:
-                    SettingHierarchyWindow.OnInspectorGUI();
+                    HierarchyWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.Build when _currentType is WizardType.Tools or WizardType.All:
                     BuildWindow.OnInspectorGUI(ref _currentAndroidBuildPipeline);
