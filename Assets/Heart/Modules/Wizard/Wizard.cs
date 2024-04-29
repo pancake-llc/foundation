@@ -37,7 +37,6 @@ namespace PancakeEditor
             InAppReview,
             LevelSystem,
             Localization,
-            Notification,
             OtherPackage,
             ScreenSetting,
             Scriptable,
@@ -59,7 +58,6 @@ namespace PancakeEditor
 
         private enum WizardUtilitiesType
         {
-            Notification = WizardAllType.Notification,
             InAppReview = WizardAllType.InAppReview,
             Spine = WizardAllType.Spine,
             GameSerice = WizardAllType.GameService,
@@ -250,9 +248,6 @@ namespace PancakeEditor
                 case WizardAllType.Adjust when _currentType is WizardType.Track or WizardType.All:
                     AdjustWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.Notification when _currentType is WizardType.Utilities or WizardType.All:
-                    NotificationWindow.OnInspectorGUI();
-                    break;
                 case WizardAllType.InAppReview when _currentType is WizardType.Utilities or WizardType.All:
                     InAppReviewWindow.OnInspectorGUI();
                     break;
@@ -375,7 +370,6 @@ namespace PancakeEditor
                 case WizardAllType.InAppPurchase: return EditorResources.ScriptableIap;
                 case WizardAllType.Firebase: return EditorResources.ScriptableFirebase;
                 case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
-                case WizardAllType.Notification: return EditorResources.ScriptableNotification;
                 case WizardAllType.InAppReview:
                 case WizardAllType.GameService:
                 case WizardAllType.Localization: return EditorResources.ScriptableInterface;

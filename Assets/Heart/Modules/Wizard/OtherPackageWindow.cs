@@ -1,5 +1,4 @@
 ﻿using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 
@@ -28,12 +27,46 @@ namespace PancakeEditor
 
             GUILayout.Space(8);
 
+#if PANCAKE_NOTIFICATION
+            EditorGUILayout.BeginHorizontal();
+            Uniform.DrawInstalled("Notification 2.3.2", new RectOffset(0, 0, 6, 0));
+
+
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                SettingsService.OpenProjectSettings("Project/Mobile Notifications");
+            }
+
+            if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                Application.OpenURL("https://github.com/pancake-llc/heart/wiki/notification");
+            }
+
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Notification", $"Are you sure you want to uninstall Notification package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.unity.mobile.notifications");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+#else
+            InstallNotification();
+#endif
+
 #if PANCAKE_TEST_PERFORMANCE
             Uninstall("Test Performance 3.0.3", "com.unity.test-framework.performance");
 #else
             InstallTestPerformance();
 #endif
-            
+
             GUILayout.Space(8);
 
 #if PANCAKE_GRAPHY
@@ -119,7 +152,7 @@ namespace PancakeEditor
 
             GUI.enabled = true;
         }
-        
+
         private static void InstallProfileAnalyzer()
         {
             GUI.enabled = !EditorApplication.isCompiling;
@@ -161,7 +194,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
         }
-        
+
         private static void InstallTestPerformance()
         {
             GUI.enabled = !EditorApplication.isCompiling;
@@ -173,13 +206,25 @@ namespace PancakeEditor
 
             GUI.enabled = true;
         }
-        
+
         private static void InstallGraphy()
         {
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Graphy", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.tayx.graphy", "https://github.com/pancake-llc/graphy.git#3.0.6");
+                RegistryManager.Resolve();
+            }
+
+            GUI.enabled = true;
+        }
+
+        private static void InstallNotification()
+        {
+            GUI.enabled = !EditorApplication.isCompiling;
+            if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                RegistryManager.Add("com.unity.mobile.notifications", "2.3.2");
                 RegistryManager.Resolve();
             }
 
@@ -194,7 +239,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
             {
                 bool confirmDelete = EditorUtility.DisplayDialog($"Uninstall {namePackage}", $"Are you sure you want to uninstall {namePackage} package ?", "Yes", "No");
                 if (confirmDelete)
