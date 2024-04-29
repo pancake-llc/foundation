@@ -1,19 +1,19 @@
 ﻿using System.IO;
 using Pancake;
-
 using Pancake.Tracking;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
+using Editor = PancakeEditor.Common.Editor;
 
 namespace PancakeEditor
 {
-    public static class TrackingAdjustDrawer
+    public static class AdjustWindow
     {
         public static void OnInspectorGUI()
         {
 #if PANCAKE_ADJUST
-            Uniform.DrawInstalled("4.37.0");
+            Uniform.DrawInstalled("4.38.0");
             EditorGUILayout.Space();
 
             var adjustSetting = Resources.Load<AdjustConfig>(nameof(AdjustConfig));
@@ -57,7 +57,7 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Adjust Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.pancake.adjust", "https://github.com/pancake-llc/adjust.git#4.37.0");
+                RegistryManager.Add("com.pancake.adjust", "https://github.com/pancake-llc/adjust.git#4.38.0");
                 RegistryManager.Resolve();
             }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesInAppReviewDrawer
+    public static class InAppReviewWindow
     {
         public static void OnInspectorGUI()
         {

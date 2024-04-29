@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class TrackingFirebaseDrawer
+    public static class FirebaseWindow
     {
 #if UNITY_ANDROID
         private static string bundleId;

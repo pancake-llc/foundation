@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesGameServiceDrawer
+    public static class GameServiceWindow
     {
         public static void OnInspectorGUI()
         {

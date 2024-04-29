@@ -2,13 +2,12 @@
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesHeartSettingDrawer
+    public static class HeartSettingWindow
     {
         public static void OnInspectorGUI()
         {

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesBuildDrawer
+    public static class BuildWindow
     {
         public static void OnInspectorGUI(ref AndroidBuildPipelineSettings pipelineSettings)
         {

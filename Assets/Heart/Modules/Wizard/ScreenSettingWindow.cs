@@ -2,14 +2,13 @@ using System.IO;
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using Pancake.UI;
 using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesScreenSettingDrawer
+    public static class ScreenSettingWindow
     {
         public static void OnInspectorGUI(Rect position)
         {

@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class MonetizeAdvertisingDrawer
+    public static class AdvertisingWindow
     {
         public static void OnInspectorGUI()
         {

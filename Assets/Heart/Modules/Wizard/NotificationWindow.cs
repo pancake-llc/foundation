@@ -1,11 +1,10 @@
 ﻿using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesNotificationDrawer
+    public static class NotificationWindow
     {
         public static void OnInspectorGUI()
         {

@@ -2,14 +2,13 @@
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using Pancake.ScriptableEditor;
 using UnityEditor;
 using UnityEngine;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesScriptableDrawer
+    public static class ScriptableWindow
     {
         public static void OnInspectorGUI()
         {

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Pancake;
-
 using Spine;
 using Spine.Unity;
 using Spine.Unity.Editor;
@@ -17,7 +16,7 @@ using Event = UnityEngine.Event;
 
 namespace PancakeEditor
 {
-    public static class UtilitiesSpineDrawer
+    public static class SpineWindow
     {
         public static void OnInspectorGUI(Action repaint, Rect position)
         {

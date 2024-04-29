@@ -6,7 +6,7 @@ using UnityEngine;
 // ReSharper disable UnusedMember.Local
 namespace PancakeEditor
 {
-    public static class UtilitiesOtherPacakgeDrawer
+    public static class OtherPacakgeWindow
     {
         public static void OnInspectorGUI()
         {

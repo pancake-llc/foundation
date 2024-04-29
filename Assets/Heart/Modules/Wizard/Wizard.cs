@@ -147,7 +147,7 @@ namespace PancakeEditor
         protected override void Init()
         {
             base.Init();
-            UtilitiesLevelSystemDrawer.OnEnabled();
+            LevelSystemWindow.OnEnabled();
             if (isInitialized)
             {
                 SelectTab(tabIndex);
@@ -163,9 +163,9 @@ namespace PancakeEditor
         private void OnDisable()
         {
 #if PANCAKE_SPINE
-            UtilitiesSpineDrawer.Clear();
+            SpineWindow.Clear();
 #endif
-            UtilitiesLevelSystemDrawer.OnDisabled();
+            LevelSystemWindow.OnDisabled();
         }
 
         protected override void OnGUI()
@@ -239,46 +239,46 @@ namespace PancakeEditor
             switch (_selectedItemType)
             {
                 case WizardAllType.Advertisement when _currentType is WizardType.Money or WizardType.All:
-                    MonetizeAdvertisingDrawer.OnInspectorGUI();
+                    AdvertisingWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.InAppPurchase when _currentType is WizardType.Money or WizardType.All:
-                    MonetizeIAPDrawer.OnInspectorGUI();
+                    IAPWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.Firebase when _currentType is WizardType.Track or WizardType.All:
-                    TrackingFirebaseDrawer.OnInspectorGUI();
+                    FirebaseWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.Adjust when _currentType is WizardType.Track or WizardType.All:
-                    TrackingAdjustDrawer.OnInspectorGUI();
+                    AdjustWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.Notification when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesNotificationDrawer.OnInspectorGUI();
+                    NotificationWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.InAppReview when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesInAppReviewDrawer.OnInspectorGUI();
+                    InAppReviewWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.HeartSetting when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesHeartSettingDrawer.OnInspectorGUI();
+                    HeartSettingWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.ScreenSetting when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesScreenSettingDrawer.OnInspectorGUI(position);
+                    ScreenSettingWindow.OnInspectorGUI(position);
                     break;
                 case WizardAllType.Scriptable when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesScriptableDrawer.OnInspectorGUI();
+                    ScriptableWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.OtherPackage when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesOtherPacakgeDrawer.OnInspectorGUI();
+                    OtherPacakgeWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
-                    UtilitiesLevelSystemDrawer.OnInspectorGUI(ref _currentLevelTabType, position);
+                    LevelSystemWindow.OnInspectorGUI(ref _currentLevelTabType, position);
                     break;
                 case WizardAllType.Spine when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesSpineDrawer.OnInspectorGUI(Repaint, position);
+                    SpineWindow.OnInspectorGUI(Repaint, position);
                     break;
                 case WizardAllType.GameService when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesGameServiceDrawer.OnInspectorGUI();
+                    GameServiceWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesLocalizationDrawer.OnInspectorGUI(ref _treeViewState,
+                    LocalizationWindow.OnInspectorGUI(ref _treeViewState,
                         ref localeTreeView,
                         ref multiColumnHeaderState,
                         BodyViewRect,
@@ -289,13 +289,13 @@ namespace PancakeEditor
                         ref _currentLocaleTabType);
                     break;
                 case WizardAllType.Texture when _currentType is WizardType.Setting or WizardType.All:
-                    SettingTextureDrawer.OnInspectorGUI(ref _spriteAtlas, this);
+                    SettingTextureWindow.OnInspectorGUI(ref _spriteAtlas, this);
                     break;
                 case WizardAllType.HierarchySetting when _currentType is WizardType.Setting or WizardType.All:
-                    SettingHierarchyDrawer.OnInspectorGUI();
+                    SettingHierarchyWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.Build when _currentType is WizardType.Utilities or WizardType.All:
-                    UtilitiesBuildDrawer.OnInspectorGUI(ref _currentAndroidBuildPipeline);
+                    BuildWindow.OnInspectorGUI(ref _currentAndroidBuildPipeline);
                     break;
             }
         }
