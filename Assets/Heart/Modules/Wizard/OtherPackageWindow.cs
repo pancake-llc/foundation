@@ -17,29 +17,6 @@ namespace PancakeEditor
 #else
             InstallAtt();
 #endif
-            GUILayout.Space(8);
-
-#if PANCAKE_NEEDLE_CONSOLE
-            UninstallNeedleConsole();
-#else
-            InstallNeedleConsole();
-#endif
-
-            GUILayout.Space(8);
-
-#if PANCAKE_SELECTIVE_PROFILING
-            UninstallSelectiveProfiler();
-#else
-            InstallSelectiveProfiler();
-#endif
-
-            GUILayout.Space(8);
-
-#if PANCAKE_AUDITOR
-            UninstallProjectAutidor();
-#else
-            InstallProjectAuditor();
-#endif
 
             GUILayout.Space(8);
 
@@ -68,7 +45,7 @@ namespace PancakeEditor
             GUILayout.Space(8);
 
 #if PANCAKE_PARTICLE_EFFECT_UGUI
-            Uninstall("Particle Effect For UGUI 4.6.2", "com.coffee.ui-particle");
+            Uninstall("Particle Effect For UGUI 4.6.3", "com.coffee.ui-particle");
 #else
             InstallParticleEffectUGUI();
 #endif
@@ -119,101 +96,12 @@ namespace PancakeEditor
             EditorGUILayout.EndHorizontal();
         }
 
-        private static void InstallNeedleConsole()
-        {
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Needle Console", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                RegistryManager.Add("com.needle.console", "https://github.com/pancake-llc/needle-console.git?path=package#2.4.1");
-                RegistryManager.Add("com.pancake.demystifier", "https://github.com/pancake-llc/ben-demystifier.git#0.4.1");
-                RegistryManager.Add("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#5.0.0");
-                RegistryManager.Add("com.pancake.immutable", "https://github.com/pancake-llc/system-immutable.git#5.0.0");
-                RegistryManager.Add("com.pancake.reflection.metadata", "https://github.com/pancake-llc/reflection-metadata.git#5.0.0");
-                RegistryManager.Resolve();
-            }
-
-            GUI.enabled = true;
-        }
-
-        private static void UninstallNeedleConsole()
-        {
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Needle Console 4.5.1", new RectOffset(0, 0, 6, 0));
-
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                SettingsService.OpenUserPreferences("Preferences/Needle/Console");
-            }
-
-            GUILayout.Space(8);
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Needle Console", "Are you sure you want to uninstall needle console package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.needle.console");
-                    RegistryManager.Remove("com.pancake.demystifier");
-                    RegistryManager.Remove("com.pancake.unsafe");
-                    RegistryManager.Remove("com.pancake.immutable");
-                    RegistryManager.Remove("com.pancake.reflection.metadata");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-        }
-
-        private static void InstallSelectiveProfiler()
-        {
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Selective Profiling", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                RegistryManager.Add("com.needle.selective-profiling", "https://github.com/pancake-llc/selective-profiling.git?path=package#1.0.1-pre.1");
-                RegistryManager.Resolve();
-            }
-
-            GUI.enabled = true;
-        }
-
-        private static void UninstallSelectiveProfiler()
-        {
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Selective Profiler 1.0.1-pre.1", labelMargin: new RectOffset(0, 0, 6, 0));
-
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                SettingsService.OpenProjectSettings("Project/Needle/Selective Profiler");
-            }
-
-            GUILayout.Space(8);
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Selective Profiling",
-                    "Are you sure you want to uninstall selective profiling package ?",
-                    "Yes",
-                    "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.needle.selective-profiling");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-        }
-
         private static void InstallParticleEffectUGUI()
         {
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Particle Effect For UGUI", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.2");
+                RegistryManager.Add("com.coffee.ui-particle", "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.3");
                 RegistryManager.Resolve();
             }
 
@@ -231,47 +119,7 @@ namespace PancakeEditor
 
             GUI.enabled = true;
         }
-
-
-        private static void InstallProjectAuditor()
-        {
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Project Auditor", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                RegistryManager.Add("com.unity.project-auditor", "0.10.0");
-                RegistryManager.Resolve();
-            }
-
-            GUI.enabled = true;
-        }
-
-        private static void UninstallProjectAutidor()
-        {
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Project Auditor 0.10.0", new RectOffset(0, 0, 6, 0));
-
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Open Dashboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                EditorApplication.ExecuteMenuItem("Window/Analysis/Project Auditor");
-            }
-
-            GUILayout.Space(8);
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(100)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Project Auditor", "Are you sure you want to uninstall ProjectAuditor package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.unity.project-auditor");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-        }
-
+        
         private static void InstallProfileAnalyzer()
         {
             GUI.enabled = !EditorApplication.isCompiling;
@@ -313,8 +161,7 @@ namespace PancakeEditor
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
         }
-
-
+        
         private static void InstallTestPerformance()
         {
             GUI.enabled = !EditorApplication.isCompiling;
