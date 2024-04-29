@@ -18,9 +18,8 @@ namespace PancakeEditor
         {
             All,
             Money,
-            Track,
             Setting,
-            Utilities
+            Tools
         }
 
         private enum WizardAllType
@@ -41,22 +40,19 @@ namespace PancakeEditor
             ScreenSetting,
             Scriptable,
             Spine,
-            Texture
+            Texture,
+            UIDesign
         }
 
-        private enum WizardMonetizeType
+        private enum MonetizationType
         {
             Advertisement = WizardAllType.Advertisement,
             InAppPurchase = WizardAllType.InAppPurchase,
-        }
-
-        private enum WizardTrackingType
-        {
             Firebase = WizardAllType.Firebase,
             Adjust = WizardAllType.Adjust,
         }
 
-        private enum WizardUtilitiesType
+        private enum ToolsType
         {
             InAppReview = WizardAllType.InAppReview,
             Spine = WizardAllType.Spine,
@@ -66,7 +62,7 @@ namespace PancakeEditor
             Build = WizardAllType.Build
         }
 
-        private enum WizardSettingType
+        private enum SettingType
         {
             HeartConfig = WizardAllType.HeartSetting,
             Scriptable = WizardAllType.Scriptable,
@@ -127,7 +123,7 @@ namespace PancakeEditor
         #endregion
 
         private readonly Color[] _colors = {Uniform.RaisinBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
-        private const float TAB_WIDTH = 65f;
+        private const float TAB_WIDTH = 50f;
 
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
@@ -242,13 +238,13 @@ namespace PancakeEditor
                 case WizardAllType.InAppPurchase when _currentType is WizardType.Money or WizardType.All:
                     IAPWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.Firebase when _currentType is WizardType.Track or WizardType.All:
+                case WizardAllType.Firebase when _currentType is WizardType.Money or WizardType.All:
                     FirebaseWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.Adjust when _currentType is WizardType.Track or WizardType.All:
+                case WizardAllType.Adjust when _currentType is WizardType.Money or WizardType.All:
                     AdjustWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.InAppReview when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.InAppReview when _currentType is WizardType.Tools or WizardType.All:
                     InAppReviewWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.HeartSetting when _currentType is WizardType.Setting or WizardType.All:
@@ -260,19 +256,19 @@ namespace PancakeEditor
                 case WizardAllType.Scriptable when _currentType is WizardType.Setting or WizardType.All:
                     ScriptableWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.OtherPackage when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.OtherPackage when _currentType is WizardType.Tools or WizardType.All:
                     OtherPackageWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
                     LevelSystemWindow.OnInspectorGUI(ref _currentLevelTabType, position);
                     break;
-                case WizardAllType.Spine when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.Spine when _currentType is WizardType.Tools or WizardType.All:
                     SpineWindow.OnInspectorGUI(Repaint, position);
                     break;
-                case WizardAllType.GameService when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.GameService when _currentType is WizardType.Tools or WizardType.All:
                     GameServiceWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.Localization when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.Localization when _currentType is WizardType.Tools or WizardType.All:
                     LocalizationWindow.OnInspectorGUI(ref _treeViewState,
                         ref localeTreeView,
                         ref multiColumnHeaderState,
@@ -289,7 +285,7 @@ namespace PancakeEditor
                 case WizardAllType.HierarchySetting when _currentType is WizardType.Setting or WizardType.All:
                     SettingHierarchyWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.Build when _currentType is WizardType.Utilities or WizardType.All:
+                case WizardAllType.Build when _currentType is WizardType.Tools or WizardType.All:
                     BuildWindow.OnInspectorGUI(ref _currentAndroidBuildPipeline);
                     break;
             }
@@ -320,13 +316,10 @@ namespace PancakeEditor
                 case WizardType.Money:
                     if (deselectCurrent) _selectedItemType = WizardAllType.Advertisement;
                     break;
-                case WizardType.Track:
-                    if (deselectCurrent) _selectedItemType = WizardAllType.Firebase;
-                    break;
                 case WizardType.Setting:
                     if (deselectCurrent) _selectedItemType = WizardAllType.Scriptable;
                     break;
-                case WizardType.Utilities:
+                case WizardType.Tools:
                     if (deselectCurrent) _selectedItemType = WizardAllType.OtherPackage;
                     break;
             }
@@ -342,16 +335,13 @@ namespace PancakeEditor
                     _items.Remove(-1); // remove None
                     break;
                 case WizardType.Money:
-                    _items.AddRange(System.Enum.GetValues(typeof(WizardMonetizeType)).Cast<int>());
-                    break;
-                case WizardType.Track:
-                    _items.AddRange(System.Enum.GetValues(typeof(WizardTrackingType)).Cast<int>());
+                    _items.AddRange(System.Enum.GetValues(typeof(MonetizationType)).Cast<int>());
                     break;
                 case WizardType.Setting:
-                    _items.AddRange(System.Enum.GetValues(typeof(WizardSettingType)).Cast<int>());
+                    _items.AddRange(System.Enum.GetValues(typeof(SettingType)).Cast<int>());
                     break;
-                case WizardType.Utilities:
-                    _items.AddRange(System.Enum.GetValues(typeof(WizardUtilitiesType)).Cast<int>());
+                case WizardType.Tools:
+                    _items.AddRange(System.Enum.GetValues(typeof(ToolsType)).Cast<int>());
                     break;
             }
         }
@@ -364,27 +354,21 @@ namespace PancakeEditor
 
         private Texture2D GetIcon(WizardAllType type)
         {
-            switch (type)
+            return type switch
             {
-                case WizardAllType.Advertisement: return EditorResources.ScriptableAd;
-                case WizardAllType.InAppPurchase: return EditorResources.ScriptableIap;
-                case WizardAllType.Firebase: return EditorResources.ScriptableFirebase;
-                case WizardAllType.Adjust: return EditorResources.ScriptableAdjust;
-                case WizardAllType.InAppReview:
-                case WizardAllType.GameService:
-                case WizardAllType.Localization: return EditorResources.ScriptableInterface;
-                case WizardAllType.HeartSetting: return EditorResources.ScriptableSetting;
-                case WizardAllType.ScreenSetting: return EditorResources.ScriptableSetting;
-                case WizardAllType.Scriptable:
-                case WizardAllType.Texture:
-                case WizardAllType.HierarchySetting:
-                case WizardAllType.LevelSystem: return EditorResources.ScriptableEditorSetting;
-                case WizardAllType.Spine: return EditorResources.ScriptableEditorSpine;
-                case WizardAllType.Build:
-                case WizardAllType.OtherPackage: return EditorResources.ScriptableUnity;
-                default:
-                    return null;
-            }
+                WizardAllType.Advertisement => EditorResources.ScriptableAd,
+                WizardAllType.InAppPurchase => EditorResources.ScriptableIap,
+                WizardAllType.Firebase => EditorResources.ScriptableFirebase,
+                WizardAllType.Adjust => EditorResources.ScriptableAdjust,
+                WizardAllType.InAppReview or WizardAllType.GameService or WizardAllType.Localization => EditorResources.ScriptableInterface,
+                WizardAllType.HeartSetting => EditorResources.ScriptableSetting,
+                WizardAllType.ScreenSetting => EditorResources.ScriptableSetting,
+                WizardAllType.Scriptable or WizardAllType.Texture or WizardAllType.HierarchySetting or WizardAllType.LevelSystem => EditorResources
+                    .ScriptableEditorSetting,
+                WizardAllType.Spine => EditorResources.ScriptableEditorSpine,
+                WizardAllType.Build or WizardAllType.OtherPackage => EditorResources.ScriptableUnity,
+                _ => null
+            };
         }
     }
 }
