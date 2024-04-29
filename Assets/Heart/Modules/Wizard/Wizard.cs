@@ -266,7 +266,7 @@ namespace PancakeEditor
                     ScriptableWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.OtherPackage when _currentType is WizardType.Utilities or WizardType.All:
-                    OtherPacakgeWindow.OnInspectorGUI();
+                    OtherPackageWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.LevelSystem when _currentType is WizardType.Setting or WizardType.All:
                     LevelSystemWindow.OnInspectorGUI(ref _currentLevelTabType, position);
