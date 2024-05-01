@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.ScriptableEditor
 {
-    [EditorIcon("so_gray_setting")]
+    [EditorIcon("so_dark_setting")]
     public class ScriptableEditorSetting : ScriptableSettings<ScriptableEditorSetting>
     {
         internal const float BUTTON_HEIGHT = 30f;

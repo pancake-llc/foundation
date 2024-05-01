@@ -14,7 +14,7 @@ using Debug = UnityEngine.Debug;
 
 namespace PancakeEditor
 {
-    [EditorIcon("so_gray_setting")]
+    [EditorIcon("so_dark_setting")]
     [Serializable]
     public class AndroidBuildPipelineSettings : ScriptableSettings<AndroidBuildPipelineSettings>
     {
