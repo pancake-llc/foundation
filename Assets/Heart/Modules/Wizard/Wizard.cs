@@ -163,7 +163,7 @@ namespace PancakeEditor
 
         protected override void OnGUI()
         {
-            Uniform.DrawLine(2);
+            GUILayout.Space(4);
             DrawTabs();
             EditorGUILayout.BeginHorizontal();
             DrawLeftSide();
