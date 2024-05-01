@@ -1,11 +1,11 @@
-﻿using PancakeEditor.Common;
-
+﻿using Pancake;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 using Editor = UnityEditor.Editor;
 using Object = UnityEngine.Object;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
     public class ScriptableBasePropertyDrawer : PropertyDrawer

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Pancake;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     [EditorIcon("so_dark_setting")]
     public class ScriptableEditorSetting : ScriptableSettings<ScriptableEditorSetting>

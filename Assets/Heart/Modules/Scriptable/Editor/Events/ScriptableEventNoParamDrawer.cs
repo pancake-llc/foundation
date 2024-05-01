@@ -5,7 +5,7 @@ using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     [CustomEditor(typeof(ScriptableEventNoParam))]
     public class ScriptableEventNoParamDrawer : UnityEditor.Editor

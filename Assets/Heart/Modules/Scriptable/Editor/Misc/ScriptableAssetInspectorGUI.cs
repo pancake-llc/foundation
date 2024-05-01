@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Editor = UnityEditor.Editor;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     [InitializeOnLoad]
     internal class ScriptableAssetInspectorGUI

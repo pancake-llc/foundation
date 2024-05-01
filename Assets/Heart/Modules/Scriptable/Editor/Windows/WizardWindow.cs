@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     public class WizardWindow : WindowBase
     {

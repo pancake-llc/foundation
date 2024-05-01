@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     public class CategoryPopUpWindow : PopupWindowContent
     {

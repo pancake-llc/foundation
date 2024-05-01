@@ -1,9 +1,10 @@
-﻿using Pancake.Scriptable;
+﻿using Pancake;
+using Pancake.Scriptable;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     [CustomEditor(typeof(BindTextMeshPro))]
     [CanEditMultipleObjects]

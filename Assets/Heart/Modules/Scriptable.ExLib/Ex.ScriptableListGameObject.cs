@@ -8,7 +8,7 @@ namespace Pancake.Scriptable.ExLib
     {
         public static T Get<T>(this ListGameObject list) where T : Component
         {
-            if (list is null || !list) return default(T);
+            if (list is null || !list) return default;
 
             foreach (var gameObject in list)
             {
@@ -16,12 +16,12 @@ namespace Pancake.Scriptable.ExLib
                 return value;
             }
 
-            return default(T);
+            return default;
         }
 
         public static T Get<T>(this ListGameObject list, Func<GameObject, bool> predicate) where T : Component
         {
-            if (list is null || !list) return default(T);
+            if (list is null || !list) return default;
 
             foreach (var gameObject in list)
             {
@@ -30,7 +30,7 @@ namespace Pancake.Scriptable.ExLib
                 return value;
             }
 
-            return default(T);
+            return default;
         }
 
         public static IEnumerable<T> GetList<T>(this ListGameObject list) where T : Component

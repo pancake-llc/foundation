@@ -6,7 +6,7 @@ using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     [CustomEditor(typeof(ScriptableEventFunc<>), true)]
     public class ScriptableEventFuncDrawer : UnityEditor.Editor

@@ -1,10 +1,9 @@
 ﻿using System.IO;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     public class CreateTypePopUpWindow : PopupWindowContent
     {

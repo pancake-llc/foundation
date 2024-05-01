@@ -2,7 +2,7 @@
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-using Pancake.ScriptableEditor;
+using PancakeEditor.Scriptable;
 using UnityEditor;
 using UnityEngine;
 

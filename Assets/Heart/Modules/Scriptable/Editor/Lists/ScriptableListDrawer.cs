@@ -5,7 +5,7 @@ using Pancake.Scriptable;
 using UnityEditor;
 using UnityEngine;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     [CustomEditor(typeof(ScriptableListBase), true)]
     public class ScriptableListDrawer : UnityEditor.Editor

@@ -6,7 +6,7 @@ using PancakeEditor.Common;
 using Pancake.Scriptable;
 using UnityEngine.SceneManagement;
 
-namespace Pancake.ScriptableEditor
+namespace PancakeEditor.Scriptable
 {
     public class EventsDebugWindow : WindowBase
     {
