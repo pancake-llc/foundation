@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Pancake;
 using Pancake.Common;
@@ -24,7 +25,8 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(DefaultTransitionSetting).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
+                    Debug.Log(
+                        $"{nameof(DefaultTransitionSetting).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultTransitionSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;
@@ -35,7 +37,7 @@ namespace PancakeEditor
                 EditorGUILayout.Space();
                 var editor = UnityEditor.Editor.CreateEditor(defaultPopupSetting);
                 editor.OnInspectorGUI();
-                
+
                 GUILayout.FlexibleSpace();
                 GUI.backgroundColor = Uniform.Green;
                 if (GUILayout.Button("Create Type", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))

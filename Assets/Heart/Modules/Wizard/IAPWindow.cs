@@ -1,11 +1,9 @@
 #if PANCAKE_IAP
 using System.IO;
 using Pancake.IAP;
-using Pancake;
 #endif
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 
@@ -16,8 +14,8 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_IAP
-            var iapSetting = ProjectDatabase.FindAll<IAPSettings>();
-            if (iapSetting.IsNullOrEmpty())
+            var iapSettings = ProjectDatabase.FindAll<IAPSettings>();
+            if (iapSettings.IsNullOrEmpty())
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
@@ -33,36 +31,23 @@ namespace PancakeEditor
                 }
 
                 GUI.enabled = true;
-
-                GUILayout.FlexibleSpace();
-                GUI.backgroundColor = Uniform.Red;
-                if (GUILayout.Button("Uninstall IAP Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                {
-                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall IAP", "Are you sure you want to uninstall in-app-purchase package ?", "Yes", "No");
-                    if (confirmDelete)
-                    {
-                        RegistryManager.Remove("com.unity.purchasing");
-                        RegistryManager.Resolve();
-                    }
-                }
-
-                GUI.backgroundColor = Color.white;
             }
             else
             {
-                if (iapSetting.Count > 1)
+                if (iapSettings.Count > 1)
                 {
                     EditorGUILayout.HelpBox("There is more than one IAPSettings file in the project.\nPlease delete duplicate files keep only one file",
                         MessageType.Error);
 
                     EditorGUILayout.BeginVertical();
-                    foreach (var t in iapSetting.ToArray())
+                    foreach (var t in iapSettings.ToArray())
                     {
                         EditorGUILayout.BeginHorizontal();
                         GUI.enabled = false;
                         EditorGUILayout.ObjectField(t, typeof(IAPSettings), false);
                         GUI.enabled = true;
-                        if (GUILayout.Button("delete", GUILayout.Width(30f))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(t));
+                        if (GUILayout.Button(Uniform.IconContent("Toolbar Minus", "Remove"), GUILayout.Width(30f)))
+                            AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(t));
                         EditorGUILayout.EndHorizontal();
                     }
 
@@ -70,25 +55,8 @@ namespace PancakeEditor
                 }
                 else
                 {
-                    var editor = UnityEditor.Editor.CreateEditor(iapSetting[0]);
+                    var editor = UnityEditor.Editor.CreateEditor(iapSettings[0]);
                     editor.OnInspectorGUI();
-                    GUILayout.FlexibleSpace();
-                    GUILayout.Space(20);
-
-                    EditorGUILayout.BeginHorizontal();
-                    GUI.backgroundColor = Uniform.Green;
-                    if (GUILayout.Button("Ping", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) iapSetting[0].SelectAndPing();
-
-                    GUI.backgroundColor = Uniform.Red;
-                    if (GUILayout.Button("Delete IAPSettings", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                    {
-                        bool confirmDelete = EditorUtility.DisplayDialog("Delete IAPSettings", "Are you sure you want to delete iap settings?", "Yes", "No");
-                        if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(iapSetting[0]));
-                    }
-
-                    GUI.backgroundColor = Color.white;
-
-                    EditorGUILayout.EndHorizontal();
                 }
             }
 

@@ -30,7 +30,7 @@ namespace Pancake.IAPEditor
             EditorGUI.indentLevel++;
             if (index > _skusDataProperty.arraySize - 1) return;
             var element = _skusDataProperty.GetArrayElementAtIndex(index);
-            if (GUI.Button(new Rect(rect.x + rect.width - 20, rect.y, 20, EditorGUIUtility.singleLineHeight), "X"))
+            if (GUI.Button(new Rect(rect.x + rect.width - 20, rect.y, 20, EditorGUIUtility.singleLineHeight), Uniform.IconContent("Toolbar Minus", "Remove")))
             {
                 _reorderableList.serializedProperty.DeleteArrayElementAtIndex(index);
                 serializedObject.ApplyModifiedProperties();

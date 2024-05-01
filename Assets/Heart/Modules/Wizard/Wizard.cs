@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using Pancake;
+using Pancake.Common;
 using PancakeEditor.Common;
-using PancakeEditor.Localization;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.U2D;
+using Object = UnityEngine.Object;
 
 // ReSharper disable UnusedMember.Local
 namespace PancakeEditor
@@ -91,7 +93,7 @@ namespace PancakeEditor
 
         private LocaleTabType _currentLocaleTabType = LocaleTabType.Setting;
         private TreeViewState _treeViewState;
-        internal LocaleTreeView localeTreeView;
+        internal Localization.LocaleTreeView localeTreeView;
         private SearchField _localeSearchField;
         private Rect BodyViewRect => new(0f, 48f, position.width - TAB_WIDTH * 4f - 22f, position.height - 172f);
         private Rect ToolbarRect => new(0f, 28f, position.width - TAB_WIDTH * 4f - 22f, 20f);
@@ -217,11 +219,113 @@ namespace PancakeEditor
 
         private void DrawRightSideHeader()
         {
-            //Draw name and icon
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
             var icon = GetIcon(_selectedItemType);
             GUILayout.Box(icon, GUIStyle.none, GUILayout.Width(32), GUILayout.Height(32));
             GUILayout.Label(_selectedItemType.ToString(), Uniform.HeaderLabel);
+
+            var lastRect = GUILayoutUtility.GetLastRect();
+            var e = Event.current;
+            if (e.type == EventType.MouseDown && e.button == 1 && lastRect.Contains(e.mousePosition))
+            {
+                void ShowContextMenu(Object so, string nameSetting, System.Action<Object> actionUninstall = null)
+                {
+                    var context = new GenericMenu();
+                    context.AddItem(new GUIContent("Ping"), false, _ => so.SelectAndPing(), null);
+                    context.AddItem(new GUIContent("Delete"),
+                        false,
+                        _ =>
+                        {
+                            bool confirmDelete = EditorUtility.DisplayDialog($"Delete {nameSetting}", $"Are you sure you want to delete {nameSetting}?", "Yes", "No");
+                            if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(so));
+                        },
+                        null);
+                    if (actionUninstall != null)
+                    {
+                        context.AddSeparator("");
+                        context.AddItem(new GUIContent("Uninstall"), false, _ => actionUninstall.Invoke(so), null);
+                    }
+
+                    context.ShowAsContext();
+                }
+
+                switch (_selectedItemType)
+                {
+                    case WizardAllType.Adjust:
+                        var adjustSetting = Resources.Load<Pancake.Tracking.AdjustConfig>(nameof(Pancake.Tracking.AdjustConfig));
+                        if (adjustSetting != null)
+                            ShowContextMenu(adjustSetting,
+                                nameof(Pancake.Tracking.AdjustConfig),
+                                so =>
+                                {
+                                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Adjust",
+                                        "Are you sure you want to uninstall Adjust package ?",
+                                        "Yes",
+                                        "No");
+                                    if (confirmDelete)
+                                    {
+                                        AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(so));
+                                        RegistryManager.Remove("com.pancake.adjust");
+                                        RegistryManager.Resolve();
+                                    }
+                                });
+                        break;
+                    case WizardAllType.Advertisement:
+                        var adSettings = ProjectDatabase.FindAll<Pancake.Monetization.AdSettings>();
+                        if (!adSettings.IsNullOrEmpty())
+                            ShowContextMenu(adSettings[0],
+                                nameof(Pancake.Monetization.AdSettings),
+                                so =>
+                                {
+                                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Advertising",
+                                        "Are you sure you want to uninstall Advertising package ?",
+                                        "Yes",
+                                        "No");
+                                    if (confirmDelete)
+                                    {
+                                        AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(so));
+                                        ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
+                                        AssetDatabase.SaveAssets();
+                                        AssetDatabase.Refresh();
+                                    }
+                                });
+                        break;
+                    case WizardAllType.InAppPurchase:
+                        var iapSettings = ProjectDatabase.FindAll<Pancake.IAP.IAPSettings>();
+                        if (!iapSettings.IsNullOrEmpty())
+                            ShowContextMenu(iapSettings[0],
+                                nameof(Pancake.IAP.IAPSettings),
+                                so =>
+                                {
+                                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall IAP", "Are you sure you want to uninstall IAP package ?", "Yes", "No");
+                                    if (confirmDelete)
+                                    {
+                                        AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(so));
+                                        RegistryManager.Remove("com.unity.purchasing");
+                                        RegistryManager.Resolve();
+                                    }
+                                });
+                        break;
+                    case WizardAllType.ScreenSetting:
+                        var defaultPopupSetting = Resources.Load<Pancake.UI.DefaultTransitionSetting>(nameof(Pancake.UI.DefaultTransitionSetting));
+                        if (defaultPopupSetting != null) ShowContextMenu(defaultPopupSetting, nameof(Pancake.UI.DefaultTransitionSetting));
+
+                        break;
+                    case WizardAllType.HeartSetting:
+                        var heartSetting = Resources.Load<HeartSettings>(nameof(HeartSettings));
+                        var heartEditorSetting = Resources.Load<HeartEditorSettings>(nameof(HeartEditorSettings));
+                        if (heartSetting != null)
+                        {
+                            var context = new GenericMenu();
+                            context.AddItem(new GUIContent("Ping"), false, _ => heartSetting.SelectAndPing(), null);
+                            context.AddItem(new GUIContent("Ping Editor Setting"), false, _ => heartEditorSetting.SelectAndPing(), null);
+                            context.ShowAsContext();
+                        }
+
+                        break;
+                }
+            }
+
             EditorGUILayout.EndHorizontal();
         }
 

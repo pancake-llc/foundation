@@ -3,9 +3,9 @@ using System.IO;
 using Pancake.Monetization;
 using Pancake;
 #endif
+using System;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 
@@ -16,8 +16,8 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_ADVERTISING
-            var adSetting = ProjectDatabase.FindAll<AdSettings>();
-            if (adSetting.IsNullOrEmpty())
+            var adSettings = ProjectDatabase.FindAll<AdSettings>();
+            if (adSettings.IsNullOrEmpty())
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
@@ -34,31 +34,16 @@ namespace PancakeEditor
 
                 GUI.backgroundColor = Color.white;
                 GUI.enabled = true;
-
-                GUILayout.FlexibleSpace();
-                GUI.backgroundColor = Uniform.Red;
-                if (GUILayout.Button("Uninstall Advertising", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                {
-                    bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Advertising", "Are you sure you want to uninstall advertising package ?", "Yes", "No");
-                    if (confirmDelete)
-                    {
-                        ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_ADVERTISING");
-                        AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
-                    }
-                }
-
-                GUI.backgroundColor = Color.white;
             }
             else
             {
-                if (adSetting.Count > 1)
+                if (adSettings.Count > 1)
                 {
                     EditorGUILayout.HelpBox("There is more than one AdSettings file in the project.\nPlease delete duplicate files keep only one file",
                         MessageType.Error);
 
                     EditorGUILayout.BeginVertical();
-                    foreach (var t in adSetting.ToArray())
+                    foreach (var t in adSettings.ToArray())
                     {
                         EditorGUILayout.BeginHorizontal();
                         GUI.enabled = false;
@@ -72,25 +57,8 @@ namespace PancakeEditor
                 }
                 else
                 {
-                    var editor = UnityEditor.Editor.CreateEditor(adSetting[0]);
+                    var editor = UnityEditor.Editor.CreateEditor(adSettings[0]);
                     editor.OnInspectorGUI();
-                    GUILayout.FlexibleSpace();
-                    GUILayout.Space(20);
-
-                    EditorGUILayout.BeginHorizontal();
-                    GUI.backgroundColor = Uniform.Green;
-                    if (GUILayout.Button("Ping", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) adSetting[0].SelectAndPing();
-
-                    GUI.backgroundColor = Uniform.Red;
-                    if (GUILayout.Button("Delete AdSettings", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                    {
-                        bool confirmDelete = EditorUtility.DisplayDialog("Delete AdSettings", "Are you sure you want to delete ad settings?", "Yes", "No");
-                        if (confirmDelete) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(adSetting[0]));
-                    }
-
-                    GUI.backgroundColor = Color.white;
-
-                    EditorGUILayout.EndHorizontal();
                 }
             }
 

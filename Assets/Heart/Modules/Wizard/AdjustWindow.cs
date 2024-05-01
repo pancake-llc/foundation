@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Pancake;
+using Pancake.Common;
 using Pancake.Tracking;
 using PancakeEditor.Common;
 using UnityEditor;
@@ -39,20 +39,6 @@ namespace PancakeEditor
                 var editor = UnityEditor.Editor.CreateEditor(adjustSetting);
                 editor.OnInspectorGUI();
             }
-
-            GUILayout.FlexibleSpace();
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall Adjust Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Adjust", "Are you sure you want to uninstall adjust package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.pancake.adjust");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
 #else
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install Adjust Package", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
