@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Pancake.SceneFlow
 {
-    [EditorIcon("script_progress")]
+    [EditorIcon("icon_progress")]
     public class Loading : GameComponent
     {
         [SerializeField, Range(0f, 3f)] private float duration;

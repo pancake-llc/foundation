@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     /// </summary>
     [Searchable]
     [CreateAssetMenu(fileName = "ad_banner_unit_wrapper.asset", menuName = "Pancake/Misc/Advertising/Banner Variable Wrapper", order = 1)]
-    [EditorIcon("scriptable_bind")]
+    [EditorIcon("so_blue_bind")]
     public class BannerVariable : ScriptableObject
     {
         [SerializeField] private AdmobBannerVariable admobBanner;

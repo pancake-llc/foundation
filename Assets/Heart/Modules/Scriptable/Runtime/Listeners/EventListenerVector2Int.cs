@@ -8,7 +8,7 @@ namespace Pancake.Scriptable
     /// A listener for a ScriptableEventVector2Int.
     /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerVector2Int")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerVector2Int : EventListenerGeneric<Vector2Int>
     {
         [SerializeField] private EventResponse[] eventResponses;

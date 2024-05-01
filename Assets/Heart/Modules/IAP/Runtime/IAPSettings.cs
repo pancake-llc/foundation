@@ -17,7 +17,7 @@ namespace Pancake.IAP
     }
 
 
-    [EditorIcon("scriptable_iap")]
+    [EditorIcon("so_blue_setting")]
     public class IAPSettings : ScriptableObject
     {
         [SerializeField] private List<IAPData> skusData = new();

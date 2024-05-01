@@ -11,7 +11,7 @@ namespace Pancake.Scriptable
     /// <summary>
     /// A listener for a ScriptableEventFuncT_TResult.
     /// </summary>
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     // ReSharper disable once InconsistentNaming
     public abstract class EventListenerFuncT_TResult<T, TResult> : EventListenerBase
     {

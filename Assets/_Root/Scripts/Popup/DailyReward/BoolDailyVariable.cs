@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Pancake.SceneFlow
 {
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     [Serializable]
     [CreateAssetMenu(menuName = "Pancake/Game/Variables/Bool Daily Reset")]
     public class BoolDailyVariable : ScriptableVariable<bool>

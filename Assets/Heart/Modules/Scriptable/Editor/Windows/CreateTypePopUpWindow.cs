@@ -99,17 +99,17 @@ namespace Pancake.ScriptableEditor
             DrawToggle(ref _variable,
                 nameType,
                 "Variable",
-                EditorResources.ScriptableVariable,
+                EditorResources.IconVariable,
                 true);
             GUILayout.Space(5);
-            DrawToggle(ref _event, "ScriptableEvent", nameType, EditorResources.ScriptableEvent);
+            DrawToggle(ref _event, "ScriptableEvent", nameType, EditorResources.IconEvent);
             GUILayout.Space(5);
             if (!_event) _eventListener = false;
             GUI.enabled = _event;
-            DrawToggle(ref _eventListener, "EventListener", nameType, EditorResources.ScriptableEventListener);
+            DrawToggle(ref _eventListener, "EventListener", nameType, EditorResources.IconEventListener);
             GUI.enabled = true;
             GUILayout.Space(5);
-            DrawToggle(ref _list, "ScriptableList", nameType, EditorResources.ScriptableList);
+            DrawToggle(ref _list, "ScriptableList", nameType, EditorResources.IconList);
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
         }

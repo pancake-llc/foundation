@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pancake.MobileInput
 {
-    [EditorIcon("scriptable_input")]
+    [EditorIcon("so_blue_input")]
     [CreateAssetMenu(fileName = "event_input_on_update_pinch.asset", menuName = "Pancake/Input/Events/on update pinch")]
     public class InputEventUpdatePinch : ScriptableInput
     {

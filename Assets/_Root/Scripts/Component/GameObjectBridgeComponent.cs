@@ -6,7 +6,7 @@ namespace Pancake.SceneFlow
     using UnityEngine;
 
 
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class GameObjectBridgeComponent : GameComponent
     {
         [SerializeField, LabelText("Event")] private ScriptableEventGetGameObject getGameObjectEvent;

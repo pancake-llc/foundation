@@ -9,7 +9,7 @@ using GoogleMobileAds.Api;
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public class AdmobAppOpenVariable : AdUnitVariable
     {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB

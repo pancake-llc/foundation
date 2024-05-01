@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.Monetization
 {
 
-    [EditorIcon("scriptable_ad")]
+    [EditorIcon("so_blue_setting")]
     public class AdSettings : ScriptableObject
     {
         [Range(5, 100), SerializeField] private float adCheckingInterval = 8f;

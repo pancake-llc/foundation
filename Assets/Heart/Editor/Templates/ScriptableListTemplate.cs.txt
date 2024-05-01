@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [EditorIcon("scriptable_list")]
+    [EditorIcon("so_blue_list")]
     [CreateAssetMenu(fileName = "scriptable_list_#TYPE#.asset", menuName = "Pancake/Scriptable/Lists/#TYPE#")]
     public class ScriptableList#TYPE# : ScriptableList<#TYPE#>
     {

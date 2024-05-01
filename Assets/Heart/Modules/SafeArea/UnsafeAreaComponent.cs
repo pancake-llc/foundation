@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.SafeArea
 {
-    [EditorIcon("scriptable_area")]
+    [EditorIcon("so_blue_area")]
 
     public class UnsafeAreaComponent : SafeAreaBase
     {

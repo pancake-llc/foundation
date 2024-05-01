@@ -11,7 +11,7 @@ using UnityEngine.Serialization;
 
 namespace Pancake.IAP
 {
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     [AddComponentMenu("Scriptable/EventListeners/EventListenerIAPNoParam")]
     public class EventListenerIAPNoParam : EventListenerBase
     {

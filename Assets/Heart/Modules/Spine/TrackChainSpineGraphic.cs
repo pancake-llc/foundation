@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Pancake.Spine
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class TrackChainSpineGraphic : GameComponent
     {
         [SerializeField] private SkeletonGraphic skeleton;

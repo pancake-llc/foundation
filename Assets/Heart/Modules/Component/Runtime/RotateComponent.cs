@@ -9,7 +9,7 @@ using LitMotion.Extensions;
 
 namespace Pancake.Component
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class RotateComponent : GameComponent
     {
         [SerializeField] private float delay;

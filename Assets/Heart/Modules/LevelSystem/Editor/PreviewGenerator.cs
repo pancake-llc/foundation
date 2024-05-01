@@ -89,7 +89,7 @@ namespace Pancake.LevelSystemEditor
             if (!CanCreatePreview(obj))
             {
                 onCapturedCallback?.Invoke(null);
-                return EditorResources.ScriptableFactory;
+                return EditorResources.IconGameObject;
             }
 
             var cachedPosition = obj.transform.position;

@@ -6,7 +6,7 @@ namespace Pancake.Scriptable
     /// <summary>
     /// Base class for all event listeners
     /// </summary>
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public abstract class EventListenerBase : MonoBehaviour
     {
         protected enum Binding

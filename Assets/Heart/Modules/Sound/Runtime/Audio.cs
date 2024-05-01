@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Pancake.Sound
 {
     [Searchable]
-    [EditorIcon("scriptable_audio")]
+    [EditorIcon("so_blue_audioclip")]
     [CreateAssetMenu(fileName = "Audio", menuName = "Pancake/Sound/Audio")]
     public class Audio : ScriptableObject
     {

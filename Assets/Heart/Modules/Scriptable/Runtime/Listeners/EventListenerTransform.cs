@@ -8,7 +8,7 @@ namespace Pancake.Scriptable
     /// A listener for a ScriptableEventTransform
     /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerTransform")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerTransform : EventListenerGeneric<Transform>
     {
         [SerializeField] private EventResponse[] eventResponses;

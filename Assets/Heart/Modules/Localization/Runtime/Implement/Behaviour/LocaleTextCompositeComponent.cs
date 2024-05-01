@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Pancake.Localization
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LocaleTextCompositeComponent : LocaleComponentGenericBase
     {
         [SerializeField] private string seperate = ", ";

@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace Pancake.IAP
 {
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     [AddComponentMenu("Scriptable/EventListeners/EventListenerIAPProduct")]
     public class EventListenerIAPProduct : EventListenerGeneric<IAPDataVariable>
     {

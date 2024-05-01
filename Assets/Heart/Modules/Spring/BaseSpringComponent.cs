@@ -2,7 +2,7 @@
 
 namespace Pancake.Spring
 {
-    [EditorIcon("script_spring")]
+    [EditorIcon("icon_default")]
     public abstract class BaseSpringComponent : GameComponent
     {
         [SerializeField, Range(0f, 100f)] protected float damping = 26f;

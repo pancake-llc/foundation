@@ -7,7 +7,7 @@ namespace Pancake.Tracking
 {
     [Searchable]
     [CreateAssetMenu(fileName = "adjust_tracking_name", menuName = "Pancake/Tracking/Adjust No Param", order = 2)]
-    [EditorIcon("scriptable_adjust")]
+    [EditorIcon("so_blue_adjust")]
     public class ScriptableTrackingAdjustNoParam : ScriptableTracking
     {
         [Space] [SerializeField] private string eventToken;

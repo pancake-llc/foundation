@@ -6,7 +6,7 @@ namespace Pancake.SceneFlow
 {
     [Serializable]
     [CreateAssetMenu(fileName = "event_preview_locked_outfit.asset", menuName = "Pancake/Misc/Events/Preview Locked Outfit")]
-    [EditorIcon("scriptable_event")]
+    [EditorIcon("so_blue_event")]
     public class ScriptableEventPreviewLockedOutfit : ScriptableEventBase
     {
         private Action<OutfitType, string> _onRaised;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Sound
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public sealed class AudioManager : GameComponent
     {
         [Header("Sound Emitter Pool")] [SerializeField] private GameObject prefab;

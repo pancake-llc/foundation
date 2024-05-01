@@ -2,7 +2,7 @@
 
 namespace Pancake
 {
-    [EditorIcon("scriptable_setting")]
+    [EditorIcon("so_blue_setting")]
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
         [SerializeField] private bool debugView;

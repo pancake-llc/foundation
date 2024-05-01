@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace Pancake.Scriptable
 {
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public abstract class ScriptableVariable<T> : ScriptableBase, ISave, IReset, IResetOn, IDrawObjectsInInspector, IGuid
     {
 #if UNITY_EDITOR

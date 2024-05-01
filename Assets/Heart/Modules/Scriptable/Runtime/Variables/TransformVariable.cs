@@ -3,7 +3,7 @@
 namespace Pancake.Scriptable
 {
     [CreateAssetMenu(fileName = "variable_transform.asset", menuName = "Pancake/Scriptable/Variables/transform")]
-    [EditorIcon("scriptable_variable_runtime")]
+    [EditorIcon("so_blue_variable2")]
     public class TransformVariable : ScriptableVariable<Transform>
     {
 #if UNITY_EDITOR

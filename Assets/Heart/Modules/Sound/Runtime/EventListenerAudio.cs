@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Pancake.Sound
 {
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerAudio : EventListenerFuncT_TResult<Audio, AudioHandle>
     {
         [SerializeField] private EventResponse[] eventResponses;

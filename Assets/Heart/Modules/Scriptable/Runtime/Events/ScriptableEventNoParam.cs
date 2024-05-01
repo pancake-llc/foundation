@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.Scriptable
 {
     [CreateAssetMenu(fileName = "event_noparam.asset", menuName = "Pancake/Scriptable/Events/no param")]
-    [EditorIcon("scriptable_event")]
+    [EditorIcon("so_blue_event")]
     public class ScriptableEventNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {
         private readonly List<EventListenerNoParam> _eventListeners = new();

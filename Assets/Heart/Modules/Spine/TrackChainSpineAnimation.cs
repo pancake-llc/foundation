@@ -18,7 +18,7 @@ namespace Pancake.Spine
         public uint loopCount;
     }
 
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class TrackChainSpineAnimation : GameComponent
     {
         [SerializeField] private SkeletonAnimation skeleton;

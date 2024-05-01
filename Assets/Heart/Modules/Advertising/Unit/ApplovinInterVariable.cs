@@ -4,7 +4,7 @@
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public class ApplovinInterVariable : AdUnitVariable
     {
         [NonSerialized] internal Action completedCallback;

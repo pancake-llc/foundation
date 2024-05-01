@@ -3,7 +3,7 @@
 namespace Pancake.Scriptable
 {
     [CreateAssetMenu(fileName = "variable_string.asset", menuName = "Pancake/Scriptable/Variables/string")]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public class StringVariable : ScriptableVariable<string>
     {
         public override void Save()

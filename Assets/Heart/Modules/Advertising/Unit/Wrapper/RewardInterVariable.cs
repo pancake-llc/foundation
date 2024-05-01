@@ -7,7 +7,7 @@ namespace Pancake.Monetization
     /// </summary>
     [Searchable]
     [CreateAssetMenu(fileName = "ad_reward_inter_unit_wrapper.asset", menuName = "Pancake/Misc/Advertising/Reward Inter Variable Wrapper", order = 4)]
-    [EditorIcon("scriptable_bind")]
+    [EditorIcon("so_blue_bind")]
     public class RewardInterVariable : ScriptableObject
     {
         [SerializeField] private AdmobRewardInterVariable admobRewardInter;

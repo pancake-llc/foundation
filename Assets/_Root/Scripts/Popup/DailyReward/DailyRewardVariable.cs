@@ -9,7 +9,7 @@ namespace Pancake.SceneFlow
 
     [Serializable]
     [CreateAssetMenu(menuName = "Pancake/Game/Daily Reward Data", fileName = "daily_reward_data.asset")]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public class DailyRewardVariable : ScriptableVariable<DailyRewardData>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

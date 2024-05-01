@@ -109,9 +109,9 @@ namespace Pancake.ScriptableEditor
         {
             _icons = new Texture[11];
             _icons[0] = EditorResources.StarEmpty;
-            _icons[1] = EditorResources.ScriptableVariable;
-            _icons[2] = EditorResources.ScriptableEvent;
-            _icons[3] = EditorResources.ScriptableList;
+            _icons[1] = EditorResources.IconVariable;
+            _icons[2] = EditorResources.IconEvent;
+            _icons[3] = EditorResources.IconList;
             _icons[4] = EditorResources.StarFull;
             _icons[5] = EditorResources.IconPing;
             _icons[6] = EditorResources.IconEdit;
@@ -508,9 +508,9 @@ namespace Pancake.ScriptableEditor
         {
             return scriptableBase switch
             {
-                ScriptableEventBase => EditorResources.ScriptableEvent,
-                ScriptableListBase => EditorResources.ScriptableList,
-                _ => EditorResources.ScriptableVariable
+                ScriptableEventBase => EditorResources.IconEvent,
+                ScriptableListBase => EditorResources.IconList,
+                _ => EditorResources.IconVariable
             };
         }
 

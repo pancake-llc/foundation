@@ -7,7 +7,7 @@ namespace Pancake.Scriptable
     /// A listener for a ScriptableEventInt.
     /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerInt")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerInt : EventListenerGeneric<int>
     {
         [SerializeField] private EventResponse[] eventResponses;

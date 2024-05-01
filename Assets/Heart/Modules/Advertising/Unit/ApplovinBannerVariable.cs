@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public class ApplovinBannerVariable : AdUnitVariable, IBannerHide
     {
         public EBannerSize size;

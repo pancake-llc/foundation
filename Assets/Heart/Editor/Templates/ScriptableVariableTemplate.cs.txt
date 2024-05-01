@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     [CreateAssetMenu(fileName = "variable_#TYPE#.asset", menuName = "Pancake/Scriptable/Variables/#TYPE#")]
     [System.Serializable]
     public class #TYPE#Variable : ScriptableVariable<#TYPE#>

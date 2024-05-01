@@ -10,22 +10,26 @@ namespace PancakeEditor.Common
         private const string RELATIVE_PATH = "Editor/Textures";
         private const string RELATIVE_TEMPLATE_PATH = "Editor/Templates";
 
-        public static Texture2D ScriptableEvent => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_event.png", RELATIVE_PATH);
-        public static Texture2D ScriptableEventListener => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_event_listener.png", RELATIVE_PATH);
-        public static Texture2D ScriptableList => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_list.png", RELATIVE_PATH);
-        public static Texture2D ScriptableVariable => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_variable.png", RELATIVE_PATH);
-        public static Texture2D StarEmpty => ProjectDatabase.FindAssetWithPath<Texture2D>("star_empty.png", RELATIVE_PATH);
-        public static Texture2D StarFull => ProjectDatabase.FindAssetWithPath<Texture2D>("star_full.png", RELATIVE_PATH);
-        public static Texture2D ScriptableAd => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_ad.png", RELATIVE_PATH);
-        public static Texture2D ScriptableIap => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_iap.png", RELATIVE_PATH);
-        public static Texture2D ScriptableFirebase => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_firebase.png", RELATIVE_PATH);
-        public static Texture2D ScriptableAdjust => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_adjust.png", RELATIVE_PATH);
-        public static Texture2D ScriptableSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_setting.png", RELATIVE_PATH);
-        public static Texture2D ScriptableEditorSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_editor_setting.png", RELATIVE_PATH);
-        public static Texture2D ScriptableEditorSpine => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_editor_spine.png", RELATIVE_PATH);
-        public static Texture2D ScriptableInterface => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_interface.png", RELATIVE_PATH);
-        public static Texture2D ScriptableFactory => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_factory.png", RELATIVE_PATH);
-        public static Texture2D ScriptableUnity => ProjectDatabase.FindAssetWithPath<Texture2D>("scriptable_unity.png", RELATIVE_PATH);
+        public static Texture2D IconEvent => ProjectDatabase.FindAssetWithPath<Texture2D>("so_blue_event.png", RELATIVE_PATH);
+        public static Texture2D IconEventListener => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_event_listener.png", RELATIVE_PATH);
+        public static Texture2D IconList => ProjectDatabase.FindAssetWithPath<Texture2D>("so_blue_list.png", RELATIVE_PATH);
+        public static Texture2D IconVariable => ProjectDatabase.FindAssetWithPath<Texture2D>("so_blue_variable.png", RELATIVE_PATH);
+        public static Texture2D StarEmpty => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_star_empty.png", RELATIVE_PATH);
+        public static Texture2D StarFull => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_star_full.png", RELATIVE_PATH);
+        public static Texture2D IconAds => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_ads.png", RELATIVE_PATH);
+        public static Texture2D IconIAP => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_iap.png", RELATIVE_PATH);
+        public static Texture2D IconFirebase => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_firebase.png", RELATIVE_PATH);
+        public static Texture2D IconAdjust => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_adjust.png", RELATIVE_PATH);
+        public static Texture2D IconSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("so_blue_setting.png", RELATIVE_PATH);
+        public static Texture2D IconEditorSetting => ProjectDatabase.FindAssetWithPath<Texture2D>("so_gray_setting.png", RELATIVE_PATH);
+        public static Texture2D IconSpine => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_spine.png", RELATIVE_PATH);
+        public static Texture2D IconGameService => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_gameservice.png", RELATIVE_PATH);
+        public static Texture2D IconLocalization => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_localization.png", RELATIVE_PATH);
+        public static Texture2D IconGameObject => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_gameobject.png", RELATIVE_PATH);
+        public static Texture2D IconUnity => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_unity.png", RELATIVE_PATH);
+        public static Texture2D IconLevelSytem => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_levelsystem.png", RELATIVE_PATH);
+        public static Texture2D IconPackage => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_package.png", RELATIVE_PATH);
+        public static Texture2D IconAtlas => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_atlas.png", RELATIVE_PATH);
 
         public static Texture2D BoxContentDark
         {

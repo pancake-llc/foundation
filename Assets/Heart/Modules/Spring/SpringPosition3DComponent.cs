@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Spring
 {
-    [EditorIcon("script_spring")]
+    [EditorIcon("icon_default")]
     public class SpringPosition3DComponent : BaseSpringComponent, ISpringTo<Vector3>, INudgeable<Vector3>
     {
         private SpringVector3 _spring;

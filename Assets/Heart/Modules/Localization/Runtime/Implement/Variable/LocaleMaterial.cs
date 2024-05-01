@@ -5,7 +5,7 @@ namespace Pancake.Localization
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "Pancake/Localization/Material", fileName = "material_localizevalue", order = 1)]
-    [EditorIcon("scriptable_yellow_material")]
+    [EditorIcon("so_yellow_material")]
     public class LocaleMaterial : LocaleVariable<Material>
     {
         [Serializable]

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Pancake.SceneFlow
 {
     [CreateAssetMenu(fileName = "outfit_variable.asset", menuName = "Pancake/Game/Outfit/Outfit Element")]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     [Serializable]
     public class OutfitUnitVariable : ScriptableVariable<OutfitElement>
     {

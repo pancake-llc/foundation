@@ -11,7 +11,7 @@ namespace Pancake.Scriptable
     /// <summary>
     /// A listener for a ScriptableEventFunc.
     /// </summary>
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public abstract class EventListenerFunc<TResult> : EventListenerBase
     {
         [System.Serializable]

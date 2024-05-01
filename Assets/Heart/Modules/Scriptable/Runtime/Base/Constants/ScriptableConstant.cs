@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
-    [EditorIcon("scriptable_const")]
+    [EditorIcon("so_blue_const")]
     public abstract class ScriptableConstant<T> : ScriptableBase
     {
         [Tooltip("The value of the const. This will can not be change during play mode")] [SerializeField]

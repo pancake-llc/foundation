@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Pancake.Tracking
 {
-    [EditorIcon("scriptable_adjust")]
+    [EditorIcon("so_blue_setting")]
     public class AdjustConfig : ScriptableSettings<AdjustConfig>
     {
         [SerializeField] private string appToken;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.Scriptable
 {
     [CreateAssetMenu(fileName = "variable_int.asset", menuName = "Pancake/Scriptable/Variables/int")]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public class IntVariable : ScriptableVariable<int>
     {
         [Tooltip("Clamps the value of this variable to a minimum and maximum.")] [SerializeField]

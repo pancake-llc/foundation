@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pancake.IAP
 {
-    [EditorIcon("scriptable_event")]
+    [EditorIcon("so_blue_event")]
     public abstract class IAPPurchaseSuccess : ScriptableObject
     {
         public abstract void Raise();

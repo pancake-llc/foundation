@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace Pancake.SceneFlow
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class SceneLoader : GameComponent
     {
         [SerializeField] private ScriptableEventString changeSceneEvent;

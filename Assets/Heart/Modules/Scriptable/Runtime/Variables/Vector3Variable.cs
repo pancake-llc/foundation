@@ -3,7 +3,7 @@
 namespace Pancake.Scriptable
 {
     [CreateAssetMenu(fileName = "variable_vector3.asset", menuName = "Pancake/Scriptable/Variables/vector3")]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public class Vector3Variable : ScriptableVariable<Vector3>
     {
         public override void Save()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PancakeEditor.Hierarchy
 {
-    [EditorIcon("scriptable_editor_setting")]
+    [EditorIcon("so_gray_setting")]
     public class HierarchyEditorSetting : ScriptableSettings<HierarchyEditorSetting>
     {
         [Header("TREE MAP")] [SerializeField] private bool enabledTreeMap = true;

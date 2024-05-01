@@ -8,7 +8,7 @@ namespace Pancake.Scriptable
     /// A listener for a ScriptableEventFloat
     /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerFloat")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerFloat : EventListenerGeneric<float>
     {
         [SerializeField] private EventResponse[] eventResponses;

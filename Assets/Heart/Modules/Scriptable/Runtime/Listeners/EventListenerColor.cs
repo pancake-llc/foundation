@@ -8,7 +8,7 @@ namespace Pancake.Scriptable
     /// A listener for a ScriptableEventColor
     /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerColor")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerColor : EventListenerGeneric<Color>
     {
         [SerializeField] private EventResponse[] eventResponses;

@@ -6,7 +6,7 @@ namespace Pancake.LevelSystem
 {
     [Searchable]
 
-    [EditorIcon("scriptable_setting")]
+    [EditorIcon("so_blue_setting")]
     [CreateAssetMenu(fileName = "level_setting.asset", menuName = "Pancake/Misc/Level System/Setting")]
     public class LevelSetting : ScriptableObject
     {

@@ -9,7 +9,7 @@ namespace PancakeEditor
     {
         public static void OnInspectorGUI()
         {
-            GUILayout.Space(8);
+            GUILayout.Space(4);
 
 #if PANCAKE_ATT
             UninstallAtt();
@@ -17,7 +17,7 @@ namespace PancakeEditor
             InstallAtt();
 #endif
 
-            GUILayout.Space(8);
+            GUILayout.Space(4);
 
 #if PANCAKE_PROFILE_ANALYZER
             UninstallProfileAnalyzer();
@@ -25,7 +25,7 @@ namespace PancakeEditor
             InstallProfileAnalyzer();
 #endif
 
-            GUILayout.Space(8);
+            GUILayout.Space(4);
 
 #if PANCAKE_NOTIFICATION
             EditorGUILayout.BeginHorizontal();
@@ -67,7 +67,7 @@ namespace PancakeEditor
             InstallTestPerformance();
 #endif
 
-            GUILayout.Space(8);
+            GUILayout.Space(4);
 
 #if PANCAKE_GRAPHY
             Uninstall("Graphy 3.0.6", "com.tayx.graphy");
@@ -75,7 +75,7 @@ namespace PancakeEditor
             InstallGraphy();
 #endif
 
-            GUILayout.Space(8);
+            GUILayout.Space(4);
 
 #if PANCAKE_PARTICLE_EFFECT_UGUI
             Uninstall("Particle Effect For UGUI 4.6.3", "com.coffee.ui-particle");
@@ -83,10 +83,37 @@ namespace PancakeEditor
             InstallParticleEffectUGUI();
 #endif
 
-            GUILayout.Space(8);
+            GUILayout.Space(4);
 
 #if PANCAKE_UI_EFFECT
             Uninstall("UI Effect 4.0.0-preview.10", "com.coffee.ui-effect");
+#else
+            InstallUIEffect();
+#endif
+
+            GUILayout.Space(4);
+            
+#if PANCAKE_IN_APP_REVIEW
+            EditorGUILayout.BeginHorizontal();
+            Uniform.DrawInstalled("In-App-Review 1.8.1");
+
+            GUI.backgroundColor = Uniform.Red;
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall In-App-Review", "Are you sure you want to uninstall In-App-Review package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.google.play.review");
+                    RegistryManager.Remove("com.google.play.core");
+                    RegistryManager.Remove("com.google.play.common");
+                    RegistryManager.Remove("com.google.android.appbundle");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
 #else
             InstallUIEffect();
 #endif
@@ -225,6 +252,22 @@ namespace PancakeEditor
             if (GUILayout.Button("Install Unity Local Notification", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.unity.mobile.notifications", "2.3.2");
+                RegistryManager.Resolve();
+            }
+
+            GUI.enabled = true;
+        }
+
+        private static void InstallInAppReview()
+        {
+            GUI.enabled = !EditorApplication.isCompiling;
+            if (GUILayout.Button("Install In-App-Review", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                RegistryManager.Add("com.google.play.review", "https://github.com/google-unity/in-app-review.git#1.8.1");
+                RegistryManager.Add("com.google.play.core", "https://github.com/google-unity/google-play-core.git#1.8.1");
+                RegistryManager.Add("com.google.play.common", "https://github.com/google-unity/google-play-common.git#1.8.1");
+                RegistryManager.Add("com.google.android.appbundle", "https://github.com/google-unity/android-app-bundle.git#1.8.0");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.175");
                 RegistryManager.Resolve();
             }
 

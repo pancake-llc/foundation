@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace Pancake.IAP
 {
     [Serializable]
-    [EditorIcon("scriptable_event")]
+    [EditorIcon("so_blue_event")]
     [CreateAssetMenu(fileName = "iap_noparam_chanel.asset", menuName = "Pancake/IAP/No Parameters Event")]
     public class ScriptableEventIAPNoParam : ScriptableEventBase, IDrawObjectsInInspector
     {

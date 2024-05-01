@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Pancake.MobileInput
 {
     /// <summary>
-    /// Wrapper touch data from Input.touch
+    /// Wrapper touch data from <see cref="Touch"/>
     /// </summary>
     public class TouchData
     {

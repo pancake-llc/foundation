@@ -51,6 +51,10 @@
     "com.unity.modules.unitywebrequesttexture": "1.0.0",
     "com.unity.modules.unitywebrequestwww": "1.0.0",
     "com.unity.modules.vehicles": "1.0.0",
-    "com.unity.modules.video": "1.0.0"
+    "com.unity.modules.video": "1.0.0",
+    "com.google.play.review": "https://github.com/google-unity/in-app-review.git#1.8.1",
+    "com.google.play.core": "https://github.com/google-unity/google-play-core.git#1.8.1",
+    "com.google.play.common": "https://github.com/google-unity/google-play-common.git#1.8.1",
+    "com.google.android.appbundle": "https://github.com/google-unity/android-app-bundle.git#1.8.0"
   }
 }

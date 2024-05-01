@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace Pancake.UI
 {
+    [EditorIcon("icon_scroll")]
     public sealed class RecyclerView : RecyclerViewBase
     {
         [SerializeField] private HorizontalOrVerticalLayoutGroup _layoutGroup;

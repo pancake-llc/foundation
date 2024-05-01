@@ -8,7 +8,7 @@ namespace Pancake.Component
 {
     [Serializable]
     [CreateAssetMenu(fileName = "event_vfx_magnet.asset", menuName = "Pancake/Misc/Events/Vfx Magnet Event")]
-    [EditorIcon("scriptable_event")]
+    [EditorIcon("so_blue_event")]
     public class ScriptableEventVfxMagnet : ScriptableEventBase, IDrawObjectsInInspector
     {
         private readonly List<EventListenerVfxMagnet> _eventListeners = new();

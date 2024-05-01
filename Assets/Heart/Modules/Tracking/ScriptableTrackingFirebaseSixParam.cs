@@ -4,7 +4,7 @@ namespace Pancake.Tracking
 {
     [Searchable]
     [CreateAssetMenu(fileName = "firebase_tracking_name", menuName = "Pancake/Tracking/Firebase Six Param", order = 9)]
-    [EditorIcon("scriptable_firebase")]
+    [EditorIcon("so_blue_firebase")]
     public class ScriptableTrackingFirebaseSixParam : ScriptableTracking
     {
         [Space] [SerializeField] private string eventName;

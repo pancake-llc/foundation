@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Pancake.Scriptable
 {
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListener#TYPE# : EventListenerGeneric<#TYPE#>
     {
         [SerializeField] private EventResponse[] eventResponses;

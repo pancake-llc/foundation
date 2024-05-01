@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Pancake.Component
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class ScaleComponent : GameComponent
     {
         [SerializeField] private float delay;

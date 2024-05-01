@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.SceneFlow
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class ConditionRateComponent : GameComponent
     {
         [SerializeField] private int[] distanceLevels;

@@ -8,7 +8,7 @@ namespace Pancake.Scriptable
     using UnityEngine;
 
     [Serializable]
-    [EditorIcon("scriptable_event")]
+    [EditorIcon("so_blue_event")]
     // ReSharper disable once InconsistentNaming
     public abstract class ScriptableEventFuncT_TResult<T, TResult> : ScriptableEventBase, IDrawObjectsInInspector
     {

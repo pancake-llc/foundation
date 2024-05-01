@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Pancake.Sound
 {
     [Searchable]
-    [EditorIcon("scriptable_event")]
-    [CreateAssetMenu(fileName = "scriptable_audio_handle_event.asset", menuName = "Pancake/Sound/Scriptable Event Audio Handle")]
+    [EditorIcon("so_blue_event")]
+    [CreateAssetMenu(fileName = "event_audio_handle.asset", menuName = "Pancake/Sound/Event Audio Handle")]
     public class ScriptableEventAudioHandle : ScriptableEvent<AudioHandle>
     {
     }

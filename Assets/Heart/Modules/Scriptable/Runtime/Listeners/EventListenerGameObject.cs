@@ -8,7 +8,7 @@ namespace Pancake.Scriptable
     /// A listener for a ScriptableEventGameObject
     /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerGameObject")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerGameObject : EventListenerGeneric<GameObject>
     {
         [SerializeField] private EventResponse[] eventResponses;

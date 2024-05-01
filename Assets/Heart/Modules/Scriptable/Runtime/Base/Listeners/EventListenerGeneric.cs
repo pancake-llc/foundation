@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Pancake.Scriptable
 {
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public abstract class EventListenerGeneric<T> : EventListenerBase
     {
         protected virtual EventResponse<T>[] EventResponses { get; }

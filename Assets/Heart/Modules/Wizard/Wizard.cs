@@ -33,7 +33,6 @@ namespace PancakeEditor
             HeartSetting,
             HierarchySetting,
             InAppPurchase,
-            InAppReview,
             LevelSystem,
             Localization,
             OtherPackage,
@@ -53,7 +52,6 @@ namespace PancakeEditor
 
         private enum ToolsType
         {
-            InAppReview = WizardAllType.InAppReview,
             Spine = WizardAllType.Spine,
             GameSerice = WizardAllType.GameService,
             Localization = WizardAllType.Localization,
@@ -207,7 +205,7 @@ namespace PancakeEditor
             {
                 EditorGUILayout.BeginHorizontal();
                 var icon = GetIcon((WizardAllType) i);
-                var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 5)};
+                var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 2)};
                 var styleToggle = new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
                 bool clicked = GUILayout.Toggle((int) _selectedItemType == i, ((WizardAllType) i).ToString(), styleToggle, GUILayout.ExpandWidth(true));
@@ -242,9 +240,6 @@ namespace PancakeEditor
                     break;
                 case WizardAllType.Adjust when _currentType is WizardType.Money or WizardType.All:
                     AdjustWindow.OnInspectorGUI();
-                    break;
-                case WizardAllType.InAppReview when _currentType is WizardType.Tools or WizardType.All:
-                    InAppReviewWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.HeartSetting when _currentType is WizardType.Setting or WizardType.All:
                     HeartSettingWindow.OnInspectorGUI();
@@ -355,17 +350,19 @@ namespace PancakeEditor
         {
             return type switch
             {
-                WizardAllType.Advertisement => EditorResources.ScriptableAd,
-                WizardAllType.InAppPurchase => EditorResources.ScriptableIap,
-                WizardAllType.Firebase => EditorResources.ScriptableFirebase,
-                WizardAllType.Adjust => EditorResources.ScriptableAdjust,
-                WizardAllType.InAppReview or WizardAllType.GameService or WizardAllType.Localization => EditorResources.ScriptableInterface,
-                WizardAllType.HeartSetting => EditorResources.ScriptableSetting,
-                WizardAllType.ScreenSetting => EditorResources.ScriptableSetting,
-                WizardAllType.Scriptable or WizardAllType.Texture or WizardAllType.HierarchySetting or WizardAllType.LevelSystem => EditorResources
-                    .ScriptableEditorSetting,
-                WizardAllType.Spine => EditorResources.ScriptableEditorSpine,
-                WizardAllType.Build or WizardAllType.OtherPackage => EditorResources.ScriptableUnity,
+                WizardAllType.Advertisement => EditorResources.IconAds,
+                WizardAllType.InAppPurchase => EditorResources.IconIAP,
+                WizardAllType.Firebase => EditorResources.IconFirebase,
+                WizardAllType.Adjust => EditorResources.IconAdjust,
+                WizardAllType.GameService => EditorResources.IconGameService,
+                WizardAllType.Localization => EditorResources.IconLocalization,
+                WizardAllType.HeartSetting or WizardAllType.ScreenSetting => EditorResources.IconSetting,
+                WizardAllType.LevelSystem => EditorResources.IconLevelSytem,
+                WizardAllType.Texture => EditorResources.IconAtlas,
+                WizardAllType.Scriptable or WizardAllType.HierarchySetting => EditorResources.IconEditorSetting,
+                WizardAllType.Spine => EditorResources.IconSpine,
+                WizardAllType.Build => EditorResources.IconUnity,
+                WizardAllType.OtherPackage => EditorResources.IconPackage,
                 _ => null
             };
         }

@@ -15,7 +15,7 @@ using UnityEngine.AddressableAssets;
 namespace Pancake.LevelSystem
 {
 
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class LevelCoordinator : GameComponent
     {
         [SerializeField] private string id = "normal";

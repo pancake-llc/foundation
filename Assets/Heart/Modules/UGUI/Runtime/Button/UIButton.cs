@@ -18,7 +18,7 @@ using LitMotion;
 
 namespace Pancake.UI
 {
-    [EditorIcon("script_button")]
+    [EditorIcon("Button")]
     public class UIButton : Button, IButton, IButtonAffect
     {
         private const float DOUBLE_CLICK_TIME_INTERVAL = 0.2f;

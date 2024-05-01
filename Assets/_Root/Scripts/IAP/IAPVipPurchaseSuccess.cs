@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Pancake.SceneFlow
 {
     [CreateAssetMenu(fileName = "iap_vip_purchase_success", menuName = "Pancake/IAP/Vip Purchase Success Listener", order = 3005)]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class IAPVipPurchaseSuccess : IAPPurchaseSuccess
     {
         public override void Raise()

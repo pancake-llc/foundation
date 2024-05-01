@@ -121,7 +121,7 @@ namespace PancakeEditor.Common
             get
             {
                 if (headerLabel != null) return headerLabel;
-                headerLabel = new GUIStyle(EditorStyles.label) {fontSize = 13, fontStyle = FontStyle.Bold};
+                headerLabel = new GUIStyle(EditorStyles.label) {fontSize = 13, fontStyle = FontStyle.Bold, padding = new RectOffset(0, 0, 6, 0)};
                 return headerLabel;
             }
         }
@@ -141,7 +141,6 @@ namespace PancakeEditor.Common
 
         #region color
 
-        public static readonly Color TealBlue = new(0f, 1f, 0.97f, 0.27f);
         public static readonly Color GothicOlive = new(0.49f, 0.43f, 0.31f);
         public static readonly Color Maroon = new(0.52f, 0.27f, 0.33f);
         public static readonly Color ElegantNavy = new(0.15f, 0.21f, 0.41f);
@@ -156,7 +155,6 @@ namespace PancakeEditor.Common
         public static readonly Color ChinesePink = new(0.87f, 0.44f, 0.64f);
         public static readonly Color TwilightLavender = new(0.53f, 0.28f, 0.42f);
         public static readonly Color BabyBlueEyes = new(0.6f, 0.8f, 1f);
-        public static readonly Color DeepCarminePink = new(1f, 0.2f, 0.2f);
         public static readonly Color FluorescentBlue = new(0.2f, 1f, 1f);
         public static readonly Color Yellow = new(0.92f, 0.76f, 0.2f);
         public static readonly Color Jet = new(0.21f, 0.21f, 0.21f);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Spring
 {
-    [EditorIcon("script_spring")]
+    [EditorIcon("icon_default")]
     public class SpringRotationComponent : BaseSpringComponent, ISpringTo<Vector3>, ISpringTo<Quaternion>, INudgeable<Vector3>, INudgeable<Quaternion>
     {
         private SpringVector3 _spring;

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Pancake.Component
 {
-    [EditorIcon("csharp")]
+    [EditorIcon("icon_default")]
     public class VfxMagnetComponent : GameComponent
     {
         [SerializeField] private ScriptableEventVfxMagnet spawnEvent;

@@ -1,3 +1,5 @@
+using Pancake.Common;
+
 namespace Pancake.Rate
 {
     using Scriptable;
@@ -10,6 +12,7 @@ namespace Pancake.Rate
     using Google.Play.Review;
 #endif
 
+    [EditorIcon("icon_default")]
     public class AppRatingComponent : GameComponent
     {
 #if UNITY_ANDROID

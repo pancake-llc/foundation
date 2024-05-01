@@ -2,7 +2,7 @@
 
 namespace Pancake.Scriptable
 {
-    [EditorIcon("scriptable_event")]
+    [EditorIcon("so_blue_event")]
     [CreateAssetMenu(fileName = "event_#TYPE#.asset", menuName = "Pancake/Scriptable/Events/#TYPE#")]
     public class ScriptableEvent#TYPE# : ScriptableEvent<#TYPE#>
     {

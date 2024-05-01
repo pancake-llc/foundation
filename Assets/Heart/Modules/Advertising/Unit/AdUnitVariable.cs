@@ -6,7 +6,7 @@ namespace Pancake.Monetization
 {
     [Searchable]
     [Serializable]
-    [EditorIcon("scriptable_variable")]
+    [EditorIcon("so_blue_variable")]
     public abstract class AdUnitVariable : ScriptableObject
     {
         [Blockquote("When you change the platform need to double check if the id is empty?")]

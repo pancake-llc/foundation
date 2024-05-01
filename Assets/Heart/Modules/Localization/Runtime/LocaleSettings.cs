@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Pancake.Localization
 {
-    [EditorIcon("scriptable_setting")]
+    [EditorIcon("so_blue_setting")]
     public sealed class LocaleSettings : ScriptableSettings<LocaleSettings>
     {
         [SerializeField] private List<Language> availableLanguages = new(1) {Language.English};

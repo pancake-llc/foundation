@@ -10,7 +10,7 @@ using UnityEngine.Events;
 namespace Pancake.Component
 {
     [AddComponentMenu("Scriptable/EventListeners/EventListenerVfxMagnet")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerVfxMagnet : EventListenerBase
     {
         [System.Serializable]

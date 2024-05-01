@@ -12,7 +12,7 @@ namespace Pancake.Scriptable
     /// A listener for a ScriptableEventNoParam.
     /// </summary>
     [AddComponentMenu("Scriptable/EventListeners/EventListenerNoParam")]
-    [EditorIcon("scriptable_event_listener")]
+    [EditorIcon("icon_event_listener")]
     public class EventListenerNoParam : EventListenerBase
     {
         [SerializeField] private EventResponse[] eventResponses;

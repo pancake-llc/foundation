@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Pancake.UI
 {
-    [EditorIcon("scriptable_setting")]
+    [EditorIcon("so_blue_setting")]
     public class DefaultTransitionSetting : ScriptableSettings<DefaultTransitionSetting>
     {
         [SerializeField] private UITransitionAnimationSO sheetEnterAnim;

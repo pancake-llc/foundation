@@ -5,7 +5,7 @@ namespace Pancake.Tracking
 {
     [Searchable]
     [CreateAssetMenu(fileName = "scriptable_tracking_noparam", menuName = "Pancake/Tracking/No Param", order = 1)]
-    [EditorIcon("scriptable_tracking")]
+    [EditorIcon("so_blue_tracking")]
     public class ScriptableTrackingNoParam : ScriptableObject
     {
         [SerializeField, TextArea(3, 6)] private string developerDescription;
