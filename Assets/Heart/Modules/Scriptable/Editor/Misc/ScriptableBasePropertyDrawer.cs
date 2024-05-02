@@ -83,6 +83,7 @@ namespace PancakeEditor.Scriptable
 
             if (!isInCollection)
             {
+                labelRect.position -= new Vector2(15, 0);
                 property.isExpanded = EditorGUI.Foldout(labelRect, property.isExpanded, new GUIContent(""), true);
                 int indent = EditorGUI.indentLevel;
                 if (property.isExpanded)
@@ -91,7 +92,7 @@ namespace PancakeEditor.Scriptable
                     rect.width = position.width;
                     EditorGUI.PropertyField(rect, property, label);
                     var cacheBgColor = GUI.backgroundColor;
-                    GUI.backgroundColor = EditorGUIUtility.isProSkin ? Uniform.BabyBlueEyes : Uniform.ChinesePink;;
+                    GUI.backgroundColor = EditorGUIUtility.isProSkin ? Uniform.BabyBlueEyes : Uniform.ChinesePink;
                     GUILayout.BeginVertical(GUI.skin.box);
                     if (_editor == null) Editor.CreateCachedEditor(targetObject, null, ref _editor);
                     _editor.OnInspectorGUI();
