@@ -210,7 +210,10 @@ namespace PancakeEditor
                 var style = new GUIStyle(GUIStyle.none) {contentOffset = new Vector2(0, 2)};
                 var styleToggle = new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft};
                 GUILayout.Box(icon, style, GUILayout.Width(18), GUILayout.Height(18));
-                bool clicked = GUILayout.Toggle((int) _selectedItemType == i, ((WizardAllType) i).ToString(), styleToggle, GUILayout.ExpandWidth(true));
+                bool clicked = GUILayout.Toggle((int) _selectedItemType == i,
+                    ObjectNames.NicifyVariableName(((WizardAllType) i).ToString()),
+                    styleToggle,
+                    GUILayout.ExpandWidth(true));
                 EditorGUILayout.EndHorizontal();
 
                 if (clicked) _selectedItemType = (WizardAllType) i;
@@ -222,7 +225,7 @@ namespace PancakeEditor
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
             var icon = GetIcon(_selectedItemType);
             GUILayout.Box(icon, GUIStyle.none, GUILayout.Width(32), GUILayout.Height(32));
-            GUILayout.Label(_selectedItemType.ToString(), Uniform.HeaderLabel);
+            GUILayout.Label(ObjectNames.NicifyVariableName(_selectedItemType.ToString()), Uniform.HeaderLabel);
 
             var lastRect = GUILayoutUtility.GetLastRect();
             var e = Event.current;
