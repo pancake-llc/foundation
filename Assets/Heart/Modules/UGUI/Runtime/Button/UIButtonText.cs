@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Pancake.UI
 {
-    [EditorIcon("Button")]
+    [EditorIcon("icon_button")]
     public sealed class UIButtonText : UIButton, ILabel
     {
         [SerializeField] private TextMeshProUGUI label;
