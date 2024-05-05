@@ -69,7 +69,7 @@ namespace PancakeEditor.ComponentHeader
             }
             else
             {
-                TooltipWindow.Show("Nothing happens because it doesn't inherit from GameComponent!");
+                TooltipWindow.Show("Nothing happens, Need inherit GameComponent!");
             }
         }
 
