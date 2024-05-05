@@ -33,17 +33,17 @@ namespace PancakeEditor.ComponentHeader
             var container = new VisualElement {pickingMode = PickingMode.Ignore, style = {flexDirection = FlexDirection.RowReverse, height = 22,}};
 
             var imageCreator = new ImageCreator(headerElementName, onRefresh);
-            var removeComponentImage = imageCreator.CreateImage(ButtonType.Remove, Undo.DestroyObjectImmediate);
-            var moveUpImage = imageCreator.CreateImage(ButtonType.MoveUp, x => ComponentUtility.MoveComponentUp(x));
-            var moveDownImage = imageCreator.CreateImage(ButtonType.MoveDown, x => ComponentUtility.MoveComponentDown(x));
-            var copyComponentImage = imageCreator.CreateImage(ButtonType.CopyComponent, CopyComponent);
-            var pasteComponentValuesImage = imageCreator.CreateImage(ButtonType.PasteComponentValue, PasteComponentValues);
+            var removeComponentImage = imageCreator.CreateButton(ButtonType.Remove, Undo.DestroyObjectImmediate);
+            var moveUpElement = imageCreator.CreateButton(ButtonType.MoveUp, x => ComponentUtility.MoveComponentUp(x));
+            var moveDownElement = imageCreator.CreateButton(ButtonType.MoveDown, x => ComponentUtility.MoveComponentDown(x));
+            var copyComponentElement = imageCreator.CreateButton(ButtonType.CopyComponent, CopyComponent);
+            var pasteComponentValuesElement = imageCreator.CreateButton(ButtonType.PasteComponentValue, PasteComponentValues);
 
             container.Add(removeComponentImage);
-            container.Add(moveUpImage);
-            container.Add(moveDownImage);
-            container.Add(pasteComponentValuesImage);
-            container.Add(copyComponentImage);
+            container.Add(moveUpElement);
+            container.Add(moveDownElement);
+            container.Add(pasteComponentValuesElement);
+            container.Add(copyComponentElement);
 
             return container;
         }
@@ -73,24 +73,11 @@ namespace PancakeEditor.ComponentHeader
                 _onRefresh = onRefresh;
             }
 
-            public Image CreateImage(ButtonType buttonType, Action<Component> action)
+            public Button CreateButton(ButtonType buttonType, Action<Component> action)
             {
-                var image = new Image
+                var button = new Button(() =>
                 {
-                    style =
-                    {
-                        position = Position.Relative,
-                        backgroundImage = GetIcon(buttonType),
-                        top = 3,
-                        right = 63 + (int) buttonType * 3,
-                        width = 16,
-                        height = 16,
-                    }
-                };
-
-                image.RegisterCallback<ClickEvent>(_ =>
-                {
-                    var componentName = _headerElementName switch
+                    string componentName = _headerElementName switch
                     {
                         "TextMeshPro - TextHeader" => "TextMeshPro",
                         "TextMeshPro - Text (UI)Header" => "TextMeshProUGUI",
@@ -106,9 +93,33 @@ namespace PancakeEditor.ComponentHeader
                     }
 
                     _onRefresh();
-                });
+                })
+                {
+                    style =
+                    {
+                        position = Position.Relative,
+                        backgroundImage = GetIcon(buttonType),
+                        backgroundColor = Color.clear,
+                        borderTopWidth = 0,
+                        borderBottomWidth = 0,
+                        borderLeftWidth = 0,
+                        borderRightWidth = 0,
+                        paddingLeft = 0,
+                        paddingRight = 0,
+                        paddingTop = 0,
+                        paddingBottom = 0,
+                        marginLeft = 0,
+                        marginRight = 0,
+                        marginTop = 0,
+                        marginBottom = 0,
+                        top = 3,
+                        right = 63 + (int) buttonType * 3,
+                        width = 16,
+                        height = 16,
+                    }
+                };
 
-                return image;
+                return button;
             }
         }
     }

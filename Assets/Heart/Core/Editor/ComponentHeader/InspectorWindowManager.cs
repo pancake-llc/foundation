@@ -7,7 +7,7 @@ namespace PancakeEditor
 {
     internal static class InspectorWindowManager
     {
-        private static readonly Type InspectorWindowType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+        private static readonly Type InspectorWindowType = typeof(Editor).Assembly.GetType("UnityEditor.InspectorWindow");
 
         private static EditorWindow inspectorWindow;
 
