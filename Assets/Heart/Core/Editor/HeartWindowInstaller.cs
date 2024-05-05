@@ -11,8 +11,12 @@ namespace PancakeEditor.Common
         private static readonly Dictionary<string, string> InternalDependencies = new()
         {
             {"com.cysharp.unitask", "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4"},
-            {"com.annulusgames.alchemy", "https://github.com/AnnulusGames/Alchemy.git?path=/Alchemy/Assets/Alchemy#v2.0.1"},
+            {"com.annulusgames.alchemy", "https://github.com/pancake-llc/Alchemy.git?path=/Alchemy/Assets/Alchemy"},
             {"com.annulusgames.lit-motion", "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion"},
+            {
+                "com.annulusgames.component-cache-generator",
+                "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator"
+            },
             {"jp.hadashikick.vcontainer", "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#1.15.4"}
         };
 

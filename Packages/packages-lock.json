@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "2c652e5abcc53a75990d72cc51027d03a027e359"
     },
+    "com.annulusgames.component-cache-generator": {
+      "version": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f25fb2680ce3bd01d284a3fe3406200ee0cec59e"
+    },
     "com.annulusgames.lit-motion": {
       "version": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
       "depth": 0,
