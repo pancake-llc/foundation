@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Pancake.SceneFlow
 {
-    [EditorIcon("script_controller")]
+    [EditorIcon("icon_controller")]
     public class GameplayController : GameComponent
     {
         [Header("BUTTON")] [SerializeField] private Button buttonHome;

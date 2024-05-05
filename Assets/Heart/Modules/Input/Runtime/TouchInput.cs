@@ -6,7 +6,7 @@ using Pancake.Scriptable;
 
 namespace Pancake.MobileInput
 {
-    [EditorIcon("script_input")]
+    [EditorIcon("icon_input")]
     public class TouchInput : MonoBehaviour
     {
         private const float DRAG_DURATION_THRESHOLD = 0.01f;

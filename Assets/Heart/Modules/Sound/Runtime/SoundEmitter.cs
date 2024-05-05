@@ -8,7 +8,7 @@ using LitMotion.Extensions;
 
 namespace Pancake.Sound
 {
-    [EditorIcon("script_sound")]
+    [EditorIcon("icon_sound")]
     [RequireComponent(typeof(AudioSource))]
     public class SoundEmitter : CacheGameComponent<AudioSource>
     {

@@ -8,8 +8,7 @@ using UnityEngine;
 
 namespace Pancake.ExTag
 {
-    [EditorIcon("script_enum")]
-
+    [EditorIcon("icon_enum")]
     public class Tag : GameComponent, ISerializationCallbackReceiver
     {
         /// <summary>

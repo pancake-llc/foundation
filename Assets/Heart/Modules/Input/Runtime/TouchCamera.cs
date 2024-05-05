@@ -6,7 +6,7 @@ using Pancake.Common;
 namespace Pancake.MobileInput
 {
     [RequireComponent(typeof(Camera))]
-    [EditorIcon("script_game_state")]
+    [EditorIcon("icon_game_state")]
     public class TouchCamera : CacheGameComponent<TouchCamera>
     {
         #region inspector

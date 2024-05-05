@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace Pancake.MobileInput
 {
-    [EditorIcon("script_manager")]
+    [EditorIcon("icon_manager")]
     [RequireComponent(typeof(TouchCamera))]
     public class PickingController : MonoBehaviour
     {

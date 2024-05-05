@@ -2,8 +2,7 @@
 
 namespace Pancake.SafeArea
 {
-    [EditorIcon("script_manager")]
-
+    [EditorIcon("icon_manager")]
     public class RuntimeSafeAreaUpdater : CacheGameComponent<ISafeAreaUpdatable>
     {
         private Rect _safeArea;
