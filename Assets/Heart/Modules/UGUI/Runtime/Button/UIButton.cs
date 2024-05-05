@@ -60,7 +60,7 @@ namespace Pancake.UI
         [SerializeField] private bool ignoreTimeScale;
         [SerializeField] private bool isMotionUnableInteract;
         [SerializeField] private bool isAffectToSelf = true;
-        [SerializeField, HierarchyNullable] private Transform affectObject;
+        [SerializeField] private Transform affectObject;
         [SerializeField] private bool enabledSound;
         [SerializeField] private Audio audioClick;
         [SerializeField] private ScriptableEventAudio audioPlayEvent;

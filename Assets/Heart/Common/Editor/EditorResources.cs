@@ -40,7 +40,7 @@ namespace PancakeEditor.Common
                 if (tex != null) return tex;
                 tex = Editor.ConvertToTexture(
                     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAD1BMVEVEREQlJSUmJiYtLS04ODhTxJsAAAAAJklEQVQI12NQYIAAGIMZxmBiEIAwGKnOQFhhDKaBlLOiIBAImQAAdGYChuP2NCcAAAAASUVORK5CYII=");
-                TextureCached.Add(nameof(BoxContentDark), tex);
+                TextureCached[nameof(BoxContentDark)] = tex;
                 return tex;
             }
         }
@@ -54,7 +54,7 @@ namespace PancakeEditor.Common
                 if (tex != null) return tex;
                 tex = Editor.ConvertToTexture(
                     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAD1BMVEVEREQlJSUtLS0mJiY4ODhE6guiAAAAJ0lEQVQI12NwMhQEAmEVBiUGEABSBhAGM4MAhMFIdQbcCrilcGcAAP3gA3XIoRcnAAAAAElFTkSuQmCC");
-                TextureCached.Add(nameof(BoxBackgroundDark), tex);
+                TextureCached[nameof(BoxBackgroundDark)] = tex;
                 return tex;
             }
         }
@@ -67,7 +67,7 @@ namespace PancakeEditor.Common
 
                 if (tex != null) return tex;
                 tex = Editor.ConvertToTexture("iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFAQMAAAC3obSmAAAAA1BMVEVEREQ1TRdOAAAACklEQVQI12OAAwAACgABaQY5MgAAAABJRU5ErkJggg==");
-                TextureCached.Add(nameof(EvenBackground), tex);
+                TextureCached[nameof(EvenBackground)] = tex;
                 return tex;
             }
         }
@@ -80,7 +80,7 @@ namespace PancakeEditor.Common
 
                 if (tex != null) return tex;
                 tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_current.png", RELATIVE_PATH);
-                TextureCached.Add(nameof(TreeMapCurrent), tex);
+                TextureCached[nameof(TreeMapCurrent)] = tex;
                 return tex;
             }
         }
@@ -93,7 +93,7 @@ namespace PancakeEditor.Common
 
                 if (tex != null) return tex;
                 tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_last.png", RELATIVE_PATH);
-                TextureCached.Add(nameof(TreeMapLast), tex);
+                TextureCached[nameof(TreeMapLast)] = tex;
                 return tex;
             }
         }
@@ -106,7 +106,7 @@ namespace PancakeEditor.Common
 
                 if (tex != null) return tex;
                 tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level.png", RELATIVE_PATH);
-                TextureCached.Add(nameof(TreeMapLevel), tex);
+                TextureCached[nameof(TreeMapLevel)] = tex;
                 return tex;
             }
         }
@@ -119,7 +119,7 @@ namespace PancakeEditor.Common
 
                 if (tex != null) return tex;
                 tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_level4.png", RELATIVE_PATH);
-                TextureCached.Add(nameof(TreeMapLevel4), tex);
+                TextureCached[nameof(TreeMapLevel4)] = tex;
                 return tex;
             }
         }
@@ -132,7 +132,7 @@ namespace PancakeEditor.Common
 
                 if (tex != null) return tex;
                 tex = ProjectDatabase.FindAssetWithPath<Texture2D>("tree_map_line.png", RELATIVE_PATH);
-                TextureCached.Add(nameof(TreeMapLine), tex);
+                TextureCached[nameof(TreeMapLine)] = tex;
                 return tex;
             }
         }
@@ -151,7 +151,7 @@ namespace PancakeEditor.Common
 
             if (tex != null) return tex;
             tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_copy.png" : "icon_copy_dark.png", RELATIVE_PATH);
-            TextureCached.Add($"{nameof(IconCopyComponent)}{theme}", tex);
+            TextureCached[$"{nameof(IconCopyComponent)}{theme}"] = tex;
             return tex;
         }
 
@@ -161,7 +161,7 @@ namespace PancakeEditor.Common
 
             if (tex != null) return tex;
             tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_arrow_down.png" : "icon_arrow_down_dark.png", RELATIVE_PATH);
-            TextureCached.Add($"{nameof(IconMoveDown)}{theme}", tex);
+            TextureCached[$"{nameof(IconMoveDown)}{theme}"] = tex;
             return tex;
         }
 
@@ -171,7 +171,7 @@ namespace PancakeEditor.Common
 
             if (tex != null) return tex;
             tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_arrow_up.png" : "icon_arrow_up_dark.png", RELATIVE_PATH);
-            TextureCached.Add($"{nameof(IconMoveUp)}{theme}", tex);
+            TextureCached[$"{nameof(IconMoveUp)}{theme}"] = tex;
             return tex;
         }
 
@@ -181,7 +181,7 @@ namespace PancakeEditor.Common
 
             if (tex != null) return tex;
             tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_paste.png" : "icon_paste_dark.png", RELATIVE_PATH);
-            TextureCached.Add($"{nameof(IconPasteComponentValues)}{theme}", tex);
+            TextureCached[$"{nameof(IconPasteComponentValues)}{theme}"] = tex;
             return tex;
         }
 
@@ -191,7 +191,7 @@ namespace PancakeEditor.Common
 
             if (tex != null) return tex;
             tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_remove.png" : "icon_remove_dark.png", RELATIVE_PATH);
-            TextureCached.Add($"{nameof(IconRemoveComponent)}{theme}", tex);
+            TextureCached[$"{nameof(IconRemoveComponent)}{theme}"] = tex;
             return tex;
         }
 

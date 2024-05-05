@@ -33,7 +33,6 @@ namespace PancakeEditor
             Firebase,
             GameService,
             HeartSetting,
-            HierarchySetting,
             InAppPurchase,
             LevelSystem,
             Localization,
@@ -67,8 +66,7 @@ namespace PancakeEditor
             Scriptable = WizardAllType.Scriptable,
             LevelSystem = WizardAllType.LevelSystem,
             ScreenSetting = WizardAllType.ScreenSetting,
-            Texture = WizardAllType.Texture,
-            HierarchySetting = WizardAllType.HierarchySetting
+            Texture = WizardAllType.Texture
         }
 
         public enum LocaleTabType
@@ -383,9 +381,6 @@ namespace PancakeEditor
                 case WizardAllType.Texture when _currentType is WizardType.Setting or WizardType.All:
                     TextureWindow.OnInspectorGUI(ref _spriteAtlas, this);
                     break;
-                case WizardAllType.HierarchySetting when _currentType is WizardType.Setting or WizardType.All:
-                    HierarchyWindow.OnInspectorGUI();
-                    break;
                 case WizardAllType.Build when _currentType is WizardType.Tools or WizardType.All:
                     BuildWindow.OnInspectorGUI(ref _currentAndroidBuildPipeline);
                     break;
@@ -466,7 +461,7 @@ namespace PancakeEditor
                 WizardAllType.HeartSetting or WizardAllType.ScreenSetting => EditorResources.IconSetting,
                 WizardAllType.LevelSystem => EditorResources.IconLevelSytem,
                 WizardAllType.Texture => EditorResources.IconAtlas,
-                WizardAllType.Scriptable or WizardAllType.HierarchySetting => EditorResources.IconEditorSetting,
+                WizardAllType.Scriptable => EditorResources.IconEditorSetting,
                 WizardAllType.Spine => EditorResources.IconSpine,
                 WizardAllType.Build => EditorResources.IconUnity,
                 WizardAllType.OtherPackage => EditorResources.IconPackage,

@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.annulusgames.alchemy": {
-      "version": "https://github.com/AnnulusGames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
+      "version": "https://github.com/pancake-llc/Alchemy.git?path=/Alchemy/Assets/Alchemy",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "5fef637954b6886c055a0d893b070470cf2c295c"
+      "hash": "2c652e5abcc53a75990d72cc51027d03a027e359"
     },
     "com.annulusgames.lit-motion": {
       "version": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
