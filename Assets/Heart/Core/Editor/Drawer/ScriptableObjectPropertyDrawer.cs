@@ -5,10 +5,10 @@ using UnityEngine;
 using Editor = UnityEditor.Editor;
 using Object = UnityEngine.Object;
 
-namespace PancakeEditor.Scriptable
+namespace PancakeEditor
 {
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
-    public class ScriptableBasePropertyDrawer : PropertyDrawer
+    public class ScriptableObjectPropertyDrawer : PropertyDrawer
     {
         private Editor _editor;
 
@@ -33,7 +33,7 @@ namespace PancakeEditor.Scriptable
             EditorGUI.EndProperty();
         }
 
-        protected void DrawIfNull(Rect position, SerializedProperty property, GUIContent label)
+        private void DrawIfNull(Rect position, SerializedProperty property, GUIContent label)
         {
             if (fieldInfo.FieldType.IsAbstract)
             {
@@ -63,7 +63,7 @@ namespace PancakeEditor.Scriptable
             EditorGUI.EndProperty();
         }
 
-        protected Rect DrawPropertyField(Rect position, SerializedProperty property, GUIContent label)
+        private Rect DrawPropertyField(Rect position, SerializedProperty property, GUIContent label)
         {
             var rectPosition = position;
             const float propertyWidthRatio = 0.82f;
@@ -75,7 +75,7 @@ namespace PancakeEditor.Scriptable
             return rectPosition;
         }
 
-        protected void DrawIfNotNull(Rect position, SerializedProperty property, GUIContent label, Object targetObject, bool isInCollection)
+        private void DrawIfNotNull(Rect position, SerializedProperty property, GUIContent label, Object targetObject, bool isInCollection)
         {
             var rect = position;
             var labelRect = position;
