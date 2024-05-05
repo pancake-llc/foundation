@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 namespace PancakeEditor.Common
 {
-    using UnityEngine;
-
     public static class TooltipWindow
     {
         private static Event GetCurrent()

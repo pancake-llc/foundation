@@ -1,15 +1,14 @@
 using UnityEditor;
 using UnityEngine;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
 
 namespace Pancake
 {
-    using System.Diagnostics;
-    using Debug = UnityEngine.Debug;
-    using Object = UnityEngine.Object;
-
     /// <summary>
-    /// Class to log only in Unity editor, double clicking console logs produced by this class still open the calling source file)
-    /// NOTE: Implement your own version of this is supported. Just implement a class named "DebugEditor" and any method inside this class starting with "Log" will, when double clicked, open the file of the calling method. Use [Conditional] attributes to control when any of these methods should be included.
+    /// Class to log only in Unity editor, double-clicking console logs produced by this class still open the calling source file
+    /// NOTE: Implement your own version of this is supported. Just implement a class named "DebugEditor" and any method inside this class starting with "Log" will, when double-clicked, open the file of the calling method. Use [Conditional] attributes to control when any of these methods should be included.
     /// </summary>
     public static class DebugEditor
     {
