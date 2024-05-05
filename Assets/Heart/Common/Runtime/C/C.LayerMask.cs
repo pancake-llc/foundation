@@ -19,5 +19,17 @@ namespace Pancake.Common
         /// <param name="gameobject"></param>
         /// <returns></returns>
         public static bool Contains(this LayerMask mask, GameObject gameobject) { return (mask.value & (1 << gameobject.layer)) > 0; }
+
+        /// <summary>
+        /// Return LayerMask value of name layer
+        /// </summary>
+        /// <param name="nameLayer"></param>
+        /// <returns></returns>
+        public static int AsLayerMask(this string nameLayer)
+        {
+            var resultMask = 0;
+            if (LayerMask.NameToLayer(nameLayer) != -1) resultMask |= 1 << LayerMask.NameToLayer(nameLayer);
+            return resultMask;
+        }
     }
 }
