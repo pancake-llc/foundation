@@ -7,5 +7,6 @@
         MoveDown,
         PasteComponentValue,
         CopyComponent,
+        LoadComponent
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using Pancake;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEditorInternal;
@@ -23,6 +25,8 @@ namespace PancakeEditor.ComponentHeader
                     return EditorResources.IconPasteComponentValues(Uniform.Theme);
                 case ButtonType.CopyComponent:
                     return EditorResources.IconCopyComponent(Uniform.Theme);
+                case ButtonType.LoadComponent:
+                    return EditorResources.IconLightComponent(Uniform.Theme);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null);
             }
@@ -38,14 +42,35 @@ namespace PancakeEditor.ComponentHeader
             var moveDownElement = imageCreator.CreateButton(ButtonType.MoveDown, x => ComponentUtility.MoveComponentDown(x));
             var copyComponentElement = imageCreator.CreateButton(ButtonType.CopyComponent, CopyComponent);
             var pasteComponentValuesElement = imageCreator.CreateButton(ButtonType.PasteComponentValue, PasteComponentValues);
+            var loadComponentElement = imageCreator.CreateButton(ButtonType.LoadComponent, LoadComponent);
 
             container.Add(removeComponentImage);
             container.Add(moveUpElement);
             container.Add(moveDownElement);
             container.Add(pasteComponentValuesElement);
             container.Add(copyComponentElement);
+            container.Add(loadComponentElement);
 
             return container;
+        }
+
+        private static void LoadComponent(Component component)
+        {
+            if (component.GetType().IsSubclassOf(typeof(GameComponent)))
+            {
+                var methodInfo = component.GetType().GetMethod("OnLoadComponents", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (methodInfo != null)
+                {
+                    methodInfo.Invoke(component, null);
+                    TooltipWindow.Show("Component Loaded!");
+                }
+
+                EditorUtility.SetDirty(component);
+            }
+            else
+            {
+                TooltipWindow.Show("Nothing happens because it doesn't inherit from GameComponent!");
+            }
         }
 
         private static void CopyComponent(Component component)

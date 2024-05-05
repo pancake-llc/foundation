@@ -194,6 +194,16 @@ namespace PancakeEditor.Common
             TextureCached[$"{nameof(IconRemoveComponent)}{theme}"] = tex;
             return tex;
         }
+        
+        public static Texture2D IconLightComponent(string theme)
+        {
+            TextureCached.TryGetValue($"{nameof(IconLightComponent)}{theme}", out var tex);
+
+            if (tex != null) return tex;
+            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_light.png" : "icon_light_dark.png", RELATIVE_PATH);
+            TextureCached[$"{nameof(IconLightComponent)}{theme}"] = tex;
+            return tex;
+        }
 
         public static TextAsset ScriptableEventListenerTemplate =>
             ProjectDatabase.FindAssetWithPath<TextAsset>("ScriptableEventListenerTemplate.cs.txt", RELATIVE_TEMPLATE_PATH);
