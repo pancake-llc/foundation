@@ -1,9 +1,7 @@
-
 using UnityEngine;
 
 namespace Pancake
 {
-
     [EditorIcon("icon_default")]
     public class RuntimeInitializer : GameComponent
     {
