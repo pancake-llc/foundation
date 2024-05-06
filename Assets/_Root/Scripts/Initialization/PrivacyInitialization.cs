@@ -18,7 +18,7 @@ namespace Pancake.SceneFlow
             SkAdNetworkBinding.SkAdNetworkUpdateConversionValue(HeartSettings.SkAdConversionValue);
 #endif
 
-            if (HeartSettings.EnablePrivacyFirstOpen && !Data.Load<bool>(Invariant.USER_AGREE_PRIVACY_KEY)) ShowPrivacy();
+            if (HeartSettings.EnablePrivacyFirstOpen && !Data.Load<bool>("user_agree_privacy")) ShowPrivacy();
             else
             {
                 RequestAuthorizationTracking();
@@ -52,7 +52,7 @@ namespace Pancake.SceneFlow
         {
             if (status)
             {
-                if (!Data.Load<bool>(Invariant.USER_AGREE_PRIVACY_KEY)) ShowPrivacy();
+                if (!Data.Load<bool>("user_agree_privacy")) ShowPrivacy();
             }
         }
 
@@ -70,7 +70,7 @@ namespace Pancake.SceneFlow
                 () =>
                 {
                     Time.timeScale = 1;
-                    Data.Save(Invariant.USER_AGREE_PRIVACY_KEY, true);
+                    Data.Save("user_agree_privacy", true);
                     App.RemoveFocusCallback(PrivacyPolicyValidate);
 
                     // Show ATT
@@ -89,7 +89,7 @@ namespace Pancake.SceneFlow
                 () =>
                 {
                     Time.timeScale = 1;
-                    Data.Save(Invariant.USER_AGREE_PRIVACY_KEY, true);
+                    Data.Save("user_agree_privacy", true);
                     App.RemoveFocusCallback(PrivacyPolicyValidate);
 
                     // Show ATT

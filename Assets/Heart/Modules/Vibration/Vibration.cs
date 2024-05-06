@@ -54,9 +54,9 @@ public static class Vibration
 
 #endif
 
-    private static bool initialized = false;
+    private static bool initialized;
 
-    public static bool EnableVibration { get => Data.Load(Invariant.SETTING_VIBRATE_STATE, true); set => Data.Save(Invariant.SETTING_VIBRATE_STATE, value); }
+    public static bool EnableVibration { get => Data.Load("setting_vibrate_state", true); set => Data.Save("setting_vibrate_state", value); }
 
     public static void Init()
     {
