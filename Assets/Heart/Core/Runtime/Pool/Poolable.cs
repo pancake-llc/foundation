@@ -5,7 +5,7 @@ using Pancake.Common;
 namespace Pancake
 {
     [DisallowMultipleComponent]
-    [EditorIcon("cs")]
+    [EditorIcon("icon_default")]
     internal sealed class Poolable : MonoBehaviour
     {
         private IPoolable[] _poolables = Array.Empty<IPoolable>();

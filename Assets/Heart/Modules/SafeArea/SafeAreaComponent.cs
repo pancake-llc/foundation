@@ -5,7 +5,6 @@ using UnityEngine;
 namespace Pancake.SafeArea
 {
     [EditorIcon("so_blue_area")]
-
     public sealed class SafeAreaComponent : SafeAreaBase
     {
         [Flags]

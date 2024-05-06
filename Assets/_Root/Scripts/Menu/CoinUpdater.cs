@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Pancake.SceneFlow
 {
-    [EditorIcon("cs")]
+    [EditorIcon("icon_default")]
     public class CoinUpdater : GameComponent
     {
         [Blockquote("Update text coin with current coin of user")] [SerializeField]
