@@ -5,11 +5,11 @@ namespace Pancake
     [EditorIcon("so_blue_setting")]
     public class HeartSettings : ScriptableSettings<HeartSettings>
     {
-        [SerializeField] private bool debugView;
+        [Header("Runtime"), SerializeField] private bool debugView;
         [SerializeField] private bool enablePrivacyFirstOpen;
         [SerializeField] private bool enableMultipleTouch;
         [SerializeField] private bool requireInternet;
-        [SerializeField] private TargetFrameRate targetFrameRate;
+        [SerializeField] private TargetFrameRate targetFrameRate = TargetFrameRate.Frame60;
         [SerializeField] private string privacyUrl;
         [SerializeField] private string privacyTitle;
         [TextArea(3, 6)] [SerializeField] private string privacyMessage;

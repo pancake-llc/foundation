@@ -26,7 +26,12 @@ namespace Pancake.SceneFlow
 
         private void Awake()
         {
+#if UNITY_EDITOR
+            Application.targetFrameRate = (int) HeartEditorSettings.TargetFrameRate;
+#else
             Application.targetFrameRate = (int) HeartSettings.TargetFrameRate;
+#endif
+
             Input.multiTouchEnabled = HeartSettings.EnableMultipleTouch;
             if (requireInitLocalization)
             {

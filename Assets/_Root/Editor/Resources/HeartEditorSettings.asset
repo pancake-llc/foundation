@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: HeartEditorSettings
   m_EditorClassIdentifier: 
   nameCreationMode: 0
+  targetFrameRate: -1
