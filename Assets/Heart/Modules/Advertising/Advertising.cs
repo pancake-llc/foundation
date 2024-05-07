@@ -1,25 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using Alchemy.Inspector;
 #if PANCAKE_ADMOB
 using GoogleMobileAds.Ump.Api;
 #endif
 
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
     public class Advertising : GameComponent
     {
+        private static event Action<string> ChangeNetworkEvent;
+        private static event Action<bool> ChangePreventDisplayAppOpenEvent;
+        private static event Action ShowGdprAgainEvent;
+        private static event Action GdprResetEvent;
+
         private AdClient _adClient;
+
         [SerializeField] private AdSettings adSettings;
-        [SerializeField] private ScriptableEventString changeNetworkEvent;
-        [SerializeField] private ScriptableEventBool changePreventDisplayAppOpenEvent;
-#if PANCAKE_ADMOB
-        [SerializeField, LabelText("Show GDPR Again Event")] private ScriptableEventNoParam showGdprAgainEvent;
-        [SerializeField, LabelText("GDPR Reset Event")] private ScriptableEventNoParam gdprResetEvent;
-#endif
 
         private IEnumerator _autoLoadAdCoroutine;
         private float _lastTimeLoadInterstitialAdTimestamp = DEFAULT_TIMESTAMP;
@@ -34,8 +33,8 @@ namespace Pancake.Monetization
             if (adSettings.Gdpr)
             {
 #if PANCAKE_ADMOB
-                if (showGdprAgainEvent != null) showGdprAgainEvent.OnRaised += LoadAndShowConsentForm;
-                if (gdprResetEvent != null) gdprResetEvent.OnRaised += GdprReset;
+                ShowGdprAgainEvent += LoadAndShowConsentForm;
+                GdprResetEvent += GdprReset;
                 var request = new ConsentRequestParameters {TagForUnderAgeOfConsent = false};
                 if (adSettings.GdprTestMode)
                 {
@@ -52,8 +51,8 @@ namespace Pancake.Monetization
                 InternalInitAd();
             }
 
-            if (changeNetworkEvent != null) changeNetworkEvent.OnRaised += OnChangeNetworkCallback;
-            if (changePreventDisplayAppOpenEvent != null) changePreventDisplayAppOpenEvent.OnRaised += OnChangePreventDisplayOpenAd;
+            ChangeNetworkEvent += OnChangeNetworkCallback;
+            ChangePreventDisplayAppOpenEvent += OnChangePreventDisplayOpenAd;
         }
 
         private void InternalInitAd()
@@ -183,11 +182,18 @@ namespace Pancake.Monetization
             _lastTimeLoadAppOpenTimestamp = Time.realtimeSinceStartup;
         }
 
+        public static void ChangeNetwork(string network) { ChangeNetworkEvent?.Invoke(network); }
+        public static void ChangePreventDisplayAppOpen(bool status) { ChangePreventDisplayAppOpenEvent?.Invoke(status); }
+        public static void ShowGdprAgain() { ShowGdprAgainEvent?.Invoke(); }
+        public static void ResetGdpr() { GdprResetEvent?.Invoke(); }
+
         private void OnDisable()
         {
+            ChangeNetworkEvent -= OnChangeNetworkCallback;
+            ChangePreventDisplayAppOpenEvent -= OnChangePreventDisplayOpenAd;
 #if PANCAKE_ADMOB
-            if (showGdprAgainEvent != null) showGdprAgainEvent.OnRaised -= LoadAndShowConsentForm;
-            if (gdprResetEvent != null) gdprResetEvent.OnRaised -= GdprReset;
+            ShowGdprAgainEvent -= LoadAndShowConsentForm;
+            GdprResetEvent -= GdprReset;
 #endif
         }
 

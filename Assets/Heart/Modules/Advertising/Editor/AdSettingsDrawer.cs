@@ -157,14 +157,15 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.HelpBox("Admob plugin not found", MessageType.Warning);
                 GUI.backgroundColor = Color.white;
 
+                EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
 
                 bool googleMobileAdsInstalled = File.Exists("Assets/GoogleMobileAds/GoogleMobileAds.dll");
-                var contentInstallLabel = "Install Admob SDK v9.0.0 (1)";
+                var contentInstallLabel = "Install Admob SDK v9.1.0 (1)";
                 if (googleMobileAdsInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Admob SDK v9.0.0 Installed (1)";
+                    contentInstallLabel = "Admob SDK v9.1.0 Installed (1)";
                 }
                 else
                 {
@@ -181,7 +182,7 @@ namespace Pancake.MonetizationEditor
                 if (googleMobileAdsInstalled) GUI.color = Uniform.Green;
 
                 GUI.enabled = googleMobileAdsInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, -10, 0)}, GUILayout.Width(52));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 
@@ -243,6 +244,7 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.HelpBox("Applovin plugin not found", MessageType.Warning);
                 GUI.backgroundColor = Color.white;
 
+                EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
                 bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
                 var contentInstallLabel = "Install Applovin v6.2.1 (1)";
@@ -265,7 +267,7 @@ namespace Pancake.MonetizationEditor
                 var previousColor = GUI.color;
                 if (applovinInstalled) GUI.color = Uniform.Green;
                 GUI.enabled = applovinInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 5, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, -10, 0)}, GUILayout.Width(52));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 

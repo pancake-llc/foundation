@@ -17,7 +17,8 @@ namespace PancakeEditor.Common
                 "com.annulusgames.component-cache-generator",
                 "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator"
             },
-            {"jp.hadashikick.vcontainer", "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#1.15.4"}
+            {"jp.hadashikick.vcontainer", "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#1.15.4"},
+            {"jp.hadashikick.vitalrouter", "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.2"}
         };
 
         protected override Dictionary<string, string> Dependencies => InternalDependencies;
