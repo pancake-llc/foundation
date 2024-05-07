@@ -7,14 +7,18 @@ namespace Pancake.ComputationalGeometry
     //Help enum in case we need to return something else than a bool
     public enum LeftOnRight
     {
-        Left, On, Right
-    }
-    public enum OutsideOnInside
-    {
-        Outside, On, Inside
+        Left,
+        On,
+        Right
     }
 
-    
+    public enum OutsideOnInside
+    {
+        Outside,
+        On,
+        Inside
+    }
+
 
     public static class _Geometry
     {
@@ -66,7 +70,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Calculate the center of circle in 3d space given three coordinates
         //
@@ -83,7 +86,7 @@ namespace Pancake.ComputationalGeometry
             toCircumsphereCenter += MyVector3.Cross(ac, abXac) * Mathf.Pow(MyVector3.Magnitude(ab), 2f);
 
             toCircumsphereCenter *= (1f / (2f * Mathf.Pow(MyVector3.Magnitude(abXac), 2f)));
-            
+
             float circumsphereRadius = MyVector3.Magnitude(toCircumsphereCenter);
 
             //The circumsphere center becomes
@@ -91,7 +94,6 @@ namespace Pancake.ComputationalGeometry
 
             return ccs;
         }
-
 
 
         //
@@ -103,7 +105,6 @@ namespace Pancake.ComputationalGeometry
 
             return center;
         }
-
 
 
         //
@@ -124,7 +125,6 @@ namespace Pancake.ComputationalGeometry
 
             return isClockWise;
         }
-
 
 
         //
@@ -188,7 +188,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Point-plane relations
         //
@@ -220,7 +219,7 @@ namespace Pancake.ComputationalGeometry
 
         //3d
         //Outside means in the planes normal direction
-        public static bool IsPointOutsidePlane(MyVector3 pointPos, Plane3 plane) 
+        public static bool IsPointOutsidePlane(MyVector3 pointPos, Plane3 plane)
         {
             float distance = GetSignedDistanceFromPointToPlane(pointPos, plane);
 
@@ -258,7 +257,6 @@ namespace Pancake.ComputationalGeometry
                 return OutsideOnInside.On;
             }
         }
-
 
 
         //
@@ -312,7 +310,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Is a point p between point a and b (we assume all 3 are on the same line)
         //
@@ -335,7 +332,6 @@ namespace Pancake.ComputationalGeometry
 
             return isBetween;
         }
-
 
 
         //
@@ -377,7 +373,7 @@ namespace Pancake.ComputationalGeometry
 
             //This point may not be on the line segment, if so return one of the end points
             float epsilon = MathUtility.EPSILON;
-            
+
             if (withinSegment && distance < 0f - epsilon)
             {
                 return a;
@@ -428,7 +424,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Create a supertriangle that contains all other points
         //According to the book "Geometric tools for computer graphics" a reasonably sized triangle
         //is one that contains a circle that contains the axis-aligned bounding rectangle of the points 
@@ -463,13 +458,12 @@ namespace Pancake.ComputationalGeometry
 
             MyVector2 t_T = new MyVector2(circleCenter.x, t_B.y + triangleHeight);
 
-            
+
             //The final triangle
             Triangle2 superTriangle = new Triangle2(t_BR, t_BL, t_T);
 
             return superTriangle;
         }
-
 
 
         //
@@ -503,7 +497,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Calculate the normal of a clock-wise oriented triangle in 3d space
         //
@@ -518,7 +511,6 @@ namespace Pancake.ComputationalGeometry
 
             return normal;
         }
-
 
 
         //

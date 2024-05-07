@@ -13,7 +13,7 @@ namespace PancakeEditor.Common
         public const float BUTTON_HEIGHT = 30f;
         public const string DEFAULT_RESOURCE_PATH = "Assets/_Root/Resources";
         public const string DEFAULT_EDITOR_RESOURCE_PATH = "Assets/_Root/Editor/Resources";
-        
+
         public static Rect GetInnerGuiPosition(SceneView sceneView)
         {
             var position = sceneView.position;
@@ -431,20 +431,14 @@ namespace PancakeEditor.Common
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToCamelCase(this string source)
-        {
-            return new CamelCaseNamingStrategy().GetPropertyName(source, false);
-        }
+        public static string ToCamelCase(this string source) { return new CamelCaseNamingStrategy().GetPropertyName(source, false); }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToSnakeCase(this string source)
-        {
-            return new SnakeCaseNamingStrategy().GetPropertyName(source, false);
-        }
+        public static string ToSnakeCase(this string source) { return new SnakeCaseNamingStrategy().GetPropertyName(source, false); }
 
         public static bool IsSerializable(Type type)
         {
@@ -808,7 +802,7 @@ namespace PancakeEditor.Common
         public static bool GetEditorBool(string key, bool defaultValue) { return EditorPrefs.GetBool($"{Application.identifier}_{key}", defaultValue); }
 
         public static void SetEditorBool(string key, bool value) { EditorPrefs.SetBool($"{Application.identifier}_{key}", value); }
-        
+
         /// <summary>
         /// Deletes an object after showing a confirmation dialog.
         /// </summary>

@@ -105,7 +105,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Different boolean operations
         //

@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-
 using UnityEngine;
 
 
 namespace Pancake.Monetization
 {
-
     [EditorIcon("so_blue_setting")]
     public class AdSettings : ScriptableObject
     {

@@ -34,33 +34,25 @@ namespace RedBlueGames.MulliganRenamer
     {
         private static readonly string[] UppercaseAlphabet = new string[]
         {
-            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
-            "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
         };
 
         private static readonly string[] LowercaseAlphabet = new string[]
         {
-            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-            "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
         };
 
-        [SerializeField]
-        private string[] countSequence;
+        [SerializeField] private string[] countSequence;
 
-        [SerializeField]
-        private int startingCount;
+        [SerializeField] private int startingCount;
 
-        [SerializeField]
-        private int increment;
+        [SerializeField] private int increment;
 
-        [SerializeField]
-        private bool doNotCarryOver;
+        [SerializeField] private bool doNotCarryOver;
 
-        [SerializeField]
-        private bool prepend;
+        [SerializeField] private bool prepend;
 
-        [SerializeField]
-        private StringPreset preset;
+        [SerializeField] private StringPreset preset;
 
         /// <summary>
         /// Presets of possible strings to use instead of custom strings
@@ -126,90 +118,37 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Gets or sets the starting count which offsets all letter assignments.
         /// </summary>
-        public int StartingCount
-        {
-            get
-            {
-                return this.startingCount;
-            }
-
-            set
-            {
-                this.startingCount = value;
-            }
-        }
+        public int StartingCount { get { return this.startingCount; } set { this.startingCount = value; } }
 
         /// <summary>
         /// Gets or sets the increment to use when counting.
         /// </summary>
-        public int Increment
-        {
-            get
-            {
-                return this.increment;
-            }
-
-            set
-            {
-                this.increment = value;
-            }
-        }
+        public int Increment { get { return this.increment; } set { this.increment = value; } }
 
         /// <summary>
         /// Gets or sets a value indicating whether this
         /// <see cref="T:RedBlueGames.MulliganRenamer.CountByLetterOperation"/> should not carry
         /// over the sequence to another "digit".
         /// </summary>
-        public bool DoNotCarryOver
-        {
-            get
-            {
-                return this.doNotCarryOver;
-            }
-
-            set
-            {
-                this.doNotCarryOver = value;
-            }
-        }
+        public bool DoNotCarryOver { get { return this.doNotCarryOver; } set { this.doNotCarryOver = value; } }
 
         /// <summary>
         /// Gets or sets a value indicating whether this
         /// <see cref="T:RedBlueGames.MulliganRenamer.CountByLetterOperation"/> should prepend the count
         /// to the front of the string
         /// </summary>
-        public bool Prepend
-        {
-            get
-            {
-                return this.prepend;
-            }
-
-            set
-            {
-                this.prepend = value;
-            }
-        }
+        public bool Prepend { get { return this.prepend; } set { this.prepend = value; } }
 
         /// <summary>
         /// Gets the current Preset to use for letter counting
         /// </summary>
-        public StringPreset Preset
-        {
-            get
-            {
-                return this.preset;
-            }
-        }
+        public StringPreset Preset { get { return this.preset; } }
 
         /// <summary>
         /// Checks if this RenameOperation has errors in its configuration.
         /// </summary>
         /// <returns><c>true</c>, if operation has errors, <c>false</c> otherwise.</returns>
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Clone this instance.
@@ -288,10 +227,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Sets a preset to use when counting.
         /// </summary>
         /// <param name="countPreset">Preset of strings to use when counting.</param>
-        public void SetCountSequencePreset(StringPreset countPreset)
-        {
-            this.preset = countPreset;
-        }
+        public void SetCountSequencePreset(StringPreset countPreset) { this.preset = countPreset; }
 
         /// <summary>
         /// Gets the hash code for the operation

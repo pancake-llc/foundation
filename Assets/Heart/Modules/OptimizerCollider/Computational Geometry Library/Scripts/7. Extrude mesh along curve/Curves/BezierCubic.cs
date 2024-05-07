@@ -10,7 +10,9 @@ namespace Pancake.ComputationalGeometry
     {
         //Start and end points
         public MyVector3 posA;
+
         public MyVector3 posB;
+
         //Handles connected to the start and end points
         public MyVector3 handlePosA;
         public MyVector3 handlePosB;
@@ -32,7 +34,11 @@ namespace Pancake.ComputationalGeometry
 
         public override MyVector3 GetPosition(float t)
         {
-            MyVector3 interpolatedValue = GetPosition(posA, posB, handlePosA, handlePosB, t);
+            MyVector3 interpolatedValue = GetPosition(posA,
+                posB,
+                handlePosA,
+                handlePosB,
+                t);
 
             return interpolatedValue;
         }
@@ -84,13 +90,12 @@ namespace Pancake.ComputationalGeometry
             finalInterpolation += -t * (3f * (A - B));
 
             finalInterpolation += Mathf.Pow(t, 2f) * (3f * (A - 2f * B + C));
-            
+
             //t^3 -> cubic 
             finalInterpolation += Mathf.Pow(t, 3f) * (-(A - 3f * (B - C) - D));
 
             return finalInterpolation;
         }
-
 
 
         //
@@ -111,18 +116,25 @@ namespace Pancake.ComputationalGeometry
 
             //Alternative 2
             //The tangent is also the derivative vector
-            MyVector3 tangent = MyVector3.Normalize(GetDerivativeVec(posA, posB, handlePosA, handlePosB, t));
+            MyVector3 tangent = MyVector3.Normalize(GetDerivativeVec(posA,
+                posB,
+                handlePosA,
+                handlePosB,
+                t));
 
             return tangent;
         }
 
         public override MyVector3 GetTangent(float t)
         {
-            MyVector3 tangent = GetTangent(posA, posB, handlePosA, handlePosB, t);
+            MyVector3 tangent = GetTangent(posA,
+                posB,
+                handlePosA,
+                handlePosB,
+                t);
 
             return tangent;
         }
-
 
 
         //
@@ -136,7 +148,11 @@ namespace Pancake.ComputationalGeometry
             //float derivative = InterpolationHelpMethods.EstimateDerivative(this, t);
 
             //Alternative 2. Exact
-            MyVector3 derivativeVec = GetDerivativeVec(posA, posB, handlePosA, handlePosB, t);
+            MyVector3 derivativeVec = GetDerivativeVec(posA,
+                posB,
+                handlePosA,
+                handlePosB,
+                t);
 
             float derivative = MyVector3.Magnitude(derivativeVec);
 
@@ -189,7 +205,11 @@ namespace Pancake.ComputationalGeometry
 
         public override MyVector3 GetSecondDerivativeVec(float t)
         {
-            return GetSecondDerivativeVec(posA, posB, handlePosA, handlePosB, t);
+            return GetSecondDerivativeVec(posA,
+                posB,
+                handlePosA,
+                handlePosB,
+                t);
         }
     }
 }

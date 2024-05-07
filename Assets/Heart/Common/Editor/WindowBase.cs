@@ -21,9 +21,6 @@ namespace PancakeEditor.Common
 
         protected virtual void Init() { }
 
-        protected virtual void OnGUI()
-        {
-            Uniform.DrawFooter("\u00a9 2024 pancake-llc");
-        }
+        protected virtual void OnGUI() { Uniform.DrawFooter("\u00a9 2024 pancake-llc"); }
     }
 }

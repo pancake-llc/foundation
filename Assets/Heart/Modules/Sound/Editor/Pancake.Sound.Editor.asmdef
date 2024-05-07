@@ -1,21 +1,21 @@
 {
-    "name": "Pancake.Sound.Editor",
-    "rootNamespace": "",
-    "references": [
-        "GUID:f4bbbe38ed06eef458a5b3516216a659",
-        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
-        "GUID:5a5bdc0387f898e429d96457c503426a",
-        "GUID:d8912e81233de99449df74c45fe416da"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Pancake.Sound.Editor",
+  "rootNamespace": "",
+  "references": [
+    "GUID:f4bbbe38ed06eef458a5b3516216a659",
+    "GUID:b0a110e2f808b4d4d82f5694f91b251a",
+    "GUID:5a5bdc0387f898e429d96457c503426a",
+    "GUID:d8912e81233de99449df74c45fe416da"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

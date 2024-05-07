@@ -34,43 +34,22 @@ namespace RedBlueGames.MulliganRenamer
     [System.Serializable]
     public class AdjustNumberingOperation : IRenameOperation
     {
-        [SerializeField]
-        private int offset;
+        [SerializeField] private int offset;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangeCaseOperation"/> class.
         /// </summary>
-        public AdjustNumberingOperation()
-        {
-            this.offset = 0;
-        }
+        public AdjustNumberingOperation() { this.offset = 0; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangeCaseOperation"/> class by copying another.
         /// </summary>
         /// <param name="operationToCopy">Operation to copy.</param>
-        public AdjustNumberingOperation(AdjustNumberingOperation operationToCopy)
-        {
-            this.Offset = operationToCopy.Offset;
-        }
+        public AdjustNumberingOperation(AdjustNumberingOperation operationToCopy) { this.Offset = operationToCopy.Offset; }
 
-        public int Offset
-        {
-            get
-            {
-                return this.offset;
-            }
+        public int Offset { get { return this.offset; } set { this.offset = value; } }
 
-            set
-            {
-                this.offset = value;
-            }
-        }
-
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Clone this instance.
@@ -123,10 +102,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets the hash code for the operation
         /// </summary>
         /// <returns>A unique hash code from the values</returns>
-        public override int GetHashCode()
-        {
-            return this.Offset.GetHashCode();
-        }
+        public override int GetHashCode() { return this.Offset.GetHashCode(); }
 
         /// <summary>
         /// Returns whether or not this rename operation is equal to another and returns the result.

@@ -13,7 +13,7 @@ namespace Pancake.MobileInput
         /// Action raised when this event is raised.
         /// </summary>
         public event Action<Vector3, bool, bool> OnRaised { add => _onRaised += value; remove => _onRaised -= value; }
-        
+
         /// <summary>
         /// Raise the event
         /// </summary>

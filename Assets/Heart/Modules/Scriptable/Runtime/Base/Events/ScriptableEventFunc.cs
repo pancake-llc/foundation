@@ -66,7 +66,7 @@ namespace Pancake.Scriptable
             allObjects.AddRange(_listenerObjects);
             return allObjects;
         }
-        
+
         private void Debug()
         {
             var delegates = _onRaised.GetInvocationList();

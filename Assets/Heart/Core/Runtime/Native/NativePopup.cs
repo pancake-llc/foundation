@@ -46,7 +46,7 @@ namespace Pancake
                 declineAction);
         }
 
-        public static void ShowToast(string message, ToastStyle style = ToastStyle.Short) { MobileNative.ShowToast(message, (int)style); }
+        public static void ShowToast(string message, ToastStyle style = ToastStyle.Short) { MobileNative.ShowToast(message, (int) style); }
 
         public enum ToastStyle
         {
@@ -54,9 +54,6 @@ namespace Pancake
             Long = 1,
         }
 
-        public static void DismissCurrentAlert()
-        {
-            MobileNative.DismissCurrentAlert();
-        }
+        public static void DismissCurrentAlert() { MobileNative.DismissCurrentAlert(); }
     }
 }

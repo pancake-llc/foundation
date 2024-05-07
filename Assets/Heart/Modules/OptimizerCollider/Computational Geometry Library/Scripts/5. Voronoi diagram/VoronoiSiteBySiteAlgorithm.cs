@@ -12,12 +12,11 @@
 //    public static List<Cell> GenerateVoronoiDiagram(List<Vector3> sites, float halfWidth, int breakInt)
 //    {
 //        bool isDebugOn = false;
-    
+
 //        //Initialize edges and cells to be empty
 //        List<Edge> edges = new List<Edge>();
 
 //        List<Cell> cells = new List<Cell>();
-
 
 
 //        //
@@ -75,7 +74,6 @@
 //        cells.Add(cell4);
 
 
-
 //        //
 //        // Step 2. Add the sites one by one and rebuild the diagram
 //        //
@@ -101,7 +99,7 @@
 
 //                //The position of this vector
 //                Vector3 centerPos = (newCell.cellPos + existingCell.cellPos) * 0.5f;
-                    
+
 
 //                //Create a data structure to hold the critical points and edges to delete
 //                List<Vector3> criticalPoints = new List<Vector3>();
@@ -198,10 +196,10 @@
 //                        //if (relation_p1 >= -tolerance && relation_p1 <= tolerance && relation_p2 >= -tolerance && relation_p2 <= tolerance)
 //                        //{
 //                        //    Debug.Log("On the edge");
-                        
+
 //                        //    continue;
 //                        //}
-                    
+
 //                        Vector3 intersectionPoint = Intersections.GetLinePlaneIntersectionCoordinate(vecBetween, centerPos, edge_p1, edge_p2);
 
 //                        criticalPoints.Add(intersectionPoint);
@@ -238,7 +236,6 @@
 //                            Gizmos.DrawWireSphere(intersectionPoint, 1f);
 //                        }
 //                    }
-
 
 
 //                    if (isDebugOn && breakInt == iteration)
@@ -366,10 +363,9 @@
 //                }
 
 //            }
-            
+
 //            cells.Add(newCell);
 //        }
-
 
 
 //        //
@@ -415,7 +411,6 @@
 //            }
 
 
-
 //            //Connect the edges
 //            List<Vector3> edgesCoordinates = cells[i].borderCoordinates;
 
@@ -447,13 +442,10 @@
 //        }
 
 
-
 //        //
 //        // Step 4 clip edges
 //        //
 //        ClipDiagram(cells, halfWidth);
-
-
 
 
 //        //
@@ -506,7 +498,6 @@
 
 //        return cells;
 //    }
-
 
 
 //    //Clip the Voronoi diagram with a clipping algorithm which is a better solution than the solution suggested on the webpage
@@ -574,3 +565,4 @@
 //        }
 //    }
 //}
+

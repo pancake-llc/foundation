@@ -156,19 +156,13 @@ namespace PancakeEditor
                 }
             }
 
-            public void Draw(Rect r)
-            {
-                tree?.Draw(r);
-            }
+            public void Draw(Rect r) { tree?.Draw(r); }
 
             public bool HasChildren => tree != null && tree._rootItem.childCount > 0;
 
             public bool HasValidTree => _groupDict != null && tree != null;
 
-            public void DrawLayout()
-            {
-                tree?.DrawLayout();
-            }
+            public void DrawLayout() { tree?.DrawLayout(); }
 
             // ----------------- DRAWER WRAPPER ------------------
 
@@ -179,10 +173,7 @@ namespace PancakeEditor
                 return _groupDict.TryGetValue(id, out var group) ? group.Count : 0;
             }
 
-            public override string[] GetChildren(string id)
-            {
-                return _groupDict.TryGetValue(id, out var group) ? group.ToArray() : null;
-            }
+            public override string[] GetChildren(string id) { return _groupDict.TryGetValue(id, out var group) ? group.ToArray() : null; }
 
             public override void Draw(Rect r, TreeItem item)
             {
@@ -226,13 +217,13 @@ namespace PancakeEditor
                 get => isOpen;
                 set
                 {
-                    if (isOpen == value || childCount == 0)  return;
+                    if (isOpen == value || childCount == 0) return;
 
                     isOpen = value;
 
                     if (isOpen)
                     {
-                        if (children == null)  RefreshChildren(tree.drawer.GetChildren(id));
+                        if (children == null) RefreshChildren(tree.drawer.GetChildren(id));
 
                         //Update height for all parents
                         var p = parent;
@@ -258,7 +249,7 @@ namespace PancakeEditor
             internal void DeepOpen()
             {
                 IsOpen = true;
-                if (children == null)  return;
+                if (children == null) return;
 
                 for (var i = 0; i < children.Count; i++)
                 {
@@ -309,7 +300,7 @@ namespace PancakeEditor
                     for (var i = 0; i < children.Count; i++)
                     {
                         children[i].Draw(ref index, ref rect, minY, maxY);
-                        if (rect.y > maxY)  break;
+                        if (rect.y > maxY) break;
                     }
                 }
             }

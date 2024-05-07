@@ -41,21 +41,18 @@ namespace RedBlueGames.MulliganRenamer
 
         private AsyncOp<T> outstandingOp;
 
-        public JSONRetrieverWeb(string uri) : this(UnityWebRequestWrapper.Get(uri))
+        public JSONRetrieverWeb(string uri)
+            : this(UnityWebRequestWrapper.Get(uri))
         {
             Uri uriResult;
-            bool result = Uri.TryCreate(uri, UriKind.Absolute, out uriResult)
-                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            bool result = Uri.TryCreate(uri, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
             if (!result)
             {
                 throw new System.ArgumentException("Invalid URI Format.");
             }
         }
 
-        public JSONRetrieverWeb(IWebRequest requester)
-        {
-            this.requester = requester;
-        }
+        public JSONRetrieverWeb(IWebRequest requester) { this.requester = requester; }
 
         /// <summary>
         /// Request the JSON from the web using the initialized uri. 

@@ -14,7 +14,6 @@ using UnityEngine.AddressableAssets;
 
 namespace Pancake.LevelSystem
 {
-
     [EditorIcon("icon_default")]
     public class LevelCoordinator : GameComponent
     {
@@ -106,9 +105,9 @@ namespace Pancake.LevelSystem
             nextLevelLoaded.Init(index + 1, currentLevelIndex); // write into prefab
             return nextLevelLoaded;
         }
-        
+
         private LevelComponent GetNextLevel() => nextLevelLoaded;
-        
+
         private LevelComponent GetPreviousLevel() => previousLevelLoaded;
 #endif
 

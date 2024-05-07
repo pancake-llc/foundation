@@ -15,18 +15,14 @@ namespace Pancake.UI
 
         private float _cellSizeAverage;
 
-        public override LayoutGroup LayoutGroup
-        {
-            get => _layoutGroup;
-            set => _layoutGroup = value as HorizontalOrVerticalLayoutGroup;
-        }
+        public override LayoutGroup LayoutGroup { get => _layoutGroup; set => _layoutGroup = value as HorizontalOrVerticalLayoutGroup; }
 
         public override float Spacing => _layoutGroup.spacing;
 
         protected override float CalculateBeforeInvisibleAreaSize(float viewportPosMin, out int cellCount)
         {
             cellCount = 0;
-            var areaSize = (float)BeforePadding;
+            var areaSize = (float) BeforePadding;
             while (cellCount < DataCount)
             {
                 // Because the cell work with auto layout, create the cell.
@@ -47,7 +43,7 @@ namespace Pancake.UI
 
         protected override float CalculateAfterInvisibleAreaSize(int startDataIndex)
         {
-            var areaSize = (float)AfterPadding;
+            var areaSize = (float) AfterPadding;
             for (var i = startDataIndex; i < DataCount; i++)
             {
                 if (_cellSizes.TryGetValue(i, out var cellSize))
@@ -61,30 +57,22 @@ namespace Pancake.UI
             return areaSize;
         }
 
-        protected override float GetCellSize(int dataIndex)
-        {
-            return _cellSizes[dataIndex];
-        }
+        protected override float GetCellSize(int dataIndex) { return _cellSizes[dataIndex]; }
 
-        protected override int GetCellCountInGroup()
-        {
-            return 1;
-        }
+        protected override int GetCellCountInGroup() { return 1; }
 
         protected override GameObject CreateCell(int dataIndex)
         {
             var cell = base.CreateCell(dataIndex);
-            var cellTrans = (RectTransform)cell.transform;
+            var cellTrans = (RectTransform) cell.transform;
             var isHorizontal = ScrollDirection == ScrollDirection.Horizontal;
             var layoutElement = cell.GetComponent<ILayoutElement>();
 
             if (layoutElement == null)
                 throw new Exception("RecyclerView cells must have the ILayoutElement.");
 
-            var cellSize = isHorizontal
-                ? LayoutUtility.GetPreferredWidth(cellTrans)
-                : LayoutUtility.GetPreferredHeight(cellTrans);
-            
+            var cellSize = isHorizontal ? LayoutUtility.GetPreferredWidth(cellTrans) : LayoutUtility.GetPreferredHeight(cellTrans);
+
             _cellSizes[dataIndex] = cellSize;
             _cellSizeAverage = _cellSizes.Values.Average();
             return cell;

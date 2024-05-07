@@ -1,6 +1,5 @@
 using System;
 using PancakeEditor.Common;
-
 using Pancake.Sound;
 using Pancake.Tracking;
 using UnityEditor;
@@ -180,6 +179,7 @@ namespace PancakeEditor
                             true);
                     }
                 }
+
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
@@ -196,6 +196,7 @@ namespace PancakeEditor
                             true);
                     }
                 }
+
                 EditorGUILayout.EndHorizontal();
             }
 

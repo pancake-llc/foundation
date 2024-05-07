@@ -60,12 +60,10 @@ namespace Pancake.ComputationalGeometry
                         isIntersecting = true;
                     }
                 }
-
             }
 
             return isIntersecting;
         }
-
 
 
         //Whats the coordinate of the intersection point between two lines in 2d space if we know they are intersecting
@@ -80,7 +78,6 @@ namespace Pancake.ComputationalGeometry
 
             return intersectionPoint;
         }
-
 
 
         //
@@ -102,7 +99,7 @@ namespace Pancake.ComputationalGeometry
 
             return intersectionPoint;
         }
-        
+
         //3d
         private static MyVector3 GetIntersectionCoordinate(Plane3 plane, Ray3 ray)
         {
@@ -116,7 +113,6 @@ namespace Pancake.ComputationalGeometry
 
             return intersectionPoint;
         }
-
 
 
         //
@@ -166,7 +162,6 @@ namespace Pancake.ComputationalGeometry
 
             return intersectionPoint;
         }
-
 
 
         //
@@ -233,7 +228,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Plane-plane intersection
         //
@@ -272,7 +266,6 @@ namespace Pancake.ComputationalGeometry
 
             return intersectionPoint;
         }
-
 
 
         //
@@ -352,7 +345,6 @@ namespace Pancake.ComputationalGeometry
         //}
 
 
-
         //
         // Is a triangle inside a triangle
         //
@@ -362,10 +354,7 @@ namespace Pancake.ComputationalGeometry
             bool isWithin = false;
 
             //Test if each vertex is inside the triangle
-            if (
-                PointTriangle(t2, t1.p1, false) &&
-                PointTriangle(t2, t1.p2, false) &&
-                PointTriangle(t2, t1.p3, false))
+            if (PointTriangle(t2, t1.p1, false) && PointTriangle(t2, t1.p2, false) && PointTriangle(t2, t1.p3, false))
             {
                 isWithin = true;
             }
@@ -374,11 +363,10 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Are two Axis-aligned-bounding-box (boxes are here rectangles) intersecting?
         //
-        
+
         //2d
         public static bool AABB_AABB(AABB2 r1, AABB2 r2)
         {
@@ -410,7 +398,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Is a point intersecting with a circle?
         //
@@ -425,7 +412,7 @@ namespace Pancake.ComputationalGeometry
 
             //The distance sqr from the point to the circle center
             float distPointCenterSqr = MyVector2.SqrDistance(testPoint, circleCenter);
-            
+
             //Add/remove a small value becuse we will never be exactly on the edge because of floating point precision issues
             //Mutiply epsilon by two because we are using sqr root???
             if (distPointCenterSqr < radiusSqr - MathUtility.EPSILON * 2f)
@@ -441,7 +428,6 @@ namespace Pancake.ComputationalGeometry
                 return IntersectionCases.IsOnEdge;
             }
         }
-
 
 
         //
@@ -509,7 +495,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Is a point within a convex hull?
         //
@@ -542,7 +527,6 @@ namespace Pancake.ComputationalGeometry
 
             return isInside;
         }
-
 
 
         //
@@ -581,29 +565,17 @@ namespace Pancake.ComputationalGeometry
             Edge2 t2_e3 = new Edge2(t2.p3, t2.p1);
 
             //Line 1 of t1 against all lines of t2
-            if (
-                LineLine(t1_e1, t2_e1, true) ||
-                LineLine(t1_e1, t2_e2, true) ||
-                LineLine(t1_e1, t2_e3, true)
-            )
+            if (LineLine(t1_e1, t2_e1, true) || LineLine(t1_e1, t2_e2, true) || LineLine(t1_e1, t2_e3, true))
             {
                 isIntersecting = true;
             }
             //Line 2 of t1 against all lines of t2
-            else if (
-                LineLine(t1_e2, t2_e1, true) ||
-                LineLine(t1_e2, t2_e2, true) ||
-                LineLine(t1_e2, t2_e3, true)
-            )
+            else if (LineLine(t1_e2, t2_e1, true) || LineLine(t1_e2, t2_e2, true) || LineLine(t1_e2, t2_e3, true))
             {
                 isIntersecting = true;
             }
             //Line 3 of t1 against all lines of t2
-            else if (
-                LineLine(t1_e3, t2_e1, true) ||
-                LineLine(t1_e3, t2_e2, true) ||
-                LineLine(t1_e3, t2_e3, true)
-            )
+            else if (LineLine(t1_e3, t2_e1, true) || LineLine(t1_e3, t2_e2, true) || LineLine(t1_e3, t2_e3, true))
             {
                 isIntersecting = true;
             }

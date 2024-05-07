@@ -12,7 +12,7 @@ namespace Pancake.MobileInput
         #region inspector
 
         [SerializeField] private Camera cam;
-        
+
         [SerializeField]
         [Tooltip(
             "You need to define whether your camera is a side-view camera (which is the default when using the 2D mode of unity) or if you chose a top-down looking camera. This parameter tells the system whether to scroll in XY direction, or in XZ direction.")]

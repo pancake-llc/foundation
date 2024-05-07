@@ -42,7 +42,7 @@ namespace Pancake.Monetization
             }
 #endif
         }
-        
+
         private void OnWaitAppOpenClosed()
         {
             if (_previousBannerShowStatus)

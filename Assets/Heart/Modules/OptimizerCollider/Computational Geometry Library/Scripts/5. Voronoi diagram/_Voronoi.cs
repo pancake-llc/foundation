@@ -16,9 +16,7 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Algorithm 2. Voronoi by adding point after point
-
 
 
         //Algorithm 3. 3D Delaunay to Voronoi

@@ -105,7 +105,7 @@ namespace Pancake.ReplacerEditor
                 if (Mathf.Approximately(sizeY, 500f)) sizeX = 350 + 13;
                 else sizeX = 350;
 
-                window.maxSize = window.minSize= new Vector2(sizeX, sizeY);
+                window.maxSize = window.minSize = new Vector2(sizeX, sizeY);
             }
         }
     }

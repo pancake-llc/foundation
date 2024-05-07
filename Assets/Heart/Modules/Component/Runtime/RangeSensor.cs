@@ -25,7 +25,9 @@ namespace Pancake.Component
 #if PANCAKE_ALCHEMY
         [Required]
 #endif
-        [SerializeField] private Transform source;
+        [SerializeField]
+        private Transform source;
+
         [SerializeField] private ScriptableEventGameObject detectedEvent;
 
         private Collider[] _hits;

@@ -17,7 +17,8 @@ namespace Pancake.ComputationalGeometry.Marching_Squares
         //Each node might have a value, which is useful if we want to smooth
         public float value;
 
-        public ControlNode(MyVector2 pos, bool isActive, float squareSize, float value) : base(pos)
+        public ControlNode(MyVector2 pos, bool isActive, float squareSize, float value)
+            : base(pos)
         {
             this.isActive = isActive;
 

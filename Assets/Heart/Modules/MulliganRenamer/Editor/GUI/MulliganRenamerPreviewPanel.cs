@@ -159,10 +159,7 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Refresh the GUIContents of this window. Use this if the language changes, for example
         /// </summary>
-        public void RefreshGUIContent()
-        {
-            this.InitializeGUIContents();
-        }
+        public void RefreshGUIContent() { this.InitializeGUIContents(); }
 
         private static PreviewRowResult DrawPreviewRow(Rect rowRect, PreviewRowModel info, PreviewRowStyle style)
         {
@@ -227,8 +224,7 @@ namespace RedBlueGames.MulliganRenamer
 
                 if (info.IsPreviewingSteps)
                 {
-                    MulliganEditorGUIUtilities.DrawDiffLabel(
-                        firstColumnRect,
+                    MulliganEditorGUIUtilities.DrawDiffLabel(firstColumnRect,
                         info.RenameResultBefore,
                         true,
                         renameResultStyle,
@@ -256,8 +252,7 @@ namespace RedBlueGames.MulliganRenamer
 
                 if (info.IsPreviewingSteps)
                 {
-                    MulliganEditorGUIUtilities.DrawDiffLabel(
-                        secondColumnRect,
+                    MulliganEditorGUIUtilities.DrawDiffLabel(secondColumnRect,
                         info.RenameResultAfter,
                         false,
                         renameResultStyle,
@@ -430,8 +425,7 @@ namespace RedBlueGames.MulliganRenamer
                 // This is to fix the bug where some of the columns would be collapsed until
                 // we messed with the preview window.
                 var forceFitContents = this.drewEmptyLastFrame;
-                this.contentsLayout.ResizeForContents(
-                    scrollLayout.ScrollRect,
+                this.contentsLayout.ResizeForContents(scrollLayout.ScrollRect,
                     previewContents,
                     forceFitContents,
                     shouldShowSecondColumn,
@@ -443,8 +437,7 @@ namespace RedBlueGames.MulliganRenamer
                 panelStyle.DeletionColor = this.DeletionTextColor;
                 panelStyle.DeletionBackgroundColor = this.DeletionBackgroundColor;
 
-                newScrollPosition = this.DrawPreviewPanelContentsWithItems(
-                    scrollLayout,
+                newScrollPosition = this.DrawPreviewPanelContentsWithItems(scrollLayout,
                     contentsLayout,
                     panelStyle,
                     previewPanelScrollPosition,
@@ -527,7 +520,10 @@ namespace RedBlueGames.MulliganRenamer
                     noun = LocalizationManager.Instance.GetTranslation("objects");
                 }
 
-                var renameSuccessContent = new GUIContent(string.Format("{0} {1} {2}", this.NumPreviouslyRenamedObjects, noun, LocalizationManager.Instance.GetTranslation("renamed")));
+                var renameSuccessContent = new GUIContent(string.Format("{0} {1} {2}",
+                    this.NumPreviouslyRenamedObjects,
+                    noun,
+                    LocalizationManager.Instance.GetTranslation("renamed")));
                 EditorGUI.LabelField(labelRect, renameSuccessContent, this.guiStyles.RenameSuccessPrompt);
                 GUI.contentColor = oldColor;
 
@@ -558,8 +554,7 @@ namespace RedBlueGames.MulliganRenamer
 
             string originalNameColumnHeader = LocalizationManager.Instance.GetTranslation(previewContents.RenameStepIndex < 1 ? "original" : "before");
             string newNameColumnHeader = LocalizationManager.Instance.GetTranslation("after");
-            this.DrawPreviewHeader(
-                scrollLayout.HeaderRect,
+            this.DrawPreviewHeader(scrollLayout.HeaderRect,
                 -previewPanelScrollPosition.x,
                 originalNameColumnHeader,
                 newNameColumnHeader,
@@ -567,10 +562,7 @@ namespace RedBlueGames.MulliganRenamer
                 contentsLayout.SecondColumnWidth,
                 contentsLayout.ThirdColumnWidth);
 
-            var newScrollPosition = GUI.BeginScrollView(
-                scrollLayout.ScrollRect,
-                previewPanelScrollPosition,
-                contentsLayout.ContentsRect);
+            var newScrollPosition = GUI.BeginScrollView(scrollLayout.ScrollRect, previewPanelScrollPosition, contentsLayout.ContentsRect);
 
             var rowRect = new Rect(scrollLayout.ScrollRect);
             rowRect.width = Mathf.Max(contentsLayout.ContentsRect.width, scrollLayout.ScrollRect.width);
@@ -646,11 +638,7 @@ namespace RedBlueGames.MulliganRenamer
             GUI.EndGroup();
         }
 
-        private void DrawPreviewRows(
-            Rect previewRowsRect,
-            PreviewPanelContents previewContents,
-            PreviewPanelContentsLayout layout,
-            PreviewPanelStyle panelStyle)
+        private void DrawPreviewRows(Rect previewRowsRect, PreviewPanelContents previewContents, PreviewPanelContentsLayout layout, PreviewPanelStyle panelStyle)
         {
             for (int i = 0; i < previewContents.NumVisibleRows; ++i)
             {
@@ -658,20 +646,15 @@ namespace RedBlueGames.MulliganRenamer
                 var previewRowStyle = new PreviewRowStyle();
                 previewRowStyle.IconStyle = this.guiStyles.Icon;
 
-                previewRowStyle.FirstColumnStyle = content.NameChangedThisStep ?
-                    this.guiStyles.OriginalNameLabelWhenModified :
-                    this.guiStyles.OriginalNameLabelUnModified;
+                previewRowStyle.FirstColumnStyle =
+                    content.NameChangedThisStep ? this.guiStyles.OriginalNameLabelWhenModified : this.guiStyles.OriginalNameLabelUnModified;
                 previewRowStyle.FirstColumnWidth = layout.FirstColumnWidth;
 
-                previewRowStyle.SecondColumnStyle = content.NameChangedThisStep ?
-                    this.guiStyles.NewNameLabelModified :
-                    this.guiStyles.NewNameLabelUnModified;
+                previewRowStyle.SecondColumnStyle = content.NameChangedThisStep ? this.guiStyles.NewNameLabelModified : this.guiStyles.NewNameLabelUnModified;
 
                 previewRowStyle.SecondColumnWidth = layout.SecondColumnWidth;
 
-                previewRowStyle.ThirdColumnStyle = content.NameChangedThisStep ?
-                    this.guiStyles.FinalNameLabelWhenModified :
-                    this.guiStyles.FinalNameLabelUnModified;
+                previewRowStyle.ThirdColumnStyle = content.NameChangedThisStep ? this.guiStyles.FinalNameLabelWhenModified : this.guiStyles.FinalNameLabelUnModified;
 
                 previewRowStyle.ThirdColumnWidth = layout.ThirdColumnWidth;
 
@@ -693,6 +676,7 @@ namespace RedBlueGames.MulliganRenamer
                             var absoluteIndex = previewContents.FirstVisibleItemIndex + i;
                             this.ObjectRemovedAtIndex.Invoke(absoluteIndex);
                         }
+
                         break;
                     default:
                         continue;
@@ -702,10 +686,7 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        private void DrawDividers(
-            Vector2 newScrollPosition,
-            PreviewPanelLayout scrollLayout,
-            PreviewPanelContentsLayout contentsLayout)
+        private void DrawDividers(Vector2 newScrollPosition, PreviewPanelLayout scrollLayout, PreviewPanelContentsLayout contentsLayout)
         {
             // Put dividers in group so that they scroll (horizontally)
             var dividerGroup = new Rect(scrollLayout.ScrollRect);
@@ -732,8 +713,7 @@ namespace RedBlueGames.MulliganRenamer
                 dividerHeight -= scrollbarHeight;
             }
 
-            var firstDividerRect = new Rect(
-                -newScrollPosition.x + contentsLayout.FirstColumnWidth + contentsLayout.WidthForButtons,
+            var firstDividerRect = new Rect(-newScrollPosition.x + contentsLayout.FirstColumnWidth + contentsLayout.WidthForButtons,
                 0.0f,
                 DividerWidth,
                 dividerHeight - 1.0f);
@@ -872,8 +852,7 @@ namespace RedBlueGames.MulliganRenamer
                 }
             }
 
-            var isDraggingValidAssets = (currentEvent.type == EventType.DragUpdated || currentEvent.type == EventType.DragPerform) &&
-                                        validDraggedObjects.Count > 0;
+            var isDraggingValidAssets = (currentEvent.type == EventType.DragUpdated || currentEvent.type == EventType.DragPerform) && validDraggedObjects.Count > 0;
             if (isDraggingValidAssets)
             {
                 DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
@@ -926,8 +905,7 @@ namespace RedBlueGames.MulliganRenamer
 
             public bool ContentsFitWithoutAnyScrolling(PreviewPanelContentsLayout contentsLayout)
             {
-                return this.ContentsFitWithoutScrollingHorizontally(contentsLayout) &&
-                           this.ContentsFitWithoutScrollingVertically(contentsLayout);
+                return this.ContentsFitWithoutScrollingHorizontally(contentsLayout) && this.ContentsFitWithoutScrollingVertically(contentsLayout);
             }
         }
 
@@ -981,7 +959,12 @@ namespace RedBlueGames.MulliganRenamer
 
             public bool IsShowingThirdColumn { get; private set; }
 
-            public void ResizeForContents(Rect scrollRect, PreviewPanelContents previewContents, bool forceResizeToFitContents, bool shouldShowSecondColumn, bool shouldShowThirdColumn)
+            public void ResizeForContents(
+                Rect scrollRect,
+                PreviewPanelContents previewContents,
+                bool forceResizeToFitContents,
+                bool shouldShowSecondColumn,
+                bool shouldShowThirdColumn)
             {
                 // Store off First and Second column content width for divider double clicking
                 this.firstColumnContentWidth = previewContents.LongestOriginalNameWidth;
@@ -1083,10 +1066,7 @@ namespace RedBlueGames.MulliganRenamer
                 this.ChangeFirstColumnWidth(desiredWidth, true);
             }
 
-            public void ResizeSecondColumnToFitContent()
-            {
-                this.ChangeSecondColumnWidth(this.secondColumnContentWidth - this.WidthForButtons);
-            }
+            public void ResizeSecondColumnToFitContent() { this.ChangeSecondColumnWidth(this.secondColumnContentWidth - this.WidthForButtons); }
         }
 
         /// <summary>
@@ -1110,15 +1090,9 @@ namespace RedBlueGames.MulliganRenamer
 
             public int TotalNumRows { get; set; }
 
-            public int FirstVisibleItemIndex {get; set;}
+            public int FirstVisibleItemIndex { get; set; }
 
-            public int NumVisibleRows
-            {
-                get
-                {
-                    return this.PreviewRowInfos.Length;
-                }
-            }
+            public int NumVisibleRows { get { return this.PreviewRowInfos.Length; } }
 
             private PreviewRowModel[] PreviewRowInfos { get; set; }
 
@@ -1134,17 +1108,12 @@ namespace RedBlueGames.MulliganRenamer
                     }
                     else
                     {
-                        throw new System.IndexOutOfRangeException(
-                            LocalizationManager.Instance.GetTranslation("errorTryingToAccessModel") + index);
+                        throw new System.IndexOutOfRangeException(LocalizationManager.Instance.GetTranslation("errorTryingToAccessModel") + index);
                     }
                 }
             }
 
-            public static PreviewPanelContents CreatePreviewContentsForObjects(
-                BulkRenamePreview preview,
-                int firstPreviewIndex,
-                int numObjectsToShow,
-                int stepIndex)
+            public static PreviewPanelContents CreatePreviewContentsForObjects(BulkRenamePreview preview, int firstPreviewIndex, int numObjectsToShow, int stepIndex)
             {
                 var previewPanelContents = new PreviewPanelContents();
                 previewPanelContents.FirstVisibleItemIndex = firstPreviewIndex;
@@ -1166,7 +1135,7 @@ namespace RedBlueGames.MulliganRenamer
 
                     if (previewForIndex.HasWarnings || preview.WillRenameCollideWithExistingAsset(previewForIndex))
                     {
-                        info.WarningIcon = (Texture2D)EditorGUIUtility.Load("icons/console.warnicon.sml.png");
+                        info.WarningIcon = (Texture2D) EditorGUIUtility.Load("icons/console.warnicon.sml.png");
                         if (previewForIndex.HasWarnings)
                         {
                             info.WarningMessage = GetWarningMessageForRenamePreview(previewForIndex);
@@ -1196,22 +1165,19 @@ namespace RedBlueGames.MulliganRenamer
                 {
                     var labelStyle = GUI.skin.label;
                     labelStyle.richText = true;
-                    float originalNameWidth = labelStyle.CalcSize(
-                              new GUIContent(previewRowInfo.NameBeforeStep)).x * paddingScaleForBold;
+                    float originalNameWidth = labelStyle.CalcSize(new GUIContent(previewRowInfo.NameBeforeStep)).x * paddingScaleForBold;
                     if (originalNameWidth > previewPanelContents.LongestOriginalNameWidth)
                     {
                         previewPanelContents.LongestOriginalNameWidth = originalNameWidth;
                     }
 
-                    float newNameWidth = labelStyle.CalcSize(
-                                             new GUIContent(previewRowInfo.NameAtStep)).x * paddingScaleForBold;
+                    float newNameWidth = labelStyle.CalcSize(new GUIContent(previewRowInfo.NameAtStep)).x * paddingScaleForBold;
                     if (newNameWidth > previewPanelContents.LongestNewNameWidth)
                     {
                         previewPanelContents.LongestNewNameWidth = newNameWidth;
                     }
 
-                    float finalNameWidth = labelStyle.CalcSize(
-                                             new GUIContent(previewRowInfo.FinalName)).x * paddingScaleForBold;
+                    float finalNameWidth = labelStyle.CalcSize(new GUIContent(previewRowInfo.FinalName)).x * paddingScaleForBold;
                     if (finalNameWidth > previewPanelContents.LongestFinalNameWidth)
                     {
                         previewPanelContents.LongestFinalNameWidth = finalNameWidth;
@@ -1254,26 +1220,14 @@ namespace RedBlueGames.MulliganRenamer
 
             public string WarningMessage { get; set; }
 
-            public string FinalName
-            {
-                get
-                {
-                    return this.RenameResultSequence.NewName;
-                }
-            }
+            public string FinalName { get { return this.RenameResultSequence.NewName; } }
 
             public int IndexInPreview { get; set; }
 
             public RenameResultSequence RenameResultSequence { get; set; }
             public int RenameStepIndex { get; set; }
 
-            public bool IsPreviewingSteps
-            {
-                get
-                {
-                    return this.RenameStepIndex >= 0 && this.RenameStepIndex < this.RenameResultSequence.NumSteps;
-                }
-            }
+            public bool IsPreviewingSteps { get { return this.RenameStepIndex >= 0 && this.RenameStepIndex < this.RenameResultSequence.NumSteps; } }
 
             public string NameBeforeStep
             {
@@ -1335,13 +1289,7 @@ namespace RedBlueGames.MulliganRenamer
                 }
             }
 
-            public bool NameChangedThisStep
-            {
-                get
-                {
-                    return this.NameBeforeStep != this.NameAtStep;
-                }
-            }
+            public bool NameChangedThisStep { get { return this.NameBeforeStep != this.NameAtStep; } }
         }
 
         private struct PreviewRowStyle

@@ -15,7 +15,7 @@ namespace Pancake.UI
         private bool IsMonobehaviour => type == AnimationAssetType.MonoBehaviour;
         private bool IsScriptableObject => type == AnimationAssetType.MonoBehaviour;
 #endif
-            
+
         [SerializeField, ShowIf("IsMonobehaviour"), LabelText("Animation")]
         private UITransitionComponent uiTransitionComponent;
 

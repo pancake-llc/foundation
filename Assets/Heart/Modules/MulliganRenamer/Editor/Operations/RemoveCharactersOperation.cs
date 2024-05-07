@@ -36,56 +36,41 @@ namespace RedBlueGames.MulliganRenamer
     {
         private static readonly RemoveCharactersOperation.RenameOptions Symbols = new RemoveCharactersOperation.RenameOptions()
         {
-            CharactersToRemove = "^\\s\\w",
-            CharactersAreRegex = true,
-            IsCaseSensitive = false
+            CharactersToRemove = "^\\s\\w", CharactersAreRegex = true, IsCaseSensitive = false
         };
 
         private static readonly RemoveCharactersOperation.RenameOptions Numbers = new RemoveCharactersOperation.RenameOptions()
         {
-            CharactersToRemove = "\\d",
-            CharactersAreRegex = true,
-            IsCaseSensitive = false
+            CharactersToRemove = "\\d", CharactersAreRegex = true, IsCaseSensitive = false
         };
 
         private static readonly RemoveCharactersOperation.RenameOptions Whitespace = new RemoveCharactersOperation.RenameOptions()
         {
-            CharactersToRemove = "\\s",
-            CharactersAreRegex = true,
-            IsCaseSensitive = false
+            CharactersToRemove = "\\s", CharactersAreRegex = true, IsCaseSensitive = false
         };
 
         private static readonly Dictionary<PresetID, RenameOptions> optionsPresets = new Dictionary<PresetID, RenameOptions>()
         {
-            {PresetID.Numbers, Numbers},
-            {PresetID.Whitespace, Whitespace},
-            {PresetID.Symbols, Symbols}
+            {PresetID.Numbers, Numbers}, {PresetID.Whitespace, Whitespace}, {PresetID.Symbols, Symbols}
         };
 
-        [SerializeField]
-        private RenameOptions customOptions;
+        [SerializeField] private RenameOptions customOptions;
 
-        [SerializeField]
-        private PresetID currentPresetID;
+        [SerializeField] private PresetID currentPresetID;
 
         private ReplaceStringOperation internalReplaceStringOperation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoveCharactersOperation"/> class.
         /// </summary>
-        public RemoveCharactersOperation()
-        {
-        }
+        public RemoveCharactersOperation() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoveCharactersOperation"/> class.
         /// This is a clone constructor, copying the values from one to another.
         /// </summary>
         /// <param name="operationToCopy">Operation to copy.</param>
-        public RemoveCharactersOperation(RemoveCharactersOperation operationToCopy)
-        {
-            this.CopyFrom(operationToCopy);
-        }
+        public RemoveCharactersOperation(RemoveCharactersOperation operationToCopy) { this.CopyFrom(operationToCopy); }
 
         public enum PresetID
         {
@@ -99,13 +84,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets or sets the characters to remove.
         /// </summary>
         /// <value>The characters to remove.</value>
-        public string CharactersToRemove
-        {
-            get
-            {
-                return this.CurrentOptions.CharactersToRemove;
-            }
-        }
+        public string CharactersToRemove { get { return this.CurrentOptions.CharactersToRemove; } }
 
         /// <summary>
         /// Gets or sets a value indicating whether this
@@ -113,33 +92,15 @@ namespace RedBlueGames.MulliganRenamer
         /// characters are regex symbols.
         /// </summary>
         /// <value><c>true</c> if characters are regex; otherwise, <c>false</c>.</value>
-        public bool CharactersAreRegex
-        {
-            get
-            {
-                return this.CurrentOptions.CharactersAreRegex;
-            }
-        }
+        public bool CharactersAreRegex { get { return this.CurrentOptions.CharactersAreRegex; } }
 
         /// <summary>
         /// Gets or sets a value indicating whether the characters are matched using case sensitivity.
         /// </summary>
         /// <value><c>true</c> if search is case sensitive; otherwise, <c>false</c>.</value>
-        public bool IsCaseSensitive
-        {
-            get
-            {
-                return this.CurrentOptions.IsCaseSensitive;
-            }
-        }
+        public bool IsCaseSensitive { get { return this.CurrentOptions.IsCaseSensitive; } }
 
-        public PresetID CurrentPresetID
-        {
-            get
-            {
-                return this.currentPresetID;
-            }
-        }
+        public PresetID CurrentPresetID { get { return this.currentPresetID; } }
 
         private RenameOptions CurrentOptions
         {
@@ -186,10 +147,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Checks if the operation has errors and returns true if it does.
         /// </summary>
         /// <returns><c>true</c>, if errors exist, <c>false</c> otherwise.</returns>
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Clone this instance.
@@ -238,10 +196,7 @@ namespace RedBlueGames.MulliganRenamer
             this.currentPresetID = PresetID.Custom;
         }
 
-        public void SetOptionPreset(PresetID preset)
-        {
-            this.currentPresetID = preset;
-        }
+        public void SetOptionPreset(PresetID preset) { this.currentPresetID = preset; }
 
         /// <summary>
         /// Gets the hash code for the operation
@@ -285,14 +240,11 @@ namespace RedBlueGames.MulliganRenamer
         [System.Serializable]
         public struct RenameOptions
         {
-            [SerializeField]
-            private string charactersToRemove;
+            [SerializeField] private string charactersToRemove;
 
-            [SerializeField]
-            private bool charactersAreRegex;
+            [SerializeField] private bool charactersAreRegex;
 
-            [SerializeField]
-            private bool isCaseSensitive;
+            [SerializeField] private bool isCaseSensitive;
 
             public string CharactersToRemove
             {
@@ -307,38 +259,12 @@ namespace RedBlueGames.MulliganRenamer
                         return this.charactersToRemove;
                     }
                 }
-
-                set
-                {
-                    this.charactersToRemove = value;
-                }
+                set { this.charactersToRemove = value; }
             }
 
-            public bool IsCaseSensitive
-            {
-                get
-                {
-                    return this.isCaseSensitive;
-                }
+            public bool IsCaseSensitive { get { return this.isCaseSensitive; } set { this.isCaseSensitive = value; } }
 
-                set
-                {
-                    this.isCaseSensitive = value;
-                }
-            }
-
-            public bool CharactersAreRegex
-            {
-                get
-                {
-                    return this.charactersAreRegex;
-                }
-
-                set
-                {
-                    this.charactersAreRegex = value;
-                }
-            }
+            public bool CharactersAreRegex { get { return this.charactersAreRegex; } set { this.charactersAreRegex = value; } }
         }
     }
 }

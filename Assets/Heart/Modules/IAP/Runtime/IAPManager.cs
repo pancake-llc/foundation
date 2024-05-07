@@ -14,7 +14,6 @@ using UnityEngine.Purchasing.Extension;
 
 namespace Pancake.IAP
 {
-
     public class IAPManager : GameComponent, IDetailedStoreListener
     {
         [SerializeField] private BoolVariable isServiceInitialized;

@@ -9,10 +9,6 @@ namespace Pancake.ComputationalGeometry
     //Interface for each item in the heap
     public interface IHeapItem<T> : IComparable<T>
     {
-        int HeapIndex
-        {
-            get;
-            set;
-        }
+        int HeapIndex { get; set; }
     }
 }

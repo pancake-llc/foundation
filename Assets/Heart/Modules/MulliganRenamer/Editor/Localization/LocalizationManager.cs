@@ -65,10 +65,7 @@ namespace RedBlueGames.MulliganRenamer
 
         public Language CurrentLanguage
         {
-            get
-            {
-                return this.GetLanguageByKey(currentLanguageKey);
-            }
+            get { return this.GetLanguageByKey(currentLanguageKey); }
             set
             {
                 if (value != null)
@@ -78,13 +75,7 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        public List<Language> AllLanguages
-        {
-            get
-            {
-                return this.allLanguages;
-            }
-        }
+        public List<Language> AllLanguages { get { return this.allLanguages; } }
 
         private string currentLanguageKey;
 
@@ -92,10 +83,7 @@ namespace RedBlueGames.MulliganRenamer
 
         private bool areLanguagesLoaded;
 
-        private LocalizationManager()
-        {
-            this.Initialize();
-        }
+        private LocalizationManager() { this.Initialize(); }
 
         /// <summary>
         /// Gets all the languages stored in the project for Mulligan
@@ -117,7 +105,7 @@ namespace RedBlueGames.MulliganRenamer
                 }
                 catch (ArgumentException)
                 {
-                     //I don't want to spam users with an error here, so we will just have to fail silently for now.
+                    //I don't want to spam users with an error here, so we will just have to fail silently for now.
                 }
             }
 
@@ -159,9 +147,8 @@ namespace RedBlueGames.MulliganRenamer
             }
             else
             {
-                throw new System.ArgumentException(
-                    "Language with key [" + languageKey + "] not found in LocalizationManager's loaded languages. " +
-                    "Are you sure it's a valid key? Did ChangeLanguage get called bofore LocalizationManager could load languages?",
+                throw new System.ArgumentException("Language with key [" + languageKey + "] not found in LocalizationManager's loaded languages. " +
+                                                   "Are you sure it's a valid key? Did ChangeLanguage get called bofore LocalizationManager could load languages?",
                     "languageKey");
             }
         }
@@ -210,7 +197,7 @@ namespace RedBlueGames.MulliganRenamer
             else
             {
                 throw new Exception("CurrentLanguage is unset on LocalizationManager. Somehow we are requesting translations " +
-                    "before LocalizationManager succesfully loaded languages.");
+                                    "before LocalizationManager succesfully loaded languages.");
             }
         }
 
@@ -276,15 +263,9 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        private static void SortLanguages(List<Language> languages)
-        {
-            languages.Sort(CompareLangauges);
-        }
+        private static void SortLanguages(List<Language> languages) { languages.Sort(CompareLangauges); }
 
-        private static int CompareLangauges(Language languageA, Language languageB)
-        {
-            return UnityEditor.EditorUtility.NaturalCompare(languageA.Key, languageB.Key);
-        }
+        private static int CompareLangauges(Language languageA, Language languageB) { return UnityEditor.EditorUtility.NaturalCompare(languageA.Key, languageB.Key); }
 
         private static string GetPathToLanguages()
         {
@@ -299,10 +280,7 @@ namespace RedBlueGames.MulliganRenamer
             return System.IO.Path.GetDirectoryName(pathToFirstLanguage);
         }
 
-        private Language GetLanguageByKey(string languagekey)
-        {
-            return this.allLanguages.FirstOrDefault(x => x.Key == languagekey);
-        }
+        private Language GetLanguageByKey(string languagekey) { return this.allLanguages.FirstOrDefault(x => x.Key == languagekey); }
 
         public class LanguageUpdateReport
         {

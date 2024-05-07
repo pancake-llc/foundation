@@ -452,7 +452,7 @@ namespace Pancake.MobileInputEditor
 
             Uniform.DrawGroupFoldout("touch_camera_callback", "Callback", DrawCallback);
             Uniform.DrawGroupFoldout("touch_camera_touch_input_ref", "TouchInput Reference", DrawInputSetting);
-            
+
 
             if (GUI.changed)
             {
@@ -484,7 +484,7 @@ namespace Pancake.MobileInputEditor
             EditorGUILayout.PropertyField(_onUpdateExtendPinchProperty, true);
             EditorGUILayout.PropertyField(_onStopPinchProperty, true);
         }
-        
+
         private void OnScrollDampModeChanged(AutoScrollDampMode dampMode)
         {
             var serializedScrollDamp = serializedObject.FindProperty("autoScrollDamp");

@@ -24,16 +24,11 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Triangulate points by: 
         //1. Sort the points along one axis. The first 3 points form a triangle 
         //2. Consider the next point and connect it with all previously connected points which are visible to the point
         //3. Do 2 until we are out of points to add
-        public static HashSet<Triangle2> VisibleEdgesTriangulation(HashSet<MyVector2> points)
-        {
-            return VisibleEdgesTriangulationAlgorithm.TriangulatePoints(points);
-        }
-
+        public static HashSet<Triangle2> VisibleEdgesTriangulation(HashSet<MyVector2> points) { return VisibleEdgesTriangulationAlgorithm.TriangulatePoints(points); }
 
 
         //

@@ -2,7 +2,6 @@
 using UnityEditor;
 using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using Pancake.Scriptable;
 using UnityEngine.SceneManagement;
 

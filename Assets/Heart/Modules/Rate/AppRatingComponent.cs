@@ -36,7 +36,7 @@ namespace Pancake.Rate
         private void OnReview()
         {
             if (!Application.isMobilePlatform) return;
-            
+
 #if UNITY_ANDROID && PANCAKE_REVIEW
             StartCoroutine(LaunchReview());
 #elif UNITY_IOS

@@ -42,9 +42,9 @@ namespace Pancake.ComputationalGeometry
                 //The circumcenter is also known as a voronoi vertex, which is a position in the diagram where we are equally
                 //close to the surrounding sites (= the corners ina voronoi cell)
                 MyVector2 voronoiVertex = _Geometry.CalculateCircleCenter(v1, v2, v3);
-                
+
                 //Debug.Log(voronoiVertex.x + " " + voronoiVertex.y);
-                
+
                 //We will generate a single edge belonging to this site
                 //Try means that this edge might not have an opposite and then we can't generate an edge
                 TryAddVoronoiEdgeFromTriangleEdge(e1, voronoiVertex, voronoiEdges);
@@ -85,7 +85,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Find the cell in the list of all cells that includes this site
         private static VoronoiCell2 TryFindCell(VoronoiEdge2 e, HashSet<VoronoiCell2> voronoiCells)
         {
@@ -99,7 +98,6 @@ namespace Pancake.ComputationalGeometry
 
             return null;
         }
-
 
 
         //Try to add a voronoi edge. Not all edges have a neighboring triangle, and if it hasnt we cant add a voronoi edge

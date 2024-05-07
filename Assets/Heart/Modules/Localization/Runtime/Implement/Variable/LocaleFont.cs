@@ -14,7 +14,7 @@ namespace Pancake.Localization
         };
 
         [SerializeField] private FontLocaleItem[] items = new FontLocaleItem[1];
-        
+
         // ReSharper disable once CoVariantArrayConversion
         public override LocaleItemBase[] LocaleItems => items;
     }

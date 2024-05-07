@@ -30,7 +30,7 @@ namespace Pancake.Component
 #endif
         [SerializeField]
         private Audio audioCollision;
-        
+
 #if PANCAKE_ALCHEMY
         [ShowIf(nameof(enabledSound))]
 #endif

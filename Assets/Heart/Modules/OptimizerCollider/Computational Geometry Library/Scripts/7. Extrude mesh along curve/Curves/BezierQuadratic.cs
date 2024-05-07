@@ -10,7 +10,9 @@ namespace Pancake.ComputationalGeometry
     {
         //Start and end point
         public MyVector3 posA;
+
         public MyVector3 posB;
+
         //Handle connected to start and end points
         public MyVector3 handlePos;
 
@@ -19,7 +21,7 @@ namespace Pancake.ComputationalGeometry
         {
             this.posA = posA;
             this.posB = posB;
-            
+
             this.handlePos = handlePos;
         }
 
@@ -71,7 +73,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Tangent at point t (Forward direction if we travel along the curve)
         //
@@ -100,7 +101,6 @@ namespace Pancake.ComputationalGeometry
 
             return tangent;
         }
-
 
 
         //
@@ -154,9 +154,6 @@ namespace Pancake.ComputationalGeometry
             return derivativeVector;
         }
 
-        public override MyVector3 GetSecondDerivativeVec(float t)
-        {
-            return GetSecondDerivativeVec(posA, posB, handlePos, t);
-        }
+        public override MyVector3 GetSecondDerivativeVec(float t) { return GetSecondDerivativeVec(posA, posB, handlePos, t); }
     }
 }

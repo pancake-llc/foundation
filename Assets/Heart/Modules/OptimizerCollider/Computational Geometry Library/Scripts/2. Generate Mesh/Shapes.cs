@@ -17,7 +17,7 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
             if (resolution < 3)
             {
                 Debug.Log("You cant make a circle with less than 3 points! FailFish");
-                
+
                 return null;
             }
 
@@ -64,7 +64,7 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
             List<MyVector2> pointsOnCircleEdge = new List<MyVector2>();
 
             //The ange between each point on the edge
-            float angleBetween = 360f / (float)(resolution);
+            float angleBetween = 360f / (float) (resolution);
 
             float angle = 0f;
 
@@ -84,7 +84,6 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
 
             return pointsOnCircleEdge;
         }
-
 
 
         //
@@ -127,7 +126,6 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
         }
 
 
-
         //
         // Connected line segments
         //
@@ -140,7 +138,6 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
 
                 return null;
             }
-
 
 
             //Generate the triangles
@@ -158,7 +155,7 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
             for (int i = 0; i < points.Count; i++)
             {
                 MyVector2 p = points[i];
-            
+
                 //First point = special case if the lines are not connected
                 if (i == 0 && !isConnected)
                 {
@@ -188,10 +185,17 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
 
                     MyVector2 p_after = points[MathUtility.ClampListIndex(i + 1, points.Count)];
 
-                    MyVector2 pTop = GetIntersectionPoint(p_before, p, p_after, halfWidth, isTopPoint: true);
-                    
-                    MyVector2 pBottom = GetIntersectionPoint(p_before, p, p_after, halfWidth, isTopPoint: false);
+                    MyVector2 pTop = GetIntersectionPoint(p_before,
+                        p,
+                        p_after,
+                        halfWidth,
+                        isTopPoint: true);
 
+                    MyVector2 pBottom = GetIntersectionPoint(p_before,
+                        p,
+                        p_after,
+                        halfWidth,
+                        isTopPoint: false);
 
 
                     topCoordinate.Add(pTop);
@@ -266,7 +270,7 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
 
                 return intersectionPoint;
             }
-            else 
+            else
             {
                 //Now we can calculate where the plane starts
                 MyVector2 beforePlanePos = b + beforeNormal * halfWidth * normalDirFactor;
@@ -312,7 +316,6 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
         }
 
 
-
         //
         // Arrow
         //
@@ -345,7 +348,7 @@ namespace Pancake.ComputationalGeometry.MeshAlgorithms
             MyVector2 arrowBottom_R = arrowBottom + lineNormal * arrowSize * 0.5f;
             MyVector2 arrowBottom_L = arrowBottom - lineNormal * arrowSize * 0.5f;
 
-            Triangle2 arrowTipTriangle = new Triangle2(p2 , arrowBottom_R, arrowBottom_L);
+            Triangle2 arrowTipTriangle = new Triangle2(p2, arrowBottom_R, arrowBottom_L);
 
             arrowTriangles.Add(arrowTipTriangle);
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEditor;

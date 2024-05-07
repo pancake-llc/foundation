@@ -21,7 +21,7 @@ namespace Pancake.Scriptable
         [SerializeField, DisableInPlayMode, HideIf("IgnoreDraw")] protected T initialValue;
 
         [Tooltip("The value of the variable. This will be reset on play mode exit to the value it had before entering play mode.")]
-        [SerializeField, HideInEditMode/*, IgnoreTypeMismatch*/]
+        [SerializeField, HideInEditMode /*, IgnoreTypeMismatch*/]
         protected T value;
 
         [Tooltip("Log in the console whenever this variable is changed, loaded or saved.")] [SerializeField]

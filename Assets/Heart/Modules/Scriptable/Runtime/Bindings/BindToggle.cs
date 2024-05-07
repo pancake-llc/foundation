@@ -11,7 +11,7 @@ namespace Pancake.Scriptable
     [RequireComponent(typeof(Toggle))]
     public class BindToggle : CacheGameComponent<Toggle>
     {
-         [SerializeField] private BoolVariable boolVariable;
+        [SerializeField] private BoolVariable boolVariable;
 
         protected override void Awake()
         {

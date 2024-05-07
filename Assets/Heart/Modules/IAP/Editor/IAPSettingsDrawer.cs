@@ -39,7 +39,6 @@ namespace Pancake.IAPEditor
 
             EditorGUI.PropertyField(rect, element, new GUIContent(element.FindPropertyRelative("id").stringValue.Split('.').Last().ToCamelCase()), true);
             EditorGUI.indentLevel--;
-
         }
 
         public override void OnInspectorGUI()

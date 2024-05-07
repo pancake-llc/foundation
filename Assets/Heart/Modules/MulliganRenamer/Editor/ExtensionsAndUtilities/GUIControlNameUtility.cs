@@ -44,8 +44,7 @@ namespace RedBlueGames.MulliganRenamer
 
             if (split.Length != 2)
             {
-                var exception = string.Format(
-                                    "Expected name of format '#|ControlName' but it did not parse correctly. Argument: {0}", name);
+                var exception = string.Format("Expected name of format '#|ControlName' but it did not parse correctly. Argument: {0}", name);
                 throw new System.ArgumentException(exception);
             }
 
@@ -80,9 +79,6 @@ namespace RedBlueGames.MulliganRenamer
         /// <returns>The prefixed name.</returns>
         /// <param name="prefix">Prefix to concatenate.</param>
         /// <param name="controlName">Control name.</param>
-        public static string CreatePrefixedName(int prefix, string controlName)
-        {
-            return string.Concat(prefix.ToString(), Delimeter, controlName);
-        }
+        public static string CreatePrefixedName(int prefix, string controlName) { return string.Concat(prefix.ToString(), Delimeter, controlName); }
     }
 }

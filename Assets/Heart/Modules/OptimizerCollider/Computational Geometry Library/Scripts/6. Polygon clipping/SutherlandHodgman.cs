@@ -22,7 +22,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Assumes the polygons are oriented counter clockwise
         //poly is the polygon we want to cut
         //Assumes the polygon we want to remove from the other polygon is convex, so clipPolygon has to be convex
@@ -98,7 +97,6 @@ namespace Pancake.ComputationalGeometry
 
             return vertices;
         }
-
 
 
         //Get the clipping planes

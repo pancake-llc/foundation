@@ -1,6 +1,5 @@
 ﻿#if UNITY_ANDROID
 using System.Diagnostics;
-
 using UnityEditor.Android;
 #endif
 using PancakeEditor.Common;
@@ -103,7 +102,7 @@ namespace PancakeEditor
                 bundleId = Application.identifier;
                 GUI.enabled = false;
             }
-            
+
             bundleId = EditorGUILayout.TextField("Bundle Id: ", bundleId);
             GUI.enabled = true;
             customBundleId = EditorGUILayout.Toggle("Custom Bundle: ", customBundleId);
@@ -135,7 +134,7 @@ namespace PancakeEditor
 
                 var process = Process.Start(startInfo);
                 process!.WaitForExit();
-                UnityEngine.Debug.Log( $"{fileName} {arguments}" );
+                UnityEngine.Debug.Log($"{fileName} {arguments}");
             }
 #endif
 

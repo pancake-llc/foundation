@@ -1,6 +1,5 @@
 using Pancake;
 using PancakeEditor.Common;
-
 using UnityEditor;
 
 namespace PancakeEditor

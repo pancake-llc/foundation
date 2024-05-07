@@ -2,7 +2,6 @@
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;

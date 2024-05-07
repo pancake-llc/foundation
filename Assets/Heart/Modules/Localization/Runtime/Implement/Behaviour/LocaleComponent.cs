@@ -15,10 +15,7 @@ namespace Pancake.Localization
             if (Application.isPlaying) Locale.LocaleChangedEvent += LocaleChangedInvoke;
         }
 
-        private void LocaleChangedInvoke(object sender, LocaleChangedEventArgs e)
-        {
-            ForceUpdate();
-        }
+        private void LocaleChangedInvoke(object sender, LocaleChangedEventArgs e) { ForceUpdate(); }
 
         public void ForceUpdate()
         {
@@ -29,7 +26,6 @@ namespace Pancake.Localization
 
         protected virtual void OnDisable()
         {
-            
             if (Application.isPlaying) Locale.LocaleChangedEvent -= LocaleChangedInvoke;
         }
 
@@ -45,7 +41,7 @@ namespace Pancake.Localization
             _isOnValidate = true;
             ForceUpdate();
         }
-        
+
         /// <summary>
         /// Updates component localization if possible.
         /// </summary>

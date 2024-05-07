@@ -29,9 +29,9 @@ namespace UnityDebugSheet.Runtime.Foundation
 
         private void Update()
         {
-            if (_text.text == _textValue) 
+            if (_text.text == _textValue)
                 return;
-            
+
             _textValue = _text.text;
             Apply();
         }

@@ -25,7 +25,7 @@ namespace Pancake
         private static extern void _TAG_DismissCurrentAlert();
 
 #endif
-    
+
         internal static void ShowDialogNeutral(string title, string message, string accept, string neutral, string decline, bool touchOutSide)
         {
 #if UNITY_EDITOR
@@ -66,7 +66,7 @@ namespace Pancake
             javaUnityClass.CallStatic("ShowDialogInfo", title, message, ok, touchOutSide);
 #endif
         }
-        
+
         internal static void ShowToast(string message, int style)
         {
 #if UNITY_EDITOR

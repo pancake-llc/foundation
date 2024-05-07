@@ -34,6 +34,7 @@ namespace Pancake.ComputationalGeometry
                 {
                     maxX = p;
                 }
+
                 if (p.x < minX.x)
                 {
                     minX = p;
@@ -43,6 +44,7 @@ namespace Pancake.ComputationalGeometry
                 {
                     maxY = p;
                 }
+
                 if (p.y < minY.y)
                 {
                     minY = p;
@@ -53,7 +55,7 @@ namespace Pancake.ComputationalGeometry
             //Step 2. 
             //From the 4 extreme points, choose the pair that's furthest appart
             //These two are the first two points on the hull
-            List<MyVector2> extremePoints = new List<MyVector2>() { maxX, minX, maxY, minY };
+            List<MyVector2> extremePoints = new List<MyVector2>() {maxX, minX, maxY, minY};
 
             //Just pick some points as start value
             MyVector2 p1 = maxX;
@@ -66,9 +68,9 @@ namespace Pancake.ComputationalGeometry
             for (int i = 0; i < extremePoints.Count; i++)
             {
                 MyVector2 p1_test = extremePoints[i];
-            
+
                 for (int j = i + 1; j < extremePoints.Count; j++)
-                {                
+                {
                     MyVector2 p2_test = extremePoints[j];
 
                     float distSqr = MyVector2.SqrDistance(p1_test, p2_test);
@@ -95,7 +97,7 @@ namespace Pancake.ComputationalGeometry
             //Find the third point on the hull, by finding the point which is the furthest
             //from the line between p1 and p2
             MyVector2 p3 = FindPointFurthestFromEdge(p1, p2, pointsToAdd);
-           
+
             //Remove it from the points we want to add
             pointsToAdd.Remove(p3);
 
@@ -109,7 +111,7 @@ namespace Pancake.ComputationalGeometry
             {
                 tStart.ChangeOrientation();
             }
-            
+
             //New p1-p3
             p1 = tStart.p1;
             p2 = tStart.p2;
@@ -161,7 +163,7 @@ namespace Pancake.ComputationalGeometry
             //For each edge, find the point furthest away and create a new triangle
             //and repeat the above steps by finding which points are inside of the hull
             //and which points are outside and belong to a new edge
-            
+
             //Will automatically ignore the last point on this sub-hull to avoid doubles 
             List<MyVector2> pointsOnHUll_p1p2 = CreateSubConvexHUll(p1, p2, edge_p1p2_points);
 
@@ -176,7 +178,6 @@ namespace Pancake.ComputationalGeometry
             pointsOnConvexHull.AddRange(pointsOnHUll_p1p2);
             pointsOnConvexHull.AddRange(pointsOnHUll_p2p3);
             pointsOnConvexHull.AddRange(pointsOnHUll_p3p1);
-
 
 
             //Step 7. Add colinear points
@@ -194,12 +195,11 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Add colinear points to the convex hull
         private static List<MyVector2> AddColinearPoints(List<MyVector2> pointsOnConvexHull, List<MyVector2> points)
         {
             List<MyVector2> pointsOnConvexHull_IncludingColinear = new List<MyVector2>();
-            
+
             //From the original points we dont have to remove the points that are on the convex hull
             //because they will be added anyway
 
@@ -235,17 +235,16 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Split an edge and create a new sub-convex hull
         private static List<MyVector2> CreateSubConvexHUll(MyVector2 p1, MyVector2 p3, HashSet<MyVector2> pointsToAdd)
         {
             if (pointsToAdd.Count == 0)
             {
                 //Never return the last point so we avoid doubles on the convex hull
-                return new List<MyVector2>() { p1 };
+                return new List<MyVector2>() {p1};
             }
-        
-        
+
+
             //Find the point which is furthest from an edge
             MyVector2 p2 = FindPointFurthestFromEdge(p1, p3, pointsToAdd);
 
@@ -259,7 +258,7 @@ namespace Pancake.ComputationalGeometry
             if (pointsToAdd.Count == 0)
             {
                 //Never return the last point so we avoid doubles on the convex hull
-                return new List<MyVector2>() { p1, p2 };
+                return new List<MyVector2>() {p1, p2};
             }
             //If we still have points to add, we have to split the edges again
             else
@@ -302,7 +301,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Remove from points from hashset that are within a triangle
         private static void RemovePointsWithinTriangle(Triangle2 t, HashSet<MyVector2> points)
         {
@@ -321,7 +319,6 @@ namespace Pancake.ComputationalGeometry
                 points.Remove(p);
             }
         }
-
 
 
         //Find the point which is furthest away from an edge
@@ -369,14 +366,13 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //For debugging
         private static void DisplayPoints(HashSet<MyVector2> points, Normalizer2 normalizer)
         {
             foreach (MyVector2 p in points)
             {
                 MyVector2 pUnNormalize = normalizer.UnNormalize(p);
-            
+
                 Debug.DrawLine(pUnNormalize.ToVector3(), Vector3.zero, Color.blue, 3f);
             }
         }

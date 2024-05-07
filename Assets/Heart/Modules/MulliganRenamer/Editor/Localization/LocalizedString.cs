@@ -33,28 +33,14 @@ namespace RedBlueGames.MulliganRenamer
     {
         // These are assigned through Unity's serialization / deserialization.
         // So we Ignore warning about Unassigned field.
-        #pragma warning disable 0649
-        [SerializeField]
-        private string key;
+#pragma warning disable 0649
+        [SerializeField] private string key;
 
-        [SerializeField]
-        private string value;
-        #pragma warning restore 0649
+        [SerializeField] private string value;
+#pragma warning restore 0649
 
-        public string Key
-        {
-            get
-            {
-                return key;
-            }
-        }
+        public string Key { get { return key; } }
 
-        public string Value
-        {
-            get
-            {
-                return value;
-            }
-        }
+        public string Value { get { return value; } }
     }
 }

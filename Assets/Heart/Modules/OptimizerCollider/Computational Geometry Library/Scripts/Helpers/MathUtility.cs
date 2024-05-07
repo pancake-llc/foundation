@@ -13,7 +13,6 @@ namespace Pancake.ComputationalGeometry
         public const float EPSILON = 0.00001f;
 
 
-
         //Test if a float is the same as another float
         public static bool AreFloatsEqual(float a, float b)
         {
@@ -32,7 +31,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Remap value from range 1 to range 2
         public static float Remap(float value, float r1_low, float r1_high, float r2_low, float r2_high)
         {
@@ -40,7 +38,6 @@ namespace Pancake.ComputationalGeometry
 
             return remappedValue;
         }
-
 
 
         //Clamp list indices
@@ -53,7 +50,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         // Returns the determinant of the 2x2 matrix defined as
         // | x1 x2 |
         // | y1 y2 |
@@ -63,16 +59,9 @@ namespace Pancake.ComputationalGeometry
         //Perpendicular:   0  -1
         //Opposite:       -1   0
         //Perpendicular:   0   1
-        public static float Det2(float x1, float x2, float y1, float y2)
-        {
-            return x1 * y2 - y1 * x2;
-        }
+        public static float Det2(float x1, float x2, float y1, float y2) { return x1 * y2 - y1 * x2; }
 
-        public static float Det2(MyVector2 a, MyVector2 b)
-        {
-            return a.x * b.y - a.y * b.x;
-        }
-
+        public static float Det2(MyVector2 a, MyVector2 b) { return a.x * b.y - a.y * b.x; }
 
 
         //Calculate the angle between two vectors 
@@ -185,7 +174,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Add value to average
         //http://www.bennadel.com/blog/1627-create-a-running-average-without-storing-individual-values.htm
         //count - how many values does the average consist of
@@ -197,13 +185,12 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Round a value to nearest int value determined by stepValue
         //So if stepValue is 5, we round 11 to 10 because we want to go in steps of 5
         //such as 0, 5, 10, 15
         public static int RoundValue(float value, float stepValue)
         {
-            int roundedValue = (int)(Mathf.Round(value / stepValue) * stepValue);
+            int roundedValue = (int) (Mathf.Round(value / stepValue) * stepValue);
 
             return roundedValue;
         }

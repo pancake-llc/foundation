@@ -14,7 +14,7 @@ namespace Pancake.Localization
         };
 
         [SerializeField] private SpriteLocaleItem[] items = new SpriteLocaleItem[1];
-        
+
         // ReSharper disable once CoVariantArrayConversion
         public override LocaleItemBase[] LocaleItems => items.ToArray<LocaleItemBase>();
     }

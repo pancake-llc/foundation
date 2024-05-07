@@ -39,34 +39,19 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Initializes a new instance of the <see cref="RenameResult"/> class.
         /// </summary>
-        public RenameResult()
-        {
-            this.diffs = new List<Diff>();
-        }
+        public RenameResult() { this.diffs = new List<Diff>(); }
 
         /// <summary>
         /// Gets the count of Diffs.
         /// </summary>
         /// <value>The count.</value>
-        public int Count
-        {
-            get
-            {
-                return this.diffs.Count;
-            }
-        }
+        public int Count { get { return this.diffs.Count; } }
 
         /// <summary>
         /// Gets a value indicating whether this instance is read only.
         /// </summary>
         /// <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly { get { return false; } }
 
         /// <summary>
         /// Gets the resultant name from the diffs
@@ -118,83 +103,51 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        public Diff this[int key]
-        {
-            get
-            {
-                return this.diffs[key];
-            }
-            
-            set
-            {
-                this.diffs[key] = value;
-            }
-        }
+        public Diff this[int key] { get { return this.diffs[key]; } set { this.diffs[key] = value; } }
 
         /// <summary>
         /// Clear the RenameResult.
         /// </summary>
-        public void Clear()
-        {
-            this.diffs.Clear();
-        }
+        public void Clear() { this.diffs.Clear(); }
 
         /// <summary>
         /// Get whether or not the RenameResult contains the specified diff
         /// </summary>
         /// <param name="item">Item to check for.</param>
         /// <returns>True if the collection contains the diff, false otherwise</returns>
-        public bool Contains(Diff item)
-        {
-            return this.diffs.Contains(item);
-        }
+        public bool Contains(Diff item) { return this.diffs.Contains(item); }
 
         /// <summary>
         /// Copies the diffs from an array.
         /// </summary>
         /// <param name="array">Array to copy.</param>
         /// <param name="arrayIndex">Array index.</param>
-        public void CopyTo(Diff[] array, int arrayIndex)
-        {
-            this.diffs.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(Diff[] array, int arrayIndex) { this.diffs.CopyTo(array, arrayIndex); }
 
         /// <summary>
         /// Remove the specified item.
         /// </summary>
         /// <param name="item">Item to remove.</param>
         /// <returns>True if the item was successfully removed from the collection, false otherwise</returns>
-        public bool Remove(Diff item)
-        {
-            return this.diffs.Remove(item);
-        }
+        public bool Remove(Diff item) { return this.diffs.Remove(item); }
 
         /// <summary>
         /// Gets an enumerator for iterating the set.
         /// </summary>
         /// <returns>The enumerator.</returns>
-        public IEnumerator<Diff> GetEnumerator()
-        {
-            return this.diffs.GetEnumerator();
-        }
+        public IEnumerator<Diff> GetEnumerator() { return this.diffs.GetEnumerator(); }
 
         /// <summary>
         /// Gets the enumerator.
         /// </summary>
         /// <returns>The enumerator.</returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
 
         /// <summary>
         /// Add the specified Diff to the collection.
         /// </summary>
         /// <param name="diffToAdd">Diff to add.</param>
-        public void Add(Diff diffToAdd)
-        {
-            this.diffs.Add(diffToAdd);
-        }
+        public void Add(Diff diffToAdd) { this.diffs.Add(diffToAdd); }
 
         /// <summary>
         /// Gets the original name with color tags added.
@@ -234,7 +187,7 @@ namespace RedBlueGames.MulliganRenamer
             }
 
             var otherRenameResult = obj as RenameResult;
-            if ((object)otherRenameResult == null)
+            if ((object) otherRenameResult == null)
             {
                 return false;
             }
@@ -260,10 +213,7 @@ namespace RedBlueGames.MulliganRenamer
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() { return base.GetHashCode(); }
 
         /// <summary>
         /// Returns a <see cref="System.String"/> that represents the current <see cref="RedBlueGames.MulliganRenamer.RenameResult"/>.

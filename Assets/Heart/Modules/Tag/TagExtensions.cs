@@ -75,7 +75,7 @@ namespace Pancake.ExTag
 
             return false;
         }
-        
+
         /// <summary>
         /// Remove
         /// </summary>
@@ -84,8 +84,8 @@ namespace Pancake.ExTag
         public static void RemoveTag(this GameObject go, string tag)
         {
             var tags = Tag.GetTagsForGameObject(go);
-            if (tags == null) return; 
-            
+            if (tags == null) return;
+
             tags.RemoveTag(tag);
         }
 
@@ -96,8 +96,8 @@ namespace Pancake.ExTag
         /// <param name="tag"></param>
         public static void AddTag(this GameObject go, StringConstant tag)
         {
-            var tags = Tag.GetTagsForGameObject(go); 
-            if (tags == null) return; 
+            var tags = Tag.GetTagsForGameObject(go);
+            if (tags == null) return;
             tags.AddTag(tag);
         }
     }

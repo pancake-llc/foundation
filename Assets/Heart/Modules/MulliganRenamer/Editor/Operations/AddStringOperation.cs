@@ -32,11 +32,9 @@ namespace RedBlueGames.MulliganRenamer
     [System.Serializable]
     public class AddStringOperation : IRenameOperation
     {
-        [SerializeField]
-        private string prefix;
+        [SerializeField] private string prefix;
 
-        [SerializeField]
-        private string suffix;
+        [SerializeField] private string suffix;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddStringOperation"/> class.
@@ -61,34 +59,12 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Gets or sets the prefix to add.
         /// </summary>
-        public string Prefix
-        {
-            get
-            {
-                return this.prefix;
-            }
-
-            set
-            {
-                this.prefix = value;
-            }
-        }
+        public string Prefix { get { return this.prefix; } set { this.prefix = value; } }
 
         /// <summary>
         /// Gets or sets the suffix to add.
         /// </summary>
-        public string Suffix
-        {
-            get
-            {
-                return this.suffix;
-            }
-
-            set
-            {
-                this.suffix = value;
-            }
-        }
+        public string Suffix { get { return this.suffix; } set { this.suffix = value; } }
 
         /// <summary>
         /// Clone this instance.
@@ -100,10 +76,7 @@ namespace RedBlueGames.MulliganRenamer
             return clone;
         }
 
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Rename the specified input, using the relativeCount.
@@ -131,7 +104,7 @@ namespace RedBlueGames.MulliganRenamer
 
             return renameResult;
         }
-        
+
         /// <summary>
         /// Gets the hash code for the operation
         /// </summary>

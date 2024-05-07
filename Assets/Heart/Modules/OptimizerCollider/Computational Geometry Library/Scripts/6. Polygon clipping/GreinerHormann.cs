@@ -14,12 +14,10 @@ namespace Pancake.ComputationalGeometry
             List<List<MyVector2>> finalPoly = new List<List<MyVector2>>();
 
 
-
             //Step 0. Create the data structure needed
             List<ClipVertex> poly = InitDataStructure(polyVector2);
 
             List<ClipVertex> clipPoly = InitDataStructure(clipPolyVector2);
-
 
 
             //Step 1. Find intersection points
@@ -88,7 +86,6 @@ namespace Pancake.ComputationalGeometry
             //InWhichOrderAreVerticesAdded(clipPoly);
 
 
-
             //If the polygons are intersecting
             if (hasFoundIntersection)
             {
@@ -100,7 +97,6 @@ namespace Pancake.ComputationalGeometry
                 //Debug entry exit points
                 DebugEntryExit(poly);
                 //DebugEntryExit(clipPoly);
-
 
 
                 //Step 3. Create the desired clipped polygon
@@ -182,7 +178,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //We may end up with several polygons, so this will split the connected list into one list per polygon
         private static void AddPolygonToList(List<ClipVertex> verticesToAdd, List<List<MyVector2>> finalPoly, bool shouldReverse)
         {
@@ -222,7 +217,6 @@ namespace Pancake.ComputationalGeometry
                 finalPoly[finalPoly.Count - 1].Reverse();
             }
         }
-
 
 
         //Get the clipped polygons: either the intersection or the !intersection
@@ -381,7 +375,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Reset vertices before we find the final polygon(s)
         private static void ResetVertices(List<ClipVertex> poly)
         {
@@ -421,7 +414,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Is a polygon One inside polygon Two?
         private static bool IsPolygonInsidePolygon(List<MyVector2> polyOne, List<MyVector2> polyTwo)
         {
@@ -441,7 +433,6 @@ namespace Pancake.ComputationalGeometry
 
             return isInside;
         }
-
 
 
         //Find the the first entry vertex in a polygon
@@ -486,7 +477,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Create the data structure needed
         private static List<ClipVertex> InitDataStructure(List<MyVector2> polyVector)
         {
@@ -509,7 +499,6 @@ namespace Pancake.ComputationalGeometry
 
             return poly;
         }
-
 
 
         //Insert intersection vertex
@@ -567,7 +556,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Mark entry exit points
         private static void MarkEntryExit(List<ClipVertex> poly, List<MyVector2> clipPolyVector)
         {
@@ -611,7 +599,6 @@ namespace Pancake.ComputationalGeometry
                 }
             }
         }
-
 
 
         //
@@ -677,7 +664,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         private static void InWhichOrderAreVerticesAdded(List<ClipVertex> polyList)
         {
             ClipVertex thisVertex = polyList[0];
@@ -715,7 +701,6 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     //Same structure as in the report
     //Should maybe extend from Vertex class?
     public class ClipVertex
@@ -745,9 +730,6 @@ namespace Pancake.ComputationalGeometry
         //when we create the final polygon
         public bool isTakenByFinalPolygon;
 
-        public ClipVertex(MyVector2 coordinate)
-        {
-            this.coordinate = coordinate;
-        }
+        public ClipVertex(MyVector2 coordinate) { this.coordinate = coordinate; }
     }
 }

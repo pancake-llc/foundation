@@ -23,7 +23,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //We assume an edge is visible from a point if the triangle (formed by travering edges in the convex hull
         //of the existing triangulation) form a clockwise triangle with the point
         //https://stackoverflow.com/questions/8898255/check-whether-a-point-is-visible-from-a-face-of-a-2d-convex-hull
@@ -35,11 +34,10 @@ namespace Pancake.ComputationalGeometry
 
                 return null;
             }
-        
+
 
             //Step 0. Init the triangles we will return
             HashSet<Triangle2> triangles = new HashSet<Triangle2>();
-
 
 
             //Step 1. Sort the points
@@ -50,7 +48,6 @@ namespace Pancake.ComputationalGeometry
 
             //If we have colinear points we have to sort in both x and y
             sortedPoints = sortedPoints.OrderBy(n => n.x).ThenBy(n => n.y).ToList();
-
 
 
             //Step 2. Create the first triangle so we can start the algorithm because we need edges to look at
@@ -72,7 +69,7 @@ namespace Pancake.ComputationalGeometry
             {
                 //We have found a non-colinear point
                 LeftOnRight pointRelation = _Geometry.IsPoint_Left_On_Right_OfVector(p1, p2, sortedPoints[i]);
-                
+
                 if (pointRelation == LeftOnRight.Left || pointRelation == LeftOnRight.Right)
                 {
                     MyVector2 p3 = sortedPoints[i];
@@ -94,10 +91,9 @@ namespace Pancake.ComputationalGeometry
             if (triangles.Count == 0)
             {
                 Debug.Log("All points you want to triangulate a co-linear");
-                
+
                 return null;
             }
-
 
 
             //Step 3. Add the other points one-by-one
@@ -148,7 +144,7 @@ namespace Pancake.ComputationalGeometry
                     //If this triangle is clockwise, then we can see the edge
                     //so we should create a new triangle with this edge and the point
                     if (_Geometry.IsTriangleOrientedClockwise(hull_p1, hull_p2, pointToAdd))
-                    {                    
+                    {
                         triangles.Add(new Triangle2(hull_p1, hull_p2, pointToAdd));
 
                         couldFormTriangle = true;
@@ -171,7 +167,6 @@ namespace Pancake.ComputationalGeometry
                     Debug.Log("This point could not form any triangles " + pointToAdd.x + " " + pointToAdd.y);
                 }
             }
-            
 
 
             return triangles;

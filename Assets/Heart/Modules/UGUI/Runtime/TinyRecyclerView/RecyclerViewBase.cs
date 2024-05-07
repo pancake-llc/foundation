@@ -25,17 +25,9 @@ namespace Pancake.UI
 
         public abstract float Spacing { get; }
 
-        public ScrollRect ScrollRect
-        {
-            get => _scrollRect;
-            set => _scrollRect = value;
-        }
+        public ScrollRect ScrollRect { get => _scrollRect; set => _scrollRect = value; }
 
-        public ScrollDirection ScrollDirection
-        {
-            get => _scrollDirection;
-            set => _scrollDirection = value;
-        }
+        public ScrollDirection ScrollDirection { get => _scrollDirection; set => _scrollDirection = value; }
 
         private void Awake()
         {
@@ -43,35 +35,21 @@ namespace Pancake.UI
             var content = _scrollRect.content;
             _cellManager = new CellManager(content);
 
-            BeforePadding += _scrollDirection == ScrollDirection.Horizontal
-                ? LayoutGroup.padding.left
-                : LayoutGroup.padding.top;
-            AfterPadding += _scrollDirection == ScrollDirection.Horizontal
-                ? LayoutGroup.padding.right
-                : LayoutGroup.padding.bottom;
+            BeforePadding += _scrollDirection == ScrollDirection.Horizontal ? LayoutGroup.padding.left : LayoutGroup.padding.top;
+            AfterPadding += _scrollDirection == ScrollDirection.Horizontal ? LayoutGroup.padding.right : LayoutGroup.padding.bottom;
 
             OnAwake();
 
             Assert.IsTrue(_scrollRect.content.childCount == 0);
         }
 
-        private void OnEnable()
-        {
-            _scrollRect.onValueChanged.AddListener(OnScrollValueChanged);
-        }
+        private void OnEnable() { _scrollRect.onValueChanged.AddListener(OnScrollValueChanged); }
 
-        private void OnDisable()
-        {
-            _scrollRect.onValueChanged.RemoveListener(OnScrollValueChanged);
-        }
+        private void OnDisable() { _scrollRect.onValueChanged.RemoveListener(OnScrollValueChanged); }
 
-        protected virtual void OnValidate()
-        {
-        }
+        protected virtual void OnValidate() { }
 
-        protected virtual void OnAwake()
-        {
-        }
+        protected virtual void OnAwake() { }
 
         protected abstract float CalculateBeforeInvisibleAreaSize(float viewportPosMin, out int cellCount);
 
@@ -100,11 +78,9 @@ namespace Pancake.UI
                 return;
 
             var isHorizontal = _scrollDirection == ScrollDirection.Horizontal;
-            var rectTrans = (RectTransform)transform;
+            var rectTrans = (RectTransform) transform;
             var viewportSize = isHorizontal ? rectTrans.rect.width : rectTrans.rect.height;
-            var viewportPosMin = isHorizontal
-                ? -_scrollRect.content.anchoredPosition.x
-                : _scrollRect.content.anchoredPosition.y;
+            var viewportPosMin = isHorizontal ? -_scrollRect.content.anchoredPosition.x : _scrollRect.content.anchoredPosition.y;
             var viewportPosMax = viewportPosMin + viewportSize;
 
             // Calculate the invisible area size before the viewport.
@@ -153,7 +129,7 @@ namespace Pancake.UI
                 }
 
             // Apply the invisible area size calculated above.
-            ApplyInvisibleAreaSize((int)beforeInvisibleAreaSize, (int)afterInvisibleAreaSize);
+            ApplyInvisibleAreaSize((int) beforeInvisibleAreaSize, (int) afterInvisibleAreaSize);
         }
 
         /// <summary>
@@ -224,10 +200,7 @@ namespace Pancake.UI
             _scrollRect.normalizedPosition = pos;
         }
 
-        private void OnScrollValueChanged(Vector2 _)
-        {
-            UpdateContents();
-        }
+        private void OnScrollValueChanged(Vector2 _) { UpdateContents(); }
 
         private void ApplyInvisibleAreaSize(int beforeSize, int afterSize)
         {
@@ -245,24 +218,17 @@ namespace Pancake.UI
 
         private sealed class CellManager
         {
-            private readonly List<(int dataIndex, Transform trans)> _children =
-                new List<(int dataIndex, Transform trans)>();
+            private readonly List<(int dataIndex, Transform trans)> _children = new List<(int dataIndex, Transform trans)>();
 
             private readonly List<int> _dataIndices = new List<int>();
 
             private readonly Transform _parent;
 
-            public CellManager(Transform parent)
-            {
-                _parent = parent;
-            }
+            public CellManager(Transform parent) { _parent = parent; }
 
             public IReadOnlyList<int> DataIndices => _dataIndices;
 
-            public bool Contains(int dataIndex)
-            {
-                return _dataIndices.Contains(dataIndex);
-            }
+            public bool Contains(int dataIndex) { return _dataIndices.Contains(dataIndex); }
 
             public Transform GetCell(int dataIndex)
             {

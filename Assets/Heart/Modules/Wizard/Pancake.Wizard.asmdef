@@ -1,139 +1,139 @@
 {
-    "name": "Pancake.Wizard",
-    "rootNamespace": "",
-    "references": [
-        "GUID:d8912e81233de99449df74c45fe416da",
-        "GUID:38036840b8620d443a0acf3e48f20d6f",
-        "GUID:2bb2982fd552689428d4c3ae8bb26fb7",
-        "GUID:d43f774d56c534e4b84fe18247432afb",
-        "GUID:f7dabdcbede30aa4d84803a163c2fa1b",
-        "GUID:07b5f841645356448b819bba7d440ce5",
-        "GUID:adac8d59ad7e8504f82d387cded797a7",
-        "GUID:8a8c4467ea7eb924ea8771a941f6408b",
-        "GUID:c7e7793e0b5d326429f90e6fd716775e",
-        "GUID:5a5bdc0387f898e429d96457c503426a",
-        "GUID:6a3996cca4c689e4597a79d47ef54353",
-        "GUID:1fc40a42fd9ba86428b9f1a1bc03d8a6",
-        "GUID:71a2e5fd62742b447a45a06bf18f9a7d",
-        "GUID:68765d262e2128e4ab49c983f3411946",
-        "GUID:72d1fea872bd7a449bf3818f2b0a6708",
-        "GUID:173464ddf4cdb6640a4dfa8a9281ad69"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.unity.purchasing",
-            "expression": "4.5.2",
-            "define": "PANCAKE_IAP"
-        },
-        {
-            "name": "com.unity.mobile.notifications",
-            "expression": "2.1.0",
-            "define": "PANCAKE_NOTIFICATION"
-        },
-        {
-            "name": "com.pancake.adjust",
-            "expression": "4.33.0",
-            "define": "PANCAKE_ADJUST"
-        },
-        {
-            "name": "com.google.firebase.analytics",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_ANALYTIC"
-        },
-        {
-            "name": "com.google.firebase.remote-config",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_REMOTECONFIG"
-        },
-        {
-            "name": "com.google.firebase.messaging",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_MESSAGING"
-        },
-        {
-            "name": "com.google.firebase.crashlytics",
-            "expression": "8.1.0",
-            "define": "PANCAKE_FIREBASE_CRASHLYTIC"
-        },
-        {
-            "name": "com.google.external-dependency-manager",
-            "expression": "1.2.169",
-            "define": "PANCAKE_GOOGLE_EDM"
-        },
-        {
-            "name": "com.google.play.review",
-            "expression": "1.8.0",
-            "define": "PANCAKE_IN_APP_REVIEW"
-        },
-        {
-            "name": "com.unity.ads.ios-support",
-            "expression": "1.2.0",
-            "define": "PANCAKE_ATT"
-        },
-        {
-            "name": "com.coffee.ui-particle",
-            "expression": "4.0.0",
-            "define": "PANCAKE_PARTICLE_EFFECT_UGUI"
-        },
-        {
-            "name": "com.coffee.ui-effect",
-            "expression": "3.2.0",
-            "define": "PANCAKE_UI_EFFECT"
-        },
-        {
-            "name": "com.pancake.play-asset-delivery",
-            "expression": "1.0.0",
-            "define": "PANCAKE_PLAY_ASSET_DELIVERY"
-        },
-        {
-            "name": "com.unity.addressables",
-            "expression": "1.18.2",
-            "define": "PANCAKE_ADDRESSABLE"
-        },
-        {
-            "name": "com.esotericsoftware.spine.spine-unity",
-            "expression": "3.8.0",
-            "define": "PANCAKE_SPINE"
-        },
-        {
-            "name": "com.unity.services.leaderboards",
-            "expression": "1.0.0",
-            "define": "PANCAKE_LEADERBOARD"
-        },
-        {
-            "name": "com.unity.services.cloudsave",
-            "expression": "2.0.0",
-            "define": "PANCAKE_CLOUDSAVE"
-        },
-        {
-            "name": "com.unity.performance.profile-analyzer",
-            "expression": "1.2.0",
-            "define": "PANCAKE_PROFILE_ANALYZER"
-        },
-        {
-            "name": "com.unity.test-framework.performance",
-            "expression": "1.0.9-preview",
-            "define": "PANCAKE_TEST_PERFORMANCE"
-        },
-        {
-            "name": "com.lupidan.apple-signin-unity",
-            "expression": "1.4.0",
-            "define": "PANCAKE_APPLE_SIGNIN"
-        },
-        {
-            "name": "com.tayx.graphy",
-            "expression": "1.0.0",
-            "define": "PANCAKE_GRAPHY"
-        }
-    ],
-    "noEngineReferences": false
+  "name": "Pancake.Wizard",
+  "rootNamespace": "",
+  "references": [
+    "GUID:d8912e81233de99449df74c45fe416da",
+    "GUID:38036840b8620d443a0acf3e48f20d6f",
+    "GUID:2bb2982fd552689428d4c3ae8bb26fb7",
+    "GUID:d43f774d56c534e4b84fe18247432afb",
+    "GUID:f7dabdcbede30aa4d84803a163c2fa1b",
+    "GUID:07b5f841645356448b819bba7d440ce5",
+    "GUID:adac8d59ad7e8504f82d387cded797a7",
+    "GUID:8a8c4467ea7eb924ea8771a941f6408b",
+    "GUID:c7e7793e0b5d326429f90e6fd716775e",
+    "GUID:5a5bdc0387f898e429d96457c503426a",
+    "GUID:6a3996cca4c689e4597a79d47ef54353",
+    "GUID:1fc40a42fd9ba86428b9f1a1bc03d8a6",
+    "GUID:71a2e5fd62742b447a45a06bf18f9a7d",
+    "GUID:68765d262e2128e4ab49c983f3411946",
+    "GUID:72d1fea872bd7a449bf3818f2b0a6708",
+    "GUID:173464ddf4cdb6640a4dfa8a9281ad69"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "com.unity.purchasing",
+      "expression": "4.5.2",
+      "define": "PANCAKE_IAP"
+    },
+    {
+      "name": "com.unity.mobile.notifications",
+      "expression": "2.1.0",
+      "define": "PANCAKE_NOTIFICATION"
+    },
+    {
+      "name": "com.pancake.adjust",
+      "expression": "4.33.0",
+      "define": "PANCAKE_ADJUST"
+    },
+    {
+      "name": "com.google.firebase.analytics",
+      "expression": "8.1.0",
+      "define": "PANCAKE_FIREBASE_ANALYTIC"
+    },
+    {
+      "name": "com.google.firebase.remote-config",
+      "expression": "8.1.0",
+      "define": "PANCAKE_FIREBASE_REMOTECONFIG"
+    },
+    {
+      "name": "com.google.firebase.messaging",
+      "expression": "8.1.0",
+      "define": "PANCAKE_FIREBASE_MESSAGING"
+    },
+    {
+      "name": "com.google.firebase.crashlytics",
+      "expression": "8.1.0",
+      "define": "PANCAKE_FIREBASE_CRASHLYTIC"
+    },
+    {
+      "name": "com.google.external-dependency-manager",
+      "expression": "1.2.169",
+      "define": "PANCAKE_GOOGLE_EDM"
+    },
+    {
+      "name": "com.google.play.review",
+      "expression": "1.8.0",
+      "define": "PANCAKE_IN_APP_REVIEW"
+    },
+    {
+      "name": "com.unity.ads.ios-support",
+      "expression": "1.2.0",
+      "define": "PANCAKE_ATT"
+    },
+    {
+      "name": "com.coffee.ui-particle",
+      "expression": "4.0.0",
+      "define": "PANCAKE_PARTICLE_EFFECT_UGUI"
+    },
+    {
+      "name": "com.coffee.ui-effect",
+      "expression": "3.2.0",
+      "define": "PANCAKE_UI_EFFECT"
+    },
+    {
+      "name": "com.pancake.play-asset-delivery",
+      "expression": "1.0.0",
+      "define": "PANCAKE_PLAY_ASSET_DELIVERY"
+    },
+    {
+      "name": "com.unity.addressables",
+      "expression": "1.18.2",
+      "define": "PANCAKE_ADDRESSABLE"
+    },
+    {
+      "name": "com.esotericsoftware.spine.spine-unity",
+      "expression": "3.8.0",
+      "define": "PANCAKE_SPINE"
+    },
+    {
+      "name": "com.unity.services.leaderboards",
+      "expression": "1.0.0",
+      "define": "PANCAKE_LEADERBOARD"
+    },
+    {
+      "name": "com.unity.services.cloudsave",
+      "expression": "2.0.0",
+      "define": "PANCAKE_CLOUDSAVE"
+    },
+    {
+      "name": "com.unity.performance.profile-analyzer",
+      "expression": "1.2.0",
+      "define": "PANCAKE_PROFILE_ANALYZER"
+    },
+    {
+      "name": "com.unity.test-framework.performance",
+      "expression": "1.0.9-preview",
+      "define": "PANCAKE_TEST_PERFORMANCE"
+    },
+    {
+      "name": "com.lupidan.apple-signin-unity",
+      "expression": "1.4.0",
+      "define": "PANCAKE_APPLE_SIGNIN"
+    },
+    {
+      "name": "com.tayx.graphy",
+      "expression": "1.0.0",
+      "define": "PANCAKE_GRAPHY"
+    }
+  ],
+  "noEngineReferences": false
 }

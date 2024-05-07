@@ -12,9 +12,6 @@ namespace Pancake.ComputationalGeometry.Marching_Squares
         //Index in the mesh which will make it simpler to avoid duplicate vertices
         public int vertexIndex = -1;
 
-        public Node(MyVector2 pos)
-        {
-            this.pos = pos;
-        }
+        public Node(MyVector2 pos) { this.pos = pos; }
     }
 }

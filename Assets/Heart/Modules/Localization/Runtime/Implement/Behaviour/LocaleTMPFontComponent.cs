@@ -14,5 +14,4 @@ namespace Pancake.Localization
             TrySetComponentAndPropertyIfNotSet<TextMeshPro>("font");
         }
     }
-
 }

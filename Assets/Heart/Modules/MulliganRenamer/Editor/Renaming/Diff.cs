@@ -69,7 +69,7 @@ namespace RedBlueGames.MulliganRenamer
             }
 
             Diff otherDiff = obj as Diff;
-            if ((object)otherDiff == null)
+            if ((object) otherDiff == null)
             {
                 return false;
             }
@@ -92,21 +92,12 @@ namespace RedBlueGames.MulliganRenamer
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() { return base.GetHashCode(); }
 
         /// <summary>
         /// Returns a <see cref="System.String"/> that represents the current <see cref="RedBlueGames.MulliganRenamer.Diff"/>.
         /// </summary>
         /// <returns>A <see cref="System.String"/> that represents the current <see cref="RedBlueGames.MulliganRenamer.Diff"/>.</returns>
-        public override string ToString()
-        {
-            return string.Format(
-                "[Diff: Result={0}, Operation={1}]",
-                this.Result,
-                this.Operation);
-        }
+        public override string ToString() { return string.Format("[Diff: Result={0}, Operation={1}]", this.Result, this.Operation); }
     }
 }

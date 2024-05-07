@@ -35,11 +35,9 @@ namespace RedBlueGames.MulliganRenamer
     [System.Serializable]
     public class ToCamelCaseOperation : IRenameOperation
     {
-        [SerializeField]
-        private bool usePascal;
+        [SerializeField] private bool usePascal;
 
-        [SerializeField]
-        private string delimiterCharacters;
+        [SerializeField] private string delimiterCharacters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToCamelCaseOperation"/> class.
@@ -60,44 +58,13 @@ namespace RedBlueGames.MulliganRenamer
             this.usePascal = operationToCopy.usePascal;
         }
 
-        public bool UsePascal
-        {
-            get
-            {
-                return this.usePascal;
-            }
+        public bool UsePascal { get { return this.usePascal; } set { this.usePascal = value; } }
 
-            set
-            {
-                this.usePascal = value;
-            }
-        }
+        public bool UseCamel { get { return !this.UsePascal; } }
 
-        public bool UseCamel
-        {
-            get
-            {
-                return !this.UsePascal;
-            }
-        }
+        public string DelimiterCharacters { get { return this.delimiterCharacters; } set { this.delimiterCharacters = value; } }
 
-        public string DelimiterCharacters
-        {
-            get
-            {
-                return this.delimiterCharacters;
-            }
-
-            set
-            {
-                this.delimiterCharacters = value;
-            }
-        }
-
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Clone this instance.
@@ -141,6 +108,7 @@ namespace RedBlueGames.MulliganRenamer
                         patternBuilder.Append(Regex.Escape(delimiterChar.ToString()));
                     }
                 }
+
                 patternBuilder.Append("])");
                 string pattern = patternBuilder.ToString();
 
@@ -179,10 +147,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets the hash code for the operation
         /// </summary>
         /// <returns>A unique hash code from the values</returns>
-        public override int GetHashCode()
-        {
-            return this.delimiterCharacters.GetHashCode();
-        }
+        public override int GetHashCode() { return this.delimiterCharacters.GetHashCode(); }
 
         /// <summary>
         /// Returns whether or not this rename operation is equal to another and returns the result.

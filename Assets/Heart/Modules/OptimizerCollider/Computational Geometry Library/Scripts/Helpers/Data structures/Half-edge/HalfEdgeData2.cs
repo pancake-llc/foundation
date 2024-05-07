@@ -17,7 +17,6 @@ namespace Pancake.ComputationalGeometry
         public HashSet<HalfEdge2> edges;
 
 
-
         public HalfEdgeData2()
         {
             this.vertices = new HashSet<HalfEdgeVertex2>();
@@ -26,7 +25,6 @@ namespace Pancake.ComputationalGeometry
 
             this.edges = new HashSet<HalfEdge2>();
         }
-
 
 
         //Get a list with unique edges
@@ -69,7 +67,6 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     //A position
     public class HalfEdgeVertex2
     {
@@ -81,13 +78,8 @@ namespace Pancake.ComputationalGeometry
         public HalfEdge2 edge;
 
 
-
-        public HalfEdgeVertex2(MyVector2 position)
-        {
-            this.position = position;
-        }
+        public HalfEdgeVertex2(MyVector2 position) { this.position = position; }
     }
-
 
 
     //This face could be a triangle or whatever we need
@@ -98,13 +90,8 @@ namespace Pancake.ComputationalGeometry
         public HalfEdge2 edge;
 
 
-
-        public HalfEdgeFace2(HalfEdge2 edge)
-        {
-            this.edge = edge;
-        }
+        public HalfEdgeFace2(HalfEdge2 edge) { this.edge = edge; }
     }
-
 
 
     //An edge going in a direction
@@ -129,10 +116,6 @@ namespace Pancake.ComputationalGeometry
         public HalfEdge2 prevEdge;
 
 
-
-        public HalfEdge2(HalfEdgeVertex2 v)
-        {
-            this.v = v;
-        }
+        public HalfEdge2(HalfEdgeVertex2 v) { this.v = v; }
     }
 }

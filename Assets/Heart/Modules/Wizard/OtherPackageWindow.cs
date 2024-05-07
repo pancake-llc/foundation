@@ -92,7 +92,7 @@ namespace PancakeEditor
 #endif
 
             GUILayout.Space(4);
-            
+
 #if PANCAKE_IN_APP_REVIEW
             EditorGUILayout.BeginHorizontal();
             Uniform.DrawInstalled("In-App-Review 1.8.1");

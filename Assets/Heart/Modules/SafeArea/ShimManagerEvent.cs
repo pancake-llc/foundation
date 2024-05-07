@@ -14,7 +14,7 @@ namespace Pancake.SafeAreEditor
         private static void Initialize()
         {
             activeScreenShim = ShimManagerProxy.GetActiveScreenShim();
-            
+
             EditorApplication.update -= OnUpdate;
             EditorApplication.update += OnUpdate;
         }

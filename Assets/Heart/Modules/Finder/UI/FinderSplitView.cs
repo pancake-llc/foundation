@@ -198,7 +198,7 @@ namespace PancakeEditor
         private void EndLayout(bool horz)
         {
             if (horz) EditorGUILayout.EndHorizontal();
-            else  EditorGUILayout.EndVertical();
+            else EditorGUILayout.EndVertical();
         }
     }
 }

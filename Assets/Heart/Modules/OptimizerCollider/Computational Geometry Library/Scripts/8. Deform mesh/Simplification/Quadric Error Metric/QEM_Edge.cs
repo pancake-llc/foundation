@@ -17,12 +17,7 @@ namespace Pancake.ComputationalGeometry
         public float qem;
 
 
-
-        public QEM_Edge(HalfEdge3 halfEdge, Matrix4x4 Q1, Matrix4x4 Q2)
-        {
-            UpdateEdge(halfEdge, Q1, Q2);
-        }
-
+        public QEM_Edge(HalfEdge3 halfEdge, Matrix4x4 Q1, Matrix4x4 Q2) { UpdateEdge(halfEdge, Q1, Q2); }
 
 
         public void UpdateEdge(HalfEdge3 halfEdge, Matrix4x4 Q1, Matrix4x4 Q2)
@@ -32,7 +27,6 @@ namespace Pancake.ComputationalGeometry
             //Compute the optimal contraction target v for the pair (v1, v2) and the qem at this position
             CalculateMergePositionANDqem(this.halfEdge, Q1, Q2);
         }
-
 
 
         //Compute the optimal contraction target v for the pair (v1, v2)
@@ -55,7 +49,7 @@ namespace Pancake.ComputationalGeometry
             float qem1 = CalculateQEM(v1, Q1, Q2);
             float qem2 = CalculateQEM(v2, Q1, Q2);
             float qem3 = CalculateQEM(v3, Q1, Q2);
-           
+
             //Find which vertex minimized the qem
             if (qem1 < qem2 && qem1 < qem3)
             {
@@ -76,7 +70,6 @@ namespace Pancake.ComputationalGeometry
                 this.qem = qem3;
             }
         }
-
 
 
         //Compute the Quadric Error Metric at point v
@@ -112,7 +105,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Get the positions where this edge starts and end
         public Edge3 GetEdgeEndPoints()
         {
@@ -125,7 +117,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // For the heap
         //
@@ -133,11 +124,7 @@ namespace Pancake.ComputationalGeometry
         private int heapIndex;
 
         //To be able to sort the items in the heap
-        public int HeapIndex
-        {
-            get { return heapIndex; }
-            set { this.heapIndex = value; }
-        }
+        public int HeapIndex { get { return heapIndex; } set { this.heapIndex = value; } }
 
         //To be able to sort items in the heap
         //https://docs.microsoft.com/en-us/previous-versions/windows/silverlight/dotnet-windows-silverlight/74z9b11e(v=vs.95)?redirectedfrom=MSDN

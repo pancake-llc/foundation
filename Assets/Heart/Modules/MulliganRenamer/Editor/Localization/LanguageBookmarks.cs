@@ -25,24 +25,18 @@ namespace RedBlueGames.MulliganRenamer
 {
     using System.Collections.Generic;
     using UnityEngine;
+
     public class LanguageBookmarks
     {
         // These are assigned through Unity's serialization / deserialization.
         // So we Ignore warning about Unassigned field.
 #pragma warning disable 0649
-        [SerializeField]
-        private List<string> languageUrls;
+        [SerializeField] private List<string> languageUrls;
 #pragma warning restore 0649
 
         /// <summary>
         /// 
         /// </summary>
-        public List<string> LanguageUrls
-        {
-            get
-            {
-                return this.languageUrls;
-            }
-        }
+        public List<string> LanguageUrls { get { return this.languageUrls; } }
     }
 }

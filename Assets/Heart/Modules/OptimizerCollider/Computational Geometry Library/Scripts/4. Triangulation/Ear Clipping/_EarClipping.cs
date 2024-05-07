@@ -28,8 +28,6 @@ namespace Pancake.ComputationalGeometry
                 return null;
             }
 
-           
-
 
             //Step -1. Merge the holes with the points on the hull into one big polygon with invisible edges between the holes and the hull
             if (allHoleVertices != null && allHoleVertices.Count > 0)
@@ -61,7 +59,6 @@ namespace Pancake.ComputationalGeometry
             }
 
             //Debug.Log("Number of vertices: " + CountLinkedVertices(verticesLinked[0]));
-            
 
 
             //Step 1. Find:
@@ -73,7 +70,7 @@ namespace Pancake.ComputationalGeometry
             HashSet<LinkedVertex> reflectVerts = new HashSet<LinkedVertex>();
 
             foreach (LinkedVertex v in verticesLinked)
-            {            
+            {
                 bool isConvex = IsVertexConvex(v);
 
                 if (isConvex)
@@ -85,7 +82,6 @@ namespace Pancake.ComputationalGeometry
                     reflectVerts.Add(v);
                 }
             }
-
 
 
             //Step 2. Find the initial ears
@@ -104,7 +100,6 @@ namespace Pancake.ComputationalGeometry
 
             //Debug
             //DisplayVertices(earVertices);
-
 
 
             //Step 3. Build the triangles
@@ -137,14 +132,13 @@ namespace Pancake.ComputationalGeometry
                 //Try to flip this triangle according to Delaunay triangulation
                 if (optimizeTriangles)
                 {
-                    OptimizeTriangle(t, triangulation);    
+                    OptimizeTriangle(t, triangulation);
                 }
                 else
                 {
                     triangulation.Add(t);
                 }
 
-                
 
                 //Check if we have found all triangles
                 //This should also prevent us from getting stuck in an infinite loop
@@ -183,7 +177,6 @@ namespace Pancake.ComputationalGeometry
                 //}
 
 
-
                 safety += 1;
 
                 if (safety > 50000)
@@ -193,7 +186,6 @@ namespace Pancake.ComputationalGeometry
                     break;
                 }
             }
-
 
 
             //Step 4. Improve triangulation
@@ -208,7 +200,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Optimize a new triangle according to Delaunay triangulation
         //TODO: This process would have been easier if we had used the HalfEdge data structure
         private static void OptimizeTriangle(Triangle2 t, HashSet<Triangle2> triangulation)
@@ -219,7 +210,11 @@ namespace Pancake.ComputationalGeometry
 
             Edge2 edgeToSwap;
 
-            FindEdgeInTriangulation(t, triangulation, out hasOppositeEdge, out tOpposite, out edgeToSwap);
+            FindEdgeInTriangulation(t,
+                triangulation,
+                out hasOppositeEdge,
+                out tOpposite,
+                out edgeToSwap);
 
             //If it has no opposite edge we just add triangle to the triangulation because it can't be improved
             if (!hasOppositeEdge)
@@ -263,9 +258,13 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Find an edge in a triangulation and return the triangle the edge is attached to
-        private static void FindEdgeInTriangulation(Triangle2 tNew, HashSet<Triangle2> triangulation, out bool hasOppositeEdge, out Triangle2 tOpposite, out Edge2 edgeToSwap)
+        private static void FindEdgeInTriangulation(
+            Triangle2 tNew,
+            HashSet<Triangle2> triangulation,
+            out bool hasOppositeEdge,
+            out Triangle2 tOpposite,
+            out Edge2 edgeToSwap)
         {
             //Step 1. Find the triangle's biggest interior angle and its opposite edge
             float angleP1 = CalculateInteriorAngle(tNew.p3, tNew.p1, tNew.p2);
@@ -310,9 +309,12 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Reconfigure an adjacent vertex that was used to build a triangle
-        private static void ReconfigureAdjacentVertex(LinkedVertex v, HashSet<LinkedVertex> convexVerts, HashSet<LinkedVertex> reflectVerts, HashSet<LinkedVertex> earVerts)
+        private static void ReconfigureAdjacentVertex(
+            LinkedVertex v,
+            HashSet<LinkedVertex> convexVerts,
+            HashSet<LinkedVertex> reflectVerts,
+            HashSet<LinkedVertex> earVerts)
         {
             //If the adjacent vertex was reflect...
             if (reflectVerts.Contains(v))
@@ -347,7 +349,6 @@ namespace Pancake.ComputationalGeometry
                 }
             }
         }
-
 
 
         //Get the best ear vertex
@@ -388,7 +389,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Is a vertex an ear?
         private static bool IsVertexEar(LinkedVertex vertex, HashSet<LinkedVertex> reflectVertices)
         {
@@ -422,7 +422,6 @@ namespace Pancake.ComputationalGeometry
             //No vertex is intersecting with the triangle, so this vertex must be an ear
             return true;
         }
-
 
 
         //Is a vertex convex? (if not its concave or neither if its a straight line)
@@ -463,7 +462,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Get interior angle (the angle within the polygon) of a vertex
         private static float CalculateInteriorAngle(LinkedVertex v)
         {
@@ -492,7 +490,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Count vertices that are linked to each other in a looping way
         private static int CountLinkedVertices(LinkedVertex startVertex)
         {
@@ -503,14 +500,14 @@ namespace Pancake.ComputationalGeometry
             while (true)
             {
                 currentVertex = currentVertex.nextLinkedVertex;
-            
+
                 if (currentVertex == startVertex)
                 {
                     break;
                 }
-            
+
                 counter += 1;
-            
+
                 if (counter > 50000)
                 {
                     Debug.Log("Stuck in infinite loop!");
@@ -521,7 +518,6 @@ namespace Pancake.ComputationalGeometry
 
             return counter;
         }
-
 
 
         //Debug stuff

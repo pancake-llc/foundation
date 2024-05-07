@@ -25,7 +25,7 @@ namespace Pancake.Localization
                     return null;
                 }
 #endif
-                
+
                 if (instance == null)
                 {
                     instance = new Locale();

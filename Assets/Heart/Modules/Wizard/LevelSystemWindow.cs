@@ -5,7 +5,6 @@ using System.Linq;
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-
 using Pancake.LevelSystemEditor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -47,7 +46,8 @@ namespace PancakeEditor
                     RegistryManager.Add("com.unity.addressables", "1.21.20");
                     RegistryManager.Resolve();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
+                    Debug.Log(
+                        $"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

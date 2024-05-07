@@ -1,7 +1,6 @@
 #if PANCAKE_IAP
 using System.Collections.Generic;
 using PancakeEditor.Common;
-
 using Pancake.IAP;
 using Pancake.Scriptable;
 using UnityEditor;

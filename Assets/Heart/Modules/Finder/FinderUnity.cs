@@ -568,7 +568,7 @@ namespace PancakeEditor
             public TerrainTextureData(params Texture2D[] texs)
             {
                 var count = 0;
-                if (texs != null)  count = texs.Length;
+                if (texs != null) count = texs.Length;
 
                 textures = new Texture2D[count];
                 for (var i = 0; i < count; i++)

@@ -6,9 +6,6 @@ namespace Pancake.Localization
     [EditorIcon("icon_default")]
     public class LocaleSpriteComponent : LocaleComponentGeneric<LocaleSprite, Sprite>
     {
-        private void Reset()
-        {
-            TrySetComponentAndPropertyIfNotSet<Image>("sprite");
-        }
+        private void Reset() { TrySetComponentAndPropertyIfNotSet<Image>("sprite"); }
     }
 }

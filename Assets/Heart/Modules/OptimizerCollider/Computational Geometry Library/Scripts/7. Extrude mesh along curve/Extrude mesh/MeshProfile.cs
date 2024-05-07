@@ -22,7 +22,9 @@ namespace Pancake.ComputationalGeometry
     public class Vertex
     {
         public MyVector2 point;
+
         public MyVector2 normal;
+
         //The u in uv (v is in the extrusion direction)
         public float u;
     }

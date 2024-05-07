@@ -13,5 +13,4 @@ namespace Pancake.Localization
             TrySetComponentAndPropertyIfNotSet<TMP_Text>("fontSharedMaterial");
         }
     }
-
 }

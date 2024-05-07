@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 namespace Pancake.LevelSystem
 {
-
     [EditorIcon("icon_default")]
     public abstract class LevelComponent : GameComponent
     {

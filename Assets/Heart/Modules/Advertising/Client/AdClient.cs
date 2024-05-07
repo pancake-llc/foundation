@@ -1,8 +1,5 @@
-
-
 namespace Pancake.Monetization
 {
-
     public abstract class AdClient
     {
         protected AdSettings adSettings;

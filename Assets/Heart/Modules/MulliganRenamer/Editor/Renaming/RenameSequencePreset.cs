@@ -30,40 +30,24 @@ namespace RedBlueGames.MulliganRenamer
     [System.Serializable]
     public class RenameSequencePreset : UnityEngine.ISerializationCallbackReceiver
     {
-        [SerializeField]
-        private string name;
+        [SerializeField] private string name;
 
-        [SerializeField]
-        private string serializedOperationSequence;
+        [SerializeField] private string serializedOperationSequence;
 
         private RenameOperationSequence<IRenameOperation> operationSequence;
 
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
-            set
-            {
-                this.name = value;
-            }
-        }
+        public string Name { get { return this.name; } set { this.name = value; } }
 
         public RenameOperationSequence<IRenameOperation> OperationSequence
         {
             get
             {
-                if(this.operationSequence == null)
+                if (this.operationSequence == null)
                     this.operationSequence = RenameOperationSequence<IRenameOperation>.FromString(this.serializedOperationSequence);
 
                 return this.operationSequence;
             }
-
-            set
-            {
-                this.operationSequence = value;
-            }
+            set { this.operationSequence = value; }
         }
 
         public void OnBeforeSerialize()
@@ -78,10 +62,7 @@ namespace RedBlueGames.MulliganRenamer
             }
         }
 
-        public void OnAfterDeserialize()
-        {
-
-        }
+        public void OnAfterDeserialize() { }
 
         public override int GetHashCode()
         {

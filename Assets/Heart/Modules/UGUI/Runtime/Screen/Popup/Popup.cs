@@ -14,7 +14,7 @@ namespace Pancake.UI
         [SerializeField] private bool usePrefabNameAsId = true;
         [SerializeField, HideIf(nameof(usePrefabNameAsId)), Indent] private string id;
         public PopupTransitionContainer animationContainer = new();
-        
+
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
         private RectTransform _rectTransform;

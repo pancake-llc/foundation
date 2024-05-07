@@ -22,7 +22,7 @@ namespace Pancake.Component
 #endif
         [SerializeField]
         private Audio audioSpawn;
-        
+
 #if PANCAKE_ALCHEMY
         [ShowIf(nameof(isPlaySound)), Indent]
 #endif

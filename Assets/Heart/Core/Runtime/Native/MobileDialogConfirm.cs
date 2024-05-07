@@ -15,14 +15,7 @@ namespace Pancake
         public bool touchOutSide;
 
         // Constructor
-        public static MobileDialogConfirm Create(
-            string title,
-            string message,
-            string yes,
-            string no,
-            bool touchOutSide,
-            Action yesAction,
-            Action noAction)
+        public static MobileDialogConfirm Create(string title, string message, string yes, string no, bool touchOutSide, Action yesAction, Action noAction)
         {
             var dialog = new GameObject("MobileDialogConfirm").AddComponent<MobileDialogConfirm>();
             dialog.title = title;

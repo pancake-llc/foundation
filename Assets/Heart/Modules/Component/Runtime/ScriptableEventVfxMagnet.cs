@@ -13,7 +13,7 @@ namespace Pancake.Component
     {
         private readonly List<EventListenerVfxMagnet> _eventListeners = new();
         private readonly List<Object> _listenerObjects = new();
-        
+
         private Action<Vector3, int> _onRaised;
 
         /// <summary> Event raised when the event is raised. </summary>
@@ -21,7 +21,7 @@ namespace Pancake.Component
         {
             add
             {
-                _onRaised += value; 
+                _onRaised += value;
                 var listener = value.Target as Object;
                 if (listener != null && !_listenerObjects.Contains(listener)) _listenerObjects.Add(listener);
             }
@@ -37,12 +37,12 @@ namespace Pancake.Component
         public void Raise(Vector3 position, int value)
         {
             if (!Application.isPlaying) return;
-            
+
             for (int i = _eventListeners.Count - 1; i >= 0; i--)
             {
                 _eventListeners[i].OnEventRaised(this);
             }
-            
+
             _onRaised?.Invoke(position, value);
         }
 

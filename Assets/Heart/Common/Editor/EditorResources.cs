@@ -194,7 +194,7 @@ namespace PancakeEditor.Common
             TextureCached[$"{nameof(IconRemoveComponent)}{theme}"] = tex;
             return tex;
         }
-        
+
         public static Texture2D IconLightComponent(string theme)
         {
             TextureCached.TryGetValue($"{nameof(IconLightComponent)}{theme}", out var tex);

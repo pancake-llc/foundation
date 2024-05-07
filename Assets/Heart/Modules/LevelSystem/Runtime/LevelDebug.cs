@@ -31,7 +31,7 @@ namespace Pancake.LevelSystem
                 levelPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PathLevelPrefab)?.GetComponent<LevelComponent>();
                 return levelPrefab;
             }
-           internal set => levelPrefab = value;
+            internal set => levelPrefab = value;
         }
 
         static LevelDebug() { EditorApplication.playModeStateChanged += OnPlayModeStateChanged; }

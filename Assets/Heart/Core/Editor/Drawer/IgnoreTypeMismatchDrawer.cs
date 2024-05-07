@@ -24,3 +24,4 @@
 //         public bool IsValidProperty(SerializedProperty property) { return property.propertyType == SerializedPropertyType.ObjectReference; }
 //     }
 // }
+

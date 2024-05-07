@@ -23,16 +23,13 @@ namespace Pancake.ComputationalGeometry
                 return null;
             }
 
-            
 
             //Step 1.Normalize the points to the range(0 - 1), which assumes we have more than 1 point
             //Is not being done here, we assume the points are already normalized
 
 
-
             //Step 2. Sort the points into bins to make it faster to find which triangle a point is in
             //TODO
-
 
 
             //Step 3. Establish the supertriangle
@@ -49,7 +46,6 @@ namespace Pancake.ComputationalGeometry
             //Change to half-edge data structure
             _TransformBetweenDataStructures.Triangle2ToHalfEdge2(triangles, triangulationData);
 
-            
 
             //Step 4. Loop over each point we want to insert and do Steps 5-7
 
@@ -64,10 +60,8 @@ namespace Pancake.ComputationalGeometry
             }
 
 
-
             //Step 8. Delete the vertices belonging to the supertriangle
             RemoveSuperTriangle(superTriangle, triangulationData);
-
 
 
             //Step 9.Reset the coordinates to their original values because they are currently in the range (0,1)
@@ -87,7 +81,6 @@ namespace Pancake.ComputationalGeometry
 
             return triangulationData;
         }
-
 
 
         //Insert a new point in the triangulation we already have, so we need at least one triangle
@@ -137,7 +130,7 @@ namespace Pancake.ComputationalGeometry
                 MyVector2 a = edgeToTest.v.position;
                 MyVector2 b = edgeToTest.prevEdge.v.position;
                 MyVector2 c = edgeToTest.nextEdge.v.position;
-                
+
                 //abc are here counter-clockwise
                 if (DelaunayMethods.ShouldFlipEdgeStable(a, b, c, p))
                 {
@@ -150,7 +143,6 @@ namespace Pancake.ComputationalGeometry
                 }
             }
         }
-
 
 
         //Find all triangles opposite of vertex p
@@ -208,14 +200,13 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Remove the supertriangle
         private static void RemoveSuperTriangle(Triangle2 superTriangle, HalfEdgeData2 triangulationData)
         {
             //The super triangle doesnt exists anymore because we have split it into many new triangles
             //But we can use its vertices to figure out which new triangles (or faces belonging to the triangle) 
             //we should delete
-        
+
             HashSet<HalfEdgeFace2> triangleFacesToDelete = new HashSet<HalfEdgeFace2>();
 
             //Loop through all vertices belongin to the triangulation

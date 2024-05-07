@@ -12,7 +12,7 @@ namespace Pancake.Localization
         private class TextureLocaleItem : LocaleItem<Texture>
         {
         };
-        
+
         [SerializeField] private TextureLocaleItem[] items = new TextureLocaleItem[1];
 
         // ReSharper disable once CoVariantArrayConversion

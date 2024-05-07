@@ -213,8 +213,7 @@ namespace Pancake.Common
             bool isLooped = false,
             bool useRealTime = false)
         {
-            return App.Delay(
-                target,
+            return App.Delay(target,
                 duration,
                 onComplete,
                 onUpdate,

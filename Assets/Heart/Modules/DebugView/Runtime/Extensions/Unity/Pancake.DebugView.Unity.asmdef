@@ -1,20 +1,20 @@
 {
-    "name": "Pancake.DebugView.Unity",
-    "rootNamespace": "",
-    "references": [
-        "GUID:58c518d4346be9042bfa20894cfca1d3",
-        "GUID:71a2e5fd62742b447a45a06bf18f9a7d",
-        "GUID:adac8d59ad7e8504f82d387cded797a7"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [
-        "!EXCLUDE_UNITY_DEBUG_SHEET"
-    ],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Pancake.DebugView.Unity",
+  "rootNamespace": "",
+  "references": [
+    "GUID:58c518d4346be9042bfa20894cfca1d3",
+    "GUID:71a2e5fd62742b447a45a06bf18f9a7d",
+    "GUID:adac8d59ad7e8504f82d387cded797a7"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "!EXCLUDE_UNITY_DEBUG_SHEET"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

@@ -48,9 +48,8 @@ namespace Pancake.Localization
 
             return false;
         }
-        
-        public bool TrySetComponentAndPropertyIfNotSet<TComponent>(string propertyName)
-            where TComponent : Component
+
+        public bool TrySetComponentAndPropertyIfNotSet<TComponent>(string propertyName) where TComponent : Component
         {
             return component == null && TrySetComponentAndProperty<TComponent>(propertyName);
         }

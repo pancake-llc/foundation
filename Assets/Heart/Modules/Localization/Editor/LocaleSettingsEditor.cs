@@ -81,7 +81,7 @@ namespace PancakeEditor.Localization
                 LocaleEditorUtil.LanguageField(position, languageProperty, GUIContent.none, true);
             }
         }
-        
+
         private void OnDrawHeaderCallback(Rect rect) { EditorGUI.LabelField(rect, "Available Languages"); }
 
         private void OnAddDropdownCallback(Rect buttonrect, ReorderableList list)

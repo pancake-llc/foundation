@@ -35,52 +35,35 @@ namespace RedBlueGames.MulliganRenamer
     {
         private UnityWebRequest webRequest;
 
-        public int Timeout
-        {
-            get
-            {
-                return this.webRequest.timeout;
-            }
-
-            set
-            {
-                this.webRequest.timeout = value;
-            }
-        }
+        public int Timeout { get { return this.webRequest.timeout; } set { this.webRequest.timeout = value; } }
 
         public bool IsTimeout
         {
             get
             {
-                #if UNITY_5
+#if UNITY_5
                 return this.webRequest.isError && this.webRequest.error == "Request timeout";
-                #elif UNITY_2020_1_OR_NEWER
+#elif UNITY_2020_1_OR_NEWER
                 return this.webRequest.result == UnityWebRequest.Result.ConnectionError && this.webRequest.error == "Request timeout";
-                #else
+#else
                 return this.webRequest.isNetworkError && this.webRequest.error == "Request timeout";
-                #endif
+#endif
             }
         }
 
-        public bool IsDone
-        {
-            get
-            {
-                return this.webRequest.isDone;
-            }
-        }
+        public bool IsDone { get { return this.webRequest.isDone; } }
 
         public bool IsNetworkError
         {
             get
             {
-                #if UNITY_5
+#if UNITY_5
                 return this.webRequest.isError;
-                #elif UNITY_2020_1_OR_NEWER
+#elif UNITY_2020_1_OR_NEWER
                 return this.webRequest.result == UnityWebRequest.Result.ConnectionError;
-                #else
+#else
                 return this.webRequest.isNetworkError;
-                #endif
+#endif
             }
         }
 
@@ -88,62 +71,41 @@ namespace RedBlueGames.MulliganRenamer
         {
             get
             {
-                #if UNITY_5
+#if UNITY_5
                 return this.webRequest.isError;
-                #elif UNITY_2020_1_OR_NEWER
+#elif UNITY_2020_1_OR_NEWER
                 return this.webRequest.result == UnityWebRequest.Result.ProtocolError;
-                #else
+#else
                 return this.webRequest.isHttpError;
-                #endif
+#endif
             }
         }
 
-        public string ErrorText
-        {
-            get
-            {
-                return this.webRequest.error;
-            }
-        }
+        public string ErrorText { get { return this.webRequest.error; } }
 
-        public string DownloadedText
-        {
-            get
-            {
-                return this.webRequest.downloadHandler.text;
-            }
-        }
+        public string DownloadedText { get { return this.webRequest.downloadHandler.text; } }
 
         /// <summary>
         /// Create an instance ready to go for a GET request. This mirror's UnityWebRequest's API.
         /// </summary>
         /// <param name="uri">Address for the GET</param>
         /// <returns>The object that can be used to execute the web request</returns>
-        public static UnityWebRequestWrapper Get(string uri)
-        {
-            return new UnityWebRequestWrapper(uri);
-        }
+        public static UnityWebRequestWrapper Get(string uri) { return new UnityWebRequestWrapper(uri); }
 
-        private UnityWebRequestWrapper(string uri)
-        {
-            this.webRequest = UnityWebRequest.Get(uri);
-        }
+        private UnityWebRequestWrapper(string uri) { this.webRequest = UnityWebRequest.Get(uri); }
 
         /// <summary>
         /// Asynchronously send the request to the web. Query IsDone to see if it's complete.
         /// </summary>
         public void SendWebRequest()
         {
-            #if UNITY_5
+#if UNITY_5
             this.webRequest.Send();
-            #else
+#else
             this.webRequest.SendWebRequest();
-            #endif
+#endif
         }
 
-        public void Dispose()
-        {
-            this.webRequest.Dispose();
-        }
+        public void Dispose() { this.webRequest.Dispose(); }
     }
 }

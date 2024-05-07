@@ -123,9 +123,7 @@
             {
                 // last diff in the sequence matches the desired diff for the remainder of the string. Consolidate them
                 var previousDiff = renameResult[renameResult.Count - 1];
-                renameResult[renameResult.Count - 1] = new Diff(
-                    string.Concat(previousDiff.Result, remainderOfOldString),
-                    previousDiff.Operation);
+                renameResult[renameResult.Count - 1] = new Diff(string.Concat(previousDiff.Result, remainderOfOldString), previousDiff.Operation);
             }
             else
             {

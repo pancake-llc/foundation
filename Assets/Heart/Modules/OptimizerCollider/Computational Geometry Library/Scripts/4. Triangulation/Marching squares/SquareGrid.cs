@@ -20,7 +20,6 @@ namespace Pancake.ComputationalGeometry.Marching_Squares
         public List<Edge2> contourEdges;
 
 
-
         public SquareGrid(float[,] map, float squareSize)
         {
             //Init
@@ -71,7 +70,6 @@ namespace Pancake.ComputationalGeometry.Marching_Squares
                 }
             }
         }
-
 
 
         //Marching squares is a 2d algorithm, so we need a height to display it in 3d

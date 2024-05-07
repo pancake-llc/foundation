@@ -18,7 +18,7 @@ namespace Pancake.Component
 
         [SerializeField] protected ScriptableEventNoParam pulseEvent;
         [SerializeField] protected ScriptableEventNoParam stopEvent;
-        
+
         protected bool isPlaying;
 
         protected virtual void Register()

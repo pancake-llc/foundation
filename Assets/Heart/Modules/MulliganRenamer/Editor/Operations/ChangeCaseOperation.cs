@@ -33,11 +33,9 @@ namespace RedBlueGames.MulliganRenamer
     [System.Serializable]
     public class ChangeCaseOperation : IRenameOperation
     {
-        [SerializeField]
-        private CasingChange casing;
+        [SerializeField] private CasingChange casing;
 
-        [SerializeField]
-        private bool changeFirstCharacterOnly;
+        [SerializeField] private bool changeFirstCharacterOnly;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangeCaseOperation"/> class.
@@ -78,39 +76,14 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets or sets the desired casing.
         /// </summary>
         /// <value>The desired casing.</value>
-        public CasingChange Casing
-        {
-            get
-            {
-                return this.casing;
-            }
-
-            set
-            {
-                this.casing = value;
-            }
-        }
+        public CasingChange Casing { get { return this.casing; } set { this.casing = value; } }
 
         /// <summary>
         /// Gets or sets a flag indicating whether or not to change all characters or just the first.
         /// </summary>
-        public bool ChangeFirstCharacterOnly
-        {
-            get
-            {
-                return this.changeFirstCharacterOnly;
-            }
+        public bool ChangeFirstCharacterOnly { get { return this.changeFirstCharacterOnly; } set { this.changeFirstCharacterOnly = value; } }
 
-            set
-            {
-                this.changeFirstCharacterOnly = value;
-            }
-        }
-
-        public bool HasErrors()
-        {
-            return false;
-        }
+        public bool HasErrors() { return false; }
 
         /// <summary>
         /// Clone this instance.
@@ -145,9 +118,7 @@ namespace RedBlueGames.MulliganRenamer
                     inputCaseChanged = input.ToUpper();
                     break;
                 default:
-                    var message = string.Format(
-                                      "CaseOperation received unknown CasingOption {0}",
-                                      this.Casing);
+                    var message = string.Format("CaseOperation received unknown CasingOption {0}", this.Casing);
                     throw new System.ArgumentOutOfRangeException(message);
             }
 
@@ -198,10 +169,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Gets the hash code for the operation
         /// </summary>
         /// <returns>A unique hash code from the values</returns>
-        public override int GetHashCode()
-        {
-            return this.Casing.GetHashCode();
-        }
+        public override int GetHashCode() { return this.Casing.GetHashCode(); }
 
         /// <summary>
         /// Returns whether or not this rename operation is equal to another and returns the result.

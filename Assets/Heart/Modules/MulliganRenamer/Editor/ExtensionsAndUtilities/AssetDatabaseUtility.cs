@@ -81,7 +81,7 @@ namespace RedBlueGames.MulliganRenamer
         {
             // Note this has to use AssetDatabase.Load so that we load sprites and other sub assets and
             // include them as "assets" in the directory. System.IO would not find these files.
-            var assetGUIDsInDirectory = AssetDatabase.FindAssets(string.Empty, new string[] { assetDirectory.Substring(0, assetDirectory.Length - 1) });
+            var assetGUIDsInDirectory = AssetDatabase.FindAssets(string.Empty, new string[] {assetDirectory.Substring(0, assetDirectory.Length - 1)});
             var filePaths = new List<string>(assetGUIDsInDirectory.Length);
             for (int i = 0; i < assetGUIDsInDirectory.Length; ++i)
             {

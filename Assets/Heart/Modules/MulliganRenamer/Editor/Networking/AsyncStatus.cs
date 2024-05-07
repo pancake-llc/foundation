@@ -63,9 +63,6 @@ namespace RedBlueGames.MulliganRenamer
         /// </summary>
         public static readonly AsyncStatus Failed = new AsyncStatus("Failed");
 
-        public override string ToString()
-        {
-            return this.Description;
-        }
+        public override string ToString() { return this.Description; }
     }
 }

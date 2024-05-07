@@ -21,7 +21,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Vector operations
         //
@@ -93,10 +92,7 @@ namespace Pancake.ComputationalGeometry
             float e = MathUtility.EPSILON;
 
             //If all of the differences are around 0
-            if (
-                xDiff < e && xDiff > -e && 
-                yDiff < e && yDiff > -e && 
-                zDiff < e && zDiff > -e)
+            if (xDiff < e && xDiff > -e && yDiff < e && yDiff > -e && zDiff < e && zDiff > -e)
             {
                 return true;
             }
@@ -107,44 +103,27 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Directions by using Unity's coordinate system
         //
 
-        public static MyVector3 Right   => new MyVector3(1f, 0f, 0f);
+        public static MyVector3 Right => new MyVector3(1f, 0f, 0f);
         public static MyVector3 Forward => new MyVector3(0f, 0f, 1f);
-        public static MyVector3 Up      => new MyVector3(0f, 1f, 0f);
-
+        public static MyVector3 Up => new MyVector3(0f, 1f, 0f);
 
 
         //
         // Operator overloads
         //
 
-        public static MyVector3 operator +(MyVector3 a, MyVector3 b)
-        {
-            return new MyVector3(a.x + b.x, a.y + b.y, a.z + b.z);
-        }
+        public static MyVector3 operator +(MyVector3 a, MyVector3 b) { return new MyVector3(a.x + b.x, a.y + b.y, a.z + b.z); }
 
-        public static MyVector3 operator -(MyVector3 a, MyVector3 b)
-        {
-            return new MyVector3(a.x - b.x, a.y - b.y, a.z - b.z);
-        }
+        public static MyVector3 operator -(MyVector3 a, MyVector3 b) { return new MyVector3(a.x - b.x, a.y - b.y, a.z - b.z); }
 
-        public static MyVector3 operator *(MyVector3 a, float b)
-        {
-            return new MyVector3(a.x * b, a.y * b, a.z * b);
-        }
+        public static MyVector3 operator *(MyVector3 a, float b) { return new MyVector3(a.x * b, a.y * b, a.z * b); }
 
-        public static MyVector3 operator *(float b, MyVector3 a)
-        {
-            return new MyVector3(a.x * b, a.y * b, a.z * b);
-        }
+        public static MyVector3 operator *(float b, MyVector3 a) { return new MyVector3(a.x * b, a.y * b, a.z * b); }
 
-        public static MyVector3 operator -(MyVector3 a)
-        {
-            return a * -1f;
-        }
+        public static MyVector3 operator -(MyVector3 a) { return a * -1f; }
     }
 }

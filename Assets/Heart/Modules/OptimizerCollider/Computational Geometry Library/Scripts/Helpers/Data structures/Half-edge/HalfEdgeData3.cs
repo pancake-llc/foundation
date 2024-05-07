@@ -17,16 +17,16 @@ namespace Pancake.ComputationalGeometry
     public class HalfEdgeData3
     {
         //Should be called verts because have the same #letters as faces, edges, so makes it pretty
-        public HashSet<HalfEdgeVertex3> verts; 
+        public HashSet<HalfEdgeVertex3> verts;
 
         public HashSet<HalfEdgeFace3> faces;
 
         public HashSet<HalfEdge3> edges;
 
         public enum ConnectOppositeEdges
-        {   
+        {
             Precise,
-            Fast,            
+            Fast,
             No
         }
 
@@ -41,10 +41,10 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Convert from MyMesh (which is face-vertex data structure) to half-edge data structure
         //In the half-edge data structure, each edge has an opposite edge, which may have to be connected
-        public HalfEdgeData3(MyMesh mesh, ConnectOppositeEdges connectOppositeEdges) : this()
+        public HalfEdgeData3(MyMesh mesh, ConnectOppositeEdges connectOppositeEdges)
+            : this()
         {
             //Loop through all triangles in the mesh
             List<int> triangles = mesh.triangles;
@@ -86,7 +86,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Get a list with unique edges
         //
@@ -126,7 +125,6 @@ namespace Pancake.ComputationalGeometry
 
             return uniqueEdges;
         }
-
 
 
         //
@@ -182,7 +180,7 @@ namespace Pancake.ComputationalGeometry
                 //This edge is already connected
                 //Is faster to first do a null check
                 if (e.oppositeEdge != null)
-                //if (!(e.oppositeEdge is null)) //Is slightly slower
+                    //if (!(e.oppositeEdge is null)) //Is slightly slower
                 {
                     continue;
                 }
@@ -211,13 +209,9 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Connect an edge with an unknown opposite edge which has not been connected
         //If no opposite edge exists, it means it has no neighbor which is possible if there's a hole
-        public void TryFindOppositeEdge(HalfEdge3 e)
-        {
-            TryFindOppositeEdge(e, edges);
-        }
+        public void TryFindOppositeEdge(HalfEdge3 e) { TryFindOppositeEdge(e, edges); }
 
 
         //An optimization is to have a list of opposite edges, so we don't have to search ALL edges in the entire triangulation
@@ -253,7 +247,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Merge this half edge mesh with another half-edge mesh
         //
@@ -265,7 +258,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Convert to mesh
         //
@@ -275,7 +267,7 @@ namespace Pancake.ComputationalGeometry
         public MyMesh ConvertToMyMesh(string meshName, MyMesh.MeshStyle meshStyle)
         {
             MyMesh myMesh = new MyMesh(meshName);
-        
+
             //Loop through each triangle
             foreach (HalfEdgeFace3 f in faces)
             {
@@ -320,11 +312,10 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // We have faces, but we also want a list with vertices, edges, etc
         //
-        
+
         public static HalfEdgeData3 GenerateHalfEdgeDataFromFaces(HashSet<HalfEdgeFace3> faces)
         {
             HalfEdgeData3 meshData = new HalfEdgeData3();
@@ -352,7 +343,6 @@ namespace Pancake.ComputationalGeometry
 
             return meshData;
         }
-
 
 
         //
@@ -442,7 +432,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Delete a face from this data structure
         //
@@ -479,7 +468,6 @@ namespace Pancake.ComputationalGeometry
             //Remove the face from the list of all faces
             this.faces.Remove(f);
         }
-
 
 
         //
@@ -526,12 +514,13 @@ namespace Pancake.ComputationalGeometry
                     {
                         continue;
                     }
-                
+
                     edgeToV.v.position = mergePos;
 
                     edgesPointingToVertex.Add(edgeToV);
                 }
             }
+
             if (edgesGoingToVertex_v2 != null)
             {
                 foreach (HalfEdge3 edgeToV in edgesGoingToVertex_v2)
@@ -575,6 +564,7 @@ namespace Pancake.ComputationalGeometry
                 //The edge on the opposite side of BC should have its opposite edge connected with the opposite edge of CA
                 e_BC.oppositeEdge.oppositeEdge = e_CA.oppositeEdge;
             }
+
             if (e_CA.oppositeEdge != null)
             {
                 e_CA.oppositeEdge.oppositeEdge = e_BC.oppositeEdge;
@@ -583,12 +573,12 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     //A position
     public class HalfEdgeVertex3
     {
         //The position of the vertex
         public MyVector3 position;
+
         //In 3d space we also need a normal, which should maybe be a class so it can be null
         //Instead of storing normals, uvs, etc for each vertex, some people are using a data structure called "wedge"
         //A wedge includes the same normal, uv, etc for the vertices that's sharing this data. 
@@ -601,11 +591,7 @@ namespace Pancake.ComputationalGeometry
         public HalfEdge3 edge;
 
 
-
-        public HalfEdgeVertex3(MyVector3 position)
-        {
-            this.position = position;
-        }
+        public HalfEdgeVertex3(MyVector3 position) { this.position = position; }
 
         public HalfEdgeVertex3(MyVector3 position, MyVector3 normal)
         {
@@ -613,7 +599,6 @@ namespace Pancake.ComputationalGeometry
 
             this.normal = normal;
         }
-
 
 
         //Return all edges going to this vertex = all edges that references this vertex position
@@ -661,9 +646,7 @@ namespace Pancake.ComputationalGeometry
 
                     break;
                 }
-            }
-            while (currentEdge != this.edge.prevEdge);
-
+            } while (currentEdge != this.edge.prevEdge);
 
 
             //If there are holes in the triangulation around the vertex, 
@@ -688,7 +671,6 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     //This face could be a triangle or whatever we need
     public class HalfEdgeFace3
     {
@@ -697,12 +679,7 @@ namespace Pancake.ComputationalGeometry
         public HalfEdge3 edge;
 
 
-
-        public HalfEdgeFace3(HalfEdge3 edge)
-        {
-            this.edge = edge;
-        }
-
+        public HalfEdgeFace3(HalfEdge3 edge) { this.edge = edge; }
 
 
         //Get all edges that make up this face
@@ -710,7 +687,7 @@ namespace Pancake.ComputationalGeometry
         public List<HalfEdge3> GetEdges()
         {
             List<HalfEdge3> allEdges = new List<HalfEdge3>();
-        
+
             HalfEdge3 currentEdge = this.edge;
 
             int safety = 0;
@@ -729,13 +706,11 @@ namespace Pancake.ComputationalGeometry
 
                     return null;
                 }
-            }
-            while (currentEdge != this.edge);
+            } while (currentEdge != this.edge);
 
             return allEdges;
         }
     }
-
 
 
     //An edge going in a direction
@@ -760,12 +735,7 @@ namespace Pancake.ComputationalGeometry
         public HalfEdge3 prevEdge;
 
 
-
-        public HalfEdge3(HalfEdgeVertex3 v)
-        {
-            this.v = v;
-        }
-
+        public HalfEdge3(HalfEdgeVertex3 v) { this.v = v; }
 
 
         //The length of this edge

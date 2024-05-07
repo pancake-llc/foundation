@@ -21,19 +21,18 @@ namespace Pancake.ComputationalGeometry
         {
             HardAndSoftEdges,
             HardEdges,
-            SoftEdges            
+            SoftEdges
         }
 
 
         public MyMesh(string meshName = null)
         {
             this.meshName = meshName;
-        
+
             vertices = new List<MyVector3>();
             normals = new List<MyVector3>();
             triangles = new List<int>();
         }
-
 
 
         public MyMesh(Mesh mesh_Unity)
@@ -51,7 +50,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Add a triangle (oriented clock-wise) to the mesh
         public void AddTriangle(MyMeshVertex v1, MyMeshVertex v2, MyMeshVertex v3, MeshStyle meshStyle)
         {
@@ -61,7 +59,6 @@ namespace Pancake.ComputationalGeometry
 
             AddTrianglePositions(index1, index2, index3);
         }
-
 
 
         //Add a vertex to the mesh and return its position in the array
@@ -76,7 +73,7 @@ namespace Pancake.ComputationalGeometry
                 for (int i = 0; i < vertices.Count; i++)
                 {
                     MyVector3 thisPos = vertices[i];
-                   
+
                     if (thisPos.Equals(v.position))
                     {
                         //Here we have to compare both position and normal or we can't get hard edges in combination with soft edges
@@ -88,7 +85,7 @@ namespace Pancake.ComputationalGeometry
 
                             return vertexPosInList;
                         }
-                        
+
                         //Sometimes we dont have a normal to compare
                         if (meshStyle == MeshStyle.SoftEdges)
                         {
@@ -110,7 +107,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Add a normal at a certain index
         //Run this after adding a vertex
         //public void AddNormal(MyVector3 normal, int index)
@@ -125,7 +121,6 @@ namespace Pancake.ComputationalGeometry
         //}
 
 
-
         //Add triangle
         public void AddTrianglePositions(int index_1, int index_2, int index_3)
         {
@@ -135,12 +130,11 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Merge a mesh with this mesh
         public void MergeMesh(MyMesh otherMesh)
         {
             int numberOfVerticesBeforeMerge = vertices.Count;
-        
+
             vertices.AddRange(otherMesh.vertices);
             normals.AddRange(otherMesh.normals);
 
@@ -149,9 +143,8 @@ namespace Pancake.ComputationalGeometry
 
             triangles.AddRange(newTriangles);
         }
-        
-        
-        
+
+
         //Convert this mesh to a unity mesh
         public Mesh ConvertToUnityMesh(bool generateNormals, string meshName = null)
         {
@@ -159,7 +152,7 @@ namespace Pancake.ComputationalGeometry
 
             //MyVector3 to Vector3
             Vector3[] vertices_Unity = vertices.Select(x => x.ToVector3()).ToArray();
-          
+
             mesh.vertices = vertices_Unity;
 
             mesh.SetTriangles(triangles, 0);
@@ -189,7 +182,6 @@ namespace Pancake.ComputationalGeometry
                 }
             }
 
-            
 
             mesh.RecalculateBounds();
 

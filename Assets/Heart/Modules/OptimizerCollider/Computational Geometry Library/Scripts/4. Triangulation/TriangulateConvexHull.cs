@@ -123,7 +123,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Algorithm 2
         //
@@ -142,7 +141,7 @@ namespace Pancake.ComputationalGeometry
             {
                 MyVector2 b = points[i];
                 MyVector2 c = points[MathUtility.ClampListIndex(i + 1, points.Count)];
-                
+
                 triangles.Add(new Triangle2(a, b, c));
             }
 

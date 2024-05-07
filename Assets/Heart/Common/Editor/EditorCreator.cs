@@ -87,7 +87,7 @@ namespace PancakeEditor.Common
             {
                 ProjectWindowUtil.CreateAsset(instance, uniqueFilePath);
             }
-            
+
             return instance;
         }
     }

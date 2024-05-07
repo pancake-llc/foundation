@@ -35,7 +35,7 @@ namespace Pancake.Component
 #endif
         [SerializeField]
         private Transform end;
-        
+
 #if PANCAKE_ALCHEMY
         [Required]
 #endif

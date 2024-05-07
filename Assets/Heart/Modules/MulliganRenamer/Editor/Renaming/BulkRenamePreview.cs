@@ -41,13 +41,7 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Gets the number of objects in the preview.
         /// </summary>
-        public int NumObjects
-        {
-            get
-            {
-                return this.renamePreviewsList.Count;
-            }
-        }
+        public int NumObjects { get { return this.renamePreviewsList.Count; } }
 
         /// <summary>
         /// Gets the number of steps in the rename sequence
@@ -113,30 +107,21 @@ namespace RedBlueGames.MulliganRenamer
         /// </summary>
         /// <returns>The preview at index.</returns>
         /// <param name="index">Index to query.</param>
-        public RenamePreview GetPreviewAtIndex(int index)
-        {
-            return this.renamePreviewsList[index];
-        }
+        public RenamePreview GetPreviewAtIndex(int index) { return this.renamePreviewsList[index]; }
 
         /// <summary>
         /// Determines if the BulkPreview contains a preview for the specified object.
         /// </summary>
         /// <returns><c>true</c>, if object is in the bulk rename, <c>false</c> otherwise.</returns>
         /// <param name="obj">Object to query.</param>
-        public bool ContainsPreviewForObject(UnityEngine.Object obj)
-        {
-            return this.renamePreviews.ContainsKey(obj);
-        }
+        public bool ContainsPreviewForObject(UnityEngine.Object obj) { return this.renamePreviews.ContainsKey(obj); }
 
         /// <summary>
         /// Gets the preview for the specified object.
         /// </summary>
         /// <returns>The preview for object.</returns>
         /// <param name="obj">Object to query.</param>
-        public RenamePreview GetPreviewForObject(UnityEngine.Object obj)
-        {
-            return this.renamePreviews[obj];
-        }
+        public RenamePreview GetPreviewForObject(UnityEngine.Object obj) { return this.renamePreviews[obj]; }
 
         /// <summary>
         /// Check if the RenamePreview's final name will match an existing asset's name. This means it will fail
@@ -144,10 +129,7 @@ namespace RedBlueGames.MulliganRenamer
         /// </summary>
         /// <returns><c>true</c>, if the renamed object's name will collide with existing asset, <c>false</c> otherwise.</returns>
         /// <param name="preview">Preview to check.</param>
-        public bool WillRenameCollideWithExistingAsset(RenamePreview preview)
-        {
-            return this.duplicatePreviews.Contains(preview);
-        }
+        public bool WillRenameCollideWithExistingAsset(RenamePreview preview) { return this.duplicatePreviews.Contains(preview); }
 
         private void AddEntry(RenamePreview singlePreview)
         {

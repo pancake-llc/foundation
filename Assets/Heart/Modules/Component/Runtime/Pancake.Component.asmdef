@@ -1,34 +1,34 @@
 {
-    "name": "Pancake.Component",
-    "rootNamespace": "",
-    "references": [
-        "GUID:88be65f96b86746888c927a5c8ff3534",
-        "GUID:adac8d59ad7e8504f82d387cded797a7",
-        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
-        "GUID:f4bbbe38ed06eef458a5b3516216a659",
-        "GUID:c7e7793e0b5d326429f90e6fd716775e",
-        "GUID:2bb2982fd552689428d4c3ae8bb26fb7",
-        "GUID:3b570a5146f9d4f0fa107ed4559471a3",
-        "GUID:3aa1866a824b5472da50fe142777d95f"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.annulusgames.lit-motion",
-            "expression": "1.0.0",
-            "define": "PANCAKE_LITMOTION"
-        },
-        {
-            "name": "com.annulusgames.alchemy",
-            "expression": "1.0.0",
-            "define": "PANCAKE_ALCHEMY"
-        }
-    ],
-    "noEngineReferences": false
+  "name": "Pancake.Component",
+  "rootNamespace": "",
+  "references": [
+    "GUID:88be65f96b86746888c927a5c8ff3534",
+    "GUID:adac8d59ad7e8504f82d387cded797a7",
+    "GUID:b0a110e2f808b4d4d82f5694f91b251a",
+    "GUID:f4bbbe38ed06eef458a5b3516216a659",
+    "GUID:c7e7793e0b5d326429f90e6fd716775e",
+    "GUID:2bb2982fd552689428d4c3ae8bb26fb7",
+    "GUID:3b570a5146f9d4f0fa107ed4559471a3",
+    "GUID:3aa1866a824b5472da50fe142777d95f"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "com.annulusgames.lit-motion",
+      "expression": "1.0.0",
+      "define": "PANCAKE_LITMOTION"
+    },
+    {
+      "name": "com.annulusgames.alchemy",
+      "expression": "1.0.0",
+      "define": "PANCAKE_ALCHEMY"
+    }
+  ],
+  "noEngineReferences": false
 }

@@ -46,10 +46,7 @@ namespace RedBlueGames.MulliganRenamer
         /// Sets the renamed assets with their name history.
         /// </summary>
         /// <param name="objectRenames">Object renames.</param>
-        public void SetRenamedAssets(List<ObjectNameDelta> objectRenames)
-        {
-            this.renamedAssets = objectRenames;
-        }
+        public void SetRenamedAssets(List<ObjectNameDelta> objectRenames) { this.renamedAssets = objectRenames; }
 
         /// <summary>
         /// Reapplies the name changes to the affected assets.

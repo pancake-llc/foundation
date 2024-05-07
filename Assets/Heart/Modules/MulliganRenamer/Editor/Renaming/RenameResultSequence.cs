@@ -36,46 +36,25 @@ namespace RedBlueGames.MulliganRenamer
         /// Initializes a new instance of the <see cref="RenameResultSequence"/> class.
         /// </summary>
         /// <param name="renameOperationResults">Rename operation results.</param>
-        public RenameResultSequence(List<RenameResult> renameOperationResults)
-        {
-            this.OperationResults = renameOperationResults;
-        }
+        public RenameResultSequence(List<RenameResult> renameOperationResults) { this.OperationResults = renameOperationResults; }
 
         /// <summary>
         /// Gets the original name, before any rename operation.
         /// </summary>
         /// <value>The original name.</value>
-        public string OriginalName
-        {
-            get
-            {
-                return this.OperationResults.DefaultIfEmpty(RenameResult.Empty).First().Original;
-            }
-        }
+        public string OriginalName { get { return this.OperationResults.DefaultIfEmpty(RenameResult.Empty).First().Original; } }
 
         /// <summary>
         /// Gets the new name, after the rename operations.
         /// </summary>
         /// <value>The new name.</value>
-        public string NewName
-        {
-            get
-            {
-                return this.OperationResults.DefaultIfEmpty(RenameResult.Empty).Last().Result;
-            }
-        }
+        public string NewName { get { return this.OperationResults.DefaultIfEmpty(RenameResult.Empty).Last().Result; } }
 
         /// <summary>
         /// Gets the number of steps in the sequence.
         /// </summary>
         /// <value>The number of steps.</value>
-        public int NumSteps
-        {
-            get
-            {
-                return this.OperationResults.Count;
-            }
-        }
+        public int NumSteps { get { return this.OperationResults.Count; } }
 
         private List<RenameResult> OperationResults { get; set; }
 
@@ -88,9 +67,7 @@ namespace RedBlueGames.MulliganRenamer
         {
             if (stepIndex < 0 || stepIndex >= this.NumSteps)
             {
-                var exception = string.Format(
-                                    LocalizationManager.Instance.GetTranslation("errorTryintToGetOriginalName"),
-                                    stepIndex);
+                var exception = string.Format(LocalizationManager.Instance.GetTranslation("errorTryintToGetOriginalName"), stepIndex);
                 throw new System.ArgumentException(exception, "stepIndex");
             }
 
@@ -106,9 +83,7 @@ namespace RedBlueGames.MulliganRenamer
         {
             if (stepIndex < 0 || stepIndex >= this.NumSteps)
             {
-                var exception = string.Format(
-                    LocalizationManager.Instance.GetTranslation("errorTryingToGetOriginalNameOutOfBounds"),
-                    stepIndex);
+                var exception = string.Format(LocalizationManager.Instance.GetTranslation("errorTryingToGetOriginalNameOutOfBounds"), stepIndex);
                 throw new System.ArgumentException(exception, "stepIndex");
             }
 

@@ -19,7 +19,7 @@ namespace Pancake.ComputationalGeometry
             {
                 return null;
             }
-        
+
             //Has to return a list and not hashset because the points have an order coming after each other
             List<MyVector2> pointsOnHull = JarvisMarchAlgorithm2D.GenerateConvexHull(pointsList);
 
@@ -44,7 +44,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // 3d space
         //
@@ -65,7 +64,6 @@ namespace Pancake.ComputationalGeometry
 
             return convexHull;
         }
-
 
 
         //

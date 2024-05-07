@@ -38,14 +38,20 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Initializes a new instance of the <see cref="T:RedBlueGames.MulliganRenamer.AddStringSequenceOperation"/> class.
         /// </summary>
-        public AddStringSequenceOperation() : base() { }
+        public AddStringSequenceOperation()
+            : base()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:RedBlueGames.MulliganRenamer.AddStringSequenceOperation"/> class.
         /// This is a clone constructor, copying the values from one to another.
         /// </summary>
         /// <param name="operationToCopy">Operation to copy.</param>
-        public AddStringSequenceOperation(CountByLetterOperation operationToCopy) : base(operationToCopy) { }
+        public AddStringSequenceOperation(CountByLetterOperation operationToCopy)
+            : base(operationToCopy)
+        {
+        }
 
         /// <summary>
         /// Clone this instance.

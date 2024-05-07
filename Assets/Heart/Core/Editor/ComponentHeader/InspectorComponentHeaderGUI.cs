@@ -61,7 +61,7 @@ namespace PancakeEditor.ComponentHeader
                 string headerElementName = headerElement.name;
 
                 if (headerElementName is "TransformHeader" or "Rect TransformHeader") continue;
-              
+
                 var container = VisualElementCreator.CreateContainer(headerElementName: headerElementName, onRefresh: () => EditorApplication.delayCall += Refresh);
 
                 headerElement.Add(container);

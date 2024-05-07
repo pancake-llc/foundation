@@ -85,7 +85,7 @@ namespace PancakeEditor.Scriptable
             LoadAssets();
             LoadSavedData();
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            
+
             if (isInitialized)
             {
                 SelectTab(typeTabIndex);

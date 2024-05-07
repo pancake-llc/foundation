@@ -132,9 +132,10 @@ namespace PancakeEditor
                 {
                     EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
                 }
+
                 return;
             }
-            
+
             EditorGUI.BeginChangeCheck();
 
             var color = _environmentProperty.intValue switch

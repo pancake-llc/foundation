@@ -42,7 +42,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //From "A fast algortihm for generating constrained delaunay..."
         //Is numerically stable
         //v1, v2 should belong to the edge we ant to flip
@@ -67,6 +66,7 @@ namespace Pancake.ComputationalGeometry
             {
                 return false;
             }
+
             if (cos_a < 0f && cos_b < 0)
             {
                 return true;

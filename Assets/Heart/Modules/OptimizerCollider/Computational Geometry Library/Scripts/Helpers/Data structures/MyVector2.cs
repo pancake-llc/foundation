@@ -19,7 +19,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // To make vector operations easier
         //
@@ -36,9 +35,7 @@ namespace Pancake.ComputationalGeometry
             float e = MathUtility.EPSILON;
 
             //If all of the differences are around 0
-            if (
-                xDiff < e && xDiff > -e && 
-                yDiff < e && yDiff > -e)
+            if (xDiff < e && xDiff > -e && yDiff < e && yDiff > -e)
             {
                 return true;
             }
@@ -97,29 +94,14 @@ namespace Pancake.ComputationalGeometry
 
 
         //Operator overloads
-        public static MyVector2 operator +(MyVector2 a, MyVector2 b)
-        {
-            return new MyVector2(a.x + b.x, a.y + b.y);
-        }
+        public static MyVector2 operator +(MyVector2 a, MyVector2 b) { return new MyVector2(a.x + b.x, a.y + b.y); }
 
-        public static MyVector2 operator -(MyVector2 a, MyVector2 b)
-        {
-            return new MyVector2(a.x - b.x, a.y - b.y);
-        }
+        public static MyVector2 operator -(MyVector2 a, MyVector2 b) { return new MyVector2(a.x - b.x, a.y - b.y); }
 
-        public static MyVector2 operator *(MyVector2 a, float b)
-        {
-            return new MyVector2(a.x * b, a.y * b);
-        }
+        public static MyVector2 operator *(MyVector2 a, float b) { return new MyVector2(a.x * b, a.y * b); }
 
-        public static MyVector2 operator *(float b, MyVector2 a)
-        {
-            return new MyVector2(a.x * b, a.y * b);
-        }
+        public static MyVector2 operator *(float b, MyVector2 a) { return new MyVector2(a.x * b, a.y * b); }
 
-        public static MyVector2 operator -(MyVector2 a)
-        {
-            return a * -1f;
-        }
+        public static MyVector2 operator -(MyVector2 a) { return a * -1f; }
     }
 }

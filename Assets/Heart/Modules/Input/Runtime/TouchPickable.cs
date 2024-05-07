@@ -5,8 +5,7 @@ namespace Pancake.MobileInput
 {
     public class TouchPickable : MonoBehaviour
     {
-        [Blockquote("pickableTransform only needs to be set \nin case the collider of the pickable item is not on the root object of the pickable item")]
-        [SerializeField]
+        [Blockquote("pickableTransform only needs to be set \nin case the collider of the pickable item is not on the root object of the pickable item")] [SerializeField]
         private Optional<Transform> pickableTransform;
 
         [SerializeField]

@@ -13,7 +13,8 @@ namespace PancakeEditor
             if (pipelineSettings == null) pipelineSettings = Resources.Load<AndroidBuildPipelineSettings>(nameof(AndroidBuildPipelineSettings));
 
             EditorGUILayout.BeginHorizontal();
-            pipelineSettings = EditorGUILayout.ObjectField("Build Pipeline", pipelineSettings, typeof(AndroidBuildPipelineSettings), true) as AndroidBuildPipelineSettings;
+            pipelineSettings =
+                EditorGUILayout.ObjectField("Build Pipeline", pipelineSettings, typeof(AndroidBuildPipelineSettings), true) as AndroidBuildPipelineSettings;
 
             if (pipelineSettings == null)
             {

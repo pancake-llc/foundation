@@ -38,14 +38,17 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //
         // Alternative 2. Triangulation walk
         //
-        
+
         //Fast but a little more complicated to understand
         //We can also give it a list, which should be empty so we can display the triangulation walk
-        public static HalfEdgeFace2 TriangulationWalk(MyVector2 p, HalfEdgeFace2 startTriangle, HalfEdgeData2 triangulationData, List<HalfEdgeFace2> visitedTriangles = null)
+        public static HalfEdgeFace2 TriangulationWalk(
+            MyVector2 p,
+            HalfEdgeFace2 startTriangle,
+            HalfEdgeData2 triangulationData,
+            List<HalfEdgeFace2> visitedTriangles = null)
         {
             HalfEdgeFace2 intersectingTriangle = null;
 
@@ -91,7 +94,6 @@ namespace Pancake.ComputationalGeometry
             {
                 visitedTriangles.Add(currentTriangle);
             }
-            
 
 
             //Start the triangulation walk to find the intersecting triangle

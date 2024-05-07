@@ -72,13 +72,7 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Gets the RenameOperation this drawer represents.
         /// </summary>
-        public T RenameOperation
-        {
-            get
-            {
-                return this.renameOperation;
-            }
-        }
+        public T RenameOperation { get { return this.renameOperation; } }
 
         /// <summary>
         /// Sets the RenameOperation instance represented by the drawer.
@@ -88,7 +82,7 @@ namespace RedBlueGames.MulliganRenamer
         {
             // This cast is a *bit* of an assumption, that the passed instance can be
             // downcasted to a more derived type (T : IRenameOperation) than IRenameOperation.
-            this.renameOperation = (T)renameOperationInstance;
+            this.renameOperation = (T) renameOperationInstance;
         }
 
         /// <summary>
@@ -115,10 +109,10 @@ namespace RedBlueGames.MulliganRenamer
             var headerRect = new Rect(paddedContainer);
             headerRect.height = HeaderHeight;
             RenameOperationSortingButtonEvent buttonEvent = this.DrawHeaderAndReorderButtons(
-                                              headerRect,
-                                              this.HeadingLabel,
-                                              guiOptions.DisableUpButton,
-                                              guiOptions.DisableDownButton);
+                headerRect,
+                this.HeadingLabel,
+                guiOptions.DisableUpButton,
+                guiOptions.DisableDownButton);
             EditorGUI.indentLevel++;
             var contentsRect = new Rect(paddedContainer);
             contentsRect.y += headerRect.height + HeaderAndContentSpacing;
@@ -184,8 +178,7 @@ namespace RedBlueGames.MulliganRenamer
             var buttonPaddingTop = 1.0f;
             var buttonPaddingBottom = 1.0f;
             var buttonGroupWidth = 60.0f;
-            var buttonRect = new Rect(
-                labelRect.x + labelRect.width - buttonGroupWidth,
+            var buttonRect = new Rect(labelRect.x + labelRect.width - buttonGroupWidth,
                 labelRect.y + buttonPaddingTop,
                 buttonGroupWidth,
                 labelRect.height - (buttonPaddingBottom + buttonPaddingTop));

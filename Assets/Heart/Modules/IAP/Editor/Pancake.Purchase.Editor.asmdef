@@ -1,28 +1,28 @@
 {
-    "name": "Pancake.Purchase.Editor",
-    "rootNamespace": "",
-    "references": [
-        "GUID:60bfecf5cb232594891bc622f40d6bed",
-        "GUID:1fc40a42fd9ba86428b9f1a1bc03d8a6",
-        "GUID:5a5bdc0387f898e429d96457c503426a",
-        "GUID:b0a110e2f808b4d4d82f5694f91b251a",
-        "GUID:d8912e81233de99449df74c45fe416da"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.unity.purchasing",
-            "expression": "4.8.0",
-            "define": "PANCAKE_IAP"
-        }
-    ],
-    "noEngineReferences": false
+  "name": "Pancake.Purchase.Editor",
+  "rootNamespace": "",
+  "references": [
+    "GUID:60bfecf5cb232594891bc622f40d6bed",
+    "GUID:1fc40a42fd9ba86428b9f1a1bc03d8a6",
+    "GUID:5a5bdc0387f898e429d96457c503426a",
+    "GUID:b0a110e2f808b4d4d82f5694f91b251a",
+    "GUID:d8912e81233de99449df74c45fe416da"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "com.unity.purchasing",
+      "expression": "4.8.0",
+      "define": "PANCAKE_IAP"
+    }
+  ],
+  "noEngineReferences": false
 }

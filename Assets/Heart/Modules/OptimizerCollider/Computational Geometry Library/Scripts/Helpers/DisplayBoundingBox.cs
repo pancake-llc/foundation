@@ -6,9 +6,8 @@ using Pancake.ComputationalGeometry;
 //Attach this to go with mesh and it should display its bounding box
 public class DisplayBoundingBox : MonoBehaviour
 {
-
     void OnDrawGizmosSelected()
-	{
+    {
         MeshFilter meshFilter = GetComponent<MeshFilter>();
 
         if (meshFilter == null)
@@ -81,7 +80,6 @@ public class DisplayBoundingBox : MonoBehaviour
     }
 
 
-
     //Mesh.Bounds are AABB in local space
     //Is taking rotation into account, so we get an oriented bounding box
     private void DisplayMeshBoundingBox(Mesh mesh)
@@ -91,19 +89,17 @@ public class DisplayBoundingBox : MonoBehaviour
 
         //Display corners
         //HashSet<MyVector3> corners = orientedBB.GetCorners();
-        
+
         //Gizmos.color = Color.blue;
 
         //foreach (MyVector3 v in corners)
         //{
         //    Gizmos.DrawWireSphere(v.ToVector3(), 0.1f);
         //}
-        
 
 
         //Generate the AABB which should give the same result as when using the MeshRenderer
         //AABB3 aabb = new AABB3(new List<MyVector3>(corners));
-
 
 
         //Display the edges

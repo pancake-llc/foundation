@@ -57,7 +57,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Check if the rectangle is a rectangle and not flat in any dimension
         public bool IsRectangleARectangle()
         {
@@ -76,13 +75,11 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     //Axis-Aligned-Bounding-Box, which is a box in 3d space aligned along the x-y-z axis
     public struct AABB3
     {
         public MyVector3 max;
         public MyVector3 min;
-
 
 
         //Bounds is a Unity data structure
@@ -93,7 +90,6 @@ namespace Pancake.ComputationalGeometry
             this.max = bounds.max.ToMyVector3();
             this.min = bounds.min.ToMyVector3();
         }
-
 
 
         //We have a list with points and want to find the min and max values
@@ -110,7 +106,7 @@ namespace Pancake.ComputationalGeometry
             {
                 return;
             }
-            
+
             for (int i = 1; i < points.Count; i++)
             {
                 MyVector3 p = points[i];
@@ -148,7 +144,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Check if the box is a box and not flat in any dimension
         public bool IsBoxABox()
         {
@@ -165,7 +160,6 @@ namespace Pancake.ComputationalGeometry
 
             return true;
         }
-
 
 
         //Its common that we want to display this box for debugging, so return a list with edges that form the box
@@ -190,12 +184,10 @@ namespace Pancake.ComputationalGeometry
                 new Edge3(topFL, topBL),
                 new Edge3(topBL, topBR),
                 new Edge3(topBR, topFR),
-
                 new Edge3(bottomFR, bottomFL),
                 new Edge3(bottomFL, bottomBL),
                 new Edge3(bottomBL, bottomBR),
                 new Edge3(bottomBR, bottomFR),
-
                 new Edge3(topFR, bottomFR),
                 new Edge3(topFL, bottomFL),
                 new Edge3(topBL, bottomBL),
@@ -204,7 +196,6 @@ namespace Pancake.ComputationalGeometry
 
             return edges;
         }
-
 
 
         //Get all corners of the box
@@ -229,7 +220,6 @@ namespace Pancake.ComputationalGeometry
                 topFL,
                 topBR,
                 topBL,
-
                 bottomFR,
                 bottomFL,
                 bottomBR,

@@ -29,7 +29,6 @@ namespace RedBlueGames.MulliganRenamer
     /// Defines the functionality needed for requesting Text from the web.
     /// This is used to code JSONRetriever to a testable interface.
     /// </summary>
-
     public interface IWebRequest : IDisposable
     {
         void SendWebRequest();

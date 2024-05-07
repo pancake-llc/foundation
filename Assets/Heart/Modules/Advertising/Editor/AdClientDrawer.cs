@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using PancakeEditor.Common;
-
 using Pancake.Monetization;
 using UnityEditor;
 using UnityEngine;

@@ -10,7 +10,6 @@ using UnityEngine;
 
 namespace Pancake.Monetization
 {
-
     public class Advertising : GameComponent
     {
         private AdClient _adClient;

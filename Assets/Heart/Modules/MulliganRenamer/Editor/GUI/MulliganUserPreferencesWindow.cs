@@ -51,7 +51,7 @@ namespace RedBlueGames.MulliganRenamer
             {
                 if (sampleDiffLabelStyle == null)
                 {
-                    sampleDiffLabelStyle = new GUIStyle(EditorStyles.boldLabel) { richText = true };
+                    sampleDiffLabelStyle = new GUIStyle(EditorStyles.boldLabel) {richText = true};
                 }
 
                 return sampleDiffLabelStyle;
@@ -60,10 +60,7 @@ namespace RedBlueGames.MulliganRenamer
 
         public static MulliganUserPreferencesWindow ShowWindow()
         {
-            return EditorWindow.GetWindow<MulliganUserPreferencesWindow>(
-                true,
-                LocalizationManager.Instance.GetTranslation("preferenceWindowTitle"),
-                true);
+            return EditorWindow.GetWindow<MulliganUserPreferencesWindow>(true, LocalizationManager.Instance.GetTranslation("preferenceWindowTitle"), true);
         }
 
         private void OnEnable()
@@ -74,10 +71,7 @@ namespace RedBlueGames.MulliganRenamer
             this.languageRetriever = new LanguageRetriever();
         }
 
-        private void OnGUI()
-        {
-            DrawPreferences(this.activePreferences, this.languageRetriever);
-        }
+        private void OnGUI() { DrawPreferences(this.activePreferences, this.languageRetriever); }
 
         /// <summary>
         /// Draw the Preferences using Unity GUI framework.
@@ -106,12 +100,10 @@ namespace RedBlueGames.MulliganRenamer
             GUILayout.Label(LocalizationManager.Instance.GetTranslation("preferencesDiffLabel"), EditorStyles.boldLabel);
 
             EditorGUI.BeginChangeCheck();
-            preferences.InsertionTextColor = EditorGUILayout.ColorField(
-                LocalizationManager.Instance.GetTranslation("preferencesInsertionText"),
+            preferences.InsertionTextColor = EditorGUILayout.ColorField(LocalizationManager.Instance.GetTranslation("preferencesInsertionText"),
                 preferences.InsertionTextColor,
                 GUILayout.MaxWidth(MaxWidth));
-            preferences.InsertionBackgroundColor = EditorGUILayout.ColorField(
-                LocalizationManager.Instance.GetTranslation("preferencesInsertionBackground"),
+            preferences.InsertionBackgroundColor = EditorGUILayout.ColorField(LocalizationManager.Instance.GetTranslation("preferencesInsertionBackground"),
                 preferences.InsertionBackgroundColor,
                 GUILayout.MaxWidth(MaxWidth));
             EditorGUILayout.Space();
@@ -119,12 +111,10 @@ namespace RedBlueGames.MulliganRenamer
             EditorGUILayout.Space();
 
             EditorGUILayout.Space();
-            preferences.DeletionTextColor = EditorGUILayout.ColorField(
-                LocalizationManager.Instance.GetTranslation("preferencesDeletionText"),
+            preferences.DeletionTextColor = EditorGUILayout.ColorField(LocalizationManager.Instance.GetTranslation("preferencesDeletionText"),
                 preferences.DeletionTextColor,
                 GUILayout.MaxWidth(MaxWidth));
-            preferences.DeletionBackgroundColor = EditorGUILayout.ColorField(
-                LocalizationManager.Instance.GetTranslation("preferencesDeletionBackground"),
+            preferences.DeletionBackgroundColor = EditorGUILayout.ColorField(LocalizationManager.Instance.GetTranslation("preferencesDeletionBackground"),
                 preferences.DeletionBackgroundColor,
                 GUILayout.MaxWidth(MaxWidth));
             EditorGUILayout.Space();
@@ -167,9 +157,7 @@ namespace RedBlueGames.MulliganRenamer
 
         private static Language DrawLanguageDropdown(Language currentLanguage)
         {
-            var content = new GUIContent(
-                LocalizationManager.Instance.GetTranslation("language"),
-                LocalizationManager.Instance.GetTranslation(" languageTooltip"));
+            var content = new GUIContent(LocalizationManager.Instance.GetTranslation("language"), LocalizationManager.Instance.GetTranslation(" languageTooltip"));
             var languages = new GUIContent[LocalizationManager.Instance.AllLanguages.Count];
             for (int i = 0; i < LocalizationManager.Instance.AllLanguages.Count; ++i)
             {
@@ -186,7 +174,7 @@ namespace RedBlueGames.MulliganRenamer
             else
             {
                 Debug.Log("Can't draw LanguageDropdown as the CurrentLanguage was not found in LocalizationManager." +
-                    " Restarting Unity should fix this. This should not happen in production, please report it on GitHub issues.");
+                          " Restarting Unity should fix this. This should not happen in production, please report it on GitHub issues.");
                 return LocalizationManager.Instance.CurrentLanguage;
             }
         }
@@ -235,7 +223,11 @@ namespace RedBlueGames.MulliganRenamer
             };
 
             var renameResult = CreateSampleTextForDiffOp(new string[] {"exampleSampleText", "exampleInserted"}, DiffOperation.Insertion);
-            MulliganEditorGUIUtilities.DrawDiffLabel(rect, renameResult, false, diffLabelStyle, SampleDiffLabelStyle);
+            MulliganEditorGUIUtilities.DrawDiffLabel(rect,
+                renameResult,
+                false,
+                diffLabelStyle,
+                SampleDiffLabelStyle);
         }
 
         private static void DrawSampleDeletionLabel(Rect rect, MulliganUserPreferences preferences)
@@ -249,7 +241,11 @@ namespace RedBlueGames.MulliganRenamer
             };
 
             var renameResult = CreateSampleTextForDiffOp(new string[] {"exampleSampleText", "exampleDeleted"}, DiffOperation.Deletion);
-            MulliganEditorGUIUtilities.DrawDiffLabel(rect, renameResult, true, diffLabelStyle, SampleDiffLabelStyle);
+            MulliganEditorGUIUtilities.DrawDiffLabel(rect,
+                renameResult,
+                true,
+                diffLabelStyle,
+                SampleDiffLabelStyle);
         }
 
         private static RenameResult CreateSampleTextForDiffOp(string[] keys, DiffOperation diffOp)
@@ -260,7 +256,7 @@ namespace RedBlueGames.MulliganRenamer
             MatchCollection matches = regex.Matches(translatedText);
             List<Diff> subStrings = new List<Diff>();
 
-            for(int i = 0; i < matches.Count; i++)
+            for (int i = 0; i < matches.Count; i++)
             {
                 var match = matches[i];
                 subStrings.Add(new Diff(translatedText.Substring(0, translatedText.IndexOf(match.Value)), DiffOperation.Equal));

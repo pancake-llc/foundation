@@ -69,13 +69,7 @@ namespace RedBlueGames.MulliganRenamer
         /// <summary>
         /// Gets a value indicating whether this instance has warnings.
         /// </summary>
-        public bool HasWarnings
-        {
-            get
-            {
-                return this.HasInvalidEmptyFinalName || this.FinalNameContainsInvalidCharacters;
-            }
-        }
+        public bool HasWarnings { get { return this.HasInvalidEmptyFinalName || this.FinalNameContainsInvalidCharacters; } }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="T:RedBlueGames.MulliganRenamer.RenamePreview"/> has an invalid
@@ -110,12 +104,12 @@ namespace RedBlueGames.MulliganRenamer
                 }
 
                 // Sprites are actually allowed to have all the characters that are considered invalid in Assets
-                if(this.ObjectToRename is Sprite)
+                if (this.ObjectToRename is Sprite)
                 {
                     return false;
                 }
 
-                var invalidCharacters = new char[] { '?', '/', '<', '>', '\\', '|', '*', ':', '"' };
+                var invalidCharacters = new char[] {'?', '/', '<', '>', '\\', '|', '*', ':', '"'};
                 return this.RenameResultSequence.NewName.IndexOfAny(invalidCharacters) >= 0;
             }
         }
@@ -135,8 +129,7 @@ namespace RedBlueGames.MulliganRenamer
             else
             {
                 var pathWithoutFilename = System.IO.Path.GetDirectoryName(this.OriginalPathToObject);
-                resultingPath = string.Concat(
-                    pathWithoutFilename,
+                resultingPath = string.Concat(pathWithoutFilename,
                     System.IO.Path.DirectorySeparatorChar,
                     this.RenameResultSequence.NewName,
                     System.IO.Path.GetExtension(this.OriginalPathToObject));

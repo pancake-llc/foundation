@@ -4,7 +4,6 @@ using UnityEngine;
 using Pancake.ComputationalGeometry;
 
 
-
 //Display meshes, points, etc so we dont have to do it in each file
 public static class TestAlgorithmsHelpMethods
 {
@@ -36,7 +35,6 @@ public static class TestAlgorithmsHelpMethods
     }
 
 
-
     //
     // Display shapes with Gizmos
     //
@@ -48,7 +46,7 @@ public static class TestAlgorithmsHelpMethods
         {
             return;
         }
-    
+
         Gizmos.color = color;
 
         foreach (Vector3 p in points)
@@ -56,7 +54,6 @@ public static class TestAlgorithmsHelpMethods
             Gizmos.DrawSphere(p, radius);
         }
     }
-
 
 
     //Display an arrow at the end of vector from a to b
@@ -83,7 +80,6 @@ public static class TestAlgorithmsHelpMethods
     }
 
 
-
     //Display triangle
     public static void DisplayTriangleEdges(Vector3 a, Vector3 b, Vector3 c, Color color)
     {
@@ -93,7 +89,6 @@ public static class TestAlgorithmsHelpMethods
         Gizmos.DrawLine(b, c);
         Gizmos.DrawLine(c, a);
     }
-
 
 
     //Display a plane
@@ -114,7 +109,6 @@ public static class TestAlgorithmsHelpMethods
         //Draw the plane normal
         Gizmos.DrawLine(planePos, planePos + planeNormal.ToVector3() * 1f);
     }
-
 
 
     //Display the edges of a mesh's triangles with some color
@@ -143,7 +137,6 @@ public static class TestAlgorithmsHelpMethods
             Gizmos.DrawLine(p3, p1);
         }
     }
-
 
 
     //Display a connected set of points, like a convex hull
@@ -177,7 +170,6 @@ public static class TestAlgorithmsHelpMethods
     }
 
 
-
     //
     // Display shapes with Mesh
     //
@@ -188,7 +180,7 @@ public static class TestAlgorithmsHelpMethods
         if (mesh == null)
         {
             Debug.Log("Cant display the mesh because there's no mesh!");
-        
+
             return;
         }
 
@@ -219,9 +211,9 @@ public static class TestAlgorithmsHelpMethods
 
                 Mesh triangleMesh = new Mesh();
 
-                triangleMesh.vertices = new Vector3[] { p1, p2, p3 };
+                triangleMesh.vertices = new Vector3[] {p1, p2, p3};
 
-                triangleMesh.triangles = new int[] { 0, 1, 2 };
+                triangleMesh.triangles = new int[] {0, 1, 2};
 
                 triangleMesh.RecalculateNormals();
 
@@ -244,29 +236,24 @@ public static class TestAlgorithmsHelpMethods
     public static void DisplayMesh(Mesh mesh, Color meshColor)
     {
         int seed = 0;
-    
+
         DisplayMesh(mesh, false, seed, meshColor);
     }
 
     //Random color
     //Seed is determining the random color
-    public static void DisplayMeshWithRandomColors(Mesh mesh, int seed)
-    {
-        DisplayMesh(mesh, true, seed, Color.black);
-    }
-
+    public static void DisplayMeshWithRandomColors(Mesh mesh, int seed) { DisplayMesh(mesh, true, seed, Color.black); }
 
 
     //Connected list of points
     public static void DisplayConnectedLinesMesh(List<MyVector2> points, float lineWidth, Color color)
     {
         HashSet<Triangle2> triangles = _GenerateMesh.ConnectedLineSegments(points, lineWidth, isConnected: true);
-       
+
         Mesh mesh = _TransformBetweenDataStructures.Triangles2ToMesh(triangles, false);
-        
+
         TestAlgorithmsHelpMethods.DisplayMesh(mesh, color);
     }
-
 
 
     //Corners in a mesh
@@ -276,12 +263,11 @@ public static class TestAlgorithmsHelpMethods
 
         Gizmos.color = color;
 
-        foreach(Vector3 v in vertices)
+        foreach (Vector3 v in vertices)
         {
             Gizmos.DrawSphere(v, radius);
         }
     }
-
 
 
     //Circle
@@ -295,7 +281,6 @@ public static class TestAlgorithmsHelpMethods
     }
 
 
-
     //Line
     public static void DisplayLineMesh(MyVector2 a, MyVector2 b, float width, Color color)
     {
@@ -305,7 +290,6 @@ public static class TestAlgorithmsHelpMethods
 
         TestAlgorithmsHelpMethods.DisplayMesh(mesh, color);
     }
-
 
 
     //Plane
@@ -331,9 +315,12 @@ public static class TestAlgorithmsHelpMethods
 
         float arrowSize = width + 0.5f;
 
-        DisplayArrowMesh(pos, pos + normal * arrowLength, width, arrowSize, color);
+        DisplayArrowMesh(pos,
+            pos + normal * arrowLength,
+            width,
+            arrowSize,
+            color);
     }
-
 
 
     //Arrow
@@ -345,7 +332,6 @@ public static class TestAlgorithmsHelpMethods
 
         TestAlgorithmsHelpMethods.DisplayMesh(mesh, color);
     }
-
 
 
     //Triangle
@@ -387,7 +373,6 @@ public static class TestAlgorithmsHelpMethods
 
         return points;
     }
-
 
 
     //Generate random points within a square located at (0,0), so 2d space
@@ -456,7 +441,6 @@ public static class TestAlgorithmsHelpMethods
     }
 
 
-
     //
     // Display shapes with Debug.DrawLine()
     //
@@ -468,12 +452,12 @@ public static class TestAlgorithmsHelpMethods
 
         int segments = 12;
 
-        float anglePerSegment = (Mathf.PI * 2f) / (float)segments;
+        float anglePerSegment = (Mathf.PI * 2f) / (float) segments;
 
         float angle = anglePerSegment;
 
         for (int i = 0; i < segments; i++)
-        {        
+        {
             float nextPosX = center.x + Mathf.Cos(angle) * radius;
             float nextPosZ = center.z + Mathf.Sin(angle) * radius;
 
@@ -497,7 +481,7 @@ public static class TestAlgorithmsHelpMethods
 
         int segments = 12;
 
-        float anglePerSegment = (Mathf.PI * 2f) / (float)segments;
+        float anglePerSegment = (Mathf.PI * 2f) / (float) segments;
 
         float angle = anglePerSegment;
 
@@ -531,7 +515,6 @@ public static class TestAlgorithmsHelpMethods
     }
 
 
-
     //Display a triangle with a normal at the center
     public static void DebugDrawTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 normal, Color lineColor, Color normalColor)
     {
@@ -543,7 +526,6 @@ public static class TestAlgorithmsHelpMethods
 
         Debug.DrawLine(center, center + normal, normalColor, 2f);
     }
-
 
 
     //Display a face which we know is a triangle with its normal at the center
@@ -562,7 +544,12 @@ public static class TestAlgorithmsHelpMethods
 
         Vector3 normal = f.edge.v.normal.ToVector3();
 
-        TestAlgorithmsHelpMethods.DebugDrawTriangle(p1.ToVector3(), p2.ToVector3(), p3.ToVector3(), normal * 0.5f, Color.white, Color.red);
+        TestAlgorithmsHelpMethods.DebugDrawTriangle(p1.ToVector3(),
+            p2.ToVector3(),
+            p3.ToVector3(),
+            normal * 0.5f,
+            Color.white,
+            Color.red);
 
         //Debug.Log("Displayed Triangle");
 
@@ -572,13 +559,9 @@ public static class TestAlgorithmsHelpMethods
     }
 
 
-
     //
     // Display data structures
     //
-    
-    public static void DisplayMyVector3(MyVector3 v)
-    {
-        Debug.Log($"({v.x}, {v.y}, {v.z})");
-    }
+
+    public static void DisplayMyVector3(MyVector3 v) { Debug.Log($"({v.x}, {v.y}, {v.z})"); }
 }

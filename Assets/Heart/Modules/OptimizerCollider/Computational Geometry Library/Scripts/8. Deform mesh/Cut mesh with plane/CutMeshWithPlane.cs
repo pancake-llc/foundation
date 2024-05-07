@@ -13,7 +13,7 @@ namespace Pancake.ComputationalGeometry
     //- When cutting triangles - always cut edges from outside -> inside. If you cut one from outside and the other from inside, the result is not the same because of floating point issues, which may cause trouble when finding opposite edges
     //- Use the cut-edge to analyze how many holes we have. If we have just one hole, we don't need to flood-fill and thus we don't need to convert the mesh to the half-edge data structure. But it might be problematic to merge small edges if we are not on the half-edge data structure...
     //- Input should be half-edge, not mesh. If we want to cut a mesh multiple times, then we would have to convert from mesh to half-edge multiple times. Converting to half-edge is a bottleneck. 
-    public static class CutMeshWithPlane 
+    public static class CutMeshWithPlane
     {
         //Should return null if the mesh couldn't be cut because it doesn't intersect with the plane
         //Otherwise it should return two new meshes
@@ -60,12 +60,11 @@ namespace Pancake.ComputationalGeometry
                     if (ArePointsOnOneSideOfPlane(new List<MyVector3>(corners), cutPlaneGlobal))
                     {
                         Debug.Log("This mesh can't be cut because its AABB doesnt intersect with the plane");
-                    
+
                         return null;
                     }
                 }
             }
-
 
 
             //The two meshes we might end up with after the cut
@@ -132,49 +131,99 @@ namespace Pancake.ComputationalGeometry
                 //All are outside the plane
                 if (is_p1_front && is_p2_front && is_p3_front)
                 {
-                    AddTriangleToMesh(v1, v2, v3, newMeshO, newEdges: null);
+                    AddTriangleToMesh(v1,
+                        v2,
+                        v3,
+                        newMeshO,
+                        newEdges: null);
                 }
                 //All are inside the plane
                 else if (!is_p1_front && !is_p2_front && !is_p3_front)
                 {
-                    AddTriangleToMesh(v1, v2, v3, newMeshI, newEdges: null);
+                    AddTriangleToMesh(v1,
+                        v2,
+                        v3,
+                        newMeshI,
+                        newEdges: null);
                 }
                 //The vertices are on different sides of the plane, so we need to cut the triangle into 3 new triangles
                 else
                 {
                     //We get 6 cases where each vertex is on its own in front or in the back of the plane
-                    
+
                     //p1 is outside
                     if (is_p1_front && !is_p2_front && !is_p3_front)
                     {
-                        CutTriangleOneOutside(v1, v2, v3, newMeshO, newMeshI, newEdgesI, newEdgesO, cutPlane);
+                        CutTriangleOneOutside(v1,
+                            v2,
+                            v3,
+                            newMeshO,
+                            newMeshI,
+                            newEdgesI,
+                            newEdgesO,
+                            cutPlane);
                     }
                     //p1 is inside
                     else if (!is_p1_front && is_p2_front && is_p3_front)
                     {
-                        CutTriangleTwoOutside(v2, v3, v1, newMeshO, newMeshI, newEdgesI, newEdgesO, cutPlane);
+                        CutTriangleTwoOutside(v2,
+                            v3,
+                            v1,
+                            newMeshO,
+                            newMeshI,
+                            newEdgesI,
+                            newEdgesO,
+                            cutPlane);
                     }
 
                     //p2 is outside
                     else if (!is_p1_front && is_p2_front && !is_p3_front)
                     {
-                        CutTriangleOneOutside(v2, v3, v1, newMeshO, newMeshI, newEdgesI, newEdgesO, cutPlane);
+                        CutTriangleOneOutside(v2,
+                            v3,
+                            v1,
+                            newMeshO,
+                            newMeshI,
+                            newEdgesI,
+                            newEdgesO,
+                            cutPlane);
                     }
                     //p2 is inside
                     else if (is_p1_front && !is_p2_front && is_p3_front)
                     {
-                        CutTriangleTwoOutside(v3, v1, v2, newMeshO, newMeshI, newEdgesI, newEdgesO, cutPlane);
+                        CutTriangleTwoOutside(v3,
+                            v1,
+                            v2,
+                            newMeshO,
+                            newMeshI,
+                            newEdgesI,
+                            newEdgesO,
+                            cutPlane);
                     }
 
                     //p3 is outside
                     else if (!is_p1_front && !is_p2_front && is_p3_front)
                     {
-                        CutTriangleOneOutside(v3, v1, v2, newMeshO, newMeshI, newEdgesI, newEdgesO, cutPlane);
+                        CutTriangleOneOutside(v3,
+                            v1,
+                            v2,
+                            newMeshO,
+                            newMeshI,
+                            newEdgesI,
+                            newEdgesO,
+                            cutPlane);
                     }
                     //p3 is inside
                     else if (is_p1_front && is_p2_front && !is_p3_front)
                     {
-                        CutTriangleTwoOutside(v1, v2, v3, newMeshO, newMeshI, newEdgesI, newEdgesO, cutPlane);
+                        CutTriangleTwoOutside(v1,
+                            v2,
+                            v3,
+                            newMeshO,
+                            newMeshI,
+                            newEdgesI,
+                            newEdgesO,
+                            cutPlane);
                     }
 
                     //Something is strange if we end up here...
@@ -213,7 +262,11 @@ namespace Pancake.ComputationalGeometry
 
 
             //Fill the holes in the mesh
-            HashSet<Hole> allHoles = FillHoles(newEdgesI, newEdgesO, orientedCutPlaneGlobal, meshTrans, planeNormalLocal);
+            HashSet<Hole> allHoles = FillHoles(newEdgesI,
+                newEdgesO,
+                orientedCutPlaneGlobal,
+                meshTrans,
+                planeNormalLocal);
 
 
             //Connect the holes with respective mesh
@@ -242,10 +295,8 @@ namespace Pancake.ComputationalGeometry
             }
 
 
-
             return cuttedUnityMeshes;
         }
-
 
 
         private static void AddHolesToMeshes(HashSet<HalfEdgeData3> newMeshesO, HashSet<HalfEdgeData3> newMeshesI, HashSet<Hole> allHoles)
@@ -256,7 +307,7 @@ namespace Pancake.ComputationalGeometry
             {
                 return;
             }
-        
+
             foreach (Hole hole in allHoles)
             {
                 HalfEdge3 holeEdgeI = hole.holeEdgeI;
@@ -283,7 +334,6 @@ namespace Pancake.ComputationalGeometry
                 }
             }
         }
-
 
 
         //Separate a mesh by its islands (if it has islands)
@@ -338,11 +388,11 @@ namespace Pancake.ComputationalGeometry
                     else
                     {
                         Debug.Log($"This mesh has {numberOfIslands} islands");
-                    
+
                         break;
                     }
                 }
-            
+
                 HalfEdgeFace3 f = facesToFloodFrom.Dequeue();
 
                 facesOnThisIsland.Add(f);
@@ -372,7 +422,7 @@ namespace Pancake.ComputationalGeometry
 
                     //Here we could mabe save all edges with no opposite, meaning its an edge at the hole 
                 }
-                
+
 
                 safety += 1;
 
@@ -388,9 +438,13 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Fill the hole (or holes) in the mesh
-        private static HashSet<Hole> FillHoles(HashSet<HalfEdge3> holeEdgesI, HashSet<HalfEdge3> holeEdgesO, OrientedPlane3 orientedCutPlane, Transform meshTrans, MyVector3 planeNormal)
+        private static HashSet<Hole> FillHoles(
+            HashSet<HalfEdge3> holeEdgesI,
+            HashSet<HalfEdge3> holeEdgesO,
+            OrientedPlane3 orientedCutPlane,
+            Transform meshTrans,
+            MyVector3 planeNormal)
         {
             if (holeEdgesI == null || holeEdgesI.Count == 0)
             {
@@ -485,8 +539,16 @@ namespace Pancake.ComputationalGeometry
                     MyMeshVertex v3_O = new MyMeshVertex(p3Mesh.ToMyVector3(), -planeNormal);
 
                     //Now we can finally add this triangle to the half-edge data structure
-                    AddTriangleToMesh(v1_I, v2_I, v3_I, holeMeshI, null);
-                    AddTriangleToMesh(v1_O, v3_O, v2_O, holeMeshO, null);
+                    AddTriangleToMesh(v1_I,
+                        v2_I,
+                        v3_I,
+                        holeMeshI,
+                        null);
+                    AddTriangleToMesh(v1_O,
+                        v3_O,
+                        v2_O,
+                        holeMeshO,
+                        null);
                 }
 
                 //We also need an edge belonging to the mesh (not hole mesh) to easier merge mesh with hole
@@ -526,7 +588,6 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //We might end up with multiple holes, so we need to identify all of them
         //Input is just a list of all edges that form the hole(s)
         //The output list is sorted so we can walk around the hole
@@ -543,7 +604,7 @@ namespace Pancake.ComputationalGeometry
             cutEdges.Add(startEdge);
 
 
-            List<HalfEdge3> sortedHoleEdges = new List<HalfEdge3>() { startEdge };
+            List<HalfEdge3> sortedHoleEdges = new List<HalfEdge3>() {startEdge};
             //The first edge is needed to stop the algorithm, so don't remove it!
             //cutEdges.Remove(startEdge);
 
@@ -595,13 +656,13 @@ namespace Pancake.ComputationalGeometry
                         cutEdges.Add(startEdge);
 
                         //Start over with a new list
-                        sortedHoleEdges = new List<HalfEdge3>() { startEdge };
+                        sortedHoleEdges = new List<HalfEdge3>() {startEdge};
                     }
                     //No more holes
                     else
                     {
                         Debug.Log($"The mesh has {allHoles.Count} holes");
-                    
+
                         break;
                     }
                 }
@@ -609,7 +670,6 @@ namespace Pancake.ComputationalGeometry
                 {
                     sortedHoleEdges.Add(nextEdge);
                 }
-
 
 
                 safety += 1;
@@ -628,11 +688,18 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Cut a triangle where one vertex is outside and the other vertices are inside
         //Make sure they are sorted clockwise: O1-I1-I2
         //F means that this vertex is outside of the plane
-        private static void CutTriangleOneOutside(MyMeshVertex O1, MyMeshVertex I1, MyMeshVertex I2, HalfEdgeData3 newMeshO, HalfEdgeData3 newMeshI, HashSet<HalfEdge3> newEdgesI, HashSet<HalfEdge3> newEdgesO, Plane3 cutPlane)
+        private static void CutTriangleOneOutside(
+            MyMeshVertex O1,
+            MyMeshVertex I1,
+            MyMeshVertex I2,
+            HalfEdgeData3 newMeshO,
+            HalfEdgeData3 newMeshI,
+            HashSet<HalfEdge3> newEdgesI,
+            HashSet<HalfEdge3> newEdgesO,
+            Plane3 cutPlane)
         {
             //Cut the triangle by using edge-plane intersection
             //Triangles in Unity are ordered clockwise, so form edges that intersects with the plane:
@@ -664,18 +731,37 @@ namespace Pancake.ComputationalGeometry
 
             //Form 3 new triangles
             //Outside
-            AddTriangleToMesh(v_O1I1, v_I2O1, O1, newMeshO, newEdgesO);
+            AddTriangleToMesh(v_O1I1,
+                v_I2O1,
+                O1,
+                newMeshO,
+                newEdgesO);
             //Inside
-            AddTriangleToMesh(v_O1I1, I1, I2, newMeshI, null);
-            AddTriangleToMesh(v_I2O1, v_O1I1, I2, newMeshI, newEdgesI);
+            AddTriangleToMesh(v_O1I1,
+                I1,
+                I2,
+                newMeshI,
+                null);
+            AddTriangleToMesh(v_I2O1,
+                v_O1I1,
+                I2,
+                newMeshI,
+                newEdgesI);
         }
-
 
 
         //Cut a triangle where two vertices are inside and the other vertex is outside
         //Make sure they are sorted clockwise: O1-O2-I1
         //F means that this vertex is outside the plane
-        private static void CutTriangleTwoOutside(MyMeshVertex O1, MyMeshVertex O2, MyMeshVertex I1, HalfEdgeData3 newMeshO, HalfEdgeData3 newMeshI, HashSet<HalfEdge3> newEdgesI, HashSet<HalfEdge3> newEdgesO, Plane3 cutPlane)
+        private static void CutTriangleTwoOutside(
+            MyMeshVertex O1,
+            MyMeshVertex O2,
+            MyMeshVertex I1,
+            HalfEdgeData3 newMeshO,
+            HalfEdgeData3 newMeshI,
+            HashSet<HalfEdge3> newEdgesI,
+            HashSet<HalfEdge3> newEdgesO,
+            Plane3 cutPlane)
         {
             //Cut the triangle by using edge-plane intersection
             //Triangles in Unity are ordered clockwise, so form edges that intersects with the plane:
@@ -707,12 +793,23 @@ namespace Pancake.ComputationalGeometry
 
             //Form 3 new triangles
             //Outside
-            AddTriangleToMesh(v_O2I1, v_I1O1, O2, newMeshO, newEdgesO);
-            AddTriangleToMesh(O2, v_I1O1, O1, newMeshO, null);
+            AddTriangleToMesh(v_O2I1,
+                v_I1O1,
+                O2,
+                newMeshO,
+                newEdgesO);
+            AddTriangleToMesh(O2,
+                v_I1O1,
+                O1,
+                newMeshO,
+                null);
             //Inside
-            AddTriangleToMesh(v_I1O1, v_O2I1, I1, newMeshI, newEdgesI);
+            AddTriangleToMesh(v_I1O1,
+                v_O2I1,
+                I1,
+                newMeshI,
+                newEdgesI);
         }
-
 
 
         //Help method to build a triangle and add it to a mesh
@@ -780,10 +877,9 @@ namespace Pancake.ComputationalGeometry
         }
 
 
-
         //Is a list of points on one side of a plane?
         public static bool ArePointsOnOneSideOfPlane(List<MyVector3> points, Plane3 plane)
-        {        
+        {
             //First check the first point
             bool isInFront = _Geometry.IsPointOutsidePlane(points[0], plane);
 

@@ -23,7 +23,7 @@ namespace Pancake.Scriptable
         /// Use this to toggle the value of the variable.
         /// </summary>
         public void Toggle() { Value = !Value; }
-        
+
 #if UNITY_EDITOR
         protected override void OnValidate()
         {

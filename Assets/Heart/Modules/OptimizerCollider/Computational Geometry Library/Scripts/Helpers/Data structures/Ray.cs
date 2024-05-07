@@ -21,7 +21,6 @@ namespace Pancake.ComputationalGeometry
     }
 
 
-
     //2D
     public class Ray2
     {
