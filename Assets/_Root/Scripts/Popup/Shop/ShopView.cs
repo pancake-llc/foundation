@@ -25,8 +25,6 @@ namespace Pancake.UI
         [SerializeField] private GameObject purchasedAllPinSkin;
         [SerializeField] private GameObject purchasedVip;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
-        [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
-        [SerializeField] private ScriptableEventIAPFuncProduct checkOwnerProductEvent;
         [SerializeField] private IAPDataVariable coinPack1;
         [SerializeField] private IAPDataVariable coinPack2;
         [SerializeField] private IAPDataVariable doubleCoin;
@@ -68,7 +66,7 @@ namespace Pancake.UI
         {
             bool checkDoubleCoin;
             if (!Application.isMobilePlatform) checkDoubleCoin = Data.Load(Constant.IAP_DOUBLE_COIN, false);
-            else checkDoubleCoin = checkOwnerProductEvent.Raise(doubleCoin) || Data.Load(Constant.IAP_DOUBLE_COIN, false);
+            else checkDoubleCoin = doubleCoin.IsPurchased() || Data.Load(Constant.IAP_DOUBLE_COIN, false);
 
             purchasedDoubleCoin.SetActive(checkDoubleCoin);
             buttonDoubleCoin.gameObject.SetActive(!checkDoubleCoin);
@@ -76,14 +74,14 @@ namespace Pancake.UI
 
             bool checkRemoveAds;
             if (!Application.isMobilePlatform) checkRemoveAds = Advertising.IsRemoveAd;
-            else checkRemoveAds = checkOwnerProductEvent.Raise(removeAds) || Advertising.IsRemoveAd;
+            else checkRemoveAds = removeAds.IsPurchased() || Advertising.IsRemoveAd;
 
             purchasedRemoveAds.SetActive(checkRemoveAds);
             buttonRemoveAds.gameObject.SetActive(!checkRemoveAds);
 
             bool checkAllPinSkin;
             if (!Application.isMobilePlatform) checkAllPinSkin = Data.Load(Constant.IAP_UNLOCK_ALL_SKIN, false);
-            else checkAllPinSkin = checkOwnerProductEvent.Raise(allPinSkin) || Data.Load(Constant.IAP_UNLOCK_ALL_SKIN, false);
+            else checkAllPinSkin = allPinSkin.IsPurchased() || Data.Load(Constant.IAP_UNLOCK_ALL_SKIN, false);
 
             purchasedAllPinSkin.SetActive(checkAllPinSkin);
             buttonAllPinSkin.gameObject.SetActive(!checkAllPinSkin);
@@ -91,16 +89,13 @@ namespace Pancake.UI
 
             bool checkVip;
             if (!Application.isMobilePlatform) checkVip = Data.Load(Constant.IAP_VIP, false);
-            else checkVip = checkOwnerProductEvent.Raise(vip) || Data.Load(Constant.IAP_VIP, false);
+            else checkVip = vip.IsPurchased() || Data.Load(Constant.IAP_VIP, false);
 
             purchasedVip.SetActive(checkVip);
             buttonVip.gameObject.SetActive(!checkVip);
         }
 
-        private void OnButtonGetFreeCoinPressed()
-        {
-            Advertising.Reward.OnCompleted(OnCompleteAdGetFreeCoin).Show();
-        }
+        private void OnButtonGetFreeCoinPressed() { Advertising.Reward.OnCompleted(OnCompleteAdGetFreeCoin).Show(); }
 
         private void OnCompleteAdGetFreeCoin()
         {
@@ -116,12 +111,12 @@ namespace Pancake.UI
                     Refresh();
                     fxCoinSpawnEvent.Raise(buttonVip.transform.parent.position, coinPack1Value);
                 })
-                .Purchase(purchaseEvent);
+                .Purchase();
         }
 
-        private void OnButtonAllSkinPinPressed() { allPinSkin.OnPurchaseCompleted(Refresh).Purchase(purchaseEvent); }
-        private void OnButtonRemoveAdsPressed() { removeAds.OnPurchaseCompleted(Refresh).Purchase(purchaseEvent); }
-        private void OnButtonDoubleCoinPressed() { doubleCoin.OnPurchaseCompleted(Refresh).Purchase(purchaseEvent); }
+        private void OnButtonAllSkinPinPressed() { allPinSkin.OnPurchaseCompleted(Refresh).Purchase(); }
+        private void OnButtonRemoveAdsPressed() { removeAds.OnPurchaseCompleted(Refresh).Purchase(); }
+        private void OnButtonDoubleCoinPressed() { doubleCoin.OnPurchaseCompleted(Refresh).Purchase(); }
 
         private void OnButtonCoinPack1Pressed()
         {
@@ -130,7 +125,7 @@ namespace Pancake.UI
                     Refresh();
                     fxCoinSpawnEvent.Raise(buttonCoinPack1.transform.parent.position, coinPack1Value);
                 })
-                .Purchase(purchaseEvent);
+                .Purchase();
         }
 
         private void OnButtonCoinPack2Pressed()
@@ -140,7 +135,7 @@ namespace Pancake.UI
                     Refresh();
                     fxCoinSpawnEvent.Raise(buttonCoinPack2.transform.parent.position, coinPack2Value);
                 })
-                .Purchase(purchaseEvent);
+                .Purchase();
         }
     }
 }
