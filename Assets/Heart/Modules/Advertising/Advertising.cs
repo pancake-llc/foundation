@@ -11,15 +11,28 @@ namespace Pancake.Monetization
 {
     public class Advertising : GameComponent
     {
+        [SerializeField] private AdSettings adSettings;
+        
         private static event Action<string> ChangeNetworkEvent;
         private static event Action<bool> ChangePreventDisplayAppOpenEvent;
         private static event Action ShowGdprAgainEvent;
         private static event Action GdprResetEvent;
+        private static event Func<AdUnit> GetBannerAdEvent;
+        private static event Func<AdUnit> GetInterAdEvent;
+        private static event Func<AdUnit> GetRewardAdEvent;
+        private static event Func<AdUnit> GetRewardInterAdEvent;
+        private static event Func<AdUnit> GetAppOpenAdEvent;
 
         private AdClient _adClient;
+        
+        /// <summary>
+        /// prevent show app open ad, it will become true when interstitial or rewarded was showed
+        /// </summary>
+        internal static bool isShowingAd;
 
-        [SerializeField] private AdSettings adSettings;
-
+        internal static Action waitAppOpenDisplayedAction;
+        internal static Action waitAppOpenClosedAction;
+        
         private IEnumerator _autoLoadAdCoroutine;
         private float _lastTimeLoadInterstitialAdTimestamp = DEFAULT_TIMESTAMP;
         private float _lastTimeLoadRewardedTimestamp = DEFAULT_TIMESTAMP;
@@ -29,7 +42,6 @@ namespace Pancake.Monetization
 
         private void Start()
         {
-            AdStatic.currentNetworkShared = adSettings.CurrentNetwork;
             if (adSettings.Gdpr)
             {
 #if PANCAKE_ADMOB
@@ -53,6 +65,11 @@ namespace Pancake.Monetization
 
             ChangeNetworkEvent += OnChangeNetworkCallback;
             ChangePreventDisplayAppOpenEvent += OnChangePreventDisplayOpenAd;
+            GetBannerAdEvent += OnGetBannerAd;
+            GetInterAdEvent += OnGetInterAd;
+            GetRewardAdEvent += OnGetRewardAd;
+            GetRewardInterAdEvent += OnGetRewardInterAd;
+            GetAppOpenAdEvent += OnGetOpenAd;
         }
 
         private void InternalInitAd()
@@ -111,7 +128,7 @@ namespace Pancake.Monetization
 
 #endif
 
-        private void OnChangePreventDisplayOpenAd(bool state) { AdStatic.isShowingAd = state; }
+        private void OnChangePreventDisplayOpenAd(bool state) { isShowingAd = state; }
 
         private void OnChangeNetworkCallback(string value)
         {
@@ -120,9 +137,8 @@ namespace Pancake.Monetization
                 "admob" => EAdNetwork.Admob,
                 _ => EAdNetwork.Applovin
             };
-            AdStatic.currentNetworkShared = adSettings.CurrentNetwork;
-            AdStatic.waitAppOpenClosedAction = null;
-            AdStatic.waitAppOpenDisplayedAction = null;
+            waitAppOpenClosedAction = null;
+            waitAppOpenDisplayedAction = null;
             InitClient();
         }
 
@@ -182,10 +198,50 @@ namespace Pancake.Monetization
             _lastTimeLoadAppOpenTimestamp = Time.realtimeSinceStartup;
         }
 
-        public static void ChangeNetwork(string network) { ChangeNetworkEvent?.Invoke(network); }
-        public static void ChangePreventDisplayAppOpen(bool status) { ChangePreventDisplayAppOpenEvent?.Invoke(status); }
-        public static void ShowGdprAgain() { ShowGdprAgainEvent?.Invoke(); }
-        public static void ResetGdpr() { GdprResetEvent?.Invoke(); }
+        private AdUnit OnGetOpenAd()
+        {
+            return adSettings.CurrentNetwork switch
+            {
+                EAdNetwork.Applovin => adSettings.ApplovinAppOpen,
+                _ => adSettings.AdmobAppOpen,
+            };
+        }
+
+        private AdUnit OnGetRewardInterAd()
+        {
+            return adSettings.CurrentNetwork switch
+            {
+                EAdNetwork.Applovin => adSettings.ApplovinRewardInter,
+                _ => adSettings.AdmobRewardInter,
+            };
+        }
+
+        private AdUnit OnGetRewardAd()
+        {
+            return adSettings.CurrentNetwork switch
+            {
+                EAdNetwork.Applovin => adSettings.ApplovinReward,
+                _ => adSettings.AdmobReward,
+            };
+        }
+
+        private AdUnit OnGetInterAd()
+        {
+            return adSettings.CurrentNetwork switch
+            {
+                EAdNetwork.Applovin => adSettings.ApplovinInter,
+                _ => adSettings.AdmobInter,
+            };
+        }
+
+        private AdUnit OnGetBannerAd()
+        {
+            return adSettings.CurrentNetwork switch
+            {
+                EAdNetwork.Applovin => adSettings.ApplovinBanner,
+                _ => adSettings.AdmobBanner,
+            };
+        }
 
         private void OnDisable()
         {
@@ -203,5 +259,21 @@ namespace Pancake.Monetization
             if (!pauseStatus) (_adClient as ApplovinAdClient)?.ShowAppOpen();
         }
 #endif
+
+        #region API
+
+        public static AdUnit Banner => GetBannerAdEvent?.Invoke();
+        public static AdUnit Inter => GetInterAdEvent?.Invoke();
+        public static AdUnit Reward => GetRewardAdEvent?.Invoke();
+        public static AdUnit RewardInter => GetRewardInterAdEvent?.Invoke();
+        public static AdUnit AppOpen => GetAppOpenAdEvent?.Invoke();
+        public static void ChangeNetwork(string network) { ChangeNetworkEvent?.Invoke(network); }
+        public static void ChangePreventDisplayAppOpen(bool status) { ChangePreventDisplayAppOpenEvent?.Invoke(status); }
+        public static void ShowGdprAgain() { ShowGdprAgainEvent?.Invoke(); }
+        public static void ResetGdpr() { GdprResetEvent?.Invoke(); }
+
+        public static bool IsRemoveAd { get => Data.Load($"{Application.identifier}_removeads", false); set => Data.Save($"{Application.identifier}_removeads", value); }
+
+        #endregion
     }
 }

@@ -488,7 +488,6 @@ MonoBehaviour:
   textValueX5: {fileID: 1963513561505940709}
   popupShop: ShopPopup
   fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
-  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   boolDailyVariable: {fileID: 11400000, guid: a66391c4583af954e84a2e823e2dd2c4, type: 2}
   datas:
   - {fileID: 11400000, guid: d82d9cffde819074795ca86a49f4757a, type: 2}
@@ -3132,7 +3131,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6009f886fd5a41344b443b505398d111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rewardAd: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   fetch: {fileID: 5081696642371554532}
 --- !u!1 &5412539736536632174
 GameObject:

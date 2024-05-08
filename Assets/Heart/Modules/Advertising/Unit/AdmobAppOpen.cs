@@ -9,8 +9,7 @@ using GoogleMobileAds.Api;
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("so_blue_variable")]
-    public class AdmobAppOpenVariable : AdUnitVariable
+    public class AdmobAppOpen : AdUnit
     {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
         private AppOpenAd _appOpenAd;
@@ -20,7 +19,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+            if (Advertising.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
 
             Destroy();
             AppOpenAd.Load(Id, new AdRequest(), OnAdLoadCallback);
@@ -36,10 +35,10 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override AdUnitVariable Show()
+        public override AdUnit Show()
         {
             ResetChainCallback();
-            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || AdStatic.IsRemoveAd || !IsReady()) return this;
+            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || Advertising.IsRemoveAd || !IsReady()) return this;
             ShowImpl();
             return this;
         }
@@ -83,8 +82,8 @@ namespace Pancake.Monetization
 
         private void OnAdOpening()
         {
-            AdStatic.waitAppOpenDisplayedAction?.Invoke();
-            AdStatic.isShowingAd = true;
+            Advertising.waitAppOpenDisplayedAction?.Invoke();
+            Advertising.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 
@@ -92,8 +91,8 @@ namespace Pancake.Monetization
 
         private void OnAdClosed()
         {
-            AdStatic.waitAppOpenClosedAction?.Invoke();
-            AdStatic.isShowingAd = false;
+            Advertising.waitAppOpenClosedAction?.Invoke();
+            Advertising.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
             Destroy();
         }
@@ -110,19 +109,6 @@ namespace Pancake.Monetization
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
         private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref failedToLoadCallback); }
-#endif
-
-#if UNITY_EDITOR
-        [UnityEngine.ContextMenu("Copy Default Test Id")]
-        protected void FillDefaultTestId()
-        {
-#if UNITY_ANDROID
-            "ca-app-pub-3940256099942544/9257395921".CopyToClipboard();
-#elif UNITY_IOS
-            "ca-app-pub-3940256099942544/5575463023".CopyToClipboard();
-#endif
-            DebugEditor.Toast("[Admob] Copy App Open Test Unit Id Success!");
-        }
 #endif
     }
 }

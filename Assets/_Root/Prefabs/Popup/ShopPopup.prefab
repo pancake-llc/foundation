@@ -2405,7 +2405,6 @@ MonoBehaviour:
   purchasedAllPinSkin: {fileID: 570312259677152325}
   purchasedVip: {fileID: 2094699733643020368}
   fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
-  rewardAd: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   purchaseEvent: {fileID: 11400000, guid: d365856548e93d4418b79a2943431b39, type: 2}
   checkOwnerProductEvent: {fileID: 11400000, guid: bc9e6bc45ab7c044499f43ca43c225be, type: 2}
   coinPack1: {fileID: 11400000, guid: 86d0e5ab87bd2064db2da785a698f13a, type: 2}
@@ -5695,7 +5694,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6009f886fd5a41344b443b505398d111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rewardAd: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   fetch: {fileID: 7261158629668670619}
 --- !u!1 &8052511678769924302
 GameObject:

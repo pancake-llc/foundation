@@ -10,7 +10,7 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("so_blue_variable")]
-    public class AdmobInterVariable : AdUnitVariable
+    public class AdmobInter : AdUnit
     {
         [NonSerialized] internal Action completedCallback;
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
@@ -19,7 +19,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+            if (Advertising.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
 
             Destroy();
             InterstitialAd.Load(Id, new AdRequest(), AdLoadCallback);
@@ -36,10 +36,10 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override AdUnitVariable Show()
+        public override AdUnit Show()
         {
             ResetChainCallback();
-            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || AdStatic.IsRemoveAd || !IsReady()) return this;
+            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || Advertising.IsRemoveAd || !IsReady()) return this;
             ShowImpl();
             return this;
         }
@@ -86,7 +86,7 @@ namespace Pancake.Monetization
 
         private void OnAdOpening()
         {
-            AdStatic.isShowingAd = true;
+            Advertising.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 
@@ -94,7 +94,7 @@ namespace Pancake.Monetization
 
         private void OnAdClosed()
         {
-            AdStatic.isShowingAd = false;
+            Advertising.isShowingAd = false;
             C.CallActionClean(ref completedCallback);
             Destroy();
         }
@@ -111,19 +111,6 @@ namespace Pancake.Monetization
         private void OnAdLoaded() { C.CallActionClean(ref loadedCallback); }
 
         private void OnAdFailedToLoad(LoadAdError error) { C.CallActionClean(ref failedToLoadCallback); }
-#endif
-
-#if UNITY_EDITOR
-        [UnityEngine.ContextMenu("Copy Default Test Id")]
-        protected void FillDefaultTestId()
-        {
-#if UNITY_ANDROID
-            "ca-app-pub-3940256099942544/1033173712".CopyToClipboard();
-#elif UNITY_IOS
-            "ca-app-pub-3940256099942544/4411468910".CopyToClipboard();
-#endif
-            DebugEditor.Toast("[Admob] Copy Interstitial Test Unit Id Success!");
-        }
 #endif
     }
 }

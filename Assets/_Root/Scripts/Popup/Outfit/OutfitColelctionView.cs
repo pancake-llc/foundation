@@ -15,7 +15,6 @@ namespace Pancake.UI
         [SerializeField] private OutfitSlotBarComponent slotBarPrefab;
         [SerializeField] private Transform content;
         [SerializeField] private Button buttonFreeCoin;
-        [SerializeField] private RewardVariable rewardAd;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private int coinFreeValue = 500;
 
@@ -37,7 +36,10 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonGetFreeCoinPressed() { rewardAd.Context().OnCompleted(OnCompleteAdGetFreeCoin).Show(); }
+        private void OnButtonGetFreeCoinPressed()
+        {
+            Advertising.Reward?.OnCompleted(OnCompleteAdGetFreeCoin).Show();
+        }
 
         private void OnCompleteAdGetFreeCoin()
         {

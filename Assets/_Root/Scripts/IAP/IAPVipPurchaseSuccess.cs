@@ -11,7 +11,7 @@ namespace Pancake.SceneFlow
         public override void Raise()
         {
             // remove ads
-            AdStatic.IsRemoveAd = true;
+            Advertising.IsRemoveAd = true;
 
             // double coin
             Data.Save(Constant.IAP_DOUBLE_COIN, true);

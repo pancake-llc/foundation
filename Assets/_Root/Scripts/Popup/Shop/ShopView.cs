@@ -25,7 +25,6 @@ namespace Pancake.UI
         [SerializeField] private GameObject purchasedAllPinSkin;
         [SerializeField] private GameObject purchasedVip;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
-        [SerializeField] private RewardVariable rewardAd;
         [SerializeField] private ScriptableEventIAPProduct purchaseEvent;
         [SerializeField] private ScriptableEventIAPFuncProduct checkOwnerProductEvent;
         [SerializeField] private IAPDataVariable coinPack1;
@@ -76,8 +75,8 @@ namespace Pancake.UI
 
 
             bool checkRemoveAds;
-            if (!Application.isMobilePlatform) checkRemoveAds = AdStatic.IsRemoveAd;
-            else checkRemoveAds = checkOwnerProductEvent.Raise(removeAds) || AdStatic.IsRemoveAd;
+            if (!Application.isMobilePlatform) checkRemoveAds = Advertising.IsRemoveAd;
+            else checkRemoveAds = checkOwnerProductEvent.Raise(removeAds) || Advertising.IsRemoveAd;
 
             purchasedRemoveAds.SetActive(checkRemoveAds);
             buttonRemoveAds.gameObject.SetActive(!checkRemoveAds);
@@ -98,7 +97,10 @@ namespace Pancake.UI
             buttonVip.gameObject.SetActive(!checkVip);
         }
 
-        private void OnButtonGetFreeCoinPressed() { rewardAd.Context().OnCompleted(OnCompleteAdGetFreeCoin).Show(); }
+        private void OnButtonGetFreeCoinPressed()
+        {
+            Advertising.Reward.OnCompleted(OnCompleteAdGetFreeCoin).Show();
+        }
 
         private void OnCompleteAdGetFreeCoin()
         {

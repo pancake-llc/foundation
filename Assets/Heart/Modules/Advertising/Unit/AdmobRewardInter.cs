@@ -8,8 +8,7 @@ using GoogleMobileAds.Api;
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("so_blue_variable")]
-    public class AdmobRewardInterVariable : AdUnitVariable
+    public class AdmobRewardInter : AdUnit
     {
         [NonSerialized] internal Action completedCallback;
         [NonSerialized] internal Action skippedCallback;
@@ -51,7 +50,7 @@ namespace Pancake.Monetization
             skippedCallback = null;
         }
 
-        public override AdUnitVariable Show()
+        public override AdUnit Show()
         {
             ResetChainCallback();
             if (!UnityEngine.Application.isMobilePlatform || string.IsNullOrEmpty(Id) || !IsReady()) return this;
@@ -104,13 +103,13 @@ namespace Pancake.Monetization
 
         private void OnAdOpening()
         {
-            AdStatic.isShowingAd = true;
+            Advertising.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 
         private void OnAdClosed()
         {
-            AdStatic.isShowingAd = false;
+            Advertising.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
             if (IsEarnRewarded)
             {
@@ -124,19 +123,6 @@ namespace Pancake.Monetization
         }
 
         private void UserEarnedRewardCallback(Reward reward) { IsEarnRewarded = true; }
-#endif
-
-#if UNITY_EDITOR
-        [UnityEngine.ContextMenu("Copy Default Test Id")]
-        protected void FillDefaultTestId()
-        {
-#if UNITY_ANDROID
-            "ca-app-pub-3940256099942544/5354046379".CopyToClipboard();
-#elif UNITY_IOS
-            "ca-app-pub-3940256099942544/6978759866".CopyToClipboard();
-#endif
-            DebugEditor.Toast("[Admob] Copy Rewarded Interstitial Test Unit Id Success!");
-        }
 #endif
     }
 }

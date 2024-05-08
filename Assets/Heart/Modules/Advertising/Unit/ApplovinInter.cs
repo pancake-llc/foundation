@@ -6,7 +6,7 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("so_blue_variable")]
-    public class ApplovinInterVariable : AdUnitVariable
+    public class ApplovinInter : AdUnit
     {
         [NonSerialized] internal Action completedCallback;
 
@@ -15,7 +15,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+            if (Advertising.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
             if (!_registerCallback)
             {
                 MaxSdkCallbacks.Interstitial.OnAdLoadedEvent += OnAdLoaded;
@@ -60,7 +60,7 @@ namespace Pancake.Monetization
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
-            AdStatic.isShowingAd = false;
+            Advertising.isShowingAd = false;
             C.CallActionClean(ref completedCallback);
             
             if (!string.IsNullOrEmpty(Id)) MaxSdk.LoadInterstitial(Id);  // ApplovinEnableRequestAdAfterHidden as true
@@ -68,7 +68,7 @@ namespace Pancake.Monetization
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info)
         {
-            AdStatic.isShowingAd = true;
+            Advertising.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 

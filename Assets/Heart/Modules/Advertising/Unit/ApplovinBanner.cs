@@ -7,7 +7,7 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("so_blue_variable")]
-    public class ApplovinBannerVariable : AdUnitVariable, IBannerHide
+    public class ApplovinBanner : AdUnit, IBannerHide
     {
         public EBannerSize size;
         public EBannerPosition position;
@@ -22,7 +22,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+            if (Advertising.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
             if (!_registerCallback)
             {
                 MaxSdkCallbacks.Banner.OnAdLoadedEvent += OnAdLoaded;
@@ -65,8 +65,8 @@ namespace Pancake.Monetization
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
             _isBannerShowing = true;
-            AdStatic.waitAppOpenClosedAction = OnWaitAppOpenClosed;
-            AdStatic.waitAppOpenDisplayedAction = OnWaitAppOpenDisplayed;
+            Advertising.waitAppOpenClosedAction = OnWaitAppOpenClosed;
+            Advertising.waitAppOpenDisplayedAction = OnWaitAppOpenDisplayed;
             Load(); // load banner again if destroyed banner before
             MaxSdk.ShowBanner(Id);
 #endif
@@ -78,8 +78,8 @@ namespace Pancake.Monetization
             if (string.IsNullOrEmpty(Id)) return;
             _isBannerShowing = false;
             _isBannerDestroyed = true;
-            AdStatic.waitAppOpenClosedAction = null;
-            AdStatic.waitAppOpenDisplayedAction = null;
+            Advertising.waitAppOpenClosedAction = null;
+            Advertising.waitAppOpenDisplayedAction = null;
             MaxSdk.DestroyBanner(Id);
 #endif
         }

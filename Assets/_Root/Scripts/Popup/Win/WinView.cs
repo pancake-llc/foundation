@@ -29,7 +29,6 @@ namespace Pancake.UI
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private ScriptableEventNoParam showUiGameplayEvent;
         [SerializeField] private IntVariable currentLevelIndex;
-        [SerializeField] private RewardVariable rewardVariable;
         [SerializeField] private IntVariable winGifProgresValue;
         [SerializeField] private Vector2Int rangeGiftValueIncrease;
 
@@ -79,7 +78,7 @@ namespace Pancake.UI
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
 
-        private void OnButtonVideoX5Pressed() { rewardVariable.Context().OnCompleted(() => { InternalContinue(numberCoinReceive * 5); }).Show(); }
+        private void OnButtonVideoX5Pressed() { Advertising.Reward.OnCompleted(() => { InternalContinue(numberCoinReceive * 5); }).Show(); }
 
         private void CollectReward(int number)
         {

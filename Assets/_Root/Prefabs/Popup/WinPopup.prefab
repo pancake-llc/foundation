@@ -142,7 +142,6 @@ MonoBehaviour:
   reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
   showUiGameplayEvent: {fileID: 11400000, guid: d13fa7db81a86084da9a67bbdc7e381f, type: 2}
   currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
-  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   winGifProgresValue: {fileID: 11400000, guid: 091b41098013f73448505b7d9f00a3c5, type: 2}
   rangeGiftValueIncrease: {x: 10, y: 10}
   overrideBGM: 0
@@ -797,7 +796,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6009f886fd5a41344b443b505398d111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rewardAd: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   fetch: {fileID: 3971022683058928567}
 --- !u!1 &4715376939158404054
 GameObject:

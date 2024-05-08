@@ -1,18 +1,13 @@
 ﻿using System;
-using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake.Monetization
 {
-    [Searchable]
     [Serializable]
-    [EditorIcon("so_blue_variable")]
-    public abstract class AdUnitVariable : ScriptableObject
+    public abstract class AdUnit
     {
-        [Blockquote("When you change the platform need to double check if the id is empty?")]
 #if UNITY_ANDROID
-        [SerializeField]
-        protected string androidId;
+        [SerializeField] protected string androidId;
 #elif UNITY_IOS
         [SerializeField] protected string iOSId;
 #endif
@@ -42,10 +37,10 @@ namespace Pancake.Monetization
 
         public abstract bool IsReady();
 
-        public virtual AdUnitVariable Show()
+        public virtual AdUnit Show()
         {
             ResetChainCallback();
-            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || AdStatic.IsRemoveAd) return this;
+            if (!Application.isMobilePlatform || string.IsNullOrEmpty(Id) || Advertising.IsRemoveAd) return this;
             ShowImpl();
             return this;
         }

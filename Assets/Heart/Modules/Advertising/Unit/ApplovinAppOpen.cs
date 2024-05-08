@@ -6,14 +6,14 @@ namespace Pancake.Monetization
 {
     [Serializable]
     [EditorIcon("so_blue_variable")]
-    public class ApplovinAppOpenVariable : AdUnitVariable
+    public class ApplovinAppOpen : AdUnit
     {
         private bool _registerCallback;
 
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+            if (Advertising.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
             if (!_registerCallback)
             {
                 MaxSdkCallbacks.AppOpen.OnAdDisplayedEvent += OnAdDisplayed;
@@ -66,8 +66,8 @@ namespace Pancake.Monetization
 
         private void OnAdHidden(string unit, MaxSdkBase.AdInfo info)
         {
-            AdStatic.waitAppOpenClosedAction?.Invoke();
-            AdStatic.isShowingAd = false;
+            Advertising.waitAppOpenClosedAction?.Invoke();
+            Advertising.isShowingAd = false;
             C.CallActionClean(ref closedCallback);
 
             if (!string.IsNullOrEmpty(Id)) MaxSdk.LoadAppOpenAd(Id); // ApplovinEnableRequestAdAfterHidden as true
@@ -75,8 +75,8 @@ namespace Pancake.Monetization
 
         private void OnAdDisplayed(string unit, MaxSdkBase.AdInfo info)
         {
-            AdStatic.waitAppOpenDisplayedAction?.Invoke();
-            AdStatic.isShowingAd = true;
+            Advertising.waitAppOpenDisplayedAction?.Invoke();
+            Advertising.isShowingAd = true;
             C.CallActionClean(ref displayedCallback);
         }
 #endif

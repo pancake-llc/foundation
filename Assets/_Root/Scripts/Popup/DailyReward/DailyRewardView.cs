@@ -21,11 +21,14 @@ namespace Pancake.UI
         [SerializeField] private TextMeshProUGUI textValueX5;
         [SerializeField, PopupPickup] private string popupShop;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
-        [SerializeField] private RewardVariable rewardVariable;
         [SerializeField] private BoolDailyVariable boolDailyVariable;
 
-        [SerializeField, ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)] private List<DailyRewardVariable> datas;
-        [SerializeField, ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)] private DayComponent[] days;
+        [SerializeField, ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)]
+        private List<DailyRewardVariable> datas;
+
+        [SerializeField, ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)]
+        private DayComponent[] days;
+
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
 
         protected override UniTask Initialize()
@@ -73,7 +76,7 @@ namespace Pancake.UI
                 data.Claim();
                 UserData.NextDayDailyReward(); // next day
             }
-            
+
             boolDailyVariable.Value = true;
             Refresh();
         }
@@ -82,8 +85,7 @@ namespace Pancake.UI
         {
             buttonClaim.gameObject.SetActive(false);
             buttonClaimX5.gameObject.SetActive(false);
-            rewardVariable.Context()
-                .Show()
+            Advertising.Reward?.Show()
                 .OnCompleted(() => InternalClaim(5))
                 .OnClosed(() =>
                 {

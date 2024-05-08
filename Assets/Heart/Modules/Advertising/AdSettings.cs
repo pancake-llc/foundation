@@ -15,36 +15,35 @@ namespace Pancake.Monetization
         [Header("[admob]")] [SerializeField] private bool admobEnableTestMode;
 
         [SerializeField] private List<string> admobDevicesTest;
-        [SerializeField] private AdmobBannerVariable admobBanner;
-        [SerializeField] private AdmobInterVariable admobInter;
-        [SerializeField] private AdmobRewardVariable admobReward;
-        [SerializeField] private AdmobRewardInterVariable admobRewardInter;
-
-        [SerializeField] private AdmobAppOpenVariable admobAppOpen;
+        [SerializeField] private AdmobBanner admobBanner = new();
+        [SerializeField] private AdmobInter admobInter = new();
+        [SerializeField] private AdmobReward admobReward = new();
+        [SerializeField] private AdmobRewardInter admobRewardInter = new();
+        [SerializeField] private AdmobAppOpen admobAppOpen = new();
 
         public List<string> AdmobDevicesTest => admobDevicesTest;
         public bool AdmobEnableTestMode => admobEnableTestMode;
-        public AdUnitVariable AdmobBanner => admobBanner;
-        public AdUnitVariable AdmobInter => admobInter;
-        public AdUnitVariable AdmobReward => admobReward;
-        public AdUnitVariable AdmobRewardInter => admobRewardInter;
-        public AdUnitVariable AdmobAppOpen => admobAppOpen;
+        public AdUnit AdmobBanner => admobBanner;
+        public AdUnit AdmobInter => admobInter;
+        public AdUnit AdmobReward => admobReward;
+        public AdUnit AdmobRewardInter => admobRewardInter;
+        public AdUnit AdmobAppOpen => admobAppOpen;
 
         [Header("[applovin]")] [SerializeField, TextArea] private string sdkKey;
 
-        [SerializeField] private ApplovinBannerVariable applovinBanner;
-        [SerializeField] private ApplovinInterVariable applovinInter;
-        [SerializeField] private ApplovinRewardVariable applovinReward;
-        [SerializeField] private ApplovinRewardInterVariable applovinRewardInter;
-        [SerializeField] private ApplovinAppOpenVariable applovinAppOpen;
+        [SerializeField] private ApplovinBanner applovinBanner = new();
+        [SerializeField] private ApplovinInter applovinInter = new();
+        [SerializeField] private ApplovinReward applovinReward = new();
+        [SerializeField] private ApplovinRewardInter applovinRewardInter = new();
+        [SerializeField] private ApplovinAppOpen applovinAppOpen = new();
         [SerializeField] private bool applovinEnableAgeRestrictedUser;
 
         public string SDKKey => sdkKey;
-        public AdUnitVariable ApplovinBanner => applovinBanner;
-        public AdUnitVariable ApplovinInter => applovinInter;
-        public AdUnitVariable ApplovinReward => applovinReward;
-        public AdUnitVariable ApplovinRewardInter => applovinRewardInter;
-        public AdUnitVariable ApplovinAppOpen => applovinAppOpen;
+        public AdUnit ApplovinBanner => applovinBanner;
+        public AdUnit ApplovinInter => applovinInter;
+        public AdUnit ApplovinReward => applovinReward;
+        public AdUnit ApplovinRewardInter => applovinRewardInter;
+        public AdUnit ApplovinAppOpen => applovinAppOpen;
         public bool ApplovinEnableAgeRestrictedUser => applovinEnableAgeRestrictedUser;
         public float AdCheckingInterval => adCheckingInterval;
         public float AdLoadingInterval => adLoadingInterval;

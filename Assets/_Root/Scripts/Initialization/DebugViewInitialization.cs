@@ -12,9 +12,6 @@ namespace Pancake.SceneFlow
     {
         [SerializeField] private GameObject debugViewPrefab;
         [SerializeField] private GameObject graphyPrefab;
-        [SerializeField] private BannerVariable bannerVariable;
-        [SerializeField] private InterVariable interVariable;
-        [SerializeField] private RewardVariable rewardVariable;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [Header("level")] [SerializeField] private IntVariable currentLevelIndex;
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
@@ -36,7 +33,7 @@ namespace Pancake.SceneFlow
             if (graphyPrefab != null) Instantiate(graphyPrefab);
             var initialPage = DebugSheet.Instance.GetOrCreateInitialPage();
             initialPage.AddPageLinkButton<DebugToolsPage>("Debug Tools", icon: toolIcon);
-            initialPage.AddPageLinkButton<AdsToolsPage>("Ads Tools", onLoad: tuple => { tuple.page.Setup(bannerVariable, interVariable, rewardVariable); });
+            initialPage.AddPageLinkButton<AdsToolsPage>("Ads Tools");
             initialPage.AddPageLinkButton<LevelToolsPage>("Level Tools",
                 onLoad: tuple =>
                 {

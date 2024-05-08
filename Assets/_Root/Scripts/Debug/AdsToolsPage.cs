@@ -6,17 +6,7 @@ namespace Pancake.SceneFlow
 {
     public class AdsToolsPage : DefaultDebugPageBase
     {
-        private BannerVariable _bannerVariable;
-        private InterVariable _interVariable;
-        private RewardVariable _rewardVariable;
         private PickerCellModel _statePickerModel;
-
-        public void Setup(BannerVariable banner, InterVariable inter, RewardVariable reward)
-        {
-            _bannerVariable = banner;
-            _interVariable = inter;
-            _rewardVariable = reward;
-        }
 
         protected override string Title => "Ads Tools";
 
@@ -24,18 +14,18 @@ namespace Pancake.SceneFlow
         {
             string[] names = {"Enabled", "Disabled"};
             _statePickerModel = new PickerCellModel {Text = "State"};
-            _statePickerModel.SetOptions(names, AdStatic.IsRemoveAd ? 1 : 0);
+            _statePickerModel.SetOptions(names, Advertising.IsRemoveAd ? 1 : 0);
             _statePickerModel.ActiveOptionChanged += OnModelPickerValueChanged;
             AddPicker(_statePickerModel);
-            AddButton("Show Banner", clicked: () => _bannerVariable.Context().Show());
-            AddButton("Hide Banner", clicked: () => (_bannerVariable.Context() as IBannerHide)?.Hide());
-            AddButton("Show Interstitial", clicked: () => _interVariable.Context().Show());
-            AddButton("Show Rewarded", clicked: () => _rewardVariable.Context().Show());
+            AddButton("Show Banner", clicked: () => Advertising.Banner?.Show());
+            AddButton("Hide Banner", clicked: () => (Advertising.Banner as IBannerHide)?.Hide());
+            AddButton("Show Interstitial", clicked: () => Advertising.Inter?.Show());
+            AddButton("Show Rewarded", clicked: () => Advertising.Reward?.Show());
 
             Reload();
             return Task.CompletedTask;
         }
 
-        private void OnModelPickerValueChanged(int state) { AdStatic.IsRemoveAd = state == 1; }
+        private void OnModelPickerValueChanged(int state) { Advertising.IsRemoveAd = state == 1; }
     }
 }

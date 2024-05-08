@@ -131,15 +131,65 @@ namespace Pancake.MonetizationEditor
                 if (GUILayout.Button("Import Mediation", GUILayout.Height(24)))
                 {
                     DebugEditor.Log("<color=#FF77C6>[Ad]</color> importing admob mediation");
-                    AssetDatabase.ImportPackage(
-                        ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob-mediation.unitypackage"),
-                        false);
+                    AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob-mediation.unitypackage"), false);
                 }
 
-                if (GUILayout.Button("Copy Admob Test AppId", GUILayout.Height(24)))
+                if (GUILayout.Button("Get Test AppId", GUILayout.Height(24)))
                 {
                     "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
-                    DebugEditor.Toast("[Admob] Copy AppId Test Id Success!");
+                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy AppId Test Id Success!");
+                }
+
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("Get Test BannerId", GUILayout.Height(24)))
+                {
+#if UNITY_ANDROID
+                    "ca-app-pub-3940256099942544/6300978111".CopyToClipboard();
+#elif UNITY_IOS
+                    "ca-app-pub-3940256099942544/2934735716".CopyToClipboard();
+#endif
+                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Banner Test Unit Id Success!");
+                }
+
+                if (GUILayout.Button("Get Test InterId", GUILayout.Height(24)))
+                {
+#if UNITY_ANDROID
+                    "ca-app-pub-3940256099942544/1033173712".CopyToClipboard();
+#elif UNITY_IOS
+                    "ca-app-pub-3940256099942544/4411468910".CopyToClipboard();
+#endif
+                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Interstitial Test Unit Id Success!");
+                }
+
+                if (GUILayout.Button("Get Test RewardId", GUILayout.Height(24)))
+                {
+#if UNITY_ANDROID
+                    "ca-app-pub-3940256099942544/5224354917".CopyToClipboard();
+#elif UNITY_IOS
+                    "ca-app-pub-3940256099942544/1712485313".CopyToClipboard();
+#endif
+                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Test Unit Id Success!");
+                }
+
+                if (GUILayout.Button("Get Test RewardInterId", GUILayout.Height(24)))
+                {
+#if UNITY_ANDROID
+                    "ca-app-pub-3940256099942544/5354046379".CopyToClipboard();
+#elif UNITY_IOS
+                    "ca-app-pub-3940256099942544/6978759866".CopyToClipboard();
+#endif
+                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Interstitial Test Unit Id Success!");
+                }
+
+                if (GUILayout.Button("Get Test AppOpenId", GUILayout.Height(24)))
+                {
+#if UNITY_ANDROID
+                    "ca-app-pub-3940256099942544/9257395921".CopyToClipboard();
+#elif UNITY_IOS
+                    "ca-app-pub-3940256099942544/5575463023".CopyToClipboard();
+#endif
+                    DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy App Open Test Unit Id Success!");
                 }
 
                 EditorGUILayout.EndHorizontal();
@@ -204,41 +254,41 @@ namespace Pancake.MonetizationEditor
             else if (_currentNetworkProperty.enumValueIndex == (int) EAdNetwork.Applovin)
             {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            GUI.backgroundColor = Uniform.Green;
-            EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
-            GUI.backgroundColor = Color.white;
+                GUI.backgroundColor = Uniform.Green;
+                EditorGUILayout.HelpBox("Applovin plugin was imported", MessageType.Info);
+                GUI.backgroundColor = Color.white;
 
-            EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.BeginHorizontal();
 
-            GUI.backgroundColor = Uniform.Green;
-            if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
-            {
-                EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
-            }
+                GUI.backgroundColor = Uniform.Green;
+                if (GUILayout.Button("Open AppLovin Integration", GUILayout.Height(24)))
+                {
+                    EditorApplication.ExecuteMenuItem("AppLovin/Integration Manager");
+                }
 
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
-            {
-                var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group)) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
+                GUI.backgroundColor = Uniform.Red;
+                if (GUILayout.Button("Uninstall AppLovin SDK", GUILayout.Height(24)))
+                {
+                    var group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+                    if (ScriptingDefinition.IsSymbolDefined("PANCAKE_APPLOVIN", group)) ScriptingDefinition.RemoveDefineSymbolOnAllPlatforms("PANCAKE_APPLOVIN");
 
-                FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
-                FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk"));
+                    FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk.meta"));
 
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-            }
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                }
 
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-            
-            EditorGUILayout.PropertyField(_sdkKeyPropertyProperty);
-            EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
-            EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
-            EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
-            EditorGUILayout.PropertyField(_applovinRewardInterProperty, new GUIContent("Inter Rewarded"));
-            EditorGUILayout.PropertyField(_applovinAppOpenProperty, new GUIContent("App Open"));
-            EditorGUILayout.PropertyField(_applovinEnableAgeRestrictedUserProperty, new GUIContent("Age Restricted"));
+                GUI.backgroundColor = Color.white;
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.PropertyField(_sdkKeyPropertyProperty);
+                EditorGUILayout.PropertyField(_applovinEnableAgeRestrictedUserProperty, new GUIContent("Age Restricted"));
+                EditorGUILayout.PropertyField(_applovinBannerProperty, new GUIContent("Banner"));
+                EditorGUILayout.PropertyField(_applovinInterProperty, new GUIContent("Interstitial"));
+                EditorGUILayout.PropertyField(_applovinRewardProperty, new GUIContent("Rewarded"));
+                EditorGUILayout.PropertyField(_applovinRewardInterProperty, new GUIContent("Inter Rewarded"));
+                EditorGUILayout.PropertyField(_applovinAppOpenProperty, new GUIContent("App Open"));
 #else
                 GUI.backgroundColor = Uniform.Orange;
                 EditorGUILayout.HelpBox("Applovin plugin not found", MessageType.Warning);

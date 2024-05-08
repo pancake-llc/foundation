@@ -8,7 +8,6 @@ namespace Pancake.SceneFlow
 {
     public class AdStatusComponent : GameComponent
     {
-        [SerializeField] private RewardVariable rewardAd;
         [SerializeField] private GameObject fetch;
 
         private readonly WaitForSeconds _wait = new WaitForSeconds(0.1f);
@@ -44,7 +43,7 @@ namespace Pancake.SceneFlow
         {
             while (true)
             {
-                fetch.SetActive(!rewardAd.Context().IsReady());
+                fetch.SetActive(!Advertising.Reward.IsReady());
                 yield return _wait;
             }
             // ReSharper disable once IteratorNeverReturns

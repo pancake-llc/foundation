@@ -368,7 +368,7 @@ MonoBehaviour:
   remoteConfigIsFetchCompleted: {fileID: 11400000, guid: 54998a0dfba51d049a2b6ac1b700584d, type: 2}
   remoteConfigCurrentAdNetwork: {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
   changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
-  alchemySerializationData:
+  __alchemySerializationData_Pancake_Tracking_RemoteConfig:
     remoteData:
       isCreated: 1
       data: '{}'
@@ -403,8 +403,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   adSettings: {fileID: 11400000, guid: 85e8c9e26dfa9794ebdd8aeb3ae17c6a, type: 2}
-  changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
-  changePreventDisplayAppOpenEvent: {fileID: 11400000, guid: 5f35b40808667ca4ca6e2bc78a9ac78b, type: 2}
 --- !u!114 &776958717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -664,9 +662,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugViewPrefab: {fileID: 6564643838517370666, guid: ca5e6d279e01e413f8bbf07d75aebe7f, type: 3}
   graphyPrefab: {fileID: 8546455465286430009, guid: a0ba11c85f92c1c4792eeec43dad26c0, type: 3}
-  bannerVariable: {fileID: 11400000, guid: ff00650560048454880d06e8221ed404, type: 2}
-  interVariable: {fileID: 11400000, guid: f5ac8a92fe9b0134eb63adcf04da125b, type: 2}
-  rewardVariable: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
+  bannerVariable: {fileID: 0}
+  interVariable: {fileID: 0}
+  rewardVariable: {fileID: 0}
   fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
   currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
   loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}

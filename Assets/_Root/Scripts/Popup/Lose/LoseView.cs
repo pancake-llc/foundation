@@ -21,7 +21,6 @@ namespace Pancake.UI
         [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
         [SerializeField] private ScriptableEventNoParam showUiGameplayEvent;
         [SerializeField] private IntVariable currentLevelIndex;
-        [SerializeField] private RewardVariable rewardVariable;
 
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
 
@@ -35,7 +34,10 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonSkipPressed() { rewardVariable.Context().OnCompleted(SkipLevel).Show(); }
+        private void OnButtonSkipPressed()
+        {
+            Advertising.Reward?.OnCompleted(SkipLevel).Show();
+        }
 
         private async void SkipLevel()
         {

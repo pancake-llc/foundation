@@ -25,7 +25,6 @@ namespace Pancake.SceneFlow
         [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
         // ReSharper disable once InconsistentNaming
         [AlchemySerializeField, NonSerialized] private Dictionary<OutfitUnlockType, Button> buttonDict = new ();
-        [SerializeField] private RewardVariable rewardVariable;
         [SerializeField, PopupPickup] private string popupDailyReward;
 
         private OutfitUnitVariable _outfitUnit;
@@ -105,7 +104,10 @@ namespace Pancake.SceneFlow
             b.Value.onClick.AddListener(OnButtonPurchaseByAdPressed);
         }
 
-        private void OnButtonPurchaseByAdPressed() { rewardVariable.Context().Show().OnCompleted(UnlockedOutfitInternal); }
+        private void OnButtonPurchaseByAdPressed()
+        {
+            Advertising.Reward.Show().OnCompleted(UnlockedOutfitInternal);
+        }
 
         private void UnlockedOutfitInternal()
         {

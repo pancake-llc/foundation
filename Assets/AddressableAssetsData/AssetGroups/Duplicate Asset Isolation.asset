@@ -325,21 +325,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7127d460e8cf74341a319a8dec6427d7
-    m_Address: Assets/_Root/Storages/Advertising/Wrapper/ad_reward_unit_wrapper.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 677bd6bf9b86d1d45935e926f6b0d50c
-    m_Address: Assets/_Root/Storages/Advertising/AppLovin/applovinReward.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0e3971a80d268eb4fa25c76ca981517c
-    m_Address: Assets/_Root/Storages/Advertising/Admob/admobReward.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9646a2b346725a14fa934f6e37a84505
     m_Address: Assets/_Root/Storages/RemoteConfig/remote_config_using_admob.asset
     m_ReadOnly: 0

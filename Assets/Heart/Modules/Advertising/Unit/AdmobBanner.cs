@@ -9,8 +9,7 @@ using GoogleMobileAds.Api;
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("so_blue_variable")]
-    public class AdmobBannerVariable : AdUnitVariable, IBannerHide
+    public class AdmobBanner : AdUnit, IBannerHide
     {
         public EBannerSize size = EBannerSize.Adaptive;
         public EBannerPosition position = EBannerPosition.Bottom;
@@ -27,7 +26,7 @@ namespace Pancake.Monetization
         public override void Load()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (AdStatic.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
+            if (Advertising.IsRemoveAd || string.IsNullOrEmpty(Id)) return;
 
             Destroy();
             _bannerView = new BannerView(Id, ConvertSize(), ConvertPosition());
@@ -68,8 +67,8 @@ namespace Pancake.Monetization
         {
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
             _isBannerShowing = true;
-            AdStatic.waitAppOpenClosedAction = OnWaitAppOpenClosed;
-            AdStatic.waitAppOpenDisplayedAction = OnWaitAppOpenDisplayed;
+            Advertising.waitAppOpenClosedAction = OnWaitAppOpenClosed;
+            Advertising.waitAppOpenDisplayedAction = OnWaitAppOpenDisplayed;
             _bannerView.Show();
 #endif
         }
@@ -79,8 +78,8 @@ namespace Pancake.Monetization
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
             if (_bannerView == null) return;
             _isBannerShowing = false;
-            AdStatic.waitAppOpenClosedAction = null;
-            AdStatic.waitAppOpenDisplayedAction = null;
+            Advertising.waitAppOpenClosedAction = null;
+            Advertising.waitAppOpenDisplayedAction = null;
             _bannerView.Destroy();
             _bannerView = null;
 #endif
@@ -145,19 +144,6 @@ namespace Pancake.Monetization
         {
             yield return _waitBannerReload;
             Load();
-        }
-#endif
-
-#if UNITY_EDITOR
-        [UnityEngine.ContextMenu("Copy Default Test Id")]
-        protected void FillDefaultTestId()
-        {
-#if UNITY_ANDROID
-            "ca-app-pub-3940256099942544/6300978111".CopyToClipboard();
-#elif UNITY_IOS
-            "ca-app-pub-3940256099942544/2934735716".CopyToClipboard();
-#endif
-            DebugEditor.Toast("[Admob] Copy Banner Test Unit Id Success!");
         }
 #endif
     }

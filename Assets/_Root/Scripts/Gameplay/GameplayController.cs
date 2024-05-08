@@ -19,8 +19,7 @@ namespace Pancake.SceneFlow
 
         [Header("OTHER")] [SerializeField] private ScriptableEventString changeSceneEvent;
 
-        [Header("LEVEL")] [SerializeField] private RewardVariable rewardVariable;
-        [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
+        [Header("LEVEL")] [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
         [SerializeField] private ScriptableEventGetLevelCached getNextLevelCached;
         [SerializeField] private ScriptableEventNoParam trackingStartLevelEvent;
         [SerializeField] private Transform levelRootHolder;
@@ -43,7 +42,7 @@ namespace Pancake.SceneFlow
 
         private void OnButtonSkipByAdClicked()
         {
-            rewardVariable.Context().Show().OnCompleted(Execute);
+            Advertising.Reward?.Show().OnCompleted(Execute);
             return;
 
             async void Execute()
