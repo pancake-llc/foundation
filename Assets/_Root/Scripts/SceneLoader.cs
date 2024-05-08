@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,8 +12,9 @@ namespace Pancake.SceneFlow
     public class SceneLoader : GameComponent
     {
         [SerializeField] private ScriptableEventString changeSceneEvent;
-
-
+        
+        public static readonly Dictionary<string, AsyncOperationHandle<SceneInstance>> SceneHolder = new();
+        
         private void Start() { changeSceneEvent.OnRaised += OnChangeScene; }
 
         private void OnChangeScene(string sceneName)
@@ -21,8 +23,8 @@ namespace Pancake.SceneFlow
             {
                 if (!scene.name.Equals(Constant.PERSISTENT_SCENE))
                 {
-                    Addressables.UnloadSceneAsync(Static.sceneHolder[scene.name]);
-                    Static.sceneHolder.Remove(scene.name);
+                    Addressables.UnloadSceneAsync(SceneHolder[scene.name]);
+                    SceneHolder.Remove(scene.name);
                 }
             }
 
@@ -34,7 +36,7 @@ namespace Pancake.SceneFlow
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 string sceneName = handle.Result.Scene.name;
-                Static.sceneHolder.Add(sceneName, handle);
+                SceneHolder.Add(sceneName, handle);
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             }
         }

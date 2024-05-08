@@ -2405,8 +2405,6 @@ MonoBehaviour:
   purchasedAllPinSkin: {fileID: 570312259677152325}
   purchasedVip: {fileID: 2094699733643020368}
   fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
-  purchaseEvent: {fileID: 11400000, guid: d365856548e93d4418b79a2943431b39, type: 2}
-  checkOwnerProductEvent: {fileID: 11400000, guid: bc9e6bc45ab7c044499f43ca43c225be, type: 2}
   coinPack1: {fileID: 11400000, guid: 86d0e5ab87bd2064db2da785a698f13a, type: 2}
   coinPack2: {fileID: 11400000, guid: 32def0cacc911c64f8f3c7e2b7545f73, type: 2}
   doubleCoin: {fileID: 11400000, guid: 85a963c5dd5676740a41bdd888d84415, type: 2}

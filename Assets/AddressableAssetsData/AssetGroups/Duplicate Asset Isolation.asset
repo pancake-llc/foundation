@@ -305,11 +305,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d365856548e93d4418b79a2943431b39
-    m_Address: Assets/_Root/Storages/Generated/IAP/Event/purchaseEvent.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7c97ef05d361f764f8eebf905370ffaa
     m_Address: Assets/_Root/Storages/Generated/IAP/scriptable_iap_allskin.asset
     m_ReadOnly: 0
@@ -317,11 +312,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bdc8aab1f9fea0945a308123a50e4887
     m_Address: Assets/_Root/Storages/Generated/IAP/Event/iap_allpinskin_purchase_success.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bc9e6bc45ab7c044499f43ca43c225be
-    m_Address: Assets/_Root/Storages/Generated/IAP/Event/product_onwership_check_event.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -17,10 +17,7 @@ namespace Pancake.IAP
     public class IAPManager : GameComponent, IDetailedStoreListener
     {
         [SerializeField] private IAPSettings iapSettings;
-#if UNITY_IOS
-        [SerializeField] private ScriptableEventIAPNoParam restoreEvent;
-#endif
-
+        
         private IStoreController _controller;
         private IExtensionProvider _extensions;
         private static event Action<IAPDataVariable> PurchaseProductEvent;
@@ -28,7 +25,6 @@ namespace Pancake.IAP
         private static event Action RestoreProductEvent;
 
         public bool IsInitialized { get; set; }
-        public static bool IsServiceInitialized { get; set; }
 
         protected void OnEnable()
         {
@@ -67,7 +63,7 @@ namespace Pancake.IAP
             if (IsInitialized) return;
 
 #if PANCAKE_UNITASK
-            await UniTask.WaitUntil(() => IsServiceInitialized);
+            await UniTask.WaitUntil(() => Static.IsUnitySeriveReady);
 #endif
 
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());

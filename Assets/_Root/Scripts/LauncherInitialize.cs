@@ -70,7 +70,7 @@ namespace Pancake.SceneFlow
             if (scene.Status == AsyncOperationStatus.Succeeded)
             {
                 string sceneName = scene.Result.Scene.name;
-                Static.sceneHolder.Add(sceneName, scene);
+                SceneLoader.SceneHolder.Add(sceneName, scene);
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             }
         }
