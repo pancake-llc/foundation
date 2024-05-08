@@ -2266,14 +2266,14 @@ MonoBehaviour:
   popupCredit: CreditPopup
   popupBackupData: BackupDataPopup
   popupRestoreData: RestoreDataPopup
-  alchemySerializationData:
+  __alchemySerializationData_Pancake_UI_SettingView:
     langData:
       isCreated: 1
-      data: "[\n    {\n        \"Key\": 10,\n        \"Value\": 0\n    },\n    {\n       
-        \"Key\": 39,\n        \"Value\": 1\n    }\n]"
+      data: "[\n    {\n        \"Key\": 39,\n        \"Value\": 0\n    },\n    {\n       
+        \"Key\": 10,\n        \"Value\": 1\n    }\n]"
     unityObjectReferences:
-    - {fileID: 11400000, guid: b4aed3e2d46a5a14ca86b042d6dec354, type: 2}
     - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
+    - {fileID: 11400000, guid: b4aed3e2d46a5a14ca86b042d6dec354, type: 2}
 --- !u!114 &2176503854581155739
 MonoBehaviour:
   m_ObjectHideFlags: 0
