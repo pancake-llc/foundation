@@ -134,7 +134,7 @@ namespace Pancake.MonetizationEditor
                     AssetDatabase.ImportPackage(ProjectDatabase.GetPathInCurrentEnvironent("Editor/UnityPackages/admob-mediation.unitypackage"), false);
                 }
 
-                if (GUILayout.Button("Get Test AppId", GUILayout.Height(24)))
+                if (GUILayout.Button("Copy Test AppId", GUILayout.Height(24)))
                 {
                     "ca-app-pub-3940256099942544~3347511713".CopyToClipboard();
                     DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy AppId Test Id Success!");
@@ -142,7 +142,7 @@ namespace Pancake.MonetizationEditor
 
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Get Test BannerId", GUILayout.Height(24)))
+                if (GUILayout.Button("Copy Test BannerId", GUILayout.Height(24)))
                 {
 #if UNITY_ANDROID
                     "ca-app-pub-3940256099942544/6300978111".CopyToClipboard();
@@ -152,7 +152,7 @@ namespace Pancake.MonetizationEditor
                     DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Banner Test Unit Id Success!");
                 }
 
-                if (GUILayout.Button("Get Test InterId", GUILayout.Height(24)))
+                if (GUILayout.Button("Copy Test InterId", GUILayout.Height(24)))
                 {
 #if UNITY_ANDROID
                     "ca-app-pub-3940256099942544/1033173712".CopyToClipboard();
@@ -162,7 +162,7 @@ namespace Pancake.MonetizationEditor
                     DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Interstitial Test Unit Id Success!");
                 }
 
-                if (GUILayout.Button("Get Test RewardId", GUILayout.Height(24)))
+                if (GUILayout.Button("Copy Test RewardId", GUILayout.Height(24)))
                 {
 #if UNITY_ANDROID
                     "ca-app-pub-3940256099942544/5224354917".CopyToClipboard();
@@ -172,7 +172,10 @@ namespace Pancake.MonetizationEditor
                     DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Test Unit Id Success!");
                 }
 
-                if (GUILayout.Button("Get Test RewardInterId", GUILayout.Height(24)))
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("Copy Test RewardInterId", GUILayout.Height(24)))
                 {
 #if UNITY_ANDROID
                     "ca-app-pub-3940256099942544/5354046379".CopyToClipboard();
@@ -182,7 +185,7 @@ namespace Pancake.MonetizationEditor
                     DebugEditor.Log("<color=#FF77C6>[Admob]</color> Copy Rewarded Interstitial Test Unit Id Success!");
                 }
 
-                if (GUILayout.Button("Get Test AppOpenId", GUILayout.Height(24)))
+                if (GUILayout.Button("Copy Test AppOpenId", GUILayout.Height(24)))
                 {
 #if UNITY_ANDROID
                     "ca-app-pub-3940256099942544/9257395921".CopyToClipboard();
