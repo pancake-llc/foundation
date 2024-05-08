@@ -365,14 +365,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 119d038a646778942a278cc2327f8230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remoteConfigIsFetchCompleted: {fileID: 11400000, guid: 54998a0dfba51d049a2b6ac1b700584d, type: 2}
   remoteConfigCurrentAdNetwork: {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
-  changeNetworkEvent: {fileID: 11400000, guid: 138e60cce88846843bd48b828d9091af, type: 2}
   __alchemySerializationData_Pancake_Tracking_RemoteConfig:
     remoteData:
       isCreated: 1
-      data: '{}'
-    unityObjectReferences: []
+      data: "{\n    \"CHANGELOG_ANDROID\": 0,\n    \"CHANGELOG_IOS\": 1,\n    \"CURENT_AD_NETWORK\":
+        2,\n    \"DURATION_BETWEEN_SHOW_AD\": 3,\n    \"IS_FIRST_TIME_LEVEL_SHOW_AD\":
+        4,\n    \"NEW_VERSION_ANDROID\": 5,\n    \"NEW_VERSION_IOS\": 6,\n    \"TURN_ON_AD\":
+        7\n}"
+    unityObjectReferences:
+    - {fileID: 11400000, guid: cc4a98ebd9e30e1439c375c3115a9301, type: 2}
+    - {fileID: 11400000, guid: d93790b7691a62f468bd84dc00c93abc, type: 2}
+    - {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
+    - {fileID: 11400000, guid: d92f0059d9308d04da08a9e4b7f1c149, type: 2}
+    - {fileID: 11400000, guid: b8ad4ed9041808e45b8c278feda7814d, type: 2}
+    - {fileID: 11400000, guid: 417262f7635563c4a8aac862988c6ea9, type: 2}
+    - {fileID: 11400000, guid: 0da29de6fbacc8e45be8a853b0b23dfb, type: 2}
+    - {fileID: 11400000, guid: 1970e99d71fffd44a83fee3291b14826, type: 2}
 --- !u!114 &776958713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -385,11 +394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bdb92e409c81049b88cd47094c43a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isServiceInitialized: {fileID: 11400000, guid: 1a8a9f1cc3711e34385ab17524065545, type: 2}
   iapSettings: {fileID: 11400000, guid: cd177c9ca100e7c428fef531b32c9290, type: 2}
-  purchaseEvent: {fileID: 11400000, guid: d365856548e93d4418b79a2943431b39, type: 2}
-  productOnwershipCheckEvent: {fileID: 11400000, guid: bc9e6bc45ab7c044499f43ca43c225be, type: 2}
-  changePreventDisplayAppOpenEvent: {fileID: 11400000, guid: 5f35b40808667ca4ca6e2bc78a9ac78b, type: 2}
 --- !u!114 &776958714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,9 +667,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugViewPrefab: {fileID: 6564643838517370666, guid: ca5e6d279e01e413f8bbf07d75aebe7f, type: 3}
   graphyPrefab: {fileID: 8546455465286430009, guid: a0ba11c85f92c1c4792eeec43dad26c0, type: 3}
-  bannerVariable: {fileID: 0}
-  interVariable: {fileID: 0}
-  rewardVariable: {fileID: 0}
   fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
   currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
   loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}
@@ -682,7 +684,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28470c3036df8a44b81131d23317cf8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUnityServiceInitialized: {fileID: 11400000, guid: 1a8a9f1cc3711e34385ab17524065545, type: 2}
   environment: 1
 --- !u!114 &814159088
 MonoBehaviour:

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alchemy.Inspector;
 using Alchemy.Serialization;
+using Pancake.Monetization;
 #if PANCAKE_REMOTE_CONFIG
 using Firebase;
 using Firebase.Extensions;
@@ -16,15 +17,15 @@ namespace Pancake.Tracking
     [AlchemySerialize]
     public partial class RemoteConfig : MonoBehaviour
     {
-        [SerializeField, LabelText("Status")] private BoolVariable remoteConfigIsFetchCompleted;
+        public static bool IsFetchCompleted { get; set; }
+
         [AlchemySerializeField, NonSerialized] private Dictionary<string, StringVariable> remoteData = new();
         [SerializeField] private StringVariable remoteConfigCurrentAdNetwork;
-        [SerializeField] private ScriptableEventString changeNetworkEvent;
 
 #if PANCAKE_REMOTE_CONFIG
         private void Start()
         {
-            remoteConfigIsFetchCompleted.Value = false;
+            IsFetchCompleted = false;
             FirebaseApp.CheckDependenciesAsync()
                 .ContinueWith(task =>
                 {
@@ -40,8 +41,8 @@ namespace Pancake.Tracking
         /// <summary>
         /// Start a fetch request.
         /// FetchAsync only fetches new data if the current data is older than the provided
-        /// timespan.  Otherwise it assumes the data is "recent enough", and does nothing.
-        /// By default the timespan is 12 hours, and for production apps, this is a good
+        /// timespan.  Otherwise, it assumes the data is "recent enough", and does nothing.
+        /// By default, the timespan is 12 hours, and for production apps, this is a good
         /// number. For this example though, it's set to a timespan of zero, so that
         /// changes in the console will always show up immediately.
         /// </summary>
@@ -64,8 +65,7 @@ namespace Pancake.Tracking
             var info = remoteConfig.Info;
             if (info.LastFetchStatus != LastFetchStatus.Success)
             {
-                Debug.LogError(
-                    $"{nameof(FetchComplete)} was unsuccessful\n{nameof(info.LastFetchStatus)}: {info.LastFetchStatus}");
+                Debug.LogError($"{nameof(FetchComplete)} was unsuccessful\n{nameof(info.LastFetchStatus)}: {info.LastFetchStatus}");
                 return;
             }
 
@@ -87,12 +87,13 @@ namespace Pancake.Tracking
 
                     if (remoteConfigCurrentAdNetwork != null && remoteConfigCurrentAdNetwork.Value != string.Empty)
                     {
-                        if (changeNetworkEvent != null) changeNetworkEvent.Raise(remoteConfigCurrentAdNetwork.Value);
+                        Advertising.ChangeNetwork(remoteConfigCurrentAdNetwork.Value);
                     }
 
-                    remoteConfigIsFetchCompleted.Value = true;
+                    IsFetchCompleted = true;
                 });
         }
+
 #endif
     }
 }
