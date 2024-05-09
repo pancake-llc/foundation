@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Pancake.Scriptable;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -31,13 +30,13 @@ namespace Pancake.ExTag
 
         private ReadOnlyList<StringConstant> _readOnlyTags;
 
-        [SerializeField] private List<StringConstant> tags = new List<StringConstant>();
+        [SerializeField] private List<StringConstant> tags = new();
 
-        private SortedList<string, StringConstant> _sortedTags = new SortedList<string, StringConstant>();
+        private SortedList<string, StringConstant> _sortedTags = new();
 
-        private static readonly Dictionary<string, List<GameObject>> TaggedGameObjects = new Dictionary<string, List<GameObject>>();
+        private static readonly Dictionary<string, List<GameObject>> TaggedGameObjects = new();
 
-        private static readonly Dictionary<GameObject, Tag> TagInstances = new Dictionary<GameObject, Tag>();
+        private static readonly Dictionary<GameObject, Tag> TagInstances = new();
         private static Action onInitialization;
 
         #region Serialization
@@ -172,8 +171,8 @@ namespace Pancake.ExTag
             Tags = new ReadOnlyList<StringConstant>(_sortedTags.Values);
 
             // Update static accessors:
-            if (!TaggedGameObjects.ContainsKey(tag)) return; // this should never happen
-            TaggedGameObjects[tag].Remove(this.gameObject);
+            if (!TaggedGameObjects.TryGetValue(tag, out var list)) return; // this should never happen
+            list.Remove(gameObject);
         }
 
         /// <summary>
@@ -183,9 +182,8 @@ namespace Pancake.ExTag
         /// <returns>The first `GameObject` with the provided tag found. If no `GameObject`is found, it returns `null`.</returns>
         public static GameObject FindByTag(string tag)
         {
-            if (!TaggedGameObjects.ContainsKey(tag)) return null;
-            if (TaggedGameObjects[tag].Count < 1) return null;
-            return TaggedGameObjects[tag][0];
+            if (!TaggedGameObjects.TryGetValue(tag, out var list)) return null;
+            return list.Count < 1 ? null : TaggedGameObjects[tag][0];
         }
 
         /// <summary>
@@ -193,11 +191,7 @@ namespace Pancake.ExTag
         /// </summary>
         /// <param name="tag">The tag that the `GameObject`s that you search for will have.</param>
         /// <returns>An array of `GameObject`s with the provided tag. If not found it returns `null`.</returns>
-        public static GameObject[] FindAllByTag(string tag)
-        {
-            if (!TaggedGameObjects.ContainsKey(tag)) return null;
-            return TaggedGameObjects[tag].ToArray();
-        }
+        public static GameObject[] FindAllByTag(string tag) { return !TaggedGameObjects.TryGetValue(tag, out var list) ? null : list.ToArray(); }
 
         /// <summary>
         /// Find all `GameObject`s that have the tag provided. Mutates the output `List&lt;GameObject&gt;` and adds the `GameObject`s found to it.
@@ -220,11 +214,7 @@ namespace Pancake.ExTag
         /// <returns>
         /// Returns the `UATags` component. Returns `null` if the `GameObject` does not have a `UATags` component or if the `GameObject` is disabled.
         /// </returns>
-        public static Tag GetTagsForGameObject(GameObject go)
-        {
-            if (!TagInstances.ContainsKey(go)) return null;
-            return TagInstances[go];
-        }
+        public static Tag GetTagsForGameObject(GameObject go) { return TagInstances.GetValueOrDefault(go); }
 
         /// <summary>
         /// Retrieves all tags for a given `GameObject`. A faster alternative to `gameObject.GetComponen&lt;UATags&gt;().Tags`.
@@ -233,12 +223,7 @@ namespace Pancake.ExTag
         /// <returns>
         /// A `ReadOnlyList&lt;T&gt;` of tags stored as `StringContant`s. Returns `null` if the `GameObject` does not have any tags or if the `GameObject` is disabled.
         /// </returns>
-        public static ReadOnlyList<StringConstant> GetTags(GameObject go)
-        {
-            if (!TagInstances.ContainsKey(go)) return null;
-            var tags = TagInstances[go];
-            return tags.Tags;
-        }
+        public static ReadOnlyList<StringConstant> GetTags(GameObject go) { return !TagInstances.TryGetValue(go, out var t) ? null : t.Tags; }
 
         private static bool IsInitialized(GameObject go) => TagInstances.ContainsKey(go);
     }
