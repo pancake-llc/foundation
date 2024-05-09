@@ -13,9 +13,6 @@ namespace Pancake.SceneFlow
         [SerializeField] private BoolVariable canShowRate;
         [SerializeField] private IntVariable lastLevelShowRate;
         [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent; // check rate for each new level
-#if UNITY_ANDROID
-        [SerializeField] private ScriptableEventNoParam initReviewEvent;
-#endif
 
         protected void OnEnable() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
 
@@ -25,7 +22,7 @@ namespace Pancake.SceneFlow
             if (currentLevelIndex.Value == indexLevelGoal)
             {
 #if UNITY_ANDROID
-                initReviewEvent.Raise();
+                Rate.AppRatingComponent.InitReview();
 #endif
                 canShowRate.Value = true;
             }

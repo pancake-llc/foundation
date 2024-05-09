@@ -37,7 +37,6 @@ namespace Pancake.UI
         [SerializeField, ShowIf(nameof(overrideBGM))] private ScriptableEventAudio playBgmEvent;
 
         [Header("RATE")] [SerializeField] private BoolVariable canShowRate;
-        [SerializeField] private ScriptableEventNoParam reviewEvent;
         [SerializeField] private IntVariable rateDisplayTimes;
 
         private LevelComponent _prewarmNextLevel;
@@ -53,7 +52,7 @@ namespace Pancake.UI
             // handle show rate or show other special popup
             if (canShowRate)
             {
-                reviewEvent.Raise();
+                Rate.AppRatingComponent.LaunchReview();
                 rateDisplayTimes.Value++;
             }
 

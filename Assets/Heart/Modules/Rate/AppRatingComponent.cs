@@ -1,11 +1,10 @@
+using System;
 using Pancake.Common;
+using System.Collections;
+using UnityEngine;
 
 namespace Pancake.Rate
 {
-    using Scriptable;
-    using System.Collections;
-    using UnityEngine;
-
 #if UNITY_IOS
     using UnityEngine.iOS;
 #elif UNITY_ANDROID && PANCAKE_REVIEW
@@ -21,16 +20,17 @@ namespace Pancake.Rate
         private PlayReviewInfo _playReviewInfo;
         private Coroutine _coroutine;
 #endif
-        [SerializeField] private ScriptableEventNoParam initReviewEvent;
+        private static event Action InitReviewEvent;
 #endif
-        [SerializeField] private ScriptableEventNoParam reviewEvent;
+
+        private static event Action ReviewEvent;
 
         protected void OnEnable()
         {
 #if UNITY_ANDROID
-            initReviewEvent.OnRaised += OnInitReview;
+            InitReviewEvent += OnInitReview;
 #endif
-            reviewEvent.OnRaised += OnReview;
+            ReviewEvent += OnReview;
         }
 
         private void OnReview()
@@ -38,7 +38,7 @@ namespace Pancake.Rate
             if (!Application.isMobilePlatform) return;
 
 #if UNITY_ANDROID && PANCAKE_REVIEW
-            StartCoroutine(LaunchReview());
+            StartCoroutine(IeLaunchReview());
 #elif UNITY_IOS
             Device.RequestStoreReview();
 #endif
@@ -49,20 +49,20 @@ namespace Pancake.Rate
             if (!Application.isMobilePlatform) return;
 
 #if UNITY_ANDROID && PANCAKE_REVIEW
-            _coroutine = StartCoroutine(InitReview());
+            _coroutine = StartCoroutine(IeInitReview());
 #endif
         }
 
         protected void OnDisable()
         {
 #if UNITY_ANDROID
-            initReviewEvent.OnRaised -= OnInitReview;
+            InitReviewEvent -= OnInitReview;
 #endif
-            reviewEvent.OnRaised -= OnReview;
+            ReviewEvent -= OnReview;
         }
 
 #if UNITY_ANDROID && PANCAKE_REVIEW
-        private IEnumerator InitReview(bool force = false)
+        private IEnumerator IeInitReview(bool force = false)
         {
             if (_reviewManager == null) _reviewManager = new ReviewManager();
 
@@ -77,12 +77,12 @@ namespace Pancake.Rate
             _playReviewInfo = requestFlowOperation.GetResult();
         }
 
-        private IEnumerator LaunchReview()
+        private IEnumerator IeLaunchReview()
         {
             if (_playReviewInfo == null)
             {
                 if (_coroutine != null) StopCoroutine(_coroutine);
-                yield return StartCoroutine(InitReview(true));
+                yield return StartCoroutine(IeInitReview(true));
             }
 
             var launchFlowOperation = _reviewManager.LaunchReviewFlow(_playReviewInfo);
@@ -95,5 +95,8 @@ namespace Pancake.Rate
             }
         }
 #endif
+
+        public static void InitReview() { InitReviewEvent?.Invoke(); }
+        public static void LaunchReview() { ReviewEvent?.Invoke(); }
     }
 }

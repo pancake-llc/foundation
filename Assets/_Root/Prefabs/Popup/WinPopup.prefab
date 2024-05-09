@@ -148,7 +148,6 @@ MonoBehaviour:
   bgmWin: {fileID: 0}
   playBgmEvent: {fileID: 0}
   canShowRate: {fileID: 11400000, guid: 135082354cdf1344a81b51eead3b2605, type: 2}
-  reviewEvent: {fileID: 11400000, guid: 98a69f3242b31c34da74b3378bf582f1, type: 2}
   rateDisplayTimes: {fileID: 11400000, guid: 07b02a6eeefe11a408abec7267e4c252, type: 2}
 --- !u!114 &3425207291397061621
 MonoBehaviour:
@@ -165,16 +164,8 @@ MonoBehaviour:
   usePrefabNameAsId: 1
   id: 
   animationContainer:
-    enterAnimations:
-    - partnerIdRegex: 
-      type: 1
-      uiTransitionComponent: {fileID: 0}
-      uiTransitionAnimationSo: {fileID: 11400000, guid: b0f90654cf33e7b46b1e727d9677f168, type: 2}
-    exitAnimations:
-    - partnerIdRegex: 
-      type: 1
-      uiTransitionComponent: {fileID: 0}
-      uiTransitionAnimationSo: {fileID: 11400000, guid: 361ac707b37606c45b20fd3174014ab0, type: 2}
+    enterAnimations: []
+    exitAnimations: []
   view: {fileID: 4976590004839059205}
 --- !u!1 &414942460626473590
 GameObject:

@@ -695,18 +695,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 98a69f3242b31c34da74b3378bf582f1
-    m_Address: Assets/_Root/Storages/Generated/Gameplay/rate/rate_review_event.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fb81634f71d307442907c2378fd2cf49
     m_Address: Assets/_Root/Sprites/StarterPack/Gameplay/starter_common_icon_home.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 69791bee97aec0f44afa2801729a4f91
-    m_Address: Assets/_Root/Storages/Generated/Gameplay/rate/rate_init_review_event.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
