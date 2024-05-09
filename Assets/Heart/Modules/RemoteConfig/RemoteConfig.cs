@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Alchemy.Inspector;
 using Alchemy.Serialization;
 using Pancake.Monetization;
 #if PANCAKE_REMOTE_CONFIG
@@ -9,7 +8,6 @@ using Firebase;
 using Firebase.Extensions;
 using Firebase.RemoteConfig;
 #endif
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Tracking
@@ -17,10 +15,10 @@ namespace Pancake.Tracking
     [AlchemySerialize]
     public partial class RemoteConfig : MonoBehaviour
     {
-        public static bool IsFetchCompleted { get; set; }
+        [AlchemySerializeField, NonSerialized] private Dictionary<StringConstant, string> remoteData = new();
+        [SerializeField] private StringConstant currentAdNetwork;
 
-        [AlchemySerializeField, NonSerialized] private Dictionary<string, StringVariable> remoteData = new();
-        [SerializeField] private StringVariable remoteConfigCurrentAdNetwork;
+        public static bool IsFetchCompleted { get; set; }
 
 #if PANCAKE_REMOTE_CONFIG
         private void Start()
@@ -73,21 +71,21 @@ namespace Pancake.Tracking
             remoteConfig.ActivateAsync()
                 .ContinueWithOnMainThread(task =>
                 {
-                    foreach (string key in remoteData.Keys)
+                    foreach (var key in remoteData.Keys)
                     {
-                        if (!string.IsNullOrEmpty(key))
+                        if (!string.IsNullOrEmpty(key.Value))
                         {
-                            ConfigValue configValue = FirebaseRemoteConfig.DefaultInstance.GetValue(key);
+                            ConfigValue configValue = FirebaseRemoteConfig.DefaultInstance.GetValue(key.Value);
                             if (configValue.Source == ValueSource.RemoteValue)
                             {
-                                remoteData[key].Value = configValue.StringValue;
+                                remoteData[key] = configValue.StringValue;
                             }
                         }
                     }
 
-                    if (remoteConfigCurrentAdNetwork != null && remoteConfigCurrentAdNetwork.Value != string.Empty)
+                    if (currentAdNetwork != null && currentAdNetwork.Value != string.Empty)
                     {
-                        Advertising.ChangeNetwork(remoteConfigCurrentAdNetwork.Value);
+                        Advertising.ChangeNetwork(remoteData[currentAdNetwork]);
                     }
 
                     IsFetchCompleted = true;

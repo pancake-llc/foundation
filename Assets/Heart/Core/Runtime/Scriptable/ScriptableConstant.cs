@@ -1,16 +1,13 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using UnityEngine;
 
-namespace Pancake.Scriptable
+namespace Pancake
 {
     [EditorIcon("so_blue_const")]
-    public abstract class ScriptableConstant<T> : ScriptableBase
+    public abstract class ScriptableConstant<T> : ScriptableObject
     {
         [Tooltip("The value of the const. This will can not be change during play mode")] [SerializeField]
         protected T value;
-
-        public override Type GetGenericType => typeof(T);
 
         public T Value => value;
 

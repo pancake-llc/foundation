@@ -9,15 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbb51723e892a404a87b22018981eb5d, type: 3}
+  m_Script: {fileID: 11500000, guid: f0e2ac8d58d649769c4e1fbd757f3259, type: 3}
   m_Name: remote_config_new_version_android
   m_EditorClassIdentifier: 
-  categoryIndex: 0
-  description: 
-  initialValue: 
-  value: 
-  debugLogEnabled: 0
-  saved: 0
-  guidCreateMode: 0
-  guid: 417262f7635563c4a8aac862988c6ea9
-  resetOn: 0
+  value: NEW_VERSION_ANDROID

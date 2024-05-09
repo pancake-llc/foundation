@@ -3,6 +3,7 @@ using Pancake.Localization;
 using Pancake.Notification;
 using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
+using Pancake.Tracking;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -14,7 +15,7 @@ namespace Pancake.SceneFlow
     public class LauncherInitialize : GameComponent
     {
         [SerializeField] private BoolVariable loadingCompleted;
-        [SerializeField] private BoolVariable remoteConfigFetchCompleted;
+        [SerializeField] private bool isWaitRemoteConfig;
         [SerializeField] private ScriptableNotificationVariable dailyNotification;
         [SerializeField] private AssetReference persistentScene;
 
@@ -55,7 +56,7 @@ namespace Pancake.SceneFlow
         {
             await UniTask.WaitUntil(() => loadingCompleted.Value);
             await Addressables.LoadSceneAsync(persistentScene);
-            if (remoteConfigFetchCompleted != null) await UniTask.WaitUntil(() => remoteConfigFetchCompleted.Value);
+            if (isWaitRemoteConfig) await UniTask.WaitUntil(() => RemoteConfig.IsFetchCompleted);
             if (isWaitLevelLoaded) await UniTask.WaitUntil(() => loadLevelCompleted.Value);
 
             // TODO : wait something else before load menu

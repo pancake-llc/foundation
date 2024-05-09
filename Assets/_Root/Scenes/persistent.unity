@@ -365,23 +365,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 119d038a646778942a278cc2327f8230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remoteConfigCurrentAdNetwork: {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
+  currentAdNetwork: {fileID: 11400000, guid: b5ef89713dcc7e54c8ed0857fff2d726, type: 2}
   __alchemySerializationData_Pancake_Tracking_RemoteConfig:
     remoteData:
       isCreated: 1
-      data: "{\n    \"CHANGELOG_ANDROID\": 0,\n    \"CHANGELOG_IOS\": 1,\n    \"CURENT_AD_NETWORK\":
-        2,\n    \"DURATION_BETWEEN_SHOW_AD\": 3,\n    \"IS_FIRST_TIME_LEVEL_SHOW_AD\":
-        4,\n    \"NEW_VERSION_ANDROID\": 5,\n    \"NEW_VERSION_IOS\": 6,\n    \"TURN_ON_AD\":
-        7\n}"
+      data: "[\n    {\n        \"Key\": 0,\n        \"Value\": \"\"\n    },\n   
+        {\n        \"Key\": 1,\n        \"Value\": \"\"\n    },\n    {\n        \"Key\":
+        2,\n        \"Value\": \"\"\n    },\n    {\n        \"Key\": 3,\n       
+        \"Value\": \"25\"\n    },\n    {\n        \"Key\": 4,\n        \"Value\":
+        \"5\"\n    },\n    {\n        \"Key\": 5,\n        \"Value\": \"2\"\n   
+        },\n    {\n        \"Key\": 6,\n        \"Value\": \"\"\n    },\n    {\n       
+        \"Key\": 7,\n        \"Value\": \"\"\n    },\n    {\n        \"Key\": 8,\n       
+        \"Value\": \"true\"\n    }\n]"
     unityObjectReferences:
-    - {fileID: 11400000, guid: cc4a98ebd9e30e1439c375c3115a9301, type: 2}
-    - {fileID: 11400000, guid: d93790b7691a62f468bd84dc00c93abc, type: 2}
-    - {fileID: 11400000, guid: 9646a2b346725a14fa934f6e37a84505, type: 2}
-    - {fileID: 11400000, guid: d92f0059d9308d04da08a9e4b7f1c149, type: 2}
-    - {fileID: 11400000, guid: b8ad4ed9041808e45b8c278feda7814d, type: 2}
-    - {fileID: 11400000, guid: 417262f7635563c4a8aac862988c6ea9, type: 2}
-    - {fileID: 11400000, guid: 0da29de6fbacc8e45be8a853b0b23dfb, type: 2}
-    - {fileID: 11400000, guid: 1970e99d71fffd44a83fee3291b14826, type: 2}
+    - {fileID: 11400000, guid: 5b8982ea6058b8c4291f578a734134dd, type: 2}
+    - {fileID: 11400000, guid: 5f143a813ece80a489ed59294647f4d6, type: 2}
+    - {fileID: 11400000, guid: b5ef89713dcc7e54c8ed0857fff2d726, type: 2}
+    - {fileID: 11400000, guid: 4e46938cb521d24499ef06df2a18c27d, type: 2}
+    - {fileID: 11400000, guid: 711c07af1aeff8248a4864669aa3b4fb, type: 2}
+    - {fileID: 11400000, guid: d6cca29383ce8bf43b3b1d071663c8ed, type: 2}
+    - {fileID: 11400000, guid: d7855d41a9a72c24bbed027ef95b239b, type: 2}
+    - {fileID: 11400000, guid: 6f6c219d0d8008b419b9fcf8503badc5, type: 2}
+    - {fileID: 11400000, guid: 91c8d39fa366f614bb039269c266d0ee, type: 2}
 --- !u!114 &776958713
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,15 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbb51723e892a404a87b22018981eb5d, type: 3}
+  m_Script: {fileID: 11500000, guid: f0e2ac8d58d649769c4e1fbd757f3259, type: 3}
   m_Name: remote_config_turn_on_ad
   m_EditorClassIdentifier: 
-  categoryIndex: 0
-  description: 
-  initialValue: 
-  value: 
-  debugLogEnabled: 0
-  saved: 0
-  guidCreateMode: 0
-  guid: 1970e99d71fffd44a83fee3291b14826
-  resetOn: 0
+  value: TURN_ON_AD
