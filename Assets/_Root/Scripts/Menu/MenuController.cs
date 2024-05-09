@@ -3,6 +3,7 @@ using System.Threading;
 using Pancake.Localization;
 using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
+using Pancake.Component;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,7 +34,6 @@ namespace Pancake.SceneFlow
 
         [Header("OTHER")] [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private LocaleText localeTextFeatureLocked;
-        [SerializeField] private ScriptableEventLocaleText eventSpawnInGameNotification;
         private CancellationTokenSource _tokenShowUpdate;
 
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
@@ -53,9 +53,9 @@ namespace Pancake.SceneFlow
             WaitShowUpdate();
         }
 
-        private void OnButtonRoomPressed() { eventSpawnInGameNotification.Raise(localeTextFeatureLocked); }
+        private void OnButtonRoomPressed() { InGameNotificationRouter.Spawn(localeTextFeatureLocked); }
 
-        private void OnButtonPetPressed() { eventSpawnInGameNotification.Raise(localeTextFeatureLocked); }
+        private void OnButtonPetPressed() { InGameNotificationRouter.Spawn(localeTextFeatureLocked); }
 
         private void OnButtonRankPressed() { MainPopupContainer.Push<LeaderboardPopup>(popupLeaderboard, false); }
 

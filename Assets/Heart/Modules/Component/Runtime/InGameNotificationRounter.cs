@@ -8,17 +8,16 @@ namespace Pancake.Component
 {
     public class InGameNotificationRouter : GameComponent
     {
-        [Header("POOL")] [SerializeField] private ScriptableEventLocaleText spawnEvent;
-        [SerializeField] private GameObject notificationPrefab;
+        [Header("POOL")] [SerializeField] private GameObject notificationPrefab;
         [SerializeField] private ScriptableEventGameObject returnPoolEvent;
-
         [SerializeField] private ScriptableEventGetGameObject getCanvasMasterEvent;
 
+        private static event Action<LocaleText> SpawnLocaleTextEvent;
         private RectTransform _canvasRectTransform;
 
         protected void OnEnable()
         {
-            spawnEvent.OnRaised += Spawn;
+            SpawnLocaleTextEvent += OnSpawn;
             returnPoolEvent.OnRaised += ReturnToPool;
 
             // trycatch only in editor to avoid case startup from any scene
@@ -38,13 +37,13 @@ namespace Pancake.Component
 
         protected void OnDisable()
         {
-            spawnEvent.OnRaised -= Spawn;
+            SpawnLocaleTextEvent -= OnSpawn;
             returnPoolEvent.OnRaised -= ReturnToPool;
         }
 
         private void ReturnToPool(GameObject prefab) { prefab.Return(); }
 
-        private void Spawn(LocaleText localeText)
+        private void OnSpawn(LocaleText localeText)
         {
             var instance = notificationPrefab.Request<InGameNotification>();
             instance.transform.SetParent(_canvasRectTransform, false);
@@ -55,5 +54,7 @@ namespace Pancake.Component
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _canvasRectTransform.rect.width - 100);
             instance.Show(localeText);
         }
+
+        public static void Spawn(LocaleText localeText) { SpawnLocaleTextEvent?.Invoke(localeText); }
     }
 }
