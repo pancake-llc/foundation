@@ -725,7 +725,6 @@ MonoBehaviour:
   skeleton: {fileID: 3147131445104872872}
   loopLastestTrack: 1
   startupMode: 3
-  playAnimationEvent: {fileID: 0}
   datas:
   - trackName: show
     overrideDuration: 0

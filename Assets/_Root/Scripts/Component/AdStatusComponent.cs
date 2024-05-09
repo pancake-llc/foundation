@@ -20,24 +20,11 @@ namespace Pancake.SceneFlow
                 fetch.SetActive(false);
                 return;
             }
+
             _handle = App.StartCoroutine(IeValidate());
         }
 
-        protected void OnDisable()
-        {
-#if UNITY_EDITOR
-            try
-            {
-#endif
-                if (_handle is {IsTerminated: false}) App.StopCoroutine(_handle);
-#if UNITY_EDITOR
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-#endif
-        }
+        protected void OnDisable() { App.StopAndClean(ref _handle); }
 
         private IEnumerator IeValidate()
         {

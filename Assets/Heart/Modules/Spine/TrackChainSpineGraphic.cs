@@ -1,9 +1,7 @@
 #if PANCAKE_SPINE
 using System;
 using System.Collections;
-using Alchemy.Inspector;
 using Pancake.Common;
-using Pancake.Scriptable;
 using Spine.Unity;
 using UnityEngine;
 
@@ -15,13 +13,6 @@ namespace Pancake.Spine
         [SerializeField] private SkeletonGraphic skeleton;
         [SerializeField] private bool loopLastestTrack;
         [SerializeField] private StartupMode startupMode = StartupMode.OnEnabled;
-
-#if UNITY_EDITOR
-        private bool IsManual => startupMode == StartupMode.Manual;
-#endif
-        [SerializeField, ShowIf("IsManual"), LabelText("   Play Event")]
-        private ScriptableEventNoParam playAnimationEvent;
-
         [SerializeField] private TrackData[] datas;
 
         private AsyncProcessHandle _handle;
@@ -39,28 +30,11 @@ namespace Pancake.Spine
         protected void OnEnable()
         {
             if (startupMode == StartupMode.OnEnabled) Play();
-            if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised += Play;
         }
 
-        protected void OnDisable()
-        {
-            if (_handle is {IsTerminated: false})
-            {
-                // avoid case app be destroy soon than other component
-                try
-                {
-                    App.StopCoroutine(_handle);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
+        protected void OnDisable() { App.StopAndClean(ref _handle); }
 
-            if (startupMode == StartupMode.Manual) playAnimationEvent.OnRaised -= Play;
-        }
-
-        private void Play() { _handle = App.StartCoroutine(IePlay()); }
+        public void Play() { _handle = App.StartCoroutine(IePlay()); }
 
         private IEnumerator IePlay()
         {
