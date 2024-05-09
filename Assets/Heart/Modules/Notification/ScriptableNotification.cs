@@ -11,7 +11,7 @@ namespace Pancake.Notification
     [Searchable]
     [EditorIcon("so_blue_notification")]
     [CreateAssetMenu(fileName = "notification_channel_data.asset", menuName = "Pancake/Misc/Notification Channel")]
-    public class ScriptableNotificationVariable : ScriptableObject
+    public class ScriptableNotification : ScriptableObject
     {
         [Serializable]
         public class NotificationData

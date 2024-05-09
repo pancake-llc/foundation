@@ -16,7 +16,7 @@ namespace Pancake.SceneFlow
     {
         [SerializeField] private BoolVariable loadingCompleted;
         [SerializeField] private bool isWaitRemoteConfig;
-        [SerializeField] private ScriptableNotificationVariable dailyNotification;
+        [SerializeField] private ScriptableNotification dailyNotification;
         [SerializeField] private AssetReference persistentScene;
 
         [Space] [SerializeField] private bool isWaitLevelLoaded;

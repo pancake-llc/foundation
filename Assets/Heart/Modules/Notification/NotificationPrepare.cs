@@ -11,7 +11,7 @@ namespace Pancake.Notification
     public class NotificationPrepare : GameComponent
     {
 #if UNITY_ANDROID
-        [SerializeField] private ScriptableNotificationVariable[] notificationVariables;
+        [SerializeField] private ScriptableNotification[] notificationVariables;
 
         private void Start()
         {
