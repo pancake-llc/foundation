@@ -480,7 +480,6 @@ MonoBehaviour:
   enabledSound: 1
   audioOpen: {fileID: 11400000, guid: 5faabd619f34f1345957ffd6b6178887, type: 2}
   audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
-  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   buttonClose: {fileID: 790684109546108668}
   buttonShop: {fileID: 7369621893222661059}
   buttonClaim: {fileID: 240928343697400709}
@@ -3104,7 +3103,6 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   useVariableListener: 0
@@ -3629,7 +3627,6 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   useVariableListener: 0
@@ -5467,7 +5464,6 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   useVariableListener: 0

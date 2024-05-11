@@ -12,7 +12,6 @@ namespace Pancake.UI
         [Header("SOUND"), SerializeField] protected bool enabledSound;
         [SerializeField, ShowIf(nameof(enabledSound))] protected Audio audioOpen;
         [SerializeField, ShowIf(nameof(enabledSound))] protected Audio audioClose;
-        [SerializeField, ShowIf(nameof(enabledSound))] protected ScriptableEventAudio playAudioEvent;
         private bool _isInitialized;
 
 #if PANCAKE_UNITASK
@@ -31,12 +30,12 @@ namespace Pancake.UI
 
         protected virtual void PlaySoundOpen()
         {
-            if (enabledSound && audioOpen != null) playAudioEvent.Raise(audioOpen);
+            if (enabledSound && audioOpen != null) audioOpen.PlaySfx();
         }
 
         protected virtual void PlaySoundClose()
         {
-            if (enabledSound && audioClose != null) playAudioEvent.Raise(audioClose);
+            if (enabledSound && audioClose != null) audioClose.PlaySfx();
         }
     }
 }

@@ -63,7 +63,6 @@ namespace Pancake.UI
         [SerializeField] private Transform affectObject;
         [SerializeField] private bool enabledSound;
         [SerializeField] private Audio audioClick;
-        [SerializeField] private ScriptableEventAudio audioPlayEvent;
         [SerializeField] private bool enabledTracking;
         [SerializeField] private ScriptableTrackingNoParam trackingEvent;
         [SerializeField] private bool useVariableListener;
@@ -144,7 +143,7 @@ namespace Pancake.UI
 
         private void PlaySound()
         {
-            if (enabledSound) audioPlayEvent.Raise(audioClick);
+            if (enabledSound && audioClick != null) audioClick.PlaySfx();
         }
 
 #if UNITY_EDITOR

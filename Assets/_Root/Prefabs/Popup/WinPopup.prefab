@@ -128,7 +128,6 @@ MonoBehaviour:
   enabledSound: 1
   audioOpen: {fileID: 11400000, guid: 54af6ac18e07ebd4788e1bbe7ef0277b, type: 2}
   audioClose: {fileID: 0}
-  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   buttonHome: {fileID: 3546506742219380592}
   buttonVideoX5: {fileID: 3664700572117366651}
   buttonContinue: {fileID: 872414644874235518}
@@ -146,7 +145,6 @@ MonoBehaviour:
   rangeGiftValueIncrease: {x: 10, y: 10}
   overrideBGM: 0
   bgmWin: {fileID: 0}
-  playBgmEvent: {fileID: 0}
   canShowRate: {fileID: 11400000, guid: 135082354cdf1344a81b51eead3b2605, type: 2}
   rateDisplayTimes: {fileID: 11400000, guid: 07b02a6eeefe11a408abec7267e4c252, type: 2}
 --- !u!114 &3425207291397061621
@@ -386,7 +384,6 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   useVariableListener: 0
@@ -760,7 +757,6 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   useVariableListener: 0
@@ -2033,7 +2029,6 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   useVariableListener: 0

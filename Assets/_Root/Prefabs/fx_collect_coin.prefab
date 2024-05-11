@@ -4922,10 +4922,9 @@ MonoBehaviour:
   <PS>k__BackingField: {fileID: 3996613071643963069}
   enabledSound: 1
   audioCollision: {fileID: 11400000, guid: aa33ad2229195f9479821f41de547c98, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
-  alchemySerializationData:
+  __alchemySerializationData_Pancake_Component_VfxParticleCollision:
     numberParticleMap:
       isCreated: 1
-      data: "[\n    {\n        \"Key\": 100,\n        \"Value\": 20\n    },\n   
-        {\n        \"Key\": 1000,\n        \"Value\": 40\n    }\n]"
+      data: "[\n    {\n        \"Key\": 100,\n        \"Value\": 1\n    },\n    {\n       
+        \"Key\": 1000,\n        \"Value\": 0\n    }\n]"
     unityObjectReferences: []

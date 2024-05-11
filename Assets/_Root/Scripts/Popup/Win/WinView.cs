@@ -34,7 +34,6 @@ namespace Pancake.UI
 
         [Header("SOUND")] [SerializeField] private bool overrideBGM;
         [SerializeField, ShowIf(nameof(overrideBGM))] private Audio bgmWin;
-        [SerializeField, ShowIf(nameof(overrideBGM))] private ScriptableEventAudio playBgmEvent;
 
         [Header("RATE")] [SerializeField] private BoolVariable canShowRate;
         [SerializeField] private IntVariable rateDisplayTimes;
@@ -108,7 +107,7 @@ namespace Pancake.UI
         {
             _prewarmNextLevel = null;
             buttonContinue.gameObject.SetActive(true);
-            if (overrideBGM) playBgmEvent.Raise(bgmWin);
+            if (overrideBGM && bgmWin != null) bgmWin.PlayMusic();
 
             int addedValue = UnityEngine.Random.Range(rangeGiftValueIncrease.x, rangeGiftValueIncrease.y);
             int startValue = winGifProgresValue.Value;

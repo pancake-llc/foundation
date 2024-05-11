@@ -43,15 +43,12 @@ namespace Pancake.UI
 
         [Space] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
-        [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
-        [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
         [SerializeField] private ScriptableEventNoParam eventStopAllSfx;
         [SerializeField] private string popupCredit;
         [SerializeField] private string popupBackupData;
         [SerializeField] private string popupRestoreData;
 #if UNITY_IOS
         [SerializeField] private Button buttonRestore;
-        [SerializeField] private Pancake.IAP.ScriptableEventIAPNoParam restorePurchaseEvent;
 #endif
 
         private Language _selectedLang;
@@ -181,12 +178,12 @@ namespace Pancake.UI
             if (state)
             {
                 musicVolume.Value = 1;
-                eventResumeMusic.Raise(AudioHandle.invalid);
+                AudioHandle.invalid.ResumeMusic();
             }
             else
             {
                 musicVolume.Value = 0;
-                eventPauseMusic.Raise(AudioHandle.invalid);
+                AudioHandle.invalid.PauseMusic();
             }
 
             RefreshMusicState(state);
@@ -197,7 +194,7 @@ namespace Pancake.UI
 #if UNITY_IOS
         private void OnButtonRestorePressed()
         {
-            restorePurchaseEvent?.Raise();
+            Pancake.IAP.IAPManager.Restore();
         }
 #endif
 

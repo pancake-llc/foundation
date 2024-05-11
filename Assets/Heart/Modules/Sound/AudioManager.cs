@@ -1,3 +1,4 @@
+using System;
 using Pancake.Linq;
 using Pancake.Scriptable;
 using UnityEngine;
@@ -10,28 +11,21 @@ namespace Pancake.Sound
         [Header("Sound Emitter Pool")] [SerializeField] private GameObject prefab;
         [SerializeField] private int prewarmSize = 10;
 
-        [Header("Listening Channel")] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to play SFXs")] [SerializeField]
-        private ScriptableEventAudio eventPlaySfx;
-
-        [SerializeField] private ScriptableEventAudioHandle eventStopSfx;
-        [SerializeField] private ScriptableEventAudioHandle eventPauseSfx;
-        [SerializeField] private ScriptableEventAudioHandle eventResumeSfx;
-        [SerializeField] private ScriptableEventAudioHandle eventFinishSfx;
-        [SerializeField] private ScriptableEventNoParam eventStopAllSfx;
-
-
-        [Space] [Tooltip("The SoundManager listens to this event, fired by objects in any scene, to play Music")] [SerializeField]
-        private ScriptableEventAudio eventPlayMusic;
-
-        [SerializeField] private ScriptableEventAudioHandle eventStopMusic;
-        [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
-        [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
-
         [Header("Audio Control")] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
 
         private SoundEmitterVault _sfx;
         private SoundEmitter _music;
+        private static event Func<Audio, AudioHandle> PlaySfxEvent;
+        private static event Action<AudioHandle> StopSfxEvent;
+        private static event Action<AudioHandle> PauseSfxEvent;
+        private static event Action<AudioHandle> ResumeSfxEvent;
+        private static event Action<AudioHandle> FinishSfxEvent;
+        private static event Action StopSfxAllEvent;
+        private static event Func<Audio, AudioHandle> PlayMusicEvent;
+        private static event Action<AudioHandle> StopMusicEvent;
+        private static event Action<AudioHandle> PauseMusicEvent;
+        private static event Action<AudioHandle> ResumeMusicEvent;
 
         private void Awake()
         {
@@ -59,36 +53,36 @@ namespace Pancake.Sound
 
         private void OnEnable()
         {
-            eventPlaySfx.OnRaised += PlaySfx;
-            eventStopSfx.OnRaised += StopSfx;
-            eventPauseSfx.OnRaised += PauseSfx;
-            eventResumeSfx.OnRaised += ResumeSfx;
-            eventFinishSfx.OnRaised += FinishSfx;
-            eventStopAllSfx.OnRaised += StopAllSfx;
-            eventPlayMusic.OnRaised += PlayMusic;
-            eventStopMusic.OnRaised += StopMusic;
-            eventPauseMusic.OnRaised += PauseMusic;
-            eventResumeMusic.OnRaised += ResumeMusic;
+            PlaySfxEvent += OnPlaySfx;
+            StopSfxEvent += OnStopSfx;
+            PauseSfxEvent += OnPauseSfx;
+            ResumeSfxEvent += OnResumeSfx;
+            FinishSfxEvent += OnFinishSfx;
+            StopSfxAllEvent += OnStopAllSfx;
+            PlayMusicEvent += OnOnPlayMusic;
+            StopMusicEvent += OnStopMusic;
+            PauseMusicEvent += OnPauseMusic;
+            ResumeMusicEvent += OnResumeMusic;
         }
 
         private void OnDisable()
         {
-            eventPlaySfx.OnRaised -= PlaySfx;
-            eventStopSfx.OnRaised -= StopSfx;
-            eventPauseSfx.OnRaised -= PauseSfx;
-            eventResumeSfx.OnRaised -= ResumeSfx;
-            eventFinishSfx.OnRaised -= FinishSfx;
-            eventStopAllSfx.OnRaised -= StopAllSfx;
-            eventPlayMusic.OnRaised -= PlayMusic;
-            eventStopMusic.OnRaised -= StopMusic;
-            eventPauseMusic.OnRaised -= PauseMusic;
-            eventResumeMusic.OnRaised -= ResumeMusic;
+            PlaySfxEvent -= OnPlaySfx;
+            StopSfxEvent -= OnStopSfx;
+            PauseSfxEvent -= OnPauseSfx;
+            ResumeSfxEvent -= OnResumeSfx;
+            FinishSfxEvent -= OnFinishSfx;
+            StopSfxAllEvent -= OnStopAllSfx;
+            PlayMusicEvent -= OnOnPlayMusic;
+            StopMusicEvent -= OnStopMusic;
+            PauseMusicEvent -= OnPauseMusic;
+            ResumeMusicEvent -= OnResumeMusic;
         }
 
         /// <summary>
         /// Plays an AudioCue by requesting the appropriate number of SoundEmitters from the pool.
         /// </summary>
-        private AudioHandle PlaySfx(Audio audio)
+        private AudioHandle OnPlaySfx(Audio audio)
         {
             var clipsToPlay = audio.GetClips().Filter(s => s != null);
             var soundEmitters = new SoundEmitter[clipsToPlay.Length];
@@ -107,7 +101,7 @@ namespace Pancake.Sound
             return _sfx.Add(audio, soundEmitters);
         }
 
-        private void StopSfx(AudioHandle handle)
+        private void OnStopSfx(AudioHandle handle)
         {
             bool isFound = _sfx.Get(handle, out var soundEmitters);
             if (!isFound) return;
@@ -119,7 +113,7 @@ namespace Pancake.Sound
             _sfx.Remove(handle);
         }
 
-        private void PauseSfx(AudioHandle handle)
+        private void OnPauseSfx(AudioHandle handle)
         {
             bool isFound = _sfx.Get(handle, out var soundEmitters);
             if (!isFound) return;
@@ -129,7 +123,7 @@ namespace Pancake.Sound
             }
         }
 
-        private void ResumeSfx(AudioHandle handle)
+        private void OnResumeSfx(AudioHandle handle)
         {
             bool isFound = _sfx.Get(handle, out var soundEmitters);
             if (!isFound) return;
@@ -139,7 +133,7 @@ namespace Pancake.Sound
             }
         }
 
-        private void StopAllSfx()
+        private void OnStopAllSfx()
         {
             foreach (var s in _sfx.GetAll())
             {
@@ -152,7 +146,7 @@ namespace Pancake.Sound
             _sfx.ClearAll();
         }
 
-        public void FinishSfx(AudioHandle handle)
+        public void OnFinishSfx(AudioHandle handle)
         {
             bool isFound = _sfx.Get(handle, out SoundEmitter[] soundEmitters);
 
@@ -170,14 +164,13 @@ namespace Pancake.Sound
             }
         }
 
-
         /// <summary>
         /// Only used by the timeline to stop the gameplay music during cutscenes.
         /// Called by the SignalReceiver present on this same GameObject.
         /// </summary>
-        public void TimelineInterruptsMusic() { StopMusic(AudioHandle.invalid); }
+        public void TimelineInterruptsMusic() { OnStopMusic(AudioHandle.invalid); }
 
-        private AudioHandle PlayMusic(Audio audio)
+        private AudioHandle OnOnPlayMusic(Audio audio)
         {
             const float fadeDuration = 2f;
             var startTime = 0f;
@@ -199,7 +192,7 @@ namespace Pancake.Sound
             //No need to return a valid key for music
         }
 
-        private void StopMusic(AudioHandle handle)
+        private void OnStopMusic(AudioHandle handle)
         {
             if (_music != null)
             {
@@ -208,12 +201,12 @@ namespace Pancake.Sound
             }
         }
 
-        private void PauseMusic(AudioHandle handle)
+        private void OnPauseMusic(AudioHandle handle)
         {
             if (_music != null && _music.IsPlaying()) _music.Pause();
         }
 
-        private void ResumeMusic(AudioHandle handle)
+        private void OnResumeMusic(AudioHandle handle)
         {
             if (_music != null && !_music.IsPlaying()) _music.Resume();
         }
@@ -237,5 +230,16 @@ namespace Pancake.Sound
             soundEmitter.OnCompleted -= StopMusicEmitter;
             soundEmitter.gameObject.Return();
         }
+
+        internal static AudioHandle PlaySfx(Audio audio) { return PlaySfxEvent?.Invoke(audio) ?? AudioHandle.invalid; }
+        internal static void StopSfx(AudioHandle handle) { StopSfxEvent?.Invoke(handle); }
+        internal static void PauseSfx(AudioHandle handle) { PauseSfxEvent?.Invoke(handle); }
+        internal static void ResumeSfx(AudioHandle handle) { ResumeSfxEvent?.Invoke(handle); }
+        internal static void FinishSfx(AudioHandle handle) { FinishSfxEvent?.Invoke(handle); }
+        internal static void StopAllSfx() { StopSfxAllEvent?.Invoke(); }
+        internal static AudioHandle PlayMusic(Audio audio) { return PlayMusicEvent?.Invoke(audio) ?? AudioHandle.invalid; }
+        internal static void StopMusic(AudioHandle handle) { StopMusicEvent?.Invoke(handle); }
+        internal static void PauseMusic(AudioHandle handle) { PauseMusicEvent?.Invoke(handle); }
+        internal static void ResumeMusic(AudioHandle handle) { ResumeMusicEvent?.Invoke(handle); }
     }
 }

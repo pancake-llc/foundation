@@ -38,13 +38,6 @@ namespace Pancake.Component
         [SerializeField]
         protected Audio audioClose;
 
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
-#endif
-        [SerializeField]
-        protected ScriptableEventAudio playAudioEvent;
-
-
         public void Show(LocaleText localeText)
         {
             PlaySoundOpen();
@@ -75,12 +68,12 @@ namespace Pancake.Component
 
         private void PlaySoundOpen()
         {
-            if (enabledSound && audioOpen != null) playAudioEvent.Raise(audioOpen);
+            if (enabledSound && audioOpen != null) audioOpen.PlaySfx();
         }
 
         private void PlaySoundClose()
         {
-            if (enabledSound && audioClose != null) playAudioEvent.Raise(audioClose);
+            if (enabledSound && audioClose != null) audioClose.PlaySfx();
         }
     }
 }

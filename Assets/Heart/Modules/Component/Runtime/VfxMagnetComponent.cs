@@ -23,12 +23,6 @@ namespace Pancake.Component
         [SerializeField]
         private Audio audioSpawn;
 
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(isPlaySound)), Indent]
-#endif
-        [SerializeField]
-        private ScriptableEventAudio audioPlayEvent;
-
         protected void OnEnable()
         {
             spawnEvent.OnRaised += SpawnCoinFx;
@@ -69,7 +63,7 @@ namespace Pancake.Component
             externalForcesModule.AddInfluence(coinForceField);
             ps.Emit(1); // avoid zero particle count when start
             ps.Play();
-            if (isPlaySound) audioPlayEvent.Raise(audioSpawn);
+            if (isPlaySound && audioSpawn != null) audioSpawn.PlaySfx();
         }
     }
 }

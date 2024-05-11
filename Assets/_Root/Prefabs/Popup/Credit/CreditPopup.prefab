@@ -149,7 +149,6 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
   useVariableListener: 0
@@ -688,7 +687,6 @@ MonoBehaviour:
   enabledSound: 0
   audioOpen: {fileID: 0}
   audioClose: {fileID: 0}
-  playAudioEvent: {fileID: 0}
   elements:
   - {fileID: 11400000, guid: df38906f4969c8743a9953f893c6e786, type: 2}
   - {fileID: 11400000, guid: 78bd9a9fdcca19641b12d5381abd5841, type: 2}

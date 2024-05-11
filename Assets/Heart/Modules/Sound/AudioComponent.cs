@@ -3,7 +3,6 @@
 using Alchemy.Inspector;
 #endif
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Pancake.Sound
 {
@@ -22,13 +21,7 @@ namespace Pancake.Sound
         private Audio au;
 
         [SerializeField] private bool playOnStart;
-
-        [FormerlySerializedAs("audioPlayChannel")] [Header("Configuration")] [SerializeField]
-        private ScriptableEventAudio playAudioEvent;
-
-        [SerializeField] private ScriptableEventAudioHandle stopAudioEvent;
-        [SerializeField] private ScriptableEventAudioHandle pauseAudioEvent;
-        [SerializeField] private ScriptableEventAudioHandle resumeAudioEvent;
+        [SerializeField] private bool isSfx;
 
         private AudioHandle _audioHandle = AudioHandle.invalid;
 
@@ -53,23 +46,26 @@ namespace Pancake.Sound
             if (playOnStart) Play();
         }
 
-        public void Play() { _audioHandle = playAudioEvent.Raise(au); }
+        public void Play() { _audioHandle = isSfx ? au.PlaySfx() : au.PlayMusic(); }
 
         public void Stop()
         {
-            stopAudioEvent.Raise(_audioHandle);
+            if (isSfx) _audioHandle.StopSfx();
+            else _audioHandle.StopMusic();
             _audioHandle = AudioHandle.invalid;
         }
 
         public void Pause()
         {
-            pauseAudioEvent.Raise(_audioHandle);
+            if (isSfx) _audioHandle.PauseSfx();
+            else _audioHandle.PauseMusic();
             _audioHandle = AudioHandle.invalid;
         }
 
         public void Resume()
         {
-            resumeAudioEvent.Raise(_audioHandle);
+            if (isSfx) _audioHandle.ResumeSfx();
+            else _audioHandle.ResumeMusic();
             _audioHandle = AudioHandle.invalid;
         }
     }

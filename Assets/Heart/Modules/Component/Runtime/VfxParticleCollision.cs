@@ -31,12 +31,6 @@ namespace Pancake.Component
         [SerializeField]
         private Audio audioCollision;
 
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
-#endif
-        [SerializeField]
-        private ScriptableEventAudio audioPlayEvent;
-
         private int _segmentValue;
         private bool _flag;
 
@@ -63,7 +57,7 @@ namespace Pancake.Component
         private void OnParticleCollision(GameObject particle)
         {
             updateCoinWithValueEvent.Raise(_segmentValue);
-            if (enabledSound) audioPlayEvent.Raise(audioCollision);
+            if (enabledSound && audioCollision != null) audioCollision.PlaySfx();
         }
 
         protected void Update()

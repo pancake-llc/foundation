@@ -32,7 +32,6 @@ namespace PancakeEditor
         private SerializedProperty _affectObject;
         private SerializedProperty _enabledSound;
         private SerializedProperty _audioClick;
-        private SerializedProperty _audioPlayEvent;
         private SerializedProperty _enabledTracking;
         private SerializedProperty _trackingEvent;
         private SerializedProperty _motion;
@@ -64,7 +63,6 @@ namespace PancakeEditor
             _affectObject = serializedObject.FindProperty("affectObject");
             _enabledSound = serializedObject.FindProperty("enabledSound");
             _audioClick = serializedObject.FindProperty("audioClick");
-            _audioPlayEvent = serializedObject.FindProperty("audioPlayEvent");
             _enabledTracking = serializedObject.FindProperty("enabledTracking");
             _trackingEvent = serializedObject.FindProperty("trackingEvent");
             _isMotion = serializedObject.FindProperty("isMotion");
@@ -161,13 +159,9 @@ namespace PancakeEditor
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Is Play Sound", GUILayout.Width(DEFAULT_LABEL_WIDTH));
             _enabledSound.boolValue = GUILayout.Toggle(_enabledSound.boolValue, "");
-            EditorGUILayout.EndHorizontal();
-
 
             if (_enabledSound.boolValue)
             {
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label("   Audio", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _audioClick.objectReferenceValue = EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
                 if (_audioClick.objectReferenceValue == null)
                 {
@@ -179,26 +173,9 @@ namespace PancakeEditor
                             true);
                     }
                 }
-
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label("   Channel", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                _audioPlayEvent.objectReferenceValue =
-                    EditorGUILayout.ObjectField("", _audioPlayEvent.objectReferenceValue, typeof(ScriptableEventAudio), false) as ScriptableEventAudio;
-                if (_audioPlayEvent.objectReferenceValue == null)
-                {
-                    if (GUILayout.Button("Create", GUILayout.Width(60)))
-                    {
-                        _audioPlayEvent.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableEventAudio),
-                            target.name.ToLower() + "_audio_event",
-                            ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
-                            true);
-                    }
-                }
-
-                EditorGUILayout.EndHorizontal();
             }
+
+            EditorGUILayout.EndHorizontal();
 
             switch ((EButtonClickType) _clickType.enumValueIndex)
             {
