@@ -24,23 +24,4 @@ namespace Pancake.Common
         /// </summary>
         public T Value { get => UnsafeUtility.As<UnityEngine.Object, T>(ref target); set => target = UnsafeUtility.As<T, UnityEngine.Object>(ref value); }
     }
-#if UNITY_EDITOR
-    [UnityEditor.CustomPropertyDrawer(typeof(InterfaceHelper<>))]
-    internal class InterfaceHelperDrawer : UnityEditor.PropertyDrawer
-    {
-        public override void OnGUI(Rect rect, UnityEditor.SerializedProperty property, GUIContent label)
-        {
-            var generic = fieldInfo.FieldType.GetGenericArguments()[0];
-            var component = property.FindPropertyRelative("target");
-            UnityEditor.EditorGUI.BeginProperty(rect, label, property);
-            component.objectReferenceValue = UnityEditor.EditorGUI.ObjectField(rect,
-                label,
-                component.objectReferenceValue,
-                generic,
-                true);
-
-            UnityEditor.EditorGUI.EndProperty();
-        }
-    }
-#endif
 }

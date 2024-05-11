@@ -1,4 +1,5 @@
 using Pancake.Common;
+using Pancake.LevelSystem;
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -12,11 +13,11 @@ namespace Pancake.SceneFlow
         [SerializeField] private IntVariable rateDisplayTimes;
         [SerializeField] private BoolVariable canShowRate;
         [SerializeField] private IntVariable lastLevelShowRate;
-        [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent; // check rate for each new level
+        [SerializeField] private StringConstant levelType;
 
-        protected void OnEnable() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
+        protected void OnEnable() { LevelInstantiate.RegisterActionRecreateLevel(levelType.Value, OnRecreateLevelLoaded); }
 
-        private void OnReCreateLevelLoaded()
+        private void OnRecreateLevelLoaded()
         {
             int indexLevelGoal = lastLevelShowRate.Value + distanceLevels[rateDisplayTimes.Value.Min(distanceLevels.Length - 1)];
             if (currentLevelIndex.Value == indexLevelGoal)
@@ -34,6 +35,6 @@ namespace Pancake.SceneFlow
             if (currentLevelIndex.Value >= indexLevelGoal) lastLevelShowRate.Value = currentLevelIndex.Value;
         }
 
-        protected void OnDisable() { reCreateLevelLoadedEvent.OnRaised -= OnReCreateLevelLoaded; }
+        protected void OnDisable() { LevelInstantiate.RegisterActionRecreateLevel(levelType.Value, OnRecreateLevelLoaded); }
     }
 }

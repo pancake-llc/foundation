@@ -13,25 +13,16 @@ namespace Pancake.SceneFlow
     public class LevelToolsPage : DefaultDebugPageBase
     {
         private ScriptableEventVfxMagnet _fxCoinSpawnEvent;
-        private IntVariable _currentLevelIndex;
-        private ScriptableEventLoadLevel _loadLevelEvent;
-        private ScriptableEventNoParam _reCreateLevelLoadedEvent;
+        private StringConstant _levelType;
         private ScriptableEventNoParam _hideUiGameplayEvent;
 
         private string _targetLevel;
         protected override string Title => "Level Tools";
 
-        public void Setup(
-            ScriptableEventVfxMagnet fxCoinSpawnEvent,
-            IntVariable currentLevelIndex,
-            ScriptableEventLoadLevel loadLevelEvent,
-            ScriptableEventNoParam reCreateLevelLoadedEvent,
-            ScriptableEventNoParam hideUiGameplayEvent)
+        public void Setup(ScriptableEventVfxMagnet fxCoinSpawnEvent, StringConstant levelType, ScriptableEventNoParam hideUiGameplayEvent)
         {
             _fxCoinSpawnEvent = fxCoinSpawnEvent;
-            _currentLevelIndex = currentLevelIndex;
-            _loadLevelEvent = loadLevelEvent;
-            _reCreateLevelLoadedEvent = reCreateLevelLoadedEvent;
+            _levelType = levelType;
             _hideUiGameplayEvent = hideUiGameplayEvent;
         }
 
@@ -94,10 +85,10 @@ namespace Pancake.SceneFlow
         {
             if (!CheckInGamePlay()) return;
             int target = (int.Parse(_targetLevel) - 1).Max(0);
-            _currentLevelIndex.Value = target;
-            var prefab = await _loadLevelEvent.Raise(target);
+            LevelCoordinator.SetCurrentLevelIndex(_levelType.Value, target);
+            var prefab = await LevelCoordinator.LoadLevel(_levelType.Value, target);
             if (prefab == null) return;
-            _reCreateLevelLoadedEvent.Raise();
+            LevelInstantiate.RecreateLevelLoaded(_levelType.Value);
         }
 
         private void OnLevelChanged(string level) { _targetLevel = level; }
@@ -105,19 +96,19 @@ namespace Pancake.SceneFlow
         private async void NextLevel()
         {
             if (!CheckInGamePlay()) return;
-            _currentLevelIndex.Value += 1;
-            var prefab = await _loadLevelEvent.Raise(_currentLevelIndex.Value);
+            LevelCoordinator.IncreaseLevelIndex(_levelType.Value, 1);
+            var prefab = await LevelCoordinator.LoadLevel(_levelType.Value, LevelCoordinator.GetCurrentLevelIndex(_levelType.Value));
             if (prefab == null) return;
-            _reCreateLevelLoadedEvent.Raise();
+            LevelInstantiate.RecreateLevelLoaded(_levelType.Value);
         }
 
         private async void PreviousLevel()
         {
             if (!CheckInGamePlay()) return;
-            _currentLevelIndex.Value = (_currentLevelIndex.Value - 1).Max(0);
-            var prefab = await _loadLevelEvent.Raise(_currentLevelIndex.Value);
+            LevelCoordinator.SetCurrentLevelIndex(_levelType.Value, (LevelCoordinator.GetCurrentLevelIndex(_levelType.Value) - 1).Max(0));
+            var prefab = await LevelCoordinator.LoadLevel(_levelType.Value, LevelCoordinator.GetCurrentLevelIndex(_levelType.Value));
             if (prefab == null) return;
-            _reCreateLevelLoadedEvent.Raise();
+            LevelInstantiate.RecreateLevelLoaded(_levelType.Value);
         }
 
         private bool CheckInGamePlay()

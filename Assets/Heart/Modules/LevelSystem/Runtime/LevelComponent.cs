@@ -1,20 +1,21 @@
-﻿using Alchemy.Inspector;
-using Pancake.Scriptable;
+﻿using System;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Pancake.LevelSystem
 {
     [EditorIcon("icon_default")]
-    public abstract class LevelComponent : GameComponent
+    public abstract class LevelComponent : GameComponent, ISerializationCallbackReceiver
     {
+        [SerializeField] private StringConstant type;
         [SerializeField, HideInEditMode, ReadOnly] protected int originLevelIndex;
         [SerializeField, HideInEditMode, ReadOnly] protected int currentLevelIndex;
 
-        [SerializeField, Group("Event")] private ScriptableEventNoParam winEvent;
-        [SerializeField, Group("Event")] private ScriptableEventNoParam loseEvent;
-        [SerializeField, Group("Event")] private ScriptableEventNoParam replayEvent;
-        [SerializeField, Group("Event")] private ScriptableEventNoParam skipEvent;
+        private static event Action WinEvent;
+        private static event Action LoseEvent;
+        private static event Action ReplayEvent;
+        private static event Action SkipEvent;
 
         internal void Init(int originLevelIndex, int currentLevelIndex)
         {
@@ -29,23 +30,28 @@ namespace Pancake.LevelSystem
 
         protected virtual void OnSpawned()
         {
-            if (winEvent != null) winEvent.OnRaised += OnWinLevel;
-            if (loseEvent != null) loseEvent.OnRaised += OnLoseLevel;
-            if (replayEvent != null) replayEvent.OnRaised += OnReplayLevel;
-            if (skipEvent != null) skipEvent.OnRaised += OnSkipLevel;
+            WinEvent += OnWinLevel;
+            LoseEvent += OnLoseLevel;
+            ReplayEvent += OnReplayLevel;
+            SkipEvent += OnSkipLevel;
         }
 
         protected virtual void OnDespawned()
         {
-            if (winEvent != null) winEvent.OnRaised -= OnWinLevel;
-            if (loseEvent != null) loseEvent.OnRaised -= OnLoseLevel;
-            if (replayEvent != null) replayEvent.OnRaised -= OnReplayLevel;
-            if (skipEvent != null) skipEvent.OnRaised -= OnSkipLevel;
+            WinEvent -= OnWinLevel;
+            LoseEvent -= OnLoseLevel;
+            ReplayEvent -= OnReplayLevel;
+            SkipEvent -= OnSkipLevel;
         }
 
         protected void OnEnable() { OnSpawned(); }
 
         protected void OnDisable() { OnDespawned(); }
+
+        public static void WinLevel() { WinEvent?.Invoke(); }
+        public static void LoseLevel() { LoseEvent?.Invoke(); }
+        public static void ReplayLevel() { ReplayEvent?.Invoke(); }
+        public static void SkipLevel() { SkipEvent?.Invoke(); }
 
 
 #if UNITY_EDITOR
@@ -67,11 +73,27 @@ namespace Pancake.LevelSystem
             }
             else
             {
-                // recreate
-                var levelInstantiate = FindAnyObjectByType<LevelInstantiate>();
-                levelInstantiate.OnReCreateLevelLoaded();
+                LevelInstantiate.RecreateLevelLoaded(type.Value);
             }
         }
 #endif
+
+        private void Clear()
+        {
+            WinEvent = null;
+            LoseEvent = null;
+            ReplayEvent = null;
+            SkipEvent = null;
+        }
+
+        public void OnBeforeSerialize()
+        {
+#if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlaying && !UnityEditor.EditorApplication.isUpdating && !UnityEditor.EditorApplication.isCompiling) return;
+#endif
+            Clear();
+        }
+
+        public void OnAfterDeserialize() { }
     }
 }

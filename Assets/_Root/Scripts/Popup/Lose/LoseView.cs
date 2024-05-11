@@ -2,7 +2,6 @@ using Pancake.LevelSystem;
 using Pancake.Monetization;
 using Pancake.SceneFlow;
 using Pancake.Scriptable;
-using Pancake.Sound;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,11 +15,9 @@ namespace Pancake.UI
         [SerializeField] private Button buttonShop;
         [SerializeField] private Button buttonSkip;
         [SerializeField, PopupPickup] private string popupShop;
+        [SerializeField] private StringConstant levelType;
         [Header("EVENT")] [SerializeField] private ScriptableEventString changeSceneEvent;
-        [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
-        [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
         [SerializeField] private ScriptableEventNoParam showUiGameplayEvent;
-        [SerializeField] private IntVariable currentLevelIndex;
 
         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
 
@@ -34,16 +31,13 @@ namespace Pancake.UI
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonSkipPressed()
-        {
-            Advertising.Reward?.OnCompleted(SkipLevel).Show();
-        }
+        private void OnButtonSkipPressed() { Advertising.Reward?.OnCompleted(SkipLevel).Show(); }
 
         private async void SkipLevel()
         {
-            currentLevelIndex.Value++;
-            await loadLevelEvent.Raise(currentLevelIndex);
-            reCreateLevelLoadedEvent.Raise();
+            LevelCoordinator.IncreaseLevelIndex(levelType.Value, 1);
+            await LevelCoordinator.LoadLevel(levelType.Value, LevelCoordinator.GetCurrentLevelIndex(levelType.Value));
+            LevelInstantiate.RecreateLevelLoaded(levelType.Value);
             PlaySoundClose();
             await PopupHelper.Close(transform, false);
             showUiGameplayEvent.Raise();
@@ -53,7 +47,7 @@ namespace Pancake.UI
 
         private async void OnButtonReplayPressed()
         {
-            reCreateLevelLoadedEvent.Raise();
+            LevelInstantiate.RecreateLevelLoaded(levelType.Value);
             PlaySoundClose();
             await PopupHelper.Close(transform, false);
             showUiGameplayEvent.Raise();

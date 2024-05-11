@@ -4925,6 +4925,6 @@ MonoBehaviour:
   __alchemySerializationData_Pancake_Component_VfxParticleCollision:
     numberParticleMap:
       isCreated: 1
-      data: "[\n    {\n        \"Key\": 100,\n        \"Value\": 1\n    },\n    {\n       
-        \"Key\": 1000,\n        \"Value\": 0\n    }\n]"
+      data: "[\n    {\n        \"Key\": 100,\n        \"Value\": 10\n    },\n   
+        {\n        \"Key\": 1000,\n        \"Value\": 20\n    }\n]"
     unityObjectReferences: []

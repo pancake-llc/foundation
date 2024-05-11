@@ -25,10 +25,8 @@ namespace Pancake.UI
 
         [SerializeField] private ScriptableEventString changeSceneEvent;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
-        [SerializeField] private ScriptableEventLoadLevel eventLoadLevel;
-        [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
         [SerializeField] private ScriptableEventNoParam showUiGameplayEvent;
-        [SerializeField] private IntVariable currentLevelIndex;
+        [SerializeField] private StringConstant levelType;
         [SerializeField] private IntVariable winGifProgresValue;
         [SerializeField] private Vector2Int rangeGiftValueIncrease;
 
@@ -87,7 +85,7 @@ namespace Pancake.UI
         private async void Continute()
         {
             await UniTask.WaitUntil(() => _prewarmNextLevel != null);
-            reCreateLevelLoadedEvent.Raise();
+            LevelInstantiate.RecreateLevelLoaded(levelType.Value);
             PlaySoundClose();
             uiConfetti.SetActive(false);
             await PopupHelper.Close(transform, false);
@@ -127,8 +125,8 @@ namespace Pancake.UI
                 });
 #pragma warning restore 4014
             // load next level
-            currentLevelIndex.Value++;
-            _prewarmNextLevel = await eventLoadLevel.Raise(currentLevelIndex);
+            LevelCoordinator.IncreaseLevelIndex(levelType.Value, 1);
+            _prewarmNextLevel = await LevelCoordinator.LoadLevel(levelType.Value, LevelCoordinator.GetCurrentLevelIndex(levelType.Value));
         }
     }
 }

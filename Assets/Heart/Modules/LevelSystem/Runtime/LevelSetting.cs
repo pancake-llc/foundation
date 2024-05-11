@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.LevelSystem
@@ -16,6 +15,6 @@ namespace Pancake.LevelSystem
         [field: SerializeField] public LevelLoopReplace[] LevelsLoopReplace { get; private set; }
 
 
-        [HideInInspector] public List<int> CacheLevels { get; set; } = new List<int>();
+        public List<int> CacheLevels { get; set; } = new();
     }
 }

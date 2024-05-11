@@ -455,11 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6f7b9468d6e4ab6a5339c9d06f1b0df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: normal
-  currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
-  eventLoadLevel: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}
-  eventGetNextLevelLoaded: {fileID: 11400000, guid: f3ccdb9f38be711469cdd4dca3dd3f08, type: 2}
-  eventGetPreviousLevelLoaded: {fileID: 11400000, guid: c8dfee10c75c65340ba8356bfb9526db, type: 2}
+  type: {fileID: 11400000, guid: 81143fca18d352440a7bd3d0e8191892, type: 2}
   loopType: 1
   levelSettings:
   - {fileID: 11400000, guid: f06d5066e1dcb94448f7465ea8642784, type: 2}
@@ -643,9 +639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db2a3b77ce594d489ec5a7b8d9fee8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
-  loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}
-  loadLevelCompleted: {fileID: 11400000, guid: 61509f6b494b461498cccef441c17f12, type: 2}
+  levelType: {fileID: 11400000, guid: 81143fca18d352440a7bd3d0e8191892, type: 2}
 --- !u!114 &814159086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,9 +655,7 @@ MonoBehaviour:
   debugViewPrefab: {fileID: 6564643838517370666, guid: ca5e6d279e01e413f8bbf07d75aebe7f, type: 3}
   graphyPrefab: {fileID: 8546455465286430009, guid: a0ba11c85f92c1c4792eeec43dad26c0, type: 3}
   fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
-  currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
-  loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}
-  reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
+  levelType: {fileID: 11400000, guid: 81143fca18d352440a7bd3d0e8191892, type: 2}
   hideUiGameplayEvent: {fileID: 11400000, guid: 7dcbf6ffc2eff08498f36bd132ec680a, type: 2}
 --- !u!114 &814159087
 MonoBehaviour:

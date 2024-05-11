@@ -2,7 +2,6 @@ using System;
 using Pancake.Component;
 using Pancake.DebugView;
 using Pancake.LevelSystem;
-using Pancake.Monetization;
 using Pancake.Scriptable;
 using UnityEngine;
 
@@ -13,9 +12,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private GameObject debugViewPrefab;
         [SerializeField] private GameObject graphyPrefab;
         [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
-        [Header("level")] [SerializeField] private IntVariable currentLevelIndex;
-        [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
-        [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
+        [Header("level")] [SerializeField] private StringConstant levelType;
         [SerializeField] private ScriptableEventNoParam hideUiGameplayEvent;
 
         public override void Init()
@@ -38,9 +35,7 @@ namespace Pancake.SceneFlow
                 onLoad: tuple =>
                 {
                     tuple.page.Setup(fxCoinSpawnEvent,
-                        currentLevelIndex,
-                        loadLevelEvent,
-                        reCreateLevelLoadedEvent,
+                        levelType,
                         hideUiGameplayEvent);
                 });
             initialPage.Reload();

@@ -2,7 +2,6 @@ using Pancake.Common;
 using Pancake.LevelSystem;
 using Pancake.Monetization;
 using Pancake.Scriptable;
-using Pancake.Sound;
 using Cysharp.Threading.Tasks;
 using Pancake.UI;
 using UnityEngine;
@@ -13,17 +12,14 @@ namespace Pancake.SceneFlow
     [EditorIcon("icon_controller")]
     public class GameplayController : GameComponent
     {
-        [Header("BUTTON")] [SerializeField] private Button buttonHome;
+        [Header("Button")] [SerializeField] private Button buttonHome;
         [SerializeField] private Button buttonReplay;
         [SerializeField] private Button buttonSkipByAd;
 
-        [Header("OTHER")] [SerializeField] private ScriptableEventString changeSceneEvent;
+        [Header("Other")] [SerializeField] private ScriptableEventString changeSceneEvent;
 
-        [Header("LEVEL")] [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
-        [SerializeField] private ScriptableEventGetLevelCached getNextLevelCached;
-        [SerializeField] private ScriptableEventNoParam trackingStartLevelEvent;
+        [Header("Level")] [SerializeField] private StringConstant levelType;
         [SerializeField] private Transform levelRootHolder;
-        [SerializeField] private IntVariable currentLevelIndex;
 
         private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
 
@@ -32,12 +28,6 @@ namespace Pancake.SceneFlow
             buttonHome.onClick.AddListener(GoToMenu);
             buttonReplay.onClick.AddListener(OnButtonReplayClicked);
             buttonSkipByAd.onClick.AddListener(OnButtonSkipByAdClicked);
-            trackingStartLevelEvent.OnRaised += OnTrackingStartLevel;
-        }
-
-        private void OnTrackingStartLevel()
-        {
-            // todo tracking with currentLevelIndex
         }
 
         private void OnButtonSkipByAdClicked()
@@ -47,8 +37,8 @@ namespace Pancake.SceneFlow
 
             async void Execute()
             {
-                currentLevelIndex.Value += 1;
-                var prefabLevel = await loadLevelEvent.Raise(currentLevelIndex.Value);
+                LevelCoordinator.IncreaseLevelIndex(levelType.Value, 1);
+                var prefabLevel = await LevelCoordinator.LoadLevel(levelType.Value, LevelCoordinator.GetCurrentLevelIndex(levelType.Value));
                 levelRootHolder.RemoveAllChildren();
                 var instance = Instantiate(prefabLevel, levelRootHolder, false);
             }
@@ -57,7 +47,7 @@ namespace Pancake.SceneFlow
         private void OnButtonReplayClicked()
         {
             // Because the next level load has not yet been called, the cached next level is the current level being played
-            var nextLevelPrefab = getNextLevelCached.Raise();
+            var nextLevelPrefab = LevelCoordinator.GetNextLevelLoaded(levelType.Value);
             // clear current instance
             levelRootHolder.RemoveAllChildren();
             var instance = Instantiate(nextLevelPrefab, levelRootHolder, false);
@@ -72,7 +62,5 @@ namespace Pancake.SceneFlow
                 popupId: nameof(SceneTransitionPopup)); // show transition
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
-
-        protected void OnDisable() { trackingStartLevelEvent.OnRaised -= OnTrackingStartLevel; }
     }
 }

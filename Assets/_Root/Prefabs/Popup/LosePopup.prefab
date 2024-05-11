@@ -574,11 +574,9 @@ MonoBehaviour:
   buttonShop: {fileID: 4013918265822090470}
   buttonSkip: {fileID: 3139221376541989844}
   popupShop: ShopPopup
+  levelType: {fileID: 11400000, guid: 81143fca18d352440a7bd3d0e8191892, type: 2}
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
-  reCreateLevelLoadedEvent: {fileID: 11400000, guid: 74e4041815bd38a4b8258cc730da955c, type: 2}
-  loadLevelEvent: {fileID: 11400000, guid: e791799907e357449a2018d8f7f5982b, type: 2}
   showUiGameplayEvent: {fileID: 11400000, guid: d13fa7db81a86084da9a67bbdc7e381f, type: 2}
-  currentLevelIndex: {fileID: 11400000, guid: a006421cd8bfffd42a013cf538174370, type: 2}
 --- !u!114 &560365581974563851
 MonoBehaviour:
   m_ObjectHideFlags: 0

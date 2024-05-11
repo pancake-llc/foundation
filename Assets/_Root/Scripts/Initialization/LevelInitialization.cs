@@ -1,5 +1,6 @@
+using Cysharp.Threading.Tasks;
+using Pancake.Common;
 using Pancake.LevelSystem;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.SceneFlow
@@ -9,15 +10,12 @@ namespace Pancake.SceneFlow
     /// </summary>
     public class LevelInitialization : Initialize
     {
-        [SerializeField] private IntVariable currentLevelIndex;
-        [SerializeField] private ScriptableEventLoadLevel loadLevelEvent;
-        [SerializeField] private BoolVariable loadLevelCompleted;
+        [SerializeField] private StringConstant levelType;
 
         public override async void Init()
         {
-            loadLevelCompleted.Value = false;
-            var prefab = await loadLevelEvent.Raise(currentLevelIndex.Value);
-            loadLevelCompleted.Value = true;
+            await LevelCoordinator.LoadLevel(levelType.Value, LevelCoordinator.GetCurrentLevelIndex(levelType.Value));
+            EventBus<LevelLoadedNoticeEvent>.Raise();
         }
     }
 }

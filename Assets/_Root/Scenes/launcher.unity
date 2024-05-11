@@ -1129,7 +1129,6 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   isWaitLevelLoaded: 1
-  loadLevelCompleted: {fileID: 11400000, guid: 61509f6b494b461498cccef441c17f12, type: 2}
   requireInitLocalization: 1
   localizationInitialized: {fileID: 11400000, guid: 601184d2e3af08841b68fcdf5a5d1a3f, type: 2}
 --- !u!1660057539 &9223372036854775807

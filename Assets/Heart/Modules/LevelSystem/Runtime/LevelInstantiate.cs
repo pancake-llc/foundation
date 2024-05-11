@@ -1,43 +1,70 @@
+using System;
+using System.Collections.Generic;
 using Pancake.Common;
-using Pancake.Scriptable;
+using Pancake.Tracking;
 using UnityEngine;
 
 namespace Pancake.LevelSystem
 {
+    public class LevelInstantiateDimension
+    {
+        internal event Action ReCreateLevelLoadedEvent;
+
+        public void RecreateLevelLoaded() { ReCreateLevelLoadedEvent?.Invoke(); }
+    }
+
     public class LevelInstantiate : GameComponent
     {
-        [SerializeField] private ScriptableEventGetLevelCached loadLevelCachedEvent;
-        [SerializeField] private ScriptableEventNoParam reCreateLevelLoadedEvent;
-        [SerializeField] private ScriptableEventNoParam trackingStartLevelEvent;
+        [SerializeField] private StringConstant type;
         [SerializeField] private Transform root;
+        [SerializeField] private InterfaceHelper<ScriptableTracking>[] trackingStartLevels;
 
-        public void Start()
+        private static readonly Dictionary<string, LevelInstantiateDimension> Dimensions = new();
+
+        public void Awake()
         {
-            if (trackingStartLevelEvent != null) trackingStartLevelEvent.Raise();
+            Dimensions[type.Value] = new LevelInstantiateDimension();
+            foreach (var t in trackingStartLevels)
+            {
+                t.Value.Track();
+            }
+
             LevelComponent levelComponent = null;
 #if UNITY_EDITOR
-            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : loadLevelCachedEvent.Raise();
+            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type.Value);
 #else
-            levelComponent = loadLevelCachedEvent.Raise();
+            levelComponent = LevelCoordinator.GetNextLevelLoaded(id.Value);
 #endif
             Instantiate(levelComponent, root, false);
         }
 
-        protected void OnEnable() { reCreateLevelLoadedEvent.OnRaised += OnReCreateLevelLoaded; }
+        protected void OnEnable() { RegisterActionRecreateLevel(type.Value, OnRecreateLevelLoaded); }
 
-        protected void OnDisable() { reCreateLevelLoadedEvent.OnRaised -= OnReCreateLevelLoaded; }
+        protected void OnDisable()
+        {
+            UnRegisterActionRecreateLevel(type.Value, OnRecreateLevelLoaded);
+            Dimensions.Remove(type.Value);
+        }
 
-        public void OnReCreateLevelLoaded()
+        private void OnRecreateLevelLoaded()
         {
             root.RemoveAllChildren(true);
-            LevelComponent levelComponent = null;
+            LevelComponent levelComponent;
 #if UNITY_EDITOR
-            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : loadLevelCachedEvent.Raise();
+            levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type.Value);
 #else
-            levelComponent = loadLevelCachedEvent.Raise();
+            levelComponent = LevelCoordinator.GetNextLevelLoaded(id.Value)
 #endif
-            if (trackingStartLevelEvent != null) trackingStartLevelEvent.Raise();
+            foreach (var t in trackingStartLevels)
+            {
+                t.Value.Track();
+            }
+
             Instantiate(levelComponent, root, false);
         }
+
+        public static void RegisterActionRecreateLevel(string id, Action action) { Dimensions[id].ReCreateLevelLoadedEvent += action; }
+        public static void UnRegisterActionRecreateLevel(string id, Action action) { Dimensions[id].ReCreateLevelLoadedEvent -= action; }
+        public static void RecreateLevelLoaded(string id) { Dimensions[id].RecreateLevelLoaded(); }
     }
 }

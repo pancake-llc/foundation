@@ -18,10 +18,7 @@ namespace Pancake.SceneFlow
         [SerializeField] private bool isWaitRemoteConfig;
         [SerializeField] private ScriptableNotification dailyNotification;
         [SerializeField] private AssetReference persistentScene;
-
         [Space] [SerializeField] private bool isWaitLevelLoaded;
-        [SerializeField, ShowIf("isWaitLevelLoaded")] private BoolVariable loadLevelCompleted;
-
         [Space] [SerializeField] private bool requireInitLocalization;
         [SerializeField, ShowIf("requireInitLocalization")] private BoolVariable localizationInitialized;
 
@@ -57,7 +54,7 @@ namespace Pancake.SceneFlow
             await UniTask.WaitUntil(() => loadingCompleted.Value);
             await Addressables.LoadSceneAsync(persistentScene);
             if (isWaitRemoteConfig) await UniTask.WaitUntil(() => RemoteConfig.IsFetchCompleted);
-            if (isWaitLevelLoaded) await UniTask.WaitUntil(() => loadLevelCompleted.Value);
+            if (isWaitLevelLoaded) await EventBus<LevelLoadedNoticeEvent>.GetAwaiter().Async();
 
             // TODO : wait something else before load menu
             // Don't call the ScheduleDailyNotification function here because LoadSceneAsync may cause the Schedule to be inaccurate 
@@ -75,5 +72,9 @@ namespace Pancake.SceneFlow
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             }
         }
+    }
+
+    public struct LevelLoadedNoticeEvent : IEvent
+    {
     }
 }

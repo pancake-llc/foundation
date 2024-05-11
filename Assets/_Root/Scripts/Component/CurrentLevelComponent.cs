@@ -1,6 +1,5 @@
-using System;
+using Pancake.LevelSystem;
 using Pancake.Localization;
-using Pancake.Scriptable;
 
 namespace Pancake.SceneFlow
 {
@@ -11,20 +10,20 @@ namespace Pancake.SceneFlow
     /// </summary>
     public class CurrentLevelComponent : GameComponent
     {
-        [SerializeField] private IntVariable currentLevel;
+        [SerializeField] private StringConstant levelType;
         [SerializeField] private LocaleTextComponent localeText;
         [SerializeField] private bool subscribe;
 
-        private void Start() { OnValueChanged(currentLevel.Value); }
+        private void Start() { OnValueChanged(LevelCoordinator.GetCurrentLevelIndex(levelType.Value)); }
 
         protected void OnEnable()
         {
-            if (subscribe) currentLevel.OnValueChanged += OnValueChanged;
+            if (subscribe) LevelCoordinator.RegisterLevelIndexChanged(levelType.Value, OnValueChanged);
         }
 
         protected void OnDisable()
         {
-            if (subscribe) currentLevel.OnValueChanged -= OnValueChanged;
+            if (subscribe) LevelCoordinator.RegisterLevelIndexChanged(levelType.Value, OnValueChanged);
         }
 
         private void OnValueChanged(int level) { localeText.UpdateArgs($"{level + 1}"); }
