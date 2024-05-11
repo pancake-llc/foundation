@@ -1,5 +1,6 @@
 ﻿using Alchemy.Inspector;
 using UnityEngine;
+using Pancake.Common;
 
 namespace Pancake.Scriptable
 {

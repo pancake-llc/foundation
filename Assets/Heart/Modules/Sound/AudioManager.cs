@@ -1,6 +1,6 @@
 using System;
+using Pancake.Common;
 using Pancake.Linq;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Sound
@@ -11,8 +11,8 @@ namespace Pancake.Sound
         [Header("Sound Emitter Pool")] [SerializeField] private GameObject prefab;
         [SerializeField] private int prewarmSize = 10;
 
-        [Header("Audio Control")] [SerializeField] private FloatVariable musicVolume;
-        [SerializeField] private FloatVariable sfxVolume;
+        [Header("Audio Control")] [SerializeField] private float initMusicVolume = 1f;
+        [SerializeField] private float initSfxVolume = 1f;
 
         private SoundEmitterVault _sfx;
         private SoundEmitter _music;
@@ -26,13 +26,36 @@ namespace Pancake.Sound
         private static event Action<AudioHandle> StopMusicEvent;
         private static event Action<AudioHandle> PauseMusicEvent;
         private static event Action<AudioHandle> ResumeMusicEvent;
+        private static event Action<float> ChangeSfxVolumeEvent;
+        private static event Action<float> ChangeMusicVolumeEvent;
+
+        public static float MusicVolume
+        {
+            get => Data.Load("user_music_volume", 1f);
+            set
+            {
+                Data.Save("user_music_volume", value);
+                ChangeMusicVolumeEvent?.Invoke(value);
+            }
+        }
+
+        public static float SfxVolume
+        {
+            get => Data.Load("user_sfx_volume", 1f);
+            set
+            {
+                Data.Save("user_sfx_volume", value);
+                ChangeSfxVolumeEvent?.Invoke(value);
+            }
+        }
 
         private void Awake()
         {
             _sfx = new SoundEmitterVault();
             prefab.Populate(prewarmSize, true);
-            sfxVolume.OnValueChanged += OnSfxVolumeChanged;
-            musicVolume.OnValueChanged += OnMusicVolumeChanged;
+
+            MusicVolume = initMusicVolume;
+            SfxVolume = initSfxVolume;
         }
 
         private void OnMusicVolumeChanged(float volume)
@@ -63,6 +86,8 @@ namespace Pancake.Sound
             StopMusicEvent += OnStopMusic;
             PauseMusicEvent += OnPauseMusic;
             ResumeMusicEvent += OnResumeMusic;
+            ChangeSfxVolumeEvent += OnSfxVolumeChanged;
+            ChangeMusicVolumeEvent += OnMusicVolumeChanged;
         }
 
         private void OnDisable()
@@ -77,6 +102,8 @@ namespace Pancake.Sound
             StopMusicEvent -= OnStopMusic;
             PauseMusicEvent -= OnPauseMusic;
             ResumeMusicEvent -= OnResumeMusic;
+            ChangeSfxVolumeEvent -= OnSfxVolumeChanged;
+            ChangeMusicVolumeEvent -= OnMusicVolumeChanged;
         }
 
         /// <summary>
@@ -93,7 +120,7 @@ namespace Pancake.Sound
                 soundEmitters[i] = prefab.Request<SoundEmitter>();
                 if (soundEmitters[i] != null)
                 {
-                    soundEmitters[i].PlayAudioClip(clipsToPlay[i], audio.loop, audio.volume * sfxVolume.Value);
+                    soundEmitters[i].PlayAudioClip(clipsToPlay[i], audio.loop, audio.volume * SfxVolume);
                     if (!audio.loop) soundEmitters[i].OnCompleted += OnSoundEmitterFinishedPlaying;
                 }
             }
@@ -185,7 +212,7 @@ namespace Pancake.Sound
             }
 
             _music = prefab.Request<SoundEmitter>();
-            _music.FadeMusicIn(audio.GetClips()[0], 0.2f, audio.volume * musicVolume.Value, startTime);
+            _music.FadeMusicIn(audio.GetClips()[0], 0.2f, audio.volume * MusicVolume, startTime);
             _music.OnCompleted += StopMusicEmitter;
 
             return AudioHandle.invalid;

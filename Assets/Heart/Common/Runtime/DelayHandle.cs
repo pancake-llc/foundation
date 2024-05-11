@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Common
 {
     public class DelayHandle
     {

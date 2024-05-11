@@ -15,6 +15,7 @@ namespace Pancake.Common
             var app = new GameObject("App") {hideFlags = HideFlags.HideInHierarchy};
             globalComponent = app.AddComponent<GlobalComponent>();
             UnityEngine.Object.DontDestroyOnLoad(app);
+            Data.Init();
         }
 
         public static float DeltaTime(ETimeMode mode) => mode == ETimeMode.Normal ? Time.deltaTime : Time.unscaledDeltaTime;

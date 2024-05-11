@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Pancake.Common;
 
 namespace Pancake.Scriptable
 {

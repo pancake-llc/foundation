@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Pancake.Scriptable;
+using Pancake.Common;
 using UnityEngine;
 
 namespace Pancake.SceneFlow

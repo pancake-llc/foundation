@@ -441,18 +441,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 7453307853223308394, guid: 02a1a626475d155488cbe05a16ac0f3e, type: 3}
   prewarmSize: 10
-  eventPlaySfx: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
-  eventStopSfx: {fileID: 11400000, guid: 0b4dc6b12e4de5043b9e0337aa36ec9c, type: 2}
-  eventPauseSfx: {fileID: 11400000, guid: 252b1bfe33b9f0949b2d8469c8cc647f, type: 2}
-  eventResumeSfx: {fileID: 11400000, guid: 14f7060f6eee48e4fa320e463dff2598, type: 2}
-  eventFinishSfx: {fileID: 11400000, guid: 80a4703dfe38f4b4f934ea85acdb01f3, type: 2}
-  eventStopAllSfx: {fileID: 11400000, guid: 6e29be8aadddb964eb9f19c60d630a7c, type: 2}
-  eventPlayMusic: {fileID: 11400000, guid: 7d34ae6d8c5cba24286f019322591cc7, type: 2}
-  eventStopMusic: {fileID: 11400000, guid: 1d79670ea7c53c642a63ce449457b09a, type: 2}
-  eventPauseMusic: {fileID: 11400000, guid: b759b6d8cd9821449a28381a0f4d9fff, type: 2}
-  eventResumeMusic: {fileID: 11400000, guid: 069cea4fe43fae241bce20a8088a0e5f, type: 2}
-  musicVolume: {fileID: 11400000, guid: f40c18cdb6b391741b188b73d884cb92, type: 2}
-  sfxVolume: {fileID: 11400000, guid: 0a97e9acdf82e434983225db6d5b578f, type: 2}
+  initMusicVolume: 1
+  initSfxVolume: 1
 --- !u!114 &776958719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,8 +491,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41191a39695b3a4f878c77309e35846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initReviewEvent: {fileID: 11400000, guid: 69791bee97aec0f44afa2801729a4f91, type: 2}
-  reviewEvent: {fileID: 11400000, guid: 98a69f3242b31c34da74b3378bf582f1, type: 2}
 --- !u!114 &776958722
 MonoBehaviour:
   m_ObjectHideFlags: 0

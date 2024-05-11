@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System.Runtime.InteropServices.ComTypes;
-using Pancake;
+using Pancake.Common;
 using UnityEngine;
 
 #if UNITY_IOS

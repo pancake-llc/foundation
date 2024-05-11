@@ -2924,7 +2924,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remoteConfigFetchCompleted: {fileID: 0}
-  remoteConfigNewVersion: {fileID: 11400000, guid: 417262f7635563c4a8aac862988c6ea9, type: 2}
+  remoteConfigNewVersion: {fileID: 0}
   dontShowUpdateAgain: {fileID: 11400000, guid: 5e9c77fdc5001d44584ffa49b70ed929, type: 2}
   buttonSetting: {fileID: 527389383}
   buttonTapToPlay: {fileID: 2090725824}

@@ -1,9 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Pancake.Common;
 
-namespace Pancake
+namespace Pancake.Common
 {
     using UnityEngine;
 

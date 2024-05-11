@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using Pancake.Common;
 
 namespace Pancake.Common
 {
@@ -15,7 +14,7 @@ namespace Pancake.Common
 
         public int Id { get; }
 
-        public object Result { get; private set; }
+        public object Result { get; private set; } 
 
         public bool IsTerminated { get; private set; }
 

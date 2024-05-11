@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Pancake.Common;
 using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Common
 {
     /// <summary>
     /// Master class holder data in memory
@@ -32,11 +32,11 @@ namespace Pancake
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static byte[] Serialize<T>(T data) { return Pancake.Serialize.ToBinary(data); }
+        private static byte[] Serialize<T>(T data) { return Common.Serialize.ToBinary(data); }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static T Deserialize<T>(byte[] bytes) { return Pancake.Serialize.FromBinary<T>(bytes); }
+        private static T Deserialize<T>(byte[] bytes) { return Common.Serialize.FromBinary<T>(bytes); }
 
         private static void OnApplicationFocus(bool focus)
         {
@@ -189,14 +189,14 @@ namespace Pancake
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] Backup() { return Pancake.Serialize.ToBinary(datas); }
+        public static byte[] Backup() { return Common.Serialize.ToBinary(datas); }
 
         /// <summary>
         /// Load from byte[]
         /// </summary>
         /// <param name="bytes"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Restore(byte[] bytes) { datas = Pancake.Serialize.FromBinary<Dictionary<string, byte[]>>(bytes); }
+        public static void Restore(byte[] bytes) { datas = Common.Serialize.FromBinary<Dictionary<string, byte[]>>(bytes); }
 
         #endregion
     }
