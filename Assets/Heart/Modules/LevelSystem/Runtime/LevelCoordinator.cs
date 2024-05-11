@@ -43,7 +43,7 @@ namespace Pancake.LevelSystem
             SetCurrentLevelIndex(type, value);
         }
 
-        private async void Awake()
+        private void Awake()
         {
             // todo: change flow to avoid data not load before use
             Dimensions[type.Value] = new LevelDimension();
@@ -65,7 +65,7 @@ namespace Pancake.LevelSystem
             CheckCacheLevel(GetCurrentLevelIndex(type.Value));
         }
 
-        private async void OnEnable()
+        private void OnEnable()
         {
 #if PANCAKE_ADDRESSABLE && PANCAKE_UNITASK
             var dimesion = Dimensions[type.Value];
