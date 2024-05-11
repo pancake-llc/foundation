@@ -386,8 +386,8 @@ MonoBehaviour:
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -759,8 +759,8 @@ MonoBehaviour:
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2031,8 +2031,8 @@ MonoBehaviour:
   audioClick: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2

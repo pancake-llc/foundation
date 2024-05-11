@@ -42,8 +42,8 @@ namespace PancakeEditor
         private SerializedProperty _scaleUnableInteract;
         private SerializedProperty _durationUnableInteract;
         private SerializedProperty _easeInteract;
-        private SerializedProperty _useVariableListener;
-        private SerializedProperty _callbackVariable;
+        private SerializedProperty _bindCustomListener;
+        private SerializedProperty _listenerCallback;
 
         protected override void OnEnable()
         {
@@ -75,8 +75,8 @@ namespace PancakeEditor
             _isMotionUnableInteract = serializedObject.FindProperty("isMotionUnableInteract");
             _ease = serializedObject.FindProperty("motionData").FindPropertyRelative("ease");
             _easeInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("ease");
-            _useVariableListener = serializedObject.FindProperty("useVariableListener");
-            _callbackVariable = serializedObject.FindProperty("callbackVariable");
+            _bindCustomListener = serializedObject.FindProperty("bindCustomListener");
+            _listenerCallback = serializedObject.FindProperty("listenerCallback");
         }
 
         public override void OnInspectorGUI()
@@ -207,18 +207,17 @@ namespace PancakeEditor
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Custom Listener", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-            _useVariableListener.boolValue = GUILayout.Toggle(_useVariableListener.boolValue, "");
-            if (_useVariableListener.boolValue)
+            _bindCustomListener.boolValue = GUILayout.Toggle(_bindCustomListener.boolValue, "");
+            if (_bindCustomListener.boolValue)
             {
-                _callbackVariable.objectReferenceValue =
-                    EditorGUILayout.ObjectField(_callbackVariable.objectReferenceValue, typeof(ScriptableButtonCallbackVariable), false) as
-                        ScriptableButtonCallbackVariable;
+                _listenerCallback.objectReferenceValue =
+                    EditorGUILayout.ObjectField(_listenerCallback.objectReferenceValue, typeof(ScriptableButtonCallback), false) as ScriptableButtonCallback;
 
-                if (_callbackVariable.objectReferenceValue == null)
+                if (_listenerCallback.objectReferenceValue == null)
                 {
                     if (GUILayout.Button("Create", GUILayout.Width(60)))
                     {
-                        _callbackVariable.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableButtonCallbackVariable),
+                        _listenerCallback.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableButtonCallback),
                             target.name.ToLower() + "_callback_variable",
                             ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
                             true);

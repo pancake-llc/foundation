@@ -151,8 +151,8 @@ MonoBehaviour:
   audioClick: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2

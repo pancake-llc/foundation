@@ -508,11 +508,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -1296,11 +1295,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -1611,11 +1609,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -1960,11 +1957,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2123,11 +2119,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2463,11 +2458,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2543,10 +2537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   au: {fileID: 11400000, guid: eae2c05a868e928468feb87d21194698, type: 2}
   playOnStart: 1
-  playAudioEvent: {fileID: 11400000, guid: 7d34ae6d8c5cba24286f019322591cc7, type: 2}
-  stopAudioEvent: {fileID: 11400000, guid: 1d79670ea7c53c642a63ce449457b09a, type: 2}
-  pauseAudioEvent: {fileID: 11400000, guid: b759b6d8cd9821449a28381a0f4d9fff, type: 2}
-  resumeAudioEvent: {fileID: 11400000, guid: 069cea4fe43fae241bce20a8088a0e5f, type: 2}
+  isSfx: 0
 --- !u!1 &1580930632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2661,10 +2652,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   au: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
   playOnStart: 0
-  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
-  stopAudioEvent: {fileID: 11400000, guid: 0b4dc6b12e4de5043b9e0337aa36ec9c, type: 2}
-  pauseAudioEvent: {fileID: 11400000, guid: 252b1bfe33b9f0949b2d8469c8cc647f, type: 2}
-  resumeAudioEvent: {fileID: 11400000, guid: 14f7060f6eee48e4fa320e463dff2598, type: 2}
+  isSfx: 0
 --- !u!4 &1679153823
 Transform:
   m_ObjectHideFlags: 0
@@ -2954,7 +2942,6 @@ MonoBehaviour:
   outfitPageName: OutfitPage
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
   localeTextFeatureLocked: {fileID: 11400000, guid: 2bed9aeb75d7c8f4a986c0e269dc0388, type: 2}
-  eventSpawnInGameNotification: {fileID: 11400000, guid: 2261a2a84816d914ab405ff3133db4c1, type: 2}
 --- !u!114 &1988258787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2967,7 +2954,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20a7f8c694d34b98b82633ed1715e4de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnEvent: {fileID: 11400000, guid: 2261a2a84816d914ab405ff3133db4c1, type: 2}
   notificationPrefab: {fileID: 6103597003888582579, guid: ad8c0e57917578f40ac15f7d2b915718, type: 3}
   returnPoolEvent: {fileID: 11400000, guid: d1bedc11cc6d4a14e9de7b508197c061, type: 2}
   getCanvasMasterEvent: {fileID: 11400000, guid: eb6564e2a34609041adf55fdffed4eb2, type: 2}
@@ -3158,11 +3144,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2

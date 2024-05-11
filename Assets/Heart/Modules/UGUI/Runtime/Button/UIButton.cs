@@ -65,10 +65,10 @@ namespace Pancake.UI
         [SerializeField] private Audio audioClick;
         [SerializeField] private bool enabledTracking;
         [SerializeField] private ScriptableTrackingNoParam trackingEvent;
-        [SerializeField] private bool useVariableListener;
-        [SerializeField] private ScriptableButtonCallbackVariable callbackVariable;
-        [SerializeField] private MotionData motionData = new MotionData {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
-        [SerializeField] private MotionData motionDataUnableInteract = new MotionData {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
+        [SerializeField] private bool bindCustomListener;
+        [SerializeField] private ScriptableButtonCallback listenerCallback;
+        [SerializeField] private MotionData motionData = new() {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
+        [SerializeField] private MotionData motionDataUnableInteract = new() {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
         private Coroutine _routineLongClick;
         private Coroutine _routineHold;
@@ -131,14 +131,8 @@ namespace Pancake.UI
             DefaultScale = AffectObject.localScale;
             onClick.AddListener(PlaySound);
 
-            if (!useVariableListener) return;
-            if (callbackVariable == null)
-            {
-                Debug.LogError(name + ": missing variable listener");
-                return;
-            }
-
-            callbackVariable.Value = new ButtonCallbackData();
+            if (!bindCustomListener) return;
+            if (listenerCallback == null) Debug.LogError(name + ": missing variable listener");
         }
 
         private void PlaySound()
@@ -165,14 +159,14 @@ namespace Pancake.UI
         {
             base.OnDisable();
             if (!Application.isPlaying) return; // not execute awake when not playing
-            if (useVariableListener)
+            if (bindCustomListener)
             {
-                onPointerUp.RemoveListener(callbackVariable.Value.InvokePointerUp);
-                onPointerDown.RemoveListener(callbackVariable.Value.InvokePointerDown);
-                onClick.RemoveListener(callbackVariable.Value.InvokeClick);
-                onDoubleClick.RemoveListener(callbackVariable.Value.InvokeDoubleClick);
-                onLongClick.RemoveListener(callbackVariable.Value.InvokeLongClick);
-                onHold.RemoveListener(callbackVariable.Value.InvokeHold);
+                onPointerUp.RemoveListener(listenerCallback.InvokePointerUp);
+                onPointerDown.RemoveListener(listenerCallback.InvokePointerDown);
+                onClick.RemoveListener(listenerCallback.InvokeClick);
+                onDoubleClick.RemoveListener(listenerCallback.InvokeDoubleClick);
+                onLongClick.RemoveListener(listenerCallback.InvokeLongClick);
+                onHold.RemoveListener(listenerCallback.InvokeHold);
             }
 
             if (_handleMultipleClick is {IsTerminated: false})
@@ -203,14 +197,14 @@ namespace Pancake.UI
         {
             base.OnEnable();
             if (!Application.isPlaying) return; // not execute awake when not playing
-            if (useVariableListener)
+            if (bindCustomListener)
             {
-                onPointerUp.AddListener(callbackVariable.Value.InvokePointerUp);
-                onPointerDown.AddListener(callbackVariable.Value.InvokePointerDown);
-                onClick.AddListener(callbackVariable.Value.InvokeClick);
-                onDoubleClick.AddListener(callbackVariable.Value.InvokeDoubleClick);
-                onLongClick.AddListener(callbackVariable.Value.InvokeLongClick);
-                onHold.AddListener(callbackVariable.Value.InvokeHold);
+                onPointerUp.AddListener(listenerCallback.InvokePointerUp);
+                onPointerDown.AddListener(listenerCallback.InvokePointerDown);
+                onClick.AddListener(listenerCallback.InvokeClick);
+                onDoubleClick.AddListener(listenerCallback.InvokeDoubleClick);
+                onLongClick.AddListener(listenerCallback.InvokeLongClick);
+                onHold.AddListener(listenerCallback.InvokeHold);
             }
         }
 
