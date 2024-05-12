@@ -38,7 +38,6 @@ namespace PancakeEditor
             Localization,
             OtherPackage,
             ScreenSetting,
-            Scriptable,
             Spine,
             Texture
         }
@@ -63,7 +62,6 @@ namespace PancakeEditor
         private enum SettingType
         {
             HeartConfig = WizardAllType.HeartSetting,
-            Scriptable = WizardAllType.Scriptable,
             LevelSystem = WizardAllType.LevelSystem,
             ScreenSetting = WizardAllType.ScreenSetting,
             Texture = WizardAllType.Texture
@@ -352,9 +350,6 @@ namespace PancakeEditor
                 case WizardAllType.ScreenSetting when _currentType is WizardType.Setting or WizardType.All:
                     ScreenSettingWindow.OnInspectorGUI(position);
                     break;
-                case WizardAllType.Scriptable when _currentType is WizardType.Setting or WizardType.All:
-                    ScriptableWindow.OnInspectorGUI();
-                    break;
                 case WizardAllType.OtherPackage when _currentType is WizardType.Tools or WizardType.All:
                     OtherPackageWindow.OnInspectorGUI();
                     break;
@@ -413,7 +408,7 @@ namespace PancakeEditor
                     if (deselectCurrent) _selectedItemType = WizardAllType.Advertisement;
                     break;
                 case WizardType.Setting:
-                    if (deselectCurrent) _selectedItemType = WizardAllType.Scriptable;
+                    if (deselectCurrent) _selectedItemType = WizardAllType.ScreenSetting;
                     break;
                 case WizardType.Tools:
                     if (deselectCurrent) _selectedItemType = WizardAllType.OtherPackage;
@@ -461,7 +456,6 @@ namespace PancakeEditor
                 WizardAllType.HeartSetting or WizardAllType.ScreenSetting => EditorResources.IconSetting,
                 WizardAllType.LevelSystem => EditorResources.IconLevelSytem,
                 WizardAllType.Texture => EditorResources.IconAtlas,
-                WizardAllType.Scriptable => EditorResources.IconEditorSetting,
                 WizardAllType.Spine => EditorResources.IconSpine,
                 WizardAllType.Build => EditorResources.IconUnity,
                 WizardAllType.OtherPackage => EditorResources.IconPackage,
