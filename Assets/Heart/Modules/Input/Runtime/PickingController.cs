@@ -1,8 +1,8 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using Pancake.Common;
-using Pancake.Scriptable;
 using UnityEngine.Events;
 
 namespace Pancake.MobileInput
@@ -79,25 +79,13 @@ namespace Pancake.MobileInput
             "Here you can set up callbacks to be invoked when the moving of a pickable transform is ended. The event requires 2 parameters. The first is the start position of the drag. The second is the dragged transform. The start position can be used to reset the transform in case the drag has ended on an invalid position.")]
         private Vector3TransformUnityEvent onTransformMoveEndedCallback;
 
-        [SerializeField, FoldoutGroup("Pickable Channel")] private ScriptableEventTransform transformSelectedEvent;
-
-        [SerializeField, FoldoutGroup("Pickable Channel")] private InputEventPickableSelected transformSelectedExtendedEvent;
-
-        [SerializeField, FoldoutGroup("Pickable Channel")] private ScriptableEventTransform transformDeselectedEvent;
-
-        [SerializeField, FoldoutGroup("Pickable Channel")] private ScriptableEventTransform transformMoveStartedEvent;
-
-        [SerializeField, FoldoutGroup("Pickable Channel")] private ScriptableEventTransform transformMovedEvent;
-
-        [SerializeField, FoldoutGroup("Pickable Channel")] private ScriptableEventVector3Transform transformMoveEndedEvent;
-
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private BoolVariable longTapStartsDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventStartDrag onStartDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventUpdateDrag onUpdateDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventStopDrag onStopDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventFingerDown onFingerDown;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventFingerUp onFingerUp;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private InputEventClick onClick;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private bool longTapStartsDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, bool> onStartDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, Vector3, Vector3, Vector3> onUpdateDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, Vector3> onStopDrag;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3> onFingerDown;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action onFingerUp;
+        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, bool, bool> onClick;
 
         #endregion
 
@@ -166,22 +154,22 @@ namespace Pancake.MobileInput
 
         public void Start()
         {
-            onClick.OnRaised += OnClick;
-            onFingerDown.OnRaised += InputOnFingerDown;
-            onFingerUp.OnRaised += InputOnFingerUp;
-            onStartDrag.OnRaised += InputOnDragStart;
-            onUpdateDrag.OnRaised += InputOnDragUpdate;
-            onStopDrag.OnRaised += InputOnDragStop;
+            onClick += OnClick;
+            onFingerDown += InputOnFingerDown;
+            onFingerUp += InputOnFingerUp;
+            onStartDrag += InputOnDragStart;
+            onUpdateDrag += InputOnDragUpdate;
+            onStopDrag += InputOnDragStop;
         }
 
         public void OnDestroy()
         {
-            onClick.OnRaised -= OnClick;
-            onFingerDown.OnRaised -= InputOnFingerDown;
-            onFingerUp.OnRaised -= InputOnFingerUp;
-            onStartDrag.OnRaised -= InputOnDragStart;
-            onUpdateDrag.OnRaised -= InputOnDragUpdate;
-            onStopDrag.OnRaised -= InputOnDragStop;
+            onClick -= OnClick;
+            onFingerDown -= InputOnFingerDown;
+            onFingerUp -= InputOnFingerUp;
+            onStartDrag -= InputOnDragStart;
+            onUpdateDrag -= InputOnDragUpdate;
+            onStopDrag -= InputOnDragStop;
         }
 
         public void LateUpdate()
@@ -448,7 +436,7 @@ namespace Pancake.MobileInput
 
         private void InputOnDragStart(Vector3 clickPosition, bool isLongTap)
         {
-            if (isLongTap && longTapStartsDrag.Value)
+            if (isLongTap && longTapStartsDrag)
             {
                 var newCollider = GetClosestColliderAtScreenPoint(clickPosition, out _);
                 if (newCollider != null)
@@ -514,7 +502,6 @@ namespace Pancake.MobileInput
                     if (_invokeMoveStartedOnDrag && useLegacyTransformMoved == false) InvokePickableMoveStart();
 
                     InvokeTransformActionSafe(onTransformMovedCallback, CurrentlyDraggedTransform);
-                    InvokeTransformActionSafe(transformMovedEvent, CurrentlyDraggedTransform);
                 }
 
                 _currentlyDraggedTransformPosition = CurrentlyDraggedTransform.position;
@@ -524,7 +511,6 @@ namespace Pancake.MobileInput
         private void InvokePickableMoveStart()
         {
             InvokeTransformActionSafe(onTransformMoveStartedCallback, CurrentlyDraggedTransform);
-            InvokeTransformActionSafe(transformMoveStartedEvent, CurrentlyDraggedTransform);
             _invokeMoveStartedOnDrag = false;
             _invokeMoveEndedOnDrag = true;
         }
@@ -540,7 +526,6 @@ namespace Pancake.MobileInput
                 if (_invokeMoveEndedOnDrag)
                 {
                     onTransformMoveEndedCallback?.Invoke(_currentDragStartPos, CurrentlyDraggedTransform);
-                    if (transformMoveEndedEvent != null) transformMoveEndedEvent.Raise(_currentDragStartPos, CurrentlyDraggedTransform);
                 }
             }
 
@@ -596,11 +581,9 @@ namespace Pancake.MobileInput
             {
                 case SelectionAction.Select:
                     InvokeTransformActionSafe(onTransformSelectedCallback, touchPickable.PickableTransform);
-                    InvokeTransformActionSafe(transformSelectedEvent, touchPickable.PickableTransform);
                     break;
                 case SelectionAction.Deselect:
                     InvokeTransformActionSafe(onTransformDeselectedCallback, touchPickable.PickableTransform);
-                    InvokeTransformActionSafe(transformDeselectedEvent, touchPickable.PickableTransform);
                     break;
             }
         }
@@ -612,15 +595,9 @@ namespace Pancake.MobileInput
 
             var pickableSelected = new PickableSelected() {Selected = touchPickable.PickableTransform, IsDoubleClick = isDoubleClick, IsLongTap = isLongTap};
             InvokeGenericActionSafe(onTransformSelectedExtendedCallback, pickableSelected);
-            if (transformSelectedExtendedEvent != null) transformSelectedExtendedEvent.Raise(pickableSelected);
         }
 
         private void InvokeTransformActionSafe(TransformUnityEvent @event, Transform t) { @event?.Invoke(t); }
-
-        private void InvokeTransformActionSafe(ScriptableEventTransform @event, Transform t)
-        {
-            if (@event != null) @event.Raise(t);
-        }
 
         private void InvokeGenericActionSafe<T1, T2>(T1 eventAction, T2 eventArgs) where T1 : UnityEvent<T2> { eventAction?.Invoke(eventArgs); }
 

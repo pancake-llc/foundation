@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
@@ -145,15 +146,15 @@ namespace Pancake.MobileInput
 
         #endregion
 
-        [SerializeField] private InputEventStartDrag onStartDrag;
-        [SerializeField] private InputEventUpdateDrag onUpdateDrag;
-        [SerializeField] private InputEventStopDrag onStopDrag;
-        [SerializeField] private InputEventFingerDown onFingerDown;
-        [SerializeField] private InputEventFingerUp onFingerUp;
-        [SerializeField] private InputEventClick onClick;
-        [SerializeField] private InputEventStartPinch onStartPinch;
-        [SerializeField] private InputEventUpdateExtendPinch onUpdateExtendPinch;
-        [SerializeField] private InputEventStopPinch onStopPinch;
+        [SerializeField] private Action<Vector3, bool> onStartDrag;
+        [SerializeField] private Action<Vector3, Vector3, Vector3, Vector3> onUpdateDrag;
+        [SerializeField] private Action<Vector3, Vector3> onStopDrag;
+        [SerializeField] private Action<Vector3> onFingerDown;
+        [SerializeField] private Action onFingerUp;
+        [SerializeField] private Action<Vector3, bool, bool> onClick;
+        [SerializeField] private Action<Vector3, float> onStartPinch;
+        [SerializeField] private Action<PinchData> onUpdateExtendPinch;
+        [SerializeField] private Action onStopPinch;
 
 
         public CameraPlaneAxes CameraAxes { get => cameraAxes; set => cameraAxes = value; }
@@ -464,15 +465,15 @@ namespace Pancake.MobileInput
 
         public void Start()
         {
-            onClick.OnRaised += OnClick;
-            onStartDrag.OnRaised += InputOnDragStart;
-            onUpdateDrag.OnRaised += InputOnDragUpdate;
-            onStopDrag.OnRaised += InputOnDragStop;
-            onFingerDown.OnRaised += InputOnFingerDown;
-            onFingerUp.OnRaised += InputOnFingerUp;
-            onStartPinch.OnRaised += InputOnPinchStart;
-            onUpdateExtendPinch.OnRaised += InputOnPinchUpdate;
-            onStopPinch.OnRaised += InputOnPinchStop;
+            onClick += OnClick;
+            onStartDrag += InputOnDragStart;
+            onUpdateDrag += InputOnDragUpdate;
+            onStopDrag += InputOnDragStop;
+            onFingerDown += InputOnFingerDown;
+            onFingerUp += InputOnFingerUp;
+            onStartPinch += InputOnPinchStart;
+            onUpdateExtendPinch += InputOnPinchUpdate;
+            onStopPinch += InputOnPinchStop;
             _isStarted = true;
             StartCoroutine(InitCamBoundariesDelayed());
         }
@@ -481,15 +482,15 @@ namespace Pancake.MobileInput
         {
             if (_isStarted)
             {
-                onClick.OnRaised -= OnClick;
-                onStartDrag.OnRaised -= InputOnDragStart;
-                onUpdateDrag.OnRaised -= InputOnDragUpdate;
-                onStopDrag.OnRaised -= InputOnDragStop;
-                onFingerDown.OnRaised -= InputOnFingerDown;
-                onFingerUp.OnRaised -= InputOnFingerUp;
-                onStartPinch.OnRaised -= InputOnPinchStart;
-                onUpdateExtendPinch.OnRaised -= InputOnPinchUpdate;
-                onStopPinch.OnRaised -= InputOnPinchStop;
+                onClick -= OnClick;
+                onStartDrag -= InputOnDragStart;
+                onUpdateDrag -= InputOnDragUpdate;
+                onStopDrag -= InputOnDragStop;
+                onFingerDown -= InputOnFingerDown;
+                onFingerUp -= InputOnFingerUp;
+                onStartPinch -= InputOnPinchStart;
+                onUpdateExtendPinch -= InputOnPinchUpdate;
+                onStopPinch -= InputOnPinchStop;
             }
         }
 

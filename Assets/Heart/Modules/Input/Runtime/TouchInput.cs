@@ -1,8 +1,8 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using Pancake.Common;
-using Pancake.Scriptable;
 
 namespace Pancake.MobileInput
 {
@@ -12,19 +12,19 @@ namespace Pancake.MobileInput
         private const float DRAG_DURATION_THRESHOLD = 0.01f;
         private const int MOMENTUM_SAMPLES_COUNT = 5;
 
-        [SerializeField] private BoolVariable statusTouchOnLockedArea;
+        [field: SerializeField] private bool IsTouchOnLockedArea { get; set; }
 
-        [Header("Event Drag")] public InputEventStartDrag onStartDrag;
-        public InputEventUpdateDrag onUpdateDrag;
-        public InputEventStopDrag onStopDrag;
-        [Header("Event Finger")] public InputEventFingerDown onFingerDown;
-        public InputEventFingerUp onFingerUp;
-        public InputEventClick onClick;
-        public InputEventLongTapUpdate onLongTapUpdate;
-        [Header("Event Pinch")] public InputEventStartPinch onStartPinch;
-        public InputEventUpdatePinch onUpdatePinch;
-        public InputEventUpdateExtendPinch onUpdateExtendPinch;
-        public InputEventStopPinch onStopPinch;
+        [Header("Event Drag")] public Action<Vector3, bool> onStartDrag;
+        public Action<Vector3, Vector3, Vector3, Vector3> onUpdateDrag;
+        public Action<Vector3, Vector3> onStopDrag;
+        [Header("Event Finger")] public Action<Vector3> onFingerDown;
+        public Action onFingerUp;
+        public Action<Vector3, bool, bool> onClick;
+        public Action<float> onLongTapUpdate;
+        [Header("Event Pinch")] public Action<Vector3, float> onStartPinch;
+        public Action<Vector3, float, float> onUpdatePinch;
+        public Action<PinchData> onUpdateExtendPinch;
+        public Action onStopPinch;
 
 #if UNITY_EDITOR
         [SerializeField] private bool isCustom;
@@ -32,27 +32,27 @@ namespace Pancake.MobileInput
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip("When the finger is held on an item for at least this duration without moving, the gesture is recognized as a long tap.")]
-        private FloatReference clickDurationThreshold; //0.7f
+        private float clickDurationThreshold = 0.7f;
 
         [SerializeField, ShowIf("isCustom")] [Tooltip("A double click gesture is recognized when the time between two consecutive taps is shorter than this duration.")]
-        private FloatReference doubleClickThreshold; //0.5f
+        private float doubleClickThreshold = 0.5f;
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip("This value controls how close to a vertical line the user has to perform a tilt gesture for it to be recognized as such.")]
-        private FloatReference tiltVerticalThreshold; //0.7f
+        private float tiltVerticalThreshold = 0.7f;
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip(
             "Threshold value for detecting whether the fingers are horizontal enough for starting the tilt. Using this value you can prevent vertical finger placement to be counted as tilt gesture.")]
-        private FloatReference tiltHorizontalThreshold; // 0.5f
+        private float tiltHorizontalThreshold = 0.5f;
 
         [SerializeField, ShowIf("isCustom")]
         [Tooltip(
             "A drag is started as soon as the user moves his finger over a longer distance than this value. The value is defined as normalized value. Dragging the entire width of the screen equals 1. Dragging the entire height of the screen also equals 1.")]
-        private FloatReference dragThreshold; // 0.05f
+        private float dragThreshold = 0.05f;
 
         [SerializeField, ShowIf("isCustom")] [Tooltip("When this flag is enabled the drag started event is invoked immediately when the long tap time is succeeded.")]
-        private BoolVariable longTapStartsDrag;
+        private bool longTapStartsDrag;
 
         private float _realTimeOfLastFinderDown;
         private float _realTimeOfLastClick;
@@ -80,8 +80,6 @@ namespace Pancake.MobileInput
 
         public bool LongTapStartsDrag => longTapStartsDrag;
 
-        public bool IsTouchOnLockedArea { get => statusTouchOnLockedArea.Value; set => statusTouchOnLockedArea.Value = value; }
-
         public void Awake()
         {
             _realTimeOfLastFinderDown = 0;
@@ -101,11 +99,11 @@ namespace Pancake.MobileInput
 
         public void Update()
         {
-            if (TouchWrapper.IsFingerDown == false) statusTouchOnLockedArea.Value = false;
+            if (TouchWrapper.IsFingerDown == false) IsTouchOnLockedArea = false;
 
             var pinchToDragCurrentFrame = false;
 
-            if (statusTouchOnLockedArea.Value == false)
+            if (IsTouchOnLockedArea == false)
             {
                 #region pinch
 
@@ -151,10 +149,10 @@ namespace Pancake.MobileInput
                                 {
                                     float longTapProgress = 0;
                                     if (Mathf.Approximately(clickDurationThreshold, 0) == false) longTapProgress = Mathf.Clamp01(dragTime / clickDurationThreshold);
-                                    onLongTapUpdate.Raise(longTapProgress);
+                                    onLongTapUpdate.Invoke(longTapProgress);
                                 }
 
-                                if ((dragDistance >= dragThreshold.Value && dragTime >= DRAG_DURATION_THRESHOLD) || (longTapStartsDrag && isLongTap))
+                                if ((dragDistance >= dragThreshold && dragTime >= DRAG_DURATION_THRESHOLD) || (longTapStartsDrag && isLongTap))
                                 {
                                     _isDragging = true;
                                     _dragStartOffset = _lastFinger0DownPosition - _dragStartPosition;
@@ -213,7 +211,7 @@ namespace Pancake.MobileInput
                             float clickDuration = Time.realtimeSinceStartup - _realTimeOfLastClick;
                             bool isDoubleClick = clickDuration < doubleClickThreshold;
                             bool isLongTap = fingerDownUpDuration > clickDurationThreshold;
-                            if (onClick != null) onClick.Raise(_lastFinger0DownPosition, isDoubleClick, isLongTap);
+                            onClick?.Invoke(_lastFinger0DownPosition, isDoubleClick, isLongTap);
                             _realTimeOfLastClick = Time.realtimeSinceStartup;
                         }
                     }
@@ -228,7 +226,7 @@ namespace Pancake.MobileInput
                 if (_dragFinalMomentumVector.Count > MOMENTUM_SAMPLES_COUNT) _dragFinalMomentumVector.RemoveAt(0);
             }
 
-            if (statusTouchOnLockedArea.Value == false) _wasFingerDownLastFrame = TouchWrapper.IsFingerDown;
+            if (IsTouchOnLockedArea == false) _wasFingerDownLastFrame = TouchWrapper.IsFingerDown;
 
             if (_wasFingerDownLastFrame) _lastFinger0DownPosition = TouchWrapper.Touch0.Position;
 
@@ -248,7 +246,7 @@ namespace Pancake.MobileInput
             _pinchStartPositions[1] = _touchPositionsLastFrame[1] = TouchWrapper.Touches[1].Position;
 
             _pinchStartDistance = GetPinchDistance(_pinchStartPositions[0], _pinchStartPositions[1]);
-            if (onStartPinch != null) onStartPinch.Raise((_pinchStartPositions[0] + _pinchStartPositions[1]) * 0.5f, _pinchStartDistance);
+            onStartPinch?.Invoke((_pinchStartPositions[0] + _pinchStartPositions[1]) * 0.5f, _pinchStartDistance);
 
             _isClickPrevented = true;
             _pinchVectorStart = TouchWrapper.Touches[1].Position - TouchWrapper.Touches[0].Position;
@@ -293,21 +291,18 @@ namespace Pancake.MobileInput
 
             #endregion
 
-            if (onUpdatePinch != null) onUpdatePinch.Raise(pinchCenter, pinchDistance, _pinchStartDistance);
+            onUpdatePinch?.Invoke(pinchCenter, pinchDistance, _pinchStartDistance);
 
-            if (onUpdateExtendPinch != null)
+            onUpdateExtendPinch?.Invoke(new PinchData
             {
-                onUpdateExtendPinch.Raise(new PinchData
-                {
-                    pinchCenter = pinchCenter,
-                    pinchDistance = pinchDistance,
-                    pinchStartDistance = _pinchStartDistance,
-                    pinchAngleDelta = pinchAngleDelta,
-                    pinchAngleDeltaNormalized = pinchAngleDeltaNormalized,
-                    pinchTiltDelta = pinchTiltDelta,
-                    pinchTotalFingerMovement = _totalFingerMovement
-                });
-            }
+                pinchCenter = pinchCenter,
+                pinchDistance = pinchDistance,
+                pinchStartDistance = _pinchStartDistance,
+                pinchAngleDelta = pinchAngleDelta,
+                pinchAngleDeltaNormalized = pinchAngleDeltaNormalized,
+                pinchTiltDelta = pinchTiltDelta,
+                pinchTotalFingerMovement = _totalFingerMovement
+            });
 
             _pinchVectorLastFrame = pinchVector;
             _touchPositionsLastFrame[0] = TouchWrapper.Touches[0].Position;
@@ -324,12 +319,12 @@ namespace Pancake.MobileInput
         private void StopPinch()
         {
             _dragStartOffset = Vector3.zero;
-            if (onStopPinch != null) onStopPinch.Raise();
+            onStopPinch?.Invoke();
         }
 
         private void DragStart(Vector3 position, bool isLongTap)
         {
-            if (onStartDrag != null) onStartDrag.Raise(position, isLongTap);
+            onStartDrag?.Invoke(position, isLongTap);
 
             _isClickPrevented = true;
             _timeSinceDragStart = 0;
@@ -342,7 +337,7 @@ namespace Pancake.MobileInput
             {
                 _timeSinceDragStart += Time.unscaledDeltaTime;
                 var offset = Vector3.Lerp(Vector3.zero, _dragStartOffset, Mathf.Clamp01(_timeSinceDragStart * 10.0f));
-                onUpdateDrag.Raise(_dragStartPosition, currentPosition, offset, delta);
+                onUpdateDrag.Invoke(_dragStartPosition, currentPosition, offset, delta);
             }
         }
 
@@ -358,7 +353,7 @@ namespace Pancake.MobileInput
                     momentum /= _dragFinalMomentumVector.Count;
                 }
 
-                onStopDrag.Raise(stopPosition, momentum);
+                onStopDrag.Invoke(stopPosition, momentum);
             }
 
             _dragFinalMomentumVector.Clear();
@@ -367,13 +362,13 @@ namespace Pancake.MobileInput
         private void FingerDown(Vector3 position)
         {
             _isFingerDown = true;
-            if (onFingerDown != null) onFingerDown.Raise(position);
+            onFingerDown?.Invoke(position);
         }
 
         private void FingerUp()
         {
             _isFingerDown = false;
-            if (onFingerUp != null) onFingerUp.Raise();
+            onFingerUp?.Invoke();
         }
 
         private Vector3 GetTouchPositionRelative(Vector3 touchPosScreen)
