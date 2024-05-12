@@ -136,7 +136,7 @@ MonoBehaviour:
   numberCoinReceive: 100
   popupShop: ShopPopup
   changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
-  fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
+  coinType: {fileID: 11400000, guid: 289aaf57a8365bb4d83cb20c17f51951, type: 2}
   showUiGameplayEvent: {fileID: 11400000, guid: d13fa7db81a86084da9a67bbdc7e381f, type: 2}
   levelType: {fileID: 11400000, guid: 81143fca18d352440a7bd3d0e8191892, type: 2}
   winGifProgresValue: {fileID: 11400000, guid: 091b41098013f73448505b7d9f00a3c5, type: 2}

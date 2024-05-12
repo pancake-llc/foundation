@@ -20,8 +20,8 @@ namespace Pancake.UI
         [SerializeField] private Button buttonClaimX5;
         [SerializeField] private TextMeshProUGUI textValueX5;
         [SerializeField, PopupPickup] private string popupShop;
-        [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
         [SerializeField] private BoolDailyVariable boolDailyVariable;
+        [SerializeField] private StringConstant coinType;
 
         [SerializeField, ListViewSettings(ShowAlternatingRowBackgrounds = AlternatingRowBackground.All, ShowFoldoutHeader = false)]
         private List<DailyRewardVariable> datas;
@@ -52,7 +52,10 @@ namespace Pancake.UI
             if (data.Value.typeReward == TypeRewardDailyReward.Coin)
             {
                 UserData.AddCoin(data.Value.amount * coeffict);
-                fxCoinSpawnEvent.Raise(days[UserData.GetCurrentDayDailyReward() - 1].transform.position, data.Value.amount * coeffict);
+                EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
+                {
+                    position = days[UserData.GetCurrentDayDailyReward() - 1].transform.position, value = data.Value.amount * coeffict, type = coinType.Value
+                });
             }
             else
             {

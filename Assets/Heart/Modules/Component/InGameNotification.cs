@@ -7,7 +7,6 @@ using LitMotion.Extensions;
 #endif
 using Pancake.Common;
 using Pancake.Localization;
-using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +21,6 @@ namespace Pancake.Component
         [SerializeField] private float timeAnimate = 0.5f;
         [SerializeField] private float sizeYColapse = 74f;
         [SerializeField] private float sizeYExpland = 90f;
-        [SerializeField] private ScriptableEventGameObject returnPoolEvent;
 
         [Header("SOUND"), SerializeField] protected bool enabledSound;
 
@@ -60,7 +58,7 @@ namespace Pancake.Component
             localeTextMessage.gameObject.SetActive(false);
 #if PANCAKE_LITMOTION
             LMotion.Create(imageBackgound.rectTransform.sizeDelta, new Vector2(-GetComponent<RectTransform>().rect.width + sizeYColapse, sizeYColapse), timeAnimate)
-                .WithOnComplete(() => returnPoolEvent.Raise(gameObject))
+                .WithOnComplete(() => gameObject.Return())
                 .BindToSizeDelta(imageBackgound.rectTransform)
                 .AddTo(gameObject);
 #endif

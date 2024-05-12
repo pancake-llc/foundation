@@ -486,8 +486,8 @@ MonoBehaviour:
   buttonClaimX5: {fileID: 5486523363708144616}
   textValueX5: {fileID: 1963513561505940709}
   popupShop: ShopPopup
-  fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
   boolDailyVariable: {fileID: 11400000, guid: a66391c4583af954e84a2e823e2dd2c4, type: 2}
+  coinType: {fileID: 11400000, guid: 289aaf57a8365bb4d83cb20c17f51951, type: 2}
   datas:
   - {fileID: 11400000, guid: d82d9cffde819074795ca86a49f4757a, type: 2}
   - {fileID: 11400000, guid: 8aa628d6ce5aafc4f8c52cd2b732ce80, type: 2}

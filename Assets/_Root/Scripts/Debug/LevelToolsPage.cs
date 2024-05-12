@@ -12,16 +12,16 @@ namespace Pancake.SceneFlow
 {
     public class LevelToolsPage : DefaultDebugPageBase
     {
-        private ScriptableEventVfxMagnet _fxCoinSpawnEvent;
+        private StringConstant _currencyType;
         private StringConstant _levelType;
         private ScriptableEventNoParam _hideUiGameplayEvent;
 
         private string _targetLevel;
         protected override string Title => "Level Tools";
 
-        public void Setup(ScriptableEventVfxMagnet fxCoinSpawnEvent, StringConstant levelType, ScriptableEventNoParam hideUiGameplayEvent)
+        public void Setup(StringConstant currencyType, StringConstant levelType, ScriptableEventNoParam hideUiGameplayEvent)
         {
-            _fxCoinSpawnEvent = fxCoinSpawnEvent;
+            _currencyType = currencyType;
             _levelType = levelType;
             _hideUiGameplayEvent = hideUiGameplayEvent;
         }
@@ -32,13 +32,13 @@ namespace Pancake.SceneFlow
                 clicked: () =>
                 {
                     UserData.AddCoin(10000);
-                    _fxCoinSpawnEvent.Raise(Vector3.zero, 10000);
+                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = Vector3.zero, value = 10000, type = _currencyType.Value});
                 });
             AddButton("Add 1M Coin",
                 clicked: () =>
                 {
                     UserData.AddCoin(1000000);
-                    _fxCoinSpawnEvent.Raise(Vector3.zero, 1000000);
+                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = Vector3.zero, value = 1000000, type = _currencyType.Value});
                 });
 
             AddButton("Next Level", clicked: NextLevel);

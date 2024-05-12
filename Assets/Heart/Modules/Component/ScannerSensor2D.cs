@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Alchemy.Inspector;
 #endif
 using Pancake.Common;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Component
@@ -42,12 +41,12 @@ namespace Pancake.Component
         [SerializeField]
         private Transform source;
 
-        [SerializeField] private ScriptableEventGameObject detectedEvent;
+        [SerializeField] private GameObjectUnityEvent detectedEvent;
 
         private Vector2[] _sensors;
         private Vector2[] _lastPositions;
-        private RaycastHit2D[] _hits;
-        private HashSet<Collider2D> _hitObjects = new HashSet<Collider2D>();
+        private readonly RaycastHit2D[] _hits = new RaycastHit2D[16];
+        private readonly HashSet<Collider2D> _hitObjects = new();
 
         private int _frames;
 
@@ -80,7 +79,7 @@ namespace Pancake.Component
             }
         }
 
-        protected override void Pulse()
+        public override void Pulse()
         {
             // Reset _lastPositions
             for (var i = 0; i < _lastPositions.Length; ++i) _lastPositions[i] = source.TransformPoint(_sensors[i]);
@@ -128,9 +127,11 @@ namespace Pancake.Component
             var hitDetected = false;
 #pragma warning restore 0219
 #endif
-            _hits = Physics2D.LinecastAll(from, to, layer);
-            foreach (var hit in _hits)
+            int count = Physics2D.Linecast(from, to, new ContactFilter2D {layerMask = layer}, _hits);
+            if (count <= 0) return;
+            for (var i = 0; i < count; i++)
             {
+                var hit = _hits[i];
                 if (hit.collider != null && hit.collider.transform != source)
                 {
 #if UNITY_EDITOR
@@ -162,7 +163,7 @@ namespace Pancake.Component
             if (_hitObjects.Contains(hit.collider)) return;
 
             _hitObjects.Add(hit.collider);
-            if (detectedEvent != null) detectedEvent.Raise(hit.collider.gameObject);
+            detectedEvent?.Invoke(hit.collider.gameObject);
             if (stopAfterFirstHit) Stop();
 
 #if UNITY_EDITOR

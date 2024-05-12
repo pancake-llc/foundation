@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Pancake.Common;
 #if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
 #endif
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Component
@@ -28,10 +28,10 @@ namespace Pancake.Component
         [SerializeField]
         private Transform source;
 
-        [SerializeField] private ScriptableEventGameObject detectedEvent;
+        [SerializeField] private GameObjectUnityEvent detectedEvent;
 
-        private Collider[] _hits;
-        private HashSet<Collider> _hitObjects = new HashSet<Collider>();
+        private readonly Collider[] _hits = new Collider[16];
+        private readonly HashSet<Collider> _hitObjects = new();
         private int _frames;
 
         private void Awake()
@@ -39,7 +39,7 @@ namespace Pancake.Component
             if (detectOnStart) Pulse();
         }
 
-        protected override void Pulse()
+        public override void Pulse()
         {
             _hitObjects.Clear();
             isPlaying = true;
@@ -62,9 +62,11 @@ namespace Pancake.Component
 
         private void Raycast(Vector3 center)
         {
-            _hits = Physics.OverlapSphere(center, radius, layer);
-            foreach (var hit in _hits)
+            int count = Physics.OverlapSphereNonAlloc(center, radius, _hits, layer);
+            if (count <= 0) return;
+            for (var i = 0; i < count; i++)
             {
+                var hit = _hits[i];
                 if (hit != null && hit.transform != source) HandleHit(hit);
             }
         }
@@ -73,7 +75,7 @@ namespace Pancake.Component
         {
             if (_hitObjects.Contains(hit)) return;
             _hitObjects.Add(hit);
-            if (detectedEvent != null) detectedEvent.Raise(hit.gameObject);
+            detectedEvent?.Invoke(hit.gameObject);
             if (stopAfterFirstHit) Stop();
 
 #if UNITY_EDITOR

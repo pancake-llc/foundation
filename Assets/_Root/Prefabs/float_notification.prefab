@@ -301,11 +301,9 @@ MonoBehaviour:
   imageBackgound: {fileID: 5992194379926268908}
   localeTextMessage: {fileID: 4433790781560610965}
   duration: 1
-  timeAnimate: 0.5
+  timeAnimate: 0.3
   sizeYColapse: 74
   sizeYExpland: 90
-  returnPoolEvent: {fileID: 11400000, guid: d1bedc11cc6d4a14e9de7b508197c061, type: 2}
   enabledSound: 0
   audioOpen: {fileID: 0}
   audioClose: {fileID: 0}
-  playAudioEvent: {fileID: 0}

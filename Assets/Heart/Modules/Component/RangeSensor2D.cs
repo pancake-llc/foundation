@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Pancake.Common;
 #if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
 #endif
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.Component
@@ -10,7 +10,6 @@ namespace Pancake.Component
     public class RangeSensor2D : Sensor
     {
         [Space(8)] [SerializeField] private float radius = 1f;
-
         [Space(8)] [SerializeField] private bool stopAfterFirstHit;
         [SerializeField] private bool detectOnStart = true;
 #if UNITY_EDITOR
@@ -27,10 +26,10 @@ namespace Pancake.Component
         [SerializeField]
         private Transform source;
 
-        [SerializeField] private ScriptableEventGameObject detectedEvent;
+        [SerializeField] private GameObjectUnityEvent detectedEvent;
 
-        private Collider2D[] _hits;
-        private HashSet<Collider2D> _hitObjects = new HashSet<Collider2D>();
+        private readonly Collider2D[] _hits = new Collider2D[16];
+        private readonly HashSet<Collider2D> _hitObjects = new();
         private int _frames;
 
         private void Awake()
@@ -38,7 +37,7 @@ namespace Pancake.Component
             if (detectOnStart) Pulse();
         }
 
-        protected override void Pulse()
+        public override void Pulse()
         {
             _hitObjects.Clear();
             isPlaying = true;
@@ -67,9 +66,12 @@ namespace Pancake.Component
             var hitDetected = false;
 #pragma warning restore 0219
 #endif
-            _hits = Physics2D.OverlapCircleAll(center, radius, layer);
-            foreach (var hit in _hits)
+            int count = Physics2D.OverlapCircle(center, radius, new ContactFilter2D {layerMask = layer}, _hits);
+            if (count <= 0) return;
+
+            for (var i = 0; i < count; i++)
             {
+                var hit = _hits[i];
                 if (hit != null && hit.transform != source)
                 {
 #if UNITY_EDITOR
@@ -94,7 +96,7 @@ namespace Pancake.Component
         {
             if (_hitObjects.Contains(hit)) return;
             _hitObjects.Add(hit);
-            if (detectedEvent != null) detectedEvent.Raise(hit.gameObject);
+            detectedEvent?.Invoke(hit.gameObject);
             if (stopAfterFirstHit) Stop();
 
 #if UNITY_EDITOR

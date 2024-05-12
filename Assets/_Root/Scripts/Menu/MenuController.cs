@@ -53,9 +53,9 @@ namespace Pancake.SceneFlow
             WaitShowUpdate();
         }
 
-        private void OnButtonRoomPressed() { InGameNotificationRouter.Spawn(localeTextFeatureLocked); }
+        private void OnButtonRoomPressed() { EventBus<SpawnInGameNotiEvent>.Raise(new SpawnInGameNotiEvent {localeText = localeTextFeatureLocked}); }
 
-        private void OnButtonPetPressed() { InGameNotificationRouter.Spawn(localeTextFeatureLocked); }
+        private void OnButtonPetPressed() { EventBus<SpawnInGameNotiEvent>.Raise(new SpawnInGameNotiEvent {localeText = localeTextFeatureLocked}); }
 
         private void OnButtonRankPressed() { MainPopupContainer.Push<LeaderboardPopup>(popupLeaderboard, false); }
 

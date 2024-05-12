@@ -197,7 +197,11 @@ namespace Pancake.LevelSystem
         private int IndexInLevelContainer(int indexSegment, int countOfType, int countOfTypeBeforeIndex) { return countOfType * indexSegment + countOfTypeBeforeIndex; }
 
         public static void RegisterLevelIndexChanged(string id, Action<int> action) { Dimensions[id].ChangeLevelIndexEvent += action; }
-        public static void UnRegisterLevelIndexChanged(string id, Action<int> action) { Dimensions[id].ChangeLevelIndexEvent -= action; }
+
+        public static void UnRegisterLevelIndexChanged(string id, Action<int> action)
+        {
+            if (Dimensions.TryGetValue(id, out var dimension)) dimension.ChangeLevelIndexEvent -= action;
+        }
         public static UniTask<LevelComponent> LoadLevel(string id, int index) { return Dimensions[id].LoadLevel(index); }
         public static LevelComponent GetNextLevelLoaded(string id) { return Dimensions[id].GetNextlevelLoaded(); }
         public static LevelComponent GetPreviousLevelLoaded(string id) { return Dimensions[id].GetPreviousLevelLoaded(); }

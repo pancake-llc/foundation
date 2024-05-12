@@ -22,9 +22,8 @@ namespace Pancake.UI
         [SerializeField] private GameObject uiConfetti;
         [SerializeField] private int numberCoinReceive = 100;
         [SerializeField, PopupPickup] private string popupShop;
-
         [SerializeField] private ScriptableEventString changeSceneEvent;
-        [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
+        [SerializeField] private StringConstant coinType;
         [SerializeField] private ScriptableEventNoParam showUiGameplayEvent;
         [SerializeField] private StringConstant levelType;
         [SerializeField] private IntVariable winGifProgresValue;
@@ -79,7 +78,10 @@ namespace Pancake.UI
         private void CollectReward(int number)
         {
             UserData.AddCoin(number);
-            fxCoinSpawnEvent.Raise(Vector3.zero, number);
+            EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
+            {
+                position = Vector3.zero, value = number, type = coinType.Value
+            });
         }
 
         private async void Continute()

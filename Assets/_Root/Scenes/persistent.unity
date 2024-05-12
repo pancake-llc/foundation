@@ -298,6 +298,7 @@ GameObject:
   - component: {fileID: 776958722}
   - component: {fileID: 776958723}
   - component: {fileID: 776958724}
+  - component: {fileID: 776958725}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -565,6 +566,20 @@ MonoBehaviour:
   userId: {fileID: 11400000, guid: b68a0354d7023a24790218162ff3b773, type: 2}
   status: {fileID: 11400000, guid: 07f6d12cd53d8ad4090943cae6eed64f, type: 2}
   loginEvent: {fileID: 11400000, guid: 5f14cc6af0a90434eb9fac7fae2fedc0, type: 2}
+--- !u!114 &776958725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 776958708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20a7f8c694d34b98b82633ed1715e4de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notificationPrefab: {fileID: 6103597003888582579, guid: ad8c0e57917578f40ac15f7d2b915718, type: 3}
+  root: {fileID: 1042183230}
 --- !u!1 &814159081
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,7 +669,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugViewPrefab: {fileID: 6564643838517370666, guid: ca5e6d279e01e413f8bbf07d75aebe7f, type: 3}
   graphyPrefab: {fileID: 8546455465286430009, guid: a0ba11c85f92c1c4792eeec43dad26c0, type: 3}
-  fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
+  coinType: {fileID: 11400000, guid: 289aaf57a8365bb4d83cb20c17f51951, type: 2}
   levelType: {fileID: 11400000, guid: 81143fca18d352440a7bd3d0e8191892, type: 2}
   hideUiGameplayEvent: {fileID: 11400000, guid: 7dcbf6ffc2eff08498f36bd132ec680a, type: 2}
 --- !u!114 &814159087

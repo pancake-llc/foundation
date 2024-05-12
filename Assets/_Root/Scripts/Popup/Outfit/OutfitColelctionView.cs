@@ -15,7 +15,7 @@ namespace Pancake.UI
         [SerializeField] private OutfitSlotBarComponent slotBarPrefab;
         [SerializeField] private Transform content;
         [SerializeField] private Button buttonFreeCoin;
-        [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
+        [SerializeField] private StringConstant coinType;
         [SerializeField] private int coinFreeValue = 500;
 
         private CharacterOutfit _datas;
@@ -31,20 +31,17 @@ namespace Pancake.UI
                     _slotBars[i].Setup(units[i], outfitType);
                 }
             }
-        
+
             buttonFreeCoin.onClick.AddListener(OnButtonGetFreeCoinPressed);
             return UniTask.CompletedTask;
         }
 
-        private void OnButtonGetFreeCoinPressed()
-        {
-            Advertising.Reward?.OnCompleted(OnCompleteAdGetFreeCoin).Show();
-        }
+        private void OnButtonGetFreeCoinPressed() { Advertising.Reward?.OnCompleted(OnCompleteAdGetFreeCoin).Show(); }
 
         private void OnCompleteAdGetFreeCoin()
         {
             UserData.AddCoin(coinFreeValue);
-            fxCoinSpawnEvent.Raise(buttonFreeCoin.transform.position, coinFreeValue);
+            EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = buttonFreeCoin.transform.position, value = coinFreeValue, type = coinType.Value});
         }
 
         public void Binding(CharacterOutfit filter, OutfitType outfitType)

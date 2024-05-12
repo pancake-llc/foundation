@@ -24,7 +24,7 @@ namespace Pancake.UI
         [SerializeField] private GameObject purchasedRemoveAds;
         [SerializeField] private GameObject purchasedAllPinSkin;
         [SerializeField] private GameObject purchasedVip;
-        [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
+        [SerializeField] private StringConstant coinType;
         [SerializeField] private IAPDataVariable coinPack1;
         [SerializeField] private IAPDataVariable coinPack2;
         [SerializeField] private IAPDataVariable doubleCoin;
@@ -100,7 +100,7 @@ namespace Pancake.UI
         private void OnCompleteAdGetFreeCoin()
         {
             UserData.AddCoin(coinFreeValue);
-            fxCoinSpawnEvent.Raise(buttonFreeCoin.transform.position, coinFreeValue);
+            EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = buttonFreeCoin.transform.position, value = coinFreeValue, type = coinType.Value});
             //noticeUpdateCoinEvent.Raise(); // use coin collision insteaded so dont need use noticeUpdateCoinEvent
         }
 
@@ -109,7 +109,10 @@ namespace Pancake.UI
             vip.OnPurchaseCompleted(() =>
                 {
                     Refresh();
-                    fxCoinSpawnEvent.Raise(buttonVip.transform.parent.position, coinPack1Value);
+                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
+                        {
+                            position = buttonVip.transform.parent.position, value = coinPack1Value, type = coinType.Value
+                        });
                 })
                 .Purchase();
         }
@@ -123,7 +126,10 @@ namespace Pancake.UI
             coinPack1.OnPurchaseCompleted(() =>
                 {
                     Refresh();
-                    fxCoinSpawnEvent.Raise(buttonCoinPack1.transform.parent.position, coinPack1Value);
+                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
+                    {
+                        position = buttonCoinPack1.transform.parent.position, value = coinPack1Value, type = coinType.Value
+                    });
                 })
                 .Purchase();
         }
@@ -133,7 +139,10 @@ namespace Pancake.UI
             coinPack2.OnPurchaseCompleted(() =>
                 {
                     Refresh();
-                    fxCoinSpawnEvent.Raise(buttonCoinPack2.transform.parent.position, coinPack2Value);
+                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
+                    {
+                        position = buttonCoinPack2.transform.parent.position, value = coinPack2Value, type = coinType.Value
+                    });
                 })
                 .Purchase();
         }

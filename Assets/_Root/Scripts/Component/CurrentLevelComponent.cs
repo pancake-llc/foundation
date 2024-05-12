@@ -23,7 +23,7 @@ namespace Pancake.SceneFlow
 
         protected void OnDisable()
         {
-            if (subscribe) LevelCoordinator.RegisterLevelIndexChanged(levelType.Value, OnValueChanged);
+            if (subscribe) LevelCoordinator.UnRegisterLevelIndexChanged(levelType.Value, OnValueChanged);
         }
 
         private void OnValueChanged(int level) { localeText.UpdateArgs($"{level + 1}"); }

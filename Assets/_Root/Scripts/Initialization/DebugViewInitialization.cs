@@ -11,7 +11,7 @@ namespace Pancake.SceneFlow
     {
         [SerializeField] private GameObject debugViewPrefab;
         [SerializeField] private GameObject graphyPrefab;
-        [SerializeField] private ScriptableEventVfxMagnet fxCoinSpawnEvent;
+        [SerializeField] private StringConstant coinType;
         [Header("level")] [SerializeField] private StringConstant levelType;
         [SerializeField] private ScriptableEventNoParam hideUiGameplayEvent;
 
@@ -31,13 +31,7 @@ namespace Pancake.SceneFlow
             var initialPage = DebugSheet.Instance.GetOrCreateInitialPage();
             initialPage.AddPageLinkButton<DebugToolsPage>("Debug Tools", icon: toolIcon);
             initialPage.AddPageLinkButton<AdsToolsPage>("Ads Tools");
-            initialPage.AddPageLinkButton<LevelToolsPage>("Level Tools",
-                onLoad: tuple =>
-                {
-                    tuple.page.Setup(fxCoinSpawnEvent,
-                        levelType,
-                        hideUiGameplayEvent);
-                });
+            initialPage.AddPageLinkButton<LevelToolsPage>("Level Tools", onLoad: tuple => { tuple.page.Setup(coinType, levelType, hideUiGameplayEvent); });
             initialPage.Reload();
         }
     }

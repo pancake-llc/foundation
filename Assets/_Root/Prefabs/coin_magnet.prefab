@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4648305778772171451}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -46,18 +46,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf80b6e169b3d56408b30b66e4da91e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
-  listVfxMagnetInstance: {fileID: 11400000, guid: 491280c243b81044cbb54bda9df5a525, type: 2}
-  coinFxPrefab: {fileID: 0}
-  returnPoolEvent: {fileID: 11400000, guid: b39b52d9a5ec5e144aa0c0b97a091f74, type: 2}
-  coinFxScale: 0.8
-  coinForceField: {fileID: 0}
+  type: {fileID: 11400000, guid: 289aaf57a8365bb4d83cb20c17f51951, type: 2}
+  fxPrefab: {fileID: 3996613071643963067, guid: 7fe4a6ec0fa30b548b7b105b4bd73ece, type: 3}
+  fxScale: 1
+  particleForceField: {fileID: 8764099533596667228}
   isPlaySound: 1
   audioSpawn: {fileID: 11400000, guid: 8f893bd59754ee243917f301f9d3da84, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
-  useCanvasMaster: 1
-  canvas: {fileID: 0}
-  getCanvasMasterEvent: {fileID: 11400000, guid: eb6564e2a34609041adf55fdffed4eb2, type: 2}
 --- !u!330 &8764099533596667228
 ParticleSystemForceField:
   m_ObjectHideFlags: 0
@@ -561,6 +555,7 @@ CircleCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4648305778772171451}
   m_Enabled: 1
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -584,7 +579,7 @@ CircleCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.5

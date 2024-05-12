@@ -5,7 +5,6 @@ using System.Linq;
 using Alchemy.Inspector;
 using Alchemy.Serialization;
 #endif
-using Pancake.Scriptable;
 using Pancake.Sound;
 using UnityEngine;
 
@@ -14,10 +13,7 @@ namespace Pancake.Component
     [AlchemySerialize]
     public partial class VfxParticleCollision : GameComponent
     {
-        [SerializeField] private ScriptableEventInt updateCoinWithValueEvent;
-        [SerializeField] private ScriptableEventNoParam updateCoinEvent;
-        [SerializeField] private ListGameObject vfxMagnetCollection;
-        [SerializeField] private ScriptableEventGameObject returnPoolEvent;
+        public StringConstant type;
         [field: SerializeField] public ParticleSystem PS { get; private set; }
 #if PANCAKE_ALCHEMY
         [AlchemySerializeField, NonSerialized]
@@ -33,9 +29,13 @@ namespace Pancake.Component
 
         private int _segmentValue;
         private bool _flag;
+        private Action<GameObject> _returnEvent;
+        private Func<bool> _isFxInstanceEmpty;
 
-        public void Init(int value)
+        public void Init(int value, Action<GameObject> returnEvent, Func<bool> isFxInstanceEmpty)
         {
+            _returnEvent = returnEvent;
+            _isFxInstanceEmpty = isFxInstanceEmpty;
             _flag = false;
 
             var sorted = numberParticleMap.OrderByDescending(x => x.Key).ToList();
@@ -56,7 +56,7 @@ namespace Pancake.Component
 
         private void OnParticleCollision(GameObject particle)
         {
-            updateCoinWithValueEvent.Raise(_segmentValue);
+            EventBus<UpdateCurrencyWithValueEvent>.Raise(new UpdateCurrencyWithValueEvent {typeCurrency = type.Value, value = _segmentValue});
             if (enabledSound && audioCollision != null) audioCollision.PlaySfx();
         }
 
@@ -71,8 +71,8 @@ namespace Pancake.Component
                 ParticleSystem.ExternalForcesModule externalForcesModule = PS.externalForces;
                 externalForcesModule.RemoveAllInfluences();
                 externalForcesModule.enabled = false;
-                returnPoolEvent.Raise(gameObject);
-                if (vfxMagnetCollection.Count == 0) updateCoinEvent.Raise();
+                _returnEvent.Invoke(gameObject);
+                if (_isFxInstanceEmpty.Invoke()) EventBus<UpdateCurrencyEvent>.Raise(new UpdateCurrencyEvent {typeCurrency = type.Value});
             }
         }
     }

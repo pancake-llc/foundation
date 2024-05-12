@@ -187,15 +187,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -356,15 +358,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -708,14 +712,12 @@ MonoBehaviour:
   enabledSound: 0
   audioOpen: {fileID: 0}
   audioClose: {fileID: 0}
-  playAudioEvent: {fileID: 0}
   outfitType: 2
   chunkSize: 3
   slotBarPrefab: {fileID: 6083883964460880350, guid: c2f41edf55c4bd04f907d4fa0aa22b4c, type: 3}
   content: {fileID: 4814279569940970306}
   buttonFreeCoin: {fileID: 7889007262081752405}
-  rewardAd: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
-  fxCoinSpawnEvent: {fileID: 11400000, guid: fbaf3af7ccd5bd34bbfbb642f62f7987, type: 2}
+  coinType: {fileID: 11400000, guid: 289aaf57a8365bb4d83cb20c17f51951, type: 2}
   coinFreeValue: 1000
 --- !u!114 &1332071669992820406
 MonoBehaviour:
@@ -729,7 +731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b3b286a9cc6ab94cbbad8d94122b850, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Id>k__BackingField: SkinShoesCollectionSheet
+  id: 
   order: 0
   animationContainer:
     enterAnimations: []
@@ -1027,6 +1029,9 @@ MonoBehaviour:
   onPointerUp:
     m_PersistentCalls:
       m_Calls: []
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
   onHold:
     m_PersistentCalls:
       m_Calls: []
@@ -1037,9 +1042,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -1062,7 +1068,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6009f886fd5a41344b443b505398d111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rewardAd: {fileID: 11400000, guid: 7127d460e8cf74341a319a8dec6427d7, type: 2}
   fetch: {fileID: 4994860656953845481}
 --- !u!1001 &364991826325867248
 PrefabInstance:

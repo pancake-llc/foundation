@@ -4915,10 +4915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98354c947a493d2488eba32717bfc4fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateCoinWithValueEvent: {fileID: 11400000, guid: fd36f245da8848948a005de35c9f6993, type: 2}
-  updateCoinEvent: {fileID: 11400000, guid: 740c80bfeabae64499a1300066af7143, type: 2}
-  vfxMagnetCollection: {fileID: 11400000, guid: 491280c243b81044cbb54bda9df5a525, type: 2}
-  returnPoolEvent: {fileID: 11400000, guid: b39b52d9a5ec5e144aa0c0b97a091f74, type: 2}
+  type: {fileID: 11400000, guid: 289aaf57a8365bb4d83cb20c17f51951, type: 2}
   <PS>k__BackingField: {fileID: 3996613071643963069}
   enabledSound: 1
   audioCollision: {fileID: 11400000, guid: aa33ad2229195f9479821f41de547c98, type: 2}
