@@ -12,7 +12,7 @@ namespace PancakeEditor.Common
         {
             {"com.cysharp.unitask", "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4"},
             {"com.annulusgames.alchemy", "https://github.com/pancake-llc/Alchemy.git?path=/Alchemy/Assets/Alchemy"},
-            {"com.annulusgames.lit-motion", "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#1.9.0"},
+            {"com.annulusgames.lit-motion", "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v1.9.0"},
             {
                 "com.annulusgames.component-cache-generator",
                 "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator"

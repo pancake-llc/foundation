@@ -2,7 +2,7 @@
   "dependencies": {
     "com.annulusgames.alchemy": "https://github.com/pancake-llc/Alchemy.git?path=/Alchemy/Assets/Alchemy",
     "com.annulusgames.component-cache-generator": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",
-    "com.annulusgames.lit-motion": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
+    "com.annulusgames.lit-motion": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v1.9.0",
     "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10",
     "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.3",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4",

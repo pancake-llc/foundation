@@ -15,15 +15,15 @@
       "hash": "f25fb2680ce3bd01d284a3fe3406200ee0cec59e"
     },
     "com.annulusgames.lit-motion": {
-      "version": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
+      "version": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion#v1.9.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.burst": "1.6.0",
         "com.unity.collections": "1.5.1",
-        "com.unity.mathematics": "1.0.0"
+        "com.unity.mathematics": "1.0.1"
       },
-      "hash": "b2bcc26e4d8a708fa24c493253785363424fd291"
+      "hash": "b6002a25d18b889216d886ee787fe1878e66be00"
     },
     "com.coffee.ui-effect": {
       "version": "https://github.com/mob-sakai/UIEffect.git#4.0.0-preview.10",
