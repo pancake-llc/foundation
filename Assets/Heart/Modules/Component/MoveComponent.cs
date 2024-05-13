@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace Pancake
 {
+    [EditorIcon("icon_default")]
     public class MoveComponent : GameComponent
     {
         [SerializeField] private bool manual;
