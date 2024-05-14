@@ -189,6 +189,8 @@ namespace Pancake.Sound
 
                 //Music is already playing, need to fade it out
                 startTime = _music.FadeMusicOut(fadeDuration);
+                var go = _music.gameObject;
+                App.Delay(_music, fadeDuration, () => go.Return());
             }
 
             _music = prefab.Request<SoundEmitter>();
