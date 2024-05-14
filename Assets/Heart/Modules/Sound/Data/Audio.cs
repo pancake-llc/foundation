@@ -7,7 +7,7 @@ namespace Pancake.Sound
     [Searchable]
     [EditorIcon("scriptable_audio")]
     [CreateAssetMenu(fileName = "Audio", menuName = "Pancake/Sound/Audio")]
-    public class Audio : ScriptableObject
+    public class Audio : ScriptableObject, ISerializationCallbackReceiver
     {
         public bool loop;
         [Range(0f, 1f)] public float volume = 1f;
@@ -24,6 +24,14 @@ namespace Pancake.Sound
 
             return result;
         }
+
+
+        public void OnBeforeSerialize()
+        {
+            foreach (var g in groups) g.ResetLastTimePlayed();
+        }
+
+        public void OnAfterDeserialize() { }
     }
 
     /// <summary>
@@ -59,6 +67,7 @@ namespace Pancake.Sound
             if (cooldownToPlay)
             {
                 if (Time.time - _lastTimePlayed <= cooldown) return null;
+
                 _lastTimePlayed = Time.time;
             }
 
@@ -96,6 +105,13 @@ namespace Pancake.Sound
             _lastClipPlayed = _nextClipToPlay;
 
             return clips[_nextClipToPlay];
+        }
+
+        internal void ResetLastTimePlayed()
+        {
+            _lastTimePlayed = 0;
+            _nextClipToPlay = -1;
+            _lastClipPlayed = -1;
         }
     }
 }
