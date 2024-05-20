@@ -294,7 +294,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.4.3",
+      "version": "1.4.4",
       "depth": 1,
       "source": "registry",
       "dependencies": {
