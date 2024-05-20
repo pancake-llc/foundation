@@ -7,6 +7,7 @@ using Pancake.Component;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
@@ -53,9 +54,9 @@ namespace Pancake.SceneFlow
             WaitShowUpdate();
         }
 
-        private void OnButtonRoomPressed() { EventBus<SpawnInGameNotiEvent>.Raise(new SpawnInGameNotiEvent {localeText = localeTextFeatureLocked}); }
+        private void OnButtonRoomPressed() { Router.Default.PublishAsync(new SpawnInGameNotiCommand(localeTextFeatureLocked)); }
 
-        private void OnButtonPetPressed() { EventBus<SpawnInGameNotiEvent>.Raise(new SpawnInGameNotiEvent {localeText = localeTextFeatureLocked}); }
+        private void OnButtonPetPressed() { Router.Default.PublishAsync(new SpawnInGameNotiCommand(localeTextFeatureLocked)); }
 
         private void OnButtonRankPressed() { MainPopupContainer.Push<LeaderboardPopup>(popupLeaderboard, false); }
 

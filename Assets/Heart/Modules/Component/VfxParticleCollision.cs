@@ -7,6 +7,7 @@ using Alchemy.Serialization;
 #endif
 using Pancake.Sound;
 using UnityEngine;
+using VitalRouter;
 
 namespace Pancake.Component
 {
@@ -56,7 +57,7 @@ namespace Pancake.Component
 
         private void OnParticleCollision(GameObject particle)
         {
-            EventBus<UpdateCurrencyWithValueEvent>.Raise(new UpdateCurrencyWithValueEvent {typeCurrency = type.Value, value = _segmentValue});
+            Router.Default.PublishAsync(new UpdateCurrencyWithValueCommand(type.Value, _segmentValue));
             if (enabledSound && audioCollision != null) audioCollision.PlaySfx();
         }
 
@@ -72,7 +73,7 @@ namespace Pancake.Component
                 externalForcesModule.RemoveAllInfluences();
                 externalForcesModule.enabled = false;
                 _returnEvent.Invoke(gameObject);
-                if (_isFxInstanceEmpty.Invoke()) EventBus<UpdateCurrencyEvent>.Raise(new UpdateCurrencyEvent {typeCurrency = type.Value});
+                if (_isFxInstanceEmpty.Invoke()) Router.Default.PublishAsync(new UpdateCurrencyCommand(type.Value));
             }
         }
     }

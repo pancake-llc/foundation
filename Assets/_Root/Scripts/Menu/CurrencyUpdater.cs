@@ -2,49 +2,35 @@ using Alchemy.Inspector;
 using Pancake.Component;
 using TMPro;
 using UnityEngine;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
     [EditorIcon("icon_default")]
-    public class CurrencyUpdater : GameComponent
+    [Routes]
+    public partial class CurrencyUpdater : GameComponent
     {
         [SerializeField] private StringConstant type;
 
         [Blockquote("Update text with current currency of user")] [SerializeField]
         private TextMeshProUGUI text;
 
-        private EventBinding<UpdateCurrencyEvent> _updateCurrency;
-        private EventBinding<UpdateCurrencyWithValueEvent> _updateCurrencyWithValue;
-
         private void Awake()
         {
-            _updateCurrency = new EventBinding<UpdateCurrencyEvent>(OnNoticeUpdateCoin);
-            _updateCurrencyWithValue = new EventBinding<UpdateCurrencyWithValueEvent>(OnNoticeUpdateCoinWithValue);
+            MapTo(Router.Default);
             NoticeUpdateCoinImpl();
         }
 
-        private void OnNoticeUpdateCoinWithValue(UpdateCurrencyWithValueEvent arg)
+        public void OnNoticeUpdateCoinWithValue(UpdateCurrencyWithValueCommand cmd)
         {
-            if (type.Value != arg.typeCurrency) return;
-            NoticeUpdateCoinImpl(arg.value);
+            if (type.Value != cmd.TypeCurrency) return;
+            NoticeUpdateCoinImpl(cmd.Value);
         }
 
-        private void OnNoticeUpdateCoin(UpdateCurrencyEvent arg)
+        public void OnNoticeUpdateCoin(UpdateCurrencyCommand cmd)
         {
-            if (type.Value != arg.typeCurrency) return;
+            if (type.Value != cmd.TypeCurrency) return;
             NoticeUpdateCoinImpl();
-        }
-
-        private void OnEnable()
-        {
-            _updateCurrency.Listen = true;
-            _updateCurrencyWithValue.Listen = true;
-        }
-
-        private void OnDisable()
-        {
-            _updateCurrency.Listen = false;
-            _updateCurrencyWithValue.Listen = false;
         }
 
         private void NoticeUpdateCoinImpl(int value)

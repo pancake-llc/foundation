@@ -9,10 +9,12 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
-    public class LauncherInitialize : GameComponent
+    [Routes]
+    public partial class LauncherInitialize : GameComponent
     {
         [SerializeField] private BoolVariable loadingCompleted;
         [SerializeField] private bool isWaitRemoteConfig;
@@ -21,6 +23,8 @@ namespace Pancake.SceneFlow
         [Space] [SerializeField] private bool isWaitLevelLoaded;
         [Space] [SerializeField] private bool requireInitLocalization;
         [SerializeField, ShowIf("requireInitLocalization")] private BoolVariable localizationInitialized;
+
+        private bool _isLevelLoadCompleted;
 
         private void Awake()
         {
@@ -41,6 +45,8 @@ namespace Pancake.SceneFlow
             LoadScene();
         }
 
+        public void OnLevelLoadedCompleted(LevelLoadedNoticeCommand cmd) { _isLevelLoadCompleted = true; }
+
         private void ScheduleDailyNotification()
         {
             if (dailyNotification != null) dailyNotification.Schedule();
@@ -54,7 +60,7 @@ namespace Pancake.SceneFlow
             await UniTask.WaitUntil(() => loadingCompleted.Value);
             await Addressables.LoadSceneAsync(persistentScene);
             if (isWaitRemoteConfig) await UniTask.WaitUntil(() => RemoteConfig.IsFetchCompleted);
-            if (isWaitLevelLoaded) await EventBus<LevelLoadedNoticeEvent>.GetAwaiter().Async();
+            if (isWaitLevelLoaded) await UniTask.WaitUntil(() => _isLevelLoadCompleted);
 
             // TODO : wait something else before load menu
             // Don't call the ScheduleDailyNotification function here because LoadSceneAsync may cause the Schedule to be inaccurate 
@@ -74,7 +80,7 @@ namespace Pancake.SceneFlow
         }
     }
 
-    public struct LevelLoadedNoticeEvent : IEvent
+    public readonly struct LevelLoadedNoticeCommand : ICommand
     {
     }
 }

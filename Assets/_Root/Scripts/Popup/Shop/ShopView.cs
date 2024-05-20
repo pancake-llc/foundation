@@ -6,6 +6,7 @@ using Pancake.SceneFlow;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using VitalRouter;
 
 namespace Pancake.UI
 {
@@ -100,7 +101,7 @@ namespace Pancake.UI
         private void OnCompleteAdGetFreeCoin()
         {
             UserData.AddCoin(coinFreeValue);
-            EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = buttonFreeCoin.transform.position, value = coinFreeValue, type = coinType.Value});
+            Router.Default.PublishAsync(new VfxMangnetCommand(coinType.Value, buttonFreeCoin.transform.position, coinFreeValue));
             //noticeUpdateCoinEvent.Raise(); // use coin collision insteaded so dont need use noticeUpdateCoinEvent
         }
 
@@ -109,10 +110,7 @@ namespace Pancake.UI
             vip.OnPurchaseCompleted(() =>
                 {
                     Refresh();
-                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
-                        {
-                            position = buttonVip.transform.parent.position, value = coinPack1Value, type = coinType.Value
-                        });
+                    Router.Default.PublishAsync(new VfxMangnetCommand(coinType.Value, buttonVip.transform.parent.position, coinPack1Value));
                 })
                 .Purchase();
         }
@@ -126,10 +124,7 @@ namespace Pancake.UI
             coinPack1.OnPurchaseCompleted(() =>
                 {
                     Refresh();
-                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
-                    {
-                        position = buttonCoinPack1.transform.parent.position, value = coinPack1Value, type = coinType.Value
-                    });
+                    Router.Default.PublishAsync(new VfxMangnetCommand(coinType.Value, buttonCoinPack1.transform.parent.position, coinPack1Value));
                 })
                 .Purchase();
         }
@@ -139,10 +134,7 @@ namespace Pancake.UI
             coinPack2.OnPurchaseCompleted(() =>
                 {
                     Refresh();
-                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
-                    {
-                        position = buttonCoinPack2.transform.parent.position, value = coinPack2Value, type = coinType.Value
-                    });
+                    Router.Default.PublishAsync(new VfxMangnetCommand(coinType.Value, buttonCoinPack2.transform.parent.position, coinPack2Value));
                 })
                 .Purchase();
         }

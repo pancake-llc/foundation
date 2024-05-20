@@ -10,6 +10,7 @@ using Cysharp.Threading.Tasks;
 using LitMotion;
 using UnityEngine;
 using UnityEngine.UI;
+using VitalRouter;
 
 namespace Pancake.UI
 {
@@ -78,10 +79,7 @@ namespace Pancake.UI
         private void CollectReward(int number)
         {
             UserData.AddCoin(number);
-            EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
-            {
-                position = Vector3.zero, value = number, type = coinType.Value
-            });
+            Router.Default.PublishAsync(new VfxMangnetCommand(coinType.Value, Vector3.zero, number));
         }
 
         private async void Continute()

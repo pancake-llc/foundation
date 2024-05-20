@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VitalRouter;
 using Button = UnityEngine.UI.Button;
 
 namespace Pancake.UI
@@ -52,10 +53,9 @@ namespace Pancake.UI
             if (data.Value.typeReward == TypeRewardDailyReward.Coin)
             {
                 UserData.AddCoin(data.Value.amount * coeffict);
-                EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent
-                {
-                    position = days[UserData.GetCurrentDayDailyReward() - 1].transform.position, value = data.Value.amount * coeffict, type = coinType.Value
-                });
+                Router.Default.PublishAsync(new VfxMangnetCommand(coinType.Value,
+                    days[UserData.GetCurrentDayDailyReward() - 1].transform.position,
+                    data.Value.amount * coeffict));
             }
             else
             {

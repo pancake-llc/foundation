@@ -4,18 +4,27 @@ using Alchemy.Inspector;
 using System.Collections.Generic;
 using Pancake.Sound;
 using UnityEngine;
+using VitalRouter;
 
 namespace Pancake.Component
 {
-    public struct VfxMangnetEvent : IEvent
+    public readonly struct VfxMangnetCommand : ICommand
     {
-        public string type;
-        public Vector3 position;
-        public int value;
+        public string Type { get; }
+        public Vector3 Position { get; }
+        public int Value { get; }
+
+        public VfxMangnetCommand(string type, Vector3 position, int value)
+        {
+            Type = type;
+            Position = position;
+            Value = value;
+        }
     }
 
     [EditorIcon("icon_default")]
-    public class VfxMagnetComponent : GameComponent
+    [Routes]
+    public partial class VfxMagnetComponent : GameComponent
     {
         [SerializeField] private StringConstant type;
         [SerializeField] private GameObject fxPrefab;
@@ -29,13 +38,8 @@ namespace Pancake.Component
         private Audio audioSpawn;
 
         private readonly List<GameObject> _fxInstances = new();
-        private EventBinding<VfxMangnetEvent> _binding;
 
-        private void Awake() { _binding = new EventBinding<VfxMangnetEvent>(OnSpawnVfx); }
-
-        protected void OnEnable() { _binding.Listen = true; }
-
-        protected void OnDisable() { _binding.Listen = false; }
+        private void Awake() { MapTo(Router.Default); }
 
         private void ReturnFx(GameObject fx)
         {
@@ -45,19 +49,19 @@ namespace Pancake.Component
 
         private bool IsFxInstanceEmpty() => _fxInstances.Count == 0;
 
-        private void OnSpawnVfx(VfxMangnetEvent data)
+        public void OnSpawnVfx(VfxMangnetCommand data)
         {
-            if (data.type != type.Value) return;
+            if (data.Type != type.Value) return;
 
             var fx = fxPrefab.Request();
             var vfxParticleCollision = fx.GetComponent<VfxParticleCollision>();
             if (vfxParticleCollision == null) return;
-            vfxParticleCollision.Init(data.value, ReturnFx, IsFxInstanceEmpty);
+            vfxParticleCollision.Init(data.Value, ReturnFx, IsFxInstanceEmpty);
             var ps = vfxParticleCollision.PS;
             _fxInstances.Add(fx);
             ps.gameObject.SetActive(true);
             var transformCache = ps.transform;
-            transformCache.position = data.position;
+            transformCache.position = data.Position;
             var localPos = transformCache.localPosition;
             localPos = new Vector3(localPos.x, localPos.y);
             transformCache.localPosition = localPos;

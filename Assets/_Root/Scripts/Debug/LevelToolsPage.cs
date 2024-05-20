@@ -7,6 +7,7 @@ using Pancake.Scriptable;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
@@ -32,13 +33,13 @@ namespace Pancake.SceneFlow
                 clicked: () =>
                 {
                     UserData.AddCoin(10000);
-                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = Vector3.zero, value = 10000, type = _currencyType.Value});
+                    Router.Default.PublishAsync(new VfxMangnetCommand(_currencyType.Value, Vector3.zero, 10000));
                 });
             AddButton("Add 1M Coin",
                 clicked: () =>
                 {
                     UserData.AddCoin(1000000);
-                    EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = Vector3.zero, value = 1000000, type = _currencyType.Value});
+                    Router.Default.PublishAsync(new VfxMangnetCommand(_currencyType.Value, Vector3.zero, 1000000));
                 });
 
             AddButton("Next Level", clicked: NextLevel);

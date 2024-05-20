@@ -1,22 +1,19 @@
 using Pancake.Common;
 using UnityEngine;
+using VitalRouter;
 
 namespace Pancake.Component
 {
-    public class InGameNotificationRouter : GameComponent
+    [Routes]
+    public partial class InGameNotificationRouter : GameComponent
     {
         [SerializeField] private GameObject notificationPrefab;
         [SerializeField] private RectTransform root;
 
-        private EventBinding<SpawnInGameNotiEvent> _binding;
 
-        private void Awake() { _binding = new EventBinding<SpawnInGameNotiEvent>(OnSpawn); }
+        private void Awake() { MapTo(Router.Default); }
 
-        protected void OnEnable() { _binding.Listen = true; }
-
-        protected void OnDisable() { _binding.Listen = false; }
-
-        private void OnSpawn(SpawnInGameNotiEvent arg)
+        public void OnSpawn(SpawnInGameNotiCommand cmd)
         {
             var instance = notificationPrefab.Request<InGameNotification>();
             instance.transform.SetParent(root, false);
@@ -25,7 +22,7 @@ namespace Pancake.Component
             rectTransform.SetLocalPositionZ(0);
             rectTransform.SetAnchoredPositionY(-444);
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, root.rect.width - 100);
-            instance.Show(arg.localeText);
+            instance.Show(cmd.LocaleText);
         }
     }
 }

@@ -5,6 +5,7 @@ using Pancake.SceneFlow;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using VitalRouter;
 
 namespace Pancake.UI
 {
@@ -41,7 +42,7 @@ namespace Pancake.UI
         private void OnCompleteAdGetFreeCoin()
         {
             UserData.AddCoin(coinFreeValue);
-            EventBus<VfxMangnetEvent>.Raise(new VfxMangnetEvent {position = buttonFreeCoin.transform.position, value = coinFreeValue, type = coinType.Value});
+            Router.Default.PublishAsync(new VfxMangnetCommand(coinType.Value, buttonFreeCoin.transform.position, coinFreeValue));
         }
 
         public void Binding(CharacterOutfit filter, OutfitType outfitType)

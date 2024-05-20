@@ -1,7 +1,6 @@
-using Cysharp.Threading.Tasks;
-using Pancake.Common;
 using Pancake.LevelSystem;
 using UnityEngine;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
@@ -15,7 +14,7 @@ namespace Pancake.SceneFlow
         public override async void Init()
         {
             await LevelCoordinator.LoadLevel(levelType.Value, LevelCoordinator.GetCurrentLevelIndex(levelType.Value));
-            EventBus<LevelLoadedNoticeEvent>.Raise();
+            Router.Default.PublishAsync(new LevelLoadedNoticeCommand());
         }
     }
 }
