@@ -82,7 +82,7 @@ namespace Pancake.Sound
             ResumeSfxEvent += OnResumeSfx;
             FinishSfxEvent += OnFinishSfx;
             StopSfxAllEvent += OnStopAllSfx;
-            PlayMusicEvent += OnOnPlayMusic;
+            PlayMusicEvent += OnPlayMusic;
             StopMusicEvent += OnStopMusic;
             PauseMusicEvent += OnPauseMusic;
             ResumeMusicEvent += OnResumeMusic;
@@ -98,7 +98,7 @@ namespace Pancake.Sound
             ResumeSfxEvent -= OnResumeSfx;
             FinishSfxEvent -= OnFinishSfx;
             StopSfxAllEvent -= OnStopAllSfx;
-            PlayMusicEvent -= OnOnPlayMusic;
+            PlayMusicEvent -= OnPlayMusic;
             StopMusicEvent -= OnStopMusic;
             PauseMusicEvent -= OnPauseMusic;
             ResumeMusicEvent -= OnResumeMusic;
@@ -197,7 +197,7 @@ namespace Pancake.Sound
         /// </summary>
         public void TimelineInterruptsMusic() { OnStopMusic(AudioHandle.invalid); }
 
-        private AudioHandle OnOnPlayMusic(Audio audio)
+        private AudioHandle OnPlayMusic(Audio audio)
         {
             const float fadeDuration = 2f;
             var startTime = 0f;
@@ -209,6 +209,8 @@ namespace Pancake.Sound
 
                 //Music is already playing, need to fade it out
                 startTime = _music.FadeMusicOut(fadeDuration);
+                var go = _music.gameObject;
+                App.Delay(_music, fadeDuration, () => go.Return());
             }
 
             _music = prefab.Request<SoundEmitter>();
