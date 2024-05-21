@@ -137,7 +137,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.14",
+      "version": "1.8.15",
       "depth": 0,
       "source": "registry",
       "dependencies": {
