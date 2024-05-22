@@ -42,6 +42,15 @@
       },
       "hash": "e82b35466b53c9bdca805ad9a667df49ec5eb5d8"
     },
+    "com.cysharp.r3": {
+      "version": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.11",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.modules.imgui": "1.0.0"
+      },
+      "hash": "96c13c71cbd6cdd7ef0faaea90237bac7dfbdf9e"
+    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4",
       "depth": 0,
@@ -107,6 +116,48 @@
         "com.google.play.core": "1.8.1"
       },
       "hash": "039118f280938f9770ed4efcf04b5bf030981e7e"
+    },
+    "com.pancake.bcl.asyncinterfaces": {
+      "version": "https://github.com/pancake-llc/microsoft-bcl-async-interfaces.git#6.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "aa3033a3e4138902d6e50d823e51bfa0a3c46f7e"
+    },
+    "com.pancake.bcl.timeprovider": {
+      "version": "https://github.com/pancake-llc/microsoft-bcl-time-provider.git#8.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a2bbda6e7badc7036dee3ac9c9fdadee6d5f4351"
+    },
+    "com.pancake.component.annotations": {
+      "version": "https://github.com/pancake-llc/system-componentmodel-annotations.git#5.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ba111308f3ac436c073b7f9b64b0f9d238d97722"
+    },
+    "com.pancake.r3": {
+      "version": "https://github.com/pancake-llc/R3.git#1.1.11",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "5a729c4091c9b8b2fb3b8470b733027b43498f8a"
+    },
+    "com.pancake.threading.channels": {
+      "version": "https://github.com/pancake-llc/system-threading-channels.git#8.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "28c29b07521ca500ce2ef87d3269d942e818c46c"
+    },
+    "com.pancake.unsafe": {
+      "version": "https://github.com/pancake-llc/system-unsafe.git#6.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "8697585ea3ceeba6f51f25e248e89da264fe8e12"
     },
     "com.tayx.graphy": {
       "version": "https://github.com/pancake-llc/graphy.git#3.0.6",

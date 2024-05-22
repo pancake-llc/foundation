@@ -10,6 +10,7 @@ namespace PancakeEditor.Common
     public abstract class WindowInstallDependency : WindowBase
     {
         protected abstract Dictionary<string, string> Dependencies { get; }
+        protected abstract Dictionary<string, string> SubDependencies { get; }
 
         protected override void OnGUI()
         {
@@ -26,17 +27,20 @@ namespace PancakeEditor.Common
             if (GUILayout.Button("Install All"))
             {
                 Close();
-                Client.AddAndRemove(Dependencies.Values.ToArray());
+                var urls = new List<string>();
+                urls.AddRange(Dependencies.Values);
+                urls.AddRange(SubDependencies.Values);
+                Client.AddAndRemove(urls.ToArray());
             }
 
             GUI.enabled = true;
             GUILayout.Space(4);
             Uniform.DrawLine(Uniform.Jet, 2);
             GUILayout.Space(2);
-            if (!isStillMissingPackage)
-            {
-                GUILayout.Label("<color=#FFB76B>All dependencies was installed.\nPlease turn off `Show Window On Reload` to not show again</color>", htmlLabel);
-            }
+            GUILayout.Label(!isStillMissingPackage
+                    ? "<color=#FFB76B><i>All dependencies was installed.\nPlease turn off `Show Window On Reload` to not show again</i></color>"
+                    : "<color=#FFB76B><i>InstallAll is an asynchronous operation.\nAfter click please wait a moment before the operation is completed</i></color>",
+                htmlLabel);
 
             OnDrawShowOnStartup();
 
