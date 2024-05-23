@@ -26,16 +26,18 @@ namespace Pancake.Sound
         [SerializeField] private ScriptableEventAudioHandle eventStopMusic;
         [SerializeField] private ScriptableEventAudioHandle eventPauseMusic;
         [SerializeField] private ScriptableEventAudioHandle eventResumeMusic;
-
+        [SerializeField] private ScriptableEventNoParam eventStopAllMusic;
+        
         [Header("Audio Control")] [SerializeField] private FloatVariable musicVolume;
         [SerializeField] private FloatVariable sfxVolume;
 
         private SoundEmitterVault _sfx;
-        private SoundEmitter _music;
+        private SoundEmitterVault _music;
 
         private void Awake()
         {
             _sfx = new SoundEmitterVault();
+            _music = new SoundEmitterVault();
             prefab.Populate(prewarmSize, true);
             sfxVolume.OnValueChanged += OnSfxVolumeChanged;
             musicVolume.OnValueChanged += OnMusicVolumeChanged;
@@ -43,17 +45,17 @@ namespace Pancake.Sound
 
         private void OnMusicVolumeChanged(float volume)
         {
-            if (_music != null) _music.component.volume = volume;
+            foreach (var m in _music.GetAll())
+            {
+                foreach (var soundEmitter in m) soundEmitter.component.volume = volume;
+            }
         }
 
         private void OnSfxVolumeChanged(float volume)
         {
             foreach (var s in _sfx.GetAll())
             {
-                foreach (var soundEmitter in s)
-                {
-                    soundEmitter.component.volume = volume;
-                }
+                foreach (var soundEmitter in s) soundEmitter.component.volume = volume;
             }
         }
 
@@ -69,6 +71,7 @@ namespace Pancake.Sound
             eventStopMusic.OnRaised += StopMusic;
             eventPauseMusic.OnRaised += PauseMusic;
             eventResumeMusic.OnRaised += ResumeMusic;
+            eventStopAllMusic.OnRaised += StopAllMusic;
         }
 
         private void OnDisable()
@@ -83,6 +86,7 @@ namespace Pancake.Sound
             eventStopMusic.OnRaised -= StopMusic;
             eventPauseMusic.OnRaised -= PauseMusic;
             eventResumeMusic.OnRaised -= ResumeMusic;
+            eventStopAllMusic.OnRaised -= StopAllMusic;
         }
 
         /// <summary>
@@ -179,45 +183,82 @@ namespace Pancake.Sound
 
         private AudioHandle PlayMusic(Audio audio)
         {
-            const float fadeDuration = 2f;
+            const float fadeDuration = 1f;
             var startTime = 0f;
 
-            if (_music != null && _music.IsPlaying())
+            //Music is already playing, need to fade it out
+            var allPrevious = _music.GetAll();
+            foreach (var all in allPrevious)
             {
-                AudioClip songToPlay = audio.GetClips()[0];
-                if (_music.GetClip() == songToPlay) return AudioHandle.invalid;
-
-                //Music is already playing, need to fade it out
-                startTime = _music.FadeMusicOut(fadeDuration);
-                var go = _music.gameObject;
-                App.Delay(_music, fadeDuration, () => go.Return());
+                foreach (var emitter in all)
+                {
+                    emitter.FadeMusicOut(fadeDuration);
+                    var go = emitter.gameObject;
+                    emitter.OnCompleted -= StopMusicEmitter;
+                    App.Delay(emitter, fadeDuration, () => go.Return());
+                }
             }
 
-            _music = prefab.Request<SoundEmitter>();
-            _music.FadeMusicIn(audio.GetClips()[0], 0.2f, audio.volume * musicVolume.Value, startTime);
-            _music.OnCompleted += StopMusicEmitter;
+            _music.ClearAll();
 
-            return AudioHandle.invalid;
-            //No need to return a valid key for music
+            var songToPlay = audio.GetClips().Filter(s => s != null);
+            var soundEmitters = new SoundEmitter[songToPlay.Length];
+            int nOfClips = songToPlay.Length;
+            for (int i = 0; i < nOfClips; i++)
+            {
+                soundEmitters[i] = prefab.Request<SoundEmitter>();
+                soundEmitters[i].FadeMusicIn(audio.GetClips()[0], 0.2f, audio.volume * musicVolume.Value, startTime);
+                soundEmitters[i].OnCompleted += StopMusicEmitter;
+            }
+
+            return _music.Add(audio, soundEmitters);
         }
 
         private void StopMusic(AudioHandle handle)
         {
-            if (_music != null)
+            bool isFound = _music.Get(handle, out var soundEmitters);
+            if (!isFound) return;
+            foreach (var s in soundEmitters)
             {
-                if (_music.IsPlaying()) _music.Stop();
-                _music.gameObject.Return();
+                if (s.IsPlaying()) s.Stop();
+                StopMusicEmitter(s);
             }
+
+            _music.Remove(handle);
         }
 
         private void PauseMusic(AudioHandle handle)
         {
-            if (_music != null && _music.IsPlaying()) _music.Pause();
+            bool isFound = _music.Get(handle, out var soundEmitters);
+            if (!isFound) return;
+            foreach (var s in soundEmitters)
+            {
+                if (s.IsPlaying()) s.Pause();
+            }
         }
 
         private void ResumeMusic(AudioHandle handle)
         {
-            if (_music != null && !_music.IsPlaying()) _music.Resume();
+            bool isFound = _music.Get(handle, out var soundEmitters);
+            if (!isFound) return;
+            foreach (var s in soundEmitters)
+            {
+                if (!s.IsPlaying()) s.Resume();
+            }
+        }
+
+        private void StopAllMusic()
+        {
+            foreach (var s in _music.GetAll())
+            {
+                foreach (var soundEmitter in s)
+                {
+                    if (soundEmitter.IsPlaying()) soundEmitter.Stop();
+                    StopMusicEmitter(soundEmitter);
+                }
+            }
+
+            _music.ClearAll();
         }
 
         private void OnSoundEmitterFinishedPlaying(SoundEmitter soundEmitter) { StopAndCleanEmitter(soundEmitter); }
@@ -228,10 +269,6 @@ namespace Pancake.Sound
 
             soundEmitter.Stop();
             soundEmitter.gameObject.Return();
-
-            //TODO: is the above enough?
-            //_soundEmitterVault.Remove(audioCueKey); is never called if StopAndClean is called after a Finish event
-            //How is the key removed from the vault?
         }
 
         private void StopMusicEmitter(SoundEmitter soundEmitter)

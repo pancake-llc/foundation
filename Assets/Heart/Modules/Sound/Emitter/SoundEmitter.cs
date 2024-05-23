@@ -8,7 +8,7 @@ namespace Pancake.Sound
     [HideMonoScript]
     [EditorIcon("script_sound")]
     [RequireComponent(typeof(AudioSource))]
-    public class SoundEmitter : CacheGameComponent<AudioSource>
+    public class SoundEmitter : CacheGameComponent<AudioSource>, IPoolable
     {
         public event UnityAction<SoundEmitter> OnCompleted;
         public event UnityAction<SoundEmitter> OnPaused;
@@ -97,6 +97,22 @@ namespace Pancake.Sound
             component.loop = false;
             float remainingTime = component.clip.length - component.time;
             this.Delay(remainingTime, OnFadeOutCompleted);
+        }
+
+        public void OnRequest()
+        {
+            OnCompleted = null;
+            OnPaused = null;
+            OnResumed = null;
+            OnStopped = null;
+        }
+
+        public void OnReturn()
+        {
+            OnCompleted = null;
+            OnPaused = null;
+            OnResumed = null;
+            OnStopped = null;
         }
     }
 }
