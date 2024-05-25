@@ -26,7 +26,7 @@ namespace PancakeEditor.ComponentHeader
                 case ButtonType.CopyComponent:
                     return EditorResources.IconCopyComponent(Uniform.Theme);
                 case ButtonType.LoadComponent:
-                    return EditorResources.IconLightComponent(Uniform.Theme);
+                    return EditorResources.IconReloadComponent(Uniform.Theme);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null);
             }

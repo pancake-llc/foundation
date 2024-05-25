@@ -195,13 +195,13 @@ namespace PancakeEditor.Common
             return tex;
         }
 
-        public static Texture2D IconLightComponent(string theme)
+        public static Texture2D IconReloadComponent(string theme)
         {
-            TextureCached.TryGetValue($"{nameof(IconLightComponent)}{theme}", out var tex);
+            TextureCached.TryGetValue($"{nameof(IconReloadComponent)}{theme}", out var tex);
 
             if (tex != null) return tex;
-            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_light.png" : "icon_light_dark.png", RELATIVE_PATH);
-            TextureCached[$"{nameof(IconLightComponent)}{theme}"] = tex;
+            tex = ProjectDatabase.FindAssetWithPath<Texture2D>(theme.Equals("DarkTheme") ? "icon_reload_csharp.png" : "icon_reload_csharp_dark.png", RELATIVE_PATH);
+            TextureCached[$"{nameof(IconReloadComponent)}{theme}"] = tex;
             return tex;
         }
 
