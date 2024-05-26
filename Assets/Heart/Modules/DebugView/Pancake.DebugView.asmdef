@@ -1,0 +1,17 @@
+{
+    "name": "Pancake.DebugView",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1d516b886d9db401ea62daad275f3915",
+        "GUID:77221876cc6b8244180b96e320b1bcd4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

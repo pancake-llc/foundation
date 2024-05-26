@@ -608,11 +608,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -872,11 +871,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -1552,11 +1550,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2241,7 +2238,6 @@ MonoBehaviour:
   enabledSound: 1
   audioOpen: {fileID: 11400000, guid: 5faabd619f34f1345957ffd6b6178887, type: 2}
   audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
-  playAudioEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   localeTextVersion: {fileID: 193468588306640282}
   buttonMusic: {fileID: 2571178757400256735}
   buttonSound: {fileID: 5102706881421395248}
@@ -2260,8 +2256,6 @@ MonoBehaviour:
   textNameLanguageSelected: {fileID: 5003263306355268004}
   musicVolume: {fileID: 11400000, guid: f40c18cdb6b391741b188b73d884cb92, type: 2}
   sfxVolume: {fileID: 11400000, guid: 0a97e9acdf82e434983225db6d5b578f, type: 2}
-  eventPauseMusic: {fileID: 11400000, guid: b759b6d8cd9821449a28381a0f4d9fff, type: 2}
-  eventResumeMusic: {fileID: 11400000, guid: 069cea4fe43fae241bce20a8088a0e5f, type: 2}
   eventStopAllSfx: {fileID: 11400000, guid: 6e29be8aadddb964eb9f19c60d630a7c, type: 2}
   popupCredit: CreditPopup
   popupBackupData: BackupDataPopup
@@ -2460,11 +2454,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -2851,11 +2844,10 @@ MonoBehaviour:
   affectObject: {fileID: 4279811490697607961}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3094,11 +3086,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3259,11 +3250,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3661,11 +3651,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 0
   audioClick: {fileID: 0}
-  audioPlayEvent: {fileID: 0}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -3845,11 +3834,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2
@@ -4492,11 +4480,10 @@ MonoBehaviour:
   affectObject: {fileID: 0}
   enabledSound: 1
   audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  audioPlayEvent: {fileID: 11400000, guid: ef279f98ef02e3a429ea342f2d2c40a6, type: 2}
   enabledTracking: 0
   trackingEvent: {fileID: 0}
-  useVariableListener: 0
-  callbackVariable: {fileID: 0}
+  bindCustomListener: 0
+  listenerCallback: {fileID: 0}
   motionData:
     scale: {x: 0.92, y: 0.92}
     motion: 2

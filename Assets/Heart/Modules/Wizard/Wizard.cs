@@ -306,8 +306,8 @@ namespace PancakeEditor
                                 });
                         break;
                     case WizardAllType.ScreenSetting:
-                        var defaultPopupSetting = Resources.Load<Pancake.UI.DefaultTransitionSetting>(nameof(Pancake.UI.DefaultTransitionSetting));
-                        if (defaultPopupSetting != null) ShowContextMenu(defaultPopupSetting, nameof(Pancake.UI.DefaultTransitionSetting));
+                        //var defaultPopupSetting = Resources.Load<Pancake.UI.DefaultTransitionSetting>(nameof(Pancake.UI.DefaultTransitionSetting));
+                        //if (defaultPopupSetting != null) ShowContextMenu(defaultPopupSetting, nameof(Pancake.UI.DefaultTransitionSetting));
 
                         break;
                     case WizardAllType.HeartSetting:

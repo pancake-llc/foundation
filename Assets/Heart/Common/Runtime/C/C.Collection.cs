@@ -318,5 +318,73 @@ namespace Pancake.Common
             if (oldIndex == newIndex) return;
             (source[oldIndex], source[newIndex]) = (source[newIndex], source[oldIndex]);
         }
+
+        /// <summary>
+        /// Added the ability to access all elements in Linq
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T[] ForEach<T>(this T[] collection, Action<T> action)
+        {
+            for (int i = collection.Length - 1; i >= 0; i--)
+            {
+                action(collection[i]);
+            }
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Added the ability to access all elements in Linq
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> ForEach<T>(this List<T> collection, Action<T> action)
+        {
+            for (int i = collection.Count - 1; i >= 0; i--)
+            {
+                action(collection[i]);
+            }
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Added the ability to access all elements in Linq (including index)
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T[] ForEach<T>(this T[] collection, Action<T, int> action)
+        {
+            for (int i = collection.Length - 1; i >= 0; i--)
+            {
+                action(collection[i], i);
+            }
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Added the ability to access all elements in Linq (including index)
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> ForEach<T>(this List<T> collection, Action<T, int> action)
+        {
+            for (int i = collection.Count - 1; i >= 0; i--)
+            {
+                action(collection[i], i);
+            }
+
+            return collection;
+        }
     }
 }

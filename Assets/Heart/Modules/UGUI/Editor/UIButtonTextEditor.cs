@@ -3,7 +3,7 @@ using Pancake.UI;
 using UnityEditor;
 using UnityEngine;
 
-namespace PancakeEditor
+namespace PancakeEditor.UI
 {
     [CustomEditor(typeof(UIButtonText), true)]
     [CanEditMultipleObjects]

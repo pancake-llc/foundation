@@ -13,25 +13,8 @@ MonoBehaviour:
   m_Name: LevelNormal
   m_EditorClassIdentifier: 
   m_GroupName: LevelNormal
-  m_Data:
-    m_SerializedData: []
   m_GUID: a7ff170a7bbaade41b2864598f889992
-  m_SerializeEntries:
-  - m_GUID: f2a9da9fed4523241891e2dfc2e8347c
-    m_Address: Level_1
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ce8b3daa0b4ab40479157462c09988b0
-    m_Address: Level_2
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fad5f1eee7b9d2841a53ebe279c0a2ac
-    m_Address: Level_3
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 62e87d988a8db174792a5736ca2712ee, type: 2}
   m_SchemaSet:
