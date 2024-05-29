@@ -50,13 +50,13 @@
       "hash": "e8c98732016d7cdba47eb0d283977abd1012741c"
     },
     "com.cysharp.r3": {
-      "version": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.11",
+      "version": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.12",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.modules.imgui": "1.0.0"
       },
-      "hash": "96c13c71cbd6cdd7ef0faaea90237bac7dfbdf9e"
+      "hash": "d0ee86f6bb8b7e2809f1dd317c62d5d610356c92"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4",
@@ -146,11 +146,11 @@
       "hash": "ba111308f3ac436c073b7f9b64b0f9d238d97722"
     },
     "com.pancake.r3": {
-      "version": "https://github.com/pancake-llc/R3.git#1.1.11",
+      "version": "https://github.com/pancake-llc/R3.git#1.1.12",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "5a729c4091c9b8b2fb3b8470b733027b43498f8a"
+      "hash": "aa18a4974ddc27f4e5e7ed20365eb659001e834c"
     },
     "com.pancake.threading.channels": {
       "version": "https://github.com/pancake-llc/system-threading-channels.git#8.0.0",
@@ -389,11 +389,11 @@
       "hash": "58610810240efebe27b982a3adfb8405c57320a2"
     },
     "jp.hadashikick.vitalrouter": {
-      "version": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.2",
+      "version": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.3",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "e98aae6c8d44205e36950381f06ae1bcd34d3425"
+      "hash": "27edc0014bcaf6d0574508622f1cb22ef906d428"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
