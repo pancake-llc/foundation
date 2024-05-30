@@ -8,8 +8,6 @@ namespace Pancake.DebugView
 {
     public class DefaultPage : DebugPageBase
     {
-        protected override string Label => "";
-
         private short _fps;
 
         public override void Configure(DebugUIBuilder builder)

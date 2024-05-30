@@ -1,227 +1,227 @@
-using System;
-using System.Collections.Generic;
-using Alchemy.Serialization;
-using Pancake.Monetization;
-using Pancake.Scriptable;
-using Pancake.Spine;
-using Pancake.UI;
-using Spine.Unity;
-using UnityEngine.UI;
-
-namespace Pancake.SceneFlow
-{
-    using UnityEngine;
-
-    [AlchemySerialize]
-    public partial class OutfitSlotElement : MonoBehaviour
-    {
-        [SerializeField] private SkeletonGraphic render;
-        [SerializeField, SpineAnimation(dataField: nameof(render))] private string unlockedStateAnim;
-        [SerializeField] private GameObject selectedObject;
-        [SerializeField] private UIButton button;
-        [SerializeField] private ScriptableEventNoParam eventUpdateCoin;
-        [SerializeField] private ScriptableEventNoParam eventUpdatePreview;
-        [SerializeField] private ScriptableEventPreviewLockedOutfit eventPreviewLockedOutfit;
-        [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
-        // ReSharper disable once InconsistentNaming
-        [AlchemySerializeField, NonSerialized] private Dictionary<OutfitUnlockType, Button> buttonDict = new ();
-        [SerializeField, PopupPickup] private string popupDailyReward;
-
-        private OutfitUnitVariable _outfitUnit;
-        private OutfitType _outfitType;
-        private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
-
-        public void Init(ref OutfitUnitVariable element, OutfitType outfitType)
-        {
-            _outfitUnit = element;
-            _outfitType = outfitType;
-            eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect;
-            eventUpdateSelectedEffect.OnRaised += UpdateSelectedEffect;
-
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(OnButtonPressed);
-
-            Setup();
-        }
-
-        private void Setup()
-        {
-            render.ChangeSkin(_outfitUnit.Value.skinId);
-            render.transform.localPosition = _outfitUnit.Value.viewPosition;
-            if (_outfitUnit.IsUnlocked())
-            {
-                foreach (var b in buttonDict)
-                {
-                    b.Value.gameObject.SetActive(false);
-                }
-
-                render.PlayOnly(unlockedStateAnim, true);
-                UpdateSelectedEffect();
-            }
-            else
-            {
-                foreach (var b in buttonDict)
-                {
-                    if (_outfitUnit.Value.unlockType == b.Key)
-                    {
-                        switch (b.Key)
-                        {
-                            case OutfitUnlockType.Coin:
-                                SetupPurchaseByCoin(_outfitUnit, b);
-                                break;
-                            case OutfitUnlockType.Rewarded:
-                                SetupPurchaseByAd(b);
-                                break;
-                            case OutfitUnlockType.Event:
-                                // TO_DO
-                                break;
-                            case OutfitUnlockType.DailyReward:
-                                OpenDailyReward(b);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        b.Value.gameObject.SetActive(false);
-                    }
-                }
-            }
-        }
-
-        private void OpenDailyReward(KeyValuePair<OutfitUnlockType, Button> b)
-        {
-            b.Value.gameObject.SetActive(true);
-            b.Value.onClick.RemoveListener(OnButtonDailyrewardPressed);
-            b.Value.onClick.AddListener(OnButtonDailyrewardPressed);
-        }
-
-        private void OnButtonDailyrewardPressed() { MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true); }
-
-        private void SetupPurchaseByAd(KeyValuePair<OutfitUnlockType, Button> b)
-        {
-            b.Value.gameObject.SetActive(true);
-            b.Value.onClick.RemoveListener(OnButtonPurchaseByAdPressed);
-            b.Value.onClick.AddListener(OnButtonPurchaseByAdPressed);
-        }
-
-        private void OnButtonPurchaseByAdPressed()
-        {
-            Advertising.Reward.Show().OnCompleted(UnlockedOutfitInternal);
-        }
-
-        private void UnlockedOutfitInternal()
-        {
-            _outfitUnit.Unlock();
-            foreach (var b in buttonDict)
-            {
-                b.Value.gameObject.SetActive(false);
-            }
-        }
-
-        private void SetupPurchaseByCoin(OutfitUnitVariable element, KeyValuePair<OutfitUnlockType, Button> b)
-        {
-            b.Value.GetComponent<CurrencyButtonStatus>().Setup(element.Value.value);
-            b.Value.gameObject.SetActive(true);
-            b.Value.onClick.RemoveListener(OnButtonPurchaseByCoinPressed);
-            b.Value.onClick.AddListener(OnButtonPurchaseByCoinPressed);
-        }
-
-        private void OnButtonPurchaseByCoinPressed()
-        {
-            if (UserData.GetCurrentCoin() >= _outfitUnit.Value.value)
-            {
-                UserData.MinusCoin(_outfitUnit.Value.value);
-                eventUpdateCoin.Raise();
-                UnlockedOutfitInternal();
-            }
-        }
-
-        private void OnButtonPressed()
-        {
-            // to_do with outfit
-            if (_outfitUnit.IsUnlocked())
-            {
-                selectedObject.SetActive(true);
-
-                switch (_outfitType)
-                {
-                    case OutfitType.Hat:
-                        UserData.SetCurrentSkinHat(_outfitUnit.Value.id);
-                        break;
-                    case OutfitType.Shirt:
-                        UserData.SetCurrentSkinShirt(_outfitUnit.Value.id);
-                        break;
-                    case OutfitType.Shoe:
-                        UserData.SetCurrentSkinShoes(_outfitUnit.Value.id);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                eventUpdatePreview.Raise();
-                eventUpdateSelectedEffect.Raise();
-            }
-            else
-            {
-                eventPreviewLockedOutfit.Raise(_outfitType, _outfitUnit.Value.skinId);
-            }
-        }
-
-        private void UpdateSelectedEffect()
-        {
-            if (_outfitUnit.IsUnlocked())
-            {
-                switch (_outfitType)
-                {
-                    case OutfitType.Hat:
-                        string hatId = UserData.GetCurrentSkinHat();
-                        if (string.IsNullOrEmpty(hatId))
-                        {
-                            if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
-                            {
-                                UserData.SetCurrentSkinHat(_outfitUnit.Value.id);
-                                selectedObject.SetActive(true);
-                            }
-                        }
-                        else selectedObject.SetActive(hatId == _outfitUnit.Value.id);
-
-                        break;
-                    case OutfitType.Shirt:
-                        string shirtId = UserData.GetCurrentSkinShirt();
-                        if (string.IsNullOrEmpty(shirtId))
-                        {
-                            if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
-                            {
-                                UserData.SetCurrentSkinShirt(_outfitUnit.Value.id);
-                                selectedObject.SetActive(true);
-                            }
-                        }
-                        else selectedObject.SetActive(shirtId == _outfitUnit.Value.id);
-
-                        break;
-                    case OutfitType.Shoe:
-                        string shoeId = UserData.GetCurrentSkinShoes();
-                        if (string.IsNullOrEmpty(shoeId))
-                        {
-                            if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
-                            {
-                                UserData.SetCurrentSkinShoes(_outfitUnit.Value.id);
-                                selectedObject.SetActive(true);
-                            }
-                        }
-                        else selectedObject.SetActive(shoeId == _outfitUnit.Value.id);
-
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            else
-            {
-                selectedObject.SetActive(false);
-            }
-        }
-
-        private void OnDestroy() { eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect; }
-    }
-}
+// using System;
+// using System.Collections.Generic;
+// using Alchemy.Serialization;
+// using Pancake.Monetization;
+// using Pancake.Scriptable;
+// using Pancake.Spine;
+// using Pancake.UI;
+// using Spine.Unity;
+// using UnityEngine.UI;
+//
+// namespace Pancake.SceneFlow
+// {
+//     using UnityEngine;
+//
+//     [AlchemySerialize]
+//     public partial class OutfitSlotElement : MonoBehaviour
+//     {
+//         [SerializeField] private SkeletonGraphic render;
+//         [SerializeField, SpineAnimation(dataField: nameof(render))] private string unlockedStateAnim;
+//         [SerializeField] private GameObject selectedObject;
+//         [SerializeField] private UIButton button;
+//         [SerializeField] private ScriptableEventNoParam eventUpdateCoin;
+//         [SerializeField] private ScriptableEventNoParam eventUpdatePreview;
+//         [SerializeField] private ScriptableEventPreviewLockedOutfit eventPreviewLockedOutfit;
+//         [SerializeField] private ScriptableEventNoParam eventUpdateSelectedEffect;
+//         // ReSharper disable once InconsistentNaming
+//         [AlchemySerializeField, NonSerialized] private Dictionary<OutfitUnlockType, Button> buttonDict = new ();
+//         [SerializeField, PopupPickup] private string popupDailyReward;
+//
+//         private OutfitUnitVariable _outfitUnit;
+//         private OutfitType _outfitType;
+//         private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+//
+//         public void Init(ref OutfitUnitVariable element, OutfitType outfitType)
+//         {
+//             _outfitUnit = element;
+//             _outfitType = outfitType;
+//             eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect;
+//             eventUpdateSelectedEffect.OnRaised += UpdateSelectedEffect;
+//
+//             button.onClick.RemoveAllListeners();
+//             button.onClick.AddListener(OnButtonPressed);
+//
+//             Setup();
+//         }
+//
+//         private void Setup()
+//         {
+//             render.ChangeSkin(_outfitUnit.Value.skinId);
+//             render.transform.localPosition = _outfitUnit.Value.viewPosition;
+//             if (_outfitUnit.IsUnlocked())
+//             {
+//                 foreach (var b in buttonDict)
+//                 {
+//                     b.Value.gameObject.SetActive(false);
+//                 }
+//
+//                 render.PlayOnly(unlockedStateAnim, true);
+//                 UpdateSelectedEffect();
+//             }
+//             else
+//             {
+//                 foreach (var b in buttonDict)
+//                 {
+//                     if (_outfitUnit.Value.unlockType == b.Key)
+//                     {
+//                         switch (b.Key)
+//                         {
+//                             case OutfitUnlockType.Coin:
+//                                 SetupPurchaseByCoin(_outfitUnit, b);
+//                                 break;
+//                             case OutfitUnlockType.Rewarded:
+//                                 SetupPurchaseByAd(b);
+//                                 break;
+//                             case OutfitUnlockType.Event:
+//                                 // TO_DO
+//                                 break;
+//                             case OutfitUnlockType.DailyReward:
+//                                 OpenDailyReward(b);
+//                                 break;
+//                         }
+//                     }
+//                     else
+//                     {
+//                         b.Value.gameObject.SetActive(false);
+//                     }
+//                 }
+//             }
+//         }
+//
+//         private void OpenDailyReward(KeyValuePair<OutfitUnlockType, Button> b)
+//         {
+//             b.Value.gameObject.SetActive(true);
+//             b.Value.onClick.RemoveListener(OnButtonDailyrewardPressed);
+//             b.Value.onClick.AddListener(OnButtonDailyrewardPressed);
+//         }
+//
+//         private void OnButtonDailyrewardPressed() { MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true); }
+//
+//         private void SetupPurchaseByAd(KeyValuePair<OutfitUnlockType, Button> b)
+//         {
+//             b.Value.gameObject.SetActive(true);
+//             b.Value.onClick.RemoveListener(OnButtonPurchaseByAdPressed);
+//             b.Value.onClick.AddListener(OnButtonPurchaseByAdPressed);
+//         }
+//
+//         private void OnButtonPurchaseByAdPressed()
+//         {
+//             Advertising.Reward.Show().OnCompleted(UnlockedOutfitInternal);
+//         }
+//
+//         private void UnlockedOutfitInternal()
+//         {
+//             _outfitUnit.Unlock();
+//             foreach (var b in buttonDict)
+//             {
+//                 b.Value.gameObject.SetActive(false);
+//             }
+//         }
+//
+//         private void SetupPurchaseByCoin(OutfitUnitVariable element, KeyValuePair<OutfitUnlockType, Button> b)
+//         {
+//             b.Value.GetComponent<CurrencyButtonStatus>().Setup(element.Value.value);
+//             b.Value.gameObject.SetActive(true);
+//             b.Value.onClick.RemoveListener(OnButtonPurchaseByCoinPressed);
+//             b.Value.onClick.AddListener(OnButtonPurchaseByCoinPressed);
+//         }
+//
+//         private void OnButtonPurchaseByCoinPressed()
+//         {
+//             if (UserData.GetCurrentCoin() >= _outfitUnit.Value.value)
+//             {
+//                 UserData.MinusCoin(_outfitUnit.Value.value);
+//                 eventUpdateCoin.Raise();
+//                 UnlockedOutfitInternal();
+//             }
+//         }
+//
+//         private void OnButtonPressed()
+//         {
+//             // to_do with outfit
+//             if (_outfitUnit.IsUnlocked())
+//             {
+//                 selectedObject.SetActive(true);
+//
+//                 switch (_outfitType)
+//                 {
+//                     case OutfitType.Hat:
+//                         UserData.SetCurrentSkinHat(_outfitUnit.Value.id);
+//                         break;
+//                     case OutfitType.Shirt:
+//                         UserData.SetCurrentSkinShirt(_outfitUnit.Value.id);
+//                         break;
+//                     case OutfitType.Shoe:
+//                         UserData.SetCurrentSkinShoes(_outfitUnit.Value.id);
+//                         break;
+//                     default:
+//                         throw new ArgumentOutOfRangeException();
+//                 }
+//
+//                 eventUpdatePreview.Raise();
+//                 eventUpdateSelectedEffect.Raise();
+//             }
+//             else
+//             {
+//                 eventPreviewLockedOutfit.Raise(_outfitType, _outfitUnit.Value.skinId);
+//             }
+//         }
+//
+//         private void UpdateSelectedEffect()
+//         {
+//             if (_outfitUnit.IsUnlocked())
+//             {
+//                 switch (_outfitType)
+//                 {
+//                     case OutfitType.Hat:
+//                         string hatId = UserData.GetCurrentSkinHat();
+//                         if (string.IsNullOrEmpty(hatId))
+//                         {
+//                             if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
+//                             {
+//                                 UserData.SetCurrentSkinHat(_outfitUnit.Value.id);
+//                                 selectedObject.SetActive(true);
+//                             }
+//                         }
+//                         else selectedObject.SetActive(hatId == _outfitUnit.Value.id);
+//
+//                         break;
+//                     case OutfitType.Shirt:
+//                         string shirtId = UserData.GetCurrentSkinShirt();
+//                         if (string.IsNullOrEmpty(shirtId))
+//                         {
+//                             if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
+//                             {
+//                                 UserData.SetCurrentSkinShirt(_outfitUnit.Value.id);
+//                                 selectedObject.SetActive(true);
+//                             }
+//                         }
+//                         else selectedObject.SetActive(shirtId == _outfitUnit.Value.id);
+//
+//                         break;
+//                     case OutfitType.Shoe:
+//                         string shoeId = UserData.GetCurrentSkinShoes();
+//                         if (string.IsNullOrEmpty(shoeId))
+//                         {
+//                             if (_outfitUnit.Value.unlockType == OutfitUnlockType.BeginnerGift)
+//                             {
+//                                 UserData.SetCurrentSkinShoes(_outfitUnit.Value.id);
+//                                 selectedObject.SetActive(true);
+//                             }
+//                         }
+//                         else selectedObject.SetActive(shoeId == _outfitUnit.Value.id);
+//
+//                         break;
+//                     default:
+//                         throw new ArgumentOutOfRangeException();
+//                 }
+//             }
+//             else
+//             {
+//                 selectedObject.SetActive(false);
+//             }
+//         }
+//
+//         private void OnDestroy() { eventUpdateSelectedEffect.OnRaised -= UpdateSelectedEffect; }
+//     }
+// }

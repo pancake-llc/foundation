@@ -37,9 +37,9 @@ namespace Pancake.SceneFlow
         [SerializeField] private LocaleText localeTextFeatureLocked;
         private CancellationTokenSource _tokenShowUpdate;
 
-        private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
-        private PageContainer MainPageContainer => PageContainer.Find(Constant.MAIN_PAGE_CONTAINER);
-        private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
+        //private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
+        //private PageContainer MainPageContainer => PageContainer.Find(Constant.MAIN_PAGE_CONTAINER);
+        //private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
 
         private void Start()
         {
@@ -58,11 +58,20 @@ namespace Pancake.SceneFlow
 
         private void OnButtonPetPressed() { Router.Default.PublishAsync(new SpawnInGameNotiCommand(localeTextFeatureLocked)); }
 
-        private void OnButtonRankPressed() { MainPopupContainer.Push<LeaderboardPopup>(popupLeaderboard, false); }
+        private void OnButtonRankPressed()
+        {
+            //MainPopupContainer.Push<LeaderboardPopup>(popupLeaderboard, false);
+        }
 
-        private void OnButtonDailyRewardPressed() { MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true); }
+        private void OnButtonDailyRewardPressed()
+        {
+            //MainPopupContainer.Push<DailyRewardPopup>(popupDailyReward, true);
+        }
 
-        private void OnButtonOutfitPressed() { MainPageContainer.Push(outfitPageName, true); }
+        private void OnButtonOutfitPressed()
+        {
+            //MainPageContainer.Push(outfitPageName, true);
+        }
 
         private async void WaitShowUpdate()
         {
@@ -74,7 +83,7 @@ namespace Pancake.SceneFlow
                 var version = new Version(remoteConfigNewVersion.Value);
                 int result = version.CompareTo(new Version(Application.version));
                 // is new version
-                if (result > 0 && !dontShowUpdateAgain) await MainPopupContainer.Push<UpdatePopup>(popupUpdate, true);
+                //if (result > 0 && !dontShowUpdateAgain) await MainPopupContainer.Push<UpdatePopup>(popupUpdate, true);
             }
             catch (OperationCanceledException)
             {
@@ -85,16 +94,22 @@ namespace Pancake.SceneFlow
         private async void OnButtonTapToPlayPressed()
         {
             PoolHelper.ReturnAllPool();
-            await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
-                false,
-                onLoad: t => { t.popup.view.Setup(true); },
-                popupId: nameof(SceneTransitionPopup)); // show transition
+            // await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
+            //     false,
+            //     onLoad: t => { t.popup.view.Setup(true); },
+            //     popupId: nameof(SceneTransitionPopup)); // show transition
             changeSceneEvent.Raise(Constant.GAMEPLAY_SCENE);
         }
 
-        private void OnButtonShopPressed() { MainPopupContainer.Push<ShopPopup>(popupShop, true); }
+        private void OnButtonShopPressed()
+        {
+            //MainPopupContainer.Push<ShopPopup>(popupShop, true);
+        }
 
-        private void OnButtonSettingPressed() { MainPopupContainer.Push<SettingPopup>(popupSetting, true, popupId: popupSetting); }
+        private void OnButtonSettingPressed()
+        {
+            //MainPopupContainer.Push<SettingPopup>(popupSetting, true, popupId: popupSetting);
+        }
 
         protected void OnDisable()
         {

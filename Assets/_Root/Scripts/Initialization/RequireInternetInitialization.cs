@@ -23,9 +23,9 @@ namespace Pancake.SceneFlow
             {
                 if (network != ENetworkStatus.Connected)
                 {
-                    var popupContainer = PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
-                    popupContainer.Popups.TryGetValue(popupNoInternet, out var popup);
-                    if (popup == null) popupContainer.Push<NoInternetPopup>(popupNoInternet, true, popupId: popupNoInternet);
+                    // var popupContainer = PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
+                    // popupContainer.Popups.TryGetValue(popupNoInternet, out var popup);
+                    // if (popup == null) popupContainer.Push<NoInternetPopup>(popupNoInternet, true, popupId: popupNoInternet);
                 }
             });
         }

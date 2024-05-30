@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -641,8 +640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6afca1f1cb971da4589c73bc59c2d217, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugViewPrefab: {fileID: 6564643838517370666, guid: ca5e6d279e01e413f8bbf07d75aebe7f, type: 3}
-  graphyPrefab: {fileID: 8546455465286430009, guid: a0ba11c85f92c1c4792eeec43dad26c0, type: 3}
+  debugViewPrefab: {fileID: 2010511745293585087, guid: 6d106074201400d4782773fb440d1b11, type: 3}
   coinType: {fileID: 11400000, guid: 289aaf57a8365bb4d83cb20c17f51951, type: 2}
   levelType: {fileID: 11400000, guid: 81143fca18d352440a7bd3d0e8191892, type: 2}
   hideUiGameplayEvent: {fileID: 11400000, guid: 7dcbf6ffc2eff08498f36bd132ec680a, type: 2}

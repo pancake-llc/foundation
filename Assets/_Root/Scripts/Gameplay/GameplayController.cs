@@ -21,7 +21,7 @@ namespace Pancake.SceneFlow
         [Header("Level")] [SerializeField] private StringConstant levelType;
         [SerializeField] private Transform levelRootHolder;
 
-        private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
+        //private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
 
         private void Start()
         {
@@ -56,10 +56,10 @@ namespace Pancake.SceneFlow
         private async void GoToMenu()
         {
             PoolHelper.ReturnAllPool();
-            await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
-                false,
-                onLoad: t => { t.popup.view.Setup(); },
-                popupId: nameof(SceneTransitionPopup)); // show transition
+            // await PersistentPopupContainer.Push<SceneTransitionPopup>(nameof(SceneTransitionPopup),
+            //     false,
+            //     onLoad: t => { t.popup.view.Setup(); },
+            //     popupId: nameof(SceneTransitionPopup)); // show transition
             changeSceneEvent.Raise(Constant.MENU_SCENE);
         }
     }
