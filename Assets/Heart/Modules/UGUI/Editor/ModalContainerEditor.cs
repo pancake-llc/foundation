@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Pancake.UI;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -54,32 +55,29 @@ namespace PancakeEditor.UI
 
         protected override void AdditionalGUIProcess()
         {
-            var area = EditorGUILayout.BeginVertical();
-            {
-                GUI.Box(area, GUIContent.none);
-                DrawTitleField("Initialize Setting");
-
-                EditorGUILayout.PropertyField(_instantiateType, GUIContent.none);
-                switch (Target.InstantiateType)
+            Uniform.DrawGroupFoldout("modal_container_initialize",
+                "Initialize Setting",
+                () =>
                 {
-                    case EInstantiateType.ByPrefab:
-                        EditorGUI.indentLevel++;
-                        EditorGUILayout.PropertyField(_registerModalsByPrefab);
-                        EditorGUI.indentLevel--;
-                        break;
+                    EditorGUILayout.PropertyField(_instantiateType, GUIContent.none);
+                    switch (Target.InstantiateType)
+                    {
+                        case EInstantiateType.ByPrefab:
+                            EditorGUI.indentLevel++;
+                            EditorGUILayout.PropertyField(_registerModalsByPrefab);
+                            EditorGUI.indentLevel--;
+                            break;
 #if PANCAKE_ADDRESSABLE
-                    case EInstantiateType.ByAddressable:
-                        EditorGUI.indentLevel++;
-                        EditorGUILayout.PropertyField(_registerModalsByAddressable);
-                        EditorGUI.indentLevel--;
-                        break;
+                        case EInstantiateType.ByAddressable:
+                            EditorGUI.indentLevel++;
+                            EditorGUILayout.PropertyField(_registerModalsByAddressable);
+                            EditorGUI.indentLevel--;
+                            break;
 #endif
-                }
+                    }
 
-                EditorGUILayout.PropertyField(_modalBackdrop);
-                EditorGUILayout.Space(4);
-            }
-            EditorGUILayout.EndVertical();
+                    EditorGUILayout.PropertyField(_modalBackdrop);
+                });
         }
 
         #endregion

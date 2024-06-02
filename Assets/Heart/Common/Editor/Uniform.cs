@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -80,11 +79,10 @@ namespace PancakeEditor.Common
                 foldoutButton = new GUIStyle
                 {
                     normal = new GUIStyleState {textColor = Color.white},
-                    margin = new RectOffset(4, 4, 4, 4),
-                    padding = new RectOffset(0, 0, 2, 3),
+                    padding = new RectOffset(0, 0, 3, 3),
                     stretchWidth = true,
                     richText = true,
-                    fontSize = 12,
+                    fontSize = 11,
                     fontStyle = FontStyle.Bold
                 };
 
@@ -250,60 +248,6 @@ namespace PancakeEditor.Common
         }
 
         /// <summary>
-        ///  Draw only the property specified. work only with float or int field
-        /// </summary>
-        /// <param name="serializedObject"></param>
-        /// <param name="fieldName">only name field has type int or float</param>
-        /// <param name="isReadOnly"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        public static void DrawOnlyIntField(SerializedObject serializedObject, string fieldName, bool isReadOnly, int start, int end)
-        {
-            serializedObject.Update();
-            var prop = serializedObject.GetIterator();
-            if (prop.NextVisible(true))
-            {
-                do
-                {
-                    if (prop.name != fieldName) continue;
-
-                    GUI.enabled = !isReadOnly;
-                    EditorGUILayout.IntSlider(serializedObject.FindProperty(prop.name), start, end);
-                    GUI.enabled = true;
-                } while (prop.NextVisible(false));
-            }
-
-            serializedObject.ApplyModifiedProperties();
-        }
-
-        /// <summary>
-        ///  Draw only the property specified. work only with float or int field
-        /// </summary>
-        /// <param name="serializedObject"></param>
-        /// <param name="fieldName">only name field has type int or float</param>
-        /// <param name="isReadOnly"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        public static void DrawOnlyFloatField(SerializedObject serializedObject, string fieldName, bool isReadOnly, float start, float end)
-        {
-            serializedObject.Update();
-            var prop = serializedObject.GetIterator();
-            if (prop.NextVisible(true))
-            {
-                do
-                {
-                    if (prop.name != fieldName) continue;
-
-                    GUI.enabled = !isReadOnly;
-                    EditorGUILayout.Slider(serializedObject.FindProperty(prop.name), start, end);
-                    GUI.enabled = true;
-                } while (prop.NextVisible(false));
-            }
-
-            serializedObject.ApplyModifiedProperties();
-        }
-
-        /// <summary>
         /// Draw property field with validate wrong value
         /// </summary>
         /// <param name="property"></param>
@@ -446,40 +390,32 @@ namespace PancakeEditor.Common
         /// <param name="sectionName"></param>
         /// <param name="drawer"></param>
         /// <param name="defaultFoldout"></param>
-        /// <param name="isShowContent"></param>
-        public static float DrawGroupFoldout(string key, string sectionName, Action drawer, bool defaultFoldout = true, bool isShowContent = true)
+        public static void DrawGroupFoldout(string key, string sectionName, Action drawer, bool defaultFoldout = true)
         {
             bool foldout = GetFoldoutState(key, defaultFoldout);
 
-            var rect = EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout && isShowContent ? 30 : 0));
-
-            if (!isShowContent)
+            var rect = EditorGUILayout.BeginVertical(GUILayout.MinHeight(foldout ? 20 : 0));
             {
-                EditorGUILayout.LabelField(sectionName);
-            }
-            else
-            {
+                GUI.Box(rect, GUIContent.none);
                 EditorGUILayout.BeginHorizontal();
 
-                // Header label (and button).
-                if (GUILayout.Button($"    {sectionName}", FoldoutButton)) SetFoldoutState(key, !foldout);
+                var area = EditorGUILayout.BeginVertical();
+                {
+                    GUI.Box(new Rect(area) {xMin = 18}, GUIContent.none);
+                    if (GUILayout.Button($"    {sectionName}", FoldoutButton)) SetFoldoutState(key, !foldout);
+                }
+                EditorGUILayout.EndVertical();
 
-                // The expand/collapse icon.
                 var buttonRect = GUILayoutUtility.GetLastRect();
                 var iconRect = new Rect(buttonRect.x, buttonRect.y, 10, buttonRect.height);
                 GUI.Label(iconRect, foldout ? IconContent("d_IN_foldout_act_on") : IconContent("d_IN_foldout"), FoldoutIcon);
 
                 EditorGUILayout.EndHorizontal();
 
-                // Draw the section content.
-                if (foldout) GUILayout.Space(5);
+                if (foldout) GUILayout.Space(4);
                 if (foldout && drawer != null) drawer();
             }
-
-            float height = rect.height;
             EditorGUILayout.EndVertical();
-            height += 4;
-            return height;
         }
 
         /// <summary>
@@ -490,55 +426,38 @@ namespace PancakeEditor.Common
         /// <param name="drawer"></param>
         /// <param name="actionRightClick"></param>
         /// <param name="defaultFoldout"></param>
-        /// <param name="isShowContent"></param>
-        public static float DrawGroupFoldoutWithRightClick(
-            string key,
-            string sectionName,
-            Action drawer,
-            Action actionRightClick,
-            bool defaultFoldout = true,
-            bool isShowContent = true)
+        public static void DrawGroupFoldoutWithRightClick(string key, string sectionName, Action drawer, Action actionRightClick, bool defaultFoldout = true)
         {
             bool foldout = GetFoldoutState(key, defaultFoldout);
 
-            var rect = EditorGUILayout.BeginVertical(Box, GUILayout.MinHeight(foldout && isShowContent ? 30 : 0));
-
-            if (!isShowContent)
+            var rect = EditorGUILayout.BeginVertical(GUILayout.MinHeight(foldout ? 20 : 0));
             {
-                EditorGUILayout.LabelField(sectionName);
-            }
-            else
-            {
+                GUI.Box(rect, GUIContent.none);
                 EditorGUILayout.BeginHorizontal();
 
-                // Header label (and button).
-                if (GUILayout.Button($"    {sectionName}", FoldoutButton))
+                var area = EditorGUILayout.BeginVertical();
                 {
-                    if (Event.current.button == 1)
+                    GUI.Box(new Rect(area) {xMin = 18}, GUIContent.none);
+                    if (GUILayout.Button($"    {sectionName}", FoldoutButton))
                     {
-                        actionRightClick?.Invoke();
-                        return rect.height;
+                        if (Event.current.button == 1) actionRightClick?.Invoke();
+
+                        SetFoldoutState(key, !foldout);
                     }
-
-                    SetFoldoutState(key, !foldout);
                 }
+                EditorGUILayout.EndVertical();
 
-                // The expand/collapse icon.
                 var buttonRect = GUILayoutUtility.GetLastRect();
                 var iconRect = new Rect(buttonRect.x, buttonRect.y, 10, buttonRect.height);
                 GUI.Label(iconRect, foldout ? IconContent("d_IN_foldout_act_on") : IconContent("d_IN_foldout"), FoldoutIcon);
 
                 EditorGUILayout.EndHorizontal();
 
-                // Draw the section content.
-                if (foldout) GUILayout.Space(5);
+                if (foldout) GUILayout.Space(4);
                 if (foldout && drawer != null) drawer();
             }
 
-            float height = rect.height;
             EditorGUILayout.EndVertical();
-            height += 4;
-            return height;
         }
 
         /// <summary>
@@ -671,6 +590,18 @@ namespace PancakeEditor.Common
             else if (vectorInt.y < vectorInt.x) vectorInt.y = vectorInt.x;
 
             property.vector2IntValue = vectorInt;
+        }
+
+        public static void DrawTitleField(string title, Rect rect = default)
+        {
+            var area = EditorGUILayout.BeginVertical();
+            {
+                GUI.Box(rect == default ? new Rect(area) {xMin = 18} : rect, GUIContent.none);
+                var targetStyle = new GUIStyle {fontSize = 11, normal = {textColor = Color.white}, alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold};
+                if (rect == default) EditorGUILayout.LabelField(title, targetStyle);
+                else EditorGUI.LabelField(rect, title, targetStyle);
+            }
+            EditorGUILayout.EndVertical();
         }
 
         #endregion

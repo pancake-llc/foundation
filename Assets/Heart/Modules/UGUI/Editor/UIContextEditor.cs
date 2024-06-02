@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Pancake.UI;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -95,48 +96,7 @@ namespace PancakeEditor.UI
             EditorGUILayout.PropertyField(_script);
             GUI.enabled = true;
 
-            var area = EditorGUILayout.BeginVertical();
-            {
-                GUI.Box(area, GUIContent.none);
-                DrawTitleField("Animation Setting");
-                var settingTabArea = EditorGUILayout.BeginVertical();
-                {
-                    settingTabArea = new Rect(settingTabArea) {xMin = 18, height = 18};
-                    GUI.Box(settingTabArea, GUIContent.none, GUI.skin.window);
-                    _settingSelectionValue = GUI.Toolbar(settingTabArea, _settingSelectionValue, _animationSetting.enumNames);
-                    _animationSetting.enumValueIndex = _settingSelectionValue;
-                    EditorGUILayout.Space(settingTabArea.height);
-                }
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.Space(3);
-
-                var animationTabArea = EditorGUILayout.BeginVertical();
-                {
-                    animationTabArea = new Rect(animationTabArea) {xMin = 18, height = 24};
-                    GUI.Box(animationTabArea, GUIContent.none, GUI.skin.window);
-                    _animationSelectionValue = GUI.Toolbar(animationTabArea, _animationSelectionValue, _animationTabArray);
-                    EditorGUILayout.Space(animationTabArea.height);
-                }
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.Space(3);
-                switch (_animationSelectionValue)
-                {
-                    case 0:
-                        DrawAnimationSetting<MoveShowAnimation, MoveHideAnimation>("moveAnimation");
-                        break;
-                    case 1:
-                        DrawAnimationSetting<RotateShowAnimation, RotateHideAnimation>("rotateAnimation");
-                        break;
-                    case 2:
-                        DrawAnimationSetting<ScaleShowAnimation, ScaleHideAnimation>("scaleAnimation");
-                        break;
-                    case 3:
-                        DrawAnimationSetting<FadeShowAnimation, FadeHideAnimation>("fadeAnimation");
-                        break;
-                }
-            }
-            EditorGUILayout.EndVertical();
-            EditorGUILayout.Space(9);
+            DrawAnimationSetting();
 
             AdditionalGUIProcess();
 
@@ -149,60 +109,75 @@ namespace PancakeEditor.UI
 
         #region Private Methods
 
+        private void DrawAnimationSetting()
+        {
+            Uniform.DrawGroupFoldout("ui_context_animation",
+                "Animation Setting",
+                () =>
+                {
+                    var settingTabArea = EditorGUILayout.BeginVertical();
+                    {
+                        settingTabArea = new Rect(settingTabArea) {xMin = 18, height = 20};
+                        GUI.Box(settingTabArea, GUIContent.none);
+                        _settingSelectionValue = GUI.Toolbar(settingTabArea, _settingSelectionValue, _animationSetting.enumNames);
+                        _animationSetting.enumValueIndex = _settingSelectionValue;
+                        EditorGUILayout.Space(settingTabArea.height);
+                    }
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.Space(2);
+
+                    var animationTabArea = EditorGUILayout.BeginVertical();
+                    {
+                        animationTabArea = new Rect(animationTabArea) {xMin = 18, height = 20};
+                        GUI.Box(animationTabArea, GUIContent.none);
+                        _animationSelectionValue = GUI.Toolbar(animationTabArea, _animationSelectionValue, _animationTabArray);
+                        EditorGUILayout.Space(animationTabArea.height);
+                    }
+                    EditorGUILayout.EndVertical();
+                    EditorGUILayout.Space(2);
+                    switch (_animationSelectionValue)
+                    {
+                        case 0:
+                            DrawAnimationSetting<MoveShowAnimation, MoveHideAnimation>("moveAnimation");
+                            break;
+                        case 1:
+                            DrawAnimationSetting<RotateShowAnimation, RotateHideAnimation>("rotateAnimation");
+                            break;
+                        case 2:
+                            DrawAnimationSetting<ScaleShowAnimation, ScaleHideAnimation>("scaleAnimation");
+                            break;
+                        case 3:
+                            DrawAnimationSetting<FadeShowAnimation, FadeHideAnimation>("fadeAnimation");
+                            break;
+                    }
+                });
+        }
+
         private void DrawAnimationSetting<TShow, THide>(string propertyRelative) where TShow : class where THide : class
         {
-            var showArea = EditorGUILayout.BeginVertical();
+            GUI.enabled = _animationSetting.enumValueIndex != 0;
+            EditorGUILayout.BeginVertical();
             {
-                GUI.Box(showArea, GUIContent.none);
                 DrawReferenceField<TShow>(ShowAnimation?.FindPropertyRelative(propertyRelative), "Show Animation");
             }
             EditorGUILayout.EndVertical();
-            EditorGUILayout.Space(9);
-            var hideArea = EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginVertical();
             {
-                GUI.Box(hideArea, GUIContent.none);
                 DrawReferenceField<THide>(HideAnimation?.FindPropertyRelative(propertyRelative), "Hide Animation");
             }
             EditorGUILayout.EndVertical();
+            GUI.enabled = true;
         }
 
         private void DrawReferenceField<T>(SerializedProperty target, string title = null) where T : class
         {
-            var area = EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginVertical();
             {
-                GUI.Box(area, GUIContent.none);
+                if (title != null) Uniform.DrawTitleField(title);
 
                 if (target != null)
                 {
-                    EditorGUILayout.Space(6);
-                    EditorGUI.indentLevel++;
-                    {
-                        target.isExpanded = true;
-                        EditorGUILayout.PropertyField(target, GUIContent.none, true);
-                    }
-                    EditorGUI.indentLevel--;
-                }
-                else
-                {
-                    EditorGUILayout.Space(27);
-                    EditorGUI.indentLevel++;
-                    {
-                        EditorGUILayout.LabelField(new GUIContent("Failed to find parent container"), new GUIStyle(GUI.skin.label) {alignment = TextAnchor.MiddleLeft});
-                    }
-                    EditorGUI.indentLevel--;
-                    EditorGUILayout.Space(9);
-                }
-
-                if (title != null) DrawTitleField(title, new Rect(area) {yMin = area.yMin, height = 24});
-
-                // Dropdown processing
-                if (target != null)
-                {
-                    var dropdownArea = new Rect(GUILayoutUtility.GetLastRect()) {xMin = 18, height = 24};
-                    GUI.Box(dropdownArea, GUIContent.none, GUI.skin.window);
-
-                    EditorGUILayout.Space(1);
-                    var options = TypeCache.GetTypesDerivedFrom<T>().Select(x => x.Name).Prepend("None").ToArray();
+                    string[] options = TypeCache.GetTypesDerivedFrom<T>().Select(x => x.Name).Prepend("None").ToArray();
                     int currentIndex = target.managedReferenceValue != null
                         ? Array.FindIndex(options, option => option == target.managedReferenceValue.GetType().Name)
                         : 0;
@@ -212,25 +187,27 @@ namespace PancakeEditor.UI
                         target.managedReferenceValue = selectedIndex == 0 ? null : Activator.CreateInstance(TypeCache.GetTypesDerivedFrom<T>()[selectedIndex - 1]) as T;
                         serializedObject.ApplyModifiedProperties();
                     }
+
+                    if (currentIndex != 0)
+                    {
+                        EditorGUI.indentLevel++;
+                        {
+                            target.isExpanded = true;
+                            EditorGUILayout.PropertyField(target, GUIContent.none, true, GUILayout.ExpandHeight(false));
+                        }
+                        EditorGUI.indentLevel--;
+                    }
+                }
+                else
+                {
+                    EditorGUI.indentLevel++;
+                    {
+                        EditorGUILayout.LabelField(new GUIContent("Failed to find parent container"), new GUIStyle(GUI.skin.label) {alignment = TextAnchor.MiddleLeft});
+                    }
+                    EditorGUI.indentLevel--;
                 }
             }
-            EditorGUILayout.EndVertical();
-        }
-
-        private static void DrawTitleField(string title, Rect rect = default)
-        {
-            var area = EditorGUILayout.BeginVertical();
-            {
-                GUI.Box(rect == default ? new Rect(area) {xMin = 18} : rect, GUIContent.none, GUI.skin.window);
-                var targetStyle = new GUIStyle();
-                targetStyle.fontSize = 15;
-                targetStyle.padding.left = 10;
-                targetStyle.normal.textColor = Color.white;
-                targetStyle.alignment = TextAnchor.MiddleLeft;
-                targetStyle.fontStyle = FontStyle.Bold;
-                if (rect == default) EditorGUILayout.LabelField(title, targetStyle, GUILayout.Height(25));
-                else EditorGUI.LabelField(rect, title, targetStyle);
-            }
+            GUILayout.Space(4);
             EditorGUILayout.EndVertical();
         }
 
