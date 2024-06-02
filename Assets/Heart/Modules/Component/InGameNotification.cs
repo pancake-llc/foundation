@@ -66,12 +66,12 @@ namespace Pancake.Component
 
         private void PlaySoundOpen()
         {
-            if (enabledSound && audioOpen != null) audioOpen.PlaySfx();
+            //if (enabledSound && audioOpen != null) audioOpen.PlaySfx();
         }
 
         private void PlaySoundClose()
         {
-            if (enabledSound && audioClose != null) audioClose.PlaySfx();
+            //if (enabledSound && audioClose != null) audioClose.PlaySfx();
         }
     }
 }

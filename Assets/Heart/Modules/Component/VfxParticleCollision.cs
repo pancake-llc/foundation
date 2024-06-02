@@ -58,7 +58,7 @@ namespace Pancake.Component
         private void OnParticleCollision(GameObject particle)
         {
             Router.Default.PublishAsync(new UpdateCurrencyWithValueCommand(type.Value, _segmentValue));
-            if (enabledSound && audioCollision != null) audioCollision.PlaySfx();
+            //if (enabledSound && audioCollision != null) audioCollision.PlaySfx();
         }
 
         protected void Update()

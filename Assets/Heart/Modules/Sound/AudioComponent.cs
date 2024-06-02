@@ -3,6 +3,7 @@
 using Alchemy.Inspector;
 #endif
 using UnityEngine;
+using VContainer;
 
 namespace Pancake.Sound
 {
@@ -23,7 +24,8 @@ namespace Pancake.Sound
         [SerializeField] private bool playOnStart;
         [SerializeField] private bool isSfx;
 
-        private AudioHandle _audioHandle = AudioHandle.invalid;
+        private AudioHandle _handle;
+        [Inject] private readonly AudioManager _audioManager;
 
         private void Start()
         {
@@ -41,32 +43,29 @@ namespace Pancake.Sound
             //The wait allows the AudioManager to be ready for play requests
             yield return new WaitForSeconds(0.5f);
 
-            //This additional check prevents the AudioCue from playing if the object is disabled or the scene unloaded
-            //This prevents playing a looping AudioCue which then would be never stopped
+            //This additional check prevents the Audio from playing if the object is disabled or the scene unloaded
+            //This prevents playing a looping Audio which then would be never stopped
             if (playOnStart) Play();
         }
 
-        public void Play() { _audioHandle = isSfx ? au.PlaySfx() : au.PlayMusic(); }
+        public void Play() { _handle = isSfx ? _audioManager.PlaySfx(au) : _audioManager.PlayMusic(au); }
 
         public void Stop()
         {
-            if (isSfx) _audioHandle.StopSfx();
-            else _audioHandle.StopMusic();
-            _audioHandle = AudioHandle.invalid;
+            if (isSfx) _audioManager.StopSfx(_handle);
+            else _audioManager.StopMusic(_handle);
         }
 
         public void Pause()
         {
-            if (isSfx) _audioHandle.PauseSfx();
-            else _audioHandle.PauseMusic();
-            _audioHandle = AudioHandle.invalid;
+            if (isSfx) _audioManager.PauseSfx(_handle);
+            else _audioManager.PauseMusic(_handle);
         }
 
         public void Resume()
         {
-            if (isSfx) _audioHandle.ResumeSfx();
-            else _audioHandle.ResumeMusic();
-            _audioHandle = AudioHandle.invalid;
+            if (isSfx) _audioManager.ResumeSfx(_handle);
+            else _audioManager.ResumeMusic(_handle);
         }
     }
 }

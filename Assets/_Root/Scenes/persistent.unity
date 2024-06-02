@@ -290,7 +290,6 @@ GameObject:
   - component: {fileID: 776958712}
   - component: {fileID: 776958713}
   - component: {fileID: 776958717}
-  - component: {fileID: 776958718}
   - component: {fileID: 776958719}
   - component: {fileID: 776958720}
   - component: {fileID: 776958721}
@@ -427,26 +426,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   notificationVariables:
   - {fileID: 11400000, guid: 99240ac69a3d5ff4aae0aa5239fa8ad7, type: 2}
---- !u!114 &776958718
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776958708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 656a4e49ea4a53443bdee498d2fd0fc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 7453307853223308394, guid: 02a1a626475d155488cbe05a16ac0f3e, type: 3}
-  prewarmSize: 10
-  initMusicVolume:
-    enabled: 0
-    value: 1
-  initSfxVolume:
-    enabled: 0
-    value: 1
 --- !u!114 &776958719
 MonoBehaviour:
   m_ObjectHideFlags: 0

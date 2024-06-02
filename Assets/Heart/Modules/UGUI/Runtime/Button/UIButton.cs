@@ -137,7 +137,7 @@ namespace Pancake.UI
 
         private void PlaySound()
         {
-            if (enabledSound && audioClick != null) audioClick.PlaySfx();
+            //if (enabledSound && audioClick != null) audioClick.PlaySfx();
         }
 
 #if UNITY_EDITOR

@@ -3,7 +3,7 @@ namespace Pancake.Sound
     using UnityEngine;
 
     /// <summary>
-    /// Class to activate AudioCues when a GameObject (i.e. the Player) enters the trigger Collider on this same GameObject.
+    /// Class to activate Audio when a GameObject (i.e. the Player) enters the trigger Collider on this same GameObject.
     /// This component is mostly used for testing purposes.
     /// </summary>
     [RequireComponent(typeof(AudioComponent))]

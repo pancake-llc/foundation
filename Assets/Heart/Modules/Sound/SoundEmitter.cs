@@ -12,6 +12,7 @@ namespace Pancake.Sound
     [RequireComponent(typeof(AudioSource))]
     public class SoundEmitter : CacheGameComponent<AudioSource>
     {
+        public string Id { get; private set; }
         public event UnityAction<SoundEmitter> OnCompleted;
         public event UnityAction<SoundEmitter> OnPaused;
         public event UnityAction<SoundEmitter> OnResumed;
@@ -104,5 +105,7 @@ namespace Pancake.Sound
             float remainingTime = component.clip.length - component.time;
             this.Delay(remainingTime, OnFadeOutCompleted);
         }
+
+        internal void Sync(AudioHandle handle) { Id = handle.id; }
     }
 }

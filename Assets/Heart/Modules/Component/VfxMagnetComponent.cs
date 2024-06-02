@@ -72,7 +72,7 @@ namespace Pancake.Component
             externalForcesModule.AddInfluence(particleForceField);
             ps.Emit(1); // avoid zero particle count when start
             ps.Play();
-            if (isPlaySound && audioSpawn != null) audioSpawn.PlaySfx();
+            //if (isPlaySound && audioSpawn != null) audioSpawn.PlaySfx();
         }
     }
 }
