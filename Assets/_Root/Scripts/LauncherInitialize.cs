@@ -17,9 +17,8 @@ namespace Pancake.SceneFlow
     public partial class LauncherInitialize : GameComponent
     {
         [SerializeField] private BoolVariable loadingCompleted;
-        [SerializeField] private bool isWaitRemoteConfig;
         [SerializeField] private ScriptableNotification dailyNotification;
-        [SerializeField] private AssetReference persistentScene;
+        [SerializeField] private bool isWaitRemoteConfig;
         [Space] [SerializeField] private bool isWaitLevelLoaded;
         [Space] [SerializeField] private bool requireInitLocalization;
         [SerializeField, ShowIf("requireInitLocalization")] private BoolVariable localizationInitialized;
@@ -58,7 +57,7 @@ namespace Pancake.SceneFlow
         private async void LoadScene()
         {
             await UniTask.WaitUntil(() => loadingCompleted.Value);
-            await Addressables.LoadSceneAsync(persistentScene);
+            await SceneManager.LoadSceneAsync(Constant.PERSISTENT_SCENE);
             if (isWaitRemoteConfig) await UniTask.WaitUntil(() => RemoteConfig.IsFetchCompleted);
             if (isWaitLevelLoaded) await UniTask.WaitUntil(() => _isLevelLoadCompleted);
 
@@ -66,16 +65,17 @@ namespace Pancake.SceneFlow
             // Don't call the ScheduleDailyNotification function here because LoadSceneAsync may cause the Schedule to be inaccurate 
 
             // manual load menu scene not via event
-            Addressables.LoadSceneAsync(Constant.MENU_SCENE, LoadSceneMode.Additive).Completed += OnMenuSceneLoaded;
+            SceneManager.LoadSceneAsync(Constant.MENU_SCENE, LoadSceneMode.Additive)!.completed += OnMenuSceneLoaded;
         }
 
-        private void OnMenuSceneLoaded(AsyncOperationHandle<SceneInstance> scene)
+
+        private void OnMenuSceneLoaded(AsyncOperation operation)
         {
-            if (scene.Status == AsyncOperationStatus.Succeeded)
+            if (operation.isDone)
             {
-                string sceneName = scene.Result.Scene.name;
-                SceneLoader.SceneHolder.Add(sceneName, scene);
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+                // string sceneName = scene.Result.Scene.name;
+                // SceneLoader.SceneHolder.Add(sceneName, scene);
+                // SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             }
         }
     }

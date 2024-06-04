@@ -1,4 +1,6 @@
-﻿using VContainer;
+﻿using Pancake.Sound;
+using R3;
+using VContainer;
 using VContainer.Unity;
 
 namespace Pancake.SceneFlow
@@ -7,7 +9,7 @@ namespace Pancake.SceneFlow
     {
         [Inject] private readonly SettingModalContext.UIModel _model;
         [Inject] private readonly SettingModalContext.UIView _view;
-
+        [Inject] private readonly AudioManager _audioManager;
 
         public void Start()
         {
@@ -15,14 +17,14 @@ namespace Pancake.SceneFlow
             InitializeView();
         }
 
-        private void InitializeModel()
-        {
-            
-        }
+        private void InitializeModel() { }
 
         private void InitializeView()
         {
-            
+            _view.ButtonMusic.OnClickAsObservable().Subscribe(_ =>
+            {
+                // todo
+            });
         }
     }
 }

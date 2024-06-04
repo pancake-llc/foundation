@@ -1119,16 +1119,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingCompleted: {fileID: 11400000, guid: 0242afafb7675c5488f3c71b4b484636, type: 2}
-  isWaitRemoteConfig: 0
   dailyNotification: {fileID: 11400000, guid: 99240ac69a3d5ff4aae0aa5239fa8ad7, type: 2}
-  persistentScene:
-    m_AssetGUID: c15ae3d734261624eafaa8161aa39780
-    m_SubObjectName: 
-    m_SubObjectGUID: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  isWaitLevelLoaded: 1
-  requireInitLocalization: 1
+  isWaitRemoteConfig: 0
+  isWaitLevelLoaded: 0
+  requireInitLocalization: 0
   localizationInitialized: {fileID: 11400000, guid: 601184d2e3af08841b68fcdf5a5d1a3f, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -297,6 +297,7 @@ GameObject:
   - component: {fileID: 776958723}
   - component: {fileID: 776958724}
   - component: {fileID: 776958725}
+  - component: {fileID: 776958726}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -433,7 +434,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 776958708}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6f7b9468d6e4ab6a5339c9d06f1b0df, type: 3}
   m_Name: 
@@ -536,6 +537,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   notificationPrefab: {fileID: 6103597003888582579, guid: ad8c0e57917578f40ac15f7d2b915718, type: 3}
   root: {fileID: 1042183230}
+--- !u!114 &776958726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 776958708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a08470cd0f58bb84db26f7939303c8b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: 
+  autoRun: 1
+  autoInjectGameObjects: []
 --- !u!1 &814159081
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,9 +1,7 @@
 #if UNITY_EDITOR
 using Pancake;
 using Pancake.SceneFlow;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 
 namespace PancakeEditor
@@ -21,7 +19,7 @@ namespace PancakeEditor
                 case Constant.MENU_SCENE:
                 case Constant.GAMEPLAY_SCENE:
                     PoolHelper.ReturnAllPool();
-                    await Addressables.LoadSceneAsync(Constant.LAUNCHER_SCENE);
+                    SceneManager.LoadScene(Constant.LAUNCHER_SCENE);
                     break;
             }
         }
