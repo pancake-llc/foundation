@@ -5,9 +5,6 @@ using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
 using Pancake.Tracking;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using VitalRouter;
 
@@ -19,8 +16,8 @@ namespace Pancake.SceneFlow
         [SerializeField] private BoolVariable loadingCompleted;
         [SerializeField] private ScriptableNotification dailyNotification;
         [SerializeField] private bool isWaitRemoteConfig;
-        [Space] [SerializeField] private bool isWaitLevelLoaded;
-        [Space] [SerializeField] private bool requireInitLocalization;
+        [SerializeField] private bool isWaitLevelLoaded;
+        [SerializeField] private bool requireInitLocalization;
         [SerializeField, ShowIf("requireInitLocalization")] private BoolVariable localizationInitialized;
 
         private bool _isLevelLoadCompleted;
@@ -65,18 +62,14 @@ namespace Pancake.SceneFlow
             // Don't call the ScheduleDailyNotification function here because LoadSceneAsync may cause the Schedule to be inaccurate 
 
             // manual load menu scene not via event
-            SceneManager.LoadSceneAsync(Constant.MENU_SCENE, LoadSceneMode.Additive)!.completed += OnMenuSceneLoaded;
+            SceneManager.sceneLoaded += OnMenuSceneLoaded;
+            SceneManager.LoadSceneAsync(Constant.MENU_SCENE, LoadSceneMode.Additive);
         }
 
-
-        private void OnMenuSceneLoaded(AsyncOperation operation)
+        private void OnMenuSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (operation.isDone)
-            {
-                // string sceneName = scene.Result.Scene.name;
-                // SceneLoader.SceneHolder.Add(sceneName, scene);
-                // SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            }
+            SceneManager.sceneLoaded -= OnMenuSceneLoaded;
+            SceneManager.SetActiveScene(scene);
         }
     }
 

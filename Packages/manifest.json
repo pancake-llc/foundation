@@ -20,7 +20,6 @@
     "com.pancake.r3": "https://github.com/pancake-llc/R3.git#1.1.12",
     "com.pancake.threading.channels": "https://github.com/pancake-llc/system-threading-channels.git#8.0.0",
     "com.pancake.unsafe": "https://github.com/pancake-llc/system-unsafe.git#6.0.0",
-    "com.tayx.graphy": "https://github.com/pancake-llc/graphy.git#3.0.6",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "2.0.8",
     "com.unity.burst": "1.8.15",

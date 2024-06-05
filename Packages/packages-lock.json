@@ -166,13 +166,6 @@
       "dependencies": {},
       "hash": "8697585ea3ceeba6f51f25e248e89da264fe8e12"
     },
-    "com.tayx.graphy": {
-      "version": "https://github.com/pancake-llc/graphy.git#3.0.6",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "9ded9ea5743bac53592c1988ea7c35939404e655"
-    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

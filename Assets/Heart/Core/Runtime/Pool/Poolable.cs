@@ -6,7 +6,7 @@ namespace Pancake
 {
     [DisallowMultipleComponent]
     [EditorIcon("icon_default")]
-    internal sealed class Poolable : MonoBehaviour
+    public sealed class Poolable : MonoBehaviour
     {
         private IPoolable[] _poolables = Array.Empty<IPoolable>();
 

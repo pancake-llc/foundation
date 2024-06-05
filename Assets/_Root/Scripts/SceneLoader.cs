@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using Pancake.Scriptable;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
 namespace Pancake.SceneFlow
@@ -12,34 +8,21 @@ namespace Pancake.SceneFlow
     public class SceneLoader : GameComponent
     {
         [SerializeField] private ScriptableEventString changeSceneEvent;
-        
-        public static readonly Dictionary<string, AsyncOperationHandle<SceneInstance>> SceneHolder = new();
-        
+
         private void Start() { changeSceneEvent.OnRaised += OnChangeScene; }
 
         private void OnChangeScene(string sceneName)
         {
             foreach (var scene in GetAllLoadedScene())
             {
-                if (!scene.name.Equals(Constant.PERSISTENT_SCENE))
-                {
-                    Addressables.UnloadSceneAsync(SceneHolder[scene.name]);
-                    SceneHolder.Remove(scene.name);
-                }
+                if (!scene.name.Equals(Constant.PERSISTENT_SCENE)) SceneManager.UnloadSceneAsync(scene);
             }
 
-            Addressables.LoadSceneAsync(sceneName, LoadSceneMode.Additive).Completed += OnAdditiveSceneLoaded;
+            SceneManager.sceneLoaded += OnAdditiveSceneLoaded;
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         }
 
-        private void OnAdditiveSceneLoaded(AsyncOperationHandle<SceneInstance> handle)
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                string sceneName = handle.Result.Scene.name;
-                SceneHolder.Add(sceneName, handle);
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            }
-        }
+        private void OnAdditiveSceneLoaded(Scene scene, LoadSceneMode mode) { SceneManager.SetActiveScene(scene); }
 
         private Scene[] GetAllLoadedScene()
         {

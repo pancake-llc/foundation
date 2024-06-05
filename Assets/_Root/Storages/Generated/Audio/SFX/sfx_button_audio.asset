@@ -18,3 +18,5 @@ MonoBehaviour:
   - sequenceMode: 0
     clips:
     - {fileID: 8300000, guid: 9899d6357668f0e45892cbc9b4820777, type: 3}
+    cooldownToPlay: 0
+    cooldown: 0

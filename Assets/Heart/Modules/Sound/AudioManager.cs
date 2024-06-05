@@ -6,7 +6,6 @@ using VContainer.Unity;
 
 namespace Pancake.Sound
 {
-    [EditorIcon("icon_default")]
     public sealed class AudioManager : IStartable
     {
         private readonly List<SoundEmitter> _bgm = new();
@@ -199,7 +198,7 @@ namespace Pancake.Sound
 
         public void Start()
         {
-            _source = new GameObject("SoundEmitter", typeof(IPoolable), typeof(AudioSource), typeof(SoundEmitter));
+            _source = new GameObject("SoundEmitter", typeof(AudioSource), typeof(Poolable), typeof(SoundEmitter));
             _source.SetActive(false);
         }
     }
