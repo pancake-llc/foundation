@@ -4,9 +4,12 @@ using Pancake.Localization;
 using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
 using Pancake.Component;
+using Pancake.Sound;
 using Pancake.UI;
+using R3;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 using VitalRouter;
 
 namespace Pancake.SceneFlow
@@ -32,10 +35,13 @@ namespace Pancake.SceneFlow
         [SerializeField, PopupPickup] private string popupDailyReward;
         [SerializeField, PopupPickup] private string popupLeaderboard;
         [SerializeField, PagePickup] private string outfitPageName;
+        [SerializeField] private Audio buttonAudio;
 
-        [Header("OTHER")] [SerializeField] private ScriptableEventString changeSceneEvent;
+        [Header("OTHER")]
         [SerializeField] private LocaleText localeTextFeatureLocked;
         private CancellationTokenSource _tokenShowUpdate;
+        [Inject] private readonly AudioManager _soundManager;
+        [Inject] private readonly SceneLoader _sceneLoader;
 
         //private PopupContainer MainPopupContainer => PopupContainer.Find(Constant.MAIN_POPUP_CONTAINER);
         //private PageContainer MainPageContainer => PageContainer.Find(Constant.MAIN_PAGE_CONTAINER);
@@ -43,7 +49,7 @@ namespace Pancake.SceneFlow
 
         private void Start()
         {
-            buttonSetting.onClick.AddListener(OnButtonSettingPressed);
+            buttonSetting.OnClickAsObservable().Subscribe(OnSettingButtonPressed);
             buttonTapToPlay.onClick.AddListener(OnButtonTapToPlayPressed);
             buttonShop.onClick.AddListener(OnButtonShopPressed);
             buttonOutfit.onClick.AddListener(OnButtonOutfitPressed);
@@ -52,6 +58,12 @@ namespace Pancake.SceneFlow
             buttonPet.onClick.AddListener(OnButtonPetPressed);
             buttonRoom.onClick.AddListener(OnButtonRoomPressed);
             WaitShowUpdate();
+        }
+
+        private void OnSettingButtonPressed(Unit _)
+        {
+            ModalContainer.Main.NextAsync<SettingModalContext>().Forget();
+            _soundManager.PlaySfx(buttonAudio);
         }
 
         private void OnButtonRoomPressed() { Router.Default.PublishAsync(new SpawnInGameNotiCommand(localeTextFeatureLocked)); }
@@ -98,17 +110,12 @@ namespace Pancake.SceneFlow
             //     false,
             //     onLoad: t => { t.popup.view.Setup(true); },
             //     popupId: nameof(SceneTransitionPopup)); // show transition
-            changeSceneEvent.Raise(Constant.GAMEPLAY_SCENE);
+            _sceneLoader.ChangeScene(Constant.GAMEPLAY_SCENE);
         }
 
         private void OnButtonShopPressed()
         {
             //MainPopupContainer.Push<ShopPopup>(popupShop, true);
-        }
-
-        private void OnButtonSettingPressed()
-        {
-            //MainPopupContainer.Push<SettingPopup>(popupSetting, true, popupId: popupSetting);
         }
 
         protected void OnDisable()

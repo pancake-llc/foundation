@@ -1,17 +1,10 @@
-using Pancake.Scriptable;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Pancake.SceneFlow
 {
-    [EditorIcon("icon_default")]
-    public class SceneLoader : GameComponent
+    public sealed class SceneLoader
     {
-        [SerializeField] private ScriptableEventString changeSceneEvent;
-
-        private void Start() { changeSceneEvent.OnRaised += OnChangeScene; }
-
-        private void OnChangeScene(string sceneName)
+        public void ChangeScene(string sceneName)
         {
             foreach (var scene in GetAllLoadedScene())
             {

@@ -14,13 +14,11 @@ namespace PancakeEditor.UI
 
         private SerializedProperty _script;
         private SerializedProperty _animationSetting;
+        private SerializedProperty _animationType;
         private SerializedProperty _showAnimation;
         private SerializedProperty _hideAnimation;
 
-        private int _settingSelectionValue;
-
         private readonly string[] _animationTabArray = {"Move", "Rotate", "Scale", "Fade"};
-        private int _animationSelectionValue;
 
         #endregion
 
@@ -80,6 +78,7 @@ namespace PancakeEditor.UI
         {
             _script = serializedObject.FindProperty("m_Script");
             _animationSetting = serializedObject.FindProperty("animationSetting");
+            _animationType = serializedObject.FindProperty("animationType");
             _showAnimation = serializedObject.FindProperty($"showAnimation");
             _hideAnimation = serializedObject.FindProperty($"hideAnimation");
         }
@@ -119,8 +118,7 @@ namespace PancakeEditor.UI
                     {
                         settingTabArea = new Rect(settingTabArea) {xMin = 18, height = 20};
                         GUI.Box(settingTabArea, GUIContent.none);
-                        _settingSelectionValue = GUI.Toolbar(settingTabArea, _settingSelectionValue, _animationSetting.enumNames);
-                        _animationSetting.enumValueIndex = _settingSelectionValue;
+                        _animationSetting.enumValueIndex = GUI.Toolbar(settingTabArea, _animationSetting.enumValueIndex, _animationSetting.enumNames);
                         EditorGUILayout.Space(settingTabArea.height);
                     }
                     EditorGUILayout.EndVertical();
@@ -130,12 +128,12 @@ namespace PancakeEditor.UI
                     {
                         animationTabArea = new Rect(animationTabArea) {xMin = 18, height = 20};
                         GUI.Box(animationTabArea, GUIContent.none);
-                        _animationSelectionValue = GUI.Toolbar(animationTabArea, _animationSelectionValue, _animationTabArray);
+                        _animationType.enumValueIndex = GUI.Toolbar(animationTabArea, _animationType.enumValueIndex, _animationTabArray);
                         EditorGUILayout.Space(animationTabArea.height);
                     }
                     EditorGUILayout.EndVertical();
                     EditorGUILayout.Space(2);
-                    switch (_animationSelectionValue)
+                    switch (_animationType.enumValueIndex)
                     {
                         case 0:
                             DrawAnimationSetting<MoveShowAnimation, MoveHideAnimation>("moveAnimation");

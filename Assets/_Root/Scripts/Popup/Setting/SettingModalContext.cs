@@ -38,7 +38,6 @@ namespace Pancake.SceneFlow
         [Serializable]
         public class UIModel
         {
-            
         }
 
         [field: SerializeField] public UIView View { get; private set; }
@@ -47,6 +46,7 @@ namespace Pancake.SceneFlow
 
         protected override void Configure(IContainerBuilder builder)
         {
+            builder.Register<UIModel>(Lifetime.Scoped);
             builder.RegisterInstance(View);
             builder.RegisterEntryPoint<SettingModalPresenter>();
         }

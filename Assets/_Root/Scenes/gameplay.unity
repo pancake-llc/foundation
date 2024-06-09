@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -233,10 +232,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -675,6 +670,55 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &250281821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 250281823}
+  - component: {fileID: 250281822}
+  m_Layer: 0
+  m_Name: Scope
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &250281822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250281821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ae3667d3e1c94439807886438ba0c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: Pancake.SceneFlow.GameRootScope
+  autoRun: 1
+  autoInjectGameObjects:
+  - {fileID: 1052722281}
+--- !u!4 &250281823
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250281821}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &289504592
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,10 +965,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -1220,10 +1260,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -1384,7 +1420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a21e7d8f9e80462e94e77c6371b318bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  au: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  clip: {fileID: 0}
   playOnStart: 0
   isSfx: 0
 --- !u!4 &703498820
@@ -2145,7 +2181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a21e7d8f9e80462e94e77c6371b318bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  au: {fileID: 11400000, guid: e6df2df842109334db91eef565137a4c, type: 2}
+  clip: {fileID: 11400000, guid: e6df2df842109334db91eef565137a4c, type: 2}
   playOnStart: 1
   isSfx: 0
 --- !u!1 &1087319927
@@ -2427,8 +2463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   notificationPrefab: {fileID: 6103597003888582579, guid: ad8c0e57917578f40ac15f7d2b915718, type: 3}
-  returnPoolEvent: {fileID: 11400000, guid: d1bedc11cc6d4a14e9de7b508197c061, type: 2}
-  getCanvasMasterEvent: {fileID: 11400000, guid: eb6564e2a34609041adf55fdffed4eb2, type: 2}
+  root: {fileID: 0}
 --- !u!1 &1662595678
 GameObject:
   m_ObjectHideFlags: 0
@@ -2613,6 +2648,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 933445161}
+  - {fileID: 250281823}
   - {fileID: 1659228164}
   - {fileID: 196817869}
   - {fileID: 703498820}

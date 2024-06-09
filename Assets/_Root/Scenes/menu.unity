@@ -225,71 +225,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 54397139}
   m_CullTransparentMesh: 1
---- !u!1 &107215218
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 107215219}
-  - component: {fileID: 107215221}
-  - component: {fileID: 107215220}
-  m_Layer: 5
-  m_Name: MainPopupContainer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &107215219
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 107215218}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 441888050}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &107215220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 107215218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67b8f36e50b84afd885a926ec5ea5846, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayName: MainPopupContainer
-  overridePopupPrefab: {fileID: 6179132998334149207, guid: 04ac0e953311a02458e0e69155af0dda, type: 3}
---- !u!114 &107215221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 107215218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding: {x: 0, y: 0, z: 0, w: 0}
-  m_Softness: {x: 0, y: 0}
 --- !u!1 &110994879
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,10 +440,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -570,7 +501,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d9c5e67443647f6b5a2a543f36194b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: MainPageContainer
 --- !u!114 &252998231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1292,10 +1222,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -1339,8 +1265,9 @@ GameObject:
   - component: {fileID: 441888049}
   - component: {fileID: 441888048}
   - component: {fileID: 441888047}
+  - component: {fileID: 441888051}
   m_Layer: 5
-  m_Name: PopupCanvas
+  m_Name: Container - Modal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1420,8 +1347,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 107215219}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1429,6 +1355,66 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &441888051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441888046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1bc3f7e16734d49ae20883e38315a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDontDestroyOnLoad: 0
+  <ContainerName>k__BackingField: 
+  <InstantiateType>k__BackingField: 1
+  <ShowAnimation>k__BackingField:
+    moveAnimation:
+      rid: -2
+    rotateAnimation:
+      rid: -2
+    scaleAnimation:
+      rid: 1227074981114937423
+    fadeAnimation:
+      rid: -2
+  <HideAnimation>k__BackingField:
+    moveAnimation:
+      rid: -2
+    rotateAnimation:
+      rid: -2
+    scaleAnimation:
+      rid: 1227074981114937424
+    fadeAnimation:
+      rid: -2
+  modalBackdrop: {fileID: 4589947422471684445, guid: 42732fb66bdec5649979b16000d8ea93, type: 3}
+  <RegisterModalsByPrefab>k__BackingField: []
+  <RegisterModalsByAddressable>k__BackingField:
+  - m_AssetGUID: 1a36681796865b24cb50fbde837a0877
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 1227074981114937423
+      type: {class: ScaleByFloatShowAnimation, ns: Pancake.UI, asm: Pancake.UGUI}
+      data:
+        from: 1
+        startDelay: 0
+        duration: 0.25
+        ease: 11
+    - rid: 1227074981114937424
+      type: {class: ScaleByFloatHideAnimation, ns: Pancake.UI, asm: Pancake.UGUI}
+      data:
+        to: 0
+        startDelay: 0
+        duration: 0.25
+        ease: 10
 --- !u!1 &452700859
 GameObject:
   m_ObjectHideFlags: 0
@@ -1606,10 +1592,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -1660,6 +1642,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 527389381}
   m_CullTransparentMesh: 1
+--- !u!1 &590336389
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 590336391}
+  - component: {fileID: 590336390}
+  m_Layer: 0
+  m_Name: UI Container
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &590336390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590336389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f517a64d7c9c64b32922a42317242caf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hierarchyObjectMode: 0
+--- !u!4 &590336391
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590336389}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &741260654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,10 +1981,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -2116,10 +2139,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -2455,10 +2474,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -2534,9 +2549,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a21e7d8f9e80462e94e77c6371b318bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  au: {fileID: 11400000, guid: eae2c05a868e928468feb87d21194698, type: 2}
+  clip: {fileID: 11400000, guid: eae2c05a868e928468feb87d21194698, type: 2}
   playOnStart: 1
   isSfx: 0
+--- !u!1 &1474826017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1474826018}
+  - component: {fileID: 1474826019}
+  m_Layer: 0
+  m_Name: Scope
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1474826018
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474826017}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1474826019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474826017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1826d803c92047ae8f123c34c9303a60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: Pancake.SceneFlow.GameRootScope
+  autoRun: 1
+  autoInjectGameObjects:
+  - {fileID: 1380979883}
+  - {fileID: 1988258783}
 --- !u!1 &1580930632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2649,7 +2714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a21e7d8f9e80462e94e77c6371b318bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  au: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
+  clip: {fileID: 0}
   playOnStart: 0
   isSfx: 0
 --- !u!4 &1679153823
@@ -2938,7 +3003,7 @@ MonoBehaviour:
   popupDailyReward: DailyRewardPopup
   popupLeaderboard: LeaderboardPopup
   outfitPageName: OutfitPage
-  changeSceneEvent: {fileID: 11400000, guid: 10247cca5ce308843ae5e0c25c17942e, type: 2}
+  buttonAudio: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
   localeTextFeatureLocked: {fileID: 11400000, guid: 2bed9aeb75d7c8f4a986c0e269dc0388, type: 2}
 --- !u!1 &2023170879
 GameObject:
@@ -3125,10 +3190,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -3390,6 +3451,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 933445161}
+  - {fileID: 1474826018}
   - {fileID: 1988258784}
   - {fileID: 20273459}
   - {fileID: 1679153823}
@@ -3399,6 +3461,7 @@ SceneRoots:
   - {fileID: 114426206}
   - {fileID: 1580930634}
   - {fileID: 1838933293}
-  - {fileID: 441888050}
   - {fileID: 990153298}
   - {fileID: 452700862}
+  - {fileID: 590336391}
+  - {fileID: 441888050}

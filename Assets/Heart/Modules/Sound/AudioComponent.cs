@@ -1,7 +1,4 @@
 ﻿using System.Collections;
-#if PANCAKE_ALCHEMY
-using Alchemy.Inspector;
-#endif
 using UnityEngine;
 using VContainer;
 
@@ -14,18 +11,13 @@ namespace Pancake.Sound
     [EditorIcon("icon_default")]
     public sealed class AudioComponent : GameComponent
     {
-        [Header("Sound definition")]
-#if PANCAKE_ALCHEMY
-        [LabelText("Audio")]
-#endif
-        [SerializeField]
-        private Audio au;
+        [SerializeField] private Audio clip;
 
         [SerializeField] private bool playOnStart;
         [SerializeField] private bool isSfx;
 
         private AudioHandle _handle;
-        [Inject] private readonly AudioManager _audioManager;
+        [Inject] private AudioManager _audioManager;
 
         private void Start()
         {
@@ -48,7 +40,7 @@ namespace Pancake.Sound
             if (playOnStart) Play();
         }
 
-        public void Play() { _handle = isSfx ? _audioManager.PlaySfx(au) : _audioManager.PlayMusic(au); }
+        public void Play() { _handle = isSfx ? _audioManager.PlaySfx(clip) : _audioManager.PlayMusic(clip); }
 
         public void Stop()
         {

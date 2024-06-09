@@ -606,10 +606,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -869,10 +865,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -1548,10 +1540,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -2194,15 +2182,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 894450503413852103}
-  - component: {fileID: 1243702189330042800}
-  - component: {fileID: 2176503854581155739}
+  - component: {fileID: 372713660908622629}
+  - component: {fileID: 3167766373695828996}
   m_Layer: 5
   m_Name: SettingPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &894450503413852103
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2223,7 +2211,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1243702189330042800
+--- !u!114 &372713660908622629
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2232,60 +2220,81 @@ MonoBehaviour:
   m_GameObject: {fileID: 4755009919356987428}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cbb8f1de46c06048a4b083acfa43881, type: 3}
+  m_Script: {fileID: 11500000, guid: 9715c4d7639440a7bbb2e13f94bc7c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enabledSound: 1
-  audioOpen: {fileID: 11400000, guid: 5faabd619f34f1345957ffd6b6178887, type: 2}
-  audioClose: {fileID: 11400000, guid: bdf716089d1d8464bbf80e556d3c62a7, type: 2}
-  localeTextVersion: {fileID: 193468588306640282}
-  buttonMusic: {fileID: 2571178757400256735}
-  buttonSound: {fileID: 5102706881421395248}
-  buttonVibrate: {fileID: 417324144337977329}
-  buttonUpdate: {fileID: 6317884312494511607}
-  buttonClose: {fileID: 7150211516756256072}
-  buttonCredit: {fileID: 6413086526448860549}
-  buttonBackupData: {fileID: 5053989108295605353}
-  buttonRestoreData: {fileID: 540107984714658293}
-  musicUIEffect: {fileID: 9018291667453916183}
-  soundUIEffect: {fileID: 5651522672628340280}
-  vibrateUIEffect: {fileID: 2768682543534061907}
-  languageElementPrefab: {fileID: 5602949441496932617, guid: 9a6b306dbd312bd41a7c294337a5698d, type: 3}
-  languagePopup: {fileID: 742818637084947580}
-  buttonSelectLanguage: {fileID: 1415266517432278116}
-  textNameLanguageSelected: {fileID: 5003263306355268004}
-  musicVolume: {fileID: 11400000, guid: f40c18cdb6b391741b188b73d884cb92, type: 2}
-  sfxVolume: {fileID: 11400000, guid: 0a97e9acdf82e434983225db6d5b578f, type: 2}
-  eventStopAllSfx: {fileID: 11400000, guid: 6e29be8aadddb964eb9f19c60d630a7c, type: 2}
-  popupCredit: CreditPopup
-  popupBackupData: BackupDataPopup
-  popupRestoreData: RestoreDataPopup
-  __alchemySerializationData_Pancake_UI_SettingView:
-    langData:
-      isCreated: 1
-      data: "[\n    {\n        \"Key\": 39,\n        \"Value\": 0\n    },\n    {\n       
-        \"Key\": 10,\n        \"Value\": 1\n    }\n]"
-    unityObjectReferences:
-    - {fileID: 11400000, guid: fdea6d6456da83947bc14b00138ff56c, type: 2}
-    - {fileID: 11400000, guid: b4aed3e2d46a5a14ca86b042d6dec354, type: 2}
---- !u!114 &2176503854581155739
-MonoBehaviour:
+  parentReference:
+    TypeName: Pancake.SceneFlow.GameRootScope
+  autoRun: 1
+  autoInjectGameObjects: []
+  animationSetting: 1
+  animationType: 2
+  showAnimation:
+    moveAnimation:
+      rid: -2
+    rotateAnimation:
+      rid: -2
+    scaleAnimation:
+      rid: 1227074981114937421
+    fadeAnimation:
+      rid: -2
+  hideAnimation:
+    moveAnimation:
+      rid: -2
+    rotateAnimation:
+      rid: -2
+    scaleAnimation:
+      rid: 1227074981114937422
+    fadeAnimation:
+      rid: -2
+  <View>k__BackingField:
+    <ButtonMusic>k__BackingField: {fileID: 2571178757400256735}
+    <ButtonSound>k__BackingField: {fileID: 5102706881421395248}
+    <ButtonVibrate>k__BackingField: {fileID: 417324144337977329}
+    <MusicUIEffect>k__BackingField: {fileID: 9018291667453916183}
+    <SoundUIEffect>k__BackingField: {fileID: 5651522672628340280}
+    <VibrateUIEffect>k__BackingField: {fileID: 2768682543534061907}
+    <LanguageElementPrefab>k__BackingField: {fileID: 5602949441496932617, guid: 9a6b306dbd312bd41a7c294337a5698d, type: 3}
+    <LanguagePopup>k__BackingField: {fileID: 742818637084947580}
+    <ButtonSelectLanguage>k__BackingField: {fileID: 1415266517432278116}
+    <TextNameLanguageSelected>k__BackingField: {fileID: 5003263306355268004}
+    <LocaleTextVersion>k__BackingField: {fileID: 193468588306640282}
+    <ButtonUpdate>k__BackingField: {fileID: 6317884312494511607}
+    <ButtonClose>k__BackingField: {fileID: 7150211516756256072}
+    <ButtonCredit>k__BackingField: {fileID: 6413086526448860549}
+    <ButtonBackupData>k__BackingField: {fileID: 5053989108295605353}
+    <ButtonRestoreData>k__BackingField: {fileID: 540107984714658293}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 1227074981114937421
+      type: {class: ScaleByFloatShowAnimation, ns: Pancake.UI, asm: Pancake.UGUI}
+      data:
+        from: 1
+        startDelay: 0
+        duration: 0.25
+        ease: 11
+    - rid: 1227074981114937422
+      type: {class: ScaleByFloatHideAnimation, ns: Pancake.UI, asm: Pancake.UGUI}
+      data:
+        to: 0
+        startDelay: 0
+        duration: 0.25
+        ease: 10
+--- !u!225 &3167766373695828996
+CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4755009919356987428}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af8394f5473a71d4091fda0e2b182f49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  usePrefabNameAsId: 1
-  id: 
-  animationContainer:
-    enterAnimations: []
-    exitAnimations: []
-  view: {fileID: 1243702189330042800}
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5011449061280719489
 GameObject:
   m_ObjectHideFlags: 0
@@ -2452,10 +2461,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -2842,10 +2847,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 0
   affectObject: {fileID: 4279811490697607961}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -3084,10 +3085,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -3248,10 +3245,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -3649,10 +3642,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 0
-  audioClick: {fileID: 0}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -3832,10 +3821,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:
@@ -4478,10 +4463,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 1
   affectObject: {fileID: 0}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:

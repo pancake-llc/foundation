@@ -3,8 +3,6 @@ using System.Collections;
 using System.Threading;
 using LitMotion.Extensions;
 using Pancake.Common;
-using Pancake.Sound;
-using Pancake.Tracking;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -61,10 +59,6 @@ namespace Pancake.UI
         [SerializeField] private bool isMotionUnableInteract;
         [SerializeField] private bool isAffectToSelf = true;
         [SerializeField] private Transform affectObject;
-        [SerializeField] private bool enabledSound;
-        [SerializeField] private Audio audioClick;
-        [SerializeField] private bool enabledTracking;
-        [SerializeField] private ScriptableTrackingNoParam trackingEvent;
         [SerializeField] private bool bindCustomListener;
         [SerializeField] private ScriptableButtonCallback listenerCallback;
         [SerializeField] private MotionData motionData = new() {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
@@ -129,15 +123,9 @@ namespace Pancake.UI
             if (!Application.isPlaying) return; // not execute awake when not playing
             _tokenSource = new CancellationTokenSource();
             DefaultScale = AffectObject.localScale;
-            onClick.AddListener(PlaySound);
 
             if (!bindCustomListener) return;
             if (listenerCallback == null) Debug.LogError(name + ": missing variable listener");
-        }
-
-        private void PlaySound()
-        {
-            //if (enabledSound && audioClick != null) audioClick.PlaySfx();
         }
 
 #if UNITY_EDITOR
@@ -337,7 +325,6 @@ namespace Pancake.UI
                 return;
             }
 
-            if ((clickType == EButtonClickType.OnlySingleClick || clickType == EButtonClickType.Instant) && enabledTracking) trackingEvent.Track();
             StartCoroutine(IeExecute(eventData));
         }
 
@@ -405,7 +392,6 @@ namespace Pancake.UI
         private void ExecuteDoubleClick()
         {
             if (!IsActive() || !IsInteractable() || !IsDetectDoubleClick) return;
-            PlaySound();
             onDoubleClick.Invoke();
         }
 
@@ -442,7 +428,6 @@ namespace Pancake.UI
         private void ExecuteLongClick()
         {
             if (!IsActive() || !IsInteractable() || !IsDetectLongCLick) return;
-            PlaySound();
             onLongClick.Invoke();
         }
 

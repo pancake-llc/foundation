@@ -14,6 +14,7 @@ namespace Pancake.UI
         #region Fields
 
         [SerializeField] private EAnimationSetting animationSetting = EAnimationSetting.Container;
+        [SerializeField] private EAnimationType animationType = EAnimationType.Scale;
         [SerializeField] private ViewShowAnimation showAnimation = new();
         [SerializeField] private ViewHideAnimation hideAnimation = new();
 

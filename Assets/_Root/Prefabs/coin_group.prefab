@@ -450,10 +450,6 @@ MonoBehaviour:
   isMotionUnableInteract: 0
   isAffectToSelf: 0
   affectObject: {fileID: 5989464646084517973}
-  enabledSound: 1
-  audioClick: {fileID: 11400000, guid: 1ff6dec2a986b8341b52b362384b2b90, type: 2}
-  enabledTracking: 0
-  trackingEvent: {fileID: 0}
   bindCustomListener: 0
   listenerCallback: {fileID: 0}
   motionData:

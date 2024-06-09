@@ -11,7 +11,7 @@ using VitalRouter;
 namespace Pancake.SceneFlow
 {
     [Routes]
-    public partial class LauncherInitialize : GameComponent
+    public partial class EntryPoint : GameComponent
     {
         [SerializeField] private BoolVariable loadingCompleted;
         [SerializeField] private ScriptableNotification dailyNotification;
