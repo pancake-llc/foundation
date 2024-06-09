@@ -14,7 +14,6 @@ namespace Pancake.SceneFlow
         public override async void Init()
         {
             await LevelCoordinator.LoadLevel(levelType.Value, LevelCoordinator.GetCurrentLevelIndex(levelType.Value));
-            await Router.Default.PublishAsync(new LevelLoadedNoticeCommand());
         }
     }
 }

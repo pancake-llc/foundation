@@ -1,7 +1,6 @@
 using System.Globalization;
 using Pancake.Common;
 using Pancake.Localization;
-using Pancake.Scriptable;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,20 +12,19 @@ namespace Pancake.SceneFlow
         [SerializeField, Range(0f, 3f)] private float duration;
         [SerializeField] private Slider loadingBar;
         [SerializeField] private LocaleTextComponent localeTxtPercent;
-        [SerializeField] private BoolVariable loadingCompleted;
-
 
         private float _currentTimeLoading;
+        private bool _loadingCompleted;
 
         private void Start()
         {
             loadingBar.value = 0;
-            loadingCompleted.Value = false;
+            _loadingCompleted = false;
         }
 
         private void Update()
         {
-            if (!loadingCompleted.Value)
+            if (!_loadingCompleted)
             {
                 if (loadingBar.value < 0.4f)
                 {
@@ -40,7 +38,7 @@ namespace Pancake.SceneFlow
                 }
 
                 localeTxtPercent.UpdateArgs((loadingBar.value * 100).Round().ToString(CultureInfo.InvariantCulture));
-                if (_currentTimeLoading >= duration) loadingCompleted.Value = true;
+                if (_currentTimeLoading >= duration) _loadingCompleted = true;
             }
         }
     }

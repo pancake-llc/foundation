@@ -45,7 +45,7 @@ namespace Pancake.SceneFlow
             var list = LocaleSettings.AvailableLanguages;
             string lang = GetCurrentLanguage();
             // for first time when user not choose lang to display
-            // use system language, if dont use detect system language use first language in list available laguages
+            // use system language, if not use detect system language use first language in list available laguages
             if (string.IsNullOrEmpty(lang))
             {
                 var index = 0;

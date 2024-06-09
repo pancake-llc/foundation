@@ -284,7 +284,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 586055911}
-  - component: {fileID: 586055910}
   m_Layer: 0
   m_Name: EntryPoint
   m_TagString: Untagged
@@ -292,22 +291,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &586055910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 586055909}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb43d4f915d270446b0564387f20e84d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentReference:
-    TypeName: 
-  autoRun: 1
-  autoInjectGameObjects: []
 --- !u!4 &586055911
 Transform:
   m_ObjectHideFlags: 0
@@ -836,6 +819,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  dailyNotification: {fileID: 11400000, guid: 99240ac69a3d5ff4aae0aa5239fa8ad7, type: 2}
 --- !u!4 &2059321581
 Transform:
   m_ObjectHideFlags: 0

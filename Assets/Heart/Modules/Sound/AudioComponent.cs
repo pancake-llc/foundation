@@ -24,12 +24,6 @@ namespace Pancake.Sound
             if (playOnStart) StartCoroutine(IePlayDelayed());
         }
 
-        private void OnDisable()
-        {
-            playOnStart = false;
-            Stop();
-        }
-
         private IEnumerator IePlayDelayed()
         {
             //The wait allows the AudioManager to be ready for play requests
