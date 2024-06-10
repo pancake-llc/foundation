@@ -1,6 +1,4 @@
 using Pancake.Localization;
-using Pancake.Scriptable;
-using UnityEngine;
 
 namespace Pancake.SceneFlow
 {
@@ -8,13 +6,7 @@ namespace Pancake.SceneFlow
 
     public class LanguageInitialization : Initialize
     {
-        [SerializeField] private BoolVariable isInitialized;
-
-        public override void Init()
-        {
-            Locale.LocaleChangedEvent += OnLocaleChanged;
-            if (!isInitialized.Value) UserData.LoadLanguageSetting(LocaleSettings.DetectDeviceLanguage);
-        }
+        public override void Init() { Locale.LocaleChangedEvent += OnLocaleChanged; }
 
         private void OnDestroy() { Locale.LocaleChangedEvent -= OnLocaleChanged; }
 

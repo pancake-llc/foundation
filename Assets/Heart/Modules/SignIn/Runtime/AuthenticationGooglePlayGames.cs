@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Pancake.Scriptable;
 #if UNITY_ANDROID && PANCAKE_GPGS
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -10,10 +9,10 @@ namespace Pancake.SignIn
 {
     public class AuthenticationGooglePlayGames : MonoBehaviour
     {
-        [SerializeField] private StringVariable serverCode;
-        [SerializeField] private BoolVariable status;
-        [SerializeField] private ScriptableEventNoParam loginEvent;
-        [SerializeField] private ScriptableEventNoParam getNewServerCode;
+        // [SerializeField] private StringVariable serverCode;
+        // [SerializeField] private BoolVariable status;
+        // [SerializeField] private ScriptableEventNoParam loginEvent;
+        // [SerializeField] private ScriptableEventNoParam getNewServerCode;
 
 #if UNITY_ANDROID && PANCAKE_GPGS
         private void Start()

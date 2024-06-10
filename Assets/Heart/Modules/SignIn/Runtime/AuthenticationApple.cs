@@ -6,7 +6,6 @@ using AppleAuth.Native;
 using AppleAuth.Enums;
 using AppleAuth.Interfaces;
 #endif
-using Pancake.Scriptable;
 
 namespace Pancake.AppleSignIn
 {
@@ -14,10 +13,10 @@ namespace Pancake.AppleSignIn
 
     public class AuthenticationApple : MonoBehaviour
     {
-        [SerializeField] private StringVariable serverCode;
-        [SerializeField] private StringVariable userId;
-        [SerializeField] private BoolVariable status;
-        [SerializeField] private ScriptableEventNoParam loginEvent;
+        //[SerializeField] private StringVariable serverCode;
+        //[SerializeField] private StringVariable userId;
+        //[SerializeField] private BoolVariable status;
+        //[SerializeField] private ScriptableEventNoParam loginEvent;
 #if UNITY_IOS && PANCAKE_APPLE_SIGNIN
         private IAppleAuthManager _appleAuthManager;
 #endif

@@ -7,4 +7,10 @@
         Left,
         Right
     }
+
+    public enum ECurrencyType
+    {
+        Coin,
+        Gem
+    }
 }

@@ -1,55 +1,54 @@
 using System;
 using System.Runtime.CompilerServices;
 using Alchemy.Inspector;
-using Pancake.Scriptable;
 using Pancake.Common;
 
 namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    [Serializable]
-    [CreateAssetMenu(menuName = "Pancake/Game/Daily Reward Data", fileName = "daily_reward_data.asset")]
-    [EditorIcon("so_blue_variable")]
-    public class DailyRewardVariable : ScriptableVariable<DailyRewardData>
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Claim()
-        {
-            Value.isClaimed = true;
-            Save();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsClaimed() => Value.isClaimed;
-
-        public override void Load()
-        {
-            base.Load();
-            Value.isClaimed = Data.Load(Guid, InitialValue.isClaimed);
-        }
-
-        public override void Save()
-        {
-            Data.Save(Guid, Value.isClaimed);
-            base.Save();
-        }
-
-#if UNITY_EDITOR
-        protected override void OnValidate()
-        {
-            try
-            {
-                if (value == null || value.isClaimed == PreviousValue.isClaimed) return;
-                ValueChanged();
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
-#endif
-    }
+//     [Serializable]
+//     [CreateAssetMenu(menuName = "Pancake/Game/Daily Reward Data", fileName = "daily_reward_data.asset")]
+//     [EditorIcon("so_blue_variable")]
+//     public class DailyRewardVariable : ScriptableVariable<DailyRewardData>
+//     {
+//         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//         public void Claim()
+//         {
+//             Value.isClaimed = true;
+//             Save();
+//         }
+//
+//         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//         public bool IsClaimed() => Value.isClaimed;
+//
+//         public override void Load()
+//         {
+//             base.Load();
+//             Value.isClaimed = Data.Load(Guid, InitialValue.isClaimed);
+//         }
+//
+//         public override void Save()
+//         {
+//             Data.Save(Guid, Value.isClaimed);
+//             base.Save();
+//         }
+//
+// #if UNITY_EDITOR
+//         protected override void OnValidate()
+//         {
+//             try
+//             {
+//                 if (value == null || value.isClaimed == PreviousValue.isClaimed) return;
+//                 ValueChanged();
+//             }
+//             catch (Exception)
+//             {
+//                 // ignored
+//             }
+//         }
+// #endif
+//     }
 
     [Serializable]
     public class DailyRewardData
@@ -62,7 +61,7 @@ namespace Pancake.SceneFlow
         private bool IsRewardOutfit => typeReward == TypeRewardDailyReward.Outfit;
 #endif
         [ShowIf("IsRewardCoin")] public Sprite icon;
-        [ShowIf("IsRewardOutfit")] public OutfitUnitVariable outfitUnit;
+        //[ShowIf("IsRewardOutfit")] public OutfitUnitVariable outfitUnit;
         public bool isClaimed;
     }
 

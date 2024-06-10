@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace Pancake.SceneFlow
 {
+    [CreateAssetMenu(fileName = "outfit_variable.asset", menuName = "Pancake/Game/Outfit/Outfit Element")]
+    [EditorIcon("so_blue_variable")]
     [Serializable]
-    public class OutfitElement
+    public class OutfitElement : ScriptableObject
     {
         [Guid] public string id;
         public bool isUnlocked;

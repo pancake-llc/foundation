@@ -14,7 +14,7 @@ namespace Pancake.SceneFlow
     public class CharacterOutfit
     {
         public OutfitType type;
-        public OutfitUnitVariable[] list;
+        public OutfitElement[] list;
     }
 
 

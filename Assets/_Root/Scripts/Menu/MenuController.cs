@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using Pancake.Localization;
-using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
 using Pancake.Component;
 using Pancake.Sound;
@@ -17,9 +16,6 @@ namespace Pancake.SceneFlow
     [EditorIcon("icon_controller")]
     public class MenuController : GameComponent
     {
-        [SerializeField] private BoolVariable remoteConfigFetchCompleted;
-        [SerializeField] private StringVariable remoteConfigNewVersion;
-        [SerializeField] private BoolVariable dontShowUpdateAgain;
         [Header("BUTTON")] [SerializeField] private Button buttonSetting;
         [SerializeField] private Button buttonTapToPlay;
         [SerializeField] private Button buttonShop;
@@ -87,20 +83,20 @@ namespace Pancake.SceneFlow
 
         private async void WaitShowUpdate()
         {
-            if (remoteConfigFetchCompleted == null) return;
-            _tokenShowUpdate = new CancellationTokenSource();
-            try
-            {
-                await UniTask.WaitUntil(() => remoteConfigFetchCompleted, PlayerLoopTiming.Update, _tokenShowUpdate.Token);
-                var version = new Version(remoteConfigNewVersion.Value);
-                int result = version.CompareTo(new Version(Application.version));
-                // is new version
-                //if (result > 0 && !dontShowUpdateAgain) await MainPopupContainer.Push<UpdatePopup>(popupUpdate, true);
-            }
-            catch (OperationCanceledException)
-            {
-                // ignored
-            }
+            // if (remoteConfigFetchCompleted == null) return;
+            // _tokenShowUpdate = new CancellationTokenSource();
+            // try
+            // {
+            //     await UniTask.WaitUntil(() => remoteConfigFetchCompleted, PlayerLoopTiming.Update, _tokenShowUpdate.Token);
+            //     var version = new Version(remoteConfigNewVersion.Value);
+            //     int result = version.CompareTo(new Version(Application.version));
+            //     // is new version
+            //     //if (result > 0 && !dontShowUpdateAgain) await MainPopupContainer.Push<UpdatePopup>(popupUpdate, true);
+            // }
+            // catch (OperationCanceledException)
+            // {
+            //     // ignored
+            // }
         }
 
         private async void OnButtonTapToPlayPressed()

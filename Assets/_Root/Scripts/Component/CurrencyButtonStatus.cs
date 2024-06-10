@@ -1,17 +1,18 @@
 using Coffee.UIEffects;
-using Pancake.Scriptable;
+using Pancake.Component;
 using TMPro;
 using UnityEngine.UI;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    public class CurrencyButtonStatus : MonoBehaviour
+    [Routes]
+    public partial class CurrencyButtonStatus : MonoBehaviour
     {
+        [SerializeField] private StringConstant typeCurrency;
         [SerializeField] private TextMeshProUGUI textValue;
-        [SerializeField] private ScriptableEventInt updateCurrencyEvent;
-        [SerializeField] private ScriptableEventNoParam updateImediateCurrencyEvent;
         [SerializeField] private Button button;
         [SerializeField] private UIEffect uiEffect;
 
@@ -21,19 +22,12 @@ namespace Pancake.SceneFlow
         {
             _cost = cost;
             textValue.SetText($"{_cost}");
-            OnUpdateCurrency();
+            OnUpdateCurrency(new UpdateCurrencyCommand(typeCurrency.Value));
         }
 
-        private void OnEnable()
+        public void OnUpdateCurrency(UpdateCurrencyCommand cmd)
         {
-            updateImediateCurrencyEvent.OnRaised += OnUpdateCurrency;
-            updateCurrencyEvent.OnRaised += OnUpdateCurrency;
-        }
-
-        private void OnUpdateCurrency() { OnUpdateCurrency(0); }
-
-        private void OnUpdateCurrency(int currentCurrency)
-        {
+            // todo check typeCurrency
             if (UserData.GetCurrentCoin() >= _cost)
             {
                 textValue.color = Color.white;
@@ -46,12 +40,6 @@ namespace Pancake.SceneFlow
                 button.interactable = false;
                 uiEffect.effectMode = EffectMode.Grayscale;
             }
-        }
-
-        private void OnDisable()
-        {
-            updateImediateCurrencyEvent.OnRaised -= OnUpdateCurrency;
-            updateCurrencyEvent.OnRaised -= OnUpdateCurrency;
         }
     }
 }

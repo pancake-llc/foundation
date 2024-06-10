@@ -1,5 +1,4 @@
 using System;
-using Pancake.Scriptable;
 using UnityEngine;
 
 namespace Pancake.SceneFlow
@@ -9,7 +8,6 @@ namespace Pancake.SceneFlow
         [SerializeField] private GameObject debugViewPrefab;
         [SerializeField] private StringConstant coinType;
         [Header("level")] [SerializeField] private StringConstant levelType;
-        [SerializeField] private ScriptableEventNoParam hideUiGameplayEvent;
 
         public override void Init()
         {

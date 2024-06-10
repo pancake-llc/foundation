@@ -1,24 +1,20 @@
 using LitMotion;
 using LitMotion.Extensions;
-using Pancake.Scriptable;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    public class UIHideBeforeWin : GameComponent
+    [Routes]
+    public partial class UIHideBeforeWin : GameComponent
     {
         [SerializeField] private RectTransform target;
         [SerializeField] private EFourDirection direction;
         [SerializeField] private float value;
-        [SerializeField] private ScriptableEventNoParam hideEvent;
         [SerializeField] private float duration = 0.5f;
 
-        protected void OnEnable() { hideEvent.OnRaised += OnHide; }
-
-        protected void OnDisable() { hideEvent.OnRaised -= OnHide; }
-
-        private void OnHide()
+        public void OnHide(HideUIBeforeWinCommand cmd)
         {
             switch (direction)
             {
@@ -36,5 +32,9 @@ namespace Pancake.SceneFlow
                     break;
             }
         }
+    }
+
+    public struct HideUIBeforeWinCommand : ICommand
+    {
     }
 }

@@ -26,5 +26,7 @@ namespace Pancake.SceneFlow
 
         public const string KEY_COUNTRY_CODE = "country_code";
         public const string KEY_LANGUAGE_CODE = "language_code";
+
+        public const string CURRENCY_COIN = "coin";
     }
 }

@@ -1,27 +1,23 @@
 using LitMotion;
 using LitMotion.Extensions;
-using Pancake.Scriptable;
+using VitalRouter;
 
 namespace Pancake.SceneFlow
 {
     using UnityEngine;
 
-    public class UIShowAfterWin : GameComponent
+    [Routes]
+    public partial class UIShowAfterWin : GameComponent
     {
         [SerializeField] private RectTransform target;
         [SerializeField] private EFourDirection direction;
-        [SerializeField] private ScriptableEventNoParam showEvent;
         [SerializeField] private float duration = 0.5f;
 
         private Vector2 _defaultPosition;
 
-        protected void OnEnable() { showEvent.OnRaised += OnShow; }
-
-        protected void OnDisable() { showEvent.OnRaised -= OnShow; }
-
         private void Start() { _defaultPosition = target.anchoredPosition; }
 
-        private void OnShow()
+        public void OnShow(UIShowAfterWinCommand cmd)
         {
             switch (direction)
             {
@@ -39,5 +35,9 @@ namespace Pancake.SceneFlow
                     break;
             }
         }
+    }
+
+    public struct UIShowAfterWinCommand : ICommand
+    {
     }
 }

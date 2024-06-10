@@ -1,11 +1,11 @@
 using Pancake.Common;
 using Pancake.LevelSystem;
 using Pancake.Monetization;
-using Pancake.Scriptable;
 using Cysharp.Threading.Tasks;
 using Pancake.UI;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Pancake.SceneFlow
 {
@@ -16,11 +16,10 @@ namespace Pancake.SceneFlow
         [SerializeField] private Button buttonReplay;
         [SerializeField] private Button buttonSkipByAd;
 
-        [Header("Other")] [SerializeField] private ScriptableEventString changeSceneEvent;
-
         [Header("Level")] [SerializeField] private StringConstant levelType;
         [SerializeField] private Transform levelRootHolder;
 
+        [Inject] private readonly SceneLoader _sceneLoader;
         //private PopupContainer PersistentPopupContainer => PopupContainer.Find(Constant.PERSISTENT_POPUP_CONTAINER);
 
         private void Start()
@@ -60,7 +59,7 @@ namespace Pancake.SceneFlow
             //     false,
             //     onLoad: t => { t.popup.view.Setup(); },
             //     popupId: nameof(SceneTransitionPopup)); // show transition
-            changeSceneEvent.Raise(Constant.MENU_SCENE);
+            _sceneLoader.ChangeScene(Constant.MENU_SCENE);
         }
     }
 }
