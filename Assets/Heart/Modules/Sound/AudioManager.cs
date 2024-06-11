@@ -200,6 +200,7 @@ namespace Pancake.Sound
         {
             _source = new GameObject("SoundEmitter", typeof(AudioSource), typeof(Poolable), typeof(SoundEmitter));
             _source.SetActive(false);
+            App.DontDestroy(_source); // move out launcher scene
         }
     }
 }

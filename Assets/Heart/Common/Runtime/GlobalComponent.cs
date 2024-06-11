@@ -312,6 +312,8 @@ namespace Pancake.Common
             return (arg1, arg2, arg3) => RunOnMainThreadImpl(() => action(arg1, arg2, arg3));
         }
 
+        internal void DontDestroy(Object target) { DontDestroyOnLoad(target); }
+
         #endregion
     }
 }

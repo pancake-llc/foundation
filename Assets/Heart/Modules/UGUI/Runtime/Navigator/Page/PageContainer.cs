@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Pancake.Linq;
 using R3;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace Pancake.UI
 {
@@ -183,7 +184,7 @@ namespace Pancake.UI
             nextPage = nextPage.IsRecycle
                 ? nextPage
                 :
-#if VCONTAINER_SUPPORT
+#if PANCAKE_VCONTAINER
                 VContainerSettings.Instance.RootLifetimeScope.Container.Instantiate(nextPage, transform);
 #else
                 Instantiate(nextPage, transform);

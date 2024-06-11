@@ -21,10 +21,17 @@ namespace Pancake.SceneFlow
 
         private void InitializeView()
         {
-            _view.ButtonMusic.OnClickAsObservable().Subscribe(_ =>
-            {
-                // todo
-            });
+            // _view.ButtonMusic.OnClickAsObservable()
+            //     .Subscribe(_ =>
+            //     {
+            //         // todo
+            //     })
+            //     .AddTo(Context);
+            //
+            // _view.ButtonClose.OnClickAsObservable().Subscribe(_ =>
+            // {
+            //     
+            // });
         }
     }
 }

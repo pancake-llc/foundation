@@ -5,6 +5,7 @@ using Pancake.Linq;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace Pancake.UI
 {
@@ -145,7 +146,7 @@ namespace Pancake.UI
             nextSheet = nextSheet.IsRecycle
                 ? nextSheet
                 :
-#if VCONTAINER_SUPPORT
+#if PANCAKE_VCONTAINER
                 VContainerSettings.Instance.RootLifetimeScope.Container.Instantiate(nextSheet, transform);
 #else
                 Instantiate(nextSheet, transform);

@@ -33,3 +33,10 @@ MonoBehaviour:
   guidCreateMode: 0
   guid: e92d33afe8fe37b45b6f8b1a9b1f125c
   resetOn: 2
+  <PreviousValue>k__BackingField:
+    id: 50c5c5ab291945e
+    isUnlocked: 0
+    unlockType: 0
+    value: 1000
+    viewPosition: {x: 0, y: -216}
+    skinId: clothes/dress-green

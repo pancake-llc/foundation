@@ -7,6 +7,7 @@ using LitMotion.Extensions;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer.Unity;
 
 namespace Pancake.UI
 {
@@ -145,7 +146,7 @@ namespace Pancake.UI
 
             nextModal.gameObject.SetActive(false);
             nextModal =
-#if VCONTAINER_SUPPORT
+#if PANCAKE_VCONTAINER
                 VContainerSettings.Instance.RootLifetimeScope.Container.Instantiate(nextModal, transform);
 #else
                 Instantiate(nextModal, transform);

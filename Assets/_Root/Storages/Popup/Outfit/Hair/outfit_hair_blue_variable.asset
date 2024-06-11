@@ -33,3 +33,10 @@ MonoBehaviour:
   guidCreateMode: 0
   guid: e50a99c327078d948ba537f6884472ca
   resetOn: 2
+  <PreviousValue>k__BackingField:
+    id: 43ca78109d2c44d
+    isUnlocked: 1
+    unlockType: 2
+    value: 1000
+    viewPosition: {x: 0, y: -366}
+    skinId: hair/blue

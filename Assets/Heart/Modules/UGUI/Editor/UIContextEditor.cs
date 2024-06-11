@@ -18,15 +18,13 @@ namespace PancakeEditor.UI
         private SerializedProperty _showAnimation;
         private SerializedProperty _hideAnimation;
 
-        private readonly string[] _animationTabArray = {"Move", "Rotate", "Scale", "Fade"};
-
         #endregion
 
         #region Properties
 
         private UIContext Target => target as UIContext;
 
-        protected virtual string[] PropertyToExclude() => new[] {"m_Script", "showAnimation", "hideAnimation", "animationSetting"};
+        protected virtual string[] PropertyToExclude() => new[] {"m_Script", "showAnimation", "hideAnimation", "animationSetting", "animationType"};
 
         private SerializedProperty ShowAnimation
         {
@@ -79,8 +77,8 @@ namespace PancakeEditor.UI
             _script = serializedObject.FindProperty("m_Script");
             _animationSetting = serializedObject.FindProperty("animationSetting");
             _animationType = serializedObject.FindProperty("animationType");
-            _showAnimation = serializedObject.FindProperty($"showAnimation");
-            _hideAnimation = serializedObject.FindProperty($"hideAnimation");
+            _showAnimation = serializedObject.FindProperty("showAnimation");
+            _hideAnimation = serializedObject.FindProperty("hideAnimation");
         }
 
         #endregion
@@ -128,7 +126,7 @@ namespace PancakeEditor.UI
                     {
                         animationTabArea = new Rect(animationTabArea) {xMin = 18, height = 20};
                         GUI.Box(animationTabArea, GUIContent.none);
-                        _animationType.enumValueIndex = GUI.Toolbar(animationTabArea, _animationType.enumValueIndex, _animationTabArray);
+                        _animationType.enumValueIndex = GUI.Toolbar(animationTabArea, _animationType.enumValueIndex, _animationSetting.enumNames);
                         EditorGUILayout.Space(animationTabArea.height);
                     }
                     EditorGUILayout.EndVertical();

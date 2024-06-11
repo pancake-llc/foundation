@@ -33,3 +33,10 @@ MonoBehaviour:
   guidCreateMode: 0
   guid: 86449f592b1e228429a6d51d536b0b43
   resetOn: 2
+  <PreviousValue>k__BackingField:
+    day: 4
+    typeReward: 0
+    amount: 100
+    icon: {fileID: 21300000, guid: ea8e3bdb32dced94e9a0f18fa7fdba30, type: 3}
+    outfitUnit: {fileID: 0}
+    isClaimed: 0

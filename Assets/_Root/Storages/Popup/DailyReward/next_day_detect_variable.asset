@@ -21,5 +21,7 @@ MonoBehaviour:
   guidCreateMode: 0
   guid: a66391c4583af954e84a2e823e2dd2c4
   resetOn: 2
+  <PreviousValue>k__BackingField: 0
   message: The value will be reset after each new day, requiring the Saved attribute
     to be enabled
+  _lastTimeUpdated: 6/9/2024

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using System.Runtime.CompilerServices;
+using Object = UnityEngine.Object;
 
 namespace Pancake.Common
 {
@@ -200,5 +201,7 @@ namespace Pancake.Common
             CancelDelay(handle);
             handle = null;
         }
+
+        public static void DontDestroy(Object target) { globalComponent.DontDestroy(target); }
     }
 }

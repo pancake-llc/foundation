@@ -33,3 +33,10 @@ MonoBehaviour:
   guidCreateMode: 0
   guid: ffef2d9b865150d4390b300677f2e188
   resetOn: 2
+  <PreviousValue>k__BackingField:
+    id: 1842470bc7d7446
+    isUnlocked: 1
+    unlockType: 2
+    value: 0
+    viewPosition: {x: 0, y: -90}
+    skinId: legs/pants-jeans

@@ -21,5 +21,6 @@ MonoBehaviour:
   guidCreateMode: 0
   guid: eee83a1c61699f34e8eba711713dffd8
   resetOn: 2
+  <PreviousValue>k__BackingField: 0
   isClamped: 0
   minMax: {x: -2147483648, y: 2147483647}
