@@ -65,22 +65,6 @@
       "dependencies": {},
       "hash": "d057074f177b078e29f10dd511b54df48a8806ea"
     },
-    "com.esotericsoftware.spine.spine-csharp": {
-      "version": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "238e86c58a50359968718c1f13cc8ec10b8b2c37"
-    },
-    "com.esotericsoftware.spine.spine-unity": {
-      "version": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-unity/Assets/Spine#4.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.esotericsoftware.spine.spine-csharp": "4.1.0"
-      },
-      "hash": "238e86c58a50359968718c1f13cc8ec10b8b2c37"
-    },
     "com.google.android.appbundle": {
       "version": "https://github.com/google-unity/android-app-bundle.git#1.8.0",
       "depth": 0,
@@ -198,7 +182,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collections": {
-      "version": "2.4.1",
+      "version": "2.4.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -314,12 +298,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.cloudsave": {
-      "version": "3.1.1",
+      "version": "3.2.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.services.authentication": "2.6.1",
-        "com.unity.services.core": "1.4.3"
+        "com.unity.services.authentication": "3.3.1",
+        "com.unity.services.core": "1.12.5"
       },
       "url": "https://packages.unity.com"
     },

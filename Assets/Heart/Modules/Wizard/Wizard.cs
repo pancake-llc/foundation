@@ -38,9 +38,7 @@ namespace PancakeEditor
             Localization,
             OtherPackage,
             ScreenSetting,
-            Spine,
-            Texture
-        }
+            Spine}
 
         private enum MonetizationType
         {
@@ -63,8 +61,7 @@ namespace PancakeEditor
         {
             HeartConfig = WizardAllType.HeartSetting,
             LevelSystem = WizardAllType.LevelSystem,
-            ScreenSetting = WizardAllType.ScreenSetting,
-            Texture = WizardAllType.Texture
+            ScreenSetting = WizardAllType.ScreenSetting
         }
 
         public enum LocaleTabType
@@ -373,9 +370,6 @@ namespace PancakeEditor
                         ref _localeInitialized,
                         ref _currentLocaleTabType);
                     break;
-                case WizardAllType.Texture when _currentType is WizardType.Setting or WizardType.All:
-                    TextureWindow.OnInspectorGUI(ref _spriteAtlas, this);
-                    break;
                 case WizardAllType.Build when _currentType is WizardType.Tools or WizardType.All:
                     BuildWindow.OnInspectorGUI(ref _currentAndroidBuildPipeline);
                     break;
@@ -455,7 +449,6 @@ namespace PancakeEditor
                 WizardAllType.Localization => EditorResources.IconLocalization,
                 WizardAllType.HeartSetting or WizardAllType.ScreenSetting => EditorResources.IconSetting,
                 WizardAllType.LevelSystem => EditorResources.IconLevelSytem,
-                WizardAllType.Texture => EditorResources.IconAtlas,
                 WizardAllType.Spine => EditorResources.IconSpine,
                 WizardAllType.Build => EditorResources.IconUnity,
                 WizardAllType.OtherPackage => EditorResources.IconPackage,
