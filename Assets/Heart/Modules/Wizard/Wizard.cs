@@ -37,8 +37,9 @@ namespace PancakeEditor
             LevelSystem,
             Localization,
             OtherPackage,
-            ScreenSetting,
-            Spine}
+            Navigator,
+            Spine
+        }
 
         private enum MonetizationType
         {
@@ -54,14 +55,14 @@ namespace PancakeEditor
             GameSerice = WizardAllType.GameService,
             Localization = WizardAllType.Localization,
             OtherPacakge = WizardAllType.OtherPackage,
-            Build = WizardAllType.Build
+            Build = WizardAllType.Build,
+            Navigator = WizardAllType.Navigator
         }
 
         private enum SettingType
         {
             HeartConfig = WizardAllType.HeartSetting,
             LevelSystem = WizardAllType.LevelSystem,
-            ScreenSetting = WizardAllType.ScreenSetting
         }
 
         public enum LocaleTabType
@@ -302,11 +303,6 @@ namespace PancakeEditor
                                     }
                                 });
                         break;
-                    case WizardAllType.ScreenSetting:
-                        //var defaultPopupSetting = Resources.Load<Pancake.UI.DefaultTransitionSetting>(nameof(Pancake.UI.DefaultTransitionSetting));
-                        //if (defaultPopupSetting != null) ShowContextMenu(defaultPopupSetting, nameof(Pancake.UI.DefaultTransitionSetting));
-
-                        break;
                     case WizardAllType.HeartSetting:
                         var heartSetting = Resources.Load<HeartSettings>(nameof(HeartSettings));
                         var heartEditorSetting = Resources.Load<HeartEditorSettings>(nameof(HeartEditorSettings));
@@ -344,8 +340,8 @@ namespace PancakeEditor
                 case WizardAllType.HeartSetting when _currentType is WizardType.Setting or WizardType.All:
                     HeartSettingWindow.OnInspectorGUI();
                     break;
-                case WizardAllType.ScreenSetting when _currentType is WizardType.Setting or WizardType.All:
-                    ScreenSettingWindow.OnInspectorGUI(position);
+                case WizardAllType.Navigator when _currentType is WizardType.Tools or WizardType.All:
+                    NavigatorWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.OtherPackage when _currentType is WizardType.Tools or WizardType.All:
                     OtherPackageWindow.OnInspectorGUI();
@@ -402,7 +398,7 @@ namespace PancakeEditor
                     if (deselectCurrent) _selectedItemType = WizardAllType.Advertisement;
                     break;
                 case WizardType.Setting:
-                    if (deselectCurrent) _selectedItemType = WizardAllType.ScreenSetting;
+                    if (deselectCurrent) _selectedItemType = WizardAllType.HeartSetting;
                     break;
                 case WizardType.Tools:
                     if (deselectCurrent) _selectedItemType = WizardAllType.OtherPackage;
@@ -447,7 +443,8 @@ namespace PancakeEditor
                 WizardAllType.Adjust => EditorResources.IconAdjust,
                 WizardAllType.GameService => EditorResources.IconGameService,
                 WizardAllType.Localization => EditorResources.IconLocalization,
-                WizardAllType.HeartSetting or WizardAllType.ScreenSetting => EditorResources.IconSetting,
+                WizardAllType.HeartSetting => EditorResources.IconSetting,
+                WizardAllType.Navigator => EditorResources.IconPopup,
                 WizardAllType.LevelSystem => EditorResources.IconLevelSytem,
                 WizardAllType.Spine => EditorResources.IconSpine,
                 WizardAllType.Build => EditorResources.IconUnity,

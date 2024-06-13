@@ -29,7 +29,7 @@ namespace PancakeEditor.Common
         public static Texture2D IconUnity => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_unity.png", RELATIVE_PATH);
         public static Texture2D IconLevelSytem => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_levelsystem.png", RELATIVE_PATH);
         public static Texture2D IconPackage => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_package.png", RELATIVE_PATH);
-        public static Texture2D IconAtlas => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_atlas.png", RELATIVE_PATH);
+        public static Texture2D IconPopup => ProjectDatabase.FindAssetWithPath<Texture2D>("icon_popup.png", RELATIVE_PATH);
 
         public static Texture2D BoxContentDark
         {
