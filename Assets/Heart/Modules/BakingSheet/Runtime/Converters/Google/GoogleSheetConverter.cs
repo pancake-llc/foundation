@@ -52,7 +52,7 @@ namespace Pancake.BakingSheet
             using (var service = new SheetsService(new BaseClientService.Initializer() {HttpClientInitializer = _credential}))
             {
                 var sheetReq = service.Spreadsheets.Get(_gsheetAddress);
-                sheetReq.Fields = "properties,sheets(properties,data.rowData.values.formattedValue)";
+                sheetReq.Fields = "sheets(properties.title,data.rowData.values.formattedValue)";
                 _spreadsheet = await sheetReq.ExecuteAsync();
             }
 
