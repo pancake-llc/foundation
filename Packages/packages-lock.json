@@ -65,48 +65,12 @@
       "dependencies": {},
       "hash": "d057074f177b078e29f10dd511b54df48a8806ea"
     },
-    "com.google.android.appbundle": {
-      "version": "https://github.com/google-unity/android-app-bundle.git#1.8.0",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "50d04b09ae563e7eed9b72180973870171e15423"
-    },
     "com.google.external-dependency-manager": {
       "version": "https://github.com/google-unity/external-dependency-manager.git#1.2.179",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "66fd0c1b84d72ec9ac32e2eece65f2630b4b262e"
-    },
-    "com.google.play.common": {
-      "version": "https://github.com/google-unity/google-play-common.git#1.8.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.google.android.appbundle": "1.8.0"
-      },
-      "hash": "5c3fb2edb0d5fdd0e71b283b0ca529f8baf61059"
-    },
-    "com.google.play.core": {
-      "version": "https://github.com/google-unity/google-play-core.git#1.8.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.google.android.appbundle": "1.8.0",
-        "com.google.external-dependency-manager": "1.2.172"
-      },
-      "hash": "c8b5299670d28304ca0b96b493d3593fd6ac1862"
-    },
-    "com.google.play.review": {
-      "version": "https://github.com/google-unity/in-app-review.git#1.8.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.google.play.common": "1.8.1",
-        "com.google.play.core": "1.8.1"
-      },
-      "hash": "039118f280938f9770ed4efcf04b5bf030981e7e"
     },
     "com.pancake.bcl.asyncinterfaces": {
       "version": "https://github.com/pancake-llc/microsoft-bcl-async-interfaces.git#6.0.0",

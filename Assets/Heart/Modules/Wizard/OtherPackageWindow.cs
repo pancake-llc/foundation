@@ -69,14 +69,6 @@ namespace PancakeEditor
 
             GUILayout.Space(4);
 
-#if PANCAKE_GRAPHY
-            Uninstall("Graphy 3.0.6", "com.tayx.graphy");
-#else
-            InstallGraphy();
-#endif
-
-            GUILayout.Space(4);
-
 #if PANCAKE_PARTICLE_EFFECT_UGUI
             Uninstall("Particle Effect For UGUI 4.6.8", "com.coffee.ui-particle");
 #else
@@ -228,18 +220,6 @@ namespace PancakeEditor
             if (GUILayout.Button("Install Test Performance", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 RegistryManager.Add("com.unity.test-framework.performance", "3.0.3");
-                RegistryManager.Resolve();
-            }
-
-            GUI.enabled = true;
-        }
-
-        private static void InstallGraphy()
-        {
-            GUI.enabled = !EditorApplication.isCompiling;
-            if (GUILayout.Button("Install Graphy", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                RegistryManager.Add("com.tayx.graphy", "https://github.com/pancake-llc/graphy.git#3.0.6");
                 RegistryManager.Resolve();
             }
 
