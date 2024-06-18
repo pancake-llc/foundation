@@ -49,7 +49,7 @@ namespace Pancake.Sound
             int length = clipsToPlay.Length;
             for (var i = 0; i < length; i++)
             {
-                soundEmitters[i] = _source.Request<SoundEmitter>();
+                //soundEmitters[i] = _source.Request<SoundEmitter>();
                 soundEmitters[i].Sync(handle);
                 soundEmitters[i].PlayAudioClip(clipsToPlay[i], audio.loop, audio.volume * SfxVolume);
                 if (!audio.loop) soundEmitters[i].OnCompleted += OnSoundEmitterFinishedPlaying;
@@ -118,7 +118,7 @@ namespace Pancake.Sound
                 emitter.FadeMusicOut(fadeDuration);
                 var go = emitter.gameObject;
                 emitter.OnCompleted -= StopMusicEmitter;
-                App.Delay(emitter, fadeDuration, () => go.Return());
+                //App.Delay(emitter, fadeDuration, () => go.Return());
             }
 
             _bgm.Clear();
@@ -129,7 +129,7 @@ namespace Pancake.Sound
             int length = clipsToPlay.Length;
             for (var i = 0; i < length; i++)
             {
-                emitters[i] = _source.Request<SoundEmitter>();
+                //emitters[i] = _source.Request<SoundEmitter>();
                 emitters[i].Sync(handle);
                 emitters[i].FadeMusicIn(clipsToPlay[i], 0.2f, audio.volume * MusicVolume, startTime);
                 emitters[i].OnCompleted += StopMusicEmitter;
@@ -187,18 +187,18 @@ namespace Pancake.Sound
             if (!soundEmitter.IsLooping()) soundEmitter.OnCompleted -= OnSoundEmitterFinishedPlaying;
 
             soundEmitter.Stop();
-            soundEmitter.gameObject.Return();
+            //soundEmitter.gameObject.Return();
         }
 
         private void StopMusicEmitter(SoundEmitter soundEmitter)
         {
             soundEmitter.OnCompleted -= StopMusicEmitter;
-            soundEmitter.gameObject.Return();
+            //soundEmitter.gameObject.Return();
         }
 
         public void Start()
         {
-            _source = new GameObject("SoundEmitter", typeof(AudioSource), typeof(Poolable), typeof(SoundEmitter));
+            //_source = new GameObject("SoundEmitter", typeof(AudioSource), typeof(Poolable), typeof(SoundEmitter));
             _source.SetActive(false);
             App.DontDestroy(_source); // move out launcher scene
         }

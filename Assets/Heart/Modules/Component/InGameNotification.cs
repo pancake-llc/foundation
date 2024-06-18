@@ -58,7 +58,7 @@ namespace Pancake.Component
             localeTextMessage.gameObject.SetActive(false);
 #if PANCAKE_LITMOTION
             LMotion.Create(imageBackgound.rectTransform.sizeDelta, new Vector2(-GetComponent<RectTransform>().rect.width + sizeYColapse, sizeYColapse), timeAnimate)
-                .WithOnComplete(() => gameObject.Return())
+                // .WithOnComplete(() => gameObject.Return())
                 .BindToSizeDelta(imageBackgound.rectTransform)
                 .AddTo(gameObject);
 #endif

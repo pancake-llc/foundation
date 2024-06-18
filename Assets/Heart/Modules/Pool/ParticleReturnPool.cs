@@ -1,7 +1,7 @@
 ﻿using Pancake.Common;
 using UnityEngine;
 
-namespace Pancake
+namespace Pancake.Pools
 {
     [RequireComponent(typeof(ParticleSystem))]
     public class ParticleReturnPool : MonoBehaviour

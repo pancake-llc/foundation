@@ -44,7 +44,7 @@ namespace Pancake.Component
         private void ReturnFx(GameObject fx)
         {
             _fxInstances.Remove(fx);
-            fx.Return();
+            //fx.Return();
         }
 
         private bool IsFxInstanceEmpty() => _fxInstances.Count == 0;
@@ -53,26 +53,26 @@ namespace Pancake.Component
         {
             if (data.Type != type.Value) return;
 
-            var fx = fxPrefab.Request();
-            var vfxParticleCollision = fx.GetComponent<VfxParticleCollision>();
-            if (vfxParticleCollision == null) return;
-            vfxParticleCollision.Init(data.Value, ReturnFx, IsFxInstanceEmpty);
-            var ps = vfxParticleCollision.PS;
-            _fxInstances.Add(fx);
-            ps.gameObject.SetActive(true);
-            var transformCache = ps.transform;
-            transformCache.position = data.Position;
-            var localPos = transformCache.localPosition;
-            localPos = new Vector3(localPos.x, localPos.y);
-            transformCache.localPosition = localPos;
-            transformCache.localScale = new Vector3(fxScale, fxScale, fxScale);
-            var externalForcesModule = ps.externalForces;
-            externalForcesModule.enabled = true;
-            particleForceField.gameObject.SetActive(true);
-            externalForcesModule.AddInfluence(particleForceField);
-            ps.Emit(1); // avoid zero particle count when start
-            ps.Play();
-            //if (isPlaySound && audioSpawn != null) audioSpawn.PlaySfx();
+            // var fx = fxPrefab.Request();
+            // var vfxParticleCollision = fx.GetComponent<VfxParticleCollision>();
+            // if (vfxParticleCollision == null) return;
+            // vfxParticleCollision.Init(data.Value, ReturnFx, IsFxInstanceEmpty);
+            // var ps = vfxParticleCollision.PS;
+            // _fxInstances.Add(fx);
+            // ps.gameObject.SetActive(true);
+            // var transformCache = ps.transform;
+            // transformCache.position = data.Position;
+            // var localPos = transformCache.localPosition;
+            // localPos = new Vector3(localPos.x, localPos.y);
+            // transformCache.localPosition = localPos;
+            // transformCache.localScale = new Vector3(fxScale, fxScale, fxScale);
+            // var externalForcesModule = ps.externalForces;
+            // externalForcesModule.enabled = true;
+            // particleForceField.gameObject.SetActive(true);
+            // externalForcesModule.AddInfluence(particleForceField);
+            // ps.Emit(1); // avoid zero particle count when start
+            // ps.Play();
+            // //if (isPlaySound && audioSpawn != null) audioSpawn.PlaySfx();
         }
     }
 }
