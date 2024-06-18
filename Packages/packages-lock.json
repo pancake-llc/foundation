@@ -40,14 +40,14 @@
       "hash": "332340e7bc2f8257816dd28784607a1edf6b6c2a"
     },
     "com.coffee.ui-particle": {
-      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.7",
+      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.8",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
-      "hash": "e8c98732016d7cdba47eb0d283977abd1012741c"
+      "hash": "49f46d5c9e0e899f351907fea7b8a1258763109b"
     },
     "com.cysharp.r3": {
       "version": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.12",
@@ -366,11 +366,11 @@
       "hash": "58610810240efebe27b982a3adfb8405c57320a2"
     },
     "jp.hadashikick.vitalrouter": {
-      "version": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.3",
+      "version": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.4",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "27edc0014bcaf6d0574508622f1cb22ef906d428"
+      "hash": "ffb313961ee9ecffcdffd9a59a340b63a5d43414"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
