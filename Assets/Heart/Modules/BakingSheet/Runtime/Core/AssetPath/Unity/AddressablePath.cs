@@ -34,12 +34,12 @@ namespace Pancake.BakingSheet.Unity
 
             if (!match.Success) return;
 
-            var filePath = match.Groups[1].Value;
-            var subAssetName = match.Groups[2].Value;
+            string filePath = match.Groups[1].Value;
+            string subAssetName = match.Groups[2].Value;
 
             if (!string.IsNullOrEmpty(extension)) filePath = $"{filePath}.{extension}";
 
-            FullPath = Path.Combine(basePath, filePath);
+            FullPath = AssetPath.CombinePath(basePath, filePath, "/");
             SubAssetName = subAssetName;
 
             if (!string.IsNullOrEmpty(SubAssetName)) FullPath += $"[{SubAssetName}]";

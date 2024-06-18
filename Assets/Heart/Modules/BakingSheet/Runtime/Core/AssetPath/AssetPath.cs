@@ -22,7 +22,17 @@ namespace Pancake.BakingSheet
 
             if (!string.IsNullOrEmpty(extension)) filePath = $"{filePath}.{extension}";
 
-            FullPath = Path.Combine(basePath, filePath);
+            FullPath = CombinePath(basePath, filePath, "/");
+        }
+        
+        // Defining our own, since Path.Combine or similar methods does not support custom separator,
+        public static string CombinePath(string basePath, string filePath, string separator)
+        {
+            if (string.IsNullOrEmpty(basePath)) return filePath;
+
+            if (basePath.EndsWith(separator)) return $"{basePath}{filePath}";
+
+            return $"{basePath}{separator}{filePath}";
         }
     }
 

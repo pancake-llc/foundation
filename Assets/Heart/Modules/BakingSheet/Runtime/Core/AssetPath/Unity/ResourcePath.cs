@@ -30,7 +30,7 @@ namespace Pancake.BakingSheet.Unity
             string filePath = match.Groups[1].Value;
             string subAssetName = match.Groups[2].Value;
 
-            FullPath = Path.Combine(basePath, filePath);
+            FullPath = AssetPath.CombinePath(basePath, filePath, "/");
             SubAssetName = subAssetName;
         }
 

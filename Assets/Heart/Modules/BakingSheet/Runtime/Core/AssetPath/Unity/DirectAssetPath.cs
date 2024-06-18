@@ -41,7 +41,7 @@ namespace Pancake.BakingSheet.Unity
 
             if (!string.IsNullOrEmpty(extension)) filePath = $"{filePath}.{extension}";
 
-            FullPath = Path.Combine(basePath, filePath);
+            FullPath = AssetPath.CombinePath(basePath, filePath, "/");
             SubAssetName = subAssetName;
         }
 
