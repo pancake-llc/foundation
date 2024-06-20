@@ -136,21 +136,21 @@ namespace Pancake.Pools
             return obj;
         }
 
-        public static TComponent Request<TComponent>(TComponent original) where TComponent : Component { return Request(original.gameObject).GetComponent<TComponent>(); }
+        public static TComponent Request<TComponent>(this GameObject original) where TComponent : Component { return Request(original).GetComponent<TComponent>(); }
 
-        public static TComponent Request<TComponent>(TComponent original, Vector3 position, Quaternion rotation, Transform parent) where TComponent : Component
+        public static TComponent Request<TComponent>(this GameObject original, Transform parent) where TComponent : Component
         {
-            return Request(original.gameObject, position, rotation, parent).GetComponent<TComponent>();
+            return Request(original, parent).GetComponent<TComponent>();
         }
 
-        public static TComponent Request<TComponent>(TComponent original, Vector3 position, Quaternion rotation) where TComponent : Component
+        public static TComponent Request<TComponent>(this GameObject original, Vector3 position, Quaternion rotation) where TComponent : Component
         {
-            return Request(original.gameObject, position, rotation).GetComponent<TComponent>();
+            return Request(original, position, rotation).GetComponent<TComponent>();
         }
 
-        public static TComponent Request<TComponent>(TComponent original, Transform parent) where TComponent : Component
+        public static TComponent Request<TComponent>(this GameObject original, Vector3 position, Quaternion rotation, Transform parent) where TComponent : Component
         {
-            return Request(original.gameObject, parent).GetComponent<TComponent>();
+            return Request(original, position, rotation, parent).GetComponent<TComponent>();
         }
 
         public static void Return(this GameObject instance)

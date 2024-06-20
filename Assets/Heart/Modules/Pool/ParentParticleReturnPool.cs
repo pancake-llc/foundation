@@ -3,7 +3,7 @@
 namespace Pancake.Pools
 {
     [RequireComponent(typeof(ParticleSystem))]
-    public class ParticleReturnPool : MonoBehaviour
+    public class ParentParticleReturnPool : MonoBehaviour
     {
         private void Awake()
         {
@@ -11,6 +11,6 @@ namespace Pancake.Pools
             main.stopAction = ParticleSystemStopAction.Callback;
         }
 
-        private void OnParticleSystemStopped() { gameObject.Return(); }
+        private void OnParticleSystemStopped() { transform.parent.gameObject.Return(); }
     }
 }
