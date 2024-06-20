@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.annulusgames.alchemy": {
-      "version": "https://github.com/pancake-llc/Alchemy.git?path=/Alchemy/Assets/Alchemy",
+      "version": "https://github.com/AnnulusGames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "cc9538b748537e61477c2ebdaa9fd3ffc36b011e"
+      "hash": "c8348c6b69b2df5512a9375af02409c00c6c24e8"
     },
     "com.annulusgames.component-cache-generator": {
       "version": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",
