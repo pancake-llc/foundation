@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "2c652e5abcc53a75990d72cc51027d03a027e359"
+      "hash": "cc9538b748537e61477c2ebdaa9fd3ffc36b011e"
     },
     "com.annulusgames.component-cache-generator": {
       "version": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",
@@ -40,14 +40,14 @@
       "hash": "332340e7bc2f8257816dd28784607a1edf6b6c2a"
     },
     "com.coffee.ui-particle": {
-      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.8",
+      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.7.1",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
-      "hash": "49f46d5c9e0e899f351907fea7b8a1258763109b"
+      "hash": "1674e850e001a51c6583c4ce6036972d185979fa"
     },
     "com.cysharp.r3": {
       "version": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.12",
