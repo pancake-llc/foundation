@@ -7,6 +7,7 @@ using LitMotion.Extensions;
 #endif
 using Pancake.Common;
 using Pancake.Localization;
+using Pancake.Pools;
 using Pancake.Sound;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,7 +59,7 @@ namespace Pancake.Component
             localeTextMessage.gameObject.SetActive(false);
 #if PANCAKE_LITMOTION
             LMotion.Create(imageBackgound.rectTransform.sizeDelta, new Vector2(-GetComponent<RectTransform>().rect.width + sizeYColapse, sizeYColapse), timeAnimate)
-                // .WithOnComplete(() => gameObject.Return())
+                 .WithOnComplete(() => gameObject.Return())
                 .BindToSizeDelta(imageBackgound.rectTransform)
                 .AddTo(gameObject);
 #endif
