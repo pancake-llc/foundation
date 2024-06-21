@@ -1,6 +1,5 @@
 using System;
 using PancakeEditor.Common;
-using Pancake.Sound;
 using Pancake.Tracking;
 using UnityEditor;
 using UnityEngine;
@@ -160,20 +159,20 @@ namespace PancakeEditor.UI
             GUILayout.Label("Is Play Sound", GUILayout.Width(DEFAULT_LABEL_WIDTH));
             _enabledSound.boolValue = GUILayout.Toggle(_enabledSound.boolValue, "");
 
-            if (_enabledSound.boolValue)
-            {
-                _audioClick.objectReferenceValue = EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
-                if (_audioClick.objectReferenceValue == null)
-                {
-                    if (GUILayout.Button("Create", GUILayout.Width(60)))
-                    {
-                        _audioClick.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(Audio),
-                            target.name.ToLower() + "_audio",
-                            ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
-                            true);
-                    }
-                }
-            }
+            // if (_enabledSound.boolValue)
+            // {
+            //     _audioClick.objectReferenceValue = EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
+            //     if (_audioClick.objectReferenceValue == null)
+            //     {
+            //         if (GUILayout.Button("Create", GUILayout.Width(60)))
+            //         {
+            //             _audioClick.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(Audio),
+            //                 target.name.ToLower() + "_audio",
+            //                 ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
+            //                 true);
+            //         }
+            //     }
+            // }
 
             EditorGUILayout.EndHorizontal();
 

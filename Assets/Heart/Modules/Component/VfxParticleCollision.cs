@@ -5,7 +5,6 @@ using System.Linq;
 using Alchemy.Inspector;
 using Alchemy.Serialization;
 #endif
-using Pancake.Sound;
 using UnityEngine;
 using VitalRouter;
 
@@ -22,11 +21,11 @@ namespace Pancake.Component
         public Dictionary<int, int> numberParticleMap = new();
 
         [SerializeField] private bool enabledSound;
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
-#endif
-        [SerializeField]
-        private Audio audioCollision;
+// #if PANCAKE_ALCHEMY
+//         [ShowIf(nameof(enabledSound))]
+// #endif
+//         [SerializeField]
+//         private Audio audioCollision;
 
         private int _segmentValue;
         private bool _flag;

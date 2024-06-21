@@ -1,4 +1,3 @@
-using Pancake.Sound;
 using VContainer;
 using VContainer.Unity;
 
@@ -8,7 +7,7 @@ namespace Pancake.Game
     {
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterEntryPoint<AudioManager>().AsSelf();
+            
         }
     }
 }

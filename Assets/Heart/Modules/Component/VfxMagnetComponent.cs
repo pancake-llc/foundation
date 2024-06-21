@@ -3,7 +3,6 @@ using Alchemy.Inspector;
 #endif
 using System.Collections.Generic;
 using Pancake.Pools;
-using Pancake.Sound;
 using UnityEngine;
 using VitalRouter;
 
@@ -32,11 +31,11 @@ namespace Pancake.Component
         [SerializeField] private float fxScale = 1f;
         [SerializeField] private ParticleSystemForceField particleForceField;
         [SerializeField] private bool isPlaySound;
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(isPlaySound)), Indent]
-#endif
-        [SerializeField]
-        private Audio audioSpawn;
+// #if PANCAKE_ALCHEMY
+//         [ShowIf(nameof(isPlaySound)), Indent]
+// #endif
+//         [SerializeField]
+//         private Audio audioSpawn;
 
         private readonly List<GameObject> _fxInstances = new();
 

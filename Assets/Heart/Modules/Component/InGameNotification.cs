@@ -8,7 +8,6 @@ using LitMotion.Extensions;
 using Pancake.Common;
 using Pancake.Localization;
 using Pancake.Pools;
-using Pancake.Sound;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,17 +24,17 @@ namespace Pancake.Component
 
         [Header("SOUND"), SerializeField] protected bool enabledSound;
 
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
-#endif
-        [SerializeField]
-        protected Audio audioOpen;
-
-#if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
-#endif
-        [SerializeField]
-        protected Audio audioClose;
+// #if PANCAKE_ALCHEMY
+//         [ShowIf(nameof(enabledSound))]
+// #endif
+//         [SerializeField]
+//         protected Audio audioOpen;
+//
+// #if PANCAKE_ALCHEMY
+//         [ShowIf(nameof(enabledSound))]
+// #endif
+//         [SerializeField]
+//         protected Audio audioClose;
 
         public void Show(LocaleText localeText)
         {
