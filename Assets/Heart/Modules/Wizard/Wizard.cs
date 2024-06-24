@@ -3,6 +3,7 @@ using System.Linq;
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
+using PancakeEditor.Sound;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace PancakeEditor
     public class Wizard : WindowBase
     {
         internal const float BUTTON_HEIGHT = 30f;
+
+        #region enum
 
         private enum WizardType
         {
@@ -29,6 +32,7 @@ namespace PancakeEditor
             None = -1,
             Adjust,
             Advertisement,
+            Audio,
             Build,
             Firebase,
             GameService,
@@ -56,13 +60,14 @@ namespace PancakeEditor
             Localization = WizardAllType.Localization,
             OtherPacakge = WizardAllType.OtherPackage,
             Build = WizardAllType.Build,
-            Navigator = WizardAllType.Navigator
+            Navigator = WizardAllType.Navigator,
+            LevelSystem = WizardAllType.LevelSystem,
+            Audio = WizardAllType.Audio
         }
 
         private enum SettingType
         {
             HeartConfig = WizardAllType.HeartSetting,
-            LevelSystem = WizardAllType.LevelSystem,
         }
 
         public enum LocaleTabType
@@ -77,6 +82,23 @@ namespace PancakeEditor
             PickupArea
         }
 
+        public enum AudioTabType
+        {
+            Library,
+            Setting,
+            ClipEditor,
+            EffectEditor
+        }
+        
+        public enum AudioSetingTabType
+        {
+            Audio,
+            GUI,
+            Miscellaneous,
+        }
+
+        #endregion
+
         private Vector2 _leftSideScrollPosition = Vector2.zero;
         private Vector2 _rightSideScrollPosition = Vector2.zero;
         private List<int> _items;
@@ -85,7 +107,7 @@ namespace PancakeEditor
 
         #region locale
 
-        private LocaleTabType _currentLocaleTabType = LocaleTabType.Setting;
+        private LocaleTabType _currentLocaleTab = LocaleTabType.Setting;
         private TreeViewState _treeViewState;
         internal Localization.LocaleTreeView localeTreeView;
         private SearchField _localeSearchField;
@@ -115,8 +137,19 @@ namespace PancakeEditor
 
         #endregion
 
+        #region audio
+
+        private AudioTabType _currentAudioTab = AudioTabType.Library;
+        private AudioSetingTabType _currentAudioSettingTab = AudioSetingTabType.Audio;
+        private UnityEditor.Editor _effectTrackEditor;
+        private Vector2 _audioScrollPosition;
+        private DrawClipPropertiesHelper _clipPropHelper = new();
+        private bool _isAudioLoop;
+
+        #endregion
+
         private readonly Color[] _colors = {Uniform.RaisinBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
-        private const float TAB_WIDTH = 50f;
+        public const float TAB_WIDTH = 50f;
 
         [SerializeField] private int tabIndex = -1;
         [SerializeField] private bool isInitialized;
@@ -135,6 +168,7 @@ namespace PancakeEditor
         {
             base.Init();
             LevelSystemWindow.OnEnabled();
+            AudioWindow.OnEnable();
             if (isInitialized)
             {
                 SelectTab(tabIndex);
@@ -153,7 +187,12 @@ namespace PancakeEditor
             SpineWindow.Clear();
 #endif
             LevelSystemWindow.OnDisabled();
+            AudioWindow.OnDisable();
         }
+
+        private void OnLostFocus() { AudioWindow.OnLostFocus(); }
+
+        private void OnFocus() { AudioWindow.OnFocus(); }
 
         protected override void OnGUI()
         {
@@ -364,10 +403,19 @@ namespace PancakeEditor
                         BottomToolbarRect,
                         ref _localeSearchField,
                         ref _localeInitialized,
-                        ref _currentLocaleTabType);
+                        ref _currentLocaleTab);
                     break;
                 case WizardAllType.Build when _currentType is WizardType.Tools or WizardType.All:
                     BuildWindow.OnInspectorGUI(ref _currentAndroidBuildPipeline);
+                    break;
+                case WizardAllType.Audio when _currentType is WizardType.Tools or WizardType.All:
+                    AudioWindow.OnInspectorGUI(position,
+                        ref _audioScrollPosition,
+                        ref _currentAudioTab,
+                        ref _effectTrackEditor,
+                        ref _clipPropHelper,
+                        ref _isAudioLoop,
+                        ref _currentAudioSettingTab);
                     break;
             }
         }
@@ -448,9 +496,12 @@ namespace PancakeEditor
                 WizardAllType.LevelSystem => EditorResources.IconLevelSytem,
                 WizardAllType.Spine => EditorResources.IconSpine,
                 WizardAllType.Build => EditorResources.IconUnity,
+                WizardAllType.Audio => EditorResources.IconYellowAudioSource,
                 WizardAllType.OtherPackage => EditorResources.IconPackage,
                 _ => null
             };
         }
+
+        public static void CallRepaint() { window?.Repaint(); }
     }
 }

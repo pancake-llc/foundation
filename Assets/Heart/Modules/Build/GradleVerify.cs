@@ -89,7 +89,7 @@ namespace PancakeEditor
 
         public void OnComplete(bool status)
         {
-            Debug.Log(status ? "[Gradle] Verify Success".TextColor(Uniform.Success) : "[Gradle] Verify Failure".TextColor(Uniform.Error));
+            Debug.Log(status ? "[Gradle] Verify Success".SetColor(Uniform.Success) : "[Gradle] Verify Failure".SetColor(Uniform.Error));
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Pancake.Common;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace PancakeEditor.Common
 
         protected override void OnGUI()
         {
-            GUILayout.Label("You need to install the below dependencies for work properly", headerLabel);
+            GUILayout.Label("You need to install the below dependencies for work properly", Uniform.BoldRichLabel);
 
             GUILayout.Space(4);
 
@@ -38,9 +39,9 @@ namespace PancakeEditor.Common
             Uniform.DrawLine(Uniform.Jet, 2);
             GUILayout.Space(2);
             GUILayout.Label(!isStillMissingPackage
-                    ? "<color=#FFB76B><i>All dependencies was installed.\nPlease turn off `Show Window On Reload` to not show again</i></color>"
-                    : "<color=#FFB76B><i>InstallAll is an asynchronous operation.\nAfter click please wait a moment before the operation is completed</i></color>",
-                htmlLabel);
+                    ? "All dependencies was installed.\nPlease turn off `Show Window On Reload` to not show again".ToItalic().SetColor("FFB76B")
+                    : "InstallAll is an asynchronous operation.\nAfter click please wait a moment before the operation is completed".ToItalic().SetColor("FFB76B"),
+                Uniform.RichLabel);
 
             OnDrawShowOnStartup();
 
@@ -51,7 +52,7 @@ namespace PancakeEditor.Common
 
             void DrawValidateDependency(bool isInstalled, string dependency)
             {
-                GUILayout.Label(isInstalled ? $"• <color=#4FF97A>{dependency}</color>" : $"• <color=#FF3333>{dependency}</color>", htmlLabel);
+                GUILayout.Label(isInstalled ? $"• <color=#4FF97A>{dependency}</color>" : $"• <color=#FF3333>{dependency}</color>", Uniform.RichLabel);
             }
         }
 

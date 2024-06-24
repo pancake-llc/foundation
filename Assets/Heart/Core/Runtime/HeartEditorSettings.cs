@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 
 namespace Pancake
 {
-#if UNITY_EDITOR
     [EditorIcon("so_dark_setting")]
     public class HeartEditorSettings : ScriptableSettings<HeartEditorSettings>
     {
@@ -15,5 +15,5 @@ namespace Pancake
         public static ECreationMode EditorNameCreationMode => Instance.nameCreationMode;
         public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;
     }
-#endif
 }
+#endif

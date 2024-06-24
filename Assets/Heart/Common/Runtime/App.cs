@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine;
 using System.Runtime.CompilerServices;
-using Object = UnityEngine.Object;
 
 namespace Pancake.Common
 {
@@ -194,6 +193,12 @@ namespace Pancake.Common
             handle = null;
         }
 
+        public static void StopAndReassign(ref AsyncProcessHandle handle, IEnumerator enumerator)
+        {
+            if (handle is {keepWaiting: true}) StopCoroutine(handle);
+            handle = StartCoroutine(enumerator);
+        }
+
         public static void StopAndClean(ref DelayHandle handle)
         {
             if (!handle.IsDone) return;
@@ -202,6 +207,37 @@ namespace Pancake.Common
             handle = null;
         }
 
-        public static void DontDestroy(Object target) { globalComponent.DontDestroy(target); }
+        public static void DontDestroy(UnityEngine.Object target) { globalComponent.DontDestroy(target); }
+
+        public static class Task
+        {
+            /// <summary>
+            /// Delay using async/await
+            /// </summary>
+            /// <param name="delay">delay time(seconds)</param>
+            /// <param name="action"></param>
+            /// <param name="cancellationToken"></param>
+            public static void DelayInvoke(float delay, Action action, System.Threading.CancellationToken cancellationToken = default)
+            {
+                float ms = delay * 1000;
+                // Do not remove the casting; otherwise, it will call to itself, creating an infinite loop
+                DelayInvoke((int) ms, action, cancellationToken);
+            }
+
+            private static async void DelayInvoke(int milliseconds, Action action, System.Threading.CancellationToken cancellationToken = default)
+            {
+                if (milliseconds <= 0) return;
+
+                try
+                {
+                    await System.Threading.Tasks.Task.Delay(milliseconds, cancellationToken);
+                    action.Invoke();
+                }
+                catch (System.Threading.Tasks.TaskCanceledException)
+                {
+                    // This exception is thrown by the task cancellation design, not an actual error.
+                }
+            }
+        }
     }
 }

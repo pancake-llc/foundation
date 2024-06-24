@@ -20,7 +20,10 @@ namespace PancakeEditor.Common
         private static GUIStyle foldoutIcon;
         private static GUIStyle installedIcon;
         private static GUIStyle headerLabel;
-        private static GUIStyle richCenterLabel;
+        private static GUIStyle richLabel;
+        private static GUIStyle richLabelHelpBox;
+        private static GUIStyle boldRichLabel;
+        private static GUIStyle centerRichLabel;
 
         private static readonly Dictionary<string, GUIContent> CachedIconContent = new();
         private static readonly UniformFoldoutState FoldoutSettings = new();
@@ -124,13 +127,43 @@ namespace PancakeEditor.Common
             }
         }
 
-        public static GUIStyle RichCenterLabel
+        public static GUIStyle RichLabel
         {
             get
             {
-                if (richCenterLabel != null) return richCenterLabel;
-                richCenterLabel = new GUIStyle(EditorStyles.label) {richText = true, alignment = TextAnchor.MiddleCenter};
-                return richCenterLabel;
+                if (richLabel != null) return richLabel;
+                richLabel = new GUIStyle(EditorStyles.label) {richText = true};
+                return richLabel;
+            }
+        }
+
+        public static GUIStyle RichLabelHelpBox
+        {
+            get
+            {
+                if (richLabelHelpBox != null) return richLabelHelpBox;
+                richLabelHelpBox = new GUIStyle(EditorStyles.helpBox) {richText = true};
+                return richLabelHelpBox;
+            }
+        }
+
+        public static GUIStyle BoldRichLabel
+        {
+            get
+            {
+                if (boldRichLabel != null) return boldRichLabel;
+                boldRichLabel = new GUIStyle(EditorStyles.label) {fontStyle = FontStyle.Bold, richText = true};
+                return boldRichLabel;
+            }
+        }
+
+        public static GUIStyle CenterRichLabel
+        {
+            get
+            {
+                if (centerRichLabel != null) return centerRichLabel;
+                centerRichLabel = new GUIStyle(EditorStyles.label) {richText = true, alignment = TextAnchor.MiddleCenter};
+                return centerRichLabel;
             }
         }
 
@@ -602,6 +635,92 @@ namespace PancakeEditor.Common
                 else EditorGUI.LabelField(rect, title, targetStyle);
             }
             EditorGUILayout.EndVertical();
+        }
+
+        public static GUIStyle GetTabStyle(int i, int length)
+        {
+            if (length == 1) return "Tab onlyOne";
+            if (i == 0) return "Tab first";
+            if (i == length - 1) return "Tab last";
+            return "Tab middle";
+        }
+
+        public static Rect GetHorizontalCenterRect(Rect rect, float width, float height)
+        {
+            return new Rect(rect) {x = rect.x + rect.width * 0.5f - width * 0.5f, width = width, height = height};
+        }
+
+        public static void SplitRectHorizontal(Rect origin, float firstRatio, float gap, out Rect rect1, out Rect rect2)
+        {
+            float halfGap = gap * 0.5f;
+            rect1 = new Rect(origin.x, origin.y, origin.width * firstRatio - halfGap, origin.height);
+            rect2 = new Rect(rect1.xMax + gap, origin.y, origin.width * (1 - firstRatio) - halfGap, origin.height);
+        }
+
+        public static void SplitRectHorizontal(Rect origin, int count, float gap, Rect[] resultRects)
+        {
+            SplitHorizontal(origin,
+                resultRects,
+                gap,
+                index =>
+                {
+                    float ratio = 1f / count;
+                    if (index == count - 1) return 1 - (ratio * (count - 1));
+                    return ratio;
+                });
+        }
+
+        public static void SplitRectHorizontal(Rect origin, float gap, Rect[] resultRects, params float[] ratios)
+        {
+            if (!Mathf.Approximately(ratios.Sum(), 1))
+            {
+                Debug.LogError("[Editor] Split ratio's sum should be 1");
+                return;
+            }
+
+            SplitHorizontal(origin, resultRects, gap, index => ratios[index]);
+        }
+
+        private static void SplitHorizontal(Rect origin, Rect[] resultRects, float gap, Func<int, float> getRatio)
+        {
+            if (resultRects == null)
+            {
+                Debug.LogError("Rects array is null!");
+                return;
+            }
+
+            for (int i = 0; i < resultRects.Length; i++)
+            {
+                float offsetWidth = i == 0 || i == resultRects.Length - 1 ? gap : gap * 0.5f;
+                float newWidth = origin.width * getRatio.Invoke(i) - offsetWidth;
+                float newX = i > 0 ? resultRects[i - 1].xMax + gap : origin.x;
+                resultRects[i] = new Rect(newX, origin.y, newWidth, origin.height);
+            }
+        }
+
+        public static void SplitRectVertical(Rect origin, float firstRatio, float gap, out Rect rect1, out Rect rect2)
+        {
+            float halfGap = gap * 0.5f;
+            rect1 = new Rect(origin.x, origin.y, origin.width, origin.height * firstRatio - halfGap);
+            rect2 = new Rect(origin.x, rect1.yMax + gap, origin.width, origin.height * (1 - firstRatio) - halfGap);
+        }
+
+        public static void SplitRectVertical(Rect origin, float gap, Rect[] resultRects, params float[] ratios)
+        {
+            if (Mathf.Approximately(ratios.Sum(), 1))
+            {
+                Debug.LogError("[Editor] Split ratio's sum should be 1");
+                return;
+            }
+
+            resultRects ??= new Rect[ratios.Length];
+            for (int i = 0; i < resultRects.Length; i++)
+            {
+                float offsetHeight = i == 0 || i == resultRects.Length - 1 ? gap : gap * 0.5f;
+                float newHeight = origin.height * ratios[i] - offsetHeight;
+                float newY = i > 0 ? resultRects[i - 1].yMax + gap : origin.y;
+                resultRects[i] = new Rect(origin.x, newY, origin.width, newHeight);
+            }
         }
 
         #endregion

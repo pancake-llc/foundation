@@ -8,16 +8,8 @@ namespace PancakeEditor.Common
         protected const int LOAD_TIME_IN_FRAMES = 72;
         protected static int waitFramesTillReload = LOAD_TIME_IN_FRAMES;
         protected static bool showOnReload = true;
-        protected GUIStyle htmlLabel;
-        protected GUIStyle headerLabel;
 
-        protected void OnEnable()
-        {
-            htmlLabel ??= new GUIStyle(EditorStyles.label) {richText = true};
-            headerLabel ??= new GUIStyle(EditorStyles.label) {fontStyle = FontStyle.Bold, richText = true};
-
-            Init();
-        }
+        protected void OnEnable() { Init(); }
 
         protected virtual void Init() { }
 

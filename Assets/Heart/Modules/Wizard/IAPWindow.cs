@@ -27,7 +27,7 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(IAPSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(IAPSettings).TextColor("#f75369")} was created ad {path}/{nameof(IAPSettings)}.asset");
+                    Debug.Log($"{nameof(IAPSettings).SetColor("f75369")} was created ad {path}/{nameof(IAPSettings)}.asset");
                 }
 
                 GUI.enabled = true;

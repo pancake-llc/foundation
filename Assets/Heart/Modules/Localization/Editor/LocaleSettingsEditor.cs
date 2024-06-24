@@ -309,7 +309,7 @@ namespace PancakeEditor.Localization
                 AssetDatabase.Refresh();
             }
 
-            Debug.Log("[Localization] The import process from spreasheet is complete".TextColor(Uniform.Success));
+            Debug.Log("[Localization] The import process from spreasheet is complete".SetColor(Uniform.Success));
             SessionState.SetBool("spreasheet_importing", false);
         }
     }

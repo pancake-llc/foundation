@@ -47,7 +47,7 @@ namespace PancakeEditor
                     RegistryManager.Resolve();
                     AssetDatabase.Refresh();
                     Debug.Log(
-                        $"{nameof(LevelSystemEditorSetting).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
+                        $"{nameof(LevelSystemEditorSetting).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(LevelSystemEditorSetting)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

@@ -27,7 +27,7 @@ namespace PancakeEditor
 
         public void OnComplete(bool status)
         {
-            Debug.Log(status ? "[Keystore] Verify Success".TextColor(Uniform.Success) : "[Keystore] Verify Failure".TextColor(Uniform.Error));
+            Debug.Log(status ? "[Keystore] Verify Success".SetColor(Uniform.Success) : "[Keystore] Verify Failure".SetColor(Uniform.Error));
         }
     }
 }

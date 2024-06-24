@@ -24,7 +24,7 @@ namespace PancakeEditor
                     if (!Directory.Exists(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH);
                     AssetDatabase.CreateAsset(pipelineSettings, $"{Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AndroidBuildPipelineSettings)}.asset");
                     Debug.Log(
-                        $"{nameof(AndroidBuildPipelineSettings).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AndroidBuildPipelineSettings)}.asset");
+                        $"{nameof(AndroidBuildPipelineSettings).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AndroidBuildPipelineSettings)}.asset");
                 }
             }
 

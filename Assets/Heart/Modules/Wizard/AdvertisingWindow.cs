@@ -29,7 +29,7 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{path}/{nameof(AdSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(AdSettings).TextColor("#f75369")} was created ad {path}/{nameof(AdSettings)}.asset");
+                    Debug.Log($"{nameof(AdSettings).SetColor("f75369")} was created ad {path}/{nameof(AdSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;

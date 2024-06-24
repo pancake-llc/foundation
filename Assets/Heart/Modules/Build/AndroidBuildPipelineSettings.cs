@@ -126,7 +126,7 @@ namespace PancakeEditor
 
             if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
             {
-                GUILayout.Label("Switch Platform To Android To Use This Pipeline Setting".TextColor(Uniform.Notice).TextSize(18), Uniform.RichCenterLabel);
+                GUILayout.Label("Switch Platform To Android To Use This Pipeline Setting".SetColor(Uniform.Notice).SetSize(18), Uniform.CenterRichLabel);
                 GUILayout.Space(8);
                 if (GUILayout.Button("Switch Android", GUILayout.MaxHeight(30f)))
                 {
@@ -144,9 +144,9 @@ namespace PancakeEditor
                 (int) AndroidBuildPipelineSettings.Environment.Development => Uniform.Yellow,
                 _ => Color.white
             };
-            GUILayout.Label(("BUILD ".TextColor(Color.white) +
-                             ((AndroidBuildPipelineSettings.Environment) _environmentProperty.enumValueIndex).ToString().ToUpper().TextColor(color)).TextSize(25),
-                Uniform.RichCenterLabel);
+            GUILayout.Label(("BUILD ".SetColor(Color.white) +
+                             ((AndroidBuildPipelineSettings.Environment) _environmentProperty.enumValueIndex).ToString().ToUpper().SetColor(color)).SetSize(25),
+                Uniform.CenterRichLabel);
             GUILayout.Space(4);
             EditorGUILayout.PropertyField(_environmentProperty);
             GUILayout.Space(4);
@@ -243,7 +243,7 @@ namespace PancakeEditor
                     if (!check) break;
                 }
 
-                if (check) Debug.Log("ALL VERIFY SUCCESS! YOU CAN BUILD NOW".TextColor(Uniform.Success).TextBold());
+                if (check) Debug.Log("ALL VERIFY SUCCESS! YOU CAN BUILD NOW".SetColor(Uniform.Success).ToBold());
 
                 SessionState.SetBool("build_verify", check);
             }

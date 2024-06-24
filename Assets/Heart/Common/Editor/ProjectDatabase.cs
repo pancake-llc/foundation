@@ -177,8 +177,8 @@ namespace PancakeEditor.Common
 
         public static void SelectAndPing(this Object @object)
         {
-            UnityEditor.Selection.activeObject = @object;
-            UnityEditor.EditorApplication.delayCall += () => UnityEditor.EditorGUIUtility.PingObject(@object);
+            Selection.activeObject = @object;
+            EditorApplication.delayCall += () => EditorGUIUtility.PingObject(@object);
         }
     }
 }

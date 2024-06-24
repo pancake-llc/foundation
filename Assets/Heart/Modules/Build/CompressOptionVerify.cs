@@ -25,7 +25,7 @@ namespace PancakeEditor
 
         public void OnComplete(bool status)
         {
-            Debug.Log(status ? "[CompressOption] Verify Success".TextColor(Uniform.Success) : "[CompressOption] Verify Failure".TextColor(Uniform.Error));
+            Debug.Log(status ? "[CompressOption] Verify Success".SetColor(Uniform.Success) : "[CompressOption] Verify Failure".SetColor(Uniform.Error));
         }
     }
 }

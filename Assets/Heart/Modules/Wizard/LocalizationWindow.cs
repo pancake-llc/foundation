@@ -60,13 +60,21 @@ namespace PancakeEditor
 
         private static void DrawButtonSetting(ref Wizard.LocaleTabType index)
         {
-            bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Setting, "Settings", GUI.skin.button, GUILayout.ExpandWidth(true));
+            bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Setting,
+                "Settings",
+                Uniform.GetTabStyle(0, 2),
+                GUILayout.ExpandWidth(true),
+                GUILayout.Height(22));
             if (clicked && index != Wizard.LocaleTabType.Setting) index = Wizard.LocaleTabType.Setting;
         }
 
         private static void DrawButtonExplore(ref Wizard.LocaleTabType index)
         {
-            bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Explore, "Explore", GUI.skin.button, GUILayout.ExpandWidth(true));
+            bool clicked = GUILayout.Toggle(index == Wizard.LocaleTabType.Explore,
+                "Explore",
+                Uniform.GetTabStyle(1, 2),
+                GUILayout.ExpandWidth(true),
+                GUILayout.Height(22));
             if (clicked && index != Wizard.LocaleTabType.Explore) index = Wizard.LocaleTabType.Explore;
         }
 
@@ -84,7 +92,7 @@ namespace PancakeEditor
                     AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(LocaleSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(LocaleSettings).TextColor("#f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(LocaleSettings)}.asset");
+                    Debug.Log($"{nameof(LocaleSettings).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(LocaleSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;
@@ -553,7 +561,7 @@ namespace PancakeEditor
             {
                 if (EditorUtility.DisplayDialog("Translate All", "Are you sure you wish to translate all missing locale?\nThis action cannot be reversed.", "Yes", "No"))
                 {
-                    Debug.Log("[Localization] Starting translate all LocaleText!".TextColor(Uniform.Notice));
+                    Debug.Log("[Localization] Starting translate all LocaleText!".SetColor(Uniform.Notice));
                     EditorCoroutine.Start(ExecuteTranslateProcess(treeView));
                 }
             }
@@ -603,7 +611,7 @@ namespace PancakeEditor
 
             IEnumerator ExecuteFillMissingLangProcess(LocaleTreeView treeView)
             {
-                Debug.Log("[Localization] Starting fill language same with AvaiableLanguage for LocaleText!".TextColor(Uniform.Notice));
+                Debug.Log("[Localization] Starting fill language same with AvaiableLanguage for LocaleText!".SetColor(Uniform.Notice));
                 var rows = treeView.GetRows();
                 foreach (var viewItem in rows.ToList())
                 {
@@ -613,7 +621,7 @@ namespace PancakeEditor
                 }
 
                 treeView.Reload();
-                Debug.Log("[Localization] End fill language all LocaleText!".TextColor(Uniform.Success));
+                Debug.Log("[Localization] End fill language all LocaleText!".SetColor(Uniform.Success));
             }
 
             IEnumerator ExecuteTranslateProcess(LocaleTreeView treeView)
@@ -627,7 +635,7 @@ namespace PancakeEditor
                     yield return new WaitForSeconds(0.15f);
                 }
 
-                Debug.Log("[Localization] End translate all LocaleText!".TextColor(Uniform.Success));
+                Debug.Log("[Localization] End translate all LocaleText!".SetColor(Uniform.Success));
                 Debug.Log("Total LocaleText Translated is :" + SessionState.GetInt("translate_all_locale_text_count", 0));
                 SessionState.EraseInt("translate_all_locale_text_count");
             }
@@ -639,7 +647,7 @@ namespace PancakeEditor
             var options = new List<GUIContent>();
             if (localeText != null)
             {
-                Debug.Log("[Localization] Starting Translate LocaleText: ".TextColor(Uniform.Notice) + localeText.name);
+                Debug.Log("[Localization] Starting Translate LocaleText: ".SetColor(Uniform.Notice) + localeText.name);
                 foreach (var locale in localeText.TypedLocaleItems)
                 {
                     if (!string.IsNullOrEmpty(locale.Value)) options.Add(new GUIContent(locale.Language.ToString()));
@@ -739,7 +747,7 @@ namespace PancakeEditor
                             {
                                 localeItem.Value = response.translatedText;
                                 SessionState.SetInt("translate_all_locale_text_count", SessionState.GetInt("translate_all_locale_text_count", 0) + 1);
-                                Debug.Log("[Localization] Translate Successfull: ".TextColor(Uniform.Success) + localizedText.name);
+                                Debug.Log("[Localization] Translate Successfull: ".SetColor(Uniform.Success) + localizedText.name);
                             }
 
                             EditorUtility.SetDirty(localizedText);

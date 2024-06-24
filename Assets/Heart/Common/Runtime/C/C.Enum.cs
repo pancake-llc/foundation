@@ -4,7 +4,15 @@ namespace Pancake.Common
 {
     public static partial class C
     {
-        public static bool HasFlagUnsafe<TEnum>(TEnum lhs, TEnum rhs) where TEnum : unmanaged, Enum
+        /// <summary>
+        /// Faster and not create garbage allocation
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static bool HasFlagUnsafe<TEnum>(this TEnum lhs, TEnum rhs) where TEnum : unmanaged, Enum
         {
             unsafe
             {

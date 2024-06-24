@@ -124,7 +124,7 @@ namespace PancakeEditor.Localization
                 {
                     if (GUILayout.Button("Translate"))
                     {
-                        Debug.Log("[Localization] Starting Translate LocaleText: ".TextColor(Uniform.Notice) + localeText.name);
+                        Debug.Log("[Localization] Starting Translate LocaleText: ".SetColor(Uniform.Notice) + localeText.name);
                         var firstLocale = localeText.TypedLocaleItems.First();
                         foreach (var locale in localeText.TypedLocaleItems)
                         {
@@ -138,7 +138,7 @@ namespace PancakeEditor.Localization
                                     if (response != null)
                                     {
                                         localeItem.Value = response.translatedText;
-                                        Debug.Log("[Localization] Translate Successfull: ".TextColor(Uniform.Success) + localeText.name);
+                                        Debug.Log("[Localization] Translate Successfull: ".SetColor(Uniform.Success) + localeText.name);
                                     }
 
                                     EditorUtility.SetDirty(localeText);
@@ -149,7 +149,7 @@ namespace PancakeEditor.Localization
 
                     if (GUILayout.Button("Fill Language Same Avaiable Language"))
                     {
-                        Debug.Log("[Localization] Starting fill language same with AvaiableLanguage for LocaleText!".TextColor(Uniform.Notice));
+                        Debug.Log("[Localization] Starting fill language same with AvaiableLanguage for LocaleText!".SetColor(Uniform.Notice));
 
                         foreach (var item in localeText.LocaleItems.ToList())
                         {
@@ -187,7 +187,7 @@ namespace PancakeEditor.Localization
                             }
                         }
 
-                        Debug.Log("[Localization] Fill language same with AvaiableLanguage Successfull: ".TextColor(Uniform.Success) + localeText.name);
+                        Debug.Log("[Localization] Fill language same with AvaiableLanguage Successfull: ".SetColor(Uniform.Success) + localeText.name);
                     }
 
                     helpRect = _currentLayoutRect;
