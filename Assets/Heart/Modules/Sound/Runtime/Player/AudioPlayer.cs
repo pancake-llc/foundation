@@ -183,11 +183,7 @@ namespace Pancake.Sound
         private void ResetSpatial()
         {
             audioSource.spatialBlend = AudioConstant.SPATIAL_BLEND_2D;
-            if (transform.parent != SoundManager.Instance)
-            {
-                transform.SetParent(SoundManager.Instance.transform);
-            }
-
+            if (transform.parent != SoundManager.Instance.transform) transform.SetParent(SoundManager.Instance.transform);
             transform.position = Vector3.zero;
         }
 

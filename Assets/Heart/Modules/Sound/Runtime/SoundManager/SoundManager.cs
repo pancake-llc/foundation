@@ -11,26 +11,6 @@ namespace Pancake.Sound
     [DisallowMultipleComponent, AddComponentMenu("")]
     public class SoundManager : MonoBehaviour, IAudioMixer
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void Init()
-        {
-            var prefab = Instantiate(Resources.Load(nameof(SoundManager))) as GameObject;
-
-            if (prefab == null)
-            {
-                Debug.LogError(AudioConstant.LOG_HEADER + $"Initialize failed ,please check {nameof(SoundManager)}.prefab in your Resources folder!");
-                return;
-            }
-
-            if (prefab.TryGetComponent(out SoundManager soundSystem)) instance = soundSystem;
-            else
-            {
-                Debug.LogError(AudioConstant.LOG_HEADER + $"Initialize failed ,please add {nameof(SoundManager)} component to {nameof(SoundManager)}.prefab");
-            }
-
-            DontDestroyOnLoad(prefab);
-        }
-
         private static SoundManager instance;
 
         public static SoundManager Instance
@@ -61,16 +41,19 @@ namespace Pancake.Sound
 
         private void Awake()
         {
-            string nullRefLog = AudioConstant.LOG_HEADER + $"Please assign {{0}} in {nameof(SoundManager)}.prefab";
+            if (instance == null) instance = this;
+            else Debug.LogError("SoundManager already exist at runtime");
+
+            string noticeTemplate = AudioConstant.LOG_HEADER + $"Please assign {{0}} in {nameof(SoundManager)}.prefab";
             if (!audioMixer)
             {
-                Debug.LogError(string.Format(nullRefLog, AudioConstant.MIXER_NAME));
+                Debug.LogError(string.Format(noticeTemplate, AudioConstant.MIXER_NAME));
                 return;
             }
 
             if (!audioPlayerPrefab)
             {
-                Debug.LogError(string.Format(nullRefLog, AudioConstant.AUDIO_PLAYER_PREFAB_NAME));
+                Debug.LogError(string.Format(noticeTemplate, AudioConstant.AUDIO_PLAYER_PREFAB_NAME));
                 return;
             }
 

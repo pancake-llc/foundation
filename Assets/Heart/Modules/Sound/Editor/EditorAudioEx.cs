@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Pancake.Linq;
 using Pancake.Sound;
 using PancakeEditor.Common;
 using UnityEditor;
@@ -44,11 +45,11 @@ namespace PancakeEditor.Sound
 
         public static void AddToSoundManager(ScriptableObject asset)
         {
-            string assetPath = AssetDatabase.GetAssetPath(Resources.Load(nameof(SoundManager)));
+            var prefab = ProjectDatabase.FindAll<GameObject>().Filter(go => go.TryGetComponent<SoundManager>(out _)).First();
+            string assetPath = AssetDatabase.GetAssetPath(prefab);
             using (var editScope = new EditPrefabAssetScope(assetPath))
             {
                 if (editScope.prefabRoot.TryGetComponent<SoundManager>(out var soundManager)) soundManager.AddAsset(asset);
-
                 editScope.prefabRoot.transform.position = Vector3.one;
             }
         }
@@ -59,7 +60,8 @@ namespace PancakeEditor.Sound
 
             DeleteJsonDataByAssetPath(deletedAssetPaths);
 
-            string assetPath = AssetDatabase.GetAssetPath(Resources.Load(nameof(SoundManager)));
+            var prefab = ProjectDatabase.FindAll<GameObject>().Filter(go => go.TryGetComponent<SoundManager>(out _)).First();
+            string assetPath = AssetDatabase.GetAssetPath(prefab);
 
             if (string.IsNullOrEmpty(assetPath) || !File.Exists(assetPath)) return;
 
@@ -470,7 +472,7 @@ namespace PancakeEditor.Sound
             public string left;
             public string right;
         }
-        
+
         public static Rect DissolveHorizontal(this Rect origin, float dissolveRatio)
         {
             return new Rect(origin.xMin + dissolveRatio * origin.width, origin.y, (1 - dissolveRatio) * origin.width, origin.height);
