@@ -304,7 +304,7 @@ namespace PancakeEditor
                 if (GUILayout.Button(new GUIContent("Save"), GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     string path = AssetDatabase.GetAssetPath(Clip);
-                    
+
                     var fullFilePath = $"{Application.dataPath.Replace("/Assets", string.Empty)}/{path}";
 
                     if (File.Exists(fullFilePath) && EditorUtility.DisplayDialog("Confirm overwrite",

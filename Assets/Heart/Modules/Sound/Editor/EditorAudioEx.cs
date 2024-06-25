@@ -212,7 +212,7 @@ namespace PancakeEditor.Sound
 #if UNITY_2020_1_OR_NEWER
             GUI.DrawTexture(browserIconRect, EditorGUIUtility.IconContent("FolderOpened Icon").image);
 #endif
-            EditorGUI.DrawRect(browserIconRect, Uniform.Jet);
+            EditorGUI.DrawRect(browserIconRect, new Color(0.21f, 0.21f, 0.21f, 0.4f));
         }
 
         public static void DrawVuMeter(Rect vuRect)
