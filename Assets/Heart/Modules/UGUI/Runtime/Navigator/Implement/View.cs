@@ -7,7 +7,7 @@ namespace Pancake.UI
 {
     public abstract class View : GameComponent
     {
-        [Header("SOUND"), SerializeField] protected bool enabledSound;
+        [Header("Sound"), SerializeField] protected bool enabledSound;
         [SerializeField, ShowIf(nameof(enabledSound))] protected SoundId audioOpen;
         [SerializeField, ShowIf(nameof(enabledSound))] protected SoundId audioClose;
         private bool _isInitialized;
