@@ -10,21 +10,21 @@ namespace Pancake.Sound
         /// Play an audio
         /// </summary>
         /// <param name="id"></param>
-        public static IAudioPlayer Play(SoundId id) => SoundManager.Instance?.Play(id);
+        public static IAudioPlayer Play(this SoundId id) => SoundManager.Instance?.Play(id);
 
         /// <summary>
         /// Play an audio at the given position
         /// </summary>
         /// <param name="id"></param>
         /// <param name="position"></param>
-        public static IAudioPlayer Play(SoundId id, Vector3 position) => SoundManager.Instance?.Play(id, position);
+        public static IAudioPlayer Play(this SoundId id, Vector3 position) => SoundManager.Instance?.Play(id, position);
 
         /// <summary>
         /// Play an audio and let it keep following the target
         /// </summary>
         /// <param name="id"></param>
         /// <param name="followTarget"></param>
-        public static IAudioPlayer Play(SoundId id, Transform followTarget) => SoundManager.Instance?.Play(id, followTarget);
+        public static IAudioPlayer Play(this SoundId id, Transform followTarget) => SoundManager.Instance?.Play(id, followTarget);
 
         #endregion
 
@@ -34,27 +34,27 @@ namespace Pancake.Sound
         /// Stop playing all audio that match the given audio type
         /// </summary>
         /// <param name="audioType"></param>
-        public static void Stop(EAudioType audioType) => SoundManager.Instance.Stop(audioType);
+        public static void Stop(this EAudioType audioType) => SoundManager.Instance.Stop(audioType);
 
         /// <summary>
         /// Stop playing all audio that match the given audio type
         /// </summary>
         /// <param name="audioType"></param>
         /// <param name="fadeOut">Set this value to override the LibraryManager's setting</param>
-        public static void Stop(EAudioType audioType, float fadeOut) => SoundManager.Instance?.Stop(audioType, fadeOut);
+        public static void Stop(this EAudioType audioType, float fadeOut) => SoundManager.Instance?.Stop(audioType, fadeOut);
 
         /// <summary>
         /// Stop playing an audio
         /// </summary>
         /// <param name="id"></param>
-        public static void Stop(SoundId id) => SoundManager.Instance?.Stop(id);
+        public static void Stop(this SoundId id) => SoundManager.Instance?.Stop(id);
 
         /// <summary>
         /// Stop playing an audio
         /// </summary>
         /// <param name="id"></param>
         /// /// <param name="fadeOut">Set this value to override the LibraryManager's setting</param>
-        public static void Stop(SoundId id, float fadeOut) => SoundManager.Instance?.Stop(id, fadeOut);
+        public static void Stop(this SoundId id, float fadeOut) => SoundManager.Instance?.Stop(id, fadeOut);
 
         #endregion
 
@@ -64,14 +64,14 @@ namespace Pancake.Sound
         /// Pause an audio
         /// </summary>
         /// <param name="id"></param>
-        public static void Pause(SoundId id) => SoundManager.Instance?.Pause(id);
+        public static void Pause(this SoundId id) => SoundManager.Instance?.Pause(id);
 
         /// <summary>
         /// Pause an audio
         /// </summary>
         /// <param name="id"></param>
         /// <param name="fadeOut">Set this value to override the LibraryManager's setting</param>
-        public static void Pause(SoundId id, float fadeOut) => SoundManager.Instance?.Pause(id, fadeOut);
+        public static void Pause(this SoundId id, float fadeOut) => SoundManager.Instance?.Pause(id, fadeOut);
 
         #endregion
 
@@ -88,7 +88,7 @@ namespace Pancake.Sound
         /// </summary>
         /// <param name="volume">values between 0.0 to 10.0</param>
         /// <param name="audioType"></param>
-        public static void SetVolume(EAudioType audioType, float volume) => SetVolume(audioType, volume, AudioConstant.FADE_TIME_IMMEDIATE);
+        public static void SetVolume(this EAudioType audioType, float volume) => SetVolume(audioType, volume, AudioConstant.FADE_TIME_IMMEDIATE);
 
         /// <summary>
         /// Set the volume of the given audio type
@@ -96,14 +96,14 @@ namespace Pancake.Sound
         /// <param name="volume">values between 0.0 to 10.0</param>
         /// <param name="audioType"></param>
         /// <param name="fadeTime">Set this value to override the LibraryManager's setting</param>
-        public static void SetVolume(EAudioType audioType, float volume, float fadeTime) => SoundManager.Instance?.SetVolume(volume, audioType, fadeTime);
+        public static void SetVolume(this EAudioType audioType, float volume, float fadeTime) => SoundManager.Instance?.SetVolume(volume, audioType, fadeTime);
 
         /// <summary>
         /// Set the volume of an audio
         /// </summary>
         /// <param name="volume">values between 0.0 to 10.0</param>
         /// <param name="id"></param>
-        public static void SetVolume(SoundId id, float volume) => SetVolume(id, volume, AudioConstant.FADE_TIME_IMMEDIATE);
+        public static void SetVolume(this SoundId id, float volume) => SetVolume(id, volume, AudioConstant.FADE_TIME_IMMEDIATE);
 
         /// <summary>
         /// Set the volume of an audio
@@ -111,7 +111,7 @@ namespace Pancake.Sound
         /// <param name="volume">values between 0.0 to 10.0</param>
         /// <param name="id"></param>
         /// <param name="fadeTime">Set this value to override the LibraryManager's setting</param>
-        public static void SetVolume(SoundId id, float volume, float fadeTime) => SoundManager.Instance?.SetVolume(id, volume, fadeTime);
+        public static void SetVolume(this SoundId id, float volume, float fadeTime) => SoundManager.Instance?.SetVolume(id, volume, fadeTime);
 
         #endregion
 

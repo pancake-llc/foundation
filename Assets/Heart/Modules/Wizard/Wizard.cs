@@ -89,7 +89,7 @@ namespace PancakeEditor
             ClipEditor,
             EffectEditor
         }
-        
+
         public enum AudioSetingTabType
         {
             Audio,
@@ -380,7 +380,7 @@ namespace PancakeEditor
                     HeartSettingWindow.OnInspectorGUI();
                     break;
                 case WizardAllType.Navigator when _currentType is WizardType.Tools or WizardType.All:
-                    NavigatorWindow.OnInspectorGUI();
+                    NavigatorWindow.OnInspectorGUI(position);
                     break;
                 case WizardAllType.OtherPackage when _currentType is WizardType.Tools or WizardType.All:
                     OtherPackageWindow.OnInspectorGUI();

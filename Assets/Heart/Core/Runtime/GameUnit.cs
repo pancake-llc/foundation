@@ -6,7 +6,7 @@ namespace Pancake
 {
     public abstract class GameUnit : GameComponent, IUpdate, IFixedUpdate, ILateUpdate
     {
-        [Header("base"), SerializeField] private GameLoopType gameLoop;
+        [Header("base"), SerializeField] private EGameLoopType gameLoop;
 
         private void OnEnable()
         {
@@ -22,16 +22,16 @@ namespace Pancake
 
         protected virtual void Register()
         {
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.Update)) GameLoop.Register(this, OnUpdate, PlayerLoopTiming.PreUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate)) GameLoop.Register(this, OnLateUpdate, PlayerLoopTiming.PreLateUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate)) GameLoop.Register(this, OnFixedUpdate, PlayerLoopTiming.PreFixedUpdate);
+            if (C.HasFlagUnsafe(gameLoop, EGameLoopType.Update)) GameLoop.Register(this, OnUpdate, PlayerLoopTiming.PreUpdate);
+            if (C.HasFlagUnsafe(gameLoop, EGameLoopType.LateUpdate)) GameLoop.Register(this, OnLateUpdate, PlayerLoopTiming.PreLateUpdate);
+            if (C.HasFlagUnsafe(gameLoop, EGameLoopType.FixedUpdate)) GameLoop.Register(this, OnFixedUpdate, PlayerLoopTiming.PreFixedUpdate);
         }
 
         protected virtual void UnRegister()
         {
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.Update)) GameLoop.Unregister(this, PlayerLoopTiming.PreUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.LateUpdate)) GameLoop.Unregister(this, PlayerLoopTiming.PreLateUpdate);
-            if (C.HasFlagUnsafe(gameLoop, GameLoopType.FixedUpdate)) GameLoop.Unregister(this, PlayerLoopTiming.PreFixedUpdate);
+            if (C.HasFlagUnsafe(gameLoop, EGameLoopType.Update)) GameLoop.Unregister(this, PlayerLoopTiming.PreUpdate);
+            if (C.HasFlagUnsafe(gameLoop, EGameLoopType.LateUpdate)) GameLoop.Unregister(this, PlayerLoopTiming.PreLateUpdate);
+            if (C.HasFlagUnsafe(gameLoop, EGameLoopType.FixedUpdate)) GameLoop.Unregister(this, PlayerLoopTiming.PreFixedUpdate);
         }
 
         public virtual void OnUpdate() { }

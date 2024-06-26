@@ -1,3 +1,7 @@
+using System.IO;
+using Pancake.Common;
+using Pancake.UI;
+using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 
@@ -5,33 +9,39 @@ namespace PancakeEditor
 {
     internal static class NavigatorWindow
     {
-        public static void OnInspectorGUI()
+        public static void OnInspectorGUI(Rect position)
         {
-            EditorGUILayout.BeginHorizontal();
+            var defaultPopupSetting = Resources.Load<DefaultNavigatorSetting>(nameof(DefaultNavigatorSetting));
+            if (defaultPopupSetting == null)
             {
-                EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Create Modal", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+                GUI.enabled = !EditorApplication.isCompiling;
+                GUI.backgroundColor = Uniform.Pink;
+                if (GUILayout.Button("Create Default Naviagtor Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
+                    var setting = ScriptableObject.CreateInstance<DefaultNavigatorSetting>();
+                    if (!Directory.Exists(Common.Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultNavigatorSetting)}.asset");
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                    Debug.Log(
+                        $"{nameof(DefaultNavigatorSetting).SetColor("#f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(DefaultNavigatorSetting)}.asset");
                 }
 
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Create Page", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                {
-                }
-
-                EditorGUILayout.EndVertical();
-                EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Create Sheet", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                {
-                }
-
-                EditorGUILayout.EndVertical();
+                GUI.backgroundColor = Color.white;
+                GUI.enabled = true;
             }
-            EditorGUILayout.EndHorizontal();
+            else
+            {
+                EditorGUILayout.Space();
+                var editor = UnityEditor.Editor.CreateEditor(defaultPopupSetting);
+                editor.OnInspectorGUI();
+
+                GUILayout.FlexibleSpace();
+                GUI.backgroundColor = Uniform.Green;
+                if (GUILayout.Button("Create Type", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) PopupWindow.Show(new Rect(), new CreateTypeScreenWindow(position));
+
+                GUI.backgroundColor = Color.white;
+            }
         }
     }
 }

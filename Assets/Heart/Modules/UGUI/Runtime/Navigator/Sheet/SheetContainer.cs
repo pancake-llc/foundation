@@ -1,189 +1,425 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.Linq;
-using Cysharp.Threading.Tasks;
-using R3;
+using Alchemy.Inspector;
+using Pancake.AssetLoader;
+using Pancake.Common;
 using UnityEngine;
-using VContainer.Unity;
+using UnityEngine.UI;
 
 namespace Pancake.UI
 {
-    public sealed class SheetContainer : UIContainer<SheetContainer>, ISerializationCallbackReceiver
+    [RequireComponent(typeof(RectMask2D))]
+    public sealed class SheetContainer : MonoBehaviour
     {
-        #region Properties
+        private static readonly Dictionary<int, SheetContainer> InstanceCacheByTransform = new();
+        private static readonly Dictionary<string, SheetContainer> InstanceCacheByName = new();
 
-        [field: SerializeField] public List<Sheet> RegisterSheetsByPrefab { get; private set; } = new(); // List of sheets that can be created in the container
-#if PANCAKE_ADDRESSABLE
-        [field: SerializeField] public List<ComponentReference<Sheet>> RegisterSheetsByAddressable { get; private set; } =
-            new(); // List of sheets that can be created in the container
-#endif
-        [field: SerializeField] public bool HasDefault { get; private set; } // Whether to activate the initial sheet at startup
-        private Dictionary<Type, Sheet> Sheets { get; set; }
+        [SerializeField, LabelText("Name")] private string displayName;
 
-        public Sheet CurrentView { get; private set; }
+        private readonly Dictionary<string, AssetLoadHandle<GameObject>> _assetLoadHandles = new();
+        private readonly List<ISheetContainerCallbackReceiver> _callbackReceivers = new();
+        private readonly Dictionary<string, string> _sheetNameToId = new();
+        private readonly Dictionary<string, Sheet> _sheets = new();
+        private IAssetLoader _assetLoader;
+        private CanvasGroup _canvasGroup;
 
-        #endregion
+        public static List<SheetContainer> Instances { get; } = new();
 
-        #region Unity Lifecycle
+        /// <summary>
+        ///     By default, <see cref="IAssetLoader" /> in <see cref="DefaultNavigatorSetting" /> is used.
+        ///     If this property is set, it is used instead.
+        /// </summary>
+        public IAssetLoader AssetLoader { get => _assetLoader ?? DefaultNavigatorSetting.AssetLoader; set => _assetLoader = value; }
 
-        protected override void Awake()
+        public string ActiveSheetId { get; private set; }
+
+        public Sheet ActiveSheet
         {
-            base.Awake();
+            get
+            {
+                if (ActiveSheetId == null) return null;
 
-#if PANCAKE_ADDRESSABLE
-            if (InstantiateType == EInstantiateType.ByAddressable)
-                RegisterSheetsByPrefab = RegisterSheetsByAddressable.Select(x => x.LoadAssetAsync<GameObject>().WaitForCompletion().GetComponent<Sheet>()).ToList();
-#endif
-
-            // Register all sheets registered in sheets in Dictionary format with Type as the key value
-            RegisterSheetsByPrefab = RegisterSheetsByPrefab.Select(x => x.IsRecycle ? Instantiate(x, transform) : x)
-                .GroupBy(x => x.GetType())
-                .Select(x => x.FirstOrDefault())
-                .ToList();
-            Sheets = RegisterSheetsByPrefab.ToDictionary(sheet => sheet.GetType(), sheet => sheet);
-
-            RegisterSheetsByPrefab.Filter(x => x.IsRecycle)
-                .ForEach(x =>
-                {
-                    x.UIContainer = this;
-                    x.gameObject.SetActive(false);
-                });
+                return _sheets[ActiveSheetId];
+            }
         }
 
-        private void OnEnable()
-        {
-            // Activate initial sheet
-            if (HasDefault && RegisterSheetsByPrefab.Any())
-            {
-                var nextSheet = Sheets[RegisterSheetsByPrefab.First().GetType()];
+        /// <summary>
+        ///     True if in transition.
+        /// </summary>
+        public bool IsInTransition { get; private set; }
 
-                if (CurrentView)
+        /// <summary>
+        ///     Registered sheets.
+        /// </summary>
+        public IReadOnlyDictionary<string, Sheet> Sheets => _sheets;
+
+        public bool Interactable { get => _canvasGroup.interactable; set => _canvasGroup.interactable = value; }
+
+        private void Awake()
+        {
+            Instances.Add(this);
+
+            _callbackReceivers.AddRange(GetComponents<ISheetContainerCallbackReceiver>());
+
+            if (!string.IsNullOrWhiteSpace(displayName)) InstanceCacheByName.Add(displayName, this);
+            _canvasGroup = gameObject.GetOrAddComponent<CanvasGroup>();
+        }
+
+        private void OnDestroy()
+        {
+            UnregisterAll();
+
+            InstanceCacheByName.Remove(displayName);
+            var keysToRemove = new List<int>();
+            foreach (var cache in InstanceCacheByTransform)
+            {
+                if (Equals(cache.Value)) keysToRemove.Add(cache.Key);
+            }
+
+            foreach (var keyToRemove in keysToRemove) InstanceCacheByTransform.Remove(keyToRemove);
+
+            Instances.Remove(this);
+        }
+
+        /// <summary>
+        ///     Get the <see cref="SheetContainer" /> that manages the sheet to which <see cref="transform" /> belongs.
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <param name="useCache">Use the previous result for the <see cref="transform" />.</param>
+        /// <returns></returns>
+        public static SheetContainer Of(Transform transform, bool useCache = true) { return Of((RectTransform) transform, useCache); }
+
+        /// <summary>
+        ///     Get the <see cref="SheetContainer" /> that manages the sheet to which <see cref="rectTransform" /> belongs.
+        /// </summary>
+        /// <param name="rectTransform"></param>
+        /// <param name="useCache">Use the previous result for the <see cref="rectTransform" />.</param>
+        /// <returns></returns>
+        public static SheetContainer Of(RectTransform rectTransform, bool useCache = true)
+        {
+            var hashCode = rectTransform.GetInstanceID();
+
+            if (useCache && InstanceCacheByTransform.TryGetValue(hashCode, out var container)) return container;
+
+            container = rectTransform.GetComponentInParent<SheetContainer>();
+            if (container != null)
+            {
+                InstanceCacheByTransform.Add(hashCode, container);
+                return container;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Find the <see cref="SheetContainer" /> of <see cref="containerName" />.
+        /// </summary>
+        /// <param name="containerName"></param>
+        /// <returns></returns>
+        public static SheetContainer Find(string containerName)
+        {
+            if (InstanceCacheByName.TryGetValue(containerName, out var instance)) return instance;
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Add a callback receiver.
+        /// </summary>
+        /// <param name="callbackReceiver"></param>
+        public void AddCallbackReceiver(ISheetContainerCallbackReceiver callbackReceiver) { _callbackReceivers.Add(callbackReceiver); }
+
+        /// <summary>
+        ///     Remove a callback receiver.
+        /// </summary>
+        /// <param name="callbackReceiver"></param>
+        public void RemoveCallbackReceiver(ISheetContainerCallbackReceiver callbackReceiver) { _callbackReceivers.Remove(callbackReceiver); }
+
+        /// <summary>
+        ///     Show a sheet.
+        /// </summary>
+        /// <param name="resourceKey"></param>
+        /// <param name="playAnimation"></param>
+        /// <returns></returns>
+        public AsyncProcessHandle ShowByResourceKey(string resourceKey, bool playAnimation)
+        {
+            return App.StartCoroutine(ShowByResourceKeyRoutine(resourceKey, playAnimation));
+        }
+
+        /// <summary>
+        ///     Show a sheet.
+        /// </summary>
+        /// <param name="sheetId"></param>
+        /// <param name="playAnimation"></param>
+        /// <returns></returns>
+        public AsyncProcessHandle Show(string sheetId, bool playAnimation) { return App.StartCoroutine(ShowRoutine(sheetId, playAnimation)); }
+
+        /// <summary>
+        ///     Hide a sheet.
+        /// </summary>
+        /// <param name="playAnimation"></param>
+        public AsyncProcessHandle Hide(bool playAnimation) { return App.StartCoroutine(HideRoutine(playAnimation)); }
+
+        /// <summary>
+        ///     Register a sheet.
+        /// </summary>
+        /// <param name="resourceKey"></param>
+        /// <param name="onLoad"></param>
+        /// <param name="loadAsync"></param>
+        /// <param name="sheetId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public AsyncProcessHandle Register(string resourceKey, Action<(string sheetId, Sheet sheet)> onLoad = null, bool loadAsync = true, string sheetId = null)
+        {
+            return App.StartCoroutine(RegisterRoutine(typeof(Sheet),
+                resourceKey,
+                onLoad,
+                loadAsync,
+                sheetId));
+        }
+
+        /// <summary>
+        ///     Register a sheet.
+        /// </summary>
+        /// <param name="sheetType"></param>
+        /// <param name="resourceKey"></param>
+        /// <param name="onLoad"></param>
+        /// <param name="loadAsync"></param>
+        /// <param name="sheetId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public AsyncProcessHandle Register(
+            Type sheetType,
+            string resourceKey,
+            Action<(string sheetId, Sheet sheet)> onLoad = null,
+            bool loadAsync = true,
+            string sheetId = null)
+        {
+            return App.StartCoroutine(RegisterRoutine(sheetType,
+                resourceKey,
+                onLoad,
+                loadAsync,
+                sheetId));
+        }
+
+        /// <summary>
+        ///     Register a sheet.
+        /// </summary>
+        /// <param name="resourceKey"></param>
+        /// <param name="onLoad"></param>
+        /// <param name="loadAsync"></param>
+        /// <param name="sheetId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public AsyncProcessHandle Register<TSheet>(string resourceKey, Action<(string sheetId, TSheet sheet)> onLoad = null, bool loadAsync = true, string sheetId = null)
+            where TSheet : Sheet
+        {
+            return App.StartCoroutine(RegisterRoutine(typeof(TSheet),
+                resourceKey,
+                x => onLoad?.Invoke((x.sheetId, (TSheet) x.sheet)),
+                loadAsync,
+                sheetId));
+        }
+
+        private IEnumerator RegisterRoutine(
+            Type sheetType,
+            string resourceKey,
+            Action<(string sheetId, Sheet sheet)> onLoad = null,
+            bool loadAsync = true,
+            string sheetId = null)
+        {
+            if (resourceKey == null) throw new ArgumentNullException(nameof(resourceKey));
+
+            var assetLoadHandle = loadAsync ? AssetLoader.LoadAsync<GameObject>(resourceKey) : AssetLoader.Load<GameObject>(resourceKey);
+            while (!assetLoadHandle.IsDone) yield return null;
+
+            if (assetLoadHandle.Status == AssetLoadStatus.Failed) throw assetLoadHandle.OperationException;
+
+            var instance = Instantiate(assetLoadHandle.Result);
+            if (!instance.TryGetComponent(sheetType, out var c))
+                c = instance.AddComponent(sheetType);
+            var sheet = (Sheet) c;
+
+            if (sheetId == null) sheetId = Guid.NewGuid().ToString();
+            _sheets.Add(sheetId, sheet);
+            _sheetNameToId[resourceKey] = sheetId;
+            _assetLoadHandles.Add(sheetId, assetLoadHandle);
+            onLoad?.Invoke((sheetId, sheet));
+            var afterLoadHandle = sheet.AfterLoad((RectTransform) transform);
+            while (!afterLoadHandle.IsTerminated) yield return null;
+
+            yield return sheetId;
+        }
+
+        private IEnumerator ShowByResourceKeyRoutine(string resourceKey, bool playAnimation)
+        {
+            var sheetId = _sheetNameToId[resourceKey];
+            yield return ShowRoutine(sheetId, playAnimation);
+        }
+
+        private IEnumerator ShowRoutine(string sheetId, bool playAnimation)
+        {
+            if (IsInTransition) throw new InvalidOperationException("Cannot transition because the screen is already in transition.");
+
+            if (ActiveSheetId != null && ActiveSheetId == sheetId) throw new InvalidOperationException("Cannot transition because the sheet is already active.");
+
+            IsInTransition = true;
+
+            if (!DefaultNavigatorSetting.EnableInteractionInTransition)
+            {
+                if (DefaultNavigatorSetting.ControlInteractionAllContainer)
                 {
-                    CurrentView.HideAsync(false).Forget();
-                    if (!CurrentView.IsRecycle) Destroy(CurrentView.gameObject);
+                    foreach (var pageContainer in PageContainer.Instances) pageContainer.Interactable = false;
+                    foreach (var popupContainer in PopupContainer.Instances) popupContainer.Interactable = false;
+                    foreach (var sheetContainer in Instances) sheetContainer.Interactable = false;
                 }
-
-                CurrentView = nextSheet.IsRecycle ? nextSheet : Instantiate(nextSheet, transform);
-                CurrentView.ShowAsync(false).Forget();
+                else
+                {
+                    Interactable = false;
+                }
             }
-        }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-#if PANCAKE_ADDRESSABLE
-            if (InstantiateType == EInstantiateType.ByAddressable) RegisterSheetsByAddressable.ForEach(x => x.ReleaseAsset());
-#endif
-        }
+            var enterSheet = _sheets[sheetId];
+            var exitSheet = ActiveSheetId != null ? _sheets[ActiveSheetId] : null;
 
-        #endregion
+            // Preprocess
+            foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforeShow(enterSheet, exitSheet);
 
-        #region Public Methods
+            var preprocessHandles = new List<AsyncProcessHandle>();
+            if (exitSheet != null) preprocessHandles.Add(exitSheet.BeforeExit(enterSheet));
 
-        /// <summary>
-        /// Activates the specified child sheet. <br/>
-        /// The method of specifying a Sheet is to pass the desired Sheet type as a generic type. <br/>
-        /// <br/>
-        /// If there is a currently active Sheet, this method deactivates the previous Sheet and activates a new Sheet, and updates the FocusView. <br/>
-        /// At this time, it is not executed when the existing sheet is being converted. <br/>
-        /// <br/>
-        /// If resetOnChangeSheet is true, the history of the previous sheet is initialized. <br/>
-        /// </summary>
-        /// <typeparam name="T"> Type of Sheet to be activated </typeparam>
-        /// <returns></returns>
-        public async UniTask<T> NextAsync<T>(Action<T> onPreInitialize = null, Action<T> onPostInitialize = null) where T : Sheet
-        {
-            if (Sheets.TryGetValue(typeof(T), out var sheet))
-                return await NextAsync(sheet as T, onPreInitialize, onPostInitialize);
-
-            Debug.LogError($"Sheet not found : {typeof(T)}");
-            return null;
-        }
-
-        /// <summary>
-        /// Activates the specified child sheet. <br/>
-        /// <br/>
-        /// If there is a currently active Sheet, this method deactivates the previous Sheet and activates a new Sheet, and updates the FocusView. <br/>
-        /// At this time, it is not executed when the existing sheet is being converted. <br/>
-        /// <br/>
-        /// If resetOnChangeSheet is true, the history of the previous sheet is initialized. <br/>
-        /// </summary>
-        /// <param name="sheetName"> Class name of the sheet to be activated </param>
-        /// <param name="onPreInitialize"></param>
-        /// <param name="onPostInitialize"></param>
-        /// <returns></returns>
-        public async UniTask<Sheet> NextAsync(string sheetName, Action<Sheet> onPreInitialize = null, Action<Sheet> onPostInitialize = null)
-        {
-            var sheet = Sheets.Values.FirstOrDefault(x => x.GetType().Name == sheetName);
-            if (sheet != null) return await NextAsync(sheet, onPreInitialize, onPostInitialize);
-
-            Debug.LogError($"Sheet not found : {sheetName}");
-            return null;
-        }
-
-        public async UniTask<Sheet> NextAsync(Type targetSheet, Action<Sheet> onPreInitialize = null, Action<Sheet> onPostInitialize = null)
-        {
-            if (Sheets.TryGetValue(targetSheet, out var nextSheet))
-                return await NextAsync(nextSheet, onPreInitialize, onPostInitialize);
-
-            Debug.LogError("Sheet not found");
-            return null;
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private async UniTask<T> NextAsync<T>(T nextSheet, Action<T> onPreInitialize, Action<T> onPostInitialize) where T : Sheet
-        {
-            if (CurrentView != null && CurrentView.VisibleState is EVisibleState.Appearing or EVisibleState.Disappearing) return null;
-            if (CurrentView != null && CurrentView == nextSheet) return null;
-
-            var prevSheet = CurrentView;
-
-            nextSheet.gameObject.SetActive(false);
-            nextSheet = nextSheet.IsRecycle
-                ? nextSheet
-                :
-#if PANCAKE_VCONTAINER
-                VContainerSettings.Instance.RootLifetimeScope.Container.Instantiate(nextSheet, transform);
-#else
-                Instantiate(nextSheet, transform);
-#endif
-
-            nextSheet.UIContainer = this;
-
-            nextSheet.OnPreInitialize.Take(1).DefaultIfEmpty().Subscribe(_ => onPreInitialize?.Invoke(nextSheet)).AddTo(nextSheet);
-            nextSheet.OnPostInitialize.Take(1).DefaultIfEmpty().Subscribe(_ => onPostInitialize?.Invoke(nextSheet)).AddTo(nextSheet);
-
-            CurrentView = nextSheet;
-
-            if (prevSheet != null)
+            preprocessHandles.Add(enterSheet.BeforeEnter(exitSheet));
+            foreach (var coroutineHandle in preprocessHandles)
             {
-                prevSheet.HideAsync().Forget();
-                if (!prevSheet.IsRecycle) Destroy(prevSheet.gameObject);
+                while (!coroutineHandle.IsTerminated)
+                    yield return null;
             }
 
-            await CurrentView.ShowAsync();
+            // Play Animation
+            var animationHandles = new List<AsyncProcessHandle>();
+            if (exitSheet != null) animationHandles.Add(exitSheet.Exit(playAnimation, enterSheet));
 
-            return CurrentView as T;
+            animationHandles.Add(enterSheet.Enter(playAnimation, exitSheet));
+
+            foreach (var handle in animationHandles)
+            {
+                while (!handle.IsTerminated)
+                    yield return null;
+            }
+
+            // End Transition
+            ActiveSheetId = sheetId;
+            IsInTransition = false;
+
+            // Postprocess
+            if (exitSheet != null) exitSheet.AfterExit(enterSheet);
+
+            enterSheet.AfterEnter(exitSheet);
+
+            foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.AfterShow(enterSheet, exitSheet);
+
+            if (!DefaultNavigatorSetting.EnableInteractionInTransition)
+            {
+                if (DefaultNavigatorSetting.ControlInteractionAllContainer)
+                {
+                    // If there's a container in transition, it should restore Interactive to true when the transition is finished.
+                    // So, do nothing here if there's a transitioning container.
+                    if (PageContainer.Instances.All(x => !x.IsInTransition) && PopupContainer.Instances.All(x => !x.IsInTransition) &&
+                        Instances.All(x => !x.IsInTransition))
+                    {
+                        foreach (var pageContainer in PageContainer.Instances) pageContainer.Interactable = true;
+                        foreach (var popupContainer in PopupContainer.Instances) popupContainer.Interactable = true;
+                        foreach (var sheetContainer in Instances) sheetContainer.Interactable = true;
+                    }
+                }
+                else
+                {
+                    Interactable = true;
+                }
+            }
         }
 
-        #endregion
-
-        #region ISerializationCallbackReceiver
-
-        public void OnBeforeSerialize() { }
-
-        public void OnAfterDeserialize()
+        private IEnumerator HideRoutine(bool playAnimation)
         {
-#if PANCAKE_ADDRESSABLE
-            if (InstantiateType == EInstantiateType.ByAddressable) RegisterSheetsByPrefab.Clear();
-            else RegisterSheetsByAddressable.Clear();
-#endif
+            if (IsInTransition)
+                throw new InvalidOperationException("Cannot transition because the screen is already in transition.");
+
+            if (ActiveSheetId == null)
+                throw new InvalidOperationException("Cannot transition because there is no active sheets.");
+
+            IsInTransition = true;
+
+            if (!DefaultNavigatorSetting.EnableInteractionInTransition)
+            {
+                if (DefaultNavigatorSetting.ControlInteractionAllContainer)
+                {
+                    foreach (var pageContainer in PageContainer.Instances) pageContainer.Interactable = false;
+                    foreach (var popupContainer in PopupContainer.Instances) popupContainer.Interactable = false;
+                    foreach (var sheetContainer in Instances) sheetContainer.Interactable = false;
+                }
+                else
+                {
+                    Interactable = false;
+                }
+            }
+
+            var exitSheet = _sheets[ActiveSheetId];
+
+            // Preprocess
+            foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.BeforeHide(exitSheet);
+
+            var preprocessHandle = exitSheet.BeforeExit(null);
+            while (!preprocessHandle.IsTerminated) yield return preprocessHandle;
+
+            // Play Animation
+            var animationHandle = exitSheet.Exit(playAnimation, null);
+            while (!animationHandle.IsTerminated) yield return null;
+
+            // End Transition
+            ActiveSheetId = null;
+            IsInTransition = false;
+
+            // Postprocess
+            exitSheet.AfterExit(null);
+            foreach (var callbackReceiver in _callbackReceivers) callbackReceiver.AfterHide(exitSheet);
+
+            if (!DefaultNavigatorSetting.EnableInteractionInTransition)
+            {
+                if (DefaultNavigatorSetting.ControlInteractionAllContainer)
+                {
+                    // If there's a container in transition, it should restore Interactive to true when the transition is finished.
+                    // So, do nothing here if there's a transitioning container.
+                    if (PageContainer.Instances.All(x => !x.IsInTransition) && PopupContainer.Instances.All(x => !x.IsInTransition) &&
+                        Instances.All(x => !x.IsInTransition))
+                    {
+                        foreach (var pageContainer in PageContainer.Instances) pageContainer.Interactable = true;
+                        foreach (var popupContainer in PopupContainer.Instances) popupContainer.Interactable = true;
+                        foreach (var sheetContainer in Instances) sheetContainer.Interactable = true;
+                    }
+                }
+                else
+                {
+                    Interactable = true;
+                }
+            }
         }
 
-        #endregion
+        /// <summary>
+        ///     Destroy and release all sheets.
+        /// </summary>
+        public void UnregisterAll()
+        {
+            foreach (var sheet in _sheets.Values)
+            {
+                if (DefaultNavigatorSetting.CallCleanupWhenDestroy) sheet.BeforeReleaseAndForget();
+                Destroy(sheet.gameObject);
+            }
+
+            foreach (var assetLoadHandle in _assetLoadHandles.Values) AssetLoader.Release(assetLoadHandle);
+
+            _assetLoadHandles.Clear();
+        }
     }
 }

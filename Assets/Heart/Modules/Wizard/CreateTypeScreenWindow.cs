@@ -1,4 +1,5 @@
 using System.IO;
+using Pancake.Common;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
@@ -13,8 +14,7 @@ namespace PancakeEditor
         private bool _popup = true;
         private bool _sheet = true;
         private bool _invalidTypeName;
-        private string _path;
-        private readonly Vector2 _dimensions = new Vector2(300, 300);
+        private readonly Vector2 _dimensions = new(250, 250);
 
         public override Vector2 GetWindowSize() => _dimensions;
 
@@ -24,29 +24,23 @@ namespace PancakeEditor
         {
             editorWindow.position = Uniform.CenterInWindow(editorWindow.position, _position);
 
-            //Uniform.DrawHeader("Create new Type");
+            GUILayout.Label("Name Class".ToBold(), Uniform.CenterRichLabel);
             EditorGUI.BeginChangeCheck();
             _typeText = EditorGUILayout.TextField(_typeText, EditorStyles.textField);
-            if (EditorGUI.EndChangeCheck())
-            {
-                _invalidTypeName = !IsTypeNameValid();
-            }
+            if (EditorGUI.EndChangeCheck()) _invalidTypeName = !IsTypeNameValid();
 
-            var guiStyle = new GUIStyle(EditorStyles.label);
-            guiStyle.normal.textColor = _invalidTypeName ? Uniform.SunsetOrange : Color.white;
-            guiStyle.fontStyle = FontStyle.Bold;
-            var errorMessage = _invalidTypeName ? "Invalid type name." : "";
+            var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.SunsetOrange : Color.white}, fontStyle = FontStyle.Bold};
+            string errorMessage = _invalidTypeName ? "Invalid type name." : "";
             EditorGUILayout.LabelField(errorMessage, guiStyle);
 
+            GUILayout.Label("Type".ToBold(), Uniform.CenterRichLabel);
             DrawTypeToggles();
 
             GUILayout.Space(10);
-            EditorGUILayout.LabelField("Selected path:", EditorStyles.boldLabel);
-            guiStyle = new GUIStyle(EditorStyles.label);
-            guiStyle.fontStyle = FontStyle.Italic;
-            _path = ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED;
-            EditorGUILayout.LabelField($"{_path}", guiStyle);
+            GUILayout.Label("Output".ToBold(), Uniform.CenterRichLabel);
+            EditorGUILayout.LabelField(ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED.ToItalic().SetColor(Uniform.Orange), Uniform.CenterRichLabel);
 
+            GUILayout.FlexibleSpace();
             DrawButtons();
         }
 
@@ -95,7 +89,7 @@ namespace PancakeEditor
 
         private void DrawButtons()
         {
-            if (GUILayout.Button("Create", GUILayout.ExpandHeight(true)))
+            if (GUILayout.Button("Create", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
                 if (!IsTypeNameValid()) return;
 
@@ -105,10 +99,11 @@ namespace PancakeEditor
 
                 if (_page)
                 {
-                    CreateView(_typeText, $"{_typeText}View.cs", _path + "/Page");
+                    const string p = ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED + "/Page";
+                    CreateView(_typeText, $"{_typeText}View.cs", p);
                     newFile = CreatePresenter(_typeText,
                         $"{_typeText}Page.cs",
-                        _path + "/Page",
+                        p,
                         true,
                         false,
                         false);
@@ -124,10 +119,11 @@ namespace PancakeEditor
 
                 if (_popup)
                 {
-                    CreateView(_typeText, $"{_typeText}View.cs", _path + "/Popup");
+                    const string p = ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED + "/Popup";
+                    CreateView(_typeText, $"{_typeText}View.cs", p);
                     newFile = CreatePresenter(_typeText,
                         $"{_typeText}Popup.cs",
-                        _path + "/Popup",
+                        p,
                         false,
                         true,
                         false);
@@ -143,10 +139,11 @@ namespace PancakeEditor
 
                 if (_sheet)
                 {
-                    CreateView(_typeText, $"{_typeText}View.cs", _path + "/Sheet");
+                    const string p = ProjectDatabase.DEFAULT_PATH_SCRIPT_GENERATED + "/Sheet";
+                    CreateView(_typeText, $"{_typeText}View.cs", p);
                     newFile = CreatePresenter(_typeText,
                         $"{_typeText}Sheet.cs",
-                        _path + "/Sheet",
+                        p,
                         false,
                         false,
                         true);
@@ -165,10 +162,7 @@ namespace PancakeEditor
                 EditorGUIUtility.PingObject(newFile);
             }
 
-            if (GUILayout.Button("Cancel", GUILayout.ExpandHeight(true)))
-            {
-                editorWindow.Close();
-            }
+            if (GUILayout.Button("Cancel", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT))) editorWindow.Close();
         }
 
         private void Close(bool hasError = true)
@@ -180,7 +174,7 @@ namespace PancakeEditor
 
         private bool IsTypeNameValid()
         {
-            var valid = System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(_typeText);
+            bool valid = System.CodeDom.Compiler.CodeGenerator.IsValidLanguageIndependentIdentifier(_typeText);
             return valid;
         }
 

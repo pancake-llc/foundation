@@ -1,6 +1,6 @@
 namespace Pancake
 {
-    public enum ResetType
+    public enum EResetType
     {
         /// <summary>
         /// Each scene loaded by LoadSceneMode.Single
@@ -17,7 +17,7 @@ namespace Pancake
         ApplicationStarts = 1,
     }
 
-    public enum StartupMode
+    public enum EStartupMode
     {
         Manual,
         Awake,
@@ -25,7 +25,7 @@ namespace Pancake
         OnEnabled
     }
 
-    public enum TargetFrameRate
+    public enum ETargetFrameRate
     {
         ByDevice = -1,
         Frame60 = 60,
@@ -40,11 +40,20 @@ namespace Pancake
     }
 
     [System.Flags]
-    public enum GameLoopType
+    public enum EGameLoopType
     {
         None = 0,
         Update = 1 << 0,
         FixedUpdate = 1 << 1,
         LateUpdate = 1 << 2,
+    }
+
+    public enum EAlignment
+    {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        Center
     }
 }

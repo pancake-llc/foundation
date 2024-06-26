@@ -9,7 +9,7 @@ namespace Pancake
         [SerializeField] private bool enablePrivacyFirstOpen;
         [SerializeField] private bool enableMultipleTouch;
         [SerializeField] private bool requireInternet;
-        [SerializeField] private TargetFrameRate targetFrameRate = TargetFrameRate.Frame60;
+        [SerializeField] private ETargetFrameRate targetFrameRate = ETargetFrameRate.Frame60;
         [SerializeField] private string privacyUrl;
         [SerializeField] private string privacyTitle;
         [TextArea(3, 6)] [SerializeField] private string privacyMessage;
@@ -29,6 +29,6 @@ namespace Pancake
 #endif
         public static bool EnableMultipleTouch => Instance.enableMultipleTouch;
         public static bool RequireInternet => Instance.requireInternet;
-        public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;
+        public static ETargetFrameRate TargetFrameRate => Instance.targetFrameRate;
     }
 }

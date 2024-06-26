@@ -9,11 +9,11 @@ namespace Pancake
         [Header("Editor")] [Tooltip("Indicates whether you can immediately edit the name asset upon creation?")] [SerializeField]
         private ECreationMode nameCreationMode;
 
-        [SerializeField] private TargetFrameRate targetFrameRate = TargetFrameRate.ByDevice;
+        [SerializeField] private ETargetFrameRate targetFrameRate = ETargetFrameRate.ByDevice;
 
 
         public static ECreationMode EditorNameCreationMode => Instance.nameCreationMode;
-        public static TargetFrameRate TargetFrameRate => Instance.targetFrameRate;
+        public static ETargetFrameRate TargetFrameRate => Instance.targetFrameRate;
     }
 }
 #endif
