@@ -17,9 +17,8 @@ namespace Pancake.UI
         [field: SerializeField, HideIf(nameof(usePrefabNameAsId)), Indent]
         private string Id { get; set; }
 
-        [SerializeField] private List<TransitionAnimation> enterAnimations = new();
-        [SerializeField] private List<TransitionAnimation> exitAnimations = new();
-
+        [SerializeField] protected List<TransitionAnimation> enterAnimations = new();
+        [SerializeField] protected List<TransitionAnimation> exitAnimations = new();
 
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;

@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "c8348c6b69b2df5512a9375af02409c00c6c24e8"
+      "hash": "84fb71550bf28d2b5250adafac948e802ddd4b51"
     },
     "com.annulusgames.component-cache-generator": {
       "version": "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator",

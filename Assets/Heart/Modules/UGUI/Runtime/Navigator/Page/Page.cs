@@ -16,10 +16,10 @@ namespace Pancake.UI
         [field: SerializeField, ShowIf(nameof(usePrefabNameAsId))] private string Id { get; set; }
 
         [SerializeField] private int order;
-        [SerializeField] private List<TransitionAnimation> pushEnterAnimations = new();
-        [SerializeField] private List<TransitionAnimation> pushExitAnimations = new();
-        [SerializeField] private List<TransitionAnimation> popEnterAnimations = new();
-        [SerializeField] private List<TransitionAnimation> popExitAnimations = new();
+        [SerializeField] protected List<TransitionAnimation> pushEnterAnimations = new();
+        [SerializeField] protected List<TransitionAnimation> pushExitAnimations = new();
+        [SerializeField] protected List<TransitionAnimation> popEnterAnimations = new();
+        [SerializeField] protected List<TransitionAnimation> popExitAnimations = new();
 
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;

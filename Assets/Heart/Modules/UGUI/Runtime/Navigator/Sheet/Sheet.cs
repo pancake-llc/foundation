@@ -15,8 +15,8 @@ namespace Pancake.UI
 
         [SerializeField] private int order;
 
-        [SerializeField] private List<TransitionAnimation> enterAnimations = new();
-        [SerializeField] private List<TransitionAnimation> exitAnimations = new();
+        [SerializeField] protected List<TransitionAnimation> enterAnimations = new();
+        [SerializeField] protected List<TransitionAnimation> exitAnimations = new();
 
         private CanvasGroup _canvasGroup;
         private RectTransform _parentTransform;
