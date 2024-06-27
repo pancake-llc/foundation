@@ -322,13 +322,6 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
-    "jp.hadashikick.vcontainer": {
-      "version": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#1.15.4",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "58610810240efebe27b982a3adfb8405c57320a2"
-    },
     "jp.hadashikick.vitalrouter": {
       "version": "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.4",
       "depth": 0,
