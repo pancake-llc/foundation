@@ -29,10 +29,6 @@ namespace PancakeEditor.UI
         private SerializedProperty _doubleClickInterval;
         private SerializedProperty _ignoreTimeScale;
         private SerializedProperty _affectObject;
-        private SerializedProperty _enabledSound;
-        private SerializedProperty _audioClick;
-        private SerializedProperty _enabledTracking;
-        private SerializedProperty _trackingEvent;
         private SerializedProperty _motion;
         private SerializedProperty _scale;
         private SerializedProperty _duration;
@@ -41,8 +37,6 @@ namespace PancakeEditor.UI
         private SerializedProperty _scaleUnableInteract;
         private SerializedProperty _durationUnableInteract;
         private SerializedProperty _easeInteract;
-        private SerializedProperty _bindCustomListener;
-        private SerializedProperty _listenerCallback;
 
         protected override void OnEnable()
         {
@@ -60,10 +54,6 @@ namespace PancakeEditor.UI
             _ignoreTimeScale = serializedObject.FindProperty("ignoreTimeScale");
             _isAffectToSelf = serializedObject.FindProperty("isAffectToSelf");
             _affectObject = serializedObject.FindProperty("affectObject");
-            _enabledSound = serializedObject.FindProperty("enabledSound");
-            _audioClick = serializedObject.FindProperty("audioClick");
-            _enabledTracking = serializedObject.FindProperty("enabledTracking");
-            _trackingEvent = serializedObject.FindProperty("trackingEvent");
             _isMotion = serializedObject.FindProperty("isMotion");
             _motion = serializedObject.FindProperty("motionData").FindPropertyRelative("motion");
             _scale = serializedObject.FindProperty("motionData").FindPropertyRelative("scale");
@@ -74,8 +64,6 @@ namespace PancakeEditor.UI
             _isMotionUnableInteract = serializedObject.FindProperty("isMotionUnableInteract");
             _ease = serializedObject.FindProperty("motionData").FindPropertyRelative("ease");
             _easeInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("ease");
-            _bindCustomListener = serializedObject.FindProperty("bindCustomListener");
-            _listenerCallback = serializedObject.FindProperty("listenerCallback");
         }
 
         public override void OnInspectorGUI()
@@ -154,78 +142,6 @@ namespace PancakeEditor.UI
             if (!_isAffectToSelf.boolValue)
                 _affectObject.objectReferenceValue = EditorGUILayout.ObjectField("", _affectObject.objectReferenceValue, typeof(Transform), true) as Transform;
             EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("Is Play Sound", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-            _enabledSound.boolValue = GUILayout.Toggle(_enabledSound.boolValue, "");
-
-            // if (_enabledSound.boolValue)
-            // {
-            //     _audioClick.objectReferenceValue = EditorGUILayout.ObjectField("", _audioClick.objectReferenceValue, typeof(Audio), false) as Audio;
-            //     if (_audioClick.objectReferenceValue == null)
-            //     {
-            //         if (GUILayout.Button("Create", GUILayout.Width(60)))
-            //         {
-            //             _audioClick.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(Audio),
-            //                 target.name.ToLower() + "_audio",
-            //                 ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
-            //                 true);
-            //         }
-            //     }
-            // }
-
-            EditorGUILayout.EndHorizontal();
-
-            switch ((EButtonClickType) _clickType.enumValueIndex)
-            {
-                case EButtonClickType.OnlySingleClick:
-                case EButtonClickType.Instant:
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label("Enable Tracking", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                    _enabledTracking.boolValue = GUILayout.Toggle(_enabledTracking.boolValue, "");
-
-                    if (_enabledTracking.boolValue)
-                    {
-                        _trackingEvent.objectReferenceValue =
-                            EditorGUILayout.ObjectField("", _trackingEvent.objectReferenceValue, typeof(ScriptableTrackingNoParam), false) as ScriptableTrackingNoParam;
-                        if (_trackingEvent.objectReferenceValue == null)
-                        {
-                            if (GUILayout.Button("Create", GUILayout.Width(60)))
-                            {
-                                _trackingEvent.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableTrackingNoParam),
-                                    target.name.ToLower() + "_tracking_no_param",
-                                    ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
-                                    true);
-                            }
-                        }
-                    }
-
-                    EditorGUILayout.EndHorizontal();
-                    break;
-            }
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("Custom Listener", GUILayout.Width(DEFAULT_LABEL_WIDTH));
-            _bindCustomListener.boolValue = GUILayout.Toggle(_bindCustomListener.boolValue, "");
-            if (_bindCustomListener.boolValue)
-            {
-                _listenerCallback.objectReferenceValue =
-                    EditorGUILayout.ObjectField(_listenerCallback.objectReferenceValue, typeof(ScriptableButtonCallback), false) as ScriptableButtonCallback;
-
-                if (_listenerCallback.objectReferenceValue == null)
-                {
-                    if (GUILayout.Button("Create", GUILayout.Width(60)))
-                    {
-                        _listenerCallback.objectReferenceValue = EditorCreator.CreateScriptableAt(typeof(ScriptableButtonCallback),
-                            target.name.ToLower() + "_callback_variable",
-                            ProjectDatabase.DEFAULT_PATH_SCRIPTABLE_ASSET_GENERATED,
-                            true);
-                    }
-                }
-            }
-
-            EditorGUILayout.EndHorizontal();
-
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();

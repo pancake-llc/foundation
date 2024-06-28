@@ -13,7 +13,6 @@ using Cysharp.Threading.Tasks;
 using LitMotion;
 #endif
 
-
 namespace Pancake.UI
 {
     [EditorIcon("icon_button")]
@@ -59,10 +58,14 @@ namespace Pancake.UI
         [SerializeField] private bool isMotionUnableInteract;
         [SerializeField] private bool isAffectToSelf = true;
         [SerializeField] private Transform affectObject;
-        [SerializeField] private bool bindCustomListener;
-        [SerializeField] private ScriptableButtonCallback listenerCallback;
         [SerializeField] private MotionData motionData = new() {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new() {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
+
+        public Action<float> onHoldEvent;
+        public Action onDoubleClickEvent;
+        public Action onLongClickEvent;
+        public Action onPointerUpEvent;
+        public Action onPointerDownEvent;
 
         private Coroutine _routineLongClick;
         private Coroutine _routineHold;
@@ -123,9 +126,6 @@ namespace Pancake.UI
             if (!Application.isPlaying) return; // not execute awake when not playing
             _tokenSource = new CancellationTokenSource();
             DefaultScale = AffectObject.localScale;
-
-            if (!bindCustomListener) return;
-            if (listenerCallback == null) Debug.LogError(name + ": missing variable listener");
         }
 
 #if UNITY_EDITOR
@@ -147,15 +147,6 @@ namespace Pancake.UI
         {
             base.OnDisable();
             if (!Application.isPlaying) return; // not execute awake when not playing
-            if (bindCustomListener)
-            {
-                onPointerUp.RemoveListener(listenerCallback.InvokePointerUp);
-                onPointerDown.RemoveListener(listenerCallback.InvokePointerDown);
-                onClick.RemoveListener(listenerCallback.InvokeClick);
-                onDoubleClick.RemoveListener(listenerCallback.InvokeDoubleClick);
-                onLongClick.RemoveListener(listenerCallback.InvokeLongClick);
-                onHold.RemoveListener(listenerCallback.InvokeHold);
-            }
 
             if (_handleMultipleClick is {IsTerminated: false})
             {
@@ -181,21 +172,6 @@ namespace Pancake.UI
             if (AffectObject != null) AffectObject.localScale = DefaultScale;
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-            if (!Application.isPlaying) return; // not execute awake when not playing
-            if (bindCustomListener)
-            {
-                onPointerUp.AddListener(listenerCallback.InvokePointerUp);
-                onPointerDown.AddListener(listenerCallback.InvokePointerDown);
-                onClick.AddListener(listenerCallback.InvokeClick);
-                onDoubleClick.AddListener(listenerCallback.InvokeDoubleClick);
-                onLongClick.AddListener(listenerCallback.InvokeLongClick);
-                onHold.AddListener(listenerCallback.InvokeHold);
-            }
-        }
-
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -211,7 +187,7 @@ namespace Pancake.UI
         public override void OnPointerDown(PointerEventData eventData)
         {
             base.OnPointerDown(eventData);
-            onPointerDown?.Invoke();
+            InternalInvokePointerDownEvent();
             IsRelease = false;
             IsPrevent = false;
             if (IsDetectLongCLick && interactable) RegisterLongClick();
@@ -225,7 +201,7 @@ namespace Pancake.UI
             if (IsRelease) return;
             base.OnPointerUp(eventData);
             IsRelease = true;
-            onPointerUp.Invoke();
+            InternalInvokePointerUpEvent();
             if (IsDetectLongCLick) CancelLongClick();
             if (IsDetectHold)
             {
@@ -304,6 +280,18 @@ namespace Pancake.UI
             if (ignoreTimeScale) yield return new WaitForSecondsRealtime(duration);
             else yield return new WaitForSeconds(duration);
             interactable = true;
+        }
+
+        private void InternalInvokePointerDownEvent()
+        {
+            onPointerDownEvent?.Invoke();
+            onPointerDown?.Invoke();
+        }
+
+        private void InternalInvokePointerUpEvent()
+        {
+            onPointerUpEvent?.Invoke();
+            onPointerUp?.Invoke();
         }
 
         #region single click
@@ -392,7 +380,13 @@ namespace Pancake.UI
         private void ExecuteDoubleClick()
         {
             if (!IsActive() || !IsInteractable() || !IsDetectDoubleClick) return;
-            onDoubleClick.Invoke();
+            InternalInvokeDoubleClickdEvent();
+        }
+
+        private void InternalInvokeDoubleClickdEvent()
+        {
+            onDoubleClickEvent?.Invoke();
+            onDoubleClick?.Invoke();
         }
 
         #endregion
@@ -428,7 +422,7 @@ namespace Pancake.UI
         private void ExecuteLongClick()
         {
             if (!IsActive() || !IsInteractable() || !IsDetectLongCLick) return;
-            onLongClick.Invoke();
+            InternalInvokeLongClickdEvent();
         }
 
         /// <summary>
@@ -459,6 +453,12 @@ namespace Pancake.UI
         {
             if (_longClickDone || !IsDetectLongCLick) return;
             ResetLongClick();
+        }
+
+        private void InternalInvokeLongClickdEvent()
+        {
+            onLongClickEvent?.Invoke();
+            onLongClick?.Invoke();
         }
 
         #endregion
@@ -497,7 +497,7 @@ namespace Pancake.UI
         private void ExecuteHold(float time)
         {
             if (!IsActive() || !IsInteractable() || !IsDetectHold) return;
-            onHold.Invoke(time);
+            InternalInvokeHoldEvent(time);
         }
 
         /// <summary>
@@ -528,6 +528,12 @@ namespace Pancake.UI
         {
             if (_holdDone || !IsDetectHold) return;
             ResetHold();
+        }
+
+        private void InternalInvokeHoldEvent(float time)
+        {
+            onHoldEvent?.Invoke(time);
+            onHold?.Invoke(time);
         }
 
         #endregion
