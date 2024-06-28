@@ -62,6 +62,7 @@ namespace Pancake.UI
         [SerializeField] private MotionData motionDataUnableInteract = new() {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
         public Action<float> onHoldEvent;
+        public Action onHoldStoppedEvent;
         public Action onDoubleClickEvent;
         public Action onLongClickEvent;
         public Action onPointerUpEvent;
@@ -207,6 +208,7 @@ namespace Pancake.UI
             {
                 if (_holding)
                 {
+                    onHoldStoppedEvent?.Invoke();
                     _holding = false;
                     _holdDone = true;
                 }
@@ -234,6 +236,7 @@ namespace Pancake.UI
             {
                 if (_holding)
                 {
+                    onHoldStoppedEvent?.Invoke();
                     _holding = false;
                     _holdDone = true;
                 }
