@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Pancake
@@ -6,7 +7,7 @@ namespace Pancake
     [EditorIcon("so_blue_const")]
     public abstract class ScriptableConstant<T> : ScriptableObject
     {
-        [Tooltip("The value of the const. This will can not be change during play mode")] [SerializeField]
+        [Tooltip("The value of the const. This will can not be change during play mode")] [SerializeField, DisableInPlayMode]
         protected T value;
 
         public T Value => value;
