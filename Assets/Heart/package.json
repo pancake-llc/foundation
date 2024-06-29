@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.burst": "1.8.15",
+    "com.unity.burst": "1.8.16",
     "com.unity.collections": "2.4.2",
     "com.unity.serialization": "3.1.1",
     "com.unity.nuget.newtonsoft-json": "3.2.1"

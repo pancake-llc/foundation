@@ -136,7 +136,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.15",
+      "version": "1.8.16",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -220,7 +220,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "4.11.0",
+      "version": "4.12.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -228,7 +228,7 @@
         "com.unity.modules.unitywebrequest": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.androidjni": "1.0.0",
-        "com.unity.services.core": "1.8.2"
+        "com.unity.services.core": "1.12.5"
       },
       "url": "https://packages.unity.com"
     },

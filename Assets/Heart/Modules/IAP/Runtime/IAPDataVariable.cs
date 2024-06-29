@@ -13,6 +13,13 @@ namespace Pancake.IAP
     {
         [ReadOnly] public string id;
         [ReadOnly] public ProductType productType;
+        [ReadOnly] public int price;
+        [ReadOnly] public string localizedPrice;
+        [ReadOnly] public string isoCurrencyCode;
+        [ReadOnly] public string localizedDescription;
+        [ReadOnly] public string localizedTitle;
+        [HideInInspector] public string receipt;
+        internal SubscriptionInfo subscriptionInfo;
 
         [Space] [SerializeField] private IAPPurchaseSuccess onPurchaseSuccess;
         [SerializeField] private IAPPurchaseFailed onPurchaseFailed;
@@ -20,8 +27,8 @@ namespace Pancake.IAP
         internal IAPPurchaseSuccess OnPurchaseSuccess => onPurchaseSuccess;
         internal IAPPurchaseFailed OnPurchaseFailed => onPurchaseFailed;
 
-        [NonSerialized] public Action purchaseSuccessCallback;
-        [NonSerialized] public Action purchaseFailedCallback;
+        [NonSerialized] internal Action purchaseSuccessCallback;
+        [NonSerialized] internal Action purchaseFailedCallback;
     }
 }
 #endif
