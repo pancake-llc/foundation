@@ -174,7 +174,7 @@ PlayerSettings:
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 23
-  AndroidTargetSdkVersion: 33
+  AndroidTargetSdkVersion: 34
   AndroidPreferredInstallLocation: 1
   aotOptions: 
   stripEngineCode: 1
@@ -255,14 +255,14 @@ PlayerSettings:
   clonedFromGUID: 10ad67313f4034357812315f3c407484
   templatePackageId: com.unity.template.2d@7.0.3
   templateDefaultScene: Assets/Scenes/SampleScene.unity
-  useCustomMainManifest: 0
+  useCustomMainManifest: 1
   useCustomLauncherManifest: 0
-  useCustomMainGradleTemplate: 0
+  useCustomMainGradleTemplate: 1
   useCustomLauncherGradleManifest: 0
   useCustomBaseGradleTemplate: 0
-  useCustomGradlePropertiesTemplate: 0
-  useCustomGradleSettingsTemplate: 0
-  useCustomProguardFile: 0
+  useCustomGradlePropertiesTemplate: 1
+  useCustomGradleSettingsTemplate: 1
+  useCustomProguardFile: 1
   AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
@@ -807,23 +807,23 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Android: TextMeshPro;PANCAKE_ADVERTISING
-    EmbeddedLinux: TextMeshPro;PANCAKE_ADVERTISING
-    GameCoreScarlett: PANCAKE_ADVERTISING
-    GameCoreXboxOne: TextMeshPro;PANCAKE_ADVERTISING
-    LinuxHeadlessSimulation: PANCAKE_ADVERTISING
-    Nintendo Switch: TextMeshPro;PANCAKE_ADVERTISING
-    PS4: TextMeshPro;PANCAKE_ADVERTISING
-    PS5: TextMeshPro;PANCAKE_ADVERTISING
-    QNX: TextMeshPro;PANCAKE_ADVERTISING
-    Stadia: TextMeshPro;PANCAKE_ADVERTISING
-    Standalone: TextMeshPro;PANCAKE_ADVERTISING
-    VisionOS: TextMeshPro;PANCAKE_ADVERTISING
-    WebGL: TextMeshPro;PANCAKE_ADVERTISING
-    Windows Store Apps: PANCAKE_ADVERTISING
-    XboxOne: TextMeshPro;PANCAKE_ADVERTISING
-    iPhone: TextMeshPro;PANCAKE_ADVERTISING
-    tvOS: TextMeshPro;PANCAKE_ADVERTISING
+    Android: TextMeshPro
+    EmbeddedLinux: TextMeshPro
+    GameCoreScarlett: 
+    GameCoreXboxOne: TextMeshPro
+    LinuxHeadlessSimulation: 
+    Nintendo Switch: TextMeshPro
+    PS4: TextMeshPro
+    PS5: TextMeshPro
+    QNX: TextMeshPro
+    Stadia: TextMeshPro
+    Standalone: TextMeshPro
+    VisionOS: TextMeshPro
+    WebGL: TextMeshPro
+    Windows Store Apps: 
+    XboxOne: TextMeshPro
+    iPhone: TextMeshPro
+    tvOS: TextMeshPro
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

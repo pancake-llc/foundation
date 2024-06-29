@@ -46,7 +46,6 @@ namespace PancakeEditor
             }
             else
             {
-                EditorGUILayout.Space();
                 var editorHeartSetting = UnityEditor.Editor.CreateEditor(heartSetting);
                 editorHeartSetting.OnInspectorGUI();
                 EditorGUILayout.Space();

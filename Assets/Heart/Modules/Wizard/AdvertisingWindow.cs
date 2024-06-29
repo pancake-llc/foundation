@@ -16,20 +16,19 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_ADVERTISING
-            var adSettings = ProjectDatabase.FindAll<AdSettings>();
-            if (adSettings.IsNullOrEmpty())
+            var adSettings = Resources.Load<AdSettings>(nameof(AdSettings));
+            if (adSettings == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
                 if (GUILayout.Button("Create Adverisement Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
                 {
                     var setting = ScriptableObject.CreateInstance<AdSettings>();
-                    const string path = "Assets/_Root/Storages/Settings";
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    AssetDatabase.CreateAsset(setting, $"{path}/{nameof(AdSettings)}.asset");
+                    if (!Directory.Exists(Common.Editor.DEFAULT_RESOURCE_PATH)) Directory.CreateDirectory(Common.Editor.DEFAULT_RESOURCE_PATH);
+                    AssetDatabase.CreateAsset(setting, $"{Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(AdSettings)}.asset");
+                    Debug.Log($"{nameof(AdSettings).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_RESOURCE_PATH}/{nameof(AdSettings)}.asset");
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-                    Debug.Log($"{nameof(AdSettings).SetColor("f75369")} was created ad {path}/{nameof(AdSettings)}.asset");
                 }
 
                 GUI.backgroundColor = Color.white;
@@ -37,29 +36,8 @@ namespace PancakeEditor
             }
             else
             {
-                if (adSettings.Count > 1)
-                {
-                    EditorGUILayout.HelpBox("There is more than one AdSettings file in the project.\nPlease delete duplicate files keep only one file",
-                        MessageType.Error);
-
-                    EditorGUILayout.BeginVertical();
-                    foreach (var t in adSettings.ToArray())
-                    {
-                        EditorGUILayout.BeginHorizontal();
-                        GUI.enabled = false;
-                        EditorGUILayout.ObjectField(t, typeof(AdSettings), false);
-                        GUI.enabled = true;
-                        if (GUILayout.Button("delete", GUILayout.Width(30))) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(t));
-                        EditorGUILayout.EndHorizontal();
-                    }
-
-                    EditorGUILayout.EndVertical();
-                }
-                else
-                {
-                    var editor = UnityEditor.Editor.CreateEditor(adSettings[0]);
-                    editor.OnInspectorGUI();
-                }
+                var editor = UnityEditor.Editor.CreateEditor(adSettings);
+                editor.OnInspectorGUI();
             }
 
 #else

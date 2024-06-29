@@ -39,87 +39,44 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override void LoadBanner()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            adSettings.AdmobBanner.Load();
-#endif
-        }
+        public override void LoadBanner() { AdSettings.AdmobBanner.Load(); }
 
         public override void LoadInterstitial()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (!IsInterstitialReady()) adSettings.AdmobInter.Load();
-#endif
+            if (!IsInterstitialReady()) AdSettings.AdmobInter.Load();
         }
 
-        public override bool IsInterstitialReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobInter.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsInterstitialReady() { return AdSettings.AdmobInter.IsReady(); }
 
         public override void LoadRewarded()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (!IsRewardedReady()) adSettings.AdmobReward.Load();
-#endif
+            if (!IsRewardedReady()) AdSettings.AdmobReward.Load();
         }
 
-        public override bool IsRewardedReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobReward.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsRewardedReady() { return AdSettings.AdmobReward.IsReady(); }
 
         public override void LoadRewardedInterstitial()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (!IsRewardedInterstitialReady()) adSettings.AdmobRewardInter.Load();
-#endif
+            if (!IsRewardedInterstitialReady()) AdSettings.AdmobRewardInter.Load();
         }
 
-        public override bool IsRewardedInterstitialReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobRewardInter.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsRewardedInterstitialReady() { return AdSettings.AdmobRewardInter.IsReady(); }
 
         private void ShowAppOpen()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (statusAppOpenFirstIgnore) adSettings.AdmobAppOpen.Show();
+            if (statusAppOpenFirstIgnore && !Advertising.isShowingAd) AdSettings.AdmobAppOpen.Show();
             statusAppOpenFirstIgnore = true;
-#endif
         }
 
         public override void LoadAppOpen()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            if (!IsAppOpenReady()) adSettings.AdmobAppOpen.Load();
-#endif
+            if (!IsAppOpenReady()) AdSettings.AdmobAppOpen.Load();
         }
 
-        public override bool IsAppOpenReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-            return adSettings.AdmobAppOpen.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsAppOpenReady() { return AdSettings.AdmobAppOpen.IsReady(); }
 
 #if PANCAKE_ADVERTISING && PANCAKE_ADMOB
-        private void RegisterAppStateChange() { GoogleMobileAds.Api.AppStateEventNotifier.AppStateChanged += OnAppStateChanged; }
+        private void RegisterAppStateChange() { AppStateEventNotifier.AppStateChanged += OnAppStateChanged; }
 
         private void OnAppStateChanged(GoogleMobileAds.Common.AppState state)
         {

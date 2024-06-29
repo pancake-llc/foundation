@@ -235,7 +235,7 @@ namespace Pancake.MonetizationEditor
                 if (googleMobileAdsInstalled) GUI.color = Uniform.Green;
 
                 GUI.enabled = googleMobileAdsInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, -10, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 2, 0)}, GUILayout.Width(52));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 
@@ -300,11 +300,11 @@ namespace Pancake.MonetizationEditor
                 EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
                 bool applovinInstalled = File.Exists("Assets/MaxSdk/Scripts/MaxSdk.cs");
-                var contentInstallLabel = "Install Applovin v6.4.4 (1)";
+                var contentInstallLabel = "Install Applovin v6.5.2 (1)";
                 if (applovinInstalled)
                 {
                     GUI.backgroundColor = Uniform.Green;
-                    contentInstallLabel = "Applovin SDK v6.4.4 Installed (1)";
+                    contentInstallLabel = "Applovin SDK v6.5.2 Installed (1)";
                 }
                 else
                 {
@@ -320,7 +320,7 @@ namespace Pancake.MonetizationEditor
                 var previousColor = GUI.color;
                 if (applovinInstalled) GUI.color = Uniform.Green;
                 GUI.enabled = applovinInstalled;
-                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, -10, 0)}, GUILayout.Width(52));
+                GUILayout.Label(" =====> ", new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 2, 0)}, GUILayout.Width(52));
                 GUI.color = previousColor;
                 GUI.backgroundColor = Color.white;
 

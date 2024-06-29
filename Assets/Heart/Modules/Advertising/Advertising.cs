@@ -12,8 +12,6 @@ namespace Pancake.Monetization
 {
     public class Advertising : GameComponent
     {
-        [SerializeField] private AdSettings adSettings;
-        
         private static event Action<string> ChangeNetworkEvent;
         private static event Action<bool> ChangePreventDisplayAppOpenEvent;
         private static event Action ShowGdprAgainEvent;
@@ -25,7 +23,7 @@ namespace Pancake.Monetization
         private static event Func<AdUnit> GetAppOpenAdEvent;
 
         private AdClient _adClient;
-        
+
         /// <summary>
         /// prevent show app open ad, it will become true when interstitial or rewarded was showed
         /// </summary>
@@ -33,7 +31,7 @@ namespace Pancake.Monetization
 
         internal static Action waitAppOpenDisplayedAction;
         internal static Action waitAppOpenClosedAction;
-        
+
         private IEnumerator _autoLoadAdCoroutine;
         private float _lastTimeLoadInterstitialAdTimestamp = DEFAULT_TIMESTAMP;
         private float _lastTimeLoadRewardedTimestamp = DEFAULT_TIMESTAMP;
@@ -43,13 +41,13 @@ namespace Pancake.Monetization
 
         private void Start()
         {
-            if (adSettings.Gdpr)
+            if (AdSettings.Gdpr)
             {
 #if PANCAKE_ADMOB
                 ShowGdprAgainEvent += LoadAndShowConsentForm;
                 GdprResetEvent += GdprReset;
                 var request = new ConsentRequestParameters {TagForUnderAgeOfConsent = false};
-                if (adSettings.GdprTestMode)
+                if (AdSettings.GdprTestMode)
                 {
                     string deviceID = SystemInfo.deviceUniqueIdentifier.ToUpper();
                     var consentDebugSettings = new ConsentDebugSettings {DebugGeography = DebugGeography.EEA, TestDeviceHashedIds = new List<string> {deviceID}};
@@ -133,7 +131,7 @@ namespace Pancake.Monetization
 
         private void OnChangeNetworkCallback(string value)
         {
-            adSettings.CurrentNetwork = value.Trim().ToLower() switch
+            AdSettings.CurrentNetwork = value.Trim().ToLower() switch
             {
                 "admob" => EAdNetwork.Admob,
                 _ => EAdNetwork.Applovin
@@ -145,14 +143,13 @@ namespace Pancake.Monetization
 
         private void InitClient()
         {
-            _adClient = adSettings.CurrentNetwork switch
+            _adClient = AdSettings.CurrentNetwork switch
             {
                 EAdNetwork.Applovin => new ApplovinAdClient(),
                 EAdNetwork.Admob => new AdmobClient(),
                 _ => _adClient
             };
 
-            _adClient.SetupSetting(adSettings);
             _adClient.Init();
         }
 
@@ -166,81 +163,81 @@ namespace Pancake.Monetization
                 AutoLoadRewardedAd();
                 AutoLoadRewardedInterstitialAd();
                 AutoLoadAppOpenAd();
-                yield return new WaitForSeconds(adSettings.AdCheckingInterval);
+                yield return new WaitForSeconds(AdSettings.AdCheckingInterval);
             }
             // ReSharper disable once IteratorNeverReturns
         }
 
         private void AutoLoadInterstitialAd()
         {
-            if (Time.realtimeSinceStartup - _lastTimeLoadInterstitialAdTimestamp < adSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - _lastTimeLoadInterstitialAdTimestamp < AdSettings.AdLoadingInterval) return;
             _adClient.LoadInterstitial();
             _lastTimeLoadInterstitialAdTimestamp = Time.realtimeSinceStartup;
         }
 
         private void AutoLoadRewardedAd()
         {
-            if (Time.realtimeSinceStartup - _lastTimeLoadRewardedTimestamp < adSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - _lastTimeLoadRewardedTimestamp < AdSettings.AdLoadingInterval) return;
             _adClient.LoadRewarded();
             _lastTimeLoadRewardedTimestamp = Time.realtimeSinceStartup;
         }
 
         private void AutoLoadRewardedInterstitialAd()
         {
-            if (Time.realtimeSinceStartup - _lastTimeLoadRewardedInterstitialTimestamp < adSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - _lastTimeLoadRewardedInterstitialTimestamp < AdSettings.AdLoadingInterval) return;
             _adClient.LoadRewardedInterstitial();
             _lastTimeLoadRewardedInterstitialTimestamp = Time.realtimeSinceStartup;
         }
 
         private void AutoLoadAppOpenAd()
         {
-            if (Time.realtimeSinceStartup - _lastTimeLoadAppOpenTimestamp < adSettings.AdLoadingInterval) return;
+            if (Time.realtimeSinceStartup - _lastTimeLoadAppOpenTimestamp < AdSettings.AdLoadingInterval) return;
             _adClient.LoadAppOpen();
             _lastTimeLoadAppOpenTimestamp = Time.realtimeSinceStartup;
         }
 
         private AdUnit OnGetOpenAd()
         {
-            return adSettings.CurrentNetwork switch
+            return AdSettings.CurrentNetwork switch
             {
-                EAdNetwork.Applovin => adSettings.ApplovinAppOpen,
-                _ => adSettings.AdmobAppOpen,
+                EAdNetwork.Applovin => AdSettings.ApplovinAppOpen,
+                _ => AdSettings.AdmobAppOpen,
             };
         }
 
         private AdUnit OnGetRewardInterAd()
         {
-            return adSettings.CurrentNetwork switch
+            return AdSettings.CurrentNetwork switch
             {
-                EAdNetwork.Applovin => adSettings.ApplovinRewardInter,
-                _ => adSettings.AdmobRewardInter,
+                EAdNetwork.Applovin => AdSettings.ApplovinRewardInter,
+                _ => AdSettings.AdmobRewardInter,
             };
         }
 
         private AdUnit OnGetRewardAd()
         {
-            return adSettings.CurrentNetwork switch
+            return AdSettings.CurrentNetwork switch
             {
-                EAdNetwork.Applovin => adSettings.ApplovinReward,
-                _ => adSettings.AdmobReward,
+                EAdNetwork.Applovin => AdSettings.ApplovinReward,
+                _ => AdSettings.AdmobReward,
             };
         }
 
         private AdUnit OnGetInterAd()
         {
-            return adSettings.CurrentNetwork switch
+            return AdSettings.CurrentNetwork switch
             {
-                EAdNetwork.Applovin => adSettings.ApplovinInter,
-                _ => adSettings.AdmobInter,
+                EAdNetwork.Applovin => AdSettings.ApplovinInter,
+                _ => AdSettings.AdmobInter,
             };
         }
 
         private AdUnit OnGetBannerAd()
         {
-            return adSettings.CurrentNetwork switch
+            return AdSettings.CurrentNetwork switch
             {
-                EAdNetwork.Applovin => adSettings.ApplovinBanner,
-                _ => adSettings.AdmobBanner,
+                EAdNetwork.Applovin => AdSettings.ApplovinBanner,
+                _ => AdSettings.AdmobBanner,
             };
         }
 

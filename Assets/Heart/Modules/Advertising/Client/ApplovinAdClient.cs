@@ -1,6 +1,5 @@
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
 using Pancake.Tracking;
-using UnityEngine;
 #endif
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
@@ -11,100 +10,57 @@ namespace Pancake.Monetization
         public override void Init()
         {
 #if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            MaxSdk.SetSdkKey(adSettings.SDKKey);
+            MaxSdk.SetSdkKey(AdSettings.SDKKey);
             MaxSdk.InitializeSdk();
-            MaxSdk.SetIsAgeRestrictedUser(adSettings.ApplovinEnableAgeRestrictedUser);
-            adSettings.ApplovinBanner.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.ApplovinInter.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.ApplovinReward.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.ApplovinRewardInter.paidedCallback = AppTracking.TrackRevenue;
-            adSettings.ApplovinAppOpen.paidedCallback = AppTracking.TrackRevenue;
+            MaxSdk.SetIsAgeRestrictedUser(AdSettings.ApplovinEnableAgeRestrictedUser);
+            AdSettings.ApplovinBanner.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.ApplovinInter.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.ApplovinReward.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.ApplovinRewardInter.paidedCallback = AppTracking.TrackRevenue;
+            AdSettings.ApplovinAppOpen.paidedCallback = AppTracking.TrackRevenue;
             LoadInterstitial();
             LoadRewarded();
             LoadRewardedInterstitial();
             LoadAppOpen();
             LoadBanner();
-            (adSettings.ApplovinBanner as IBannerHide)?.Hide(); // hide banner first time when banner auto show when loaded
+            (AdSettings.ApplovinBanner as IBannerHide)?.Hide(); // hide banner first time when banner auto show when loaded
 #endif
         }
 
-        public override void LoadBanner()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            adSettings.AdmobBanner.Load();
-#endif
-        }
+        public override void LoadBanner() { AdSettings.AdmobBanner.Load(); }
 
         public override void LoadInterstitial()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (!IsInterstitialReady()) adSettings.ApplovinInter.Load();
-#endif
+            if (!IsInterstitialReady()) AdSettings.ApplovinInter.Load();
         }
 
-        public override bool IsInterstitialReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinInter.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsInterstitialReady() { return AdSettings.ApplovinInter.IsReady(); }
 
         public override void LoadRewarded()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (!IsRewardedReady()) adSettings.ApplovinReward.Load();
-#endif
+            if (!IsRewardedReady()) AdSettings.ApplovinReward.Load();
         }
 
-        public override bool IsRewardedReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinReward.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsRewardedReady() { return AdSettings.ApplovinReward.IsReady(); }
 
         public override void LoadRewardedInterstitial()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (!IsRewardedInterstitialReady()) adSettings.ApplovinRewardInter.Load();
-#endif
+            if (!IsRewardedInterstitialReady()) AdSettings.ApplovinRewardInter.Load();
         }
 
-        public override bool IsRewardedInterstitialReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinRewardInter.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsRewardedInterstitialReady() { return AdSettings.ApplovinRewardInter.IsReady(); }
 
         internal void ShowAppOpen()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (statusAppOpenFirstIgnore) adSettings.ApplovinAppOpen.Show();
+            if (statusAppOpenFirstIgnore && !Advertising.isShowingAd) AdSettings.ApplovinAppOpen.Show();
             statusAppOpenFirstIgnore = true;
-#endif
         }
 
         public override void LoadAppOpen()
         {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            if (!IsAppOpenReady()) adSettings.ApplovinAppOpen.Load();
-#endif
+            if (!IsAppOpenReady()) AdSettings.ApplovinAppOpen.Load();
         }
 
-        public override bool IsAppOpenReady()
-        {
-#if PANCAKE_ADVERTISING && PANCAKE_APPLOVIN
-            return adSettings.ApplovinAppOpen.IsReady();
-#else
-            return false;
-#endif
-        }
+        public override bool IsAppOpenReady() { return AdSettings.ApplovinAppOpen.IsReady(); }
     }
 }

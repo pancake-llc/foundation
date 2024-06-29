@@ -33,7 +33,7 @@ namespace Pancake.LevelSystem
 #if UNITY_EDITOR
             levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type.Value);
 #else
-            levelComponent = LevelCoordinator.GetNextLevelLoaded(id.Value);
+            levelComponent = LevelCoordinator.GetNextLevelLoaded(type.Value);
 #endif
             Instantiate(levelComponent, root, false);
         }
@@ -53,7 +53,7 @@ namespace Pancake.LevelSystem
 #if UNITY_EDITOR
             levelComponent = LevelDebug.IsTest ? LevelDebug.LevelPrefab : LevelCoordinator.GetNextLevelLoaded(type.Value);
 #else
-            levelComponent = LevelCoordinator.GetNextLevelLoaded(id.Value)
+            levelComponent = LevelCoordinator.GetNextLevelLoaded(type.Value);
 #endif
             foreach (var t in trackingStartLevels)
             {

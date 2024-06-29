@@ -56,6 +56,7 @@ namespace PancakeEditor
             [InspectorName("Android 12L API Level 32")] Android12_1 = 32,
             [InspectorName("Android 13  API Level 33")] Android13 = 33,
             [InspectorName("Android 14  API Level 34")] Android14 = 34,
+            [InspectorName("Android 15  API Level 35")] Android15 = 35,
         }
 
         public Environment environment = Environment.Development;
@@ -65,7 +66,7 @@ namespace PancakeEditor
         public BuildSystem buildSystem = BuildSystem.Gradle;
         public bool customMainGradle = true;
         public AndroidAPITarget minAPITarget = AndroidAPITarget.Android6;
-        public AndroidAPITarget maxAPITarget = AndroidAPITarget.Android13;
+        public AndroidAPITarget maxAPITarget = AndroidAPITarget.Android14;
         public bool optimizedFramePacing;
         public bool customKeystore = false;
         public string keystorePath;

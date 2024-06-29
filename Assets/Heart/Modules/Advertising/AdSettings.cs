@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.Monetization
 {
     [EditorIcon("so_blue_setting")]
-    public class AdSettings : ScriptableObject
+    public class AdSettings : ScriptableSettings<AdSettings>
     {
         [Range(5, 100), SerializeField] private float adCheckingInterval = 8f;
         [Range(5, 100), SerializeField] private float adLoadingInterval = 15f;
@@ -21,13 +21,13 @@ namespace Pancake.Monetization
         [SerializeField] private AdmobRewardInter admobRewardInter = new();
         [SerializeField] private AdmobAppOpen admobAppOpen = new();
 
-        public List<string> AdmobDevicesTest => admobDevicesTest;
-        public bool AdmobEnableTestMode => admobEnableTestMode;
-        public AdUnit AdmobBanner => admobBanner;
-        public AdUnit AdmobInter => admobInter;
-        public AdUnit AdmobReward => admobReward;
-        public AdUnit AdmobRewardInter => admobRewardInter;
-        public AdUnit AdmobAppOpen => admobAppOpen;
+        public static List<string> AdmobDevicesTest => Instance.admobDevicesTest;
+        public static bool AdmobEnableTestMode => Instance.admobEnableTestMode;
+        public static AdUnit AdmobBanner => Instance.admobBanner;
+        public static AdUnit AdmobInter => Instance.admobInter;
+        public static AdUnit AdmobReward => Instance.admobReward;
+        public static AdUnit AdmobRewardInter => Instance.admobRewardInter;
+        public static AdUnit AdmobAppOpen => Instance.admobAppOpen;
 
         [Header("[applovin]")] [SerializeField, TextArea] private string sdkKey;
 
@@ -38,17 +38,17 @@ namespace Pancake.Monetization
         [SerializeField] private ApplovinAppOpen applovinAppOpen = new();
         [SerializeField] private bool applovinEnableAgeRestrictedUser;
 
-        public string SDKKey => sdkKey;
-        public AdUnit ApplovinBanner => applovinBanner;
-        public AdUnit ApplovinInter => applovinInter;
-        public AdUnit ApplovinReward => applovinReward;
-        public AdUnit ApplovinRewardInter => applovinRewardInter;
-        public AdUnit ApplovinAppOpen => applovinAppOpen;
-        public bool ApplovinEnableAgeRestrictedUser => applovinEnableAgeRestrictedUser;
-        public float AdCheckingInterval => adCheckingInterval;
-        public float AdLoadingInterval => adLoadingInterval;
-        public EAdNetwork CurrentNetwork { get => currentNetwork; set => currentNetwork = value; }
-        public bool Gdpr => gdpr;
-        public bool GdprTestMode => gdprTestMode;
+        public static string SDKKey => Instance.sdkKey;
+        public static AdUnit ApplovinBanner => Instance.applovinBanner;
+        public static AdUnit ApplovinInter => Instance.applovinInter;
+        public static AdUnit ApplovinReward => Instance.applovinReward;
+        public static AdUnit ApplovinRewardInter => Instance.applovinRewardInter;
+        public static AdUnit ApplovinAppOpen => Instance.applovinAppOpen;
+        public static bool ApplovinEnableAgeRestrictedUser => Instance.applovinEnableAgeRestrictedUser;
+        public static float AdCheckingInterval => Instance.adCheckingInterval;
+        public static float AdLoadingInterval => Instance.adLoadingInterval;
+        public static EAdNetwork CurrentNetwork { get => Instance.currentNetwork; set => Instance.currentNetwork = value; }
+        public static bool Gdpr => Instance.gdpr;
+        public static bool GdprTestMode => Instance.gdprTestMode;
     }
 }
