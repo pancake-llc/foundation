@@ -10,6 +10,7 @@ using Pancake.Common;
 
 namespace Pancake.Monetization
 {
+    [EditorIcon("icon_manager")]
     public class Advertising : GameComponent
     {
         private static event Action<string> ChangeNetworkEvent;

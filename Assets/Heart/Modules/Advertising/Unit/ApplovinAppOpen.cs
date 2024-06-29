@@ -5,7 +5,6 @@ using Pancake.Common;
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("so_blue_variable")]
     public class ApplovinAppOpen : AdUnit
     {
         private bool _registerCallback;

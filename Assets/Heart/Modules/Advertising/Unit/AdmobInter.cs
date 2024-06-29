@@ -9,7 +9,6 @@ using GoogleMobileAds.Api;
 namespace Pancake.Monetization
 {
     [Serializable]
-    [EditorIcon("so_blue_variable")]
     public class AdmobInter : AdUnit
     {
         [NonSerialized] internal Action completedCallback;
