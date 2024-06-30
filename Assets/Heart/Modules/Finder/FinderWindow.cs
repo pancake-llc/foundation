@@ -4,12 +4,53 @@ using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
 using Editor = PancakeEditor.Common.Editor;
-using Object = UnityEngine.Object;
+using UnityObject = UnityEngine.Object;
 
-namespace PancakeEditor
+
+namespace PancakeEditor.Finder
 {
+    [Serializable]
+    public class SelectHistory
+    {
+        public bool isSceneAssets;
+        public UnityObject[] selection;
+
+        public bool IsTheSame(UnityObject[] objects)
+        {
+            if (objects.Length != selection.Length) return false;
+            var j = 0;
+            for (; j < objects.Length; j++)
+            {
+                if (selection[j] != objects[j]) break;
+            }
+
+            return j == objects.Length;
+        }
+    }
+
+    [Serializable]
+    internal class PanelSettings
+    {
+        public bool selection;
+        public bool horzLayout;
+        public bool scene = true;
+        public bool asset = true;
+        public bool details;
+        public bool bookmark;
+        public bool toolMode;
+
+        public FindRefDrawer.Mode toolGroupMode = FindRefDrawer.Mode.Type;
+        public FindRefDrawer.Mode groupMode = FindRefDrawer.Mode.Dependency;
+        public FindRefDrawer.Sort sortMode = FindRefDrawer.Sort.Path;
+
+        public int historyIndex;
+        public List<SelectHistory> history = new();
+    }
+
     public class FinderWindow : FinderWindowBase, IHasCustomMenu
     {
+        [SerializeField] internal PanelSettings settings = new();
+
         public static void ShowWindow()
         {
             var window = GetWindow<FinderWindow>("Finder", true, Editor.InspectorWindow);
@@ -20,56 +61,71 @@ namespace PancakeEditor
             }
         }
 
-        [NonSerialized] internal FinderBookmark bookmark;
-        [NonSerialized] internal FinderSelection selection;
+        [NonSerialized] private AssetBookmark _bookmark;
+        [NonSerialized] internal FindSelection selection;
+        [NonSerialized] private AssetUsedInBuild _usedInBuild;
+        [NonSerialized] private AssetDuplicateTree2 _duplicated;
+        [NonSerialized] private FindRefDrawer _refUnUse;
 
-        [NonSerialized] internal FinderRefDrawer usesDrawer; // [Selected Assets] are [USING] (depends on / contains reference to) ---> those assets
-        [NonSerialized] internal FinderRefDrawer usedByDrawer; // [Selected Assets] are [USED BY] <---- those assets 
-        [NonSerialized] internal FinderRefDrawer sceneToAssetDrawer; // [Selected GameObjects in current Scene] are [USING] ---> those assets
+        [NonSerialized] private FindRefDrawer _usesDrawer;
+        [NonSerialized] private FindRefDrawer _usedByDrawer;
+        [NonSerialized] private FindRefDrawer _sceneToAssetDrawer;
 
-        [NonSerialized] internal FinderRefDrawer refInScene; // [Selected Assets] are [USED BY] <---- those components in current Scene 
-        [NonSerialized] internal FinderRefDrawer sceneUsesDrawer; // [Selected GameObjects] are [USING] ---> those components / GameObjects in current scene
-        [NonSerialized] internal FinderRefDrawer refSceneInScene; // [Selected GameObjects] are [USED BY] <---- those components / GameObjects in current scene
+        [NonSerialized] private FindRefDrawer _refInScene;
+        [NonSerialized] private FindRefDrawer _sceneUsesDrawer;
+        [NonSerialized] private FindRefDrawer _refSceneInScene;
+
 
         internal int level;
         private Vector2 _scrollPos;
         private string _tempGuid;
-        private Object _tempObject;
+        private string _tempFileID;
+        private UnityObject _tempObject;
 
         protected bool LockSelection => selection != null && selection.isLock;
 
-        private void OnEnable()
-        {
-            CacheSetting.disabled = false;
-            Repaint();
-            CacheSetting?.Check4Changes(false);
-        }
-
-        private void OnDisable()
-        {
-            CacheSetting.disabled = true;
-            Cache.SaveSetting();
-            Setting.SaveSetting();
-        }
+        private void OnEnable() { Repaint(); }
 
         protected void InitIfNeeded()
         {
-            if (usesDrawer != null) return;
+            if (_usesDrawer != null) return;
 
-            usesDrawer = new FinderRefDrawer(this) {messageEmpty = "[Selected Assets] are not [USING] (depends on / contains reference to) any other assets!"};
+            _usesDrawer = new FindRefDrawer(this, () => settings.sortMode, () => settings.groupMode)
+            {
+                messageEmpty = "[Selected Assets] are not [USING] (depends on / contains reference to) any other assets!"
+            };
 
-            usedByDrawer = new FinderRefDrawer(this) {messageEmpty = "[Selected Assets] are not [USED BY] any other assets!"};
+            _usedByDrawer = new FindRefDrawer(this, () => settings.sortMode, () => settings.groupMode)
+            {
+                messageEmpty = "[Selected Assets] are not [USED BY] any other assets!"
+            };
 
-            sceneToAssetDrawer = new FinderRefDrawer(this) {messageEmpty = "[Selected GameObjects] (in current open scenes) are not [USING] any assets!"};
+            _duplicated = new AssetDuplicateTree2(this, () => settings.sortMode, () => settings.toolGroupMode);
+            _sceneToAssetDrawer = new FindRefDrawer(this, () => settings.sortMode, () => settings.groupMode)
+            {
+                messageEmpty = "[Selected GameObjects] (in current open scenes) are not [USING] any assets!"
+            };
 
-            bookmark = new FinderBookmark(this);
-            selection = new FinderSelection(this);
+            _refUnUse = new FindRefDrawer(this, () => settings.sortMode, () => settings.toolGroupMode) {groupDrawer = {hideGroupIfPossible = true}};
 
-            sceneUsesDrawer = new FinderRefDrawer(this) {messageEmpty = "[Selected GameObjects] are not [USING] any other GameObjects in scenes"};
+            _usedInBuild = new AssetUsedInBuild(this, () => settings.sortMode, () => settings.toolGroupMode);
+            _bookmark = new AssetBookmark(this, () => settings.sortMode, () => settings.groupMode);
+            selection = new FindSelection(this, () => settings.sortMode, () => settings.groupMode);
 
-            refInScene = new FinderRefDrawer(this) {messageEmpty = "[Selected Assets] are not [USED BY] any GameObjects in opening scenes!"};
+            _sceneUsesDrawer = new FindRefDrawer(this, () => settings.sortMode, () => settings.groupMode)
+            {
+                messageEmpty = "[Selected GameObjects] are not [USING] any other GameObjects in scenes"
+            };
 
-            refSceneInScene = new FinderRefDrawer(this) {messageEmpty = "[Selected GameObjects] are not [USED BY] by any GameObjects in opening scenes!"};
+            _refInScene = new FindRefDrawer(this, () => settings.sortMode, () => settings.groupMode)
+            {
+                messageEmpty = "[Selected Assets] are not [USED BY] any GameObjects in opening scenes!"
+            };
+
+            _refSceneInScene = new FindRefDrawer(this, () => settings.sortMode, () => settings.groupMode)
+            {
+                messageEmpty = "[Selected GameObjects] are not [USED BY] by any GameObjects in opening scenes!"
+            };
 
 #if UNITY_2018_OR_NEWER
             UnityEditor.SceneManagement.EditorSceneManager.activeSceneChangedInEditMode -= OnSceneChanged;
@@ -79,11 +135,21 @@ namespace PancakeEditor
             UnityEditor.SceneManagement.EditorSceneManager.activeSceneChanged += OnSceneChanged;
 #endif
 
-            FinderCache.onCacheReady -= OnReady;
-            FinderCache.onCacheReady += OnReady;
+            AssetCache.onCacheReady -= OnReady;
+            AssetCache.onCacheReady += OnReady;
 
             FinderSetting.onIgnoreChange -= OnIgnoreChanged;
             FinderSetting.onIgnoreChange += OnIgnoreChanged;
+
+            int idx = settings.historyIndex;
+            if (idx != -1 && settings.history.Count > idx)
+            {
+                var h = settings.history[idx];
+                Selection.objects = h.selection;
+                settings.historyIndex = idx;
+                RefreshOnSelectionChange();
+                Repaint();
+            }
 
             Repaint();
         }
@@ -97,139 +163,277 @@ namespace PancakeEditor
             }
         }
 #endif
-        protected void OnIgnoreChanged() { OnSelectionChange(); }
+        protected void OnIgnoreChanged()
+        {
+            _refUnUse.ResetUnusedAsset();
+            _usedInBuild.SetDirty();
+            OnSelectionChange();
+        }
 
         protected void OnReady() { OnSelectionChange(); }
+
+        private void AddHistory()
+        {
+            var objects = Selection.objects;
+
+            // Check if the same set of selection has already existed
+            RefreshHistoryIndex(objects);
+            if (settings.historyIndex != -1) return;
+
+            // Add newly selected objects to the selection
+            const int maxHistoryLength = 10;
+            settings.history.Add(new SelectHistory {selection = Selection.objects});
+            settings.historyIndex = settings.history.Count - 1;
+            if (settings.history.Count > maxHistoryLength)
+            {
+                settings.history.RemoveRange(0, settings.history.Count - maxHistoryLength);
+            }
+
+            EditorUtility.SetDirty(this);
+        }
+
+        private void RefreshHistoryIndex(UnityObject[] objects)
+        {
+            settings.historyIndex = -1;
+            if (objects == null || objects.Length == 0) return;
+            var history = settings.history;
+            for (var i = 0; i < history.Count; i++)
+            {
+                var h = history[i];
+                if (!h.IsTheSame(objects)) continue;
+                settings.historyIndex = i;
+            }
+
+            EditorUtility.SetDirty(this);
+        }
+
+        private bool IsScenePanelVisible
+        {
+            get
+            {
+                if (selection.IsSelectingAsset && IsFocusingUses) return false;
+                if (!selection.IsSelectingAsset && IsFocusingUsedBy) return true;
+                return settings.scene;
+            }
+        }
+
+        private bool IsAssetPanelVisible
+        {
+            get
+            {
+                if (selection.IsSelectingAsset && IsFocusingUses) return true;
+                if (!selection.IsSelectingAsset && IsFocusingUsedBy) return false;
+                return settings.asset;
+            }
+        }
+
+        private void RefreshPanelVisible()
+        {
+            sp2.splits[0].visible = IsScenePanelVisible;
+            sp2.splits[1].visible = IsAssetPanelVisible;
+            sp2.CalculateWeight();
+        }
+
+        private void RefreshOnSelectionChange()
+        {
+            _ids = FinderUtility.SelectionAssetGUIDs;
+            selection.Clear();
+
+            //ignore selection on asset when selected any object in scene
+            if (Selection.gameObjects.Length > 0 && !FinderUtility.IsInAsset(Selection.gameObjects[0]))
+            {
+                _ids = Array.Empty<string>();
+                selection.AddRange(Selection.gameObjects);
+            }
+            else
+            {
+                selection.AddRange(_ids);
+            }
+
+            level = 0;
+            RefreshPanelVisible();
+
+            if (selection.IsSelectingAsset)
+            {
+                _usesDrawer.Reset(_ids, true);
+                _usedByDrawer.Reset(_ids, false);
+                _refInScene.Reset(_ids, this as IWindow);
+            }
+            else
+            {
+                _refSceneInScene.ResetSceneInScene(Selection.gameObjects);
+                _sceneToAssetDrawer.Reset(Selection.gameObjects, true, true);
+                _sceneUsesDrawer.ResetSceneUseSceneObjects(Selection.gameObjects);
+            }
+        }
 
         public override void OnSelectionChange()
         {
             Repaint();
 
             if (!IsCacheReady) return;
+
             if (focusedWindow == null) return;
-            if (sceneUsesDrawer == null) InitIfNeeded();
-            if (usesDrawer == null) InitIfNeeded();
+            if (_sceneUsesDrawer == null) InitIfNeeded();
+            if (_usesDrawer == null) InitIfNeeded();
 
             if (!LockSelection)
             {
-                _ids = FinderUnity.SelectionAssetGUIDs;
-                selection.Clear();
-
-                //ignore selection on asset when selected any object in scene
-                if (Selection.gameObjects.Length > 0 && !FinderUnity.IsInAsset(Selection.gameObjects[0]))
-                {
-                    _ids = Array.Empty<string>();
-                    selection.AddRange(Selection.gameObjects);
-                }
-                else selection.AddRange(_ids);
-
-                level = 0;
-
-                if (selection.IsSelectingAsset)
-                {
-                    usesDrawer.Reset(_ids, true);
-                    usedByDrawer.Reset(_ids, false);
-                    refInScene.Reset(_ids, this as IWindow);
-                }
-                else
-                {
-                    refSceneInScene.ResetSceneInScene(Selection.gameObjects);
-                    sceneToAssetDrawer.Reset(Selection.gameObjects, true, true);
-                    sceneUsesDrawer.ResetSceneUseSceneObjects(Selection.gameObjects);
-                }
-
-                // auto disable enable scene / asset
-                if (IsFocusingUses)
-                {
-                    sp2.splits[0].visible = !selection.IsSelectingAsset;
-                    sp2.splits[1].visible = true;
-                    sp2.CalculateWeight();
-                }
-
-                if (IsFocusingUsedBy)
-                {
-                    sp2.splits[0].visible = true;
-                    sp2.splits[1].visible = selection.IsSelectingAsset;
-                    sp2.CalculateWeight();
-                }
+                RefreshOnSelectionChange();
+                RefreshHistoryIndex(Selection.objects);
             }
 
-            if (FinderSceneCache.Api.Dirty && !Application.isPlaying)
+            if (IsFocusingGUIDs)
             {
-                FinderSceneCache.Api.RefreshCache(this);
+                _guidObjs = new Dictionary<string, UnityObject>();
+                var objects = Selection.objects;
+                for (var i = 0; i < objects.Length; i++)
+                {
+                    var item = objects[i];
+                    try
+                    {
+                        if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(item, out string guid, out long fileid)) _guidObjs.Add(guid + "/" + fileid, objects[i]);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
             }
+
+            if (IsFocusingUnused) _refUnUse.ResetUnusedAsset();
+
+            if (FindSceneCache.Api.Dirty && !Application.isPlaying) FindSceneCache.Api.RefreshCache(this);
 
             EditorApplication.delayCall -= Repaint;
             EditorApplication.delayCall += Repaint;
         }
 
 
-        public FinderSplitView sp1; // container : Selection / sp2 / Bookmark 
-        public FinderSplitView sp2; // Scene / Assets
+        public SplitView sp1; // container : Selection / sp2 / Bookmark 
+        public SplitView sp2; // Scene / Assets
+
+        private void DrawHistory(Rect rect)
+        {
+            var c = GUI.backgroundColor;
+            GUILayout.BeginArea(rect);
+            GUILayout.BeginHorizontal();
+
+            for (var i = 0; i < settings.history.Count; i++)
+            {
+                var h = settings.history[i];
+                int idx = i;
+                GUI.backgroundColor = i == settings.historyIndex ? GUI2.darkBlue : c;
+
+                var content = new GUIContent($"{i + 1}", "RightClick to delete!");
+                if (GUILayout.Button(content, EditorStyles.miniButton, GUILayout.Width(24f)))
+                {
+                    if (Event.current.button == 0) // left click
+                    {
+                        Selection.objects = h.selection;
+                        settings.historyIndex = idx;
+                        RefreshOnSelectionChange();
+                        Repaint();
+                    }
+
+                    if (Event.current.button == 1) // right click
+                    {
+                        bool isActive = i == settings.historyIndex;
+                        settings.history.RemoveAt(idx);
+
+                        if (isActive && settings.history.Count > 0)
+                        {
+                            int idx2 = settings.history.Count - 1;
+                            Selection.objects = settings.history[idx2].selection;
+                            settings.historyIndex = idx2;
+                            RefreshOnSelectionChange();
+                            Repaint();
+                        }
+                    }
+                }
+            }
+
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+            GUI.backgroundColor = c;
+        }
 
         private void InitPanes()
         {
-            sp2 = new FinderSplitView(this)
+            sp2 = new SplitView(this)
             {
                 isHorz = false,
-                splits = new List<FinderSplitView.Info>()
+                splits = new List<SplitView.Info>
                 {
-                    new() {title = new GUIContent("Scene", Uniform.IconContent("SceneAsset Icon").image), draw = DrawScene},
-                    new() {title = new GUIContent("Assets", Uniform.IconContent("Folder Icon").image), draw = DrawAsset},
+                    new() {title = new GUIContent("Scene", Uniform.IconContent("SceneAsset Icon").image), draw = DrawScene, visible = settings.scene},
+                    new() {title = new GUIContent("Assets", Uniform.IconContent("Folder Icon").image), draw = DrawAsset, visible = settings.asset}
                 }
             };
 
             sp2.CalculateWeight();
 
-            sp1 = new FinderSplitView(this)
+            sp1 = new SplitView(this)
             {
                 isHorz = true,
-                splits = new List<FinderSplitView.Info>()
+                splits = new List<SplitView.Info>
                 {
                     new()
                     {
                         title = new GUIContent("Selection", Uniform.IconContent("d_RectTransformBlueprint").image),
                         weight = 0.4f,
-                        visible = true,
-                        draw = (rect) => selection.Draw(rect)
+                        visible = settings.selection,
+                        draw = rect =>
+                        {
+                            var historyRect = rect;
+                            historyRect.yMin = historyRect.yMax - 16f;
+
+                            rect.yMax -= 16f;
+                            selection.Draw(rect);
+                            DrawHistory(historyRect);
+                        }
                     },
+                    new() {draw = r => { sp2.Draw(r); }},
                     new()
                     {
-                        draw = (r) =>
+                        title = new GUIContent("Asset Detail", Uniform.IconContent("d_UnityEditor.SceneHierarchyWindow").image),
+                        weight = 0.4f,
+                        visible = settings.details,
+                        draw = rect =>
                         {
-                            if (IsFocusingUses || IsFocusingUsedBy) sp2.Draw(r);
-                            else DrawTools(r);
+                            var assetDrawer = GetAssetDrawer();
+                            assetDrawer?.DrawDetails(rect);
                         }
                     },
                     new()
                     {
-                        title = new GUIContent("Bookmark", Uniform.IconContent("Favorite On Icon").image),
+                        title = new GUIContent("Bookmark", Uniform.IconContent("d_Favorite").image),
                         weight = 0.4f,
-                        visible = false,
-                        draw = (rect) => bookmark.Draw(rect)
-                    },
+                        visible = settings.bookmark,
+                        draw = rect => _bookmark.Draw(rect)
+                    }
                 }
             };
 
             sp1.CalculateWeight();
         }
 
-        private FinderTabView _tabs;
-        private FinderTabView _bottomTabs;
-        private FinderSearchView _search;
+        private TabView _tabs;
+        private TabView _toolTabs;
+        private TabView _bottomTabs;
+        private SearchView _search;
 
         private void DrawScene(Rect rect)
         {
-            var drawer = IsFocusingUses ? (selection.IsSelectingAsset ? null : sceneUsesDrawer) : (selection.IsSelectingAsset ? refInScene : refSceneInScene);
+            var drawer = IsFocusingUses ? selection.IsSelectingAsset ? null : _sceneUsesDrawer : selection.IsSelectingAsset ? _refInScene : _refSceneInScene;
             if (drawer == null) return;
 
-            if (!FinderSceneCache.ready)
+            if (!FindSceneCache.ready)
             {
                 var rr = rect;
                 rr.height = 16f;
 
-                int cur = FinderSceneCache.Api.current, total = FinderSceneCache.Api.total;
-                EditorGUI.ProgressBar(rr, cur * 1f / total, string.Format("{0} / {1}", cur, total));
+                int cur = FindSceneCache.Api.current, total = FindSceneCache.Api.total;
+                EditorGUI.ProgressBar(rr, cur * 1f / total, $"{cur} / {total}");
                 WillRepaint = true;
                 return;
             }
@@ -237,29 +441,36 @@ namespace PancakeEditor
             drawer.Draw(rect);
 
             var refreshRect = new Rect(rect.xMax - 16f, rect.yMin - 14f, 18f, 18f);
-            if (GUI2.ColorIconButton(refreshRect, Uniform.IconContent("d_Refresh@2x").image, FinderSceneCache.Api.Dirty ? (Color?) GUI2.lightRed : null))
-            {
-                FinderSceneCache.Api.RefreshCache(drawer.Window);
-            }
+            if (GUI2.ColorIconButton(refreshRect, Uniform.IconContent("d_Refresh@2x").image, FindSceneCache.Api.Dirty ? GUI2.lightRed : (Color?) null))
+                FindSceneCache.Api.RefreshCache(drawer.Window);
         }
 
 
-        private FinderRefDrawer GetAssetDrawer()
+        private FindRefDrawer GetAssetDrawer()
         {
-            if (IsFocusingUses) return selection.IsSelectingAsset ? usesDrawer : sceneToAssetDrawer;
-            if (IsFocusingUsedBy) return selection.IsSelectingAsset ? usedByDrawer : null;
+            if (IsFocusingUses) return selection.IsSelectingAsset ? _usesDrawer : _sceneToAssetDrawer;
+            if (IsFocusingUsedBy) return selection.IsSelectingAsset ? _usedByDrawer : null;
             return null;
         }
 
         private void DrawAsset(Rect rect)
         {
             var drawer = GetAssetDrawer();
-            drawer?.Draw(rect);
+            if (drawer == null) return;
+            drawer.Draw(rect);
+
+            if (!drawer.showDetail) return;
+
+            settings.details = true;
+            drawer.showDetail = false;
+            sp1.splits[2].visible = settings.details;
+            sp1.CalculateWeight();
+            Repaint();
         }
 
         private void DrawSearch()
         {
-            _search ??= new FinderSearchView();
+            if (_search == null) _search = new SearchView();
             _search.DrawLayout();
         }
 
@@ -296,7 +507,7 @@ namespace PancakeEditor
                 if (!HasCache)
                 {
                     EditorGUILayout.HelpBox(
-                        "Finder Cache not found!\nFirst scan may takes quite some time to finish but you would be able to work normally while the scan works in background...",
+                        "Finder cache not found!\nFirst scan may takes quite some time to finish but you would be able to work normally while the scan works in background...",
                         MessageType.Warning);
 
                     DrawPriorityGUI();
@@ -327,13 +538,43 @@ namespace PancakeEditor
         protected bool IsFocusingUses => _tabs != null && _tabs.current == 0;
         protected bool IsFocusingUsedBy => _tabs != null && _tabs.current == 1;
 
-        private void OnTabChange() { }
+        // 
+        protected bool IsFocusingDuplicate => _toolTabs != null && _toolTabs.current == 0;
+        protected bool IsFocusingGUIDs => _toolTabs != null && _toolTabs.current == 1;
+        protected bool IsFocusingUnused => _toolTabs != null && _toolTabs.current == 2;
+        protected bool IsFocusingUsedInBuild => _toolTabs != null && _toolTabs.current == 3;
+
+        private static readonly HashSet<FindRefDrawer.Mode> AllowedModes = new() {FindRefDrawer.Mode.Type, FindRefDrawer.Mode.Extension, FindRefDrawer.Mode.Folder};
+
+        private void OnTabChange()
+        {
+            if (IsFocusingUnused || IsFocusingUsedInBuild)
+            {
+                if (!AllowedModes.Contains(settings.groupMode)) settings.groupMode = FindRefDrawer.Mode.Type;
+            }
+
+            if (_deleteUnused != null) _deleteUnused.hasConfirm = false;
+            _usedInBuild?.SetDirty();
+        }
 
         private void InitTabs()
         {
-            _tabs = FinderTabView.Create(this, false, "Uses", "Used By");
+            _bottomTabs = TabView.Create(this,
+                true,
+                Uniform.IconContent("Settings@2x", "Settings"),
+                Uniform.IconContent("ShurikenCheckMarkMixed", "Ignore"),
+                Uniform.IconContent("d_FilterByType@2x", "Filter by Type"));
+            _bottomTabs.current = -1;
+
+            _toolTabs = TabView.Create(this,
+                false,
+                "Duplicate",
+                "GUID",
+                "Not Referenced",
+                "In Build");
+            _tabs = TabView.Create(this, false, "Uses", "Used By");
             _tabs.onTabChange = OnTabChange;
-            _tabs.callback = new DrawCallback()
+            _tabs.callback = new DrawCallback
             {
                 beforeDraw = () =>
                 {
@@ -343,64 +584,59 @@ namespace PancakeEditor
                             "Lock Selection"))
                     {
                         WillRepaint = true;
+                        OnSelectionChange();
+                        if (selection.isLock) AddHistory();
                     }
                 },
                 afterDraw = () =>
                 {
-                    //GUILayout.Space(16f);
-
-                    if (GUI2.ToolbarToggle(ref sp1.isHorz, Uniform.IconContent("LockIcon").image, Vector2.zero, "Layout"))
+                    if (GUI2.ToolbarToggle(ref settings.selection, Uniform.IconContent("d_RectTransformBlueprint").image, Vector2.zero, "Show / Hide Selection"))
                     {
+                        sp1.splits[0].visible = settings.selection;
                         sp1.CalculateWeight();
                         Repaint();
                     }
 
-                    if (GUI2.ToolbarToggle(ref sp1.splits[0].visible, Uniform.IconContent("d_RectTransformBlueprint").image, Vector2.zero, "Show / Hide Selection"))
+                    if (GUI2.ToolbarToggle(ref settings.scene, Uniform.IconContent("SceneAsset Icon").image, Vector2.zero, "Show / Hide Scene References"))
                     {
+                        if (settings.asset == false && settings.scene == false)
+                        {
+                            settings.asset = true;
+                            sp2.splits[1].visible = settings.asset;
+                        }
+
+                        RefreshPanelVisible();
+                        Repaint();
+                    }
+
+                    if (GUI2.ToolbarToggle(ref settings.asset, Uniform.IconContent("Folder Icon").image, Vector2.zero, "Show / Hide Asset References"))
+                    {
+                        if (settings.asset == false && settings.scene == false)
+                        {
+                            settings.scene = true;
+                            sp2.splits[0].visible = settings.scene;
+                        }
+
+                        RefreshPanelVisible();
+                        Repaint();
+                    }
+
+                    if (GUI2.ToolbarToggle(ref settings.details, Uniform.IconContent("d_UnityEditor.SceneHierarchyWindow").image, Vector2.zero, "Show / Hide Details"))
+                    {
+                        sp1.splits[2].visible = settings.details;
                         sp1.CalculateWeight();
                         Repaint();
                     }
 
-                    if (GUI2.ToolbarToggle(ref sp2.splits[0].visible, Uniform.IconContent("SceneAsset Icon").image, Vector2.zero, "Show / Hide Scene References"))
+                    if (GUI2.ToolbarToggle(ref settings.bookmark, Uniform.IconContent("d_Favorite").image, Vector2.zero, "Show / Hide Bookmarks"))
                     {
-                        sp2.CalculateWeight();
-                        Repaint();
-                    }
-
-                    if (GUI2.ToolbarToggle(ref sp2.splits[1].visible, Uniform.IconContent("Folder Icon").image, Vector2.zero, "Show / Hide Asset References"))
-                    {
-                        sp2.CalculateWeight();
-                        Repaint();
-                    }
-
-
-                    if (GUI2.ToolbarToggle(ref sp1.splits[2].visible, Uniform.IconContent("Favorite On Icon").image, Vector2.zero, "Show / Hide Bookmarks"))
-                    {
+                        sp1.splits[3].visible = settings.bookmark;
                         sp1.CalculateWeight();
                         Repaint();
                     }
                 }
             };
         }
-
-        protected bool DrawHeader()
-        {
-            if (_tabs == null) InitTabs();
-            if (_bottomTabs == null)
-            {
-                _bottomTabs = FinderTabView.Create(this,
-                    true,
-                    Uniform.IconContent("Settings@2x", "Settings"),
-                    Uniform.IconContent("d_SceneViewVisibility@2x", "Ignore"),
-                    Uniform.IconContent("d_FilterByType@2x", "Filter by Type"));
-                _bottomTabs.current = -1;
-            }
-
-            _tabs.DrawLayout();
-
-            return true;
-        }
-
 
         protected bool DrawFooter()
         {
@@ -411,6 +647,17 @@ namespace PancakeEditor
                 DrawAssetViewSettings();
                 GUILayout.FlexibleSpace();
                 DrawViewModes();
+
+                var oColor = GUI.color;
+                if (settings.toolMode) GUI.color = Color.green;
+                if (GUILayout.Button(Uniform.IconContent("CustomTool").image, EditorStyles.toolbarButton))
+                {
+                    settings.toolMode = !settings.toolMode;
+                    EditorUtility.SetDirty(this);
+                    WillRepaint = true;
+                }
+
+                GUI.color = oColor;
             }
             GUILayout.EndHorizontal();
             return false;
@@ -422,36 +669,53 @@ namespace PancakeEditor
             EditorGUI.BeginDisabledGroup(isDisable);
             {
                 GUI2.ToolbarToggle(ref Setting.Settings.displayAssetBundleName,
-                    Uniform.IconContent("d_FilterByLabel@2x").image,
+                    Uniform.IconContent("d_SceneViewVisibility On").image,
                     Vector2.zero,
                     "Show / Hide Assetbundle Names");
 #if UNITY_2017_1_OR_NEWER
-                GUI2.ToolbarToggle(ref Setting.Settings.displayAtlasName,
-                    Uniform.IconContent("SpriteAtlasAsset Icon").image,
-                    Vector2.zero,
-                    "Show / Hide Atlas packing tags");
+                GUI2.ToolbarToggle(ref Setting.Settings.displayAtlasName, Uniform.IconContent("SpriteAtlas Icon").image, Vector2.zero, "Show / Hide Atlas packing tags");
 #endif
-                GUI2.ToolbarToggle(ref Setting.Settings.showUsedByClassed, Uniform.IconContent("d_RenderTexture Icon").image, Vector2.zero, "Show / Hide usage icons");
-                GUI2.ToolbarToggle(ref Setting.Settings.displayFileSize, Uniform.IconContent("d_Package Manager").image, Vector2.zero, "Show / Hide file size");
+                GUI2.ToolbarToggle(ref Setting.Settings.showUsedByClassed, Uniform.IconContent("d_PreMatSphere").image, Vector2.zero, "Show / Hide usage icons");
+                GUI2.ToolbarToggle(ref Setting.Settings.displayFileSize, Uniform.IconContent("d_Audio Mixer").image, Vector2.zero, "Show / Hide file size");
             }
             EditorGUI.EndDisabledGroup();
         }
 
+        private EnumDrawer _groupModeEd;
+        private EnumDrawer _toolModeEd;
+        private EnumDrawer _sortModeEd;
+
         private void DrawViewModes()
         {
-            var gMode = GroupMode;
-            if (GUI2.EnumPopup(ref gMode, Uniform.IconContent("EditCollider", "Group by"), EditorStyles.toolbarPopup, GUILayout.Width(100f)))
+            _toolModeEd ??= new EnumDrawer {enumInfo = new EnumDrawer.EnumInfo(FindRefDrawer.Mode.Type, FindRefDrawer.Mode.Folder, FindRefDrawer.Mode.Extension)};
+            _groupModeEd ??= new EnumDrawer();
+            _sortModeEd ??= new EnumDrawer();
+
+            if (settings.toolMode)
             {
-                GroupMode = gMode;
-                MarkDirty();
+                var tMode = settings.toolGroupMode;
+                if (_toolModeEd.DrawLayout(ref tMode, GUILayout.Width(100f)))
+                {
+                    settings.toolGroupMode = tMode;
+                    AllMarkDirty();
+                    RefreshSort();
+                }
+            }
+            else
+            {
+                var gMode = settings.groupMode;
+                if (_groupModeEd.DrawLayout(ref gMode, GUILayout.Width(100f)))
+                {
+                    settings.groupMode = gMode;
+                    AllMarkDirty();
+                    RefreshSort();
+                }
             }
 
-            GUILayout.Space(16f);
-
-            var sMode = SortMode;
-            if (GUI2.EnumPopup(ref sMode, Uniform.IconContent("AlphabeticalSorting", "Sort by"), EditorStyles.toolbarPopup, GUILayout.Width(50f)))
+            var sMode = settings.sortMode;
+            if (_sortModeEd.DrawLayout(ref sMode, GUILayout.Width(80f)))
             {
-                SortMode = sMode;
+                settings.sortMode = sMode;
                 RefreshSort();
             }
         }
@@ -460,18 +724,81 @@ namespace PancakeEditor
         {
             if (!CheckDrawImport()) return;
 
+            if (_tabs == null) InitTabs();
             if (sp1 == null) InitPanes();
 
-            DrawHeader();
-            sp1.DrawLayout();
+            if (settings.toolMode)
+            {
+                EditorGUILayout.HelpBox("Tools are POWERFUL & DANGEROUS! Only use if you know what you are doing!!!", MessageType.Warning);
+                _toolTabs.DrawLayout();
+                DrawTools();
+            }
+            else
+            {
+                _tabs?.DrawLayout();
+                sp1?.DrawLayout();
+            }
+
             DrawSettings();
             DrawFooter();
-
             if (WillRepaint) Repaint();
         }
 
 
-        private void DrawTools(Rect rect) { }
+        private DeleteButton _deleteUnused;
+
+        private void DrawTools()
+        {
+            if (IsFocusingDuplicate)
+            {
+                _duplicated.DrawLayout();
+                GUILayout.FlexibleSpace();
+                return;
+            }
+
+            if (IsFocusingUnused)
+            {
+                if (_refUnUse.refs != null && _refUnUse.refs.Count == 0)
+                {
+                    EditorGUILayout.HelpBox("Wow! So clean!?", MessageType.Info);
+                    EditorGUILayout.HelpBox("Your project does not has have any unused assets, or have you just hit DELETE ALL?", MessageType.Info);
+                    EditorGUILayout.HelpBox("Your backups are placed at Library/Finder/ just in case you want your assets back!", MessageType.Info);
+                }
+                else
+                {
+                    _refUnUse.DrawLayout();
+
+                    if (_deleteUnused == null)
+                    {
+                        _deleteUnused = new DeleteButton
+                        {
+                            warningMessage = "A backup (.unitypackage) will be created so you can reimport the deleted assets later!",
+                            deleteLabel = MyGUIContent.From("DELETE ASSETS", Uniform.IconContent("d_TreeEditor.Trash").image),
+                            confirmMessage = "Create backup at Library/Finder/"
+                        };
+                    }
+
+                    GUILayout.BeginHorizontal();
+                    {
+                        _deleteUnused.Draw(() => { FinderUtility.BackupAndDeleteAssets(_refUnUse.Source); });
+                    }
+                    GUILayout.EndHorizontal();
+                }
+
+                return;
+            }
+
+            if (IsFocusingUsedInBuild)
+            {
+                _usedInBuild.DrawLayout();
+                return;
+            }
+
+            if (IsFocusingGUIDs)
+            {
+                DrawGUIDs();
+            }
+        }
 
         private void DrawSettings()
         {
@@ -490,14 +817,13 @@ namespace PancakeEditor
 
                     case 1:
                     {
-                        if (FinderAssetType.DrawIgnoreFolder()) MarkDirty();
+                        if (AssetType.DrawIgnoreFolder()) AllMarkDirty();
                         break;
                     }
 
                     case 2:
                     {
-                        if (FinderAssetType.DrawSearchFilter()) MarkDirty();
-
+                        if (AssetType.DrawSearchFilter()) AllMarkDirty();
                         break;
                     }
                 }
@@ -509,26 +835,118 @@ namespace PancakeEditor
             GUI2.Rect(rect, Color.black, 0.4f);
         }
 
-        protected void MarkDirty()
+        protected void AllMarkDirty()
         {
-            usedByDrawer.SetDirty();
-            usesDrawer.SetDirty();
-            sceneToAssetDrawer.SetDirty();
+            _usedByDrawer.SetDirty();
+            _usesDrawer.SetDirty();
+            _duplicated.SetDirty();
+            _sceneToAssetDrawer.SetDirty();
+            _refUnUse.SetDirty();
 
-            refInScene.SetDirty();
-            refSceneInScene.SetDirty();
-            sceneUsesDrawer.SetDirty();
+            _refInScene.SetDirty();
+            _refSceneInScene.SetDirty();
+            _sceneUsesDrawer.SetDirty();
+            _usedInBuild.SetDirty();
             WillRepaint = true;
         }
 
         protected void RefreshSort()
         {
-            usedByDrawer.RefreshSort();
-            usesDrawer.RefreshSort();
-            sceneToAssetDrawer.RefreshSort();
+            _usedByDrawer.RefreshSort();
+            _usesDrawer.RefreshSort();
+
+            _duplicated.RefreshSort();
+            _sceneToAssetDrawer.RefreshSort();
+            _refUnUse.RefreshSort();
+            _usedInBuild.RefreshSort();
         }
 
-        private Dictionary<string, Object> _objs;
+        private Dictionary<string, UnityObject> _guidObjs;
         private string[] _ids;
+
+        private void DrawGUIDs()
+        {
+            GUILayout.Label("GUID to Object", EditorStyles.boldLabel);
+            GUILayout.BeginHorizontal();
+            {
+                string guid = EditorGUILayout.TextField(_tempGuid ?? string.Empty);
+                string fileId = EditorGUILayout.TextField(_tempFileID ?? string.Empty);
+                EditorGUILayout.ObjectField(_tempObject, typeof(UnityObject), false, GUILayout.Width(160f));
+
+                if (GUILayout.Button("Paste", EditorStyles.miniButton, GUILayout.Width(70f)))
+                {
+                    string[] split = EditorGUIUtility.systemCopyBuffer.Split('/');
+                    guid = split[0];
+                    fileId = split.Length == 2 ? split[1] : string.Empty;
+                }
+
+                if ((guid != _tempGuid || fileId != _tempFileID) && !string.IsNullOrEmpty(guid))
+                {
+                    _tempGuid = guid;
+                    _tempFileID = fileId;
+                    string fullId = string.IsNullOrEmpty(fileId) ? _tempGuid : _tempGuid + "/" + _tempFileID;
+
+                    _tempObject = FinderUtility.LoadAssetAtPath<UnityObject>(AssetDatabase.GUIDToAssetPath(fullId));
+                }
+
+                if (GUILayout.Button("Set FileID"))
+                {
+                    var newDict = new Dictionary<string, UnityObject>();
+                    foreach (var kvp in _guidObjs)
+                    {
+                        string key = kvp.Key.Split('/')[0];
+                        if (!string.IsNullOrEmpty(fileId)) key = key + "/" + fileId;
+
+                        var value = FinderUtility.LoadAssetAtPath<UnityObject>(AssetDatabase.GUIDToAssetPath(key));
+                        newDict.Add(key, value);
+                    }
+
+                    _guidObjs = newDict;
+                }
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(10f);
+            if (_guidObjs == null) // || ids == null)
+                return;
+
+
+            {
+                _scrollPos = GUILayout.BeginScrollView(_scrollPos);
+                {
+                    foreach (var item in _guidObjs)
+                    {
+                        GUILayout.BeginHorizontal();
+                        {
+                            var obj = item.Value;
+
+                            EditorGUILayout.ObjectField(obj, typeof(UnityObject), false, GUILayout.Width(150));
+                            string idi = item.Key;
+                            GUILayout.TextField(idi, GUILayout.Width(320f));
+                            if (GUILayout.Button("Copy", EditorStyles.miniButton, GUILayout.Width(50f)))
+                            {
+                                _tempObject = obj;
+
+                                string[] arr = item.Key.Split('/');
+                                _tempGuid = arr[0];
+                                _tempFileID = arr[1];
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                }
+                GUILayout.EndScrollView();
+            }
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Merge Selection To"))
+            {
+                string fullId = string.IsNullOrEmpty(_tempFileID) ? _tempGuid : _tempGuid + "/" + _tempFileID;
+                FinderExport.MergeDuplicate(fullId);
+            }
+
+            EditorGUILayout.ObjectField(_tempObject, typeof(UnityObject), false, GUILayout.Width(120f));
+            GUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();
+        }
     }
 }

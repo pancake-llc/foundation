@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
-using Pancake;
 using Pancake.Common;
+using PancakeEditor.Finder;
 using RedBlueGames.MulliganRenamer;
 using UnityEditor;
 using UnityEngine;

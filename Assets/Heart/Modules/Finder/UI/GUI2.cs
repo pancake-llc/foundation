@@ -3,13 +3,30 @@ using System.Collections.Generic;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
+using Object = UnityEngine.Object;
 
-namespace PancakeEditor
+namespace PancakeEditor.Finder
 {
-    internal static class GUI2
+    public static class GUI2
     {
-        private static void Color(Action a, Color c, float? alpha = null)
+        private static GUIStyle miniLabelAlignRight;
+
+        public static Color darkRed = new(0.5f, .0f, 0f, 1f);
+        public static Color darkGreen = new(0, .5f, 0f, 1f);
+        public static Color darkBlue = new(0, .0f, 0.5f, 1f);
+        public static Color lightRed = new(1f, 0.5f, 0.5f, 1f);
+        private static readonly GUILayoutOption Glw22 = GUILayout.Width(22f);
+
+        public static GUIStyle MiniLabelAlignRight
+        {
+            get
+            {
+                if (miniLabelAlignRight != null) return miniLabelAlignRight;
+                return miniLabelAlignRight = new GUIStyle(EditorStyles.miniLabel) {alignment = TextAnchor.MiddleRight};
+            }
+        }
+
+        public static void Color(Action a, Color c, float? alpha = null)
         {
             if (a == null) return;
 
@@ -21,18 +38,17 @@ namespace PancakeEditor
             GUI.color = cColor;
         }
 
-        public static void ContentColor(Action a, Color c, float? alpha = null)
+        public static void BackgroundColor(Action a, Color c, float? alpha = null)
         {
             if (a == null) return;
 
-            var cColor = GUI.contentColor;
+            var cColor = GUI.backgroundColor;
             if (alpha != null) c.a = alpha.Value;
 
-            GUI.contentColor = c;
+            GUI.backgroundColor = c;
             a();
-            GUI.contentColor = cColor;
+            GUI.backgroundColor = cColor;
         }
-
 
         public static Color Theme(Color proColor, Color indieColor) { return EditorGUIUtility.isProSkin ? proColor : indieColor; }
 
@@ -46,7 +62,7 @@ namespace PancakeEditor
             GUI.color = cColor;
         }
 
-        public static UnityEngine.Object[] DropZone(string title, float w, float h)
+        public static Object[] DropZone(string title, float w, float h)
         {
             var rect = GUILayoutUtility.GetRect(w, h);
             GUI.Box(rect, GUIContent.none, EditorStyles.textArea);
@@ -55,7 +71,7 @@ namespace PancakeEditor
             float cy = rect.y + h / 2f;
             float pz = w / 3f; // plus size
 
-            var plusRect = new Rect(cx - pz / 2f, (cy - pz / 2f), pz, pz);
+            var plusRect = new Rect(cx - pz / 2f, cy - pz / 2f, pz, pz);
             Color(() => { GUI.DrawTexture(plusRect, Uniform.IconContent("ShurikenPlus").image, ScaleMode.ScaleToFit); }, UnityEngine.Color.white, 0.1f);
 
             GUI.Label(rect, title, EditorStyles.wordWrappedMiniLabel);
@@ -79,6 +95,20 @@ namespace PancakeEditor
             return isAccepted ? DragAndDrop.objectReferences : null;
         }
 
+        //        public static bool ColorIconButton(Rect r, Texture icon, Vector2? iconOffset, Color? c)
+        //        {
+        //            if (c != null) Rect(r, c.Value);
+        //            
+        //            // align center
+        //            if (iconOffset != null)
+        //            {
+        //                r.x += iconOffset.Value.x;
+        //                r.y += iconOffset.Value.y;
+        //            }
+        //            
+        //            return GUI.Button(r, icon, GUIStyle.none);
+        //        }
+
         public static bool ColorIconButton(Rect r, Texture icon, Color? c)
         {
             var oColor = GUI.color;
@@ -96,14 +126,6 @@ namespace PancakeEditor
             return true;
         }
 
-        public static bool Toggle(Rect rect, ref bool value, GUIContent tex)
-        {
-            bool vv = GUI.Toggle(rect, value, tex, GUIStyle.none);
-            if (vv == value) return false;
-            value = vv;
-            return true;
-        }
-
         public static bool Toggle(Rect rect, ref bool value)
         {
             bool vv = GUI.Toggle(rect, value, GUIContent.none);
@@ -112,24 +134,9 @@ namespace PancakeEditor
             return true;
         }
 
-        private static Dictionary<string, GUIContent> tooltipCache = new();
-
-        private static GUIContent GetTooltip(string tooltip)
-        {
-            if (string.IsNullOrEmpty(tooltip)) return GUIContent.none;
-
-            if (tooltipCache.TryGetValue(tooltip, out var result)) return result;
-            result = new GUIContent(string.Empty, tooltip);
-            tooltipCache.Add(tooltip, result);
-            return result;
-        }
-
         internal static bool ToolbarToggle(ref bool value, Texture icon, Vector2 padding, string tooltip = null)
         {
-            var previousColor = GUI.backgroundColor;
-            if (value) GUI.backgroundColor = new Color(0.66f, 0.87f, 1f);
-            bool vv = GUILayout.Toggle(value, GetTooltip(tooltip), EditorStyles.toolbarButton, GUILayout.Width(22f));
-            GUI.backgroundColor = previousColor;
+            bool vv = GUILayout.Toggle(value, MyGUIContent.Tooltip(tooltip), EditorStyles.toolbarButton, Glw22);
 
             if (icon != null)
             {
@@ -140,21 +147,6 @@ namespace PancakeEditor
 
             if (vv == value) return false;
             value = vv;
-            return true;
-        }
-
-        public static bool EnumPopup<T>(ref T mode, GUIContent icon, GUIStyle style, params GUILayoutOption[] options)
-        {
-            var obj = (Enum) (object) mode;
-            var cRect = GUILayoutUtility.GetRect(16f, 16f);
-            cRect.xMin -= 2f;
-            cRect.yMin += 2f;
-            GUI.Label(cRect, icon);
-
-            var vv = EditorGUILayout.EnumPopup(obj, style, options);
-            if (Equals(vv, obj)) return false;
-
-            mode = (T) (object) vv;
             return true;
         }
 
@@ -172,16 +164,5 @@ namespace PancakeEditor
             rect.width -= w;
             return new Rect(rect.x + rect.width, rect.y, w, rect.height);
         }
-
-        // -----------------------
-
-        private static GUIStyle miniLabelAlignRight;
-
-        public static GUIStyle MiniLabelAlignRight => miniLabelAlignRight ??= new GUIStyle(EditorStyles.miniLabel) {alignment = TextAnchor.MiddleRight};
-
-        public static Color darkRed = new(0.5f, .0f, 0f, 1f);
-        public static Color darkGreen = new(0, .5f, 0f, 1f);
-        public static Color darkBlue = new(0, .0f, 0.5f, 1f);
-        public static Color lightRed = new(1f, 0.5f, 0.5f, 1f);
     }
 }

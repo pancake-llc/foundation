@@ -15,5 +15,5 @@ EditorBuildSettings:
     path: Assets/_Root/Scenes/persistent.unity
     guid: 279d22aee6a33954186a30b9dbacdccc
   m_configObjects:
-    com.unity.addressableassets: {fileID: 11400000, guid: 435767ee90740cf45848f5f6d2789fd1, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: 35e398e4a5e5260499617a92c34718aa, type: 2}
   m_UseUCBPForAssetBundles: 0
