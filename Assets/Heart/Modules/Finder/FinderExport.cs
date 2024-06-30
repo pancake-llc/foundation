@@ -14,7 +14,7 @@ namespace PancakeEditor.Finder
 
         public static bool IsMergeProcessing { get; private set; }
 
-        [MenuItem("Assets/Pancake/Finder/Toggle Ignore", false, 19)]
+        [MenuItem("Assets/Finder/Toggle Ignore", false, 19)]
         private static void Ignore()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -33,10 +33,10 @@ namespace PancakeEditor.Finder
             }
         }
 
-        [MenuItem("Assets/Pancake/Finder/Copy GUID", false, 20)]
+        [MenuItem("Assets/Finder/Copy GUID", false, 20)]
         private static void CopyGuid() { EditorGUIUtility.systemCopyBuffer = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(Selection.activeObject)); }
 
-        [MenuItem("Assets/Pancake/Finder/Select Dependencies (assets I use)", false, 22)]
+        [MenuItem("Assets/Finder/Select Dependencies (assets I use)", false, 22)]
         private static void SelectDependencies_wtme()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -48,7 +48,7 @@ namespace PancakeEditor.Finder
             SelectDependencies(false);
         }
 
-        [MenuItem("Assets/Pancake/Finder/Refresh")]
+        [MenuItem("Assets/Finder/Refresh")]
         public static void ForceRefreshSelection()
         {
             string[] guids = Selection.assetGUIDs;
@@ -71,7 +71,7 @@ namespace PancakeEditor.Finder
             FinderWindowBase.CacheSetting.Check4Work();
         }
 
-        [MenuItem("Assets/Pancake/Finder/Select Dependencies included me", false, 23)]
+        [MenuItem("Assets/Finder/Select Dependencies included me", false, 23)]
         private static void SelectDependencies_wme()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -82,8 +82,8 @@ namespace PancakeEditor.Finder
 
             SelectDependencies(true);
         }
-        
-        [MenuItem("Assets/Pancake/Finder/Select Used (assets used me)", false, 24)]
+
+        [MenuItem("Assets/Finder/Select Used (assets used me)", false, 24)]
         private static void SelectUsed_wtme()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -95,7 +95,7 @@ namespace PancakeEditor.Finder
             SelectUsed(false);
         }
 
-        [MenuItem("Assets/Pancake/Finder/Select Used included me", false, 25)]
+        [MenuItem("Assets/Finder/Select Used included me", false, 25)]
         private static void SelectUsed_wme()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -150,15 +150,12 @@ namespace PancakeEditor.Finder
                 return;
             }
 
-
             //check asset type, only replace same type
 #if REPLACE_SAME_TYPE
             var type1 = AssetDatabase.GetMainAssetTypeAtPath(gPath);
             var importType1 = AssetImporter.GetAtPath(gPath);
 #endif
 
-
-            var assetList = new List<FindAsset>();
             var lstFind = new List<string>();
 
             foreach (string item in guidsFiles)
@@ -210,7 +207,7 @@ namespace PancakeEditor.Finder
                 return;
             }
 
-            assetList = FinderWindowBase.CacheSetting.FindAssets(lstFind.ToArray(), false);
+            var assetList = FinderWindowBase.CacheSetting.FindAssets(lstFind.ToArray(), false);
 
             //replace one by one
             listReplace = new Dictionary<string, ProcessReplaceData>();

@@ -229,9 +229,12 @@ namespace PancakeEditor.Finder
 
         private void RefreshPanelVisible()
         {
-            sp2.splits[0].visible = IsScenePanelVisible;
-            sp2.splits[1].visible = IsAssetPanelVisible;
-            sp2.CalculateWeight();
+            if (sp2 != null)
+            {
+                sp2.splits[0].visible = IsScenePanelVisible;
+                sp2.splits[1].visible = IsAssetPanelVisible;
+                sp2.CalculateWeight();
+            }
         }
 
         private void RefreshOnSelectionChange()
