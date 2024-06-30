@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Alchemy.Inspector;
@@ -17,7 +16,7 @@ namespace Pancake.MobileInput
             Deselect,
         }
 
-        #region inspector
+        #region Field
 
         [SerializeField] [Tooltip("When set to true, the position of dragged items snaps to discrete units.")]
         private bool snapToGrid = true;
@@ -79,13 +78,7 @@ namespace Pancake.MobileInput
             "Here you can set up callbacks to be invoked when the moving of a pickable transform is ended. The event requires 2 parameters. The first is the start position of the drag. The second is the dragged transform. The start position can be used to reset the transform in case the drag has ended on an invalid position.")]
         private Vector3TransformUnityEvent onTransformMoveEndedCallback;
 
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private bool longTapStartsDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, bool> onStartDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, Vector3, Vector3, Vector3> onUpdateDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, Vector3> onStopDrag;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3> onFingerDown;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action onFingerUp;
-        [SerializeField, FoldoutGroup("TouchInput Reference")] private Action<Vector3, bool, bool> onClick;
+        [SerializeField] private bool longTapStartsDrag;
 
         #endregion
 
@@ -154,22 +147,22 @@ namespace Pancake.MobileInput
 
         public void Start()
         {
-            onClick += OnClick;
-            onFingerDown += InputOnFingerDown;
-            onFingerUp += InputOnFingerUp;
-            onStartDrag += InputOnDragStart;
-            onUpdateDrag += InputOnDragUpdate;
-            onStopDrag += InputOnDragStop;
+            TouchInput.OnClick += OnClick;
+            TouchInput.OnFingerDown += InputOnFingerDown;
+            TouchInput.OnFingerUp += InputOnFingerUp;
+            TouchInput.OnStartDrag += InputOnDragStart;
+            TouchInput.OnUpdateDrag += InputOnDragUpdate;
+            TouchInput.OnStopDrag += InputOnDragStop;
         }
 
         public void OnDestroy()
         {
-            onClick -= OnClick;
-            onFingerDown -= InputOnFingerDown;
-            onFingerUp -= InputOnFingerUp;
-            onStartDrag -= InputOnDragStart;
-            onUpdateDrag -= InputOnDragUpdate;
-            onStopDrag -= InputOnDragStop;
+            TouchInput.OnClick -= OnClick;
+            TouchInput.OnFingerDown -= InputOnFingerDown;
+            TouchInput.OnFingerUp -= InputOnFingerUp;
+            TouchInput.OnStartDrag -= InputOnDragStart;
+            TouchInput.OnUpdateDrag -= InputOnDragUpdate;
+            TouchInput.OnStopDrag -= InputOnDragStop;
         }
 
         public void LateUpdate()

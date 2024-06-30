@@ -14,17 +14,17 @@ namespace Pancake.MobileInput
 
         [field: SerializeField] private bool IsTouchOnLockedArea { get; set; }
 
-        [Header("Event Drag")] public Action<Vector3, bool> onStartDrag;
-        public Action<Vector3, Vector3, Vector3, Vector3> onUpdateDrag;
-        public Action<Vector3, Vector3> onStopDrag;
-        [Header("Event Finger")] public Action<Vector3> onFingerDown;
-        public Action onFingerUp;
-        public Action<Vector3, bool, bool> onClick;
-        public Action<float> onLongTapUpdate;
-        [Header("Event Pinch")] public Action<Vector3, float> onStartPinch;
-        public Action<Vector3, float, float> onUpdatePinch;
-        public Action<PinchData> onUpdateExtendPinch;
-        public Action onStopPinch;
+        public static event Action<Vector3, bool> OnStartDrag;
+        public static event Action<Vector3, Vector3, Vector3, Vector3> OnUpdateDrag;
+        public static event Action<Vector3, Vector3> OnStopDrag;
+        public static event Action<Vector3> OnFingerDown;
+        public static event Action OnFingerUp;
+        public static event Action<Vector3, bool, bool> OnClick;
+        public static event Action<float> OnLongTapUpdate;
+        public static event Action<Vector3, float> OnStartPinch;
+        public static event Action<Vector3, float, float> OnUpdatePinch;
+        public static event Action<PinchData> OnUpdateExtendPinch;
+        public static event Action OnStopPinch;
 
 #if UNITY_EDITOR
         [SerializeField] private bool isCustom;
@@ -145,11 +145,11 @@ namespace Pancake.MobileInput
                                 float dragTime = Time.realtimeSinceStartup - _realTimeOfLastFinderDown;
 
                                 bool isLongTap = dragTime > clickDurationThreshold;
-                                if (onLongTapUpdate != null)
+                                if (OnLongTapUpdate != null)
                                 {
                                     float longTapProgress = 0;
                                     if (Mathf.Approximately(clickDurationThreshold, 0) == false) longTapProgress = Mathf.Clamp01(dragTime / clickDurationThreshold);
-                                    onLongTapUpdate.Invoke(longTapProgress);
+                                    OnLongTapUpdate.Invoke(longTapProgress);
                                 }
 
                                 if ((dragDistance >= dragThreshold && dragTime >= DRAG_DURATION_THRESHOLD) || (longTapStartsDrag && isLongTap))
@@ -211,7 +211,7 @@ namespace Pancake.MobileInput
                             float clickDuration = Time.realtimeSinceStartup - _realTimeOfLastClick;
                             bool isDoubleClick = clickDuration < doubleClickThreshold;
                             bool isLongTap = fingerDownUpDuration > clickDurationThreshold;
-                            onClick?.Invoke(_lastFinger0DownPosition, isDoubleClick, isLongTap);
+                            OnClick?.Invoke(_lastFinger0DownPosition, isDoubleClick, isLongTap);
                             _realTimeOfLastClick = Time.realtimeSinceStartup;
                         }
                     }
@@ -246,7 +246,7 @@ namespace Pancake.MobileInput
             _pinchStartPositions[1] = _touchPositionsLastFrame[1] = TouchWrapper.Touches[1].Position;
 
             _pinchStartDistance = GetPinchDistance(_pinchStartPositions[0], _pinchStartPositions[1]);
-            onStartPinch?.Invoke((_pinchStartPositions[0] + _pinchStartPositions[1]) * 0.5f, _pinchStartDistance);
+            OnStartPinch?.Invoke((_pinchStartPositions[0] + _pinchStartPositions[1]) * 0.5f, _pinchStartDistance);
 
             _isClickPrevented = true;
             _pinchVectorStart = TouchWrapper.Touches[1].Position - TouchWrapper.Touches[0].Position;
@@ -291,9 +291,9 @@ namespace Pancake.MobileInput
 
             #endregion
 
-            onUpdatePinch?.Invoke(pinchCenter, pinchDistance, _pinchStartDistance);
+            OnUpdatePinch?.Invoke(pinchCenter, pinchDistance, _pinchStartDistance);
 
-            onUpdateExtendPinch?.Invoke(new PinchData
+            OnUpdateExtendPinch?.Invoke(new PinchData
             {
                 pinchCenter = pinchCenter,
                 pinchDistance = pinchDistance,
@@ -319,12 +319,12 @@ namespace Pancake.MobileInput
         private void StopPinch()
         {
             _dragStartOffset = Vector3.zero;
-            onStopPinch?.Invoke();
+            OnStopPinch?.Invoke();
         }
 
         private void DragStart(Vector3 position, bool isLongTap)
         {
-            onStartDrag?.Invoke(position, isLongTap);
+            OnStartDrag?.Invoke(position, isLongTap);
 
             _isClickPrevented = true;
             _timeSinceDragStart = 0;
@@ -333,17 +333,17 @@ namespace Pancake.MobileInput
 
         private void DragUpdate(Vector3 currentPosition, Vector3 delta)
         {
-            if (onUpdateDrag != null)
+            if (OnUpdateDrag != null)
             {
                 _timeSinceDragStart += Time.unscaledDeltaTime;
                 var offset = Vector3.Lerp(Vector3.zero, _dragStartOffset, Mathf.Clamp01(_timeSinceDragStart * 10.0f));
-                onUpdateDrag.Invoke(_dragStartPosition, currentPosition, offset, delta);
+                OnUpdateDrag.Invoke(_dragStartPosition, currentPosition, offset, delta);
             }
         }
 
         private void DragStop(Vector3 stopPosition)
         {
-            if (onStopDrag != null)
+            if (OnStopDrag != null)
             {
                 var momentum = Vector3.zero;
                 if (_dragFinalMomentumVector.Count > 0)
@@ -353,7 +353,7 @@ namespace Pancake.MobileInput
                     momentum /= _dragFinalMomentumVector.Count;
                 }
 
-                onStopDrag.Invoke(stopPosition, momentum);
+                OnStopDrag.Invoke(stopPosition, momentum);
             }
 
             _dragFinalMomentumVector.Clear();
@@ -362,13 +362,13 @@ namespace Pancake.MobileInput
         private void FingerDown(Vector3 position)
         {
             _isFingerDown = true;
-            onFingerDown?.Invoke(position);
+            OnFingerDown?.Invoke(position);
         }
 
         private void FingerUp()
         {
             _isFingerDown = false;
-            onFingerUp?.Invoke();
+            OnFingerUp?.Invoke();
         }
 
         private Vector3 GetTouchPositionRelative(Vector3 touchPosScreen)
