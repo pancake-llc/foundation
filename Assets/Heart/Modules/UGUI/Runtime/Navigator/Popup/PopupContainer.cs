@@ -12,7 +12,8 @@ using UnityEngine.UI;
 namespace Pancake.UI
 {
     [RequireComponent(typeof(RectMask2D))]
-    public class PopupContainer : GameComponent
+    [EditorIcon("icon_popup")]
+    public class PopupContainer : MonoBehaviour , IUIContainer
     {
         private static readonly Dictionary<int, PopupContainer> InstanceCacheByTransform = new();
         private static readonly Dictionary<string, PopupContainer> InstanceCacheByName = new();

@@ -12,7 +12,8 @@ using UnityEngine.UI;
 namespace Pancake.UI
 {
     [RequireComponent(typeof(RectMask2D))]
-    public sealed class PageContainer : GameComponent
+    [EditorIcon("icon_popup")]
+    public sealed class PageContainer : MonoBehaviour, IUIContainer
     {
         [SerializeField, LabelText("Name")] private string displayName;
         private static readonly Dictionary<int, PageContainer> InstanceCacheByTransform = new();
