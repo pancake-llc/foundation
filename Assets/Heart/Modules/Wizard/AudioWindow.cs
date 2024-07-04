@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Google;
 using LitMotion;
 using Pancake.Common;
 using Pancake.Linq;
@@ -21,17 +20,8 @@ namespace PancakeEditor
     public static class AudioWindow
     {
         private static bool isVolumeSnapped;
-        private static float volume = AudioConstant.FULL_VOLUME;
-        private static bool isReverse;
-        private static bool isMono;
-        private static EMonoConversionMode monoMode = EMonoConversionMode.Downmixing;
-        private static GenericMenu monoModeMenu;
-        private static string currSavingFilePath;
-        private static event Action OnChangeAudioClip;
-        private static AudioClip clip;
         private static AudioMixer mixer;
         private static AudioMixerGroup duplicateTrackSource;
-        private static Transport transport;
         private static readonly IUniqueIdGenerator IdGenerator = new IdGenerator();
         private static ReorderableList assetReorderableList;
         private static int currentSelectAssetIndex;
@@ -44,17 +34,6 @@ namespace PancakeEditor
         private static int pickerId = -1;
         private static int currProjectSettingVoiceCount = -1;
         private static int currentMixerTracksCount = -1;
-
-        private static AudioClip Clip
-        {
-            get => clip;
-            set
-            {
-                bool hasChanged = value != clip;
-                clip = value;
-                if (hasChanged) OnChangeAudioClip?.Invoke();
-            }
-        }
 
         private static AudioMixer AudioMixer
         {
@@ -82,8 +61,6 @@ namespace PancakeEditor
             ref Vector2 scrollPosition,
             ref Wizard.AudioTabType currentTab,
             ref UnityEditor.Editor effectTrackEditor,
-            ref DrawClipPropertiesHelper clipPropHelper,
-            ref bool isLoop,
             ref Wizard.AudioSetingTabType currentSettingTab)
         {
             var audioSetting = Resources.Load<AudioSettings>(nameof(AudioSettings));
@@ -130,9 +107,6 @@ namespace PancakeEditor
                     case Wizard.AudioTabType.Setting:
                         DrawTabSetting(position, ref currentSettingTab);
                         break;
-                    case Wizard.AudioTabType.ClipEditor:
-                        DrawTabClipEditor(position, ref clipPropHelper, ref isLoop);
-                        break;
                     case Wizard.AudioTabType.EffectEditor:
                         DrawTabEffectEditor(ref scrollPosition, ref mixer, ref effectTrackEditor);
                         break;
@@ -151,7 +125,6 @@ namespace PancakeEditor
         public static void OnEnable()
         {
             hasOutputAssetPath = Directory.Exists(LibraryDataContainer.Data.Settings.assetOutputPath);
-            OnChangeAudioClip += ResetSetting;
             ResetSetting();
             EditorPlayAudioClip.AddPlaybackIndicatorListener(Wizard.CallRepaint);
             InitEditorDictionary();
@@ -161,7 +134,6 @@ namespace PancakeEditor
 
         public static void OnDisable()
         {
-            OnChangeAudioClip -= ResetSetting;
             EditorAudioEx.onCloseWindow?.Invoke();
             ResetTracksAndAudioVoices();
             EditorPlayAudioClip.RemovePlaybackIndicatorListener(Wizard.CallRepaint);
@@ -174,24 +146,9 @@ namespace PancakeEditor
             if (hasAssetListReordered) LibraryDataContainer.Data.SaveSetting();
         }
 
-        public static void OnPostprocessAllAssets()
-        {
-            if (string.IsNullOrEmpty(currSavingFilePath)) return;
+        public static void OnPostprocessAllAssets() { }
 
-            var newClip = AssetDatabase.LoadAssetAtPath(currSavingFilePath, typeof(AudioClip)) as AudioClip;
-            Clip = newClip;
-            if (Clip != null) transport = new Transport(Clip.length);
-        }
-
-        private static void ResetSetting()
-        {
-            currSavingFilePath = null;
-            isReverse = false;
-            isMono = false;
-            transport = null;
-            OnChangeAudioClip = null;
-            EditorAudioEx.onSelectAsset = null;
-        }
+        private static void ResetSetting() { EditorAudioEx.onSelectAsset = null; }
 
         private static void DrawTabEffectEditor(ref Vector2 scrollPosition, ref AudioMixer mixer, ref UnityEditor.Editor effectTrackEditor)
         {
@@ -234,100 +191,6 @@ namespace PancakeEditor
                     EditorGUILayout.EndScrollView();
                 }
             }
-        }
-
-        private static void DrawTabClipEditor(Rect position, ref DrawClipPropertiesHelper clipPropHelper, ref bool isLoop)
-        {
-            EditorGUI.BeginChangeCheck();
-            Clip = EditorGUILayout.ObjectField(new GUIContent("AudioClip"), Clip, typeof(AudioClip), false) as AudioClip;
-            if (EditorGUI.EndChangeCheck() && Clip != null) transport = new Transport(Clip.length);
-
-            if (Clip == null || transport == null)
-            {
-                GUILayout.BeginVertical(GUILayout.ExpandHeight(true));
-                GUILayout.FlexibleSpace();
-                GUILayout.Label("No Clip".SetSize(30).SetColor(Color.white), Uniform.CenterRichLabel);
-                GUILayout.FlexibleSpace();
-                GUILayout.EndVertical();
-
-                return;
-            }
-
-            var r = GUILayoutUtility.GetLastRect();
-            var rect = new Rect(r.x + 10, r.y + EditorGUIUtility.singleLineHeight * 2, position.width - Wizard.TAB_WIDTH * 4 - 45, EditorGUIUtility.singleLineHeight);
-            DrawClipPreview(rect, position.height * 0.3f, ref clipPropHelper, out var previewRect);
-
-            DrawClipPropertiesHelper.DrawPlaybackIndicator(new Rect(0, 0, previewRect.width, Mathf.Max(previewRect.height + position.height * 0.3f, 100f)));
-
-            rect.x += 50;
-            rect.width -= 100;
-
-            DrawPlaybackBar(rect, previewRect, ref isLoop);
-
-            rect.y += previewRect.height + EditorGUIUtility.singleLineHeight * 2f;
-            DrawVolumeSlider(rect);
-            rect.y += 60;
-            DrawPlaybackPositionField(rect, ref clipPropHelper);
-            rect.y += EditorGUIUtility.singleLineHeight * 1.25f;
-            DrawFadingField(rect, ref clipPropHelper);
-            rect.y += EditorGUIUtility.singleLineHeight * 1.25f;
-            isReverse = EditorGUI.Toggle(rect, "Reverse", isReverse);
-            rect.y += EditorGUIUtility.singleLineHeight * 1.25f;
-            using (new EditorGUI.DisabledScope(Clip.channels != 2))
-            {
-                isMono = EditorGUI.Toggle(rect, "Convert To Mono", isMono);
-                using (new EditorGUI.DisabledScope(!isMono))
-                {
-                    rect.x += 300;
-                    if (Clip.channels > 2)
-                    {
-                        EditorGUI.LabelField(rect, "Surround sound is not supported");
-                    }
-                    else
-                    {
-                        float previousWidth = rect.width;
-                        rect.width = 150;
-                        if (EditorGUI.DropdownButton(rect, new GUIContent(monoMode.ToString()), FocusType.Keyboard)) ShowMonoModeMenu(rect);
-                        rect.width = previousWidth;
-                    }
-
-                    rect.x -= 300;
-                }
-            }
-
-            bool hasEdited = !Mathf.Approximately(volume, AudioConstant.FULL_VOLUME) || transport.HasDifferentPosition || transport.HasFading || isReverse || isMono;
-
-            EditorGUI.BeginDisabledGroup(!hasEdited);
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button(new GUIContent("Save"), GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                {
-                    string path = AssetDatabase.GetAssetPath(Clip);
-
-                    var fullFilePath = $"{Application.dataPath.Replace("/Assets", string.Empty)}/{path}";
-
-                    if (File.Exists(fullFilePath) && EditorUtility.DisplayDialog("Confirm overwrite",
-                            "Changes will be saved to the file permanently, and they cannot be undone. Would you like to proceed?",
-                            "Yes",
-                            "No"))
-                    {
-                        SaveClip(path);
-                    }
-                }
-
-                if (GUILayout.Button(new GUIContent("Save As"), GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-                {
-                    string newPath = EditorUtility.SaveFilePanelInProject("Save as a new file", Clip.name, "wav", "Save as a new file");
-                    if (!string.IsNullOrEmpty(newPath))
-                    {
-                        SaveClip(newPath);
-                    }
-                }
-
-                GUILayout.EndHorizontal();
-            }
-            EditorGUI.EndDisabledGroup();
         }
 
         private static void DrawTabSetting(Rect position, ref Wizard.AudioSetingTabType settingTabType)
@@ -389,7 +252,6 @@ namespace PancakeEditor
 
             DrawButtonLibrary(ref currentTab);
             DrawButtonSetting(ref currentTab);
-            DrawButtonClipEditor(ref currentTab);
             DrawButtonEffectEditor(ref currentTab);
             EditorGUILayout.EndHorizontal();
         }
@@ -588,16 +450,6 @@ namespace PancakeEditor
             if (clicked && currentTab != Wizard.AudioTabType.EffectEditor) currentTab = Wizard.AudioTabType.EffectEditor;
         }
 
-        private static void DrawButtonClipEditor(ref Wizard.AudioTabType currentTab)
-        {
-            bool clicked = GUILayout.Toggle(currentTab == Wizard.AudioTabType.ClipEditor,
-                "Clip Editor",
-                Uniform.GetTabStyle(2, 4),
-                GUILayout.ExpandWidth(true),
-                GUILayout.Height(22));
-            if (clicked && currentTab != Wizard.AudioTabType.ClipEditor) currentTab = Wizard.AudioTabType.ClipEditor;
-        }
-
         private static void DrawButtonSetting(ref Wizard.AudioTabType currentTab)
         {
             bool clicked = GUILayout.Toggle(currentTab == Wizard.AudioTabType.Setting,
@@ -651,133 +503,6 @@ namespace PancakeEditor
         #endregion
 
         #region method
-
-        private static void DrawClipPreview(Rect position, float height, ref DrawClipPropertiesHelper clipPropHelper, out Rect previewRect)
-        {
-            previewRect = new Rect(position.x, position.y, position.width, position.height) {height = height};
-            clipPropHelper.DrawClipPreview(previewRect,
-                transport,
-                Clip,
-                volume,
-                Clip.name); // don't worry about any duplicate path, because there will only one clip in editing
-        }
-
-        private static void DrawPlaybackBar(Rect drawPosition, Rect previewRect, ref bool isLoop)
-        {
-            float buttonSize = EditorGUIUtility.singleLineHeight * 2;
-            var barRect = new Rect(drawPosition.x + drawPosition.width / 2f - EditorGUIUtility.singleLineHeight * 2,
-                drawPosition.y + previewRect.height + EditorGUIUtility.singleLineHeight,
-                EditorGUIUtility.singleLineHeight * 2,
-                EditorGUIUtility.singleLineHeight);
-            var playbackButtonRect = new Rect(barRect) {width = buttonSize, height = buttonSize};
-            var loopButtonRect = new Rect(playbackButtonRect) {x = playbackButtonRect.x + buttonSize};
-            string icon = EditorPlayAudioClip.IsPlaying ? "PreMatQuad" : "PlayButton";
-            var playButtonContent = new GUIContent(EditorGUIUtility.IconContent(icon).image, EditorPlayAudioClip.PLAY_WITH_VOLUME_SETTING);
-            if (GUI.Button(playbackButtonRect, playButtonContent))
-            {
-                if (EditorPlayAudioClip.IsPlaying) EditorPlayAudioClip.StopAllClips();
-                else
-                {
-                    if (Event.current.button == 0) // Left Click
-                    {
-                        EditorPlayAudioClip.PlayClip(Clip, transport.StartPosition, transport.EndPosition, isLoop);
-                    }
-                    else
-                    {
-                        EditorPlayAudioClip.PlayClipByAudioSource(Clip,
-                            volume,
-                            transport.StartPosition,
-                            transport.EndPosition,
-                            isLoop);
-                    }
-
-                    EditorPlayAudioClip.PlaybackIndicator.SetClipInfo(previewRect, new PreviewClip(transport));
-                }
-            }
-
-            isLoop = EditorGUI.Toggle(loopButtonRect, isLoop, GUI.skin.button);
-            EditorGUI.LabelField(loopButtonRect, EditorGUIUtility.IconContent("d_preAudioLoopOff"), Uniform.CenterRichLabel);
-        }
-
-        private static void DrawPlaybackPositionField(Rect position, ref DrawClipPropertiesHelper clipPropHelper)
-        {
-            clipPropHelper.DrawPlaybackPositionField(position, transport);
-        }
-
-        private static void DrawFadingField(Rect position, ref DrawClipPropertiesHelper clipPropHelper) { clipPropHelper.DrawFadingField(position, transport); }
-
-        private static void DrawVolumeSlider(Rect drawPosition)
-        {
-            var volRect = new Rect(drawPosition.x, drawPosition.y + EditorGUIUtility.singleLineHeight * 2, drawPosition.width, drawPosition.height);
-
-            volume = EditorAudioEx.DrawVolumeSlider(volRect,
-                new GUIContent("Volume"),
-                volume,
-                isVolumeSnapped,
-                () => isVolumeSnapped = !isVolumeSnapped);
-        }
-
-        private static void ShowMonoModeMenu(Rect rect)
-        {
-            if (monoModeMenu == null)
-            {
-                monoModeMenu = new GenericMenu();
-                monoModeMenu.AddDisabledItem(new GUIContent("Mix all channels into one"));
-                AddModeItem(EMonoConversionMode.Downmixing);
-                monoModeMenu.AddSeparator(string.Empty);
-
-                monoModeMenu.AddDisabledItem(new GUIContent("Select one channel"));
-                AddModeItem(EMonoConversionMode.Left);
-                AddModeItem(EMonoConversionMode.Right);
-            }
-
-            monoModeMenu.DropDown(rect);
-
-            void AddModeItem(EMonoConversionMode mode) { monoModeMenu.AddItem(new GUIContent(mode.ToString()), false, OnChangeMonoMode, mode); }
-        }
-
-        private static void OnChangeMonoMode(object userData)
-        {
-            if (userData is EMonoConversionMode mode) monoMode = mode;
-        }
-
-        private static void SaveClip(string savePath)
-        {
-            using (var helper = new AudioClipEditingHelper(Clip))
-            {
-                if (transport.StartPosition != 0f || transport.EndPosition != 0f) helper.Trim(transport.StartPosition, transport.EndPosition);
-
-                if (isMono) helper.ConvertToMono(monoMode);
-
-                if (transport.Delay > 0f) helper.AddSlient(transport.Delay);
-
-                if (Mathf.Approximately(volume, AudioConstant.FULL_VOLUME)) helper.AdjustVolume(volume);
-
-                if (transport.FadeIn != 0f) helper.FadeIn(transport.FadeIn);
-
-                if (transport.FadeOut != 0f) helper.FadeOut(transport.FadeOut);
-
-                if (isReverse) helper.Reverse();
-
-                bool hasEdited = !Mathf.Approximately(volume, AudioConstant.FULL_VOLUME) || transport.HasDifferentPosition || transport.HasFading || isReverse || isMono;
-                if (hasEdited)
-                {
-                    SavWav.Save(savePath, helper.GetResultClip());
-                    currSavingFilePath = savePath;
-                    AssetDatabase.Refresh();
-                }
-            }
-        }
-
-        public static void SelectAsset(string guid)
-        {
-            int index = LibraryDataContainer.Data.Settings.guids.IndexOf(guid);
-            if (index >= 0)
-            {
-                assetReorderableList.index = index;
-                OnSelect(assetReorderableList);
-            }
-        }
 
         public static void RemoveAssetEditor(string guid)
         {

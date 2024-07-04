@@ -86,7 +86,6 @@ namespace PancakeEditor
         {
             Library,
             Setting,
-            ClipEditor,
             EffectEditor
         }
 
@@ -143,8 +142,6 @@ namespace PancakeEditor
         private AudioSetingTabType _currentAudioSettingTab = AudioSetingTabType.Audio;
         private UnityEditor.Editor _effectTrackEditor;
         private Vector2 _audioScrollPosition;
-        private DrawClipPropertiesHelper _clipPropHelper = new();
-        private bool _isAudioLoop;
 
         #endregion
 
@@ -413,8 +410,6 @@ namespace PancakeEditor
                         ref _audioScrollPosition,
                         ref _currentAudioTab,
                         ref _effectTrackEditor,
-                        ref _clipPropHelper,
-                        ref _isAudioLoop,
                         ref _currentAudioSettingTab);
                     break;
             }
