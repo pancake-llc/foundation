@@ -65,7 +65,9 @@ namespace PancakeEditor
         {
             var audioSetting = Resources.Load<AudioSettings>(nameof(AudioSettings));
             var audioEditorSetting = Resources.Load<AudioEditorSetting>(nameof(AudioEditorSetting));
-            if (audioSetting == null || audioEditorSetting == null)
+            var audioDatas = ProjectDatabase.FindAll<AudioData>();
+            var audioData = !audioDatas.IsNullOrEmpty() ? audioDatas[0] : null;
+            if (audioSetting == null || audioEditorSetting == null || audioData == null)
             {
                 GUI.enabled = !EditorApplication.isCompiling;
                 GUI.backgroundColor = Uniform.Pink;
@@ -87,6 +89,15 @@ namespace PancakeEditor
                         AssetDatabase.CreateAsset(editorSetting, $"{Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AudioEditorSetting)}.asset");
                         Debug.Log(
                             $"{nameof(AudioEditorSetting).SetColor("f75369")} was created ad {Common.Editor.DEFAULT_EDITOR_RESOURCE_PATH}/{nameof(AudioEditorSetting)}.asset");
+                    }
+
+                    if (audioData == null)
+                    {
+                        var editorAudioData = ScriptableObject.CreateInstance<AudioData>();
+                        const string path = "Assets/_Root/Audio";
+                        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                        AssetDatabase.CreateAsset(editorAudioData, $"{path}/{nameof(AudioData)}.asset");
+                        Debug.Log($"{nameof(AudioData).SetColor("f75369")} was created ad {path}/{nameof(AudioData)}.asset");
                     }
 
                     AssetDatabase.SaveAssets();
@@ -116,17 +127,17 @@ namespace PancakeEditor
 
         public static void OnLostFocus()
         {
-            EditorPlayAudioClip.StopAllClips();
-            EditorPlayAudioClip.RemovePlaybackIndicatorListener(Wizard.CallRepaint);
+            EditorPlayAudioClip.In.StopAllClips();
+            EditorPlayAudioClip.In.RemovePlaybackIndicatorListener(Wizard.CallRepaint);
         }
 
-        public static void OnFocus() { EditorPlayAudioClip.AddPlaybackIndicatorListener(Wizard.CallRepaint); }
+        public static void OnFocus() { EditorPlayAudioClip.In.AddPlaybackIndicatorListener(Wizard.CallRepaint); }
 
         public static void OnEnable()
         {
             hasOutputAssetPath = Directory.Exists(LibraryDataContainer.Data.Settings.assetOutputPath);
             ResetSetting();
-            EditorPlayAudioClip.AddPlaybackIndicatorListener(Wizard.CallRepaint);
+            EditorPlayAudioClip.In.AddPlaybackIndicatorListener(Wizard.CallRepaint);
             InitEditorDictionary();
             InitReorderableList();
             Undo.undoRedoPerformed += Wizard.CallRepaint;
@@ -136,7 +147,7 @@ namespace PancakeEditor
         {
             EditorAudioEx.onCloseWindow?.Invoke();
             ResetTracksAndAudioVoices();
-            EditorPlayAudioClip.RemovePlaybackIndicatorListener(Wizard.CallRepaint);
+            EditorPlayAudioClip.In.RemovePlaybackIndicatorListener(Wizard.CallRepaint);
             foreach (var editor in AssetEditorDict.Values)
             {
                 UnityEngine.Object.DestroyImmediate(editor);
@@ -268,6 +279,8 @@ namespace PancakeEditor
             DrawDefaultEasing();
             DrawSeamlessLoopEasing();
             GUILayout.Space(4);
+            DrawAudioPlayerSetting();
+            GUILayout.Space(4);
             DrawAudioProjectSettings();
 
             void DrawBGMSetting()
@@ -329,6 +342,21 @@ namespace PancakeEditor
             {
                 AudioSettings.AudioFilterSlope = (EFilterSlope) EditorGUILayout.EnumPopup("Audio Filter Slope", AudioSettings.AudioFilterSlope);
             }
+
+            void DrawAudioPlayerSetting()
+            {
+                EditorGUILayout.LabelField("Audio Player".ToWhiteBold(), Uniform.RichLabel);
+
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    AudioSettings.LogAccessRecycledPlayerWarning = EditorGUILayout.ToggleLeft(new GUIContent("Log Access Recycled Player Warning",
+                            "Whether to log a warning when trying to access an AudioPlayer that has finished playing and has been recycled into the Object Pool."),
+                        AudioSettings.LogAccessRecycledPlayerWarning);
+
+                    AudioSettings.DefaultAudioPlayerPoolSize = EditorGUILayout.IntField("Audio Player Object Pool Size", AudioSettings.DefaultAudioPlayerPoolSize);
+                }
+            }
+
 
             void DrawAudioProjectSettings()
             {
@@ -412,10 +440,6 @@ namespace PancakeEditor
 
         private static void DrawTabMiscellaneous(Rect position)
         {
-            GUILayout.Space(2);
-            AudioSettings.LogAccessRecycledPlayerWarning = EditorGUILayout.ToggleLeft(new GUIContent("Log Access Recycled Player Warning",
-                    "Whether to log a warning when trying to access an AudioPlayer that has finished playing and has been recycled into the Object Pool."),
-                AudioSettings.LogAccessRecycledPlayerWarning);
             GUILayout.Space(4);
             position.y += EditorGUIUtility.singleLineHeight * 2;
             EditorGUILayout.LabelField("Asset Output Path".ToBold(), Uniform.CenterRichLabel);
@@ -515,19 +539,12 @@ namespace PancakeEditor
         private static void InitEditorDictionary()
         {
             AssetEditorDict.Clear();
-            List<string> missingGuids = null;
             foreach (string guid in LibraryDataContainer.Data.Settings.guids)
             {
                 if (!string.IsNullOrEmpty(guid) && !AssetEditorDict.ContainsKey(guid))
                 {
                     string assetPath = AssetDatabase.GUIDToAssetPath(guid);
                     var asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
-                    if (string.IsNullOrEmpty(assetPath) || asset == null)
-                    {
-                        missingGuids ??= new List<string>();
-                        missingGuids.Add(guid);
-                        continue;
-                    }
 
                     var editor = UnityEditor.Editor.CreateEditor(asset, typeof(AudioAssetEditor)) as AudioAssetEditor;
                     if (editor != null)
@@ -536,16 +553,6 @@ namespace PancakeEditor
                         AssetEditorDict.Add(guid, editor);
                     }
                 }
-            }
-
-            if (missingGuids != null)
-            {
-                foreach (string guid in missingGuids)
-                {
-                    LibraryDataContainer.Data.Settings.guids.Remove(guid);
-                }
-
-                LibraryDataContainer.Data.SaveSetting();
             }
         }
 
@@ -601,13 +608,13 @@ namespace PancakeEditor
             AssetNameWindow.Show(assetNames, assetName => CreateAsset(assetName));
         }
 
-        private static AudioAssetEditor CreateAsset(string entityName, bool isTemp = false)
+        private static AudioAssetEditor CreateAsset(string entityName)
         {
             if (!TryGetNewPath(entityName, out string path, out string fileName)) return null;
 
             var newAsset = ScriptableObject.CreateInstance(typeof(AudioAsset));
             AssetDatabase.CreateAsset(newAsset, path);
-            EditorAudioEx.AddToSoundManager(newAsset);
+            EditorAudioEx.AddNewAssetToCoreData(newAsset);
             AssetDatabase.SaveAssets();
 
             var editor = UnityEditor.Editor.CreateEditor(newAsset, typeof(AudioAssetEditor)) as AudioAssetEditor;
@@ -648,17 +655,18 @@ namespace PancakeEditor
             {
                 EditorAudioEx.onSelectAsset?.Invoke();
                 currentSelectAssetIndex = list.index;
-                EditorPlayAudioClip.StopAllClips();
+                EditorPlayAudioClip.In.StopAllClips();
                 foreach (var pair in AssetEditorDict)
                 {
                     string guid = pair.Key;
                     var editor = pair.Value;
                     if (guid == LibraryDataContainer.Data.Settings.guids[list.index])
                     {
-                        editor.AddEntitiesNameChangeListener();
+                        editor.RemoveEntitiesListener();
+                        editor.AddEntitiesListener();
                         editor.Verify();
                     }
-                    else editor.RemoveEntitiesNameChangeListener();
+                    else editor.RemoveEntitiesListener();
                 }
             }
         }
@@ -700,7 +708,7 @@ namespace PancakeEditor
             {
                 entitiesScrollPos = EditorGUILayout.BeginScrollView(entitiesScrollPos);
                 {
-                    DrawEntitiesHeader(editor.Asset, newName => OnChangeAssetName(editor, newName));
+                    DrawEntitiesHeader(editor.Asset, editor.SetAssetName);
                     editor.DrawEntitiesList();
                 }
                 EditorGUILayout.EndScrollView();
@@ -749,12 +757,13 @@ namespace PancakeEditor
         private static void DrawAssetNameField(Rect headerRect, IAudioAsset asset, Action<string> onAssetNameChanged)
         {
             const string namingHint = "Click to name";
-            string displayName = string.IsNullOrWhiteSpace(asset.AssetName) ? namingHint : asset.AssetName;
+            string displayName = string.IsNullOrWhiteSpace(asset.AssetName) || EditorAudioEx.IsTempReservedName(asset.AssetName) ? namingHint : asset.AssetName;
             var wordWrapStyle = new GUIStyle(Uniform.CenterRichLabel) {wordWrap = true, fontSize = 16};
 
             EditorGUI.BeginChangeCheck();
             string newName = EditorGUI.DelayedTextField(headerRect, displayName, wordWrapStyle);
-            if (EditorGUI.EndChangeCheck() && newName != asset.AssetName && IsValidAssetName(newName)) onAssetNameChanged?.Invoke(newName);
+            if (EditorGUI.EndChangeCheck() && !newName.Equals(asset.AssetName) && !newName.Equals(displayName) && IsValidAssetName(newName))
+                onAssetNameChanged?.Invoke(newName);
         }
 
         private static bool IsValidAssetName(string newName)
@@ -790,26 +799,6 @@ namespace PancakeEditor
             }
 
             return true;
-        }
-
-        private static void OnChangeAssetName(AudioAssetEditor editor, string newName)
-        {
-            bool isFirstSet = string.IsNullOrEmpty(editor.Asset.AssetName);
-
-            editor.SetAssetName(newName);
-
-            if (isFirstSet)
-            {
-                OnFirstSetAsset(editor.Asset);
-            }
-        }
-
-        private static void OnFirstSetAsset(IAudioAsset asset)
-        {
-            if (!string.IsNullOrEmpty(asset.AssetName))
-            {
-                EditorAudioEx.AddToSoundManager(asset as AudioAsset);
-            }
         }
 
         private static void DrawEntityFactory(Rect position, Rect factoryRect)
@@ -859,7 +848,7 @@ namespace PancakeEditor
                 var audioClip = EditorGUIUtility.GetObjectPickerObject() as AudioClip;
                 if (audioClip)
                 {
-                    var tempEditor = CreateAsset(AudioConstant.TEMP_ASSET_NAME, true);
+                    var tempEditor = CreateAsset(AudioConstant.TEMP_ASSET_NAME);
                     CreateNewEntity(tempEditor, audioClip);
                 }
 
@@ -886,7 +875,7 @@ namespace PancakeEditor
                     return;
                 }
 
-                var tempEditor = CreateAsset(AudioConstant.TEMP_ASSET_NAME, true);
+                AudioAssetEditor tempEditor = null;
 
                 if (clips.Count > 1)
                 {
@@ -901,6 +890,7 @@ namespace PancakeEditor
                         case EMultiClipsImportOption.MultipleForEach:
                             foreach (var c in clips)
                             {
+                                tempEditor = CreateAsset(AudioConstant.TEMP_ASSET_NAME);
                                 CreateNewEntity(tempEditor, c);
                             }
 
@@ -909,25 +899,30 @@ namespace PancakeEditor
                             // Do Nothing
                             break;
                         case EMultiClipsImportOption.OneForAll:
+                            tempEditor = CreateAsset(AudioConstant.TEMP_ASSET_NAME);
                             CreateNewEntity(tempEditor, clips);
                             break;
                     }
                 }
                 else if (clips.Count == 1)
                 {
+                    tempEditor = CreateAsset(AudioConstant.TEMP_ASSET_NAME);
                     CreateNewEntity(tempEditor, clips[0]);
                 }
 
-                tempEditor.Verify();
-                tempEditor.serializedObject.ApplyModifiedProperties();
+                if (tempEditor != null)
+                {
+                    tempEditor.Verify();
+                    tempEditor.serializedObject.ApplyModifiedProperties();
+                }
             }
         }
 
         private static void CreateNewEntity(AudioAssetEditor editor, AudioClip clip)
         {
             var entity = editor.CreateNewEntity();
-            entity.FindPropertyRelative(AudioEntity.EditorPropertyName.Name).stringValue = clip.name;
-            var clipListProp = entity.FindPropertyRelative(AudioEntity.EditorPropertyName.Clips);
+            entity.FindPropertyRelative(AudioEntity.ForEditor.Name).stringValue = clip.name;
+            var clipListProp = entity.FindPropertyRelative(AudioEntity.ForEditor.Clips);
 
             editor.SetClipList(clipListProp, 0, clip);
             isInEntitiesEditMode = true;
@@ -936,7 +931,7 @@ namespace PancakeEditor
         private static void CreateNewEntity(AudioAssetEditor editor, List<AudioClip> clips)
         {
             var entity = editor.CreateNewEntity();
-            var clipListProp = entity.FindPropertyRelative(AudioEntity.EditorPropertyName.Clips);
+            var clipListProp = entity.FindPropertyRelative(AudioEntity.ForEditor.Clips);
 
             for (var i = 0; i < clips.Count; i++)
             {

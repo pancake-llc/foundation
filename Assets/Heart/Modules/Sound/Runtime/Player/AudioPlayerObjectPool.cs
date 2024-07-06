@@ -19,10 +19,8 @@ namespace Pancake.Sound
         public override AudioPlayer Extract()
         {
             var player = base.Extract();
-#if !UNITY_WEBGL
+            player.gameObject.SetActive(true);
             player.SetData(_mixer.Mixer, _mixer.GetTrack);
-#endif
-
             _currentPlayers ??= new List<AudioPlayer>();
             _currentPlayers.Add(player);
             return player;
@@ -32,6 +30,7 @@ namespace Pancake.Sound
         {
             _mixer.ReturnTrack(player.TrackType, player.AudioTrack);
             RemoveFromCurrent(player);
+            player.gameObject.SetActive(false);
             base.Recycle(player);
         }
 

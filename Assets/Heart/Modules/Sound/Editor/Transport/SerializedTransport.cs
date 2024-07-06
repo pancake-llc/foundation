@@ -11,20 +11,14 @@ namespace PancakeEditor.Sound
         private readonly SerializedProperty _fadeInProp;
         private readonly SerializedProperty _fadeOutProp;
 
-        public SerializedTransport(
-            SerializedProperty startPosProp,
-            SerializedProperty endPosProp,
-            SerializedProperty fadeInProp,
-            SerializedProperty fadeOutProp,
-            SerializedProperty delayProp,
-            float fullLength)
+        public SerializedTransport(SerializedProperty clipProp, float fullLength)
             : base(fullLength)
         {
-            _delayProp = delayProp;
-            this.startPosProp = startPosProp;
-            _endPosProp = endPosProp;
-            _fadeInProp = fadeInProp;
-            _fadeOutProp = fadeOutProp;
+            _delayProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.Delay);
+            startPosProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.StartPosition);
+            _endPosProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.EndPosition);
+            _fadeInProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.FadeIn);
+            _fadeOutProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.FadeOut);
         }
 
         public override float Delay => _delayProp.floatValue;

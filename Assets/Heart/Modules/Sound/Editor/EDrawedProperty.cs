@@ -5,13 +5,13 @@ namespace PancakeEditor.Sound
     [Flags]
     public enum EDrawedProperty
     {
-        // Basic
+        // Clip
         Volume = 1 << 0,
         PlaybackPosition = 1 << 1,
         Fade = 1 << 2,
         ClipPreview = 1 << 3,
 
-        // Additional (start from 10)
+        // Overall (starts from 10)
         MasterVolume = 1 << 10,
         Loop = 1 << 11,
         Priority = 1 << 12,

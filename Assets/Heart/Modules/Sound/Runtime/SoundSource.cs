@@ -25,7 +25,9 @@ namespace Pancake.Sound
         public void Stop(float fadeTime) => _currentPlayer?.Stop(fadeTime);
         public void SetVolume(float vol) => _currentPlayer?.SetVolume(vol);
         public void SetVolume(float vol, float fadeTime) => _currentPlayer?.SetVolume(vol, fadeTime);
-
+        public void SetPitch(float pitch) => _currentPlayer?.SetPitch(pitch);
+        public void SetPitch(float pitch, float fadeTime) => _currentPlayer?.SetPitch(pitch, fadeTime);
+        
         private void Start()
         {
             if (!playOnStart) return;

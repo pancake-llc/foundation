@@ -12,8 +12,9 @@ namespace Pancake.Sound
         [SerializeField] private float endPosition;
         [SerializeField] private float fadeIn;
         [SerializeField] private float fadeOut;
-        [SerializeField] private int weight;
+        [SerializeField] private int weight; // for random
 
+        [System.NonSerialized] public bool isUsed; // For shuffle
         public AudioClip AudioClip => audioClip;
         public float Volume => volume;
         public float Delay => delay;
@@ -25,7 +26,7 @@ namespace Pancake.Sound
         public bool IsNull() => audioClip == null;
 
 #if UNITY_EDITOR
-        public static class EditorPropertyName
+        public static class ForEditor
         {
             public static string AudioClip => nameof(audioClip);
             public static string Volume => nameof(volume);

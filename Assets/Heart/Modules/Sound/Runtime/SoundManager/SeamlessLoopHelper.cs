@@ -17,24 +17,22 @@ namespace Pancake.Sound
         private void Recycle(AudioPlayer player)
         {
             _playerWrapper.OnRecycle -= Recycle;
-            player.OnFinishingOneRound -= OnFinishingOneRound;
+            player.OnSeamlessLoopReplay -= Replay;
         }
 
-        public void SetPlayer(AudioPlayer player) { player.OnFinishingOneRound += OnFinishingOneRound; }
+        public void AddReplayListener(AudioPlayer player) { player.OnSeamlessLoopReplay += Replay; }
 
-        private void OnFinishingOneRound(int id, PlaybackPreference pref, EEffectType previousEffect)
+        private void Replay(int id, PlaybackPreference pref, EEffectType previousEffect, float trackVolume, float pitch)
         {
             var newPlayer = _getPlayerFunc?.Invoke();
             if (newPlayer == null) return;
 
             _playerWrapper.UpdateInstance(newPlayer);
-
-            var audioType = AudioExtension.GetAudioType(id);
-            if (SoundManager.Instance.AudioTypePreference.TryGetValue(audioType, out var audioTypePreference)) pref.AudioTypePlaybackPreference = audioTypePreference;
-
             newPlayer.SetEffect(previousEffect, ESetEffectMode.Override);
-            newPlayer.Play(id, pref, false);
-            newPlayer.OnFinishingOneRound += OnFinishingOneRound;
+            newPlayer.SetVolume(trackVolume);
+            newPlayer.SetPitch(pitch);
+            newPlayer.Play(id, pref);
+            newPlayer.OnSeamlessLoopReplay += Replay;
         }
     }
 }

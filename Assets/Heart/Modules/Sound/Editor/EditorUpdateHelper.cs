@@ -3,12 +3,12 @@ using UnityEditor;
 
 namespace PancakeEditor.Sound
 {
-    public abstract class EditorUpdateHelper
+    public abstract class EditorUpdateHelper : IDisposable
     {
-        // TODO: use AnimBase instaed?
         public event Action OnUpdate;
 
         private double _lastUpdateTime;
+        protected float DeltaTime;
         protected abstract float UpdateInterval { get; }
 
         public virtual void Start()
@@ -19,17 +19,25 @@ namespace PancakeEditor.Sound
             _lastUpdateTime = EditorApplication.timeSinceStartup;
         }
 
-        public virtual void End() { EditorApplication.update -= Update; }
+        public virtual void End() { EditorApplication.update -= UpdateInternal; }
 
-        private void Update()
+        private void UpdateInternal()
         {
             double currentTime = EditorApplication.timeSinceStartup;
             if (currentTime - _lastUpdateTime >= UpdateInterval)
             {
+                DeltaTime = (float) (currentTime - _lastUpdateTime);
                 _lastUpdateTime = currentTime;
-
-                OnUpdate?.Invoke();
+                Update();
             }
+        }
+
+        protected virtual void Update() { OnUpdate?.Invoke(); }
+
+        public virtual void Dispose()
+        {
+            EditorApplication.update -= UpdateInternal;
+            OnUpdate = null;
         }
     }
 }

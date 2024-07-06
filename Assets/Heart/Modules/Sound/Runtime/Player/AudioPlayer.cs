@@ -12,6 +12,8 @@ namespace Pancake.Sound
     [RequireComponent(typeof(AudioSource)), AddComponentMenu("")]
     public class AudioPlayer : MonoBehaviour, IAudioPlayer, IRecyclable<AudioPlayer>
     {
+        public delegate void SeamlessLoopReplay(int id, PlaybackPreference pref, EEffectType effectType, float trackVolume, float pitch);
+
         private enum VolumeControl
         {
             Clip,
@@ -28,7 +30,8 @@ namespace Pancake.Sound
 
         public event Action<AudioPlayer> OnRecycle;
         public static Dictionary<int, AudioPlayer> resumablePlayers;
-        public event Action<int, PlaybackPreference, EEffectType> OnFinishingOneRound;
+        public event SeamlessLoopReplay OnSeamlessLoopReplay;
+        public event Action<SoundId> OnEndPlaying;
 
         [SerializeField] private AudioSource audioSource;
 
@@ -41,12 +44,12 @@ namespace Pancake.Sound
         private EAudioStopMode _stopMode;
         private AsyncProcessHandle _playbackControlHandle;
         private AsyncProcessHandle _trackVolumeControlHandle;
-        private bool _isReadyToPlay;
         private float _clipVolume;
         private float _trackVolume = DEFAULT_TRACK_VOLUME;
         private float _mixerDecibelVolume = DEFAULT_MIXER_DECIBEL_VOLUME;
+        private AsyncProcessHandle _pitchCoroutine;
 
-        public int Id { get; private set; } = -1;
+        public SoundId Id { get; private set; } = -1;
         public bool IsPlaying => audioSource.isPlaying;
         public bool IsActive => Id > 0;
         public bool IsStopping { get; private set; }
@@ -56,6 +59,12 @@ namespace Pancake.Sound
         public bool IsUsingEffect => CurrentActiveEffects != EEffectType.None;
         public bool IsDominator => TryGetDecorator<DominatorPlayer>(out _);
         public bool IsBGM => TryGetDecorator<MusicPlayer>(out _);
+        public int PlaybackStartingTime { get; private set; }
+
+        /// <summary>
+        /// Pitch value without any fading process
+        /// </summary>
+        public float StaticPitch { get; private set; } = AudioConstant.DEFAULT_PITCH;
 
         public string VolumeParaName
         {
@@ -86,26 +95,6 @@ namespace Pancake.Sound
         {
             _audioMixer = mixer;
             _getAudioTrack = getAudioTrack;
-        }
-
-        private void SetPitch(IAudioEntity entity)
-        {
-            float pitch = entity.Pitch;
-            if (entity.RandomFlags.HasFlagUnsafe(ERandomFlags.Pitch))
-            {
-                float half = entity.PitchRandomRange * 0.5f;
-                pitch += UnityEngine.Random.Range(-half, half);
-            }
-
-            switch (AudioSettings.PitchSetting)
-            {
-                case EPitchShiftingSetting.AudioMixer:
-                    //_audioMixer.SafeSetFloat(_pitchParaName, pitch); // Don't * 100f, the value in percentage is displayed in Editor only.  
-                    break;
-                case EPitchShiftingSetting.AudioSource:
-                    audioSource.pitch = pitch;
-                    break;
-            }
         }
 
         private void SetSpatial(PlaybackPreference pref)
@@ -226,9 +215,7 @@ namespace Pancake.Sound
 
         IMusicPlayer IMusicDecoratable.AsBGM() { return GetOrCreateDecorator(() => new MusicPlayer(this)); }
 
-#if !UNITY_WEBGL
         IPlayerEffect IEffectDecoratable.AsDominator() { return GetOrCreateDecorator(() => new DominatorPlayer(this)); }
-#endif
 
         private T GetOrCreateDecorator<T>(Func<T> onCreateDecorator) where T : AudioPlayerDecorator
         {
@@ -281,46 +268,25 @@ namespace Pancake.Sound
 
         #region Playback
 
-        public void Play(int id, PlaybackPreference pref, bool waitForChainingMethod = true)
+        public void Play(int id, PlaybackPreference pref)
         {
+            if (IsStopping) return;
+
             Id = id;
-            if (_stopMode == EAudioStopMode.Stop)
-            {
-                _currentClip = pref.entity.PickNewClip();
-            }
+            PlaybackStartingTime = C.UnscaledCurrentFrameBeganTime;
+            if (_stopMode == default) _currentClip = pref.entity.PickNewClip();
 
-            _isReadyToPlay = true;
-            IsStopping = false;
-
-            if (waitForChainingMethod)
-            {
-                ExecuteAfterChainingMethod(() =>
-                {
-                    if (_isReadyToPlay) StartPlaying();
-                    else EndPlaying();
-                });
-            }
-            else
-            {
-                StartPlaying();
-            }
-
-            return;
-
-            void StartPlaying() { App.StopAndReassign(ref _playbackControlHandle, PlayControl(pref)); }
-
-            void ExecuteAfterChainingMethod(Action action)
-            {
-#if UNITY_WEBGL
-                this.DelayInvoke(action, new WaitForEndOfFrame());
-#else
-                App.Task.DelayInvoke(AudioConstant.MILLISECOND_IN_SECONDS, action);
-#endif
-            }
+            App.StopAndReassign(ref _playbackControlHandle, PlayControl(pref));
         }
 
         private IEnumerator PlayControl(PlaybackPreference pref)
         {
+            IAudioPlaybackPreference audioTypePlaybackPref = null;
+            if (SoundManager.Instance.AudioTypePreferences.TryGetValue(Id.ToAudioType(), out var typePref))
+            {
+                audioTypePlaybackPref = typePref;
+            }
+
             if (!RemoveFromResumablePlayer()) // if is not resumable (not paused)
             {
                 if (pref.PlayerWaiter != null)
@@ -334,7 +300,7 @@ namespace Pancake.Sound
 
                 audioSource.clip = _currentClip.AudioClip;
                 audioSource.priority = pref.entity.Priority;
-                SetPitch(pref.entity);
+                SetInitialPitch(pref.entity, audioTypePlaybackPref);
                 SetSpatial(pref);
 
                 if (TryGetDecorator<MusicPlayer>(out var musicPlayer))
@@ -345,13 +311,13 @@ namespace Pancake.Sound
                 }
 
                 if (IsDominator) TrackType = EAudioTrackType.Dominator;
-                else SetEffect(pref.AudioTypePlaybackPreference.EffectType, ESetEffectMode.Add);
+                else SetEffect(audioTypePlaybackPref.EffectType, ESetEffectMode.Add);
             }
 
             App.StopAndClean(ref _trackVolumeControlHandle);
-            TrackVolume = StaticTrackVolume * pref.AudioTypePlaybackPreference.Volume;
+            TrackVolume = StaticTrackVolume * audioTypePlaybackPref.Volume;
             ClipVolume = 0f;
-            float targetClipVolume = GetTargetClipVolume();
+            float targetClipVolume = _currentClip.Volume * pref.entity.GetMasterVolume();
             AudioTrack = _getAudioTrack?.Invoke(TrackType);
 
             int sampleRate = _currentClip.AudioClip.frequency;
@@ -380,7 +346,7 @@ namespace Pancake.Sound
                 {
                     IsFadingIn = true;
                     //FadeIn start from here
-                    yield return Fade(targetClipVolume, fadeIn, fader, pref.fadeInEase);
+                    yield return Fade(targetClipVolume, fadeIn, fader, pref.FadeInEase);
                     IsFadingIn = false;
                 }
                 else
@@ -400,16 +366,16 @@ namespace Pancake.Sound
                     yield return new WaitUntil(() => endSample - audioSource.timeSamples <= fadeOut * sampleRate);
 
                     IsFadingOut = true;
-                    OnFinishOneRound(pref);
+                    TriggerSeamlessLoopReplay(pref);
                     //FadeOut start from here
-                    yield return Fade(0f, fadeOut, fader, pref.fadeOutEase);
+                    yield return Fade(0f, fadeOut, fader, pref.FadeOutEase);
                     IsFadingOut = false;
                 }
                 else
                 {
                     bool hasPlayed = false;
                     yield return new WaitUntil(() => HasEndPlaying(ref hasPlayed) || endSample - audioSource.timeSamples <= 0);
-                    OnFinishOneRound(pref);
+                    TriggerSeamlessLoopReplay(pref);
                 }
 
                 #endregion
@@ -424,22 +390,6 @@ namespace Pancake.Sound
                 audioSource.Play();
             }
 
-            float GetTargetClipVolume()
-            {
-                float result = _currentClip.Volume;
-                if (pref.entity.RandomFlags.HasFlagUnsafe(ERandomFlags.Volume))
-                {
-                    float masterVol = pref.entity.MasterVolume + UnityEngine.Random.Range(-pref.entity.VolumeRandomRange, pref.entity.VolumeRandomRange);
-                    result *= masterVol;
-                }
-                else
-                {
-                    result *= pref.entity.MasterVolume;
-                }
-
-                return result;
-            }
-
             // more accurate than AudioSource.isPlaying
             bool HasEndPlaying(ref bool hasPlayed)
             {
@@ -450,20 +400,24 @@ namespace Pancake.Sound
             }
         }
 
-        private void OnFinishOneRound(PlaybackPreference pref)
+        private void TriggerSeamlessLoopReplay(PlaybackPreference pref)
         {
-            OnFinishingOneRound?.Invoke(Id, pref, CurrentActiveEffects);
-            OnFinishingOneRound = null;
+            OnSeamlessLoopReplay?.Invoke(Id,
+                pref,
+                CurrentActiveEffects,
+                StaticTrackVolume,
+                StaticPitch);
+            OnSeamlessLoopReplay = null;
         }
 
         #region Stop Overloads
 
-        public void Pause() => Pause(USE_ENTITY_SETTING);
-        public void Pause(float fadeOut) => Stop(fadeOut, EAudioStopMode.Pause, null);
-        public void Stop() => Stop(USE_ENTITY_SETTING);
-        public void Stop(float fadeOut) => Stop(fadeOut, null);
-        public void Stop(Action onFinished) => Stop(USE_ENTITY_SETTING, onFinished);
-        public void Stop(float fadeOut, Action onFinished) => Stop(fadeOut, EAudioStopMode.Stop, onFinished);
+        void IAudioStoppable.Pause() => this.Pause(USE_ENTITY_SETTING);
+        void IAudioStoppable.Pause(float fadeOut) => Stop(fadeOut, EAudioStopMode.Pause, null);
+        void IAudioStoppable.Stop() => this.Stop(USE_ENTITY_SETTING);
+        void IAudioStoppable.Stop(float fadeOut) => this.Stop(fadeOut, null);
+        void IAudioStoppable.Stop(Action onFinished) => this.Stop(USE_ENTITY_SETTING, onFinished);
+        void IAudioStoppable.Stop(float fadeOut, Action onFinished) => Stop(fadeOut, EAudioStopMode.Stop, onFinished);
 
         #endregion
 
@@ -471,24 +425,24 @@ namespace Pancake.Sound
         {
             if (IsStopping && Mathf.Approximately(overrideFade, IMMEDIATE)) return;
 
-            _isReadyToPlay = false;
-            _stopMode = stopMode;
+            if (Id <= 0 || !audioSource.isPlaying)
+            {
+                onFinished?.Invoke();
+                return;
+            }
+
             App.StopAndReassign(ref _playbackControlHandle, StopControl(overrideFade, stopMode, onFinished));
         }
 
         private IEnumerator StopControl(float overrideFade, EAudioStopMode stopMode, Action onFinished)
         {
-            if (Id <= 0 || !audioSource.isPlaying)
-            {
-                onFinished?.Invoke();
-                yield break;
-            }
+            _stopMode = stopMode;
+            IsStopping = true;
 
             #region FadeOut
 
             if (HasFading(_currentClip.FadeOut, overrideFade, out float fadeTime))
             {
-                IsStopping = true;
                 if (IsFadingOut)
                 {
                     // if it is fading out. then don't stop. just wait for it
@@ -542,9 +496,10 @@ namespace Pancake.Sound
 
         private void EndPlaying()
         {
-            Id = -1;
+            PlaybackStartingTime = 0;
             _stopMode = default;
             ResetVolume();
+            ResetPitch();
 
             audioSource.Stop();
             audioSource.clip = null;
@@ -554,7 +509,64 @@ namespace Pancake.Sound
 
             App.StopAndClean(ref _trackVolumeControlHandle);
             RemoveFromResumablePlayer();
+            OnEndPlaying?.Invoke(Id);
+            OnEndPlaying = null;
+            Id = -1;
             Recycle();
+        }
+
+        IAudioPlayer IPitchSettable.SetPitch(float pitch, float fadeTime)
+        {
+            StaticPitch = pitch;
+            switch (AudioSettings.PitchSetting)
+            {
+                case EPitchShiftingSetting.AudioMixer:
+                    //_audioMixer.SafeSetFloat(_pitchParaName, pitch); // Don't * 100f, the value in percentage is displayed in Editor only.  
+                    break;
+                case EPitchShiftingSetting.AudioSource:
+                    pitch = Mathf.Clamp(pitch, AudioConstant.MIN_AUDIO_SOURCE_PITCH, AudioConstant.MAX_AUDIO_SOURCE_PITCH);
+                    if (fadeTime > 0f) App.StopAndReassign(ref _pitchCoroutine, PitchControl(pitch, fadeTime));
+                    else audioSource.pitch = pitch;
+                    break;
+            }
+
+            return this;
+        }
+
+        private void SetInitialPitch(IAudioEntity entity, IAudioPlaybackPreference audioTypePlaybackPref)
+        {
+            float pitch;
+            if (!Mathf.Approximately(StaticPitch, AudioConstant.DEFAULT_PITCH))
+            {
+                pitch = entity.GetRandomValue(StaticPitch, ERandomFlag.Pitch);
+            }
+            else if (!Mathf.Approximately(audioTypePlaybackPref.Pitch, AudioConstant.DEFAULT_PITCH))
+            {
+                pitch = entity.GetRandomValue(audioTypePlaybackPref.Pitch, ERandomFlag.Pitch);
+            }
+            else
+            {
+                pitch = entity.GetPitch();
+            }
+
+            audioSource.pitch = pitch;
+        }
+
+        private IEnumerator PitchControl(float targetPitch, float fadeTime)
+        {
+            var pitchs = AudioExtension.GetLerpValuesPerFrame(audioSource.pitch, targetPitch, fadeTime, Ease.Linear);
+
+            foreach (var pitch in pitchs)
+            {
+                audioSource.pitch = pitch;
+                yield return null;
+            }
+        }
+
+        private void ResetPitch()
+        {
+            StaticPitch = AudioConstant.DEFAULT_PITCH;
+            audioSource.pitch = AudioConstant.DEFAULT_PITCH;
         }
 
         #endregion
@@ -683,13 +695,6 @@ namespace Pancake.Sound
             _mixerDecibelVolume = DEFAULT_MIXER_DECIBEL_VOLUME;
             StaticTrackVolume = DEFAULT_TRACK_VOLUME;
         }
-
-#if UNITY_WEBGL
-        private void WebGLSetVolume()
-        {
-            AudioSource.volume = AudioExtension.ClampNormalize(_clipVolume * _trackVolume);
-        }
-#endif
 
         #endregion
     }

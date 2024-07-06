@@ -143,10 +143,8 @@ namespace PancakeEditor.Sound
             var fadeSample = (int) Math.Round(fadeTime * _originalClip.frequency * GetChannelCount(), MidpointRounding.AwayFromZero);
             int startSampleIndex = Samples.Length - fadeSample;
 
-            // TODO: Accept more ease type
             var volFactor = 1f;
             float volIncrement = 1f / fadeSample * -1f;
-
 
             for (int i = startSampleIndex; i < Samples.Length; i++)
             {

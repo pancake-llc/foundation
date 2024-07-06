@@ -20,15 +20,22 @@ namespace PancakeEditor.Sound
         private const float SLIDER_LABEL_WIDTH = 25;
         private const float OBJECT_PICKER_RATIO = 0.6f;
 
-        private readonly ReorderableList _reorderableList;
-        private readonly SerializedProperty _playModeProp;
+        private ReorderableList _reorderableList;
+        private SerializedProperty _entityProp;
+        private SerializedProperty _playModeProp;
         private int _currSelectedClipIndex = -1;
         private SerializedProperty _currSelectedClip;
         private Rect _previewRect;
+        private string _currentPlayingClipPath;
+        private GUIContent _weightGUIContent = new("Weight", "Probability = Weight / Total Weight");
 
+
+        private Vector2 PlayButtonSize => new(30f, 20f);
         public bool IsMulticlips => _reorderableList.count > 1;
         public float Height => _reorderableList.GetHeight();
-        private Vector2 PlayButtonSize => new(30f, 20f);
+        public Rect PreviewRect => _previewRect;
+        public bool IsPlaying => _currentPlayingClipPath != null;
+        public bool HasValidClipSelected => CurrentSelectedClip != null && CurrentSelectedClip.TryGetPropertyObject(nameof(SoundClip.AudioClip), out AudioClip _);
 
         public SerializedProperty CurrentSelectedClip
         {
@@ -56,16 +63,32 @@ namespace PancakeEditor.Sound
 
         public ReorderableClips(SerializedProperty entityProperty)
         {
-            _playModeProp = entityProperty.FindPropertyRelative(AudioEntity.EditorPropertyName.AudioPlayMode);
+            _entityProp = entityProperty;
+            _playModeProp = entityProperty.FindPropertyRelative(AudioEntity.ForEditor.AudioPlayMode);
             _reorderableList = CreateReorderabeList(entityProperty);
             UpdatePlayMode();
 
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
         }
 
-        public void Dispose() { Undo.undoRedoPerformed -= OnUndoRedoPerformed; }
+        public void Dispose()
+        {
+            Undo.undoRedoPerformed -= OnUndoRedoPerformed;
+            _currentPlayingClipPath = null;
+        }
 
         public void SetPreviewRect(Rect rect) { _previewRect = rect; }
+
+        public void SelectAndSetPlayingElement(int index)
+        {
+            if (index >= 0)
+            {
+                _reorderableList.index = index;
+                SetPlayingClip(_reorderableList.serializedProperty.GetArrayElementAtIndex(index).propertyPath);
+            }
+        }
+
+        public void SetPlayingClip(string clipPath) { _currentPlayingClipPath = clipPath; }
 
         private void OnUndoRedoPerformed()
         {
@@ -83,7 +106,7 @@ namespace PancakeEditor.Sound
 
         private ReorderableList CreateReorderabeList(SerializedProperty entityProperty)
         {
-            var clipsProp = entityProperty.FindPropertyRelative(AudioEntity.EditorPropertyName.Clips);
+            var clipsProp = entityProperty.FindPropertyRelative(AudioEntity.ForEditor.Clips);
             var list = new ReorderableList(clipsProp.serializedObject, clipsProp)
             {
                 drawHeaderCallback = OnDrawHeader,
@@ -96,12 +119,10 @@ namespace PancakeEditor.Sound
             return list;
         }
 
-        private EAudioPlayMode UpdatePlayMode()
+        private void UpdatePlayMode()
         {
             if (!IsMulticlips) _playModeProp.enumValueIndex = 0;
             else if (IsMulticlips && _playModeProp.enumValueIndex == 0) _playModeProp.enumValueIndex = (int) DEFAULT_MULTICLIPS_MODE;
-
-            return (EAudioPlayMode) _playModeProp.enumValueIndex;
         }
 
         private void HandleClipsDragAndDrop(Rect rect)
@@ -115,7 +136,7 @@ namespace PancakeEditor.Sound
                     foreach (var clipObj in DragAndDrop.objectReferences)
                     {
                         var clipProp = AddClip(_reorderableList);
-                        var audioClipProp = clipProp.FindPropertyRelative(SoundClip.EditorPropertyName.AudioClip);
+                        var audioClipProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.AudioClip);
                         audioClipProp.objectReferenceValue = clipObj;
                     }
 
@@ -134,34 +155,91 @@ namespace PancakeEditor.Sound
 
             var labelRect = new Rect(rect) {width = HEADER_LABEL_WIDTH};
             var valueRect = new Rect(rect) {width = MULTICLIPS_VALUE_LABEL_WIDTH, x = rect.xMax - MULTICLIPS_VALUE_LABEL_WIDTH};
-            var multiclipOptionRect = new Rect(rect) {width = (rect.width - labelRect.width - valueRect.width) * 0.5f, x = labelRect.xMax};
+            Rect remainRect = new Rect(rect) {width = (rect.width - HEADER_LABEL_WIDTH - MULTICLIPS_VALUE_LABEL_WIDTH), x = labelRect.xMax};
+            Uniform.SplitRectHorizontal(remainRect,
+                0.5f,
+                10f,
+                out var multiclipOptionRect,
+                out var masterVolRect);
 
             EditorGUI.LabelField(labelRect, "Clips");
             if (IsMulticlips)
             {
-                var popupStyle = new GUIStyle(EditorStyles.popup) {alignment = TextAnchor.MiddleLeft};
-                var currentPlayMode = (EAudioPlayMode) _playModeProp.enumValueIndex;
-                _playModeProp.enumValueIndex = (int) (EAudioPlayMode) EditorGUI.EnumPopup(multiclipOptionRect, currentPlayMode, popupStyle);
-                currentPlayMode = (EAudioPlayMode) _playModeProp.enumValueIndex;
-                switch (currentPlayMode)
+                var playMode = (EAudioPlayMode) _playModeProp.enumValueIndex;
+                playMode = (EAudioPlayMode) EditorGUI.EnumPopup(multiclipOptionRect, playMode);
+                _playModeProp.enumValueIndex = (int) playMode;
+
+                DrawMasterVolume(masterVolRect);
+
+                GUIContent guiContent = new GUIContent(string.Empty);
+                switch (playMode)
                 {
+                    case EAudioPlayMode.Single:
+                        guiContent.tooltip = "Always play the first clip";
+                        break;
                     case EAudioPlayMode.Sequence:
                         EditorGUI.LabelField(valueRect, "Index", Uniform.CenterRichLabel);
+                        guiContent.tooltip = "Plays the next clip each time";
                         break;
                     case EAudioPlayMode.Random:
-                        EditorGUI.LabelField(valueRect, "Weight", Uniform.CenterRichLabel);
+                        EditorGUI.LabelField(valueRect, _weightGUIContent, Uniform.CenterRichLabel);
+                        guiContent.tooltip = "Plays a clip randomly";
+                        break;
+                    case EAudioPlayMode.Shuffle:
+                        guiContent.tooltip = "Plays a clip randomly without repeating the previous one.";
                         break;
                 }
 
                 EditorGUI.LabelField(multiclipOptionRect.DissolveHorizontal(0.5f), "(PlayMode)".SetColor(Color.gray), Uniform.CenterRichLabel);
+                EditorGUI.LabelField(multiclipOptionRect, guiContent);
             }
+        }
+
+        private void DrawMasterVolume(Rect masterVolRect)
+        {
+            int id = _entityProp.FindPropertyRelative(AudioEntity.ForEditor.Id).intValue;
+            if (!AudioEditorSetting.ShowMasterVolumeOnClipListHeader ||
+                !AudioEditorSetting.Instance.TryGetAudioTypeSetting(AudioExtension.GetAudioType(id), out var typeSetting) ||
+                !typeSetting.CanDraw(EDrawedProperty.MasterVolume))
+            {
+                return;
+            }
+
+            var masterProp = _entityProp.FindPropertyRelative(AudioEntity.ForEditor.MasterVolume);
+            var masterRandProp = _entityProp.FindPropertyRelative(AudioEntity.ForEditor.VolumeRandomRange);
+            float masterVol = masterProp.floatValue;
+            float masterVolRand = masterRandProp.floatValue;
+            var flags = (ERandomFlag) _entityProp.FindPropertyRelative(AudioEntity.ForEditor.RandomFlags).intValue;
+            EditorAudioEx.GetMixerMinMaxVolume(out float minVol, out float maxVol);
+            var masterVolLabelRect = new Rect(masterVolRect) {width = SLIDER_LABEL_WIDTH};
+            var masterVolSldierRect = new Rect(masterVolRect) {width = masterVolRect.width - SLIDER_LABEL_WIDTH, x = masterVolLabelRect.xMax};
+
+            EditorGUI.LabelField(masterVolLabelRect, EditorGUIUtility.IconContent("SceneViewAudio On"));
+            if (flags.HasFlagUnsafe(ERandomFlag.Volume))
+            {
+                EditorAudioEx.DrawRandomRangeSlider(masterVolSldierRect,
+                    GUIContent.none,
+                    ref masterVol,
+                    ref masterVolRand,
+                    minVol,
+                    maxVol,
+                    EditorAudioEx.RandomRangeSliderType.Volume);
+            }
+            else
+            {
+                masterVol = EditorAudioEx.DrawVolumeSlider(masterVolSldierRect, masterVol, out _, out float newSliderInFullScale);
+                EditorAudioEx.DrawDecibelValuePeeking(masterVol, 3f, masterVolRect, newSliderInFullScale);
+            }
+
+            masterProp.floatValue = masterVol;
+            masterRandProp.floatValue = masterVolRand;
         }
 
         private void OnDrawElement(Rect rect, int index, bool isActive, bool isFocused)
         {
             var clipProp = _reorderableList.serializedProperty.GetArrayElementAtIndex(index);
-            var audioClipProp = clipProp.FindPropertyRelative(SoundClip.EditorPropertyName.AudioClip);
-            var volProp = clipProp.FindPropertyRelative(SoundClip.EditorPropertyName.Volume);
+            var audioClipProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.AudioClip);
+            var volProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.Volume);
 
             var buttonRect = new Rect(rect) {width = PlayButtonSize.x, height = PlayButtonSize.y};
             buttonRect.y += (_reorderableList.elementHeight - PlayButtonSize.y) * 0.5f;
@@ -189,29 +267,41 @@ namespace PancakeEditor.Sound
 
             void DrawPlayClipButton()
             {
-                if (audioClipProp.objectReferenceValue is AudioClip audioClip)
+                AudioClip audioClip = audioClipProp.objectReferenceValue as AudioClip;
+                if (audioClip == null) return;
+
+                bool isPlaying = string.Equals(_currentPlayingClipPath, clipProp.propertyPath);
+                var image = EditorAudioEx.GetPlaybackButtonIcon(isPlaying).image;
+                var buttonGUIContent = new GUIContent(image, EditorPlayAudioClip.IGNORE_SETTING_TOOLTIP);
+                if (GUI.Button(buttonRect, buttonGUIContent))
                 {
-                    bool isPlaying = EditorPlayAudioClip.CurrentPlayingClip == audioClip;
-                    string icon = isPlaying ? "PreMatQuad" : "PlayButton";
-                    var buttonGUIContent = new GUIContent(EditorGUIUtility.IconContent(icon).image, EditorPlayAudioClip.PLAY_WITH_VOLUME_SETTING);
-                    if (GUI.Button(buttonRect, buttonGUIContent))
-                    {
-                        if (isPlaying) EditorPlayAudioClip.StopAllClips();
-                        else
-                        {
-                            float startPos = clipProp.FindPropertyRelative(SoundClip.EditorPropertyName.StartPosition).floatValue;
-                            float endPos = clipProp.FindPropertyRelative(SoundClip.EditorPropertyName.EndPosition).floatValue;
-                            if (Event.current.button == 0) EditorPlayAudioClip.PlayClip(audioClip, startPos, endPos);
-                            else EditorPlayAudioClip.PlayClipByAudioSource(audioClip, volProp.floatValue, startPos, endPos);
+                    if (isPlaying) EditorPlayAudioClip.In.StopAllClips();
+                    else PreviewAudio(audioClip);
+                }
+            }
 
-                            if (EditorPlayAudioClip.PlaybackIndicator.IsPlaying && EditorPlayAudioClip.CurrentPlayingClip == audioClip)
-                            {
-                                var clip = new PreviewClip() {StartPosition = startPos, EndPosition = endPos, Length = audioClip.length,};
+            void PreviewAudio(AudioClip audioClip)
+            {
+                PreviewClip previewClipGUI;
+                if (Event.current.button == 0) // Left Click
+                {
+                    var transport = new SerializedTransport(clipProp, audioClip.length);
+                    var clipData = new EditorPlayAudioClip.Data(audioClip, volProp.floatValue, transport);
+                    EditorPlayAudioClip.In.PlayClipByAudioSource(clipData);
+                    previewClipGUI = new PreviewClip(transport);
+                }
+                else
+                {
+                    EditorPlayAudioClip.In.PlayClip(audioClip, 0f, 0f);
+                    previewClipGUI = new PreviewClip(audioClip.length);
+                }
 
-                                EditorPlayAudioClip.PlaybackIndicator.SetClipInfo(_previewRect, clip);
-                            }
-                        }
-                    }
+                _currentPlayingClipPath = clipProp.propertyPath;
+                EditorPlayAudioClip.In.OnFinished = () => _currentPlayingClipPath = null;
+
+                if (EditorPlayAudioClip.In.PlaybackIndicator.IsPlaying)
+                {
+                    EditorPlayAudioClip.In.PlaybackIndicator.SetClipInfo(_previewRect, previewClipGUI);
                 }
             }
 
@@ -222,11 +312,8 @@ namespace PancakeEditor.Sound
                 sliderRect.x = labelRect.xMax;
                 EditorGUI.LabelField(labelRect, EditorGUIUtility.IconContent("SceneViewAudio On"));
                 float newVol = EditorAudioEx.DrawVolumeSlider(sliderRect, volProp.floatValue, out bool hasChanged, out float newSliderValue);
-                if (hasChanged)
-                {
-                    volProp.floatValue = newVol;
-                    EditorAudioEx.DrawDecibelValuePeeking(volProp.floatValue, 3f, sliderRect, newSliderValue);
-                }
+                if (hasChanged) volProp.floatValue = newVol;
+                EditorAudioEx.DrawDecibelValuePeeking(volProp.floatValue, 3f, sliderRect, newSliderValue);
             }
 
             void DrawMulticlipsValue()
@@ -242,7 +329,7 @@ namespace PancakeEditor.Sound
                         EditorGUI.LabelField(valueRect, index.ToString(), Uniform.CenterRichLabel);
                         break;
                     case EAudioPlayMode.Random:
-                        var weightProp = clipProp.FindPropertyRelative(SoundClip.EditorPropertyName.Weight);
+                        var weightProp = clipProp.FindPropertyRelative(SoundClip.ForEditor.Weight);
                         var intFieldStyle = new GUIStyle(EditorStyles.numberField) {alignment = TextAnchor.MiddleCenter};
                         weightProp.intValue = EditorGUI.IntField(valueRect, weightProp.intValue, intFieldStyle);
                         break;
@@ -254,7 +341,7 @@ namespace PancakeEditor.Sound
         private void OnDrawFooter(Rect rect)
         {
             ReorderableList.defaultBehaviours.DrawFooter(rect, _reorderableList);
-            if (CurrentSelectedClip.TryGetPropertyObject(SoundClip.EditorPropertyName.AudioClip, out AudioClip audioClip))
+            if (CurrentSelectedClip.TryGetPropertyObject(SoundClip.ForEditor.AudioClip, out AudioClip audioClip))
             {
                 EditorGUI.LabelField(rect, audioClip.name.SetColor(Uniform.Green).ToBold(), Uniform.RichLabel);
             }
@@ -272,7 +359,7 @@ namespace PancakeEditor.Sound
             UpdatePlayMode();
         }
 
-        private void OnSelect(ReorderableList list) { EditorPlayAudioClip.StopAllClips(); }
+        private void OnSelect(ReorderableList list) { EditorPlayAudioClip.In.StopAllClips(); }
 
         #endregion
 

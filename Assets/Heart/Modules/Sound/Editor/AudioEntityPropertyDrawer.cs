@@ -16,10 +16,28 @@ namespace PancakeEditor.Sound
     [CustomPropertyDrawer(typeof(AudioEntity))]
     public class AudioEntityPropertyDrawer : AuPropertyDrawer
     {
-        public class ClipData
+        private class ClipData
         {
             public ITransport transport;
             public bool isSnapToFullVolume;
+        }
+
+        private class EntityData
+        {
+            public Tab selectedTab;
+            public bool isLoop;
+            public bool isPreviewing;
+            public bool IsPlaying => isPreviewing || (Clips != null && Clips.IsPlaying);
+
+            public ReorderableClips Clips { get; private set; }
+
+            public EntityData(ReorderableClips clips) { Clips = clips; }
+
+            public void Dispose()
+            {
+                Clips?.Dispose();
+                Clips = null;
+            }
         }
 
         public enum Tab
@@ -29,6 +47,7 @@ namespace PancakeEditor.Sound
         }
 
         public static event Action OnEntityNameChanged;
+        public static event Action OnRemoveEntity;
 
         private const float CLIP_PREVIEW_HEIGHT = 100f;
         private const float DEFAULT_FIELD_RATIO = 0.9f;
@@ -37,30 +56,34 @@ namespace PancakeEditor.Sound
         private const float MAX_TEXT_FIELD_WIDTH = 300f;
         private const float PERCENTAGE = 100f;
         private const float RANDOM_TOOL_BAR_WIDTH = 40f;
-        private const float MIN_MAX_SLIDER_FIELD_WIDTH = 50f;
-        private const int ROUNDED_DIGITS = 3;
 
-        private readonly GUIContent[] _tabLabelGUIContents = {new(nameof(Tab.Clips)), new(nameof(Tab.Overall))};
-        private readonly float[] _tabLabelRatios = {0.5f, 0.5f};
-        private readonly float[] _identityLabelRatios = {0.65f, 0.15f, 0.2f};
+        private readonly float[] _headerRatios = new[] {0.55f, 0.2f, 0.25f};
         private readonly GUIContent _volumeLabel = new(nameof(SoundClip.Volume), "The playback volume of this clip");
         private readonly IUniqueIdGenerator _idGenerator = new IdGenerator();
-        private Rect[] _tabPreAllocRects;
-        private Rect[] _identityLabelRects;
 
-        private readonly Dictionary<string, ReorderableClips> _reorderableClipsDict = new();
+        private readonly TabViewData[] _tabViewDatas =
+        {
+            new(0.475f, new GUIContent(nameof(Tab.Clips)), EditorPlayAudioClip.In.StopAllClips, null),
+            new(0.475f, new GUIContent(nameof(Tab.Overall)), EditorPlayAudioClip.In.StopAllClips, null),
+            new(0.05f, EditorGUIUtility.IconContent("pane options"), null, OnClickChangeDrawedProperties),
+        };
+
+        private Rect[] _headerRects = null;
+
         private readonly DrawClipPropertiesHelper _clipPropHelper = new();
         private readonly Dictionary<string, ClipData> _clipDataDict = new();
-        private readonly Dictionary<string, Tab> _currSelectedTabDict = new();
+        private readonly Dictionary<string, EntityData> _entityDataDict = new();
         private readonly GUIContent _masterVolLabel = new("Master Volume", "Represent the master volume of all clips");
         private readonly GUIContent _loopingLabel = new("Looping");
         private readonly GUIContent _seamlessLabel = new("Seamless Setting");
         private readonly GUIContent _pitchLabel = new(nameof(AudioEntity.Pitch));
         private readonly GUIContent _spatialLabel = new("Spatial (3D Sound)");
-        private readonly float[] _seamlessSettingRectRatio = {0.2f, 0.25f, 0.2f, 0.2f, 0.15f};
+        private readonly float[] _seamlessSettingRectRatio = {0.25f, 0.25f, 0.2f, 0.15f, 0.15f};
 
         private GenericMenu _changeAudioTypeOption;
         private SerializedProperty _entityThatIsModifyingAudioType;
+        private AudioEntity _currentPreviewingEntity = null;
+        private Rect[] _loopingRects;
         private Rect[] _seamlessRects;
         private readonly SerializedProperty[] _loopingToggles = new SerializedProperty[2];
 
@@ -68,7 +91,8 @@ namespace PancakeEditor.Sound
         public float ClipPreviewPadding => ReorderableList.Defaults.padding;
         public float SnapVolumePadding => ReorderableList.Defaults.padding;
 
-        private float TabLabelHeight => SingleLineSpace * 1.5f;
+        private float TabLabelHeight => SingleLineSpace * 1.3f;
+        private float TabLabelCompensation => SingleLineSpace * 2 - TabLabelHeight;
 
         protected override void OnEnable()
         {
@@ -76,25 +100,33 @@ namespace PancakeEditor.Sound
 
             onCloseWindow += OnDisable;
             onSelectAsset += OnDisable;
+            onLostFocus += OnLostFocus;
 
             _changeAudioTypeOption = CreateAudioTypeGenericMenu("Change current AudioType to ...", OnChangeEntityAudioType);
         }
 
         private void OnDisable()
         {
-            foreach (var reorderableClips in _reorderableClipsDict.Values)
+            foreach (var data in _entityDataDict.Values)
             {
-                reorderableClips.Dispose();
+                data.Dispose();
             }
 
-            _reorderableClipsDict.Clear();
+            _entityDataDict.Clear();
             _clipDataDict.Clear();
 
             onCloseWindow -= OnDisable;
             onSelectAsset -= OnDisable;
+            onLostFocus -= OnLostFocus;
 
+            ResetPreview();
+
+            OnEntityNameChanged = null;
+            OnRemoveEntity = null;
             IsEnable = false;
         }
+
+        private void OnLostFocus() { ResetPreview(); }
 
         private GenericMenu CreateAudioTypeGenericMenu(string str, GenericMenu.MenuFunction2 onClickOption)
         {
@@ -116,7 +148,7 @@ namespace PancakeEditor.Sound
         {
             if (type is EAudioType audioType && _entityThatIsModifyingAudioType != null)
             {
-                var idProp = _entityThatIsModifyingAudioType.FindPropertyRelative(AudioEntity.EditorPropertyName.Id);
+                var idProp = _entityThatIsModifyingAudioType.FindPropertyRelative(AudioEntity.ForEditor.Id);
                 if (AudioExtension.GetAudioType(idProp.intValue) != audioType)
                 {
                     idProp.intValue = _idGenerator.GetSimpleUniqueId(audioType);
@@ -136,41 +168,40 @@ namespace PancakeEditor.Sound
             var idProp = property.FindPropertyRelative(nameof(IAudioIdentity.Id).ToCamelCase());
 
             var foldoutRect = GetRectAndIterateLine(position);
-            _identityLabelRects ??= new Rect[_identityLabelRatios.Length];
+            _headerRects ??= new Rect[_headerRatios.Length];
 
-            Uniform.SplitRectHorizontal(foldoutRect, 5f, _identityLabelRects, _identityLabelRatios);
-            var nameRect = _identityLabelRects[0];
-            //var idRect = _identityLabelRects[1];
-            var audioTypeRect = _identityLabelRects[2];
+            Uniform.SplitRectHorizontal(foldoutRect, 5f, _headerRects, _headerRatios);
+            var nameRect = _headerRects[0];
+            var previewButtonRect = _headerRects[1];
+            var audioTypeRect = _headerRects[2];
+            audioTypeRect.x += 25f;
 
             property.isExpanded = EditorGUI.Foldout(nameRect, property.isExpanded, property.isExpanded ? string.Empty : nameProp.stringValue);
             DrawAudioTypeButton(audioTypeRect, property, AudioExtension.GetAudioType(idProp.intValue));
             if (!property.isExpanded || !TryGetAudioTypeSetting(property, out var setting)) return;
 
-            DrawEntityNameField(nameRect, nameProp);
+            GetOrCreateEntityDataDict(property, out var data);
+            DrawEntityNameField(nameRect, nameProp, idProp.intValue);
+            DrawEntityPreviewButton(previewButtonRect, property, data);
 
-            GetOrAddTabDict(property.propertyPath, out var tab);
-            var tabViewRect = GetRectAndIterateLine(position);
-            tabViewRect.height = GetTabWindowHeight();
-            _tabPreAllocRects ??= new Rect[_tabLabelRatios.Length];
-            tab = (Tab) DrawTabsView(tabViewRect,
-                (int) tab,
+            Rect tabViewRect = GetRectAndIterateLine(position).SetHeight(GetTabWindowHeight());
+            data.selectedTab = (Tab) DrawButtonTabsMixedView(tabViewRect,
+                property,
+                (int) data.selectedTab,
                 TabLabelHeight,
-                _tabLabelGUIContents,
-                _tabLabelRatios,
-                _tabPreAllocRects);
-            _currSelectedTabDict[property.propertyPath] = tab;
+                _tabViewDatas);
+
             DrawEmptyLine(1);
 
-            position.x += INDENT_IN_PIXEL;
-            position.width -= INDENT_IN_PIXEL * 2f;
+            position.x += AudioConstant.INDENT_IN_PIXEL;
+            position.width -= AudioConstant.INDENT_IN_PIXEL * 2f;
 
-            switch (tab)
+            switch (data.selectedTab)
             {
                 case Tab.Clips:
-                    var currClipList = DrawReorderableClipsList(position, property, OnClipChanged);
-                    var currSelectClip = currClipList.CurrentSelectedClip;
-                    if (currSelectClip.TryGetPropertyObject(EditorPropertyName.AudioClip, out AudioClip audioClip))
+                    DrawReorderableClipsList(position, data.Clips, OnClipChanged);
+                    var currSelectClip = data.Clips.CurrentSelectedClip;
+                    if (currSelectClip.TryGetPropertyObject(ForEditor.AudioClip, out AudioClip audioClip))
                     {
                         DrawClipProperties(position,
                             currSelectClip,
@@ -178,7 +209,7 @@ namespace PancakeEditor.Sound
                             setting,
                             out var transport,
                             out float volume);
-                        if (setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.ClipPreview) && audioClip != null && Event.current.type != EventType.Layout)
+                        if (setting.CanDraw(EDrawedProperty.ClipPreview) && audioClip != null && Event.current.type != EventType.Layout)
                         {
                             DrawEmptyLine(1);
                             var previewRect = GetNextLineRect(position);
@@ -188,8 +219,9 @@ namespace PancakeEditor.Sound
                                 transport,
                                 audioClip,
                                 volume,
-                                currSelectClip.propertyPath);
-                            currClipList.SetPreviewRect(previewRect);
+                                currSelectClip.propertyPath,
+                                data.Clips.SetPlayingClip);
+                            data.Clips.SetPreviewRect(previewRect);
                             Offset += CLIP_PREVIEW_HEIGHT + ClipPreviewPadding;
                         }
                     }
@@ -200,25 +232,20 @@ namespace PancakeEditor.Sound
                     break;
             }
 
-            if (Event.current.type == EventType.MouseDown && position.Contains(Event.current.mousePosition))
-            {
-                EditorPlayAudioClip.StopAllClips();
-            }
-
             float GetTabWindowHeight()
             {
                 float height = TabLabelHeight;
-                switch (tab)
+                switch (data.selectedTab)
                 {
                     case Tab.Clips:
                         height += GetClipListHeight(property, setting);
                         break;
                     case Tab.Overall:
-                        height += GetAdditionalBaseProtiesLineCount(property, setting) * SingleLineSpace + GetAdditionalBasePropertiesOffest(setting);
+                        height += GetAdditionalBasePropertiesHeight(property, setting) * SingleLineSpace + GetAdditionalBasePropertiesOffest(setting);
                         break;
                 }
 
-                height += SingleLineSpace * 0.5f; // compensation for tab label's half line height
+                height += TabLabelCompensation;
                 return height;
             }
         }
@@ -236,10 +263,14 @@ namespace PancakeEditor.Sound
             EditorGUI.LabelField(position, audioTypeName, Uniform.CenterRichLabel);
         }
 
-
-        private void GetOrAddTabDict(string propertyPath, out Tab tab)
+        private void GetOrCreateEntityDataDict(SerializedProperty property, out EntityData data)
         {
-            if (!_currSelectedTabDict.TryGetValue(propertyPath, out tab)) _currSelectedTabDict[propertyPath] = Tab.Clips;
+            if (!_entityDataDict.TryGetValue(property.propertyPath, out data))
+            {
+                var reorderableClips = new ReorderableClips(property);
+                data = new EntityData(reorderableClips);
+                _entityDataDict[property.propertyPath] = data;
+            }
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -249,18 +280,18 @@ namespace PancakeEditor.Sound
             if (property.isExpanded && TryGetAudioTypeSetting(property, out var setting))
             {
                 height += ReorderableList.Defaults.padding; // reorderableList element padding;
-                height += TabLabelHeight + SingleLineSpace * 0.5f; // Tab View + compensation
+                height += TabLabelHeight + TabLabelCompensation;
 #if !UNITY_2019_3_OR_NEWER
                 height += SingleLineSpace;
 #endif
-                GetOrAddTabDict(property.propertyPath, out var tab);
-                switch (tab)
+                GetOrCreateEntityDataDict(property, out var data);
+                switch (data.selectedTab)
                 {
                     case Tab.Clips:
                         height += GetClipListHeight(property, setting);
                         break;
                     case Tab.Overall:
-                        height += GetAdditionalBaseProtiesLineCount(property, setting) * SingleLineSpace + GetAdditionalBasePropertiesOffest(setting);
+                        height += GetAdditionalBasePropertiesHeight(property, setting);
                         break;
                 }
             }
@@ -271,14 +302,13 @@ namespace PancakeEditor.Sound
         private float GetClipListHeight(SerializedProperty property, AudioEditorSetting.AudioTypeSetting setting)
         {
             var height = 0f;
-            if (_reorderableClipsDict.TryGetValue(property.propertyPath, out var clipList))
+            if (_entityDataDict.TryGetValue(property.propertyPath, out var data))
             {
-                bool isShowClipProp = clipList.CurrentSelectedClip != null &&
-                                      clipList.CurrentSelectedClip.TryGetPropertyObject(EditorPropertyName.AudioClip, out AudioClip _);
+                bool isShowClipProp = data.Clips.HasValidClipSelected;
 
-                height += clipList.Height;
-                height += isShowClipProp ? GetAdditionalClipPropertiesLineCount(property, setting) * SingleLineSpace : 0f;
-                height += isShowClipProp ? CLIP_PREVIEW_HEIGHT + ClipPreviewPadding : 0f;
+                height += data.Clips.Height;
+                height += isShowClipProp ? GetAdditionalClipPropertiesHeight(property, setting) : 0f;
+                height += isShowClipProp && setting.CanDraw(EDrawedProperty.ClipPreview) ? CLIP_PREVIEW_HEIGHT + ClipPreviewPadding : 0f;
             }
 
             return height;
@@ -286,7 +316,7 @@ namespace PancakeEditor.Sound
 
         #endregion
 
-        private void DrawEntityNameField(Rect position, SerializedProperty nameProp)
+        private void DrawEntityNameField(Rect position, SerializedProperty nameProp, int id)
         {
             EditorGUI.BeginChangeCheck();
 #if UNITY_2019_3_OR_NEWER
@@ -304,20 +334,43 @@ namespace PancakeEditor.Sound
             }
         }
 
-        private ReorderableClips DrawReorderableClipsList(Rect position, SerializedProperty property, Action<string> onClipChanged)
+        private void DrawEntityPreviewButton(Rect rect, SerializedProperty property, EntityData data)
         {
-            bool hasReorderableClips = _reorderableClipsDict.TryGetValue(property.propertyPath, out var reorderableClips);
-            if (!hasReorderableClips)
+            if (!data.Clips.HasValidClipSelected) return;
+
+            rect = rect.SetHeight(h => h * 1.1f);
+            Uniform.SplitRectHorizontal(rect,
+                0.5f,
+                5f,
+                out var playButtonRect,
+                out var loopToggleRect);
+            data.isLoop = EditorGUILayout.Toggle(new GUIContent(EditorGUIUtility.IconContent("d_preAudioLoopOff")), data.isLoop);
+            if (GUI.Button(playButtonRect, GetPlaybackButtonIcon(data.IsPlaying)) && TryGetEntityInstance(property, out var entity))
             {
-                reorderableClips = new ReorderableClips(property);
-                _reorderableClipsDict.Add(property.propertyPath, reorderableClips);
+                if (data.IsPlaying)
+                {
+                    EditorPlayAudioClip.In.StopAllClips();
+                    AudioExtension.ClearPreviewAudioData();
+                    entity.Clips.ResetIsUse();
+                }
+                else
+                {
+                    StartPreview(data, entity);
+                }
             }
 
+            if (data.IsPlaying && data.selectedTab != Tab.Clips)
+            {
+                EditorPlayAudioClip.In.PlaybackIndicator.End();
+            }
+        }
+
+        private void DrawReorderableClipsList(Rect position, ReorderableClips reorderableClips, Action<string> onClipChanged)
+        {
             var rect = GetNextLineRect(position);
             reorderableClips.DrawReorderableList(rect);
             Offset += reorderableClips.Height;
             reorderableClips.onAudioClipChanged = onClipChanged;
-            return reorderableClips;
         }
 
         private void DrawClipProperties(
@@ -328,34 +381,20 @@ namespace PancakeEditor.Sound
             out ITransport transport,
             out float volume)
         {
-            var volumeProp = clipProp.FindPropertyRelative(EditorPropertyName.Volume);
-            var delayProp = clipProp.FindPropertyRelative(EditorPropertyName.Delay);
-            var startPosProp = clipProp.FindPropertyRelative(EditorPropertyName.StartPosition);
-            var endPosProp = clipProp.FindPropertyRelative(EditorPropertyName.EndPosition);
-            var fadeInProp = clipProp.FindPropertyRelative(EditorPropertyName.FadeIn);
-            var fadeOutProp = clipProp.FindPropertyRelative(EditorPropertyName.FadeOut);
+            
+            var volumeProp = clipProp.FindPropertyRelative(ForEditor.Volume);
 
             if (!_clipDataDict.TryGetValue(clipProp.propertyPath, out var clipData))
             {
-                clipData = new ClipData
-                {
-                    transport = new SerializedTransport(startPosProp,
-                        endPosProp,
-                        fadeInProp,
-                        fadeOutProp,
-                        delayProp,
-                        audioClip.length)
-                };
-
+                clipData = new ClipData {transport = new SerializedTransport(clipProp, audioClip.length)};
                 _clipDataDict[clipProp.propertyPath] = clipData;
             }
 
             transport = clipData.transport;
 
-            if (CanDraw(EDrawedProperty.Volume))
+            if (setting.CanDraw(EDrawedProperty.Volume))
             {
-                var volRect = GetRectAndIterateLine(position);
-                volRect.width *= DEFAULT_FIELD_RATIO;
+                var volRect = GetRectAndIterateLine(position).SetWidth(w => w * DEFAULT_FIELD_RATIO);
                 volumeProp.floatValue = DrawVolumeSlider(volRect,
                     _volumeLabel,
                     volumeProp.floatValue,
@@ -365,39 +404,80 @@ namespace PancakeEditor.Sound
 
             volume = volumeProp.floatValue;
 
-            if (CanDraw(EDrawedProperty.PlaybackPosition))
+            if (setting.CanDraw(EDrawedProperty.PlaybackPosition))
             {
-                var playbackRect = GetRectAndIterateLine(position);
-                playbackRect.width *= DEFAULT_FIELD_RATIO;
+                var playbackRect = GetRectAndIterateLine(position).SetWidth(w => w * DEFAULT_FIELD_RATIO);
                 _clipPropHelper.DrawPlaybackPositionField(playbackRect, transport);
             }
 
-            if (CanDraw(EDrawedProperty.Fade))
+            if (setting.CanDraw(EDrawedProperty.Fade))
             {
-                var fadingRect = GetRectAndIterateLine(position);
-                fadingRect.width *= DEFAULT_FIELD_RATIO;
+                var fadingRect = GetRectAndIterateLine(position).SetWidth(w => w * DEFAULT_FIELD_RATIO);
                 _clipPropHelper.DrawFadingField(fadingRect, transport);
             }
-
-            bool CanDraw(EDrawedProperty drawedProperty) { return setting.drawedProperty.HasFlagUnsafe(drawedProperty); }
         }
 
         private bool TryGetAudioTypeSetting(SerializedProperty property, out AudioEditorSetting.AudioTypeSetting setting)
         {
-            int id = property.FindPropertyRelative(AudioEntity.EditorPropertyName.Id).intValue;
+            int id = property.FindPropertyRelative(AudioEntity.ForEditor.Id).intValue;
             return AudioEditorSetting.Instance.TryGetAudioTypeSetting(AudioExtension.GetAudioType(id), out setting);
         }
 
         private void OnClipChanged(string clipPropPath) { _clipDataDict.Remove(clipPropPath); }
 
-        private int GetAdditionalBaseProtiesLineCount(SerializedProperty property, AudioEditorSetting.AudioTypeSetting setting)
+        private int GetAdditionalBasePropertiesHeight(SerializedProperty property, AudioEditorSetting.AudioTypeSetting setting)
         {
+            var drawFlags = setting.drawedProperty;
+            ConvertUnityEverythingFlagsToAll(ref drawFlags);
+            int intBits = 32;
+            int lineCount = GetDrawingLineCount(property,
+                drawFlags,
+                10,
+                intBits,
+                IsDefaultValue);
+            var seamlessProp = property.FindPropertyRelative(AudioEntity.ForEditor.SeamlessLoop);
+
             int filterRange = FlagsExtension.GetFlagsRange(0, 10 - 1, FlagsExtension.FlagsRangeType.Excluded);
-            ConvertUnityEverythingFlagsToAll(ref setting.drawedProperty);
             int count = FlagsExtension.GetFlagsOnCount((int) setting.drawedProperty & filterRange);
 
-            var seamlessProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.SeamlessLoop);
             if (seamlessProp.boolValue) count++;
+            float offset = 0f;
+            offset += IsDefaultValueAndCanNotDraw(property, drawFlags, EDrawedProperty.Priority) ? 0f : 7;
+            offset += IsDefaultValueAndCanNotDraw(property, drawFlags, EDrawedProperty.MasterVolume) ? 0f : SnapVolumePadding;
+
+            return (int) (lineCount * SingleLineSpace + offset);
+        }
+
+        private float GetAdditionalClipPropertiesHeight(SerializedProperty property, AudioEditorSetting.AudioTypeSetting setting)
+        {
+            var drawFlags = setting.drawedProperty;
+            ConvertUnityEverythingFlagsToAll(ref drawFlags);
+            int lineCount = GetDrawingLineCount(property,
+                drawFlags,
+                0,
+                10 - 1,
+                IsDefaultValue);
+            return lineCount * SingleLineSpace;
+        }
+
+        private int GetDrawingLineCount(
+            SerializedProperty property,
+            EDrawedProperty flags,
+            int startIndex,
+            int lastIndex,
+            Func<SerializedProperty, EDrawedProperty, bool> onGetIsDefaultValue)
+        {
+            int count = 0;
+            for (int i = startIndex; i <= lastIndex; i++)
+            {
+                int drawFlag = (1 << i);
+                if (drawFlag > (int) EDrawedProperty.All) break;
+
+                if (!EDrawedProperty.All.HasFlagUnsafe((EDrawedProperty) drawFlag)) continue;
+
+                bool canDraw = ((int) flags & drawFlag) != 0;
+                if (canDraw || !onGetIsDefaultValue.Invoke(property, (EDrawedProperty) drawFlag)) count++;
+            }
 
             return count;
         }
@@ -405,7 +485,7 @@ namespace PancakeEditor.Sound
         private float GetAdditionalBasePropertiesOffest(AudioEditorSetting.AudioTypeSetting setting)
         {
             var offset = 0f;
-            offset += setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.Priority) ? TWO_SIDES_LABEL_OFFSET_Y : 0f;
+            offset += setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.Priority) ? AudioConstant.TWO_SIDES_LABEL_OFFSET_Y : 0f;
             offset += setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.MasterVolume) ? SnapVolumePadding : 0f;
             return offset;
         }
@@ -419,6 +499,8 @@ namespace PancakeEditor.Sound
 
         private void DrawAdditionalBaseProperties(Rect position, SerializedProperty property, AudioEditorSetting.AudioTypeSetting setting)
         {
+            var drawFlags = setting.drawedProperty;
+            ConvertUnityEverythingFlagsToAll(ref drawFlags);
             DrawMasterVolume();
             DrawPitchProperty();
             DrawPriorityProperty();
@@ -427,18 +509,19 @@ namespace PancakeEditor.Sound
 
             void DrawMasterVolume()
             {
-                if (!setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.MasterVolume)) return;
+                if (IsDefaultValueAndCanNotDraw(property,
+                        drawFlags,
+                        EDrawedProperty.MasterVolume,
+                        out var masterVolProp,
+                        out var volRandProp)) return;
 
                 Offset += SnapVolumePadding;
                 var masterVolRect = GetRectAndIterateLine(position);
                 masterVolRect.width *= DEFAULT_FIELD_RATIO;
-                var masterVolProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.MasterVolume);
-                var snapVolProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.SnapToFullVolume);
-
+                var snapVolProp = property.FindPropertyRelative(AudioEntity.ForEditor.SnapToFullVolume);
                 var randButtonRect = new Rect(masterVolRect.xMax + 5f, masterVolRect.y, RANDOM_TOOL_BAR_WIDTH, masterVolRect.height);
-                if (DrawRandomButton(randButtonRect, ERandomFlags.Volume, property))
+                if (DrawRandomButton(randButtonRect, ERandomFlag.Volume, property))
                 {
-                    var volRandProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.VolumeRandomRange);
                     float vol = masterVolProp.floatValue;
                     float volRange = volRandProp.floatValue;
 
@@ -446,14 +529,14 @@ namespace PancakeEditor.Sound
 #if !UNITY_WEBGL
                     if (AudioEditorSetting.ShowVuColorOnVolumeSlider) onDrawVu = DrawVuMeter;
 #endif
-                    bool isWebGL = EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+                    GetMixerMinMaxVolume(out float minVol, out float maxVol);
                     DrawRandomRangeSlider(masterVolRect,
                         _masterVolLabel,
                         ref vol,
                         ref volRange,
-                        AudioConstant.MIN_VOLUME,
-                        isWebGL ? AudioConstant.FULL_VOLUME : AudioConstant.MAX_VOLUME,
-                        EditorAudioEx.RandomRangeSliderType.Volume,
+                        minVol,
+                        maxVol,
+                        RandomRangeSliderType.Volume,
                         onDrawVu);
                     masterVolProp.floatValue = vol;
                     volRandProp.floatValue = volRange;
@@ -470,36 +553,43 @@ namespace PancakeEditor.Sound
 
             void DrawLoopProperty()
             {
-                if (setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.Loop))
-                {
-                    _loopingToggles[0] = property.FindPropertyRelative(AudioEntity.EditorPropertyName.Loop);
-                    _loopingToggles[1] = property.FindPropertyRelative(AudioEntity.EditorPropertyName.SeamlessLoop);
+                if (IsDefaultValueAndCanNotDraw(property,
+                        drawFlags,
+                        EDrawedProperty.Loop,
+                        out var loopProp,
+                        out var seamlessProp)) return;
 
-                    var loopRect = GetRectAndIterateLine(position);
-                    DrawToggleGroup(loopRect, _loopingLabel, _loopingToggles);
+                _loopingToggles[0] = loopProp;
+                _loopingToggles[1] = seamlessProp;
 
-                    if (_loopingToggles[1].boolValue) DrawSeamlessSetting(position, property);
-                }
+                var loopRect = GetRectAndIterateLine(position);
+                _loopingRects = _loopingRects ?? new Rect[_loopingToggles.Length];
+                _loopingRects[0] = new Rect(loopRect) {width = 100f, x = loopRect.x + EditorGUIUtility.labelWidth};
+                _loopingRects[1] = new Rect(loopRect) {width = 200f, x = _loopingRects[0].xMax};
+                DrawToggleGroup(loopRect, _loopingLabel, _loopingToggles, _loopingRects);
+
+                if (seamlessProp.boolValue) DrawSeamlessSetting(position, property);
             }
 
             void DrawPitchProperty()
             {
-                if (!setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.Pitch)) return;
+                if (IsDefaultValueAndCanNotDraw(property,
+                        drawFlags,
+                        EDrawedProperty.Pitch,
+                        out var pitchProp,
+                        out var pitchRandProp)) return;
 
                 var pitchRect = GetRectAndIterateLine(position);
                 pitchRect.width *= DEFAULT_FIELD_RATIO;
 
                 bool isWebGL = EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
                 var pitchSetting = isWebGL ? EPitchShiftingSetting.AudioSource : AudioSettings.PitchSetting;
-                float minPitch = pitchSetting == EPitchShiftingSetting.AudioMixer ? AudioConstant.MIN_MIXER_PITCH : AudioConstant.MIN_AUDIO_SOURCE_PITCH;
+                float minPitch = AudioConstant.MIN_PLAYABLE_PITCH;
                 float maxPitch = pitchSetting == EPitchShiftingSetting.AudioMixer ? AudioConstant.MAX_MIXER_PITCH : AudioConstant.MAX_AUDIO_SOURCE_PITCH;
                 _pitchLabel.tooltip = $"According to the current preference setting, the Pitch will be set on [{pitchSetting}] ";
 
-                var pitchProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.Pitch);
-                var pitchRandProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.PitchRandomRange);
-
                 var randButtonRect = new Rect(pitchRect.xMax + 5f, pitchRect.y, RANDOM_TOOL_BAR_WIDTH, pitchRect.height);
-                bool hasRandom = DrawRandomButton(randButtonRect, ERandomFlags.Pitch, property);
+                bool hasRandom = DrawRandomButton(randButtonRect, ERandomFlag.Pitch, property);
 
                 float pitch = Mathf.Clamp(pitchProp.floatValue, minPitch, maxPitch);
                 float pitchRange = pitchRandProp.floatValue;
@@ -519,9 +609,9 @@ namespace PancakeEditor.Sound
                                 ref pitchRange,
                                 minPitch,
                                 maxPitch,
-                                EditorAudioEx.RandomRangeSliderType.Default);
-                            var minFieldRect = new Rect(pitchRect) {x = pitchRect.x + EditorGUIUtility.labelWidth + 5f, width = MIN_MAX_SLIDER_FIELD_WIDTH};
-                            var maxFieldRect = new Rect(minFieldRect) {x = pitchRect.xMax - MIN_MAX_SLIDER_FIELD_WIDTH};
+                                RandomRangeSliderType.Default);
+                            var minFieldRect = new Rect(pitchRect) {x = pitchRect.x + EditorGUIUtility.labelWidth + 5f, width = AudioConstant.MIN_MAX_SLIDER_FIELD_WIDTH};
+                            var maxFieldRect = new Rect(minFieldRect) {x = pitchRect.xMax - AudioConstant.MIN_MAX_SLIDER_FIELD_WIDTH};
                             DrawPercentageLabel(minFieldRect);
                             DrawPercentageLabel(maxFieldRect);
                         }
@@ -548,7 +638,7 @@ namespace PancakeEditor.Sound
                                 ref pitchRange,
                                 minPitch,
                                 maxPitch,
-                                EditorAudioEx.RandomRangeSliderType.Default);
+                                RandomRangeSliderType.Default);
                         }
                         else
                         {
@@ -568,62 +658,117 @@ namespace PancakeEditor.Sound
 
             void DrawPriorityProperty()
             {
-                if (setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.Priority))
-                {
-                    var priorityRect = GetRectAndIterateLine(position);
-                    priorityRect.width *= DEFAULT_FIELD_RATIO;
-                    var priorityProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.Priority);
+                if (IsDefaultValueAndCanNotDraw(property,
+                        drawFlags,
+                        EDrawedProperty.Priority,
+                        out var priorityProp,
+                        out _)) return;
 
-                    var multiLabels = new EditorAudioEx.MultiLabel() {main = nameof(AudioEntity.Priority), left = "High", right = "Low"};
-                    priorityProp.intValue = (int) Draw2SidesLabelSlider(priorityRect,
-                        multiLabels,
-                        priorityProp.intValue,
-                        AudioConstant.HIGHEST_PRIORITY,
-                        AudioConstant.LOWEST_PRIORITY);
-                    Offset += TWO_SIDES_LABEL_OFFSET_Y;
-                }
+
+                var priorityRect = GetRectAndIterateLine(position);
+                priorityRect.width *= DEFAULT_FIELD_RATIO;
+
+                var multiLabels = new MultiLabel() {main = nameof(AudioEntity.Priority), left = "High", right = "Low"};
+                priorityProp.intValue = (int) Draw2SidesLabelSlider(priorityRect,
+                    multiLabels,
+                    priorityProp.intValue,
+                    AudioConstant.HIGHEST_PRIORITY,
+                    AudioConstant.LOWEST_PRIORITY);
+                Offset += AudioConstant.TWO_SIDES_LABEL_OFFSET_Y;
             }
 
             void DrawSpatialSetting()
             {
-                if (setting.drawedProperty.HasFlagUnsafe(EDrawedProperty.SpatialSettings))
-                {
-                    var spatialProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.SpatialSetting);
-                    var suffixRect = EditorGUI.PrefixLabel(GetRectAndIterateLine(position), _spatialLabel);
-                    Uniform.SplitRectHorizontal(suffixRect,
-                        0.5f,
-                        5f,
-                        out var objFieldRect,
-                        out var buttonRect);
-                    EditorGUI.ObjectField(objFieldRect, spatialProp, GUIContent.none);
-                    bool hasSetting = spatialProp.objectReferenceValue != null;
-                    string buttonLabel = hasSetting ? "Open Panel" : "Create And Open";
-                    if (GUI.Button(buttonRect, buttonLabel))
-                    {
-                        if (!hasSetting)
-                        {
-                            string entityName = property.FindPropertyRelative(nameof(IAudioIdentity.Name).ToCamelCase()).stringValue;
-                            string path = EditorUtility.SaveFilePanelInProject("Save Spatial Setting", entityName + "_Spatial", "asset", "Message");
-                            if (!string.IsNullOrEmpty(path))
-                            {
-                                var newSetting = ScriptableObject.CreateInstance<SpatialSetting>();
-                                AssetDatabase.CreateAsset(newSetting, path);
-                                spatialProp.objectReferenceValue = newSetting;
-                                spatialProp.serializedObject.ApplyModifiedProperties();
+                if (IsDefaultValueAndCanNotDraw(property,
+                        drawFlags,
+                        EDrawedProperty.SpatialSettings,
+                        out var spatialProp,
+                        out _)) return;
 
-                                SpatialSettingsEditorWindow.ShowWindow(spatialProp);
-                                GUIUtility.ExitGUI();
-                                AssetDatabase.SaveAssets();
-                            }
-                        }
-                        else
+                var suffixRect = EditorGUI.PrefixLabel(GetRectAndIterateLine(position), _spatialLabel);
+                Uniform.SplitRectHorizontal(suffixRect,
+                    0.5f,
+                    5f,
+                    out var objFieldRect,
+                    out var buttonRect);
+                EditorGUI.ObjectField(objFieldRect, spatialProp, GUIContent.none);
+                bool hasSetting = spatialProp.objectReferenceValue != null;
+                string buttonLabel = hasSetting ? "Open Panel" : "Create And Open";
+                if (GUI.Button(buttonRect, buttonLabel))
+                {
+                    if (!hasSetting)
+                    {
+                        string entityName = property.FindPropertyRelative(nameof(IAudioIdentity.Name).ToCamelCase()).stringValue;
+                        string path = EditorUtility.SaveFilePanelInProject("Save Spatial Setting", entityName + "_Spatial", "asset", "Message");
+                        if (!string.IsNullOrEmpty(path))
                         {
+                            var newSetting = ScriptableObject.CreateInstance<SpatialSetting>();
+                            AssetDatabase.CreateAsset(newSetting, path);
+                            spatialProp.objectReferenceValue = newSetting;
+                            spatialProp.serializedObject.ApplyModifiedProperties();
+
                             SpatialSettingsEditorWindow.ShowWindow(spatialProp);
                             GUIUtility.ExitGUI();
+                            AssetDatabase.SaveAssets();
                         }
+                    }
+                    else
+                    {
+                        SpatialSettingsEditorWindow.ShowWindow(spatialProp);
+                        GUIUtility.ExitGUI();
                     }
                 }
             }
+        }
+
+        private bool IsDefaultValue(SerializedProperty property, EDrawedProperty drawedProperty) { return IsDefaultValue(property, drawedProperty, out _, out _); }
+
+        private bool IsDefaultValue(SerializedProperty property, EDrawedProperty drawedProperty, out SerializedProperty mainProp, out SerializedProperty secondaryProp)
+        {
+            mainProp = null;
+            secondaryProp = null;
+            switch (drawedProperty)
+            {
+                case EDrawedProperty.MasterVolume:
+                    mainProp = property.FindPropertyRelative(AudioEntity.ForEditor.MasterVolume);
+                    secondaryProp = property.FindPropertyRelative(AudioEntity.ForEditor.VolumeRandomRange);
+                    return Mathf.Approximately(mainProp.floatValue, AudioConstant.FULL_VOLUME) && secondaryProp.floatValue == 0f;
+                case EDrawedProperty.Loop:
+                    mainProp = property.FindPropertyRelative(AudioEntity.ForEditor.Loop);
+                    secondaryProp = property.FindPropertyRelative(AudioEntity.ForEditor.SeamlessLoop);
+                    return !mainProp.boolValue && !secondaryProp.boolValue;
+                case EDrawedProperty.Priority:
+                    mainProp = property.FindPropertyRelative(AudioEntity.ForEditor.Priority);
+                    return mainProp.intValue == AudioConstant.DEFAULT_PRIORITY;
+                case EDrawedProperty.SpatialSettings:
+                    mainProp = property.FindPropertyRelative(AudioEntity.ForEditor.SpatialSetting);
+                    return mainProp.objectReferenceValue == null;
+                case EDrawedProperty.Pitch:
+                    mainProp = property.FindPropertyRelative(AudioEntity.ForEditor.Pitch);
+                    secondaryProp = property.FindPropertyRelative(AudioEntity.ForEditor.PitchRandomRange);
+                    return Mathf.Approximately(mainProp.floatValue, AudioConstant.DEFAULT_PITCH) && secondaryProp.floatValue == 0f;
+            }
+
+            return true;
+        }
+
+        private bool IsDefaultValueAndCanNotDraw(SerializedProperty checkedProp, EDrawedProperty drawFlags, EDrawedProperty drawTarget)
+        {
+            return IsDefaultValueAndCanNotDraw(checkedProp,
+                drawFlags,
+                drawTarget,
+                out _,
+                out _);
+        }
+
+        private bool IsDefaultValueAndCanNotDraw(
+            SerializedProperty checkedProp,
+            EDrawedProperty drawFlags,
+            EDrawedProperty drawTarget,
+            out SerializedProperty mainProp,
+            out SerializedProperty secondaryProp)
+        {
+            return IsDefaultValue(checkedProp, drawTarget, out mainProp, out secondaryProp) && !drawFlags.HasFlagUnsafe(drawTarget);
         }
 
         private void DrawPercentageLabel(Rect fieldRect)
@@ -642,20 +787,20 @@ namespace PancakeEditor.Sound
             EditorGUI.LabelField(_seamlessRects[drawIndex], "Transition By");
             drawIndex++;
 
-            var seamlessTypeProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.SeamlessTransitionType);
+            var seamlessTypeProp = property.FindPropertyRelative(AudioEntity.ForEditor.SeamlessTransitionType);
             var currentType = (AudioEntity.SeamlessType) seamlessTypeProp.enumValueIndex;
             currentType = (AudioEntity.SeamlessType) EditorGUI.EnumPopup(_seamlessRects[drawIndex], currentType);
             seamlessTypeProp.enumValueIndex = (int) currentType;
             drawIndex++;
 
-            var transitionTimeProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.TransitionTime);
+            var transitionTimeProp = property.FindPropertyRelative(AudioEntity.ForEditor.TransitionTime);
             switch (currentType)
             {
                 case AudioEntity.SeamlessType.Time:
                     transitionTimeProp.floatValue = Mathf.Abs(EditorGUI.FloatField(_seamlessRects[drawIndex], transitionTimeProp.floatValue));
                     break;
                 case AudioEntity.SeamlessType.Tempo:
-                    var tempoProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.TransitionTempo);
+                    var tempoProp = property.FindPropertyRelative(AudioEntity.ForEditor.TransitionTempo);
                     var bpmProp = tempoProp.FindPropertyRelative(nameof(AudioEntity.TempoTransition.bpm));
                     var beatsProp = tempoProp.FindPropertyRelative(nameof(AudioEntity.TempoTransition.beats));
 
@@ -684,62 +829,10 @@ namespace PancakeEditor.Sound
             }
         }
 
-        private void DrawRandomRangeSlider(
-            Rect rect,
-            GUIContent label,
-            ref float value,
-            ref float valueRange,
-            float minLimit,
-            float maxLimit,
-            EditorAudioEx.RandomRangeSliderType sliderType,
-            Action<Rect> onGetSliderRect = null)
+        private bool DrawRandomButton(Rect rect, ERandomFlag targetFlag, SerializedProperty property)
         {
-            float minRand = value - valueRange * 0.5f;
-            float maxRand = value + valueRange * 0.5f;
-            minRand = (float) Math.Round(Mathf.Clamp(minRand, minLimit, maxLimit), ROUNDED_DIGITS, MidpointRounding.AwayFromZero);
-            maxRand = (float) Math.Round(Mathf.Clamp(maxRand, minLimit, maxLimit), ROUNDED_DIGITS, MidpointRounding.AwayFromZero);
-            switch (sliderType)
-            {
-                case EditorAudioEx.RandomRangeSliderType.Default:
-                    DrawMinMaxSlider(rect,
-                        label,
-                        ref minRand,
-                        ref maxRand,
-                        minLimit,
-                        maxLimit,
-                        MIN_MAX_SLIDER_FIELD_WIDTH,
-                        onGetSliderRect);
-                    break;
-                case EditorAudioEx.RandomRangeSliderType.Logarithmic:
-                    DrawLogarithmicMinMaxSlider(rect,
-                        label,
-                        ref minRand,
-                        ref maxRand,
-                        minLimit,
-                        maxLimit,
-                        MIN_MAX_SLIDER_FIELD_WIDTH,
-                        onGetSliderRect);
-                    break;
-                case EditorAudioEx.RandomRangeSliderType.Volume:
-                    DrawRandomRangeVolumeSlider(rect,
-                        label,
-                        ref minRand,
-                        ref maxRand,
-                        minLimit,
-                        maxLimit,
-                        MIN_MAX_SLIDER_FIELD_WIDTH,
-                        onGetSliderRect);
-                    break;
-            }
-
-            valueRange = maxRand - minRand;
-            value = minRand + valueRange * 0.5f;
-        }
-
-        private bool DrawRandomButton(Rect rect, ERandomFlags targetFlag, SerializedProperty property)
-        {
-            var randFlagsProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.RandomFlags);
-            var randomFlags = (ERandomFlags) randFlagsProp.intValue;
+            var randFlagsProp = property.FindPropertyRelative(AudioEntity.ForEditor.RandomFlags);
+            var randomFlags = (ERandomFlag) randFlagsProp.intValue;
             bool hasRandom = randomFlags.HasFlagUnsafe(targetFlag);
             hasRandom = GUI.Toggle(rect, hasRandom, "RND", EditorStyles.miniButton);
             randomFlags = hasRandom ? randomFlags | targetFlag : randomFlags & ~targetFlag;
@@ -750,6 +843,87 @@ namespace PancakeEditor.Sound
         private void ConvertUnityEverythingFlagsToAll(ref EDrawedProperty drawedProperty)
         {
             if ((int) drawedProperty == -1) drawedProperty = EDrawedProperty.All;
+        }
+
+        private void StartPreview(EntityData data, AudioEntity entity)
+        {
+            if (entity == null) return;
+
+            _currentPreviewingEntity = entity;
+            var clip = entity.PickNewClip(out int index);
+            data.Clips.SelectAndSetPlayingElement(index);
+
+            float volume = clip.Volume * entity.GetMasterVolume();
+            float pitch = entity.GetPitch();
+            Action onReplay = null;
+            if (data.isLoop)
+            {
+                onReplay = ReplayPreview;
+            }
+
+            var clipData = new EditorPlayAudioClip.Data(clip) {Volume = volume};
+            EditorPlayAudioClip.In.PlayClipByAudioSource(clipData, data.isLoop, onReplay, pitch);
+            EditorPlayAudioClip.In.PlaybackIndicator.SetClipInfo(data.Clips.PreviewRect, new PreviewClip(clip), entity.GetPitch());
+            data.isPreviewing = true;
+            EditorPlayAudioClip.In.OnFinished = OnPreviewFinished;
+
+            void ReplayPreview() { StartPreview(data, entity); }
+
+            void OnPreviewFinished()
+            {
+                data.isPreviewing = false;
+                data.Clips.SetPlayingClip(null);
+            }
+        }
+
+        private void ResetPreview()
+        {
+            AudioExtension.ClearPreviewAudioData();
+            _currentPreviewingEntity?.Clips?.ResetIsUse();
+        }
+
+        private bool TryGetEntityInstance(SerializedProperty property, out AudioEntity entity)
+        {
+            entity = null;
+            object obj = fieldInfo.GetValue(property.serializedObject.targetObject);
+            if (obj is AudioEntity[] entities)
+            {
+                const string baseName = "entities" + ".Array.data[";
+                string num = property.propertyPath.Remove(property.propertyPath.Length - 1).Remove(0, baseName.Length);
+                if (int.TryParse(num, out int index) && index < entities.Length) entity = entities[index];
+            }
+
+            return entity != null;
+        }
+
+        private static void OnClickChangeDrawedProperties(Rect rect, SerializedProperty property)
+        {
+            var idProp = property.FindPropertyRelative(nameof(AudioEntity.Id).ToLower());
+            var nameProp = property.FindPropertyRelative(nameof(AudioEntity.Name).ToLower());
+
+            var menu = new GenericMenu();
+            menu.AddItem(new GUIContent($"Remove [{nameProp.stringValue}]"), false, () => OnRemoveEntity?.Invoke());
+
+            var audioType = AudioExtension.GetAudioType(idProp.intValue);
+            if (!AudioEditorSetting.Instance.TryGetAudioTypeSetting(audioType, out var typeSetting)) return;
+
+            menu.AddSeparator(string.Empty);
+            menu.AddDisabledItem(new GUIContent($"Displayed properties of AudioType.{audioType}"));
+            ForeachConcreteDrawedProperty(OnAddMenuItem);
+            menu.DropDown(rect);
+
+            void OnAddMenuItem(EDrawedProperty target) { menu.AddItem(new GUIContent(target.ToString()), typeSetting.CanDraw(target), OnChangeFlags, target); }
+
+            void OnChangeFlags(object userData)
+            {
+                if (userData is EDrawedProperty target)
+                {
+                    bool hasFlag = typeSetting.CanDraw(target);
+                    if (hasFlag) typeSetting.drawedProperty &= ~target;
+                    else typeSetting.drawedProperty |= target;
+                    AudioEditorSetting.Instance.WriteAudioTypeSetting(typeSetting.audioType, typeSetting);
+                }
+            }
         }
     }
 }

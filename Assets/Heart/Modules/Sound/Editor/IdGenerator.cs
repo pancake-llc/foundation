@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Pancake.Sound;
 using UnityEditor;
@@ -7,18 +8,12 @@ namespace PancakeEditor.Sound
     public class IdGenerator : IUniqueIdGenerator
     {
         private bool _isInit;
-        private List<IAudioAsset> _assetList;
+        private IReadOnlyList<AudioAsset> _assetList;
 
         private void Init()
         {
-            _assetList = new List<IAudioAsset>();
-
-            foreach (string guid in LibraryDataContainer.Data.Settings.guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                if (AssetDatabase.LoadAssetAtPath(path, typeof(IAudioAsset)) is IAudioAsset asset) _assetList.Add(asset);
-            }
-
+            if (!EditorAudioEx.TryGetCoreData(out var coreData)) return;
+            _assetList = coreData.Assets;
             _isInit = true;
         }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Pancake.Sound
 {
@@ -80,20 +81,20 @@ namespace Pancake.Sound
         /// <summary>
         /// Set the master volume
         /// </summary>
-        /// <param name="vol">values between 0.0 to 10.0</param>
-        public static void SetVolume(float vol) => SetVolume(EAudioType.All, vol);
+        /// <param name="volume">Accepts values from 0 to 10, default is 1</param>
+        public static void SetVolume(float volume) => SetVolume(EAudioType.All, volume);
 
         /// <summary>
         /// Set the volume of the given audio type
         /// </summary>
-        /// <param name="volume">values between 0.0 to 10.0</param>
+        /// <param name="volume">Accepts values from 0 to 10, default is 1</param>
         /// <param name="audioType"></param>
         public static void SetVolume(this EAudioType audioType, float volume) => SetVolume(audioType, volume, AudioConstant.FADE_TIME_IMMEDIATE);
 
         /// <summary>
         /// Set the volume of the given audio type
         /// </summary>
-        /// <param name="volume">values between 0.0 to 10.0</param>
+        /// <param name="volume">Accepts values from 0 to 10, default is 1</param>
         /// <param name="audioType"></param>
         /// <param name="fadeTime">Set this value to override the LibraryManager's setting</param>
         public static void SetVolume(this EAudioType audioType, float volume, float fadeTime) => SoundManager.Instance?.SetVolume(volume, audioType, fadeTime);
@@ -101,19 +102,47 @@ namespace Pancake.Sound
         /// <summary>
         /// Set the volume of an audio
         /// </summary>
-        /// <param name="volume">values between 0.0 to 10.0</param>
+        /// <param name="volume">Accepts values from 0 to 10, default is 1</param>
         /// <param name="id"></param>
         public static void SetVolume(this SoundId id, float volume) => SetVolume(id, volume, AudioConstant.FADE_TIME_IMMEDIATE);
 
         /// <summary>
         /// Set the volume of an audio
         /// </summary>
-        /// <param name="volume">values between 0.0 to 10.0</param>
+        /// <param name="volume">Accepts values from 0 to 10, default is 1</param>
         /// <param name="id"></param>
         /// <param name="fadeTime">Set this value to override the LibraryManager's setting</param>
         public static void SetVolume(this SoundId id, float volume, float fadeTime) => SoundManager.Instance?.SetVolume(id, volume, fadeTime);
 
         #endregion
+
+        /// <summary>
+        /// Set all audio's pitch immediately
+        /// </summary>
+        /// <param name="pitch">values between -3 to 3, default is 1</param>
+        public static void SetPitch(float pitch) => SoundManager.Instance?.SetPitch(pitch, EAudioType.All, AudioConstant.FADE_TIME_IMMEDIATE);
+
+        /// <summary>
+        /// Set the pitch of the given audio type immediately
+        /// </summary>
+        /// <param name="pitch">values between -3 to 3, default is 1</param>
+        /// <param name="audioType"></param>
+        public static void SetPitch(float pitch, EAudioType audioType) => SoundManager.Instance?.SetPitch(pitch, audioType, AudioConstant.FADE_TIME_IMMEDIATE);
+
+        /// <summary>
+        /// Set all audio's pitch
+        /// </summary>
+        /// <param name="pitch">values between -3 to 3, default is 1</param>
+        /// <param name="fadeTime"></param>
+        public static void SetPitch(float pitch, float fadeTime) => SoundManager.Instance?.SetPitch(pitch, EAudioType.All, fadeTime);
+
+        /// <summary>
+        /// Set the pitch of the given audio type
+        /// </summary>
+        /// <param name="pitch">values between -3 to 3, default is 1</param>
+        /// <param name="audioType"></param>
+        /// <param name="fadeTime"></param>
+        public static void SetPitch(float pitch, EAudioType audioType, float fadeTime) => SoundManager.Instance?.SetPitch(pitch, audioType, fadeTime);
 
 #if !UNITY_WEBGL
 
@@ -137,8 +166,44 @@ namespace Pancake.Sound
         #endregion
 
 #endif
-        
+
         #region Chain Method
+
+        #region Stop
+
+        public static void Stop(this IAudioStoppable player) => player?.Stop();
+        public static void Stop(this IAudioStoppable player, Action onFinished) => player?.Stop(onFinished);
+
+        public static void Stop(this IAudioStoppable player, float fadeOut) => player?.Stop(fadeOut);
+
+        public static void Stop(this IAudioStoppable player, float fadeOut, Action onFinished) => player?.Stop(fadeOut, onFinished);
+
+        public static void Pause(this IAudioStoppable player) => player?.Pause();
+
+        public static void Pause(this IAudioStoppable player, float fadeOut) => player?.Pause(fadeOut);
+
+        #endregion
+
+        #region Set Pitch
+
+        /// <summary>
+        /// Set the player's pitch (-3 ~ 3).
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="pitch">The target pitch</param>
+        /// <param name="fadeTime">Time to reach the target volume from the current volume.</param>
+        public static IAudioPlayer SetPitch(this IAudioPlayer player, float pitch, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) =>
+            player?.SetPitch(pitch, fadeTime);
+
+        /// <inheritdoc cref="SetPitch(IAudioPlayer,float,float)"/>
+        public static IAudioPlayer SetPitch(this IMusicPlayer player, float pitch, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) =>
+            player?.SetPitch(pitch, fadeTime);
+
+        /// <inheritdoc cref="SetPitch(IAudioPlayer,float,float)"/>
+        public static IAudioPlayer SetPitch(this IPlayerEffect player, float pitch, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) =>
+            player?.SetPitch(pitch, fadeTime);
+
+        #endregion
 
         #region Set Volume
 
@@ -148,13 +213,16 @@ namespace Pancake.Sound
         /// <param name="player"></param>
         /// <param name="volume">The target volume</param>
         /// <param name="fadeTime">Time to reach the target volume from the current volume.</param>
-        public static IAudioPlayer SetVolume(this IAudioPlayer player, float volume, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) => player?.SetVolume(volume, fadeTime);
+        public static IAudioPlayer SetVolume(this IAudioPlayer player, float volume, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) =>
+            player?.SetVolume(volume, fadeTime);
 
         /// <inheritdoc cref="SetVolume(IAudioPlayer,float,float)"/>
-        public static IAudioPlayer SetVolume(this IMusicPlayer player, float volume, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) => player?.SetVolume(volume, fadeTime);
+        public static IAudioPlayer SetVolume(this IMusicPlayer player, float volume, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) =>
+            player?.SetVolume(volume, fadeTime);
 
         /// <inheritdoc cref="SetVolume(IAudioPlayer,float,float)"/>
-        public static IAudioPlayer SetVolume(this IPlayerEffect player, float volume, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) => player?.SetVolume(volume, fadeTime);
+        public static IAudioPlayer SetVolume(this IPlayerEffect player, float volume, float fadeTime = AudioConstant.FADE_TIME_IMMEDIATE) =>
+            player?.SetVolume(volume, fadeTime);
 
         #endregion
 
@@ -241,7 +309,10 @@ namespace Pancake.Sound
         /// <param name="player"></param>
         /// <param name="frequency">10 Hz ~ 22000Hz</param>
         /// <param name="fadeTime">The time duration of the FadeIn and FadeOut</param>
-        public static IPlayerEffect LowPassOthers(this IPlayerEffect player, float frequency = AudioConstant.LOW_PASS_FREQUENCY, float fadeTime = AudioConstant.FADE_TIME_QUICK) =>
+        public static IPlayerEffect LowPassOthers(
+            this IPlayerEffect player,
+            float frequency = AudioConstant.LOW_PASS_FREQUENCY,
+            float fadeTime = AudioConstant.FADE_TIME_QUICK) =>
             player?.LowPassOthers(frequency, fadeTime);
 
         /// <inheritdoc cref = "LowPassOthers(IPlayerEffect, float, float)" />
@@ -256,7 +327,10 @@ namespace Pancake.Sound
         /// <param name="player"></param>
         /// <param name="frequency">10 Hz ~ 22000Hz</param>
         /// <param name="fadeTime">The time duration of the FadeIn and FadeOut</param>
-        public static IPlayerEffect HighPassOthers(this IPlayerEffect player, float frequency = AudioConstant.HIGH_PASS_FREQUENCY, float fadeTime = AudioConstant.FADE_TIME_QUICK) =>
+        public static IPlayerEffect HighPassOthers(
+            this IPlayerEffect player,
+            float frequency = AudioConstant.HIGH_PASS_FREQUENCY,
+            float fadeTime = AudioConstant.FADE_TIME_QUICK) =>
             player?.HighPassOthers(frequency, fadeTime);
 
         /// <inheritdoc cref = "HighPassOthers(IPlayerEffect, float, float)" />

@@ -49,6 +49,12 @@ namespace Pancake.Sound
 
         public const int SECOND_IN_MILLISECONDS = 1000;
         public const float MILLISECOND_IN_SECONDS = 0.001f;
+        
+        public const int ROUNDED_DIGITS = 4;
+        public const float MIN_MAX_SLIDER_FIELD_WIDTH = 50f;
+        public const float TWO_SIDES_LABEL_OFFSET_Y = 7f;
+        public const float INDENT_IN_PIXEL = 15f;
+        public const float LOGARITHMIC_MIN_VALUE = 0.0001f;
 
         // Base on AuidoSource default values
         public const float DEFAULT_DOPPLER = 1f;
@@ -57,9 +63,9 @@ namespace Pancake.Sound
         public const float SPATIAL_BLEND_3D = 1f;
         public const float SPATIAL_BLEND_2D = 0f;
         public const float DEFAULT_PITCH = 1f; // The default pitch for both AudioSource and AudioMixer.
-        public const float MIN_AUDIO_SOURCE_PITCH = 0.1f; // todo: values under 0 is not supported currently. Might support in the future to achieve that reverse feature.
+        public const float MIN_AUDIO_SOURCE_PITCH = -3f; 
         public const float MAX_AUDIO_SOURCE_PITCH = 3f;
-        public const float MIN_MIXER_PITCH = 0.1f;
+        public const float MIN_PLAYABLE_PITCH = 0.01f;
         public const float MAX_MIXER_PITCH = 10f;
         public const int DEFAULT_PRIORITY = 128;
         public const int HIGHEST_PRIORITY = 0;
@@ -83,20 +89,16 @@ namespace Pancake.Sound
         public const Ease LOW_PASS_OUT_EASE = Ease.InCubic;
         public const Ease HIGH_PASS_IN_EASE = Ease.InCubic;
         public const Ease HIGH_PASS_OUT_EASE = Ease.OutCubic;
-
         public const int VIRTUAL_TRACK_COUNT = 4;
-
         public static float DecibelVoulumeFullScale => MAX_DECIBEL_VOLUME - MIN_DECIBEL_VOLUME;
-
         public const string LOG_HEADER = "<b><color=#FF77C6>[Audio] </color></b>";
-
         public const string TEMP_ASSET_NAME = "Temp";
         public const string AUDIO_PLAYER_PREFAB_NAME = "AudioPlayer";
-
 
         #region Audio Mixer
 
         public const string MIXER_NAME = "MainAudioMixer";
+        public const string EDITOR_MIXER_NAME = "EditorAudioMixer";
         public const string MASTER_TRACK_NAME = "Master";
         public const string GENERIC_TRACK_NAME = "Track";
         public const string MAIN_TRACK_NAME = "Main";

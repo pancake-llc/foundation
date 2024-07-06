@@ -12,20 +12,35 @@ namespace PancakeEditor.Sound
     {
         private ReorderableList _entitiesList;
         private IUniqueIdGenerator _idGenerator;
-        private EValidationErrorCode _entityIssue;
         public string CurrMessage { get; private set; }
 
         public IAudioAsset Asset { get; private set; }
 
-        public void AddEntitiesNameChangeListener() { AudioEntityPropertyDrawer.OnEntityNameChanged += Verify; }
+        public void AddEntitiesListener()
+        {
+            AudioEntityPropertyDrawer.OnEntityNameChanged += Verify;
+            AudioEntityPropertyDrawer.OnRemoveEntity += OnRemoveSelectedEntity;
+        }
 
-        public void RemoveEntitiesNameChangeListener() { AudioEntityPropertyDrawer.OnEntityNameChanged -= Verify; }
+        public void RemoveEntitiesListener()
+        {
+            AudioEntityPropertyDrawer.OnEntityNameChanged -= Verify;
+            AudioEntityPropertyDrawer.OnRemoveEntity -= OnRemoveSelectedEntity;
+        }
+
+        private void OnDestroy() { RemoveEntitiesListener(); }
 
         public void Init(IUniqueIdGenerator idGenerator)
         {
             Asset = target as IAudioAsset;
             _idGenerator = idGenerator;
             InitReorderableList();
+        }
+        
+        private void OnRemoveSelectedEntity()
+        {
+            ReorderableList.defaultBehaviours.DoRemoveButton(_entitiesList);
+            serializedObject.ApplyModifiedProperties();
         }
 
         public void SetData(string guid, string assetName)
@@ -64,7 +79,7 @@ namespace PancakeEditor.Sound
                 if (list.count > 0)
                 {
                     var lastElementProp = list.serializedProperty.GetArrayElementAtIndex(list.count - 1);
-                    int lastElementId = lastElementProp.FindPropertyRelative(EditorPropertyName.Id).intValue;
+                    int lastElementId = lastElementProp.FindPropertyRelative(ForEditor.Id).intValue;
                     audioType = AudioExtension.GetAudioType(lastElementId);
                 }
 
@@ -98,7 +113,7 @@ namespace PancakeEditor.Sound
 
         private void AssignID(int id, SerializedProperty entityProp)
         {
-            var idProp = entityProp.FindPropertyRelative(EditorPropertyName.Id);
+            var idProp = entityProp.FindPropertyRelative(ForEditor.Id);
             idProp.intValue = id;
             entityProp.serializedObject.ApplyModifiedProperties();
         }
@@ -143,8 +158,8 @@ namespace PancakeEditor.Sound
         {
             clipListProp.InsertArrayElementAtIndex(index);
             var elementProp = clipListProp.GetArrayElementAtIndex(index);
-            elementProp.FindPropertyRelative(SoundClip.EditorPropertyName.AudioClip).objectReferenceValue = clip;
-            elementProp.FindPropertyRelative(SoundClip.EditorPropertyName.Volume).floatValue = AudioConstant.FULL_VOLUME;
+            elementProp.FindPropertyRelative(SoundClip.ForEditor.AudioClip).objectReferenceValue = clip;
+            elementProp.FindPropertyRelative(SoundClip.ForEditor.Volume).floatValue = AudioConstant.FULL_VOLUME;
         }
 
         public void Verify()
@@ -154,7 +169,7 @@ namespace PancakeEditor.Sound
 
         private bool VerifyAsset()
         {
-            if (PancakeEditor.Common.Editor.IsInvalidName(Asset.AssetName, out var code))
+            if (Common.Editor.IsInvalidName(Asset.AssetName, out var code))
             {
                 switch (code)
                 {

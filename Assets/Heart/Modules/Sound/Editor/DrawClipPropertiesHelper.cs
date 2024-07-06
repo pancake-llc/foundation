@@ -43,6 +43,7 @@ namespace PancakeEditor.Sound
         private KeyValuePair<string, DraggablePoint> _currDraggedPoint;
         private ETransportType[] _allTransportType = Enum.GetValues(typeof(ETransportType)) as ETransportType[];
         private WaveformRenderHelper _waveformHelper = new();
+        private Action<string> _onPreviewingClip;
 
         public void DrawPlaybackPositionField(Rect position, ITransport transport)
         {
@@ -69,7 +70,7 @@ namespace PancakeEditor.Sound
             }
         }
 
-        public void DrawClipPreview(Rect previewRect, ITransport transport, AudioClip audioClip, float volume, string clipPath)
+        public void DrawClipPreview(Rect previewRect, ITransport transport, AudioClip audioClip, float volume, string clipPath, Action<string> onPreviewClip)
         {
             _clipPreviewHeight = previewRect.height;
             var currEvent = Event.current;
@@ -210,12 +211,6 @@ namespace PancakeEditor.Sound
                 {
                     _currDraggedPoint = default;
                 }
-
-
-                // foreach (var point in draggablePoints.Values)
-                // {
-                //     EditorGUI.DrawRect(point.Rect, new Color(1f, 1f, 1f, 0.3f));
-                // }
             }
 
             Rect DrawExtraSlience()
@@ -234,22 +229,26 @@ namespace PancakeEditor.Sound
                 {
                     float clickedPoint = currEvent.mousePosition.Scoping(previewRect).x / previewRect.width;
                     var startSample = (int) Math.Round(clickedPoint * audioClip.samples, MidpointRounding.AwayFromZero);
-                    EditorPlayAudioClip.PlayClip(audioClip, startSample, 0);
+                    EditorPlayAudioClip.In.PlayClip(audioClip, startSample, 0);
+                    EditorPlayAudioClip.In.OnFinished = () => _onPreviewingClip?.Invoke(null);
                     currEvent.Use();
 
-                    if (EditorPlayAudioClip.PlaybackIndicator.IsPlaying && EditorPlayAudioClip.CurrentPlayingClip == audioClip)
+                    if (EditorPlayAudioClip.In.PlaybackIndicator.IsPlaying)
                     {
-                        var clip = new PreviewClip() {StartPosition = clickedPoint * audioClip.length, EndPosition = 0f, Length = audioClip.length,};
-                        EditorPlayAudioClip.PlaybackIndicator.SetClipInfo(previewRect, clip);
+                        var clip = new PreviewClip() {StartPosition = clickedPoint * audioClip.length, EndPosition = 0f, FullLength = audioClip.length,};
+                        EditorPlayAudioClip.In.PlaybackIndicator.SetClipInfo(previewRect, clip);
                     }
+                    
+                    _onPreviewingClip = onPreviewClip;
+                    _onPreviewingClip?.Invoke(clipPath);
                 }
             }
         }
 
         public static void DrawPlaybackIndicator(Rect scope, Vector2 positionOffset = default)
         {
-            var indicator = EditorPlayAudioClip.PlaybackIndicator;
-            if (indicator.IsPlaying)
+            var indicator = EditorPlayAudioClip.In.PlaybackIndicator;
+            if (indicator != null && indicator.IsPlaying)
             {
                 GUI.BeginClip(scope);
                 {
@@ -299,7 +298,7 @@ namespace PancakeEditor.Sound
                     {
                         image = EditorGUIUtility.IconContent("AudioLowPassFilter Icon").image,
                         colorTint = _fadingLineColor,
-                        onSetPlaybackPosition = posInSec => transport.SetValue(transport.Length - transport.EndPosition - posInSec, transportType),
+                        onSetPlaybackPosition = posInSec => transport.SetValue(transport.FullLength - transport.EndPosition - posInSec, transportType),
                     };
                 case ETransportType.End:
                     return new DraggablePoint(rect)
@@ -307,7 +306,7 @@ namespace PancakeEditor.Sound
                         image = EditorGUIUtility.IconContent("IN foldout focus on@2x").image,
                         imageBorder = new Vector4(0f, 0f, DRAG_POINT_SIZE_LENGTH * 0.5f, 0f),
                         colorTint = _startEndColor,
-                        onSetPlaybackPosition = posInSec => transport.SetValue(transport.Length - posInSec, transportType),
+                        onSetPlaybackPosition = posInSec => transport.SetValue(transport.FullLength - posInSec, transportType),
                     };
                 default:
                     Debug.LogError(AudioConstant.LOG_HEADER + $"No corresponding point for transport type {transportType}");

@@ -39,7 +39,7 @@ namespace Pancake.Sound
         public const int LAST_AUDIO_TYPE = ((int) EAudioType.All + 1) >> 1;
         public const int ID_CAPACITY = 0x10000000; // 1000 0000 in HEX. 268,435,456 in DEC
         public static int FinalIDLimit => ((EAudioType) LAST_AUDIO_TYPE).GetInitialId() + ID_CAPACITY;
-        public static readonly Dictionary<int, int> ClipsSequencer = new();
+        private static Dictionary<int, int> clipsSequencer = new();
 
         public static float ToDecibel(this float vol, bool allowBoost = true) { return Mathf.Log10(vol.ClampNormalize(allowBoost)) * DEFAULT_DECIBEL_VOLUME_SCALE; }
 
@@ -124,13 +124,13 @@ namespace Pancake.Sound
 
         public static void SafeSetFloat(this AudioMixer mixer, string parameterName, float value)
         {
-            if (!string.IsNullOrEmpty(parameterName)) mixer.SetFloat(parameterName, value);
+            if (mixer && !string.IsNullOrEmpty(parameterName)) mixer.SetFloat(parameterName, value);
         }
 
         public static bool SafeGetFloat(this AudioMixer mixer, string parameterName, out float value)
         {
             value = default;
-            if (!string.IsNullOrEmpty(parameterName)) return mixer.GetFloat(parameterName, out value);
+            if (mixer && !string.IsNullOrEmpty(parameterName)) return mixer.GetFloat(parameterName, out value);
 
             return false;
         }
@@ -141,12 +141,9 @@ namespace Pancake.Sound
             while (currentTime < duration)
             {
                 currentTime += Time.deltaTime;
-                float newValue = Mathf.Lerp(start, target, EaseUtility.Evaluate(currentTime / duration, ease));
-                yield return newValue;
+                yield return Mathf.Lerp(start, target, EaseUtility.Evaluate(currentTime / duration, ease));
             }
         }
-
-        public static string ToName(this int id) { return SoundManager.Instance.GetNameByID(id); }
 
         public static bool IsDefaultCurve(this AnimationCurve curve, float defaultValue)
         {
@@ -197,11 +194,12 @@ namespace Pancake.Sound
             return default;
         }
 
-        public static SoundClip PickNewOne(this SoundClip[] clips, EAudioPlayMode playMode, int id)
+        public static SoundClip PickNewOne(this SoundClip[] clips, EAudioPlayMode playMode, int id, out int index)
         {
+            index = 0;
             if (clips is not {Length: > 0})
             {
-                Debug.LogError(LOG_HEADER + "There is no AudioClip in asset");
+                Debug.LogError(LOG_HEADER + "There are no AudioClip in the entity");
                 return null;
             }
 
@@ -210,32 +208,39 @@ namespace Pancake.Sound
             switch (playMode)
             {
                 case EAudioPlayMode.Single: return clips[0];
-                case EAudioPlayMode.Sequence: return clips.PickNextClip(id);
-                case EAudioPlayMode.Random: return clips.PickRandomClip();
+                case EAudioPlayMode.Sequence: return clips.PickNextClip(id, out index);
+                case EAudioPlayMode.Random: return clips.PickRandomClip(out index);
+                case EAudioPlayMode.Shuffle: return clips.PickShuffleClip(out index);
             }
 
             return default;
         }
 
-        private static SoundClip PickNextClip(this SoundClip[] clips, int id)
+        private static SoundClip PickNextClip(this SoundClip[] clips, int id, out int index)
         {
-            var resultIndex = 0;
-            bool status = ClipsSequencer.TryAdd(id, 0);
+            clipsSequencer ??= new Dictionary<int, int>();
+            index = 0;
+            bool status = clipsSequencer.TryAdd(id, 0);
             if (!status)
             {
-                ClipsSequencer[id] = ClipsSequencer[id] + 1 >= clips.Length ? 0 : ClipsSequencer[id] + 1;
-                resultIndex = ClipsSequencer[id];
+                clipsSequencer[id] = clipsSequencer[id] + 1 >= clips.Length ? 0 : clipsSequencer[id] + 1;
+                index = clipsSequencer[id];
             }
 
-            return clips[resultIndex];
+            return clips[index];
         }
 
-        public static SoundClip PickRandomClip(this SoundClip[] clips)
+        private static SoundClip PickRandomClip(this SoundClip[] clips, out int index)
         {
+            index = 0;
             int totalWeight = clips.Sum(x => x.Weight);
 
             // No Weight
-            if (totalWeight == 0) return clips[Random.Range(0, clips.Length)];
+            if (totalWeight == 0)
+            {
+                index = Random.Range(0, clips.Length);
+                return clips[index];
+            }
 
             // Use Weight
             int targetWeight = Random.Range(0, totalWeight);
@@ -244,16 +249,68 @@ namespace Pancake.Sound
             for (int i = 0; i < clips.Length; i++)
             {
                 sum += clips[i].Weight;
-                if (targetWeight < sum) return clips[i];
+                if (targetWeight < sum)
+                {
+                    index = i;
+                    return clips[i];
+                }
             }
 
             return default;
         }
 
-        public static void ResetSequencer(int id)
+        private static SoundClip PickShuffleClip(this SoundClip[] clips, out int index)
         {
-            if (ClipsSequencer.ContainsKey(id)) ClipsSequencer[id] = 0;
+            index = Random.Range(0, clips.Length);
+
+            if (clips.Use(index, out var result)) return result;
+
+            // to avoid overusing the Random method when there are only a few clips left
+            bool isIncreasing = Random.Range(0, 1) != 0;
+            for (int i = 0; i < clips.Length; i++)
+            {
+                index += isIncreasing ? 1 : -1;
+                index = (index + clips.Length) % clips.Length;
+
+                if (clips.Use(index, out result)) return result;
+            }
+
+            // reset all IsUsed and pick randomly again
+            clips.ResetIsUse();
+            index = Random.Range(0, clips.Length);
+            if (clips.Use(index, out result)) return result;
+
+            return null;
         }
+
+        private static bool Use(this SoundClip[] clips, int index, out SoundClip result)
+        {
+            result = clips[index];
+            if (!result.isUsed)
+            {
+                result.isUsed = true;
+                return true;
+            }
+
+            result = null;
+            return false;
+        }
+
+        public static void ResetIsUse(this SoundClip[] clips)
+        {
+            for (int i = 0; i < clips.Length; i++)
+            {
+                clips[i].isUsed = false;
+            }
+        }
+
+#if UNITY_EDITOR
+        public static void ClearPreviewAudioData()
+        {
+            clipsSequencer?.Clear();
+            clipsSequencer = null;
+        }
+#endif
 
         public static int GetInitialId(this EAudioType audioType)
         {
@@ -351,5 +408,11 @@ namespace Pancake.Sound
 
             return true;
         }
+
+        public static EAudioType ToAudioType(this SoundId id) { return GetAudioType(id); }
+
+        public static string ToName(this SoundId id) { return SoundManager.Instance.GetNameByID(id); }
+
+        public static bool IsValid(this SoundId id) { return id > 0 && SoundManager.Instance.IsIdInBank(id); }
     }
 }

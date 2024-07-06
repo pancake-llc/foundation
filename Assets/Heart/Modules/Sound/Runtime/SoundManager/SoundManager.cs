@@ -26,17 +26,18 @@ namespace Pancake.Sound
 
         [SerializeField] private AudioPlayer audioPlayerPrefab;
         [SerializeField] private AudioMixer audioMixer;
-        [SerializeField] private List<ScriptableObject> soundAssets = new();
+        [SerializeField] private AudioData data;
         private readonly Dictionary<int, IAudioEntity> _audioBank = new();
         private readonly Dictionary<EAudioType, AudioTypePlaybackPreference> _audioTypePreference = new();
         private EffectAutomationHelper _automationHelper;
-        private readonly Dictionary<int, bool> _combFilteringPreventer = new();
+        private Dictionary<SoundId, AudioPlayer> _combFilteringPreventer;
         private AsyncProcessHandle _masterVolumeHandle;
         private AudioPlayerObjectPool _audioPlayerPool;
         private ObjectPool<AudioMixerGroup> _audioTrackPool;
         private ObjectPool<AudioMixerGroup> _dominatorTrackPool;
+        private Queue<Action> _playbackQueue = new();
 
-        public IReadOnlyDictionary<EAudioType, AudioTypePlaybackPreference> AudioTypePreference => _audioTypePreference;
+        public IReadOnlyDictionary<EAudioType, AudioTypePlaybackPreference> AudioTypePreferences => _audioTypePreference;
         public AudioMixer Mixer => audioMixer;
 
         private void Awake()
@@ -72,21 +73,15 @@ namespace Pancake.Sound
 
         private void InitBank()
         {
-            foreach (var scriptableObj in soundAssets)
+            foreach (var asset in data.Assets)
             {
-                IAudioAsset asset = scriptableObj as IAudioAsset;
-                if (asset == null)
-                    continue;
+                if (asset == null) continue;
 
                 foreach (var entity in asset.GetAllAudioEntities())
                 {
-                    if (!entity.Validate())
-                        continue;
+                    if (!entity.Validate()) continue;
 
-                    if (!_audioBank.ContainsKey(entity.Id))
-                    {
-                        _audioBank.Add(entity.Id, entity as IAudioEntity);
-                    }
+                    if (!_audioBank.ContainsKey(entity.Id)) _audioBank.Add(entity.Id, entity as IAudioEntity);
                 }
             }
 
@@ -215,6 +210,21 @@ namespace Pancake.Sound
 
         #endregion
 
+        public void SetPitch(float pitch, EAudioType targetType, float fadeTime)
+        {
+            if (targetType == EAudioType.None)
+            {
+                Debug.LogWarning(AudioConstant.LOG_HEADER + $"SetPitch with {targetType} is meaningless");
+                return;
+            }
+
+            GetPlaybackPrefByType(targetType, pref => pref.Pitch = pitch);
+            GetCurrentActivePlayers(player =>
+            {
+                if (targetType.HasFlagUnsafe(AudioExtension.GetAudioType(player.Id))) player.SetPitch(pitch, fadeTime);
+            });
+        }
+
         AudioMixerGroup IAudioMixer.GetTrack(EAudioTrackType trackType)
         {
             switch (trackType)
@@ -280,50 +290,9 @@ namespace Pancake.Sound
 
         private AudioPlayer GetNewAudioPlayer() { return _audioPlayerPool.Extract(); }
 
-        private IEnumerator PreventCombFiltering(int id, float preventTime)
-        {
-            _combFilteringPreventer[id] = true;
-            var waitInstruction = preventTime > Time.deltaTime ? new WaitForSeconds(preventTime) : null;
-            yield return waitInstruction;
-            _combFilteringPreventer[id] = false;
-        }
-
-        #region NullChecker
-
-        private bool IsPlayable(int id, out IAudioEntity entity)
-        {
-            entity = null;
-            if (id <= 0 || !_audioBank.TryGetValue(id, out entity))
-            {
-                Debug.LogError(AudioConstant.LOG_HEADER + $"The sound is missing or it has never been assigned. No sound will be played. SoundID:{id}");
-                return false;
-            }
-
-            if (_combFilteringPreventer.TryGetValue(id, out bool isPreventing) && isPreventing)
-            {
-#if UNITY_EDITOR
-                if (AudioSettings.LogCombFilteringWarning)
-                {
-                    Debug.LogWarning(AudioConstant.LOG_HEADER +
-                                     $"One of the plays of Audio:{id.ToName().ToWhiteBold()} has been rejected due to the concern about sound quality. " +
-                                     "For more information, please go to the [Comb Filtering] section Audio tab in Wizard");
-                }
-#endif
-                return false;
-            }
-
-            return true;
-        }
-
-        #endregion
-
         public string GetNameByID(int id)
         {
-            if (!Application.isPlaying)
-            {
-                Debug.LogError(AudioConstant.LOG_HEADER + $"The method {"GetNameByID".ToWhiteBold()} is {"Runtime Only".ToBold().SetColor(Color.green)}");
-                return null;
-            }
+            if (!IsAvailable()) return string.Empty;
 
             var result = string.Empty;
             if (_audioBank.TryGetValue(id, out var entity))
@@ -335,21 +304,23 @@ namespace Pancake.Sound
             return result;
         }
 
+        public bool IsIdInBank(SoundId id) { return _audioBank.ContainsKey(id); }
+
+        private bool IsAvailable()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogError(AudioConstant.LOG_HEADER + $"The method {"GetNameByID".ToWhiteBold()} is {"Runtime Only".ToBold().SetColor(Color.green)}");
+                return false;
+            }
+
+            return true;
+        }
+
         #region Editor
 
 #if UNITY_EDITOR
-        public void AddAsset(ScriptableObject asset)
-        {
-            if (!soundAssets.Contains(asset)) soundAssets.Add(asset);
-        }
-
-        public void RemoveDeletedAsset(ScriptableObject asset)
-        {
-            for (int i = soundAssets.Count - 1; i >= 0; i--)
-            {
-                if (soundAssets[i] == asset) soundAssets.RemoveAt(i);
-            }
-        }
+        public void SetCoreData(AudioData data) { this.data = data; }
 #endif
 
         #endregion
@@ -360,10 +331,10 @@ namespace Pancake.Sound
 
         public IAudioPlayer Play(int id)
         {
-            if (IsPlayable(id, out var entity) && TryGetAvailablePlayer(id, out var player))
+            if (IsPlayable(id, out var entity, out var previousPlayer) && TryGetAvailablePlayer(id, out var player))
             {
                 var pref = new PlaybackPreference(entity);
-                return PlayerToPlay(id, player, pref);
+                return PlayerToPlay(id, player, pref, previousPlayer);
             }
 
             return null;
@@ -371,10 +342,10 @@ namespace Pancake.Sound
 
         public IAudioPlayer Play(int id, Vector3 position)
         {
-            if (IsPlayable(id, out var entity) && TryGetAvailablePlayer(id, out var player))
+            if (IsPlayable(id, out var entity, out var previousPlayer) && TryGetAvailablePlayer(id, out var player))
             {
                 var pref = new PlaybackPreference(entity, position);
-                return PlayerToPlay(id, player, pref);
+                return PlayerToPlay(id, player, pref, previousPlayer);
             }
 
             return null;
@@ -382,21 +353,19 @@ namespace Pancake.Sound
 
         public IAudioPlayer Play(int id, Transform followTarget)
         {
-            if (IsPlayable(id, out var entity) && TryGetAvailablePlayer(id, out var player))
+            if (IsPlayable(id, out var entity, out var previousPlayer) && TryGetAvailablePlayer(id, out var player))
             {
                 var pref = new PlaybackPreference(entity, followTarget);
-                return PlayerToPlay(id, player, pref);
+                return PlayerToPlay(id, player, pref, previousPlayer);
             }
 
             return null;
         }
 
-        private IAudioPlayer PlayerToPlay(int id, AudioPlayer player, PlaybackPreference pref)
+        private IAudioPlayer PlayerToPlay(int id, AudioPlayer player, PlaybackPreference pref, AudioPlayer previousPlayer = null)
         {
             var audioType = AudioExtension.GetAudioType(id);
-            if (_audioTypePreference.TryGetValue(audioType, out var audioTypePref)) pref.AudioTypePlaybackPreference = audioTypePref;
-
-            player.Play(id, pref);
+            _playbackQueue.Enqueue(() => player.Play(id, pref));
             var wrapper = new AudioPlayerInstanceWrapper(player);
 
             if (AudioSettings.AlwaysPlayMusicAsBGM && audioType == EAudioType.Music)
@@ -406,16 +375,39 @@ namespace Pancake.Sound
 
             if (AudioSettings.CombFilteringPreventionInSeconds > 0f)
             {
-                StartCoroutine(PreventCombFiltering(id, AudioSettings.CombFilteringPreventionInSeconds));
+                _combFilteringPreventer = _combFilteringPreventer ?? new Dictionary<SoundId, AudioPlayer>();
+                if (previousPlayer != null)
+                {
+                    previousPlayer.OnEndPlaying -= RemoveFromPreventer;
+                }
+
+                player.OnEndPlaying += RemoveFromPreventer;
+                _combFilteringPreventer[id] = player;
             }
 
             if (pref.entity.SeamlessLoop)
             {
                 var seamlessLoopHelper = new SeamlessLoopHelper(wrapper, GetNewAudioPlayer);
-                seamlessLoopHelper.SetPlayer(player);
+                seamlessLoopHelper.AddReplayListener(player);
             }
 
             return wrapper;
+        }
+
+        private void RemoveFromPreventer(SoundId id)
+        {
+            if (_combFilteringPreventer != null)
+            {
+                _combFilteringPreventer.Remove(id);
+            }
+        }
+
+        private void LateUpdate()
+        {
+            while (_playbackQueue.Count > 0)
+            {
+                _playbackQueue.Dequeue()?.Invoke();
+            }
         }
 
         #endregion
@@ -451,6 +443,41 @@ namespace Pancake.Sound
             {
                 if (player.Id == id) player.Stop(fadeTime, EAudioStopMode.Pause, null);
             });
+        }
+
+        private bool IsPlayable(int id, out IAudioEntity entity, out AudioPlayer previousPlayer)
+        {
+            entity = null;
+            previousPlayer = null;
+            if (id <= 0 || !_audioBank.TryGetValue(id, out entity))
+            {
+                Debug.LogError(AudioConstant.LOG_HEADER + $"The sound is missing or it has never been assigned. No sound will be played. SoundID:{id}");
+                return false;
+            }
+
+            SoundId soundID = id;
+            if (_combFilteringPreventer != null && _combFilteringPreventer.TryGetValue(soundID, out previousPlayer) &&
+                !HasPassPreventionTime(previousPlayer.PlaybackStartingTime))
+            {
+#if UNITY_EDITOR
+                if (AudioSettings.LogCombFilteringWarning)
+                {
+                    Debug.LogWarning(AudioConstant.LOG_HEADER +
+                                     $"One of the plays of Audio:{soundID.ToName().ToWhiteBold()} has been rejected due to the concern about sound quality. " +
+                                     $"For more information, please go to the [Comb Filtering] section in Tools/BroAudio/Preference.");
+                }
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool HasPassPreventionTime(int previousPlayTime)
+        {
+            int time = C.UnscaledCurrentFrameBeganTime;
+            bool isInQueue = previousPlayTime == 0f;
+            return !isInQueue && time - previousPlayTime >= C.SecToMs(AudioSettings.CombFilteringPreventionInSeconds);
         }
 
         #endregion

@@ -236,5 +236,10 @@ namespace Pancake.Common
 
             Application.OpenURL(url);
         }
+
+        public static int RealTimeSinceStartupAsMilliseconds => SecToMs(Time.realtimeSinceStartupAsDouble);
+        public static int UnscaledCurrentFrameBeganTime => SecToMs(Time.unscaledTimeAsDouble);
+        
+        public static int SecToMs(double seconds) { return (int) (seconds * 1000); }
     }
 }

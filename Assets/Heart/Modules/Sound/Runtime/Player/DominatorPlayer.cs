@@ -68,7 +68,7 @@ namespace Pancake.Sound
             Instance?.SetEffect(EEffectType.None, ESetEffectMode.Override);
         }
 
-        private bool PlayerIsPlaying() => IsAvailable() && IsActive;
+        private bool PlayerIsPlaying() => IsActive;
 #endif
     }
 }

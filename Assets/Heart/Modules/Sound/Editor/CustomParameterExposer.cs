@@ -74,9 +74,6 @@ namespace PancakeEditor.Sound.Reflection
 
             AddElementTo(ref exposedParameters, newParam.Instance, parameterType);
 
-            // TODO: sort it in bro's way?
-            //parameters.Sort(SortFuncForExposedParameters);
-
             SetProperty(EXPOSED_PARAMETERS_PROP_NAME, reflection.MixerClass, audioMixer, exposedParameters);
 
             ExecuteMethod("OnChangedExposedParameter", ReflectionExtension.Void, reflection.MixerClass, audioMixer);

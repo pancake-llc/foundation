@@ -19,7 +19,7 @@ namespace Pancake.Sound
         [SerializeField] private float pitch;
         [SerializeField] private float pitchRandomRange;
         [SerializeField] private float volumeRandomRange;
-        [SerializeField] private ERandomFlags randomFlags;
+        [SerializeField] private ERandomFlag randomFlags;
 
         public string Name => name;
         public int Id => id;
@@ -34,11 +34,44 @@ namespace Pancake.Sound
         public float Pitch => pitch;
         public float PitchRandomRange => pitchRandomRange;
         public float VolumeRandomRange => volumeRandomRange;
-        public ERandomFlags RandomFlags => randomFlags;
+        public ERandomFlag RandomFlags => randomFlags;
 
-        public SoundClip PickNewClip() => clips.PickNewOne(audioPlayMode, Id);
+        public SoundClip PickNewClip(out int index) => clips.PickNewOne(audioPlayMode, Id, out index);
+        public SoundClip PickNewClip() => Clips.PickNewOne(AudioPlayMode, Id, out _);
 
         public bool Validate() { return AudioExtension.Validate(Name.ToWhiteBold(), clips, Id); }
+        
+        public float GetMasterVolume()
+        {
+            return GetRandomValue(MasterVolume, RandomFlags);
+        }
+
+        public float GetPitch()
+        {
+            return GetRandomValue(Pitch, ERandomFlag.Pitch);
+        }
+
+        public float GetRandomValue(float baseValue, ERandomFlag flag)
+        {
+            if(!RandomFlags.HasFlagUnsafe(flag)) return baseValue;
+
+            float range = 0f;
+            switch (flag)
+            {
+                case ERandomFlag.Pitch:
+                    range = PitchRandomRange;
+                    break;
+                case ERandomFlag.Volume:
+                    range = VolumeRandomRange;
+                    break;
+                default:
+                    Debug.LogError(AudioConstant.LOG_HEADER + "Invalid approach with multiple flags on GetRandomValue()");
+                    break;
+            }
+
+            float half = range * 0.5f;
+            return baseValue + Random.Range(-half, half);
+        }
 
 #if UNITY_EDITOR
         public enum SeamlessType
@@ -55,7 +88,7 @@ namespace Pancake.Sound
             public int beats;
         }
 
-        public static class EditorPropertyName
+        public static class ForEditor
         {
             public static string AudioPlayMode => nameof(audioPlayMode);
             public static string SeamlessTransitionType => nameof(seamlessTransitionType);

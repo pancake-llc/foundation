@@ -17,6 +17,6 @@ namespace PancakeEditor.Sound
 	{
 		float StartPosition { get; }
 		float EndPosition { get; }
-		float Length { get; }
+		float FullLength { get; }
 	}
 }

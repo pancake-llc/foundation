@@ -38,8 +38,9 @@ namespace Pancake.Sound
     public enum EAudioPlayMode
     {
         Single, // Always play the first clip
-        Sequence, // Play clips sequentially
-        Random, // Play clips randomly with the given weight
+        Sequence, // Plays clip sequentially
+        Random, // Plays clip randomly with the given weight
+        Shuffle, // Same as random but not repeating with the previous one
     }
 
     public enum EFilterSlope
@@ -68,7 +69,7 @@ namespace Pancake.Sound
     }
 
     [System.Flags]
-    public enum ERandomFlags
+    public enum ERandomFlag
     {
         None = 0,
         Pitch = 1 << 0,

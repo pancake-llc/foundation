@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using Pancake.Linq;
+using Pancake.Common;
 using Pancake.Sound;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
+using Math = System.Math;
 
 namespace PancakeEditor.Sound
 {
@@ -15,18 +17,34 @@ namespace PancakeEditor.Sound
             Default,
             Logarithmic,
             Volume,
+            VolumeNoField
+        }
+
+        public struct TabViewData
+        {
+            public float ratio;
+            public GUIContent label;
+            public Action onTabChanged;
+            public Action<Rect, SerializedProperty> onButtonClick;
+
+            public TabViewData(float ratio, GUIContent label, Action onTabChanged, Action<Rect, SerializedProperty> onButtonClick)
+            {
+                this.ratio = ratio;
+                this.label = label;
+                this.onTabChanged = onTabChanged;
+                this.onButtonClick = onButtonClick;
+            }
         }
 
         private const float LOW_VOLUME_SNAPPING_THRESHOLD = 0.05f;
         private const float HIGH_VOLUME_SNAPPING_THRESHOLD = 0.2f;
         private const string DB_VALUE_STRING_FORMAT = "0.##";
-        public const float TWO_SIDES_LABEL_OFFSET_Y = 7f;
-        public const float INDENT_IN_PIXEL = 15f;
-        public const float LOGARITHMIC_MIN_VALUE = 0.0001f;
-        private static Vector2 VolumeLabelSize => new(55f, 25f);
+        private static Vector2 DecibelLabelSize => new(55f, 25f);
+        private static Vector2 MinMaxDecibelLabelSize => new(115f, 25f);
         public static readonly float[] VolumeSplitPoints = {-80f, -60f, -36f, -24f, -12f, -6f, 0f, 6f, 20f};
         public static Action onCloseWindow;
         public static Action onSelectAsset;
+        public static Action onLostFocus;
 
         public static string AssetOutputPath
         {
@@ -41,65 +59,6 @@ namespace PancakeEditor.Sound
                 return LibraryDataContainer.Data.Settings.assetOutputPath;
             }
             set => LibraryDataContainer.Data.Settings.assetOutputPath = value;
-        }
-
-        public static void AddToSoundManager(ScriptableObject asset)
-        {
-            var prefab = ProjectDatabase.FindAll<GameObject>().Filter(go => go.TryGetComponent<SoundManager>(out _)).First();
-            string assetPath = AssetDatabase.GetAssetPath(prefab);
-            using (var editScope = new EditPrefabAssetScope(assetPath))
-            {
-                if (editScope.prefabRoot.TryGetComponent<SoundManager>(out var soundManager)) soundManager.AddAsset(asset);
-                editScope.prefabRoot.transform.position = Vector3.one;
-            }
-        }
-
-        public static void DeleteAssetRelativeData(string[] deletedAssetPaths)
-        {
-            if (deletedAssetPaths == null || deletedAssetPaths.Length == 0) return;
-
-            DeleteJsonDataByAssetPath(deletedAssetPaths);
-
-            var prefab = ProjectDatabase.FindAll<GameObject>().Filter(go => go.TryGetComponent<SoundManager>(out _)).First();
-            string assetPath = AssetDatabase.GetAssetPath(prefab);
-
-            if (string.IsNullOrEmpty(assetPath) || !File.Exists(assetPath)) return;
-
-            using (var editScope = new EditPrefabAssetScope(assetPath))
-            {
-                if (editScope.prefabRoot.TryGetComponent<SoundManager>(out var soundManager))
-                {
-                    foreach (string path in deletedAssetPaths)
-                    {
-                        if (!string.IsNullOrEmpty(path) && TryGetAssetByPath(path, out var asset))
-                        {
-                            var scriptableObject = asset as ScriptableObject;
-                            soundManager.RemoveDeletedAsset(scriptableObject);
-                        }
-                        else soundManager.RemoveDeletedAsset(null);
-                    }
-                }
-            }
-        }
-
-        private static void DeleteJsonDataByAssetPath(string[] deletedAssetPaths)
-        {
-            foreach (string path in deletedAssetPaths)
-            {
-                if (!string.IsNullOrEmpty(path))
-                {
-                    string guid = AssetDatabase.AssetPathToGUID(path);
-                    LibraryDataContainer.Data.Settings.guids.Remove(guid);
-                }
-            }
-
-            LibraryDataContainer.Data.SaveSetting();
-        }
-
-        private static bool TryGetAssetByPath(string assetPath, out IAudioAsset asset)
-        {
-            asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(ScriptableObject)) as IAudioAsset;
-            return asset != null;
         }
 
         public static int GetProjectSettingRealAudioVoices()
@@ -130,34 +89,34 @@ namespace PancakeEditor.Sound
 
         public static void ResetAudioClipSerializedProperties(SerializedProperty property)
         {
-            property.FindPropertyRelative(SoundClip.EditorPropertyName.AudioClip).objectReferenceValue = null;
-            property.FindPropertyRelative(SoundClip.EditorPropertyName.Weight).intValue = 0;
+            property.FindPropertyRelative(SoundClip.ForEditor.AudioClip).objectReferenceValue = null;
+            property.FindPropertyRelative(SoundClip.ForEditor.Weight).intValue = 0;
             ResetAudioClipPlaybackSetting(property);
         }
 
         public static void ResetAudioClipPlaybackSetting(SerializedProperty property)
         {
-            property.FindPropertyRelative(SoundClip.EditorPropertyName.Volume).floatValue = AudioConstant.FULL_VOLUME;
-            property.FindPropertyRelative(SoundClip.EditorPropertyName.StartPosition).floatValue = 0f;
-            property.FindPropertyRelative(SoundClip.EditorPropertyName.EndPosition).floatValue = 0f;
-            property.FindPropertyRelative(SoundClip.EditorPropertyName.FadeIn).floatValue = 0f;
-            property.FindPropertyRelative(SoundClip.EditorPropertyName.FadeOut).floatValue = 0f;
+            property.FindPropertyRelative(SoundClip.ForEditor.Volume).floatValue = AudioConstant.FULL_VOLUME;
+            property.FindPropertyRelative(SoundClip.ForEditor.StartPosition).floatValue = 0f;
+            property.FindPropertyRelative(SoundClip.ForEditor.EndPosition).floatValue = 0f;
+            property.FindPropertyRelative(SoundClip.ForEditor.FadeIn).floatValue = 0f;
+            property.FindPropertyRelative(SoundClip.ForEditor.FadeOut).floatValue = 0f;
         }
 
         public static void ResetEntitySerializedProperties(SerializedProperty property)
         {
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.Name).stringValue = string.Empty;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.Clips).arraySize = 0;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.AudioPlayMode).enumValueIndex = 0;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.MasterVolume).floatValue = AudioConstant.FULL_VOLUME;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.Loop).boolValue = false;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.SeamlessLoop).boolValue = false;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.Pitch).floatValue = AudioConstant.DEFAULT_PITCH;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.PitchRandomRange).floatValue = 0f;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.RandomFlags).intValue = 0;
-            property.FindPropertyRelative(AudioEntity.EditorPropertyName.Priority).intValue = AudioConstant.DEFAULT_PRIORITY;
+            property.FindPropertyRelative(AudioEntity.ForEditor.Name).stringValue = string.Empty;
+            property.FindPropertyRelative(AudioEntity.ForEditor.Clips).arraySize = 0;
+            property.FindPropertyRelative(AudioEntity.ForEditor.AudioPlayMode).enumValueIndex = 0;
+            property.FindPropertyRelative(AudioEntity.ForEditor.MasterVolume).floatValue = AudioConstant.FULL_VOLUME;
+            property.FindPropertyRelative(AudioEntity.ForEditor.Loop).boolValue = false;
+            property.FindPropertyRelative(AudioEntity.ForEditor.SeamlessLoop).boolValue = false;
+            property.FindPropertyRelative(AudioEntity.ForEditor.Pitch).floatValue = AudioConstant.DEFAULT_PITCH;
+            property.FindPropertyRelative(AudioEntity.ForEditor.PitchRandomRange).floatValue = 0f;
+            property.FindPropertyRelative(AudioEntity.ForEditor.RandomFlags).intValue = 0;
+            property.FindPropertyRelative(AudioEntity.ForEditor.Priority).intValue = AudioConstant.DEFAULT_PRIORITY;
 
-            var spatialProp = property.FindPropertyRelative(AudioEntity.EditorPropertyName.SpatialSetting);
+            var spatialProp = property.FindPropertyRelative(AudioEntity.ForEditor.SpatialSetting);
             spatialProp.objectReferenceValue = null;
             spatialProp.serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
@@ -170,8 +129,9 @@ namespace PancakeEditor.Sound
         public static bool IsTempReservedName(string name)
         {
             string tempName = AudioConstant.TEMP_ASSET_NAME;
-            return (name.Length == tempName.Length || name.Length > tempName.Length && char.IsNumber(name[tempName.Length])) &&
-                   name.StartsWith(tempName, StringComparison.Ordinal);
+            bool sameLength = name.Length == tempName.Length;
+            bool couldBeTempWithNumber = name.Length > tempName.Length && Char.IsNumber(name[name.Length - 1]);
+            return (sameLength || couldBeTempWithNumber) && name[0] == 'T' && name.StartsWith(tempName, StringComparison.Ordinal);
         }
 
         public static bool TryGetEntityName(IAudioAsset asset, int id, out string name)
@@ -202,7 +162,7 @@ namespace PancakeEditor.Sound
                 {
                     newPath = newPath.Remove(0, Application.dataPath.Replace("/Assets", string.Empty).Length + 1);
                     AssetOutputPath = newPath;
-                    LibraryDataContainer.Data.Settings.assetOutputPath = newPath;
+                    WriteAssetOutputPathToSetting(newPath);
                     onUpdateSuccess?.Invoke();
                 }
             }
@@ -225,31 +185,31 @@ namespace PancakeEditor.Sound
             EditorGUI.DrawRect(vuRect, new Color(0.2f, 0.2f, 0.2f, 0.6f));
         }
 
-        public static float DrawVolumeSlider(Rect position, GUIContent label, float currentValue)
+        public static float DrawVolumeSlider(Rect position, GUIContent label, float currentValue, bool canDrawVu = true)
         {
             return DrawVolumeSlider(position,
                 label,
                 currentValue,
                 false,
-                null);
+                null,
+                canDrawVu);
         }
 
-        public static float DrawVolumeSlider(Rect position, GUIContent label, float currentValue, bool isSnap, Action onSwitchSnapMode)
+        public static float DrawVolumeSlider(Rect position, GUIContent label, float currentValue, bool isSnap, Action onSwitchSnapMode, bool canDrawVu = true)
         {
-            var suffixRect = EditorGUI.PrefixLabel(position, label);
-            const float padding = 3f;
-            var sliderRect = new Rect(suffixRect) {width = suffixRect.width - EditorGUIUtility.fieldWidth - padding};
-            var fieldRect = new Rect(suffixRect) {x = sliderRect.xMax + padding, width = EditorGUIUtility.fieldWidth};
+            Rect suffixRect = EditorGUI.PrefixLabel(position, label);
+            float padding = 3f;
+            Rect sliderRect = new Rect(suffixRect) {width = suffixRect.width - EditorGUIUtility.fieldWidth - padding};
+            Rect fieldRect = new Rect(suffixRect) {x = sliderRect.xMax + padding, width = EditorGUIUtility.fieldWidth};
 
 #if !UNITY_WEBGL
-            if (AudioEditorSetting.ShowVuColorOnVolumeSlider) DrawVuMeter(sliderRect);
+            if (canDrawVu && AudioEditorSetting.ShowVuColorOnVolumeSlider) DrawVuMeter(sliderRect);
 
             DrawFullVolumeSnapPoint(sliderRect, onSwitchSnapMode);
 
             float newNormalizedValue = DrawVolumeSlider(sliderRect, currentValue, out bool hasSliderChanged, out float newSliderValue);
             float newFloatFieldValue = EditorGUI.FloatField(fieldRect, hasSliderChanged ? newNormalizedValue : currentValue);
             currentValue = Mathf.Clamp(newFloatFieldValue, 0f, AudioConstant.MAX_VOLUME);
-
             if (isSnap && CanSnap(currentValue))
             {
                 currentValue = AudioConstant.FULL_VOLUME;
@@ -266,19 +226,21 @@ namespace PancakeEditor.Sound
 #if !UNITY_WEBGL
             void DrawFullVolumeSnapPoint(Rect sliderPosition, Action onSwitch)
             {
-                if (onSwitch == null)
-                {
-                    return;
-                }
+                if (onSwitch == null) return;
 
+                float scale = 1f / (VolumeSplitPoints.Length - 1);
                 float sliderValue = VolumeToSlider(AudioConstant.FULL_VOLUME);
 
-                var rect = new Rect(sliderPosition) {width = 30f};
+                Rect rect = new Rect(sliderPosition);
+                rect.width = 30f;
                 rect.x = sliderPosition.x + sliderPosition.width * sliderValue - (rect.width * 0.5f) + 1f; // add 1 pixel for more precise position
                 rect.y -= sliderPosition.height;
-                var icon = new GUIContent(EditorGUIUtility.IconContent("SignalAsset Icon")) {tooltip = "Toggle full volume snapping"};
+                var icon = new GUIContent(EditorGUIUtility.IconContent("SignalAsset Icon"));
+                icon.tooltip = "Toggle full volume snapping";
                 EditorGUI.BeginDisabledGroup(!isSnap);
-                GUI.Label(rect, icon);
+                {
+                    GUI.Label(rect, icon);
+                }
                 EditorGUI.EndDisabledGroup();
                 if (GUI.Button(rect, "", EditorStyles.label))
                 {
@@ -296,25 +258,48 @@ namespace PancakeEditor.Sound
 #endif
         }
 
+        private static string GetDecibelText(float value)
+        {
+            float dBvalue = value.ToDecibel();
+            string plusSymbol = dBvalue > 0 ? "+" : string.Empty;
+            return plusSymbol + dBvalue.ToString(DB_VALUE_STRING_FORMAT) + "dB";
+        }
+
         public static void DrawDecibelValuePeeking(float currentValue, float padding, Rect sliderRect, float sliderValue)
         {
-            if (Event.current.type == EventType.Repaint)
+            string volText = GetDecibelText(currentValue);
+            DrawDecibelValuePeeking(volText,
+                padding,
+                sliderRect,
+                sliderValue,
+                DecibelLabelSize);
+        }
+
+        public static void DrawDecibelValuePeeking(float minValue, float maxValue, float padding, Rect sliderRect, float sliderValue)
+        {
+            string minDB = GetDecibelText(minValue);
+            string maxDB = GetDecibelText(maxValue);
+            string volText = minDB + " ~ " + maxDB;
+            DrawDecibelValuePeeking(volText,
+                padding,
+                sliderRect,
+                sliderValue,
+                MinMaxDecibelLabelSize);
+        }
+
+        public static void DrawDecibelValuePeeking(string text, float padding, Rect sliderRect, float sliderValue, Vector2 size)
+        {
+            if (Event.current.type == EventType.Repaint && sliderRect.Contains(Event.current.mousePosition))
             {
-                float sliderHandlerPos = sliderValue / SliderFullScale * sliderRect.width - (VolumeLabelSize.x * 0.5f);
-                if (sliderRect.Contains(Event.current.mousePosition))
-                {
-                    var valueTooltipRect = new Rect(sliderRect.x + sliderHandlerPos, sliderRect.y - VolumeLabelSize.y - padding, VolumeLabelSize.x, VolumeLabelSize.y);
-                    GUI.skin.window.Draw(valueTooltipRect,
-                        false,
-                        false,
-                        false,
-                        false);
-                    float dBvalue = currentValue.ToDecibel();
-                    string plusSymbol = dBvalue > 0 ? "+" : string.Empty;
-                    string volText = plusSymbol + dBvalue.ToString(DB_VALUE_STRING_FORMAT) + "dB";
-                    // ** Don't use EditorGUI.Label(), it will change the keyboard focus, might be a Unity's bug **
-                    GUI.Label(valueTooltipRect, volText, Uniform.CenterRichLabel);
-                }
+                float sliderHandlerPos = sliderValue / SliderFullScale * sliderRect.width - (size.x * 0.5f);
+                Rect valueTooltipRect = new Rect(sliderRect.x + sliderHandlerPos, sliderRect.y - size.y - padding, size.x, size.y);
+                GUI.skin.window.Draw(valueTooltipRect,
+                    false,
+                    false,
+                    false,
+                    false);
+                // ** Don't use EditorGUI.Label(), it will change the keyboard focus, might be a Unity's bug **
+                GUI.Label(valueTooltipRect, text, Uniform.CenterRichLabel);
             }
         }
 
@@ -334,6 +319,128 @@ namespace PancakeEditor.Sound
             return currentValue;
         }
 
+        public static void GetMixerMinMaxVolume(out float minVol, out float maxVol)
+        {
+            bool isWebGL = EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL;
+            minVol = AudioConstant.MIN_VOLUME;
+            maxVol = isWebGL ? AudioConstant.FULL_VOLUME : AudioConstant.MAX_VOLUME;
+        }
+
+        public static void DrawMinMaxSlider(
+            Rect position,
+            GUIContent label,
+            ref float min,
+            ref float max,
+            float minLimit,
+            float maxLimit,
+            float fieldWidth,
+            Action<Rect> onGetSliderRect = null)
+        {
+            Rect sliderRect = DrawMinMaxLabelAndField(position,
+                label,
+                ref min,
+                ref max,
+                fieldWidth,
+                onGetSliderRect);
+            EditorGUI.MinMaxSlider(sliderRect,
+                ref min,
+                ref max,
+                minLimit,
+                maxLimit);
+        }
+
+        public static void DrawLogarithmicMinMaxSlider(
+            Rect position,
+            GUIContent label,
+            ref float min,
+            ref float max,
+            float minLimit,
+            float maxLimit,
+            float fieldWidth,
+            Action<Rect> onGetSliderRect = null)
+        {
+            Rect sliderRect = DrawMinMaxLabelAndField(position,
+                label,
+                ref min,
+                ref max,
+                fieldWidth,
+                onGetSliderRect);
+
+            min = Mathf.Log10(min);
+            max = Mathf.Log10(max);
+            minLimit = Mathf.Log10(minLimit);
+            maxLimit = Mathf.Log10(maxLimit);
+
+            EditorGUI.MinMaxSlider(sliderRect,
+                ref min,
+                ref max,
+                minLimit,
+                maxLimit);
+
+            min = Mathf.Pow(10, min);
+            max = Mathf.Pow(10, max);
+        }
+
+        public static void DrawRandomRangeSlider(
+            Rect rect,
+            GUIContent label,
+            ref float value,
+            ref float valueRange,
+            float minLimit,
+            float maxLimit,
+            RandomRangeSliderType sliderType,
+            Action<Rect> onGetSliderRect = null)
+        {
+            float minRand = value - valueRange * 0.5f;
+            float maxRand = value + valueRange * 0.5f;
+            minRand = (float) Math.Round(Mathf.Clamp(minRand, minLimit, maxLimit), AudioConstant.ROUNDED_DIGITS, MidpointRounding.AwayFromZero);
+            maxRand = (float) Math.Round(Mathf.Clamp(maxRand, minLimit, maxLimit), AudioConstant.ROUNDED_DIGITS, MidpointRounding.AwayFromZero);
+            switch (sliderType)
+            {
+                case RandomRangeSliderType.Default:
+                    DrawMinMaxSlider(rect,
+                        label,
+                        ref minRand,
+                        ref maxRand,
+                        minLimit,
+                        maxLimit,
+                        AudioConstant.MIN_MAX_SLIDER_FIELD_WIDTH,
+                        onGetSliderRect);
+                    break;
+                case RandomRangeSliderType.Logarithmic:
+                    DrawLogarithmicMinMaxSlider(rect,
+                        label,
+                        ref minRand,
+                        ref maxRand,
+                        minLimit,
+                        maxLimit,
+                        AudioConstant.MIN_MAX_SLIDER_FIELD_WIDTH,
+                        onGetSliderRect);
+                    break;
+                case RandomRangeSliderType.Volume:
+                    DrawRandomRangeVolumeSlider(rect,
+                        label,
+                        ref minRand,
+                        ref maxRand,
+                        minLimit,
+                        maxLimit,
+                        AudioConstant.MIN_MAX_SLIDER_FIELD_WIDTH,
+                        onGetSliderRect);
+                    break;
+                case RandomRangeSliderType.VolumeNoField:
+                    DrawRandomRangeVolumeSliderNoField(rect,
+                        label,
+                        ref minRand,
+                        ref maxRand,
+                        minLimit,
+                        maxLimit);
+                    break;
+            }
+
+            valueRange = maxRand - minRand;
+            value = minRand + valueRange * 0.5f;
+        }
+
         public static float DrawRandomRangeVolumeSlider(
             Rect position,
             GUIContent label,
@@ -344,16 +451,27 @@ namespace PancakeEditor.Sound
             float fieldWidth,
             Action<Rect> onGetSliderRect = null)
         {
-            var sliderRect = DrawMinMaxLabelAndField(position,
+            Rect sliderRect = DrawMinMaxLabelAndField(position,
                 label,
                 ref min,
                 ref max,
                 fieldWidth,
                 onGetSliderRect);
+            DrawRandomRangeVolumeSliderNoField(sliderRect,
+                label,
+                ref min,
+                ref max,
+                minLimit,
+                maxLimit);
+            return max;
+        }
+
+        public static float DrawRandomRangeVolumeSliderNoField(Rect position, GUIContent label, ref float min, ref float max, float minLimit, float maxLimit)
+        {
             float minSlider = VolumeToSlider(min);
             float maxSlider = VolumeToSlider(max);
 
-            EditorGUI.MinMaxSlider(sliderRect,
+            EditorGUI.MinMaxSlider(position,
                 ref minSlider,
                 ref maxSlider,
                 0f,
@@ -361,6 +479,13 @@ namespace PancakeEditor.Sound
 
             min = SliderToVolume(minSlider);
             max = SliderToVolume(maxSlider);
+
+            float midPoint = (minSlider + maxSlider) / 2f;
+            DrawDecibelValuePeeking(min,
+                max,
+                3f,
+                position,
+                midPoint);
             return max;
         }
 
@@ -420,7 +545,7 @@ namespace PancakeEditor.Sound
         {
             if (!string.IsNullOrEmpty(propertyName) && propertyName.Length > 0)
             {
-                if (char.IsUpper(propertyName[0])) propertyName = propertyName.Replace(propertyName[0], Pancake.Common.C.ToLower(propertyName[0]));
+                if (char.IsUpper(propertyName[0])) propertyName = propertyName.Replace(propertyName[0], propertyName[0].ToLower());
                 return $"{propertyName}";
             }
 
@@ -508,7 +633,7 @@ namespace PancakeEditor.Sound
             return newProperty != null;
         }
 
-        public static void DrawToggleGroup(Rect totalPosition, GUIContent label, SerializedProperty[] toggles, bool isAllowSwitchOff = true, int toggleCountPerLine = 4)
+        public static void DrawToggleGroup(Rect totalPosition, GUIContent label, SerializedProperty[] toggles, Rect[] rects = null, bool isAllowSwitchOff = true)
         {
             if (toggles == null)
             {
@@ -516,9 +641,15 @@ namespace PancakeEditor.Sound
             }
 
             var suffixRect = EditorGUI.PrefixLabel(totalPosition, label);
-            float space = suffixRect.width / toggleCountPerLine;
-            var toggleRect = new Rect(suffixRect);
-            toggleRect.width = space;
+            if (rects == null)
+            {
+                float toggleWidth = suffixRect.width / toggles.Length;
+                rects = new Rect[toggles.Length];
+                for (int i = 0; i < rects.Length; i++)
+                {
+                    rects[i] = new Rect(suffixRect) {width = toggleWidth, x = suffixRect.x + i * toggleWidth};
+                }
+            }
 
             SerializedProperty currentActiveToggle = null;
             foreach (var toggle in toggles)
@@ -532,7 +663,7 @@ namespace PancakeEditor.Sound
             for (var i = 0; i < toggles.Length; i++)
             {
                 var toggle = toggles[i];
-                if (EditorGUI.ToggleLeft(toggleRect, toggle.displayName, toggle.boolValue))
+                if (EditorGUI.ToggleLeft(rects[i], toggle.displayName, toggle.boolValue))
                 {
                     if (toggle != currentActiveToggle)
                     {
@@ -554,10 +685,49 @@ namespace PancakeEditor.Sound
                 {
                     toggle.boolValue = false;
                 }
+            }
+        }
 
+        public static int DrawButtonTabsMixedView(Rect position, SerializedProperty property, int selectedTabIndex, float labelTabHeight, TabViewData[] datas)
+        {
+            DrawFrameBox(position);
 
-                toggleRect.x += space;
-                toggleRect.y += (i / toggleCountPerLine) * EditorGUIUtility.singleLineHeight;
+            float accumulatedWidth = 0f;
+            for (int i = 0; i < datas.Length; i++)
+            {
+                var data = datas[i];
+                Rect rect = new Rect(position) {height = labelTabHeight, width = position.width * data.ratio, x = position.x + accumulatedWidth,};
+                accumulatedWidth += rect.width;
+
+                GUIStyle style = Uniform.GetTabStyle(i, datas.Length);
+                if (data.onTabChanged != null)
+                {
+                    bool oldState = selectedTabIndex == i;
+                    bool newState = GUI.Toggle(rect, oldState, data.label, style);
+                    bool isChanged = newState != oldState;
+                    if (isChanged && newState) selectedTabIndex = i;
+
+                    if (isChanged) data.onTabChanged.Invoke();
+                }
+                else if (data.onButtonClick != null)
+                {
+                    if (GUI.Button(rect, data.label, style)) data.onButtonClick.Invoke(rect, property);
+                }
+            }
+
+            return selectedTabIndex;
+        }
+
+        public static void DrawFrameBox(Rect position)
+        {
+            if (Event.current.type == EventType.Repaint)
+            {
+                GUIStyle frameBox = "FrameBox";
+                frameBox.Draw(position,
+                    false,
+                    false,
+                    false,
+                    false);
             }
         }
 
@@ -587,9 +757,12 @@ namespace PancakeEditor.Sound
         public static void Draw2SidesLabels(Rect position, MultiLabel labels)
         {
             var rightWordLength = 30f;
-            var leftRect = new Rect(position.x + EditorGUIUtility.labelWidth, position.y + TWO_SIDES_LABEL_OFFSET_Y, EditorGUIUtility.fieldWidth, position.height);
+            var leftRect = new Rect(position.x + EditorGUIUtility.labelWidth,
+                position.y + AudioConstant.TWO_SIDES_LABEL_OFFSET_Y,
+                EditorGUIUtility.fieldWidth,
+                position.height);
             var rightRect = new Rect(position.xMax - EditorGUIUtility.fieldWidth - rightWordLength,
-                position.y + TWO_SIDES_LABEL_OFFSET_Y,
+                position.y + AudioConstant.TWO_SIDES_LABEL_OFFSET_Y,
                 EditorGUIUtility.fieldWidth,
                 position.height);
 
@@ -598,95 +771,6 @@ namespace PancakeEditor.Sound
 
             EditorGUI.LabelField(leftRect, labels.left, lowerLeftMiniLabel);
             EditorGUI.LabelField(rightRect, labels.right, lowerLeftMiniLabel);
-        }
-
-        public static int DrawTabsView(Rect position, int selectedTabIndex, float labelTabHeight, GUIContent[] labels, float[] ratios, Rect[] preAllocRects = null)
-        {
-            if (Event.current.type == EventType.Repaint)
-            {
-                GUIStyle frameBox = "FrameBox";
-                frameBox.Draw(position,
-                    false,
-                    false,
-                    false,
-                    false);
-            }
-
-            // draw tab label
-            var tabRect = new Rect(position) {height = labelTabHeight};
-
-            var tabRects = preAllocRects ?? new Rect[ratios.Length];
-            Uniform.SplitRectHorizontal(tabRect, 0f, tabRects, ratios);
-            for (var i = 0; i < tabRects.Length; i++)
-            {
-                bool oldState = selectedTabIndex == i;
-                bool newState = GUI.Toggle(tabRects[i], oldState, labels[i], Uniform.GetTabStyle(i, tabRects.Length));
-                bool isChanged = newState != oldState;
-                if (isChanged && newState)
-                {
-                    selectedTabIndex = i;
-                }
-
-                if (isChanged) EditorPlayAudioClip.StopAllClips();
-            }
-
-            return selectedTabIndex;
-        }
-
-
-        public static void DrawMinMaxSlider(
-            Rect position,
-            GUIContent label,
-            ref float min,
-            ref float max,
-            float minLimit,
-            float maxLimit,
-            float fieldWidth,
-            Action<Rect> onGetSliderRect = null)
-        {
-            var sliderRect = DrawMinMaxLabelAndField(position,
-                label,
-                ref min,
-                ref max,
-                fieldWidth,
-                onGetSliderRect);
-            EditorGUI.MinMaxSlider(sliderRect,
-                ref min,
-                ref max,
-                minLimit,
-                maxLimit);
-        }
-
-        public static void DrawLogarithmicMinMaxSlider(
-            Rect position,
-            GUIContent label,
-            ref float min,
-            ref float max,
-            float minLimit,
-            float maxLimit,
-            float fieldWidth,
-            Action<Rect> onGetSliderRect = null)
-        {
-            var sliderRect = DrawMinMaxLabelAndField(position,
-                label,
-                ref min,
-                ref max,
-                fieldWidth,
-                onGetSliderRect);
-
-            min = Mathf.Log10(min);
-            max = Mathf.Log10(max);
-            minLimit = Mathf.Log10(minLimit);
-            maxLimit = Mathf.Log10(maxLimit);
-
-            EditorGUI.MinMaxSlider(sliderRect,
-                ref min,
-                ref max,
-                minLimit,
-                maxLimit);
-
-            min = Mathf.Pow(10, min);
-            max = Mathf.Pow(10, max);
         }
 
         public static Rect DrawMinMaxLabelAndField(Rect position, GUIContent label, ref float min, ref float max, float fieldWidth, Action<Rect> onGetSliderRect)
@@ -717,7 +801,7 @@ namespace PancakeEditor.Sound
             if (leftValue <= 0f)
             {
                 //Debug.LogWarning($"The left value of the LogarithmicSlider should be greater than 0. It has been set to the default value of {min}");
-                leftValue = Mathf.Max(LOGARITHMIC_MIN_VALUE, leftValue);
+                leftValue = Mathf.Max(AudioConstant.LOGARITHMIC_MIN_VALUE, leftValue);
             }
 
             var sliderRect = new Rect(position);
@@ -755,6 +839,83 @@ namespace PancakeEditor.Sound
             rect.x -= pixel;
             rect.y -= pixel;
             return rect;
+        }
+
+        public static Rect SetWidth(this Rect rect, Func<float, float> onModify) { return new Rect(rect.x, rect.y, onModify(rect.width), rect.height); }
+
+        public static Rect SetHeight(this Rect rect, float height) { return new Rect(rect.x, rect.y, rect.width, height); }
+
+        public static Rect SetHeight(this Rect rect, Func<float, float> onModify) { return new Rect(rect.x, rect.y, rect.width, onModify(rect.height)); }
+
+        public static GUIContent GetPlaybackButtonIcon(bool isPlaying)
+        {
+            string icon = isPlaying ? "PreMatQuad" : "PlayButton";
+            return EditorGUIUtility.IconContent(icon);
+        }
+
+        public static void ForeachConcreteDrawedProperty(Action<EDrawedProperty> onGetDrawedProperty)
+        {
+            for (int i = 0; i < 32; i++) // int32
+            {
+                var drawFlag = (EDrawedProperty) (1 << i);
+                if (drawFlag > EDrawedProperty.All) break;
+
+                if (!EDrawedProperty.All.HasFlagUnsafe(drawFlag)) continue;
+
+                onGetDrawedProperty?.Invoke(drawFlag);
+            }
+        }
+
+        public static bool TryGetCoreData(out AudioData coreData)
+        {
+            var result = ProjectDatabase.FindAll<AudioData>();
+            if (result.Count > 0)
+            {
+                coreData = result[0];
+                return true;
+            }
+
+            coreData = null;
+            return false;
+        }
+
+        public static void WriteAssetOutputPathToSetting(string path)
+        {
+            AudioEditorSetting.AssetOutputPath = path;
+            SaveToDisk(AudioEditorSetting.Instance);
+        }
+
+        public static void AddNewAssetToCoreData(ScriptableObject asset)
+        {
+            if (TryGetCoreData(out var coreData))
+            {
+                coreData.AddAsset(asset as AudioAsset);
+                SaveToDisk(coreData);
+            }
+        }
+
+        public static void RemoveEmptyDatas()
+        {
+            if (TryGetCoreData(out AudioData coreData))
+            {
+                coreData.RemoveEmpty();
+                SaveToDisk(coreData);
+            }
+        }
+
+        public static void ReorderAssets(List<string> allAssetGUIDs)
+        {
+            if (TryGetCoreData(out var coreData))
+            {
+                coreData.ReorderAssets(allAssetGUIDs);
+                SaveToDisk(coreData);
+            }
+        }
+
+        private static void SaveToDisk(UnityEngine.Object obj)
+        {
+            EditorUtility.SetDirty(obj);
+            AssetDatabase.SaveAssets();
         }
     }
 }

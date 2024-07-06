@@ -13,13 +13,13 @@ namespace PancakeEditor.Sound
         public virtual float Delay => PlaybackValues[2];
         public virtual float FadeIn => FadingValues[0];
         public virtual float FadeOut => FadingValues[1];
-        public float Length { get; private set; }
+        public float FullLength { get; private set; }
         public float[] PlaybackValues { get; private set; }
         public float[] FadingValues { get; private set; }
 
-        public Transport(float length)
+        public Transport(float fullLength)
         {
-            Length = length;
+            FullLength = fullLength;
             PlaybackValues = new float[3]; // StartPosition, EndPosition, Delay
             FadingValues = new float[2]; // FadeIn, FadeOut
         }
@@ -66,7 +66,7 @@ namespace PancakeEditor.Sound
 
         private float GetLengthLimit(ETransportType modifiedType)
         {
-            return Length - GetLength(ETransportType.Start, StartPosition) - GetLength(ETransportType.End, EndPosition) - GetLength(ETransportType.FadeIn, FadeIn) -
+            return FullLength - GetLength(ETransportType.Start, StartPosition) - GetLength(ETransportType.End, EndPosition) - GetLength(ETransportType.FadeIn, FadeIn) -
                    GetLength(ETransportType.FadeOut, FadeOut);
 
             float GetLength(ETransportType transportType, float value) { return modifiedType != transportType ? value : 0f; }

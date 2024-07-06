@@ -9,13 +9,12 @@ namespace Pancake.Sound
         public readonly IAudioEntity entity;
         public readonly Vector3 position;
         public readonly Transform followTarget;
-        public readonly Ease fadeInEase;
-        public readonly Ease fadeOutEase;
+        public Ease FadeInEase => entity.SeamlessLoop ? AudioSettings.SeamlessFadeInEase : AudioSettings.DefaultFadeInEase;
+        public Ease FadeOutEase => entity.SeamlessLoop ? AudioSettings.SeamlessFadeOutEase : AudioSettings.DefaultFadeOutEase;
 
         public float FadeIn { get; private set; }
         public float FadeOut { get; private set; }
         public Waiter PlayerWaiter { get; private set; }
-        public IAudioPlaybackPreference AudioTypePlaybackPreference { get; set; }
 
         public PlaybackPreference(IAudioEntity entity, Vector3 position)
             : this(entity)
@@ -37,12 +36,7 @@ namespace Pancake.Sound
             position = Vector3.negativeInfinity;
             followTarget = null;
             PlayerWaiter = null;
-            AudioTypePlaybackPreference = null;
-
-            fadeInEase = this.entity.SeamlessLoop ? AudioSettings.SeamlessFadeInEase : AudioSettings.DefaultFadeInEase;
-            fadeOutEase = this.entity.SeamlessLoop ? AudioSettings.SeamlessFadeOutEase : AudioSettings.DefaultFadeOutEase;
         }
-
 
         public void SetFadeTime(EAudioTransition transition, float fadeTime)
         {

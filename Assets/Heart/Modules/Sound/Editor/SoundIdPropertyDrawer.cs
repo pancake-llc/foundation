@@ -46,16 +46,17 @@ namespace PancakeEditor.Sound
             var asset = assetProp.objectReferenceValue as AudioAsset;
             if (asset != null && EditorAudioEx.TryGetEntityName(asset, idProp.intValue, out _entityName)) return;
 
-            // TODO: Initializing this whenever an SoundId is created is not efficient. 
-            foreach (string guid in LibraryDataContainer.Data.Settings.guids)
+            if(EditorAudioEx.TryGetCoreData(out var coreData))
             {
-                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath) as AudioAsset;
-                if (asset != null && EditorAudioEx.TryGetEntityName(asset, idProp.intValue, out _entityName))
+                foreach (var coreAsset in coreData.Assets)
                 {
-                    assetProp.objectReferenceValue = asset;
-                    assetProp.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-                    return;
+                    asset = coreAsset;
+                    if (asset != null && EditorAudioEx.TryGetEntityName(asset, idProp.intValue, out _entityName))
+                    {
+                        assetProp.objectReferenceValue = asset;
+                        assetProp.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+                        return;
+                    }
                 }
             }
 
@@ -71,7 +72,7 @@ namespace PancakeEditor.Sound
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var idProp = property.FindPropertyRelative(nameof(SoundId.id));
-            var assetProp = property.FindPropertyRelative(SoundId.NameOf.SourceAsset);
+            var assetProp = property.FindPropertyRelative("sourceAsset");
 
             if (!_isInit) Init(idProp, assetProp);
 
