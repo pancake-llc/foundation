@@ -3,7 +3,7 @@ using System.Linq;
 using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
-using PancakeEditor.Sound;
+//using PancakeEditor.Sound;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -32,7 +32,6 @@ namespace PancakeEditor
             None = -1,
             Adjust,
             Advertisement,
-            Audio,
             Build,
             Firebase,
             GameService,
@@ -61,8 +60,7 @@ namespace PancakeEditor
             OtherPacakge = WizardAllType.OtherPackage,
             Build = WizardAllType.Build,
             Navigator = WizardAllType.Navigator,
-            LevelSystem = WizardAllType.LevelSystem,
-            Audio = WizardAllType.Audio
+            LevelSystem = WizardAllType.LevelSystem
         }
 
         private enum SettingType
@@ -80,20 +78,6 @@ namespace PancakeEditor
         {
             Setting,
             PickupArea
-        }
-
-        public enum AudioTabType
-        {
-            Library,
-            Setting,
-            EffectEditor
-        }
-
-        public enum AudioSetingTabType
-        {
-            Audio,
-            GUI,
-            Miscellaneous,
         }
 
         #endregion
@@ -136,15 +120,6 @@ namespace PancakeEditor
 
         #endregion
 
-        #region audio
-
-        private AudioTabType _currentAudioTab = AudioTabType.Library;
-        private AudioSetingTabType _currentAudioSettingTab = AudioSetingTabType.Audio;
-        private UnityEditor.Editor _effectTrackEditor;
-        private Vector2 _audioScrollPosition;
-
-        #endregion
-
         private readonly Color[] _colors = {Uniform.RaisinBlack, Uniform.GothicOlive, Uniform.Maroon, Uniform.ElegantNavy, Uniform.CrystalPurple};
         public const float TAB_WIDTH = 50f;
 
@@ -165,7 +140,6 @@ namespace PancakeEditor
         {
             base.Init();
             LevelSystemWindow.OnEnabled();
-            AudioWindow.OnEnable();
             if (isInitialized)
             {
                 SelectTab(tabIndex);
@@ -184,12 +158,7 @@ namespace PancakeEditor
             SpineWindow.Clear();
 #endif
             LevelSystemWindow.OnDisabled();
-            AudioWindow.OnDisable();
         }
-
-        private void OnLostFocus() { AudioWindow.OnLostFocus(); }
-
-        private void OnFocus() { AudioWindow.OnFocus(); }
 
         protected override void OnGUI()
         {
@@ -405,13 +374,6 @@ namespace PancakeEditor
                 case WizardAllType.Build when _currentType is WizardType.Tools or WizardType.All:
                     BuildWindow.OnInspectorGUI(ref _currentAndroidBuildPipeline);
                     break;
-                case WizardAllType.Audio when _currentType is WizardType.Tools or WizardType.All:
-                    AudioWindow.OnInspectorGUI(position,
-                        ref _audioScrollPosition,
-                        ref _currentAudioTab,
-                        ref _effectTrackEditor,
-                        ref _currentAudioSettingTab);
-                    break;
             }
         }
 
@@ -491,7 +453,6 @@ namespace PancakeEditor
                 WizardAllType.LevelSystem => EditorResources.IconLevelSytem,
                 WizardAllType.Spine => EditorResources.IconSpine,
                 WizardAllType.Build => EditorResources.IconUnity,
-                WizardAllType.Audio => EditorResources.IconYellowAudioSource,
                 WizardAllType.OtherPackage => EditorResources.IconPackage,
                 _ => null
             };

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Pancake.Sound;
+//using Pancake.Sound;
 #if PANCAKE_ALCHEMY
 using Alchemy.Inspector;
 using Alchemy.Serialization;
@@ -25,8 +25,8 @@ namespace Pancake.Component
 #if PANCAKE_ALCHEMY
         [ShowIf(nameof(enabledSound))]
 #endif
-        [SerializeField]
-        private SoundId audioCollision;
+        //[SerializeField]
+       // private SoundId audioCollision;
 
         private int _segmentValue;
         private bool _flag;
@@ -58,7 +58,7 @@ namespace Pancake.Component
         private void OnParticleCollision(GameObject particle)
         {
             Router.Default.PublishAsync(new UpdateCurrencyWithValueCommand(type.Value, _segmentValue));
-            if (enabledSound) audioCollision.Play();
+            //if (enabledSound) audioCollision.Play();
         }
 
         protected void Update()

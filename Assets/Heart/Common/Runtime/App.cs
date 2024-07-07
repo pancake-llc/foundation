@@ -203,7 +203,7 @@ namespace Pancake.Common
 
         public static void StopAndClean(ref DelayHandle handle)
         {
-            if (!handle.IsDone) return;
+            if (handle == null || !handle.IsDone) return;
 
             CancelDelay(handle);
             handle = null;
