@@ -317,29 +317,6 @@ namespace PancakeEditor.Common
         public static void DrawLine(float height = 1f) { DrawLine(new Color(0.5f, 0.5f, 0.5f, 1f), height); }
 
         /// <summary>
-        /// Draw a selectable object
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="labels"></param>
-        public static void DrawSelectableObject(Object obj, string[] labels)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button(labels[0], GUILayout.MaxWidth(300))) EditorGUIUtility.PingObject(obj);
-
-            if (GUILayout.Button(labels[1], GUILayout.MaxWidth(75)))
-            {
-                EditorWindow.FocusWindowIfItsOpen(typeof(SceneView));
-                Selection.activeObject = obj;
-                SceneView.FrameLastActiveSceneView();
-            }
-
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            GUILayout.Space(2);
-        }
-
-        /// <summary>
         /// Draws all properties like base.OnInspectorGUI() but excludes a field by name.
         /// </summary>
         /// <param name="serializedObject"></param>
@@ -365,51 +342,6 @@ namespace PancakeEditor.Common
                     if (fieldsToSkip.Any(prop.name.Contains)) continue;
 
                     EditorGUILayout.PropertyField(serializedObject.FindProperty(prop.name), true);
-                } while (prop.NextVisible(false));
-            }
-
-            serializedObject.ApplyModifiedProperties();
-        }
-
-        public static void DrawVariableCustomInspector(SerializedObject serializedObject, string[] fieldsToSkip)
-        {
-            serializedObject.Update();
-            var prop = serializedObject.GetIterator();
-            var propertyCount = 0;
-
-            if (prop.NextVisible(true))
-            {
-                do
-                {
-                    if (fieldsToSkip.Any(skipProp => prop.name == skipProp)) continue;
-
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty(prop.name), true);
-                    propertyCount++;
-
-                    if (propertyCount != 4) continue;
-
-                    //Draw save properties
-                    var isSaved = serializedObject.FindProperty("saved");
-                    if (!isSaved.boolValue) continue;
-                    EditorGUI.indentLevel++;
-                    EditorGUILayout.BeginHorizontal();
-                    var guidProperty = serializedObject.FindProperty("guid");
-                    var guidCreateMode = serializedObject.FindProperty("guidCreateMode");
-                    int index = guidCreateMode.enumValueIndex;
-                    EditorGUILayout.PropertyField(guidCreateMode, true);
-                    if (index == 0)
-                    {
-                        GUI.enabled = false;
-                        EditorGUILayout.TextField(guidProperty.stringValue);
-                        GUI.enabled = true;
-                    }
-                    else
-                    {
-                        guidProperty.stringValue = EditorGUILayout.TextField(guidProperty.stringValue);
-                    }
-
-                    EditorGUILayout.EndHorizontal();
-                    EditorGUI.indentLevel--;
                 } while (prop.NextVisible(false));
             }
 
@@ -643,84 +575,6 @@ namespace PancakeEditor.Common
             if (i == 0) return "Tab first";
             if (i == length - 1) return "Tab last";
             return "Tab middle";
-        }
-
-        public static Rect GetHorizontalCenterRect(Rect rect, float width, float height)
-        {
-            return new Rect(rect) {x = rect.x + rect.width * 0.5f - width * 0.5f, width = width, height = height};
-        }
-
-        public static void SplitRectHorizontal(Rect origin, float firstRatio, float gap, out Rect rect1, out Rect rect2)
-        {
-            float halfGap = gap * 0.5f;
-            rect1 = new Rect(origin.x, origin.y, origin.width * firstRatio - halfGap, origin.height);
-            rect2 = new Rect(rect1.xMax + gap, origin.y, origin.width * (1 - firstRatio) - halfGap, origin.height);
-        }
-
-        public static void SplitRectHorizontal(Rect origin, int count, float gap, Rect[] resultRects)
-        {
-            SplitHorizontal(origin,
-                resultRects,
-                gap,
-                index =>
-                {
-                    float ratio = 1f / count;
-                    if (index == count - 1) return 1 - (ratio * (count - 1));
-                    return ratio;
-                });
-        }
-
-        public static void SplitRectHorizontal(Rect origin, float gap, Rect[] resultRects, params float[] ratios)
-        {
-            if (!Mathf.Approximately(ratios.Sum(), 1))
-            {
-                Debug.LogError("[Editor] Split ratio's sum should be 1");
-                return;
-            }
-
-            SplitHorizontal(origin, resultRects, gap, index => ratios[index]);
-        }
-
-        private static void SplitHorizontal(Rect origin, Rect[] resultRects, float gap, Func<int, float> getRatio)
-        {
-            if (resultRects == null)
-            {
-                Debug.LogError("Rects array is null!");
-                return;
-            }
-
-            for (int i = 0; i < resultRects.Length; i++)
-            {
-                float offsetWidth = i == 0 || i == resultRects.Length - 1 ? gap : gap * 0.5f;
-                float newWidth = origin.width * getRatio.Invoke(i) - offsetWidth;
-                float newX = i > 0 ? resultRects[i - 1].xMax + gap : origin.x;
-                resultRects[i] = new Rect(newX, origin.y, newWidth, origin.height);
-            }
-        }
-
-        public static void SplitRectVertical(Rect origin, float firstRatio, float gap, out Rect rect1, out Rect rect2)
-        {
-            float halfGap = gap * 0.5f;
-            rect1 = new Rect(origin.x, origin.y, origin.width, origin.height * firstRatio - halfGap);
-            rect2 = new Rect(origin.x, rect1.yMax + gap, origin.width, origin.height * (1 - firstRatio) - halfGap);
-        }
-
-        public static void SplitRectVertical(Rect origin, float gap, Rect[] resultRects, params float[] ratios)
-        {
-            if (Mathf.Approximately(ratios.Sum(), 1))
-            {
-                Debug.LogError("[Editor] Split ratio's sum should be 1");
-                return;
-            }
-
-            resultRects ??= new Rect[ratios.Length];
-            for (int i = 0; i < resultRects.Length; i++)
-            {
-                float offsetHeight = i == 0 || i == resultRects.Length - 1 ? gap : gap * 0.5f;
-                float newHeight = origin.height * ratios[i] - offsetHeight;
-                float newY = i > 0 ? resultRects[i - 1].yMax + gap : origin.y;
-                resultRects[i] = new Rect(origin.x, newY, origin.width, newHeight);
-            }
         }
 
         #endregion
