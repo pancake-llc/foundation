@@ -1,6 +1,6 @@
 ﻿using Alchemy.Inspector;
 using Cysharp.Threading.Tasks;
-//using Pancake.Sound;
+using Pancake.Sound;
 using UnityEngine;
 
 namespace Pancake.UI
@@ -8,8 +8,8 @@ namespace Pancake.UI
     public abstract class View : GameComponent
     {
         [Header("Sound"), SerializeField] protected bool enabledSound;
-        //[SerializeField, ShowIf(nameof(enabledSound))] protected SoundId audioOpen;
-        //[SerializeField, ShowIf(nameof(enabledSound))] protected SoundId audioClose;
+        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound))] protected AudioId audioOpen;
+        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound))] protected AudioId audioClose;
         private bool _isInitialized;
 
         public async UniTask InitializeAsync()
@@ -24,12 +24,12 @@ namespace Pancake.UI
 
         protected virtual void PlaySoundOpen()
         {
-            //if (enabledSound) audioOpen.Play();
+            if (enabledSound) audioOpen.Play();
         }
 
         protected virtual void PlaySoundClose()
         {
-            //if (enabledSound) audioClose.Play();
+            if (enabledSound) audioClose.Play();
         }
     }
 }

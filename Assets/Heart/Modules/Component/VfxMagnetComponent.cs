@@ -3,7 +3,7 @@ using Alchemy.Inspector;
 #endif
 using System.Collections.Generic;
 using Pancake.Pools;
-//using Pancake.Sound;
+using Pancake.Sound;
 using UnityEngine;
 using VitalRouter;
 
@@ -35,8 +35,8 @@ namespace Pancake.Component
 #if PANCAKE_ALCHEMY
         [ShowIf(nameof(isPlaySound)), Indent]
 #endif
-        //[SerializeField]
-        //private SoundId audioSpawn;
+        [SerializeField, AudioPickup]
+        private AudioId audioSpawn;
 
         private readonly List<GameObject> _fxInstances = new();
 
@@ -73,7 +73,7 @@ namespace Pancake.Component
             externalForcesModule.AddInfluence(particleForceField);
             ps.Emit(1); // avoid zero particle count when start
             ps.Play();
-            //if (isPlaySound) audioSpawn.Play();
+            if (isPlaySound) audioSpawn.Play();
         }
     }
 }
