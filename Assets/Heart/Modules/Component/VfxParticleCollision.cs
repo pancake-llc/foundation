@@ -23,7 +23,7 @@ namespace Pancake.Component
 
         [SerializeField] private bool enabledSound;
 #if PANCAKE_ALCHEMY
-        [ShowIf(nameof(enabledSound))]
+        [ShowIf(nameof(enabledSound)), Indent]
 #endif
         [SerializeField, AudioPickup]
         private AudioId audioCollision;

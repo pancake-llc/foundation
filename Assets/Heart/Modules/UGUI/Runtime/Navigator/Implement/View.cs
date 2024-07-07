@@ -8,8 +8,8 @@ namespace Pancake.UI
     public abstract class View : GameComponent
     {
         [Header("Sound"), SerializeField] protected bool enabledSound;
-        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound))] protected AudioId audioOpen;
-        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound))] protected AudioId audioClose;
+        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound)), Indent] protected AudioId audioOpen;
+        [SerializeField, AudioPickup, ShowIf(nameof(enabledSound)), Indent] protected AudioId audioClose;
         private bool _isInitialized;
 
         public async UniTask InitializeAsync()
