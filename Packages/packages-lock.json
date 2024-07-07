@@ -59,11 +59,11 @@
       "hash": "d0ee86f6bb8b7e2809f1dd317c62d5d610356c92"
     },
     "com.cysharp.unitask": {
-      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.4",
+      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.5",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "d057074f177b078e29f10dd511b54df48a8806ea"
+      "hash": "cdf88c6a6ac8c9b7e6e5d3c0a360a4af29641c24"
     },
     "com.google.external-dependency-manager": {
       "version": "https://github.com/google-unity/external-dependency-manager.git#1.2.179",
