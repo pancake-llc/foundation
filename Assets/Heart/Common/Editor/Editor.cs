@@ -819,43 +819,5 @@ namespace PancakeEditor.Common
 
             return false;
         }
-
-        public static bool IsInvalidName(string name, out EValidationErrorCode errorCode)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                errorCode = EValidationErrorCode.IsNullOrEmpty;
-                return true;
-            }
-
-            if (char.IsNumber(name[0]))
-            {
-                errorCode = EValidationErrorCode.StartWithNumber;
-                return true;
-            }
-
-            foreach (char word in name)
-            {
-                if (!IsValidWord(word))
-                {
-                    errorCode = EValidationErrorCode.ContainsInvalidWord;
-                    return true;
-                }
-
-                if (char.IsWhiteSpace(word))
-                {
-                    errorCode = EValidationErrorCode.ContainsWhiteSpace;
-                    return true;
-                }
-            }
-
-            errorCode = EValidationErrorCode.NoError;
-            return false;
-        }
-
-        private static bool IsValidWord(this char word)
-        {
-            return Pancake.Common.C.IsEnglishLetter(word) || char.IsNumber(word) || word == '_' || char.IsWhiteSpace(word);
-        }
     }
 }

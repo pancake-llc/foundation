@@ -27,32 +27,5 @@ namespace Pancake.Common
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToWhiteBold(this string text) { return text.ToBold().SetColor(UnityEngine.Color.white); }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsEnglishLetter(char word) { return (word >= 65 && word <= 90) || (word >= 97 && word <= 122); }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static char ToLower(this char word)
-        {
-            if (word >= 65 && word <= 90) return (char) (word + 32);
-            if (word >= 97 && word <= 122) return word;
-            return char.ToLower(word);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static char ToUpper(this char word)
-        {
-            if (word >= 65 && word <= 90) return word;
-            if (word >= 97 && word <= 122) return (char) (word - 32);
-            return char.ToUpper(word);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStartAndEnd(this string text)
-        {
-            if (char.IsWhiteSpace(text[0])) text = text.TrimStart();
-            if (char.IsWhiteSpace(text[^1])) text = text.TrimEnd();
-            return text;
-        }
     }
 }
