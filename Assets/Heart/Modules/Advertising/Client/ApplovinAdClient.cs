@@ -27,7 +27,7 @@ namespace Pancake.Monetization
 #endif
         }
 
-        public override void LoadBanner() { AdSettings.AdmobBanner.Load(); }
+        public override void LoadBanner() { AdSettings.ApplovinBanner.Load(); }
 
         public override void LoadInterstitial()
         {
