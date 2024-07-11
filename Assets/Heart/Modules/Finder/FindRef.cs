@@ -425,14 +425,14 @@ namespace PancakeEditor.Finder
         {
             var result = new List<FindRef>();
 
-            if (FinderWindowBase.CacheSetting.disabled) return result;
-
             if (!FinderWindowBase.IsCacheReady)
             {
                 Debug.LogWarning("Cache not yet ready! Please wait!");
                 return result;
             }
-
+            
+            bool excludePackage = !FinderWindowBase.ShowPackageAsset;
+            
             //filter to remove items that already in dictionary
             for (var i = 0; i < guidList.Length; i++)
             {
@@ -441,7 +441,8 @@ namespace PancakeEditor.Finder
 
                 var child = FinderWindowBase.CacheSetting.Get(guid);
                 if (child == null) continue;
-
+                if (excludePackage && child.InPackages) continue;
+                
                 var r = new FindRef(dict.Count, depth + 1, child, asset);
                 if (!asset.IsFolder) dict.Add(guid, r);
 
@@ -457,6 +458,7 @@ namespace PancakeEditor.Finder
             var list = deep ? new List<FindRef>() : null;
 
             if (asset.usedByMap == null) return;
+            bool excludePackage = !FinderWindowBase.ShowPackageAsset;
 
             foreach (var kvp in h)
             {
@@ -467,7 +469,8 @@ namespace PancakeEditor.Finder
                 if (child == null) continue;
 
                 if (child.IsMissing) continue;
-
+                if (excludePackage && child.InPackages) continue;
+                
                 var r = new FindRef(result.Count, depth + 1, child, asset);
                 if (!asset.IsFolder) result.Add(guid, r);
 
@@ -485,6 +488,7 @@ namespace PancakeEditor.Finder
         internal void AppendUsage(Dictionary<string, FindRef> result, bool deep)
         {
             var h = asset.UseGUIDs;
+            bool excludePackage = !FinderWindowBase.ShowPackageAsset;
             var list = deep ? new List<FindRef>() : null;
 
             foreach (var kvp in h)
@@ -494,9 +498,9 @@ namespace PancakeEditor.Finder
 
                 var child = FinderWindowBase.CacheSetting.Get(guid);
                 if (child == null) continue;
-
                 if (child.IsMissing) continue;
-
+                if (excludePackage && child.InPackages) continue;
+                
                 var r = new FindRef(result.Count, depth + 1, child, asset);
                 if (!asset.IsFolder) result.Add(guid, r);
 
@@ -517,7 +521,8 @@ namespace PancakeEditor.Finder
         {
             var dict = new Dictionary<string, FindRef>();
             var list = new List<FindRef>();
-
+            bool excludePackage = !FinderWindowBase.ShowPackageAsset;
+            
             for (var i = 0; i < guids.Length; i++)
             {
                 string guid = guids[i];
@@ -525,7 +530,8 @@ namespace PancakeEditor.Finder
 
                 var asset = FinderWindowBase.CacheSetting.Get(guid);
                 if (asset == null) continue;
-
+                if (excludePackage && asset.InPackages) continue;
+                
                 var r = new FindRef(i, 0, asset, null);
                 if (!asset.IsFolder || addFolder) dict.Add(guid, r);
 
@@ -589,7 +595,8 @@ namespace PancakeEditor.Finder
 
             var asset = FinderWindowBase.CacheSetting.Get(guid);
             if (asset == null) return;
-
+            if (!FinderWindowBase.ShowPackageAsset && asset.InPackages) return;
+            
             var r = new FindRef(0, 1, asset, null);
             dict.Add(guid, r);
         }

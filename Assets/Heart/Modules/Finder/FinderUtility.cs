@@ -4,7 +4,6 @@ using UnityEditor.AddressableAssets;
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -15,7 +14,22 @@ namespace PancakeEditor.Finder
 {
     public static class FinderUtility
     {
-        internal static readonly AssetType[] Filters =
+        internal static bool isEditorPlaying;
+        internal static bool isEditorUpdating;
+        internal static bool isEditorCompiling;
+        internal static bool isEditorPlayingOrWillChangePlaymode;
+
+        public static void RefreshEditorStatus()
+        {
+            isEditorPlaying = EditorApplication.isPlaying;
+            isEditorUpdating = EditorApplication.isUpdating;
+            isEditorCompiling = EditorApplication.isCompiling;
+            isEditorPlayingOrWillChangePlaymode = EditorApplication.isPlayingOrWillChangePlaymode;
+        }
+
+        private static AssetType[] Filters => FiltersLazy.Value;
+
+        private static readonly Lazy<AssetType[]> FiltersLazy = new(() => new AssetType[]
         {
             new("Scene", ".unity"), new("Prefab", ".prefab"), new("Model",
                 ".3df",
@@ -138,7 +152,7 @@ namespace PancakeEditor.Finder
                 ".fontsettings",
                 ".prefs"),
             new("Others") //
-        };
+        });
 
         public static HashSet<string> selectionAssetGUIDs;
 
@@ -192,7 +206,9 @@ namespace PancakeEditor.Finder
         }
 
 
-        public static readonly Dictionary<int, string> HashClassesNormal = new()
+        public static Dictionary<int, string> HashClassesNormal => HashClassesNormalLazy.Value;
+
+        private static readonly Lazy<Dictionary<int, string>> HashClassesNormalLazy = new(() => new Dictionary<int, string>
         {
             {1, "UnityEngine.GameObject"},
             {2, "UnityEngine.Component"},
@@ -341,8 +357,7 @@ namespace PancakeEditor.Finder
             {1105, "UnityEditor.HumanTemplate"},
             {1110, "UnityEditor.SpeedTreeImporter"},
             {1113, "UnityEditor.LightmapParameters"}
-        };
-
+        });
 
         public static T LoadAssetAtPath<T>(string path) where T : Object { return AssetDatabase.LoadAssetAtPath<T>(path); }
 
@@ -650,11 +665,13 @@ namespace PancakeEditor.Finder
 
         public static TerrainTextureData[] GetTerrainTextureDatas(TerrainData data)
         {
+            if (data == null || data.terrainLayers == null) return new TerrainTextureData[] { };
+
             var arr = new TerrainTextureData[data.terrainLayers.Length];
             for (var i = 0; i < data.terrainLayers.Length; i++)
             {
                 var layer = data.terrainLayers[i];
-                arr[i] = new TerrainTextureData(layer.normalMapTexture, layer.maskMapTexture, layer.diffuseTexture);
+                arr[i] = layer == null ? new TerrainTextureData() : new TerrainTextureData(layer.normalMapTexture, layer.maskMapTexture, layer.diffuseTexture);
             }
 
             return arr;
@@ -789,7 +806,7 @@ namespace PancakeEditor.Finder
                 AssetDatabase.Refresh();
             }
 
-            FinderWindowBase.FinderDelayCheck4Changes();
+            FinderWindowBase.DelayCheck4Changes();
         }
     }
 }

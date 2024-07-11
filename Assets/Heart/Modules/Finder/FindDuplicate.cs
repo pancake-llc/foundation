@@ -5,7 +5,6 @@ using System.Linq;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace PancakeEditor.Finder
 {
@@ -35,9 +34,9 @@ namespace PancakeEditor.Finder
 
         public AssetDuplicateTree2(IWindow window, Func<FindRefDrawer.Sort> getSortMode, Func<FindRefDrawer.Mode> getGroupMode)
         {
-            this.Window = window;
-            this._getSortMode = getSortMode;
-            this._getGroupMode = getGroupMode;
+            Window = window;
+            _getSortMode = getSortMode;
+            _getGroupMode = getGroupMode;
             _groupDrawer = new FindTreeUI2.GroupDrawer(DrawGroup, DrawAsset);
         }
 
@@ -56,11 +55,13 @@ namespace PancakeEditor.Finder
 
                 EditorGUI.ProgressBar(rect, p, $"Scanning {FileCompare.nScaned} / {FileCompare.nChunks2}");
                 GUILayout.FlexibleSpace();
-                return true;
+            }
+            else
+            {
+                if (_groupDrawer.HasValidTree) _groupDrawer.tree.itemPaddingRight = 60f;
+                _groupDrawer.DrawLayout();
             }
 
-            if (_groupDrawer.HasValidTree) _groupDrawer.tree.itemPaddingRight = 60f;
-            _groupDrawer.DrawLayout();
             DrawHeader();
             return false;
         }
@@ -96,7 +97,7 @@ namespace PancakeEditor.Finder
                 else
                 {
                     int index = rf.index;
-                    Selection.objects = list.Where(x => x.index == index).Select(x => FinderUtility.LoadAssetAtPath<Object>(x.asset.AssetPath)).ToArray();
+                    Selection.objects = list.Where(x => x.index == index).Select(x => FinderUtility.LoadAssetAtPath<UnityEngine.Object>(x.asset.AssetPath)).ToArray();
                     FinderExport.MergeDuplicate(rf.asset.guid);
                 }
             }

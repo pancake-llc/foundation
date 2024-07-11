@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Pancake.Common;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
+using Math = Pancake.Common.Math;
 
 namespace PancakeEditor.Finder
 {
@@ -55,6 +57,34 @@ namespace PancakeEditor.Finder
 
         public static bool ShowReferenceCount { get => Setting.Settings.referenceCount; set => Setting.Settings.referenceCount = value; }
         public static bool ShowUsedByClassed { get => Setting.Settings.showUsedByClassed; set => Setting.Settings.showUsedByClassed = value; }
+
+        public static bool ShowPackageAsset { get => Setting.Settings.showPackageAsset; set => Setting.Settings.showPackageAsset = value; }
+        public static bool ShowSubAssetFileId { get => Setting.Settings.showSubAssetFileId; set => Setting.Settings.showSubAssetFileId = value; }
+        public static bool DisableInPlayMode { get => Setting.Settings.disableInPlayMode; set => Setting.Settings.disableInPlayMode = value; }
+        public static bool Disabled { get => Setting.Settings.disabled; set => Setting.Settings.disabled = value; }
+
+        public static bool InternalDisabled
+        {
+            get => Setting.Settings.disabled || (Setting.Settings.disableInPlayMode && EditorApplication.isPlayingOrWillChangePlaymode);
+            set
+            {
+                ref bool disableRef = ref Setting.Settings.disabled;
+                if (EditorApplication.isPlayingOrWillChangePlaymode) disableRef = ref Setting.Settings.disableInPlayMode;
+                if (disableRef == value) return;
+                disableRef = value;
+
+                if (value) // disable at runtime: only disable `disableInPlayMode`
+                {
+                    // ready = false;
+                    // EditorApplication.update -= AsyncProcess;
+                }
+                else // enable at runtime: enable all
+                {
+                    Setting.Settings.disabled = false;
+                    // Check4Changes(false);
+                }
+            }
+        }
 
         public static bool AlternateRowColor { get => Setting.Settings.alternateColor; set => Setting.Settings.alternateColor = value; }
 
@@ -157,18 +187,9 @@ namespace PancakeEditor.Finder
 
         public static void DrawFinderSettings()
         {
-            if (FinderUtility.DrawToggle(ref Setting.Settings.pingRow, "Full row click to ping"))
-            {
-                // to_do
-            }
-
             GUILayout.BeginHorizontal();
             {
-                if (FinderUtility.DrawToggle(ref Setting.Settings.alternateColor, "Alternate Odd & Even Row Color"))
-                {
-                    // to_do
-                    FinderUtility.RepaintFinderWindows();
-                }
+                if (FinderUtility.DrawToggle(ref Setting.Settings.alternateColor, "Alternate Odd & Even Row Color")) FinderUtility.RepaintFinderWindows();
 
                 EditorGUI.BeginDisabledGroup(!AlternateRowColor);
                 {
@@ -176,7 +197,6 @@ namespace PancakeEditor.Finder
                     if (!c.Equals(RowColor))
                     {
                         RowColor = c;
-                        // to_do
                         FinderUtility.RepaintFinderWindows();
                     }
                 }
@@ -184,60 +204,43 @@ namespace PancakeEditor.Finder
             }
             GUILayout.EndHorizontal();
 
-            if (FinderUtility.DrawToggle(ref Setting.Settings.referenceCount, "Show Usage Count in Project panel"))
-            {
-                // to_do
-                FinderUtility.RepaintProjectWindows();
-            }
+            if (FinderUtility.DrawToggle(ref Setting.Settings.referenceCount, "Show Usage Count in Project panel")) FinderUtility.RepaintProjectWindows();
 
-            if (FinderUtility.DrawToggle(ref Setting.Settings.showUsedByClassed, "Show Asset Type in use"))
-            {
-                // to_do
-                FinderUtility.RepaintFinderWindows();
-            }
+            if (FinderUtility.DrawToggle(ref Setting.Settings.showSubAssetFileId, "Show SubAsset FileId")) FinderUtility.RepaintProjectWindows();
+
+            if (FinderUtility.DrawToggle(ref Setting.Settings.showUsedByClassed, "Show Asset Type in use")) FinderUtility.RepaintFinderWindows();
+
+            if (FinderUtility.DrawToggle(ref Setting.Settings.showPackageAsset, "Show Asset in Packages")) FinderUtility.RepaintFinderWindows();
         }
 
-        internal static void FinderDelayCheck4Changes()
+        [NonSerialized] internal static int delayCounter;
+
+        internal static void DelayCheck4Changes()
         {
-            EditorApplication.update -= FinderCheck;
-            EditorApplication.update += FinderCheck;
+            EditorApplication.update -= Check;
+            EditorApplication.update += Check;
         }
 
-        static void FinderCheck()
+        private static void Check()
         {
-            if (EditorApplication.isCompiling || EditorApplication.isUpdating) return;
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating || Disabled)
+            {
+                delayCounter = 100;
+                return;
+            }
 
-            EditorApplication.update -= FinderCheck;
+            if (delayCounter-- > 0) return;
+            EditorApplication.update -= Check;
             CacheSetting.Check4Changes(false);
         }
 
-        internal static bool CacheDisabled
-        {
-            get => CacheSetting.disabled;
-            set
-            {
-                if (CacheSetting.disabled == value) return;
-
-                CacheSetting.disabled = value;
-                if (CacheSetting.disabled)
-                {
-                    CacheSetting.ready = false;
-                    CacheSetting.UnregisterAsyncProcess();
-                }
-                else
-                {
-                    CacheSetting.Check4Changes(false);
-                }
-            }
-        }
-
-        internal static bool IsCacheReady => Cache != null && CacheSetting.ready;
+        internal static bool IsCacheReady => !InternalDisabled && Cache != null && CacheSetting.ready;
 
         internal static bool HasCache => Cache != null;
 
         public void AddItemsToMenu(GenericMenu menu)
         {
-            menu.AddItem(MyGUIContent.FromString("Enable"), !CacheSetting.disabled, () => { CacheSetting.disabled = !CacheSetting.disabled; });
+            menu.AddItem(MyGUIContent.FromString("Enable"), !InternalDisabled, () => { InternalDisabled = !InternalDisabled; });
             menu.AddItem(MyGUIContent.FromString("Refresh"),
                 false,
                 () =>
@@ -254,21 +257,19 @@ namespace PancakeEditor.Finder
 
         protected bool DrawEnable()
         {
-            bool v = CacheSetting.disabled;
-            if (v)
+            if (!InternalDisabled) return true;
+            bool isPlayMode = EditorApplication.isPlayingOrWillChangePlaymode;
+            string message = isPlayMode ? "Finder is disabled in play mode!" : "Finder is disabled!";
+
+            EditorGUILayout.HelpBox(message, MessageType.Warning);
+
+            if (GUILayout.Button("Enable"))
             {
-                EditorGUILayout.HelpBox("Finder is disabled!", MessageType.Warning);
-
-                if (GUILayout.Button("Enable"))
-                {
-                    CacheSetting.disabled = !CacheSetting.disabled;
-                    Repaint();
-                }
-
-                return !CacheSetting.disabled;
+                InternalDisabled = !InternalDisabled;
+                Repaint();
             }
 
-            return !CacheSetting.disabled;
+            return false;
         }
 
         internal static void DrawPriorityGUI()

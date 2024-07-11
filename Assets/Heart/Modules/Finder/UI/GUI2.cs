@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
@@ -15,7 +14,6 @@ namespace PancakeEditor.Finder
         public static Color darkGreen = new(0, .5f, 0f, 1f);
         public static Color darkBlue = new(0, .0f, 0.5f, 1f);
         public static Color lightRed = new(1f, 0.5f, 0.5f, 1f);
-        private static readonly GUILayoutOption Glw22 = GUILayout.Width(22f);
 
         public static GUIStyle MiniLabelAlignRight
         {
@@ -95,20 +93,6 @@ namespace PancakeEditor.Finder
             return isAccepted ? DragAndDrop.objectReferences : null;
         }
 
-        //        public static bool ColorIconButton(Rect r, Texture icon, Vector2? iconOffset, Color? c)
-        //        {
-        //            if (c != null) Rect(r, c.Value);
-        //            
-        //            // align center
-        //            if (iconOffset != null)
-        //            {
-        //                r.x += iconOffset.Value.x;
-        //                r.y += iconOffset.Value.y;
-        //            }
-        //            
-        //            return GUI.Button(r, icon, GUIStyle.none);
-        //        }
-
         public static bool ColorIconButton(Rect r, Texture icon, Color? c)
         {
             var oColor = GUI.color;
@@ -134,10 +118,83 @@ namespace PancakeEditor.Finder
             return true;
         }
 
+        public static bool Toggle(ref bool value, GUIContent content, GUIStyle style, Rect position)
+        {
+            // Draw the toggle button directly at the specified position
+            bool newValue = GUI.Toggle(position, value, content, style);
+
+            // Update the reference value
+            bool changed = newValue != value;
+            value = newValue;
+
+            return changed;
+        }
+
+        internal static bool ToolbarToggle(Rect r, ref bool value, Texture icon, Vector2 padding, string tooltip = null)
+        {
+            var vv = GUI.Toggle(r, value, MyGUIContent.Tooltip(tooltip), EditorStyles.toolbarButton);
+
+            if (icon != null)
+            {
+                var rect = GUILayoutUtility.GetLastRect();
+                rect = Padding(rect, padding.x, padding.y);
+                GUI.DrawTexture(rect, icon, ScaleMode.ScaleToFit);
+            }
+
+            if (vv == value) return false;
+            value = vv;
+            return true;
+        }
+
+        public static bool ToolbarToggle(ref bool value, Texture icon, Vector2 padding, string tooltip, Rect position)
+        {
+            // Draw the toggle button directly at the specified position
+            bool newValue = GUI.Toggle(position, value, MyGUIContent.FromTexture(icon, tooltip), EditorStyles.toolbarButton);
+
+            // Update the reference value
+            bool changed = newValue != value;
+            value = newValue;
+
+            return changed;
+        }
+
+        internal static bool ToolbarToggle(Rect r, ref bool value, GUIContent content)
+        {
+            if (value == false)
+            {
+                if (GUI.Toggle(r, value, content, EditorStyles.toolbarButton) != value)
+                {
+                    value = true;
+                    return true;
+                }
+
+                return false;
+            }
+
+            var image = content.image;
+            content.image = null;
+
+            if (GUI.Toggle(r, value, content, EditorStyles.toolbarButton) == false)
+            {
+                value = false;
+                content.image = image;
+                return true;
+            }
+
+            if (image != null)
+            {
+                content.image = image;
+                r.xMin += 1;
+                r.xMax -= 1;
+                GUI.DrawTexture(r, image, ScaleMode.ScaleToFit);
+            }
+
+            return false;
+        }
+
         internal static bool ToolbarToggle(ref bool value, Texture icon, Vector2 padding, string tooltip = null)
         {
-            bool vv = GUILayout.Toggle(value, MyGUIContent.Tooltip(tooltip), EditorStyles.toolbarButton, Glw22);
-
+            bool vv = GUILayout.Toggle(value, MyGUIContent.Tooltip(tooltip), EditorStyles.toolbarButton, GUILayout.Width(24));
             if (icon != null)
             {
                 var rect = GUILayoutUtility.GetLastRect();

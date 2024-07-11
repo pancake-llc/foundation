@@ -143,11 +143,13 @@ namespace PancakeEditor.Finder
             if (Event.current.type == EventType.MouseUp) _resizeIndex = -1;
         }
 
+        private readonly GUILayoutOption[] _expandWh = {GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true)};
+
         private Rect StartLayout(bool horz)
         {
             return horz
-                ? EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true))
-                : EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                ? EditorGUILayout.BeginHorizontal(_expandWh)
+                : EditorGUILayout.BeginVertical(_expandWh);
         }
 
         private void EndLayout(bool horz)

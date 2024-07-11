@@ -81,7 +81,10 @@ namespace PancakeEditor.Finder
 
             public virtual string[] GetChildren(string id) { return null; }
 
-            public virtual void Draw(Rect r, TreeItem item) { GUI.Label(r, item.id); }
+            public virtual void Draw(Rect r, TreeItem item)
+            {
+                GUI.Label(r, MyGUIContent.From(item.id));
+            }
         }
 
         public class GroupDrawer : Drawer
@@ -276,7 +279,7 @@ namespace PancakeEditor.Finder
                     float x = (depth + 1) * 16f;
                     tree.drawer.Draw(new Rect(x, rect.y, rect.width - x, rect.height), this);
 
-                    if (childCount > 0) IsOpen = GUI.Toggle(new Rect(rect.x + x - 16f, rect.y, 16f, 16f), IsOpen, string.Empty, EditorStyles.foldout);
+                    if (childCount > 0) IsOpen = GUI.Toggle(new Rect(rect.x + x - 16f, rect.y, 16f, 16f), IsOpen, GUIContent.none, EditorStyles.foldout);
 
                     index++;
                     rect.y += height;

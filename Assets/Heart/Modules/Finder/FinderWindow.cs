@@ -229,12 +229,10 @@ namespace PancakeEditor.Finder
 
         private void RefreshPanelVisible()
         {
-            if (sp2 != null)
-            {
-                sp2.splits[0].visible = IsScenePanelVisible;
-                sp2.splits[1].visible = IsAssetPanelVisible;
-                sp2.CalculateWeight();
-            }
+            if (sp1 == null || sp2 == null) return;
+            sp2.splits[0].visible = IsScenePanelVisible;
+            sp2.splits[1].visible = IsAssetPanelVisible;
+            sp2.CalculateWeight();
         }
 
         private void RefreshOnSelectionChange()
@@ -313,8 +311,8 @@ namespace PancakeEditor.Finder
         }
 
 
-        public SplitView sp1; // container : Selection / sp2 / Bookmark 
-        public SplitView sp2; // Scene / Assets
+        [NonSerialized] public SplitView sp1; // container : Selection / sp2 / Bookmark 
+        [NonSerialized] public SplitView sp2; // Scene / Assets
 
         private void DrawHistory(Rect rect)
         {
@@ -382,7 +380,7 @@ namespace PancakeEditor.Finder
                 {
                     new()
                     {
-                        title = new GUIContent("Selection", Uniform.IconContent("d_RectTransformBlueprint").image),
+                        title = new GUIContent("Selection", Uniform.IconContent("d_Selectable Icon").image),
                         weight = 0.4f,
                         visible = settings.selection,
                         draw = rect =>
@@ -481,14 +479,14 @@ namespace PancakeEditor.Finder
 
         protected bool CheckDrawImport()
         {
-            if (EditorApplication.isCompiling)
+            if (FinderUtility.isEditorCompiling)
             {
                 EditorGUILayout.HelpBox("Compiling scripts, please wait!", MessageType.Warning);
                 Repaint();
                 return false;
             }
 
-            if (EditorApplication.isUpdating)
+            if (FinderUtility.isEditorUpdating)
             {
                 EditorGUILayout.HelpBox("Importing assets, please wait!", MessageType.Warning);
                 Repaint();
@@ -505,37 +503,42 @@ namespace PancakeEditor.Finder
                 return false;
             }
 
-            if (!IsCacheReady)
+            if (IsCacheReady) return DrawEnable();
+
+            if (!HasCache)
             {
-                if (!HasCache)
-                {
-                    EditorGUILayout.HelpBox(
-                        "Finder cache not found!\nFirst scan may takes quite some time to finish but you would be able to work normally while the scan works in background...",
-                        MessageType.Warning);
-
-                    DrawPriorityGUI();
-
-                    if (GUILayout.Button("Scan project"))
-                    {
-                        CreateCache();
-                        Repaint();
-                    }
-
-                    return false;
-                }
+                EditorGUILayout.HelpBox(
+                    "Finder cache not found!\nFirst scan may takes quite some time to finish but you would be able to work normally while the scan works in background...",
+                    MessageType.Warning);
 
                 DrawPriorityGUI();
 
-                if (!DrawEnable()) return false;
+                if (GUILayout.Button("Scan project"))
+                {
+                    CreateCache();
+                    Repaint();
+                }
 
+                return false;
+            }
+
+            DrawPriorityGUI();
+
+            if (!DrawEnable()) return false;
+            if (CacheSetting.workCount > 0)
+            {
                 string text = "Refreshing ... " + (int) (CacheSetting.Progress * CacheSetting.workCount) + " / " + CacheSetting.workCount;
                 var rect = GUILayoutUtility.GetRect(1f, Screen.width, 18f, 18f);
                 EditorGUI.ProgressBar(rect, CacheSetting.Progress, text);
                 Repaint();
-                return false;
+            }
+            else
+            {
+                CacheSetting.workCount = 0;
+                CacheSetting.ready = true;
             }
 
-            return DrawEnable();
+            return false;
         }
 
         protected bool IsFocusingUses => _tabs != null && _tabs.current == 0;
@@ -568,6 +571,7 @@ namespace PancakeEditor.Finder
                 Uniform.IconContent("ShurikenCheckMarkMixed", "Ignore"),
                 Uniform.IconContent("d_FilterByType@2x", "Filter by Type"));
             _bottomTabs.current = -1;
+            _bottomTabs.flexibleWidth = false;
 
             _toolTabs = TabView.Create(this,
                 false,
@@ -577,30 +581,47 @@ namespace PancakeEditor.Finder
                 "In Build");
             _tabs = TabView.Create(this, false, "Uses", "Used By");
             _tabs.onTabChange = OnTabChange;
+            const float iconW = 24f;
+            _tabs.offsetFirst = iconW;
+            _tabs.offsetLast = iconW * 5;
+
             _tabs.callback = new DrawCallback
             {
-                beforeDraw = () =>
+                beforeDraw = (rect) =>
                 {
+                    rect.width = iconW;
                     if (GUI2.ToolbarToggle(ref selection.isLock,
                             selection.isLock ? Uniform.IconContent("LockIcon-On").image : Uniform.IconContent("LockIcon").image,
-                            new Vector2(-1, 2),
-                            "Lock Selection"))
+                            Vector2.zero,
+                            "Lock Selection",
+                            rect))
                     {
                         WillRepaint = true;
                         OnSelectionChange();
                         if (selection.isLock) AddHistory();
                     }
                 },
-                afterDraw = () =>
+                afterDraw = (rect) =>
                 {
-                    if (GUI2.ToolbarToggle(ref settings.selection, Uniform.IconContent("d_RectTransformBlueprint").image, Vector2.zero, "Show / Hide Selection"))
+                    rect.xMin = rect.xMax - iconW * 5;
+                    rect.width = iconW;
+                    if (GUI2.ToolbarToggle(ref settings.selection,
+                            Uniform.IconContent("d_Selectable Icon").image,
+                            Vector2.zero,
+                            "Show / Hide Selection",
+                            rect))
                     {
                         sp1.splits[0].visible = settings.selection;
                         sp1.CalculateWeight();
                         Repaint();
                     }
 
-                    if (GUI2.ToolbarToggle(ref settings.scene, Uniform.IconContent("SceneAsset Icon").image, Vector2.zero, "Show / Hide Scene References"))
+                    rect.x += iconW;
+                    if (GUI2.ToolbarToggle(ref settings.scene,
+                            Uniform.IconContent("SceneAsset Icon").image,
+                            Vector2.zero,
+                            "Show / Hide Scene References",
+                            rect))
                     {
                         if (settings.asset == false && settings.scene == false)
                         {
@@ -612,7 +633,12 @@ namespace PancakeEditor.Finder
                         Repaint();
                     }
 
-                    if (GUI2.ToolbarToggle(ref settings.asset, Uniform.IconContent("Folder Icon").image, Vector2.zero, "Show / Hide Asset References"))
+                    rect.x += iconW;
+                    if (GUI2.ToolbarToggle(ref settings.asset,
+                            Uniform.IconContent("Folder Icon").image,
+                            Vector2.zero,
+                            "Show / Hide Asset References",
+                            rect))
                     {
                         if (settings.asset == false && settings.scene == false)
                         {
@@ -624,14 +650,24 @@ namespace PancakeEditor.Finder
                         Repaint();
                     }
 
-                    if (GUI2.ToolbarToggle(ref settings.details, Uniform.IconContent("d_UnityEditor.SceneHierarchyWindow").image, Vector2.zero, "Show / Hide Details"))
+                    rect.x += iconW;
+                    if (GUI2.ToolbarToggle(ref settings.details,
+                            Uniform.IconContent("d_UnityEditor.SceneHierarchyWindow").image,
+                            Vector2.zero,
+                            "Show / Hide Details",
+                            rect))
                     {
                         sp1.splits[2].visible = settings.details;
                         sp1.CalculateWeight();
                         Repaint();
                     }
 
-                    if (GUI2.ToolbarToggle(ref settings.bookmark, Uniform.IconContent("d_Favorite").image, Vector2.zero, "Show / Hide Bookmarks"))
+                    rect.x += iconW;
+                    if (GUI2.ToolbarToggle(ref settings.bookmark,
+                            Uniform.IconContent("d_Favorite").image,
+                            Vector2.zero,
+                            "Show / Hide Bookmarks",
+                            rect))
                     {
                         sp1.splits[3].visible = settings.bookmark;
                         sp1.CalculateWeight();
@@ -643,26 +679,30 @@ namespace PancakeEditor.Finder
 
         protected bool DrawFooter()
         {
-            GUILayout.BeginHorizontal(EditorStyles.toolbar);
-            {
-                _bottomTabs.DrawLayout();
-                GUILayout.FlexibleSpace();
-                DrawAssetViewSettings();
-                GUILayout.FlexibleSpace();
-                DrawViewModes();
+            _bottomTabs.DrawLayout();
+            var bottomBar = GUILayoutUtility.GetLastRect();
 
-                var oColor = GUI.color;
-                if (settings.toolMode) GUI.color = Color.green;
-                if (GUILayout.Button(Uniform.IconContent("CustomTool").image, EditorStyles.toolbarButton))
+            var buttonRect = bottomBar;
+            buttonRect.xMin = buttonRect.xMax - 24f;
+
+            var viewModeRect = bottomBar;
+            viewModeRect.xMax -= 24f;
+            viewModeRect.xMin = viewModeRect.xMax - 200f;
+
+            DrawViewModes(viewModeRect);
+
+            Color oColor = GUI.color;
+            if (settings.toolMode) GUI.color = Color.green;
+            {
+                if (GUI.Button(buttonRect, MyGUIContent.From(Uniform.IconContent("CustomTool").image), EditorStyles.toolbarButton))
                 {
                     settings.toolMode = !settings.toolMode;
                     EditorUtility.SetDirty(this);
                     WillRepaint = true;
                 }
-
-                GUI.color = oColor;
             }
-            GUILayout.EndHorizontal();
+            GUI.color = oColor;
+
             return false;
         }
 
@@ -688,8 +728,14 @@ namespace PancakeEditor.Finder
         private EnumDrawer _toolModeEd;
         private EnumDrawer _sortModeEd;
 
-        private void DrawViewModes()
+        private void DrawViewModes(Rect rect)
         {
+            var rect1 = rect;
+            rect1.width = rect.width / 2f;
+
+            var rect2 = rect1;
+            rect2.x += rect1.width;
+
             _toolModeEd ??= new EnumDrawer {enumInfo = new EnumDrawer.EnumInfo(FindRefDrawer.Mode.Type, FindRefDrawer.Mode.Folder, FindRefDrawer.Mode.Extension)};
             _groupModeEd ??= new EnumDrawer();
             _sortModeEd ??= new EnumDrawer();
@@ -697,7 +743,7 @@ namespace PancakeEditor.Finder
             if (settings.toolMode)
             {
                 var tMode = settings.toolGroupMode;
-                if (_toolModeEd.DrawLayout(ref tMode, GUILayout.Width(100f)))
+                if (_toolModeEd.Draw(rect1, ref tMode))
                 {
                     settings.toolGroupMode = tMode;
                     AllMarkDirty();
@@ -707,7 +753,7 @@ namespace PancakeEditor.Finder
             else
             {
                 var gMode = settings.groupMode;
-                if (_groupModeEd.DrawLayout(ref gMode, GUILayout.Width(100f)))
+                if (_groupModeEd.Draw(rect1, ref gMode))
                 {
                     settings.groupMode = gMode;
                     AllMarkDirty();
@@ -716,19 +762,34 @@ namespace PancakeEditor.Finder
             }
 
             var sMode = settings.sortMode;
-            if (_sortModeEd.DrawLayout(ref sMode, GUILayout.Width(80f)))
+            if (_sortModeEd.Draw(rect2, ref sMode))
             {
                 settings.sortMode = sMode;
                 RefreshSort();
             }
         }
 
+        // Save status to temp variable so the result will be consistent between Layout & Repaint
+        internal static int delayRepaint;
+        internal static bool checkDrawImportResult;
+
         protected void OnGUI2()
         {
-            if (!CheckDrawImport()) return;
+            if (Event.current.type == EventType.Layout) FinderUtility.RefreshEditorStatus();
+
+            if (InternalDisabled)
+            {
+                DrawEnable();
+                return;
+            }
 
             if (_tabs == null) InitTabs();
             if (sp1 == null) InitPanes();
+
+            bool result = CheckDrawImport();
+            if (Event.current.type == EventType.Layout) checkDrawImportResult = result;
+
+            if (!checkDrawImportResult) return;
 
             if (settings.toolMode)
             {
@@ -744,7 +805,9 @@ namespace PancakeEditor.Finder
 
             DrawSettings();
             DrawFooter();
-            if (WillRepaint) Repaint();
+            if (!WillRepaint) return;
+            WillRepaint = false;
+            Repaint();
         }
 
 

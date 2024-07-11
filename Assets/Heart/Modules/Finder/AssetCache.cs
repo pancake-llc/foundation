@@ -20,7 +20,7 @@ namespace PancakeEditor.Finder
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            FinderWindowBase.FinderDelayCheck4Changes();
+            FinderWindowBase.DelayCheck4Changes();
 
             if (!FinderWindowBase.IsCacheReady) return;
 
@@ -57,33 +57,29 @@ namespace PancakeEditor.Finder
 
         private static void InitHelper()
         {
-            if (EditorApplication.isCompiling) return;
+            if (FinderUtility.isEditorCompiling || FinderUtility.isEditorPlayingOrWillChangePlaymode) return;
 
             if (!FinderWindowBase.IsCacheReady) return;
+            EditorApplication.update -= InitHelper;
 
-            if (!FinderWindowBase.CacheDisabled)
-            {
-                InitListScene();
-                InitIgnore();
+            InitListScene();
+            InitIgnore();
 
 #if UNITY_2018_1_OR_NEWER
-                EditorBuildSettings.sceneListChanged -= InitListScene;
-                EditorBuildSettings.sceneListChanged += InitListScene;
+            EditorBuildSettings.sceneListChanged -= InitListScene;
+            EditorBuildSettings.sceneListChanged += InitListScene;
 #endif
 
 #if UNITY_2022_1_OR_NEWER
-                EditorApplication.projectWindowItemInstanceOnGUI -= OnGUIProjectInstance;
-                EditorApplication.projectWindowItemInstanceOnGUI += OnGUIProjectInstance;
+            EditorApplication.projectWindowItemInstanceOnGUI -= OnGUIProjectInstance;
+            EditorApplication.projectWindowItemInstanceOnGUI += OnGUIProjectInstance;
 #else
-                EditorApplication.projectWindowItemOnGUI -= OnGUIProjectItem;
-                EditorApplication.projectWindowItemOnGUI += OnGUIProjectItem;
+            EditorApplication.projectWindowItemOnGUI -= OnGUIProjectItem;
+            EditorApplication.projectWindowItemOnGUI += OnGUIProjectItem;
 #endif
 
-                AssetCache.onCacheReady -= OnCacheReady;
-                AssetCache.onCacheReady += OnCacheReady;
-            }
-
-            EditorApplication.update -= InitHelper;
+            AssetCache.onCacheReady -= OnCacheReady;
+            AssetCache.onCacheReady += OnCacheReady;
         }
 
         private static void OnCacheReady()
@@ -134,10 +130,14 @@ namespace PancakeEditor.Finder
                 return;
             }
 
+            if (!FinderWindowBase.ShowSubAssetFileId) return;
             var rect2 = selectionRect;
             var label = new GUIContent(localId.ToString());
             rect2.xMin = rect2.xMax - EditorStyles.miniLabel.CalcSize(label).x;
+            var c = GUI.color;
+            GUI.color = new Color(.5f, .5f, .5f, 0.5f);
             GUI.Label(rect2, label, EditorStyles.miniLabel);
+            GUI.color = c;
         }
 
         private static void OnGUIProjectItem(string guid, Rect rect)
@@ -189,12 +189,16 @@ namespace PancakeEditor.Finder
         public List<string> listIgnore = new();
         public bool pingRow = true;
         public bool referenceCount = true;
+        public bool showPackageAsset;
+        public bool showSubAssetFileId;
         public bool showFileSize;
         public bool displayFileSize = true;
         public bool displayAtlasName;
         public bool displayAssetBundleName;
         public bool showUsedByClassed = true;
         public int treeIndent = 10;
+        public bool disableInPlayMode = true;
+        public bool disabled;
 
         public Color32 rowColor = new(0, 0, 0, 12);
         public Color32 selectedColor = new(0, 0, 255, 63);
@@ -208,7 +212,6 @@ namespace PancakeEditor.Finder
         internal static bool triedToLoadCache;
         internal static int priority = 5;
 
-        public bool disabled;
         public List<FindAsset> assetList;
         internal bool ready;
 
@@ -252,6 +255,8 @@ namespace PancakeEditor.Finder
 
         internal void ReadFromCache()
         {
+            if (FinderWindowBase.InternalDisabled) Debug.LogWarning("Something wrong??? Finder is disabled!");
+            
             if (assetList == null) assetList = new List<FindAsset>();
 
             FinderUtility.Clear(ref queueLoadContent);
@@ -279,9 +284,9 @@ namespace PancakeEditor.Finder
 
         internal void Check4Changes(bool force)
         {
-            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating ||  FinderWindowBase.Disabled)
             {
-                FinderWindowBase.FinderDelayCheck4Changes();
+                FinderWindowBase.DelayCheck4Changes();
                 return;
             }
 
@@ -314,11 +319,12 @@ namespace PancakeEditor.Finder
         internal void RefreshAsset(FindAsset asset, bool force)
         {
             asset.MarkAsDirty(true, force);
-            FinderWindowBase.FinderDelayCheck4Changes();
+            FinderWindowBase.DelayCheck4Changes();
         }
 
         internal void ReadFromProject(bool force)
         {
+            if (FinderWindowBase.InternalDisabled) Debug.LogWarning("Something wrong??? Finder is disabled!");
             if (assetMap == null || assetMap.Count == 0) ReadFromCache();
 
             var paths = AssetDatabase.GetAllAssetPaths();
@@ -418,8 +424,6 @@ namespace PancakeEditor.Finder
 
         internal void Check4Work()
         {
-            if (disabled) return;
-
             if (workCount == 0)
             {
                 Check4Usage();
@@ -433,7 +437,7 @@ namespace PancakeEditor.Finder
 
         internal void AsyncProcess()
         {
-            if (EditorApplication.isCompiling || EditorApplication.isUpdating) return;
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating || FinderWindowBase.InternalDisabled) return;
 
             if (frameSkipped++ < 10 - 2 * priority) return;
 

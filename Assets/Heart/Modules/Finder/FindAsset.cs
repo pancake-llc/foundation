@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
@@ -46,16 +45,21 @@ namespace PancakeEditor.Finder
             ".rendertexture",
             ".cubemap",
             ".flare",
+            ".playable",
             ".mat",
             ".prefab",
             ".physicsmaterial",
             ".fontsettings",
             ".asset",
             ".prefs",
-            ".spriteatlas"
+            ".spriteatlas",
+            ".terrainlayer",
+            ".asmdef"
         };
 
-        private static readonly Dictionary<int, Type> HashClasses = new();
+        private static readonly HashSet<string> ReferencableJson = new() {".shadergraph"};
+
+        private static readonly Dictionary<long, Type> HashClasses = new();
         internal static Dictionary<string, GUIContent> cacheImage = new();
 
         public static float ignoreTs;
@@ -85,22 +89,23 @@ namespace PancakeEditor.Finder
         [SerializeField] private List<Classes> useGUIDsList = new();
 
         private bool _isExcluded;
-        private Dictionary<string, HashSet<int>> _useGUIDs;
+        private Dictionary<string, HashSet<long>> _useGUIDs;
         private float _excludeTs;
 
 
         // ----------------------------- DRAW  ---------------------------------------
         [NonSerialized] private GUIContent _fileSizeText;
-        internal HashSet<int> hashUsedByClassesIds = new();
+        internal HashSet<long> hashUsedByClassesIds = new();
         [NonSerialized] private string _mAssetFolder;
         [NonSerialized] private string _mAssetName;
         [NonSerialized] private string _mAssetPath;
         [NonSerialized] private string _mExtension;
-        [NonSerialized] private bool _mInEditor;
-        [NonSerialized] private bool _mInPlugins;
-        [NonSerialized] private bool _mInResources;
-        [NonSerialized] private bool _mInStreamingAsset;
-        [NonSerialized] private bool _mIsAssetFile;
+        [NonSerialized] private bool _inEditor;
+        [NonSerialized] private bool _inPlugins;
+        [NonSerialized] private bool _inPackage;
+        [NonSerialized] private bool _inResources;
+        [NonSerialized] private bool _inStreamingAsset;
+        [NonSerialized] private bool _isAssetFile;
 
         // easy to recalculate: will not cache
         [NonSerialized] private bool _mPathLoaded;
@@ -168,7 +173,7 @@ namespace PancakeEditor.Finder
             get
             {
                 LoadPathInfo();
-                return _mInEditor;
+                return _inEditor;
             }
         }
 
@@ -177,7 +182,16 @@ namespace PancakeEditor.Finder
             get
             {
                 LoadPathInfo();
-                return _mInPlugins;
+                return _inPlugins;
+            }
+        }
+
+        public bool InPackages
+        {
+            get
+            {
+                LoadPathInfo();
+                return _inPackage;
             }
         }
 
@@ -186,7 +200,7 @@ namespace PancakeEditor.Finder
             get
             {
                 LoadPathInfo();
-                return _mInResources;
+                return _inResources;
             }
         }
 
@@ -195,7 +209,7 @@ namespace PancakeEditor.Finder
             get
             {
                 LoadPathInfo();
-                return _mInStreamingAsset;
+                return _inStreamingAsset;
             }
         }
 
@@ -260,25 +274,25 @@ namespace PancakeEditor.Finder
             }
         }
 
-        public Dictionary<string, HashSet<int>> UseGUIDs
+        public Dictionary<string, HashSet<long>> UseGUIDs
         {
             get
             {
                 if (_useGUIDs != null) return _useGUIDs;
 
-                _useGUIDs = new Dictionary<string, HashSet<int>>(useGUIDsList.Count);
+                _useGUIDs = new Dictionary<string, HashSet<long>>(useGUIDsList.Count);
                 for (var i = 0; i < useGUIDsList.Count; i++)
                 {
                     string id = useGUIDsList[i].guid;
                     if (_useGUIDs.ContainsKey(id))
                         for (var j = 0; j < useGUIDsList[i].ids.Count; j++)
                         {
-                            int val = useGUIDsList[i].ids[j];
+                            long val = useGUIDsList[i].ids[j];
                             if (_useGUIDs[id].Contains(val)) continue;
 
                             _useGUIDs[id].Add(useGUIDsList[i].ids[j]);
                         }
-                    else _useGUIDs.Add(id, new HashSet<int>(useGUIDsList[i].ids));
+                    else _useGUIDs.Add(id, new HashSet<long>(useGUIDsList[i].ids));
                 }
 
                 return _useGUIDs;
@@ -330,11 +344,12 @@ namespace PancakeEditor.Finder
                 _mAssetFolder = _mAssetFolder.Substring(7);
             else if (!FinderUtility.StringStartsWith(_mAssetPath, "Packages/", "Project Settings/", "Library/")) _mAssetFolder = "built-in/";
 
-            _mInEditor = _mAssetPath.Contains("/Editor/") || _mAssetPath.Contains("/Editor Default Resources/");
-            _mInResources = _mAssetPath.Contains("/Resources/");
-            _mInStreamingAsset = _mAssetPath.Contains("/StreamingAssets/");
-            _mInPlugins = _mAssetPath.Contains("/Plugins/");
-            _mIsAssetFile = _mAssetPath.EndsWith(".asset", StringComparison.Ordinal);
+            _inEditor = _mAssetPath.Contains("/Editor/") || _mAssetPath.Contains("/Editor Default Resources/");
+            _inResources = _mAssetPath.Contains("/Resources/");
+            _inStreamingAsset = _mAssetPath.Contains("/StreamingAssets/");
+            _inPlugins = _mAssetPath.Contains("/Plugins/");
+            _inPackage = _mAssetPath.StartsWith("Packages/");
+            _isAssetFile = _mAssetPath.EndsWith(".asset", StringComparison.Ordinal);
         }
 
         private bool ExistOnDisk()
@@ -367,7 +382,7 @@ namespace PancakeEditor.Finder
 
             if (IsMissing)
             {
-                Debug.LogWarning("Should never be here! - missing files can not trigger LoadFileInfo()");
+                //Debug.LogWarning("Should never be here! - missing files can not trigger LoadFileInfo()");
                 return;
             }
 
@@ -416,7 +431,7 @@ namespace PancakeEditor.Finder
             if (guid == this.guid) return;
 
             usedByMap.Add(guid, asset);
-            if (hashUsedByClassesIds == null) hashUsedByClassesIds = new HashSet<int>();
+            if (hashUsedByClassesIds == null) hashUsedByClassesIds = new HashSet<long>();
 
             if (asset.UseGUIDs.TryGetValue(this.guid, out var output))
             {
@@ -454,8 +469,7 @@ namespace PancakeEditor.Finder
 
         internal void GuessAssetType()
         {
-            if (ScriptExtensions.Contains(_mExtension))
-                type = EFinderAssetType.Script;
+            if (ScriptExtensions.Contains(_mExtension)) type = EFinderAssetType.Script;
             else if (ReferencableExtensions.Contains(_mExtension))
             {
                 bool isUnity = _mExtension == ".unity";
@@ -492,6 +506,10 @@ namespace PancakeEditor.Finder
                     if (str != "%YAML") type = EFinderAssetType.BinaryAsset;
                 }
             }
+            else if (ReferencableJson.Contains(_mExtension))
+            {
+                type = EFinderAssetType.Referencable;
+            }
             else if (_mExtension == ".fbx") type = EFinderAssetType.Model;
             else if (_mExtension == ".dll") type = EFinderAssetType.DLL;
             else type = EFinderAssetType.NonReadable;
@@ -520,12 +538,12 @@ namespace PancakeEditor.Finder
             else if (IsBinaryAsset) LoadBinaryAsset();
         }
 
-        internal void AddUseGuid(string fguid, int fFileId = -1, bool checkExist = true)
+        internal void AddUseGuid(string fguid, long fFileId = -1, bool checkExist = true)
         {
             if (!UseGUIDs.ContainsKey(fguid))
             {
-                useGUIDsList.Add(new Classes {guid = fguid, ids = new List<int>()});
-                UseGUIDs.Add(fguid, new HashSet<int>());
+                useGUIDsList.Add(new Classes {guid = fguid, ids = new List<long>()});
+                UseGUIDs.Add(fguid, new HashSet<long>());
             }
 
             if (fFileId != -1)
@@ -736,7 +754,7 @@ namespace PancakeEditor.Finder
                     }
 
                     bool isExisted = cacheImage.TryGetValue(name, out var content);
-                    if (content == null) content = MyGUIContent.FromType(t, name);
+                    if (content == null) content = t == null ? GUIContent.none : MyGUIContent.FromType(t, name);
 
                     if (!isExisted) cacheImage.Add(name, content);
                     else cacheImage[name] = content;
@@ -975,6 +993,18 @@ namespace PancakeEditor.Finder
                 }
             }
 
+            if (ReferencableJson.Contains(_mExtension))
+            {
+                var result = FinderShaderGraphReader.ExtractFileIDGuidPairs(AssetPath);
+
+                foreach (var (fileId, gId) in result)
+                {
+                    AddUseGuid(gId, fileId);
+                }
+
+                return;
+            }
+
             try
             {
                 using (var sr = new StreamReader(_mAssetPath))
@@ -982,11 +1012,11 @@ namespace PancakeEditor.Finder
                     while (sr.Peek() >= 0)
                     {
                         string line = sr.ReadLine();
-                        int index = line.IndexOf("guid: ");
+                        int index = line.IndexOf("guid: ", StringComparison.Ordinal);
                         if (index < 0) continue;
 
                         string refGuid = line.Substring(index + 6, 32);
-                        int indexFileId = line.IndexOf("fileID: ");
+                        int indexFileId = line.IndexOf("fileID: ", StringComparison.Ordinal);
                         int fileID = -1;
                         if (indexFileId >= 0)
                         {
@@ -998,6 +1028,7 @@ namespace PancakeEditor.Finder
                             }
                             catch
                             {
+                                // ignored
                             }
                         }
 
@@ -1063,8 +1094,6 @@ namespace PancakeEditor.Finder
 
             if (IsReferencable)
             {
-                var text = string.Empty;
-
                 if (!File.Exists(_mAssetPath))
                 {
                     state = EFinderAssetState.Missing;
@@ -1073,7 +1102,7 @@ namespace PancakeEditor.Finder
 
                 try
                 {
-                    text = File.ReadAllText(_mAssetPath).Replace("\r", "\n");
+                    string text = File.ReadAllText(_mAssetPath).Replace("\r", "\n");
                     File.WriteAllText(_mAssetPath, text.Replace(fromGuid, toGuid));
 
                     return true;
@@ -1262,7 +1291,7 @@ namespace PancakeEditor.Finder
         private class Classes
         {
             public string guid;
-            public List<int> ids;
+            public List<long> ids;
         }
     }
 }
