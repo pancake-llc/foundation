@@ -1,18 +1,17 @@
-﻿using System;
-using DebugUI;
-using R3;
+﻿using DebugUI;
+using Pancake.PlayerLoop;
 using UnityEngine;
-using static System.TimeSpan;
 
 namespace Pancake.DebugView
 {
     public class DefaultPage : DebugPageBase
     {
         private short _fps;
+        private float _t = 0.1f;
 
         public override void Configure(DebugUIBuilder builder)
         {
-            Observable.Interval(FromSeconds(0.1f)).Subscribe(OnFPSUpdated);
+            GameLoop.Register(this, OnFPSUpdated, PlayerLoopTiming.PreUpdate);
 
             builder.AddField("FPS", () => _fps);
 
@@ -22,7 +21,23 @@ namespace Pancake.DebugView
                 () => Time.timeScale,
                 x => Time.timeScale = x);
             return;
-            void OnFPSUpdated(Unit _) { _fps = (short) (Mathf.RoundToInt(1f / Time.unscaledDeltaTime)); }
+        }
+
+        private void OnFPSUpdated()
+        {
+            _t += Time.deltaTime;
+            if (_t >= 0.1f)
+            {
+                _t = 0;
+                _fps = (short) Mathf.RoundToInt(1f / Time.unscaledDeltaTime);
+            }
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            GameLoop.Unregister(this, PlayerLoopTiming.PreUpdate);
+
         }
     }
 }
