@@ -18,21 +18,10 @@ namespace PancakeEditor.Common
                 "https://github.com/AnnulusGames/ComponentCacheGenerator.git?path=src/ComponentCacheGenerator/Assets/ComponentCacheGenerator"
             },
             {"jp.hadashikick.vitalrouter", "https://github.com/hadashiA/VitalRouter.git?path=/src/VitalRouter.Unity/Assets/VitalRouter#0.9.4"},
-            {"com.pancake.r3", "https://github.com/pancake-llc/R3.git#1.1.11"},
-        };
-
-        private static readonly Dictionary<string, string> InternalSubDependencies = new()
-        {
-            {"com.cysharp.r3", "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.11"},
-            {"com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#6.0.0"},
-            {"com.pancake.threading.channels", "https://github.com/pancake-llc/system-threading-channels.git#8.0.0"},
-            {"com.pancake.component.annotations", "https://github.com/pancake-llc/system-componentmodel-annotations.git#5.0.0"},
-            {"com.pancake.bcl.timeprovider", "https://github.com/pancake-llc/microsoft-bcl-time-provider.git#8.0.0"},
-            {"com.pancake.bcl.asyncinterfaces", "https://github.com/pancake-llc/microsoft-bcl-async-interfaces.git#6.0.0"},
         };
 
         protected override Dictionary<string, string> Dependencies => InternalDependencies;
-        protected override Dictionary<string, string> SubDependencies => InternalSubDependencies;
+        protected override Dictionary<string, string> SubDependencies => new();
 
         private new static void Show()
         {

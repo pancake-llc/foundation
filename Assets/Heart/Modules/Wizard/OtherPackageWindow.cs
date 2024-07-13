@@ -82,12 +82,20 @@ namespace PancakeEditor
 #else
             InstallUIEffect();
 #endif
+            
+            GUILayout.Space(4);
+
+#if PANCAKE_UI_EFFECT
+            Uninstall("R3", "com.pancake.r3");
+#else
+            InstallUIEffect();
+#endif
 
             GUILayout.Space(4);
 
 #if PANCAKE_IN_APP_REVIEW
             EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("In-App-Review 1.8.1");
+            Uniform.DrawInstalled("In-App-Review 1.8.2");
 
             GUI.backgroundColor = Uniform.Red;
             GUILayout.FlexibleSpace();
@@ -243,11 +251,29 @@ namespace PancakeEditor
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install In-App-Review", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.google.play.review", "https://github.com/google-unity/in-app-review.git#1.8.1");
-                RegistryManager.Add("com.google.play.core", "https://github.com/google-unity/google-play-core.git#1.8.1");
-                RegistryManager.Add("com.google.play.common", "https://github.com/google-unity/google-play-common.git#1.8.1");
-                RegistryManager.Add("com.google.android.appbundle", "https://github.com/google-unity/android-app-bundle.git#1.8.0");
-                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.175");
+                RegistryManager.Add("com.google.play.review", "https://github.com/google-unity/in-app-review.git#1.8.2");
+                RegistryManager.Add("com.google.play.core", "https://github.com/google-unity/google-play-core.git#1.8.4");
+                RegistryManager.Add("com.google.play.common", "https://github.com/google-unity/google-play-common.git#1.9.1");
+                RegistryManager.Add("com.google.android.appbundle", "https://github.com/google-unity/android-app-bundle.git#1.9.0");
+                RegistryManager.Add("com.google.external-dependency-manager", "https://github.com/google-unity/external-dependency-manager.git#1.2.179");
+                RegistryManager.Resolve();
+            }
+
+            GUI.enabled = true;
+        }
+        
+        private static void InstallR3()
+        {
+            GUI.enabled = !EditorApplication.isCompiling;
+            if (GUILayout.Button("Install R3", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                RegistryManager.Add("com.pancake.r3", "https://github.com/pancake-llc/R3.git#1.1.11");
+                RegistryManager.Add("com.cysharp.r3", "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.11");
+                RegistryManager.Add("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#6.0.0");
+                RegistryManager.Add("com.pancake.threading.channels", "https://github.com/pancake-llc/system-threading-channels.git#8.0.0");
+                RegistryManager.Add("com.pancake.component.annotations", "https://github.com/pancake-llc/system-componentmodel-annotations.git#5.0.0");
+                RegistryManager.Add("com.pancake.bcl.timeprovider", "https://github.com/pancake-llc/microsoft-bcl-time-provider.git#8.0.0");
+                RegistryManager.Add("com.pancake.bcl.asyncinterfaces", "https://github.com/pancake-llc/microsoft-bcl-async-interfaces.git#6.0.0");
                 RegistryManager.Resolve();
             }
 
