@@ -28,35 +28,7 @@ namespace PancakeEditor
             GUILayout.Space(4);
 
 #if PANCAKE_NOTIFICATION
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("Notification 2.3.2", new RectOffset(0, 0, 6, 0));
-
-
-            GUILayout.FlexibleSpace();
-
-            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                SettingsService.OpenProjectSettings("Project/Mobile Notifications");
-            }
-
-            if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
-            {
-                Application.OpenURL("https://github.com/pancake-llc/heart/wiki/notification");
-            }
-
-            GUI.backgroundColor = Uniform.Red;
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Notification", $"Are you sure you want to uninstall Notification package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.unity.mobile.notifications");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
+            UninstallNotification();
 #else
             InstallNotification();
 #endif
@@ -82,40 +54,21 @@ namespace PancakeEditor
 #else
             InstallUIEffect();
 #endif
-            
+
             GUILayout.Space(4);
 
-#if PANCAKE_UI_EFFECT
-            Uninstall("R3", "com.pancake.r3");
+#if PANCAKE_R3
+            UninstallR3();
 #else
-            InstallUIEffect();
+            InstallR3();
 #endif
 
             GUILayout.Space(4);
 
 #if PANCAKE_IN_APP_REVIEW
-            EditorGUILayout.BeginHorizontal();
-            Uniform.DrawInstalled("In-App-Review 1.8.2");
-
-            GUI.backgroundColor = Uniform.Red;
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
-            {
-                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall In-App-Review", "Are you sure you want to uninstall In-App-Review package ?", "Yes", "No");
-                if (confirmDelete)
-                {
-                    RegistryManager.Remove("com.google.play.review");
-                    RegistryManager.Remove("com.google.play.core");
-                    RegistryManager.Remove("com.google.play.common");
-                    RegistryManager.Remove("com.google.android.appbundle");
-                    RegistryManager.Resolve();
-                }
-            }
-
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
+            UninstallInAppReview();
 #else
-            InstallUIEffect();
+            InstallInAppReview();
 #endif
         }
 
@@ -246,6 +199,39 @@ namespace PancakeEditor
             GUI.enabled = true;
         }
 
+        private static void UninstallNotification()
+        {
+            EditorGUILayout.BeginHorizontal();
+            Uniform.DrawInstalled("Notification 2.3.2", new RectOffset(0, 0, 6, 0));
+
+
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Open Setting", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                SettingsService.OpenProjectSettings("Project/Mobile Notifications");
+            }
+
+            if (GUILayout.Button("See Wiki", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
+            {
+                Application.OpenURL("https://github.com/pancake-llc/heart/wiki/notification");
+            }
+
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall Notification", $"Are you sure you want to uninstall Notification package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.unity.mobile.notifications");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+        }
+
         private static void InstallInAppReview()
         {
             GUI.enabled = !EditorApplication.isCompiling;
@@ -261,14 +247,38 @@ namespace PancakeEditor
 
             GUI.enabled = true;
         }
-        
+
+        private static void UninstallInAppReview()
+        {
+            EditorGUILayout.BeginHorizontal();
+            Uniform.DrawInstalled("In-App-Review 1.8.2");
+
+            GUI.backgroundColor = Uniform.Red;
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall In-App-Review", "Are you sure you want to uninstall In-App-Review package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.google.play.review");
+                    RegistryManager.Remove("com.google.play.core");
+                    RegistryManager.Remove("com.google.play.common");
+                    RegistryManager.Remove("com.google.android.appbundle");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
+        }
+
         private static void InstallR3()
         {
             GUI.enabled = !EditorApplication.isCompiling;
             if (GUILayout.Button("Install R3", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.pancake.r3", "https://github.com/pancake-llc/R3.git#1.1.11");
-                RegistryManager.Add("com.cysharp.r3", "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.11");
+                RegistryManager.Add("com.pancake.r3", "https://github.com/pancake-llc/R3.git#1.1.14");
+                RegistryManager.Add("com.cysharp.r3", "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.1.14");
                 RegistryManager.Add("com.pancake.unsafe", "https://github.com/pancake-llc/system-unsafe.git#6.0.0");
                 RegistryManager.Add("com.pancake.threading.channels", "https://github.com/pancake-llc/system-threading-channels.git#8.0.0");
                 RegistryManager.Add("com.pancake.component.annotations", "https://github.com/pancake-llc/system-componentmodel-annotations.git#5.0.0");
@@ -278,6 +288,33 @@ namespace PancakeEditor
             }
 
             GUI.enabled = true;
+        }
+
+        private static void UninstallR3()
+        {
+            EditorGUILayout.BeginHorizontal();
+            Uniform.DrawInstalled("R3 1.1.14", new RectOffset(0, 0, 6, 0));
+
+            GUILayout.FlexibleSpace();
+            GUI.backgroundColor = Uniform.Red;
+            if (GUILayout.Button("Uninstall", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT), GUILayout.MinWidth(80)))
+            {
+                bool confirmDelete = EditorUtility.DisplayDialog("Uninstall R3", "Are you sure you want to uninstall R3 package ?", "Yes", "No");
+                if (confirmDelete)
+                {
+                    RegistryManager.Remove("com.pancake.r3");
+                    RegistryManager.Remove("com.cysharp.r3");
+                    RegistryManager.Remove("com.pancake.unsafe");
+                    RegistryManager.Remove("com.pancake.threading.channels");
+                    RegistryManager.Remove("com.pancake.component.annotations");
+                    RegistryManager.Remove("com.pancake.bcl.timeprovider");
+                    RegistryManager.Remove("com.pancake.bcl.asyncinterfaces");
+                    RegistryManager.Resolve();
+                }
+            }
+
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
         }
 
         private static void Uninstall(string namePackage, string bundle)
