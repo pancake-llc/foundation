@@ -14,7 +14,7 @@ namespace PancakeEditor.Finder
 
         public static bool IsMergeProcessing { get; private set; }
 
-        [MenuItem("Assets/Finder/Toggle Ignore", false, 19)]
+        [MenuItem("Assets/Finder/Toggle Ignore", false)]
         private static void Ignore()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -33,10 +33,10 @@ namespace PancakeEditor.Finder
             }
         }
 
-        [MenuItem("Assets/Finder/Copy GUID", false, 20)]
+        [MenuItem("Assets/Finder/Copy GUID", false)]
         private static void CopyGuid() { EditorGUIUtility.systemCopyBuffer = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(Selection.activeObject)); }
 
-        [MenuItem("Assets/Finder/Select Dependencies (assets I use)", false, 22)]
+        [MenuItem("Assets/Finder/Select Dependencies (assets I use)", false)]
         private static void SelectDependencies_wtme()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -71,7 +71,7 @@ namespace PancakeEditor.Finder
             FinderWindowBase.CacheSetting.Check4Work();
         }
 
-        [MenuItem("Assets/Finder/Select Dependencies included me", false, 23)]
+        [MenuItem("Assets/Finder/Select Dependencies included me", false)]
         private static void SelectDependencies_wme()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -83,7 +83,7 @@ namespace PancakeEditor.Finder
             SelectDependencies(true);
         }
 
-        [MenuItem("Assets/Finder/Select Used (assets used me)", false, 24)]
+        [MenuItem("Assets/Finder/Select Used (assets used me)", false)]
         private static void SelectUsed_wtme()
         {
             if (!FinderWindowBase.IsCacheReady)
@@ -95,7 +95,7 @@ namespace PancakeEditor.Finder
             SelectUsed(false);
         }
 
-        [MenuItem("Assets/Finder/Select Used included me", false, 25)]
+        [MenuItem("Assets/Finder/Select Used included me", false)]
         private static void SelectUsed_wme()
         {
             if (!FinderWindowBase.IsCacheReady)
