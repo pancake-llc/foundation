@@ -188,9 +188,7 @@ namespace Sisus.Init.EditorOnly.Internal
 
 			var labelRect = headerRect;
 			labelRect.x = headerRect.width - 69f - labelWidth;
-			#if POWER_INSPECTOR
-			labelRect. x -= EditorGUIUtility.singleLineHeight; // add room for Debug Mode+ button
-			#endif
+			labelRect. x -= 16 * 6 + 3 * 5; // for 6 button in header component
 			labelRect.y += 4f;
 
 			// Fixes Transform header label rect position.
