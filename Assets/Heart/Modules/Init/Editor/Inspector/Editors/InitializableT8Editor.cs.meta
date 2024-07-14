@@ -1,9 +1,2 @@
 fileFormatVersion: 2
 guid: 93446396873f0eb49814c05e5e97c8dc
-AssetOrigin:
-  serializedVersion: 1
-  productId: 200530
-  packageName: Init(args)
-  packageVersion: 1.3.3
-  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/Inspector/Editors/InitializableT8Editor.cs
-  uploadId: 655763

@@ -1,9 +1,2 @@
 fileFormatVersion: 2
 guid: 717ad5b5e15ef9f4c92be802d5b56b13
-AssetOrigin:
-  serializedVersion: 1
-  productId: 200530
-  packageName: Init(args)
-  packageVersion: 1.3.3
-  assetPath: Assets/Sisus/Init(args)/Scripts/Initializer/InitializerT10.cs
-  uploadId: 655763

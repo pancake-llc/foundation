@@ -1,9 +1,2 @@
 fileFormatVersion: 2
 guid: d73fc6b25ae2a76489189681eb2ab156
-AssetOrigin:
-  serializedVersion: 1
-  productId: 200530
-  packageName: Init(args)
-  packageVersion: 1.3.3
-  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/Inspector/Editors/CustomInitializerEditor.cs
-  uploadId: 655763
