@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Pancake;
 using Pancake.Common;
 using PancakeEditor.Common;
 using Pancake.LevelSystemEditor;
@@ -130,7 +129,7 @@ namespace PancakeEditor
             }
 
             LevelSystemEditorSetting.Instance.PickObjectScrollPosition = GUILayout.BeginScrollView(LevelSystemEditorSetting.Instance.PickObjectScrollPosition);
-            var resultSplitGroupObjects = LevelSystemEditorSetting.Instance.PickObjects.GroupBy(_ => _.group).Select(_ => _.ToList()).ToList();
+            var resultSplitGroupObjects = LevelSystemEditorSetting.Instance.PickObjects.GroupBy(o => o.group).Select(o => o.ToList()).ToList();
             foreach (var splitGroupObject in resultSplitGroupObjects)
             {
                 string nameGroup = splitGroupObject[0].group.ToUpper();
@@ -294,7 +293,7 @@ namespace PancakeEditor
                 {
                     case "default":
                     case "index":
-                        parent = null;
+                        //parent = null;
                         break;
                     case "custom":
                         parent = LevelSystemEditorSetting.Instance.RootSpawn ? LevelSystemEditorSetting.Instance.RootSpawn.transform : null;
@@ -513,7 +512,7 @@ namespace PancakeEditor
             GUI.color = new Color(0f, 0.83f, 1f);
             GUI.Box(whiteArea, "[WHITE LIST]", new GUIStyle(EditorStyles.helpBox) {alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Italic});
             float width = GUILayoutUtility.GetLastRect().width;
-            if (width == 1f) width = position.width / 2 - 65 * 2;
+            if (Mathf.Approximately(width, 1f)) width = position.width / 2 - 65 * 2;
 
             GUI.color = new Color(1f, 0.13f, 0f);
             GUI.Box(blackArea, "[BLACK LIST]", new GUIStyle(EditorStyles.helpBox) {alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Italic});
@@ -608,7 +607,7 @@ namespace PancakeEditor
 
             #region vertical scope
 
-            using (var scope = new EditorGUILayout.VerticalScope(GUILayout.Width(width - 10)))
+            using (new EditorGUILayout.VerticalScope(GUILayout.Width(width - 10)))
             {
                 if (LevelSystemEditorSetting.Instance.whitelistPaths.Count == 0)
                 {
@@ -624,9 +623,9 @@ namespace PancakeEditor
                     {
                         DrawRow(t,
                             width,
-                            _ =>
+                            s =>
                             {
-                                LevelSystemEditorSetting.Instance.whitelistPaths.Remove(_);
+                                LevelSystemEditorSetting.Instance.whitelistPaths.Remove(s);
                                 SaveLevelSystemSetting();
                             });
                     }
@@ -642,7 +641,7 @@ namespace PancakeEditor
 
             #region vertical scope
 
-            using (var scope = new EditorGUILayout.VerticalScope(GUILayout.Width(width - 20)))
+            using (new EditorGUILayout.VerticalScope(GUILayout.Width(width - 20)))
             {
                 if (LevelSystemEditorSetting.Instance.blacklistPaths.Count == 0)
                 {
@@ -658,9 +657,9 @@ namespace PancakeEditor
                     {
                         DrawRow(t,
                             width,
-                            _ =>
+                            s =>
                             {
-                                LevelSystemEditorSetting.Instance.blacklistPaths.Remove(_);
+                                LevelSystemEditorSetting.Instance.blacklistPaths.Remove(s);
                                 SaveLevelSystemSetting();
                             });
                     }
@@ -844,7 +843,7 @@ namespace PancakeEditor
                 }
             }
 
-            var resultAssets = whitelistAssets.Where(_ => !blacklistAssets.Contains(_));
+            var resultAssets = whitelistAssets.Where(o => !blacklistAssets.Contains(o));
             foreach (var o in resultAssets)
             {
                 string group = Path.GetDirectoryName(AssetDatabase.GetAssetPath(o))?.Replace('\\', '/').Split('/').Last();

@@ -227,7 +227,7 @@ namespace PancakeEditor
             GUILayout.Label(ObjectNames.NicifyVariableName(_selectedItemType.ToString()), Uniform.HeaderLabel);
 
             var lastRect = GUILayoutUtility.GetLastRect();
-            var e = Event.current;
+            var e = UnityEngine.Event.current;
             if (e.type == EventType.MouseDown && e.button == 1 && lastRect.Contains(e.mousePosition))
             {
                 void ShowContextMenu(Object so, string nameSetting, System.Action<Object> actionUninstall = null)

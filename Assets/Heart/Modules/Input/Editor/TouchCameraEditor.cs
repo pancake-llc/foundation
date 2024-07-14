@@ -65,16 +65,6 @@ namespace Pancake.MobileInputEditor
         private SerializedProperty _pinchTiltModeThresholdProperty;
         private SerializedProperty _pinchTiltSpeedProperty;
 
-        private SerializedProperty _onStartDragProperty;
-        private SerializedProperty _onUpdateDragProperty;
-        private SerializedProperty _onStopDragProperty;
-        private SerializedProperty _onFingerDownProperty;
-        private SerializedProperty _onFingerUpProperty;
-        private SerializedProperty _onClickProperty;
-        private SerializedProperty _onStartPinchProperty;
-        private SerializedProperty _onUpdateExtendPinchProperty;
-        private SerializedProperty _onStopPinchProperty;
-
         private void OnEnable()
         {
             _cameraAxesProperty = serializedObject.FindProperty("cameraAxes");
@@ -130,23 +120,13 @@ namespace Pancake.MobileInputEditor
             _pinchModeDetectionMoveTresholdProperty = serializedObject.FindProperty("pinchModeDetectionMoveTreshold");
             _pinchTiltModeThresholdProperty = serializedObject.FindProperty("pinchTiltModeThreshold");
             _pinchTiltSpeedProperty = serializedObject.FindProperty("pinchTiltSpeed");
-
-            _onStartDragProperty = serializedObject.FindProperty("onStartDrag");
-            _onUpdateDragProperty = serializedObject.FindProperty("onUpdateDrag");
-            _onStopDragProperty = serializedObject.FindProperty("onStopDrag");
-            _onFingerDownProperty = serializedObject.FindProperty("onFingerDown");
-            _onFingerUpProperty = serializedObject.FindProperty("onFingerUp");
-            _onClickProperty = serializedObject.FindProperty("onClick");
-            _onStartPinchProperty = serializedObject.FindProperty("onStartPinch");
-            _onUpdateExtendPinchProperty = serializedObject.FindProperty("onUpdateExtendPinch");
-            _onStopPinchProperty = serializedObject.FindProperty("onStopPinch");
         }
 
         public void OnSceneGUI()
         {
             var mobileTouchCamera = (TouchCamera) target;
 
-            if (Event.current.rawType == EventType.MouseUp) CheckSwapBoundary(mobileTouchCamera);
+            if (UnityEngine.Event.current.rawType == EventType.MouseUp) CheckSwapBoundary(mobileTouchCamera);
 
             var boundaryMin = mobileTouchCamera.BoundaryMin;
             var boundaryMax = mobileTouchCamera.BoundaryMax;

@@ -28,7 +28,7 @@ namespace PancakeEditor
             EditorGUI.EndDisabledGroup();
             EditorGUI.EndProperty();
 
-            var e = Event.current;
+            var e = UnityEngine.Event.current;
             if (e.type == EventType.MouseDown && e.button == 1 && position.Contains(e.mousePosition))
             {
                 var context = new GenericMenu();
