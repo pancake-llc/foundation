@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c89ce2ac1384ce34d86b70a4f9b52024
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/ValueProviders/Get Component.asset
+  uploadId: 655763
