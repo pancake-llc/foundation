@@ -9,7 +9,7 @@ namespace Pancake.Sound
 {
     [RequireComponent(typeof(AudioSource)), AddComponentMenu("")]
     [EditorIcon("icon_blue_audiosource")]
-    public class AudioPlayer : GameComponent, IPoolCallbackReceiver
+    public class AudioPlayer : GameComponent, IPoolCallbackReceiver, ILoadComponent
     {
         [SerializeField] private AudioSource audioSource;
 
@@ -25,9 +25,7 @@ namespace Pancake.Sound
         public bool IsPlaying() => audioSource.isPlaying;
         public bool IsLooping() => audioSource.loop;
         internal void SetVolume(float volume) => audioSource.volume = volume;
-
-        protected override void OnLoadComponents() { audioSource = GetComponent<AudioSource>(); }
-
+        
         internal void Play(AudioClip clip, bool loop, float volume, string idHandle)
         {
             idAudioHandle = idHandle;
@@ -112,5 +110,7 @@ namespace Pancake.Sound
             audioSource.time = 0f;
             App.StopAndClean(ref _delayHandle);
         }
+
+        void ILoadComponent.OnLoadComponents() { audioSource = GetComponent<AudioSource>(); }
     }
 }
