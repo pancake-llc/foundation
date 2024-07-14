@@ -6,7 +6,5 @@ namespace Pancake
     {
         public UnityEngine.GameObject GameObject => gameObject;
         public UnityEngine.Transform Transform => transform;
-
-        protected virtual void OnLoadComponents() { DebugEditor.LogWarning("Please override OnLoadComponents and implement the behavior you want for your settings!"); }
     }
 }

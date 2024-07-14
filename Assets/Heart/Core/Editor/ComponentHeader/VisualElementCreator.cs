@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Reflection;
-using Pancake;
+using Pancake.Common;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEditorInternal;
@@ -56,21 +55,28 @@ namespace PancakeEditor.ComponentHeader
 
         private static void LoadComponent(Component component)
         {
-            if (component.GetType().IsSubclassOf(typeof(GameComponent)))
+            if (component is ILoadComponent)
             {
-                var methodInfo = component.GetType().GetMethod("OnLoadComponents", BindingFlags.Instance | BindingFlags.NonPublic);
-                if (methodInfo != null)
+                var type = component.GetType();
+                // Get the interface map for the ILoadComponent interface
+                var map = type.GetInterfaceMap(typeof(ILoadComponent));
+
+                // Find the corresponding method in the map
+                for (var i = 0; i < map.InterfaceMethods.Length; i++)
                 {
-                    methodInfo.Invoke(component, null);
-                    TooltipWindow.Show("Component Loaded!");
+                    if (map.InterfaceMethods[i].Name == "OnLoadComponents")
+                    {
+                        var methodInfo = map.TargetMethods[i];
+                        methodInfo.Invoke(component, null);
+                        TooltipWindow.Show("Component Loaded!");
+                        EditorUtility.SetDirty(component);
+                        return;
+                    }
                 }
 
-                EditorUtility.SetDirty(component);
+                Debug.Log("Method not found");
             }
-            else
-            {
-                TooltipWindow.Show("Nothing happens, Need inherit GameComponent!");
-            }
+            else TooltipWindow.Show("Nothing happens, Need inherit from interface ILoadComponent!");
         }
 
         private static void CopyComponent(Component component)
