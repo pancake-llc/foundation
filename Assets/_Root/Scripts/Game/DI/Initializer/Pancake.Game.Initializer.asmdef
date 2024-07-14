@@ -1,0 +1,20 @@
+{
+    "name": "Pancake.Game.Initializer",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d263cfcb6fe4c8e458b5530d29ee4d1f",
+        "GUID:76ccd20425a997e4fa7d12750eb80eb1",
+        "GUID:b6617254337639047b6bef8c49bfe848",
+        "GUID:e873106bbfb1c2b46b5d73189bb036b5",
+        "GUID:ad0f668b6d292f7448b28fa8f9f20f2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
