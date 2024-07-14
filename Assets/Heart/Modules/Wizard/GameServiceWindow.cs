@@ -12,7 +12,7 @@ namespace PancakeEditor
         public static void OnInspectorGUI()
         {
 #if PANCAKE_LEADERBOARD
-            Uniform.DrawInstalled("Leaderboard Version 2.0.0");
+            Uniform.DrawInstalled("Leaderboard Version 2.1.0");
 #endif
 #if PANCAKE_CLOUDSAVE
             Uniform.DrawInstalled("CloudSave Version 3.1.0");
@@ -26,7 +26,7 @@ namespace PancakeEditor
 #if !PANCAKE_LEADERBOARD
             if (GUILayout.Button("Install Package Leaderboard", GUILayout.MaxHeight(Wizard.BUTTON_HEIGHT)))
             {
-                RegistryManager.Add("com.unity.services.leaderboards", "2.0.0");
+                RegistryManager.Add("com.unity.services.leaderboards", "2.1.0");
                 RegistryManager.Resolve();
             }
 #endif
