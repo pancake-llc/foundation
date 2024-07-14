@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Pancake
 {
-    [EditorIcon("so_blue_const")]
     public abstract class ScriptableConstant<T> : ScriptableObject
     {
         [Tooltip("The value of the const. This will can not be change during play mode")] [SerializeField, DisableInPlayMode]
