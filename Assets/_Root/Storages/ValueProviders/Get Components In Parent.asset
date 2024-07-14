@@ -12,4 +12,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbbbf9a1840a2d64b993fc1522e50b75, type: 3}
   m_Name: Get Components In Parent
   m_EditorClassIdentifier: 
-  includeInactive: 0
