@@ -1,0 +1,33 @@
+{
+    "name": "InitArgs.uGUI",
+    "rootNamespace": "Sisus.Init.Internal.UI",
+    "references": [
+        "Unity.TextMeshPro",
+        "InitArgs"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "",
+            "define": "UNITY_TEXT_MESH_PRO"
+        },
+        {
+            "name": "com.unity.modules.ui",
+            "expression": "",
+            "define": "UNITY_UGUI"
+        },
+        {
+            "name": "com.unity.modules.ui",
+            "expression": "1.0.0",
+            "define": "UNITY_TEXT_MESH_PRO"
+        }
+    ],
+    "noEngineReferences": false
+}

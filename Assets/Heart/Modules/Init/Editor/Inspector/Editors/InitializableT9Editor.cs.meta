@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 37525c67e6e06ff40a138b07d919dec7
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/Inspector/Editors/InitializableT9Editor.cs
+  uploadId: 655763

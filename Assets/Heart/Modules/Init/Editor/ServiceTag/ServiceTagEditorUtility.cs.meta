@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 48e26f7cc8b50d14ea81cd27b641cfbe
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/ServiceTag/ServiceTagEditorUtility.cs
+  uploadId: 655763

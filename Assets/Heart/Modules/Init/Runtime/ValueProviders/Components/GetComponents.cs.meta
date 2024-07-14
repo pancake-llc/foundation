@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f046f9724b367ee40823b54b03c81d80
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/ValueProviders/Components/GetComponents.cs
+  uploadId: 655763

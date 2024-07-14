@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3c6774edc1292fb4c83baf5ea394a34e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/Initializer/ScriptableObjectInitializer/ScriptableObjectInitializerBaseT2.cs
+  uploadId: 655763

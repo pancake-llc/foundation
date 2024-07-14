@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5a4e5533394edd84baf5c317063d5197
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Shared/Editor/ComponentHeaderWrapper.cs
+  uploadId: 655763

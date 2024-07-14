@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e4481e1b73e197344baa441c586a9238
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Shared/Editor/PowerInspectorComponentHeaderCallbackDelegator.cs
+  uploadId: 655763

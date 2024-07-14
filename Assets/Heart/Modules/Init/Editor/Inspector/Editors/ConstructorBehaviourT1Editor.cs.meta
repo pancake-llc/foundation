@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b3f6cf30eff74b843875c3d715b63f12
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/Inspector/Editors/ConstructorBehaviourT1Editor.cs
+  uploadId: 655763

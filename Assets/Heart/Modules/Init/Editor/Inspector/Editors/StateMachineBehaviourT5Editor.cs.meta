@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 54a8bbd15c3d6a84e8555b523c481ece
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/Inspector/Editors/StateMachineBehaviourT5Editor.cs
+  uploadId: 655763

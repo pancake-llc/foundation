@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 18741c562e2ebe5438e03b533436bdba
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/POCO/EventFunctions/IOnDisable.cs
+  uploadId: 655763

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1076e91f4e5bb2b4199fa464c6553a3d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/Utility/ValueProviderEditorUtility.cs
+  uploadId: 655763

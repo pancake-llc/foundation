@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: ffdfc19d3fd58b441a18c1439aaf20d2
+AssetOrigin:
+  serializedVersion: 1
+  productId: 200530
+  packageName: Init(args)
+  packageVersion: 1.3.3
+  assetPath: Assets/Sisus/Init(args)/Scripts/Editor/Initializer/InitParameterGUI.cs
+  uploadId: 655763
