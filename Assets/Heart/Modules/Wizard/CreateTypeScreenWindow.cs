@@ -30,8 +30,13 @@ namespace PancakeEditor
             if (EditorGUI.EndChangeCheck()) _invalidTypeName = !IsTypeNameValid();
 
             var guiStyle = new GUIStyle(EditorStyles.label) {normal = {textColor = _invalidTypeName ? Uniform.SunsetOrange : Color.white}, fontStyle = FontStyle.Bold};
-            string errorMessage = _invalidTypeName ? "Invalid type name." : "";
-            EditorGUILayout.LabelField(errorMessage, guiStyle);
+            if (_invalidTypeName) EditorGUILayout.LabelField("Invalid type name.", guiStyle);
+            else
+            {
+                if (_page) EditorGUILayout.LabelField("Result: " + $"{_typeText}Page".ToBold().SetColor(Uniform.Green), Uniform.RichLabel);
+                if (_sheet) EditorGUILayout.LabelField("Result: " + $"{_typeText}Sheet".ToBold().SetColor(Uniform.Orange), Uniform.RichLabel);
+                if (_popup) EditorGUILayout.LabelField("Result: " + $"{_typeText}Popup".ToBold().SetColor(Uniform.Orange), Uniform.RichLabel);
+            }
 
             GUILayout.Label("Type".ToBold(), Uniform.CenterRichLabel);
             DrawTypeToggles();
@@ -50,8 +55,6 @@ namespace PancakeEditor
 
         private void DrawTypeToggles()
         {
-            EditorGUILayout.BeginVertical();
-
             _page = GUILayout.Toggle(_page, "Page");
             if (_previousPageStaus != _page && _page)
             {
@@ -83,8 +86,6 @@ namespace PancakeEditor
                 _page = false;
                 _popup = false;
             }
-
-            EditorGUILayout.EndVertical();
         }
 
         private void DrawButtons()
