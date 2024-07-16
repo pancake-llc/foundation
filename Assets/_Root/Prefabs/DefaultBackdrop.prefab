@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 336748199260866189}
   - component: {fileID: 4509710322964172973}
   - component: {fileID: 6201045324583218108}
-  - component: {fileID: 3227543233949483060}
+  - component: {fileID: 5424429509949668683}
   m_Layer: 5
   m_Name: DefaultBackdrop
   m_TagString: Untagged
@@ -89,7 +89,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &3227543233949483060
+--- !u!114 &5424429509949668683
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,6 +98,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 5071349471500790098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d348ee63badc48b0820e5eff1722ac39, type: 3}
+  m_Script: {fileID: 11500000, guid: c6036ebc64c54e2a9125480afcc6f223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enterAnimation:
+    partnerIdRegex: 
+    type: 0
+    animMono: {fileID: 0}
+    animScriptable: {fileID: 0}
+  exitAnimation:
+    partnerIdRegex: 
+    type: 0
+    animMono: {fileID: 0}
+    animScriptable: {fileID: 0}
+  closePopupWhenClicked: 0

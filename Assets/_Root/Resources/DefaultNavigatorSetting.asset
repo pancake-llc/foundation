@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a6aa26b924f4a46baed9c803609e91a, type: 3}
   m_Name: DefaultNavigatorSetting
   m_EditorClassIdentifier: 
-  sheetEnterAnim: {fileID: 0}
-  sheetExitAnim: {fileID: 0}
-  pagePushEnterAnim: {fileID: 0}
-  pagePushExitAnim: {fileID: 0}
+  sheetEnterAnim: {fileID: 11400000, guid: cc3164b4260759641aec903dd7a897de, type: 2}
+  sheetExitAnim: {fileID: 11400000, guid: bde288037461bd94ca605aa3ca0655b3, type: 2}
+  pagePushEnterAnim: {fileID: 11400000, guid: fa3cd04e59daaf148abea4bdad176a7f, type: 2}
+  pagePushExitAnim: {fileID: 11400000, guid: 2ab4040e3313f0a448a536db30c724a9, type: 2}
   pagePopEnterAnim: {fileID: 0}
   pagePopExitAnim: {fileID: 0}
-  popupEnterAnim: {fileID: 0}
-  popupExitAnim: {fileID: 0}
+  popupEnterAnim: {fileID: 11400000, guid: 28b13bd66827cd240b4af6122a1f19e7, type: 2}
+  popupExitAnim: {fileID: 11400000, guid: dded410eaa5f9d041900de170ac72b89, type: 2}
   popupBackdropEnterAnim: {fileID: 0}
   popupBackdropExitAnim: {fileID: 0}
-  popupBackdropPrefab: {fileID: 0}
+  popupBackdropPrefab: {fileID: 5424429509949668683, guid: 9c2e436d258eee04a9906f9983b16030, type: 3}
   assetLoader: {fileID: 0}
   enableInteractionInTransition: 0
   controlInteractionAllContainer: 1
