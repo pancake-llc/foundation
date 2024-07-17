@@ -38,6 +38,7 @@ namespace Pancake.IAP
 
         public List<IAPData> Skus { get; set; } = new List<IAPData>();
         public bool IsInitialized { get; set; }
+        public IStoreController Controller => _controller;
 
         public static async void Init()
         {
