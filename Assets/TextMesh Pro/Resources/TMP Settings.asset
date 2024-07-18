@@ -24,7 +24,7 @@ MonoBehaviour:
   m_missingGlyphCharacter: 0
   m_ClearDynamicDataOnBuild: 1
   m_warningsDisabled: 0
-  m_defaultFontAsset: {fileID: 11400000, guid: 88b19755da7955344871f8514a9a0937, type: 2}
+  m_defaultFontAsset: {fileID: 11400000, guid: ebd567123ceed8449a3a2cbda0e215be, type: 2}
   m_defaultFontAssetPath: Fonts & Materials/
   m_defaultFontSize: 36
   m_defaultAutoSizeMinRatio: 0.5
@@ -36,7 +36,7 @@ MonoBehaviour:
   m_fallbackFontAssets: []
   m_matchMaterialPreset: 1
   m_HideSubTextObjects: 0
-  m_defaultSpriteAsset: {fileID: 11400000, guid: c41005c129ba4d66911b75229fd70b45, type: 2}
+  m_defaultSpriteAsset: {fileID: 0}
   m_defaultSpriteAssetPath: Sprite Assets/
   m_enableEmojiSupport: 1
   m_MissingCharacterSpriteUnicode: 0

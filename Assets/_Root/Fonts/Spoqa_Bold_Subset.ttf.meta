@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 63543572c1eb4315aeec3c1744c3833b
+timeCreated: 1721335777
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: "Spoqa_Bold_Subset"
+  fontNames:
+  - FantomeSpocaBoldSubset
+  - Fantome_SpoqaBold
+  fallbackFontReferences: []
+  customCharacters:
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData:
+  assetBundleName: 
+  assetBundleVariant: 

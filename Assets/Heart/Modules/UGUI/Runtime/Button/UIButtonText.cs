@@ -33,13 +33,13 @@ namespace Pancake.UI
         protected override void OnValidate()
         {
             base.OnValidate();
-            //use Invoke to call method to avoid warning "Send Message cannot be called during Awake, or OnValidate...
+            //use Invoke to call method to avoid warning Send Message cannot be called during Awake, or OnValidate...
             Invoke(nameof(FindChildText), 0.1f);
         }
 
         private void CreateChildTextTMP()
         {
-            var childText = new GameObject("Label");
+            var childText = new GameObject("label");
             childText.transform.SetParent(transform, false);
             label = childText.AddComponent<TextMeshProUGUI>();
             label.rectTransform.Fill();
@@ -48,7 +48,7 @@ namespace Pancake.UI
         private void FindChildText()
         {
             if (label != null) return;
-            label = GetComponentsInChildren<TextMeshProUGUI>(true).FirstOrDefault(text => text.gameObject != gameObject);
+            label = GetComponentsInChildren<TextMeshProUGUI>(true).FirstOrDefault();
             if (label != null) return;
             CreateChildTextTMP();
         }
