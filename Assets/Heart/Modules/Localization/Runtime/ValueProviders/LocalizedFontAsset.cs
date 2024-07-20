@@ -30,6 +30,8 @@ namespace Sisus.Init.Internal
         [SerializeField] internal LocaleTMPFont value;
         public TMP_FontAsset Value => value == null ? null : value.Value;
 
+        public static implicit operator TMP_Asset(LocalizedFontAsset localeFontAsset) => localeFontAsset.Value;
+
 #if UNITY_EDITOR
         NullGuardResult INullGuard.EvaluateNullGuard([AllowNull] Component client) => value == null ? NullGuardResult.InvalidValueProviderState : NullGuardResult.Passed;
 #endif

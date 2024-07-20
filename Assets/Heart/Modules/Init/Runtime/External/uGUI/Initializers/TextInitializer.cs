@@ -25,7 +25,7 @@ namespace Sisus.Init.Internal.TMPro
         private sealed class Init
         {
             public string Text;
-            public TMP_FontAsset FontAsset = default;
+            public TMP_FontAsset FontAsset;
         }
 #pragma warning restore CS0649
 #endif
@@ -42,7 +42,17 @@ namespace Sisus.Init.Internal.TMPro
             Awake();
         }
 
-        private void OnLocaleChanged(object sender, LocaleChangedEventArgs e) { InitTarget(target, FirstArgument, SecondArgument); }
+        private void OnLocaleChanged(object sender, LocaleChangedEventArgs e)
+        {
+            if (target == null)
+            {
+                if (firstArgument.reference is LocalizedString) Locale.LocaleChangedEvent -= OnLocaleChanged;
+
+                return;
+            }
+
+            if (firstArgument.reference is LocalizedString text && secondArgument.reference is LocalizedFontAsset font) InitTarget(target, text.Value, font.Value);
+        }
 
         private void OnDisable()
         {

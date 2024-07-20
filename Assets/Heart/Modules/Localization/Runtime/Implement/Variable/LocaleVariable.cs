@@ -64,7 +64,7 @@ namespace Pancake.Localization
         /// <summary>
         /// Gets localized value if exist regarding to given language.
         /// </summary>
-        /// <returns>True if exist; otherwise False</returns>
+        /// <returns>True if existed; otherwise False</returns>
         public bool TryGetLocaleValue(Language language, out T value)
         {
             int index = Array.FindIndex(TypedLocaleItems, x => x.Language == language);
