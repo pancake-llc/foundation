@@ -34,7 +34,7 @@ namespace PancakeEditor
                     var result = type.GetAllSubClass<Popup>();
                     foreach (var t in result)
                     {
-                        if (t.Namespace == SerializedProperty.stringValue)
+                        if (t.Name == SerializedProperty.stringValue)
                         {
                             button.text = SerializedProperty.stringValue;
                             break;
