@@ -799,7 +799,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -854,12 +854,14 @@ MonoBehaviour:
     scale: {x: 1.2, y: 1.2}
     motion: 2
     duration: 0.1
-    ease: 5
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
 --- !u!114 &1926011113
 MonoBehaviour:
   m_ObjectHideFlags: 0

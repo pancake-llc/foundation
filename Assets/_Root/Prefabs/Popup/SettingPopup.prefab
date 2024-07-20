@@ -149,13 +149,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
 --- !u!1 &145563497218107922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1817,13 +1819,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
 --- !u!1 &2640468335655560475
 GameObject:
   m_ObjectHideFlags: 0
@@ -2225,13 +2229,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 0.9, y: 0.9}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
 --- !u!1 &3085418281099817096
 GameObject:
   m_ObjectHideFlags: 0
@@ -3158,13 +3164,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 6986308210849314128}
 --- !u!1 &4943343221633266136
 GameObject:
@@ -3316,13 +3324,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 1900624663916789250}
 --- !u!1 &5389651920145344824
 GameObject:
@@ -3640,7 +3650,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -3694,13 +3704,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 1502141211391690790}
 --- !u!114 &3003164415269902799
 MonoBehaviour:
@@ -3881,7 +3893,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -3935,13 +3947,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 8991300954831294347}
 --- !u!114 &433901328820808772
 MonoBehaviour:
@@ -4085,19 +4099,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 874484644528306240}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1395931179110437023}
-        m_TargetAssemblyTypeName: Pancake.UI.SettingView, Pancake.Game
-        m_MethodName: SelectHighQuality
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 5032709799278932460}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   clickType: 0
   allowMultipleClick: 0
   timeDisableButton: 0.2
@@ -4127,13 +4129,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 3790486051368204926}
 --- !u!1 &5794730162446924655
 GameObject:
@@ -4255,19 +4259,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4629610063096380692}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1395931179110437023}
-        m_TargetAssemblyTypeName: Pancake.UI.SettingView, Pancake.Game
-        m_MethodName: SelectLowQuality
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 5335983914463774886}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   clickType: 0
   allowMultipleClick: 0
   timeDisableButton: 0.2
@@ -4297,13 +4289,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 3096270878742262351}
 --- !u!1 &5953218368719921402
 GameObject:
@@ -4690,13 +4684,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 0.8, y: 0.8}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
 --- !u!1 &6205252459688327898
 GameObject:
   m_ObjectHideFlags: 0
@@ -4923,13 +4919,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 1986605778531557147}
 --- !u!114 &7056694370937815557
 MonoBehaviour:
@@ -5171,13 +5169,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 6015724031661544158}
 --- !u!1 &6797619510938334612
 GameObject:
@@ -5679,19 +5679,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9050837537493037402}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1395931179110437023}
-        m_TargetAssemblyTypeName: Pancake.UI.SettingView, Pancake.Game
-        m_MethodName: SelectMediumQuality
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1970256070001264383}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   clickType: 0
   allowMultipleClick: 0
   timeDisableButton: 0.2
@@ -5721,13 +5709,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 5933163005722551534}
 --- !u!1 &7901946099940040011
 GameObject:
@@ -6639,13 +6629,15 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 244602318247465406}
 --- !u!1 &8585323461665102818
 GameObject:
@@ -7181,7 +7173,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -7235,11 +7227,13 @@ MonoBehaviour:
   motionData:
     scale: {x: 1.2, y: 1.2}
     motion: 2
-    duration: 0.1
-    ease: 5
+    duration: 0.2
+    easeDown: 5
+    easeUp: 26
   motionDataUnableInteract:
     scale: {x: 1.15, y: 1.15}
     motion: 3
     duration: 0.1
-    ease: 0
+    easeDown: 5
+    easeUp: 26
   label: {fileID: 4585876879874692095}

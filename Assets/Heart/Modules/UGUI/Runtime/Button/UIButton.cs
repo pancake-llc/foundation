@@ -36,7 +36,8 @@ namespace Pancake.UI
             public EButtonMotion motion = EButtonMotion.Normal;
             public float duration = 0.1f;
 #if PANCAKE_LITMOTION
-            public Ease ease = Ease.Linear;
+            public Ease easeDown = Ease.OutQuad;
+            public Ease easeUp = Ease.OutBack;
 #endif
         }
 
@@ -58,7 +59,7 @@ namespace Pancake.UI
         [SerializeField] private bool isMotionUnableInteract;
         [SerializeField] private bool isAffectToSelf = true;
         [SerializeField] private Transform affectObject;
-        [SerializeField] private MotionData motionData = new() {scale = new Vector2(0.92f, 0.92f), motion = EButtonMotion.Uniform};
+        [SerializeField] private MotionData motionData = new() {scale = new Vector2(1.2f, 1.2f), motion = EButtonMotion.Uniform};
         [SerializeField] private MotionData motionDataUnableInteract = new() {scale = new Vector2(1.15f, 1.15f), motion = EButtonMotion.Late};
 
         public Action<float> onHoldEvent;
@@ -567,7 +568,7 @@ namespace Pancake.UI
 
 #if PANCAKE_LITMOTION
                     _handleUp = LMotion.Create(AffectObject.localScale, DefaultScale, motionData.duration)
-                        .WithEase(motionData.ease)
+                        .WithEase(motionData.easeUp)
                         .WithScheduler(ignoreTimeScale ? MotionScheduler.UpdateRealtime : MotionScheduler.DefaultScheduler)
                         .BindToLocalScale(AffectObject)
                         .AddTo(gameObject);
@@ -580,7 +581,7 @@ namespace Pancake.UI
                     _endValue = new Vector3(DefaultScale.x * motionData.scale.x, DefaultScale.y * motionData.scale.y);
 #if PANCAKE_LITMOTION
                     _handleDown = LMotion.Create(AffectObject.localScale, _endValue, motionData.duration)
-                        .WithEase(motionData.ease)
+                        .WithEase(motionData.easeDown)
                         .WithScheduler(ignoreTimeScale ? MotionScheduler.UpdateRealtime : MotionScheduler.DefaultScheduler)
                         .WithOnComplete(() => _isCompletePhaseDown = true)
                         .BindToLocalScale(AffectObject)
@@ -600,7 +601,7 @@ namespace Pancake.UI
 
 #if PANCAKE_LITMOTION
                     _handleUp = LMotion.Create(AffectObject.localScale, DefaultScale, motionData.duration)
-                        .WithEase(motionData.ease)
+                        .WithEase(motionData.easeUp)
                         .WithScheduler(ignoreTimeScale ? MotionScheduler.UpdateRealtime : MotionScheduler.DefaultScheduler)
                         .BindToLocalScale(AffectObject)
                         .AddTo(gameObject);
@@ -627,7 +628,7 @@ namespace Pancake.UI
 
 #if PANCAKE_LITMOTION
                     _handleDown = LMotion.Create(AffectObject.localScale, _endValue, motionData.duration)
-                        .WithEase(motionData.ease)
+                        .WithEase(motionData.easeDown)
                         .WithScheduler(ignoreTimeScale ? MotionScheduler.UpdateRealtime : MotionScheduler.DefaultScheduler)
                         .WithOnComplete(() => _isCompletePhaseDown = true)
                         .BindToLocalScale(AffectObject)
@@ -639,7 +640,7 @@ namespace Pancake.UI
 
 #if PANCAKE_LITMOTION
                     _handleDown = LMotion.Create(AffectObject.localScale, _endValue, motionData.duration)
-                        .WithEase(motionData.ease)
+                        .WithEase(motionData.easeDown)
                         .WithScheduler(ignoreTimeScale ? MotionScheduler.UpdateRealtime : MotionScheduler.DefaultScheduler)
                         .WithOnComplete(() => _isCompletePhaseDown = true)
                         .BindToLocalScale(AffectObject)
@@ -659,7 +660,7 @@ namespace Pancake.UI
 
 #if PANCAKE_LITMOTION
                     _handleUp = LMotion.Create(AffectObject.localScale, DefaultScale, motionData.duration)
-                        .WithEase(motionData.ease)
+                        .WithEase(motionData.easeUp)
                         .WithScheduler(ignoreTimeScale ? MotionScheduler.UpdateRealtime : MotionScheduler.DefaultScheduler)
                         .BindToLocalScale(AffectObject)
                         .AddTo(gameObject);

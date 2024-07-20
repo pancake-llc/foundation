@@ -31,7 +31,8 @@ namespace PancakeEditor.UI
         private SerializedProperty _motion;
         private SerializedProperty _scale;
         private SerializedProperty _duration;
-        private SerializedProperty _ease;
+        private SerializedProperty _easeDown;
+        private SerializedProperty _easeUp;
         private SerializedProperty _motionUnableInteract;
         private SerializedProperty _scaleUnableInteract;
         private SerializedProperty _durationUnableInteract;
@@ -61,7 +62,8 @@ namespace PancakeEditor.UI
             _scaleUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("scale");
             _durationUnableInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("duration");
             _isMotionUnableInteract = serializedObject.FindProperty("isMotionUnableInteract");
-            _ease = serializedObject.FindProperty("motionData").FindPropertyRelative("ease");
+            _easeDown = serializedObject.FindProperty("motionData").FindPropertyRelative("easeDown");
+            _easeUp = serializedObject.FindProperty("motionData").FindPropertyRelative("easeUp");
             _easeInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("ease");
         }
 
@@ -174,8 +176,13 @@ namespace PancakeEditor.UI
                 }
 
                 EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(new GUIContent("  Ease"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
-                EditorGUILayout.PropertyField(_ease, new GUIContent(""));
+                GUILayout.Label(new GUIContent("  Ease Down"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                EditorGUILayout.PropertyField(_easeDown, new GUIContent(""));
+                EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label(new GUIContent("  Ease Up"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                EditorGUILayout.PropertyField(_easeUp, new GUIContent(""));
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.Space();
