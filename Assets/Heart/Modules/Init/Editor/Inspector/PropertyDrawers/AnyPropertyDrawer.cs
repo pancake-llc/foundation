@@ -1724,14 +1724,16 @@ namespace Sisus.Init.EditorOnly.Internal
 					{
 						valueProperty.vector2IntValue = Vector2Int.zero;
 					}
-					#if UNITY_LOCALIZATION
 					else if(setType == typeof(LocalizedString))
 					{
 						var localizedString = ScriptableObject.CreateInstance<LocalizedString>();
-						localizedString.value.TableReference = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.DefaultTable;
 						referenceProperty.objectReferenceValue = localizedString;
 					}
-					#endif
+					else if(setType == typeof(LocalizedFontAsset))
+					{
+						var localizedFontAsset = ScriptableObject.CreateInstance<LocalizedFontAsset>();
+						referenceProperty.objectReferenceValue = localizedFontAsset;
+					}
 				}
 				else if(typeof(Type).IsAssignableFrom(setType))
 				{

@@ -23,7 +23,7 @@ MonoBehaviour:
   popupBackdropEnterAnim: {fileID: 0}
   popupBackdropExitAnim: {fileID: 0}
   popupBackdropPrefab: {fileID: 5424429509949668683, guid: 9c2e436d258eee04a9906f9983b16030, type: 3}
-  assetLoader: {fileID: 0}
+  assetLoader: {fileID: 11400000, guid: 859d28f42e8e188458a8187b9e170c06, type: 2}
   enableInteractionInTransition: 0
   controlInteractionAllContainer: 1
   callCleanupWhenDestroy: 1

@@ -26,8 +26,8 @@ namespace Sisus.Init
 		: CustomInitializerBase<TClient, TFirstArgument, TSecondArgument>
 			where TClient : Component
 	{
-		[SerializeField] private Any<TFirstArgument> firstArgument = default;
-		[SerializeField] private Any<TSecondArgument> secondArgument = default;
+		[SerializeField] private protected Any<TFirstArgument> firstArgument = default;
+		[SerializeField] private protected Any<TSecondArgument> secondArgument = default;
 
 		[SerializeField, HideInInspector] private Arguments disposeArgumentsOnDestroy = Arguments.None;
 		[SerializeField, HideInInspector] private Arguments asyncValueProviderArguments = Arguments.None;

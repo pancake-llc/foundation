@@ -3,7 +3,8 @@
     "rootNamespace": "Sisus.Init.Internal.UI",
     "references": [
         "Unity.TextMeshPro",
-        "InitArgs"
+        "InitArgs",
+        "Pancake.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,19 +15,9 @@
     "defineConstraints": [],
     "versionDefines": [
         {
-            "name": "com.unity.textmeshpro",
-            "expression": "",
-            "define": "UNITY_TEXT_MESH_PRO"
-        },
-        {
-            "name": "com.unity.modules.ui",
+            "name": "com.unity.ugui",
             "expression": "",
             "define": "UNITY_UGUI"
-        },
-        {
-            "name": "com.unity.modules.ui",
-            "expression": "1.0.0",
-            "define": "UNITY_TEXT_MESH_PRO"
         }
     ],
     "noEngineReferences": false

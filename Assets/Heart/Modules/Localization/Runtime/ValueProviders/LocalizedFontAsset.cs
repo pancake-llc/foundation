@@ -1,0 +1,37 @@
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using Pancake.Localization;
+using TMPro;
+using UnityEngine;
+using static Sisus.Init.ValueProviders.ValueProviderUtility;
+
+namespace Sisus.Init.Internal
+{
+    /// <summary>
+    /// Provides a <see cref="string"/> that has been localized by Unity's Localization package.
+    /// <para>
+    /// Can be used to retrieve an Init argument at runtime.
+    /// </para>
+    /// </summary>
+#if !INIT_ARGS_DISABLE_VALUE_PROVIDER_MENU_ITEMS
+    [ValueProviderMenu("Localized Font Asset", typeof(TMP_FontAsset), Order = 1, Tooltip = "Text will be localized at runtime for the active locale.")]
+#endif
+#if !INIT_ARGS_DISABLE_CREATE_ASSET_MENU_ITEMS
+    [CreateAssetMenu(fileName = MENU_NAME, menuName = CREATE_ASSET_MENU_GROUP + MENU_NAME)]
+#endif
+    public class LocalizedFontAsset : ScriptableObject,
+        IValueProvider<TMP_FontAsset>
+#if UNITY_EDITOR
+        ,
+        INullGuard
+#endif
+    {
+        private const string MENU_NAME = "Localized Font Asset";
+        [SerializeField] internal LocaleTMPFont value;
+        public TMP_FontAsset Value => value == null ? null : value.Value;
+
+#if UNITY_EDITOR
+        NullGuardResult INullGuard.EvaluateNullGuard([AllowNull] Component client) => value == null ? NullGuardResult.InvalidValueProviderState : NullGuardResult.Passed;
+#endif
+    }
+}

@@ -5,6 +5,10 @@ namespace Pancake.Game
         public static class User
         {
             public const string KEY_LANGUAGE = "user_lang";
+            public const string KEY_QUALITY = "user_quality";
+            public const string KEY_MUSIC = "user_music";
+            public const string KEY_SFX = "user_sfx";
+            public const string KEY_VIBRATE = "user_vibrate";
         }
 
         public static class Scene

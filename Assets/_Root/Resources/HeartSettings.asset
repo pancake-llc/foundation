@@ -16,7 +16,8 @@ MonoBehaviour:
   enablePrivacyFirstOpen: 0
   enableMultipleTouch: 0
   requireInternet: 0
-  targetFrameRate: 60
+  targetFrameRate: -1
+  termOfServiceUrl: 
   privacyUrl: 
   privacyTitle: 
   privacyMessage: 

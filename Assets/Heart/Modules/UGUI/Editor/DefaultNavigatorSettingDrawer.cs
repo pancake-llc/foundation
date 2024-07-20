@@ -21,6 +21,7 @@ namespace PancakeEditor
         private SerializedProperty _popupBackdropEnterAnimProperty;
         private SerializedProperty _popupBackdropExitAnimProperty;
         private SerializedProperty _popupBackdropPrefabProperty;
+        private SerializedProperty _assetLoaderProperty;
         private SerializedProperty _enableInteractionInTransitionProperty;
         private SerializedProperty _controlInteractionAllContainerProperty;
         private SerializedProperty _callCleanupWhenDestroyProperty;
@@ -39,6 +40,7 @@ namespace PancakeEditor
             _popupBackdropEnterAnimProperty = serializedObject.FindProperty("popupBackdropEnterAnim");
             _popupBackdropExitAnimProperty = serializedObject.FindProperty("popupBackdropExitAnim");
             _popupBackdropPrefabProperty = serializedObject.FindProperty("popupBackdropPrefab");
+            _assetLoaderProperty = serializedObject.FindProperty("assetLoader");
             _enableInteractionInTransitionProperty = serializedObject.FindProperty("enableInteractionInTransition");
             _controlInteractionAllContainerProperty = serializedObject.FindProperty("controlInteractionAllContainer");
             _callCleanupWhenDestroyProperty = serializedObject.FindProperty("callCleanupWhenDestroy");
@@ -73,10 +75,16 @@ namespace PancakeEditor
 
             GUILayout.Label("[Backdrop]".ToWhiteBold(), Uniform.RichLabel);
             EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_popupBackdropPrefabProperty, new GUIContent("Prefab"));
+            EditorGUILayout.Space();
             EditorGUILayout.PropertyField(_popupBackdropEnterAnimProperty, new GUIContent("Enter Anim"));
             EditorGUILayout.PropertyField(_popupBackdropExitAnimProperty, new GUIContent("Exit Anim"));
-            EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(_popupBackdropPrefabProperty, new GUIContent("Prefab"));
+            EditorGUI.indentLevel--;
+            GUILayout.Space(4);
+
+            GUILayout.Label("[Loader]".ToWhiteBold(), Uniform.RichLabel);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_assetLoaderProperty, new GUIContent("Asset Loader"));
             EditorGUI.indentLevel--;
             GUILayout.Space(4);
 

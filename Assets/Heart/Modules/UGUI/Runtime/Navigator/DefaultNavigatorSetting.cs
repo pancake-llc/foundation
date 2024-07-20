@@ -11,25 +11,18 @@ namespace Pancake.UI
     {
         [SerializeField] private UITransitionAnimationSO sheetEnterAnim;
         [SerializeField] private UITransitionAnimationSO sheetExitAnim;
-
-        [Space] [SerializeField] private UITransitionAnimationSO pagePushEnterAnim;
+        [SerializeField] private UITransitionAnimationSO pagePushEnterAnim;
         [SerializeField] private UITransitionAnimationSO pagePushExitAnim;
         [SerializeField] private UITransitionAnimationSO pagePopEnterAnim;
         [SerializeField] private UITransitionAnimationSO pagePopExitAnim;
-
-        [Space] [SerializeField] private UITransitionAnimationSO popupEnterAnim;
+        [SerializeField] private UITransitionAnimationSO popupEnterAnim;
         [SerializeField] private UITransitionAnimationSO popupExitAnim;
-
-        [Space] [SerializeField] private UITransitionAnimationSO popupBackdropEnterAnim;
+        [SerializeField] private UITransitionAnimationSO popupBackdropEnterAnim;
         [SerializeField] private UITransitionAnimationSO popupBackdropExitAnim;
-
         [SerializeField] private PopupBackdrop popupBackdropPrefab;
-        [Space] [SerializeField] private AssetLoaderObject assetLoader;
+        [SerializeField] private AssetLoaderObject assetLoader;
         [SerializeField] private bool enableInteractionInTransition;
-
-        [HideIf(nameof(enableInteractionInTransition)), Indent, SerializeField]
-        private bool controlInteractionAllContainer = true;
-
+        [SerializeField] private bool controlInteractionAllContainer = true;
         [SerializeField] private bool callCleanupWhenDestroy = true;
 
         private IAssetLoader _defaultAssetLoader;

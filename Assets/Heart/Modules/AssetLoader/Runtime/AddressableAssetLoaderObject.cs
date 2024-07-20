@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Pancake.AssetLoader
 {
     [CreateAssetMenu(fileName = "AddressableAssetLoader", menuName = "Pancake/Asset Loader/Addressable Asset Loader")]
-    [EditorIcon("scriptable_interface")]
+    [EditorIcon("so_blue_loader")]
     public sealed class AddressableAssetLoaderObject : AssetLoaderObject, IAssetLoader
     {
         private readonly AddressableAssetLoader _loader = new();

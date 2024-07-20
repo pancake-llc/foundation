@@ -5,8 +5,7 @@
         "Unity.Addressables",
         "Unity.ResourceManager",
         "InitArgs.Services",
-        "Unity.Addressables.Editor",
-        "Unity.Localization"
+        "Unity.Addressables.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -20,11 +19,6 @@
             "name": "com.unity.addressables",
             "expression": "1.17.4",
             "define": "UNITY_ADDRESSABLES_1_17_4_OR_NEWER"
-        },
-        {
-            "name": "com.unity.localization",
-            "expression": "",
-            "define": "UNITY_LOCALIZATION"
         },
         {
             "name": "com.unity.ugui",

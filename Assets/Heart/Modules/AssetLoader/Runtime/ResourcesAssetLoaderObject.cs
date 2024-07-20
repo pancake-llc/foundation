@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Pancake.AssetLoader
 {
     [CreateAssetMenu(fileName = "ResourcesAssetLoader", menuName = "Pancake/Asset Loader/Resources Asset Loader")]
-    [EditorIcon("scriptable_interface")]
+    [EditorIcon("so_blue_loader")]
     public sealed class ResourcesAssetLoaderObject : AssetLoaderObject, IAssetLoader
     {
         private readonly ResourcesAssetLoader _loader = new();
