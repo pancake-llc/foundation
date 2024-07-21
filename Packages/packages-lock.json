@@ -40,14 +40,14 @@
       "hash": "332340e7bc2f8257816dd28784607a1edf6b6c2a"
     },
     "com.coffee.ui-particle": {
-      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.8.1",
+      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
-      "hash": "686fff869000bdac0cb5b2ab6b1f3ed925839521"
+      "hash": "4dfcb9075e166fa53fee5decc51975bdc247cdad"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.5",
