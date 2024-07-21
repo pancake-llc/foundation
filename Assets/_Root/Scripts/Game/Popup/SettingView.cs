@@ -79,7 +79,11 @@ namespace Pancake.Game.UI
 
         private void OnButtonCopyIdPressed() { textUserId.text.CopyToClipboard(); }
 
-        private async void OnButtoClosePressed() { await PopupHelper.Close(transform); }
+        private async void OnButtoClosePressed()
+        {
+            PlaySoundClose();
+            await PopupHelper.Close(transform);
+        }
 
         private void OnButtonGroupFaceookPressed() { Application.OpenURL(groupFacebookURL); }
 

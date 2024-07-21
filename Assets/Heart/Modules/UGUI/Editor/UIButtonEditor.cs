@@ -173,7 +173,7 @@ namespace PancakeEditor.UI
                         if (t.id == idProperty.stringValue)
                         {
                             buttonLabel = nameProperty.stringValue;
-                            colorLabel = new Color(0.99f, 0.5f, 0.24f, 0.31f);
+                            colorLabel = Uniform.Orange;
                             break;
                         }
 
@@ -207,7 +207,7 @@ namespace PancakeEditor.UI
                                 SetAndApplyProperty(idProperty, allAudioAsset[cachei].id);
                                 SetAndApplyProperty(nameProperty, allAudioAsset[cachei].name);
                                 buttonLabel = allAudioAsset[cachei].name;
-                                colorLabel = new Color(0.99f, 0.5f, 0.24f, 0.31f);
+                                colorLabel = Uniform.Orange;
                             });
                     }
 

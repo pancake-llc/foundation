@@ -17,5 +17,8 @@
         {
             AudioManager.quietOthersEvent?.Invoke(id, volume, fadeDuration, effectiveTime);
         }
+
+        public static void StopAll() { AudioManager.stopAllEvent?.Invoke(); }
+        public static void StopAllByType(this EAudioType audioType) { AudioManager.stopAllByTypeEvent?.Invoke(audioType); }
     }
 }

@@ -141,6 +141,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 0
+  audioClick:
+    name: 
+    id: 
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -934,10 +938,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enabledSound: 0
   audioOpen:
-    name: 
+    name: bgm_gameplay
     id: 
   audioClose:
-    name: 
+    name: bgm_gameplay
     id: 
   textVersion: {fileID: 9132658958431425205}
   textBgm: {fileID: 9216045641634463218}
@@ -1811,6 +1815,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 0
+  audioClick:
+    name: 
+    id: 
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -2221,6 +2229,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 0
+  audioClick:
+    name: 
+    id: 
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -3156,6 +3168,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -3316,6 +3332,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -3696,6 +3716,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 0
+  audioClick:
+    name: 
+    id: 
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -3939,6 +3963,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 0
+  audioClick:
+    name: 
+    id: 
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -4121,6 +4149,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -4281,6 +4313,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -4676,6 +4712,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 0
+  audioClick:
+    name: 
+    id: 
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -4911,6 +4951,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -5161,6 +5205,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -5701,6 +5749,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -6621,6 +6673,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
@@ -7219,6 +7275,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0
