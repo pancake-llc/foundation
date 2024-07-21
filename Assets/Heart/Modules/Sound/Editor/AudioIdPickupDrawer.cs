@@ -30,7 +30,7 @@ namespace PancakeEditor.Sound
                     marginLeft = 10,
                     flexShrink = 0,
                     marginRight = -3,
-                    backgroundColor = new Color(0.99f, 0.5f, 0.24f, 0.31f),
+                    backgroundColor = Uniform.Error,
                     color = Color.white
                 }
             };
@@ -44,10 +44,12 @@ namespace PancakeEditor.Sound
                     if (t.id == idProperty.stringValue)
                     {
                         button.text = nameProperty.stringValue;
+                        button.style.backgroundColor = new Color(0.99f, 0.5f, 0.24f, 0.31f);
                         break;
                     }
 
                     button.text = "Failed load...";
+                    button.style.backgroundColor = Uniform.Error;
                 }
             }
 
@@ -61,6 +63,7 @@ namespace PancakeEditor.Sound
                     {
                         SetAndApplyProperty(idProperty, string.Empty);
                         button.text = "Select type...";
+                        button.style.backgroundColor = Uniform.Error;
                     });
                 for (var i = 0; i < allAudioAsset.Count; i++)
                 {
@@ -73,6 +76,7 @@ namespace PancakeEditor.Sound
                             SetAndApplyProperty(idProperty, allAudioAsset[cachei].id);
                             SetAndApplyProperty(nameProperty, allAudioAsset[cachei].name);
                             button.text = allAudioAsset[cachei].name;
+                            button.style.backgroundColor = new Color(0.99f, 0.5f, 0.24f, 0.31f);
                         });
                 }
 

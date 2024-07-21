@@ -19,12 +19,19 @@ namespace PancakeEditor
 
             var label = new Label(ObjectNames.NicifyVariableName(SerializedProperty.name.ToCamelCase())) {style = {marginLeft = 3, marginRight = 10, flexGrow = 0}};
 
-            var button = new Button {text = "Select type...", style =
+            var button = new Button
             {
-                flexGrow = 1, marginLeft = 10, flexShrink = 0, marginRight = -3,
-                backgroundColor = new Color(0.05f, 0.61f, 0.53f, 0.31f),
-                color = Color.white
-            }};
+                text = "Select type...",
+                style =
+                {
+                    flexGrow = 1,
+                    marginLeft = 10,
+                    flexShrink = 0,
+                    marginRight = -3,
+                    backgroundColor = Uniform.Error,
+                    color = Color.white
+                }
+            };
 
             if (!string.IsNullOrEmpty(SerializedProperty.stringValue))
             {
@@ -37,10 +44,12 @@ namespace PancakeEditor
                         if (t.Name == SerializedProperty.stringValue)
                         {
                             button.text = SerializedProperty.stringValue;
+                            button.style.backgroundColor = new Color(0.05f, 0.61f, 0.53f, 0.31f);
                             break;
                         }
 
                         button.text = "Failed load...";
+                        button.style.backgroundColor = Uniform.Error;
                     }
                 }
             }
@@ -54,6 +63,7 @@ namespace PancakeEditor
                     {
                         SetAndApplyProperty(SerializedProperty, string.Empty);
                         button.text = "Select type...";
+                        button.style.backgroundColor = Uniform.Error;
                     });
                 var type = GetTypeByFullName();
                 if (type != null)
@@ -69,6 +79,7 @@ namespace PancakeEditor
                             {
                                 SetAndApplyProperty(SerializedProperty, result[cachei].Name);
                                 button.text = result[cachei].Name;
+                                button.style.backgroundColor = new Color(0.05f, 0.61f, 0.53f, 0.31f);
                             });
                     }
                 }

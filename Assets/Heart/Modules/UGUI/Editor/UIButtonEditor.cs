@@ -163,7 +163,8 @@ namespace PancakeEditor.UI
                 GUILayout.Label("   Audio Id", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 var idProperty = _audioClick.FindPropertyRelative("id");
                 var nameProperty = _audioClick.FindPropertyRelative("name");
-                string buttonLabel = "Select type...";
+                var buttonLabel = "Select type...";
+                var colorLabel =  Uniform.Error;
                 if (!string.IsNullOrEmpty(idProperty.stringValue))
                 {
                     var allAudioAsset = ProjectDatabase.FindAll<AudioData>();
@@ -172,15 +173,17 @@ namespace PancakeEditor.UI
                         if (t.id == idProperty.stringValue)
                         {
                             buttonLabel = nameProperty.stringValue;
+                            colorLabel = new Color(0.99f, 0.5f, 0.24f, 0.31f);
                             break;
                         }
 
                         buttonLabel = "Failed load...";
+                        colorLabel = Uniform.Error;
                     }
                 }
 
                 var previousColor = GUI.backgroundColor;
-                GUI.backgroundColor = new Color(0.99f, 0.5f, 0.24f, 0.31f);
+                GUI.backgroundColor = colorLabel;
                 if (GUILayout.Button(buttonLabel, EditorStyles.popup))
                 {
                     var menu = new GenericMenu();
@@ -191,6 +194,7 @@ namespace PancakeEditor.UI
                         {
                             SetAndApplyProperty(idProperty, string.Empty);
                             buttonLabel = "Select type...";
+                            colorLabel = Uniform.Error;
                         });
                     for (var i = 0; i < allAudioAsset.Count; i++)
                     {
@@ -203,6 +207,7 @@ namespace PancakeEditor.UI
                                 SetAndApplyProperty(idProperty, allAudioAsset[cachei].id);
                                 SetAndApplyProperty(nameProperty, allAudioAsset[cachei].name);
                                 buttonLabel = allAudioAsset[cachei].name;
+                                colorLabel = new Color(0.99f, 0.5f, 0.24f, 0.31f);
                             });
                     }
 

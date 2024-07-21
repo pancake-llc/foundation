@@ -28,7 +28,7 @@ namespace PancakeEditor
                     marginLeft = 10,
                     flexShrink = 0,
                     marginRight = -3,
-                    backgroundColor = new Color(0.93f, 0.78f, 0.22f, 0.31f),
+                    backgroundColor = Uniform.Error,
                     color = Color.white
                 }
             };
@@ -44,10 +44,12 @@ namespace PancakeEditor
                         if (t.Name == SerializedProperty.stringValue)
                         {
                             button.text = SerializedProperty.stringValue;
+                            button.style.backgroundColor = new Color(0.93f, 0.78f, 0.22f, 0.31f);
                             break;
                         }
 
                         button.text = "Failed load...";
+                        button.style.backgroundColor = Uniform.Error;
                     }
                 }
             }
@@ -61,6 +63,7 @@ namespace PancakeEditor
                     {
                         SetAndApplyProperty(SerializedProperty, string.Empty);
                         button.text = "Select type...";
+                        button.style.backgroundColor = Uniform.Error;
                     });
                 var type = GetTypeByFullName();
                 if (type != null)
@@ -76,6 +79,7 @@ namespace PancakeEditor
                             {
                                 SetAndApplyProperty(SerializedProperty, result[cachei].Name);
                                 button.text = result[cachei].Name;
+                                button.style.backgroundColor = new Color(0.93f, 0.78f, 0.22f, 0.31f);
                             });
                     }
                 }
