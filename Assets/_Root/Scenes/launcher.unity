@@ -333,6 +333,7 @@ GameObject:
   - component: {fileID: 472371679}
   - component: {fileID: 472371680}
   - component: {fileID: 472371681}
+  - component: {fileID: 472371682}
   m_Layer: 0
   m_Name: launcher
   m_TagString: Untagged
@@ -394,6 +395,18 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+--- !u!114 &472371682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472371678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fc10641ae60bd84c9a8946ab7d6d919, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &498076884
 GameObject:
   m_ObjectHideFlags: 0

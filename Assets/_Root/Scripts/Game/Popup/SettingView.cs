@@ -45,6 +45,7 @@ namespace Pancake.Game.UI
 
         protected override UniTask Initialize()
         {
+            textUserId.text = UserData.UserId;
             DeactiveAllButtonLanguage();
             InitializeLanguage();
             InitializeQuality();

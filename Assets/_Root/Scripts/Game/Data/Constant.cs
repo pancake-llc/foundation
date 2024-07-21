@@ -9,6 +9,8 @@ namespace Pancake.Game
             public const string KEY_MUSIC = "user_music";
             public const string KEY_SFX = "user_sfx";
             public const string KEY_VIBRATE = "user_vibrate";
+            public const string KEY_FIRST_OPEN = "user_first_open";
+            public const string KEY_ID = "user_id";
         }
 
         public static class Scene

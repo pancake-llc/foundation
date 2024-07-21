@@ -1,3 +1,4 @@
+using System;
 using Pancake.Common;
 using Pancake.Localization;
 
@@ -44,5 +45,10 @@ namespace Pancake.Game
 
         public static bool GetVibrate() => Data.Load(Constant.User.KEY_VIBRATE, true);
         public static void SetVibrate(bool status) => Data.Save(Constant.User.KEY_VIBRATE, status);
+
+        public static bool GetFirstOpen() => Data.Load(Constant.User.KEY_FIRST_OPEN, false);
+        internal static void SetFirstOpen(bool status) => Data.Save(Constant.User.KEY_FIRST_OPEN, status);
+
+        public static string UserId => Data.Load(Constant.User.KEY_ID, Guid.NewGuid().ToString("N")[..16]);
     }
 }
