@@ -107,7 +107,7 @@ namespace Pancake.Sound
             audioSource.clip = null;
             audioSource.loop = false;
             audioSource.volume = 1;
-            audioSource.time = 0f;
+            // audioSource.time = 0f; // Attempting to set `time` on an audio source that has a resource assigned that is not a clip is ignored!
             App.StopAndClean(ref _delayHandle);
         }
 
