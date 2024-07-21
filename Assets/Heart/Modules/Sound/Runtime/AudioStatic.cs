@@ -4,6 +4,7 @@
     {
         public static AudioId Play(this AudioId id)
         {
+            if (string.IsNullOrEmpty(id.id)) return id;
             AudioManager.playEvent?.Invoke(id);
             return id;
         }
