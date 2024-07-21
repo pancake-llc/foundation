@@ -845,6 +845,10 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
+  enabledSound: 1
+  audioClick:
+    name: sfx_button
+    id: 35ae31a7c6714a3
   isMotion: 1
   ignoreTimeScale: 0
   isMotionUnableInteract: 0

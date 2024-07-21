@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e851987ebff4413f958ce7e93a1fd5a9, type: 3}
+  m_Name: bgm_menu
+  m_EditorClassIdentifier: 
+  id: a72181727ec14b1
+  type: 0
+  loop: 0
+  masterVolume: 1
+  groups:
+  - sequenceMode: 0
+    clips:
+    - clip: {fileID: 8300000, guid: c74502b2529a8584395ee357f18adeba, type: 3}
+      volume: 1
+    - clip: {fileID: 8300000, guid: 142b4a2eac446f846baaee756a5f5af4, type: 3}
+      volume: 1
+    cooldownToPlay: 0
+    cooldown: 0

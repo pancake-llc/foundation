@@ -6,7 +6,7 @@ Preset:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BgmImporter
+  m_Name: bgm
   m_TargetType:
     m_NativeTypeID: 1020
     m_ManagedTypePPtr: {fileID: 0}
@@ -198,7 +198,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_PlatformSettingOverrides.Array.data[4].second.quality
-    value: 0.5
+    value: 0.59999996
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_PlatformSettingOverrides.Array.data[4].second.conversionMode
