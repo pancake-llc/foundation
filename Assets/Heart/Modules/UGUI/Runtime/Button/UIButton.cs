@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading;
 using LitMotion.Extensions;
 using Pancake.Common;
+using Pancake.Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -54,6 +55,8 @@ namespace Pancake.UI
         [SerializeField] private ButtonClickedEvent onPointerUp = new();
         [SerializeField] private ButtonClickedEvent onPointerDown = new();
         [SerializeField] private ButtonHoldEvent onHold = new();
+        [SerializeField] private bool enabledSound;
+        [SerializeField] private AudioId audioClick;
         [SerializeField] private bool isMotion = true;
         [SerializeField] private bool ignoreTimeScale;
         [SerializeField] private bool isMotionUnableInteract;
@@ -128,6 +131,12 @@ namespace Pancake.UI
             if (!Application.isPlaying) return; // not execute awake when not playing
             _tokenSource = new CancellationTokenSource();
             DefaultScale = AffectObject.localScale;
+            onClick.AddListener(PlaySound);
+        }
+
+        private void PlaySound()
+        {
+            if (enabledSound) audioClick.Play();
         }
 
 #if UNITY_EDITOR
@@ -385,6 +394,7 @@ namespace Pancake.UI
         {
             if (!IsActive() || !IsInteractable() || !IsDetectDoubleClick) return;
             InternalInvokeDoubleClickdEvent();
+            PlaySound();
         }
 
         private void InternalInvokeDoubleClickdEvent()
@@ -427,6 +437,7 @@ namespace Pancake.UI
         {
             if (!IsActive() || !IsInteractable() || !IsDetectLongCLick) return;
             InternalInvokeLongClickdEvent();
+            PlaySound();
         }
 
         /// <summary>

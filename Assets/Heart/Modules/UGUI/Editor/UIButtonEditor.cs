@@ -1,4 +1,6 @@
 using System;
+using Pancake.Linq;
+using Pancake.Sound;
 using PancakeEditor.Common;
 using UnityEditor;
 using UnityEngine;
@@ -37,6 +39,8 @@ namespace PancakeEditor.UI
         private SerializedProperty _scaleUnableInteract;
         private SerializedProperty _durationUnableInteract;
         private SerializedProperty _easeInteract;
+        private SerializedProperty _enabledSound;
+        private SerializedProperty _audioClick;
 
         protected override void OnEnable()
         {
@@ -65,6 +69,8 @@ namespace PancakeEditor.UI
             _easeDown = serializedObject.FindProperty("motionData").FindPropertyRelative("easeDown");
             _easeUp = serializedObject.FindProperty("motionData").FindPropertyRelative("easeUp");
             _easeInteract = serializedObject.FindProperty("motionDataUnableInteract").FindPropertyRelative("ease");
+            _enabledSound = serializedObject.FindProperty("enabledSound");
+            _audioClick = serializedObject.FindProperty("audioClick");
         }
 
         public override void OnInspectorGUI()
@@ -144,7 +150,76 @@ namespace PancakeEditor.UI
                 _affectObject.objectReferenceValue = EditorGUILayout.ObjectField("", _affectObject.objectReferenceValue, typeof(Transform), true) as Transform;
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("Is Play Sound", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+            _enabledSound.boolValue = GUILayout.Toggle(_enabledSound.boolValue, "");
+            EditorGUILayout.EndHorizontal();
+
+            if (_enabledSound.boolValue)
+            {
+                var currentRect = EditorGUILayout.GetControlRect(false, 0);
+
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Label("   Audio Id", GUILayout.Width(DEFAULT_LABEL_WIDTH));
+                var idProperty = _audioClick.FindPropertyRelative("id");
+                var nameProperty = _audioClick.FindPropertyRelative("name");
+                string buttonLabel = "Select type...";
+                if (!string.IsNullOrEmpty(idProperty.stringValue))
+                {
+                    var allAudioAsset = ProjectDatabase.FindAll<AudioData>();
+                    foreach (var t in allAudioAsset)
+                    {
+                        if (t.id == idProperty.stringValue)
+                        {
+                            buttonLabel = nameProperty.stringValue;
+                            break;
+                        }
+
+                        buttonLabel = "Failed load...";
+                    }
+                }
+
+                var previousColor = GUI.backgroundColor;
+                GUI.backgroundColor = new Color(0.99f, 0.5f, 0.24f, 0.31f);
+                if (GUILayout.Button(buttonLabel, EditorStyles.popup))
+                {
+                    var menu = new GenericMenu();
+                    var allAudioAsset = ProjectDatabase.FindAll<AudioData>().Filter(au => au.type == EAudioType.Sfx);
+                    menu.AddItem(new GUIContent("None (-1)"),
+                        false,
+                        () =>
+                        {
+                            SetAndApplyProperty(idProperty, string.Empty);
+                            buttonLabel = "Select type...";
+                        });
+                    for (var i = 0; i < allAudioAsset.Count; i++)
+                    {
+                        if (i == 0) menu.AddSeparator("");
+                        int cachei = i;
+                        menu.AddItem(new GUIContent($"{allAudioAsset[cachei].name} ({cachei})"),
+                            false,
+                            () =>
+                            {
+                                SetAndApplyProperty(idProperty, allAudioAsset[cachei].id);
+                                SetAndApplyProperty(nameProperty, allAudioAsset[cachei].name);
+                                buttonLabel = allAudioAsset[cachei].name;
+                            });
+                    }
+
+                    menu.DropDown(new Rect(currentRect.position + new Vector2(DEFAULT_LABEL_WIDTH, 8), Vector2.zero));
+                }
+
+                GUI.backgroundColor = previousColor;
+
+                EditorGUILayout.EndHorizontal();
+            }
+
+            void SetAndApplyProperty(SerializedProperty property, string value)
+            {
+                property.stringValue = value;
+                property.serializedObject.ApplyModifiedProperties();
+            }
+
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Use Motion", GUILayout.Width(DEFAULT_LABEL_WIDTH));
             _isMotion.boolValue = GUILayout.Toggle(_isMotion.boolValue, "");
@@ -152,7 +227,6 @@ namespace PancakeEditor.UI
 
             if (_isMotion.boolValue)
             {
-                EditorGUILayout.Space();
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("  Motion Type", GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 _motion.enumValueIndex = EditorGUILayout.Popup(_motion.enumValueIndex, ButtonMotion);
@@ -179,7 +253,7 @@ namespace PancakeEditor.UI
                 GUILayout.Label(new GUIContent("  Ease Down"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 EditorGUILayout.PropertyField(_easeDown, new GUIContent(""));
                 EditorGUILayout.EndHorizontal();
-                
+
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label(new GUIContent("  Ease Up"), GUILayout.Width(DEFAULT_LABEL_WIDTH));
                 EditorGUILayout.PropertyField(_easeUp, new GUIContent(""));
